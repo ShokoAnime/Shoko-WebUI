@@ -61,7 +61,7 @@ function mapStateToProps(state) {
     const importCount = importFolders.items.length || 0;
     let commandCount = 0;
     try {
-        commandCount = (queueStatus.items.length == 0) ? 0 : ((queueStatus.items[0].count || 0) + (queueStatus.items[1].count || 0) + (queueStatus.items[2].count || 0));
+        commandCount = (Object.keys(queueStatus).length === 0 && queueStatus.constructor === Object) ? 0 : ((queueStatus.items.hash.count || 0) + (queueStatus.items.general.count || 0) + (queueStatus.items.image.count || 0));
     } catch (ex) {
         console.log(ex);
     }
