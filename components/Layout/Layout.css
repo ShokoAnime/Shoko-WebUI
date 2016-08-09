@@ -20,11 +20,11 @@ a, a:hover, a:focus {
 }
 ::selection {
 
-  background: #FF6C60;
+  background: #49a2df;
   color: #fff;
 }
 ::-moz-selection {
-  background: #FF6C60;
+  background: #49a2df;
   color: #fff;
 }
 
