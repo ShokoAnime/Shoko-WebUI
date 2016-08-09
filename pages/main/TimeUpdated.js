@@ -3,14 +3,15 @@ import moment from 'moment';
 
 class TimeUpdated extends React.Component {
   static propTypes = {
-    timestamp: PropTypes.number
+    timestamp: PropTypes.number,
+    className: PropTypes.string
   };
 
   render() {
-    const { timestamp } = this.props;
+    const { timestamp, className } = this.props;
     let dateString = (timestamp)?moment(timestamp, 'x').format("YYYY-MM-DD HH:mm:ss"):'--';
     return (
-      <span>{"Updated: "+dateString}</span>
+      <span className={className}>{"Updated: "+dateString}</span>
     );
   }
 }
