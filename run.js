@@ -53,6 +53,24 @@ tasks.set('bundle', () => {
 });
 
 //
+// Make release zip file
+//
+tasks.set('release', ()=>{
+  let zipFolder = require('zip-folder');
+
+  return new Promise((resolve, reject) => {
+    zipFolder('./public', './build/latest.zip', function(err) {
+      if(err) {
+        reject(err);
+      } else {
+        console.log('Release build created!');
+        resolve();
+      }
+    });
+  });
+});
+
+//
 // Build website into a distributable format
 // -----------------------------------------------------------------------------
 tasks.set('build', () => {
@@ -61,7 +79,8 @@ tasks.set('build', () => {
   return Promise.resolve()
     .then(() => run('clean'))
     .then(() => run('bundle'))
-    .then(() => run('html'));
+    .then(() => run('html'))
+    .then(() => run('release'));
 });
 
 //
