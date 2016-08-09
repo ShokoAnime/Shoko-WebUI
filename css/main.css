@@ -22,17 +22,21 @@ a, a:hover, a:focus {
 }
 ::selection {
 
-    background: #FF6C60;
+    background: #49a2df;
     color: #fff;
 }
 ::-moz-selection {
-    background: #FF6C60;
+    background: #49a2df;
     color: #fff;
 }
 
 #container {
     width: 100%;
     height: 100%;
+}
+
+.fa {
+    font-size: 20px;
 }
 
 /* Sidebar */
@@ -99,7 +103,7 @@ ul.sidebar-menu li ul.sub li a {
 }
 
 ul.sidebar-menu li ul.sub li a:hover, ul.sidebar-menu li ul.sub li.active a {
-    color: #FF6C60;
+    color: #49a2df;
     transition: all 0.3s ease;
     display: block;
 }
@@ -139,12 +143,12 @@ ul.sidebar-menu li a.active, ul.sidebar-menu li a:hover, ul.sidebar-menu li a:fo
 
 
 ul.sidebar-menu li a i {
-    font-size: 15px;
+    font-size: 20px;
     padding-right: 6px;
 }
 
 ul.sidebar-menu li a:hover i, ul.sidebar-menu li a:focus i {
-    color: #FF6C60;
+    color: #49a2df;
 }
 
 ul.sidebar-menu li a.active i {
@@ -188,7 +192,8 @@ ul.sidebar-menu li a.active i {
 
 a.logo {
     font-size: 21px;
-    color: #a9d86e;
+	font-weight: 700;
+    color: #15827C;
     float: left;
     margin-top: 15px;
     text-transform: uppercase;
@@ -233,12 +238,12 @@ a.logo span {
 }
 
 .header .notification.enabled > a {
-    color: #a9d86e;
+    color: #15827C;
 }
 
 .header .notification.enabled > a:hover,
 .header .notification.enabled > a:focus {
-    color: #a9d86e;
+    color: #15827C;
 }
 
 .notification .badge {
@@ -263,7 +268,7 @@ a.logo span {
 }
 
 .badge.bg-important {
-    background: #ff6c60;
+    background: #49a2df;
 }
 
 .badge.bg-info {
@@ -312,11 +317,11 @@ a.logo span {
 }
 
 .overview .terques {
-    background: #6ccac9;
+    background: #3eacaa;
 }
 
 .overview .red {
-    background: #ff6c60;
+    background: #e7505a;
 }
 
 .overview .yellow {
@@ -324,5 +329,5 @@ a.logo span {
 }
 
 .overview .blue {
-    background: #57c8f2;
+    background: #3598dc;
 }
