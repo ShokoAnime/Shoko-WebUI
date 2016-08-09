@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
-import { QUEUE_STATUS, SET_APIKEY, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT, FILES_COUNT, autoUpdateTick } from './actions'
+import { QUEUE_STATUS, SET_APIKEY, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
+  FILES_COUNT, SIDEBAR_TOGGLE, autoUpdateTick } from './actions'
 function activeApiKey(state = '', action) {
     switch (action.type) {
         case SET_APIKEY:
@@ -25,6 +26,15 @@ function autoUpdate(state = {
                 status: action.state,
                 timer: timer
             });
+        default:
+            return state
+    }
+}
+
+function sidebarToggle(state = true, action) {
+    switch (action.type) {
+        case SIDEBAR_TOGGLE:
+            return action.state;
         default:
             return state
     }
@@ -206,7 +216,8 @@ const rootReducer = combineReducers({
     jmmNews,
     importFolders,
     seriesCount,
-    filesCount
+    filesCount,
+    sidebarToggle
 });
 
 export default rootReducer

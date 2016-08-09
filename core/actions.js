@@ -23,6 +23,15 @@ export function setAutoupdate(status) {
     }
 }
 
+export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
+
+export function toggleSidebar(status) {
+    return {
+        type: SIDEBAR_TOGGLE,
+        state: status
+    }
+}
+
 export function autoUpdateTick() {
     const state = store.getState();
     store.dispatch(fetchQueues(state.activeApiKey));

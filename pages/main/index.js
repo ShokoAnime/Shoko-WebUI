@@ -31,7 +31,7 @@ class MainPage extends React.Component {
     render() {
         return (
             <Layout>
-                <section id="main-content">
+                <section className="main-content">
                     <section className="wrapper">
                         <Overview/>
                         <div className="row">

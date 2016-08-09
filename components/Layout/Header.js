@@ -5,12 +5,14 @@ import GeneralQueue from './GeneralQueue';
 import HasherQueue from './HasherQueue';
 import ImageQueue from './ImageQueue';
 import AutoRefreshSwitch from './AutoRefreshSwitch';
+import SidebarToggle from './SidebarToggle';
 
 class Header extends React.Component {
   render() {
-    const { countHasher, countGeneral, countImages, autoUpdate } = this.props;
+    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle } = this.props;
       return (
         <header className="header white-bg">
+          <SidebarToggle enabled={sidebarToggle}/>
           <Logo/>
           <div className="nav notifications">
             <ul className="nav">
@@ -30,14 +32,15 @@ class Header extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { queueStatus, autoUpdate } = state;
+    const { queueStatus, autoUpdate, sidebarToggle } = state;
     const items = queueStatus.items || {};
 
     return {
         countHasher: items.hash?items.hash.count:null,
         countGeneral: items.general?items.general.count:null,
         countImages: items.image?items.image.count:null,
-        autoUpdate: autoUpdate.status
+        autoUpdate: autoUpdate.status,
+        sidebarToggle: sidebarToggle
     }
 }
 

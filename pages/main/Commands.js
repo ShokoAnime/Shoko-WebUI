@@ -31,12 +31,12 @@ class Commands extends React.Component {
     let names = {'hash':'Hasher', 'general':'General', 'image':'Images'};
     for (let key in items) {
       let item = items[key];
-      commands.push(<tr>
+      commands.push(<tr key={"main-"+key}>
         <td className={s['icon-column']}><i className={cx("fa", icons[key])}/></td>
         <td>{names[key]}</td>
         <td>{item.count}</td>
       </tr>);
-      commands.push(<tr><td colSpan="3"><div className={s['text-wrapper']}>{item.state}</div></td></tr>);
+      commands.push(<tr key={"details-"+key}><td colSpan="3"><div className={s['text-wrapper']}>{item.state}</div></td></tr>);
     } //<button onClick={this.handleRefresh} type="button" className="btn btn-primary pull-right">Run import</button>
     return (
       <div className={this.props.className}>

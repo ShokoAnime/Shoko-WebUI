@@ -2,3 +2,21 @@
   width: 100%;
   height: 100%;
 }
+.sidebar-toggle {
+  float: left;
+  padding-right: 15px;
+  margin-top: 20px;
+}
+.sidebar-toggle :global(.fa) {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 20px;
+}
+.hide-sidebar :global(#sidebar) {
+  transition: margin 0.5s ease-in-out;
+  margin-left: -210px;
+}
+.hide-sidebar :global(.main-content) {
+  transition: margin 0.5s ease-in-out;
+  margin-left: 0;
+}

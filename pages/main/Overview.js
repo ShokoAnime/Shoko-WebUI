@@ -61,14 +61,12 @@ function mapStateToProps(state) {
     const importCount = importFolders.items.length || 0;
     let commandCount = 0;
     try {
-        commandCount = (Object.keys(queueStatus).length === 0 && queueStatus.constructor === Object) ? 0 : ((queueStatus.items.hash.count || 0) + (queueStatus.items.general.count || 0) + (queueStatus.items.image.count || 0));
+        commandCount = (Object.keys(queueStatus.items).length === 0 && queueStatus.items.constructor === Object) ? 0 : ((queueStatus.items.hash.count || 0) + (queueStatus.items.general.count || 0) + (queueStatus.items.image.count || 0));
     } catch (ex) {
         console.log(ex);
     }
     const SeriesCount = seriesCount.count || 0;
     const FilesCount = filesCount.count || 0;
-
-    console.log(['overview state',state]);
 
     return {
         importCount,
