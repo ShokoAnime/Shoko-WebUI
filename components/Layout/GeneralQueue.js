@@ -6,7 +6,7 @@ class GeneralQueue extends React.Component {
         return (
             <li className="notification">
                 <a className="dropdown-toggle" href="#">
-                    <i className="fa fa-tasks"/>
+                    <i className="fa fa-list-alt"/>
                     {count == null?null:<span className="badge bg-success">{count}</span>}
                 </a>
             </li>

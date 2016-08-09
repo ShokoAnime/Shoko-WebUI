@@ -34,9 +34,9 @@ function mapStateToProps(state) {
     const items = queueStatus.items || {};
 
     return {
-        countHasher: items[0]?items[0].count:null,
-        countGeneral: items[1]?items[1].count:null,
-        countImages: items[2]?items[2].count:null,
+        countHasher: items.hash?items.hash.count:null,
+        countGeneral: items.general?items.general.count:null,
+        countImages: items.image?items.image.count:null,
         autoUpdate: autoUpdate.status
     }
 }

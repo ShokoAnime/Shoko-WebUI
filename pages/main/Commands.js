@@ -26,8 +26,8 @@ class Commands extends React.Component {
   render() {
     const {items, isFetching, lastUpdated} = this.props;
     let commands = [];
-    let icons = ['fa-tasks', 'fa-list-alt', 'fa-picture-o'];
-    let names = ['Hasher', 'General', 'Images'];
+    let icons = {'hash': 'fa-tasks', 'general':'fa-list-alt', 'image':'fa-picture-o'};
+    let names = {'hash':'Hasher', 'general':'General', 'image':'Images'};
     for (let key in items) {
       let item = items[key];
       commands.push(<tr>
