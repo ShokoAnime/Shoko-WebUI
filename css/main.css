@@ -239,6 +239,10 @@ a.logo span {
     color: #2E2E2E;
 }
 
+.notification .btn-sm .fa {
+    font-size: 14px;
+}
+
 .header .notification.enabled > a {
     color: #15827C;
 }

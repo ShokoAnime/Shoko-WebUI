@@ -344,3 +344,104 @@ export function fetchFilesCount(apiKey) {
         // catch any error in the network call.
     }
 }
+
+export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
+
+export function requestUpdateAvailable() {
+    return {
+        type: UPDATE_AVAILABLE,
+        status: STATUS_REQUEST
+    }
+}
+
+export function receiveUpdateAvailable(json) {
+    return {
+        type: UPDATE_AVAILABLE,
+        status: STATUS_RECEIVE,
+        count: json.count,
+        receivedAt: Date.now()
+    }
+}
+
+export function fetchUpdateAvailable(apiKey) {
+    return function (dispatch) {
+        dispatch(requestUpdateAvailable());
+
+        return fetch('/api/webui/latest', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'apikey': apiKey
+            }
+        })
+          .then(response => response.json())
+          .then(json =>
+            dispatch(receiveUpdateAvailable(json))
+          )
+          .catch(function (ex) {
+              console.log('parsing failed', ex)
+          });
+    }
+}
+
+function shouldFetchUpdateAvailable(state) {
+    const status = state.updateAvailable;
+    if (!status) {
+        return true
+    } else if (status.isFetching) {
+        return false
+    } else if (status.lastUpdated) {
+        return false
+    } else {
+        return status.didInvalidate
+    }
+}
+
+export function fetchUpdateAvailableIfNeeded() {
+    return (dispatch, getState) => {
+        if (shouldFetchUpdateAvailable(getState())) {
+            return dispatch(fetchUpdateAvailable(getState().activeApiKey))
+        } else {
+            return Promise.resolve()
+        }
+    }
+}
+
+export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
+
+export function requestWebuiVersionUpdate() {
+    return {
+        type: WEBUI_VERSION_UPDATE,
+        status: STATUS_REQUEST
+    }
+}
+
+export function receiveWebuiVersionUpdate(json) {
+    return {
+        type: WEBUI_VERSION_UPDATE,
+        status: STATUS_RECEIVE,
+        count: json.count,
+        receivedAt: Date.now()
+    }
+}
+
+export function fetchWebuiVersionUpdate(apiKey) {
+    return function (dispatch) {
+        dispatch(requestWebuiVersionUpdate());
+
+        return fetch('/api/webui/update', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'apikey': apiKey
+            }
+        })
+          .then(response => response.json())
+          .then(json =>
+            dispatch(receiveWebuiVersionUpdate(json))
+          )
+          .catch(function (ex) {
+              console.log('parsing failed', ex)
+          });
+    }
+}

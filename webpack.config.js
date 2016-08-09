@@ -1,6 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
+const childProcess = require('child_process');
 const pkg = require('./package.json');
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
@@ -54,6 +55,8 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       __DEV__: isDebug,
+      //__VERSION__: isDebug?childProcess.execSync("git log --pretty=format:'%h' -n 1").toString():pkg.version,
+      __VERSION__: JSON.stringify(pkg.version),
     }),
     new AssetsPlugin({
       path: path.resolve(__dirname, './public/dist'),

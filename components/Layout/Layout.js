@@ -1,10 +1,10 @@
 import React, { PropTypes } from 'react';
 import {connect} from 'react-redux';
+import history from '../../core/history';
 import cx from 'classnames';
 import Header from './Header';
 import Sidebar from '../Sidebar';
 import s from './Layout.css';
-
 
 class Layout extends React.Component {
 
@@ -26,8 +26,13 @@ class Layout extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { sidebarToggle } = state;
+  const { sidebarToggle, webuiVersionUpdate } = state;
 
+  if (webuiVersionUpdate.status === true) {
+    history.push({
+      pathname: '/',
+    });
+  }
   return {
     sidebarToggle
   }

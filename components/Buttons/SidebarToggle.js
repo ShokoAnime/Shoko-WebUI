@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react';
 import store from '../../core/store';
 import { toggleSidebar } from '../../core/actions';
-import s from './Layout.css';
+import s from '../Layout/Layout.css';
 
 class SidebarToggle extends React.Component {
   static propTypes = {

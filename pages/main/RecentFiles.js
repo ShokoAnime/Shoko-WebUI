@@ -16,10 +16,10 @@ class RecentFiles extends React.Component {
             let item = items[key];
             i++;
             files.push(
-              <tr>
+              <tr key={item.id}>
                 <td>{i}</td>
                 <td>
-                  <div className={s['text-wrapper']}>{item}</div>
+                  <div className={s['text-wrapper']}>{item.path}</div>
                 </td>
                 <td/>
               </tr>

@@ -55,7 +55,7 @@ class LoginPage extends React.Component {
                         <div className="row">
                             <div className={cx("col-md-3 col-md-offset-3", s['left-panel'])}>
                                 <h1>JMM Server</h1>
-                                <h3>3.7.0.1</h3>
+                                <h4>3.7.0.1 (WebUI {__VERSION__})</h4>
                                 <h2>Welcome Back!</h2>
                                 <h2>Input your user information to login into JMM Server!</h2>
                                 <h2>Trouble logging in? Click the Help! button</h2>

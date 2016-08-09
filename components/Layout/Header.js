@@ -4,12 +4,13 @@ import Logo from './Logo';
 import GeneralQueue from './GeneralQueue';
 import HasherQueue from './HasherQueue';
 import ImageQueue from './ImageQueue';
-import AutoRefreshSwitch from './AutoRefreshSwitch';
-import SidebarToggle from './SidebarToggle';
+import AutoRefreshSwitch from '../Buttons/AutoRefreshSwitch';
+import SidebarToggle from '../Buttons/SidebarToggle';
+import UpdateButton from '../Buttons/UpdateButton';
 
 class Header extends React.Component {
   render() {
-    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle } = this.props;
+    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable } = this.props;
       return (
         <header className="header white-bg">
           <SidebarToggle enabled={sidebarToggle}/>
@@ -19,8 +20,10 @@ class Header extends React.Component {
               <HasherQueue count={countHasher}/>
               <GeneralQueue count={countGeneral}/>
               <ImageQueue count={countImages}/>
+              <UpdateButton enabled={updateAvailable} />
             </ul>
           </div>
+
           <div className="nav notifications pull-right">
             <ul className="nav">
               <AutoRefreshSwitch enabled={autoUpdate}/>
@@ -32,7 +35,7 @@ class Header extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { queueStatus, autoUpdate, sidebarToggle } = state;
+    const { queueStatus, autoUpdate, sidebarToggle, updateAvailable } = state;
     const items = queueStatus.items || {};
 
     return {
@@ -40,7 +43,8 @@ function mapStateToProps(state) {
         countGeneral: items.general?items.general.count:null,
         countImages: items.image?items.image.count:null,
         autoUpdate: autoUpdate.status,
-        sidebarToggle: sidebarToggle
+        sidebarToggle: sidebarToggle,
+        updateAvailable: updateAvailable.status
     }
 }
 

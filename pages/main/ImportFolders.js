@@ -14,7 +14,7 @@ class ImportFolders extends React.Component {
         for (let key in items) {
             let item = items[key];
             i++;
-            files.push(<tr><td>{i}</td><td>{item.ImportFolderLocation}</td><td></td></tr>);
+            files.push(<tr key={i}><td>{i}</td><td>{item.ImportFolderLocation}</td><td></td></tr>);
         }
         return (
             <div className={this.props.className}>

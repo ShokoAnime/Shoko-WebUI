@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux'
 import { QUEUE_STATUS, SET_APIKEY, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
-  FILES_COUNT, SIDEBAR_TOGGLE, autoUpdateTick } from './actions'
+  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, autoUpdateTick } from './actions'
+
+const VERSION = __VERSION__;
+
 function activeApiKey(state = '', action) {
     switch (action.type) {
         case SET_APIKEY:
@@ -208,6 +211,62 @@ function filesCount(state = {
     }
 }
 
+function updateAvailable(state = {
+    isFetching: false,
+    didInvalidate: true,
+    status: false
+}, action) {
+    if (action.type != UPDATE_AVAILABLE) { return state; }
+    switch (action.status) {
+        case STATUS_INVALIDATE:
+            return Object.assign({}, state, {
+                didInvalidate: true
+            });
+        case STATUS_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true,
+                didInvalidate: false
+            });
+        case STATUS_RECEIVE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                didInvalidate: false,
+                status: (VERSION.indexOf('.') !== -1 && action.version != VERSION),
+                lastUpdated: action.receivedAt
+            });
+        default:
+            return state
+    }
+}
+
+function webuiVersionUpdate(state = {
+    isFetching: false,
+    didInvalidate: true,
+    status: false
+}, action) {
+    if (action.type != WEBUI_VERSION_UPDATE) { return state; }
+    switch (action.status) {
+        case STATUS_INVALIDATE:
+            return Object.assign({}, state, {
+                didInvalidate: true
+            });
+        case STATUS_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true,
+                didInvalidate: false
+            });
+        case STATUS_RECEIVE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                didInvalidate: false,
+                status: action.status,
+                lastUpdated: action.receivedAt
+            });
+        default:
+            return state
+    }
+}
+
 const rootReducer = combineReducers({
     activeApiKey,
     autoUpdate,
@@ -217,7 +276,9 @@ const rootReducer = combineReducers({
     importFolders,
     seriesCount,
     filesCount,
-    sidebarToggle
+    sidebarToggle,
+    updateAvailable,
+    webuiVersionUpdate
 });
 
 export default rootReducer

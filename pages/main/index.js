@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
-import { fetchQueues, fetchRecentFiles, fetchImportFolders, fetchSeriesCount, fetchFilesCount } from '../../core/actions';
+import { fetchQueues, fetchRecentFiles, fetchImportFolders, fetchSeriesCount, fetchFilesCount, fetchUpdateAvailableIfNeeded } from '../../core/actions';
 import Layout from '../../components/Layout';
 import Overview from './Overview';
 import Commands from './Commands';
@@ -24,6 +24,7 @@ class MainPage extends React.Component {
           .then(() => store.dispatch(fetchImportFolders(state.activeApiKey)))
           .then(() => store.dispatch(fetchSeriesCount(state.activeApiKey)))
           .then(() => store.dispatch(fetchFilesCount(state.activeApiKey)))
+          .then(() => fetchUpdateAvailableIfNeeded()(store.dispatch, store.getState))
         );
 
     }
