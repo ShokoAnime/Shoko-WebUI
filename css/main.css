@@ -260,15 +260,19 @@ a.logo span {
 }
 
 .badge.bg-success {
-    background: #a9d86e;
+    background: #4cbe83;
 }
 
 .badge.bg-warning {
-    background: #FCB322;
+    background: #f8d347;
+}
+
+.badge.bg-error {
+    background: #e7505a;
 }
 
 .badge.bg-important {
-    background: #49a2df;
+    background: #217ebd;
 }
 
 .badge.bg-info {
@@ -292,7 +296,7 @@ a.logo span {
 .overview .value h1, .overview .value p  {
     margin: 0;
     padding: 0;
-    color: #c6cad6;
+    color: #2f353b;
 }
 
 .overview .value h1 {
@@ -329,5 +333,6 @@ a.logo span {
 }
 
 .overview .blue {
-    background: #3598dc;
+    /*background: #3598dc; */
+	background: #217ebd;
 }
