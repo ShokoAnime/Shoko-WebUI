@@ -46,7 +46,7 @@ a, a:hover, a:focus {
     height: 100%;
     position: fixed;
     background: #15827C;
-    overflow-y: scroll;
+    overflow-y: hidden;
 }
 
 #sidebar ul li {
@@ -168,9 +168,28 @@ ul.sidebar-menu li a.active i {
     margin-left: 210px;
 }
 
-.header, .footer {
+.header {
     min-height: 60px;
     padding: 0 15px;
+}
+
+.footer {
+    background: #3eacaa;
+    padding: 10px 0;
+    color: #fff;
+}
+
+.footer .go-top {
+    margin-right: 1%;
+    float: right;
+    background: #15827C;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    color: #fff;
+}
+.footer .go-top .fa {
+    font-size: 17px;
 }
 
 .header {

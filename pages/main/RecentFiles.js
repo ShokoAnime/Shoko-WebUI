@@ -1,7 +1,8 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux'
-import TimeUpdated from './TimeUpdated';
-import s from './styles.css';
+import cx from 'classnames';
+import FixedPanel from '../../components/Panels/FixedPanel';
+import s from '../../components/Panels/styles.css';
 
 class RecentFiles extends React.Component {
     static propTypes = {
@@ -21,25 +22,22 @@ class RecentFiles extends React.Component {
                 <td>
                   <div className={s['text-wrapper']}>{item.path}</div>
                 </td>
+                  <td className="text-right">
+                      <span className={cx("badge",item.success?"bg-success":"bg-important")}>Imported</span>
+                  </td>
                 <td/>
               </tr>
             );
         }
         return (
             <div className={this.props.className}>
-                <section className="panel">
-                    <header className="panel-heading">
-                        Recent files
-                        <div className="pull-right"><TimeUpdated className={s['timer']} timestamp={lastUpdated}/></div>
-                    </header>
-                    <div className={s['fixed-panel']}>
+                <FixedPanel title="Recent files" lastUpdated={lastUpdated}>
                     <table className="table">
                         <tbody>
                         {files}
                         </tbody>
                     </table>
-                    </div>
-                </section>
+                </FixedPanel>
             </div>
     );
     }

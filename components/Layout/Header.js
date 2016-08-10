@@ -7,6 +7,7 @@ import ImageQueue from './ImageQueue';
 import AutoRefreshSwitch from '../Buttons/AutoRefreshSwitch';
 import SidebarToggle from '../Buttons/SidebarToggle';
 import UpdateButton from '../Buttons/UpdateButton';
+import Notifications from './Notifications';
 
 class Header extends React.Component {
   render() {
@@ -26,6 +27,7 @@ class Header extends React.Component {
 
           <div className="nav notifications pull-right">
             <ul className="nav">
+              <Notifications/>
               <AutoRefreshSwitch enabled={autoUpdate}/>
             </ul>
           </div>

@@ -1,10 +1,8 @@
 import React, {PropTypes} from 'react';
 import {connect} from 'react-redux'
 import cx from 'classnames';
-import { fetchQueues } from '../../core/actions';
-import store from '../../core/store';
-import TimeUpdated from './TimeUpdated';
-import s from './styles.css';
+import FixedPanel from '../../components/Panels/FixedPanel';
+import s from '../../components/Panels/styles.css';
 
 class Commands extends React.Component {
   static propTypes = {
@@ -13,16 +11,6 @@ class Commands extends React.Component {
     lastUpdated: PropTypes.number,
     autoUpdate: PropTypes.bool
   };
-
-  constructor(props) {
-    super(props);
-    this.handleRefresh = this.handleRefresh.bind(this);
-  }
-
-  handleRefresh() {
-    const state = store.getState();
-    store.dispatch(fetchQueues(state.activeApiKey));
-  }
 
   render() {
     const {items, isFetching, lastUpdated} = this.props;
@@ -36,22 +24,17 @@ class Commands extends React.Component {
         <td>{names[key]}</td>
         <td>{item.count}</td>
       </tr>);
-      commands.push(<tr key={"details-"+key}><td colSpan="3"><div className={s['text-wrapper']}>{item.state}</div></td></tr>);
-    } //<button onClick={this.handleRefresh} type="button" className="btn btn-primary pull-right">Run import</button>
+      commands.push(<tr key={"details-"+key}><td/><td colSpan="2"><div className={s['text-wrapper']}>{item.state}</div></td></tr>);
+    }
     return (
       <div className={this.props.className}>
-        <section className="panel">
-          <header className="panel-heading">Commands
-            <div className="pull-right"><TimeUpdated className={s['timer']} timestamp={lastUpdated}/></div>
-          </header>
-          <div className={s['fixed-panel']}>
+        <FixedPanel title="Commands" lastUpdated={lastUpdated}>
           <table className="table">
             <tbody>
             {commands}
             </tbody>
           </table>
-            </div>
-        </section>
+        </FixedPanel>
       </div>
     );
   }

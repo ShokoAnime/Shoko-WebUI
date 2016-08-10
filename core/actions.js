@@ -78,9 +78,6 @@ export function fetchQueues(apiKey) {
         .catch(function (ex) {
             console.log('parsing failed', ex)
         });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 
@@ -149,9 +146,6 @@ export function fetchRecentFiles(apiKey) {
           .catch(function (ex) {
               console.log('parsing failed', ex)
           });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 
@@ -184,17 +178,18 @@ export function fetchJmmNews(apiKey) {
     return function (dispatch) {
         dispatch(requestJmmNews());
 
-        return;
-        return fetch('http://jmediamanager.org/blog/')
-          .then(response =>
-            dispatch(receiveJmmNews(response))
-          )
+        return fetch('/api/news/get', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'apikey': apiKey
+            }
+        })
+          .then(response => response.json())
+          .then(json => dispatch(receiveJmmNews(json)))
           .catch(function (ex) {
               console.log('parsing failed', ex)
           });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 
@@ -241,9 +236,6 @@ export function fetchImportFolders(apiKey) {
           .catch(function (ex) {
               console.log('parsing failed', ex)
           });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 
@@ -290,9 +282,6 @@ export function fetchSeriesCount(apiKey) {
           .catch(function (ex) {
               console.log('parsing failed', ex)
           });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 
@@ -339,9 +328,6 @@ export function fetchFilesCount(apiKey) {
           .catch(function (ex) {
               console.log('parsing failed', ex)
           });
-
-        // In a real world app, you also want to
-        // catch any error in the network call.
     }
 }
 

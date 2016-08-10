@@ -1,0 +1,26 @@
+.fixed-panel {
+    min-height: 25rem;
+    max-height: 25rem;
+    overflow-y: auto;
+}
+.fixed-panel :global(.table) {
+    margin-bottom: 0;
+}
+.fixed-panel :global(.table) td {
+    line-height: 2rem;
+    overflow: hidden;
+}
+.fixed-panel .text-wrapper {
+    height: 2rem;
+    overflow: hidden;
+}
+.fixed-panel .icon-column {
+    width: 30px;
+}
+.fixed-panel .icon-column :global(.fa) {
+    position: absolute;
+}
+.timer {
+    font-size: 13px;
+    font-weight: normal;
+}

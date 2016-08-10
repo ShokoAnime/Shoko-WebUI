@@ -1,6 +1,6 @@
 import React, {PropTypes} from 'react';
 import { connect } from 'react-redux'
-import TimeUpdated from './TimeUpdated';
+import FixedPanel from '../../components/Panels/FixedPanel';
 
 class ImportFolders extends React.Component {
     static propTypes = {
@@ -9,28 +9,22 @@ class ImportFolders extends React.Component {
 
     render() {
         const { items, isFetching, lastUpdated } = this.props;
-        let files = [];
+        let folders = [];
         let i=0;
         for (let key in items) {
             let item = items[key];
             i++;
-            files.push(<tr key={i}><td>{i}</td><td>{item.ImportFolderLocation}</td><td></td></tr>);
+            folders.push(<tr key={i}><td>{i}</td><td>{item.ImportFolderLocation}</td></tr>);
         }
         return (
             <div className={this.props.className}>
-                <section className="panel">
-                    <header className="panel-heading">Import Folders</header>
+                <FixedPanel title="Import Folders Overview" lastUpdated={lastUpdated}>
                     <table className="table">
-                        <thead>
-                        <tr>
-                            <th colSpan="3"><TimeUpdated timestamp={lastUpdated}/></th>
-                        </tr>
-                        </thead>
                         <tbody>
-                        {files}
+                        {folders}
                         </tbody>
                     </table>
-                </section>
+                </FixedPanel>
             </div>
     );
     }

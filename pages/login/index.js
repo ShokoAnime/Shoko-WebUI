@@ -58,7 +58,6 @@ class LoginPage extends React.Component {
                                 <h4>3.7.0.1 (WebUI {__VERSION__})</h4>
                                 <h2>Welcome Back!</h2>
                                 <h2>Input your user information to login into JMM Server!</h2>
-                                <h2>Trouble logging in? Click the Help! button</h2>
                             </div>
                             <div className={cx("col-md-3", s['right-panel'])}>
                                 <h2>Sign In</h2>
