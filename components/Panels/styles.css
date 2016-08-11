@@ -20,7 +20,18 @@
 .fixed-panel .icon-column :global(.fa) {
     position: absolute;
 }
+.header {
+    color: #3eacaa;
+}
+.header h6 {
+    color: #c6cad6;
+}
+
 .timer {
     font-size: 13px;
     font-weight: normal;
+    position: absolute;
+    bottom: 2.3rem;
+    right: 2rem;
+    color: #c6cad6;
 }

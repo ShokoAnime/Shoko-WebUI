@@ -18,7 +18,7 @@ class ImportFolders extends React.Component {
         }
         return (
             <div className={this.props.className}>
-                <FixedPanel title="Import Folders Overview" lastUpdated={lastUpdated}>
+                <FixedPanel title="Import Folders Overview" description="Use Import Folders section to manage" lastUpdated={lastUpdated}>
                     <table className="table">
                         <tbody>
                         {folders}

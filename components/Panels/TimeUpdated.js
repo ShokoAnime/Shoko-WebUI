@@ -11,7 +11,7 @@ class TimeUpdated extends React.Component {
     const { timestamp, className } = this.props;
     let dateString = (timestamp)?moment(timestamp, 'x').format("YYYY-MM-DD HH:mm:ss"):'--';
     return (
-      <span className={className}>{"Updated: "+dateString}</span>
+      <span className={className}>{dateString}</span>
     );
   }
 }

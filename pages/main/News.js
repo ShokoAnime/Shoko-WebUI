@@ -22,7 +22,7 @@ class News extends React.Component {
 
     return (
       <div className={this.props.className}>
-        <FixedPanel title="JMM News" lastUpdated={lastUpdated}>
+        <FixedPanel title="JMM News" description="Click title to read full article" lastUpdated={lastUpdated}>
           <table className="table">
             <tbody>
             {news}
