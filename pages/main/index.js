@@ -15,7 +15,7 @@ import QuickActions from './QuickActions';
 class MainPage extends React.Component {
     componentDidMount() {
         const state = store.getState();
-        if (state.activeApiKey == '') {
+        if (state.apiSession.apikey == '') {
             history.push({
                 pathname: '/',
             });

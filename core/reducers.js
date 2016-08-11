@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux'
 import { handleAction } from 'redux-actions';
-import { QUEUE_STATUS, SET_APIKEY, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
-  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, API_SESSION, autoUpdateTick } from './actions'
+import { QUEUE_STATUS, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
+  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, API_SESSION, JMM_VERSION, autoUpdateTick } from './actions'
 
 const VERSION = __VERSION__;
 
@@ -250,19 +250,43 @@ function webuiVersionUpdate(state = {
     }
 }
 
+function jmmVersion(state = {
+    isFetching: false,
+    didInvalidate: true,
+    version: false
+}, action) {
+    if (action.type != JMM_VERSION) { return state; }
+    switch (action.meta.status) {
+        case STATUS_INVALIDATE:
+            return Object.assign({}, state, {
+                didInvalidate: true
+            });
+        case STATUS_REQUEST:
+            return Object.assign({}, state, {
+                isFetching: true,
+                didInvalidate: false
+            });
+        case STATUS_RECEIVE:
+            return Object.assign({}, state, {
+                isFetching: false,
+                didInvalidate: false,
+                version: action.payload,
+                lastUpdated: action.meta.receivedAt
+            });
+        default:
+            return state
+    }
+}
+
 const apiSession = handleAction(API_SESSION, (state,action) => {
     return action.error?state:Object.assign({},state, action.payload);
-},{});
-const activeApiKey = handleAction(SET_APIKEY,(state,action) => {
-    return action.error?state:action.payload;
-},'');
+},{apikey: ''});
 const sidebarToggle = handleAction(SIDEBAR_TOGGLE,(state,action) => {
     return action.error?state:action.payload;
 },true);
 
 const rootReducer = combineReducers({
     apiSession,
-    activeApiKey,
     autoUpdate,
     queueStatus,
     recentFiles,
@@ -272,7 +296,8 @@ const rootReducer = combineReducers({
     filesCount,
     sidebarToggle,
     updateAvailable,
-    webuiVersionUpdate
+    webuiVersionUpdate,
+    jmmVersion
 });
 
 export default rootReducer

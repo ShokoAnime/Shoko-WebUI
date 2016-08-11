@@ -10,7 +10,7 @@ function createAsyncAction(type, key, apiAction, responseCallback) {
     return () => {
         const state = store.getState();
         const status = state[key];
-        const apiKey = state.activeApiKey;
+        const apiKey = state.apiSession.apikey;
         let shouldFetch;
 
         if (!status) {
@@ -51,8 +51,6 @@ function createAsyncAction(type, key, apiAction, responseCallback) {
 /* Sync actions */
 export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);
-export const SET_APIKEY = 'SET_APIKEY';
-export const setApiKey = createAction(SET_APIKEY);
 export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
 
@@ -76,6 +74,24 @@ export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,'webuiVer
     if (response.status == 200) { return true; }
     return new Error('Response status: '+ response.status);
 });
+export const JMM_VERSION = 'JMM_VERSION';
+export const jmmVersionAsync = createAsyncAction(JMM_VERSION,'jmmVersion','/version',(response) => {
+    if (response.status != 200) { return new Error('Response status: '+ response.status); }
+    return response.json().then((json)=>{
+        try {
+            let data = {};
+            for (let key in json) {
+                if (json[key].name == 'jmmserver') {
+                    return json[key].version;
+                }
+            }
+        } catch (ex) {
+            return new Error(ex.message);
+        }
+    });
+});
+
+
 
 /* Timer */
 export const SET_AUTOUPDATE = 'SET_AUTOUPDATE';

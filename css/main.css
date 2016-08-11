@@ -240,7 +240,7 @@ a.logo span {
     margin-left: 10px;
 }
 
-.header .notifications li {
+.header .notifications .notification {
     float: left;
 }
 

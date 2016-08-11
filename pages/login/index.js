@@ -4,7 +4,7 @@ import s from './styles.css';
 import cx from 'classnames';
 import 'isomorphic-fetch';
 import store from '../../core/store';
-import { setApiKey, apiSession, queueStatusAsync } from '../../core/actions';
+import { apiSession, jmmVersionAsync } from '../../core/actions';
 import history from '../../core/history';
 
 class LoginPage extends React.Component {
@@ -18,21 +18,7 @@ class LoginPage extends React.Component {
         const container = document.getElementById('app-container');
         container.style.height = '100%';
 
-        fetch('/api/version', {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        })
-          .then(response => response.json())
-          .then(json => {
-              let data = {};
-              for (let key in json) {
-                  if (json[key].name == 'jmmserver') { data.version = json[key].version; }
-              }
-              store.dispatch(apiSession(data))
-            }
-          )
+        jmmVersionAsync();
     }
 
     handleKeyPress(e) {
@@ -42,6 +28,7 @@ class LoginPage extends React.Component {
     }
 
     handleSignIn() {
+        let user = this.refs.user.value;
         fetch('/api/auth', {
             method: 'POST',
             body: JSON.stringify({user: this.refs.user.value, pass: this.refs.pass.value, device: 'web-ui'}),
@@ -53,19 +40,18 @@ class LoginPage extends React.Component {
             return response.json()
         }).then(function (json) {
             if (json.apikey) {
-                store.dispatch(setApiKey(json.apikey));
+                store.dispatch(apiSession({'apikey': json.apikey, 'username': user}));
                 history.push({
                     pathname: '/dashboard',
                 });
             }
-            console.log('parsed json', json)
         }).catch(function (ex) {
             console.log('parsing failed', ex)
         })
     }
 
     render() {
-        const { version } = this.props;
+        const { version, isFetching } = this.props;
         return (
             <div className={s['wrapper']}>
                 <div className={s['wrapper-inner']}>
@@ -73,7 +59,7 @@ class LoginPage extends React.Component {
                         <div className="row">
                             <div className={cx("col-md-3 col-md-offset-3", s['left-panel'])}>
                                 <h1>JMM Server</h1>
-                                <h4>{version} (WebUI {__VERSION__})</h4>
+                                <h4>{isFetching?<i className="fa fa-refresh fa-spin"/>:null}{version instanceof Error?`Error: ${version.message}`:version} (WebUI {__VERSION__})</h4>
                                 <h2>Welcome Back!</h2>
                                 <h2>Input your user information to login into JMM Server!</h2>
                             </div>
@@ -102,10 +88,11 @@ class LoginPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { apiSession } = state;
+    const { apiSession, jmmVersion } = state;
 
     return {
-        version: apiSession.version || null
+        version: jmmVersion.version || null,
+        isFetching: jmmVersion.isFetching
     }
 }
 

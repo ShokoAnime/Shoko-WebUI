@@ -1,0 +1,9 @@
+{
+  "name": "UserDropdown",
+  "version": "0.1.0",
+  "private": true,
+  "main": "./UserDropdown.js",
+  "dependencies": {
+    "react": "^15.2.1"
+  }
+}

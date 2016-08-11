@@ -8,11 +8,12 @@ import AutoRefreshSwitch from '../Buttons/AutoRefreshSwitch';
 import SidebarToggle from '../Buttons/SidebarToggle';
 import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
+import UserDropdown from '../UserDropdown/UserDropdown';
 
 
 class Header extends React.Component {
   render() {
-    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable, updateFetching } = this.props;
+    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable, updateFetching, username } = this.props;
       return (
         <header className="header white-bg">
           <SidebarToggle enabled={sidebarToggle}/>
@@ -31,13 +32,14 @@ class Header extends React.Component {
               <AutoRefreshSwitch enabled={autoUpdate}/>
             </ul>
           </div>
+          <UserDropdown user={username}/>
         </header>
     );
   }
 }
 
 function mapStateToProps(state) {
-    const { queueStatus, autoUpdate, sidebarToggle, updateAvailable, webuiVersionUpdate } = state;
+    const { queueStatus, autoUpdate, sidebarToggle, updateAvailable, webuiVersionUpdate, apiSession } = state;
     const items = queueStatus.items || {};
 
     return {
@@ -47,7 +49,8 @@ function mapStateToProps(state) {
         autoUpdate: autoUpdate.status,
         sidebarToggle: sidebarToggle,
         updateAvailable: updateAvailable.status,
-        updateFetching: webuiVersionUpdate.isFetching
+        updateFetching: webuiVersionUpdate.isFetching,
+        username: apiSession.username
     }
 }
 
