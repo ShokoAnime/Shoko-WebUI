@@ -51,7 +51,6 @@ class MainPage extends React.Component {
                             <ImportFolders className="col-sm-4"/>
                         </div>
                     </section>
-                    <Footer/>
                 </section>
             </Layout>
         );
