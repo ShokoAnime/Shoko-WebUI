@@ -216,12 +216,6 @@ a {
     text-decoration: none;
 }
 
-a:focus, a:hover {
-	color: #36ad6f !important;
-    text-decoration: none;
-	transition: all 0.3s ease-in-out !important;
-}
-
 a.logo {
     font-size: 21px;
 	font-weight: 700;
@@ -284,7 +278,8 @@ a.logo span {
 
 .header .notification.enabled > a:hover,
 .header .notification.enabled > a:focus {
-    color: #15827C;
+    color: #36ad6f;
+	transition: all 0.3s ease-in-out !important;
 }
 
 .notification .badge {
