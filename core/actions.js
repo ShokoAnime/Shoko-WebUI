@@ -6,7 +6,7 @@ export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
-function createAsyncAction(type, key, apiAction) {
+function createAsyncAction(type, key, apiAction, responseCallback) {
     return () => {
         const state = store.getState();
         const status = state[key];
@@ -31,14 +31,17 @@ function createAsyncAction(type, key, apiAction) {
                     'apikey': apiKey
                 }
             })
-              .then(response => response.json())
-              .then(json =>
-                store.dispatch(createAction(type, payload => payload, ()=>({status: STATUS_RECEIVE, receivedAt: Date.now()}))(json))
-              )
-              .catch(function (ex) {
-                  console.log('parsing failed', ex)
-              });
-
+            .then((response) => {
+              if (typeof responseCallback === 'function') {
+                  return responseCallback(response);
+              } else {
+                  return response.json();
+              }
+            })
+            .then(json =>store.dispatch(createAction(type, payload => payload, ()=>({status: STATUS_RECEIVE, receivedAt: Date.now()}))(json)))
+            .catch(function (ex) {
+              console.log('parsing failed', ex)
+            });
         } else {
             return Promise.resolve()
         }
@@ -69,7 +72,10 @@ export const filesCountAsync = createAsyncAction(FILES_COUNT,'fileCount','/file/
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
 export const updateAvailableAsync = createAsyncAction(UPDATE_AVAILABLE,'updateAvailable','/webui/latest');
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
-export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,'webuiVersionUpdate','/webui/update');
+export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,'webuiVersionUpdate','/webui/update',(response) => {
+    if (response.status == 200) { return true; }
+    return new Error('Response status: '+ response.status);
+});
 
 /* Timer */
 export const SET_AUTOUPDATE = 'SET_AUTOUPDATE';

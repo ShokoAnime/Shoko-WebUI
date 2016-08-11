@@ -4,7 +4,8 @@ import { updateWebuiAsync } from '../../core/actions';
 
 class UpdateButton extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool
+    enabled: PropTypes.bool,
+    isFetching: PropTypes.bool
   };
 
   constructor(props) {
@@ -17,11 +18,11 @@ class UpdateButton extends React.Component {
   }
 
   render() {
-    const {enabled} = this.props;
+    const { enabled, isFetching } = this.props;
     return (
       <li className="notification">
         <button onClick={this.handleClick} type="button" className={cx("btn btn-info btn-sm",enabled?'':'hidden')}>
-          <i className="fa fa-refresh"/> Update available!
+          <i className={cx("fa fa-refresh",isFetching?'fa-spin':'')}/> {isFetching?"Downloading...":"Update available!"}
         </button>
       </li>
     );

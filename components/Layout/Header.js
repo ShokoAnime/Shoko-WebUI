@@ -12,7 +12,7 @@ import Notifications from './Notifications';
 
 class Header extends React.Component {
   render() {
-    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable } = this.props;
+    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable, updateFetching } = this.props;
       return (
         <header className="header white-bg">
           <SidebarToggle enabled={sidebarToggle}/>
@@ -22,7 +22,7 @@ class Header extends React.Component {
               <HasherQueue count={countHasher}/>
               <GeneralQueue count={countGeneral}/>
               <ImageQueue count={countImages}/>
-              <UpdateButton enabled={updateAvailable} />
+              <UpdateButton enabled={updateAvailable} isFetching={updateFetching}/>
             </ul>
           </div>
           <div className="nav notifications pull-right">
@@ -37,7 +37,7 @@ class Header extends React.Component {
 }
 
 function mapStateToProps(state) {
-    const { queueStatus, autoUpdate, sidebarToggle, updateAvailable } = state;
+    const { queueStatus, autoUpdate, sidebarToggle, updateAvailable, webuiVersionUpdate } = state;
     const items = queueStatus.items || {};
 
     return {
@@ -46,7 +46,8 @@ function mapStateToProps(state) {
         countImages: items.image?items.image.count:null,
         autoUpdate: autoUpdate.status,
         sidebarToggle: sidebarToggle,
-        updateAvailable: updateAvailable.status
+        updateAvailable: updateAvailable.status,
+        updateFetching: webuiVersionUpdate.isFetching
     }
 }
 
