@@ -21,10 +21,11 @@
     position: absolute;
 }
 .header {
-    color: #3eacaa;
+    /*color: #3eacaa;*/
+	color: #15827c;
 }
 .header h6 {
-    color: #c6cad6;
+    color: #2f353b;
 }
 
 .timer {
@@ -33,5 +34,5 @@
     position: absolute;
     bottom: 2.3rem;
     right: 2rem;
-    color: #c6cad6;
+    color: #2f353b;;
 }

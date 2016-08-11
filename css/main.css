@@ -211,6 +211,17 @@ ul.sidebar-menu li a.active i {
     width: 100%;
 }
 
+a {
+    color: #217ebd;
+    text-decoration: none;
+}
+
+a:focus, a:hover {
+	color: #36ad6f !important;
+    text-decoration: none;
+	transition: all 0.3s ease-in-out !important;
+}
+
 a.logo {
     font-size: 21px;
 	font-weight: 700;
@@ -290,7 +301,7 @@ a.logo span {
 }
 
 .badge.bg-success {
-    background: #4cbe83;
+    background: #36ad6f;
 }
 
 .badge.bg-warning {
