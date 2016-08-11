@@ -1,17 +1,9 @@
 import { combineReducers } from 'redux'
+import { handleAction } from 'redux-actions';
 import { QUEUE_STATUS, SET_APIKEY, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
-  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, autoUpdateTick } from './actions'
+  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, API_SESSION, autoUpdateTick } from './actions'
 
 const VERSION = __VERSION__;
-
-function activeApiKey(state = '', action) {
-    switch (action.type) {
-        case SET_APIKEY:
-            return action.key;
-        default:
-            return state
-    }
-}
 
 function autoUpdate(state = {
     status: false,
@@ -34,22 +26,13 @@ function autoUpdate(state = {
     }
 }
 
-function sidebarToggle(state = true, action) {
-    switch (action.type) {
-        case SIDEBAR_TOGGLE:
-            return action.state;
-        default:
-            return state
-    }
-}
-
 function queueStatus(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     items: {}
 }, action) {
     if (action.type != QUEUE_STATUS) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -63,8 +46,8 @@ function queueStatus(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                items: action.items,
-                lastUpdated: action.receivedAt
+                items: action.payload,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -73,11 +56,11 @@ function queueStatus(state = {
 
 function recentFiles(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     items: {}
 }, action) {
     if (action.type != RECENT_FILES) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -91,8 +74,8 @@ function recentFiles(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                items: action.items,
-                lastUpdated: action.receivedAt
+                items: action.payload,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -101,11 +84,11 @@ function recentFiles(state = {
 
 function jmmNews(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     items: {}
 }, action) {
     if (action.type != JMM_NEWS) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -119,8 +102,8 @@ function jmmNews(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                items: action.items,
-                lastUpdated: action.receivedAt
+                items: action.payload,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -129,11 +112,11 @@ function jmmNews(state = {
 
 function importFolders(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     items: {}
 }, action) {
     if (action.type != IMPORT_FOLDERS) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -147,8 +130,8 @@ function importFolders(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                items: action.items,
-                lastUpdated: action.receivedAt
+                items: action.payload,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -157,11 +140,11 @@ function importFolders(state = {
 
 function seriesCount(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     count: 0
 }, action) {
     if (action.type != SERIES_COUNT) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -175,8 +158,8 @@ function seriesCount(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                count: action.count || 0,
-                lastUpdated: action.receivedAt
+                count: action.payload.count,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -185,11 +168,11 @@ function seriesCount(state = {
 
 function filesCount(state = {
     isFetching: false,
-    didInvalidate: false,
+    didInvalidate: true,
     count: 0
 }, action) {
     if (action.type != FILES_COUNT) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -203,8 +186,8 @@ function filesCount(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                count: action.count || 0,
-                lastUpdated: action.receivedAt
+                count: action.payload.count,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -217,7 +200,7 @@ function updateAvailable(state = {
     status: false
 }, action) {
     if (action.type != UPDATE_AVAILABLE) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -231,8 +214,8 @@ function updateAvailable(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                status: (VERSION.indexOf('.') !== -1 && action.version != VERSION),
-                lastUpdated: action.receivedAt
+                status: (VERSION.indexOf('.') !== -1 && action.payload.version != VERSION),
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
@@ -245,7 +228,7 @@ function webuiVersionUpdate(state = {
     status: false
 }, action) {
     if (action.type != WEBUI_VERSION_UPDATE) { return state; }
-    switch (action.status) {
+    switch (action.meta.status) {
         case STATUS_INVALIDATE:
             return Object.assign({}, state, {
                 didInvalidate: true
@@ -259,15 +242,26 @@ function webuiVersionUpdate(state = {
             return Object.assign({}, state, {
                 isFetching: false,
                 didInvalidate: false,
-                status: action.status,
-                lastUpdated: action.receivedAt
+                status: action.payload,
+                lastUpdated: action.meta.receivedAt
             });
         default:
             return state
     }
 }
 
+const apiSession = handleAction(API_SESSION, (state,action) => {
+    return action.error?state:Object.assign({},state, action.payload);
+},{});
+const activeApiKey = handleAction(SET_APIKEY,(state,action) => {
+    return action.error?state:action.payload;
+},'');
+const sidebarToggle = handleAction(SIDEBAR_TOGGLE,(state,action) => {
+    return action.error?state:action.payload;
+},true);
+
 const rootReducer = combineReducers({
+    apiSession,
     activeApiKey,
     autoUpdate,
     queueStatus,

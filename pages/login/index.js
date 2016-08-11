@@ -1,9 +1,10 @@
 import React, {PropTypes} from 'react';
+import { connect } from 'react-redux';
 import s from './styles.css';
 import cx from 'classnames';
 import 'isomorphic-fetch';
 import store from '../../core/store';
-import { setApiKey } from '../../core/actions';
+import { setApiKey, apiSession, queueStatusAsync } from '../../core/actions';
 import history from '../../core/history';
 
 class LoginPage extends React.Component {
@@ -16,6 +17,22 @@ class LoginPage extends React.Component {
     componentDidMount() {
         const container = document.getElementById('app-container');
         container.style.height = '100%';
+
+        fetch('/api/version', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+          .then(response => response.json())
+          .then(json => {
+              let data = {};
+              for (let key in json) {
+                  if (json[key].name == 'jmmserver') { data.version = json[key].version; }
+              }
+              store.dispatch(apiSession(data))
+            }
+          )
     }
 
     handleKeyPress(e) {
@@ -48,6 +65,7 @@ class LoginPage extends React.Component {
     }
 
     render() {
+        const { version } = this.props;
         return (
             <div className={s['wrapper']}>
                 <div className={s['wrapper-inner']}>
@@ -55,7 +73,7 @@ class LoginPage extends React.Component {
                         <div className="row">
                             <div className={cx("col-md-3 col-md-offset-3", s['left-panel'])}>
                                 <h1>JMM Server</h1>
-                                <h4>3.7.0.1 (WebUI {__VERSION__})</h4>
+                                <h4>{version} (WebUI {__VERSION__})</h4>
                                 <h2>Welcome Back!</h2>
                                 <h2>Input your user information to login into JMM Server!</h2>
                             </div>
@@ -83,4 +101,12 @@ class LoginPage extends React.Component {
     }
 }
 
-export default LoginPage;
+function mapStateToProps(state) {
+    const { apiSession } = state;
+
+    return {
+        version: apiSession.version || null
+    }
+}
+
+export default connect(mapStateToProps)(LoginPage)

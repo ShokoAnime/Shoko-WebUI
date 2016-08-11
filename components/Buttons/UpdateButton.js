@@ -1,7 +1,6 @@
 import React, { PropTypes } from 'react';
 import cx from 'classnames';
-import store from '../../core/store';
-import { fetchWebuiVersionUpdate } from '../../core/actions';
+import { updateWebuiAsync } from '../../core/actions';
 
 class UpdateButton extends React.Component {
   static propTypes = {
@@ -14,8 +13,7 @@ class UpdateButton extends React.Component {
   }
 
   handleClick() {
-    let state = store.getState();
-    store.dispatch(fetchWebuiVersionUpdate(state.activeApiKey));
+    updateWebuiAsync();
   }
 
   render() {

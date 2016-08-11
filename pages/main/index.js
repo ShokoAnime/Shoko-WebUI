@@ -1,7 +1,7 @@
 import React, {PropTypes} from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
-import { fetchQueues, fetchRecentFiles, fetchImportFolders, fetchSeriesCount, fetchFilesCount, fetchJmmNews, fetchUpdateAvailableIfNeeded } from '../../core/actions';
+import { queueStatusAsync, recentFilesAsync, importFoldersAsync, seriesCountAsync, filesCountAsync, jmmNewsAsync, updateAvailableAsync } from '../../core/actions';
 import Layout from '../../components/Layout';
 import Footer from '../../components/Layout/Footer';
 import Overview from './Overview';
@@ -21,13 +21,16 @@ class MainPage extends React.Component {
             });
             return;
         }
-        store.dispatch(fetchQueues(state.activeApiKey))
-          .then(() => store.dispatch(fetchRecentFiles(state.activeApiKey))
-          .then(() => store.dispatch(fetchImportFolders(state.activeApiKey)))
-          .then(() => store.dispatch(fetchSeriesCount(state.activeApiKey)))
-          .then(() => store.dispatch(fetchFilesCount(state.activeApiKey)))
-          .then(() => store.dispatch(fetchJmmNews(state.activeApiKey)))
-          .then(() => fetchUpdateAvailableIfNeeded()(store.dispatch, store.getState))
+
+
+        queueStatusAsync()
+          .then(
+            () => recentFilesAsync()
+          .then(() => importFoldersAsync())
+          .then(() => seriesCountAsync())
+          .then(() => filesCountAsync())
+          .then(() => jmmNewsAsync())
+          .then(() => updateAvailableAsync())
         );
 
     }

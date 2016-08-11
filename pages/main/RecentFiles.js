@@ -23,7 +23,7 @@ class RecentFiles extends React.Component {
                   <div className={s['text-wrapper']}>{item.path}</div>
                 </td>
                   <td className="text-right">
-                      <span className={cx("badge",item.success?"bg-success":"bg-important")}>Imported</span>
+                      <span className={cx("badge",item.success?"bg-success":"bg-important")}>{item.success?"Imported":"Error"}</span>
                   </td>
                 <td/>
               </tr>

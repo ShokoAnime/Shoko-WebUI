@@ -14,7 +14,7 @@ class News extends React.Component {
     for (let key in items) {
       let item = items[key];
       i++;
-      news.push(<tr>
+      news.push(<tr key={i}>
         <td><a href={item.link} target="_blank">{item.title}</a></td>
         <td className="text-right">{item.date}</td>
       </tr>);

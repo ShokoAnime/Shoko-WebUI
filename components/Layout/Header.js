@@ -9,6 +9,7 @@ import SidebarToggle from '../Buttons/SidebarToggle';
 import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
 
+
 class Header extends React.Component {
   render() {
     const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable } = this.props;
@@ -24,7 +25,6 @@ class Header extends React.Component {
               <UpdateButton enabled={updateAvailable} />
             </ul>
           </div>
-
           <div className="nav notifications pull-right">
             <ul className="nav">
               <Notifications/>

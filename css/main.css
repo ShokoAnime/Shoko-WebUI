@@ -234,6 +234,11 @@ a.logo span {
     margin-top: 15px;
     margin-left: 92px;
 }
+.header .notifications.pull-right {
+    float: left;
+    margin-top: 15px;
+    margin-left: 10px;
+}
 
 .header .notifications li {
     float: left;
