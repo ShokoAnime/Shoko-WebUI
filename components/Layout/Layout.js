@@ -4,6 +4,7 @@ import history from '../../core/history';
 import cx from 'classnames';
 import Header from './Header';
 import Sidebar from '../Sidebar';
+import Footer from './Footer';
 import s from './Layout.css';
 
 class Layout extends React.Component {
@@ -14,27 +15,29 @@ class Layout extends React.Component {
   };
 
   render() {
-    const { sidebarToggle } = this.props;
+    const { sidebarToggle, version } = this.props;
     return (
         <section className={cx(s.container,sidebarToggle?null:s['hide-sidebar'])}>
             <Header />
             <Sidebar />
             {this.props.children}
+            <Footer version={version}/>
         </section>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { sidebarToggle, webuiVersionUpdate } = state;
+  const { sidebarToggle, webuiVersionUpdate, jmmVersion } = state;
 
   if (webuiVersionUpdate.status === true) {
-    history.push({
+    history.go({
       pathname: '/',
     });
   }
   return {
-    sidebarToggle
+    sidebarToggle,
+    version: jmmVersion.version
   }
 }
 
