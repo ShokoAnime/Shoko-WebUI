@@ -1,5 +1,7 @@
 import React from 'react';
 import Link from '../Link';
+import s from './Sidebar.css';
+import cx from 'classnames';
 
 class Sidebar extends React.Component {
     render() {
@@ -38,6 +40,11 @@ class Sidebar extends React.Component {
                             </a>
                         </li>
                     </ul>
+                    <div className={cx(s['bottom'])}>
+                        <a href="http://www.jmediamanager.org/" target="_blank">Home</a>
+                        <a href="https://github.com/japanesemediamanager/jmmserver-webui" target="_blank">Github</a>
+                        <a href="https://github.com/japanesemediamanager/jmmserver-webui/issues" target="_blank">Support</a>
+                    </div>
                 </div>
             </aside>
         );

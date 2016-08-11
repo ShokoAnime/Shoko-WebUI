@@ -1,0 +1,15 @@
+.bottom {
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    min-height: 30px;
+    display: flex;
+    justify-content: center;
+    padding: 0 10px;
+}
+
+.bottom > a {
+    flex-grow: 0;
+    color: #fff;
+    padding: 0 8px;
+}

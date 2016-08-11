@@ -4,7 +4,7 @@ const VERSION = __VERSION__;
 class Footer extends React.Component {
   render() {
     return (
-      <footer className="footer navbar-fixed-bottom">
+      <footer className="footer">
         <div className="text-center">
           JMM Server Web UI {VERSION}
           <a href="#" className="go-top">
