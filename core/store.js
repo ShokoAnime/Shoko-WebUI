@@ -3,14 +3,14 @@ import createLogger from 'redux-logger'
 import { createStore, applyMiddleware } from 'redux'
 import rootReducer from './reducers'
 
-const loggerMiddleware = createLogger();
+let middleware = [ thunkMiddleware ];
+if (process.env.NODE_ENV !== 'production') {
+  middleware = [ ...middleware, createLogger() ]
+}
 
 const store = createStore(
-    rootReducer,
-    applyMiddleware(
-        thunkMiddleware, // lets us dispatch() functions
-        loggerMiddleware // neat middleware that logs actions
-    )
+  rootReducer,
+  applyMiddleware(...middleware)
 );
 
 export default store;
