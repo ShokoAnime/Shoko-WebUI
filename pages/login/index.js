@@ -15,8 +15,7 @@ class LoginPage extends React.Component {
     }
 
     componentDidMount() {
-        const container = document.getElementById('app-container');
-        container.style.height = '100%';
+        document.title = "JMM Server Web UI "+__VERSION__;
         this.refs.user.focus();
 
         jmmVersionAsync();
