@@ -13,3 +13,10 @@
     color: #fff;
     padding: 0 8px;
 }
+
+.bottom > a:hover, a:focus {
+    color: #11605c;
+    transition: all .3s ease;
+}
+
+
