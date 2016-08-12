@@ -23,7 +23,7 @@ class RecentFiles extends React.Component {
                   <div className={s['text-wrapper']}>{item.path}</div>
                 </td>
                   <td className="text-right">
-                      <span className={cx("badge",item.success?"bg-success":"bg-important")}>{item.success?"Imported":"Error"}</span>
+                      <span className={cx("badge",item.success?"bg-success":"bg-error")}>{item.success?"Imported":"Error"}</span>
                   </td>
                 <td/>
               </tr>
@@ -31,7 +31,7 @@ class RecentFiles extends React.Component {
         }
         return (
             <div className={this.props.className}>
-                <FixedPanel title="Recent files" description="List of recently added files and their import status" lastUpdated={lastUpdated} isFetching={isFetching}>
+                <FixedPanel title="Recent Files" description="List of recently added files and their import status" lastUpdated={lastUpdated} isFetching={isFetching}>
                     <table className="table">
                         <tbody>
                         {files}

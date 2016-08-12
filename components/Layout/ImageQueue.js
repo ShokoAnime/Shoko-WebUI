@@ -7,7 +7,7 @@ class ImageQueue extends React.Component {
             <li className="notification">
                 <a className="dropdown-toggle" href="#">
                     <i className="fa fa-picture-o"/>
-                    {count == null?null:<span className="badge bg-error">{count}</span>}
+                    {count == null?null:<span className="badge bg-important">{count}</span>}
                 </a>
             </li>
         );

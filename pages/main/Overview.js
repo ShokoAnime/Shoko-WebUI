@@ -8,7 +8,7 @@ class Overview extends React.Component {
             <div className="row overview">
                 <div className="col-lg-3 col-sm-6">
                     <section className="panel">
-                        <div className="symbol terques">
+                        <div className="symbol green">
                             <i className="fa fa-files-o"/>
                         </div>
                         <div className="value">

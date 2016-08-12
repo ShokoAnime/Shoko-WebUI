@@ -273,7 +273,7 @@ a.logo span {
 }
 
 .header .notification.enabled > a {
-    color: #15827C;
+    color: #36ad6f;
 }
 
 .header .notification.enabled > a:hover,
@@ -356,8 +356,8 @@ a.logo span {
     padding-top: 21px;
 }
 
-.overview .terques {
-    background: #3eacaa;
+.overview .green {
+    background: #36ad6f;
 }
 
 .overview .red {
