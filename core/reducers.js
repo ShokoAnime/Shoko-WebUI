@@ -1,30 +1,9 @@
 import { combineReducers } from 'redux'
 import { handleAction } from 'redux-actions';
 import { QUEUE_STATUS, SET_AUTOUPDATE, STATUS_INVALIDATE, STATUS_RECEIVE, STATUS_REQUEST, RECENT_FILES, JMM_NEWS, IMPORT_FOLDERS, SERIES_COUNT,
-  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, API_SESSION, JMM_VERSION, autoUpdateTick } from './actions'
+  FILES_COUNT, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, WEBUI_VERSION_UPDATE, API_SESSION, JMM_VERSION } from './actions'
 
 const VERSION = __VERSION__;
-
-function autoUpdate(state = {
-    status: false,
-    timer: null
-}, action) {
-    switch (action.type) {
-        case SET_AUTOUPDATE:
-            let timer = null;
-            if (state.status === action.state) { return state; }
-            if (state.timer !== null) { clearInterval(state.timer); }
-            if (action.state) {
-                timer = setInterval(autoUpdateTick, 4000);
-            }
-            return Object.assign({}, state,{
-                status: action.state,
-                timer: timer
-            });
-        default:
-            return state
-    }
-}
 
 function queueStatus(state = {
     isFetching: false,
@@ -284,6 +263,9 @@ const apiSession = handleAction(API_SESSION, (state,action) => {
 const sidebarToggle = handleAction(SIDEBAR_TOGGLE,(state,action) => {
     return action.error?state:action.payload;
 },true);
+const autoUpdate = handleAction(SET_AUTOUPDATE,(state,action) => {
+    return action.error?state:action.payload;
+},false);
 
 const rootReducer = combineReducers({
     apiSession,

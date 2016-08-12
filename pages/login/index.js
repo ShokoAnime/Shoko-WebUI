@@ -17,6 +17,7 @@ class LoginPage extends React.Component {
     componentDidMount() {
         const container = document.getElementById('app-container');
         container.style.height = '100%';
+        this.refs.user.focus();
 
         jmmVersionAsync();
     }

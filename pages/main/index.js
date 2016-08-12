@@ -1,9 +1,8 @@
 import React, {PropTypes} from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
-import { queueStatusAsync, recentFilesAsync, importFoldersAsync, seriesCountAsync, filesCountAsync, jmmNewsAsync, updateAvailableAsync } from '../../core/actions';
+import { queueStatusAsync, recentFilesAsync, importFoldersAsync, seriesCountAsync, filesCountAsync, jmmNewsAsync, updateAvailableAsync, setAutoupdate } from '../../core/actions';
 import Layout from '../../components/Layout';
-import Footer from '../../components/Layout/Footer';
 import Overview from './Overview';
 import Commands from './Commands';
 import RecentFiles from './RecentFiles';
@@ -22,7 +21,6 @@ class MainPage extends React.Component {
             return;
         }
 
-
         queueStatusAsync()
           .then(
             () => recentFilesAsync()
@@ -31,8 +29,12 @@ class MainPage extends React.Component {
           .then(() => filesCountAsync())
           .then(() => jmmNewsAsync())
           .then(() => updateAvailableAsync())
+          .then(() => store.dispatch(setAutoupdate(true)))
         );
+    }
 
+    componentWillUnmount() {
+        setAutoupdate(false);
     }
 
     render() {

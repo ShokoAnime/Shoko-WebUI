@@ -28,7 +28,7 @@ class FixedPanel extends React.Component {
         <div className={s['fixed-panel']}>
           {children}
         </div>
-        <TimeUpdated className={s['timer']} timestamp={lastUpdated}/>
+        <TimeUpdated className={s['timer']} timestamp={lastUpdated} isFetching={isFetching}/>
       </section>
     );
   }

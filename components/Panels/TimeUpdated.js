@@ -4,14 +4,15 @@ import moment from 'moment';
 class TimeUpdated extends React.Component {
   static propTypes = {
     timestamp: PropTypes.number,
-    className: PropTypes.string
+    className: PropTypes.string,
+    isFetching: PropTypes.bool
   };
 
   render() {
-    const { timestamp, className } = this.props;
+    const { timestamp, className, isFetching } = this.props;
     let dateString = (timestamp)?moment(timestamp, 'x').format("YYYY-MM-DD HH:mm:ss"):'--';
     return (
-      <span className={className}>{dateString}</span>
+      <span className={className}>{isFetching?<i className="fa fa-refresh fa-spin"/>:null}{dateString}</span>
     );
   }
 }

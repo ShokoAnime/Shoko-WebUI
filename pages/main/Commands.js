@@ -28,7 +28,7 @@ class Commands extends React.Component {
     }
     return (
       <div className={this.props.className}>
-        <FixedPanel title="Commands" description="Commands currently being processed" lastUpdated={lastUpdated}>
+        <FixedPanel title="Commands" description="Commands currently being processed" lastUpdated={lastUpdated} isFetching={isFetching}>
           <table className="table">
             <tbody>
             {commands}

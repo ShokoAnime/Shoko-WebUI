@@ -46,7 +46,7 @@ function mapStateToProps(state) {
         countHasher: items.hash?items.hash.count:null,
         countGeneral: items.general?items.general.count:null,
         countImages: items.image?items.image.count:null,
-        autoUpdate: autoUpdate.status,
+        autoUpdate: autoUpdate,
         sidebarToggle: sidebarToggle,
         updateAvailable: updateAvailable.status,
         updateFetching: webuiVersionUpdate.isFetching,

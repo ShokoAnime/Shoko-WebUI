@@ -7,7 +7,7 @@ export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
 function createAsyncAction(type, key, apiAction, responseCallback) {
-    return () => {
+    return (forceFetch) => {
         const state = store.getState();
         const status = state[key];
         const apiKey = state.apiSession.apikey;
@@ -17,6 +17,8 @@ function createAsyncAction(type, key, apiAction, responseCallback) {
             shouldFetch = true;
         } else if (status.isFetching) {
             shouldFetch = false;
+        } else if (forceFetch === true) {
+            shouldFetch = true;
         } else {
             shouldFetch = status.didInvalidate;
         }
@@ -94,14 +96,20 @@ export const jmmVersionAsync = createAsyncAction(JMM_VERSION,'jmmVersion','/vers
 
 
 /* Timer */
+let autoupdateTimer = null;
 export const SET_AUTOUPDATE = 'SET_AUTOUPDATE';
 export function setAutoupdate(status) {
-    return {
-        type: SET_AUTOUPDATE,
-        state: status
+    if (autoupdateTimer !== null) {
+        clearInterval(autoupdateTimer);
+        autoupdateTimer = null;
     }
+    if (status === true) {
+        autoupdateTimer = setInterval(autoUpdateTick, 4000);
+    }
+    return createAction(SET_AUTOUPDATE)(status);
 }
 
-export function autoUpdateTick() {
-    queueStatusAsync();
+function autoUpdateTick() {
+    queueStatusAsync(true);
+    recentFilesAsync(true);
 }

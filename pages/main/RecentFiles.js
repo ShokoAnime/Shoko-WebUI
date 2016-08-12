@@ -31,7 +31,7 @@ class RecentFiles extends React.Component {
         }
         return (
             <div className={this.props.className}>
-                <FixedPanel title="Recent files" description="List of recently added files and their import status" lastUpdated={lastUpdated}>
+                <FixedPanel title="Recent files" description="List of recently added files and their import status" lastUpdated={lastUpdated} isFetching={isFetching}>
                     <table className="table">
                         <tbody>
                         {files}

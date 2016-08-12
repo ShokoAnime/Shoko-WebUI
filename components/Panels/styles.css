@@ -36,3 +36,7 @@
     right: 2rem;
     color: #2f353b;;
 }
+.timer :global(.fa) {
+    font-size: 13px;
+    margin-right: 3px;
+}
