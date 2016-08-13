@@ -20,275 +20,52 @@ import {
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
-function queueStatus(state = {
-  isFetching: false,
-  didInvalidate: true,
-  items: {},
-}, action) {
-  if (action.type !== QUEUE_STATUS) {
-    return state;
+function createApiReducer(type, dataPropName = 'items', dataPropValue = {}, valueFunc = undefined) {
+  if (valueFunc === undefined) {
+    valueFunc = (value) => value;
   }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
+  return (state = {
+    isFetching: false,
+    didInvalidate: true,
+    [dataPropName]: dataPropValue,
+  }, action) => {
+    if (action.type !== type) {
       return state;
-  }
+    }
+    switch (action.meta.status) {
+      case STATUS_INVALIDATE:
+        return Object.assign({}, state, {
+          didInvalidate: true,
+        });
+      case STATUS_REQUEST:
+        return Object.assign({}, state, {
+          isFetching: true,
+          didInvalidate: false,
+        });
+      case STATUS_RECEIVE:
+        return Object.assign({}, state, {
+          isFetching: false,
+          didInvalidate: false,
+          [dataPropName]: valueFunc(action.payload),
+          lastUpdated: action.meta.receivedAt,
+        });
+      default:
+        return state;
+    }
+  };
 }
 
-function recentFiles(state = {
-  isFetching: false,
-  didInvalidate: true,
-  items: {},
-}, action) {
-  if (action.type !== RECENT_FILES) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function jmmNews(state = {
-  isFetching: false,
-  didInvalidate: true,
-  items: {},
-}, action) {
-  if (action.type !== JMM_NEWS) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function importFolders(state = {
-  isFetching: false,
-  didInvalidate: true,
-  items: {},
-}, action) {
-  if (action.type !== IMPORT_FOLDERS) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        items: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function seriesCount(state = {
-  isFetching: false,
-  didInvalidate: true,
-  count: 0,
-}, action) {
-  if (action.type !== SERIES_COUNT) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        count: action.payload.count,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function filesCount(state = {
-  isFetching: false,
-  didInvalidate: true,
-  count: 0,
-}, action) {
-  if (action.type !== FILES_COUNT) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        count: action.payload.count,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function updateAvailable(state = {
-  isFetching: false,
-  didInvalidate: true,
-  status: false,
-}, action) {
-  if (action.type !== UPDATE_AVAILABLE) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        status: (VERSION.indexOf('.') !== -1 && action.payload.version !== VERSION),
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function webuiVersionUpdate(state = {
-  isFetching: false,
-  didInvalidate: true,
-  status: false,
-}, action) {
-  if (action.type !== WEBUI_VERSION_UPDATE) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        status: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
-
-function jmmVersion(state = {
-  isFetching: false,
-  didInvalidate: true,
-  version: false,
-}, action) {
-  if (action.type !== JMM_VERSION) {
-    return state;
-  }
-  switch (action.meta.status) {
-    case STATUS_INVALIDATE:
-      return Object.assign({}, state, {
-        didInvalidate: true,
-      });
-    case STATUS_REQUEST:
-      return Object.assign({}, state, {
-        isFetching: true,
-        didInvalidate: false,
-      });
-    case STATUS_RECEIVE:
-      return Object.assign({}, state, {
-        isFetching: false,
-        didInvalidate: false,
-        version: action.payload,
-        lastUpdated: action.meta.receivedAt,
-      });
-    default:
-      return state;
-  }
-}
+const queueStatus = createApiReducer(QUEUE_STATUS);
+const recentFiles = createApiReducer(RECENT_FILES);
+const jmmNews = createApiReducer(JMM_NEWS);
+const importFolders = createApiReducer(IMPORT_FOLDERS);
+const seriesCount = createApiReducer(SERIES_COUNT);
+const filesCount = createApiReducer(FILES_COUNT);
+const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, (payload) =>
+  VERSION.indexOf('.') !== -1 && payload.version !== VERSION
+);
+const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'status', false);
+const jmmVersion = createApiReducer(WEBUI_VERSION_UPDATE, 'version', '');
 
 const apiSession = handleAction(API_SESSION,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
