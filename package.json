@@ -12,11 +12,14 @@
     "babel-polyfill": "^6.9.1",
     "bootstrap": "^3.3.0",
     "browser-sync": "^2.13.0",
+    "chai": "^3.5.0",
     "classnames": "^2.2.5",
     "connect-history-api-fallback": "^1.2.0",
     "del": "^2.2.1",
     "ejs": "^2.5.1",
+    "enzyme": "^2.4.1",
     "fastclick": "^1.0.6",
+    "font-awesome": "^4.6.3",
     "history": "^3.0.0",
     "http-proxy-middleware": "^0.17.0",
     "isomorphic-fetch": "^1.0.0",
@@ -37,18 +40,18 @@
     "postcss-selector-matches": "^2.0.1",
     "postcss-selector-not": "^2.0.0",
     "react": "^15.2.1",
+    "react-bootstrap": "^0.30.2",
     "react-dom": "^15.2.1",
     "react-mdl": "^1.6.1",
     "react-redux": "^4.4.5",
     "redux": "^3.5.2",
+    "redux-actions": "^0.10.1",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1",
     "webpack-hot-middleware": "^2.12.2",
-    "zip-folder": "^1.0.0",
-    "redux-logger": "^2.6.1",
-    "redux-thunk": "^2.1.0",
-    "redux-actions": "^0.10.1",
-    "react-bootstrap": "^0.30.2"
+    "zip-folder": "^1.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.11.4",
@@ -60,7 +63,6 @@
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.11.6",
     "babel-runtime": "^6.11.6",
-    "chai": "^3.5.0",
     "css-loader": "^0.23.1",
     "eslint": "^3.1.1",
     "eslint-config-airbnb": "^10.0.0",
@@ -69,9 +71,12 @@
     "eslint-plugin-react": "^6.0.0",
     "file-loader": "^0.9.0",
     "font-awesome-webpack": "0.0.4",
+    "jsdom": "^9.4.2",
     "json-loader": "^0.5.4",
     "less": "^2.7.1",
+    "mocha": "^3.0.2",
     "moment": "^2.14.1",
+    "react-addons-test-utils": "^15.3.0",
     "react-hot-loader": "^3.0.0-beta.2",
     "style-loader": "^0.13.1",
     "stylelint": "^7.0.3",
@@ -92,7 +97,8 @@
     "parser": "babel-eslint",
     "extends": "airbnb",
     "rules": {
-      "react/prefer-stateless-function": "off"
+      "react/prefer-stateless-function": "off",
+      "react/jsx-filename-extension": "off"
     }
   },
   "stylelint": {
@@ -101,9 +107,14 @@
       "string-quotes": "single",
       "color-hex-case": "lower",
       "font-family-name-quotes": "always-where-recommended",
-      "selector-pseudo-class-no-unknown": [true, {
-        "ignorePseudoClasses": ["global"]
-      }],
+      "selector-pseudo-class-no-unknown": [
+        true,
+        {
+          "ignorePseudoClasses": [
+            "global"
+          ]
+        }
+      ],
       "indentation": 2
     }
   },
@@ -114,6 +125,7 @@
     "clean": "node run clean",
     "build": "node run build",
     "build:debug": "node run build --debug",
-    "start": "node run"
+    "start": "node run",
+    "test": "mocha test/.setup.js test/**/*-test.js"
   }
 }

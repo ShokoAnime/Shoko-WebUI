@@ -19,6 +19,11 @@ function run(task) {
   }, err => console.error(err.stack));
 }
 
+function getEnvironment() {
+  if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production')) return process.env.NODE_ENV;
+  return global.DEBUG ? '"development"' : '"production"';
+}
+
 //
 // Clean up the output directory
 // -----------------------------------------------------------------------------
@@ -42,6 +47,7 @@ tasks.set('html', () => {
 // -----------------------------------------------------------------------------
 tasks.set('bundle', () => {
   const webpackConfig = require('./webpack.config');
+  console.log(`Node env ${global.NODE_ENV}`);
 
   return new Promise((resolve, reject) => {
     webpack(webpackConfig).run((err, stats) => {
@@ -62,14 +68,16 @@ tasks.set('release', () => {
   const zipFolder = require('zip-folder');
 
   return new Promise((resolve, reject) => {
-    zipFolder('./public', './build/latest.zip', (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        console.log('Release build created!');
-        resolve();
-      }
-    });
+    zipFolder('./public', process.env.NODE_ENV === 'development' ?
+        './build/latest-unstable.zip' : './build/latest.zip',
+      (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          console.log('Release build created!');
+          resolve();
+        }
+      });
   });
 });
 
@@ -79,6 +87,7 @@ tasks.set('release', () => {
 tasks.set('build', () => {
   global.DEBUG = process.argv.includes('--debug') || false;
   global.BUILDING = true;
+  global.NODE_ENV = getEnvironment();
   return Promise.resolve()
     .then(() => run('clean'))
     .then(() => run('bundle'))

@@ -1,0 +1,28 @@
+language: node_js
+node_js:
+  - '6'
+env:
+  - CXX=g++-4.8 NODE_ENV=production
+  - CXX=g++-4.8 NODE_ENV=development
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - g++-4.8
+cache:
+  directories:
+  - node_modules
+script:
+  - npm install --dev
+  - npm run lint
+  - npm run build
+deploy:
+  provider: releases
+  api_key:
+    secure: aCp2G/ENkC166Sdqb6i/Ckel6SBv13vUdOZfhnIXClkf6ycYmjULPzJxVobrnrpXLUrBLtFJ8whx3uTUQVC6sUQdweycRTIqcsK9qxCPBiPKMaJW6WG98hc1wZP0boMnfFabC1tmn1N4OBtoe+W7F5aa+a1Ie0P92tavZyG1jfuTsmA9WX2Nx3BnjhezSeyokdMZRKASxMpU74MlFMJGbfhRQMVGHjvLCdPm/RZnXGJDVPR2PIKp51WdtDYQ0V4rZiGy9uifi8YeUnjFVa66rC/xlPWB+mJXwiaVtXxz3gtFGPXJ3pwIYH1C4sH5A6JsCZteNtjE6gUtME35UHUzH3qPh0dcwEfI5OrQJLtTlQudRBAnDCmIpRP6z//86Yb9h941D3iXBx8JP+JNz0yoFy2lmmZk4+MdLaqHJd3lsTDQJz44q117WdeF2t8RBcCL953/GK3kJE7p6J6ivz7/f4x1OlCuspruKRSnWk3ReSKZWnr5onupVCwGlpC+13ZDbk/JDTzuEKuLPZBlNKwxgVbrLGcqpneR/1F6aytBcZkEd4PngUNvQ8iqSnlOFeYWPBnlQFlW+ufs5M0UcA4QhMZdCjZX4urt5eMN1niiPh4ZHE5QRGyFyjDJPwA0IzxRQixDoO90f9Gw4SvHB4wWfDYxxnjmqz3zcuBiiU/3MKw=
+  skip_cleanup: true
+  file: build/*.zip
+  file_glob: true
+  on:
+    tags: true

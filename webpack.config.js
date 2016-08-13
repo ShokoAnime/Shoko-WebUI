@@ -57,7 +57,7 @@ const config = {
   plugins: [
     new webpack.optimize.OccurrenceOrderPlugin(),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
+      'process.env.NODE_ENV': global.NODE_ENV,
       __DEV__: isDebug,
       __VERSION__: isDebug ? childProcess.execSync("git log --pretty=format:'%h' -n 1").toString()
         : JSON.stringify(pkg.version),
