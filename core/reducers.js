@@ -20,9 +20,12 @@ import {
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
-function createApiReducer(type, dataPropName = 'items', dataPropValue = {}, valueFunc = undefined) {
-  if (valueFunc === undefined) {
+function createApiReducer(type, dataPropName = 'items', dataPropValue = {}, valueFn = undefined) {
+  let valueFunc = null;
+  if (valueFn === undefined) {
     valueFunc = (value) => value;
+  } else {
+    valueFunc = valueFn;
   }
   return (state = {
     isFetching: false,
@@ -65,7 +68,7 @@ const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, (pay
   VERSION.indexOf('.') !== -1 && payload.version !== VERSION
 );
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'status', false);
-const jmmVersion = createApiReducer(WEBUI_VERSION_UPDATE, 'version', '');
+const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
 
 const apiSession = handleAction(API_SESSION,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
