@@ -5,7 +5,7 @@ import s from '../Layout/Layout.css';
 
 class SidebarToggle extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool
+    enabled: PropTypes.bool,
   };
 
   constructor(props) {
@@ -14,16 +14,15 @@ class SidebarToggle extends React.Component {
   }
 
   handleClick() {
-    let newState = !this.props.enabled;
+    const newState = !this.props.enabled;
     store.dispatch(toggleSidebar(newState));
   }
 
   render() {
-    const {enabled} = this.props;
     return (
-    <div className={s["sidebar-toggle"]} onClick={this.handleClick}>
-      <i className="fa fa-bars"/>
-    </div>
+      <div className={s['sidebar-toggle']} onClick={this.handleClick}>
+        <i className="fa fa-bars" />
+      </div>
     );
   }
 }

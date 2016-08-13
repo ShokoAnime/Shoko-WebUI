@@ -1,3 +1,4 @@
+import 'isomorphic-fetch';
 import React from 'react';
 
 function decodeParam(val) {
@@ -43,7 +44,7 @@ function resolve(routes, context) {
     const params = matchURI(route, context.error ? '/error' : context.pathname);
 
     if (!params) {
-      continue;
+      continue; // eslint-disable-line no-continue
     }
 
     // Check if the route has any data requirements, for example:
@@ -53,11 +54,12 @@ function resolve(routes, context) {
       const keys = Object.keys(route.data);
       return Promise.all([
         route.load(),
-        ...keys.map(key => {
+        ...keys.map(key => { // eslint-disable-line no-loop-func
           const query = route.data[key];
           const method = query.substring(0, query.indexOf(' ')); // GET
           const url = query.substr(query.indexOf(' ') + 1);      // /api/tasks/$id
           // TODO: Replace query parameters with actual values coming from `params`
+          // eslint-disable-next-line no-undef
           return fetch(url, { method }).then(resp => resp.json());
         }),
       ]).then(([Page, ...data]) => {

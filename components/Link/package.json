@@ -2,5 +2,8 @@
   "name": "Link",
   "version": "0.1.0",
   "private": true,
-  "main": "./Link.js"
+  "main": "./Link.js",
+  "dependencies": {
+    "react": "^15.2.1"
+  }
 }

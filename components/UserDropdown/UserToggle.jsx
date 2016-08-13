@@ -5,6 +5,7 @@ class UserToggle extends React.Component {
   static propTypes = {
     user: PropTypes.string,
     bsRole: PropTypes.oneOf(['toggle']),
+    onClick: PropTypes.func,
   };
 
   constructor(props, context) {
@@ -23,13 +24,13 @@ class UserToggle extends React.Component {
     const { user } = this.props;
     return (
       <li className="dropdown">
-        <a href="#" className={s['user-toggle']} onClick={this.handleClick}>
-          <span className={s["username"]}>{user}</span>
-          <b className="caret"/>
+        <a className={s['user-toggle']} onClick={this.handleClick}>
+          <span className={s.username}>{user}</span>
+          <b className="caret" />
         </a>
       </li>
     );
   }
 }
 
-export default UserToggle
+export default UserToggle;

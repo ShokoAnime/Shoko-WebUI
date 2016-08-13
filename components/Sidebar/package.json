@@ -2,5 +2,9 @@
   "name": "Sidebar",
   "version": "0.1.0",
   "private": true,
-  "main": "./Sidebar.js"
+  "main": "./Sidebar.js",
+  "dependencies": {
+    "react": "^15.2.1",
+    "classnames": "^2.2.5"
+  }
 }

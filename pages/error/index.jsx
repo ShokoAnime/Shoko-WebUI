@@ -1,6 +1,6 @@
 import React from 'react';
 import history from '../../core/history';
-import Link from '../../components/Link';
+import Link from '../../components/Link/Link';
 import s from './styles.css';
 
 class ErrorPage extends React.Component {
@@ -10,6 +10,7 @@ class ErrorPage extends React.Component {
   };
 
   componentDidMount() {
+    // eslint-disable-next-line no-undef
     document.title = this.props.error && this.props.error.status === 404 ?
       'Page Not Found' : 'Error';
   }

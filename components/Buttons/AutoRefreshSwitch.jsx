@@ -5,7 +5,7 @@ import { setAutoupdate } from '../../core/actions';
 
 class AutoRefreshSwitch extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool
+    enabled: PropTypes.bool,
   };
 
   constructor(props) {
@@ -14,16 +14,16 @@ class AutoRefreshSwitch extends React.Component {
   }
 
   handleClick() {
-    let newState = !this.props.enabled;
+    const newState = !this.props.enabled;
     store.dispatch(setAutoupdate(newState));
   }
 
   render() {
-    const {enabled} = this.props;
+    const { enabled } = this.props;
     return (
-      <li className={cx("notification", enabled ? 'enabled' : null)}>
-        <a className="dropdown-toggle" href="#" onClick={this.handleClick}>
-          <i className="fa fa-check-square"/>
+      <li className={cx('notification', enabled ? 'enabled' : null)}>
+        <a className="dropdown-toggle" onClick={this.handleClick}>
+          <i className="fa fa-check-square" />
         </a>
       </li>
     );

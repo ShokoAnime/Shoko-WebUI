@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
-const UI_VERSION = __VERSION__;
+
+const UI_VERSION = __VERSION__; // eslint-disable-line no-undef
 
 class Footer extends React.Component {
   static propTypes = {
-    version: PropTypes.string
+    version: PropTypes.string,
   };
 
   render() {
@@ -12,8 +13,8 @@ class Footer extends React.Component {
       <footer className="footer">
         <div className="text-center">
           JMM Server {version} Web UI {UI_VERSION}
-          <a href="#" className="go-top">
-            <i className="fa fa-angle-up"/>
+          <a className="go-top">
+            <i className="fa fa-angle-up" />
           </a>
         </div>
       </footer>
@@ -21,4 +22,4 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer
+export default Footer;

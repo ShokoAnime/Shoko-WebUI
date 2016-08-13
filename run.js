@@ -1,3 +1,4 @@
+/* eslint-disable no-console, global-require */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
@@ -28,6 +29,7 @@ tasks.set('clean', () => del(['public/dist/*', '!public/dist/.git'], { dot: true
 // -----------------------------------------------------------------------------
 tasks.set('html', () => {
   const webpackConfig = require('./webpack.config');
+
   const assets = JSON.parse(fs.readFileSync('./public/dist/assets.json', 'utf8'));
   const template = fs.readFileSync('./public/index.ejs', 'utf8');
   const render = ejs.compile(template, { filename: './public/index.ejs' });
@@ -40,6 +42,7 @@ tasks.set('html', () => {
 // -----------------------------------------------------------------------------
 tasks.set('bundle', () => {
   const webpackConfig = require('./webpack.config');
+
   return new Promise((resolve, reject) => {
     webpack(webpackConfig).run((err, stats) => {
       if (err) {
@@ -55,12 +58,12 @@ tasks.set('bundle', () => {
 //
 // Make release zip file
 //
-tasks.set('release', ()=>{
-  let zipFolder = require('zip-folder');
+tasks.set('release', () => {
+  const zipFolder = require('zip-folder');
 
   return new Promise((resolve, reject) => {
-    zipFolder('./public', './build/latest.zip', function(err) {
-      if(err) {
+    zipFolder('./public', './build/latest.zip', (err) => {
+      if (err) {
         reject(err);
       } else {
         console.log('Release build created!');
@@ -93,6 +96,7 @@ tasks.set('start', () => {
     const bs = require('browser-sync').create();
     const webpackConfig = require('./webpack.config');
     const proxy = require('http-proxy-middleware');
+
     const compiler = webpack(webpackConfig);
     // Node.js middleware that compiles application in watch mode with HMR support
     // http://webpack.github.io/docs/webpack-dev-middleware.html
@@ -100,11 +104,12 @@ tasks.set('start', () => {
       publicPath: webpackConfig.output.publicPath,
       stats: webpackConfig.stats,
     });
+
     const proxyMiddleware = proxy(['/api'], {
       target: 'http://192.168.0.93:8111',
       ws: true,
       logLevel: 'error',
-      changeOrigin: true   // for vhosted sites, changes host header to match to target's host
+      changeOrigin: true,   // for vhosted sites, changes host header to match to target's host
     });
     compiler.plugin('done', stats => {
       // Generate index.html page

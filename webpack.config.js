@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
@@ -15,16 +16,16 @@ const babelConfig = Object.assign({}, pkg.babel, {
 
 const config = {
   context: __dirname,
- entry: [
+  entry: [
     '!!style!css!bootstrap/dist/css/bootstrap.min.css',
-    "font-awesome-webpack",
+    'font-awesome-webpack',
     '!!style!css!./css/bootstrap-reset.css',
     '!!style!css!./css/main.css',
-    './main.js',
+    './main.jsx',
   ],
   output: {
     path: path.resolve(__dirname, './public/dist'),
-    publicPath: isBuilding?'/webui/dist/':'/dist/',
+    publicPath: isBuilding ? '/webui/dist/' : '/dist/',
     filename: isDebug ? '[name].js?[hash]' : '[name].[hash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     sourcePrefix: '  ',
@@ -34,11 +35,14 @@ const config = {
     /* Send API requests on localhost to API server get around CORS */
     proxy: {
       '/api*': {
-        target:  'http://192.168.0.93'
-      }
-    }
+        target: 'http://192.168.0.93',
+      },
+    },
   },
   devtool: isDebug ? 'source-map' : false,
+  resolve: {
+    extensions: ['', '.js', '.jsx'],
+  },
   stats: {
     colors: true,
     reasons: isDebug,
@@ -55,7 +59,8 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': isDebug ? '"development"' : '"production"',
       __DEV__: isDebug,
-      __VERSION__: isDebug?childProcess.execSync("git log --pretty=format:'%h' -n 1").toString():JSON.stringify(pkg.version),
+      __VERSION__: isDebug ? childProcess.execSync("git log --pretty=format:'%h' -n 1").toString()
+        : JSON.stringify(pkg.version),
     }),
     new AssetsPlugin({
       path: path.resolve(__dirname, './public/dist'),
@@ -71,7 +76,7 @@ const config = {
           path.resolve(__dirname, './components'),
           path.resolve(__dirname, './core'),
           path.resolve(__dirname, './pages'),
-          path.resolve(__dirname, './main.js'),
+          path.resolve(__dirname, './main.jsx'),
         ],
         loader: `babel-loader?${JSON.stringify(babelConfig)}`,
       },
@@ -105,13 +110,13 @@ const config = {
           path.resolve(__dirname, './utils/routes-loader.js'),
         ],
       },
-      { //font-awesome fonts
+      { // font-awesome fonts
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "url-loader?limit=10000&mimetype=application/font-woff"
+        loader: 'url-loader?limit=10000&mimetype=application/font-woff',
       },
-      { //font-awesome fonts
+      { // font-awesome fonts
         test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: "file-loader"
+        loader: 'file-loader',
       },
       {
         test: /\.(png|jpg|jpeg|gif|svg|woff|woff2)$/,
