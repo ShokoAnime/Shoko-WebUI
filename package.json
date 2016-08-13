@@ -98,7 +98,13 @@
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {
-      "string-quotes": "single"
+      "string-quotes": "single",
+      "color-hex-case": "lower",
+      "font-family-name-quotes": "always-where-recommended",
+      "selector-pseudo-class-no-unknown": [true, {
+        "ignorePseudoClasses": ["global"]
+      }],
+      "indentation": 2
     }
   },
   "scripts": {

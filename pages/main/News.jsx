@@ -16,7 +16,7 @@ class News extends React.Component {
     const { items, isFetching, lastUpdated, className } = this.props;
     let news = [];
     let i = 0;
-    forEach(items, (item, key) => {
+    forEach(items, (item) => {
       i++;
       news.push(<NewsItem key={i} index={i} {...item} />);
     });
