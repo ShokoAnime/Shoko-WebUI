@@ -29,7 +29,7 @@ class News extends React.Component {
           lastUpdated={lastUpdated}
           isFetching={isFetching}
         >
-          <table className="table">
+          <table className="table news">
             <tbody>
             {news}
             </tbody>
