@@ -279,6 +279,7 @@ a.logo span {
 .header .notification.enabled > a:hover,
 .header .notification.enabled > a:focus {
     color: #36ad6f;
+	cursor: pointer;
 	transition: all 0.3s ease-in-out !important;
 }
 
