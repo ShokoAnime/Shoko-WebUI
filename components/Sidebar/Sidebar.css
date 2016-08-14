@@ -16,6 +16,7 @@
 
 .bottom > a:hover,
 a:focus {
-  color: #11605c;
+  color: #49a2df;
+  cursor: pointer;
   transition: all 0.3s ease;
 }

@@ -145,9 +145,10 @@ ul {
 .btn-primary[disabled],
 .btn-primary.disabled.active,
 .btn-primary.active[disabled]{
-    background-color: #1BBC9B;
-    border-color: #1BBC9B;
+    background-color: #36ad6f;
+    border-color: #36ad6f;
     color: #FFFFFF;
+	font-weight: 600;
 }
 
 .btn-primary:hover, .btn-primary:focus, .btn-primary:active, .btn-primary.active, .open .dropdown-toggle.btn-primary,
@@ -155,9 +156,10 @@ ul {
 .btn-primary[disabled],
 .btn-primary.disabled.active,
 .btn-primary.active[disabled]{
-    background-color: #39b2a9;
-    border-color: #39b2a9;
+    background-color: #217ebd;
+    border-color: #217ebd;
     color: #FFFFFF;
+	font-weight: 600;
 }
 
 .btn-success {
