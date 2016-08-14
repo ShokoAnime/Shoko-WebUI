@@ -235,6 +235,7 @@ a.logo span {
 }
 
 .header .notifications {
+	cursor: pointer;
     float: left;
     margin-top: 15px;
     margin-left: 92px;
@@ -283,11 +284,36 @@ a.logo span {
 	transition: all 0.3s ease-in-out !important;
 }
 
+.nav .open > a, .nav .open > a:focus, .nav .open > a:hover {
+    background-color: #217ebd !important;
+    border-color: #337ab7 !important;
+    color: #FFF !important;
+}
+
 .notification .badge {
     position: absolute;
     right: -10px;
     top: -10px;
     z-index: 100;
+}
+
+.open > .dropdown-menu {
+	box-shadow: 5px 5px rgba(102,102,102,.1);
+}
+
+.pull-right > .dropdown-menu {
+    right: 13px !important;
+    left: auto !important;
+    top: 27px !important;
+}
+
+.table.news a {
+    color: #217ebd !important;
+    font-weight: 600;
+}
+
+.table.news a:hover, a:focus {
+    color: #36ad6f !important;
 }
 
 /* Badge */

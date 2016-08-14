@@ -10,6 +10,7 @@
 
 .bottom > a {
   flex-grow: 0;
+  font-weight: 600;
   color: #fff;
   padding: 0 8px;
 }
@@ -18,5 +19,6 @@
 a:focus {
   color: #49a2df;
   cursor: pointer;
+  font-weight: 600;
   transition: all 0.3s ease;
 }
