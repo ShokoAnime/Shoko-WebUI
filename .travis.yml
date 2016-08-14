@@ -3,7 +3,6 @@ node_js:
 - '6'
 env:
 - CXX=g++-4.8 NODE_ENV=production
-- CXX=g++-4.8 NODE_ENV=development
 addons:
   apt:
     sources:

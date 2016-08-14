@@ -74,10 +74,10 @@ export const FILES_COUNT = 'FILES_COUNT';
 export const filesCountAsync = createAsyncAction(FILES_COUNT, 'fileCount', '/file/count');
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
 export const updateAvailableAsync =
-  createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable', '/webui/latest');
+  createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable', '/webui/latest/stable');
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
-export const updateWebuiAsync =
-  createAsyncAction(WEBUI_VERSION_UPDATE, 'webuiVersionUpdate', '/webui/update', (response) => {
+export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
+  'webuiVersionUpdate', '/webui/update/stable', (response) => {
     if (response.status === 200) {
       return true;
     }
