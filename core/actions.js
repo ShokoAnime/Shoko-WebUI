@@ -79,10 +79,11 @@ export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
   'webuiVersionUpdate', '/webui/update/stable', (response) => {
     if (response.status === 200) {
-      return true;
+      return { status: true, error: false };
     }
-    return new Error(`Response status: ${response.status}`);
+    return { status: true, error: new Error(`Response status: ${response.status}`) };
   });
+export const updateWebui = createAction(WEBUI_VERSION_UPDATE, (payload) => ({ items: payload }));
 export const JMM_VERSION = 'JMM_VERSION';
 export const jmmVersionAsync =
   createAsyncAction(JMM_VERSION, 'jmmVersion', '/version', (response) => {

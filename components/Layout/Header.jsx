@@ -18,13 +18,13 @@ class Header extends React.Component {
     autoUpdate: PropTypes.bool,
     sidebarToggle: PropTypes.bool,
     updateAvailable: PropTypes.bool,
-    updateFetching: PropTypes.bool,
+    webuiVersionUpdate: PropTypes.object,
     username: PropTypes.string,
   };
 
   render() {
     const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable,
-      updateFetching, username } = this.props;
+      webuiVersionUpdate, username } = this.props;
     return (
       <header className="header white-bg">
         <SidebarToggle enabled={sidebarToggle} />
@@ -34,7 +34,7 @@ class Header extends React.Component {
             <HasherQueue count={countHasher} />
             <GeneralQueue count={countGeneral} />
             <ImageQueue count={countImages} />
-            <UpdateButton enabled={updateAvailable} isFetching={updateFetching} />
+            <UpdateButton enabled={updateAvailable} updateStatus={webuiVersionUpdate} />
           </ul>
         </div>
         <div className="nav notifications pull-right">
@@ -61,7 +61,7 @@ function mapStateToProps(state) {
     autoUpdate,
     sidebarToggle,
     updateAvailable: updateAvailable.status,
-    updateFetching: webuiVersionUpdate.isFetching,
+    webuiVersionUpdate,
     username: apiSession.username,
   };
 }
