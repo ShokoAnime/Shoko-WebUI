@@ -67,7 +67,9 @@ const filesCount = createApiReducer(FILES_COUNT);
 const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, (payload) =>
   VERSION.indexOf('.') !== -1 && payload.version !== VERSION
 );
-const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'status', false);
+const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
+  { status: false, error: false }
+);
 const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
 
 const apiSession = handleAction(API_SESSION,
