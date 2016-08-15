@@ -16,6 +16,7 @@ import {
   WEBUI_VERSION_UPDATE,
   API_SESSION,
   JMM_VERSION,
+  MODALS_STATUS,
 } from './actions';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
@@ -81,6 +82,9 @@ const sidebarToggle = handleAction(SIDEBAR_TOGGLE,
 const autoUpdate = handleAction(SET_AUTOUPDATE,
   (state, action) => (action.error ? state : action.payload)
 , false);
+const modalsStatus = handleAction(MODALS_STATUS,
+  (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
+  , { importFolders: false });
 
 const rootReducer = combineReducers({
   apiSession,
@@ -95,6 +99,7 @@ const rootReducer = combineReducers({
   updateAvailable,
   webuiVersionUpdate,
   jmmVersion,
+  modalsStatus,
 });
 
 export default rootReducer;
