@@ -25,11 +25,9 @@ body {
   width: 100%;
   height: 100%; /* For at least Firefox */
   min-height: 100%;
-  background-color:#15827c;
-  /* For WebKit (Safari, Chrome, etc) */
-	background: #FF93AB -webkit-gradient(linear, left top, left bottom, from(#0e5753), to(#15827c)) no-repeat;
-  /* Mozilla,Firefox/Gecko */
-  background: #FF93AB -moz-linear-gradient(top, #0e5753, #15827c) no-repeat;
+  background: #ff93ab -webkit-gradient(linear, left top, left bottom, from(#0e5753), to(#15827c)) no-repeat; /* For WebKit (Safari, Chrome, etc) */
+  background: #ff93ab -moz-linear-gradient(top, #0e5753, #15827c) no-repeat; /* Mozilla,Firefox/Gecko */
+  background-color: #15827c;
 }
 
 .wrapper-inner {
