@@ -163,6 +163,10 @@ ul.sidebar-menu li a.active i {
 
 /* Main content */
 
+.dropdown-toggle:focus {
+	color: inherit !important;
+}
+
 .main-content {
     transition: margin 0.5s ease-in-out;
     margin-left: 210px;
