@@ -4,17 +4,30 @@ import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
 import ImportModal from '../../components/Dialogs/ImportModal';
+import { setModalsStatus } from '../../core/actions';
+import store from '../../core/store';
 
 class ImportFolders extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
+    show: PropTypes.bool,
     lastUpdated: PropTypes.number,
     items: PropTypes.object,
+    description: PropTypes.string,
   };
 
+  constructor(props) {
+    super(props);
+    this.handleAction = this.handleAction.bind(this);
+  }
+
+  handleAction() {
+    store.dispatch(setModalsStatus({ importFolders: true }));
+  }
+
   render() {
-    const { items, isFetching, lastUpdated } = this.props;
+    const { items, isFetching, lastUpdated, className, description, show } = this.props;
     let folders = [];
     let i = 0;
     forEach(items, (item) => {
@@ -23,12 +36,14 @@ class ImportFolders extends React.Component {
     });
 
     return (
-      <div className={this.props.className}>
+      <div className={className}>
         <FixedPanel
           title="Import Folders Overview"
-          description="Use Import Folders section to manage"
+          description={description || 'Use Import Folders section to manage'}
           lastUpdated={lastUpdated}
           isFetching={isFetching}
+          actionName="Manage"
+          onAction={this.handleAction}
         >
           <table className="table">
             <tbody>
@@ -36,14 +51,14 @@ class ImportFolders extends React.Component {
             </tbody>
           </table>
         </FixedPanel>
-        <ImportModal show />
+        <ImportModal show={show} />
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { importFolders } = state;
+  const { importFolders, modalsStatus } = state;
   const {
     isFetching,
     lastUpdated,
@@ -57,6 +72,7 @@ function mapStateToProps(state) {
     items,
     isFetching,
     lastUpdated,
+    show: modalsStatus.importFolders,
   };
 }
 

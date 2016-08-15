@@ -82,8 +82,8 @@ function mapStateToProps(state) {
   return {
     importCount,
     commandCount,
-    seriesCount: seriesCount.count || 0,
-    filesCount: filesCount.count || 0,
+    seriesCount: seriesCount.items.count || 0,
+    filesCount: filesCount.items.count || 0,
   };
 }
 

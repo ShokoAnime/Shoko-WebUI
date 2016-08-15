@@ -2,15 +2,18 @@ import React from 'react';
 import cx from 'classnames';
 import Link from '../Link/Link';
 import s from './Sidebar.css';
+import history from '../../core/history';
 
 class Sidebar extends React.Component {
   render() {
+    const location = history.getCurrentLocation().pathname;
+
     return (
       <aside>
         <div id="sidebar" className="nav-collapse ">
           <ul className="sidebar-menu" id="nav-accordion">
             <li>
-              <Link className="active" to="/dashboard">
+              <Link className={cx({ active: location === '/dashboard' })} to="/dashboard">
                 <i className="fa fa-home" />
                 <span>Dashboard</span>
               </Link>
@@ -22,10 +25,10 @@ class Sidebar extends React.Component {
               </a>
             </li>
             <li className="sub-menu">
-              <a>
+              <Link className={cx({ active: location === '/import-folders' })} to="/import-folders">
                 <i className="fa fa-folder" />
                 <span>Import Folders</span>
-              </a>
+              </Link>
             </li>
             <li className="sub-menu">
               <a>

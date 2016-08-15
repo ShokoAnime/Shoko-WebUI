@@ -2,6 +2,7 @@ import 'isomorphic-fetch';
 import { createAction } from 'redux-actions';
 import { forEach } from 'lodash';
 import store from './store';
+import history from './history';
 
 export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
@@ -57,6 +58,8 @@ export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);
 export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
+export const MODALS_STATUS = 'MODALS_STATUS';
+export const setModalsStatus = createAction(MODALS_STATUS);
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
@@ -108,8 +111,12 @@ export const jmmVersionAsync =
 
 /* Timer */
 function autoUpdateTick() {
-  queueStatusAsync(true);
-  recentFilesAsync(true);
+  const location = history.getCurrentLocation().pathname;
+
+  if (location === '/dashboard') {
+    queueStatusAsync(true);
+    recentFilesAsync(true);
+  }
 }
 let autoupdateTimer = null;
 export const SET_AUTOUPDATE = 'SET_AUTOUPDATE';
