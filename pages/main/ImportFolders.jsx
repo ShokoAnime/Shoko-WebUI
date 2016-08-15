@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
+import ImportModal from '../../components/Dialogs/ImportModal';
 
 class ImportFolders extends React.Component {
   static propTypes = {
@@ -35,6 +36,7 @@ class ImportFolders extends React.Component {
             </tbody>
           </table>
         </FixedPanel>
+        <ImportModal show />
       </div>
     );
   }
