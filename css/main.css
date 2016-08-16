@@ -124,7 +124,7 @@ ul.sidebar-menu li a span{
 }
 
 ul.sidebar-menu li a{
-    color: #fff;
+    color: #fff !important;
     text-decoration: none;
     display: block;
     padding: 15px 0 15px 10px;
