@@ -25,7 +25,7 @@ class ErrorPage extends React.Component {
 
     const [code, title] = this.props.error && this.props.error.status === 404 ?
       ['404', 'Page not found'] :
-      ['Error', 'Oups, something went wrong'];
+      ['ERROR', 'You broke the Web UI, congratulations.'];
 
     return (
       <div className={s.container}>
