@@ -39,6 +39,7 @@
     "postcss-nesting": "^2.3.1",
     "postcss-selector-matches": "^2.0.1",
     "postcss-selector-not": "^2.0.0",
+    "prettysize": "0.0.3",
     "react": "^15.2.1",
     "react-bootstrap": "^0.30.2",
     "react-dom": "^15.2.1",

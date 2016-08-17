@@ -17,6 +17,8 @@ import {
   API_SESSION,
   JMM_VERSION,
   MODALS_STATUS,
+  IMPORT_FOLDER_SERIES,
+  SELECT_IMPORT_FOLDER_SERIES,
 } from './actions';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
@@ -72,6 +74,7 @@ const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false }
 );
 const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
+const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
 
 const apiSession = handleAction(API_SESSION,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
@@ -85,6 +88,9 @@ const autoUpdate = handleAction(SET_AUTOUPDATE,
 const modalsStatus = handleAction(MODALS_STATUS,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
   , { importFolders: false });
+const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
+  (state, action) => (action.error ? state : action.payload)
+  , {});
 
 const rootReducer = combineReducers({
   apiSession,
@@ -100,6 +106,8 @@ const rootReducer = combineReducers({
   webuiVersionUpdate,
   jmmVersion,
   modalsStatus,
+  importFolderSeries,
+  selectedImportFolderSeries,
 });
 
 export default rootReducer;
