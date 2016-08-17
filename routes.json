@@ -26,9 +26,10 @@
   },
   {
     "path": "/dashboard",
-    "page": "./pages/main",
-    "fetch":{
-      "task": "GET /api/folder/list"
-    }
+    "page": "./pages/main"
+  },
+  {
+    "path": "/import-folders",
+    "page": "./pages/import"
   }
 ]
