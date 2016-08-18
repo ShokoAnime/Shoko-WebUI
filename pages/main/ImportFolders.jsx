@@ -4,6 +4,7 @@ import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
 import ImportModal from '../../components/Dialogs/ImportModal';
+import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
 import { setModalsStatus } from '../../core/actions';
 import store from '../../core/store';
 
@@ -27,7 +28,7 @@ class ImportFolders extends React.Component {
   }
 
   render() {
-    const { items, isFetching, lastUpdated, className, description, show } = this.props;
+    const { items, isFetching, lastUpdated, className, description, show, showBrowse } = this.props;
     let folders = [];
     let i = 0;
     forEach(items, (item) => {
@@ -52,6 +53,7 @@ class ImportFolders extends React.Component {
           </table>
         </FixedPanel>
         <ImportModal show={show} />
+        <BrowseFolderModal show={showBrowse} />
       </div>
     );
   }
@@ -73,6 +75,7 @@ function mapStateToProps(state) {
     isFetching,
     lastUpdated,
     show: modalsStatus.importFolders,
+    showBrowse: modalsStatus.browseFolders,
   };
 }
 

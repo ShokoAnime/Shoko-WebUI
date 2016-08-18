@@ -30,6 +30,7 @@ class ImportModal extends React.Component {
   }
 
   handleSelect() {
+    store.dispatch(setModalsStatus({ browseFolders: true }));
   }
 
   handleClose() {
@@ -54,7 +55,7 @@ class ImportModal extends React.Component {
                       <InputGroup>
                         <FormControl type="text" placeholder="Enter folder location" />
                         <InputGroup.Button>
-                          <Button>Browse</Button>
+                          <Button onClick={this.handleSelect}>Browse</Button>
                         </InputGroup.Button>
                       </InputGroup>
                     </Col>

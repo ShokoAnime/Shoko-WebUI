@@ -1,0 +1,8 @@
+.treeview .list-group-item {
+  cursor: pointer;
+}
+
+.treeview :global(.fa) {
+  margin-left: 10px;
+  margin-right: 5px;
+}
