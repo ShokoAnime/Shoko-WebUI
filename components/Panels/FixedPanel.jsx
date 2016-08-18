@@ -42,7 +42,11 @@ class FixedPanel extends React.Component {
         <div className={s['fixed-panel']}>
           {children}
         </div>
-        <TimeUpdated className={s.timer} timestamp={lastUpdated} isFetching={isFetching} />
+        {lastUpdated || isFetching ? <TimeUpdated
+          className={s.timer}
+          timestamp={lastUpdated}
+          isFetching={isFetching}
+        /> : null}
       </section>
     );
   }

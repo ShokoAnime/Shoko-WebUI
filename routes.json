@@ -31,5 +31,9 @@
   {
     "path": "/import-folders",
     "page": "./pages/import"
+  },
+  {
+    "path": "/settings",
+    "page": "./pages/settings"
   }
 ]
