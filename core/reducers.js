@@ -19,6 +19,7 @@ import {
   MODALS_STATUS,
   IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
+  SETTINGS,
 } from './actions';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
@@ -91,6 +92,9 @@ const modalsStatus = handleAction(MODALS_STATUS,
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
   , {});
+const settings = handleAction(SETTINGS,
+  (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
+  , { apikey: '' });
 
 const rootReducer = combineReducers({
   apiSession,
@@ -108,6 +112,7 @@ const rootReducer = combineReducers({
   modalsStatus,
   importFolderSeries,
   selectedImportFolderSeries,
+  settings,
 });
 
 export default rootReducer;

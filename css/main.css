@@ -403,3 +403,12 @@ a.logo span {
     /*background: #3598dc; */
 	background: #217ebd;
 }
+
+.btn-default, .btn-default:focus {
+    background-color: #fff;
+    color: #000;
+}
+.btn-default:hover {
+    background-color: #fff;
+    color: #b0b5b9;
+}

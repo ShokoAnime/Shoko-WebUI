@@ -31,10 +31,10 @@ class Sidebar extends React.Component {
               </Link>
             </li>
             <li className="sub-menu">
-              <a>
+              <Link className={cx({ active: location === '/settings' })} to="/settings">
                 <i className="fa fa-wrench" />
                 <span>Settings</span>
-              </a>
+              </Link>
             </li>
             <li className="sub-menu">
               <a>
