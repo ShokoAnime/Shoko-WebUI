@@ -9,7 +9,7 @@ export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
 function createAsyncAction(type, key, apiAction, responseCallback) {
-  return (forceFetch) => {
+  return (forceFetch, apiParams = '') => {
     const state = store.getState();
     const status = state[key];
     const apiKey = state.apiSession.apikey;
@@ -28,7 +28,7 @@ function createAsyncAction(type, key, apiAction, responseCallback) {
     if (shouldFetch) {
       store.dispatch(createAction(type, payload => payload, () => ({ status: STATUS_REQUEST }))());
       // eslint-disable-next-line no-undef
-      return fetch(`/api${apiAction}`, {
+      return fetch(`/api${apiAction}${apiParams}`, {
         headers: {
           Accept: 'application/json',
           'Content-Type': 'application/json',
@@ -60,6 +60,8 @@ export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
 export const MODALS_STATUS = 'MODALS_STATUS';
 export const setModalsStatus = createAction(MODALS_STATUS);
+export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
+export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
@@ -108,6 +110,9 @@ export const jmmVersionAsync =
     });
   });
 
+export const IMPORT_FOLDER_SERIES = 'IMPORT_FOLDER_SERIES';
+export const importFolderSeriesAsync = createAsyncAction(IMPORT_FOLDER_SERIES,
+  'importFolderSeries', '/serie/byfolder/');
 
 /* Timer */
 function autoUpdateTick() {
@@ -130,4 +135,3 @@ export function setAutoupdate(status) {
   }
   return createAction(SET_AUTOUPDATE)(status);
 }
-
