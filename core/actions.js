@@ -9,7 +9,7 @@ export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
 function createAsyncAction(type, key, apiAction, responseCallback) {
-  return (forceFetch, apiParams='') => {
+  return (forceFetch, apiParams = '') => {
     const state = store.getState();
     const status = state[key];
     const apiKey = state.apiSession.apikey;
