@@ -8,7 +8,7 @@ export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
-function createAsyncAction(type, key, apiAction, responseCallback) {
+export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {
     const state = store.getState();
     const status = state[key];
@@ -58,8 +58,6 @@ export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);
 export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
-export const MODALS_STATUS = 'MODALS_STATUS';
-export const setModalsStatus = createAction(MODALS_STATUS);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
 export const SETTINGS = 'SETTINGS';

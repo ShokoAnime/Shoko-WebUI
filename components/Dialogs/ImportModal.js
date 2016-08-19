@@ -15,7 +15,8 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap';
 import s from './ImportModal.css';
-import { setModalsStatus } from '../../core/actions';
+import { setStatus as setBrowseStatus } from '../../core/actions/modals/BrowseFolder';
+import { setStatus as setImportStatus } from '../../core/actions/modals/ImportFolder';
 import store from '../../core/store';
 
 class ImportModal extends React.Component {
@@ -26,16 +27,16 @@ class ImportModal extends React.Component {
 
   constructor(props) {
     super(props);
-    this.handleSelect = this.handleSelect.bind(this);
+    this.handleBrowse = this.handleBrowse.bind(this);
     this.handleClose = this.handleClose.bind(this);
   }
 
-  handleSelect() {
-    store.dispatch(setModalsStatus({ browseFolders: { status: true } }));
+  handleBrowse() {
+    store.dispatch(setBrowseStatus(true));
   }
 
   handleClose() {
-    store.dispatch(setModalsStatus({ importFolders: { status: false } }));
+    store.dispatch(setImportStatus(false));
   }
 
   handleSubmit() {
@@ -72,7 +73,7 @@ class ImportModal extends React.Component {
                           ref={this.formFolder}
                         />
                         <InputGroup.Button>
-                          <Button onClick={this.handleSelect}>Browse</Button>
+                          <Button onClick={this.handleBrowse}>Browse</Button>
                         </InputGroup.Button>
                       </InputGroup>
                     </Col>

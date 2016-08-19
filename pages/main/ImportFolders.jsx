@@ -5,7 +5,7 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
 import ImportModal from '../../components/Dialogs/ImportModal';
 import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
-import { setModalsStatus } from '../../core/actions';
+import { setStatus } from '../../core/actions/modals/ImportFolder';
 import store from '../../core/store';
 
 class ImportFolders extends React.Component {
@@ -26,7 +26,7 @@ class ImportFolders extends React.Component {
   }
 
   handleAction() {
-    store.dispatch(setModalsStatus({ importFolders: { status: true } }));
+    store.dispatch(setStatus(true));
   }
 
   render() {
@@ -63,7 +63,7 @@ class ImportFolders extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { importFolders, modalsStatus } = state;
+  const { importFolders, modals } = state;
   const {
     isFetching,
     lastUpdated,
@@ -77,9 +77,9 @@ function mapStateToProps(state) {
     items,
     isFetching,
     lastUpdated,
-    show: modalsStatus.importFolders.status,
-    showBrowse: modalsStatus.browseFolders.status,
-    browseFolder: modalsStatus.browseFolders.folder || '',
+    show: modals.importFolder.status,
+    showBrowse: modals.browseFolder.status,
+    browseFolder: modals.browseFolder.folder || '',
   };
 }
 

@@ -6,7 +6,7 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap';
 import s from './ImportModal.css';
-import { setModalsStatus } from '../../core/actions';
+import { setStatus, setFolder } from '../../core/actions/modals/BrowseFolder';
 import store from '../../core/store';
 import TreeView from '../TreeView/TreeView';
 
@@ -24,7 +24,7 @@ class BrowseFolderModal extends React.Component {
   }
 
   handleClose() {
-    store.dispatch(setModalsStatus({ browseFolders: { status: false } }));
+    store.dispatch(setStatus(false));
   }
 
   handleSelectionChange(folder) {
@@ -32,9 +32,8 @@ class BrowseFolderModal extends React.Component {
   }
 
   handleSelect() {
-    store.dispatch(
-      setModalsStatus({ browseFolders: { status: false, folder: this.state.folder } })
-    );
+    store.dispatch(setFolder(this.state.folder));
+    store.dispatch(setStatus(false));
   }
 
   render() {
