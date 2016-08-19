@@ -4,17 +4,20 @@ import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
 import ImportModal from '../../components/Dialogs/ImportModal';
-import { setModalsStatus } from '../../core/actions';
+import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
+import { setStatus } from '../../core/actions/modals/ImportFolder';
 import store from '../../core/store';
 
 class ImportFolders extends React.Component {
   static propTypes = {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
-    show: PropTypes.bool,
+    importModal: PropTypes.object,
     lastUpdated: PropTypes.number,
     items: PropTypes.object,
     description: PropTypes.string,
+    showBrowse: PropTypes.bool,
+    browseFolder: PropTypes.string,
   };
 
   constructor(props) {
@@ -23,11 +26,12 @@ class ImportFolders extends React.Component {
   }
 
   handleAction() {
-    store.dispatch(setModalsStatus({ importFolders: true }));
+    store.dispatch(setStatus(true));
   }
 
   render() {
-    const { items, isFetching, lastUpdated, className, description, show } = this.props;
+    const { items, isFetching, lastUpdated, className, description, importModal, showBrowse,
+      browseFolder } = this.props;
     let folders = [];
     let i = 0;
     forEach(items, (item) => {
@@ -51,14 +55,15 @@ class ImportFolders extends React.Component {
             </tbody>
           </table>
         </FixedPanel>
-        <ImportModal show={show} />
+        <ImportModal {...importModal} folder={browseFolder} />
+        <BrowseFolderModal show={showBrowse} />
       </div>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { importFolders, modalsStatus } = state;
+  const { importFolders, modals } = state;
   const {
     isFetching,
     lastUpdated,
@@ -72,7 +77,9 @@ function mapStateToProps(state) {
     items,
     isFetching,
     lastUpdated,
-    show: modalsStatus.importFolders,
+    importModal: modals.importFolder,
+    showBrowse: modals.browseFolder.status,
+    browseFolder: modals.browseFolder.folder || '',
   };
 }
 

@@ -8,7 +8,7 @@ export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
-function createAsyncAction(type, key, apiAction, responseCallback) {
+export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {
     const state = store.getState();
     const status = state[key];
@@ -53,18 +53,47 @@ function createAsyncAction(type, key, apiAction, responseCallback) {
   };
 }
 
+export function createAsyncPostAction(type, key, apiAction, responseCallback) {
+  return (apiParams) => {
+    const state = store.getState();
+    const apiKey = state.apiSession.apikey;
+
+    store.dispatch(createAction(type, payload => payload, () => ({ status: STATUS_REQUEST }))());
+    // eslint-disable-next-line no-undef
+    return fetch(`/api${apiAction}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey: apiKey,
+      },
+      body: JSON.stringify(apiParams),
+      method: 'POST',
+    })
+      .then((response) => {
+        if (typeof responseCallback === 'function') {
+          return responseCallback(response);
+        }
+        return response.json();
+      })
+      .then(json => store.dispatch(createAction(type, payload => payload, () => ({
+        status: STATUS_RECEIVE,
+        receivedAt: Date.now(),
+      }))(json)))
+      .catch(() => {
+        // TODO: toastr notification
+      });
+  };
+}
+
 /* Sync actions */
 export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);
 export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
-export const MODALS_STATUS = 'MODALS_STATUS';
-export const setModalsStatus = createAction(MODALS_STATUS);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
-export const SETTINGS = 'API_SESSION';
+export const SETTINGS = 'SETTINGS';
 export const updateSettings = createAction(SETTINGS);
-
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';

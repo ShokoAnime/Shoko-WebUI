@@ -1,0 +1,24 @@
+.treeview {
+  min-height: 400px;
+  max-height: 600px;
+  overflow: auto;
+}
+
+.treeview .list-group-item {
+  cursor: pointer;
+  margin-left: 16px;
+}
+
+.treeview .list-group-item.root {
+  cursor: pointer;
+  margin-left: 0;
+}
+
+.treeview .list-group-item.selected > span {
+  color: #49a2df;
+}
+
+.treeview :global(.fa) {
+  margin-left: 10px;
+  margin-right: 5px;
+}

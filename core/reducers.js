@@ -16,15 +16,16 @@ import {
   WEBUI_VERSION_UPDATE,
   API_SESSION,
   JMM_VERSION,
-  MODALS_STATUS,
   IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
   SETTINGS,
 } from './actions';
+import modals from './reducers/modals';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
-function createApiReducer(type, dataPropName = 'items', dataPropValue = {}, valueFn = undefined) {
+export function createApiReducer(type, dataPropName = 'items', dataPropValue = {},
+                                 valueFn = undefined) {
   let valueFunc = null;
   if (valueFn === undefined) {
     valueFunc = (value) => value;
@@ -86,15 +87,12 @@ const sidebarToggle = handleAction(SIDEBAR_TOGGLE,
 const autoUpdate = handleAction(SET_AUTOUPDATE,
   (state, action) => (action.error ? state : action.payload)
 , false);
-const modalsStatus = handleAction(MODALS_STATUS,
-  (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
-  , { importFolders: false });
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
   , {});
 const settings = handleAction(SETTINGS,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
-  , { apikey: '' });
+  , {});
 
 const rootReducer = combineReducers({
   apiSession,
@@ -109,10 +107,10 @@ const rootReducer = combineReducers({
   updateAvailable,
   webuiVersionUpdate,
   jmmVersion,
-  modalsStatus,
   importFolderSeries,
   selectedImportFolderSeries,
   settings,
+  modals,
 });
 
 export default rootReducer;
