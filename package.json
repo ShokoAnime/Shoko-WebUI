@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.1.10-dev",
+  "version": "0.1.11",
   "private": true,
   "engines": {
     "node": ">=6",
@@ -25,6 +25,7 @@
     "isomorphic-fetch": "^1.0.0",
     "lodash": "^4.15.0",
     "moment": "^2.14.1",
+    "open-sans-fontface": "^1.4.0",
     "path-to-regexp": "^1.5.3",
     "pixrem": "^3.0.1",
     "pleeease-filters": "^3.0.0",

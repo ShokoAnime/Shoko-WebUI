@@ -4,6 +4,8 @@ import { forEach } from 'lodash';
 import store from './store';
 import history from './history';
 
+const VERSION = __VERSION__; // eslint-disable-line no-undef
+
 export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
@@ -110,8 +112,8 @@ export const seriesCountAsync = createAsyncAction(SERIES_COUNT, 'seriesCount', '
 export const FILES_COUNT = 'FILES_COUNT';
 export const filesCountAsync = createAsyncAction(FILES_COUNT, 'fileCount', '/file/count');
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
-export const updateAvailableAsync =
-  createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable', '/webui/latest/stable');
+export const updateAvailableAsync = createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable',
+    `/webui/latest/${VERSION.indexOf('dev') === -1 ? 'stable' : 'unstable'}`);
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
   'webuiVersionUpdate', '/webui/update/stable', (response) => {
