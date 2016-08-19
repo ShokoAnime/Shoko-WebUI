@@ -24,7 +24,8 @@ import modals from './reducers/modals';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
-function createApiReducer(type, dataPropName = 'items', dataPropValue = {}, valueFn = undefined) {
+export function createApiReducer(type, dataPropName = 'items', dataPropValue = {},
+                                 valueFn = undefined) {
   let valueFunc = null;
   if (valueFn === undefined) {
     valueFunc = (value) => value;

@@ -53,6 +53,38 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
   };
 }
 
+export function createAsyncPostAction(type, key, apiAction, responseCallback) {
+  return (apiParams) => {
+    const state = store.getState();
+    const apiKey = state.apiSession.apikey;
+
+    store.dispatch(createAction(type, payload => payload, () => ({ status: STATUS_REQUEST }))());
+    // eslint-disable-next-line no-undef
+    return fetch(`/api${apiAction}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey: apiKey,
+      },
+      body: JSON.stringify(apiParams),
+      method: 'POST',
+    })
+      .then((response) => {
+        if (typeof responseCallback === 'function') {
+          return responseCallback(response);
+        }
+        return response.json();
+      })
+      .then(json => store.dispatch(createAction(type, payload => payload, () => ({
+        status: STATUS_RECEIVE,
+        receivedAt: Date.now(),
+      }))(json)))
+      .catch(() => {
+        // TODO: toastr notification
+      });
+  };
+}
+
 /* Sync actions */
 export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);

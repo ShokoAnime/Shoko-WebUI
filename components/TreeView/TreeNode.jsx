@@ -74,7 +74,7 @@ class TreeNode extends React.Component {
   }
 
   render() {
-    const { text, level, onSelect, selectedNode } = this.props;
+    const { text, level, selectedNode } = this.props;
     const { expanded, nodes } = this.state;
     const selected = this === selectedNode;
 
@@ -97,7 +97,7 @@ class TreeNode extends React.Component {
           onClick={this.toggleExpanded}
         />
         <span>{text}</span>
-        {children}
+        <ul>{children}</ul>
       </li>
     );
   }
