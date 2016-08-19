@@ -16,6 +16,8 @@ class ImportFolders extends React.Component {
     lastUpdated: PropTypes.number,
     items: PropTypes.object,
     description: PropTypes.string,
+    showBrowse: PropTypes.bool,
+    browseFolder: PropTypes.string,
   };
 
   constructor(props) {
@@ -24,11 +26,12 @@ class ImportFolders extends React.Component {
   }
 
   handleAction() {
-    store.dispatch(setModalsStatus({ importFolders: true }));
+    store.dispatch(setModalsStatus({ importFolders: { status: true } }));
   }
 
   render() {
-    const { items, isFetching, lastUpdated, className, description, show, showBrowse } = this.props;
+    const { items, isFetching, lastUpdated, className, description, show, showBrowse,
+      browseFolder } = this.props;
     let folders = [];
     let i = 0;
     forEach(items, (item) => {
@@ -52,7 +55,7 @@ class ImportFolders extends React.Component {
             </tbody>
           </table>
         </FixedPanel>
-        <ImportModal show={show} />
+        <ImportModal show={show} folder={browseFolder} />
         <BrowseFolderModal show={showBrowse} />
       </div>
     );
@@ -74,8 +77,9 @@ function mapStateToProps(state) {
     items,
     isFetching,
     lastUpdated,
-    show: modalsStatus.importFolders,
-    showBrowse: modalsStatus.browseFolders,
+    show: modalsStatus.importFolders.status,
+    showBrowse: modalsStatus.browseFolders.status,
+    browseFolder: modalsStatus.browseFolders.folder || '',
   };
 }
 

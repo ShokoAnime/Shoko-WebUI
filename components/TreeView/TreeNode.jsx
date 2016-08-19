@@ -1,9 +1,11 @@
 import 'isomorphic-fetch';
 import React, { PropTypes } from 'react';
+import { forEach } from 'lodash';
 import cx from 'classnames';
+import s from './TreeView.css';
 import store from '../../core/store';
 
-function fetchApiFolder (path = '') {
+function fetchApiFolder(path = '') {
   const state = store.getState();
   const headers = {
     Accept: 'application/json',
@@ -18,8 +20,9 @@ function fetchApiFolder (path = '') {
 
   // eslint-disable-next-line no-undef
   return fetch('/api/os/folder', {
+    method: 'POST',
     headers,
-    body: JSON.stringify({ folder: path }),
+    body: JSON.stringify({ full_path: path }),
   });
 }
 
@@ -28,6 +31,8 @@ class TreeNode extends React.Component {
     basePath: PropTypes.string,
     text: PropTypes.string,
     level: PropTypes.number,
+    onSelect: PropTypes.func.isRequired,
+    selectedNode: PropTypes.object,
   };
 
   constructor(props) {
@@ -44,35 +49,54 @@ class TreeNode extends React.Component {
 
   toggleExpanded(event) {
     const { expanded, loaded } = this.state;
+    const { basePath } = this.props;
 
     if (!loaded) {
-      fetchApiFolder()
+      fetchApiFolder(basePath)
         .then((response) => response.json())
-        .then((json) => this.setState({ loaded: true, expanded: !expanded, nodes: json }));
+        .then((json) => {
+          const nodes = [];
+          forEach(json.subdir, (item) => {
+            nodes.push({ path: item.full_path, text: item.dir });
+          });
+          return nodes;
+        })
+        .then((nodes) => this.setState({ loaded: true, expanded: !expanded, nodes }));
     } else {
       this.setState({ expanded: !expanded });
     }
     event.stopPropagation();
   }
 
-  toggleSelected(id, event) {
-    this.setState({ selected: !this.state.selected });
+  toggleSelected(event) {
+    this.props.onSelect(this);
     event.stopPropagation();
   }
 
   render() {
-    const { text } = this.props;
-    const { expanded } = this.state;
-    const indents = '';
+    const { text, level, onSelect, selectedNode } = this.props;
+    const { expanded, nodes } = this.state;
+    const selected = this === selectedNode;
+
     const children = [];
+    if (expanded) {
+      forEach(nodes, (node) => {
+        children.push(
+          <TreeNode {...this.props} basePath={node.path} text={node.text} level={level + 1} />
+        );
+      });
+    }
     return (
-      <li className="list-group-item" onClick={this.toggleSelected}>
-        {indents}
+      <li
+        className={cx(s['list-group-item'],
+          level === 1 ? s.root : null, selected ? s.selected : null)}
+        onClick={this.toggleSelected}
+      >
         <i
           className={cx('fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
           onClick={this.toggleExpanded}
         />
-        {text}
+        <span>{text}</span>
         {children}
       </li>
     );

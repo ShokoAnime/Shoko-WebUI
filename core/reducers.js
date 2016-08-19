@@ -88,13 +88,13 @@ const autoUpdate = handleAction(SET_AUTOUPDATE,
 , false);
 const modalsStatus = handleAction(MODALS_STATUS,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
-  , { importFolders: false });
+  , { importFolders: { status: false }, browseFolders: { status: false } });
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
   , {});
 const settings = handleAction(SETTINGS,
   (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
-  , { apikey: '' });
+  , {});
 
 const rootReducer = combineReducers({
   apiSession,

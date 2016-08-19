@@ -17,21 +17,34 @@ class BrowseFolderModal extends React.Component {
 
   constructor(props) {
     super(props);
+    this.state = { folder: '' };
     this.handleClose = this.handleClose.bind(this);
+    this.handleSelectionChange = this.handleSelectionChange.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
   }
 
   handleClose() {
-    store.dispatch(setModalsStatus({ browseFolders: false }));
+    store.dispatch(setModalsStatus({ browseFolders: { status: false } }));
+  }
+
+  handleSelectionChange(folder) {
+    this.setState({ folder });
+  }
+
+  handleSelect() {
+    store.dispatch(
+      setModalsStatus({ browseFolders: { status: false, folder: this.state.folder } })
+    );
   }
 
   render() {
     const { show } = this.props;
     return (
-      <Modal show={show} className={s.modal}>
-        <Panel header="Manage import folders">
-          <TreeView />
+      <Modal show={show} className={s.modal} backdrop={false} >
+        <Panel header="Select import folder">
+          <TreeView onSelect={this.handleSelectionChange} />
           <ButtonToolbar className="pull-right">
-            <Button bsStyle="primary">Select</Button>
+            <Button onClick={this.handleSelect} bsStyle="primary">Select</Button>
             <Button onClick={this.handleClose}>Cancel</Button>
           </ButtonToolbar>
         </Panel>

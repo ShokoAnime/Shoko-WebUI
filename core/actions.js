@@ -62,9 +62,8 @@ export const MODALS_STATUS = 'MODALS_STATUS';
 export const setModalsStatus = createAction(MODALS_STATUS);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
-export const SETTINGS = 'API_SESSION';
+export const SETTINGS = 'SETTINGS';
 export const updateSettings = createAction(SETTINGS);
-
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';

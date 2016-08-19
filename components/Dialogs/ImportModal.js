@@ -21,6 +21,7 @@ import store from '../../core/store';
 class ImportModal extends React.Component {
   static propTypes = {
     show: PropTypes.bool,
+    folder: PropTypes.string,
   };
 
   constructor(props) {
@@ -30,15 +31,25 @@ class ImportModal extends React.Component {
   }
 
   handleSelect() {
-    store.dispatch(setModalsStatus({ browseFolders: true }));
+    store.dispatch(setModalsStatus({ browseFolders: { status: true } }));
   }
 
   handleClose() {
-    store.dispatch(setModalsStatus({ importFolders: false }));
+    store.dispatch(setModalsStatus({ importFolders: { status: false } }));
+  }
+
+  handleSubmit() {
+    const data = {
+      ImportFolderType: '1',
+      ImportFolderName: '',
+      ImportFolderLocation: this.formFolder.value,
+    };
+
+
   }
 
   render() {
-    const { show } = this.props;
+    const { show, folder } = this.props;
     return (
       <Modal show={show} className={s.modal}>
         <Panel header="Manage import folders">
@@ -53,7 +64,13 @@ class ImportModal extends React.Component {
                     </Col>
                     <Col sm={10}>
                       <InputGroup>
-                        <FormControl type="text" placeholder="Enter folder location" />
+                        <FormControl
+                          type="text"
+                          value={folder}
+                          placeholder="Enter folder location"
+                          readOnly
+                          ref={this.formFolder}
+                        />
                         <InputGroup.Button>
                           <Button onClick={this.handleSelect}>Browse</Button>
                         </InputGroup.Button>
@@ -62,18 +79,18 @@ class ImportModal extends React.Component {
                   </FormGroup>
                   <FormGroup>
                     <Col smOffset={2} sm={10}>
-                      <Checkbox>Drop source</Checkbox>
+                      <Checkbox ref={this.formDropSource}>Drop source</Checkbox>
                     </Col>
                     <Col smOffset={2} sm={10}>
-                      <Checkbox>Drop destination</Checkbox>
+                      <Checkbox ref={this.formDropDestination}>Drop destination</Checkbox>
                     </Col>
                     <Col smOffset={2} sm={10}>
-                      <Checkbox>Watch folder</Checkbox>
+                      <Checkbox ref={this.formWatch}>Watch folder</Checkbox>
                     </Col>
                   </FormGroup>
                 </Form>
                 <ButtonToolbar className="pull-right">
-                  <Button bsStyle="primary">Add</Button>
+                  <Button onClick={this.handleSubmit} bsStyle="primary">Add</Button>
                   <Button onClick={this.handleClose}>Cancel</Button>
                 </ButtonToolbar>
               </Panel>
