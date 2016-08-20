@@ -41,8 +41,8 @@ class UpdateButton extends React.Component {
       </Alert>);
     const errorAlert = (
       <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
-	  	<h4>Oops! Something went wrong!</h4>
-        <p>Submit an <a href="https://github.com/japanesemediamanager/jmmserver-webui/issues" target="new">Issue on GitHub</a> so we can fix it</p>
+        <h4>Oops! Something went wrong!</h4>
+     	<p>Submit an <a href="https://github.com/japanesemediamanager/jmmserver-webui/issues" target="new">Issue on GitHub</a> so we can fix it</p>
         <p>{error.message}</p>
       </Alert>);
     const alert = error instanceof Error ? errorAlert : successAlert;
