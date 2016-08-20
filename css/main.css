@@ -275,6 +275,7 @@ a.logo span {
 
 .notification .btn-sm .fa {
     font-size: 14px;
+    margin-right: 10px;
 }
 
 .header .notification.enabled > a {
@@ -338,12 +339,8 @@ a.logo span {
     background: #e7505a;
 }
 
-.badge.bg-important {
-    background: #217ebd;
-}
-
 .badge.bg-info {
-    background: #41cac0;
+    background: #217ebd;
 }
 
 .badge.bg-inverse {
