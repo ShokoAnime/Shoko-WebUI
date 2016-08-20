@@ -41,7 +41,8 @@ class UpdateButton extends React.Component {
       </Alert>);
     const errorAlert = (
       <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
-        <h4>There was a problem!</h4>
+        <h4>Oops! Something went wrong!</h4>
+        <p>Submit an <a href="https://github.com/japanesemediamanager/jmmserver-webui/issues" target="new">Issue on GitHub</a> so we can fix it</p>
         <p>{error.message}</p>
       </Alert>);
     const alert = error instanceof Error ? errorAlert : successAlert;
@@ -54,7 +55,7 @@ class UpdateButton extends React.Component {
           className={cx('btn btn-info btn-sm', enabled ? '' : 'hidden')}
         >
           <i className={cx('fa fa-refresh', isFetching ? 'fa-spin' : '')} />
-          {isFetching ? 'Downloading...' : 'Update available!'}
+          {isFetching ? 'Downloading...' : 'Update Available!'}
         </button>
         <Modal show={status} backdrop={false}>{alert}</Modal>
       </li>

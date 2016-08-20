@@ -174,14 +174,15 @@ ul {
 }
 
 .btn-info {
-    background-color: #58c9f3;
-    border-color: #58c9f3;
+    background-color: #217ebd;
+    border-color: #217ebd;
     color: #FFFFFF;
+	font-weight: 700;
 }
 
 .btn-info:hover, .btn-info:focus, .btn-info:active, .btn-info.active, .open .dropdown-toggle.btn-info {
-    background-color: #53bee6;
-    border-color: #53BEE6;
+    background-color: #1A6497;
+    border-color: #1A6497;
     color: #FFFFFF;
 }
 
