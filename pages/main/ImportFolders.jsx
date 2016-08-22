@@ -3,8 +3,8 @@ import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
-import ImportModal from '../../components/Dialogs/ImportModal';
-import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
+import ImportModal from '../../components/Dialogs/ImportFolder/ImportModal';
+
 import { setStatus } from '../../core/actions/modals/ImportFolder';
 import store from '../../core/store';
 
@@ -16,22 +16,16 @@ class ImportFolders extends React.Component {
     lastUpdated: PropTypes.number,
     items: PropTypes.object,
     description: PropTypes.string,
-    showBrowse: PropTypes.bool,
-    browseFolder: PropTypes.string,
+    importFolders: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleAction = this.handleAction.bind(this);
-  }
-
-  handleAction() {
+  static handleAction() {
     store.dispatch(setStatus(true));
   }
 
   render() {
-    const { items, isFetching, lastUpdated, className, description, importModal, showBrowse,
-      browseFolder } = this.props;
+    const { items, isFetching, lastUpdated, className, description, importModal,
+      importFolders } = this.props;
     let folders = [];
     let i = 0;
     forEach(items, (item) => {
@@ -47,7 +41,7 @@ class ImportFolders extends React.Component {
           lastUpdated={lastUpdated}
           isFetching={isFetching}
           actionName="Manage"
-          onAction={this.handleAction}
+          onAction={ImportFolders.handleAction}
         >
           <table className="table">
             <tbody>
@@ -55,8 +49,7 @@ class ImportFolders extends React.Component {
             </tbody>
           </table>
         </FixedPanel>
-        <ImportModal {...importModal} folder={browseFolder} />
-        <BrowseFolderModal show={showBrowse} />
+        <ImportModal {...importModal} importFolders={importFolders} />
       </div>
     );
   }
@@ -78,8 +71,6 @@ function mapStateToProps(state) {
     isFetching,
     lastUpdated,
     importModal: modals.importFolder,
-    showBrowse: modals.browseFolder.status,
-    browseFolder: modals.browseFolder.folder || '',
   };
 }
 
