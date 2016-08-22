@@ -28,3 +28,7 @@
 .modal :global(.panel) {
   margin-bottom: 0;
 }
+
+.import-modal :global(.modal-content) {
+  min-height: 370px;
+}

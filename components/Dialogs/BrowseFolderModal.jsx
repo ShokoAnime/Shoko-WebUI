@@ -6,13 +6,14 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap';
 import s from './ImportModal.css';
-import { setStatus, setFolder } from '../../core/actions/modals/BrowseFolder';
+import { setStatus } from '../../core/actions/modals/BrowseFolder';
 import store from '../../core/store';
 import TreeView from '../TreeView/TreeView';
 
 class BrowseFolderModal extends React.Component {
   static propTypes = {
     show: PropTypes.bool,
+    onSelect: PropTypes.func,
   };
 
   constructor(props) {
@@ -32,8 +33,12 @@ class BrowseFolderModal extends React.Component {
   }
 
   handleSelect() {
-    store.dispatch(setFolder(this.state.folder));
+    const { onSelect } = this.props;
     store.dispatch(setStatus(false));
+
+    if (typeof onSelect === 'function') {
+      onSelect(this.state.folder);
+    }
   }
 
   render() {

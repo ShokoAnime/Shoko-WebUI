@@ -3,6 +3,7 @@ import { Panel } from 'react-bootstrap';
 
 class StatusPanel extends React.Component {
   static propTypes = {
+    isFetching: PropTypes.bool,
     lastUpdated: PropTypes.number,
     StatusCode: PropTypes.number,
     Message: PropTypes.string,
@@ -10,14 +11,16 @@ class StatusPanel extends React.Component {
   };
 
   render() {
-    const { lastUpdated, items } = this.props;
-    const { Details, StatusCode, Message } = items;
+    const { lastUpdated, isFetching, items } = this.props;
+    const { status, message } = items;
     if (!lastUpdated) { return null; }
+    const panelMessage = isFetching ?
+      [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : message;
     return (
       <Panel
-        header={StatusCode === 200 ? 'Success' : 'Error'}
-        bsStyle={StatusCode === 200 ? 'info' : 'danger'}
-      >{Message}{Details}</Panel>
+        header={status ? 'Success' : 'Error'}
+        bsStyle={status ? 'info' : 'danger'}
+      >{panelMessage}</Panel>
     );
   }
 }
