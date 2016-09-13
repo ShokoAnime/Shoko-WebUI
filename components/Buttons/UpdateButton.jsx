@@ -35,7 +35,7 @@ class UpdateButton extends React.Component {
     const { status, error } = this.props.updateStatus.items;
 
     const successAlert = (
-      <Alert bsStyle="success" onDismiss={this.handleAlertDismiss}>
+      <Alert bsStyle="success" onDismiss={this.reloadPage}>
         <h4>Update Successful!</h4>
         <p>Close this notification to reload.</p>
       </Alert>);
