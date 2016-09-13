@@ -115,7 +115,7 @@ tasks.set('start', () => {
     });
 
     const proxyMiddleware = proxy(['/api'], {
-      target: 'http://192.168.0.93:8111',
+      target: 'http://127.0.0.1:8111',
       ws: true,
       logLevel: 'error',
       changeOrigin: true,   // for vhosted sites, changes host header to match to target's host
