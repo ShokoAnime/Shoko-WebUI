@@ -3,6 +3,7 @@
 }
 
 a {
+  color: #49a2df;
   font-weight: 600;
 }
 
@@ -14,7 +15,8 @@ a:focus {
 }
 
 body {
-  background: #ff93ab -moz-linear-gradient(to top, #0e5753, #15827c) no-repeat !important; /* Mozilla,Firefox/Gecko */
+  background: #ff93ab -moz-linear-gradient(to top, #0e5753, #15827c) no-repeat; /* Mozilla,Firefox/Gecko */
+  background-color: #15827c;
   font-family: 'Open Sans', sans-serif;
 }
 
