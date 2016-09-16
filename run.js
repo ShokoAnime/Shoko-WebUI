@@ -43,7 +43,7 @@ tasks.set('clean', () => del(['public/dist/*', '!public/dist/.git'], { dot: true
 // Copy ./index.html into the /public folder
 // -----------------------------------------------------------------------------
 tasks.set('html', () => {
-  const webpackConfig = require('./webpack.config');
+  const webpackConfig = require(webpackConfigPath);
 
   const assets = JSON.parse(fs.readFileSync('./public/dist/assets.json', 'utf8'));
   const template = fs.readFileSync('./public/index.ejs', 'utf8');
@@ -56,7 +56,7 @@ tasks.set('html', () => {
 // Bundle JavaScript, CSS and image files with Webpack
 // -----------------------------------------------------------------------------
 tasks.set('bundle', () => {
-  const webpackConfig = require('./webpack.config');
+  const webpackConfig = require(webpackConfigPath);
 
   console.log(`Node env ${global.NODE_ENV}`);
 
@@ -114,7 +114,7 @@ tasks.set('start', () => {
   global.HMR = !process.argv.includes('--no-hmr'); // Hot Module Replacement (HMR)
   return run('clean').then(() => new Promise(resolve => {
     const bs = require('browser-sync').create();
-    const webpackConfig = require('./webpack.config');
+    const webpackConfig = require(webpackConfigPath);
     const proxy = require('http-proxy-middleware');
 
     const compiler = webpack(webpackConfig);
