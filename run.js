@@ -3,12 +3,7 @@ const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
 const webpack = require('webpack');
-
-const config = {
-  title: 'JMM Server WEB UI',
-  url: 'http://localhost:3000',
-  apiProxyIP: false, // Set to proxy ip
-};
+const config = require('./run.config');
 
 const tasks = new Map();
 

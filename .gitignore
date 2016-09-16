@@ -10,3 +10,5 @@ public/sitemap.xml
 # Node.js and NPM
 node_modules/
 npm-debug.log
+webpack.config.js
+run.config.js
