@@ -31,14 +31,7 @@ const config = {
     sourcePrefix: '  ',
   },
   debug: isDebug,
-  devServer: {
-    /* Send API requests on localhost to API server get around CORS */
-    proxy: {
-      '/api*': {
-        target: 'http://127.0.0.1',
-      },
-    },
-  },
+  devServer: {},
   devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['', '.js', '.jsx'],
