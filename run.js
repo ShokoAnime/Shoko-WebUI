@@ -7,6 +7,7 @@ const webpack = require('webpack');
 const config = {
   title: 'JMM Server WEB UI',
   url: 'http://localhost:3000',
+  apiProxyIP: false, // Set to proxy ip
 };
 
 const tasks = new Map();
@@ -20,7 +21,8 @@ function run(task) {
 }
 
 function getEnvironment() {
-  if ((process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production')) return process.env.NODE_ENV;
+  const nodeenv = process.env.NODE_ENV;
+  if ((nodeenv === 'development' || nodeenv === 'production')) return nodeenv;
   return global.DEBUG ? '"development"' : '"production"';
 }
 
@@ -47,6 +49,7 @@ tasks.set('html', () => {
 // -----------------------------------------------------------------------------
 tasks.set('bundle', () => {
   const webpackConfig = require('./webpack.config');
+
   console.log(`Node env ${global.NODE_ENV}`);
 
   return new Promise((resolve, reject) => {
@@ -114,12 +117,20 @@ tasks.set('start', () => {
       stats: webpackConfig.stats,
     });
 
-    const proxyMiddleware = proxy(['/api'], {
-      target: 'http://127.0.0.1:8111',
-      ws: true,
-      logLevel: 'error',
-      changeOrigin: true,   // for vhosted sites, changes host header to match to target's host
-    });
+    const middleware = [];
+    if (config.apiProxyIP) {
+      const proxyMiddleware = proxy(['/api'], {
+        target: `http://${config.apiProxyIP}:8111`,
+        ws: true,
+        logLevel: 'error',
+        changeOrigin: true,   // for vhosted sites, changes host header to match to target's host
+      });
+      middleware.push(proxyMiddleware);
+    }
+    middleware.push(webpackDevMiddleware);
+    middleware.push(require('webpack-hot-middleware')(compiler));
+    middleware.push(require('connect-history-api-fallback')());
+
     compiler.plugin('done', stats => {
       // Generate index.html page
       const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
@@ -136,12 +147,7 @@ tasks.set('start', () => {
           ui: { port: Number(process.env.PORT || 3000) + 1 },
           server: {
             baseDir: 'public',
-            middleware: [
-              proxyMiddleware,
-              webpackDevMiddleware,
-              require('webpack-hot-middleware')(compiler),
-              require('connect-history-api-fallback')(),
-            ],
+            middleware,
           },
         }, resolve);
       }
