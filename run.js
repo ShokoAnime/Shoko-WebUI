@@ -3,7 +3,14 @@ const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
 const webpack = require('webpack');
-const config = require('./run.config');
+
+let configPath = './run.config';
+try {
+  fs.accessSync(`${configPath}.js`, fs.F_OK);
+} catch (ex) {
+  configPath += '.default';
+}
+const config = require(configPath);
 
 const tasks = new Map();
 
