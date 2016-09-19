@@ -14,7 +14,7 @@ class News extends React.Component {
 
   render() {
     const { items, isFetching, lastUpdated, className } = this.props;
-    let news = [];
+    const news = [];
     let i = 0;
     forEach(items, (item) => {
       i++;

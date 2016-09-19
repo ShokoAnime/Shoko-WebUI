@@ -18,9 +18,9 @@ import {
   JMM_VERSION,
   IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
-  SETTINGS,
 } from './actions';
 import modals from './reducers/modals';
+import settings from './reducers/settings';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
@@ -89,9 +89,6 @@ const autoUpdate = handleAction(SET_AUTOUPDATE,
 , false);
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
-  , {});
-const settings = handleAction(SETTINGS,
-  (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
   , {});
 
 const rootReducer = combineReducers({

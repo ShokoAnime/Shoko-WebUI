@@ -54,7 +54,7 @@ class EditTab extends React.Component {
     let buttons;
 
     if (!form.ImportFolderID) {
-      let folders = [];
+      const folders = [];
       let i = 0;
       forEach(items, (item) => {
         i++;

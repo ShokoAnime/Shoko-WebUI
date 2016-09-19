@@ -26,7 +26,7 @@ class ImportFolders extends React.Component {
   render() {
     const { items, isFetching, lastUpdated, className, description, importModal,
       importFolders } = this.props;
-    let folders = [];
+    const folders = [];
     let i = 0;
     forEach(items, (item) => {
       i++;

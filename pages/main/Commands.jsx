@@ -16,7 +16,7 @@ class Commands extends React.Component {
 
   render() {
     const { items, isFetching, lastUpdated, className } = this.props;
-    let commands = [];
+    const commands = [];
     forEach(items, (item, key) => {
       commands.push(
         <CommandsItem

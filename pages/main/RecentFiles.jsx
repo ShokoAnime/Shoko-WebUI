@@ -19,7 +19,7 @@ class RecentFiles extends React.Component {
 
   render() {
     const { items, isFetching, lastUpdated } = this.props;
-    let files = [];
+    const files = [];
     let i = 0;
     forEach(items, (item) => {
       i++;
