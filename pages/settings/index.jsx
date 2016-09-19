@@ -2,7 +2,7 @@ import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
-import { updateSettings } from '../../core/actions';
+import { getLog } from '../../core/actions/settings/Log';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
 import Overview from '../main/Overview';
@@ -21,16 +21,7 @@ class SettingsPage extends React.Component {
       });
     }
 
-    const settings = {
-      theme: 'light',
-      notifications: false,
-      logRotation: true,
-      compressLogs: 'weekly',
-      deleteLogs: false,
-      deleteLogsInterval: 'monthly',
-    };
-
-    store.dispatch(updateSettings(settings));
+    getLog();
   }
 
   render() {

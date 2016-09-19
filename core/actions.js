@@ -94,8 +94,6 @@ export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
-export const SETTINGS = 'SETTINGS';
-export const updateSettings = createAction(SETTINGS);
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
@@ -146,7 +144,7 @@ export const jmmVersionAsync =
 
 export const IMPORT_FOLDER_SERIES = 'IMPORT_FOLDER_SERIES';
 export const importFolderSeriesAsync = createAsyncAction(IMPORT_FOLDER_SERIES,
-  'importFolderSeries', '/serie/byfolder/');
+  'importFolderSeries', '/serie/byfolder');
 
 /* Timer */
 function autoUpdateTick() {
