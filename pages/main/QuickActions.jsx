@@ -12,9 +12,9 @@ class QuickActions extends React.Component {
     const { lastUpdated } = this.props;
     const shouldComeFromStore = ['Run Import', 'Update Images', 'Sync Votes',
       'Remove Missing Files', 'Update All Stats', 'Update All TvDB Info'];
-    let actions = [];
+    const actions = [];
 
-    for (let [index, item] of shouldComeFromStore.entries()) {
+    for (const [index, item] of shouldComeFromStore.entries()) {
       actions.push(<QuickActionsItem key={index} index={index + 1} name={item} />);
     }
 

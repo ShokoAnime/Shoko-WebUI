@@ -10,7 +10,7 @@ class TimeUpdated extends React.Component {
 
   render() {
     const { timestamp, className, isFetching } = this.props;
-    let dateString = (timestamp) ? moment(timestamp, 'x').format('YYYY-MM-DD HH:mm:ss') : '--';
+    const dateString = (timestamp) ? moment(timestamp, 'x').format('YYYY-MM-DD HH:mm:ss') : '--';
     return (
       <span className={className}>
         {isFetching ? <i className="fa fa-refresh fa-spin" /> : null}

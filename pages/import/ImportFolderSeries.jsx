@@ -41,8 +41,8 @@ class ImportFolderSeries extends React.Component {
 
   render() {
     const { items, isFetching, lastUpdated, importFolders, selectedFolder } = this.props;
-    let series = [];
-    let folders = [];
+    const series = [];
+    const folders = [];
     let i = 0;
     forEach(items, (item) => {
       i++;
