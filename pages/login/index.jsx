@@ -1,6 +1,7 @@
 import 'isomorphic-fetch';
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Alert } from 'react-bootstrap';
 import cx from 'classnames';
 import s from './styles.css';
 import store from '../../core/store';
@@ -20,6 +21,9 @@ class LoginPage extends React.Component {
     super();
     this.handleSignIn = this.handleSignIn.bind(this);
     this.handleKeyPress = this.handleKeyPress.bind(this);
+    this.state = {
+      errorMessage: null,
+    };
   }
 
   componentDidMount() {
@@ -38,6 +42,7 @@ class LoginPage extends React.Component {
 
   handleSignIn() {
     const user = this.user.value;
+    this.setState({ errorMessage: null });
     // eslint-disable-next-line no-undef
     fetch('/api/auth', {
       method: 'POST',
@@ -51,22 +56,34 @@ class LoginPage extends React.Component {
         'Content-Type': 'application/json',
       },
     })
-      .then((response) => response.json())
+      .then((response) => {
+        if (response.ok === false) {
+          let errorMessage = null;
+          if (response.status === 417) {
+            errorMessage = 'Invalid Username or Password';
+          } else {
+            errorMessage = `${response.status}: ${response.statusText}`;
+          }
+          this.setState({ errorMessage });
+          throw new Error(errorMessage);
+        }
+        return response.json();
+      })
       .then((json) => {
         if (json.apikey) {
           store.dispatch(apiSession({ apikey: json.apikey, username: user }));
           history.push({
             pathname: '/dashboard',
           });
+        } else {
+          this.setState({ errorMessage: 'Unknown response!' });
         }
-      })
-      .catch(() => {
-        // TODO: show error message (toastr?)
       });
   }
 
   render() {
     const { version, isFetching } = this.props;
+    const { errorMessage } = this.state;
     return (
       <div className={s.wrapper}>
         <div className={s['wrapper-inner']}>
@@ -81,6 +98,10 @@ class LoginPage extends React.Component {
                 <h2>Input your user information to login into JMM Server!</h2>
               </div>
               <div className={cx('col-md-3', s['right-panel'])}>
+                <Alert
+                  bsStyle="danger"
+                  className={cx({ hidden: errorMessage === null })}
+                >{errorMessage}</Alert>
                 <h2>Sign In</h2>
                 <div className="form-group">
                   <label className="sr-only" htmlFor="username">Username</label>
