@@ -37,10 +37,10 @@ class Sidebar extends React.Component {
               </Link>
             </li>
             <li className="sub-menu">
-              <a>
+              <Link className={cx({ active: location === '/logs' })} to="/logs">
                 <i className="fa fa-file-text" />
                 <span>Interactive Log</span>
-              </a>
+              </Link>
             </li>
           </ul>
           <div className={cx(s.bottom)}>

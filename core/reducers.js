@@ -21,6 +21,7 @@ import {
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
+import logs from './reducers/logs';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
@@ -108,6 +109,7 @@ const rootReducer = combineReducers({
   selectedImportFolderSeries,
   settings,
   modals,
+  logs,
 });
 
 export default rootReducer;
