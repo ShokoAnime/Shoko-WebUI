@@ -1,3 +1,4 @@
+/* eslint-disable */
 const toRegExp = require('path-to-regexp');
 
 function escape(text) {

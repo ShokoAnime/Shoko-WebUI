@@ -69,7 +69,7 @@
     "babel-runtime": "^6.11.6",
     "css-loader": "^0.23.1",
     "eslint": "^3.1.1",
-    "eslint-config-airbnb": "^10.0.0",
+    "eslint-config-airbnb": "^12.0.0",
     "eslint-plugin-import": "^1.12.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
     "eslint-plugin-react": "^6.0.0",
@@ -101,7 +101,10 @@
     "extends": "airbnb",
     "rules": {
       "react/prefer-stateless-function": "off",
-      "react/jsx-filename-extension": "off"
+      "react/jsx-filename-extension": "off",
+      "jsx-a11y/no-static-element-interactions": "off",
+      "react/forbid-prop-types": "off",
+      "no-console": ["error", { "allow": ["warn", "error"] }]
     }
   },
   "stylelint": {

@@ -9,12 +9,7 @@ class RecentFiles extends React.Component {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
     lastUpdated: PropTypes.number,
-    items: PropTypes.arrayOf(
-      PropTypes.shape({
-        path: PropTypes.string,
-        success: PropTypes.bool,
-      })
-    ),
+    items: PropTypes.array,
   };
 
   render() {
@@ -22,8 +17,8 @@ class RecentFiles extends React.Component {
     const files = [];
     let i = 0;
     forEach(items, (item) => {
-      i++;
-      files.push(<RecentFilesItem index={i} {...item} />);
+      i += 1;
+      files.push(<RecentFilesItem key={i} index={i} {...item} />);
     });
     return (
       <div className={this.props.className}>
@@ -35,7 +30,7 @@ class RecentFiles extends React.Component {
         >
           <table className="table">
             <tbody>
-            {files}
+              {files}
             </tbody>
           </table>
         </FixedPanel>

@@ -18,6 +18,7 @@ class ImportFoldersPage extends React.Component {
       history.push({
         pathname: '/',
       });
+      return;
     }
   }
 

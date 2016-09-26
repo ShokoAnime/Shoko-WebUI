@@ -17,7 +17,7 @@ class News extends React.Component {
     const news = [];
     let i = 0;
     forEach(items, (item) => {
-      i++;
+      i += 1;
       news.push(<NewsItem key={i} index={i} {...item} />);
     });
 
@@ -31,7 +31,7 @@ class News extends React.Component {
         >
           <table className="table news">
             <tbody>
-            {news}
+              {news}
             </tbody>
           </table>
         </FixedPanel>

@@ -19,6 +19,7 @@ class SettingsPage extends React.Component {
       history.push({
         pathname: '/',
       });
+      return;
     }
 
     getLog();

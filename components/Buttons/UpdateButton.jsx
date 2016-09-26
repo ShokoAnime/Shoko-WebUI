@@ -10,22 +10,15 @@ class UpdateButton extends React.Component {
     updateStatus: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleAlertDismiss = this.handleAlertDismiss.bind(this);
-    this.reloadPage = this.reloadPage.bind(this);
-  }
-
-  handleClick() {
+  static handleClick() {
     updateWebuiAsync();
   }
 
-  handleAlertDismiss() {
+  static handleAlertDismiss() {
     updateWebui({ status: false });
   }
 
-  reloadPage() {
+  static reloadPage() {
     history.go({ pathname: '/' });
   }
 
@@ -35,12 +28,12 @@ class UpdateButton extends React.Component {
     const { status, error } = this.props.updateStatus.items;
 
     const successAlert = (
-      <Alert bsStyle="success" onDismiss={this.reloadPage}>
+      <Alert bsStyle="success" onDismiss={UpdateButton.reloadPage}>
         <h4>Update Successful!</h4>
         <p>Close this notification to reload.</p>
       </Alert>);
     const errorAlert = (
-      <Alert bsStyle="danger" onDismiss={this.handleAlertDismiss}>
+      <Alert bsStyle="danger" onDismiss={UpdateButton.handleAlertDismiss}>
         <h4>Oops! Something went wrong!</h4>
         <p>Submit an <a href="https://github.com/japanesemediamanager/jmmserver-webui/issues" target="new">Issue on GitHub</a> so we can fix it</p>
         <p>{error.message}</p>
@@ -50,7 +43,7 @@ class UpdateButton extends React.Component {
     return (
       <li className="notification">
         <button
-          onClick={this.handleClick}
+          onClick={UpdateButton.handleClick}
           type="button"
           className={cx('btn btn-info btn-sm', enabled ? '' : 'hidden')}
         >

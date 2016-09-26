@@ -14,7 +14,7 @@ class ImportFolders extends React.Component {
     isFetching: PropTypes.bool,
     importModal: PropTypes.object,
     lastUpdated: PropTypes.number,
-    items: PropTypes.object,
+    items: PropTypes.array,
     description: PropTypes.string,
     importFolders: PropTypes.object,
   };
@@ -29,8 +29,8 @@ class ImportFolders extends React.Component {
     const folders = [];
     let i = 0;
     forEach(items, (item) => {
-      i++;
-      folders.push(<ImportFoldersItem index={i} {...item} />);
+      i += 1;
+      folders.push(<ImportFoldersItem key={i} index={i} {...item} />);
     });
 
     return (
@@ -45,7 +45,7 @@ class ImportFolders extends React.Component {
         >
           <table className="table">
             <tbody>
-            {folders}
+              {folders}
             </tbody>
           </table>
         </FixedPanel>

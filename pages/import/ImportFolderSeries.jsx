@@ -20,17 +20,11 @@ class ImportFolderSeries extends React.Component {
     selectedFolder: PropTypes.object,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.handleSelect = this.handleSelect.bind(this);
-  }
-
-  handleClick() {
+  static handleClick() {
     importFolderSeriesAsync(true, '/1');
   }
 
-  handleSelect(folderId) {
+  static handleSelect(folderId) {
     const { importFolders } = store.getState();
     const folder = find(importFolders.items, ['ImportFolderID', folderId]);
     store.dispatch(
@@ -45,7 +39,7 @@ class ImportFolderSeries extends React.Component {
     const folders = [];
     let i = 0;
     forEach(items, (item) => {
-      i++;
+      i += 1;
       series.push(<ImportFolderSeriesItem key={i} index={i} {...item} />);
     });
 
@@ -59,10 +53,10 @@ class ImportFolderSeries extends React.Component {
       <span>Series In Import Folder
         <DropdownButton
           bsStyle="link"
-          onSelect={this.handleSelect}
+          onSelect={ImportFolderSeries.handleSelect}
           title={selectedFolder.name || ''}
         >
-        {folders}
+          {folders}
         </DropdownButton>
       </span>,
     ];
@@ -75,11 +69,11 @@ class ImportFolderSeries extends React.Component {
           lastUpdated={lastUpdated}
           isFetching={isFetching}
           actionName="Sort"
-          onAction={this.handleClick}
+          onAction={ImportFolderSeries.handleClick}
         >
           <table className="table">
             <tbody>
-            {series}
+              {series}
             </tbody>
           </table>
         </FixedPanel>

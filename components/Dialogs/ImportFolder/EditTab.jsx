@@ -57,7 +57,7 @@ class EditTab extends React.Component {
       const folders = [];
       let i = 0;
       forEach(items, (item) => {
-        i++;
+        i += 1;
         folders.push(<FolderItem index={i} {...item} />);
       });
 

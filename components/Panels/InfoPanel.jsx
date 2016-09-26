@@ -16,7 +16,7 @@ class InfoPanel extends React.Component {
         <section className="panel">
           <header className={cx('panel-heading', s.header)}>
             <div className="pull-left">
-            {title}
+              {title}
             </div>
             <div className="pull-right">
               <b className="caret" />

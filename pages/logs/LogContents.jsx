@@ -5,7 +5,6 @@ import { Panel, Row, Col } from 'react-bootstrap';
 class LogContents extends React.Component {
   static propTypes = {
     lines: PropTypes.array,
-    delta: PropTypes.object,
   };
 
   render() {

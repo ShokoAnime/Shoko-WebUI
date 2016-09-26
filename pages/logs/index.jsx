@@ -20,6 +20,7 @@ class LogsPage extends React.Component {
       history.push({
         pathname: '/',
       });
+      return;
     }
 
     // Fetch current log

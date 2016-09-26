@@ -123,7 +123,7 @@ export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
     }
     return { status: true, error: new Error(`Response status: ${response.status}`) };
   });
-export const updateWebui = createAction(WEBUI_VERSION_UPDATE, (payload) => ({ items: payload }));
+export const updateWebui = createAction(WEBUI_VERSION_UPDATE, payload => ({ items: payload }));
 export const JMM_VERSION = 'JMM_VERSION';
 export const jmmVersionAsync =
   createAsyncAction(JMM_VERSION, 'jmmVersion', '/version', (response) => {
@@ -162,7 +162,7 @@ function autoUpdateTick() {
     let position = 0;
     try {
       position = state.logs.delta.items.position;
-    } catch (ex) { console.log('Unable to get log position'); }
+    } catch (ex) { console.error('Unable to get log position'); }
     getDeltaAsync(true, `${lines}/${position}`).then(() => {
       const newState = store.getState();
       store.dispatch(appendContents(newState.logs.delta.items.lines));

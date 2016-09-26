@@ -27,7 +27,7 @@ class QuickActions extends React.Component {
         >
           <table className="table">
             <tbody>
-            {actions}
+              {actions}
             </tbody>
           </table>
         </FixedPanel>

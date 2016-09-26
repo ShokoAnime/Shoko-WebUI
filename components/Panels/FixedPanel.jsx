@@ -5,7 +5,6 @@ import s from './styles.css';
 
 class FixedPanel extends React.Component {
   static propTypes = {
-    className: PropTypes.string,
     lastUpdated: PropTypes.number,
     title: PropTypes.string,
     description: PropTypes.string,
@@ -32,7 +31,7 @@ class FixedPanel extends React.Component {
       <section className="panel">
         <header className={cx('panel-heading', s.header)}>
           <div className="pull-left">
-          {title}<h6>{description}</h6>
+            {title}<h6>{description}</h6>
           </div>
           {actionName ? <div className="pull-right">
             <a className="btn btn-primary pull-right" onClick={this.handleAction}>{actionName}</a>

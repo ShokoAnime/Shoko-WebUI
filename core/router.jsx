@@ -30,7 +30,7 @@ function matchURI(route, path) {
 
   const params = Object.create(null);
 
-  for (let i = 1; i < match.length; i++) {
+  for (let i = 1; i < match.length; i += 1) {
     params[route.keys[i - 1].name] = match[i] !== undefined ? decodeParam(match[i]) : undefined;
   }
 
@@ -54,7 +54,7 @@ function resolve(routes, context) {
       const keys = Object.keys(route.data);
       return Promise.all([
         route.load(),
-        ...keys.map(key => { // eslint-disable-line no-loop-func
+        ...keys.map((key) => { // eslint-disable-line no-loop-func
           const query = route.data[key];
           const method = query.substring(0, query.indexOf(' ')); // GET
           const url = query.substr(query.indexOf(' ') + 1);      // /api/tasks/$id

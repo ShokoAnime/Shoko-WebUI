@@ -5,8 +5,6 @@ class StatusPanel extends React.Component {
   static propTypes = {
     isFetching: PropTypes.bool,
     lastUpdated: PropTypes.number,
-    StatusCode: PropTypes.number,
-    Message: PropTypes.string,
     items: PropTypes.object,
   };
 

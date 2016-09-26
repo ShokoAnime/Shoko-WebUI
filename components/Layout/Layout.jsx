@@ -9,7 +9,6 @@ import s from './Layout.css';
 class Layout extends React.Component {
 
   static propTypes = {
-    className: PropTypes.string,
     sidebarToggle: PropTypes.bool,
     version: PropTypes.string,
     children: PropTypes.any,
