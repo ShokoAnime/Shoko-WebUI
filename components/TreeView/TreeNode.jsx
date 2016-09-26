@@ -53,7 +53,7 @@ class TreeNode extends React.Component {
 
     if (!loaded) {
       fetchApiFolder(basePath)
-        .then((response) => response.json())
+        .then(response => response.json())
         .then((json) => {
           const nodes = [];
           forEach(json.subdir, (item) => {
@@ -61,7 +61,7 @@ class TreeNode extends React.Component {
           });
           return nodes;
         })
-        .then((nodes) => this.setState({ loaded: true, expanded: !expanded, nodes }));
+        .then(nodes => this.setState({ loaded: true, expanded: !expanded, nodes }));
     } else {
       this.setState({ expanded: !expanded });
     }

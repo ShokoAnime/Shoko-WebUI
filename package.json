@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.1.12-dev",
+  "version": "0.1.12-dev2",
   "private": true,
   "engines": {
     "node": ">=6",
@@ -25,6 +25,7 @@
     "isomorphic-fetch": "^1.0.0",
     "lodash": "^4.15.0",
     "moment": "^2.14.1",
+    "object-path": "^0.11.2",
     "open-sans-fontface": "^1.4.0",
     "path-to-regexp": "^1.5.3",
     "pixrem": "^3.0.1",
@@ -66,12 +67,12 @@
     "babel-preset-stage-1": "^6.5.0",
     "babel-register": "^6.11.6",
     "babel-runtime": "^6.11.6",
-    "css-loader": "^0.23.1",
-    "eslint": "^3.1.1",
-    "eslint-config-airbnb": "^10.0.0",
-    "eslint-plugin-import": "^1.12.0",
+    "css-loader": "^0.25.0",
+    "eslint": "^3.6.0",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-import": "^1.16.0",
     "eslint-plugin-jsx-a11y": "^2.0.1",
-    "eslint-plugin-react": "^6.0.0",
+    "eslint-plugin-react": "^6.3.0",
     "file-loader": "^0.9.0",
     "font-awesome-webpack": "0.0.4",
     "jsdom": "^9.4.2",
@@ -100,7 +101,10 @@
     "extends": "airbnb",
     "rules": {
       "react/prefer-stateless-function": "off",
-      "react/jsx-filename-extension": "off"
+      "react/jsx-filename-extension": "off",
+      "jsx-a11y/no-static-element-interactions": "off",
+      "react/forbid-prop-types": "off",
+      "no-console": ["error", { "allow": ["warn", "error"] }]
     }
   },
   "stylelint": {

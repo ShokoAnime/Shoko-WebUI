@@ -3,7 +3,6 @@ import prettysize from 'prettysize';
 
 class ImportFolderSeriesItem extends React.Component {
   static propTypes = {
-    AnimeSeriesID: PropTypes.number,
     index: PropTypes.number,
     AnimeSeriesName: PropTypes.string,
     FileCount: PropTypes.number,

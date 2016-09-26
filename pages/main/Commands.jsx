@@ -10,7 +10,6 @@ class Commands extends React.Component {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
     lastUpdated: PropTypes.number,
-    autoUpdate: PropTypes.bool,
     items: PropTypes.object,
   };
 
@@ -38,7 +37,7 @@ class Commands extends React.Component {
         >
           <table className="table">
             <tbody>
-            {commands}
+              {commands}
             </tbody>
           </table>
         </FixedPanel>

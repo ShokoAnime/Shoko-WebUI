@@ -16,16 +16,16 @@ class BrowseFolderModal extends React.Component {
     onSelect: PropTypes.func,
   };
 
+  static handleClose() {
+    store.dispatch(setStatus(false));
+  }
+
   constructor(props) {
     super(props);
     this.state = { folder: '' };
     this.handleClose = this.handleClose.bind(this);
     this.handleSelectionChange = this.handleSelectionChange.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
-  }
-
-  handleClose() {
-    store.dispatch(setStatus(false));
   }
 
   handleSelectionChange(folder) {

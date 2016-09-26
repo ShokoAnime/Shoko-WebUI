@@ -21,6 +21,7 @@ import {
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
+import logs from './reducers/logs';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
@@ -28,7 +29,7 @@ export function createApiReducer(type, dataPropName = 'items', dataPropValue = {
                                  valueFn = undefined) {
   let valueFunc = null;
   if (valueFn === undefined) {
-    valueFunc = (value) => value;
+    valueFunc = value => value;
   } else {
     valueFunc = valueFn;
   }
@@ -64,12 +65,12 @@ export function createApiReducer(type, dataPropName = 'items', dataPropValue = {
 }
 
 const queueStatus = createApiReducer(QUEUE_STATUS);
-const recentFiles = createApiReducer(RECENT_FILES);
-const jmmNews = createApiReducer(JMM_NEWS);
-const importFolders = createApiReducer(IMPORT_FOLDERS);
+const recentFiles = createApiReducer(RECENT_FILES, 'items', []);
+const jmmNews = createApiReducer(JMM_NEWS, 'items', []);
+const importFolders = createApiReducer(IMPORT_FOLDERS, 'items', []);
 const seriesCount = createApiReducer(SERIES_COUNT);
 const filesCount = createApiReducer(FILES_COUNT);
-const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, (payload) =>
+const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, payload =>
   VERSION.indexOf('.') !== -1 && payload.version !== VERSION
 );
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
@@ -108,6 +109,7 @@ const rootReducer = combineReducers({
   selectedImportFolderSeries,
   settings,
   modals,
+  logs,
 });
 
 export default rootReducer;

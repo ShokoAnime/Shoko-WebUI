@@ -1,8 +1,11 @@
 import 'isomorphic-fetch';
 import { createAction } from 'redux-actions';
 import { forEach } from 'lodash';
+import objPath from 'object-path';
 import store from './store';
 import history from './history';
+import { getDeltaAsync } from './actions/logs/Delta';
+import { appendContents } from './actions/logs/Contents';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
@@ -13,7 +16,7 @@ export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {
     const state = store.getState();
-    const status = state[key];
+    const status = objPath.get(state, key);
     const apiKey = state.apiSession.apikey;
     let shouldFetch;
 
@@ -120,7 +123,7 @@ export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
     }
     return { status: true, error: new Error(`Response status: ${response.status}`) };
   });
-export const updateWebui = createAction(WEBUI_VERSION_UPDATE, (payload) => ({ items: payload }));
+export const updateWebui = createAction(WEBUI_VERSION_UPDATE, payload => ({ items: payload }));
 export const JMM_VERSION = 'JMM_VERSION';
 export const jmmVersionAsync =
   createAsyncAction(JMM_VERSION, 'jmmVersion', '/version', (response) => {
@@ -153,6 +156,17 @@ function autoUpdateTick() {
   if (location === '/dashboard') {
     queueStatusAsync(true);
     recentFilesAsync(true);
+  } else if (location === '/logs') {
+    const state = store.getState();
+    const lines = 10;
+    let position = 0;
+    try {
+      position = state.logs.delta.items.position;
+    } catch (ex) { console.error('Unable to get log position'); }
+    getDeltaAsync(true, `${lines}/${position}`).then(() => {
+      const newState = store.getState();
+      store.dispatch(appendContents(newState.logs.delta.items.lines));
+    });
   }
 }
 let autoupdateTimer = null;

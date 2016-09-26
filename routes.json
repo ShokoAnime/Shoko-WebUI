@@ -35,5 +35,9 @@
   {
     "path": "/settings",
     "page": "./pages/settings"
+  },
+  {
+    "path": "/logs",
+    "page": "./pages/logs"
   }
 ]

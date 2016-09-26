@@ -6,8 +6,6 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 class StyleSettings extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
     theme: PropTypes.string,
     notifications: PropTypes.bool,
   };
