@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.1.12-dev",
+  "version": "0.1.12-dev2",
   "private": true,
   "engines": {
     "node": ">=6",
