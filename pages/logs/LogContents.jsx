@@ -1,6 +1,7 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Panel, Row, Col } from 'react-bootstrap';
+import { forEach, escapeRegExp } from 'lodash';
+import { Panel, Row, Col, Label } from 'react-bootstrap';
 
 class LogContents extends React.Component {
   static propTypes = {
@@ -12,7 +13,9 @@ class LogContents extends React.Component {
     return (
       <Row>
         <Col sm={12}>
-          <Panel className="log-panel">{lines.join('\n')}</Panel>
+          <Panel className="log-panel">{lines.map(item => (
+            <p><Label>{item.stamp}</Label><Label bsStyle="primary">{item.tag}</Label>{item.text}</p>
+          ))}</Panel>
         </Col>
       </Row>
     );
@@ -20,8 +23,26 @@ class LogContents extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { contents } = state.logs;
-  const lines = contents.lines || [];
+  const { contents, filters, keyword } = state.logs;
+  const rawLines = contents.lines || [];
+
+  const lines = [];
+  let keywordRegex = null;
+  if (keyword !== '') {
+    keywordRegex = new RegExp(escapeRegExp(keyword));
+  }
+  forEach(rawLines, (item) => {
+    if (item.tag && filters.tags[item.tag.toLowerCase()] !== false) {
+      if (keywordRegex === null) {
+        lines.push(item);
+      } else {
+        keywordRegex.lastIndex = 0;
+        if (keywordRegex.test(item.text)) {
+          lines.push(item);
+        }
+      }
+    }
+  });
 
   return {
     lines,
