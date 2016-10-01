@@ -42,12 +42,12 @@ class LogSettings extends React.Component {
       <Panel>
         <Form inline>
           <FormGroup controlId="keyword">
-            <ControlLabel>Keyword</ControlLabel>
+            <ControlLabel>Filter by</ControlLabel>
             {' '}
             <FormControl
               onChange={this.updateKeyword}
               type="text"
-              placeholder="Filter by"
+              placeholder="keyword"
             />
           </FormGroup>
           <FormGroup controlId="tags">
@@ -61,9 +61,7 @@ class LogSettings extends React.Component {
               Trace
             </Checkbox>
           </FormGroup>
-          <FormGroup controlId="tags">
-            <Button onClick={this.applySettings}>Apply</Button>
-          </FormGroup>
+          <Button onClick={this.applySettings} style={{ marginLeft: '10px' }}>Apply</Button>
         </Form>
       </Panel>
     );
