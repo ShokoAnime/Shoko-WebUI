@@ -409,3 +409,9 @@ a.logo span {
     background-color: #fff;
     color: #b0b5b9;
 }
+.log-panel .panel-body {
+    word-wrap: break-word;
+    height: 500px;
+    overflow: auto;
+    overflow-x: hidden;
+}

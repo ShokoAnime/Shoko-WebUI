@@ -28,7 +28,7 @@ export const getDeltaAsync = createAsyncAction(GET_DELTA, 'logs.delta', '/log/ge
             currentLine = Object.assign({}, {
               stamp: null,
               tag: null,
-              text: line,
+              text: tags !== null ? line : '',
             });
           }
           currentLine.text += line;
