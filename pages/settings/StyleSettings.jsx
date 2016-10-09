@@ -1,7 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup, Button } from 'react-bootstrap';
+import { ButtonGroup, Button, Dropdown, MenuItem } from 'react-bootstrap';
 import FixedPanel from '../../components/Panels/FixedPanel';
+import { setSettings } from '../../core/actions/settings/Api';
+import { setTheme, setNotifications } from '../../core/actions/settings/UI';
+import store from '../../core/store';
 
 class StyleSettings extends React.Component {
   static propTypes = {
@@ -9,6 +12,23 @@ class StyleSettings extends React.Component {
     theme: PropTypes.string,
     notifications: PropTypes.bool,
   };
+
+  static saveSettings() {
+    const state = store.getState();
+    const settings = {
+      uiTheme: state.settings.ui.theme,
+      uiNotifications: state.settings.ui.notifications,
+    };
+    setSettings(settings);
+  }
+
+  static changeTheme(value) {
+    store.dispatch(setTheme(value));
+  }
+
+  static changeNotifications(value) {
+    store.dispatch(setNotifications(value));
+  }
 
   render() {
     const { theme, notifications, className } = this.props;
@@ -18,33 +38,42 @@ class StyleSettings extends React.Component {
         <FixedPanel
           title="Style Options"
           description="Settings related to Web UI style"
+          actionName="Save"
+          onAction={StyleSettings.saveSettings}
         >
           <table className="table">
             <tbody>
               <tr>
-                <td>Use Light Theme</td>
+                <td>Theme</td>
                 <td>
                   <ButtonGroup className="pull-right">
-                    <Button bsStyle={theme !== 'light' ? 'danger' : 'default'}>No</Button>
-                    <Button bsStyle={theme === 'light' ? 'success' : 'default'}>Yes</Button>
+                    <Button
+                      onClick={() => { StyleSettings.changeTheme('light'); }}
+                      bsStyle={theme === 'light' ? 'success' : 'default'}
+                    >Light</Button>
+                    <Button
+                      onClick={() => { StyleSettings.changeTheme('dark'); }}
+                      bsStyle={theme === 'dark' ? 'success' : 'default'}
+                    >Dark</Button>
+                    <Button
+                      onClick={() => { StyleSettings.changeTheme('custom'); }}
+                      bsStyle={theme === 'custom' ? 'success' : 'default'}
+                    >Custom</Button>
                   </ButtonGroup>
                 </td>
               </tr>
               <tr>
-                <td>Use Dark Theme</td>
+                <td>Custom Theme</td>
                 <td>
                   <ButtonGroup className="pull-right">
-                    <Button bsStyle={theme !== 'dark' ? 'danger' : 'default'}>No</Button>
-                    <Button bsStyle={theme === 'dark' ? 'success' : 'default'}>Yes</Button>
-                  </ButtonGroup>
-                </td>
-              </tr>
-              <tr>
-                <td>Use Custom Theme</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <Button bsStyle={theme !== 'custom' ? 'danger' : 'default'}>No</Button>
-                    <Button bsStyle={theme === 'custom' ? 'success' : 'default'}>Yes</Button>
+                    <Dropdown>
+                      <Dropdown.Toggle>
+                        Default
+                      </Dropdown.Toggle>
+                      <Dropdown.Menu className="super-colors">
+                        <MenuItem>Default</MenuItem>
+                      </Dropdown.Menu>
+                    </Dropdown>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -52,8 +81,14 @@ class StyleSettings extends React.Component {
                 <td>Turn Off Global Notifications</td>
                 <td>
                   <ButtonGroup className="pull-right">
-                    <Button bsStyle={notifications ? 'default' : 'danger'}>No</Button>
-                    <Button bsStyle={notifications ? 'success' : 'default'}>Yes</Button>
+                    <Button
+                      onClick={() => { StyleSettings.changeNotifications(false); }}
+                      bsStyle={notifications ? 'default' : 'danger'}
+                    >No</Button>
+                    <Button
+                      onClick={() => { StyleSettings.changeNotifications(true); }}
+                      bsStyle={notifications ? 'success' : 'default'}
+                    >Yes</Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -70,7 +105,7 @@ function mapStateToProps(state) {
   const {
     theme,
     notifications,
-  } = settings;
+  } = settings.ui;
 
   return {
     theme,

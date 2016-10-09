@@ -18,6 +18,7 @@ import {
   JMM_VERSION,
   IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
+  GLOBAL_ALERT,
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
@@ -91,8 +92,12 @@ const autoUpdate = handleAction(SET_AUTOUPDATE,
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
   , {});
+const globalAlert = handleAction(GLOBAL_ALERT,
+  (state, action) => (action.error ? state : action.payload)
+  , {});
 
 const rootReducer = combineReducers({
+  globalAlert,
   apiSession,
   autoUpdate,
   queueStatus,

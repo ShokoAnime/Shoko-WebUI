@@ -51,7 +51,7 @@ class Header extends React.Component {
 
 function mapStateToProps(state) {
   const { queueStatus, autoUpdate, sidebarToggle, updateAvailable,
-    webuiVersionUpdate, apiSession } = state;
+    webuiVersionUpdate, apiSession, settings } = state;
   const items = queueStatus.items || {};
 
   return {
@@ -61,6 +61,7 @@ function mapStateToProps(state) {
     autoUpdate,
     sidebarToggle,
     updateAvailable: updateAvailable.status,
+    updateChannel: settings.other.updateChannel,
     webuiVersionUpdate,
     username: apiSession.username,
   };
