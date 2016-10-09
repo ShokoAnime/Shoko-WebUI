@@ -7,8 +7,6 @@ import history from './history';
 import { getDeltaAsync } from './actions/logs/Delta';
 import { appendContents } from './actions/logs/Contents';
 
-const VERSION = __VERSION__; // eslint-disable-line no-undef
-
 export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
@@ -90,6 +88,50 @@ export function createAsyncPostAction(type, key, apiAction, responseCallback) {
   };
 }
 
+export function createAsyncStatelessGetAction(apiAction, responseCallback) {
+  return (apiParams = '') => {
+    const state = store.getState();
+    const apiKey = state.apiSession.apikey;
+    // eslint-disable-next-line no-undef
+    return fetch(`/api${apiAction}${apiParams}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey: apiKey,
+      },
+    })
+    .then((response) => {
+      if (typeof responseCallback === 'function') {
+        return responseCallback(response);
+      }
+      return Promise.reject();
+    });
+  };
+}
+
+export function createAsyncStatelessPostAction(apiAction, responseCallback) {
+  return (apiParams = '') => {
+    const state = store.getState();
+    const apiKey = state.apiSession.apikey;
+    // eslint-disable-next-line no-undef
+    return fetch(`/api${apiAction}`, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        apikey: apiKey,
+      },
+      body: JSON.stringify(apiParams),
+      method: 'POST',
+    })
+      .then((response) => {
+        if (typeof responseCallback === 'function') {
+          return responseCallback(response);
+        }
+        return Promise.reject();
+      });
+  };
+}
+
 /* Sync actions */
 export const API_SESSION = 'API_SESSION';
 export const apiSession = createAction(API_SESSION);
@@ -97,6 +139,8 @@ export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
 export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
+export const GLOBAL_ALERT = 'GLOBAL_ALERT';
+export const setGlobalAlert = createAction(GLOBAL_ALERT);
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
@@ -114,10 +158,10 @@ export const FILES_COUNT = 'FILES_COUNT';
 export const filesCountAsync = createAsyncAction(FILES_COUNT, 'fileCount', '/file/count');
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
 export const updateAvailableAsync = createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable',
-    `/webui/latest/${VERSION.indexOf('dev') === -1 ? 'stable' : 'unstable'}`);
+    '/webui/latest/');
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
-  'webuiVersionUpdate', '/webui/update/stable', (response) => {
+  'webuiVersionUpdate', '/webui/update/', (response) => {
     if (response.status === 200) {
       return { status: true, error: false };
     }
@@ -158,7 +202,7 @@ function autoUpdateTick() {
     recentFilesAsync(true);
   } else if (location === '/logs') {
     const state = store.getState();
-    const lines = 10;
+    const lines = state.settings.other.logDelta;
     let position = 0;
     try {
       position = state.logs.delta.items.position;

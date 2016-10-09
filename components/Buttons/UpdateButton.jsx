@@ -8,11 +8,8 @@ class UpdateButton extends React.Component {
   static propTypes = {
     enabled: PropTypes.bool,
     updateStatus: PropTypes.object,
+    updateChannel: PropTypes.string,
   };
-
-  static handleClick() {
-    updateWebuiAsync();
-  }
 
   static handleAlertDismiss() {
     updateWebui({ status: false });
@@ -20,6 +17,16 @@ class UpdateButton extends React.Component {
 
   static reloadPage() {
     history.go({ pathname: '/' });
+  }
+
+  constructor(props) {
+    super(props);
+    this.handleClick = this.handleClick.bind();
+  }
+
+  handleClick() {
+    const { updateChannel } = this.props;
+    updateWebuiAsync(false, updateChannel);
   }
 
   render() {
@@ -43,7 +50,7 @@ class UpdateButton extends React.Component {
     return (
       <li className="notification">
         <button
-          onClick={UpdateButton.handleClick}
+          onClick={this.handleClick}
           type="button"
           className={cx('btn btn-info btn-sm', enabled ? '' : 'hidden')}
         >

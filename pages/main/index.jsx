@@ -32,6 +32,8 @@ class MainPage extends React.Component {
       return;
     }
 
+    const updateChannel = state.settings.other.updateChannel;
+
     queueStatusAsync()
       .then(
         () => recentFilesAsync()
@@ -39,7 +41,7 @@ class MainPage extends React.Component {
           .then(() => seriesCountAsync())
           .then(() => filesCountAsync())
           .then(() => jmmNewsAsync())
-          .then(() => updateAvailableAsync())
+          .then(() => updateAvailableAsync(false, updateChannel))
           .then(() => store.dispatch(setAutoupdate(true)))
       );
   }
