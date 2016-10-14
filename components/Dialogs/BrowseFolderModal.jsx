@@ -23,7 +23,6 @@ class BrowseFolderModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = { folder: '' };
-    this.handleClose = this.handleClose.bind(this);
     this.handleSelectionChange = this.handleSelectionChange.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
   }

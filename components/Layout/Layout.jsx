@@ -19,7 +19,7 @@ class Layout extends React.Component {
   render() {
     const { sidebarToggle, version, children, globalAlert } = this.props;
     const alert = [];
-    if (typeof globalAlert === 'string' && globalAlert !== '') alert.push(<Alert>{globalAlert}</Alert>);
+    if (typeof globalAlert === 'string' && globalAlert !== '') alert.push(<Alert className={s.alert}>{globalAlert}</Alert>);
 
     return (
       <section className={cx(s.container, sidebarToggle ? null : s['hide-sidebar'])}>

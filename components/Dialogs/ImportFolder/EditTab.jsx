@@ -44,7 +44,8 @@ class EditTab extends React.Component {
   }
 
   handleSubmit() {
-    editFolderAsync(this.props.form);
+    editFolderAsync(this.props.form)
+      .then(() => importFoldersAsync(true));
   }
 
   render() {

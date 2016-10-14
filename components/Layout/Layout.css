@@ -24,3 +24,11 @@
   transition: margin 0.5s ease-in-out;
   margin-left: 0;
 }
+
+.alert {
+  z-index: 100;
+  position: fixed;
+  top: 50px;
+  width: 50%;
+  left: 25%;
+}
