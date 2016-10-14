@@ -11,6 +11,16 @@ export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
 export const STATUS_RECEIVE = 'STATUS_RECEIVE';
 
+/* Sync actions */
+export const API_SESSION = 'API_SESSION';
+export const apiSession = createAction(API_SESSION);
+export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
+export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
+export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
+export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
+export const GLOBAL_ALERT = 'GLOBAL_ALERT';
+export const setGlobalAlert = createAction(GLOBAL_ALERT);
+
 export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {
     const state = store.getState();
@@ -41,15 +51,24 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
         .then((response) => {
           if (typeof responseCallback === 'function') {
             return responseCallback(response);
+          } else if (response.status !== 200) {
+            store.dispatch(setGlobalAlert(`${response.status}: ${response.statusText}`));
+            return Promise.reject();
           }
           return response.json();
+        })
+        .then((json) => {
+          if (json.code && json.code !== 200) {
+            store.dispatch(setGlobalAlert(`API error: ${type} ${json.code}: ${json.message}`));
+          }
+          return json;
         })
         .then(json => store.dispatch(createAction(type, payload => payload, () => ({
           status: STATUS_RECEIVE,
           receivedAt: Date.now(),
         }))(json)))
         .catch(() => {
-          // TODO: toastr notification
+          // store.dispatch(setGlobalAlert('Unknown error'));
         });
     }
     return Promise.resolve();
@@ -132,15 +151,6 @@ export function createAsyncStatelessPostAction(apiAction, responseCallback) {
   };
 }
 
-/* Sync actions */
-export const API_SESSION = 'API_SESSION';
-export const apiSession = createAction(API_SESSION);
-export const SIDEBAR_TOGGLE = 'SIDEBAR_TOGGLE';
-export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
-export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
-export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
-export const GLOBAL_ALERT = 'GLOBAL_ALERT';
-export const setGlobalAlert = createAction(GLOBAL_ALERT);
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';

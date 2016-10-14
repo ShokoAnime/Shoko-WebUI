@@ -9,6 +9,7 @@ import StatusPanel from '../../Panels/StatusPanel';
 import { setStatus as setImportStatus,
   addFolderAsync } from '../../../core/actions/modals/ImportFolder';
 import store from '../../../core/store';
+import { importFoldersAsync } from '../../../core/actions';
 import FolderForm from './Form';
 
 class AddTab extends React.Component {
@@ -27,7 +28,16 @@ class AddTab extends React.Component {
   }
 
   handleSubmit() {
-    addFolderAsync(this.props.form);
+    addFolderAsync(this.props.form)
+      .then(() => importFoldersAsync(true))
+      .then(() => {
+        const { addFolder } = this.props;
+        const { code } = addFolder.items;
+        if (code === 200) {
+          AddTab.handleClose();
+        }
+      }
+    );
   }
 
   render() {
