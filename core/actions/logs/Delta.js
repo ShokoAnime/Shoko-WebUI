@@ -10,7 +10,7 @@ export const getDeltaAsync = createAsyncAction(GET_DELTA, 'logs.delta', '/log/ge
     try {
       const lines = [];
       let currentLine = null;
-      const logRegex = /^\[([0-9-]+\s{1}[0-9:]+)\]\s(\w+)\|(.*)/g;
+      const logRegex = /^\[([0-9-]+\s{1}[0-9:]+)]\s(\w+)\|(.*)/g;
       forEach(json.lines, (line) => {
         logRegex.lastIndex = 0;
         const tags = logRegex.exec(line);

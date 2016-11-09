@@ -22,7 +22,7 @@ import QuickActions from './QuickActions';
 class MainPage extends React.Component {
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `JMM Server Web UI ${__VERSION__}`;
+    document.title = `Shoko Server Web UI ${__VERSION__}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {
@@ -42,7 +42,7 @@ class MainPage extends React.Component {
           .then(() => filesCountAsync())
           .then(() => jmmNewsAsync())
           .then(() => updateAvailableAsync(false, updateChannel))
-          .then(() => store.dispatch(setAutoupdate(true)))
+          .then(() => store.dispatch(setAutoupdate(true))),
       );
   }
 

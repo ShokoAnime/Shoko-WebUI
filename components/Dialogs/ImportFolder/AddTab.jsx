@@ -36,7 +36,7 @@ class AddTab extends React.Component {
         if (code === 200) {
           AddTab.handleClose();
         }
-      }
+      },
     );
   }
 

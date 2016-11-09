@@ -27,7 +27,7 @@ import logs from './reducers/logs';
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
 export function createApiReducer(type, dataPropName = 'items', dataPropValue = {},
-                                 valueFn = undefined) {
+  valueFn = undefined) {
   let valueFunc = null;
   if (valueFn === undefined) {
     valueFunc = value => value;
@@ -72,10 +72,10 @@ const importFolders = createApiReducer(IMPORT_FOLDERS, 'items', []);
 const seriesCount = createApiReducer(SERIES_COUNT);
 const filesCount = createApiReducer(FILES_COUNT);
 const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, payload =>
-  VERSION.indexOf('.') !== -1 && payload.version !== VERSION
+  VERSION.indexOf('.') !== -1 && payload.version !== VERSION,
 );
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
-  { status: false, error: false }
+  { status: false, error: false },
 );
 const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
 const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);

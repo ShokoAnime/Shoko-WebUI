@@ -62,7 +62,6 @@ body {
 }
 
 @media only screen and (max-width: 280px) {
-
   .container,
   .text {
     width: 95%;
@@ -72,11 +71,9 @@ body {
     margin: 0 0 0.3em;
     font-size: 1.5em;
   }
-
 }
 
 @media screen and (max-width: 1024px) {
-
   .content {
     padding: 0 16px;
   }
@@ -88,5 +85,4 @@ body {
   .title {
     font-size: 1.5em;
   }
-
 }

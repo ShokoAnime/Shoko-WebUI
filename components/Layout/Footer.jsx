@@ -12,7 +12,7 @@ class Footer extends React.Component {
     return (
       <footer className="footer">
         <div className="text-center">
-          JMM Server {version} Web UI {UI_VERSION}
+          Shoko Server {version} Web UI {UI_VERSION}
           <a className="go-top">
             <i className="fa fa-angle-up" />
           </a>

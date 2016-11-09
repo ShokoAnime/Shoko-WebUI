@@ -24,7 +24,7 @@ class News extends React.Component {
     return (
       <div className={className}>
         <FixedPanel
-          title="JMM News"
+          title="Shoko News"
           description="Click title to read full article"
           lastUpdated={lastUpdated}
           isFetching={isFetching}
