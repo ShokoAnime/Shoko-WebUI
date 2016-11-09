@@ -205,7 +205,7 @@ export const importFolderSeriesAsync = createAsyncAction(IMPORT_FOLDER_SERIES,
 
 /* Timer */
 function autoUpdateTick() {
-  const location = history.getCurrentLocation().pathname;
+  const location = history.location.pathname;
 
   if (location === '/dashboard') {
     queueStatusAsync(true);

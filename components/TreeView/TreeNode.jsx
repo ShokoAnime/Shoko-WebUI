@@ -82,7 +82,7 @@ class TreeNode extends React.Component {
     if (expanded) {
       forEach(nodes, (node) => {
         children.push(
-          <TreeNode {...this.props} basePath={node.path} text={node.text} level={level + 1} />
+          <TreeNode {...this.props} basePath={node.path} text={node.text} level={level + 1} />,
         );
       });
     }

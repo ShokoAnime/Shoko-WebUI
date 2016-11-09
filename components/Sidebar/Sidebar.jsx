@@ -6,7 +6,7 @@ import history from '../../core/history';
 
 class Sidebar extends React.Component {
   render() {
-    const location = history.getCurrentLocation().pathname;
+    const location = history.location.pathname;
 
     return (
       <aside>
@@ -46,12 +46,12 @@ class Sidebar extends React.Component {
           <div className={cx(s.bottom)}>
             <a href="http://www.jmediamanager.org/" rel="noopener noreferrer" target="_blank">Home</a>
             <a
-              href="https://github.com/japanesemediamanager/jmmserver-webui"
+              href="https://github.com/japanesemediamanager/ShokoServer-WebUI"
               target="_blank"
               rel="noopener noreferrer"
             >Github</a>
             <a
-              href="https://github.com/japanesemediamanager/jmmserver-webui/issues"
+              href="https://github.com/japanesemediamanager/ShokoServer-WebUI/issues"
               target="_blank"
               rel="noopener noreferrer"
             >Support</a>

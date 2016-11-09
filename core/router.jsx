@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
 import React from 'react';
+import { forEach } from 'lodash';
 
 function decodeParam(val) {
   if (!(typeof val === 'string' || val.length === 0)) {
@@ -40,11 +41,12 @@ function matchURI(route, path) {
 // Find the route matching the specified location (context), fetch the required data,
 // instantiate and return a React component
 function resolve(routes, context) {
-  for (const route of routes) {
+  let resolvedRoute = null;
+  forEach(routes, (route) => {
     const params = matchURI(route, context.error ? '/error' : context.pathname);
 
     if (!params) {
-      continue; // eslint-disable-line no-continue
+      return true;
     }
 
     // Check if the route has any data requirements, for example:
@@ -52,7 +54,7 @@ function resolve(routes, context) {
     if (route.data) {
       // Load page component and all required data in parallel
       const keys = Object.keys(route.data);
-      return Promise.all([
+      resolvedRoute = Promise.all([
         route.load(),
         ...keys.map((key) => { // eslint-disable-line no-loop-func
           const query = route.data[key];
@@ -66,10 +68,14 @@ function resolve(routes, context) {
         const props = keys.reduce((result, key, i) => ({ ...result, [key]: data[i] }), {});
         return <Page route={route} error={context.error} {...props} />;
       });
+      return false;
     }
 
-    return route.load().then(Page => <Page route={route} error={context.error} />);
-  }
+    resolvedRoute = route.load().then(Page => <Page route={route} error={context.error} />);
+    return false;
+  });
+
+  if (resolvedRoute !== null) return resolvedRoute;
 
   const error = new Error('Page not found');
   error.status = 404;

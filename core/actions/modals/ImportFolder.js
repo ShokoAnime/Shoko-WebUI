@@ -17,5 +17,5 @@ export const editFolderAsync = createAsyncPostAction(API_EDIT_FOLDER, 'editFolde
       return { status: true };
     }
     return { status: false, message: response.status };
-  }
+  },
 );

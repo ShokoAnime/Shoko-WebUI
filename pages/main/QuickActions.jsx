@@ -1,4 +1,5 @@
 import React, { PropTypes } from 'react';
+import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import QuickActionsItem from './QuickActionsItem';
 
@@ -14,9 +15,9 @@ class QuickActions extends React.Component {
       'Remove Missing Files', 'Update All Stats', 'Update All TvDB Info'];
     const actions = [];
 
-    for (const [index, item] of shouldComeFromStore.entries()) {
+    forEach(shouldComeFromStore.entries(), (item, index) => {
       actions.push(<QuickActionsItem key={index} index={index + 1} name={item} />);
-    }
+    });
 
     return (
       <div className={this.props.className}>

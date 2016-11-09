@@ -29,7 +29,7 @@ class LogOptions extends React.Component {
       days: deleteLogsInterval,
     }, { [key]: value });
     setLog(items).then(
-      () => getLog()
+      () => getLog(),
     );
   }
 
@@ -41,7 +41,7 @@ class LogOptions extends React.Component {
       <div className={className}>
         <FixedPanel
           title="Log Options"
-          description="Settings related to JMM Server log"
+          description="Settings related to Shoko Server log"
           lastUpdated={lastUpdated}
           isFetching={isFetching}
         >

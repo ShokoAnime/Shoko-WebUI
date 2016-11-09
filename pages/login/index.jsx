@@ -28,7 +28,7 @@ class LoginPage extends React.Component {
 
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `JMM Server Web UI ${UI_VERSION}`;
+    document.title = `Shoko Server Web UI ${UI_VERSION}`;
     this.user.focus();
 
     jmmVersionAsync();
@@ -72,9 +72,7 @@ class LoginPage extends React.Component {
       .then((json) => {
         if (json.apikey) {
           store.dispatch(apiSession({ apikey: json.apikey, username: user }));
-          history.push({
-            pathname: '/dashboard',
-          });
+          history.push('/dashboard');
         } else {
           this.setState({ errorMessage: 'Unknown response!' });
         }
@@ -90,12 +88,12 @@ class LoginPage extends React.Component {
           <div className="container-fluid">
             <div className="row">
               <div className={cx('col-md-3 col-md-offset-3', s['left-panel'])}>
-                <h1>JMM Server</h1>
+                <h1>Shoko Server</h1>
                 <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
                   {version instanceof Error ? `Error: ${version.message}` : version}
                   (WebUI {UI_VERSION})</h4>
                 <h2>Welcome Back!</h2>
-                <h2>Input your user information to login into JMM Server!</h2>
+                <h2>Input your user information to login into Shoko Server!</h2>
               </div>
               <div className={cx('col-md-3', s['right-panel'])}>
                 <Alert

@@ -1,5 +1,7 @@
-import createBrowserHistory from 'history/lib/createBrowserHistory';
-import useQueries from 'history/lib/useQueries';
-import useBasename from 'history/lib/useBasename';
+import createHistory from 'history/createBrowserHistory';
 
-export default useBasename(useQueries(createBrowserHistory))({ basename: '/webui' });
+const history = createHistory({
+  basename: '/webui',
+});
+
+export default history;

@@ -10,7 +10,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const store = createStore(
   rootReducer,
-  applyMiddleware(...middleware)
+  applyMiddleware(...middleware),
 );
 
 export default store;

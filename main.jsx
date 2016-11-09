@@ -22,12 +22,12 @@ function render(location) {
 }
 
 history.listen(render);
-render(history.getCurrentLocation());
+render(history.location);
 
 if (module.hot) {
   module.hot.accept('./routes.json', () => {
     routes = require('./routes.json'); // eslint-disable-line global-require
 
-    render(history.getCurrentLocation());
+    render(history.location);
   });
 }

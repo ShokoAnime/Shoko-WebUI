@@ -22,7 +22,7 @@ class Commands extends React.Component {
           key={`main-${key}`}
           count={item.count}
           name={key}
-        />
+        />,
       );
       commands.push(<CommandsItemStatus key={`details-${key}`} state={item.state} />);
     });

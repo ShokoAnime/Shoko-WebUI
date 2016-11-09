@@ -31,7 +31,7 @@ class TreeView extends React.Component {
           <TreeNode
             basePath=""
             level={1}
-            text="JMM Server"
+            text="Shoko Server"
             selectedNode={selectedNode}
             onSelect={this.handleNodeSelect}
           />
