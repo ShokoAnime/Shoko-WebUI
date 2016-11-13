@@ -188,7 +188,7 @@ export const jmmVersionAsync =
       try {
         let version = null;
         forEach(json, (value) => {
-          if (value.name === 'jmmserver') {
+          if (value.name === 'server') {
             version = value.version;
           }
         });
