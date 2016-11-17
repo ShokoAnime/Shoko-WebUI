@@ -6,22 +6,22 @@ class RecentFilesItem extends React.Component {
   static propTypes = {
     id: PropTypes.number,
     index: PropTypes.number,
-    path: PropTypes.string,
-    success: PropTypes.bool,
+    filename: PropTypes.string,
+    recognized: PropTypes.bool,
   };
 
   render() {
-    const { id, index, path, success } = this.props;
+    const { id, index, filename, recognized } = this.props;
 
     return (
       <tr key={id}>
         <td>{index}</td>
         <td>
-          <div className={s['text-wrapper']}>{path}</div>
+          <div className={s['text-wrapper']}>{filename}</div>
         </td>
         <td className="text-right">
-          <span className={cx('badge', success ? 'bg-success' : 'bg-error')}>
-            {success ? 'Imported' : 'Error'}
+          <span className={cx('badge', recognized ? 'bg-success' : 'bg-error')}>
+            {recognized ? 'Imported' : 'Unrecognized'}
           </span>
         </td>
         <td />
