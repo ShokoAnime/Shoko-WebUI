@@ -26,6 +26,10 @@
 }
 
 .alert {
+  position: relative;
+}
+
+.alertContainer {
   z-index: 100;
   position: fixed;
   top: 50px;

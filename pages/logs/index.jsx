@@ -2,8 +2,7 @@ import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
-import { getDeltaAsync } from '../../core/actions/logs/Delta';
-import { setContents } from '../../core/actions/logs/Contents';
+import { getDelta } from '../../core/actions/logs/Delta';
 import { setAutoupdate } from '../../core/actions';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
@@ -24,11 +23,8 @@ class LogsPage extends React.Component {
       return;
     }
 
-    // Fetch current log
-    getDeltaAsync().then(() => {
-      const newState = store.getState();
-      store.dispatch(setContents(newState.logs.delta.items));
-    });
+    // Reset buffer and fetch current log
+    store.dispatch(getDelta());
 
     if (state.autoUpdate) {
       // Re-enable auto update if it was active

@@ -5,10 +5,15 @@ import { createAsyncStatelessGetAction, createAsyncStatelessPostAction, setGloba
 
 export const getSettings = createAsyncStatelessGetAction('/webui/config', (response) => {
   response.json().then((json) => {
+    if (json.code !== 200) {
+      setGlobalAlert(json.message);
+      return Promise.reject();
+    }
     store.dispatch(setNotifications(json.uiNotifications));
     store.dispatch(setTheme(json.uiTheme));
     store.dispatch(setUpdateChannel(json.otherUpdateChannel));
     store.dispatch(setLogDelta(json.otherLogDelta));
+    return Promise.resolve();
   });
 });
 

@@ -4,8 +4,7 @@ import { forEach } from 'lodash';
 import objPath from 'object-path';
 import store from './store';
 import history from './history';
-import { getDeltaAsync } from './actions/logs/Delta';
-import { appendContents } from './actions/logs/Contents';
+import { getDelta } from './actions/logs/Delta';
 
 export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
 export const STATUS_REQUEST = 'STATUS_REQUEST';
@@ -19,7 +18,9 @@ export const toggleSidebar = createAction(SIDEBAR_TOGGLE);
 export const SELECT_IMPORT_FOLDER_SERIES = 'SELECT_IMPORT_FOLDER_SERIES';
 export const selectImportFolderSeries = createAction(SELECT_IMPORT_FOLDER_SERIES);
 export const GLOBAL_ALERT = 'GLOBAL_ALERT';
-export const setGlobalAlert = createAction(GLOBAL_ALERT);
+export const QUEUE_GLOBAL_ALERT = 'QUEUE_GLOBAL_ALERT';
+export const SHOW_GLOBAL_ALERT = 'SHOW_GLOBAL_ALERT';
+export const setGlobalAlert = createAction(QUEUE_GLOBAL_ALERT);
 
 export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {
@@ -52,7 +53,7 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
           if (typeof responseCallback === 'function') {
             return responseCallback(response);
           } else if (response.status !== 200) {
-            store.dispatch(setGlobalAlert(`${response.status}: ${response.statusText}`));
+            store.dispatch(setGlobalAlert(`Network error: ${type} ${response.status}: ${response.statusText}`));
             return Promise.reject();
           }
           return response.json();
@@ -60,6 +61,7 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
         .then((json) => {
           if (json.code && json.code !== 200) {
             store.dispatch(setGlobalAlert(`API error: ${type} ${json.code}: ${json.message}`));
+            return Promise.reject();
           }
           return json;
         })
@@ -212,15 +214,12 @@ function autoUpdateTick() {
     recentFilesAsync(true);
   } else if (location === '/logs') {
     const state = store.getState();
-    const lines = state.settings.other.logDelta;
+    const delta = state.settings.other.logDelta;
     let position = 0;
     try {
       position = state.logs.delta.items.position;
     } catch (ex) { console.error('Unable to get log position'); }
-    getDeltaAsync(true, `${lines}/${position}`).then(() => {
-      const newState = store.getState();
-      store.dispatch(appendContents(newState.logs.delta.items.lines));
-    });
+    store.dispatch(getDelta({ delta, position }));
   }
 }
 let autoupdateTimer = null;
