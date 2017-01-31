@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { handleAction } from 'redux-actions';
+import { handleAction, handleActions } from 'redux-actions';
 import {
   QUEUE_STATUS,
   SET_AUTOUPDATE,
@@ -19,6 +19,7 @@ import {
   IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
   GLOBAL_ALERT,
+  LOGOUT,
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
@@ -80,9 +81,12 @@ const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
 const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
 const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
 
-const apiSession = handleAction(API_SESSION,
-  (state, action) => (action.error ? state : Object.assign({}, state, action.payload))
-, { apikey: '' });
+export const apiSession = handleActions({
+  [API_SESSION]: (state, action) =>
+    (action.error ? state : Object.assign({}, state, action.payload)),
+  [LOGOUT]: state => Object.assign({}, state, { apikey: '' }),
+}, { apikey: '' });
+
 const sidebarToggle = handleAction(SIDEBAR_TOGGLE,
   (state, action) => (action.error ? state : action.payload)
 , true);
@@ -94,7 +98,7 @@ const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   , {});
 const globalAlert = handleAction(GLOBAL_ALERT,
   (state, action) => (action.error ? state : action.payload)
-  , {});
+  , []);
 
 const rootReducer = combineReducers({
   globalAlert,
