@@ -1,12 +1,21 @@
 import React, { PropTypes } from 'react';
 import cx from 'classnames';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import store from '../../core/store';
+import history from '../../core/history';
+import { Logout } from '../../core/actions';
 import s from './UserDropdown.css';
 
 class UserDropdown extends React.Component {
   static propTypes = {
     user: PropTypes.string,
   };
+
+  // TODO: Move this to saga
+  static handleLogout() {
+    store.dispatch(Logout());
+    history.push({ pathname: '/' });
+  }
 
   render() {
     const { user } = this.props;
@@ -18,7 +27,7 @@ class UserDropdown extends React.Component {
             <MenuItem eventKey="1"><i className="fa fa-user" />Profile</MenuItem>
             <MenuItem divider />
             <MenuItem eventKey="2"><i className="fa fa-key" />Change password</MenuItem>
-            <MenuItem eventKey="3"><i className="fa fa-sign-out" />Logout</MenuItem>
+            <MenuItem onClick={UserDropdown.handleLogout} eventKey="3"><i className="fa fa-sign-out" />Logout</MenuItem>
           </Dropdown.Menu>
         </Dropdown>
       </div>

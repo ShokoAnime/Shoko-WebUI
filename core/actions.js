@@ -21,6 +21,8 @@ export const GLOBAL_ALERT = 'GLOBAL_ALERT';
 export const QUEUE_GLOBAL_ALERT = 'QUEUE_GLOBAL_ALERT';
 export const SHOW_GLOBAL_ALERT = 'SHOW_GLOBAL_ALERT';
 export const setGlobalAlert = createAction(QUEUE_GLOBAL_ALERT);
+export const LOGOUT = 'LOGOUT';
+export const Logout = createAction(LOGOUT);
 
 export function createAsyncAction(type, key, apiAction, responseCallback) {
   return (forceFetch, apiParams = '') => {

@@ -14,7 +14,7 @@ class Layout extends React.Component {
     sidebarToggle: PropTypes.bool,
     version: PropTypes.string,
     children: PropTypes.any,
-    globalAlert: PropTypes.oneOf([PropTypes.bool, PropTypes.string]),
+    globalAlert: PropTypes.array,
   };
 
   render() {
