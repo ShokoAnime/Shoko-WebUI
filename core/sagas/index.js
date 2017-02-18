@@ -100,7 +100,7 @@ function* getLogDelta(action) {
 
   yield put({
     type: action.payload ? APPEND_CONTENTS : SET_CONTENTS,
-    payload: { lines: result.data },
+    payload: { lines: result.data, position: resultJson.data.position },
   });
 }
 

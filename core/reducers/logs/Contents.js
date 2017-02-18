@@ -11,20 +11,23 @@ export const contents = handleActions({
   [SET_CONTENTS]: (state, action) => {
     if (action.error) { return state; }
     const lines = action.payload.lines || [];
-    return Object.assign({}, state, { lines });
+    const position = action.payload.position;
+    return Object.assign({}, state, { lines, position });
   },
   [APPEND_CONTENTS]: (state, action) => {
     if (action.error) { return state; }
+    const position = action.payload.position;
     let lines = [];
-    if (action.payload.length > 0 && action.payload[0].tag === null && state.lines.length > 0) {
+    const newLines = action.payload.lines;
+    if (newLines.length > 0 && newLines[0].tag === null && state.lines.length > 0) {
       const lastLine = state.lines.pop();
-      const newLine = action.payload.shift();
+      const newLine = newLines.shift();
       lastLine.text += newLine.text;
-      lines = concat(state.lines, [lastLine], action.payload);
+      lines = concat(state.lines, [lastLine], newLines);
     } else {
-      lines = concat(state.lines, action.payload);
+      lines = concat(state.lines, newLines);
     }
-    return Object.assign({}, state, { lines });
+    return Object.assign({}, state, { lines, position });
   },
 }, defaultState);
 
