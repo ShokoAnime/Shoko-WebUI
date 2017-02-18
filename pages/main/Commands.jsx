@@ -8,13 +8,11 @@ import CommandsItemStatus from './CommandsItemStatus';
 class Commands extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
     items: PropTypes.object,
   };
 
   render() {
-    const { items, isFetching, lastUpdated, className } = this.props;
+    const { items, className } = this.props;
     const commands = [];
     forEach(items, (item, key) => {
       commands.push(
@@ -32,8 +30,6 @@ class Commands extends React.Component {
         <FixedPanel
           title="Commands"
           description="Commands currently being processed"
-          lastUpdated={lastUpdated}
-          isFetching={isFetching}
         >
           <table className="table">
             <tbody>
@@ -48,19 +44,9 @@ class Commands extends React.Component {
 
 function mapStateToProps(state) {
   const { queueStatus } = state;
-  const {
-    isFetching,
-    lastUpdated,
-    items,
-  } = queueStatus || {
-    isFetching: true,
-    items: [],
-  };
 
   return {
-    items,
-    isFetching,
-    lastUpdated,
+    items: queueStatus,
   };
 }
 

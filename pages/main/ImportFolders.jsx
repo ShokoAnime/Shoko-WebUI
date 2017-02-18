@@ -11,10 +11,8 @@ import store from '../../core/store';
 class ImportFolders extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
     importModal: PropTypes.object,
-    lastUpdated: PropTypes.number,
-    items: PropTypes.array,
+    items: PropTypes.object,
     description: PropTypes.string,
     importFolders: PropTypes.object,
   };
@@ -24,7 +22,7 @@ class ImportFolders extends React.Component {
   }
 
   render() {
-    const { items, isFetching, lastUpdated, className, description, importModal,
+    const { items, className, description, importModal,
       importFolders } = this.props;
     const folders = [];
     let i = 0;
@@ -38,8 +36,6 @@ class ImportFolders extends React.Component {
         <FixedPanel
           title="Import Folders Overview"
           description={description || 'Use Import Folders section to manage'}
-          lastUpdated={lastUpdated}
-          isFetching={isFetching}
           actionName="Manage"
           onAction={ImportFolders.handleAction}
         >
@@ -57,19 +53,9 @@ class ImportFolders extends React.Component {
 
 function mapStateToProps(state) {
   const { importFolders, modals } = state;
-  const {
-    isFetching,
-    lastUpdated,
-    items,
-  } = importFolders || {
-    isFetching: true,
-    items: [],
-  };
 
   return {
-    items,
-    isFetching,
-    lastUpdated,
+    items: importFolders,
     importModal: modals.importFolder,
   };
 }

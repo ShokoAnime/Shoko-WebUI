@@ -7,13 +7,11 @@ import RecentFilesItem from './RecentFilesItem';
 class RecentFiles extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
-    items: PropTypes.array,
+    items: PropTypes.object,
   };
 
   render() {
-    const { items, isFetching, lastUpdated } = this.props;
+    const { items } = this.props;
     const files = [];
     let i = 0;
     forEach(items, (item) => {
@@ -24,8 +22,6 @@ class RecentFiles extends React.Component {
       <div className={this.props.className}>
         <FixedPanel
           title="Recent Files"
-          lastUpdated={lastUpdated}
-          isFetching={isFetching}
           description="List of recently added files and their import status"
         >
           <table className="table">
@@ -41,19 +37,9 @@ class RecentFiles extends React.Component {
 
 function mapStateToProps(state) {
   const { recentFiles } = state;
-  const {
-    isFetching,
-    lastUpdated,
-    items,
-  } = recentFiles || {
-    isFetching: true,
-    items: [],
-  };
 
   return {
-    items,
-    isFetching,
-    lastUpdated,
+    items: recentFiles,
   };
 }
 

@@ -1,21 +1,9 @@
+import { createAction } from 'redux-actions';
 import store from './../../store';
-import { setNotifications, setTheme } from './UI';
-import { setLogDelta, setUpdateChannel } from './Other';
-import { createAsyncStatelessGetAction, createAsyncStatelessPostAction, setGlobalAlert } from '../../actions';
+import { createAsyncStatelessPostAction, setGlobalAlert } from '../../actions';
 
-export const getSettings = createAsyncStatelessGetAction('/webui/config', (response) => {
-  response.json().then((json) => {
-    if (json.code !== 200) {
-      setGlobalAlert(json.message);
-      return Promise.reject();
-    }
-    store.dispatch(setNotifications(json.uiNotifications));
-    store.dispatch(setTheme(json.uiTheme));
-    store.dispatch(setUpdateChannel(json.otherUpdateChannel));
-    store.dispatch(setLogDelta(json.otherLogDelta));
-    return Promise.resolve();
-  });
-});
+export const SETTINGS_API_GET = 'SETTINGS_API_GET';
+export const getSettings = createAction(SETTINGS_API_GET);
 
 const prepareSettings = () => {
   const action = createAsyncStatelessPostAction('/webui/config', (response) => {

@@ -66,15 +66,9 @@ export function createApiReducer(type, dataPropName = 'items', dataPropValue = {
   };
 }
 
-const queueStatus = createApiReducer(QUEUE_STATUS);
-const recentFiles = createApiReducer(RECENT_FILES, 'items', []);
-const jmmNews = createApiReducer(JMM_NEWS, 'items', []);
-const importFolders = createApiReducer(IMPORT_FOLDERS, 'items', []);
-const seriesCount = createApiReducer(SERIES_COUNT);
-const filesCount = createApiReducer(FILES_COUNT);
-const updateAvailable = createApiReducer(UPDATE_AVAILABLE, 'status', false, payload =>
-  VERSION.indexOf('.') !== -1 && payload.version !== VERSION,
-);
+function apiReducer(state, action) {
+  return action.error ? state : Object.assign({}, state, action.payload);
+}
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
 );
@@ -99,6 +93,15 @@ const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
 const globalAlert = handleAction(GLOBAL_ALERT,
   (state, action) => (action.error ? state : action.payload)
   , []);
+const queueStatus = handleAction(QUEUE_STATUS, apiReducer, {});
+const recentFiles = handleAction(RECENT_FILES, apiReducer, {});
+const importFolders = handleAction(IMPORT_FOLDERS, apiReducer, {});
+const seriesCount = handleAction(SERIES_COUNT, apiReducer, {});
+const filesCount = handleAction(FILES_COUNT, apiReducer, {});
+const jmmNews = handleAction(JMM_NEWS, apiReducer, {});
+const updateAvailable = handleAction(UPDATE_AVAILABLE,
+  (state, action) => (action.error ? state : Object.assign({}, state, VERSION.indexOf('.') !== -1 && action.payload.version !== VERSION))
+  , {});
 
 const rootReducer = combineReducers({
   globalAlert,
