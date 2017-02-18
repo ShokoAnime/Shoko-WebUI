@@ -98,7 +98,7 @@ function mapStateToProps(state) {
     isFetching,
     lastUpdated,
     selectedFolder: selectedImportFolderSeries,
-    importFolders: importFolders.items || [],
+    importFolders: importFolders || [],
   };
 }
 
