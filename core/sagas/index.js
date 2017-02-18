@@ -3,9 +3,18 @@ import { put, takeEvery, call } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
 import Api from '../api';
-import { QUEUE_GLOBAL_ALERT, SHOW_GLOBAL_ALERT, GLOBAL_ALERT } from '../actions';
+import Events from '../events';
+import Dashboard from './dashboard';
+import {
+  QUEUE_GLOBAL_ALERT,
+  SHOW_GLOBAL_ALERT,
+  GLOBAL_ALERT,
+} from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
+import { SETTINGS_API_GET } from '../actions/settings/Api';
+import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
+import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -95,10 +104,29 @@ function* getLogDelta(action) {
   });
 }
 
+function* getSettings() {
+  const resultJson = yield call(Api.getSettings);
+
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+  const data = resultJson.data;
+
+  yield put({ type: SET_THEME, payload: data.uiTheme });
+  yield put({ type: SET_NOTIFICATIONS, payload: data.uiNotifications });
+  yield put({ type: SET_LOG_DELTA, payload: data.otherLogDelta });
+  yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
     takeEvery(SHOW_GLOBAL_ALERT, alertScheduler),
     takeEvery(GET_DELTA, getLogDelta),
+    takeEvery(SETTINGS_API_GET, getSettings),
+    takeEvery(Events.DASHBOARD_LOAD, Dashboard.eventDashboardLoad),
+    takeEvery(Events.DASHBOARD_QUEUE_STATUS, Dashboard.eventDashboardQueueStatus),
+    takeEvery(Events.DASHBOARD_RECENT_FILES, Dashboard.eventDashboardRecentFiles),
   ];
 }

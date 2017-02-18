@@ -25,6 +25,17 @@ function jsonApiCall(apiAction, apiParams) {
     .then(response => response.json());
 }
 
+function jsonApiResponse(apiAction, apiParams) {
+  return jsonApiCall(apiAction, apiParams)
+    .then((json) => {
+      if (json.code && json.code !== 200) {
+        return { error: true, message: json.message || '' };
+      }
+      return { data: json };
+    })
+    .catch(reason => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
+}
+
 function getLogDelta(data) {
   const paramString = data ? `${data.delta}/${data.position}` : '';
   return jsonApiCall('/log/get/', paramString)
@@ -40,6 +51,47 @@ function getLogDelta(data) {
     .catch(reason => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
 }
 
+function getSettings() {
+  return jsonApiResponse('/webui/config', '');
+}
+
+function queueStatus() {
+  return jsonApiResponse('/queue/get', '');
+}
+
+function fileRecent() {
+  return jsonApiResponse('/file/recent', '');
+}
+
+function folderList() {
+  return jsonApiResponse('/folder/list', '');
+}
+
+function serieCount() {
+  return jsonApiResponse('/serie/count', '');
+}
+
+function fileCount() {
+  return jsonApiResponse('/file/count', '');
+}
+
+function newsGet() {
+  return jsonApiResponse('/news/get', '');
+}
+
+function webuiLatest(channel) {
+  return jsonApiResponse('/webui/latest/', channel);
+}
+
+
 export default {
   getLogDelta,
+  getSettings,
+  queueStatus,
+  fileRecent,
+  folderList,
+  serieCount,
+  fileCount,
+  newsGet,
+  webuiLatest,
 };

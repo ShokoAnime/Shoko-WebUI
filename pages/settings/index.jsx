@@ -24,7 +24,7 @@ class SettingsPage extends React.Component {
       return;
     }
 
-    getLog().then(() => { getSettings(); });
+    getLog().then(() => { store.dispatch(getSettings()); });
   }
 
   render() {

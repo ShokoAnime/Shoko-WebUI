@@ -1,14 +1,8 @@
 import React from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
+import Events from '../../core/events';
 import {
-  queueStatusAsync,
-  recentFilesAsync,
-  importFoldersAsync,
-  seriesCountAsync,
-  filesCountAsync,
-  jmmNewsAsync,
-  updateAvailableAsync,
   setAutoupdate,
 } from '../../core/actions';
 import Layout from '../../components/Layout/Layout';
@@ -32,18 +26,7 @@ class MainPage extends React.Component {
       return;
     }
 
-    const updateChannel = state.settings.other.updateChannel;
-
-    queueStatusAsync()
-      .then(
-        () => recentFilesAsync()
-          .then(() => importFoldersAsync())
-          .then(() => seriesCountAsync())
-          .then(() => filesCountAsync())
-          .then(() => jmmNewsAsync())
-          .then(() => updateAvailableAsync(false, updateChannel))
-          .then(() => store.dispatch(setAutoupdate(true))),
-      );
+    store.dispatch({ type: Events.DASHBOARD_LOAD });
   }
 
   componentWillUnmount() {

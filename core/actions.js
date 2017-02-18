@@ -4,6 +4,7 @@ import { forEach } from 'lodash';
 import objPath from 'object-path';
 import store from './store';
 import history from './history';
+import Events from './events';
 import { getDelta } from './actions/logs/Delta';
 
 export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
@@ -111,27 +112,6 @@ export function createAsyncPostAction(type, key, apiAction, responseCallback) {
   };
 }
 
-export function createAsyncStatelessGetAction(apiAction, responseCallback) {
-  return (apiParams = '') => {
-    const state = store.getState();
-    const apiKey = state.apiSession.apikey;
-    // eslint-disable-next-line no-undef
-    return fetch(`/api${apiAction}${apiParams}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        apikey: apiKey,
-      },
-    })
-    .then((response) => {
-      if (typeof responseCallback === 'function') {
-        return responseCallback(response);
-      }
-      return Promise.reject();
-    });
-  };
-}
-
 export function createAsyncStatelessPostAction(apiAction, responseCallback) {
   return (apiParams = '') => {
     const state = store.getState();
@@ -158,21 +138,14 @@ export function createAsyncStatelessPostAction(apiAction, responseCallback) {
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
-export const queueStatusAsync = createAsyncAction(QUEUE_STATUS, 'queueStatus', '/queue/get');
 export const RECENT_FILES = 'RECENT_FILES';
-export const recentFilesAsync = createAsyncAction(RECENT_FILES, 'recentFiles', '/file/recent');
 export const JMM_NEWS = 'JMM_NEWS';
-export const jmmNewsAsync = createAsyncAction(JMM_NEWS, 'jmmNews', '/news/get');
 export const IMPORT_FOLDERS = 'IMPORT_FOLDERS';
 export const importFoldersAsync =
   createAsyncAction(IMPORT_FOLDERS, 'importFolders', '/folder/list');
 export const SERIES_COUNT = 'SERIES_COUNT';
-export const seriesCountAsync = createAsyncAction(SERIES_COUNT, 'seriesCount', '/serie/count');
 export const FILES_COUNT = 'FILES_COUNT';
-export const filesCountAsync = createAsyncAction(FILES_COUNT, 'fileCount', '/file/count');
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
-export const updateAvailableAsync = createAsyncAction(UPDATE_AVAILABLE, 'updateAvailable',
-    '/webui/latest/');
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
   'webuiVersionUpdate', '/webui/update/', (response) => {
@@ -212,8 +185,8 @@ function autoUpdateTick() {
   const location = history.location.pathname;
 
   if (location === '/dashboard') {
-    queueStatusAsync(true);
-    recentFilesAsync(true);
+    store.dispatch({ type: Events.DASHBOARD_QUEUE_STATUS });
+    store.dispatch({ type: Events.DASHBOARD_RECENT_FILES });
   } else if (location === '/logs') {
     const state = store.getState();
     const delta = state.settings.other.logDelta;

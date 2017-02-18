@@ -65,25 +65,25 @@ class Overview extends React.Component {
 function mapStateToProps(state) {
   const { importFolders, queueStatus, seriesCount, filesCount } = state;
 
-  const importCount = importFolders.items.length || 0;
+  const importCount = Object.keys(importFolders).length || 0;
   let commandCount = 0;
   try {
-    commandCount = (Object.keys(queueStatus.items).length === 0
-    && queueStatus.items.constructor === Object) ? 0
+    commandCount = (Object.keys(queueStatus).length === 0
+    && queueStatus.constructor === Object) ? 0
       : (
-        (queueStatus.items.hash.count || 0) +
-        (queueStatus.items.general.count || 0) +
-        (queueStatus.items.image.count || 0)
+        (queueStatus.hash.count || 0) +
+        (queueStatus.general.count || 0) +
+        (queueStatus.image.count || 0)
     );
   } catch (ex) {
-    commandCount = '--';
+    commandCount = 0;
   }
 
   return {
     importCount,
     commandCount,
-    seriesCount: seriesCount.items.count || 0,
-    filesCount: filesCount.items.count || 0,
+    seriesCount: seriesCount.count || 0,
+    filesCount: filesCount.count || 0,
   };
 }
 

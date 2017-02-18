@@ -7,13 +7,11 @@ import NewsItem from './NewsItem';
 class News extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
     items: PropTypes.array,
   };
 
   render() {
-    const { items, isFetching, lastUpdated, className } = this.props;
+    const { items, className } = this.props;
     const news = [];
     let i = 0;
     forEach(items, (item) => {
@@ -26,8 +24,6 @@ class News extends React.Component {
         <FixedPanel
           title="Shoko News"
           description="Click title to read full article"
-          lastUpdated={lastUpdated}
-          isFetching={isFetching}
         >
           <table className="table news">
             <tbody>
@@ -42,19 +38,9 @@ class News extends React.Component {
 
 function mapStateToProps(state) {
   const { jmmNews } = state;
-  const {
-    isFetching,
-    lastUpdated,
-    items,
-  } = jmmNews || {
-    isFetching: true,
-    items: [],
-  };
 
   return {
-    items,
-    isFetching,
-    lastUpdated,
+    items: jmmNews,
   };
 }
 
