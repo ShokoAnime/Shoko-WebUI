@@ -2,6 +2,7 @@ import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
+import Events from '../../core/events';
 import { getDelta } from '../../core/actions/logs/Delta';
 import { setAutoupdate } from '../../core/actions';
 import Layout from '../../components/Layout/Layout';
@@ -23,6 +24,7 @@ class LogsPage extends React.Component {
       return;
     }
 
+    store.dispatch({ type: Events.PAGE_LOGS_LOAD });
     // Reset buffer and fetch current log
     store.dispatch(getDelta());
 

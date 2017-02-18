@@ -2,6 +2,7 @@ import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
+import Events from '../../core/events';
 import { getLog } from '../../core/actions/settings/Log';
 import { getSettings } from '../../core/actions/settings/Api';
 import Layout from '../../components/Layout/Layout';
@@ -23,6 +24,8 @@ class SettingsPage extends React.Component {
       });
       return;
     }
+
+    store.dispatch({ type: Events.PAGE_SETTINGS_LOAD });
 
     getLog().then(() => { store.dispatch(getSettings()); });
   }

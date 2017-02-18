@@ -2,6 +2,7 @@ import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
+import Events from '../../core/events';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
 import Overview from '../main/Overview';
@@ -19,6 +20,8 @@ class ImportFoldersPage extends React.Component {
         pathname: '/',
       });
     }
+
+    store.dispatch({ type: Events.PAGE_IMPORT_FOLDERS_LOAD });
   }
 
   render() {
@@ -30,11 +33,7 @@ class ImportFoldersPage extends React.Component {
             <div className="row">
               <InfoPanel title="Info Box Example" className="col-sm-12">
                 <Panel>
-                Very long text explaining what to with this page. Very long text explaining
-                what to with this page. Very long text explaining what to with this page. Very
-                long text explaining what to with this page. Very long text explaining what to
-                with this page. Very long text explaining what to with this page. Very long text
-                explaining what to with this page. Very long text explaining what to with this page.
+                Import folder management and information about your collection.
                 </Panel>
               </InfoPanel>
             </div>
