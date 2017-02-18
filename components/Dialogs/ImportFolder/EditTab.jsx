@@ -98,7 +98,7 @@ function mapStateToProps(state) {
   const { form, editFolder } = modals.importFolder;
 
   return {
-    items: importFolders.items || [],
+    items: importFolders || [],
     form,
     editFolder,
   };

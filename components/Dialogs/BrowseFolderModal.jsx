@@ -48,7 +48,7 @@ class BrowseFolderModal extends React.Component {
           <TreeView onSelect={this.handleSelectionChange} />
           <ButtonToolbar className="pull-right">
             <Button onClick={this.handleSelect} bsStyle="primary">Select</Button>
-            <Button onClick={this.handleClose}>Cancel</Button>
+            <Button onClick={BrowseFolderModal.handleClose}>Cancel</Button>
           </ButtonToolbar>
         </Panel>
       </Modal>

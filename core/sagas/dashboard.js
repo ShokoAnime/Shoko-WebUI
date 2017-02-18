@@ -51,6 +51,33 @@ function* getRecentFiles() {
   yield put({ type: RECENT_FILES, payload: resultJson.data });
 }
 
+function* updateOverview() {
+  yield call(getQueueStatus);
+
+  let resultJson = yield call(Api.folderList);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+
+  yield put({ type: IMPORT_FOLDERS, payload: resultJson.data });
+
+  resultJson = yield call(Api.serieCount);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+
+  yield put({ type: SERIES_COUNT, payload: resultJson.data });
+
+  resultJson = yield call(Api.fileCount);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+  yield put({ type: FILES_COUNT, payload: resultJson.data });
+}
+
 function* eventDashboardQueueStatus() {
   yield call(getQueueStatus);
 }
@@ -114,4 +141,5 @@ export default {
   eventDashboardLoad,
   eventDashboardQueueStatus,
   eventDashboardRecentFiles,
+  updateOverview,
 };

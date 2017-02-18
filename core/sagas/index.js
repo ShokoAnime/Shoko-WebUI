@@ -100,7 +100,7 @@ function* getLogDelta(action) {
 
   yield put({
     type: action.payload ? APPEND_CONTENTS : SET_CONTENTS,
-    payload: { lines: result.data },
+    payload: { lines: result.data, position: resultJson.data.position },
   });
 }
 
@@ -128,5 +128,8 @@ export default function* rootSaga() {
     takeEvery(Events.DASHBOARD_LOAD, Dashboard.eventDashboardLoad),
     takeEvery(Events.DASHBOARD_QUEUE_STATUS, Dashboard.eventDashboardQueueStatus),
     takeEvery(Events.DASHBOARD_RECENT_FILES, Dashboard.eventDashboardRecentFiles),
+    takeEvery(Events.PAGE_IMPORT_FOLDERS_LOAD, Dashboard.updateOverview),
+    takeEvery(Events.PAGE_LOGS_LOAD, Dashboard.updateOverview),
+    takeEvery(Events.PAGE_SETTINGS_LOAD, Dashboard.updateOverview),
   ];
 }

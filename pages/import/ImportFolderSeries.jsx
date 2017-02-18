@@ -26,11 +26,11 @@ class ImportFolderSeries extends React.Component {
 
   static handleSelect(folderId) {
     const { importFolders } = store.getState();
-    const folder = find(importFolders.items, ['ImportFolderID', folderId]);
+    const folder = find(importFolders, ['ImportFolderID', folderId]);
     store.dispatch(
       selectImportFolderSeries({ id: folderId, name: folder.ImportFolderLocation || '' }),
     );
-    importFolderSeriesAsync(true, `/${folderId}`);
+    importFolderSeriesAsync(true, `?id=${folderId}`);
   }
 
   render() {
@@ -98,7 +98,7 @@ function mapStateToProps(state) {
     isFetching,
     lastUpdated,
     selectedFolder: selectedImportFolderSeries,
-    importFolders: importFolders.items || [],
+    importFolders: importFolders || [],
   };
 }
 

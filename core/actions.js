@@ -192,7 +192,7 @@ function autoUpdateTick() {
     const delta = state.settings.other.logDelta;
     let position = 0;
     try {
-      position = state.logs.delta.items.position;
+      position = state.logs.contents.position;
     } catch (ex) { console.error('Unable to get log position'); }
     store.dispatch(getDelta({ delta, position }));
   }
