@@ -33,7 +33,7 @@ a, a:hover, a:focus {
     height: 100%;
 }
 
-.fa {
+.fa, .fa-icon-20 .fa {
     font-size: 20px;
 }
 
