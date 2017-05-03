@@ -6,7 +6,7 @@ import { setFilters, setKeyword } from '../../core/actions/logs/Filters';
 
 class LogSettings extends React.Component {
   static propTypes = {
-    keyword: PropTypes.string,
+    keyword: PropTypes.string.isRequired,
   };
 
   constructor(props) {
@@ -14,7 +14,7 @@ class LogSettings extends React.Component {
     this.applySettings = this.applySettings.bind(this);
     this.updateKeyword = this.updateKeyword.bind(this);
     this.state = {
-      keyword: this.props.keyword,
+      keyword: props.keyword,
     };
   }
 

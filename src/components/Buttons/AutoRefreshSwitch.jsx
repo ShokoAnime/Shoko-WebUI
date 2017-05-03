@@ -5,7 +5,7 @@ import { setAutoupdate } from '../../core/actions';
 
 class AutoRefreshSwitch extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool,
+    enabled: PropTypes.bool.isRequired,
   };
 
   constructor(props) {

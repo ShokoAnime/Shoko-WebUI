@@ -1,4 +1,4 @@
-import { createApiReducer } from '../../reducers';
+import { createApiReducer } from '../../util';
 import { GET_LOG, SET_LOG } from '../../actions/settings/Log';
 
 export const logs = createApiReducer(GET_LOG);

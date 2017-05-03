@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
 import { handleAction } from 'redux-actions';
-import { createApiReducer } from '../../reducers';
+import { createApiReducer } from '../../util';
 import {
   SET_STATUS,
   SET_FORM_DATA,

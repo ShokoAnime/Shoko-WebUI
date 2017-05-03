@@ -3,9 +3,6 @@ import { handleAction, handleActions } from 'redux-actions';
 import {
   QUEUE_STATUS,
   SET_AUTOUPDATE,
-  STATUS_INVALIDATE,
-  STATUS_RECEIVE,
-  STATUS_REQUEST,
   RECENT_FILES,
   JMM_NEWS,
   IMPORT_FOLDERS,
@@ -24,51 +21,10 @@ import {
 import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
+import { createApiReducer, apiReducer } from './util';
 
 const VERSION = __VERSION__; // eslint-disable-line no-undef
 
-export function createApiReducer(type, dataPropName = 'items', dataPropValue = {},
-  valueFn = undefined) {
-  let valueFunc = null;
-  if (valueFn === undefined) {
-    valueFunc = value => value;
-  } else {
-    valueFunc = valueFn;
-  }
-  return (state = {
-    isFetching: false,
-    didInvalidate: true,
-    [dataPropName]: dataPropValue,
-  }, action) => {
-    if (action.type !== type) {
-      return state;
-    }
-    switch (action.meta.status) {
-      case STATUS_INVALIDATE:
-        return Object.assign({}, state, {
-          didInvalidate: true,
-        });
-      case STATUS_REQUEST:
-        return Object.assign({}, state, {
-          isFetching: true,
-          didInvalidate: false,
-        });
-      case STATUS_RECEIVE:
-        return Object.assign({}, state, {
-          isFetching: false,
-          didInvalidate: false,
-          [dataPropName]: valueFunc(action.payload),
-          lastUpdated: action.meta.receivedAt,
-        });
-      default:
-        return state;
-    }
-  };
-}
-
-function apiReducer(state, action) {
-  return action.error ? state : Object.assign({}, state, action.payload);
-}
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
 );
