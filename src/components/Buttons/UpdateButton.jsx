@@ -22,11 +22,6 @@ class UpdateButton extends React.Component {
     history.go({ pathname: '/' });
   }
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
   render() {
     const { enabled } = this.props;
     const { isFetching } = this.props.updateStatus;
