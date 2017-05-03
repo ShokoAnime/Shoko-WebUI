@@ -5,7 +5,7 @@ import s from '../Layout/Layout.css';
 
 class SidebarToggle extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool,
+    enabled: PropTypes.bool.isRequired,
   };
 
   constructor(props) {

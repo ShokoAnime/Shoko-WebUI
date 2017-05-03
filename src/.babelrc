@@ -1,0 +1,25 @@
+{
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "browsers": ["> 1%", "last 2 versions"]
+      }
+    }],
+    "stage-1",
+    "react"
+  ],
+  "plugins": [
+    "react-hot-loader/babel",
+    ["transform-imports", {
+      "react-bootstrap": {
+        "transform": "react-bootstrap/lib/${member}",
+        "preventFullImport": true
+      },
+      "lodash": {
+        "transform": "lodash/${member}",
+        "preventFullImport": true
+      }
+    }]
+  ]
+}

@@ -1,5 +1,6 @@
 import 'babel-polyfill';
 import 'isomorphic-fetch';
+import 'font-awesome-webpack2';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';

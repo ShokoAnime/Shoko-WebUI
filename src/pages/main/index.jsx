@@ -40,7 +40,7 @@ class MainPage extends React.Component {
           <section className="wrapper">
             <Overview />
             <div className="row">
-              <Commands className="col-sm-4" />
+              <Commands className="col-sm-4 fa-icon-20" />
               <RecentFiles className="col-sm-8" />
             </div>
             <div className="row">

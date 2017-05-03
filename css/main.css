@@ -1,9 +1,7 @@
-@import url(../node_modules/open-sans-fontface/open-sans.css);
-
 body {
     color: #2f353b;
     background: #f1f2f7;
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     padding: 0 !important;
     margin: 0 !important;
     font-size:13px;
@@ -35,7 +33,7 @@ a, a:hover, a:focus {
     height: 100%;
 }
 
-.fa {
+.fa, .fa-icon-20 .fa {
     font-size: 20px;
 }
 

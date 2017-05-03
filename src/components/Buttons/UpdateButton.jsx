@@ -6,27 +6,20 @@ import { updateWebuiAsync, updateWebui } from '../../core/actions';
 
 class UpdateButton extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool,
-    updateStatus: PropTypes.object,
-    updateChannel: PropTypes.string,
+    enabled: PropTypes.bool.isRequired,
+    updateStatus: PropTypes.object.isRequired,
   };
 
   static handleAlertDismiss() {
     updateWebui({ status: false });
   }
 
+  static handleClick() {
+    updateWebuiAsync(false);
+  }
+
   static reloadPage() {
     history.go({ pathname: '/' });
-  }
-
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    const { updateChannel } = this.props;
-    updateWebuiAsync(false, updateChannel);
   }
 
   render() {
@@ -50,7 +43,7 @@ class UpdateButton extends React.Component {
     return (
       <li className="notification">
         <button
-          onClick={this.handleClick}
+          onClick={UpdateButton.handleClick}
           type="button"
           className={cx('btn btn-info btn-sm', enabled ? '' : 'hidden')}
         >

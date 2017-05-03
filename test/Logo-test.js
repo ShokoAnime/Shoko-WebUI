@@ -1,8 +1,8 @@
 import React from 'react';
 import { expect } from 'chai';
 import { shallow } from 'enzyme';
-import Link from '../components/Link/Link';
-import Logo from '../components/Layout/Logo';
+import Link from '../src/components/Link/Link';
+import Logo from '../src/components/Layout/Logo';
 
 describe('Logo', () => {
   it('check if it renders', () => {
