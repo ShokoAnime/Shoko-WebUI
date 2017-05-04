@@ -26,11 +26,6 @@ const config = {
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     sourcePrefix: '  ',
   },
-  resolveLoader: {
-    alias: {
-      'routes-loader': path.join(__dirname, './utils/routes-loader'),
-    },
-  },
   devServer: {},
   devtool: isDebug ? 'source-map' : false,
   resolve: {
@@ -91,16 +86,6 @@ const config = {
             },
           },
           { loader: 'postcss-loader' },
-        ],
-      },
-      {
-        test: /routes\.json$/,
-        include: [
-          path.resolve(__dirname, './src/routes.json'),
-        ],
-        use: [
-          'babel-loader',
-          'routes-loader',
         ],
       },
       {

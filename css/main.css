@@ -28,7 +28,7 @@ a, a:hover, a:focus {
     color: #fff;
 }
 
-#container {
+#container, #app-container, .site-wrapper {
     width: 100%;
     height: 100%;
 }

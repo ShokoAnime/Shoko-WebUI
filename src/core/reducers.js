@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 import { handleAction, handleActions } from 'redux-actions';
+import { routerReducer } from 'react-router-redux';
 import {
   QUEUE_STATUS,
   SET_AUTOUPDATE,
@@ -60,6 +61,7 @@ const updateAvailable = handleAction(UPDATE_AVAILABLE,
   , {});
 
 const rootReducer = combineReducers({
+  routerReducer,
   globalAlert,
   apiSession,
   autoUpdate,

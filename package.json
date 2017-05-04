@@ -35,6 +35,7 @@
     "react-dom": "^15.5.4",
     "react-mdl": "^1.10.2",
     "react-redux": "^5.0.4",
+    "react-router-redux": "^5.0.0-alpha.6",
     "redux": "^3.6.0",
     "redux-actions": "^2.0.2",
     "redux-devtools": "^3.4.0",
