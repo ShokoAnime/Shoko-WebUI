@@ -5,30 +5,14 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './core/store';
-import router from './core/router';
-import history from './core/history';
-
-let routes = require('./routes.json');
+import Router from './core/router';
 
 const container = document.getElementById('app-container'); // eslint-disable-line no-undef
 
-function renderComponent(component) {
-  ReactDOM.render(<Provider store={store}>{component}</Provider>, container);
-}
+ReactDOM.render(
+  <Provider store={store}>
+    <Router />
+  </Provider>,
+  container,
+);
 
-function render(location) {
-  router.resolve(routes, location)
-    .then(renderComponent)
-    .catch(error => router.resolve(routes, { ...location, error }).then(renderComponent));
-}
-
-history.listen(render);
-render(history.location);
-
-if (module.hot) {
-  module.hot.accept('./routes.json', () => {
-    routes = require('./routes.json'); // eslint-disable-line global-require
-
-    render(history.location);
-  });
-}
