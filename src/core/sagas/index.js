@@ -163,6 +163,34 @@ function* settingsSaveLogRotate(action) {
   }
 }
 
+function* runQuickAction(action) {
+  let actionFunc;
+  switch (action.payload) {
+    case 'import':
+      actionFunc = Api.getRescan;
+      break;
+    case 'remove_missing_files':
+      actionFunc = Api.getRemoveMissingFiles;
+      break;
+    case 'stats_update':
+      actionFunc = Api.getStatsUpdate;
+      break;
+    case 'mediainfo_update':
+      actionFunc = Api.getMediainfoUpdate;
+      break;
+    default:
+      yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Unknown action!' });
+      return;
+  }
+
+  const resultJson = yield call(actionFunc);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+  } else {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Request sent!' });
+  }
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -178,5 +206,6 @@ export default function* rootSaga() {
     takeEvery(Events.SETTINGS_EXPORT, settingsExport),
     takeEvery(Events.SETTINGS_IMPORT, settingsImport),
     takeEvery(Events.SETTINGS_POST_LOG_ROTATE, settingsSaveLogRotate),
+    takeEvery(Events.RUN_QUICK_ACTION, runQuickAction),
   ];
 }

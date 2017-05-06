@@ -1,10 +1,23 @@
 import React, { PropTypes } from 'react';
+import { Button } from 'react-bootstrap';
 
 class QuickActionsItem extends React.Component {
   static propTypes = {
     index: PropTypes.number,
     name: PropTypes.string,
+    action: PropTypes.string,
+    onAction: PropTypes.func,
   };
+
+  constructor() {
+    super();
+    this.handleAction = this.handleAction.bind(this);
+  }
+
+  handleAction() {
+    const { action, onAction } = this.props;
+    onAction(action);
+  }
 
   render() {
     const { index, name } = this.props;
@@ -13,7 +26,7 @@ class QuickActionsItem extends React.Component {
         <td>{index}</td>
         <td>{name}</td>
         <td className="text-right">
-          <span className="badge bg-success">Coming soon...</span>
+          <Button bsStyle="primary" bsSize="small" onClick={this.handleAction}>Run</Button>
         </td>
       </tr>
     );
