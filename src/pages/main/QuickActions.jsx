@@ -1,34 +1,26 @@
 import React, { PropTypes } from 'react';
-import { forEach } from 'lodash';
+import { connect } from 'react-redux';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import QuickActionsItem from './QuickActionsItem';
+import Events from '../../core/events';
 
 class QuickActions extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    lastUpdated: PropTypes.number,
+    handleAction: PropTypes.func,
   };
 
   render() {
-    const { lastUpdated } = this.props;
-    const shouldComeFromStore = ['Run Import', 'Update Images', 'Sync Votes',
-      'Remove Missing Files', 'Update All Stats', 'Update All TvDB Info'];
-    const actions = [];
-
-    forEach(shouldComeFromStore.entries(), (item, index) => {
-      actions.push(<QuickActionsItem key={index} index={index + 1} name={item} />);
-    });
+    const { className, handleAction } = this.props;
 
     return (
-      <div className={this.props.className}>
-        <FixedPanel
-          title="Quick Actions"
-          description="Can be changed on the Actions tab"
-          lastUpdated={lastUpdated}
-        >
+      <div className={className}>
+        <FixedPanel title="Quick Actions">
           <table className="table">
             <tbody>
-              {actions}
+              <QuickActionsItem index="1" name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
+              <QuickActionsItem index="2" name="Update All Stats" action="stats_update" onAction={handleAction} />
+              <QuickActionsItem index="3" name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
             </tbody>
           </table>
         </FixedPanel>
@@ -37,4 +29,10 @@ class QuickActions extends React.Component {
   }
 }
 
-export default QuickActions;
+function mapDispatchToProps(dispatch) {
+  return {
+    handleAction: (value) => { dispatch({ type: Events.RUN_QUICK_ACTION, payload: value }); },
+  };
+}
+
+export default connect(null, mapDispatchToProps)(QuickActions);

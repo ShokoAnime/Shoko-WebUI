@@ -114,6 +114,22 @@ function postLogRotate(data) {
   return jsonApiResponse('/log/rotate', data, 'POST');
 }
 
+function getRescan() {
+  return jsonApiResponse('/rescan', '');
+}
+
+function getRemoveMissingFiles() {
+  return jsonApiResponse('/remove_missing_files', '');
+}
+
+function getStatsUpdate() {
+  return jsonApiResponse('/stats_update', '');
+}
+
+function getMediainfoUpdate() {
+  return jsonApiResponse('/mediainfo_update', '');
+}
+
 export default {
   getLogDelta,
   getSettings,
@@ -128,4 +144,8 @@ export default {
   configImport,
   getLogRotate,
   postLogRotate,
+  getRescan,
+  getRemoveMissingFiles,
+  getStatsUpdate,
+  getMediainfoUpdate,
 };
