@@ -1,49 +1,45 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ButtonGroup, Button } from 'react-bootstrap';
+import Events from '../../core/events';
 import FixedPanel from '../../components/Panels/FixedPanel';
-import { setLog, getLog } from '../../core/actions/settings/Log';
+import { updateLog } from '../../core/actions/settings/Log';
 
 class LogOptions extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
-    logRotation: PropTypes.bool,
-    compressLogs: PropTypes.bool,
-    deleteLogs: PropTypes.bool,
-    deleteLogsInterval: PropTypes.string,
+    logs: PropTypes.shape({
+      rotate: PropTypes.bool,
+      zip: PropTypes.bool,
+      delete: PropTypes.bool,
+      days: PropTypes.number,
+    }),
+    handleChange: PropTypes.func,
+    saveSettings: PropTypes.func,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleChange = this.handleChange.bind(this);
+  constructor() {
+    super();
+    this.saveSettings = this.saveSettings.bind(this);
   }
 
-  handleChange(key, value) {
-    const { logRotation, compressLogs, deleteLogs, deleteLogsInterval } = this.props;
-    const items = Object.assign({}, {
-      rotate: logRotation,
-      zip: compressLogs,
-      delete: deleteLogs,
-      days: deleteLogsInterval,
-    }, { [key]: value });
-    setLog(items).then(
-      () => getLog(),
-    );
+  saveSettings() {
+    const { saveSettings, logs } = this.props;
+    saveSettings(logs);
   }
 
   render() {
-    const { isFetching, lastUpdated, logRotation, compressLogs, deleteLogs, deleteLogsInterval,
-      className } = this.props;
+    const { logs } = this.props;
+    const { rotate, zip, days } = logs;
+    const { className, handleChange } = this.props;
 
     return (
       <div className={className}>
         <FixedPanel
+          actionName="Save"
+          onAction={this.saveSettings}
           title="Log Options"
           description="Settings related to Shoko Server log"
-          lastUpdated={lastUpdated}
-          isFetching={isFetching}
         >
           <table className="table">
             <tbody>
@@ -52,12 +48,12 @@ class LogOptions extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { this.handleChange('rotate', false); }}
-                      bsStyle={logRotation ? 'default' : 'danger'}
+                      onClick={() => { handleChange('rotate', false); }}
+                      bsStyle={rotate ? 'default' : 'danger'}
                     >No</Button>
                     <Button
-                      onClick={() => { this.handleChange('rotate', true); }}
-                      bsStyle={logRotation ? 'success' : 'default'}
+                      onClick={() => { handleChange('rotate', true); }}
+                      bsStyle={rotate ? 'success' : 'default'}
                     >Yes</Button>
                   </ButtonGroup>
                 </td>
@@ -67,12 +63,12 @@ class LogOptions extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { this.handleChange('zip', false); }}
-                      bsStyle={compressLogs ? 'default' : 'danger'}
+                      onClick={() => { handleChange('zip', false); }}
+                      bsStyle={zip ? 'default' : 'danger'}
                     >No</Button>
                     <Button
-                      onClick={() => { this.handleChange('zip', true); }}
-                      bsStyle={compressLogs ? 'success' : 'default'}
+                      onClick={() => { handleChange('zip', true); }}
+                      bsStyle={zip ? 'success' : 'default'}
                     >Yes</Button>
                   </ButtonGroup>
                 </td>
@@ -82,12 +78,12 @@ class LogOptions extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { this.handleChange('delete', false); }}
-                      bsStyle={deleteLogs ? 'default' : 'danger'}
+                      onClick={() => { handleChange('delete', false); }}
+                      bsStyle={logs.delete ? 'default' : 'danger'}
                     >No</Button>
                     <Button
-                      onClick={() => { this.handleChange('delete', true); }}
-                      bsStyle={deleteLogs ? 'success' : 'default'}
+                      onClick={() => { handleChange('delete', true); }}
+                      bsStyle={logs.delete ? 'success' : 'default'}
                     >Yes</Button>
                   </ButtonGroup>
                 </td>
@@ -97,16 +93,16 @@ class LogOptions extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { this.handleChange('days', 7); }}
-                      bsStyle={deleteLogsInterval === 7 ? 'success' : 'default'}
+                      onClick={() => { handleChange('days', 7); }}
+                      bsStyle={days === 7 ? 'success' : 'default'}
                     >Weekly</Button>
                     <Button
-                      onClick={() => { this.handleChange('days', 30); }}
-                      bsStyle={deleteLogsInterval === 30 ? 'success' : 'default'}
+                      onClick={() => { handleChange('days', 30); }}
+                      bsStyle={days === 30 ? 'success' : 'default'}
                     >Monthly</Button>
                     <Button
-                      onClick={() => { this.handleChange('days', 90); }}
-                      bsStyle={deleteLogsInterval === 90 ? 'success' : 'default'}
+                      onClick={() => { handleChange('days', 90); }}
+                      bsStyle={days === 90 ? 'success' : 'default'}
                     >Quarterly</Button>
                   </ButtonGroup>
                 </td>
@@ -119,17 +115,21 @@ class LogOptions extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
-  const { settings } = state;
-  const { items } = settings.logs;
 
+function mapDispatchToProps(dispatch) {
   return {
-    logRotation: items.rotate,
-    compressLogs: items.zip,
-    deleteLogs: items.delete,
-    deleteLogsInterval: items.days,
-    isFetching: settings.logs.isFetching,
+    handleChange: (field, value) => { dispatch(updateLog({ [field]: value })); },
+    saveSettings: (logs) => { dispatch({ type: Events.SETTINGS_POST_LOG_ROTATE, payload: logs }); },
   };
 }
 
-export default connect(mapStateToProps)(LogOptions);
+function mapStateToProps(state) {
+  const { settings } = state;
+  const { logs } = settings;
+
+  return {
+    logs,
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogOptions);

@@ -1,6 +1,5 @@
-import { createAsyncAction, createAsyncPostAction } from '../../actions';
+import { createAction } from 'redux-actions';
 
 export const GET_LOG = 'SETTINGS_GET_LOG';
-export const getLog = createAsyncAction(GET_LOG, 'settings.logs', '/log/rotate');
+export const updateLog = createAction(GET_LOG);
 export const SET_LOG = 'SETTINGS_SET_LOG';
-export const setLog = createAsyncPostAction(SET_LOG, 'settings.setLogs', '/log/rotate');
