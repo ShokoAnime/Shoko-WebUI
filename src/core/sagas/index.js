@@ -15,6 +15,8 @@ import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
 import { SETTINGS_API_GET } from '../actions/settings/Api';
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
+import { GET_LOG } from '../actions/settings/Log';
+import { SETTINGS_JSON } from '../actions/settings/Json';
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -119,6 +121,48 @@ function* getSettings() {
   yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
 }
 
+function* settingsExport() {
+  const resultJson = yield call(Api.configExport);
+
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+  const data = JSON.stringify(resultJson.data);
+
+  yield put({ type: SETTINGS_JSON, payload: data });
+}
+
+function* settingsImport(action) {
+  const resultJson = yield call(Api.configImport.bind(this, action.payload));
+
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+  }
+}
+
+function* pageSettingsLoad() {
+  yield call(Dashboard.updateOverview);
+
+  const resultJson = yield call(Api.getLogRotate);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    return;
+  }
+  const data = resultJson.data;
+
+  yield put({ type: GET_LOG, payload: data });
+}
+
+function* settingsSaveLogRotate(action) {
+  const resultJson = yield call(Api.postLogRotate.bind(this, action.payload));
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+  } else {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Log settings saved!' });
+  }
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -130,6 +174,9 @@ export default function* rootSaga() {
     takeEvery(Events.DASHBOARD_RECENT_FILES, Dashboard.eventDashboardRecentFiles),
     takeEvery(Events.PAGE_IMPORT_FOLDERS_LOAD, Dashboard.updateOverview),
     takeEvery(Events.PAGE_LOGS_LOAD, Dashboard.updateOverview),
-    takeEvery(Events.PAGE_SETTINGS_LOAD, Dashboard.updateOverview),
+    takeEvery(Events.PAGE_SETTINGS_LOAD, pageSettingsLoad),
+    takeEvery(Events.SETTINGS_EXPORT, settingsExport),
+    takeEvery(Events.SETTINGS_IMPORT, settingsImport),
+    takeEvery(Events.SETTINGS_POST_LOG_ROTATE, settingsSaveLogRotate),
   ];
 }

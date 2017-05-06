@@ -1,35 +1,50 @@
 import 'isomorphic-fetch';
 import store from './store';
 
-function apiCall(apiAction, apiParams) {
-  const apiKey = store.getState().apiSession.apikey;
+function apiCallPost(apiAction, apiParams, apiKey) {
+  return fetch(`/api${apiAction}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      apikey: apiKey,
+    },
+    body: JSON.stringify(apiParams),
+    method: 'POST',
+  });
+}
 
-  // eslint-disable-next-line no-undef
+function apiCallGet(apiAction, apiParams, apiKey) {
   return fetch(`/api${apiAction}${apiParams}`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       apikey: apiKey,
     },
-  })
-    .then((response) => {
-      if (response.status !== 200) {
-        return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
-      }
-      return Promise.resolve(response);
-    });
+  });
 }
 
-function jsonApiCall(apiAction, apiParams) {
-  return apiCall(apiAction, apiParams)
+function apiCall(apiAction, apiParams, type = 'GET') {
+  const apiKey = store.getState().apiSession.apikey;
+  const fetch = type === 'POST' ? apiCallPost(apiAction, apiParams, apiKey) : apiCallGet(apiAction, apiParams, apiKey);
+
+  return fetch.then((response) => {
+    if (response.status !== 200) {
+      return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
+    }
+    return Promise.resolve(response);
+  });
+}
+
+function jsonApiCall(apiAction, apiParams, type) {
+  return apiCall(apiAction, apiParams, type)
     .then(response => response.json());
 }
 
-function jsonApiResponse(apiAction, apiParams) {
-  return jsonApiCall(apiAction, apiParams)
+function jsonApiResponse(apiAction, apiParams, type) {
+  return jsonApiCall(apiAction, apiParams, type)
     .then((json) => {
       if (json.code && json.code !== 200) {
-        return { error: true, message: json.message || '' };
+        return { error: true, message: json.Message || json.message || 'No error message given.' };
       }
       return { data: json };
     })
@@ -83,6 +98,21 @@ function webuiLatest(channel) {
   return jsonApiResponse('/webui/latest/', channel);
 }
 
+function configExport() {
+  return jsonApiResponse('/config/export', '');
+}
+
+function configImport(value) {
+  return jsonApiResponse('/config/import', value, 'POST');
+}
+
+function getLogRotate() {
+  return jsonApiResponse('/log/rotate', '');
+}
+
+function postLogRotate(data) {
+  return jsonApiResponse('/log/rotate', data, 'POST');
+}
 
 export default {
   getLogDelta,
@@ -94,4 +124,8 @@ export default {
   fileCount,
   newsGet,
   webuiLatest,
+  configExport,
+  configImport,
+  getLogRotate,
+  postLogRotate,
 };

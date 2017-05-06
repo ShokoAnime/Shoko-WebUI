@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.3.2-dev3",
+  "version": "0.3.2-dev4",
   "private": true,
   "engines": {
     "node": ">=6",
@@ -88,6 +88,9 @@
   "eslintConfig": {
     "parser": "babel-eslint",
     "extends": "airbnb",
+    "env": {
+      "browser": true
+    },
     "rules": {
       "import/no-extraneous-dependencies": "off",
       "react/prefer-stateless-function": "off",

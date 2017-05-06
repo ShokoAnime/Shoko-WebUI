@@ -3,7 +3,6 @@ import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
 import store from '../../core/store';
 import Events from '../../core/events';
-import { getLog } from '../../core/actions/settings/Log';
 import { getSettings } from '../../core/actions/settings/Api';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
@@ -11,6 +10,7 @@ import Overview from '../main/Overview';
 import StyleSettings from './StyleSettings';
 import LogOptions from './LogOptions';
 import OtherSettings from './OtherSettings';
+import ExportSettings from './ExportSettings';
 
 class SettingsPage extends React.Component {
   componentDidMount() {
@@ -27,7 +27,7 @@ class SettingsPage extends React.Component {
 
     store.dispatch({ type: Events.PAGE_SETTINGS_LOAD });
 
-    getLog().then(() => { store.dispatch(getSettings()); });
+    store.dispatch(getSettings());
   }
 
   render() {
@@ -39,11 +39,7 @@ class SettingsPage extends React.Component {
             <div className="row">
               <InfoPanel title="Info Box Example" className="col-sm-12">
                 <Panel>
-                Very long text explaining what to with this page. Very long text explaining
-                what to with this page. Very long text explaining what to with this page. Very
-                long text explaining what to with this page. Very long text explaining what to
-                with this page. Very long text explaining what to with this page. Very long text
-                explaining what to with this page. Very long text explaining what to with this page.
+                  On this page you can change some Web UI or server settings.
                 </Panel>
               </InfoPanel>
             </div>
@@ -51,6 +47,9 @@ class SettingsPage extends React.Component {
               <StyleSettings className="col-sm-4" />
               <LogOptions className="col-sm-4" />
               <OtherSettings className="col-sm-4" />
+            </div>
+            <div className="row">
+              <ExportSettings />
             </div>
           </section>
         </section>

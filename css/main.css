@@ -37,6 +37,14 @@ a, a:hover, a:focus {
     font-size: 20px;
 }
 
+.panel-default > .panel-heading {
+    color: #15827c;
+}
+
+.panel-default > .panel-heading h6 {
+    color: #2f353b;
+}
+
 /* Sidebar */
 #sidebar {
     transition: margin 0.5s ease-in-out;
