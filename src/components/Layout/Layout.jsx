@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import { forEach } from 'lodash';
-import { Alert } from 'react-bootstrap';
 import Header from './Header';
 import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
 import s from './Layout.css';
+import Notification from '../Notification';
 
 class Layout extends React.Component {
 
@@ -22,7 +22,7 @@ class Layout extends React.Component {
     const alerts = [];
 
     forEach(globalAlert, (alert) => {
-      alerts.push(<Alert className={s.alert}>{alert}</Alert>);
+      alerts.push(<Notification text={alert} />);
     });
 
     return (
