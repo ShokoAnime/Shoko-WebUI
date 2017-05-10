@@ -48,7 +48,7 @@ tasks.set('html', () => {
   const assets = JSON.parse(fs.readFileSync('./public/dist/assets.json', 'utf8'));
   const template = fs.readFileSync('./public/index.ejs', 'utf8');
   const render = ejs.compile(template, { filename: './public/index.ejs' });
-  const output = render({ debug: webpackConfig.debug, bundle: assets.main.js, config });
+  const output = render({ debug: webpackConfig.debug, bundle: assets.main.js, css: assets.main.css, config });
   fs.writeFileSync('./public/index.html', output, 'utf8');
 });
 
