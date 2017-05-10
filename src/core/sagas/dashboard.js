@@ -17,10 +17,11 @@ import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 
 function* getSettings() {
-  const resultJson = yield call(Api.getSettings);
+  const resultJson = yield call(Api.getWebuiConfig);
 
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    if (resultJson.code === 404) { return; }
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
   const data = resultJson.data;
@@ -34,7 +35,7 @@ function* getSettings() {
 function* getQueueStatus() {
   const resultJson = yield call(Api.queueStatus);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -44,7 +45,7 @@ function* getQueueStatus() {
 function* getRecentFiles() {
   const resultJson = yield call(Api.fileRecent);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -56,7 +57,7 @@ function* updateOverview() {
 
   let resultJson = yield call(Api.folderList);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -64,7 +65,7 @@ function* updateOverview() {
 
   resultJson = yield call(Api.serieCount);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -72,7 +73,7 @@ function* updateOverview() {
 
   resultJson = yield call(Api.fileCount);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
   yield put({ type: FILES_COUNT, payload: resultJson.data });
@@ -92,7 +93,7 @@ function* eventDashboardLoad() {
 
   let resultJson = yield call(Api.folderList);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -102,7 +103,7 @@ function* eventDashboardLoad() {
 
   resultJson = yield call(Api.serieCount);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -110,7 +111,7 @@ function* eventDashboardLoad() {
 
   resultJson = yield call(Api.fileCount);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -118,7 +119,7 @@ function* eventDashboardLoad() {
 
   resultJson = yield call(Api.newsGet);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
@@ -129,7 +130,7 @@ function* eventDashboardLoad() {
 
   resultJson = yield call(Api.webuiLatest, updateChannel);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 

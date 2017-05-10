@@ -44,7 +44,7 @@ function jsonApiResponse(apiAction, apiParams, type) {
   return jsonApiCall(apiAction, apiParams, type)
     .then((json) => {
       if (json.code && json.code !== 200) {
-        return { error: true, message: json.Message || json.message || 'No error message given.' };
+        return { error: true, code: json.code, message: json.message || 'No error message given.' };
       }
       return { data: json };
     })
@@ -66,7 +66,7 @@ function getLogDelta(data) {
     .catch(reason => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
 }
 
-function getSettings() {
+function getWebuiConfig() {
   return jsonApiResponse('/webui/config', '');
 }
 
@@ -132,7 +132,7 @@ function getMediainfoUpdate() {
 
 export default {
   getLogDelta,
-  getSettings,
+  getWebuiConfig,
   queueStatus,
   fileRecent,
   folderList,

@@ -22,7 +22,7 @@ class Layout extends React.Component {
     const alerts = [];
 
     forEach(globalAlert, (alert) => {
-      alerts.push(<Notification text={alert} />);
+      alerts.push(<Notification type={alert.type} text={alert.text} />);
     });
 
     return (
