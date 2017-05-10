@@ -15,6 +15,7 @@ export default class Router extends React.Component {
       <ConnectedRouter history={history} basename="/webui">
         <div className="site-wrapper">
           <Route exact path="/" component={LoginPage} />
+          <Route exact path="/index.html" component={LoginPage} />
           <Route exact path="/error" component={ErrorPage} />
           <Route exact path="/dashboard" component={DashboardPage} />
           <Route exact path="/import-folders" component={ImportPage} />

@@ -2,6 +2,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const childProcess = require('child_process');
 const pkg = require('./package.json');
 
@@ -13,8 +14,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    '!!style-loader!css-loader!roboto-npm-webfont/style.css',
-    '!!style-loader!css-loader!bootstrap/dist/css/bootstrap.min.css',
+    '!!font-awesome-sass-loader!./font-awesome.config.js',
+    'roboto-npm-webfont/style.css',
+    'bootstrap-loader',
     '!!style-loader!css-loader!./css/bootstrap-reset.css',
     '!!style-loader!css-loader!./css/main.css',
     './src/main.jsx',
@@ -27,7 +29,7 @@ const config = {
     sourcePrefix: '  ',
   },
   devServer: {},
-  devtool: isDebug ? 'source-map' : false,
+  devtool: !isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -44,7 +46,7 @@ const config = {
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
-      debug: true,
+      debug: isDebug,
     }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
@@ -57,11 +59,18 @@ const config = {
       filename: 'assets.json',
       prettyPrint: true,
     }),
+    new ExtractTextPlugin({
+      filename: 'styles.css',
+      allChunks: true,
+      ignoreOrder: true,
+      disable: isDebug,
+    }),
   ],
   module: {
     rules: [
       {
         test: /\.jsx?$/,
+        exclude: /node_modules/,
         include: [
           path.resolve(__dirname, './src'),
         ],
@@ -73,23 +82,29 @@ const config = {
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          {
+        exclude: '/node_modules/',
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [{
             loader: 'css-loader',
             options: {
               modules: true,
-              importLoaders: 1,
+              importLoaders: 2,
               sourceMap: isDebug,
               localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
               minimize: !isDebug,
             },
           },
-          { loader: 'postcss-loader' },
-        ],
+            { loader: 'postcss-loader' },
+          ],
+        }),
       },
       {
-        test: /\.(woff|woff2|svg|eot|ttf|wav|mp3)$/,
+        test: /\.(woff|woff2)$/,
+        loader: 'url-loader?limit=100000&mimetype=application/font-woff',
+      },
+      {
+        test: /\.(svg|eot|ttf|wav|mp3)$/,
         use: [
           'file-loader',
         ],
