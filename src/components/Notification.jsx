@@ -4,13 +4,14 @@ import s from './Notification.css';
 
 class Notification extends React.Component {
   static propTypes = {
+    type: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
   };
 
   render() {
-    const { text } = this.props;
+    const { text, type } = this.props;
     return (
-      <div className={cx(s.notify, s.error, s['notify-top-right'])} style={{ top: '20px' }}>
+      <div className={cx(s.notify, s[type], s['notify-top-right'])} style={{ top: '20px' }}>
         <a className={s['notify-close-btn']} />
         <div className={s['notify-icon']}>
           <div className={s['notify-icon-inner']} style={{ marginTop: '-9px' }}>
@@ -18,7 +19,7 @@ class Notification extends React.Component {
           </div>
         </div>
         <div className={s['notify-text']}>
-          <h3>Error</h3>
+          <h3>{type === 'error' ? 'Error' : 'Success'}</h3>
           <p>{text}</p>
         </div>
       </div>

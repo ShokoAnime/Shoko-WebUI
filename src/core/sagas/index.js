@@ -90,13 +90,13 @@ function* getLogDelta(action) {
   const resultJson = yield call(Api.getLogDelta, action.payload);
 
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
 
   const result = splitLogLines(resultJson.data);
   if (result.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: result.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: result.message } });
     return;
   }
 
@@ -107,10 +107,11 @@ function* getLogDelta(action) {
 }
 
 function* getSettings() {
-  const resultJson = yield call(Api.getSettings);
+  const resultJson = yield call(Api.getWebuiConfig);
 
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    if (resultJson.code === 404) { return; }
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
   const data = resultJson.data;
@@ -125,7 +126,7 @@ function* settingsExport() {
   const resultJson = yield call(Api.configExport);
 
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
   const data = JSON.stringify(resultJson.data);
@@ -137,7 +138,7 @@ function* settingsImport(action) {
   const resultJson = yield call(Api.configImport.bind(this, action.payload));
 
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   }
 }
 
@@ -146,7 +147,7 @@ function* pageSettingsLoad() {
 
   const resultJson = yield call(Api.getLogRotate);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
   const data = resultJson.data;
@@ -157,9 +158,9 @@ function* pageSettingsLoad() {
 function* settingsSaveLogRotate(action) {
   const resultJson = yield call(Api.postLogRotate.bind(this, action.payload));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Log settings saved!' });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Log settings saved!' } });
   }
 }
 
@@ -179,15 +180,15 @@ function* runQuickAction(action) {
       actionFunc = Api.getMediainfoUpdate;
       break;
     default:
-      yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Unknown action!' });
+      yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
       return;
   }
 
   const resultJson = yield call(actionFunc);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: resultJson.message });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: 'Request sent!' });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
   }
 }
 
