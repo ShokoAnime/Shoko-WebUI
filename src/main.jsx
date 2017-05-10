@@ -1,3 +1,4 @@
+// @flow
 import 'babel-polyfill';
 import 'isomorphic-fetch';
 import React from 'react';
@@ -7,7 +8,7 @@ import store from './core/store';
 import Router from './core/router';
 import ErrorBoundary from './pages/error';
 
-const container = document.getElementById('app-container'); // eslint-disable-line no-undef
+const container = document.getElementById('app-container');
 
 ReactDOM.render(
   <Provider store={store}>
@@ -17,4 +18,3 @@ ReactDOM.render(
   </Provider>,
   container,
 );
-

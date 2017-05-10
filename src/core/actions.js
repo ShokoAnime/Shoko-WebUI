@@ -1,3 +1,4 @@
+// @flow
 import 'isomorphic-fetch';
 import { createAction } from 'redux-actions';
 

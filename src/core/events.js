@@ -1,3 +1,4 @@
+// @flow
 /**
  * Events are actions that are used to invoke sagas but don't get processed in the reducer usually
  */

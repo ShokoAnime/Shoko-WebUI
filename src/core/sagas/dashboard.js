@@ -1,3 +1,4 @@
+// @flow
 import { put, call } from 'redux-saga/effects';
 import Api from '../api';
 import {

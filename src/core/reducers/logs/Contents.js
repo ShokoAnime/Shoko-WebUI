@@ -1,3 +1,4 @@
+// @flow
 import { handleActions } from 'redux-actions';
 import { concat } from 'lodash';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../../actions/logs/Contents';

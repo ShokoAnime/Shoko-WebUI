@@ -1,3 +1,4 @@
+// @flow
 import { delay } from 'redux-saga';
 import { put, takeEvery, call, select } from 'redux-saga/effects';
 import { without } from 'lodash/array';

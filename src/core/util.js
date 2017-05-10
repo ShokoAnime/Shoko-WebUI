@@ -1,3 +1,4 @@
+// @flow
 import Version from '../../public/version.json';
 import {
   STATUS_INVALIDATE,

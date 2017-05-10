@@ -1,3 +1,4 @@
+// @flow
 import { handleAction } from 'redux-actions';
 import { createApiReducer } from '../../util';
 import { GET_LOG, SET_LOG } from '../../actions/settings/Log';

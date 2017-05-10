@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -46,18 +47,14 @@ class ImportFolderSeries extends React.Component {
     });
 
     forEach(importFolders, (folder) => {
-      const item = (
-        <MenuItem key={folder.ImportFolderID} eventKey={folder.ImportFolderID}>
-          {folder.ImportFolderLocation}
-        </MenuItem>
+      folders.push(
+        <MenuItem eventKey={folder.ImportFolderID}>{folder.ImportFolderLocation}</MenuItem>,
       );
-      folders.push(item);
     });
 
     const importFoldersSelector = [
       <span>Series In Import Folder
         <DropdownButton
-          id="import-folder-select"
           bsStyle="link"
           onSelect={ImportFolderSeries.handleSelect}
           title={selectedFolder.name || ''}

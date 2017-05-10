@@ -1,3 +1,4 @@
+// @flow
 import 'isomorphic-fetch';
 import store from './store';
 import Events from './events';

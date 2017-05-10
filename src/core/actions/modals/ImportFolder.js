@@ -1,3 +1,4 @@
+// @flow
 import { createAction } from 'redux-actions';
 
 export const SET_STATUS = 'MODALS_IMPORT_FOLDER_SET_STATUS';

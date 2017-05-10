@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import history from '../../core/history';
 import store from '../../core/store';

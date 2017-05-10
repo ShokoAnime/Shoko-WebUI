@@ -1,3 +1,4 @@
+// @flow
 import sessionStorage from 'sessionstorage';
 
 export const loadState = () => {

@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import { handleAction, handleActions } from 'redux-actions';
 import { routerReducer } from 'react-router-redux';

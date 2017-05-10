@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { uiVersion } from '../../core/util';
