@@ -6,7 +6,7 @@ import { setFormData } from '../../../core/actions/modals/ImportFolder';
 class FolderItem extends React.Component {
   static propTypes = {
     index: PropTypes.number,
-    ImportFolderID: PropTypes.string,
+    ImportFolderID: PropTypes.number,
     ImportFolderName: PropTypes.string,
     ImportFolderLocation: PropTypes.string,
     ImportFolderType: PropTypes.number,

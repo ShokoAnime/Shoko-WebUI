@@ -130,6 +130,23 @@ function getMediainfoUpdate() {
   return jsonApiResponse('/mediainfo_update', '');
 }
 
+function getFolderList() {
+  return jsonApiResponse('/folder/list', '');
+}
+
+function postFolderAdd(data) {
+  return jsonApiResponse('/folder/add', data, 'POST');
+}
+
+function postFolderEdit(data) {
+  return jsonApiResponse('/folder/edit', data, 'POST');
+}
+
+function postWebuiConfig(data) {
+  return jsonApiResponse('/webui/config', data, 'POST');
+}
+
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -148,4 +165,8 @@ export default {
   getRemoveMissingFiles,
   getStatsUpdate,
   getMediainfoUpdate,
+  getFolderList,
+  postFolderAdd,
+  postFolderEdit,
+  postWebuiConfig,
 };

@@ -18,9 +18,9 @@ class QuickActions extends React.Component {
         <FixedPanel title="Quick Actions">
           <table className="table">
             <tbody>
-              <QuickActionsItem index="1" name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
-              <QuickActionsItem index="2" name="Update All Stats" action="stats_update" onAction={handleAction} />
-              <QuickActionsItem index="3" name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
+              <QuickActionsItem index={1} name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
+              <QuickActionsItem index={2} name="Update All Stats" action="stats_update" onAction={handleAction} />
+              <QuickActionsItem index={3} name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
             </tbody>
           </table>
         </FixedPanel>

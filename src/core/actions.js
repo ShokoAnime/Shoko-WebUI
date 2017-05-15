@@ -80,69 +80,12 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
   };
 }
 
-export function createAsyncPostAction(type, key, apiAction, responseCallback) {
-  return (apiParams) => {
-    const state = store.getState();
-    const apiKey = state.apiSession.apikey;
-
-    store.dispatch(createAction(type, payload => payload, () => ({ status: STATUS_REQUEST }))());
-    // eslint-disable-next-line no-undef
-    return fetch(`/api${apiAction}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        apikey: apiKey,
-      },
-      body: JSON.stringify(apiParams),
-      method: 'POST',
-    })
-      .then((response) => {
-        if (typeof responseCallback === 'function') {
-          return responseCallback(response);
-        }
-        return response.json();
-      })
-      .then(json => store.dispatch(createAction(type, payload => payload, () => ({
-        status: STATUS_RECEIVE,
-        receivedAt: Date.now(),
-      }))(json)))
-      .catch(() => {
-        // TODO: toastr notification
-      });
-  };
-}
-
-export function createAsyncStatelessPostAction(apiAction, responseCallback) {
-  return (apiParams = '') => {
-    const state = store.getState();
-    const apiKey = state.apiSession.apikey;
-    // eslint-disable-next-line no-undef
-    return fetch(`/api${apiAction}`, {
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        apikey: apiKey,
-      },
-      body: JSON.stringify(apiParams),
-      method: 'POST',
-    })
-      .then((response) => {
-        if (typeof responseCallback === 'function') {
-          return responseCallback(response);
-        }
-        return Promise.reject();
-      });
-  };
-}
-
 
 /* Async actions - API calls */
 export const QUEUE_STATUS = 'QUEUE_STATUS';
 export const RECENT_FILES = 'RECENT_FILES';
 export const JMM_NEWS = 'JMM_NEWS';
 export const IMPORT_FOLDERS = 'IMPORT_FOLDERS';
-export const importFoldersAsync =
-  createAsyncAction(IMPORT_FOLDERS, 'importFolders', '/folder/list');
 export const SERIES_COUNT = 'SERIES_COUNT';
 export const FILES_COUNT = 'FILES_COUNT';
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';

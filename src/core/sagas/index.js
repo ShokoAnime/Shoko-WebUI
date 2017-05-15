@@ -1,7 +1,8 @@
 import { delay } from 'redux-saga';
-import { put, takeEvery, call } from 'redux-saga/effects';
+import { put, takeEvery, call, select } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
+import * as Ajv from 'ajv';
 import Api from '../api';
 import Events from '../events';
 import Dashboard from './dashboard';
@@ -17,6 +18,10 @@ import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { GET_LOG } from '../actions/settings/Log';
 import { SETTINGS_JSON } from '../actions/settings/Json';
+import {
+  API_ADD_FOLDER, API_EDIT_FOLDER, SET_FORM_DATA,
+  SET_STATUS,
+} from '../actions/modals/ImportFolder';
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -192,6 +197,71 @@ function* runQuickAction(action) {
   }
 }
 
+function* addFolder(action) {
+  yield put({ type: API_ADD_FOLDER, payload: { isFetching: true } });
+  const resultJson = yield call(Api.postFolderAdd.bind(this, action.payload));
+  yield put({ type: API_ADD_FOLDER, payload: { ...resultJson, isFetching: false } });
+
+  const resultList = yield call(Api.getFolderList);
+  if (resultList.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultList.message } });
+  }
+
+  if (!resultJson.error) {
+    yield put({ type: SET_STATUS, payload: false });
+  }
+}
+
+function* editFolder(action) {
+  yield put({ type: API_EDIT_FOLDER, payload: { isFetching: true } });
+  const resultJson = yield call(Api.postFolderEdit.bind(this, action.payload));
+  yield put({ type: API_EDIT_FOLDER, payload: { ...resultJson, isFetching: false } });
+
+  const resultList = yield call(Api.getFolderList);
+  if (resultList.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultList.message } });
+  }
+
+  if (!resultJson.error) {
+    yield put({ type: SET_FORM_DATA });
+    yield put({ type: SET_STATUS, payload: false });
+  }
+}
+
+function* settingsSaveWebui(action) {
+  const settings = yield select(state => state.settings);
+  const currentSettings = {
+    uiTheme: settings.ui.theme,
+    uiNotifications: settings.ui.notifications,
+    otherUpdateChannel: settings.other.updateChannel,
+    logDelta: settings.other.logDelta,
+  };
+  const data = { ...currentSettings, ...action.payload };
+
+  const schema = {
+    required: ['uiTheme', 'uiNotifications', 'otherUpdateChannel', 'logDelta'],
+    uiTheme: { enum: ['light', 'dark', 'custom'] },
+    uiNotifications: { type: 'boolean' },
+    otherUpdateChannel: { enum: ['stable', 'unstable'] },
+    logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
+  };
+
+  const ajv = new Ajv();
+  const validator = ajv.compile(schema);
+  const result = validator(data);
+  if (result !== true) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: `Schema validation failed! ${result.toString()}` } });
+    return;
+  }
+
+  const resultJson = yield call(Api.postWebuiConfig.bind(this, data));
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+  } else {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'WebUI settings saved!' } });
+  }
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -208,5 +278,8 @@ export default function* rootSaga() {
     takeEvery(Events.SETTINGS_IMPORT, settingsImport),
     takeEvery(Events.SETTINGS_POST_LOG_ROTATE, settingsSaveLogRotate),
     takeEvery(Events.RUN_QUICK_ACTION, runQuickAction),
+    takeEvery(Events.ADD_FOLDER, addFolder),
+    takeEvery(Events.EDIT_FOLDER, editFolder),
+    takeEvery(Events.SETTINGS_POST_WEBUI, settingsSaveWebui),
   ];
 }

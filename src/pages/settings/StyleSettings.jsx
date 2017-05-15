@@ -2,36 +2,37 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ButtonGroup, Button, Dropdown, MenuItem } from 'react-bootstrap';
 import FixedPanel from '../../components/Panels/FixedPanel';
-import { setSettings } from '../../core/actions/settings/Api';
 import { setTheme, setNotifications } from '../../core/actions/settings/UI';
-import store from '../../core/store';
+import Events from '../../core/events';
 
 class StyleSettings extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    theme: PropTypes.string,
-    notifications: PropTypes.bool,
+    ui: PropTypes.shape({
+      theme: PropTypes.string,
+      notifications: PropTypes.bool,
+    }),
+    changeTheme: PropTypes.func.isRequired,
+    changeNotifications: PropTypes.func.isRequired,
+    saveSettings: PropTypes.func.isRequired,
   };
 
-  static saveSettings() {
-    const state = store.getState();
-    const settings = {
-      uiTheme: state.settings.ui.theme,
-      uiNotifications: state.settings.ui.notifications,
-    };
-    setSettings(settings);
+  constructor() {
+    super();
+    this.saveSettings = this.saveSettings.bind(this);
   }
 
-  static changeTheme(value) {
-    store.dispatch(setTheme(value));
-  }
-
-  static changeNotifications(value) {
-    store.dispatch(setNotifications(value));
+  saveSettings() {
+    const { saveSettings, ui } = this.props;
+    saveSettings({
+      uiTheme: ui.theme,
+      uiNotifications: ui.notifications,
+    });
   }
 
   render() {
-    const { theme, notifications, className } = this.props;
+    const { ui, className, changeTheme, changeNotifications } = this.props;
+    const { theme, notifications } = ui;
 
     return (
       <div className={className}>
@@ -39,7 +40,7 @@ class StyleSettings extends React.Component {
           title="Style Options"
           description="Settings related to Web UI style"
           actionName="Save"
-          onAction={StyleSettings.saveSettings}
+          onAction={this.saveSettings}
         >
           <table className="table">
             <tbody>
@@ -48,15 +49,15 @@ class StyleSettings extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { StyleSettings.changeTheme('light'); }}
+                      onClick={() => { changeTheme('light'); }}
                       bsStyle={theme === 'light' ? 'success' : 'default'}
                     >Light</Button>
                     <Button
-                      onClick={() => { StyleSettings.changeTheme('dark'); }}
+                      onClick={() => { changeTheme('dark'); }}
                       bsStyle={theme === 'dark' ? 'success' : 'default'}
                     >Dark</Button>
                     <Button
-                      onClick={() => { StyleSettings.changeTheme('custom'); }}
+                      onClick={() => { changeTheme('custom'); }}
                       bsStyle={theme === 'custom' ? 'success' : 'default'}
                     >Custom</Button>
                   </ButtonGroup>
@@ -82,11 +83,11 @@ class StyleSettings extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { StyleSettings.changeNotifications(false); }}
+                      onClick={() => { changeNotifications(false); }}
                       bsStyle={notifications ? 'default' : 'danger'}
                     >No</Button>
                     <Button
-                      onClick={() => { StyleSettings.changeNotifications(true); }}
+                      onClick={() => { changeNotifications(true); }}
                       bsStyle={notifications ? 'success' : 'default'}
                     >Yes</Button>
                   </ButtonGroup>
@@ -102,15 +103,19 @@ class StyleSettings extends React.Component {
 
 function mapStateToProps(state) {
   const { settings } = state;
-  const {
-    theme,
-    notifications,
-  } = settings.ui;
+  const { ui } = settings;
 
   return {
-    theme,
-    notifications,
+    ui,
   };
 }
 
-export default connect(mapStateToProps)(StyleSettings);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeTheme: (value) => { dispatch(setTheme(value)); },
+    changeNotifications: (value) => { dispatch(setNotifications(value)); },
+    saveSettings: (value) => { dispatch({ type: Events.SETTINGS_POST_WEBUI, payload: value }); },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StyleSettings);

@@ -6,21 +6,17 @@ import {
   ButtonToolbar,
 } from 'react-bootstrap';
 import StatusPanel from '../../Panels/StatusPanel';
-import { setStatus as setImportStatus,
-  addFolderAsync } from '../../../core/actions/modals/ImportFolder';
-import store from '../../../core/store';
-import { importFoldersAsync } from '../../../core/actions';
+import { setStatus as setImportStatus } from '../../../core/actions/modals/ImportFolder';
 import FolderForm from './Form';
+import Events from '../../../core/events';
 
 class AddTab extends React.Component {
   static propTypes = {
     addFolder: PropTypes.object,
+    handleAddFolder: PropTypes.func.isRequired,
+    handleClose: PropTypes.func.isRequired,
     form: PropTypes.object,
   };
-
-  static handleClose() {
-    store.dispatch(setImportStatus(false));
-  }
 
   constructor(props) {
     super(props);
@@ -28,20 +24,12 @@ class AddTab extends React.Component {
   }
 
   handleSubmit() {
-    addFolderAsync(this.props.form)
-      .then(() => importFoldersAsync(true))
-      .then(() => {
-        const { addFolder } = this.props;
-        const { code } = addFolder.items;
-        if (code === 200) {
-          AddTab.handleClose();
-        }
-      },
-    );
+    const { handleAddFolder, form } = this.props;
+    handleAddFolder(form);
   }
 
   render() {
-    const { addFolder } = this.props;
+    const { addFolder, handleClose } = this.props;
     const { isFetching } = addFolder;
     return (
       <Panel>
@@ -51,7 +39,7 @@ class AddTab extends React.Component {
           <Button onClick={this.handleSubmit} bsStyle="primary">
             {isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : 'Add'}
           </Button>
-          <Button onClick={AddTab.handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>
         </ButtonToolbar>
       </Panel>
     );
@@ -68,4 +56,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(AddTab);
+function mapDispatchToProps(dispatch) {
+  return {
+    handleAddFolder: value => dispatch({ type: Events.ADD_FOLDER, payload: value }),
+    handleClose: () => dispatch(setImportStatus(false)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddTab);

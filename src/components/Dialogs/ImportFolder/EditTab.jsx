@@ -8,48 +8,32 @@ import {
 } from 'react-bootstrap';
 import FolderItem from './FolderItem';
 import FolderForm from './Form';
-import { setFormData, editFolderAsync, setStatus } from '../../../core/actions/modals/ImportFolder';
-import { importFoldersAsync } from '../../../core/actions';
-import store from '../../../core/store';
+import { setFormData, setStatus } from '../../../core/actions/modals/ImportFolder';
 import StatusPanel from '../../Panels/StatusPanel';
+import Events from '../../../core/events';
 
 class EditTab extends React.Component {
   static propTypes = {
-    items: PropTypes.array,
+    items: PropTypes.object,
     form: PropTypes.object,
     editFolder: PropTypes.object,
+    handleEditFolder: PropTypes.func.isRequired,
+    handleClose: PropTypes.func.isRequired,
+    handleCancel: PropTypes.func.isRequired,
   };
-
-  static handleClose() {
-    store.dispatch(setFormData());
-  }
-
-  static handleCloseModal() {
-    store.dispatch(setStatus(false));
-  }
 
   constructor(props) {
     super(props);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
-  componentWillReceiveProps(newProps) {
-    const newForm = this.props.editFolder;
-    const curForm = newProps.editFolder;
-    if (curForm.isFetching === true && newForm.isFetching === false
-      && newProps.form.ImportFolderID) {
-      importFoldersAsync(true)
-        .then(() => store.dispatch(setFormData()));
-    }
-  }
-
   handleSubmit() {
-    editFolderAsync(this.props.form)
-      .then(() => importFoldersAsync(true));
+    const { handleEditFolder, form } = this.props;
+    handleEditFolder(form);
   }
 
   render() {
-    const { items, form, editFolder } = this.props;
+    const { items, form, editFolder, handleClose, handleCancel } = this.props;
     const { isFetching } = editFolder;
     let panel;
     let buttons;
@@ -59,7 +43,7 @@ class EditTab extends React.Component {
       let i = 0;
       forEach(items, (item) => {
         i += 1;
-        folders.push(<FolderItem index={i} {...item} />);
+        folders.push(<FolderItem key={i} index={i} {...item} />);
       });
 
       panel = (
@@ -69,7 +53,7 @@ class EditTab extends React.Component {
       );
       buttons = (
         <ButtonToolbar className="pull-right">
-          <Button onClick={EditTab.handleCloseModal}>Cancel</Button>
+          <Button onClick={handleClose}>Cancel</Button>
         </ButtonToolbar>
       );
     } else {
@@ -79,7 +63,7 @@ class EditTab extends React.Component {
           <Button onClick={this.handleSubmit} bsStyle="primary">
             {isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : 'Update'}
           </Button>
-          <Button onClick={EditTab.handleClose}>Cancel</Button>
+          <Button onClick={handleCancel}>Cancel</Button>
         </ButtonToolbar>
       );
     }
@@ -104,4 +88,12 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(EditTab);
+function mapDispatchToProps(dispatch) {
+  return {
+    handleEditFolder: value => dispatch({ type: Events.EDIT_FOLDER, payload: value }),
+    handleClose: () => dispatch(setStatus(false)),
+    handleCancel: () => dispatch(setFormData()),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditTab);

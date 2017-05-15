@@ -6,8 +6,12 @@ import { updateWebuiAsync, updateWebui } from '../../core/actions';
 
 class UpdateButton extends React.Component {
   static propTypes = {
-    enabled: PropTypes.bool.isRequired,
+    enabled: PropTypes.bool,
     updateStatus: PropTypes.object.isRequired,
+  };
+
+  static defaultProps = {
+    enabled: false,
   };
 
   static handleAlertDismiss() {
