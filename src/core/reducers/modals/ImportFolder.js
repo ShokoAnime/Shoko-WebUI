@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import { handleAction } from 'redux-actions';
-import { createApiReducer } from '../../util';
 import {
   SET_STATUS,
   SET_FORM_DATA,
@@ -12,8 +11,11 @@ const status = handleAction(SET_STATUS,
   (state, action) => (action.error ? state : action.payload)
   , false);
 
-const addFolder = createApiReducer(API_ADD_FOLDER);
-const editFolder = createApiReducer(API_EDIT_FOLDER);
+const addFolder =
+  handleAction(API_ADD_FOLDER, (state, action) => Object.assign({}, state, action.payload), {});
+
+const editFolder =
+  handleAction(API_EDIT_FOLDER, (state, action) => Object.assign({}, state, action.payload), {});
 
 const defaultFormData = {
   ImportFolderID: undefined,

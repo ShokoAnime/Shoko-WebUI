@@ -2,32 +2,37 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { ButtonGroup, Button, FormControl } from 'react-bootstrap';
 import FixedPanel from '../../components/Panels/FixedPanel';
-import { setSettings } from '../../core/actions/settings/Api';
+import Events from '../../core/events';
 import { setUpdateChannel, setLogDelta } from '../../core/actions/settings/Other';
-import store from '../../core/store';
 
 class OtherSettings extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    updateChannel: PropTypes.string,
-    logDelta: PropTypes.number,
+    other: PropTypes.shape({
+      updateChannel: PropTypes.string,
+      logDelta: PropTypes.number,
+    }),
+    changeUpdateChannel: PropTypes.func.isRequired,
+    changeLogDelta: PropTypes.func.isRequired,
+    saveSettings: PropTypes.func.isRequired,
   };
 
-  static saveSettings() {
-    setSettings();
+  constructor() {
+    super();
+    this.saveSettings = this.saveSettings.bind(this);
   }
 
-  static changeUpdateChannel(value) {
-    store.dispatch(setUpdateChannel(value));
-  }
-
-  static changeLogDelta(field) {
-    const value = field.getValue();
-    store.dispatch(setLogDelta(value));
+  saveSettings() {
+    const { other, saveSettings } = this.props;
+    saveSettings({
+      otherUpdateChannel: other.updateChannel,
+      logDelta: other.logDelta,
+    });
   }
 
   render() {
-    const { updateChannel, logDelta, className } = this.props;
+    const { other, className, changeUpdateChannel, changeLogDelta } = this.props;
+    const { updateChannel, logDelta } = other;
 
     return (
       <div className={className}>
@@ -35,7 +40,7 @@ class OtherSettings extends React.Component {
           title="Other Options"
           description="General settings"
           actionName="Save"
-          onAction={OtherSettings.saveSettings}
+          onAction={this.saveSettings}
         >
           <table className="table">
             <tbody>
@@ -44,11 +49,11 @@ class OtherSettings extends React.Component {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
-                      onClick={() => { OtherSettings.changeUpdateChannel('unstable'); }}
+                      onClick={() => { changeUpdateChannel('unstable'); }}
                       bsStyle={updateChannel === 'unstable' ? 'success' : 'default'}
                     >Unstable</Button>
                     <Button
-                      onClick={() => { OtherSettings.changeUpdateChannel('stable'); }}
+                      onClick={() => { changeUpdateChannel('stable'); }}
                       bsStyle={updateChannel === 'stable' ? 'success' : 'default'}
                     >Stable</Button>
                   </ButtonGroup>
@@ -61,7 +66,7 @@ class OtherSettings extends React.Component {
                     <FormControl
                       type="text"
                       value={logDelta}
-                      onChange={() => { OtherSettings.changeLogDelta(this); }}
+                      onChange={() => { changeLogDelta(this.getValue()); }}
                     />
                   </ButtonGroup>
                 </td>
@@ -76,15 +81,19 @@ class OtherSettings extends React.Component {
 
 function mapStateToProps(state) {
   const { settings } = state;
-  const {
-    updateChannel,
-    logDelta,
-  } = settings.other;
+  const { other } = settings;
 
   return {
-    updateChannel,
-    logDelta,
+    other,
   };
 }
 
-export default connect(mapStateToProps)(OtherSettings);
+function mapDispatchToProps(dispatch) {
+  return {
+    changeUpdateChannel: (value) => { dispatch(setUpdateChannel(value)); },
+    changeLogDelta: (value) => { dispatch(setLogDelta(value)); },
+    saveSettings: (value) => { dispatch({ type: Events.SETTINGS_POST_WEBUI, payload: value }); },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OtherSettings);

@@ -7,7 +7,7 @@ import NewsItem from './NewsItem';
 class News extends React.Component {
   static propTypes = {
     className: PropTypes.string,
-    items: PropTypes.array,
+    items: PropTypes.object,
   };
 
   render() {
