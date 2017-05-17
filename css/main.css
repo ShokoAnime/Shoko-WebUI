@@ -421,3 +421,7 @@ a.logo span {
     overflow: auto;
     overflow-x: hidden;
 }
+
+.quick-actions .table tbody > tr > td {
+    padding: 8px;
+}

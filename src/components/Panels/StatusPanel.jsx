@@ -4,7 +4,6 @@ import { Alert } from 'react-bootstrap';
 class StatusPanel extends React.Component {
   static propTypes = {
     isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
     code: PropTypes.number,
     message: PropTypes.string,
   };

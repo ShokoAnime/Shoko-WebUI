@@ -134,6 +134,10 @@ function getFolderList() {
   return jsonApiResponse('/folder/list', '');
 }
 
+function getFolderImport() {
+  return jsonApiResponse('/folder/import', '');
+}
+
 function postFolderAdd(data) {
   return jsonApiResponse('/folder/add', data, 'POST');
 }
@@ -146,6 +150,9 @@ function postWebuiConfig(data) {
   return jsonApiResponse('/webui/config', data, 'POST');
 }
 
+function getPlexSyncAll() {
+  return jsonApiResponse('/plex/sync/all', '');
+}
 
 export default {
   getLogDelta,
@@ -169,4 +176,6 @@ export default {
   postFolderAdd,
   postFolderEdit,
   postWebuiConfig,
+  getFolderImport,
+  getPlexSyncAll,
 };

@@ -14,13 +14,15 @@ class QuickActions extends React.Component {
     const { className, handleAction } = this.props;
 
     return (
-      <div className={className}>
-        <FixedPanel title="Quick Actions">
+      <div className={`quick-actions ${className}`}>
+        <FixedPanel title="Quick Actions" description="Some quick actions">
           <table className="table">
             <tbody>
-              <QuickActionsItem index={1} name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
-              <QuickActionsItem index={2} name="Update All Stats" action="stats_update" onAction={handleAction} />
-              <QuickActionsItem index={3} name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
+              <QuickActionsItem index={1} name="Run Import" action="import" onAction={handleAction} />
+              <QuickActionsItem index={2} name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
+              <QuickActionsItem index={3} name="Update All Stats" action="stats_update" onAction={handleAction} />
+              <QuickActionsItem index={4} name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
+              <QuickActionsItem index={5} name="Plex Sync All" action="plex_sync" onAction={handleAction} />
             </tbody>
           </table>
         </FixedPanel>

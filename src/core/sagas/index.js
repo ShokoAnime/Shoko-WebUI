@@ -173,7 +173,7 @@ function* runQuickAction(action) {
   let actionFunc;
   switch (action.payload) {
     case 'import':
-      actionFunc = Api.getRescan;
+      actionFunc = Api.getFolderImport;
       break;
     case 'remove_missing_files':
       actionFunc = Api.getRemoveMissingFiles;
@@ -183,6 +183,9 @@ function* runQuickAction(action) {
       break;
     case 'mediainfo_update':
       actionFunc = Api.getMediainfoUpdate;
+      break;
+    case 'plex_sync':
+      actionFunc = Api.getPlexSyncAll;
       break;
     default:
       yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
