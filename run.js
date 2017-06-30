@@ -127,7 +127,7 @@ tasks.set('start', () => {
 
     const middleware = [];
     if (config.apiProxyIP) {
-      const proxyMiddleware = proxy(['/api'], {
+      const proxyMiddleware = proxy(['/api', '/plex'], {
         target: `http://${config.apiProxyIP}:8111`,
         ws: true,
         logLevel: 'error',
