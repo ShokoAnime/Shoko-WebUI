@@ -35,6 +35,36 @@ function apiCall(apiAction, apiParams, type = 'GET') {
   });
 }
 
+function plexCall(apiAction, apiParams) {
+  const apiKey = store.getState().apiSession.apikey;
+  const promise = fetch(`${apiAction}${apiParams}`, {
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      apikey: apiKey,
+    },
+  });
+
+  return promise.then((response) => {
+    if (response.status !== 200) {
+      return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
+    }
+    return Promise.resolve(response);
+  });
+}
+
+function jsonPlexResponse(apiAction, apiParams) {
+  return plexCall(apiAction, apiParams)
+    .then(response => response.json())
+    .then((json) => {
+      if (json.code && json.code !== 200) {
+        return { error: true, code: json.code, message: json.message || 'No error message given.' };
+      }
+      return { data: json };
+    })
+    .catch(reason => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
+}
+
 function jsonApiCall(apiAction, apiParams, type) {
   return apiCall(apiAction, apiParams, type)
     .then(response => response.json());
@@ -151,7 +181,7 @@ function postWebuiConfig(data) {
 }
 
 function getPlexSyncAll() {
-  return jsonApiResponse('/plex/sync/all', '');
+  return jsonPlexResponse('/plex/sync/all', '');
 }
 
 export default {
