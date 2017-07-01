@@ -4,21 +4,19 @@ import prettysize from 'prettysize';
 class ImportFolderSeriesItem extends React.Component {
   static propTypes = {
     index: PropTypes.number,
-    AnimeSeriesName: PropTypes.string,
-    FileCount: PropTypes.number,
-    FileSize: PropTypes.number,
-    Folders: PropTypes.array,
+    name: PropTypes.string,
+    type: PropTypes.string,
+    size: PropTypes.number,
   };
 
   render() {
-    const { index, AnimeSeriesName, FileCount, FileSize, Folders } = this.props;
+    const { index, name, size, type } = this.props;
     return (
       <tr>
         <td>{index}</td>
-        <td>{AnimeSeriesName}</td>
-        <td>{Folders.join(', ')}</td>
-        <td>{FileCount}</td>
-        <td>{prettysize(FileSize)}</td>
+        <td>{name}</td>
+        <td>{type}</td>
+        <td>{prettysize(size)}</td>
       </tr>
     );
   }
