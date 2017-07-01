@@ -121,7 +121,7 @@ export const jmmVersionAsync =
 
 export const IMPORT_FOLDER_SERIES = 'IMPORT_FOLDER_SERIES';
 export const importFolderSeriesAsync = createAsyncAction(IMPORT_FOLDER_SERIES,
-  'importFolderSeries', '/serie/byfolder');
+  'importFolderSeries', '/serie/infobyfolder');
 
 /* Timer */
 function autoUpdateTick() {

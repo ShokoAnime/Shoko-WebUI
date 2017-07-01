@@ -45,13 +45,16 @@ class ImportFolderSeries extends React.Component {
 
     forEach(importFolders, (folder) => {
       folders.push(
-        <MenuItem eventKey={folder.ImportFolderID}>{folder.ImportFolderLocation}</MenuItem>,
+        <MenuItem key={folder.ImportFolderID} eventKey={folder.ImportFolderID}>
+          {folder.ImportFolderLocation}
+        </MenuItem>,
       );
     });
 
     const importFoldersSelector = [
       <span>Series In Import Folder
         <DropdownButton
+          id="import-folder-select"
           bsStyle="link"
           onSelect={ImportFolderSeries.handleSelect}
           title={selectedFolder.name || ''}
