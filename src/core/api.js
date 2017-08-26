@@ -180,8 +180,8 @@ function postWebuiConfig(data) {
   return jsonApiResponse('/webui/config', data, 'POST');
 }
 
-function getPlexSyncAll() {
-  return jsonPlexResponse('/plex/sync/all', '');
+function getPlexSync() {
+  return jsonPlexResponse('/plex/sync', '');
 }
 
 export default {
@@ -207,5 +207,5 @@ export default {
   postFolderEdit,
   postWebuiConfig,
   getFolderImport,
-  getPlexSyncAll,
+  getPlexSync,
 };

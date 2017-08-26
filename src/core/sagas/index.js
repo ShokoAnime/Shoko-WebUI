@@ -185,7 +185,7 @@ function* runQuickAction(action) {
       actionFunc = Api.getMediainfoUpdate;
       break;
     case 'plex_sync':
-      actionFunc = Api.getPlexSyncAll;
+      actionFunc = Api.getPlexSync;
       break;
     default:
       yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
