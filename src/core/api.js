@@ -181,7 +181,7 @@ function postWebuiConfig(data) {
 }
 
 function getPlexSync() {
-  return jsonPlexResponse('/plex/sync', '');
+  return jsonPlexResponse('/plex/sync/all', '');
 }
 
 export default {
