@@ -15,8 +15,8 @@ a:focus {
 }
 
 body {
-  background: #ff93ab -moz-linear-gradient(to top, #0e5753, #15827c) no-repeat; /* Mozilla,Firefox/Gecko */
-  background-color: #15827c;
+  /* Mozilla,Firefox/Gecko */
+  background: #15827c linear-gradient(to top, #0e5753, #15827c) no-repeat;
   font-family: Roboto, sans-serif;
 }
 
