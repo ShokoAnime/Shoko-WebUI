@@ -106,7 +106,8 @@ class LoginPage extends React.Component {
                   <input
                     type="text"
                     className="form-control"
-                    id="username" placeholder="Username"
+                    id="username"
+                    placeholder="Username"
                     ref={(c) => { this.user = c; }}
                     onKeyPress={this.handleKeyPress}
                   />

@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react';
 import history from '../../core/history';
 
 class Link extends React.Component {
-
   static propTypes = {
     to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
     onClick: PropTypes.func,

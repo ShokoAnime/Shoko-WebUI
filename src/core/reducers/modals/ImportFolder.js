@@ -28,8 +28,8 @@ const defaultFormData = {
 };
 
 const form = handleAction(SET_FORM_DATA, (state, action) =>
-    (action.error ? state : Object.assign({}, state, action.payload || defaultFormData)),
-  defaultFormData);
+  (action.error ? state : Object.assign({}, state, action.payload || defaultFormData)),
+defaultFormData);
 
 export default combineReducers({
   status,

@@ -4,7 +4,6 @@ import Link from '../../components/Link/Link';
 import s from './styles.css';
 
 class ErrorPage extends React.Component {
-
   static propTypes = {
     error: React.PropTypes.object,
   };
@@ -45,7 +44,6 @@ class ErrorPage extends React.Component {
       </div>
     );
   }
-
 }
 
 export default ErrorPage;

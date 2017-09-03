@@ -9,7 +9,6 @@ import s from './Layout.css';
 import Notification from '../Notification';
 
 class Layout extends React.Component {
-
   static propTypes = {
     sidebarToggle: PropTypes.bool,
     version: PropTypes.string,

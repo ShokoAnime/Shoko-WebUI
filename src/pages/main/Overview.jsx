@@ -74,7 +74,7 @@ function mapStateToProps(state) {
         (queueStatus.hash.count || 0) +
         (queueStatus.general.count || 0) +
         (queueStatus.image.count || 0)
-    );
+      );
   } catch (ex) {
     commandCount = 0;
   }

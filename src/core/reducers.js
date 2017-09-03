@@ -39,11 +39,9 @@ export const apiSession = handleActions({
 }, { apikey: '' });
 
 const sidebarToggle = handleAction(SIDEBAR_TOGGLE,
-  (state, action) => (action.error ? state : action.payload)
-, true);
+  (state, action) => (action.error ? state : action.payload), true);
 const autoUpdate = handleAction(SET_AUTOUPDATE,
-  (state, action) => (action.error ? state : action.payload)
-, false);
+  (state, action) => (action.error ? state : action.payload), false);
 const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
   , {});
