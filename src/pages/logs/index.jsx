@@ -4,7 +4,7 @@ import history from '../../core/history';
 import store from '../../core/store';
 import Events from '../../core/events';
 import { getDelta } from '../../core/actions/logs/Delta';
-import { setAutoupdate } from '../../core/actions';
+import { setAutoupdate } from '../../core/legacy-actions';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
 import Overview from '../main/Overview';

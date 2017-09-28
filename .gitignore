@@ -5,7 +5,7 @@
 # Compiled output
 public/dist
 public/index.html
-public/sitemap.xml
+public/version.json
 
 # Node.js and NPM
 node_modules/
@@ -13,3 +13,5 @@ npm-debug.log
 webpack.config.js
 run.config.js
 /flowgen.js
+/.nyc_output/
+/coverage/

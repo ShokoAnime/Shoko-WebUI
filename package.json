@@ -9,7 +9,6 @@
   "dependencies": {
     "ajv": "^5.1.1",
     "assets-webpack-plugin": "^3.5.1",
-    "babel-polyfill": "^6.23.0",
     "babel-runtime": "^6.23.0",
     "browser-sync": "^2.18.8",
     "classnames": "^2.2.5",
@@ -46,11 +45,13 @@
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
+    "ava": "^0.22.0",
     "babel-core": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-loader": "^7.0.0",
     "babel-plugin-transform-imports": "^1.2.0",
     "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.4.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-1": "^6.24.1",
@@ -73,8 +74,8 @@
     "jsdom": "^11.2.0",
     "json-loader": "^0.5.4",
     "less": "^2.7.2",
-    "mocha": "^3.3.0",
     "node-sass": "^4.5.2",
+    "nyc": "^11.2.1",
     "postcss": "^6.0.10",
     "postcss-cssnext": "^3.0.2",
     "postcss-import": "^10.0.0",
@@ -82,6 +83,7 @@
     "postcss-url": "^7.1.2",
     "react-addons-test-utils": "^15.5.1",
     "react-hot-loader": "^3.0.0-beta.6",
+    "redux-saga-testing": "^1.0.5",
     "resolve-url-loader": "^2.0.2",
     "sass-loader": "^6.0.5",
     "style-loader": "^0.18.2",
@@ -135,6 +137,24 @@
       "indentation": 2
     }
   },
+  "ava": {
+    "files": [
+      "test/**/*.test.js"
+    ],
+    "source": [
+      "src/**/*.{js,jsx}"
+    ],
+    "concurrency": 5,
+    "failFast": true,
+    "failWithoutAssertions": false,
+    "tap": true,
+    "powerAssert": false,
+    "require": [
+      "babel-register",
+      "babel-polyfill"
+    ],
+    "babel": "inherit"
+  },
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx src utils run.jsx webpack.config.js",
     "stylelint": "stylelint \"src/**/*.css\"",
@@ -143,6 +163,8 @@
     "build": "cross-env NODE_ENV=production node run build",
     "build:debug": "cross-env NODE_ENV=development node run build --debug",
     "start": "cross-env NODE_ENV=development node run",
-    "test": "mocha test/.setup.js test/**/*-test.js"
+    "test": "ava",
+    "test:coverage": "nyc ava",
+    "report": "nyc report --reporter=html"
   }
 }

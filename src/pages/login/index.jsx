@@ -5,8 +5,9 @@ import { Alert } from 'react-bootstrap';
 import cx from 'classnames';
 import s from './styles.css';
 import store from '../../core/store';
-import { apiSession, jmmVersionAsync } from '../../core/actions';
+import { apiSession } from '../../core/actions';
 import history from '../../core/history';
+import { jmmVersionAsync } from '../../core/legacy-actions';
 
 // eslint-disable-next-line no-undef
 const UI_VERSION = __VERSION__;

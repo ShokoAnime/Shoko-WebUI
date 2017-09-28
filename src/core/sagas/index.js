@@ -22,6 +22,7 @@ import {
   API_ADD_FOLDER, API_EDIT_FOLDER, SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
+import queueGlobalAlert from './QueueGlobalAlert';
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -44,9 +45,6 @@ function* alertScheduler(action) {
   }
 }
 
-function* queueGlobalAlert(action) {
-  yield put({ type: SHOW_GLOBAL_ALERT, payload: action.payload });
-}
 /* ALERT SYSTEM */
 
 /**

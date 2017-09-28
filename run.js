@@ -35,6 +35,23 @@ function getEnvironment() {
 }
 
 //
+// Run tests
+// -----------------------------------------------------------------------------
+tasks.set('version', () => {
+  const childProcess = require('child_process');
+  const pkg = require('./package.json');
+  const gitHash = childProcess.execSync("git log --pretty=format:'%h' -n 1").toString().replace(/["']/g, '');
+  const appVersion = JSON.stringify(pkg.version);
+  const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
+
+  const template = fs.readFileSync('./templates/version.ejs', 'utf8');
+  const render = ejs.compile(template, { filename: './public/version.ejs' });
+  const output = render({ git: gitHash, version: appVersion, debug: isDebug });
+  fs.writeFileSync('./public/version.json', output, 'utf8');
+});
+
+
+//
 // Clean up the output directory
 // -----------------------------------------------------------------------------
 tasks.set('clean', () => del(['public/dist/*', '!public/dist/.git'], { dot: true }));
@@ -46,8 +63,8 @@ tasks.set('html', () => {
   const webpackConfig = require(webpackConfigPath);
 
   const assets = JSON.parse(fs.readFileSync('./public/dist/assets.json', 'utf8'));
-  const template = fs.readFileSync('./public/index.ejs', 'utf8');
-  const render = ejs.compile(template, { filename: './public/index.ejs' });
+  const template = fs.readFileSync('./templates/index.ejs', 'utf8');
+  const render = ejs.compile(template, { filename: './templates/index.ejs' });
   const output = render({ debug: webpackConfig.debug, bundle: assets.main.js, css: assets.main.css, config });
   fs.writeFileSync('./public/index.html', output, 'utf8');
 });
@@ -101,6 +118,7 @@ tasks.set('build', () => {
   global.NODE_ENV = getEnvironment();
   return Promise.resolve()
     .then(() => run('clean'))
+    .then(() => run('version'))
     .then(() => run('bundle'))
     .then(() => run('html'))
     .then(() => run('release'));
@@ -112,7 +130,7 @@ tasks.set('build', () => {
 tasks.set('start', () => {
   let count = 0;
   global.HMR = !process.argv.includes('--no-hmr'); // Hot Module Replacement (HMR)
-  return run('clean').then(() => new Promise(resolve => {
+  return run('clean').then(() => run('version')).then(() => new Promise(resolve => {
     const bs = require('browser-sync').create();
     const webpackConfig = require(webpackConfigPath);
     const proxy = require('http-proxy-middleware');
@@ -142,8 +160,8 @@ tasks.set('start', () => {
     compiler.plugin('done', stats => {
       // Generate index.html page
       const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
-      const template = fs.readFileSync('./public/index.ejs', 'utf8');
-      const render = ejs.compile(template, { filename: './public/index.ejs' });
+      const template = fs.readFileSync('./templates/index.ejs', 'utf8');
+      const render = ejs.compile(template, { filename: './templates/index.ejs' });
       const output = render({ debug: true, bundle: `/dist/${bundle}`, config });
       fs.writeFileSync('./public/index.html', output, 'utf8');
 

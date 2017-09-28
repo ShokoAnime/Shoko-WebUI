@@ -2,7 +2,8 @@ import React, { PropTypes } from 'react';
 import cx from 'classnames';
 import { Modal, Alert } from 'react-bootstrap';
 import history from '../../core/history';
-import { updateWebuiAsync, updateWebui } from '../../core/actions';
+import { updateWebui } from '../../core/actions';
+import { updateWebuiAsync } from '../../core/legacy-actions';
 
 class UpdateButton extends React.Component {
   static propTypes = {

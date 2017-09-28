@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
 import store from '../../core/store';
 import {
-  importFolderSeriesAsync,
   selectImportFolderSeries,
 } from '../../core/actions';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFolderSeriesItem from './ImportFolderSeriesItem';
+import { importFolderSeriesAsync } from '../../core/legacy-actions';
 
 class ImportFolderSeries extends React.Component {
   static propTypes = {

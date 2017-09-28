@@ -4,7 +4,7 @@ import store from '../../core/store';
 import Events from '../../core/events';
 import {
   setAutoupdate,
-} from '../../core/actions';
+} from '../../core/legacy-actions';
 import Layout from '../../components/Layout/Layout';
 import Overview from './Overview';
 import Commands from './Commands';

@@ -11,20 +11,21 @@ import {
   FILES_COUNT,
   SIDEBAR_TOGGLE,
   UPDATE_AVAILABLE,
-  WEBUI_VERSION_UPDATE,
   API_SESSION,
-  JMM_VERSION,
-  IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
   GLOBAL_ALERT,
   LOGOUT,
+  WEBUI_VERSION_UPDATE,
+  JMM_VERSION,
+  IMPORT_FOLDER_SERIES,
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
 import { createApiReducer, apiReducer } from './util';
+import Version from '../../public/version.json';
 
-const VERSION = __VERSION__; // eslint-disable-line no-undef
+const VERSION = Version.debug ? Version.git : Version.package; // eslint-disable-line no-undef
 
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
