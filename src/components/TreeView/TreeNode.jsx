@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { forEach } from 'lodash';
 import cx from 'classnames';
 import s from './TreeView.css';

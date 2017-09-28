@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import cx from 'classnames';
 import store from '../../core/store';
 import { setAutoupdate } from '../../core/legacy-actions';

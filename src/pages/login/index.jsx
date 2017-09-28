@@ -1,5 +1,6 @@
 import 'isomorphic-fetch';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import cx from 'classnames';

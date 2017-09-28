@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { ButtonToolbar, Button, FormControl, Panel, FormGroup, Form, Col } from 'react-bootstrap';
 import Events from '../../core/events';
