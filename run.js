@@ -45,7 +45,7 @@ tasks.set('version', () => {
   const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
 
   const template = fs.readFileSync('./templates/version.ejs', 'utf8');
-  const render = ejs.compile(template, { filename: './public/version.ejs' });
+  const render = ejs.compile(template, { filename: './templates/version.ejs' });
   const output = render({ git: gitHash, version: appVersion, debug: isDebug });
   fs.writeFileSync('./public/version.json', output, 'utf8');
 });
