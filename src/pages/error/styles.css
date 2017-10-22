@@ -11,7 +11,9 @@ a:hover,
 a:focus {
   text-decoration: none;
   outline: none;
-  color: #36ad6f !important;
+
+  /* makes first run wizard tab names incorrect color
+  color: #36ad6f !important; */
 }
 
 body {

@@ -1,6 +1,8 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
+import { uiVersion } from '../../core/util';
 
-const UI_VERSION = __VERSION__; // eslint-disable-line no-undef
+const UI_VERSION = uiVersion();
 
 class Footer extends React.Component {
   static propTypes = {

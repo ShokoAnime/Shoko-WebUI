@@ -323,7 +323,8 @@ a.logo span {
     font-weight: 600;
 }
 
-.table.news a:hover, a:focus {
+.table.news a:hover,
+.table.news a:focus {
     color: #36ad6f !important;
 }
 

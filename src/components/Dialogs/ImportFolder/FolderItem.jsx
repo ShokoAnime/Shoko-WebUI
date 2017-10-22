@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { Button } from 'react-bootstrap';
 import store from '../../../core/store';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';

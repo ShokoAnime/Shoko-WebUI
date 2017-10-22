@@ -11,20 +11,23 @@ import {
   FILES_COUNT,
   SIDEBAR_TOGGLE,
   UPDATE_AVAILABLE,
-  WEBUI_VERSION_UPDATE,
   API_SESSION,
-  JMM_VERSION,
-  IMPORT_FOLDER_SERIES,
   SELECT_IMPORT_FOLDER_SERIES,
   GLOBAL_ALERT,
   LOGOUT,
+  WEBUI_VERSION_UPDATE,
+  JMM_VERSION,
+  IMPORT_FOLDER_SERIES,
+  SET_FETCHING,
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
+import firstrun from './reducers/firstrun';
 import { createApiReducer, apiReducer } from './util';
+import Version from '../../public/version.json';
 
-const VERSION = __VERSION__; // eslint-disable-line no-undef
+const VERSION = Version.debug ? Version.git : Version.package;
 
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
@@ -58,6 +61,11 @@ const updateAvailable = handleAction(UPDATE_AVAILABLE,
   (state, action) => (action.error ? state : Object.assign({}, state, VERSION.indexOf('.') !== -1 && action.payload.version !== VERSION))
   , {});
 
+const fetching = handleAction(SET_FETCHING, (state, action) => {
+  if (action.error) { return state; }
+  return Object.assign({}, state, action.payload || {});
+}, {});
+
 const rootReducer = combineReducers({
   routerReducer,
   globalAlert,
@@ -78,6 +86,8 @@ const rootReducer = combineReducers({
   settings,
   modals,
   logs,
+  firstrun,
+  fetching,
 });
 
 export default rootReducer;

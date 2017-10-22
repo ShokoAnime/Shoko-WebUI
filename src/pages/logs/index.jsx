@@ -4,17 +4,18 @@ import history from '../../core/history';
 import store from '../../core/store';
 import Events from '../../core/events';
 import { getDelta } from '../../core/actions/logs/Delta';
-import { setAutoupdate } from '../../core/actions';
+import { setAutoupdate } from '../../core/legacy-actions';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
 import Overview from '../main/Overview';
 import LogSettings from './LogSettings';
 import LogContents from './LogContents';
+import { uiVersion } from '../../core/util';
 
 class LogsPage extends React.Component {
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${__VERSION__}`;
+    document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {

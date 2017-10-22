@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import {
-  Modal,
   Panel,
   Button,
   ButtonToolbar,
@@ -9,6 +9,7 @@ import s from './ImportModal.css';
 import { setStatus } from '../../core/actions/modals/BrowseFolder';
 import store from '../../core/store';
 import TreeView from '../TreeView/TreeView';
+import Modal from '../Modal';
 
 class BrowseFolderModal extends React.Component {
   static propTypes = {

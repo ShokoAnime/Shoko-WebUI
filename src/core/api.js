@@ -184,6 +184,50 @@ function getPlexSync() {
   return jsonPlexResponse('/plex/sync/all', '');
 }
 
+function getInit(data) {
+  return jsonApiResponse('/init/', data);
+}
+
+function getInitDatabase() {
+  return jsonApiResponse('/init/database', '');
+}
+
+function postInitDatabase(data) {
+  return jsonApiResponse('/init/database', data, 'POST');
+}
+
+function getInitDatabaseTest() {
+  return jsonApiResponse('/init/database/test', '');
+}
+
+function getInitStartserver() {
+  return jsonApiResponse('/init/startserver', '');
+}
+
+function getInitAnidb() {
+  return jsonApiResponse('/init/anidb', '');
+}
+
+function postInitAnidb(data) {
+  return jsonApiResponse('/init/anidb', data, 'POST');
+}
+
+function getInitAnidbTest() {
+  return jsonApiResponse('/init/anidb/test', '');
+}
+
+function getInitDefaultuser() {
+  return jsonApiResponse('/init/defaultuser', '');
+}
+
+function postInitDefaultuser(data) {
+  return jsonApiResponse('/init/defaultuser', data, 'POST');
+}
+
+function getInitDatabaseSqlserverinstance() {
+  return jsonApiResponse('/init/database/sqlserverinstance', '');
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -208,4 +252,15 @@ export default {
   postWebuiConfig,
   getFolderImport,
   getPlexSync,
+  getInit,
+  getInitDatabase,
+  postInitDatabase,
+  getInitDatabaseTest,
+  getInitStartserver,
+  getInitAnidb,
+  postInitAnidb,
+  getInitAnidbTest,
+  getInitDefaultuser,
+  postInitDefaultuser,
+  getInitDatabaseSqlserverinstance,
 };

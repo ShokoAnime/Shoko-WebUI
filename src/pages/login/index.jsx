@@ -1,20 +1,27 @@
 import 'isomorphic-fetch';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Alert } from 'react-bootstrap';
 import cx from 'classnames';
 import s from './styles.css';
 import store from '../../core/store';
-import { apiSession, jmmVersionAsync } from '../../core/actions';
+import { apiSession } from '../../core/actions';
 import history from '../../core/history';
+import { jmmVersionAsync } from '../../core/legacy-actions';
+import Events from '../../core/events';
+import { uiVersion } from '../../core/util';
+import Link from '../../components/Link/Link';
 
 // eslint-disable-next-line no-undef
-const UI_VERSION = __VERSION__;
+const UI_VERSION = uiVersion();
 
 class LoginPage extends React.Component {
   static propTypes = {
     version: PropTypes.string,
     isFetching: PropTypes.bool,
+    handleInit: PropTypes.func,
+    firstRun: PropTypes.bool,
   };
 
   constructor() {
@@ -30,7 +37,7 @@ class LoginPage extends React.Component {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${UI_VERSION}`;
     this.user.focus();
-
+    this.props.handleInit();
     jmmVersionAsync();
   }
 
@@ -79,9 +86,20 @@ class LoginPage extends React.Component {
       });
   }
 
-  render() {
+  renderVersion() {
     const { version, isFetching } = this.props;
+
+    return (
+      <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
+        {version instanceof Error ? `Error: ${version.message}` : version}
+        (WebUI {UI_VERSION})</h4>
+    );
+  }
+
+  render() {
+    const { firstRun } = this.props;
     const { errorMessage } = this.state;
+
     return (
       <div className={s.wrapper}>
         <div className={s['wrapper-inner']}>
@@ -89,9 +107,7 @@ class LoginPage extends React.Component {
             <div className="row">
               <div className={cx('col-md-3 col-md-offset-3', s['left-panel'])}>
                 <h1>Shoko Server</h1>
-                <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
-                  {version instanceof Error ? `Error: ${version.message}` : version}
-                  (WebUI {UI_VERSION})</h4>
+                {firstRun !== true && this.renderVersion()}
                 <h2>Welcome Back!</h2>
                 <h2>Input your user information to login into Shoko Server!</h2>
               </div>
@@ -100,6 +116,7 @@ class LoginPage extends React.Component {
                   bsStyle="danger"
                   className={cx({ hidden: errorMessage === null })}
                 >{errorMessage}</Alert>
+                {firstRun === true && <Alert bsStyle="warning"> Looks like a first run. Try the <Link to="/firstrun">wizard</Link></Alert>}
                 <h2>Sign In</h2>
                 <div className="form-group">
                   <label className="sr-only" htmlFor="username">Username</label>
@@ -138,12 +155,19 @@ class LoginPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { jmmVersion } = state;
+  const { jmmVersion, firstrun } = state;
 
   return {
     version: jmmVersion.version || null,
     isFetching: jmmVersion.isFetching,
+    firstRun: firstrun.status && firstrun.status.first_run === true,
   };
 }
 
-export default connect(mapStateToProps)(LoginPage);
+function mapDispatchToProps(dispatch) {
+  return {
+    handleInit: () => { dispatch({ type: Events.INIT_STATUS }); },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginPage);

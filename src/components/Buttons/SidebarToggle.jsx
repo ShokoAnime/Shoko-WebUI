@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import store from '../../core/store';
 import { toggleSidebar } from '../../core/actions';
 import s from '../Layout/Layout.css';

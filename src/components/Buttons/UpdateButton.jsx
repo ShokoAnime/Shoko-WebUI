@@ -1,8 +1,11 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import cx from 'classnames';
-import { Modal, Alert } from 'react-bootstrap';
+import { Alert } from 'react-bootstrap';
 import history from '../../core/history';
-import { updateWebuiAsync, updateWebui } from '../../core/actions';
+import { updateWebui } from '../../core/actions';
+import { updateWebuiAsync } from '../../core/legacy-actions';
+import Modal from '../Modal';
 
 class UpdateButton extends React.Component {
   static propTypes = {

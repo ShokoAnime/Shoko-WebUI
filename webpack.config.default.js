@@ -3,8 +3,6 @@ const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const childProcess = require('child_process');
-const pkg = require('./package.json');
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
@@ -29,7 +27,7 @@ const config = {
     sourcePrefix: '  ',
   },
   devServer: {},
-  devtool: !isDebug ? 'source-map' : false,
+  devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -51,8 +49,6 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
       __DEV__: isDebug,
-      __VERSION__: isDebug ? childProcess.execSync("git log --pretty=format:'%h' -n 1").toString()
-        : JSON.stringify(pkg.version),
     }),
     new AssetsPlugin({
       path: path.resolve(__dirname, './public/dist'),
@@ -95,7 +91,27 @@ const config = {
               minimize: !isDebug,
             },
           },
-            { loader: 'postcss-loader' },
+          { loader: 'postcss-loader' },
+          ],
+        }),
+      },
+      {
+        test: /\.scss$/,
+        exclude: '/node_modules/',
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [{
+            loader: 'css-loader',
+            options: {
+              modules: false,
+              importLoaders: 3,
+              sourceMap: isDebug,
+              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
+              minimize: !isDebug,
+            },
+          },
+          { loader: 'postcss-loader' },
+          { loader: 'sass-loader?includePaths[]=./node_modules/bootstrap-sass/assets/stylesheets' },
           ],
         }),
       },

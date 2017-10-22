@@ -10,11 +10,11 @@ import {
   FILES_COUNT,
   JMM_NEWS,
   UPDATE_AVAILABLE,
-  setAutoupdate,
 } from '../actions';
 
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
+import { setAutoupdate } from '../legacy-actions';
 
 function* getSettings() {
   const resultJson = yield call(Api.getWebuiConfig);
