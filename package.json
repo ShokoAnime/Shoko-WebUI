@@ -162,10 +162,11 @@
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx src utils run.jsx webpack.config.js",
     "stylelint": "stylelint \"src/**/*.css\"",
-    "lint": "npm run eslint && npm run stylelint",
+    "lint": "npm run build:version && npm run eslint && npm run stylelint",
     "clean": "node run clean",
     "build": "cross-env NODE_ENV=production node run build",
     "build:debug": "cross-env NODE_ENV=development node run build --debug",
+    "build:version": "cross-env NODE_ENV=production node run version",
     "start": "cross-env NODE_ENV=development node run",
     "test": "ava",
     "test:coverage": "nyc ava",
