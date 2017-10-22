@@ -8,11 +8,12 @@ import InfoPanel from '../../components/Panels/InfoPanel';
 import Overview from '../main/Overview';
 import ImportFolders from '../main/ImportFolders';
 import ImportFolderSeries from './ImportFolderSeries';
+import { uiVersion } from '../../core/util';
 
 class ImportFoldersPage extends React.Component {
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${__VERSION__}`;
+    document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {

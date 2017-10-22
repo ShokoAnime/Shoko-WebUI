@@ -18,6 +18,7 @@ export const SHOW_GLOBAL_ALERT = 'SHOW_GLOBAL_ALERT';
 export const setGlobalAlert = createAction(QUEUE_GLOBAL_ALERT);
 export const LOGOUT = 'LOGOUT';
 export const Logout = createAction(LOGOUT);
+export const SET_FETCHING = 'SET_FETCHING';
 
 
 /* Async actions - API calls */

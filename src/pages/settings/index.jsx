@@ -11,11 +11,12 @@ import StyleSettings from './StyleSettings';
 import LogOptions from './LogOptions';
 import OtherSettings from './OtherSettings';
 import ExportSettings from './ExportSettings';
+import { uiVersion } from '../../core/util';
 
 class SettingsPage extends React.Component {
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${__VERSION__}`;
+    document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {

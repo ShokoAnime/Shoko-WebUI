@@ -8,6 +8,7 @@ import DashboardPage from '../pages/main';
 import ImportPage from '../pages/import';
 import SettingsPage from '../pages/settings';
 import LogsPage from '../pages/logs';
+import FirstRunPage from '../pages/firstrun';
 
 export default class Router extends React.Component {
   render() {
@@ -16,6 +17,7 @@ export default class Router extends React.Component {
         <div className="site-wrapper">
           <Route exact path="/" component={LoginPage} />
           <Route exact path="/index.html" component={LoginPage} />
+          <Route exact path="/firstrun" component={FirstRunPage} />
           <Route exact path="/error" component={ErrorPage} />
           <Route exact path="/dashboard" component={DashboardPage} />
           <Route exact path="/import-folders" component={ImportPage} />

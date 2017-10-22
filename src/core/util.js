@@ -1,3 +1,4 @@
+import Version from '../../public/version.json';
 import {
   STATUS_INVALIDATE,
   STATUS_RECEIVE,
@@ -44,6 +45,10 @@ export function createApiReducer(type, dataPropName = 'items', dataPropValue = {
 
 export function apiReducer(state, action) {
   return action.error ? state : Object.assign({}, state, action.payload);
+}
+
+export function uiVersion() {
+  return Version.debug ? Version.git : Version.package; // eslint-disable-line no-undef
 }
 
 export default { createApiReducer, apiReducer };

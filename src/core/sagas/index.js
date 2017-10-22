@@ -9,7 +9,7 @@ import Dashboard from './dashboard';
 import {
   QUEUE_GLOBAL_ALERT,
   SHOW_GLOBAL_ALERT,
-  GLOBAL_ALERT,
+  GLOBAL_ALERT, SET_FETCHING,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
@@ -18,11 +18,13 @@ import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { GET_LOG } from '../actions/settings/Log';
 import { SETTINGS_JSON } from '../actions/settings/Json';
+import { FIRSTRUN_ANIDB, FIRSTRUN_DATABASE, FIRSTRUN_USER, getStatus } from '../actions/firstrun';
 import {
   API_ADD_FOLDER, API_EDIT_FOLDER, SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
 import queueGlobalAlert from './QueueGlobalAlert';
+import apiPollingDriver from './apiPollingDriver';
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -263,6 +265,179 @@ function* settingsSaveWebui(action) {
   }
 }
 
+function* apiInitStatus() {
+  const resultJson = yield call(Api.getInit.bind(this, 'status'));
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+  } else {
+    yield put(getStatus(resultJson.data));
+  }
+}
+
+function* firstrunGetDatabase() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
+  const resultJson = yield call(Api.getInitDatabase);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
+    yield call(delay, 1000);
+    yield put({ type: FIRSTRUN_DATABASE, payload: { } });
+  } else {
+    yield put({ type: FIRSTRUN_DATABASE, payload: resultJson.data });
+  }
+}
+
+function* firstrunTestDatabase() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
+  const resultJson = yield call(Api.getInitDatabaseTest);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
+  } else {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'success', text: 'Database test successful!' } } });
+  }
+  yield call(delay, 1000);
+  yield put({ type: FIRSTRUN_DATABASE, payload: { } });
+}
+
+/**
+ * 1. Save database settings
+ * 2. Test connection
+ * 3. Start polling
+ * 4. Tell server to init database
+ */
+function* firstrunInitDatabase() {
+  // 1. Save database settings
+  const database = yield select(state => state.firstrun.database);
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunInit' });
+  let resultJson = yield call(Api.postInitDatabase.bind(this, database));
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunInit' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
+  } else {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'success', text: 'Database settings saved!' } } });
+  }
+  yield call(delay, 1000);
+  yield put({ type: FIRSTRUN_DATABASE, payload: { } });
+
+  // 2. Test connection
+  yield call(firstrunTestDatabase);
+
+  // 3. Start polling
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
+  yield put({ type: Events.START_API_POLLING, payload: { type: 'server-status' } });
+
+  // 4. Tell server to init database
+  resultJson = yield call(Api.getInitStartserver);
+  if (resultJson.error) {
+    yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
+    yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
+    yield call(delay, 1000);
+    yield put({ type: FIRSTRUN_DATABASE, payload: { } });
+  }
+}
+
+function* startFetching(action) {
+  yield put({ type: SET_FETCHING, payload: { [action.payload]: true } });
+}
+
+function* stopFetching(action) {
+  yield put({ type: SET_FETCHING, payload: { [action.payload]: false } });
+}
+
+function* firstrunGetAnidb() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
+  const resultJson = yield call(Api.getInitAnidb);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
+    yield call(delay, 1000);
+    yield put({ type: FIRSTRUN_ANIDB, payload: { } });
+  } else {
+    yield put({ type: FIRSTRUN_ANIDB, payload: resultJson.data });
+  }
+}
+
+function* firstrunSetAnidb() {
+  const data = yield select((state) => {
+    const { anidb } = state.firstrun;
+    return {
+      login: anidb.login,
+      password: anidb.password,
+    };
+  });
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
+  const resultJson = yield call(Api.postInitAnidb, data);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
+  } else {
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'success', text: 'AniDB settings saved!' } } });
+  }
+  yield call(delay, 1000);
+  yield put({ type: FIRSTRUN_ANIDB, payload: { } });
+}
+
+function* firstrunTestAnidb() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
+  const resultJson = yield call(Api.getInitAnidbTest);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
+  } else {
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'success', text: 'AniDB credentials are correct!' } } });
+  }
+  yield call(delay, 1000);
+  yield put({ type: FIRSTRUN_ANIDB, payload: { } });
+}
+
+function* firstrunGetDefaultuser() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunUser' });
+  const resultJson = yield call(Api.getInitDefaultuser);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'error', text: resultJson.message } } });
+    yield call(delay, 1000);
+    yield put({ type: FIRSTRUN_USER, payload: { } });
+  } else {
+    yield put({ type: FIRSTRUN_USER, payload: resultJson.data });
+  }
+}
+
+function* firstrunSetDefaultuser() {
+  const data = yield select((state) => {
+    const { user } = state.firstrun;
+    return {
+      login: user.login,
+      password: user.password,
+    };
+  });
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunUser' });
+  const resultJson = yield call(Api.postInitDefaultuser, data);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'error', text: resultJson.message } } });
+  } else {
+    yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'success', text: 'User saved!' } } });
+  }
+  yield call(delay, 1000);
+  yield put({ type: FIRSTRUN_USER, payload: { } });
+}
+
+function* firstrunGetDatabaseSqlserverinstance() {
+  yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
+  const resultJson = yield call(Api.getInitDatabaseSqlserverinstance);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
+  if (resultJson.error) {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
+    yield call(delay, 1000);
+    yield put({ type: FIRSTRUN_DATABASE, payload: { } });
+  } else {
+    yield put({ type: FIRSTRUN_DATABASE, payload: { instances: resultJson.data } });
+  }
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -282,5 +457,18 @@ export default function* rootSaga() {
     takeEvery(Events.ADD_FOLDER, addFolder),
     takeEvery(Events.EDIT_FOLDER, editFolder),
     takeEvery(Events.SETTINGS_POST_WEBUI, settingsSaveWebui),
+    takeEvery(Events.INIT_STATUS, apiInitStatus),
+    takeEvery(Events.FIRSTRUN_GET_DATABASE, firstrunGetDatabase),
+    takeEvery(Events.FIRSTRUN_INIT_DATABASE, firstrunInitDatabase),
+    takeEvery(Events.FIRSTRUN_TEST_DATABASE, firstrunTestDatabase),
+    takeEvery(Events.FIRSTRUN_GET_DATABASE_SQL_INSTANCES, firstrunGetDatabaseSqlserverinstance),
+    takeEvery(Events.START_FETCHING, startFetching),
+    takeEvery(Events.STOP_FETCHING, stopFetching),
+    takeEvery(Events.START_API_POLLING, apiPollingDriver),
+    takeEvery(Events.FIRSTRUN_GET_ANIDB, firstrunGetAnidb),
+    takeEvery(Events.FIRSTRUN_SET_ANIDB, firstrunSetAnidb),
+    takeEvery(Events.FIRSTRUN_TEST_ANIDB, firstrunTestAnidb),
+    takeEvery(Events.FIRSTRUN_GET_USER, firstrunGetDefaultuser),
+    takeEvery(Events.FIRSTRUN_SET_USER, firstrunSetDefaultuser),
   ];
 }

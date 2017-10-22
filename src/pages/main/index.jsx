@@ -12,11 +12,12 @@ import RecentFiles from './RecentFiles';
 import News from './News';
 import ImportFolders from './ImportFolders';
 import QuickActions from './QuickActions';
+import { uiVersion } from '../../core/util';
 
 class MainPage extends React.Component {
   componentDidMount() {
     // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${__VERSION__}`;
+    document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {
