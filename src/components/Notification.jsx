@@ -12,7 +12,7 @@ class Notification extends React.Component {
   render() {
     const { text, type } = this.props;
     return (
-      <div className={cx(s.notify, s[type], s['notify-top-right'])} style={{ top: '20px' }}>
+      <div className={cx(s.notify, s[type])}>
         <a className={s['notify-close-btn']} />
         <div className={s['notify-icon']}>
           <div className={s['notify-icon-inner']} style={{ marginTop: '-9px' }}>

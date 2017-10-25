@@ -67,7 +67,7 @@ const fetching = handleAction(SET_FETCHING, (state, action) => {
 }, {});
 
 const rootReducer = combineReducers({
-  routerReducer,
+  router: routerReducer,
   globalAlert,
   apiSession,
   autoUpdate,

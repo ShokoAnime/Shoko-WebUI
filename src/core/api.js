@@ -1,5 +1,7 @@
 import 'isomorphic-fetch';
 import store from './store';
+import Events from './events';
+import { setAutoupdate } from './legacy-actions';
 
 function apiCallPost(apiAction, apiParams, apiKey) {
   return fetch(`/api${apiAction}`, {
@@ -29,6 +31,11 @@ function apiCall(apiAction, apiParams, type = 'GET') {
 
   return fetch.then((response) => {
     if (response.status !== 200) {
+      if (response.status === 401) {
+        // FIXME: make a better fix
+        store.dispatch({ type: Events.LOGOUT });
+        setAutoupdate(false);
+      }
       return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
     }
     return Promise.resolve(response);
@@ -73,8 +80,10 @@ function jsonApiCall(apiAction, apiParams, type) {
 function jsonApiResponse(apiAction, apiParams, type) {
   return jsonApiCall(apiAction, apiParams, type)
     .then((json) => {
-      if (json.code && json.code !== 200) {
-        return { error: true, code: json.code, message: json.message || 'No error message given.' };
+      if (json.code) {
+        if (json.code !== 200) {
+          return { error: true, code: json.code, message: json.message || 'No error message given.' };
+        }
       }
       return { data: json };
     })
