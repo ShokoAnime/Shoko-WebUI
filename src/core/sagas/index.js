@@ -2,6 +2,7 @@ import { delay } from 'redux-saga';
 import { put, takeEvery, call, select } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
+import { push } from 'react-router-redux';
 import * as Ajv from 'ajv';
 import Api from '../api';
 import Events from '../events';
@@ -9,7 +10,7 @@ import Dashboard from './dashboard';
 import {
   QUEUE_GLOBAL_ALERT,
   SHOW_GLOBAL_ALERT,
-  GLOBAL_ALERT, SET_FETCHING,
+  GLOBAL_ALERT, SET_FETCHING, Logout,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
@@ -438,6 +439,11 @@ function* firstrunGetDatabaseSqlserverinstance() {
   }
 }
 
+function* logout() {
+  yield put(Logout());
+  yield put(push({ pathname: '/' }));
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -470,5 +476,6 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_TEST_ANIDB, firstrunTestAnidb),
     takeEvery(Events.FIRSTRUN_GET_USER, firstrunGetDefaultuser),
     takeEvery(Events.FIRSTRUN_SET_USER, firstrunSetDefaultuser),
+    takeEvery(Events.LOGOUT, logout),
   ];
 }

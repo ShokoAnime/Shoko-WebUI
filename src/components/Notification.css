@@ -1,5 +1,4 @@
 .notify {
-  position: fixed;
   min-width: 350px;
   max-width: 450px;
   background-color: #fff;
@@ -10,6 +9,8 @@
   border: 1px solid #dedede;
   box-shadow: rgba(0, 0, 0, 0.0980392) 0 2px 4px;
   z-index: 999;
+  position: relative;
+  margin-bottom: 10px;
 }
 
 .notify .notify-icon {
@@ -34,7 +35,6 @@
 }
 
 .notify .notify-text {
-  float: left;
   padding: 10px 15px;
   margin-left: 50px;
 }

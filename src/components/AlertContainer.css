@@ -1,7 +1,7 @@
 .alertContainer {
   z-index: 100;
   position: fixed;
-  top: 50px;
+  top: 20px;
   width: 50%;
-  left: 25%;
+  left: 35%;
 }

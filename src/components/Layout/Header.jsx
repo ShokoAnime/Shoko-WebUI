@@ -16,16 +16,14 @@ class Header extends React.Component {
     countHasher: PropTypes.number,
     countGeneral: PropTypes.number,
     countImages: PropTypes.number,
-    autoUpdate: PropTypes.bool,
     sidebarToggle: PropTypes.bool,
     updateAvailable: PropTypes.bool,
     webuiVersionUpdate: PropTypes.object,
-    username: PropTypes.string,
   };
 
   render() {
-    const { countHasher, countGeneral, countImages, autoUpdate, sidebarToggle, updateAvailable,
-      webuiVersionUpdate, username } = this.props;
+    const { countHasher, countGeneral, countImages, sidebarToggle, updateAvailable,
+      webuiVersionUpdate } = this.props;
     return (
       <header className="header white-bg">
         <SidebarToggle enabled={sidebarToggle} />
@@ -41,30 +39,28 @@ class Header extends React.Component {
         <div className="nav notifications pull-right">
           <ul className="nav">
             <Notifications />
-            <AutoRefreshSwitch enabled={autoUpdate} />
+            <AutoRefreshSwitch />
           </ul>
         </div>
-        <UserDropdown user={username} />
+        <UserDropdown />
       </header>
     );
   }
 }
 
 function mapStateToProps(state) {
-  const { queueStatus, autoUpdate, sidebarToggle, updateAvailable,
-    webuiVersionUpdate, apiSession, settings } = state;
+  const { queueStatus, sidebarToggle, updateAvailable,
+    webuiVersionUpdate, settings } = state;
   const items = queueStatus.items || {};
 
   return {
     countHasher: items.hash ? items.hash.count : null,
     countGeneral: items.general ? items.general.count : null,
     countImages: items.image ? items.image.count : null,
-    autoUpdate,
     sidebarToggle,
     updateAvailable: updateAvailable.status,
     updateChannel: settings.other.updateChannel,
     webuiVersionUpdate,
-    username: apiSession.username,
   };
 }
 
