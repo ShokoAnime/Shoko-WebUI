@@ -1,12 +1,12 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import {
+  Modal,
   Tabs,
   Tab,
   Panel,
 } from 'react-bootstrap';
 import cx from 'classnames';
-import Modal from '../../Modal';
 import store from '../../../core/store';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
 import s from '../ImportModal.css';
