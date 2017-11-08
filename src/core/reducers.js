@@ -27,7 +27,7 @@ import firstrun from './reducers/firstrun';
 import { createApiReducer, apiReducer } from './util';
 import Version from '../../public/version.json';
 
-const VERSION = Version.debug ? Version.git : Version.package;
+
 
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
@@ -57,9 +57,10 @@ const importFolders = handleAction(IMPORT_FOLDERS, apiReducer, {});
 const seriesCount = handleAction(SERIES_COUNT, apiReducer, {});
 const filesCount = handleAction(FILES_COUNT, apiReducer, {});
 const jmmNews = handleAction(JMM_NEWS, apiReducer, {});
-const updateAvailable = handleAction(UPDATE_AVAILABLE,
-  (state, action) => (action.error ? state : Object.assign({}, state, VERSION.indexOf('.') !== -1 && action.payload.version !== VERSION))
-  , {});
+export const updateAvailable = handleAction(UPDATE_AVAILABLE, (state, action) => {
+  if (action.error) { return state; }
+  return Version.debug === false && action.payload.version !== Version.package;
+}, false);
 
 const fetching = handleAction(SET_FETCHING, (state, action) => {
   if (action.error) { return state; }

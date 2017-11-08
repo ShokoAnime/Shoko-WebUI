@@ -9,7 +9,7 @@ import {
   SERIES_COUNT,
   FILES_COUNT,
   JMM_NEWS,
-  UPDATE_AVAILABLE,
+  updateAvailable,
 } from '../actions';
 
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
@@ -134,7 +134,7 @@ function* eventDashboardLoad() {
     return;
   }
 
-  yield put({ type: UPDATE_AVAILABLE, payload: resultJson.data });
+  yield put(updateAvailable(resultJson.data));
   yield put(setAutoupdate(true));
 }
 
