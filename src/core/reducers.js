@@ -27,8 +27,6 @@ import firstrun from './reducers/firstrun';
 import { createApiReducer, apiReducer } from './util';
 import Version from '../../public/version.json';
 
-
-
 const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
 );
