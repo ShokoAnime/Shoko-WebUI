@@ -13,7 +13,7 @@ const config = {
   context: __dirname,
   entry: [
     '!!font-awesome-sass-loader!./font-awesome.config.js',
-    'roboto-npm-webfont/style.css',
+    'roboto-npm-webfont',
     'bootstrap-loader',
     '!!style-loader!css-loader!./css/bootstrap-reset.css',
     '!!style-loader!css-loader!./css/main.css',
