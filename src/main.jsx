@@ -5,7 +5,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import store from './core/store';
 import Router from './core/router';
-import ErrorBoundary from "./pages/error";
+import ErrorBoundary from './pages/error';
 
 const container = document.getElementById('app-container'); // eslint-disable-line no-undef
 

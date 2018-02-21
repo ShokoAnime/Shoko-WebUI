@@ -1,9 +1,7 @@
-import { forEach } from 'lodash';
 import objPath from 'object-path';
 import { createAction } from 'redux-actions';
 import {
   IMPORT_FOLDER_SERIES,
-  JMM_VERSION,
   SET_AUTOUPDATE,
   setGlobalAlert,
   STATUS_RECEIVE,
