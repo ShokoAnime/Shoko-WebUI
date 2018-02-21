@@ -20,9 +20,8 @@ class ErrorBoundary extends React.Component {
   }
 
   componentDidMount() {
-    // eslint-disable-next-line no-undef
-    document.title = this.state.hasError && this.props.error.status === 404 ?
-      'Page Not Found' : 'Error';
+    if (this.state.hasError !== true) { return; }
+    document.title = 'Error';
   }
 
   componentDidCatch(error, info) {
