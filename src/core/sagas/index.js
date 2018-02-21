@@ -168,7 +168,7 @@ function* settingsSaveLogRotate(action) {
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Log settings saved!' } });
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Log settings saved!' } });
   }
 }
 
