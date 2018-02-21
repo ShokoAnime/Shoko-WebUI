@@ -32,7 +32,9 @@ class OtherSettings extends React.Component {
   }
 
   render() {
-    const { other, className, changeUpdateChannel, changeLogDelta } = this.props;
+    const {
+      other, className, changeUpdateChannel, changeLogDelta,
+    } = this.props;
     const { updateChannel, logDelta } = other;
 
     return (
@@ -52,11 +54,13 @@ class OtherSettings extends React.Component {
                     <Button
                       onClick={() => { changeUpdateChannel('unstable'); }}
                       bsStyle={updateChannel === 'unstable' ? 'success' : 'default'}
-                    >Unstable</Button>
+                    >Unstable
+                    </Button>
                     <Button
                       onClick={() => { changeUpdateChannel('stable'); }}
                       bsStyle={updateChannel === 'stable' ? 'success' : 'default'}
-                    >Stable</Button>
+                    >Stable
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>

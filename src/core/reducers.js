@@ -27,7 +27,8 @@ import firstrun from './reducers/firstrun';
 import { createApiReducer, apiReducer } from './util';
 import Version from '../../public/version.json';
 
-const webuiVersionUpdate = createApiReducer(WEBUI_VERSION_UPDATE, 'items',
+const webuiVersionUpdate = createApiReducer(
+  WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
 );
 const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
@@ -39,16 +40,24 @@ export const apiSession = handleActions({
   [LOGOUT]: state => Object.assign({}, state, { apikey: '' }),
 }, { apikey: '' });
 
-const sidebarToggle = handleAction(SIDEBAR_TOGGLE,
-  (state, action) => (action.error ? state : action.payload), true);
-const autoUpdate = handleAction(SET_AUTOUPDATE,
-  (state, action) => (action.error ? state : action.payload), false);
-const selectedImportFolderSeries = handleAction(SELECT_IMPORT_FOLDER_SERIES,
+const sidebarToggle = handleAction(
+  SIDEBAR_TOGGLE,
+  (state, action) => (action.error ? state : action.payload), true,
+);
+const autoUpdate = handleAction(
+  SET_AUTOUPDATE,
+  (state, action) => (action.error ? state : action.payload), false,
+);
+const selectedImportFolderSeries = handleAction(
+  SELECT_IMPORT_FOLDER_SERIES,
   (state, action) => (action.error ? state : action.payload)
-  , {});
-const globalAlert = handleAction(GLOBAL_ALERT,
+  , {},
+);
+const globalAlert = handleAction(
+  GLOBAL_ALERT,
   (state, action) => (action.error ? state : action.payload)
-  , []);
+  , [],
+);
 const queueStatus = handleAction(QUEUE_STATUS, apiReducer, {});
 const recentFiles = handleAction(RECENT_FILES, apiReducer, {});
 const importFolders = handleAction(IMPORT_FOLDERS, apiReducer, {});

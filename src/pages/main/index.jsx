@@ -2,9 +2,7 @@ import React from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
 import Events from '../../core/events';
-import {
-  setAutoupdate,
-} from '../../core/legacy-actions';
+import { setAutoupdate } from '../../core/legacy-actions';
 import Layout from '../../components/Layout/Layout';
 import Overview from './Overview';
 import Commands from './Commands';

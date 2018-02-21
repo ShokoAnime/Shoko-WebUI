@@ -20,7 +20,9 @@ class TabUser extends React.Component {
   }
 
   render() {
-    const { user, changeSetting, saveUser, isFetching } = this.props;
+    const {
+      user, changeSetting, saveUser, isFetching,
+    } = this.props;
 
     return (
       <Form horizontal>

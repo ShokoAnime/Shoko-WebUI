@@ -41,8 +41,10 @@ class AddTab extends React.Component {
 
   render() {
     const { form, showBrowse } = this.props;
-    const { ImportFolderName, ImportFolderLocation, IsDropSource,
-      IsDropDestination, IsWatched } = form;
+    const {
+      ImportFolderName, ImportFolderLocation, IsDropSource,
+      IsDropDestination, IsWatched,
+    } = form;
 
     return (
       <Form horizontal>
@@ -81,21 +83,24 @@ class AddTab extends React.Component {
               id="IsDropSource"
               onChange={AddTab.onChange}
               checked={IsDropSource}
-            >Drop source</Checkbox>
+            >Drop source
+            </Checkbox>
           </Col>
           <Col smOffset={2} sm={10}>
             <Checkbox
               id="IsDropDestination"
               onChange={AddTab.onChange}
               checked={IsDropDestination}
-            >Drop destination</Checkbox>
+            >Drop destination
+            </Checkbox>
           </Col>
           <Col smOffset={2} sm={10}>
             <Checkbox
               id="IsWatched"
               onChange={AddTab.onChange}
               checked={IsWatched}
-            >Watch folder</Checkbox>
+            >Watch folder
+            </Checkbox>
           </Col>
         </FormGroup>
         <BrowseFolderModal show={showBrowse} onSelect={AddTab.onFolderSelect} />

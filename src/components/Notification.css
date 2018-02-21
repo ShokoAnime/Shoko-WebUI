@@ -100,14 +100,6 @@
   border: 1px solid #333;
 }
 
-.notify.dark-theme .notify-close-btn:hover {
-  background-color: #313131;
-}
-
-.notify.dark-theme .notify-close-btn:active {
-  background-color: #222;
-}
-
 .notify.success {
   background: #bcf5bc;
   color: #006400;
@@ -150,6 +142,20 @@
 .notify.warning .notify-icon,
 .notify.warning .notify-close-btn {
   border-color: #ffc237;
+}
+
+.notify.notify-top-full .notify-close-btn,
+.notify.notify-top-center .notify-close-btn {
+  top: auto;
+  bottom: -10px;
+}
+
+.notify.dark-theme .notify-close-btn:hover {
+  background-color: #313131;
+}
+
+.notify.dark-theme .notify-close-btn:active {
+  background-color: #222;
 }
 
 /* sizes */
@@ -208,12 +214,6 @@
   left: 50px;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
-}
-
-.notify.notify-top-full .notify-close-btn,
-.notify.notify-top-center .notify-close-btn {
-  top: auto;
-  bottom: -10px;
 }
 
 .notify.notify-bottom-full {

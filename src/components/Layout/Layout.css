@@ -16,14 +16,14 @@
   font-size: 20px;
 }
 
-.hide-sidebar :global(#sidebar) {
-  transition: margin 0.5s ease-in-out;
-  margin-left: -210px;
-}
-
 .hide-sidebar :global(.main-content) {
   transition: margin 0.5s ease-in-out;
   margin-left: 0;
+}
+
+.hide-sidebar :global(#sidebar) {
+  transition: margin 0.5s ease-in-out;
+  margin-left: -210px;
 }
 
 .alert {

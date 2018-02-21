@@ -14,7 +14,9 @@ export default class FieldGroup extends React.Component {
   };
 
   render() {
-    const { id, label, data, field, isHidden, onChange } = this.props;
+    const {
+      id, label, data, field, isHidden, onChange,
+    } = this.props;
 
     return (
       <FormGroup controlId={id} className={cx({ hidden: isHidden })} /* validationState="error" */>

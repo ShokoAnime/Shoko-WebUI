@@ -120,7 +120,7 @@ function* getSettings() {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
-  const data = resultJson.data;
+  const { data } = resultJson;
 
   yield put({ type: SET_THEME, payload: data.uiTheme });
   yield put({ type: SET_NOTIFICATIONS, payload: data.uiNotifications });
@@ -156,7 +156,7 @@ function* pageSettingsLoad() {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
-  const data = resultJson.data;
+  const { data } = resultJson;
 
   yield put({ type: GET_LOG, payload: data });
 }

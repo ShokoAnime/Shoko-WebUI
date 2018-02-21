@@ -22,8 +22,10 @@ class Header extends React.Component {
   };
 
   render() {
-    const { countHasher, countGeneral, countImages, sidebarToggle, updateAvailable,
-      webuiVersionUpdate } = this.props;
+    const {
+      countHasher, countGeneral, countImages, sidebarToggle, updateAvailable,
+      webuiVersionUpdate,
+    } = this.props;
     return (
       <header className="header white-bg">
         <SidebarToggle enabled={sidebarToggle} />
@@ -49,8 +51,9 @@ class Header extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { queueStatus, sidebarToggle, updateAvailable,
-    webuiVersionUpdate, settings } = state;
+  const {
+    queueStatus, sidebarToggle, updateAvailable, webuiVersionUpdate, settings,
+  } = state;
   const items = queueStatus.items || {};
 
   return {

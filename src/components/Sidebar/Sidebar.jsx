@@ -49,12 +49,14 @@ class Sidebar extends React.Component {
               href="https://github.com/japanesemediamanager/ShokoServer-WebUI"
               target="_blank"
               rel="noopener noreferrer"
-            >Github</a>
+            >Github
+            </a>
             <a
               href="https://github.com/japanesemediamanager/ShokoServer-WebUI/issues"
               target="_blank"
               rel="noopener noreferrer"
-            >Support</a>
+            >Support
+            </a>
           </div>
         </div>
       </aside>

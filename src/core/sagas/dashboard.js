@@ -24,7 +24,7 @@ function* getSettings() {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
-  const data = resultJson.data;
+  const { data } = resultJson;
 
   yield put({ type: SET_THEME, payload: data.uiTheme });
   yield put({ type: SET_NOTIFICATIONS, payload: data.uiNotifications });
@@ -126,7 +126,7 @@ function* eventDashboardLoad() {
   yield put({ type: JMM_NEWS, payload: resultJson.data });
 
   const state = store.getState();
-  const updateChannel = state.settings.other.updateChannel;
+  const { updateChannel } = state.settings.other;
 
   resultJson = yield call(Api.webuiLatest, updateChannel);
   if (resultJson.error) {

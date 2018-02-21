@@ -19,12 +19,12 @@ class SqlCombo extends React.Component {
     database: PropTypes.object,
   };
 
-  static defaultProps = {
-    items: { '': { label: '' } },
-  };
+  static defaultProps = {};
 
   render() {
-    const { id, label, data, field, isHidden, onChange, getInstances, database } = this.props;
+    const {
+      id, label, data, field, isHidden, onChange, getInstances, database,
+    } = this.props;
     let items = [];
 
     if (typeof database.instances === 'object') {

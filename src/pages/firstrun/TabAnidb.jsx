@@ -21,7 +21,9 @@ class TabAnidb extends React.Component {
   }
 
   render() {
-    const { anidb, changeSetting, saveAnidb, testAnidb, isFetching } = this.props;
+    const {
+      anidb, changeSetting, saveAnidb, testAnidb, isFetching,
+    } = this.props;
 
     return (
       <Form horizontal>

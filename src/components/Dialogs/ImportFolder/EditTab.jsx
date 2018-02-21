@@ -34,7 +34,9 @@ class EditTab extends React.Component {
   }
 
   render() {
-    const { items, form, editFolder, handleClose, handleCancel } = this.props;
+    const {
+      items, form, editFolder, handleClose, handleCancel,
+    } = this.props;
     const { isFetching } = editFolder;
     let panel;
     let buttons;

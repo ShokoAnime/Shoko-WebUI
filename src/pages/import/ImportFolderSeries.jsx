@@ -4,9 +4,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
 import store from '../../core/store';
-import {
-  selectImportFolderSeries,
-} from '../../core/actions';
+import { selectImportFolderSeries } from '../../core/actions';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFolderSeriesItem from './ImportFolderSeriesItem';
 import { importFolderSeriesAsync } from '../../core/legacy-actions';
@@ -28,14 +26,17 @@ class ImportFolderSeries extends React.Component {
   static handleSelect(folderId) {
     const { importFolders } = store.getState();
     const folder = find(importFolders, ['ImportFolderID', folderId]);
-    store.dispatch(
-      selectImportFolderSeries({ id: folderId, name: folder.ImportFolderLocation || '' }),
-    );
+    store.dispatch(selectImportFolderSeries({
+      id: folderId,
+      name: folder.ImportFolderLocation || '',
+    }));
     importFolderSeriesAsync(true, `?id=${folderId}`);
   }
 
   render() {
-    const { items, isFetching, lastUpdated, importFolders, selectedFolder } = this.props;
+    const {
+      items, isFetching, lastUpdated, importFolders, selectedFolder,
+    } = this.props;
     const series = [];
     const folders = [];
     let i = 0;
@@ -45,11 +46,12 @@ class ImportFolderSeries extends React.Component {
     });
 
     forEach(importFolders, (folder) => {
-      folders.push(
+      const item = (
         <MenuItem key={folder.ImportFolderID} eventKey={folder.ImportFolderID}>
           {folder.ImportFolderLocation}
-        </MenuItem>,
+        </MenuItem>
       );
+      folders.push(item);
     });
 
     const importFoldersSelector = [

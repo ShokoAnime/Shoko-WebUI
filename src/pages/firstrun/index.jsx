@@ -2,9 +2,7 @@ import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  TabContainer, Row, Col, Nav, NavItem, TabPane, TabContent, Grid,
-} from 'react-bootstrap';
+import { TabContainer, Row, Col, Nav, NavItem, TabPane, TabContent, Grid } from 'react-bootstrap';
 import cx from 'classnames';
 import s from './styles.css';
 import Events from '../../core/events';
@@ -27,7 +25,6 @@ class FirstRunPage extends React.Component {
     super();
     this.setActiveTab = this.setActiveTab.bind(this);
     this.state = {
-      errorMessage: null,
       activeTab: 'tabDatabase',
     };
   }

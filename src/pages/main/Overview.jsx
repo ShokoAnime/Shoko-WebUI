@@ -11,7 +11,9 @@ class Overview extends React.Component {
   };
 
   render() {
-    const { importCount, commandCount, seriesCount, filesCount } = this.props;
+    const {
+      importCount, commandCount, seriesCount, filesCount,
+    } = this.props;
     return (
       <div className="row overview">
         <div className="col-lg-3 col-sm-6">
@@ -64,7 +66,9 @@ class Overview extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { importFolders, queueStatus, seriesCount, filesCount } = state;
+  const {
+    importFolders, queueStatus, seriesCount, filesCount,
+  } = state;
 
   const importCount = Object.keys(importFolders).length || 0;
   let commandCount = 0;

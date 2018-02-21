@@ -70,13 +70,15 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
   };
 }
 
-export const updateWebuiAsync = createAsyncAction(WEBUI_VERSION_UPDATE,
+export const updateWebuiAsync = createAsyncAction(
+  WEBUI_VERSION_UPDATE,
   'webuiVersionUpdate', '/webui/update/', (response) => {
     if (response.status === 200) {
       return { status: true, error: false };
     }
     return { status: true, error: new Error(`Response status: ${response.status}`) };
-  });
+  },
+);
 
 
 export const jmmVersionAsync =
@@ -89,6 +91,7 @@ export const jmmVersionAsync =
         let version = null;
         forEach(json, (value) => {
           if (value.name === 'server') {
+            // eslint-disable-next-line prefer-destructuring
             version = value.version;
           }
         });
@@ -99,8 +102,10 @@ export const jmmVersionAsync =
     });
   });
 
-export const importFolderSeriesAsync = createAsyncAction(IMPORT_FOLDER_SERIES,
-  'importFolderSeries', '/serie/infobyfolder');
+export const importFolderSeriesAsync = createAsyncAction(
+  IMPORT_FOLDER_SERIES,
+  'importFolderSeries', '/serie/infobyfolder',
+);
 
 function autoUpdateTick() {
   const location = history.location.pathname;
@@ -113,6 +118,7 @@ function autoUpdateTick() {
     const delta = state.settings.other.logDelta;
     let position = 0;
     try {
+      // eslint-disable-next-line prefer-destructuring
       position = state.logs.contents.position;
     } catch (ex) {
       console.error('Unable to get log position');

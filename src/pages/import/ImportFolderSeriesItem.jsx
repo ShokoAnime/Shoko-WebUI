@@ -11,7 +11,9 @@ class ImportFolderSeriesItem extends React.Component {
   };
 
   render() {
-    const { index, name, size, type } = this.props;
+    const {
+      index, name, size, type,
+    } = this.props;
     return (
       <tr>
         <td>{index}</td>
