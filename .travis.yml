@@ -4,8 +4,11 @@ node_js:
 env:
 - NODE_ENV=production
 cache:
+  yarn: true
   directories:
-  - node_modules
+    - node_modules
+install:
+- yarn install --production=false
 script:
 - npm run lint --silent
 - npm run build
