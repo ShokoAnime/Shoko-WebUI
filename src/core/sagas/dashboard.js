@@ -1,5 +1,4 @@
 import { put, call } from 'redux-saga/effects';
-import store from '../store';
 import Api from '../api';
 import {
   QUEUE_GLOBAL_ALERT,
@@ -9,12 +8,12 @@ import {
   SERIES_COUNT,
   FILES_COUNT,
   JMM_NEWS,
-  updateAvailable,
 } from '../actions';
 
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { setAutoupdate } from '../legacy-actions';
+import Events from '../events';
 
 function* getSettings() {
   const resultJson = yield call(Api.getWebuiConfig);
@@ -124,17 +123,7 @@ function* eventDashboardLoad() {
   }
 
   yield put({ type: JMM_NEWS, payload: resultJson.data });
-
-  const state = store.getState();
-  const { updateChannel } = state.settings.other;
-
-  resultJson = yield call(Api.webuiLatest, updateChannel);
-  if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-    return;
-  }
-
-  yield put(updateAvailable(resultJson.data));
+  yield put({ type: Events.CHECK_UPDATES });
   yield put(setAutoupdate(true));
 }
 

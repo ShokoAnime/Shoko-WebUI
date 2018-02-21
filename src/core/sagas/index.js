@@ -3,14 +3,14 @@ import { put, takeEvery, call, select } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
 import { push } from 'react-router-redux';
+import { createAction } from 'redux-actions';
 import * as Ajv from 'ajv';
 import Api from '../api';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
-  QUEUE_GLOBAL_ALERT,
-  SHOW_GLOBAL_ALERT,
-  GLOBAL_ALERT, SET_FETCHING, Logout,
+  QUEUE_GLOBAL_ALERT, SHOW_GLOBAL_ALERT, GLOBAL_ALERT,
+  SET_FETCHING, LOGOUT, UPDATE_AVAILABLE, JMM_VERSION,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
@@ -19,13 +19,15 @@ import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { GET_LOG } from '../actions/settings/Log';
 import { SETTINGS_JSON } from '../actions/settings/Json';
-import { FIRSTRUN_ANIDB, FIRSTRUN_DATABASE, FIRSTRUN_USER, getStatus } from '../actions/firstrun';
+import { FIRSTRUN_ANIDB, FIRSTRUN_DATABASE, FIRSTRUN_USER, FIRSTRUN_STATUS } from '../actions/firstrun';
 import {
   API_ADD_FOLDER, API_EDIT_FOLDER, SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
 import queueGlobalAlert from './QueueGlobalAlert';
 import apiPollingDriver from './apiPollingDriver';
+
+const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
 // TODO: separate into submodules, for now we just put all sagas in one file
 
@@ -269,9 +271,9 @@ function* settingsSaveWebui(action) {
 function* apiInitStatus() {
   const resultJson = yield call(Api.getInit.bind(this, 'status'));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
   } else {
-    yield put(getStatus(resultJson.data));
+    yield dispatchAction(FIRSTRUN_STATUS, resultJson.data);
   }
 }
 
@@ -440,8 +442,39 @@ function* firstrunGetDatabaseSqlserverinstance() {
 }
 
 function* logout() {
-  yield put(Logout());
+  yield put({ type: LOGOUT, payload: {} });
   yield put(push({ pathname: '/' }));
+}
+
+function* checkUpdates() {
+  const { updateChannel } = yield select(state => state.settings.other);
+  const resultJson = yield call(Api.webuiLatest, updateChannel);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    return;
+  }
+
+  yield put({ type: UPDATE_AVAILABLE, payload: resultJson.data });
+}
+
+function* serverVersion() {
+  yield dispatchAction(Events.START_FETCHING, 'serverVersion');
+  const resultJson = yield call(Api.getVersion);
+  yield dispatchAction(Events.STOP_FETCHING, 'serverVersion');
+  if (resultJson.error) {
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
+    return;
+  }
+
+  let version = null;
+  forEach(resultJson.data, (value) => {
+    if (value.name === 'server') {
+      // eslint-disable-next-line prefer-destructuring
+      version = value.version;
+    }
+  });
+
+  yield dispatchAction(JMM_VERSION, version);
 }
 
 export default function* rootSaga() {
@@ -477,5 +510,7 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_GET_USER, firstrunGetDefaultuser),
     takeEvery(Events.FIRSTRUN_SET_USER, firstrunSetDefaultuser),
     takeEvery(Events.LOGOUT, logout),
+    takeEvery(Events.CHECK_UPDATES, checkUpdates),
+    takeEvery(Events.SERVER_VERSION, serverVersion),
   ];
 }

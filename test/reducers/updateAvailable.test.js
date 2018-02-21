@@ -1,7 +1,10 @@
 import test from 'ava';
 import { reducerTest } from 'redux-ava';
 import proxyquire from 'proxyquire';
-import { updateAvailable as action } from '../../src/core/actions';
+import { createAction } from 'redux-actions';
+import { UPDATE_AVAILABLE } from '../../src/core/actions';
+
+const action = createAction(UPDATE_AVAILABLE);
 
 const reducersProd = proxyquire('../../src/core/reducers', {
   '../../public/version.json': {
