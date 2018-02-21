@@ -37,6 +37,10 @@ a, a:hover, a:focus {
     font-size: 20px;
 }
 
+.panel {
+    padding: 10px;
+}
+
 .panel-default > .panel-heading {
     color: #15827c;
 }

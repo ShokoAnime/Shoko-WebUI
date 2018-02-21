@@ -237,6 +237,10 @@ function getInitDatabaseSqlserverinstance() {
   return jsonApiResponse('/init/database/sqlserverinstance', '');
 }
 
+function getVersion() {
+  return jsonApiResponse('/version', '');
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -272,4 +276,5 @@ export default {
   getInitDefaultuser,
   postInitDefaultuser,
   getInitDatabaseSqlserverinstance,
+  getVersion,
 };

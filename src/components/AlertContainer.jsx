@@ -13,9 +13,11 @@ class AlertContainer extends React.Component {
   render() {
     const { globalAlert } = this.props;
     const alerts = [];
+    let key = 0;
 
     forEach(globalAlert, (alert) => {
-      alerts.push(<Notification type={alert.type} text={alert.text} />);
+      alerts.push(<Notification key={key} type={alert.type} text={alert.text} />);
+      key += 1;
     });
 
     return (

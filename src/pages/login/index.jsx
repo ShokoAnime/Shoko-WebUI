@@ -8,7 +8,6 @@ import s from './styles.css';
 import store from '../../core/store';
 import { apiSession } from '../../core/actions';
 import history from '../../core/history';
-import { jmmVersionAsync } from '../../core/legacy-actions';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
 import Link from '../../components/Link/Link';
@@ -20,6 +19,7 @@ class LoginPage extends React.Component {
     version: PropTypes.string,
     isFetching: PropTypes.bool,
     handleInit: PropTypes.func,
+    serverVersion: PropTypes.func,
     firstRun: PropTypes.bool,
   };
 
@@ -33,11 +33,10 @@ class LoginPage extends React.Component {
   }
 
   componentDidMount() {
-    // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${UI_VERSION}`;
     this.user.focus();
     this.props.handleInit();
-    jmmVersionAsync();
+    this.props.serverVersion();
   }
 
   handleKeyPress(e) {
@@ -90,7 +89,7 @@ class LoginPage extends React.Component {
 
     return (
       <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
-        {version instanceof Error ? `Error: ${version.message}` : version}
+        {version === null ? '' : version}
         (WebUI {UI_VERSION})
       </h4>
     );
@@ -157,11 +156,11 @@ class LoginPage extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { jmmVersion, firstrun } = state;
+  const { jmmVersion, firstrun, fetching } = state;
 
   return {
-    version: jmmVersion.version || null,
-    isFetching: jmmVersion.isFetching,
+    version: jmmVersion || null,
+    isFetching: fetching.serverVersion === true,
     firstRun: firstrun.status && firstrun.status.first_run === true,
   };
 }
@@ -169,6 +168,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     handleInit: () => { dispatch({ type: Events.INIT_STATUS }); },
+    serverVersion: () => { dispatch({ type: Events.SERVER_VERSION }); },
   };
 }
 

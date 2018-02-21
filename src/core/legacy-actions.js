@@ -1,9 +1,7 @@
-import { forEach } from 'lodash';
 import objPath from 'object-path';
 import { createAction } from 'redux-actions';
 import {
   IMPORT_FOLDER_SERIES,
-  JMM_VERSION,
   SET_AUTOUPDATE,
   setGlobalAlert,
   STATUS_RECEIVE,
@@ -79,28 +77,6 @@ export const updateWebuiAsync = createAsyncAction(
     return { status: true, error: new Error(`Response status: ${response.status}`) };
   },
 );
-
-
-export const jmmVersionAsync =
-  createAsyncAction(JMM_VERSION, 'jmmVersion', '/version', (response) => {
-    if (response.status !== 200) {
-      return new Error(`Response status: ${response.status}`);
-    }
-    return response.json().then((json) => {
-      try {
-        let version = null;
-        forEach(json, (value) => {
-          if (value.name === 'server') {
-            // eslint-disable-next-line prefer-destructuring
-            version = value.version;
-          }
-        });
-        return version === null ? Error('Not found!') : version;
-      } catch (ex) {
-        return new Error(ex.message);
-      }
-    });
-  });
 
 export const importFolderSeriesAsync = createAsyncAction(
   IMPORT_FOLDER_SERIES,

@@ -17,7 +17,6 @@ export const QUEUE_GLOBAL_ALERT = 'QUEUE_GLOBAL_ALERT';
 export const SHOW_GLOBAL_ALERT = 'SHOW_GLOBAL_ALERT';
 export const setGlobalAlert = createAction(QUEUE_GLOBAL_ALERT);
 export const LOGOUT = 'LOGOUT';
-export const Logout = createAction(LOGOUT);
 export const SET_FETCHING = 'SET_FETCHING';
 
 
@@ -29,7 +28,6 @@ export const IMPORT_FOLDERS = 'IMPORT_FOLDERS';
 export const SERIES_COUNT = 'SERIES_COUNT';
 export const FILES_COUNT = 'FILES_COUNT';
 export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
-export const updateAvailable = createAction(UPDATE_AVAILABLE);
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const JMM_VERSION = 'JMM_VERSION';
 export const IMPORT_FOLDER_SERIES = 'IMPORT_FOLDER_SERIES';

@@ -31,7 +31,6 @@ const webuiVersionUpdate = createApiReducer(
   WEBUI_VERSION_UPDATE, 'items',
   { status: false, error: false },
 );
-const jmmVersion = createApiReducer(JMM_VERSION, 'version', '');
 const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
 
 export const apiSession = handleActions({
@@ -57,6 +56,11 @@ const globalAlert = handleAction(
   GLOBAL_ALERT,
   (state, action) => (action.error ? state : action.payload)
   , [],
+);
+const jmmVersion = handleAction(
+  JMM_VERSION,
+  (state, action) => (action.error ? state : action.payload),
+  '',
 );
 const queueStatus = handleAction(QUEUE_STATUS, apiReducer, {});
 const recentFiles = handleAction(RECENT_FILES, apiReducer, {});
