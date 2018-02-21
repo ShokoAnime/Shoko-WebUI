@@ -34,8 +34,10 @@ class FolderItem extends React.Component {
   }
 
   render() {
-    const { index, ImportFolderLocation, ImportFolderType, IsDropSource,
-      IsDropDestination, IsWatched } = this.props;
+    const {
+      index, ImportFolderLocation, ImportFolderType, IsDropSource,
+      IsDropDestination, IsWatched,
+    } = this.props;
     const flags = [];
     if (IsDropSource === 1) flags.push('Drop Source');
     if (IsDropDestination === 1) flags.push('Drop Destination');

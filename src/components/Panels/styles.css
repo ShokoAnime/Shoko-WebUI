@@ -22,6 +22,11 @@
   width: 30px;
 }
 
+.timer :global(.fa) {
+  font-size: 13px;
+  margin-right: 3px;
+}
+
 .fixed-panel .icon-column :global(.fa) {
   position: absolute;
 }
@@ -42,9 +47,4 @@
   bottom: 2.3rem;
   right: 2rem;
   color: #2f353b;
-}
-
-.timer :global(.fa) {
-  font-size: 13px;
-  margin-right: 3px;
 }

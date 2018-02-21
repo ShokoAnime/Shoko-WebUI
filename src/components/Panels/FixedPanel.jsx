@@ -26,17 +26,27 @@ class FixedPanel extends React.Component {
     }
   }
 
+  renderButton() {
+    const { actionName } = this.props;
+    if (!actionName) { return null; }
+    return (
+      <div className="pull-right">
+        <a className="btn btn-primary pull-right" onClick={this.handleAction}>{actionName}</a>
+      </div>
+    );
+  }
+
   render() {
-    const { children, title, isFetching, lastUpdated, description, actionName } = this.props;
+    const {
+      children, title, isFetching, lastUpdated, description,
+    } = this.props;
     return (
       <section className="panel">
         <header className={cx('panel-heading', s.header)}>
           <div className="pull-left">
             {title}<h6>{description}</h6>
           </div>
-          {actionName ? <div className="pull-right">
-            <a className="btn btn-primary pull-right" onClick={this.handleAction}>{actionName}</a>
-          </div> : null}
+          {this.renderButton()}
           <div className="clearfix" />
         </header>
         <div className={s['fixed-panel']}>

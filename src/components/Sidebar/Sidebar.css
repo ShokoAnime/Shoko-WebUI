@@ -15,8 +15,8 @@
   padding: 0 8px;
 }
 
-.bottom > a:hover,
-a:focus {
+a:focus,
+.bottom > a:hover {
   color: #49a2df;
   cursor: pointer;
   transition: all 0.3s ease;

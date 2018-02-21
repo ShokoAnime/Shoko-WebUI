@@ -12,7 +12,9 @@ class RecentFilesItem extends React.Component {
   };
 
   render() {
-    const { id, index, filename, recognized } = this.props;
+    const {
+      id, index, filename, recognized,
+    } = this.props;
 
     return (
       <tr key={id}>

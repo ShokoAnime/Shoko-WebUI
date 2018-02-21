@@ -10,7 +10,9 @@ class NewsItem extends React.Component {
   };
 
   render() {
-    const { index, link, title, date } = this.props;
+    const {
+      index, link, title, date,
+    } = this.props;
 
     return (
       <tr key={index}>

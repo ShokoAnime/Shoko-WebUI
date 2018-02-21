@@ -7,9 +7,11 @@ import {
   API_EDIT_FOLDER,
 } from '../../actions/modals/ImportFolder';
 
-const status = handleAction(SET_STATUS,
+const status = handleAction(
+  SET_STATUS,
   (state, action) => (action.error ? state : action.payload)
-  , false);
+  , false,
+);
 
 const addFolder =
   handleAction(API_ADD_FOLDER, (state, action) => Object.assign({}, state, action.payload), {});
@@ -27,9 +29,11 @@ const defaultFormData = {
   IsWatched: 0,
 };
 
-const form = handleAction(SET_FORM_DATA, (state, action) =>
-  (action.error ? state : Object.assign({}, state, action.payload || defaultFormData)),
-defaultFormData);
+const form = handleAction(
+  SET_FORM_DATA, (state, action) =>
+    (action.error ? state : Object.assign({}, state, action.payload || defaultFormData)),
+  defaultFormData,
+);
 
 export default combineReducers({
   status,

@@ -13,7 +13,6 @@ import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
 import Link from '../../components/Link/Link';
 
-// eslint-disable-next-line no-undef
 const UI_VERSION = uiVersion();
 
 class LoginPage extends React.Component {
@@ -92,7 +91,8 @@ class LoginPage extends React.Component {
     return (
       <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
         {version instanceof Error ? `Error: ${version.message}` : version}
-        (WebUI {UI_VERSION})</h4>
+        (WebUI {UI_VERSION})
+      </h4>
     );
   }
 
@@ -115,7 +115,8 @@ class LoginPage extends React.Component {
                 <Alert
                   bsStyle="danger"
                   className={cx({ hidden: errorMessage === null })}
-                >{errorMessage}</Alert>
+                >{errorMessage}
+                </Alert>
                 {firstRun === true && <Alert bsStyle="warning"> Looks like a first run. Try the <Link to="/firstrun">wizard</Link></Alert>}
                 <h2>Sign In</h2>
                 <div className="form-group">
@@ -144,7 +145,8 @@ class LoginPage extends React.Component {
                   type="button"
                   onClick={this.handleSignIn}
                   className="btn btn-primary btn-lg btn-block"
-                >Sign In</button>
+                >Sign In
+                </button>
               </div>
             </div>
           </div>

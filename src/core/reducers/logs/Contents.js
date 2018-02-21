@@ -11,12 +11,12 @@ export const contents = handleActions({
   [SET_CONTENTS]: (state, action) => {
     if (action.error) { return state; }
     const lines = action.payload.lines || [];
-    const position = action.payload.position;
+    const { position } = action.payload;
     return Object.assign({}, state, { lines, position });
   },
   [APPEND_CONTENTS]: (state, action) => {
     if (action.error) { return state; }
-    const position = action.payload.position;
+    const { position } = action.payload;
     let lines = [];
     const newLines = action.payload.lines;
     if (newLines.length > 0 && newLines[0].tag === null && state.lines.length > 0) {

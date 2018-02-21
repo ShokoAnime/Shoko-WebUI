@@ -16,7 +16,8 @@ class LogContents extends React.Component {
         <Col sm={12}>
           <Panel className="log-panel">{lines.reverse().map(item => (
             <p><Label>{item.stamp}</Label>{' '}<Label bsStyle="primary">{item.tag}</Label>{' '}{item.text}</p>
-          ))}</Panel>
+          ))}
+          </Panel>
         </Col>
       </Row>
     );

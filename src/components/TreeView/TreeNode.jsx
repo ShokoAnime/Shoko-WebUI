@@ -43,7 +43,6 @@ class TreeNode extends React.Component {
     this.state = {
       expanded: false,
       loaded: false,
-      selected: false,
       nodes: [],
     };
   }
@@ -82,15 +81,20 @@ class TreeNode extends React.Component {
     const children = [];
     if (expanded) {
       forEach(nodes, (node) => {
-        children.push(
-          <TreeNode {...this.props} basePath={node.path} text={node.text} level={level + 1} />,
-        );
+        children.push(<TreeNode
+          {...this.props}
+          basePath={node.path}
+          text={node.text}
+          level={level + 1}
+        />);
       });
     }
     return (
       <li
-        className={cx(s['list-group-item'],
-          level === 1 ? s.root : null, selected ? s.selected : null)}
+        className={cx(
+          s['list-group-item'],
+          level === 1 ? s.root : null, selected ? s.selected : null,
+        )}
         onClick={this.toggleSelected}
       >
         <i

@@ -51,11 +51,13 @@ class LogOptions extends React.Component {
                     <Button
                       onClick={() => { handleChange('rotate', false); }}
                       bsStyle={rotate ? 'default' : 'danger'}
-                    >No</Button>
+                    >No
+                    </Button>
                     <Button
                       onClick={() => { handleChange('rotate', true); }}
                       bsStyle={rotate ? 'success' : 'default'}
-                    >Yes</Button>
+                    >Yes
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -66,11 +68,13 @@ class LogOptions extends React.Component {
                     <Button
                       onClick={() => { handleChange('zip', false); }}
                       bsStyle={zip ? 'default' : 'danger'}
-                    >No</Button>
+                    >No
+                    </Button>
                     <Button
                       onClick={() => { handleChange('zip', true); }}
                       bsStyle={zip ? 'success' : 'default'}
-                    >Yes</Button>
+                    >Yes
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -81,11 +85,13 @@ class LogOptions extends React.Component {
                     <Button
                       onClick={() => { handleChange('delete', false); }}
                       bsStyle={logs.delete ? 'default' : 'danger'}
-                    >No</Button>
+                    >No
+                    </Button>
                     <Button
                       onClick={() => { handleChange('delete', true); }}
                       bsStyle={logs.delete ? 'success' : 'default'}
-                    >Yes</Button>
+                    >Yes
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -96,15 +102,18 @@ class LogOptions extends React.Component {
                     <Button
                       onClick={() => { handleChange('days', 7); }}
                       bsStyle={days === 7 ? 'success' : 'default'}
-                    >Weekly</Button>
+                    >Weekly
+                    </Button>
                     <Button
                       onClick={() => { handleChange('days', 30); }}
                       bsStyle={days === 30 ? 'success' : 'default'}
-                    >Monthly</Button>
+                    >Monthly
+                    </Button>
                     <Button
                       onClick={() => { handleChange('days', 90); }}
                       bsStyle={days === 90 ? 'success' : 'default'}
-                    >Quarterly</Button>
+                    >Quarterly
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>

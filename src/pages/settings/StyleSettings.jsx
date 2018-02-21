@@ -32,7 +32,9 @@ class StyleSettings extends React.Component {
   }
 
   render() {
-    const { ui, className, changeTheme, changeNotifications } = this.props;
+    const {
+      ui, className, changeTheme, changeNotifications,
+    } = this.props;
     const { theme, notifications } = ui;
 
     return (
@@ -52,15 +54,18 @@ class StyleSettings extends React.Component {
                     <Button
                       onClick={() => { changeTheme('light'); }}
                       bsStyle={theme === 'light' ? 'success' : 'default'}
-                    >Light</Button>
+                    >Light
+                    </Button>
                     <Button
                       onClick={() => { changeTheme('dark'); }}
                       bsStyle={theme === 'dark' ? 'success' : 'default'}
-                    >Dark</Button>
+                    >Dark
+                    </Button>
                     <Button
                       onClick={() => { changeTheme('custom'); }}
                       bsStyle={theme === 'custom' ? 'success' : 'default'}
-                    >Custom</Button>
+                    >Custom
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>
@@ -86,11 +91,13 @@ class StyleSettings extends React.Component {
                     <Button
                       onClick={() => { changeNotifications(false); }}
                       bsStyle={notifications ? 'default' : 'danger'}
-                    >No</Button>
+                    >No
+                    </Button>
                     <Button
                       onClick={() => { changeNotifications(true); }}
                       bsStyle={notifications ? 'success' : 'default'}
-                    >Yes</Button>
+                    >Yes
+                    </Button>
                   </ButtonGroup>
                 </td>
               </tr>

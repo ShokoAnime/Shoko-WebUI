@@ -19,7 +19,9 @@ class TabDatabase extends React.Component {
   };
 
   render() {
-    const { database, changeSetting, isFetching, status, testDatabase } = this.props;
+    const {
+      database, changeSetting, isFetching, status, testDatabase,
+    } = this.props;
     const db = {
       isSQLite: database.db_type === 'SQLite',
       isMySQL: database.db_type === 'MySQL',
