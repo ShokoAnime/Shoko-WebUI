@@ -4,6 +4,5 @@ node_modules/
 [include]
 
 [libs]
-flow-typed/react-bootstrap_v0.31.x.x.js
 
 [options]
