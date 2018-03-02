@@ -1,11 +1,26 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import { Button } from 'react-bootstrap';
-import store from '../../../core/store';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
 
-class FolderItem extends React.Component {
+export type FolderItemType = {
+  ImportFolderID: number,
+  ImportFolderName: string,
+  ImportFolderLocation: string,
+  ImportFolderType: number,
+  IsDropSource: number,
+  IsDropDestination: number,
+  IsWatched: number,
+}
+
+type Props = FolderItemType & {
+  index: number,
+  formData: (FolderItemType) => void,
+}
+
+class FolderItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     ImportFolderID: PropTypes.number,
@@ -15,15 +30,11 @@ class FolderItem extends React.Component {
     IsDropSource: PropTypes.number,
     IsDropDestination: PropTypes.number,
     IsWatched: PropTypes.number,
+    formData: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.onEdit = this.onEdit.bind(this);
-  }
-
-  onEdit() {
-    store.dispatch(setFormData({
+  onEdit = () => {
+    this.props.formData({
       ImportFolderID: this.props.ImportFolderID,
       ImportFolderType: this.props.ImportFolderType,
       ImportFolderName: this.props.ImportFolderName,
@@ -31,8 +42,8 @@ class FolderItem extends React.Component {
       IsDropSource: this.props.IsDropSource,
       IsDropDestination: this.props.IsDropDestination,
       IsWatched: this.props.IsWatched,
-    }));
-  }
+    });
+  };
 
   render() {
     const {
@@ -58,4 +69,10 @@ class FolderItem extends React.Component {
   }
 }
 
-export default FolderItem;
+function mapDispatchToProps(dispatch) {
+  return {
+    formData: (data: FolderItemType) => dispatch(setFormData(data)),
+  };
+}
+
+export default connect(undefined, mapDispatchToProps)(FolderItem);

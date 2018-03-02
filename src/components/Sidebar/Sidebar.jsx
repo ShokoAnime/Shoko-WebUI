@@ -5,7 +5,7 @@ import Link from '../Link/Link';
 import s from './Sidebar.css';
 import history from '../../core/history';
 
-class Sidebar extends React.Component {
+class Sidebar extends React.Component<{}> {
   render() {
     const location = history.location.pathname;
 
@@ -45,15 +45,15 @@ class Sidebar extends React.Component {
             </li>
           </ul>
           <div className={cx(s.bottom)}>
-            <a href="http://www.jmediamanager.org/" rel="noopener noreferrer" target="_blank">Home</a>
+            <a href="https://www.shokoanime.org/" rel="noopener noreferrer" target="_blank">Home</a>
             <a
-              href="https://github.com/japanesemediamanager/ShokoServer-WebUI"
+              href="https://github.com/ShokoAnime/ShokoServer-WebUI"
               target="_blank"
               rel="noopener noreferrer"
             >Github
             </a>
             <a
-              href="https://github.com/japanesemediamanager/ShokoServer-WebUI/issues"
+              href="https://github.com/ShokoAnime/ShokoServer-WebUI/issues"
               target="_blank"
               rel="noopener noreferrer"
             >Support

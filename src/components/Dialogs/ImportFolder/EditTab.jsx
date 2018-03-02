@@ -13,8 +13,21 @@ import FolderForm from './Form';
 import { setFormData, setStatus } from '../../../core/actions/modals/ImportFolder';
 import StatusPanel from '../../Panels/StatusPanel';
 import Events from '../../../core/events';
+import type { FolderItemType } from './FolderItem';
 
-class EditTab extends React.Component {
+type Props = {
+  items: Array<FolderItemType>,
+  form: FolderItemType,
+  editFolder: {
+    isFetching: bool,
+    lastUpdated: number,
+  },
+  handleEditFolder: (FolderItemType) => void,
+  handleClose: () => void,
+  handleCancel: () => void,
+}
+
+class EditTab extends React.Component<Props> {
   static propTypes = {
     items: PropTypes.object,
     form: PropTypes.object,
@@ -24,15 +37,10 @@ class EditTab extends React.Component {
     handleCancel: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleSubmit() {
+  handleSubmit = () => {
     const { handleEditFolder, form } = this.props;
     handleEditFolder(form);
-  }
+  };
 
   render() {
     const {

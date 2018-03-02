@@ -1,8 +1,13 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from "react-redux";
 
-class ImageQueue extends React.Component {
+type Props = {
+  count: number,
+}
+
+class ImageQueue extends React.Component<Props> {
   static propTypes = {
     count: PropTypes.number,
   };
@@ -20,4 +25,13 @@ class ImageQueue extends React.Component {
   }
 }
 
-export default ImageQueue;
+function mapStateToProps(state):Props {
+  const { queueStatus } = state;
+  const items = queueStatus.items || {};
+
+  return {
+    count: items.image ? items.image.count : 0,
+  };
+}
+
+export default connect(mapStateToProps)(ImageQueue);

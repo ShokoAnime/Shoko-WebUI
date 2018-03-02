@@ -1,6 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Modal,
   Tabs,
@@ -8,28 +9,37 @@ import {
   Panel,
 } from 'react-bootstrap';
 import cx from 'classnames';
-import store from '../../../core/store';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
 import s from '../ImportModal.css';
 import AddTab from './AddTab';
 import EditTab from './EditTab';
+import type { FormType } from './Form';
 
-class ImportModal extends React.Component {
+type Props = {
+  status: bool,
+  formData: (FormType) => void,
+}
+
+type State = {
+  activeTab: number,
+}
+
+class ImportModal extends React.Component<Props, State> {
   static propTypes = {
     status: PropTypes.bool,
+    formData: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-    this.onTabChange = this.onTabChange.bind(this);
     this.state = {
       activeTab: 1,
     };
   }
 
-  onTabChange(id) {
+  onTabChange = (id: number) => {
     if (id === 1) {
-      store.dispatch(setFormData({
+      this.props.formData({
         ImportFolderID: null,
         ImportFolderType: '1',
         ImportFolderName: '',
@@ -37,10 +47,10 @@ class ImportModal extends React.Component {
         IsDropSource: 0,
         IsDropDestination: 0,
         IsWatched: 0,
-      }));
+      });
     }
     this.setState({ activeTab: id });
-  }
+  };
 
   render() {
     const { status } = this.props;
@@ -60,4 +70,10 @@ class ImportModal extends React.Component {
   }
 }
 
-export default ImportModal;
+function mapDispatchToProps(dispatch) {
+  return {
+    formData: value => dispatch(setFormData(value)),
+  };
+}
+
+export default connect(undefined, mapDispatchToProps)(ImportModal);

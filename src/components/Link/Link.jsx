@@ -3,13 +3,18 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import history from '../../core/history';
 
-class Link extends React.Component {
+type Props = {
+  to: string,
+  onClick?: (Event) => void
+}
+
+class Link extends React.Component<Props> {
   static propTypes = {
-    to: PropTypes.oneOfType([PropTypes.string, PropTypes.object]).isRequired,
+    to: PropTypes.string.isRequired,
     onClick: PropTypes.func,
   };
 
-  handleClick = (event) => {
+  handleClick = (event: Event) => {
     if (this.props.onClick) {
       this.props.onClick(event);
     }
@@ -28,14 +33,7 @@ class Link extends React.Component {
 
     event.preventDefault();
 
-    if (this.props.to) {
-      history.push(this.props.to);
-    } else {
-      history.push({
-        pathname: event.currentTarget.pathname,
-        search: event.currentTarget.search,
-      });
-    }
+    history.push(this.props.to);
   };
 
   render() {

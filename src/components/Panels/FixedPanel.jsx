@@ -5,7 +5,17 @@ import cx from 'classnames';
 import TimeUpdated from './TimeUpdated';
 import s from './styles.css';
 
-class FixedPanel extends React.Component {
+type Props = {
+  lastUpdated?: number,
+  title: string,
+  description: string,
+  isFetching: bool,
+  children: any,
+  actionName?: string,
+  onAction?: () => void
+}
+
+class FixedPanel extends React.Component<Props> {
   static propTypes = {
     lastUpdated: PropTypes.number,
     title: PropTypes.string,
@@ -16,16 +26,11 @@ class FixedPanel extends React.Component {
     onAction: PropTypes.func,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleAction = this.handleAction.bind(this);
-  }
-
-  handleAction() {
+  handleAction = () => {
     if (typeof this.props.onAction === 'function') {
       this.props.onAction();
     }
-  }
+  };
 
   renderButton() {
     const { actionName } = this.props;

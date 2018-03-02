@@ -4,7 +4,12 @@ import React from 'react';
 import cx from 'classnames';
 import s from './Notification.css';
 
-class Notification extends React.Component {
+type Props = {
+  type: string,
+  text: string,
+}
+
+class Notification extends React.Component<Props> {
   static propTypes = {
     type: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,

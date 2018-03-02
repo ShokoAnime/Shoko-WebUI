@@ -1,6 +1,6 @@
 // @flow
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import Header from './Header';
@@ -9,15 +9,19 @@ import Footer from './Footer';
 import s from './Layout.css';
 import AlertContainer from '../AlertContainer';
 
-class Layout extends React.Component {
+type Props = {
+  sidebarToggle: bool,
+  children?: any
+}
+
+class Layout extends Component<Props> {
   static propTypes = {
     sidebarToggle: PropTypes.bool,
-    version: PropTypes.string,
     children: PropTypes.any,
   };
 
   render() {
-    const { sidebarToggle, version, children } = this.props;
+    const { sidebarToggle, children } = this.props;
 
     return (
       <section className={cx(s.container, sidebarToggle ? null : s['hide-sidebar'])}>
@@ -25,19 +29,18 @@ class Layout extends React.Component {
         <Sidebar />
         <AlertContainer />
         {children}
-        <Footer version={version} />
+        <Footer />
       </section>
     );
   }
 }
 
-function mapStateToProps(state) {
-  const { sidebarToggle, jmmVersion } = state;
+function mapStateToProps(state):Props {
+  const { sidebarToggle } = state;
 
   return {
     sidebarToggle,
-    version: jmmVersion.version,
   };
 }
 
-export default connect(mapStateToProps)(Layout);
+export default connect(mapStateToProps, () => {})(Layout);

@@ -1,7 +1,5 @@
 // @flow
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
 import Logo from './Logo';
 import GeneralQueue from './GeneralQueue';
 import HasherQueue from './HasherQueue';
@@ -12,26 +10,17 @@ import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
 import UserDropdown from '../UserDropdown/UserDropdown';
 
-class Header extends React.Component {
-  static propTypes = {
-    countHasher: PropTypes.number,
-    countGeneral: PropTypes.number,
-    countImages: PropTypes.number,
-  };
-
+export default class Header extends React.Component<{}> {
   render() {
-    const {
-      countHasher, countGeneral, countImages,
-    } = this.props;
     return (
       <header className="header white-bg">
         <SidebarToggle />
         <Logo />
         <div className="nav notifications">
           <ul className="nav">
-            <HasherQueue count={countHasher} />
-            <GeneralQueue count={countGeneral} />
-            <ImageQueue count={countImages} />
+            <HasherQueue />
+            <GeneralQueue />
+            <ImageQueue />
             <UpdateButton />
           </ul>
         </div>
@@ -46,19 +35,3 @@ class Header extends React.Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  const {
-    queueStatus, settings,
-  } = state;
-  const items = queueStatus.items || {};
-
-  return {
-    countHasher: items.hash ? items.hash.count : null,
-    countGeneral: items.general ? items.general.count : null,
-    countImages: items.image ? items.image.count : null,
-    updateChannel: settings.other.updateChannel,
-  };
-}
-
-export default connect(mapStateToProps)(Header);
