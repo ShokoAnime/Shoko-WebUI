@@ -25,7 +25,7 @@ import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
 import firstrun from './reducers/firstrun';
-import { createApiReducer, apiReducer } from './util';
+import { apiReducer } from './util';
 import Version from '../../public/version.json';
 
 export const webuiVersionUpdate = handleAction(
@@ -34,7 +34,11 @@ export const webuiVersionUpdate = handleAction(
   { status: false },
 );
 
-const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
+export const importFolderSeries = handleAction(
+  IMPORT_FOLDER_SERIES,
+  (state, action) => action.payload || state,
+  [],
+);
 
 export const apiSession = handleActions({
   [API_SESSION]: (state, action) =>

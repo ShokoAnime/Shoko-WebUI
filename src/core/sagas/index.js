@@ -12,6 +12,7 @@ import Dashboard from './dashboard';
 import {
   QUEUE_GLOBAL_ALERT, SHOW_GLOBAL_ALERT, GLOBAL_ALERT,
   SET_FETCHING, LOGOUT, UPDATE_AVAILABLE, JMM_VERSION, WEBUI_VERSION_UPDATE,
+  SELECT_IMPORT_FOLDER_SERIES, IMPORT_FOLDER_SERIES,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
@@ -490,6 +491,19 @@ function* downloadUpdates() {
   yield dispatchAction(WEBUI_VERSION_UPDATE, { status: true });
 }
 
+function* fetchImportFolderSeries(action) {
+  yield dispatchAction(SELECT_IMPORT_FOLDER_SERIES, action.payload);
+  yield dispatchAction(Events.START_FETCHING, 'importFolderSeries');
+  const resultJson = yield call(Api.getSerieInfobyfolder, `?id=${action.payload.id}`);
+  yield dispatchAction(Events.STOP_FETCHING, 'importFolderSeries');
+  if (resultJson.error) {
+    yield dispatchAction(IMPORT_FOLDER_SERIES, {});
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
+    return;
+  }
+  yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data);
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -526,5 +540,6 @@ export default function* rootSaga() {
     takeEvery(Events.CHECK_UPDATES, checkUpdates),
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
+    takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
   ];
 }

@@ -246,6 +246,10 @@ function getWebuiUpdate() {
   return jsonApiResponse('/webui/update', '');
 }
 
+function getSerieInfobyfolder(data) {
+  return jsonApiResponse('/serie/infobyfolder', data);
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -283,4 +287,5 @@ export default {
   getInitDatabaseSqlserverinstance,
   getVersion,
   getWebuiUpdate,
+  getSerieInfobyfolder,
 };
