@@ -28,10 +28,12 @@ import firstrun from './reducers/firstrun';
 import { createApiReducer, apiReducer } from './util';
 import Version from '../../public/version.json';
 
-const webuiVersionUpdate = createApiReducer(
-  WEBUI_VERSION_UPDATE, 'items',
-  { status: false, error: false },
+export const webuiVersionUpdate = handleAction(
+  WEBUI_VERSION_UPDATE,
+  (state, action) => Object.assign({}, action.payload || state),
+  { status: false },
 );
+
 const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
 
 export const apiSession = handleActions({
@@ -73,6 +75,7 @@ export const updateAvailable = handleAction(UPDATE_AVAILABLE, (state, action) =>
   if (action.error) { return state; }
   return Version.debug === false && action.payload.version !== Version.package;
 }, false);
+
 
 const fetching = handleAction(SET_FETCHING, (state, action) => {
   if (action.error) { return state; }

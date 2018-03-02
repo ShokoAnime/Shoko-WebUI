@@ -11,7 +11,7 @@ import Events from '../events';
 import Dashboard from './dashboard';
 import {
   QUEUE_GLOBAL_ALERT, SHOW_GLOBAL_ALERT, GLOBAL_ALERT,
-  SET_FETCHING, LOGOUT, UPDATE_AVAILABLE, JMM_VERSION,
+  SET_FETCHING, LOGOUT, UPDATE_AVAILABLE, JMM_VERSION, WEBUI_VERSION_UPDATE,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
@@ -478,6 +478,18 @@ function* serverVersion() {
   yield dispatchAction(JMM_VERSION, version);
 }
 
+function* downloadUpdates() {
+  yield dispatchAction(Events.START_FETCHING, 'downloadUpdates');
+  const resultJson = yield call(Api.getWebuiUpdate);
+  yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
+  if (resultJson.error) {
+    yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
+    return;
+  }
+
+  yield dispatchAction(WEBUI_VERSION_UPDATE, { status: true });
+}
+
 export default function* rootSaga() {
   yield [
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -513,5 +525,6 @@ export default function* rootSaga() {
     takeEvery(Events.LOGOUT, logout),
     takeEvery(Events.CHECK_UPDATES, checkUpdates),
     takeEvery(Events.SERVER_VERSION, serverVersion),
+    takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
   ];
 }

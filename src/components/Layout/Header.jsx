@@ -17,26 +17,22 @@ class Header extends React.Component {
     countHasher: PropTypes.number,
     countGeneral: PropTypes.number,
     countImages: PropTypes.number,
-    sidebarToggle: PropTypes.bool,
-    updateAvailable: PropTypes.bool,
-    webuiVersionUpdate: PropTypes.object,
   };
 
   render() {
     const {
-      countHasher, countGeneral, countImages, sidebarToggle, updateAvailable,
-      webuiVersionUpdate,
+      countHasher, countGeneral, countImages,
     } = this.props;
     return (
       <header className="header white-bg">
-        <SidebarToggle enabled={sidebarToggle} />
+        <SidebarToggle />
         <Logo />
         <div className="nav notifications">
           <ul className="nav">
             <HasherQueue count={countHasher} />
             <GeneralQueue count={countGeneral} />
             <ImageQueue count={countImages} />
-            <UpdateButton enabled={updateAvailable} updateStatus={webuiVersionUpdate} />
+            <UpdateButton />
           </ul>
         </div>
         <div className="nav notifications pull-right">
@@ -53,7 +49,7 @@ class Header extends React.Component {
 
 function mapStateToProps(state) {
   const {
-    queueStatus, sidebarToggle, updateAvailable, webuiVersionUpdate, settings,
+    queueStatus, settings,
   } = state;
   const items = queueStatus.items || {};
 
@@ -61,10 +57,7 @@ function mapStateToProps(state) {
     countHasher: items.hash ? items.hash.count : null,
     countGeneral: items.general ? items.general.count : null,
     countImages: items.image ? items.image.count : null,
-    sidebarToggle,
-    updateAvailable: updateAvailable.status,
     updateChannel: settings.other.updateChannel,
-    webuiVersionUpdate,
   };
 }
 

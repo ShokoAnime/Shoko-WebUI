@@ -6,7 +6,6 @@ import {
   setGlobalAlert,
   STATUS_RECEIVE,
   STATUS_REQUEST,
-  WEBUI_VERSION_UPDATE,
 } from './actions';
 import store from './store';
 import history from './history';
@@ -67,16 +66,6 @@ export function createAsyncAction(type, key, apiAction, responseCallback) {
     return Promise.resolve();
   };
 }
-
-export const updateWebuiAsync = createAsyncAction(
-  WEBUI_VERSION_UPDATE,
-  'webuiVersionUpdate', '/webui/update/', (response) => {
-    if (response.status === 200) {
-      return { status: true, error: false };
-    }
-    return { status: true, error: new Error(`Response status: ${response.status}`) };
-  },
-);
 
 export const importFolderSeriesAsync = createAsyncAction(
   IMPORT_FOLDER_SERIES,

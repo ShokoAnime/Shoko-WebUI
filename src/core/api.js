@@ -242,6 +242,10 @@ function getVersion() {
   return jsonApiResponse('/version', '');
 }
 
+function getWebuiUpdate() {
+  return jsonApiResponse('/webui/update', '');
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -278,4 +282,5 @@ export default {
   postInitDefaultuser,
   getInitDatabaseSqlserverinstance,
   getVersion,
+  getWebuiUpdate,
 };
