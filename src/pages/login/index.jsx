@@ -125,7 +125,8 @@ class LoginPage extends React.Component<Props, State> {
                 <h1>Shoko Server</h1>
                 {firstRun !== true && this.renderVersion()}
                 <h2>Welcome Back!</h2>
-                <h2>Input your user information to login into Shoko Server!</h2>
+                <h3>Input your user information to login into Shoko Server!</h3>
+                <h3 className="web-ui-notice">Need additional help? Check <a href="https://docs.shokoanime.com/server/config/settings.html#shoko-webui" target="_blank" rel="noopener noreferrer">Shoko Docs</a>.</h3>
               </div>
               <div className={cx('col-md-3', s['right-panel'])}>
                 <Alert
