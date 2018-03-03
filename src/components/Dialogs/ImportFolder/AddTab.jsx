@@ -15,7 +15,7 @@ import type { FormType } from './Form';
 
 type Props = {
   addFolder: {
-    isFetching: bool,
+    isFetching: boolean,
     lastUpdated: number,
   },
   handleAddFolder: (FormType) => void,

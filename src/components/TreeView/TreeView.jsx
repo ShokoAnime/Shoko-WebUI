@@ -4,26 +4,33 @@ import React from 'react';
 import s from './TreeView.css';
 import TreeNode from './TreeNode';
 
-class TreeView extends React.Component {
+type Props = {
+  onSelect: (any) => any
+}
+
+type State = {
+  selectedNode: any,
+}
+
+class TreeView extends React.Component<Props, State> {
   static propTypes = {
     onSelect: PropTypes.func,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-    this.handleNodeSelect = this.handleNodeSelect.bind(this);
     this.state = {
       selectedNode: null,
     };
   }
 
-  handleNodeSelect(node) {
+  handleNodeSelect = (node: any) => {
     this.setState({ selectedNode: node });
     if (typeof this.props.onSelect === 'function') {
       // FIXME: need some cross-platform way of choosing a directory separator
       this.props.onSelect(`${node.props.basePath}`);
     }
-  }
+  };
 
   render() {
     const { selectedNode } = this.state;

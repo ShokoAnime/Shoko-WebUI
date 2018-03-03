@@ -4,7 +4,7 @@ import React from 'react';
 import { Alert } from 'react-bootstrap';
 
 type Props = {
-  isFetching: bool,
+  isFetching: boolean,
   code: number,
   message: string,
 }

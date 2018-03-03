@@ -9,13 +9,13 @@ import { updateWebui } from '../../core/actions';
 import Events from '../../core/events';
 
 type Props = {
-  enabled: bool,
-  isFetching: bool,
+  enabled: boolean,
+  isFetching: boolean,
   downloadWebui: () => void,
   dismissAlert: () => void,
   updateStatus: {
     error ?: string,
-    status ?: bool
+    status ?: boolean
   }
 }
 

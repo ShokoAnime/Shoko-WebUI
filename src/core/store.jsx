@@ -2,6 +2,7 @@
 import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
+import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import throttle from 'lodash/throttle';
 import { routerMiddleware } from 'react-router-redux';
@@ -10,6 +11,16 @@ import rootReducer from './reducers';
 import rootSaga from './sagas';
 import history from './history';
 
+import type { Reducers } from './reducers';
+
+type Action = {
+  type: string,
+  payload: any
+}
+
+type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
+export type State = $ObjMap<Reducers, $ExtractFunctionReturn>;
+
 const sagaMiddleware = createSagaMiddleware();
 const routeMiddleware = routerMiddleware(history);
 let middleware = [routeMiddleware, sagaMiddleware, thunkMiddleware];
@@ -17,16 +28,18 @@ if (process.env.NODE_ENV !== 'production') {
   middleware = [...middleware, createLogger()];
 }
 
-const store = createStore(
-  rootReducer,
-  loadState(),
-  applyMiddleware(...middleware),
-);
+function configureStore(): ReduxStore<State, Action> {
+  return createStore(
+    rootReducer,
+    loadState(),
+    applyMiddleware(...middleware),
+  );
+}
+
+const store = configureStore();
 
 store.subscribe(throttle(() => {
-  saveState({
-    apiSession: store.getState().apiSession,
-  });
+  saveState(store.getState());
 }, 1000));
 
 sagaMiddleware.run(rootSaga);

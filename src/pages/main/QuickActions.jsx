@@ -6,7 +6,12 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import QuickActionsItem from './QuickActionsItem';
 import Events from '../../core/events';
 
-class QuickActions extends React.Component {
+type Props = {
+  className: string,
+  handleAction: () => void,
+}
+
+class QuickActions extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     handleAction: PropTypes.func,

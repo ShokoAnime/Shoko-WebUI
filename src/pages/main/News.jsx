@@ -5,8 +5,14 @@ import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import NewsItem from './NewsItem';
+import type { NewsItemType } from './NewsItem';
 
-class News extends React.Component {
+type Props = {
+  className: string,
+  items: Array<NewsItemType>,
+}
+
+class News extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     items: PropTypes.object,
@@ -46,4 +52,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(News);
+export default connect(mapStateToProps, () => {})(News);

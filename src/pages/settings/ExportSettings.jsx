@@ -6,7 +6,15 @@ import { ButtonToolbar, Button, FormControl, Panel, FormGroup, Form, Col } from 
 import Events from '../../core/events';
 import { settingsJson } from '../../core/actions/settings/Json';
 
-class ExportSettings extends React.Component {
+
+type Props = {
+  json: string,
+  exportSettings: () => void,
+  importSettings: (string) => void,
+  updateSettings: (string) => string | boolean
+}
+
+class ExportSettings extends React.Component<Props> {
   static propTypes = {
     json: PropTypes.string,
     exportSettings: PropTypes.func,
@@ -14,20 +22,14 @@ class ExportSettings extends React.Component {
     updateSettings: PropTypes.func,
   };
 
-  constructor() {
-    super();
-    this.updateSettings = this.updateSettings.bind(this);
-    this.importSettings = this.importSettings.bind(this);
-  }
-
-  updateSettings(event) {
+  updateSettings = (event: SyntheticInputEvent<HTMLInputElement>) => {
     this.props.updateSettings(event.target.value);
-  }
+  };
 
-  importSettings() {
+  importSettings = () => {
     const { importSettings, json } = this.props;
     importSettings(json);
-  }
+  };
 
   render() {
     const { json, exportSettings } = this.props;

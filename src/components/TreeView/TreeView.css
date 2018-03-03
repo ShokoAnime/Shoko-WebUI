@@ -7,6 +7,12 @@
 .treeview .list-group-item {
   cursor: pointer;
   margin-left: 16px;
+  font-size: 12pt;
+}
+
+.treeview .list-group-item .caret {
+  position: relative;
+  top: 1px;
 }
 
 .treeview .list-group-item.root {

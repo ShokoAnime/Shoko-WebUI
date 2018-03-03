@@ -25,8 +25,21 @@ import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
 import firstrun from './reducers/firstrun';
-import { apiReducer } from './util';
 import Version from '../../public/version.json';
+
+function apiReducer(state, action) {
+  return action.error ? state : Object.assign({}, state, action.payload);
+}
+
+type apiSessionState = {
+  apikey: string
+}
+
+export const apiSession = handleActions({
+  [API_SESSION]: (state: apiSessionState, action): apiSessionState =>
+    (action.error ? state : Object.assign({}, state, action.payload)),
+  [LOGOUT]: (state: apiSessionState): apiSessionState => Object.assign({}, state, { apikey: '' }),
+}, { apikey: '' });
 
 export const webuiVersionUpdate = handleAction(
   WEBUI_VERSION_UPDATE,
@@ -39,12 +52,6 @@ export const importFolderSeries = handleAction(
   (state, action) => action.payload || state,
   [],
 );
-
-export const apiSession = handleActions({
-  [API_SESSION]: (state, action) =>
-    (action.error ? state : Object.assign({}, state, action.payload)),
-  [LOGOUT]: state => Object.assign({}, state, { apikey: '' }),
-}, { apikey: '' });
 
 const sidebarToggle = handleAction(
   SIDEBAR_TOGGLE,
@@ -86,7 +93,7 @@ const fetching = handleAction(SET_FETCHING, (state, action) => {
   return Object.assign({}, state, action.payload || {});
 }, {});
 
-const rootReducer = combineReducers({
+const reducers = {
   router: routerReducer,
   globalAlert,
   apiSession,
@@ -108,6 +115,8 @@ const rootReducer = combineReducers({
   logs,
   firstrun,
   fetching,
-});
+};
 
-export default rootReducer;
+export type Reducers = typeof reducers;
+
+export default combineReducers(reducers);

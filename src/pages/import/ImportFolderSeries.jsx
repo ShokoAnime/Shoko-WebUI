@@ -10,6 +10,9 @@ import Events from '../../core/events';
 
 type FolderSeries = {
   ImportFolderLocation: string,
+  name: string,
+  size: number,
+  type: string,
 }
 
 type ImportFolder = {
@@ -24,7 +27,7 @@ type SelectedFolder = {
 
 type Props = {
   className?: string,
-  isFetching: bool,
+  isFetching: boolean,
   items: Array<FolderSeries>,
   importFolders: Array<ImportFolder>,
   selectedFolder: SelectedFolder,
@@ -41,7 +44,7 @@ class ImportFolderSeries extends React.Component<Props> {
     fetchImportFolderSeries: PropTypes.func,
   };
 
-  findFolder = (folders: Array<ImportFolder>, id: number):?ImportFolder => find(folders, ['ImportFolderID', id]);
+  findFolder = (folders: Array<ImportFolder>, id: number): ?ImportFolder => find(folders, ['ImportFolderID', id]);
 
   handleSelect = (folderId) => {
     const { fetchImportFolderSeries, importFolders } = this.props;

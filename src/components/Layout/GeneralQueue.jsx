@@ -25,7 +25,7 @@ class GeneralQueue extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state):Props {
+function mapStateToProps(state): Props {
   const { queueStatus } = state;
   const items = queueStatus.items || {};
 

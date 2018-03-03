@@ -27,7 +27,7 @@ export type FormType = {
 type Props = {
   form: FormType,
   formData: (FormType) => void,
-  browseStatus: (bool) => void,
+  browseStatus: (boolean) => void,
 }
 
 class AddTab extends React.Component<Props> {

@@ -13,12 +13,12 @@ import {
 import { connect } from 'react-redux';
 import s from './ImportModal.css';
 import { setStatus } from '../../core/actions/modals/BrowseFolder';
-import store from '../../core/store';
 import TreeView from '../TreeView/TreeView';
 
 type Props = {
-  show: bool,
+  show: boolean,
   onSelect: (string) => void,
+  status: (boolean) => void,
 }
 
 type State = {
@@ -29,16 +29,17 @@ class BrowseFolderModal extends React.Component<Props, State> {
   static propTypes = {
     show: PropTypes.bool,
     onSelect: PropTypes.func,
+    status: PropTypes.func.isRequired,
   };
-
-  static handleClose() {
-    store.dispatch(setStatus(false));
-  }
 
   constructor(props) {
     super(props);
     this.state = { folder: '' };
   }
+
+  handleClose = () => {
+    this.props.status(false);
+  };
 
   handleSelectionChange = (folder) => {
     this.setState({ folder });
@@ -46,7 +47,7 @@ class BrowseFolderModal extends React.Component<Props, State> {
 
   handleSelect = () => {
     const { onSelect } = this.props;
-    store.dispatch(setStatus(false));
+    this.props.status(false);
 
     if (typeof onSelect === 'function') {
       onSelect(this.state.folder);
@@ -68,7 +69,7 @@ class BrowseFolderModal extends React.Component<Props, State> {
               <Col>
                 <ButtonToolbar className="pull-right">
                   <Button onClick={this.handleSelect} bsStyle="primary">Select</Button>
-                  <Button onClick={BrowseFolderModal.handleClose}>Cancel</Button>
+                  <Button onClick={this.handleClose}>Cancel</Button>
                 </ButtonToolbar>
               </Col>
             </Row>
@@ -87,4 +88,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, () => {})(BrowseFolderModal);
+function mapDispatchToProps(dispatch) {
+  return {
+    status: value => dispatch(setStatus(value)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BrowseFolderModal);

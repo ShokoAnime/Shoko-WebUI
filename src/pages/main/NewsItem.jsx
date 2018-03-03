@@ -2,7 +2,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 
-class NewsItem extends React.Component {
+export type NewsItemType = {
+  link: string,
+  title: string,
+  date: string,
+}
+
+type Props = NewsItemType & {
+  index: number,
+}
+
+class NewsItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     link: PropTypes.string,

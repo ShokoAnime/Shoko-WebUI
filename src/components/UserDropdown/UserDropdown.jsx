@@ -7,7 +7,12 @@ import { connect } from 'react-redux';
 import s from './UserDropdown.css';
 import Events from '../../core/events';
 
-class UserDropdown extends React.Component {
+type Props = {
+  user: string,
+  logout: () => void,
+}
+
+class UserDropdown extends React.Component<Props> {
   static propTypes = {
     user: PropTypes.string,
     logout: PropTypes.func,

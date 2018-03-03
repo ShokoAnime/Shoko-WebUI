@@ -6,7 +6,7 @@ import moment from 'moment';
 type Props = {
   timestamp?: number,
   className: string,
-  isFetching: bool,
+  isFetching: boolean,
 }
 
 class TimeUpdated extends React.Component<Props> {

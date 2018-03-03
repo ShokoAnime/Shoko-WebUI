@@ -3,7 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import s from '../../components/Panels/styles.css';
 
-class CommandsItemStatus extends React.Component {
+type Props = {
+  state: string,
+}
+
+class CommandsItemStatus extends React.Component<Props> {
   static propTypes = {
     state: PropTypes.string,
   };

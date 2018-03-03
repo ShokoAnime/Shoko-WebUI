@@ -16,6 +16,8 @@
     "connect-history-api-fallback": "^1.4.0",
     "del": "^3.0.0",
     "ejs": "^2.5.6",
+    "es6-promise": "^4.2.4",
+    "eslint-plugin-flowtype": "^2.46.1",
     "fastclick": "^1.0.6",
     "font-awesome": "^4.7.0",
     "history": "^4.6.1",
@@ -100,7 +102,13 @@
   },
   "eslintConfig": {
     "parser": "babel-eslint",
-    "extends": "airbnb",
+    "extends": [
+      "airbnb",
+      "plugin:flowtype/recommended"
+    ],
+    "plugins": [
+      "flowtype"
+    ],
     "env": {
       "browser": true
     },
@@ -128,7 +136,10 @@
       ]
     }
   },
-  "eslintIgnore": ["flow-typed/*", "build/*"],
+  "eslintIgnore": [
+    "flow-typed/*",
+    "build/*"
+  ],
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {

@@ -4,31 +4,38 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { forEach } from 'lodash';
 import cx from 'classnames';
+import Api from '../../core/api';
+import type { ApiResponseType } from '../../core/api';
 import s from './TreeView.css';
-import store from '../../core/store';
 
 function fetchApiFolder(path = '') {
-  const state = store.getState();
-  const headers = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-    apikey: state.apiSession.apikey,
-  };
-
   if (path === '') {
-    // eslint-disable-next-line no-undef
-    return fetch('/api/os/drives', { headers });
+    return Api.getOsDrives();
   }
-
-  // eslint-disable-next-line no-undef
-  return fetch('/api/os/folder', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ full_path: path }),
-  });
+  return Api.postOsFolder({ full_path: path });
 }
 
-class TreeNode extends React.Component {
+type NodeType = {
+  path: string,
+  text: string,
+}
+
+type State = {
+  fetching: boolean,
+  expanded: boolean,
+  loaded: boolean,
+  nodes: Array<NodeType>,
+}
+
+type Props = {
+  selectedNode: NodeType,
+  level: number,
+  basePath: string,
+  onSelect: (any) => void,
+  text: string,
+}
+
+class TreeNode extends React.Component<Props, State> {
   static propTypes = {
     basePath: PropTypes.string,
     text: PropTypes.string,
@@ -37,46 +44,55 @@ class TreeNode extends React.Component {
     selectedNode: PropTypes.object,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.toggleExpanded = this.toggleExpanded.bind(this);
     this.toggleSelected = this.toggleSelected.bind(this);
     this.state = {
+      fetching: false,
       expanded: false,
       loaded: false,
       nodes: [],
     };
   }
 
-  toggleExpanded(event) {
+  toggleExpanded = (event: Event) => {
     const { expanded, loaded } = this.state;
     const { basePath } = this.props;
 
     if (!loaded) {
+      this.setState({ fetching: true });
       fetchApiFolder(basePath)
-        .then(response => response.json())
-        .then((json) => {
+        .then((json: ApiResponseType): Array<NodeType> => {
+          if (json.error) { return []; }
           const nodes = [];
-          forEach(json.subdir, (item) => {
+          // $FlowFixMe
+          forEach(json.data.subdir, (item) => {
             nodes.push({ path: item.full_path, text: item.dir });
           });
           return nodes;
         })
-        .then(nodes => this.setState({ loaded: true, expanded: !expanded, nodes }));
+        .then(nodes => this.setState({ loaded: true, expanded: !expanded, nodes }))
+        .finally(() => { this.setState({ fetching: false }); });
     } else {
       this.setState({ expanded: !expanded });
     }
     event.stopPropagation();
-  }
+  };
 
-  toggleSelected(event) {
+  toggleSelected = (event: Event) => {
     this.props.onSelect(this);
+    const { expanded, loaded } = this.state;
+    if (expanded === false && loaded === false) {
+      this.toggleExpanded(event);
+      return;
+    }
     event.stopPropagation();
-  }
+  };
 
   render() {
     const { text, level, selectedNode } = this.props;
-    const { expanded, nodes } = this.state;
+    const { fetching, expanded, nodes } = this.state;
     const selected = this === selectedNode;
 
     const children = [];
@@ -98,10 +114,10 @@ class TreeNode extends React.Component {
         )}
         onClick={this.toggleSelected}
       >
-        <i
-          className={cx('fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
+        {fetching ? <i className="fa fa-refresh fa-spin" /> : <i
+          className={cx(s.caret, 'fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
           onClick={this.toggleExpanded}
-        />
+        />}
         <span>{text}</span>
         <ul>{children}</ul>
       </li>

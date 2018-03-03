@@ -19,7 +19,7 @@ type Props = {
   items: Array<FolderItemType>,
   form: FolderItemType,
   editFolder: {
-    isFetching: bool,
+    isFetching: boolean,
     lastUpdated: number,
   },
   handleEditFolder: (FolderItemType) => void,

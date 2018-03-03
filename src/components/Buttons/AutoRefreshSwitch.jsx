@@ -6,8 +6,8 @@ import cx from 'classnames';
 import { setAutoupdate } from '../../core/legacy-actions';
 
 type Props = {
-  autoUpdate: bool,
-  setAutoUpdate: (value: bool) => void
+  autoUpdate: boolean,
+  setAutoUpdate: (value: boolean) => void
 };
 
 class AutoRefreshSwitch extends React.Component<Props> {

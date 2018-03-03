@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import prettysize from 'prettysize';
 
-class ImportFolderSeriesItem extends React.Component {
+type Props = {
+  index: number,
+  name: string,
+  type: string,
+  size: number,
+}
+
+class ImportFolderSeriesItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     name: PropTypes.string,

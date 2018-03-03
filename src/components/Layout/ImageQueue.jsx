@@ -1,7 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from "react-redux";
+import { connect } from 'react-redux';
 
 type Props = {
   count: number,
@@ -25,7 +25,7 @@ class ImageQueue extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state):Props {
+function mapStateToProps(state): Props {
   const { queueStatus } = state;
   const items = queueStatus.items || {};
 

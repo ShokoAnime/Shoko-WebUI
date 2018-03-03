@@ -1,10 +1,11 @@
 // @flow
 import { delay } from 'redux-saga';
-import { put, takeEvery, call, select } from 'redux-saga/effects';
+import { put, takeEvery, call, select, all } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
 import { push } from 'react-router-redux';
 import { createAction } from 'redux-actions';
+import type { Saga } from 'redux-saga';
 import * as Ajv from 'ajv';
 import Api from '../api';
 import Events from '../events';
@@ -38,7 +39,7 @@ const maxAlerts = 2;
 const alertDisplayTime = 3000;
 let activeAlerts = [];
 
-function* alertScheduler(action) {
+function* alertScheduler(action): Saga<void> {
   const alert = action.payload;
   if (activeAlerts.length < maxAlerts) {
     activeAlerts = [...activeAlerts, alert];
@@ -96,7 +97,7 @@ function splitLogLines(json) {
   }
 }
 
-function* getLogDelta(action) {
+function* getLogDelta(action): Saga<void> {
   const resultJson = yield call(Api.getLogDelta, action.payload);
 
   if (resultJson.error) {
@@ -116,7 +117,7 @@ function* getLogDelta(action) {
   });
 }
 
-function* getSettings() {
+function* getSettings(): Saga<void> {
   const resultJson = yield call(Api.getWebuiConfig);
 
   if (resultJson.error) {
@@ -132,7 +133,7 @@ function* getSettings() {
   yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
 }
 
-function* settingsExport() {
+function* settingsExport(): Saga<void> {
   const resultJson = yield call(Api.configExport);
 
   if (resultJson.error) {
@@ -144,7 +145,7 @@ function* settingsExport() {
   yield put({ type: SETTINGS_JSON, payload: data });
 }
 
-function* settingsImport(action) {
+function* settingsImport(action): Saga<void> {
   const resultJson = yield call(Api.configImport.bind(this, action.payload));
 
   if (resultJson.error) {
@@ -152,7 +153,7 @@ function* settingsImport(action) {
   }
 }
 
-function* pageSettingsLoad() {
+function* pageSettingsLoad(): Saga<void> {
   yield call(Dashboard.updateOverview);
 
   const resultJson = yield call(Api.getLogRotate);
@@ -165,7 +166,7 @@ function* pageSettingsLoad() {
   yield put({ type: GET_LOG, payload: data });
 }
 
-function* settingsSaveLogRotate(action) {
+function* settingsSaveLogRotate(action): Saga<void> {
   const resultJson = yield call(Api.postLogRotate.bind(this, action.payload));
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -174,7 +175,7 @@ function* settingsSaveLogRotate(action) {
   }
 }
 
-function* runQuickAction(action) {
+function* runQuickAction(action): Saga<void> {
   let actionFunc;
   switch (action.payload) {
     case 'import':
@@ -205,7 +206,7 @@ function* runQuickAction(action) {
   }
 }
 
-function* addFolder(action) {
+function* addFolder(action): Saga<void> {
   yield put({ type: API_ADD_FOLDER, payload: { isFetching: true } });
   const resultJson = yield call(Api.postFolderAdd.bind(this, action.payload));
   yield put({ type: API_ADD_FOLDER, payload: { ...resultJson, isFetching: false } });
@@ -220,7 +221,7 @@ function* addFolder(action) {
   }
 }
 
-function* editFolder(action) {
+function* editFolder(action): Saga<void> {
   yield put({ type: API_EDIT_FOLDER, payload: { isFetching: true } });
   const resultJson = yield call(Api.postFolderEdit.bind(this, action.payload));
   yield put({ type: API_EDIT_FOLDER, payload: { ...resultJson, isFetching: false } });
@@ -236,7 +237,7 @@ function* editFolder(action) {
   }
 }
 
-function* settingsSaveWebui(action) {
+function* settingsSaveWebui(action): Saga<void> {
   const settings = yield select(state => state.settings);
   const currentSettings = {
     uiTheme: settings.ui.theme,
@@ -253,7 +254,7 @@ function* settingsSaveWebui(action) {
     otherUpdateChannel: { enum: ['stable', 'unstable'] },
     logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
   };
-
+  // $FlowFixMe
   const ajv = new Ajv();
   const validator = ajv.compile(schema);
   const result = validator(data);
@@ -270,7 +271,7 @@ function* settingsSaveWebui(action) {
   }
 }
 
-function* apiInitStatus() {
+function* apiInitStatus(): Saga<void> {
   const resultJson = yield call(Api.getInit.bind(this, 'status'));
   if (resultJson.error) {
     yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
@@ -279,7 +280,7 @@ function* apiInitStatus() {
   }
 }
 
-function* firstrunGetDatabase() {
+function* firstrunGetDatabase(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
   const resultJson = yield call(Api.getInitDatabase);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
@@ -292,7 +293,7 @@ function* firstrunGetDatabase() {
   }
 }
 
-function* firstrunTestDatabase() {
+function* firstrunTestDatabase(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
   const resultJson = yield call(Api.getInitDatabaseTest);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
@@ -311,7 +312,7 @@ function* firstrunTestDatabase() {
  * 3. Start polling
  * 4. Tell server to init database
  */
-function* firstrunInitDatabase() {
+function* firstrunInitDatabase(): Saga<void> {
   // 1. Save database settings
   const database = yield select(state => state.firstrun.database);
   yield put({ type: Events.START_FETCHING, payload: 'firstrunInit' });
@@ -343,15 +344,15 @@ function* firstrunInitDatabase() {
   }
 }
 
-function* startFetching(action) {
+function* startFetching(action): Saga<void> {
   yield put({ type: SET_FETCHING, payload: { [action.payload]: true } });
 }
 
-function* stopFetching(action) {
+function* stopFetching(action): Saga<void> {
   yield put({ type: SET_FETCHING, payload: { [action.payload]: false } });
 }
 
-function* firstrunGetAnidb() {
+function* firstrunGetAnidb(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
   const resultJson = yield call(Api.getInitAnidb);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
@@ -364,7 +365,7 @@ function* firstrunGetAnidb() {
   }
 }
 
-function* firstrunSetAnidb() {
+function* firstrunSetAnidb(): Saga<void> {
   const data = yield select((state) => {
     const { anidb } = state.firstrun;
     return {
@@ -384,7 +385,7 @@ function* firstrunSetAnidb() {
   yield put({ type: FIRSTRUN_ANIDB, payload: { } });
 }
 
-function* firstrunTestAnidb() {
+function* firstrunTestAnidb(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
   const resultJson = yield call(Api.getInitAnidbTest);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
@@ -397,7 +398,7 @@ function* firstrunTestAnidb() {
   yield put({ type: FIRSTRUN_ANIDB, payload: { } });
 }
 
-function* firstrunGetDefaultuser() {
+function* firstrunGetDefaultuser(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunUser' });
   const resultJson = yield call(Api.getInitDefaultuser);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
@@ -410,7 +411,7 @@ function* firstrunGetDefaultuser() {
   }
 }
 
-function* firstrunSetDefaultuser() {
+function* firstrunSetDefaultuser(): Saga<void> {
   const data = yield select((state) => {
     const { user } = state.firstrun;
     return {
@@ -430,7 +431,7 @@ function* firstrunSetDefaultuser() {
   yield put({ type: FIRSTRUN_USER, payload: { } });
 }
 
-function* firstrunGetDatabaseSqlserverinstance() {
+function* firstrunGetDatabaseSqlserverinstance(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
   const resultJson = yield call(Api.getInitDatabaseSqlserverinstance);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
@@ -443,12 +444,12 @@ function* firstrunGetDatabaseSqlserverinstance() {
   }
 }
 
-function* logout() {
+function* logout(): Saga<void> {
   yield put({ type: LOGOUT, payload: {} });
   yield put(push({ pathname: '/' }));
 }
 
-function* checkUpdates() {
+function* checkUpdates(): Saga<void> {
   const { updateChannel } = yield select(state => state.settings.other);
   const resultJson = yield call(Api.webuiLatest, updateChannel);
   if (resultJson.error) {
@@ -459,7 +460,7 @@ function* checkUpdates() {
   yield put({ type: UPDATE_AVAILABLE, payload: resultJson.data });
 }
 
-function* serverVersion() {
+function* serverVersion(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'serverVersion');
   const resultJson = yield call(Api.getVersion);
   yield dispatchAction(Events.STOP_FETCHING, 'serverVersion');
@@ -479,7 +480,7 @@ function* serverVersion() {
   yield dispatchAction(JMM_VERSION, version);
 }
 
-function* downloadUpdates() {
+function* downloadUpdates(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'downloadUpdates');
   const resultJson = yield call(Api.getWebuiUpdate);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
@@ -491,7 +492,7 @@ function* downloadUpdates() {
   yield dispatchAction(WEBUI_VERSION_UPDATE, { status: true });
 }
 
-function* fetchImportFolderSeries(action) {
+function* fetchImportFolderSeries(action): Saga<void> {
   yield dispatchAction(SELECT_IMPORT_FOLDER_SERIES, action.payload);
   yield dispatchAction(Events.START_FETCHING, 'importFolderSeries');
   const resultJson = yield call(Api.getSerieInfobyfolder, `?id=${action.payload.id}`);
@@ -504,8 +505,8 @@ function* fetchImportFolderSeries(action) {
   yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data);
 }
 
-export default function* rootSaga() {
-  yield [
+export default function* rootSaga(): Saga<void> {
+  yield all([
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
     takeEvery(SHOW_GLOBAL_ALERT, alertScheduler),
     takeEvery(GET_DELTA, getLogDelta),
@@ -541,5 +542,5 @@ export default function* rootSaga() {
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
-  ];
+  ]);
 }

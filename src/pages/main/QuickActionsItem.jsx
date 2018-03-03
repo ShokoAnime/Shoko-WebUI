@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from 'react-bootstrap';
 
-class QuickActionsItem extends React.Component {
+type Props = {
+  index: number,
+  name: string,
+  action: string,
+  onAction: (string) => void,
+}
+
+class QuickActionsItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     name: PropTypes.string,
@@ -11,15 +18,10 @@ class QuickActionsItem extends React.Component {
     onAction: PropTypes.func,
   };
 
-  constructor() {
-    super();
-    this.handleAction = this.handleAction.bind(this);
-  }
-
-  handleAction() {
+  handleAction = () => {
     const { action, onAction } = this.props;
     onAction(action);
-  }
+  };
 
   render() {
     const { index, name } = this.props;

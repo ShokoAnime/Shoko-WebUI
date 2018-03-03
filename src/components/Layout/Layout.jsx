@@ -10,7 +10,7 @@ import s from './Layout.css';
 import AlertContainer from '../AlertContainer';
 
 type Props = {
-  sidebarToggle: bool,
+  sidebarToggle: boolean,
   children?: any
 }
 
@@ -35,7 +35,7 @@ class Layout extends Component<Props> {
   }
 }
 
-function mapStateToProps(state):Props {
+function mapStateToProps(state): Props {
   const { sidebarToggle } = state;
 
   return {

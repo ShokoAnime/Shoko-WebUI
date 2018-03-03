@@ -7,7 +7,15 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import CommandsItem from './CommandsItem';
 import CommandsItemStatus from './CommandsItemStatus';
 
-class Commands extends React.Component {
+type Props = {
+  className: string,
+  items: {
+    count: number,
+    state: string,
+  }
+}
+
+class Commands extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     items: PropTypes.object,
@@ -50,4 +58,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Commands);
+export default connect(mapStateToProps, () => {})(Commands);

@@ -6,8 +6,8 @@ import { toggleSidebar } from '../../core/actions';
 import s from '../Layout/Layout.css';
 
 type Props = {
-  enabled: bool,
-  toggleSidebar: (value: bool) => void
+  enabled: boolean,
+  toggleSidebar: (value: boolean) => void
 };
 
 class SidebarToggle extends React.Component<Props> {

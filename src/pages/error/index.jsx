@@ -5,7 +5,20 @@ import history from '../../core/history';
 import Link from '../../components/Link/Link';
 import s from './styles.css';
 
-class ErrorBoundary extends React.Component {
+type Props = {
+  error?: Error,
+  children: any,
+}
+
+type State = {
+  hasError: boolean,
+  error: {},
+  info: {
+    componentStack?: {}
+  }
+}
+
+class ErrorBoundary extends React.Component<Props, State> {
   static propTypes = {
     error: PropTypes.object,
     children: PropTypes.node,
@@ -25,12 +38,12 @@ class ErrorBoundary extends React.Component {
     document.title = 'Error';
   }
 
-  componentDidCatch(error, info) {
+  componentDidCatch(error: {}, info: {componentStack?: {}}) {
     // Display fallback UI
     this.setState({ hasError: true, error, info });
   }
 
-  goBack = (event) => {
+  goBack = (event: Event) => {
     event.preventDefault();
     history.goBack();
   };

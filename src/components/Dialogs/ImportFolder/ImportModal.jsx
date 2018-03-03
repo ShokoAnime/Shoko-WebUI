@@ -16,7 +16,7 @@ import EditTab from './EditTab';
 import type { FormType } from './Form';
 
 type Props = {
-  status: bool,
+  status: boolean,
   formData: (FormType) => void,
 }
 

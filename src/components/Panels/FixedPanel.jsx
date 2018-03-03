@@ -7,9 +7,9 @@ import s from './styles.css';
 
 type Props = {
   lastUpdated?: number,
-  title: string,
+  title: any,
   description: string,
-  isFetching: bool,
+  isFetching: boolean,
   children: any,
   actionName?: string,
   onAction?: () => void
@@ -18,12 +18,16 @@ type Props = {
 class FixedPanel extends React.Component<Props> {
   static propTypes = {
     lastUpdated: PropTypes.number,
-    title: PropTypes.string,
+    title: PropTypes.any,
     description: PropTypes.string,
     isFetching: PropTypes.bool,
     children: PropTypes.any,
     actionName: PropTypes.string,
     onAction: PropTypes.func,
+  };
+
+  static defaultProps = {
+    isFetching: false,
   };
 
   handleAction = () => {

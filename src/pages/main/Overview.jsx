@@ -3,7 +3,14 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 
-class Overview extends React.Component {
+type Props = {
+  importCount: number,
+  commandCount: number,
+  seriesCount: number,
+  filesCount: number,
+}
+
+class Overview extends React.Component<Props> {
   static propTypes = {
     importCount: PropTypes.number,
     commandCount: PropTypes.number,
@@ -93,4 +100,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(Overview);
+export default connect(mapStateToProps, () => {})(Overview);

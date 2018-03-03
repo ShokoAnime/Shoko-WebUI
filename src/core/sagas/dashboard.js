@@ -1,4 +1,5 @@
 // @flow
+import type { Saga } from 'redux-saga';
 import { put, call } from 'redux-saga/effects';
 import Api from '../api';
 import {
@@ -10,13 +11,12 @@ import {
   FILES_COUNT,
   JMM_NEWS,
 } from '../actions';
-
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { setAutoupdate } from '../legacy-actions';
 import Events from '../events';
 
-function* getSettings() {
+function* getSettings(): Saga<void> {
   const resultJson = yield call(Api.getWebuiConfig);
 
   if (resultJson.error) {
@@ -32,7 +32,7 @@ function* getSettings() {
   yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
 }
 
-function* getQueueStatus() {
+function* getQueueStatus(): Saga<void> {
   const resultJson = yield call(Api.queueStatus);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -42,7 +42,7 @@ function* getQueueStatus() {
   yield put({ type: QUEUE_STATUS, payload: resultJson.data });
 }
 
-function* getRecentFiles() {
+function* getRecentFiles(): Saga<void> {
   const resultJson = yield call(Api.fileRecent);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -52,7 +52,7 @@ function* getRecentFiles() {
   yield put({ type: RECENT_FILES, payload: resultJson.data });
 }
 
-function* updateOverview() {
+function* updateOverview(): Saga<void> {
   yield call(getQueueStatus);
 
   let resultJson = yield call(Api.folderList);
@@ -79,15 +79,15 @@ function* updateOverview() {
   yield put({ type: FILES_COUNT, payload: resultJson.data });
 }
 
-function* eventDashboardQueueStatus() {
+function* eventDashboardQueueStatus(): Saga<void> {
   yield call(getQueueStatus);
 }
 
-function* eventDashboardRecentFiles() {
+function* eventDashboardRecentFiles(): Saga<void> {
   yield call(getRecentFiles);
 }
 
-function* eventDashboardLoad() {
+function* eventDashboardLoad(): Saga<void> {
   yield call(getQueueStatus);
   yield call(getRecentFiles);
 

@@ -38,7 +38,7 @@ declare module "react-bootstrap" {
     componentClass?: ElementType,
     href?: string,
     type?: 'button' | 'reset' | 'submit',
-    bsStyle?: 'default' | 'primary' | 'link',
+    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success',
     bsSize?: BsStyle,
     bsClass?: string,
   }> {}
@@ -196,7 +196,7 @@ declare module "react-bootstrap" {
     disabled?: boolean,
     title?: string,
     validateState?: 'success' | 'warning' | 'error' | null,
-    inputRef?: (ref: ?Checkbox) => void, // TODO: double check ref
+    inputRef?: (ref: ?HTMLInputElement) => void, // TODO: double check ref
     bsClass?: string
   }> {}
 
