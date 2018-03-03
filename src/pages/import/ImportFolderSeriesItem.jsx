@@ -6,28 +6,32 @@ import prettysize from 'prettysize';
 type Props = {
   index: number,
   name: string,
-  type: string,
+  id: number,
+  filesize: number,
   size: number,
+  paths: Array<string>,
 }
 
 class ImportFolderSeriesItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     name: PropTypes.string,
-    type: PropTypes.string,
+    filesize: PropTypes.number,
     size: PropTypes.number,
+    paths: PropTypes.arrayOf(PropTypes.string),
   };
 
   render() {
     const {
-      index, name, size, type,
+      index, name, filesize, paths, size,
     } = this.props;
     return (
       <tr>
         <td>{index}</td>
         <td>{name}</td>
-        <td>{type}</td>
-        <td>{prettysize(size)}</td>
+        <td>{paths.map(path => <span>{path}</span>)}</td>
+        <td>{size}</td>
+        <td className="text-nowrap">{prettysize(filesize)}</td>
       </tr>
     );
   }

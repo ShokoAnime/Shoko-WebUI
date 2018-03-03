@@ -502,7 +502,7 @@ function* fetchImportFolderSeries(action): Saga<void> {
     yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
     return;
   }
-  yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data);
+  yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data.series);
 }
 
 export default function* rootSaga(): Saga<void> {
