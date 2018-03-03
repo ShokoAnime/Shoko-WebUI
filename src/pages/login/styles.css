@@ -4,9 +4,8 @@ body {
 }
 
 :global(.web-ui-notice) {
-  bottom: 0;
-  margin-left: 1.2rem;
-  position: absolute;
+  font-size: 16pt;
+  margin-bottom: 3rem;
 }
 
 :global(#app-container) {
@@ -46,11 +45,18 @@ body {
   }
 }
 
+.spacer {
+  flex: 5;
+}
+
 .left-panel {
   background: #228f89;
   color: #fff;
   height: 40rem;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .right-panel {

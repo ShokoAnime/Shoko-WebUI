@@ -65,7 +65,7 @@ class SettingsPage extends React.Component<Props> {
 }
 
 function mapStateToProps(state) {
-  const { apiKey } = state.apiSesssion;
+  const { apiKey } = state.apiSession;
   return {
     apiKey,
   };
