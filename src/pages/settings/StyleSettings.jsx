@@ -7,7 +7,18 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import { setTheme, setNotifications } from '../../core/actions/settings/UI';
 import Events from '../../core/events';
 
-class StyleSettings extends React.Component {
+type Props = {
+  className: string,
+  ui: {
+    theme: string,
+    notifications: boolean,
+  },
+  changeTheme: (string) => void,
+  changeNotifications: (boolean) => void,
+  saveSettings: ({}) => void,
+}
+
+class StyleSettings extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     ui: PropTypes.shape({
@@ -19,18 +30,13 @@ class StyleSettings extends React.Component {
     saveSettings: PropTypes.func.isRequired,
   };
 
-  constructor() {
-    super();
-    this.saveSettings = this.saveSettings.bind(this);
-  }
-
-  saveSettings() {
+  saveSettings = () => {
     const { saveSettings, ui } = this.props;
     saveSettings({
       uiTheme: ui.theme,
       uiNotifications: ui.notifications,
     });
-  }
+  };
 
   render() {
     const {
@@ -74,7 +80,7 @@ class StyleSettings extends React.Component {
                 <td>Custom Theme</td>
                 <td>
                   <ButtonGroup className="pull-right">
-                    <Dropdown>
+                    <Dropdown id="theme">
                       <Dropdown.Toggle>
                         Default
                       </Dropdown.Toggle>

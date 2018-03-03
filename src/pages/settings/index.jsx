@@ -1,8 +1,9 @@
 // @flow
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
+import { connect } from 'react-redux';
 import history from '../../core/history';
-import store from '../../core/store';
 import Events from '../../core/events';
 import { getSettings } from '../../core/actions/settings/Api';
 import Layout from '../../components/Layout/Layout';
@@ -14,22 +15,25 @@ import OtherSettings from './OtherSettings';
 import ExportSettings from './ExportSettings';
 import { uiVersion } from '../../core/util';
 
-class SettingsPage extends React.Component {
-  componentDidMount() {
-    // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${uiVersion()}`;
+type Props = {
+  apiKey: string,
+  loadSettings: () => void,
+}
 
-    const state = store.getState();
-    if (state.apiSession.apikey === '') {
-      history.push({
-        pathname: '/',
-      });
+class SettingsPage extends React.Component<Props> {
+  static propTypes = {
+    apiKey: PropTypes.string,
+    loadSettings: PropTypes.func.isRequired,
+  };
+
+  componentDidMount() {
+    document.title = `Shoko Server Web UI ${uiVersion()}`;
+    const { apiKey, loadSettings } = this.props;
+    if (apiKey === '') {
+      history.push('/');
       return;
     }
-
-    store.dispatch({ type: Events.PAGE_SETTINGS_LOAD });
-
-    store.dispatch(getSettings());
+    loadSettings();
   }
 
   render() {
@@ -60,4 +64,21 @@ class SettingsPage extends React.Component {
   }
 }
 
-export default SettingsPage;
+function mapStateToProps(state) {
+  const { apiKey } = state.apiSesssion;
+  return {
+    apiKey,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loadSettings: () => {
+      dispatch({ type: Events.PAGE_SETTINGS_LOAD, payload: null });
+      dispatch(getSettings());
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage);
+

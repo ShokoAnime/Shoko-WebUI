@@ -17,7 +17,7 @@ type LogSettingsType = {
 type Props = {
   className: string,
   logs: LogSettingsType,
-  handleChange: (string, string | boolean) => void,
+  handleChange: (string, string | boolean | number) => void,
   saveSettings: (LogSettingsType) => void,
 }
 

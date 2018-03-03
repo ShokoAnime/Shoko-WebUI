@@ -6,14 +6,8 @@ import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFolderSeriesItem from './ImportFolderSeriesItem';
+import type { FolderSeriesItemType } from './ImportFolderSeriesItem';
 import Events from '../../core/events';
-
-type FolderSeries = {
-  ImportFolderLocation: string,
-  name: string,
-  size: number,
-  type: string,
-}
 
 type ImportFolder = {
   ImportFolderID: number,
@@ -28,7 +22,7 @@ type SelectedFolder = {
 type Props = {
   className?: string,
   isFetching: boolean,
-  items: Array<FolderSeries>,
+  items: Array<FolderSeriesItemType>,
   importFolders: Array<ImportFolder>,
   selectedFolder: SelectedFolder,
   fetchImportFolderSeries: (SelectedFolder) => void,

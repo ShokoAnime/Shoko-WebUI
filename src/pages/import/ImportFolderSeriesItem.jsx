@@ -3,13 +3,16 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import prettysize from 'prettysize';
 
-type Props = {
-  index: number,
+export type FolderSeriesItemType = {
   name: string,
   id: number,
   filesize: number,
   size: number,
   paths: Array<string>,
+}
+
+type Props = FolderSeriesItemType & {
+  index: number,
 }
 
 class ImportFolderSeriesItem extends React.Component<Props> {
