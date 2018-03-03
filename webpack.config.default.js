@@ -1,4 +1,6 @@
 /* eslint-disable global-require */
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
@@ -130,9 +132,11 @@ const config = {
 };
 
 if (!isDebug) {
-  config.plugins.push(new webpack.optimize.UglifyJsPlugin({
-    mangle: false,
-    compress: { warnings: isVerbose },
+  config.plugins.push(new UglifyJsPlugin({
+    uglifyOptions: {
+      mangle: false,
+      compress: { warnings: isVerbose },
+    },
   }));
   config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
 }
