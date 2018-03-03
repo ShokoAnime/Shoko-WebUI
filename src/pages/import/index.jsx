@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
@@ -10,19 +11,17 @@ import ImportFolders from '../main/ImportFolders';
 import ImportFolderSeries from './ImportFolderSeries';
 import { uiVersion } from '../../core/util';
 
-class ImportFoldersPage extends React.Component {
+class ImportFoldersPage extends React.Component<{}> {
   componentDidMount() {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {
-      history.push({
-        pathname: '/',
-      });
+      history.push('/');
     }
 
-    store.dispatch({ type: Events.PAGE_IMPORT_FOLDERS_LOAD });
+    store.dispatch({ type: Events.PAGE_IMPORT_FOLDERS_LOAD, payload: null });
   }
 
   render() {

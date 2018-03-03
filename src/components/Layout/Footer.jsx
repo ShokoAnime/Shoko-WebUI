@@ -1,10 +1,16 @@
+// @flow
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import React from 'react';
 import { uiVersion } from '../../core/util';
 
 const UI_VERSION = uiVersion();
 
-class Footer extends React.Component {
+type Props = {
+  version: string,
+}
+
+class Footer extends React.Component<Props> {
   static propTypes = {
     version: PropTypes.string,
   };
@@ -24,4 +30,12 @@ class Footer extends React.Component {
   }
 }
 
-export default Footer;
+function mapStateToProps(state): Props {
+  const { jmmVersion } = state;
+
+  return {
+    version: jmmVersion.version,
+  };
+}
+
+export default connect(mapStateToProps, () => ({}))(Footer);

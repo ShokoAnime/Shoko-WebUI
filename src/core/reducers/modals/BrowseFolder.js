@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import { handleAction } from 'redux-actions';
 import { SET_STATUS, SET_FOLDER } from '../../actions/modals/BrowseFolder';

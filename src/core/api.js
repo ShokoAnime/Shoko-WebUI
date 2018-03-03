@@ -1,21 +1,27 @@
+// @flow
 import 'isomorphic-fetch';
+import Promise from 'es6-promise';
 import store from './store';
 import Events from './events';
 import { setAutoupdate } from './legacy-actions';
 
-function apiCallPost(apiAction, apiParams, apiKey) {
+export type ApiResponseSuccessType = { data: any }
+export type ApiResponseErrorType = { error: boolean, code?: number, message: string }
+export type ApiResponseType = ApiResponseSuccessType | ApiResponseErrorType
+
+function apiCallPost(apiAction, apiParams: string, apiKey) {
   return fetch(`/api${apiAction}`, {
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       apikey: apiKey,
     },
-    body: JSON.stringify(apiParams),
+    body: apiParams,
     method: 'POST',
   });
 }
 
-function apiCallGet(apiAction, apiParams, apiKey) {
+function apiCallGet(apiAction, apiParams: string, apiKey) {
   return fetch(`/api${apiAction}${apiParams}`, {
     headers: {
       Accept: 'application/json',
@@ -25,15 +31,17 @@ function apiCallGet(apiAction, apiParams, apiKey) {
   });
 }
 
-function apiCall(apiAction, apiParams, type = 'GET') {
+function apiCall(apiAction, apiParams: {} | string, type = 'GET') {
   const apiKey = store.getState().apiSession.apikey;
-  const fetch = type === 'POST' ? apiCallPost(apiAction, apiParams, apiKey) : apiCallGet(apiAction, apiParams, apiKey);
+  const params = ((type === 'POST' ? JSON.stringify(apiParams) : apiParams: any): string);
+
+  const fetch = type === 'POST' ? apiCallPost(apiAction, params, apiKey) : apiCallGet(apiAction, params, apiKey);
 
   return fetch.then((response) => {
     if (response.status !== 200) {
       if (response.status === 401) {
         // FIXME: make a better fix
-        store.dispatch({ type: Events.LOGOUT });
+        store.dispatch({ type: Events.LOGOUT, payload: null });
         setAutoupdate(false);
       }
       return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
@@ -79,7 +87,7 @@ function jsonApiCall(apiAction, apiParams, type) {
 
 function jsonApiResponse(apiAction, apiParams, type) {
   return jsonApiCall(apiAction, apiParams, type)
-    .then((json) => {
+    .then((json): ApiResponseType => {
       if (json.code) {
         if (json.code !== 200) {
           return { error: true, code: json.code, message: json.message || 'No error message given.' };
@@ -87,10 +95,10 @@ function jsonApiResponse(apiAction, apiParams, type) {
       }
       return { data: json };
     })
-    .catch(reason => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
+    .catch((reason): ApiResponseErrorType => ({ error: true, message: typeof reason === 'string' ? reason : reason.message }));
 }
 
-function getLogDelta(data) {
+function getLogDelta(data: {delta: number, position: number}) {
   const paramString = data ? `${data.delta}/${data.position}` : '';
   return jsonApiCall('/log/get/', paramString)
     .then((json) => {
@@ -133,7 +141,7 @@ function newsGet() {
   return jsonApiResponse('/news/get', '');
 }
 
-function webuiLatest(channel) {
+function webuiLatest(channel: 'stable' | 'unstable') {
   return jsonApiResponse('/webui/latest/', channel);
 }
 
@@ -141,7 +149,7 @@ function configExport() {
   return jsonApiResponse('/config/export', '');
 }
 
-function configImport(value) {
+function configImport(value: string) {
   return jsonApiResponse('/config/import', value, 'POST');
 }
 
@@ -149,7 +157,7 @@ function getLogRotate() {
   return jsonApiResponse('/log/rotate', '');
 }
 
-function postLogRotate(data) {
+function postLogRotate(data: string) {
   return jsonApiResponse('/log/rotate', data, 'POST');
 }
 
@@ -177,15 +185,15 @@ function getFolderImport() {
   return jsonApiResponse('/folder/import', '');
 }
 
-function postFolderAdd(data) {
+function postFolderAdd(data: string) {
   return jsonApiResponse('/folder/add', data, 'POST');
 }
 
-function postFolderEdit(data) {
+function postFolderEdit(data: string) {
   return jsonApiResponse('/folder/edit', data, 'POST');
 }
 
-function postWebuiConfig(data) {
+function postWebuiConfig(data: string) {
   return jsonApiResponse('/webui/config', data, 'POST');
 }
 
@@ -193,7 +201,7 @@ function getPlexSync() {
   return jsonPlexResponse('/plex/sync/all', '');
 }
 
-function getInit(data) {
+function getInit(data: string) {
   return jsonApiResponse('/init/', data);
 }
 
@@ -201,7 +209,7 @@ function getInitDatabase() {
   return jsonApiResponse('/init/database', '');
 }
 
-function postInitDatabase(data) {
+function postInitDatabase(data: string) {
   return jsonApiResponse('/init/database', data, 'POST');
 }
 
@@ -217,7 +225,7 @@ function getInitAnidb() {
   return jsonApiResponse('/init/anidb', '');
 }
 
-function postInitAnidb(data) {
+function postInitAnidb(data: string) {
   return jsonApiResponse('/init/anidb', data, 'POST');
 }
 
@@ -229,7 +237,7 @@ function getInitDefaultuser() {
   return jsonApiResponse('/init/defaultuser', '');
 }
 
-function postInitDefaultuser(data) {
+function postInitDefaultuser(data: string) {
   return jsonApiResponse('/init/defaultuser', data, 'POST');
 }
 
@@ -239,6 +247,22 @@ function getInitDatabaseSqlserverinstance() {
 
 function getVersion() {
   return jsonApiResponse('/version', '');
+}
+
+function getWebuiUpdate() {
+  return jsonApiResponse('/webui/update', '');
+}
+
+function getSerieInfobyfolder(data: string) {
+  return jsonApiResponse('/serie/infobyfolder', data);
+}
+
+function getOsDrives() {
+  return jsonApiResponse('/os/drives', '');
+}
+
+function postOsFolder(data: { full_path: string }) {
+  return jsonApiResponse('/os/folder', data, 'POST');
 }
 
 export default {
@@ -277,4 +301,8 @@ export default {
   postInitDefaultuser,
   getInitDatabaseSqlserverinstance,
   getVersion,
+  getWebuiUpdate,
+  getSerieInfobyfolder,
+  getOsDrives,
+  postOsFolder,
 };

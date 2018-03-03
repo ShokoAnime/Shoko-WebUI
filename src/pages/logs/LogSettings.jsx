@@ -1,42 +1,63 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Panel, Checkbox, Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
-import store from '../../core/store';
 import { setFilters, setKeyword } from '../../core/actions/logs/Filters';
 
-class LogSettings extends React.Component {
+type LogFilters = {
+  error: boolean,
+  info: boolean,
+  trace: boolean,
+}
+
+type Props = {
+  keyword: string,
+  tags: LogFilters,
+  updateFilters: (LogFilters) => void,
+  updateKeyword: (string) => void,
+}
+
+type State = {
+  keyword: string,
+}
+
+class LogSettings extends React.Component<Props, State> {
   static propTypes = {
     keyword: PropTypes.string.isRequired,
+    tags: PropTypes.object.isRequired,
+    updateFilters: PropTypes.func.isRequired,
+    updateKeyword: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
-    this.applySettings = this.applySettings.bind(this);
-    this.updateKeyword = this.updateKeyword.bind(this);
     this.state = {
       keyword: props.keyword,
     };
   }
 
-  applySettings() {
-    const state = store.getState();
-    const { tags } = state.logs.filters;
+  cbError: ?HTMLInputElement;
+  cbInfo: ?HTMLInputElement;
+  cbTrace: ?HTMLInputElement;
+
+  applySettings = () => {
+    const { tags, updateKeyword, updateFilters } = this.props;
     const filterValues = {
-      error: this.cbError.checked,
-      info: this.cbInfo.checked,
-      trace: this.cbTrace.checked,
+      error: !!(this.cbError && this.cbError.checked),
+      info: !!(this.cbInfo && this.cbInfo.checked === true),
+      trace: !!(this.cbTrace && this.cbTrace.checked === true),
     };
 
     const updatedFilters = Object.assign({}, tags, filterValues);
-    store.dispatch(setFilters(updatedFilters));
-    store.dispatch(setKeyword(this.state.keyword));
-  }
+    updateKeyword(this.state.keyword);
+    updateFilters(updatedFilters);
+  };
 
-  updateKeyword(event) {
+  updateKeyword = (event) => {
     const keyword = event.target.value;
     this.setState({ keyword });
-  }
+  };
 
   render() {
     return (
@@ -71,10 +92,18 @@ class LogSettings extends React.Component {
 
 function mapStateToProps(state) {
   const { keyword } = state.logs;
-
+  const { tags } = state.logs.filters;
   return {
     keyword,
+    tags,
   };
 }
 
-export default connect(mapStateToProps)(LogSettings);
+function mapDispatchToProps(dispatch) {
+  return {
+    updateFilters: (value: LogFilters) => dispatch(setFilters(value)),
+    updateKeyword: value => dispatch(setKeyword(value)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LogSettings);

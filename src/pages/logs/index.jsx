@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { Panel } from 'react-bootstrap';
 import history from '../../core/history';
@@ -12,20 +13,18 @@ import LogSettings from './LogSettings';
 import LogContents from './LogContents';
 import { uiVersion } from '../../core/util';
 
-class LogsPage extends React.Component {
+class LogsPage extends React.Component<{}> {
   componentDidMount() {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {
-      history.push({
-        pathname: '/',
-      });
+      history.push('/');
       return;
     }
 
-    store.dispatch({ type: Events.PAGE_LOGS_LOAD });
+    store.dispatch({ type: Events.PAGE_LOGS_LOAD, payload: null });
     // Reset buffer and fetch current log
     store.dispatch(getDelta());
 

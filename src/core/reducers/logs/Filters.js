@@ -1,3 +1,4 @@
+// @flow
 import { handleAction } from 'redux-actions';
 import { SET_FILTERS, SET_KEYWORD } from '../../actions/logs/Filters';
 

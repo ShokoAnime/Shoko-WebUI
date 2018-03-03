@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -6,7 +7,21 @@ import Events from '../../core/events';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import { updateLog } from '../../core/actions/settings/Log';
 
-class LogOptions extends React.Component {
+type LogSettingsType = {
+  rotate: boolean,
+  zip: boolean,
+  delete: boolean,
+  days: number,
+}
+
+type Props = {
+  className: string,
+  logs: LogSettingsType,
+  handleChange: (string, string | boolean | number) => void,
+  saveSettings: (LogSettingsType) => void,
+}
+
+class LogOptions extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     logs: PropTypes.shape({
@@ -24,10 +39,10 @@ class LogOptions extends React.Component {
     this.saveSettings = this.saveSettings.bind(this);
   }
 
-  saveSettings() {
+  saveSettings = () => {
     const { saveSettings, logs } = this.props;
     saveSettings(logs);
-  }
+  };
 
   render() {
     const { logs } = this.props;

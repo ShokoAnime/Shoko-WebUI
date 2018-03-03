@@ -1,0 +1,12 @@
+[ignore]
+node_modules/
+
+[include]
+
+[libs]
+flow-typed/react-bootstrap_v0.32.x.js
+flow-typed/es6-promise_v4.2.4.js
+flow-typed/promise.js
+
+[options]
+experimental.const_params=true

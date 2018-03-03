@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -6,7 +7,18 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import Events from '../../core/events';
 import { setUpdateChannel, setLogDelta } from '../../core/actions/settings/Other';
 
-class OtherSettings extends React.Component {
+type Props = {
+  className: string,
+  other: {
+    updateChannel: string,
+    logDelta: number,
+  },
+  changeUpdateChannel: (string) => void,
+  changeLogDelta: (number) => void,
+  saveSettings: ({}) => void,
+}
+
+class OtherSettings extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     other: PropTypes.shape({
@@ -18,18 +30,13 @@ class OtherSettings extends React.Component {
     saveSettings: PropTypes.func.isRequired,
   };
 
-  constructor() {
-    super();
-    this.saveSettings = this.saveSettings.bind(this);
-  }
-
-  saveSettings() {
+  saveSettings = () => {
     const { other, saveSettings } = this.props;
     saveSettings({
       otherUpdateChannel: other.updateChannel,
       logDelta: other.logDelta,
     });
-  }
+  };
 
   render() {
     const {
@@ -71,7 +78,7 @@ class OtherSettings extends React.Component {
                     <FormControl
                       type="text"
                       value={logDelta}
-                      onChange={() => { changeLogDelta(this.getValue()); }}
+                      onChange={(ref) => { changeLogDelta(ref.getValue()); }}
                     />
                   </ButtonGroup>
                 </td>
