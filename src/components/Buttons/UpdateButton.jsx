@@ -75,7 +75,7 @@ function mapStateToProps(state) {
   const { updateAvailable, webuiVersionUpdate, fetching } = state;
 
   return {
-    enabled: updateAvailable.status,
+    enabled: updateAvailable,
     isFetching: fetching.downloadUpdates === true,
     updateStatus: webuiVersionUpdate,
   };

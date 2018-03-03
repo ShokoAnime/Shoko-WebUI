@@ -59,7 +59,7 @@ const sidebarToggle = handleAction(
 );
 const autoUpdate = handleAction(
   SET_AUTOUPDATE,
-  (state, action) => (action.error ? state : action.payload), false,
+  (state, action) => action.payload, false,
 );
 const selectedImportFolderSeries = handleAction(
   SELECT_IMPORT_FOLDER_SERIES,
