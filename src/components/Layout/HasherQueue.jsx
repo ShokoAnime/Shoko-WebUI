@@ -34,4 +34,4 @@ function mapStateToProps(state): Props {
   };
 }
 
-export default connect(mapStateToProps, () => {})(HasherQueue);
+export default connect(mapStateToProps, () => ({}))(HasherQueue);

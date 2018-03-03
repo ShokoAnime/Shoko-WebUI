@@ -51,4 +51,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, () => {})(RecentFiles);
+export default connect(mapStateToProps, () => ({}))(RecentFiles);

@@ -38,4 +38,4 @@ function mapStateToProps(state): Props {
   };
 }
 
-export default connect(mapStateToProps, () => {})(Footer);
+export default connect(mapStateToProps, () => ({}))(Footer);

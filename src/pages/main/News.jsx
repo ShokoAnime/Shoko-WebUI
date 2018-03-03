@@ -52,4 +52,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, () => {})(News);
+export default connect(mapStateToProps, () => ({}))(News);

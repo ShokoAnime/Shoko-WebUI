@@ -58,4 +58,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, () => {})(Commands);
+export default connect(mapStateToProps, () => ({}))(Commands);

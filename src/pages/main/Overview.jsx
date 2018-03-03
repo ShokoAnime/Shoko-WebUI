@@ -100,4 +100,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, () => {})(Overview);
+export default connect(mapStateToProps, () => ({}))(Overview);

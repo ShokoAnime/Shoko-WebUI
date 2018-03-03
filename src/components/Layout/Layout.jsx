@@ -43,4 +43,4 @@ function mapStateToProps(state): Props {
   };
 }
 
-export default connect(mapStateToProps, () => {})(Layout);
+export default connect(mapStateToProps, () => ({}))(Layout);
