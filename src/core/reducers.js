@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import { handleAction, handleActions } from 'redux-actions';
 import { routerReducer } from 'react-router-redux';
@@ -24,20 +25,33 @@ import modals from './reducers/modals';
 import settings from './reducers/settings';
 import logs from './reducers/logs';
 import firstrun from './reducers/firstrun';
-import { createApiReducer, apiReducer } from './util';
 import Version from '../../public/version.json';
 
-const webuiVersionUpdate = createApiReducer(
-  WEBUI_VERSION_UPDATE, 'items',
-  { status: false, error: false },
-);
-const importFolderSeries = createApiReducer(IMPORT_FOLDER_SERIES);
+function apiReducer(state, action) {
+  return action.error ? state : Object.assign({}, state, action.payload);
+}
+
+type apiSessionState = {
+  apikey: string
+}
 
 export const apiSession = handleActions({
-  [API_SESSION]: (state, action) =>
+  [API_SESSION]: (state: apiSessionState, action): apiSessionState =>
     (action.error ? state : Object.assign({}, state, action.payload)),
-  [LOGOUT]: state => Object.assign({}, state, { apikey: '' }),
+  [LOGOUT]: (state: apiSessionState): apiSessionState => Object.assign({}, state, { apikey: '' }),
 }, { apikey: '' });
+
+export const webuiVersionUpdate = handleAction(
+  WEBUI_VERSION_UPDATE,
+  (state, action) => Object.assign({}, action.payload || state),
+  { status: false },
+);
+
+export const importFolderSeries = handleAction(
+  IMPORT_FOLDER_SERIES,
+  (state, action) => action.payload || state,
+  [],
+);
 
 const sidebarToggle = handleAction(
   SIDEBAR_TOGGLE,
@@ -73,12 +87,13 @@ export const updateAvailable = handleAction(UPDATE_AVAILABLE, (state, action) =>
   return Version.debug === false && action.payload.version !== Version.package;
 }, false);
 
+
 const fetching = handleAction(SET_FETCHING, (state, action) => {
   if (action.error) { return state; }
   return Object.assign({}, state, action.payload || {});
 }, {});
 
-const rootReducer = combineReducers({
+const reducers = {
   router: routerReducer,
   globalAlert,
   apiSession,
@@ -100,6 +115,8 @@ const rootReducer = combineReducers({
   logs,
   firstrun,
   fetching,
-});
+};
 
-export default rootReducer;
+export type Reducers = typeof reducers;
+
+export default combineReducers(reducers);

@@ -1,24 +1,23 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import store from '../../core/store';
 import { setAutoupdate } from '../../core/legacy-actions';
 
-class AutoRefreshSwitch extends React.Component {
+type Props = {
+  autoUpdate: boolean,
+  setAutoUpdate: (value: boolean) => void
+};
+
+class AutoRefreshSwitch extends React.Component<Props> {
   static propTypes = {
     autoUpdate: PropTypes.bool.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    const newState = !this.props.autoUpdate;
-    store.dispatch(setAutoupdate(newState));
-  }
+  handleClick = () => {
+    this.props.setAutoUpdate(!this.props.autoUpdate);
+  };
 
   render() {
     const { autoUpdate } = this.props;
@@ -40,4 +39,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(AutoRefreshSwitch);
+function mapDispatchToProps(dispatch) {
+  return {
+    setAutoUpdate: value => dispatch(setAutoupdate(value)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AutoRefreshSwitch);

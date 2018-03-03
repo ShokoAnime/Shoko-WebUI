@@ -1,23 +1,23 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import store from '../../core/store';
+import { connect } from 'react-redux';
 import { toggleSidebar } from '../../core/actions';
 import s from '../Layout/Layout.css';
 
-class SidebarToggle extends React.Component {
+type Props = {
+  enabled: boolean,
+  toggleSidebar: (value: boolean) => void
+};
+
+class SidebarToggle extends React.Component<Props> {
   static propTypes = {
     enabled: PropTypes.bool.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  handleClick() {
-    const newState = !this.props.enabled;
-    store.dispatch(toggleSidebar(newState));
-  }
+  handleClick = () => {
+    this.props.toggleSidebar(!this.props.enabled);
+  };
 
   render() {
     return (
@@ -28,4 +28,17 @@ class SidebarToggle extends React.Component {
   }
 }
 
-export default SidebarToggle;
+function mapStateToProps(state) {
+  const { sidebarToggle } = state;
+  return {
+    enabled: sidebarToggle,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    toggleSidebar: value => dispatch(toggleSidebar(value)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SidebarToggle);

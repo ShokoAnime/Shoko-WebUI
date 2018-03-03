@@ -1,9 +1,16 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import s from './styles.css';
 
-class InfoPanel extends React.Component {
+type Props = {
+  className: string,
+  title: string,
+  children: any
+}
+
+class InfoPanel extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     title: PropTypes.string,

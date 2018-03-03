@@ -1,8 +1,15 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Alert } from 'react-bootstrap';
 
-class StatusPanel extends React.Component {
+type Props = {
+  isFetching: boolean,
+  code: number,
+  message: string,
+}
+
+class StatusPanel extends React.Component<Props> {
   static propTypes = {
     isFetching: PropTypes.bool,
     code: PropTypes.number,
@@ -21,7 +28,7 @@ class StatusPanel extends React.Component {
     const panelMessage = isFetching ?
       [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : message;
     return (
-      <Alert bsStyle={code === 200 ? 'success' : 'danger'}>{panelMessage}</Alert>
+      <Alert onDismiss={() => {}} bsStyle={code === 200 ? 'success' : 'danger'}>{panelMessage}</Alert>
     );
   }
 }

@@ -1,41 +1,58 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
-import store from '../../core/store';
-import { selectImportFolderSeries } from '../../core/actions';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFolderSeriesItem from './ImportFolderSeriesItem';
-import { importFolderSeriesAsync } from '../../core/legacy-actions';
+import type { FolderSeriesItemType } from './ImportFolderSeriesItem';
+import Events from '../../core/events';
 
-class ImportFolderSeries extends React.Component {
+type ImportFolder = {
+  ImportFolderID: number,
+  ImportFolderLocation: string,
+}
+
+type SelectedFolder = {
+  id: number,
+  name: string,
+}
+
+type Props = {
+  className?: string,
+  isFetching: boolean,
+  items: Array<FolderSeriesItemType>,
+  importFolders: Array<ImportFolder>,
+  selectedFolder: SelectedFolder,
+  fetchImportFolderSeries: (SelectedFolder) => void,
+}
+
+class ImportFolderSeries extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
-    lastUpdated: PropTypes.number,
     items: PropTypes.array,
     importFolders: PropTypes.object,
     selectedFolder: PropTypes.object,
+    fetchImportFolderSeries: PropTypes.func,
   };
 
-  static handleClick() {
-    importFolderSeriesAsync(true, '/1');
-  }
+  findFolder = (folders: Array<ImportFolder>, id: number): ?ImportFolder => find(folders, ['ImportFolderID', id]);
 
-  static handleSelect(folderId) {
-    const { importFolders } = store.getState();
-    const folder = find(importFolders, ['ImportFolderID', folderId]);
-    store.dispatch(selectImportFolderSeries({
+  handleSelect = (folderId) => {
+    const { fetchImportFolderSeries, importFolders } = this.props;
+    const folder = this.findFolder(importFolders, folderId);
+    if (!folder) { return; }
+    fetchImportFolderSeries({
       id: folderId,
       name: folder.ImportFolderLocation || '',
-    }));
-    importFolderSeriesAsync(true, `?id=${folderId}`);
-  }
+    });
+  };
 
   render() {
     const {
-      items, isFetching, lastUpdated, importFolders, selectedFolder,
+      items, isFetching, importFolders, selectedFolder,
     } = this.props;
     const series = [];
     const folders = [];
@@ -46,20 +63,15 @@ class ImportFolderSeries extends React.Component {
     });
 
     forEach(importFolders, (folder) => {
-      const item = (
-        <MenuItem key={folder.ImportFolderID} eventKey={folder.ImportFolderID}>
-          {folder.ImportFolderLocation}
-        </MenuItem>
-      );
-      folders.push(item);
+    // eslint-disable-next-line max-len
+      folders.push(<MenuItem eventKey={folder.ImportFolderID}>{folder.ImportFolderLocation}</MenuItem>);
     });
 
     const importFoldersSelector = [
       <span>Series In Import Folder
         <DropdownButton
-          id="import-folder-select"
           bsStyle="link"
-          onSelect={ImportFolderSeries.handleSelect}
+          onSelect={this.handleSelect}
           title={selectedFolder.name || ''}
         >
           {folders}
@@ -72,10 +84,7 @@ class ImportFolderSeries extends React.Component {
         <FixedPanel
           title={importFoldersSelector}
           description="Use Import Folders section to manage"
-          lastUpdated={lastUpdated}
           isFetching={isFetching}
-          actionName="Sort"
-          onAction={ImportFolderSeries.handleClick}
         >
           <table className="table">
             <tbody>
@@ -89,23 +98,24 @@ class ImportFolderSeries extends React.Component {
 }
 
 function mapStateToProps(state) {
-  const { importFolderSeries, importFolders, selectedImportFolderSeries } = state;
   const {
-    isFetching,
-    lastUpdated,
-    items,
-  } = importFolderSeries || {
-    isFetching: true,
-    items: [],
-  };
+    importFolderSeries, importFolders, selectedImportFolderSeries, fetching,
+  } = state;
 
   return {
-    items,
-    isFetching,
-    lastUpdated,
+    items: importFolderSeries,
+    isFetching: fetching.importFolderSeries === true,
     selectedFolder: selectedImportFolderSeries,
     importFolders: importFolders || [],
   };
 }
 
-export default connect(mapStateToProps)(ImportFolderSeries);
+function mapDispatchToProps(dispatch) {
+  return {
+    fetchImportFolderSeries: (payload: SelectedFolder) => {
+      dispatch({ type: Events.FETCH_IMPORT_FOLDER_SERIES, payload });
+    },
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImportFolderSeries);

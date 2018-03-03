@@ -1,9 +1,15 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import s from '../../components/Panels/styles.css';
 
-class CommandsItem extends React.Component {
+type Props = {
+  name: string,
+  count: number,
+}
+
+class CommandsItem extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string,
     count: PropTypes.number,

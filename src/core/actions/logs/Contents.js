@@ -1,3 +1,4 @@
+// @flow
 import { createAction } from 'redux-actions';
 
 export const SET_CONTENTS = 'LOGS_SET_CONTENTS';

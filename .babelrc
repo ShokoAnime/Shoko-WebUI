@@ -6,7 +6,8 @@
       }
     }],
     "stage-1",
-    "react"
+    "react",
+    "flow"
   ],
   "plugins": [
     "react-hot-loader/babel",

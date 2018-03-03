@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import history from '../../core/history';
 import store from '../../core/store';
@@ -12,20 +13,18 @@ import ImportFolders from './ImportFolders';
 import QuickActions from './QuickActions';
 import { uiVersion } from '../../core/util';
 
-class MainPage extends React.Component {
+class MainPage extends React.Component<{}> {
   componentDidMount() {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const state = store.getState();
     if (state.apiSession.apikey === '') {
-      history.push({
-        pathname: '/',
-      });
+      history.push('/');
       return;
     }
 
-    store.dispatch({ type: Events.DASHBOARD_LOAD });
+    store.dispatch({ type: Events.DASHBOARD_LOAD, payload: null });
   }
 
   componentWillUnmount() {

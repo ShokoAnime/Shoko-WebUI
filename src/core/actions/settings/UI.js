@@ -1,3 +1,4 @@
+// @flow
 import { createAction } from 'redux-actions';
 
 export const SET_THEME = 'SETTINGS_SET_THEME';

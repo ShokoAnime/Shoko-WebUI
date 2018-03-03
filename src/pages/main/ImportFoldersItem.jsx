@@ -1,7 +1,13 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import type { FolderItemType } from '../../components/Dialogs/ImportFolder/FolderItem';
 
-class ImportFoldersItem extends React.Component {
+type Props = FolderItemType & {
+  index: number,
+}
+
+class ImportFoldersItem extends React.Component<Props> {
   static propTypes = {
     index: PropTypes.number,
     ImportFolderLocation: PropTypes.string,

@@ -1,11 +1,18 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import RecentFilesItem from './RecentFilesItem';
+import type { RecentFileType } from './RecentFilesItem';
 
-class RecentFiles extends React.Component {
+type Props = {
+  className: string,
+  items: Array<RecentFileType>
+}
+
+class RecentFiles extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     items: PropTypes.object,
@@ -44,4 +51,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(RecentFiles);
+export default connect(mapStateToProps, () => ({}))(RecentFiles);

@@ -1,8 +1,15 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import moment from 'moment';
 
-class TimeUpdated extends React.Component {
+type Props = {
+  timestamp?: number,
+  className: string,
+  isFetching: boolean,
+}
+
+class TimeUpdated extends React.Component<Props> {
   static propTypes = {
     timestamp: PropTypes.number,
     className: PropTypes.string,
@@ -11,7 +18,7 @@ class TimeUpdated extends React.Component {
 
   render() {
     const { timestamp, className, isFetching } = this.props;
-    const dateString = (timestamp) ? moment(timestamp, 'x').format('YYYY-MM-DD HH:mm:ss') : '--';
+    const dateString = (timestamp) ? moment(`${timestamp}`, 'x').format('YYYY-MM-DD HH:mm:ss') : '--';
     return (
       <span className={className}>
         {isFetching ? <i className="fa fa-refresh fa-spin" /> : null}

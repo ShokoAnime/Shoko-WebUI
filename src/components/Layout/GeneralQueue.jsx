@@ -1,7 +1,13 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { connect } from 'react-redux';
 
-class GeneralQueue extends React.Component {
+type Props = {
+  count: number,
+}
+
+class GeneralQueue extends React.Component<Props> {
   static propTypes = {
     count: PropTypes.number,
   };
@@ -19,4 +25,13 @@ class GeneralQueue extends React.Component {
   }
 }
 
-export default GeneralQueue;
+function mapStateToProps(state): Props {
+  const { queueStatus } = state;
+  const items = queueStatus.items || {};
+
+  return {
+    count: items.general ? items.general.count : 0,
+  };
+}
+
+export default connect(mapStateToProps, () => ({}))(GeneralQueue);

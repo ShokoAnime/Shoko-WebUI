@@ -1,26 +1,36 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
+import { setStatus } from '../../core/actions/modals/ImportFolder';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import ImportFoldersItem from './ImportFoldersItem';
 import ImportModal from '../../components/Dialogs/ImportFolder/ImportModal';
+import type { FolderItemType } from '../../components/Dialogs/ImportFolder/FolderItem';
 
-import { setStatus } from '../../core/actions/modals/ImportFolder';
-import store from '../../core/store';
+type Props = {
+  className: string,
+  importModal: {},
+  items: Array<FolderItemType>,
+  description: string,
+  importFolders: Array<FolderItemType>,
+  updateStatus: (boolean) => void,
+}
 
-class ImportFolders extends React.Component {
+class ImportFolders extends React.Component<Props> {
   static propTypes = {
     className: PropTypes.string,
     importModal: PropTypes.object,
     items: PropTypes.object,
     description: PropTypes.string,
     importFolders: PropTypes.object,
+    updateStatus: PropTypes.func.isRequired,
   };
 
-  static handleAction() {
-    store.dispatch(setStatus(true));
-  }
+  handleAction = () => {
+    this.props.updateStatus(true);
+  };
 
   render() {
     const {
@@ -39,7 +49,7 @@ class ImportFolders extends React.Component {
           title="Import Folders Overview"
           description={description || 'Use Import Folders section to manage'}
           actionName="Manage"
-          onAction={ImportFolders.handleAction}
+          onAction={this.handleAction}
         >
           <table className="table">
             <tbody>
@@ -62,4 +72,10 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(ImportFolders);
+function mapDispatchToProps(dispatch) {
+  return {
+    updateStatus: value => dispatch(setStatus(value)),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImportFolders);

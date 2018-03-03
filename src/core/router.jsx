@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { Route } from 'react-router';
 import { ConnectedRouter } from 'react-router-redux';
@@ -10,7 +11,7 @@ import SettingsPage from '../pages/settings';
 import LogsPage from '../pages/logs';
 import FirstRunPage from '../pages/firstrun';
 
-export default class Router extends React.Component {
+export default class Router extends React.Component<{}> {
   render() {
     return (
       <ConnectedRouter history={history} basename="/webui">

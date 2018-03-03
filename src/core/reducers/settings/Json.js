@@ -1,3 +1,4 @@
+// @flow
 import { handleAction } from 'redux-actions';
 import { SETTINGS_JSON } from '../../actions/settings/Json';
 

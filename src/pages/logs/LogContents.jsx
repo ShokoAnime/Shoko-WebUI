@@ -1,10 +1,21 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach, escapeRegExp } from 'lodash';
 import { Panel, Row, Col, Label } from 'react-bootstrap';
 
-class LogContents extends React.Component {
+type LogLine = {
+  stamp: string,
+  tag: string,
+  text: string,
+}
+
+type Props = {
+  lines: Array<LogLine>
+}
+
+class LogContents extends React.Component<Props> {
   static propTypes = {
     lines: PropTypes.array,
   };
@@ -51,4 +62,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(LogContents);
+export default connect(mapStateToProps, () => ({}))(LogContents);

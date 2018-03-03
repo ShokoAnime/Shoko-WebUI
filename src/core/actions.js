@@ -1,3 +1,4 @@
+// @flow
 import 'isomorphic-fetch';
 import { createAction } from 'redux-actions';
 
@@ -31,6 +32,7 @@ export const UPDATE_AVAILABLE = 'UPDATE_AVAILABLE';
 export const WEBUI_VERSION_UPDATE = 'WEBUI_VERSION_UPDATE';
 export const JMM_VERSION = 'JMM_VERSION';
 export const IMPORT_FOLDER_SERIES = 'IMPORT_FOLDER_SERIES';
+export const importFolderSeries = createAction(IMPORT_FOLDER_SERIES);
 export const updateWebui = createAction(WEBUI_VERSION_UPDATE, payload => ({ items: payload }));
 
 

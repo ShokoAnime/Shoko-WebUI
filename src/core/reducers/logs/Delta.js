@@ -1,3 +1,4 @@
+// @flow
 import { handleAction } from 'redux-actions';
 import { GET_DELTA } from '../../actions/logs/Delta';
 

@@ -1,3 +1,4 @@
+// @flow
 /**
  * Events are actions that are used to invoke sagas but don't get processed in the reducer usually
  */
@@ -35,4 +36,6 @@ export default {
   LOGOUT: 'EVENT_LOGOUT',
   CHECK_UPDATES: 'EVENT_CHECK_UPDATES',
   SERVER_VERSION: 'EVENT_SERVER_VERSION',
+  WEBUI_UPDATE: 'EVENT_WEBUI_UPDATE',
+  FETCH_IMPORT_FOLDER_SERIES: 'EVENT_FETCH_IMPORT_FOLDER_SERIES',
 };

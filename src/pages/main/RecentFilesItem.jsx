@@ -1,9 +1,20 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import s from '../../components/Panels/styles.css';
 
-class RecentFilesItem extends React.Component {
+export type RecentFileType = {
+  id: number,
+  filename: string,
+  recognized: boolean,
+}
+
+type Props = RecentFileType & {
+  index: number,
+}
+
+class RecentFilesItem extends React.Component<Props> {
   static propTypes = {
     id: PropTypes.number,
     index: PropTypes.number,

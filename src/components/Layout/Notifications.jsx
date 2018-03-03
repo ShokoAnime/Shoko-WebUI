@@ -1,7 +1,12 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 
-class Notifications extends React.Component {
+type Props = {
+  count?: number,
+}
+
+class Notifications extends React.Component<Props> {
   static propTypes = {
     count: PropTypes.number,
   };

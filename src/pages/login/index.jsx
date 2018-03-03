@@ -1,3 +1,4 @@
+// @flow
 import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -14,7 +15,19 @@ import Link from '../../components/Link/Link';
 
 const UI_VERSION = uiVersion();
 
-class LoginPage extends React.Component {
+type Props = {
+  version: string,
+  isFetching: boolean,
+  handleInit: () => void,
+  serverVersion: () => void,
+  firstRun: boolean,
+}
+
+type State = {
+  errorMessage: string | null,
+}
+
+class LoginPage extends React.Component<Props, State> {
   static propTypes = {
     version: PropTypes.string,
     isFetching: PropTypes.bool,
@@ -23,10 +36,8 @@ class LoginPage extends React.Component {
     firstRun: PropTypes.bool,
   };
 
-  constructor() {
-    super();
-    this.handleSignIn = this.handleSignIn.bind(this);
-    this.handleKeyPress = this.handleKeyPress.bind(this);
+  constructor(props: Props) {
+    super(props);
     this.state = {
       errorMessage: null,
     };
@@ -34,26 +45,32 @@ class LoginPage extends React.Component {
 
   componentDidMount() {
     document.title = `Shoko Server Web UI ${UI_VERSION}`;
-    this.user.focus();
+    if (this.user) this.user.focus();
     this.props.handleInit();
     this.props.serverVersion();
   }
 
-  handleKeyPress(e) {
+  user: ?HTMLInputElement;
+  pass: ?HTMLInputElement;
+
+  handleKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.handleSignIn();
     }
-  }
+  };
 
-  handleSignIn() {
+  handleSignIn = () => {
+    if (!this.user) { return; }
     const user = this.user.value;
+    if (!this.pass) { return; }
+    const pass = this.pass.value;
     this.setState({ errorMessage: null });
     // eslint-disable-next-line no-undef
     fetch('/api/auth', {
       method: 'POST',
       body: JSON.stringify({
-        user: this.user.value,
-        pass: this.pass.value,
+        user,
+        pass,
         device: 'web-ui',
       }),
       headers: {
@@ -82,7 +99,7 @@ class LoginPage extends React.Component {
           this.setState({ errorMessage: 'Unknown response!' });
         }
       });
-  }
+  };
 
   renderVersion() {
     const { version, isFetching } = this.props;
@@ -113,11 +130,12 @@ class LoginPage extends React.Component {
               </div>
               <div className={cx('col-md-3', s['right-panel'])}>
                 <Alert
+                  onDismiss={() => {}}
                   bsStyle="danger"
                   className={cx({ hidden: errorMessage === null })}
                 >{errorMessage}
                 </Alert>
-                {firstRun === true && <Alert bsStyle="warning"> Looks like a first run. Try the <Link to="/firstrun">wizard</Link></Alert>}
+                {firstRun === true && <Alert onDismiss={() => {}} bsStyle="warning"> Looks like a first run. Try the <Link to="/firstrun">wizard</Link></Alert>}
                 <h2>Sign In</h2>
                 <div className="form-group">
                   <label className="sr-only" htmlFor="username">Username</label>

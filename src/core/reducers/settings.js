@@ -1,3 +1,4 @@
+// @flow
 import { combineReducers } from 'redux';
 import { logs } from './settings/Log';
 import ui from './settings/UI';

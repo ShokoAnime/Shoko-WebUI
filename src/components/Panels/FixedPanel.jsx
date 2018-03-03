@@ -1,13 +1,24 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import TimeUpdated from './TimeUpdated';
 import s from './styles.css';
 
-class FixedPanel extends React.Component {
+type Props = {
+  lastUpdated?: number,
+  title: any,
+  description: string,
+  isFetching: boolean,
+  children: any,
+  actionName?: string,
+  onAction?: () => void
+}
+
+class FixedPanel extends React.Component<Props> {
   static propTypes = {
     lastUpdated: PropTypes.number,
-    title: PropTypes.string,
+    title: PropTypes.any,
     description: PropTypes.string,
     isFetching: PropTypes.bool,
     children: PropTypes.any,
@@ -15,16 +26,15 @@ class FixedPanel extends React.Component {
     onAction: PropTypes.func,
   };
 
-  constructor(props) {
-    super(props);
-    this.handleAction = this.handleAction.bind(this);
-  }
+  static defaultProps = {
+    isFetching: false,
+  };
 
-  handleAction() {
+  handleAction = () => {
     if (typeof this.props.onAction === 'function') {
       this.props.onAction();
     }
-  }
+  };
 
   renderButton() {
     const { actionName } = this.props;
