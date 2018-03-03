@@ -46,7 +46,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => { dispatch(Events.LOGOUT); },
+    logout: () => { dispatch({ type: Events.LOGOUT, payload: null }); },
   };
 }
 

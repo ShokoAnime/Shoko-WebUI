@@ -115,6 +115,11 @@ class LogOptions extends React.Component<Props> {
                 <td>
                   <ButtonGroup className="pull-right">
                     <Button
+                      onClick={() => { handleChange('days', 0); }}
+                      bsStyle={days === 0 ? 'success' : 'default'}
+                    >Never
+                    </Button>
+                    <Button
                       onClick={() => { handleChange('days', 7); }}
                       bsStyle={days === 7 ? 'success' : 'default'}
                     >Weekly
