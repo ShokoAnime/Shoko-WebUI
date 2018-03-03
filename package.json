@@ -48,6 +48,7 @@
     "redux-thunk": "^2.2.0",
     "roboto-npm-webfont": "1.0.1",
     "sessionstorage": "0.0.2",
+    "uglifyjs-webpack-plugin": "^1.2.2",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
