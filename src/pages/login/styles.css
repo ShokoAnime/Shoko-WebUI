@@ -3,6 +3,12 @@ body {
   height: 100%;
 }
 
+:global(.web-ui-notice) {
+  bottom: 0;
+  margin-left: 1.2rem;
+  position: absolute;
+}
+
 :global(#app-container) {
   height: 100%;
 }
@@ -44,6 +50,7 @@ body {
   background: #228f89;
   color: #fff;
   height: 40rem;
+  position: relative;
 }
 
 .right-panel {
