@@ -17,8 +17,7 @@ const config = {
     '!!font-awesome-sass-loader!./font-awesome.config.js',
     'roboto-npm-webfont',
     'bootstrap-loader',
-    '!!style-loader!css-loader!./css/bootstrap-reset.css',
-    '!!style-loader!css-loader!./css/main.css',
+    './css/main.scss',
     './src/main.jsx',
   ],
   output: {
@@ -80,7 +79,7 @@ const config = {
       },
       {
         test: /\.css$/,
-        exclude: '/node_modules/',
+        exclude: ['/node_modules/', '/css/'],
         use: ExtractTextPlugin.extract({
           fallback: 'style-loader',
           use: [{
