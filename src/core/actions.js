@@ -2,9 +2,10 @@
 import 'isomorphic-fetch';
 import { createAction } from 'redux-actions';
 
-export const STATUS_INVALIDATE = 'STATUS_INVALIDATE';
-export const STATUS_REQUEST = 'STATUS_REQUEST';
-export const STATUS_RECEIVE = 'STATUS_RECEIVE';
+export type Action = {
+  type: string,
+  payload: any
+}
 
 /* Sync actions */
 export const API_SESSION = 'API_SESSION';

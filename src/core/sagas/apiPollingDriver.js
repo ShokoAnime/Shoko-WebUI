@@ -1,9 +1,12 @@
+// @flow
 import { delay } from 'redux-saga';
+import type { Saga } from 'redux-saga';
 import { take, cancel, fork, call, put } from 'redux-saga/effects';
 import Api from '../api';
 import Events from '../events';
 import { QUEUE_GLOBAL_ALERT } from '../actions';
 import { getStatus } from '../actions/firstrun';
+import type { Action } from '../actions';
 
 function* pollServerStatus() {
   while (true) {
@@ -21,7 +24,7 @@ const typeMap = {
   'server-status': pollServerStatus,
 };
 
-export default function* apiPollingDriver(action) {
+export default function* apiPollingDriver(action: Action): Saga<void> {
   const { type } = action.payload;
 
   if (typeof typeMap[type] !== 'function') {

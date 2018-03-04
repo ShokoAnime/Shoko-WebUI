@@ -1,3 +1,4 @@
+// @flow
 import { createAction } from 'redux-actions';
 import { SET_AUTOUPDATE } from './actions';
 import store from './store';
@@ -9,8 +10,8 @@ function autoUpdateTick() {
   const location = history.location.pathname;
 
   if (location === '/dashboard') {
-    store.dispatch({ type: Events.DASHBOARD_QUEUE_STATUS });
-    store.dispatch({ type: Events.DASHBOARD_RECENT_FILES });
+    store.dispatch({ type: Events.DASHBOARD_QUEUE_STATUS, payload: null });
+    store.dispatch({ type: Events.DASHBOARD_RECENT_FILES, payload: null });
   } else if (location === '/logs') {
     const state = store.getState();
     const delta = state.settings.other.logDelta;
@@ -27,7 +28,7 @@ function autoUpdateTick() {
 
 let autoupdateTimer = null;
 
-export function setAutoupdate(status) {
+export function setAutoupdate(status: boolean) {
   if (autoupdateTimer !== null) {
     clearInterval(autoupdateTimer);
     autoupdateTimer = null;

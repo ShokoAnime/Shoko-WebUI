@@ -38,7 +38,7 @@ declare module "react-bootstrap" {
     componentClass?: ElementType,
     href?: string,
     type?: 'button' | 'reset' | 'submit',
-    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success',
+    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success' | 'info',
     bsSize?: BsStyle,
     bsClass?: string,
   }> {}
