@@ -13,7 +13,6 @@ import {
 } from '../actions';
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
-import { setAutoupdate } from '../legacy-actions';
 import Events from '../events';
 
 function* getSettings(): Saga<void> {
@@ -125,7 +124,7 @@ function* eventDashboardLoad(): Saga<void> {
 
   yield put({ type: JMM_NEWS, payload: resultJson.data });
   yield put({ type: Events.CHECK_UPDATES });
-  yield put(setAutoupdate(true));
+  yield put({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } });
 }
 
 export default {
