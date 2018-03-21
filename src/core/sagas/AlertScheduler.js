@@ -1,13 +1,16 @@
+// @flow
 import { delay } from 'redux-saga';
+import type { Saga } from 'redux-saga';
 import { put, call } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { GLOBAL_ALERT, SHOW_GLOBAL_ALERT } from '../actions';
+import type { Action } from '../actions';
 
 const maxAlerts = 2;
 const alertDisplayTime = 3000;
 let activeAlerts = [];
 
-export default function* alertScheduler(action) {
+export default function* alertScheduler(action: Action): Saga<void> {
   const alert = action.payload;
   if (activeAlerts.length < maxAlerts) {
     activeAlerts = [...activeAlerts, alert];

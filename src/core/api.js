@@ -3,7 +3,6 @@ import 'isomorphic-fetch';
 import Promise from 'es6-promise';
 import store from './store';
 import Events from './events';
-import { setAutoupdate } from './legacy-actions';
 
 export type ApiResponseSuccessType = { data: any }
 export type ApiResponseErrorType = { error: boolean, code?: number, message: string }
@@ -42,7 +41,7 @@ function apiCall(apiAction, apiParams: {} | string, type = 'GET') {
       if (response.status === 401) {
         // FIXME: make a better fix
         store.dispatch({ type: Events.LOGOUT, payload: null });
-        setAutoupdate(false);
+        store.dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } });
       }
       return Promise.reject(`Network error: ${apiAction} ${response.status}: ${response.statusText}`);
     }
@@ -249,8 +248,8 @@ function getVersion() {
   return jsonApiResponse('/version', '');
 }
 
-function getWebuiUpdate() {
-  return jsonApiResponse('/webui/update', '');
+function getWebuiUpdate(channel: string) {
+  return jsonApiResponse('/webui/update', channel);
 }
 
 function getSerieInfobyfolder(data: string) {

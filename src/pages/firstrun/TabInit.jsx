@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -7,7 +8,22 @@ import Events from '../../core/events';
 import s from './styles.css';
 import Link from '../../components/Link/Link';
 
-class TabInit extends React.Component {
+type Props = {
+  status: {
+    startup_state: string,
+    server_started: boolean,
+  },
+  saveDatabase: () => void,
+  stopPolling: () => void,
+  isFetching: boolean,
+  setActiveTab: (string) => void
+}
+
+type State = {
+  useStatus: boolean,
+}
+
+class TabInit extends React.Component<Props, State> {
   static propTypes = {
     status: PropTypes.object,
     saveDatabase: PropTypes.func,
@@ -16,12 +32,11 @@ class TabInit extends React.Component {
     setActiveTab: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
+  constructor(props: Props) {
     super(props);
     this.state = {
       useStatus: false,
     };
-    this.saveDatabase = this.saveDatabase.bind(this);
   }
 
   componentWillReceiveProps(nextProps) {
@@ -33,10 +48,10 @@ class TabInit extends React.Component {
     }
   }
 
-  saveDatabase() {
+  saveDatabase = () => {
     const { saveDatabase } = this.props;
     this.setState({ useStatus: true }, saveDatabase);
-  }
+  };
 
   renderInit() {
     const { isFetching, status } = this.props;
@@ -45,7 +60,7 @@ class TabInit extends React.Component {
 
     return (
       <Form horizontal>
-        {useStatus && <Alert bsStyle="success"><i className={cx(['fa', 'fa-refresh', 'fa-spin', s['alert-icon']])} />{status.startup_state}</Alert>}
+        {useStatus && <Alert onDismiss={() => {}} bsStyle="success"><i className={cx(['fa', 'fa-refresh', 'fa-spin', s['alert-icon']])} />{status.startup_state}</Alert>}
         <Panel>
           On this page you can try and start the server, startup progress will be reported above
           this message, after the startup and database creation process is complete you will be

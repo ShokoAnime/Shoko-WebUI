@@ -3,20 +3,25 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import { setAutoupdate } from '../../core/legacy-actions';
+import Events from '../../core/events';
+import type { State } from '../../core/store';
 
 type Props = {
   autoUpdate: boolean,
-  setAutoUpdate: (value: boolean) => void
+  startPolling: () => void,
+  stopPolling: () => void,
 };
 
-class AutoRefreshSwitch extends React.Component<Props> {
+export class AutoRefreshSwitch extends React.Component<Props> {
   static propTypes = {
     autoUpdate: PropTypes.bool.isRequired,
+    startPolling: PropTypes.func.isRequired,
+    stopPolling: PropTypes.func.isRequired,
   };
 
   handleClick = () => {
-    this.props.setAutoUpdate(!this.props.autoUpdate);
+    const { autoUpdate, startPolling, stopPolling } = this.props;
+    if (autoUpdate) { stopPolling(); } else { startPolling(); }
   };
 
   render() {
@@ -31,7 +36,7 @@ class AutoRefreshSwitch extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state) {
+function mapStateToProps(state: State) {
   const { autoUpdate } = state;
 
   return {
@@ -41,7 +46,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setAutoUpdate: value => dispatch(setAutoupdate(value)),
+    startPolling: () => dispatch({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } }),
+    stopPolling: () => dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
   };
 }
 

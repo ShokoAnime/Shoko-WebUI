@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -5,7 +6,16 @@ import { forEach } from 'lodash';
 import s from './AlertContainer.css';
 import Notification from './Notification';
 
-class AlertContainer extends React.Component {
+type AlertType = {
+  type: 'success' | 'error',
+  text: string,
+}
+
+type Props = {
+  globalAlert: Array<AlertType>
+}
+
+class AlertContainer extends React.Component<Props> {
   static propTypes = {
     globalAlert: PropTypes.array.isRequired,
   };
@@ -34,4 +44,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps)(AlertContainer);
+export default connect(mapStateToProps, () => ({}))(AlertContainer);

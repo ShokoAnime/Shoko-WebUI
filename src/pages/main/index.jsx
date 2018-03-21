@@ -1,9 +1,8 @@
 // @flow
 import React from 'react';
-import history from '../../core/history';
+import { connect } from 'react-redux';
 import store from '../../core/store';
 import Events from '../../core/events';
-import { setAutoupdate } from '../../core/legacy-actions';
 import Layout from '../../components/Layout/Layout';
 import Overview from './Overview';
 import Commands from './Commands';
@@ -12,15 +11,24 @@ import News from './News';
 import ImportFolders from './ImportFolders';
 import QuickActions from './QuickActions';
 import { uiVersion } from '../../core/util';
+import type { State } from '../../core/store';
 
-class MainPage extends React.Component<{}> {
+type Props = {
+  apiKey: string,
+  autoUpdate: boolean,
+  logout: () => void,
+  stopPolling: () => void,
+}
+
+class MainPage extends React.Component<Props> {
   componentDidMount() {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${uiVersion()}`;
 
-    const state = store.getState();
-    if (state.apiSession.apikey === '') {
-      history.push('/');
+    const { apiKey, logout } = this.props;
+
+    if (apiKey === '') {
+      logout();
       return;
     }
 
@@ -28,7 +36,10 @@ class MainPage extends React.Component<{}> {
   }
 
   componentWillUnmount() {
-    setAutoupdate(false);
+    const { autoUpdate, stopPolling } = this.props;
+    if (autoUpdate) {
+      stopPolling();
+    }
   }
 
   render() {
@@ -53,4 +64,20 @@ class MainPage extends React.Component<{}> {
   }
 }
 
-export default MainPage;
+function mapStateToProps(state: State) {
+  const { autoUpdate, apiSession } = state;
+
+  return {
+    apiKey: apiSession.apikey,
+    autoUpdate,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    logout: () => dispatch({ type: Events.LOGOUT }),
+    stopPolling: () => dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
+  };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(MainPage);

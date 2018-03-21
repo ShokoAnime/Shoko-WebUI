@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -9,7 +10,22 @@ import FieldGroup from './FieldGroup';
 import s from './styles.css';
 import SqlCombo from './SqlCombo';
 
-class TabDatabase extends React.Component {
+type Props = {
+  database: {
+    db_type: 'SQLite' | 'MySQL' | 'SQLServer',
+    status: {
+      text: string,
+    }
+  },
+  status: {
+    server_started: boolean,
+  },
+  changeSetting: (string, string) => void,
+  testDatabase: () => void,
+  isFetching: boolean,
+}
+
+class TabDatabase extends React.Component<Props> {
   static propTypes = {
     database: PropTypes.object,
     status: PropTypes.object,
@@ -31,11 +47,11 @@ class TabDatabase extends React.Component {
 
     return (
       <Form horizontal>
-        {isFetching && <Alert bsStyle="warning"><i className={cx(['fa', 'fa-refresh', 'fa-spin', s['alert-icon']])} />Loading...</Alert>}
-        {!isFetching && database.status.text && <Alert bsStyle={database.status.type === 'error' ? 'danger' : 'success'}>{database.status.text}</Alert>}
+        {isFetching && <Alert onDismiss={() => {}} bsStyle="warning"><i className={cx(['fa', 'fa-refresh', 'fa-spin', s['alert-icon']])} />Loading...</Alert>}
+        {!isFetching && database.status.text && <Alert onDismiss={() => {}} bsStyle={database.status.type === 'error' ? 'danger' : 'success'}>{database.status.text}</Alert>}
         <FormGroup controlId="formDatabaseType">
-          <Col componentClass={ControlLabel} sm={2}>
-            Database type:
+          <Col sm={2}>
+            <ControlLabel>Database type:</ControlLabel>
           </Col>
           <Col sm={6}>
             <FormControl componentClass="select" placeholder="Database" value={database.db_type} onChange={event => changeSetting('db_type', event.target.value)}>

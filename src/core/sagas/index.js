@@ -482,7 +482,8 @@ function* serverVersion(): Saga<void> {
 
 function* downloadUpdates(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'downloadUpdates');
-  const resultJson = yield call(Api.getWebuiUpdate);
+  const channel = yield select(state => state.settings.other.updateChannel);
+  const resultJson = yield call(Api.getWebuiUpdate, channel);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
   if (resultJson.error) {
     yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
