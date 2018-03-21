@@ -19,7 +19,7 @@ const UI_VERSION = uiVersion();
 type Props = {
   getDatabaseInfo: () => void,
   status: {
-    server_started: bool,
+    server_started: boolean,
   },
 }
 
