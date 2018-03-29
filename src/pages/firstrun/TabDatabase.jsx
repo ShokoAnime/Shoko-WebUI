@@ -15,6 +15,7 @@ type Props = {
     db_type: 'SQLite' | 'MySQL' | 'SQLServer',
     status: {
       text: string,
+      type: string,
     }
   },
   status: {
