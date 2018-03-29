@@ -9,7 +9,7 @@ import { QUEUE_GLOBAL_ALERT } from '../../src/core/actions';
 const action = {
   payload: {
     otherUpdateChannel: 'stable',
-    logDelta: 0,
+    logDelta: 100,
   },
 };
 
@@ -28,8 +28,15 @@ test('settingsSaveWebui', (t) => {
   const generator = cloneableGenerator(settingsSagas.default.saveWebui)(action);
   const effectSelect = select(settingsSagas.settingsSelector);
   t.deepEqual(effectSelect, generator.next().value, 'select effect with settings selector');
-
   t.deepEqual(state, settingsSagas.settingsSelector({ settings: state }), 'settings selector matches');
+
+  const cloneInvalidData = generator.clone();
+  const invalidState = Object.assign({}, state, { ui: { ...state.ui, theme: 'invalid' } });
+  const effectPutInvalid = put({
+    type: QUEUE_GLOBAL_ALERT,
+    payload: { type: 'error', text: 'Schema validation failed!' },
+  });
+  t.deepEqual(effectPutInvalid, cloneInvalidData.next(invalidState).value, 'put effect invalid schema');
 
   const currentSettings = {
     uiTheme: state.ui.theme,

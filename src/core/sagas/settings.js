@@ -20,11 +20,14 @@ function* settingsSaveWebui(action: Action): Saga<void> {
   const data = { ...currentSettings, ...action.payload };
 
   const schema = {
+    type: 'object',
     required: ['uiTheme', 'uiNotifications', 'otherUpdateChannel', 'logDelta'],
-    uiTheme: { enum: ['light', 'dark', 'custom'] },
-    uiNotifications: { type: 'boolean' },
-    otherUpdateChannel: { enum: ['stable', 'unstable'] },
-    logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
+    properties: {
+      uiTheme: { enum: ['light', 'dark', 'custom'] },
+      uiNotifications: { type: 'boolean' },
+      otherUpdateChannel: { enum: ['stable', 'unstable'] },
+      logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
+    },
   };
   // $FlowFixMe
   const ajv = new Ajv();
@@ -33,7 +36,7 @@ function* settingsSaveWebui(action: Action): Saga<void> {
   if (result !== true) {
     yield put({
       type: QUEUE_GLOBAL_ALERT,
-      payload: { type: 'error', text: `Schema validation failed! ${result.toString()}` },
+      payload: { type: 'error', text: 'Schema validation failed!' },
     });
     return;
   }
