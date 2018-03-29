@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.3.4-dev4",
+  "version": "0.3.4-dev5",
   "private": true,
   "engines": {
     "node": ">=6",
@@ -191,6 +191,7 @@
     "start": "cross-env NODE_ENV=development node run",
     "test": "ava",
     "test:coverage": "nyc --extension .jsx ava",
+    "test:debug": "ava test/sagas/settingsSaveWebui.test.js",
     "report": "nyc report --reporter=html"
   }
 }
