@@ -9,7 +9,7 @@ import type { State } from '../store';
 
 export const settingsSelector = (state: State) => state.settings;
 
-export function* settingsSaveWebui(action: Action): Saga<void> {
+function* settingsSaveWebui(action: Action): Saga<void> {
   const settings = yield select(settingsSelector);
   const currentSettings = {
     uiTheme: settings.ui.theme,

@@ -20,6 +20,7 @@ const config = {
     './css/main.scss',
     './src/main.jsx',
   ],
+  mode: isDebug ? 'development' : 'production',
   output: {
     path: path.resolve(__dirname, './public/dist'),
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',

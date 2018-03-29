@@ -25,9 +25,11 @@ const settingsSagas = proxyquire('../../src/core/sagas/settings', {
 });
 
 test('settingsSaveWebui', (t) => {
-  const generator = cloneableGenerator(settingsSagas.settingsSaveWebui)(action);
+  const generator = cloneableGenerator(settingsSagas.default.saveWebui)(action);
   const effectSelect = select(settingsSagas.settingsSelector);
   t.deepEqual(effectSelect, generator.next().value, 'select effect with settings selector');
+
+  t.deepEqual(state, settingsSagas.settingsSelector({ settings: state }), 'settings selector matches');
 
   const currentSettings = {
     uiTheme: state.ui.theme,
