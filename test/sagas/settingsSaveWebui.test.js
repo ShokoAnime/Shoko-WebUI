@@ -37,6 +37,7 @@ test('settingsSaveWebui', (t) => {
     payload: { type: 'error', text: 'Schema validation failed!' },
   });
   t.deepEqual(effectPutInvalid, cloneInvalidData.next(invalidState).value, 'put effect invalid schema');
+  t.true(cloneInvalidData.next().done, 'should be done');
 
   const currentSettings = {
     uiTheme: state.ui.theme,
