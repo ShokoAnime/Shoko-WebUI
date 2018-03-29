@@ -12,6 +12,7 @@ install:
 script:
 - npm run lint --silent
 - npm run build
+after_success: npm run coveralls
 deploy:
   provider: releases
   api_key:
