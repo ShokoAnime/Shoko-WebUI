@@ -11,6 +11,7 @@ type Props = {
   user: {
     status: {
       text: string,
+      type: string,
     }
   },
   changeSetting: () => void,

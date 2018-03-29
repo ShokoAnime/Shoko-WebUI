@@ -16,7 +16,9 @@ type Props = {
   isHidden: boolean,
   onChange: (string, string) => void,
   getInstances: () => void,
-  database: {},
+  database: {
+    instances: {}
+  },
 }
 
 

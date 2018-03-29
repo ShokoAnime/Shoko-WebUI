@@ -5,7 +5,7 @@ import history from '../../core/history';
 
 type Props = {
   to: string,
-  onClick?: (Event) => void
+  onClick?: (SyntheticMouseEvent<HTMLButtonElement>) => void
 }
 
 class Link extends React.Component<Props> {
@@ -14,7 +14,7 @@ class Link extends React.Component<Props> {
     onClick: PropTypes.func,
   };
 
-  handleClick = (event: Event) => {
+  handleClick = (event: SyntheticMouseEvent<HTMLButtonElement>) => {
     if (this.props.onClick) {
       this.props.onClick(event);
     }

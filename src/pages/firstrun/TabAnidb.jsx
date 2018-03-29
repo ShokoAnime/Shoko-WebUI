@@ -11,6 +11,7 @@ type Props = {
   anidb: {
     status: {
       text: string,
+      type: string,
     }
   },
   changeSetting: () => void,
