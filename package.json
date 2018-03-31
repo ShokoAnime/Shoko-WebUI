@@ -192,7 +192,7 @@
     "start": "cross-env NODE_ENV=development node run",
     "test": "ava",
     "test:coverage": "nyc --extension .jsx ava",
-    "test:debug": "ava test/sagas/settingsSaveWebui.test.js",
+    "test:debug": "ava --verbose test/sagas/settingsSaveServer.test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   }

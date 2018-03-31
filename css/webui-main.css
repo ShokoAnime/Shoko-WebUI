@@ -28,8 +28,12 @@ a, a:hover, a:focus {
     color: #fff;
 }
 
-#container, #app-container, .site-wrapper {
+#container, #app-container {
     width: 100%;
+    height: 100%;
+}
+
+.site-wrapper.login {
     height: 100%;
 }
 

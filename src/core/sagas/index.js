@@ -505,6 +505,8 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.ADD_FOLDER, addFolder),
     takeEvery(Events.EDIT_FOLDER, editFolder),
     takeEvery(Events.SETTINGS_POST_WEBUI, settings.saveWebui),
+    takeEvery(Events.SETTINGS_GET_SERVER, settings.getServer),
+    takeEvery(Events.SETTINGS_SAVE_SERVER, settings.saveServer),
     takeEvery(Events.INIT_STATUS, apiInitStatus),
     takeEvery(Events.FIRSTRUN_GET_DATABASE, firstrunGetDatabase),
     takeEvery(Events.FIRSTRUN_INIT_DATABASE, firstrunInitDatabase),
