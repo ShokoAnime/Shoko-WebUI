@@ -13,6 +13,7 @@ import StyleSettings from './StyleSettings';
 import LogOptions from './LogOptions';
 import OtherSettings from './OtherSettings';
 import ExportSettings from './ExportSettings';
+import AnidbLoginSettings from './AnidbLoginSettings';
 import { uiVersion } from '../../core/util';
 
 type Props = {
@@ -55,6 +56,9 @@ class SettingsPage extends React.Component<Props> {
               <OtherSettings className="col-sm-4" />
             </div>
             <div className="row">
+              <AnidbLoginSettings />
+            </div>
+            <div className="row">
               <ExportSettings />
             </div>
           </section>
@@ -76,6 +80,7 @@ function mapDispatchToProps(dispatch) {
     loadSettings: () => {
       dispatch({ type: Events.PAGE_SETTINGS_LOAD, payload: null });
       dispatch(getSettings());
+      dispatch({ type: Events.SETTINGS_GET_SERVER, payload: null });
     },
   };
 }

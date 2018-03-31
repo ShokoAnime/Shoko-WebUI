@@ -11,6 +11,7 @@ type Props = {
   description: string,
   isFetching: boolean,
   children: any,
+  form: boolean,
   actionName?: string,
   onAction?: () => void
 }
@@ -22,12 +23,14 @@ class FixedPanel extends React.Component<Props> {
     description: PropTypes.string,
     isFetching: PropTypes.bool,
     children: PropTypes.any,
+    form: PropTypes.bool,
     actionName: PropTypes.string,
     onAction: PropTypes.func,
   };
 
   static defaultProps = {
     isFetching: false,
+    form: false,
   };
 
   handleAction = () => {
@@ -48,7 +51,7 @@ class FixedPanel extends React.Component<Props> {
 
   render() {
     const {
-      children, title, isFetching, lastUpdated, description,
+      children, title, isFetching, lastUpdated, description, form,
     } = this.props;
     return (
       <section className="panel">
@@ -59,7 +62,7 @@ class FixedPanel extends React.Component<Props> {
           {this.renderButton()}
           <div className="clearfix" />
         </header>
-        <div className={s['fixed-panel']}>
+        <div className={cx(s['fixed-panel'], form && s.form)}>
           {children}
         </div>
         {lastUpdated || isFetching ? <TimeUpdated

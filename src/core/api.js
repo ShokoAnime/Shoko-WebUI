@@ -4,6 +4,8 @@ import Promise from 'es6-promise';
 import store from './store';
 import Events from './events';
 
+import type { SettingType } from './sagas/settings';
+
 export type ApiResponseSuccessType = { data: any }
 export type ApiResponseErrorType = { error: boolean, code?: number, message: string }
 export type ApiResponseType = ApiResponseSuccessType | ApiResponseErrorType
@@ -264,6 +266,10 @@ function postOsFolder(data: { full_path: string }) {
   return jsonApiResponse('/os/folder', data, 'POST');
 }
 
+function postConfigSet(data: Array<SettingType>) {
+  return jsonApiResponse('/config/set', data, 'POST');
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -304,4 +310,5 @@ export default {
   getSerieInfobyfolder,
   getOsDrives,
   postOsFolder,
+  postConfigSet,
 };

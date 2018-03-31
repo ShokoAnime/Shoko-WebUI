@@ -6,7 +6,7 @@ import cx from 'classnames';
 import { Alert, Button, ButtonToolbar, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
 import { getDatabase } from '../../core/actions/firstrun';
 import Events from '../../core/events';
-import FieldGroup from './FieldGroup';
+import FieldGroup from '../../components/FieldGroup';
 import s from './styles.css';
 import SqlCombo from './SqlCombo';
 

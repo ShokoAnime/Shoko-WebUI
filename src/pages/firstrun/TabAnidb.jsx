@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { Alert, Button, ButtonToolbar, Col, Form, FormGroup } from 'react-bootstrap';
 import { getAnidb } from '../../core/actions/firstrun';
 import Events from '../../core/events';
-import FieldGroup from './FieldGroup';
+import FieldGroup from '../../components/FieldGroup';
 
 type Props = {
   anidb: {

@@ -29,7 +29,7 @@ export default class FieldGroup extends React.Component<Props> {
     } = this.props;
 
     return (
-      <FormGroup controlId={id} className={cx({ hidden: isHidden })} /* validationState="error" */>
+      <FormGroup controlId={id} className={cx({ hidden: isHidden })}>
         <Col sm={2}>
           <ControlLabel>{label}</ControlLabel>
         </Col>
