@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
+import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import Events from '../../core/events';
 
@@ -48,6 +49,11 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
       fields: Object.assign({}, props.fields),
     };
   }
+
+  componentDidUpdate = (prevProps) => {
+    if (prevProps === this.props) return;
+    this.setState({ fields: Object.assign({}, this.props.fields) });
+  };
 
   handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
     const field = e.target;
@@ -143,18 +149,20 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
   }
 }
 
-function mapStateToProps(state: State): ComponentState {
-  const { settings } = state;
-  const { server } = settings;
+const selectComputedData = createSelector(
+  state => state.settings.server,
+  server => ({
+    AniDB_Password: server.AniDB_Password,
+    AniDB_Username: server.AniDB_Username,
+    AniDB_AVDumpKey: server.AniDB_AVDumpKey,
+    AniDB_ClientPort: server.AniDB_ClientPort,
+    AniDB_AVDumpClientPort: server.AniDB_AVDumpClientPort,
+  }),
+);
 
+function mapStateToProps(state: State): ComponentState {
   return {
-    fields: {
-      AniDB_Password: server.AniDB_Password,
-      AniDB_Username: server.AniDB_Username,
-      AniDB_AVDumpKey: server.AniDB_AVDumpKey,
-      AniDB_ClientPort: server.AniDB_ClientPort,
-      AniDB_AVDumpClientPort: server.AniDB_AVDumpClientPort,
-    },
+    fields: selectComputedData(state),
   };
 }
 

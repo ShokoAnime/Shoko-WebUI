@@ -37,8 +37,8 @@ declare module "react-bootstrap" {
     onClick?: Function,
     componentClass?: ElementType,
     href?: string,
-    type?: 'button' | 'reset' | 'submit',
-    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success' | 'info',
+    type?: 'button' | 'reset' | 'submit',
+    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success' | 'info' | 'settings-no' | 'settings-yes',
     bsSize?: BsStyle,
     bsClass?: string,
   }> {}

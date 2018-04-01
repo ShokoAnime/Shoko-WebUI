@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Form, Col } from 'react-bootstrap';
+import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import Events from '../../core/events';
@@ -21,13 +22,13 @@ type ComponentState = {
   fields: SettingsAnidbImagesType
 }
 
-class AnidbImageSettings extends React.Component<Props, ComponentState> {
+class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AniDB_DownloadCharacters: PropTypes.bool,
-      AniDB_DownloadCreators: PropTypes.bool,
-      AniDB_DownloadReviews: PropTypes.bool,
-      AniDB_DownloadReleaseGroups: PropTypes.bool,
+      AniDB_DownloadCharacters: PropTypes.oneOf(['True', 'False']),
+      AniDB_DownloadCreators: PropTypes.oneOf(['True', 'False']),
+      AniDB_DownloadReviews: PropTypes.oneOf(['True', 'False']),
+      AniDB_DownloadReleaseGroups: PropTypes.oneOf(['True', 'False']),
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -38,6 +39,11 @@ class AnidbImageSettings extends React.Component<Props, ComponentState> {
       fields: Object.assign({}, props.fields),
     };
   }
+
+  componentDidUpdate = (prevProps) => {
+    if (prevProps === this.props) return;
+    this.setState({ fields: Object.assign({}, this.props.fields) });
+  };
 
   handleChange = (field: string, value: SettingBoolean) => {
     this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
@@ -91,17 +97,19 @@ class AnidbImageSettings extends React.Component<Props, ComponentState> {
   }
 }
 
-function mapStateToProps(state: State): ComponentState {
-  const { settings } = state;
-  const { server } = settings;
+const selectComputedData = createSelector(
+  state => state.settings.server,
+  server => ({
+    AniDB_DownloadCharacters: server.AniDB_DownloadCharacters,
+    AniDB_DownloadCreators: server.AniDB_DownloadCreators,
+    AniDB_DownloadReviews: server.AniDB_DownloadReviews,
+    AniDB_DownloadReleaseGroups: server.AniDB_DownloadReleaseGroups,
+  }),
+);
 
+function mapStateToProps(state: State): ComponentState {
   return {
-    fields: {
-      AniDB_DownloadCharacters: server.AniDB_DownloadCharacters,
-      AniDB_DownloadCreators: server.AniDB_DownloadCreators,
-      AniDB_DownloadReviews: server.AniDB_DownloadReviews,
-      AniDB_DownloadReleaseGroups: server.AniDB_DownloadReleaseGroups,
-    },
+    fields: selectComputedData(state),
   };
 }
 

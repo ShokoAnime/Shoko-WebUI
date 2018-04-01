@@ -46,6 +46,7 @@
     "redux-logger": "^3.0.1",
     "redux-saga": "0.16",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "roboto-npm-webfont": "1.0.1",
     "sessionstorage": "0.0.2",
     "uglifyjs-webpack-plugin": "^1.2.4",
