@@ -60,6 +60,13 @@ declare module "react-bootstrap" {
     onChange?: Function,
   }> {}
 
+  declare export class ToggleButtonGroup extends React$Component<{
+    name?: string,
+    value?: any,
+    onChange?: Function,
+    type?: 'checkbox' | 'radio',
+  }> {}
+
   declare export class ToggleButton extends React$Component<{
     type?: string,
     name?: string,

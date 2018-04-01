@@ -3,6 +3,7 @@ import { handleAction } from 'redux-actions';
 import { SETTINGS_SERVER } from '../../actions/settings/Server';
 import type { Action } from '../../actions';
 
+export type SettingBoolean = 'True' | 'False';
 
 export type SettingsDatabaseType = {
   SQLite_DatabaseFile: string,
@@ -24,7 +25,14 @@ export type SettingsAnidbType = {
   AniDB_AVDumpClientPort: string,
 }
 
-export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType;
+export type SettingsAnidbImagesType = {
+  AniDB_DownloadCharacters: SettingBoolean,
+  AniDB_DownloadCreators: SettingBoolean,
+  AniDB_DownloadReviews: SettingBoolean,
+  AniDB_DownloadReleaseGroups: SettingBoolean,
+}
+
+export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType;
 
 const defaultState = {
   AniDB_Username: '',
@@ -41,6 +49,10 @@ const defaultState = {
   SQLServer_DatabaseServer: '',
   SQLServer_Username: '',
   SQLServer_Password: '',
+  AniDB_DownloadCharacters: 'False',
+  AniDB_DownloadCreators: 'False',
+  AniDB_DownloadReviews: 'False',
+  AniDB_DownloadReleaseGroups: 'False',
 };
 
 const server = handleAction(
