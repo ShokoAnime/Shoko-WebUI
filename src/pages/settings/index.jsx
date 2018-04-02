@@ -14,6 +14,9 @@ import LogOptions from './LogOptions';
 import OtherSettings from './OtherSettings';
 import ExportSettings from './ExportSettings';
 import AnidbLoginSettings from './AnidbLoginSettings';
+import AnidbImageSettings from './AnidbImageSettings';
+import AnidbMylistSettings from './AnidbMylistSettings';
+import AnidbUpdateSettings from './AnidbUpdateSettings';
 import { uiVersion } from '../../core/util';
 
 type Props = {
@@ -55,8 +58,13 @@ class SettingsPage extends React.Component<Props> {
               <LogOptions className="col-sm-4" />
               <OtherSettings className="col-sm-4" />
             </div>
-            <div className="row">
+            <div className="row flex">
               <AnidbLoginSettings />
+              <AnidbImageSettings />
+              <AnidbMylistSettings />
+            </div>
+            <div className="row">
+              <AnidbUpdateSettings />
             </div>
             <div className="row">
               <ExportSettings />

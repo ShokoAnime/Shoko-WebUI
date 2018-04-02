@@ -10,36 +10,28 @@ import Events from '../../../src/core/events';
 configure({ adapter: new Adapter() });
 const mockStore = configureStore();
 
-test('has .enabled class name', (t) => {
+test('autoUpdate true', (t) => {
   const store = mockStore({ autoUpdate: true });
   const wrapper = shallow(<Component store={store} />);
-  t.true(wrapper.render().hasClass('enabled'));
-});
+  t.true(wrapper.render().hasClass('enabled'), 'has .enabled class name');
 
-test('has no .enabled class name', (t) => {
-  const store = mockStore({ autoUpdate: false });
-  const wrapper = shallow(<Component store={store} />);
-  t.false(wrapper.render().hasClass('enabled'));
-});
-
-test('click fires START_API_POLLING if autoUpdate is off', (t) => {
-  const store = mockStore({ autoUpdate: false });
-  const wrapper = shallow(<Component store={store} />);
-  const el = wrapper.dive().find('.dropdown-toggle');
-  el.simulate('click');
-
-  const actions = store.getActions();
-  const expectedPayload = [{ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } }];
-  t.deepEqual(expectedPayload, actions);
-});
-
-test('click fires STOP_API_POLLING if autoUpdate is on', (t) => {
-  const store = mockStore({ autoUpdate: true });
-  const wrapper = shallow(<Component store={store} />);
   const el = wrapper.dive().find('.dropdown-toggle');
   el.simulate('click');
 
   const actions = store.getActions();
   const expectedPayload = [{ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }];
-  t.deepEqual(expectedPayload, actions);
+  t.deepEqual(expectedPayload, actions, 'click fires STOP_API_POLLING if autoUpdate is on');
+});
+
+test('autoUpdate false', (t) => {
+  const store = mockStore({ autoUpdate: false });
+  const wrapper = shallow(<Component store={store} />);
+  t.false(wrapper.render().hasClass('enabled'), 'has no .enabled class name');
+
+  const el = wrapper.dive().find('.dropdown-toggle');
+  el.simulate('click');
+
+  const actions = store.getActions();
+  const expectedPayload = [{ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } }];
+  t.deepEqual(expectedPayload, actions, 'click fires START_API_POLLING if autoUpdate is off');
 });

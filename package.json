@@ -46,6 +46,7 @@
     "redux-logger": "^3.0.1",
     "redux-saga": "0.16",
     "redux-thunk": "^2.2.0",
+    "reselect": "^3.0.1",
     "roboto-npm-webfont": "1.0.1",
     "sessionstorage": "0.0.2",
     "uglifyjs-webpack-plugin": "^1.2.4",
@@ -57,6 +58,7 @@
     "babel-core": "^6.24.1",
     "babel-eslint": "^8.2.2",
     "babel-loader": "^7.1.4",
+    "babel-plugin-istanbul": "^4.1.5",
     "babel-plugin-transform-imports": "^1.5.0",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-polyfill": "^6.26.0",
@@ -69,6 +71,7 @@
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.4",
     "css-loader": "^0.28.11",
+    "css-modules-require-hook": "^4.2.3",
     "cssnano": "^3.10.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
@@ -177,9 +180,14 @@
     "powerAssert": false,
     "require": [
       "babel-register",
-      "babel-polyfill"
+      "babel-polyfill",
+      "css-modules-require-hook/preset"
     ],
     "babel": "inherit"
+  },
+  "nyc": {
+    "sourceMap": false,
+    "instrument": false
   },
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx src utils run.jsx webpack.config.js",
@@ -190,9 +198,9 @@
     "build:debug": "cross-env NODE_ENV=development node run build --debug",
     "build:version": "cross-env NODE_ENV=production node run version",
     "start": "cross-env NODE_ENV=development node run",
-    "test": "ava",
-    "test:coverage": "nyc --extension .jsx ava",
-    "test:debug": "ava --verbose test/sagas/settingsSaveServer.test.js",
+    "test": "cross-env NODE_ENV=test ava",
+    "test:coverage": "cross-env NODE_ENV=test nyc --extension .jsx ava",
+    "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbLoginSettings.test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   }
