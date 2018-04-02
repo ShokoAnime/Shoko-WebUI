@@ -251,7 +251,7 @@ function getVersion() {
 }
 
 function getWebuiUpdate(channel: string) {
-  return jsonApiResponse('/webui/update', channel);
+  return jsonApiResponse('/webui/update/', channel);
 }
 
 function getSerieInfobyfolder(data: string) {
