@@ -23,11 +23,11 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    AniDB_Username: string,
-    AniDB_Password: string,
-    AniDB_AVDumpKey: string,
-    AniDB_ClientPort: string,
-    AniDB_AVDumpClientPort: string,
+    AniDB_Username?: string,
+    AniDB_Password?: string,
+    AniDB_AVDumpKey?: string,
+    AniDB_ClientPort?: string,
+    AniDB_AVDumpClientPort?: string,
   }
 }
 
@@ -46,14 +46,9 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      fields: Object.assign({}, props.fields),
+      fields: {},
     };
   }
-
-  componentDidUpdate = (prevProps) => {
-    if (prevProps === this.props) return;
-    this.setState({ fields: Object.assign({}, this.props.fields) });
-  };
 
   handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
     const field = e.target;

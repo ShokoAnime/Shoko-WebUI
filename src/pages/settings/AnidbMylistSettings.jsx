@@ -56,7 +56,7 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      fields: Object.assign({}, props.fields),
+      fields: {},
     };
   }
 

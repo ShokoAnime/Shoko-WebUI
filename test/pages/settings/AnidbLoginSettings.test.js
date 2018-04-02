@@ -9,6 +9,7 @@ import Component from '../../../src/pages/settings/AnidbLoginSettings';
 import Events from '../../../src/core/events';
 
 configure({ adapter: new Adapter() });
+
 const mockStore = configureStore();
 const fields = ['AniDB_Username', 'AniDB_Password', 'AniDB_AVDumpKey', 'AniDB_ClientPort', 'AniDB_AVDumpClientPort'];
 const data = {};
@@ -17,6 +18,7 @@ forEach(fields, (f) => {
   data[f] = `Test${f}`;
   changedData[f] = `Text${f}Change`;
 });
+
 const store = mockStore({
   settings: {
     server: data,

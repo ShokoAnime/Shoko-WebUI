@@ -36,14 +36,9 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      fields: Object.assign({}, props.fields),
+      fields: {},
     };
   }
-
-  componentDidUpdate = (prevProps) => {
-    if (prevProps === this.props) return;
-    this.setState({ fields: Object.assign({}, this.props.fields) });
-  };
 
   handleChange = (field: string, value: SettingBoolean) => {
     this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
