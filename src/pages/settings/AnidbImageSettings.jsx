@@ -59,8 +59,8 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
     return (
       <Col lg={4}>
         <FixedPanel
-          title="AniDB Download"
-          description="AniDB download settings"
+          title="AniDB Images"
+          description="AniDB image download settings"
           actionName="Save"
           onAction={this.saveSettings}
           form

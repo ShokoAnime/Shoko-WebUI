@@ -487,3 +487,26 @@ a.logo span {
 .btn-settings-yes:hover, .btn-settings-yes:focus, .btn-settings-yes:active {
     color: #b0b5b9;
 }
+
+.flex {
+    display: flex;
+}
+
+.row.flex > div[class^="col-"] {
+    display: flex;
+}
+
+.row.flex .panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.icon-settings-info {
+    color: #217ebd;
+    margin-left: 10px;
+}
+
+.tooltip.settings {
+    white-space: pre-wrap;
+}
