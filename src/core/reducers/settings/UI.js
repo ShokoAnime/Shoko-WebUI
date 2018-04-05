@@ -2,18 +2,26 @@
 import { combineReducers } from 'redux';
 import { handleAction } from 'redux-actions';
 import { SET_THEME, SET_NOTIFICATIONS } from '../../actions/settings/UI';
+import type { Action } from '../../actions';
 
-const themeDefault = 'light';
-const theme = handleAction(
+type themeType = 'light' | 'dark' | 'custom';
+
+export const theme = handleAction(
   SET_THEME,
-  (state, action) => (action.error ? state : (action.payload || themeDefault))
-  , themeDefault,
+  (state: themeType, action: Action): themeType => {
+    if (!action.payload) { return state; }
+    return action.payload;
+  },
+  'light',
 );
 
-const notifications = handleAction(
+export const notifications = handleAction(
   SET_NOTIFICATIONS,
-  (state, action) => (action.error ? state : (!!action.payload || false))
-  , true,
+  (state: boolean, action: Action): boolean => {
+    if (!action.payload) { return state; }
+    return !!action.payload;
+  },
+  true,
 );
 
 export default combineReducers({

@@ -1,26 +1,39 @@
-import sagaHelper from 'redux-saga-testing';
-import avaTest from 'ava';
+import test from 'ava';
 import { put, call } from 'redux-saga/effects';
 import { delay } from 'redux-saga';
-import { GLOBAL_ALERT } from '../../src/core/actions';
+import { GLOBAL_ALERT, SHOW_GLOBAL_ALERT } from '../../src/core/actions';
 
 import saga from '../../src/core/sagas/AlertScheduler';
 
 const alertDisplayTime = 3000;
-const action = { payload: 'test payload' };
 
-const test = sagaHelper(saga(action), avaTest);
+const alertOne = 'Alert one';
+const alertTwo = 'Alert two';
+const alertThree = 'Alert three';
 
-const testResult = put({ type: GLOBAL_ALERT, payload: [action.payload] });
+test('alertScheduler', (t) => {
+  const generatorOne = saga({ payload: alertOne });
+  t.deepEqual(generatorOne.next().value, put({ type: GLOBAL_ALERT, payload: [alertOne] }));
+  const generatorTwo = saga({ payload: alertTwo });
+  t.deepEqual(
+    generatorTwo.next().value,
+    put({ type: GLOBAL_ALERT, payload: [alertOne, alertTwo] }),
+  );
 
-test('should return put GLOBAL_ALERT', (result, t) => {
-  t.deepEqual(result, testResult);
-});
+  const generatorThree = saga({ payload: alertThree });
+  const callEffect = call(delay, alertDisplayTime / 2);
+  t.deepEqual(generatorThree.next().value, callEffect, 'call delay with 1/2 timeout');
+  const putEffect = put({ type: SHOW_GLOBAL_ALERT, payload: alertThree });
+  t.deepEqual(generatorThree.next().value, putEffect, 're-queue alert');
+  t.true(generatorThree.next().done, 'Gen3 is done');
 
-test('should return delay', (result, t) => {
-  t.deepEqual(result, call(delay, alertDisplayTime));
-});
+  const callDelay = call(delay, alertDisplayTime);
+  t.deepEqual(generatorTwo.next().value, callDelay, 'call delay');
+  t.deepEqual(generatorOne.next().value, callDelay, 'call delay');
 
-test('should return empty GLOBAL_ALERT', (result, t) => {
-  t.deepEqual(result, put({ type: GLOBAL_ALERT, payload: [] }));
+  t.deepEqual(generatorTwo.next().value, put({ type: GLOBAL_ALERT, payload: [alertOne] }), 'alertTwo removed');
+  t.true(generatorTwo.next().done, 'Gen2 is done');
+
+  t.deepEqual(generatorOne.next().value, put({ type: GLOBAL_ALERT, payload: [] }), 'alertOne removed');
+  t.true(generatorOne.next().done, 'Gen2 is done');
 });
