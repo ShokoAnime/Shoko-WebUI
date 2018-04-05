@@ -6,21 +6,20 @@ import type { Action } from '../../actions';
 
 type themeType = 'light' | 'dark' | 'custom';
 
-const themeDefault = 'light';
-const theme = handleAction(
+export const theme = handleAction(
   SET_THEME,
   (state: themeType, action: Action): themeType => {
-    if (!action) { return state; }
-    return action.payload || themeDefault;
+    if (!action.payload) { return state; }
+    return action.payload;
   },
-  themeDefault,
+  'light',
 );
 
-const notifications = handleAction(
+export const notifications = handleAction(
   SET_NOTIFICATIONS,
   (state: boolean, action: Action): boolean => {
-    if (!action) { return state; }
-    return !!action.payload || false;
+    if (!action.payload) { return state; }
+    return !!action.payload;
   },
   true,
 );
