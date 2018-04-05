@@ -12,14 +12,18 @@ import Events from '../../core/events';
 import type { State } from '../../core/store';
 import type { SettingsAnidbImagesType, SettingBoolean } from '../../core/reducers/settings/Server';
 
-
 type Props = {
   fields: SettingsAnidbImagesType,
   saveSettings: ({}) => void,
 }
 
 type ComponentState = {
-  fields: SettingsAnidbImagesType
+  fields: {
+    AniDB_DownloadCharacters?: SettingBoolean,
+    AniDB_DownloadCreators?: SettingBoolean,
+    AniDB_DownloadReviews?: SettingBoolean,
+    AniDB_DownloadReleaseGroups?: SettingBoolean,
+  }
 }
 
 class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {

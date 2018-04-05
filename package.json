@@ -200,7 +200,7 @@
     "start": "cross-env NODE_ENV=development node run",
     "test": "cross-env NODE_ENV=test ava",
     "test:coverage": "cross-env NODE_ENV=test nyc --extension .jsx ava",
-    "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbLoginSettings.test.js",
+    "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbImageSettings.test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   }
