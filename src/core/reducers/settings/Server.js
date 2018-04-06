@@ -110,6 +110,11 @@ const defaultState = {
   TvDB_AutoPosters: 'True',
   TvDB_AutoWideBanners: 'True',
   TvDB_AutoLink: 'True',
+  TvDB_AutoFanartAmount: '10',
+  TvDB_AutoPostersAmount: '10',
+  TvDB_AutoWideBannersAmount: '10',
+  TvDB_Language: 'en',
+  TvDB_UpdateFrequency: '1',
 };
 
 const server = handleAction(
