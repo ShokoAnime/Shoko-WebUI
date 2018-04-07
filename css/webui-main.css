@@ -492,7 +492,8 @@ a.logo span {
     display: flex;
 }
 
-.row.flex > div[class^="col-"] {
+.row.flex > div[class^="col-"],
+.form-group .flex > div[class^="col-"] {
     display: flex;
 }
 
@@ -509,4 +510,17 @@ a.logo span {
 
 .tooltip.settings {
     white-space: pre-wrap;
+}
+
+.text-large {
+    font-size: 30px;
+}
+
+.text-medium {
+    font-size: 20px;
+}
+
+.vcenter {
+    display: flex;
+    align-items:center;
 }

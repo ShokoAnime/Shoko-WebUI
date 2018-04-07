@@ -525,5 +525,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
+    takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
   ]);
 }

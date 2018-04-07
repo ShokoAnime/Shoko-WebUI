@@ -5,10 +5,13 @@ import { forEach } from 'lodash';
 import type { Saga } from 'redux-saga';
 import { QUEUE_GLOBAL_ALERT } from '../actions';
 import Api from '../api';
+import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
+import { settingsTrakt } from '../actions/settings/Trakt';
 
 import type { Action } from '../actions';
 import type { State } from '../store';
+
 
 export const settingsSelector = (state: State) => state.settings;
 
@@ -91,8 +94,20 @@ function* settingsSaveServer(action: Action): Saga<void> {
   }
 }
 
+function* settingsGetTraktCode(): Saga<void> {
+  yield put({ type: Events.START_FETCHING, payload: 'trakt_code' });
+  const resultJson = yield call(Api.getTraktCode);
+  yield put({ type: Events.STOP_FETCHING, payload: 'trakt_code' });
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+  } else {
+    yield put(settingsTrakt(resultJson.data));
+  }
+}
+
 export default {
   saveWebui: settingsSaveWebui,
   getServer: settingsGetServer,
   saveServer: settingsSaveServer,
+  getTraktCode: settingsGetTraktCode,
 };

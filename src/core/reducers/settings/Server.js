@@ -71,9 +71,15 @@ export type SettingsTvdbPrefsType = {
   TvDB_UpdateFrequency: SettingsUpdateFrequencyType,
 }
 
+export type SettingsTraktType = {
+  Trakt_IsEnabled: SettingsBoolean,
+  Trakt_TokenExpirationDate: string,
+  Trakt_UpdateFrequency: SettingsUpdateFrequencyType,
+}
+
 export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType
   & SettingsAnidbMylistType & SettingsAnidbUpdateType & SettingsTvdbDownloadType
-  & SettingsTvdbPrefsType;
+  & SettingsTvdbPrefsType & SettingsTraktType;
 
 const defaultState = {
   AniDB_Username: '',
@@ -115,6 +121,10 @@ const defaultState = {
   TvDB_AutoWideBannersAmount: '10',
   TvDB_Language: 'en',
   TvDB_UpdateFrequency: '1',
+  Trakt_IsEnabled: 'False',
+  Trakt_TokenExpirationDate: '',
+  Trakt_SyncFrequency: '1',
+  Trakt_UpdateFrequency: '1',
 };
 
 const server = handleAction(

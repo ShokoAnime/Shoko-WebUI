@@ -19,6 +19,7 @@ import AnidbMylistSettings from './AnidbMylistSettings';
 import AnidbUpdateSettings from './AnidbUpdateSettings';
 import TvdbDownloadSettings from './TvdbDownloadSettings';
 import TvdbPrefsSettings from './TvdbPrefsSettings';
+import TraktSettings from './TraktSettings';
 import { uiVersion } from '../../core/util';
 
 type Props = {
@@ -69,6 +70,9 @@ class SettingsPage extends React.Component<Props> {
               <AnidbUpdateSettings />
               <TvdbDownloadSettings />
               <TvdbPrefsSettings />
+            </div>
+            <div className="row">
+              <TraktSettings />
             </div>
             <div className="row">
               <ExportSettings />

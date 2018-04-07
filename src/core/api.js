@@ -270,6 +270,10 @@ function postConfigSet(data: Array<SettingType>) {
   return jsonApiResponse('/config/set', data, 'POST');
 }
 
+function getTraktCode() {
+  return jsonApiResponse('/trakt/code', '');
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -311,4 +315,5 @@ export default {
   getOsDrives,
   postOsFolder,
   postConfigSet,
+  getTraktCode,
 };
