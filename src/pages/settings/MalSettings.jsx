@@ -11,7 +11,7 @@ import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
-import type { SettingsUpdateFrequencyType, SettingsMalType, SettingsBoolean } from '../../core/reducers/settings/Server';
+import type { SettingsUpdateFrequencyType, SettingsMalType, SettingBoolean } from '../../core/reducers/settings/Server';
 
 const updateFrequencyType = [
   ['1', 'Never'],
@@ -29,8 +29,8 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    MAL_AutoLink?: SettingsBoolean,
-    MAL_NeverDecreaseWatchedNums?: SettingsBoolean,
+    MAL_AutoLink?: SettingBoolean,
+    MAL_NeverDecreaseWatchedNums?: SettingBoolean,
     MAL_Password?: string,
     MAL_Username?: string,
     MAL_UpdateFrequency?: SettingsUpdateFrequencyType,

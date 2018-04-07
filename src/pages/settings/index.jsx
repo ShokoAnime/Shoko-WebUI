@@ -21,6 +21,7 @@ import TvdbDownloadSettings from './TvdbDownloadSettings';
 import TvdbPrefsSettings from './TvdbPrefsSettings';
 import TraktSettings from './TraktSettings';
 import MalSettings from './MalSettings';
+import MoviedbSettings from './MoviedbSettings';
 import { uiVersion } from '../../core/util';
 
 type Props = {
@@ -75,6 +76,7 @@ class SettingsPage extends React.Component<Props> {
             <div className="row">
               <TraktSettings />
               <MalSettings />
+              <MoviedbSettings />
             </div>
             <div className="row">
               <ExportSettings />
