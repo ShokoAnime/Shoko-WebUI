@@ -71,9 +71,30 @@ export type SettingsTvdbPrefsType = {
   TvDB_UpdateFrequency: SettingsUpdateFrequencyType,
 }
 
+export type SettingsTraktType = {
+  Trakt_IsEnabled: SettingBoolean,
+  Trakt_TokenExpirationDate: string,
+  Trakt_UpdateFrequency: SettingsUpdateFrequencyType,
+}
+
+export type SettingsMalType = {
+  MAL_AutoLink: SettingBoolean,
+  MAL_NeverDecreaseWatchedNums: SettingBoolean,
+  MAL_Password: string,
+  MAL_Username: string,
+  MAL_UpdateFrequency: SettingsUpdateFrequencyType,
+}
+
+export type SettingsMoviedbType = {
+  MovieDB_AutoFanart: SettingBoolean,
+  MovieDB_AutoFanartAmount: string,
+  MovieDB_AutoPosters: SettingBoolean,
+  MovieDB_AutoPostersAmount: string,
+}
+
 export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType
   & SettingsAnidbMylistType & SettingsAnidbUpdateType & SettingsTvdbDownloadType
-  & SettingsTvdbPrefsType;
+  & SettingsTvdbPrefsType & SettingsTraktType & SettingsMalType & SettingsMoviedbType;
 
 const defaultState = {
   AniDB_Username: '',
@@ -115,6 +136,18 @@ const defaultState = {
   TvDB_AutoWideBannersAmount: '10',
   TvDB_Language: 'en',
   TvDB_UpdateFrequency: '1',
+  Trakt_IsEnabled: 'False',
+  Trakt_TokenExpirationDate: '',
+  Trakt_UpdateFrequency: '1',
+  MAL_AutoLink: 'False',
+  MAL_NeverDecreaseWatchedNums: 'True',
+  MAL_Password: '',
+  MAL_UpdateFrequency: '4',
+  MAL_Username: '',
+  MovieDB_AutoFanart: 'True',
+  MovieDB_AutoFanartAmount: '10',
+  MovieDB_AutoPosters: 'True',
+  MovieDB_AutoPostersAmount: '10',
 };
 
 const server = handleAction(
