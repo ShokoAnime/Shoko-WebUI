@@ -77,9 +77,17 @@ export type SettingsTraktType = {
   Trakt_UpdateFrequency: SettingsUpdateFrequencyType,
 }
 
+export type SettingsMalType = {
+  MAL_AutoLink: SettingsBoolean,
+  MAL_NeverDecreaseWatchedNums: SettingsBoolean,
+  MAL_Password: string,
+  MAL_Username: string,
+  MAL_UpdateFrequency: SettingsUpdateFrequencyType,
+}
+
 export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType
   & SettingsAnidbMylistType & SettingsAnidbUpdateType & SettingsTvdbDownloadType
-  & SettingsTvdbPrefsType & SettingsTraktType;
+  & SettingsTvdbPrefsType & SettingsTraktType & SettingsMalType;
 
 const defaultState = {
   AniDB_Username: '',
@@ -123,8 +131,12 @@ const defaultState = {
   TvDB_UpdateFrequency: '1',
   Trakt_IsEnabled: 'False',
   Trakt_TokenExpirationDate: '',
-  Trakt_SyncFrequency: '1',
   Trakt_UpdateFrequency: '1',
+  MAL_AutoLink: 'False',
+  MAL_NeverDecreaseWatchedNums: 'True',
+  MAL_Password: '',
+  MAL_UpdateFrequency: '4',
+  MAL_Username: '',
 };
 
 const server = handleAction(

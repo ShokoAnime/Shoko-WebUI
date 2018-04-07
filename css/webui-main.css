@@ -519,8 +519,3 @@ a.logo span {
 .text-medium {
     font-size: 20px;
 }
-
-.vcenter {
-    display: flex;
-    align-items:center;
-}
