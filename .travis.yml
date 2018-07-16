@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '6'
+- '8'
 env:
 - NODE_ENV=production
 cache:
@@ -12,6 +12,9 @@ install:
 script:
 - npm run lint --silent
 - npm run build
+after_success:
+- npm run test:coverage
+- npm run coveralls
 deploy:
   provider: releases
   api_key:

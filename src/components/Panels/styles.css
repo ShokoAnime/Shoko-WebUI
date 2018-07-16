@@ -4,6 +4,15 @@
   overflow-y: auto;
 }
 
+.fixed-panel.form {
+  padding: 10px 15px 0 15px;
+  max-height: none;
+  overflow-y: unset;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .fixed-panel :global(.table) {
   margin-bottom: 0;
 }

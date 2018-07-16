@@ -1,9 +1,14 @@
+// @flow
 import { delay } from 'redux-saga';
-import { take, cancel, fork, call, put } from 'redux-saga/effects';
+import type { Saga } from 'redux-saga';
+import { take, cancel, fork, call, put, select, cancelled } from 'redux-saga/effects';
 import Api from '../api';
 import Events from '../events';
-import { QUEUE_GLOBAL_ALERT } from '../actions';
+import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE } from '../actions';
 import { getStatus } from '../actions/firstrun';
+import type { Action } from '../actions';
+import { getDelta } from '../actions/logs/Delta';
+
 
 function* pollServerStatus() {
   while (true) {
@@ -17,11 +22,38 @@ function* pollServerStatus() {
   }
 }
 
+function* pollAutoRefresh() {
+  try {
+    yield put({ type: SET_AUTOUPDATE, payload: true });
+    while (true) {
+      const location = yield select(state => state.router.location.pathname);
+
+      if (location === '/dashboard') {
+        yield put({ type: Events.DASHBOARD_QUEUE_STATUS, payload: null });
+        yield put({ type: Events.DASHBOARD_RECENT_FILES, payload: null });
+      } else if (location === '/logs') {
+        const payload = yield select(state => ({
+          delta: state.settings.other.logDelta,
+          position: state.logs.contents.position,
+        }));
+        yield put(getDelta(payload));
+      }
+
+      yield call(delay, 4000);
+    }
+  } finally {
+    if (yield cancelled()) {
+      yield put({ type: SET_AUTOUPDATE, payload: false });
+    }
+  }
+}
+
 const typeMap = {
   'server-status': pollServerStatus,
+  'auto-refresh': pollAutoRefresh,
 };
 
-export default function* apiPollingDriver(action) {
+export default function* apiPollingDriver(action: Action): Saga<void> {
   const { type } = action.payload;
 
   if (typeof typeMap[type] !== 'function') {

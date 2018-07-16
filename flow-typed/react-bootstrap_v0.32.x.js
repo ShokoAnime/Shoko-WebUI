@@ -37,8 +37,8 @@ declare module "react-bootstrap" {
     onClick?: Function,
     componentClass?: ElementType,
     href?: string,
-    type?: 'button' | 'reset' | 'submit',
-    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success',
+    type?: 'button' | 'reset' | 'submit',
+    bsStyle?: 'default' | 'primary' | 'link' | 'danger' | 'success' | 'info' | 'settings-no' | 'settings-yes',
     bsSize?: BsStyle,
     bsClass?: string,
   }> {}
@@ -58,6 +58,13 @@ declare module "react-bootstrap" {
     name?: string,
     value?: any,
     onChange?: Function,
+  }> {}
+
+  declare export class ToggleButtonGroup extends React$Component<{
+    name?: string,
+    value?: any,
+    onChange?: Function,
+    type?: 'checkbox' | 'radio',
   }> {}
 
   declare export class ToggleButton extends React$Component<{

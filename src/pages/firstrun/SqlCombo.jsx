@@ -1,3 +1,4 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
@@ -7,7 +8,21 @@ import { Col, ControlLabel, Button, FormGroup } from 'react-bootstrap';
 import 'react-bootstrap-autosuggest/src/Autosuggest.scss';
 import Events from '../../core/events';
 
-class SqlCombo extends React.Component {
+type Props = {
+  id: string,
+  label: string,
+  data: {},
+  field: string,
+  isHidden: boolean,
+  onChange: (string, string) => void,
+  getInstances: () => void,
+  database: {
+    instances: {}
+  },
+}
+
+
+class SqlCombo extends React.Component<Props> {
   static propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
@@ -33,8 +48,8 @@ class SqlCombo extends React.Component {
 
     return (
       <FormGroup controlId={id} className={cx({ hidden: isHidden })} /* validationState="error" */>
-        <Col componentClass={ControlLabel} sm={2}>
-          {label}
+        <Col sm={2}>
+          <ControlLabel>{label}</ControlLabel>
         </Col>
         <Col sm={5}>
           <Autosuggest

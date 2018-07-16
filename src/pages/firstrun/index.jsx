@@ -1,3 +1,4 @@
+// @flow
 import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -15,15 +16,25 @@ import AlertContainer from '../../components/AlertContainer';
 
 const UI_VERSION = uiVersion();
 
-class FirstRunPage extends React.Component {
+type Props = {
+  getDatabaseInfo: () => void,
+  status: {
+    server_started: boolean,
+  },
+}
+
+type State = {
+  activeTab: string,
+}
+
+class FirstRunPage extends React.Component<Props, State> {
   static propTypes = {
     getDatabaseInfo: PropTypes.func,
     status: PropTypes.object,
   };
 
-  constructor() {
-    super();
-    this.setActiveTab = this.setActiveTab.bind(this);
+  constructor(props: Props) {
+    super(props);
     this.state = {
       activeTab: 'tabDatabase',
     };
@@ -34,9 +45,9 @@ class FirstRunPage extends React.Component {
     this.props.getDatabaseInfo();
   }
 
-  setActiveTab(key) {
+  setActiveTab = (key) => {
     this.setState({ activeTab: key });
-  }
+  };
 
   render() {
     const { activeTab } = this.state;

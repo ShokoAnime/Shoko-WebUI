@@ -25,6 +25,11 @@
   "env": {
     "development": {
       "sourceMaps": "inline"
+    },
+    "test": {
+      "plugins": [
+        "istanbul"
+      ]
     }
   }
 }

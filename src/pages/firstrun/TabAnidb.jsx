@@ -1,12 +1,27 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Alert, Button, ButtonToolbar, Col, Form, FormGroup } from 'react-bootstrap';
 import { getAnidb } from '../../core/actions/firstrun';
 import Events from '../../core/events';
-import FieldGroup from './FieldGroup';
+import FieldGroup from '../../components/FieldGroup';
 
-class TabAnidb extends React.Component {
+type Props = {
+  anidb: {
+    status: {
+      text: string,
+      type: string,
+    }
+  },
+  changeSetting: () => void,
+  saveAnidb: () => void,
+  testAnidb: () => void,
+  getAnidb: () => void,
+  isFetching: boolean,
+}
+
+class TabAnidb extends React.Component<Props> {
   static propTypes = {
     anidb: PropTypes.object,
     changeSetting: PropTypes.func,
@@ -27,8 +42,8 @@ class TabAnidb extends React.Component {
 
     return (
       <Form horizontal>
-        {isFetching && <Alert bsStyle="warning"><i className="fa fa-refresh fa-spin" />Loading...</Alert>}
-        {!isFetching && anidb.status.text && <Alert bsStyle={anidb.status.type === 'error' ? 'danger' : 'success'}>{anidb.status.text}</Alert>}
+        {isFetching && <Alert onDismiss={() => {}} bsStyle="warning"><i className="fa fa-refresh fa-spin" />Loading...</Alert>}
+        {!isFetching && anidb.status.text && <Alert onDismiss={() => {}} bsStyle={anidb.status.type === 'error' ? 'danger' : 'success'}>{anidb.status.text}</Alert>}
         <FieldGroup id="formAnidbUsername" label="Username:" data={anidb} field="login" onChange={changeSetting} isHidden={false} />
         <FieldGroup id="formAnidbPassword" label="Password:" data={anidb} field="password" onChange={changeSetting} isHidden={false} />
         <FormGroup>

@@ -20,6 +20,7 @@ const config = {
     './css/main.scss',
     './src/main.jsx',
   ],
+  mode: isDebug ? 'development' : 'production',
   output: {
     path: path.resolve(__dirname, './public/dist'),
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
@@ -27,7 +28,9 @@ const config = {
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     sourcePrefix: '  ',
   },
-  devServer: {},
+  devServer: {
+    hot: true,
+  },
   devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
@@ -81,6 +84,7 @@ const config = {
         test: /\.css$/,
         exclude: ['/node_modules/', '/css/'],
         use: ExtractTextPlugin.extract({
+          disable: isDebug,
           fallback: 'style-loader',
           use: [{
             loader: 'css-loader',
@@ -100,6 +104,7 @@ const config = {
         test: /\.scss$/,
         exclude: '/node_modules/',
         use: ExtractTextPlugin.extract({
+          disable: isDebug,
           fallback: 'style-loader',
           use: [{
             loader: 'css-loader',
@@ -141,7 +146,8 @@ if (!isDebug) {
 }
 
 if (isDebug && useHMR) {
-  config.entry.unshift('react-hot-loader/patch', 'webpack-hot-middleware/client');
+  config.entry.unshift('webpack-hot-middleware/client');
+  config.plugins.push(new webpack.NamedModulesPlugin());
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
 }

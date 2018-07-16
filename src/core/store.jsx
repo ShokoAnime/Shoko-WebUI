@@ -12,11 +12,7 @@ import rootSaga from './sagas';
 import history from './history';
 
 import type { Reducers } from './reducers';
-
-type Action = {
-  type: string,
-  payload: any
-}
+import type { Action } from './actions';
 
 type $ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
 export type State = $ObjMap<Reducers, $ExtractFunctionReturn>;

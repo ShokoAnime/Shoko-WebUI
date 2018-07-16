@@ -28,8 +28,12 @@ a, a:hover, a:focus {
     color: #fff;
 }
 
-#container, #app-container, .site-wrapper {
+#container, #app-container {
     width: 100%;
+    height: 100%;
+}
+
+.site-wrapper.login {
     height: 100%;
 }
 
@@ -429,4 +433,89 @@ a.logo span {
 
 .quick-actions .table tbody > tr > td {
     padding: 8px;
+}
+
+/*** setting page buttons ***/
+.btn-settings-no {
+    background-color: #bec3c7;
+    border-color: #bec3c7;
+    color: #fff;
+}
+.btn-settings-no, .btn-settings-no:focus {
+    background-color: #fff;
+    color: #000;
+}
+.btn-settings-no:hover {
+    background-color: #fff;
+    color: #b0b5b9;
+}
+.btn-shadow.btn-settings-no {
+    box-shadow: 0 4px #9c9c9c;
+}
+.btn-settings-no.active, .btn-settings-no.active:hover, .open .dropdown-toggle.btn-settings-no {
+    color: #fff;
+    background-color: #ff6c60;
+    border-color: #ff6c60;
+}
+.btn-settings-no:hover, .btn-settings-no:focus, .btn-settings-no:active,
+.btn-settings-no:disabled:hover, .btn-settings-no:disabled:focus, .btn-settings-no:disabled:active {
+    color: #b0b5b9;
+}
+
+.btn-settings-yes {
+    background-color: #bec3c7;
+    border-color: #bec3c7;
+    color: #fff;
+}
+.btn-settings-yes, .btn-settings-yes:focus {
+    background-color: #fff;
+    color: #000;
+}
+.btn-settings-yes:hover {
+    background-color: #fff;
+    color: #b0b5b9;
+}
+.btn-shadow.btn-settings-yes {
+    box-shadow: 0 4px #9c9c9c;
+}
+.btn-settings-yes.active, .btn-settings-yes.active:hover, .open .dropdown-toggle.btn-settings-yes {
+    color: #fff;
+    background-color: #6dbb4a;
+    border-color: #6dbb4a;
+}
+.btn-settings-yes:disabled:hover, .btn-settings-yes:disabled:focus, .btn-settings-yes:disabled:active,
+.btn-settings-yes:hover, .btn-settings-yes:focus, .btn-settings-yes:active {
+    color: #b0b5b9;
+}
+
+.flex {
+    display: flex;
+}
+
+.row.flex > div[class^="col-"],
+.form-group .flex > div[class^="col-"] {
+    display: flex;
+}
+
+.row.flex .panel {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.icon-settings-info {
+    color: #217ebd;
+    margin-left: 10px;
+}
+
+.tooltip.settings {
+    white-space: pre-wrap;
+}
+
+.text-large {
+    font-size: 30px;
+}
+
+.text-medium {
+    font-size: 20px;
 }

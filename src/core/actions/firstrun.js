@@ -1,3 +1,4 @@
+// @flow
 import { createAction } from 'redux-actions';
 
 export const FIRSTRUN_STATUS = 'FIRSTRUN_STATUS';

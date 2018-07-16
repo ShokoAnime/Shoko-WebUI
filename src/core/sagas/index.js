@@ -1,34 +1,48 @@
 // @flow
+import type { Saga } from 'redux-saga';
 import { delay } from 'redux-saga';
-import { put, takeEvery, call, select, all } from 'redux-saga/effects';
+import { all, call, put, select, takeEvery } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
 import { push } from 'react-router-redux';
 import { createAction } from 'redux-actions';
-import type { Saga } from 'redux-saga';
-import * as Ajv from 'ajv';
 import Api from '../api';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
-  QUEUE_GLOBAL_ALERT, SHOW_GLOBAL_ALERT, GLOBAL_ALERT,
-  SET_FETCHING, LOGOUT, UPDATE_AVAILABLE, JMM_VERSION, WEBUI_VERSION_UPDATE,
-  SELECT_IMPORT_FOLDER_SERIES, IMPORT_FOLDER_SERIES,
+  GLOBAL_ALERT,
+  IMPORT_FOLDER_SERIES,
+  JMM_VERSION,
+  LOGOUT,
+  QUEUE_GLOBAL_ALERT,
+  SELECT_IMPORT_FOLDER_SERIES,
+  SET_FETCHING,
+  SHOW_GLOBAL_ALERT,
+  UPDATE_AVAILABLE,
+  WEBUI_VERSION_UPDATE,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
-import { SET_CONTENTS, APPEND_CONTENTS } from '../actions/logs/Contents';
+import { APPEND_CONTENTS, SET_CONTENTS } from '../actions/logs/Contents';
 import { SETTINGS_API_GET } from '../actions/settings/Api';
-import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
+import { SET_NOTIFICATIONS, SET_THEME } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import { GET_LOG } from '../actions/settings/Log';
 import { SETTINGS_JSON } from '../actions/settings/Json';
-import { FIRSTRUN_ANIDB, FIRSTRUN_DATABASE, FIRSTRUN_USER, FIRSTRUN_STATUS } from '../actions/firstrun';
 import {
-  API_ADD_FOLDER, API_EDIT_FOLDER, SET_FORM_DATA,
+  FIRSTRUN_ANIDB,
+  FIRSTRUN_DATABASE,
+  FIRSTRUN_STATUS,
+  FIRSTRUN_USER,
+} from '../actions/firstrun';
+import {
+  API_ADD_FOLDER,
+  API_EDIT_FOLDER,
+  SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
 import queueGlobalAlert from './QueueGlobalAlert';
 import apiPollingDriver from './apiPollingDriver';
+import settings from './settings';
 
 const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
@@ -234,40 +248,6 @@ function* editFolder(action): Saga<void> {
   if (!resultJson.error) {
     yield put({ type: SET_FORM_DATA });
     yield put({ type: SET_STATUS, payload: false });
-  }
-}
-
-function* settingsSaveWebui(action): Saga<void> {
-  const settings = yield select(state => state.settings);
-  const currentSettings = {
-    uiTheme: settings.ui.theme,
-    uiNotifications: settings.ui.notifications,
-    otherUpdateChannel: settings.other.updateChannel,
-    logDelta: settings.other.logDelta,
-  };
-  const data = { ...currentSettings, ...action.payload };
-
-  const schema = {
-    required: ['uiTheme', 'uiNotifications', 'otherUpdateChannel', 'logDelta'],
-    uiTheme: { enum: ['light', 'dark', 'custom'] },
-    uiNotifications: { type: 'boolean' },
-    otherUpdateChannel: { enum: ['stable', 'unstable'] },
-    logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
-  };
-  // $FlowFixMe
-  const ajv = new Ajv();
-  const validator = ajv.compile(schema);
-  const result = validator(data);
-  if (result !== true) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: `Schema validation failed! ${result.toString()}` } });
-    return;
-  }
-
-  const resultJson = yield call(Api.postWebuiConfig.bind(this, data));
-  if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'WebUI settings saved!' } });
   }
 }
 
@@ -482,7 +462,8 @@ function* serverVersion(): Saga<void> {
 
 function* downloadUpdates(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'downloadUpdates');
-  const resultJson = yield call(Api.getWebuiUpdate);
+  const channel = yield select(state => state.settings.other.updateChannel);
+  const resultJson = yield call(Api.getWebuiUpdate, channel);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
   if (resultJson.error) {
     yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
@@ -523,7 +504,9 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.RUN_QUICK_ACTION, runQuickAction),
     takeEvery(Events.ADD_FOLDER, addFolder),
     takeEvery(Events.EDIT_FOLDER, editFolder),
-    takeEvery(Events.SETTINGS_POST_WEBUI, settingsSaveWebui),
+    takeEvery(Events.SETTINGS_POST_WEBUI, settings.saveWebui),
+    takeEvery(Events.SETTINGS_GET_SERVER, settings.getServer),
+    takeEvery(Events.SETTINGS_SAVE_SERVER, settings.saveServer),
     takeEvery(Events.INIT_STATUS, apiInitStatus),
     takeEvery(Events.FIRSTRUN_GET_DATABASE, firstrunGetDatabase),
     takeEvery(Events.FIRSTRUN_INIT_DATABASE, firstrunInitDatabase),
@@ -542,5 +525,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
+    takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
   ]);
 }

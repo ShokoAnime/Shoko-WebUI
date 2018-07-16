@@ -1,9 +1,19 @@
+// @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import { Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
 
-export default class FieldGroup extends React.Component {
+type Props = {
+  id: string,
+  label: string,
+  data: {},
+  field: string,
+  isHidden: boolean,
+  onChange: (string, string) => void,
+}
+
+export default class FieldGroup extends React.Component<Props> {
   static propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
@@ -19,13 +29,12 @@ export default class FieldGroup extends React.Component {
     } = this.props;
 
     return (
-      <FormGroup controlId={id} className={cx({ hidden: isHidden })} /* validationState="error" */>
-        <Col componentClass={ControlLabel} sm={2}>
-          {label}
+      <FormGroup controlId={id} className={cx({ hidden: isHidden })}>
+        <Col sm={2}>
+          <ControlLabel>{label}</ControlLabel>
         </Col>
         <Col sm={6}>
           <FormControl placeholder="" value={data[field]} onChange={event => onChange(field, event.target.value)} />
-          {/* <HelpBlock>Help text with validation state.</HelpBlock> */}
         </Col>
       </FormGroup>
     );
