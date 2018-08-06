@@ -6,7 +6,7 @@ import {
 } from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import Api from '../api';
 import Events from '../events';

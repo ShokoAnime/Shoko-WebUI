@@ -92,9 +92,15 @@ export type SettingsMoviedbType = {
   MovieDB_AutoPostersAmount: string,
 }
 
+export type SettingsPlexType = {
+  Plex_Server: string,
+  Plex_Libraries: string,
+}
+
 export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType
   & SettingsAnidbMylistType & SettingsAnidbUpdateType & SettingsTvdbDownloadType
-  & SettingsTvdbPrefsType & SettingsTraktType & SettingsMalType & SettingsMoviedbType;
+  & SettingsTvdbPrefsType & SettingsTraktType & SettingsMalType & SettingsMoviedbType
+  & SettingsPlexType;
 
 const defaultState = {
   AniDB_Username: '',
@@ -148,6 +154,8 @@ const defaultState = {
   MovieDB_AutoFanartAmount: '10',
   MovieDB_AutoPosters: 'True',
   MovieDB_AutoPostersAmount: '10',
+  Plex_Server: '',
+  Plex_Libraries: '',
 };
 
 const server = handleAction(

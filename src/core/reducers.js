@@ -1,7 +1,6 @@
 // @flow
 import { combineReducers } from 'redux';
 import { handleAction, handleActions } from 'redux-actions';
-import { routerReducer } from 'react-router-redux';
 import {
   QUEUE_STATUS,
   SET_AUTOUPDATE,
@@ -92,7 +91,6 @@ const fetching = handleAction(SET_FETCHING, (state, action) => {
 }, {});
 
 const reducers = {
-  router: routerReducer,
   globalAlert,
   apiSession,
   autoUpdate,
