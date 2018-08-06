@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import { Alert, Button, ButtonToolbar, Col, ControlLabel, Form, FormControl, FormGroup } from 'react-bootstrap';
+import {
+  Alert, Button, ButtonToolbar, Col, ControlLabel, Form, FormControl, FormGroup,
+} from 'react-bootstrap';
 import { getDatabase } from '../../core/actions/firstrun';
 import Events from '../../core/events';
 import FieldGroup from '../../components/FieldGroup';

@@ -1,7 +1,9 @@
 // @flow
 import type { Saga } from 'redux-saga';
 import { delay } from 'redux-saga';
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import {
+  all, call, put, select, takeEvery,
+} from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
 import { push } from 'react-router-redux';
@@ -526,5 +528,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
+    takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
   ]);
 }

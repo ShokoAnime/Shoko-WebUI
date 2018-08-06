@@ -46,15 +46,20 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: string) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields: stateFields } = this.state;
+    const { fields } = this.props;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -69,25 +74,25 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
             <SettingsYesNoToggle
               name="MovieDB_AutoFanart"
               label="Fanart"
-              value={fields.MovieDB_AutoFanart}
+              value={formFields.MovieDB_AutoFanart}
               onChange={this.handleChange}
             />
             <SettingsInput
               name="MovieDB_AutoFanartAmount"
               label="Max Posters"
-              value={fields.MovieDB_AutoFanartAmount}
+              value={formFields.MovieDB_AutoFanartAmount}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="MovieDB_AutoPosters"
               label="Posters"
-              value={fields.MovieDB_AutoPosters}
+              value={formFields.MovieDB_AutoPosters}
               onChange={this.handleChange}
             />
             <SettingsInput
               name="MovieDB_AutoPostersAmount"
               label="Max Posters"
-              value={fields.MovieDB_AutoPostersAmount}
+              value={formFields.MovieDB_AutoPostersAmount}
               onChange={this.handleChange}
             />
           </Form>

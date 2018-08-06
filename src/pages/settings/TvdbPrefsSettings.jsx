@@ -83,15 +83,20 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: string) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -106,33 +111,33 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
             <SettingsInput
               name="TvDB_AutoFanartAmount"
               label="Max Fanart"
-              value={fields.TvDB_AutoFanartAmount}
+              value={formFields.TvDB_AutoFanartAmount}
               onChange={this.handleChange}
             />
             <SettingsInput
               name="TvDB_AutoPostersAmount"
               label="Max Posters"
-              value={fields.TvDB_AutoPostersAmount}
+              value={formFields.TvDB_AutoPostersAmount}
               onChange={this.handleChange}
             />
             <SettingsInput
               name="TvDB_AutoWideBannersAmount"
               label="Max Wide Banners"
-              value={fields.TvDB_AutoWideBannersAmount}
+              value={formFields.TvDB_AutoWideBannersAmount}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="TvDB_Language"
               label="Language"
               values={tvdbLanguages}
-              value={fields.TvDB_Language}
+              value={formFields.TvDB_Language}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="AniDB_Calendar_UpdateFrequency"
               label="Calendar"
               values={updateFrequencyType}
-              value={fields.AniDB_Calendar_UpdateFrequency}
+              value={formFields.AniDB_Calendar_UpdateFrequency}
               onChange={this.handleChange}
             />
           </Form>

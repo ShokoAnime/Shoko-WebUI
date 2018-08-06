@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Panel, Checkbox, Button, Form, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import {
+  Panel, Checkbox, Button, Form, FormGroup, ControlLabel, FormControl,
+} from 'react-bootstrap';
 import { setFilters, setKeyword } from '../../core/actions/logs/Filters';
 
 type LogFilters = {
@@ -37,12 +39,9 @@ class LogSettings extends React.Component<Props, State> {
     };
   }
 
-  cbError: ?HTMLInputElement;
-  cbInfo: ?HTMLInputElement;
-  cbTrace: ?HTMLInputElement;
-
   applySettings = () => {
     const { tags, updateKeyword, updateFilters } = this.props;
+    const { keyword } = this.state;
     const filterValues = {
       error: !!(this.cbError && this.cbError.checked),
       info: !!(this.cbInfo && this.cbInfo.checked === true),
@@ -50,7 +49,7 @@ class LogSettings extends React.Component<Props, State> {
     };
 
     const updatedFilters = Object.assign({}, tags, filterValues);
-    updateKeyword(this.state.keyword);
+    updateKeyword(keyword);
     updateFilters(updatedFilters);
   };
 
@@ -58,6 +57,12 @@ class LogSettings extends React.Component<Props, State> {
     const keyword = event.target.value;
     this.setState({ keyword });
   };
+
+  cbError: ?HTMLInputElement;
+
+  cbInfo: ?HTMLInputElement;
+
+  cbTrace: ?HTMLInputElement;
 
   render() {
     return (

@@ -38,7 +38,8 @@ class BrowseFolderModal extends React.Component<Props, State> {
   }
 
   handleClose = () => {
-    this.props.status(false);
+    const { status } = this.props;
+    status(false);
   };
 
   handleSelectionChange = (folder) => {
@@ -46,18 +47,19 @@ class BrowseFolderModal extends React.Component<Props, State> {
   };
 
   handleSelect = () => {
-    const { onSelect } = this.props;
-    this.props.status(false);
+    const { onSelect, status } = this.props;
+    status(false);
 
     if (typeof onSelect === 'function') {
-      onSelect(this.state.folder);
+      const { folder } = this.state;
+      onSelect(folder);
     }
   };
 
   render() {
     const { show } = this.props;
     return (
-      <Modal show={show} className={s.modal} backdrop={false} >
+      <Modal show={show} className={s.modal} backdrop={false}>
         <Panel header="Select import folder">
           <Grid fluid>
             <Row>

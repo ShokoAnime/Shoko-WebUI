@@ -52,7 +52,7 @@ class ImportFolderSeries extends React.Component<Props> {
 
   render() {
     const {
-      items, isFetching, importFolders, selectedFolder,
+      items, isFetching, importFolders, selectedFolder, className,
     } = this.props;
     const series = [];
     const folders = [];
@@ -80,7 +80,7 @@ class ImportFolderSeries extends React.Component<Props> {
     ];
 
     return (
-      <div className={this.props.className}>
+      <div className={className}>
         <FixedPanel
           title={importFoldersSelector}
           description="Use Import Folders section to manage"

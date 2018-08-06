@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { Col, ControlLabel, FormControl, FormGroup } from 'react-bootstrap';
+import {
+  Col, ControlLabel, FormControl, FormGroup,
+} from 'react-bootstrap';
 
 type Props = {
   id: string,

@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ButtonToolbar, Button, FormControl, Panel, FormGroup, Form, Col } from 'react-bootstrap';
+import {
+  ButtonToolbar, Button, FormControl, Panel, FormGroup, Form, Col,
+} from 'react-bootstrap';
 import Events from '../../core/events';
 import { settingsJson } from '../../core/actions/settings/Json';
 
@@ -23,7 +25,8 @@ class ExportSettings extends React.Component<Props> {
   };
 
   updateSettings = (event: SyntheticInputEvent<HTMLInputElement>) => {
-    this.props.updateSettings(event.target.value);
+    const { updateSettings } = this.props;
+    updateSettings(event.target.value);
   };
 
   importSettings = () => {

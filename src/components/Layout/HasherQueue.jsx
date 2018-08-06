@@ -18,7 +18,11 @@ class HasherQueue extends React.Component<Props> {
       <li className="notification">
         <a className="dropdown-toggle">
           <i className="fa fa-tasks" />
-          {count == null ? null : <span className="badge bg-error">{count}</span>}
+          {count && (
+            <span className="badge bg-error">
+              {count}
+            </span>
+          )}
         </a>
       </li>
     );

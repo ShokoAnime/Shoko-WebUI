@@ -15,8 +15,9 @@ const defaultState = {
 
 const trakt = handleAction(
   SETTINGS_TRAKT,
-  (state: SettingsTraktType, action: Action): SettingsTraktType =>
-    Object.assign({}, state, action.payload),
+  (state: SettingsTraktType, action: Action): SettingsTraktType => (
+    Object.assign({}, state, action.payload)
+  ),
   defaultState,
 );
 

@@ -202,6 +202,10 @@ function getPlexSync() {
   return jsonPlexResponse('/plex/sync/all', '');
 }
 
+function getPlexLoginurl() {
+  return jsonPlexResponse('/plex/loginurl', '');
+}
+
 function getInit(data: string) {
   return jsonApiResponse('/init/', data);
 }
@@ -298,6 +302,7 @@ export default {
   postWebuiConfig,
   getFolderImport,
   getPlexSync,
+  getPlexLoginurl,
   getInit,
   getInitDatabase,
   postInitDatabase,

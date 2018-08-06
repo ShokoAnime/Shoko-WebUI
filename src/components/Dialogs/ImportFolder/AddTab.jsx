@@ -47,7 +47,9 @@ class AddTab extends React.Component<Props> {
           <Button onClick={this.handleSubmit} bsStyle="primary">
             {isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : 'Add'}
           </Button>
-          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleClose}>
+            Cancel
+          </Button>
         </ButtonToolbar>
       </Panel>
     );

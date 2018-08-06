@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 // @flow
 import React from 'react';
 import { Route } from 'react-router';

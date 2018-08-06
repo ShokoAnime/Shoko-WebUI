@@ -3,7 +3,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import {
+  Form, Col, FormGroup, ControlLabel, FormControl,
+} from 'react-bootstrap';
 import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
@@ -57,15 +59,20 @@ class MalSettings extends React.PureComponent<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: string) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -84,7 +91,7 @@ class MalSettings extends React.PureComponent<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={fields.MAL_Username}
+                  value={formFields.MAL_Username}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -96,7 +103,7 @@ class MalSettings extends React.PureComponent<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="password"
-                  value={fields.MAL_Password}
+                  value={formFields.MAL_Password}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -104,20 +111,20 @@ class MalSettings extends React.PureComponent<Props, ComponentState> {
             <SettingsYesNoToggle
               name="MAL_AutoLink"
               label="Autolink MAL Series"
-              value={fields.MAL_AutoLink}
+              value={formFields.MAL_AutoLink}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="MAL_NeverDecreaseWatchedNums"
               label="Never decrease watched"
-              value={fields.MAL_NeverDecreaseWatchedNums}
+              value={formFields.MAL_NeverDecreaseWatchedNums}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="MAL_UpdateFrequency"
               label="Automatically Update Data"
               values={updateFrequencyType}
-              value={fields.MAL_UpdateFrequency}
+              value={formFields.MAL_UpdateFrequency}
               onChange={this.handleChange}
             />
           </Form>

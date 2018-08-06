@@ -22,4 +22,3 @@ export const saveState = (state: State) => {
     // Ignore write errors.
   }
 };
-

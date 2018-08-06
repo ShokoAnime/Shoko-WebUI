@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach, escapeRegExp } from 'lodash';
-import { Panel, Row, Col, Label } from 'react-bootstrap';
+import {
+  Panel, Row, Col, Label,
+} from 'react-bootstrap';
 
 type LogLine = {
   stamp: string,

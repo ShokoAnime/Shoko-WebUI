@@ -1,4 +1,4 @@
-/* eslint-disable no-console, global-require */
+/* eslint-disable import/no-dynamic-require,no-console,global-require */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
@@ -65,7 +65,9 @@ tasks.set('html', () => {
   const assets = JSON.parse(fs.readFileSync('./public/dist/assets.json', 'utf8'));
   const template = fs.readFileSync('./templates/index.ejs', 'utf8');
   const render = ejs.compile(template, { filename: './templates/index.ejs' });
-  const output = render({ debug: webpackConfig.debug, bundle: assets.main.js, css: assets.main.css, config });
+  const output = render({
+    debug: webpackConfig.debug, bundle: assets.main.js, css: assets.main.css, config,
+  });
   fs.writeFileSync('./public/index.html', output, 'utf8');
 });
 
@@ -96,16 +98,16 @@ tasks.set('release', () => {
   const zipFolder = require('zip-folder');
 
   return new Promise((resolve, reject) => {
-    zipFolder('./public', process.env.NODE_ENV === 'development' ?
-        './build/latest-unstable.zip' : './build/latest.zip',
-      (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          console.log('Release build created!');
-          resolve();
-        }
-      });
+    zipFolder('./public', process.env.NODE_ENV === 'development'
+      ? './build/latest-unstable.zip' : './build/latest.zip',
+    (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('Release build created!');
+        resolve();
+      }
+    });
   });
 });
 
@@ -130,7 +132,7 @@ tasks.set('build', () => {
 tasks.set('start', () => {
   let count = 0;
   global.HMR = !process.argv.includes('--no-hmr'); // Hot Module Replacement (HMR)
-  return run('clean').then(() => run('version')).then(() => new Promise(resolve => {
+  return run('clean').then(() => run('version')).then(() => new Promise((resolve) => {
     const bs = require('browser-sync').create();
     const webpackConfig = require(webpackConfigPath);
     const proxy = require('http-proxy-middleware');
@@ -149,7 +151,7 @@ tasks.set('start', () => {
         target: `http://${config.apiProxyIP}:8111`,
         ws: true,
         logLevel: 'error',
-        changeOrigin: true,   // for vhosted sites, changes host header to match to target's host
+        changeOrigin: true, // for vhosted sites, changes host header to match to target's host
       });
       middleware.push(proxyMiddleware);
     }
@@ -157,7 +159,7 @@ tasks.set('start', () => {
     middleware.push(require('webpack-hot-middleware')(compiler));
     middleware.push(require('connect-history-api-fallback')());
 
-    compiler.plugin('done', stats => {
+    compiler.plugin('done', (stats) => {
       // Generate index.html page
       const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
       const template = fs.readFileSync('./templates/index.ejs', 'utf8');
@@ -167,6 +169,7 @@ tasks.set('start', () => {
 
       // Launch Browsersync after the initial bundling is complete
       // For more information visit https://browsersync.io/docs/options
+      // eslint-disable-next-line no-plusplus
       if (++count === 1) {
         bs.init({
           port: process.env.PORT || 3000,

@@ -29,7 +29,8 @@ class ImportFolders extends React.Component<Props> {
   };
 
   handleAction = () => {
-    this.props.updateStatus(true);
+    const { updateStatus } = this.props;
+    updateStatus(true);
   };
 
   render() {

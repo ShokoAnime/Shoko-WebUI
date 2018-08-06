@@ -7,16 +7,18 @@ import s from '../Layout/Layout.css';
 
 type Props = {
   enabled: boolean,
-  toggleSidebar: (value: boolean) => void
+  toggleSidebarFunc: (value: boolean) => void
 };
 
 class SidebarToggle extends React.Component<Props> {
   static propTypes = {
     enabled: PropTypes.bool.isRequired,
+    toggleSidebarFunc: PropTypes.func.isRequired,
   };
 
   handleClick = () => {
-    this.props.toggleSidebar(!this.props.enabled);
+    const { toggleSidebarFunc, enabled } = this.props;
+    toggleSidebarFunc(!enabled);
   };
 
   render() {
@@ -37,7 +39,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    toggleSidebar: value => dispatch(toggleSidebar(value)),
+    toggleSidebarFunc: value => dispatch(toggleSidebar(value)),
   };
 }
 

@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, ButtonToolbar, Col, Form, FormGroup } from 'react-bootstrap';
+import {
+  Alert, Button, ButtonToolbar, Col, Form, FormGroup,
+} from 'react-bootstrap';
 import { getAnidb } from '../../core/actions/firstrun';
 import Events from '../../core/events';
 import FieldGroup from '../../components/FieldGroup';
@@ -17,7 +19,7 @@ type Props = {
   changeSetting: () => void,
   saveAnidb: () => void,
   testAnidb: () => void,
-  getAnidb: () => void,
+  getAnidbFunc: () => void,
   isFetching: boolean,
 }
 
@@ -27,12 +29,13 @@ class TabAnidb extends React.Component<Props> {
     changeSetting: PropTypes.func,
     saveAnidb: PropTypes.func,
     testAnidb: PropTypes.func,
-    getAnidb: PropTypes.func,
+    getAnidbFunc: PropTypes.func,
     isFetching: PropTypes.bool,
   };
 
   componentDidMount() {
-    this.props.getAnidb();
+    const { getAnidbFunc } = this.props;
+    getAnidbFunc();
   }
 
   render() {
@@ -73,7 +76,7 @@ function mapDispatchToProps(dispatch) {
     changeSetting: (field, value) => { dispatch(getAnidb({ [field]: value })); },
     saveAnidb: () => { dispatch({ type: Events.FIRSTRUN_SET_ANIDB }); },
     testAnidb: () => { dispatch({ type: Events.FIRSTRUN_TEST_ANIDB }); },
-    getAnidb: () => { dispatch({ type: Events.FIRSTRUN_GET_ANIDB }); },
+    getAnidbFunc: () => { dispatch({ type: Events.FIRSTRUN_GET_ANIDB }); },
   };
 }
 

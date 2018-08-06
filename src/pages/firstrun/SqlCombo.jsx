@@ -4,7 +4,9 @@ import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
 import Autosuggest from 'react-bootstrap-autosuggest';
-import { Col, ControlLabel, Button, FormGroup } from 'react-bootstrap';
+import {
+  Col, ControlLabel, Button, FormGroup,
+} from 'react-bootstrap';
 import 'react-bootstrap-autosuggest/src/Autosuggest.scss';
 import Events from '../../core/events';
 
@@ -47,7 +49,7 @@ class SqlCombo extends React.Component<Props> {
     }
 
     return (
-      <FormGroup controlId={id} className={cx({ hidden: isHidden })} /* validationState="error" */>
+      <FormGroup controlId={id} className={cx({ hidden: isHidden })}>
         <Col sm={2}>
           <ControlLabel>{label}</ControlLabel>
         </Col>
@@ -82,4 +84,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SqlCombo);
-

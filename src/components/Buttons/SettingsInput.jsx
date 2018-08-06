@@ -3,7 +3,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
-import { FormGroup, ControlLabel, Col, FormControl } from 'react-bootstrap';
+import {
+  FormGroup, ControlLabel, Col, FormControl,
+} from 'react-bootstrap';
 import SettingsTooltip from '../SettingsTooltip';
 
 type Props = {
@@ -24,8 +26,8 @@ export default class SettingsInput extends React.Component<Props> {
   };
 
   handleChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
-    const { name } = this.props;
-    this.props.onChange(name, event.target.value);
+    const { name, onChange } = this.props;
+    onChange(name, event.target.value);
   };
 
   render() {

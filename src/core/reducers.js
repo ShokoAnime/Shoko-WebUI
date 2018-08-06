@@ -63,13 +63,11 @@ const autoUpdate = handleAction(
 );
 const selectedImportFolderSeries = handleAction(
   SELECT_IMPORT_FOLDER_SERIES,
-  (state, action) => (action.error ? state : action.payload)
-  , {},
+  (state, action) => (action.error ? state : action.payload), {},
 );
 const globalAlert = handleAction(
   GLOBAL_ALERT,
-  (state, action) => (action.error ? state : action.payload)
-  , [],
+  (state, action) => (action.error ? state : action.payload), [],
 );
 const jmmVersion = handleAction(
   JMM_VERSION,

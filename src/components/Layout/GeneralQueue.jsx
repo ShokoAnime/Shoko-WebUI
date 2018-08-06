@@ -18,7 +18,11 @@ class GeneralQueue extends React.Component<Props> {
       <li className="notification">
         <a className="dropdown-toggle">
           <i className="fa fa-list-alt" />
-          {count == null ? null : <span className="badge bg-success">{count}</span>}
+          {count && (
+            <span className="badge bg-success">
+              {count}
+            </span>
+          )}
         </a>
       </li>
     );

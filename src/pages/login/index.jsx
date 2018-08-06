@@ -46,12 +46,10 @@ class LoginPage extends React.Component<Props, State> {
   componentDidMount() {
     document.title = `Shoko Server Web UI ${UI_VERSION}`;
     if (this.user) this.user.focus();
-    this.props.handleInit();
-    this.props.serverVersion();
+    const { handleInit, serverVersion } = this.props;
+    handleInit();
+    serverVersion();
   }
-
-  user: ?HTMLInputElement;
-  pass: ?HTMLInputElement;
 
   handleKeyPress = (e) => {
     if (e.key === 'Enter') {
@@ -100,6 +98,10 @@ class LoginPage extends React.Component<Props, State> {
         }
       });
   };
+
+  user: ?HTMLInputElement;
+
+  pass: ?HTMLInputElement;
 
   renderVersion() {
     const { version, isFetching } = this.props;

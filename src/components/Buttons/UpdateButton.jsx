@@ -20,6 +20,10 @@ type Props = {
 }
 
 class UpdateButton extends React.Component<Props> {
+  static reloadPage() {
+    history.push('/');
+  }
+
   static propTypes = {
     enabled: PropTypes.bool,
     isFetching: PropTypes.bool,
@@ -32,15 +36,11 @@ class UpdateButton extends React.Component<Props> {
     enabled: false,
   };
 
-  static reloadPage() {
-    history.push('/');
-  }
-
   render() {
     const {
-      enabled, isFetching, dismissAlert, downloadWebui,
+      enabled, isFetching, dismissAlert, downloadWebui, updateStatus,
     } = this.props;
-    const { status, error } = this.props.updateStatus;
+    const { status, error } = updateStatus;
 
     const successAlert = (
       <Alert bsStyle="success" onDismiss={UpdateButton.reloadPage}>

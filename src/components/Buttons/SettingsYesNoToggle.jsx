@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
-import { FormGroup, ControlLabel, Col, ToggleButtonGroup, ToggleButton } from 'react-bootstrap';
+import {
+  FormGroup, ControlLabel, Col, ToggleButtonGroup, ToggleButton,
+} from 'react-bootstrap';
 import SettingsTooltip from '../SettingsTooltip';
 
 import type { SettingBoolean } from '../../core/reducers/settings/Server';
@@ -25,8 +27,8 @@ export default class SettingsYesNoToggle extends React.Component<Props> {
   };
 
   handleChange = (value: number) => {
-    const { name } = this.props;
-    this.props.onChange(name, value === 1 ? 'True' : 'False');
+    const { name, onChange } = this.props;
+    onChange(name, value === 1 ? 'True' : 'False');
   };
 
   render() {
@@ -57,4 +59,3 @@ export default class SettingsYesNoToggle extends React.Component<Props> {
     );
   }
 }
-

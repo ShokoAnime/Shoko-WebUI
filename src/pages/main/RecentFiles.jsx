@@ -19,7 +19,7 @@ class RecentFiles extends React.Component<Props> {
   };
 
   render() {
-    const { items } = this.props;
+    const { items, className } = this.props;
     const files = [];
     let i = 0;
     forEach(items, (item) => {
@@ -27,7 +27,7 @@ class RecentFiles extends React.Component<Props> {
       files.push(<RecentFilesItem key={i} index={i} {...item} />);
     });
     return (
-      <div className={this.props.className}>
+      <div className={className}>
         <FixedPanel
           title="Recent Files"
           description="List of recently added files and their import status"

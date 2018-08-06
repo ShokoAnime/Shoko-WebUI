@@ -45,15 +45,20 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: SettingBoolean) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -68,25 +73,25 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
             <SettingsYesNoToggle
               name="AniDB_DownloadCharacters"
               label="Character Images"
-              value={fields.AniDB_DownloadCharacters}
+              value={formFields.AniDB_DownloadCharacters}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="AniDB_DownloadCreators"
               label="Creator Images"
-              value={fields.AniDB_DownloadCreators}
+              value={formFields.AniDB_DownloadCreators}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="AniDB_DownloadReviews"
               label="Reviews"
-              value={fields.AniDB_DownloadReviews}
+              value={formFields.AniDB_DownloadReviews}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="AniDB_DownloadReleaseGroups"
               label="Release Groups"
-              value={fields.AniDB_DownloadReleaseGroups}
+              value={formFields.AniDB_DownloadReleaseGroups}
               onChange={this.handleChange}
             />
           </Form>

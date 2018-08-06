@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup, Button, Dropdown, MenuItem } from 'react-bootstrap';
+import {
+  ButtonGroup, Button, Dropdown, MenuItem,
+} from 'react-bootstrap';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import { setTheme, setNotifications } from '../../core/actions/settings/UI';
 import Events from '../../core/events';
