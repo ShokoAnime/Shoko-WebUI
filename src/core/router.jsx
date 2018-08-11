@@ -1,4 +1,4 @@
-/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/prop-types */
 // @flow
 import React from 'react';
 import { Route, Switch } from 'react-router';

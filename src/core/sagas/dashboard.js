@@ -1,7 +1,7 @@
 // @flow
 import type { Saga } from 'redux-saga';
 import { put, call } from 'redux-saga/effects';
-import Api from '../api';
+import Api from '../api/common';
 import {
   QUEUE_GLOBAL_ALERT,
   QUEUE_STATUS,

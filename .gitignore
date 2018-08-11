@@ -15,3 +15,5 @@ run.config.js
 /flowgen.js
 /.nyc_output/
 /coverage/
+.eslintcache
+flow-typed/npm/
