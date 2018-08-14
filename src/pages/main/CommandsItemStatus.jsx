@@ -19,7 +19,9 @@ class CommandsItemStatus extends React.Component<Props> {
       <tr>
         <td />
         <td colSpan="2">
-          <div className={s['text-wrapper']}>{state}</div>
+          <div className={s['text-wrapper']}>
+            {state}
+          </div>
         </td>
       </tr>
     );

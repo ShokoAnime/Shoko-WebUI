@@ -52,7 +52,8 @@ class LogsPage extends React.Component<Props> {
             <Overview />
             <div className="row">
               <InfoPanel title="Interactive Log" className="col-sm-12">
-                <Panel>Log is displayed in the tab below, filtering by event type and keyword is
+                <Panel>
+                  Log is displayed in the tab below, filtering by event type and keyword is
                   possible. To filter the results, make the changes and press Apply button.
                   Initially only first 10 lines are displayed, if auto-update is enabled server is
                   continuously polled and more lines are loaded.

@@ -1,12 +1,14 @@
 // @flow
 import type { Saga } from 'redux-saga';
 import { delay } from 'redux-saga';
-import { all, call, put, select, takeEvery } from 'redux-saga/effects';
+import {
+  all, call, put, select, takeEvery,
+} from 'redux-saga/effects';
 import { without } from 'lodash/array';
 import { forEach } from 'lodash';
-import { push } from 'react-router-redux';
+import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
-import Api from '../api';
+import ApiCommon from '../api/common';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
@@ -112,7 +114,7 @@ function splitLogLines(json) {
 }
 
 function* getLogDelta(action): Saga<void> {
-  const resultJson = yield call(Api.getLogDelta, action.payload);
+  const resultJson = yield call(ApiCommon.getLogDelta, action.payload);
 
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -132,7 +134,7 @@ function* getLogDelta(action): Saga<void> {
 }
 
 function* getSettings(): Saga<void> {
-  const resultJson = yield call(Api.getWebuiConfig);
+  const resultJson = yield call(ApiCommon.getWebuiConfig);
 
   if (resultJson.error) {
     if (resultJson.code === 404) { return; }
@@ -148,7 +150,7 @@ function* getSettings(): Saga<void> {
 }
 
 function* settingsExport(): Saga<void> {
-  const resultJson = yield call(Api.configExport);
+  const resultJson = yield call(ApiCommon.configExport);
 
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -160,7 +162,7 @@ function* settingsExport(): Saga<void> {
 }
 
 function* settingsImport(action): Saga<void> {
-  const resultJson = yield call(Api.configImport.bind(this, action.payload));
+  const resultJson = yield call(ApiCommon.configImport.bind(this, action.payload));
 
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -170,7 +172,7 @@ function* settingsImport(action): Saga<void> {
 function* pageSettingsLoad(): Saga<void> {
   yield call(Dashboard.updateOverview);
 
-  const resultJson = yield call(Api.getLogRotate);
+  const resultJson = yield call(ApiCommon.getLogRotate);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
@@ -181,7 +183,7 @@ function* pageSettingsLoad(): Saga<void> {
 }
 
 function* settingsSaveLogRotate(action): Saga<void> {
-  const resultJson = yield call(Api.postLogRotate.bind(this, action.payload));
+  const resultJson = yield call(ApiCommon.postLogRotate.bind(this, action.payload));
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
@@ -193,19 +195,19 @@ function* runQuickAction(action): Saga<void> {
   let actionFunc;
   switch (action.payload) {
     case 'import':
-      actionFunc = Api.getFolderImport;
+      actionFunc = ApiCommon.getFolderImport;
       break;
     case 'remove_missing_files':
-      actionFunc = Api.getRemoveMissingFiles;
+      actionFunc = ApiCommon.getRemoveMissingFiles;
       break;
     case 'stats_update':
-      actionFunc = Api.getStatsUpdate;
+      actionFunc = ApiCommon.getStatsUpdate;
       break;
     case 'mediainfo_update':
-      actionFunc = Api.getMediainfoUpdate;
+      actionFunc = ApiCommon.getMediainfoUpdate;
       break;
     case 'plex_sync':
-      actionFunc = Api.getPlexSync;
+      actionFunc = ApiCommon.getPlexSync;
       break;
     default:
       yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
@@ -222,10 +224,10 @@ function* runQuickAction(action): Saga<void> {
 
 function* addFolder(action): Saga<void> {
   yield put({ type: API_ADD_FOLDER, payload: { isFetching: true } });
-  const resultJson = yield call(Api.postFolderAdd.bind(this, action.payload));
+  const resultJson = yield call(ApiCommon.postFolderAdd.bind(this, action.payload));
   yield put({ type: API_ADD_FOLDER, payload: { ...resultJson, isFetching: false } });
 
-  const resultList = yield call(Api.getFolderList);
+  const resultList = yield call(ApiCommon.getFolderList);
   if (resultList.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultList.message } });
   }
@@ -237,10 +239,10 @@ function* addFolder(action): Saga<void> {
 
 function* editFolder(action): Saga<void> {
   yield put({ type: API_EDIT_FOLDER, payload: { isFetching: true } });
-  const resultJson = yield call(Api.postFolderEdit.bind(this, action.payload));
+  const resultJson = yield call(ApiCommon.postFolderEdit.bind(this, action.payload));
   yield put({ type: API_EDIT_FOLDER, payload: { ...resultJson, isFetching: false } });
 
-  const resultList = yield call(Api.getFolderList);
+  const resultList = yield call(ApiCommon.getFolderList);
   if (resultList.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultList.message } });
   }
@@ -252,7 +254,7 @@ function* editFolder(action): Saga<void> {
 }
 
 function* apiInitStatus(): Saga<void> {
-  const resultJson = yield call(Api.getInit.bind(this, 'status'));
+  const resultJson = yield call(ApiCommon.getInit, 'status');
   if (resultJson.error) {
     yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
   } else {
@@ -262,7 +264,7 @@ function* apiInitStatus(): Saga<void> {
 
 function* firstrunGetDatabase(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
-  const resultJson = yield call(Api.getInitDatabase);
+  const resultJson = yield call(ApiCommon.getInitDatabase);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -275,7 +277,7 @@ function* firstrunGetDatabase(): Saga<void> {
 
 function* firstrunTestDatabase(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
-  const resultJson = yield call(Api.getInitDatabaseTest);
+  const resultJson = yield call(ApiCommon.getInitDatabaseTest);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -296,7 +298,7 @@ function* firstrunInitDatabase(): Saga<void> {
   // 1. Save database settings
   const database = yield select(state => state.firstrun.database);
   yield put({ type: Events.START_FETCHING, payload: 'firstrunInit' });
-  let resultJson = yield call(Api.postInitDatabase.bind(this, database));
+  let resultJson = yield call(ApiCommon.postInitDatabase.bind(this, database));
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunInit' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -314,7 +316,7 @@ function* firstrunInitDatabase(): Saga<void> {
   yield put({ type: Events.START_API_POLLING, payload: { type: 'server-status' } });
 
   // 4. Tell server to init database
-  resultJson = yield call(Api.getInitStartserver);
+  resultJson = yield call(ApiCommon.getInitStartserver);
   if (resultJson.error) {
     yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
     yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
@@ -334,7 +336,7 @@ function* stopFetching(action): Saga<void> {
 
 function* firstrunGetAnidb(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
-  const resultJson = yield call(Api.getInitAnidb);
+  const resultJson = yield call(ApiCommon.getInitAnidb);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -354,7 +356,7 @@ function* firstrunSetAnidb(): Saga<void> {
     };
   });
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
-  const resultJson = yield call(Api.postInitAnidb, data);
+  const resultJson = yield call(ApiCommon.postInitAnidb, data);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -367,7 +369,7 @@ function* firstrunSetAnidb(): Saga<void> {
 
 function* firstrunTestAnidb(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
-  const resultJson = yield call(Api.getInitAnidbTest);
+  const resultJson = yield call(ApiCommon.getInitAnidbTest);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -380,7 +382,7 @@ function* firstrunTestAnidb(): Saga<void> {
 
 function* firstrunGetDefaultuser(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunUser' });
-  const resultJson = yield call(Api.getInitDefaultuser);
+  const resultJson = yield call(ApiCommon.getInitDefaultuser);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -400,7 +402,7 @@ function* firstrunSetDefaultuser(): Saga<void> {
     };
   });
   yield put({ type: Events.START_FETCHING, payload: 'firstrunUser' });
-  const resultJson = yield call(Api.postInitDefaultuser, data);
+  const resultJson = yield call(ApiCommon.postInitDefaultuser, data);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -413,7 +415,7 @@ function* firstrunSetDefaultuser(): Saga<void> {
 
 function* firstrunGetDatabaseSqlserverinstance(): Saga<void> {
   yield put({ type: Events.START_FETCHING, payload: 'firstrunDatabase' });
-  const resultJson = yield call(Api.getInitDatabaseSqlserverinstance);
+  const resultJson = yield call(ApiCommon.getInitDatabaseSqlserverinstance);
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
@@ -431,7 +433,7 @@ function* logout(): Saga<void> {
 
 function* checkUpdates(): Saga<void> {
   const { updateChannel } = yield select(state => state.settings.other);
-  const resultJson = yield call(Api.webuiLatest, updateChannel);
+  const resultJson = yield call(ApiCommon.webuiLatest, updateChannel);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
@@ -442,7 +444,7 @@ function* checkUpdates(): Saga<void> {
 
 function* serverVersion(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'serverVersion');
-  const resultJson = yield call(Api.getVersion);
+  const resultJson = yield call(ApiCommon.getVersion);
   yield dispatchAction(Events.STOP_FETCHING, 'serverVersion');
   if (resultJson.error) {
     yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
@@ -463,7 +465,7 @@ function* serverVersion(): Saga<void> {
 function* downloadUpdates(): Saga<void> {
   yield dispatchAction(Events.START_FETCHING, 'downloadUpdates');
   const channel = yield select(state => state.settings.other.updateChannel);
-  const resultJson = yield call(Api.getWebuiUpdate, channel);
+  const resultJson = yield call(ApiCommon.getWebuiUpdate, channel);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
   if (resultJson.error) {
     yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
@@ -476,7 +478,7 @@ function* downloadUpdates(): Saga<void> {
 function* fetchImportFolderSeries(action): Saga<void> {
   yield dispatchAction(SELECT_IMPORT_FOLDER_SERIES, action.payload);
   yield dispatchAction(Events.START_FETCHING, 'importFolderSeries');
-  const resultJson = yield call(Api.getSerieInfobyfolder, `?id=${action.payload.id}`);
+  const resultJson = yield call(ApiCommon.getSerieInfobyfolder, `?id=${action.payload.id}`);
   yield dispatchAction(Events.STOP_FETCHING, 'importFolderSeries');
   if (resultJson.error) {
     yield dispatchAction(IMPORT_FOLDER_SERIES, {});
@@ -526,5 +528,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
+    takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
   ]);
 }

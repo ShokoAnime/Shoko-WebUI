@@ -12,7 +12,9 @@ export default class SettingsTooltip extends React.Component<Props> {
   render() {
     const { name, text } = this.props;
     const component = (
-      <Tooltip className="settings" id={`tip-${name}`}>{text}</Tooltip>
+      <Tooltip className="settings" id={`tip-${name}`}>
+        {text}
+      </Tooltip>
     );
 
     return (
@@ -22,4 +24,3 @@ export default class SettingsTooltip extends React.Component<Props> {
     );
   }
 }
-

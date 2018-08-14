@@ -34,14 +34,15 @@ class FolderItem extends React.Component<Props> {
   };
 
   onEdit = () => {
-    this.props.formData({
-      ImportFolderID: this.props.ImportFolderID,
-      ImportFolderType: this.props.ImportFolderType,
-      ImportFolderName: this.props.ImportFolderName,
-      ImportFolderLocation: this.props.ImportFolderLocation,
-      IsDropSource: this.props.IsDropSource,
-      IsDropDestination: this.props.IsDropDestination,
-      IsWatched: this.props.IsWatched,
+    const { formData, ...props } = this.props;
+    formData({
+      ImportFolderID: props.ImportFolderID,
+      ImportFolderType: props.ImportFolderType,
+      ImportFolderName: props.ImportFolderName,
+      ImportFolderLocation: props.ImportFolderLocation,
+      IsDropSource: props.IsDropSource,
+      IsDropDestination: props.IsDropDestination,
+      IsWatched: props.IsWatched,
     });
   };
 

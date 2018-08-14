@@ -45,15 +45,20 @@ class TvdbDownloadSettings extends React.PureComponent<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: SettingBoolean) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -68,25 +73,25 @@ class TvdbDownloadSettings extends React.PureComponent<Props, ComponentState> {
             <SettingsYesNoToggle
               name="TvDB_AutoFanart"
               label="Fanart"
-              value={fields.TvDB_AutoFanart}
+              value={formFields.TvDB_AutoFanart}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="TvDB_AutoPosters"
               label="Posters"
-              value={fields.TvDB_AutoPosters}
+              value={formFields.TvDB_AutoPosters}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="TvDB_AutoWideBanners"
               label="Wide Banners"
-              value={fields.TvDB_AutoWideBanners}
+              value={formFields.TvDB_AutoWideBanners}
               onChange={this.handleChange}
             />
             <SettingsYesNoToggle
               name="TvDB_AutoLink"
               label="Auto link"
-              value={fields.TvDB_AutoLink}
+              value={formFields.TvDB_AutoLink}
               onChange={this.handleChange}
             />
           </Form>

@@ -20,7 +20,7 @@ import AnidbUpdateSettings from './AnidbUpdateSettings';
 import TvdbDownloadSettings from './TvdbDownloadSettings';
 import TvdbPrefsSettings from './TvdbPrefsSettings';
 import TraktSettings from './TraktSettings';
-import MalSettings from './MalSettings';
+import PlexSettings from './PlexSettings';
 import MoviedbSettings from './MoviedbSettings';
 import { uiVersion } from '../../core/util';
 
@@ -75,7 +75,7 @@ class SettingsPage extends React.Component<Props> {
             </div>
             <div className="row">
               <TraktSettings />
-              <MalSettings />
+              <PlexSettings />
               <MoviedbSettings />
             </div>
             <div className="row">
@@ -106,4 +106,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SettingsPage);
-

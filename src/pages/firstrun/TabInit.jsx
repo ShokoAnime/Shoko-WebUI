@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import cx from 'classnames';
-import { Alert, Button, ButtonToolbar, Col, Form, FormGroup, Panel } from 'react-bootstrap';
+import {
+  Alert, Button, ButtonToolbar, Col, Form, FormGroup, Panel,
+} from 'react-bootstrap';
 import Events from '../../core/events';
 import s from './styles.css';
 import Link from '../../components/Link/Link';

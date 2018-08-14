@@ -6,6 +6,7 @@ import other from './settings/Other';
 import json from './settings/Json';
 import server from './settings/Server';
 import trakt from './settings/Trakt';
+import plex from './settings/Plex';
 
 export default combineReducers({
   logs,
@@ -14,4 +15,5 @@ export default combineReducers({
   json,
   server,
   trakt,
+  plex,
 });

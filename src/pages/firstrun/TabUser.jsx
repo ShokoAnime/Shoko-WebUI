@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Alert, Button, ButtonToolbar, Col, Form, FormGroup } from 'react-bootstrap';
+import {
+  Alert, Button, ButtonToolbar, Col, Form, FormGroup,
+} from 'react-bootstrap';
 import { getUser } from '../../core/actions/firstrun';
 import Events from '../../core/events';
 import FieldGroup from '../../components/FieldGroup';
@@ -16,7 +18,7 @@ type Props = {
   },
   changeSetting: () => void,
   saveUser: () => void,
-  getUser: () => void,
+  getUserFunc: () => void,
   isFetching: boolean,
 }
 
@@ -25,12 +27,13 @@ class TabUser extends React.Component<Props> {
     user: PropTypes.object,
     changeSetting: PropTypes.func,
     saveUser: PropTypes.func,
-    getUser: PropTypes.func,
+    getUserFunc: PropTypes.func,
     isFetching: PropTypes.bool,
   };
 
   componentDidMount() {
-    this.props.getUser();
+    const { getUserFunc } = this.props;
+    getUserFunc();
   }
 
   render() {
@@ -69,7 +72,7 @@ function mapDispatchToProps(dispatch) {
   return {
     changeSetting: (field, value) => { dispatch(getUser({ [field]: value })); },
     saveUser: () => { dispatch({ type: Events.FIRSTRUN_SET_USER }); },
-    getUser: () => { dispatch({ type: Events.FIRSTRUN_GET_USER }); },
+    getUserFunc: () => { dispatch({ type: Events.FIRSTRUN_GET_USER }); },
   };
 }
 

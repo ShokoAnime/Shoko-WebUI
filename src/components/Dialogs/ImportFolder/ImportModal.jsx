@@ -39,7 +39,8 @@ class ImportModal extends React.Component<Props, State> {
 
   onTabChange = (id: number) => {
     if (id === 1) {
-      this.props.formData({
+      const { formData } = this.props;
+      formData({
         ImportFolderID: null,
         ImportFolderType: '1',
         ImportFolderName: '',
@@ -61,7 +62,7 @@ class ImportModal extends React.Component<Props, State> {
         <Panel header="Manage import folders">
           <Tabs activeKey={activeTab} onSelect={this.onTabChange} id="import-modal-tabs">
             <Tab eventKey={1} title="Add new"><AddTab /></Tab>
-            <Tab eventKey={2} title="Edit / Delete" ><EditTab /></Tab>
+            <Tab eventKey={2} title="Edit / Delete"><EditTab /></Tab>
             <Tab eventKey={3} title="Providers" disabled />
           </Tabs>
         </Panel>

@@ -25,8 +25,7 @@ class StatusPanel extends React.Component<Props> {
   render() {
     const { isFetching, code, message } = this.props;
     if (code === 0) { return null; }
-    const panelMessage = isFetching ?
-      [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : message;
+    const panelMessage = isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : message;
     return (
       <Alert onDismiss={() => {}} bsStyle={code === 200 ? 'success' : 'danger'}>{panelMessage}</Alert>
     );

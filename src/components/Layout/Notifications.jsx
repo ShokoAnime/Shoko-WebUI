@@ -17,7 +17,11 @@ class Notifications extends React.Component<Props> {
       <li className="notification">
         <a className="dropdown-toggle">
           <i className="fa fa-bell-o" />
-          {count == null ? null : <span className="badge bg-warning">{count}</span>}
+          {count && (
+            <span className="badge bg-warning">
+              {count}
+            </span>
+          )}
         </a>
       </li>
     );

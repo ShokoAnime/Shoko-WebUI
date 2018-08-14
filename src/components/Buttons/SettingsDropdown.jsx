@@ -4,7 +4,9 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
 import { forEach } from 'lodash';
-import { FormGroup, ControlLabel, Col, MenuItem, Dropdown } from 'react-bootstrap';
+import {
+  FormGroup, ControlLabel, Col, MenuItem, Dropdown,
+} from 'react-bootstrap';
 import SettingsTooltip from '../SettingsTooltip';
 
 type Props = {
@@ -27,8 +29,8 @@ export default class SettingsDropdown extends React.Component<Props> {
   };
 
   handleChange = (value: string) => {
-    const { name } = this.props;
-    this.props.onChange(name, value);
+    const { name, onChange } = this.props;
+    onChange(name, value);
   };
 
   renderItems() {

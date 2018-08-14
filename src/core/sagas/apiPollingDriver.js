@@ -1,7 +1,9 @@
 // @flow
 import { delay } from 'redux-saga';
 import type { Saga } from 'redux-saga';
-import { take, cancel, fork, call, put, select, cancelled } from 'redux-saga/effects';
+import {
+  take, cancel, fork, call, put, select, cancelled,
+} from 'redux-saga/effects';
 import Api from '../api';
 import Events from '../events';
 import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE } from '../actions';

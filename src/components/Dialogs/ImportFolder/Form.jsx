@@ -39,19 +39,22 @@ class AddTab extends React.Component<Props> {
 
   onChange = (event) => {
     const item = event.target;
+    const { formData } = this.props;
     if (item.type === 'checkbox') {
-      this.props.formData({ [item.id]: item.checked ? 1 : 0 });
+      formData({ [item.id]: item.checked ? 1 : 0 });
     } else {
-      this.props.formData({ [item.id]: item.value });
+      formData({ [item.id]: item.value });
     }
   };
 
   onFolderSelect = (folder) => {
-    this.props.formData({ ImportFolderLocation: folder });
+    const { formData } = this.props;
+    formData({ ImportFolderLocation: folder });
   };
 
   handleBrowse = () => {
-    this.props.browseStatus(true);
+    const { browseStatus } = this.props;
+    browseStatus(true);
   };
 
   render() {

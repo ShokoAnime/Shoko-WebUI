@@ -53,15 +53,20 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
   }
 
   handleChange = (field: string, value: string) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -77,35 +82,35 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
               name="AniDB_Calendar_UpdateFrequency"
               label="Calendar"
               values={updateFrequencyType}
-              value={fields.AniDB_Calendar_UpdateFrequency}
+              value={formFields.AniDB_Calendar_UpdateFrequency}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="AniDB_Anime_UpdateFrequency"
               label="Anime and Episode Information"
               values={updateFrequencyType}
-              value={fields.AniDB_Anime_UpdateFrequency}
+              value={formFields.AniDB_Anime_UpdateFrequency}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="AniDB_MyList_UpdateFrequency"
               label="Sync Mylist"
               values={updateFrequencyType}
-              value={fields.AniDB_MyList_UpdateFrequency}
+              value={formFields.AniDB_MyList_UpdateFrequency}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="AniDB_MyListStats_UpdateFrequency"
               label="Get Mylist Stats"
               values={updateFrequencyType}
-              value={fields.AniDB_MyListStats_UpdateFrequency}
+              value={formFields.AniDB_MyListStats_UpdateFrequency}
               onChange={this.handleChange}
             />
             <SettingsDropdown
               name="AniDB_File_UpdateFrequency"
               label="Files With Missing Info"
               values={updateFrequencyType}
-              value={fields.AniDB_File_UpdateFrequency}
+              value={formFields.AniDB_File_UpdateFrequency}
               onChange={this.handleChange}
             />
           </Form>

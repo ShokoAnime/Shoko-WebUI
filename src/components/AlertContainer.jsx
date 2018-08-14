@@ -31,7 +31,9 @@ class AlertContainer extends React.Component<Props> {
     });
 
     return (
-      <div className={s.alertContainer}>{alerts}</div>
+      <div className={s.alertContainer}>
+        {alerts}
+      </div>
     );
   }
 }

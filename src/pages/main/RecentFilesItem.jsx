@@ -29,7 +29,9 @@ class RecentFilesItem extends React.Component<Props> {
 
     return (
       <tr key={id}>
-        <td>{index}</td>
+        <td>
+          {index}
+        </td>
         <td>
           <div className={s['text-wrapper']}>{filename}</div>
         </td>

@@ -3,7 +3,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, FormControl, FormGroup, ControlLabel, Col } from 'react-bootstrap';
+import {
+  Form, FormControl, FormGroup, ControlLabel, Col,
+} from 'react-bootstrap';
 import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import Events from '../../core/events';
@@ -52,15 +54,21 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
 
   handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
     const field = e.target;
-    const newState = Object.assign({}, this.state.fields, { [field.id]: field.value });
+    const { fields } = this.state;
+    const newState = Object.assign({}, fields, { [field.id]: field.value });
     this.setState({ fields: newState });
   };
+
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -79,7 +87,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={fields.AniDB_Username}
+                  value={formFields.AniDB_Username}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -92,7 +100,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="password"
-                  value={fields.AniDB_Password}
+                  value={formFields.AniDB_Password}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -105,7 +113,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={fields.AniDB_ClientPort}
+                  value={formFields.AniDB_ClientPort}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -118,7 +126,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={fields.AniDB_AVDumpKey}
+                  value={formFields.AniDB_AVDumpKey}
                   onChange={this.handleChange}
                 />
               </Col>
@@ -131,7 +139,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
               <Col sm={9}>
                 <FormControl
                   type="text"
-                  value={fields.AniDB_AVDumpClientPort}
+                  value={formFields.AniDB_AVDumpClientPort}
                   onChange={this.handleChange}
                 />
               </Col>

@@ -5,7 +5,7 @@ import { createStore, applyMiddleware } from 'redux';
 import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import throttle from 'lodash/throttle';
-import { routerMiddleware } from 'react-router-redux';
+import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { saveState, loadState } from './localStorage';
 import rootReducer from './reducers';
 import rootSaga from './sagas';
@@ -26,7 +26,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 function configureStore(): ReduxStore<State, Action> {
   return createStore(
-    rootReducer,
+    connectRouter(history)(rootReducer),
     loadState(),
     applyMiddleware(...middleware),
   );

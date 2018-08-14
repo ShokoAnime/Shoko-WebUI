@@ -34,8 +34,9 @@ class FixedPanel extends React.Component<Props> {
   };
 
   handleAction = () => {
-    if (typeof this.props.onAction === 'function') {
-      this.props.onAction();
+    const { onAction } = this.props;
+    if (typeof onAction === 'function') {
+      onAction();
     }
   };
 
@@ -65,11 +66,12 @@ class FixedPanel extends React.Component<Props> {
         <div className={cx(s['fixed-panel'], form && s.form)}>
           {children}
         </div>
-        {lastUpdated || isFetching ? <TimeUpdated
-          className={s.timer}
-          timestamp={lastUpdated}
-          isFetching={isFetching}
-        /> : null}
+        {lastUpdated || isFetching ? (
+          <TimeUpdated
+            className={s.timer}
+            timestamp={lastUpdated}
+            isFetching={isFetching}
+          />) : null}
       </section>
     );
   }

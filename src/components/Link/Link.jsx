@@ -15,8 +15,9 @@ class Link extends React.Component<Props> {
   };
 
   handleClick = (event: SyntheticMouseEvent<HTMLButtonElement>) => {
-    if (this.props.onClick) {
-      this.props.onClick(event);
+    const { onClick } = this.props;
+    if (onClick) {
+      onClick(event);
     }
 
     if (event.button !== 0 /* left click */) {
@@ -32,8 +33,8 @@ class Link extends React.Component<Props> {
     }
 
     event.preventDefault();
-
-    history.push(this.props.to);
+    const { to } = this.props;
+    history.push(to);
   };
 
   render() {

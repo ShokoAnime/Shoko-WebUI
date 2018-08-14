@@ -8,6 +8,7 @@ import Api from '../api';
 import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';
+import { settingsPlex } from '../actions/settings/Plex';
 
 import type { Action } from '../actions';
 import type { State } from '../store';
@@ -105,9 +106,21 @@ function* settingsGetTraktCode(): Saga<void> {
   }
 }
 
+function* settingsGetPlexLoginUrl(): Saga<void> {
+  yield put({ type: Events.START_FETCHING, payload: 'plex_login_url' });
+  const resultJson = yield call(Api.getPlexLoginurl);
+  yield put({ type: Events.STOP_FETCHING, payload: 'plex_login_url' });
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+  } else {
+    yield put(settingsPlex(resultJson.data));
+  }
+}
+
 export default {
   saveWebui: settingsSaveWebui,
   getServer: settingsGetServer,
   saveServer: settingsSaveServer,
   getTraktCode: settingsGetTraktCode,
+  getPlexLoginUrl: settingsGetPlexLoginUrl,
 };

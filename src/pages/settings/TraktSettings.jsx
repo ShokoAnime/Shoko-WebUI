@@ -5,7 +5,9 @@ import React from 'react';
 import cx from 'classnames';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { Form, Col, HelpBlock, FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
+import {
+  Form, Col, HelpBlock, FormGroup, ControlLabel, FormControl,
+} from 'react-bootstrap';
 import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
@@ -28,9 +30,22 @@ type Props = {
   fields: SettingsTraktType,
   getTraktCode: () => void,
   saveSettings: ({}) => void,
+  fetching: boolean,
+  trakt: {
+    usercode: string,
+    url: string,
+  }
 }
 
-class TraktSettings extends React.PureComponent<Props> {
+type ComponentState = {
+  fields: {
+    Trakt_IsEnabled?: 'True' | 'False',
+    Trakt_TokenExpirationDate?: string,
+    Trakt_UpdateFrequency?: string,
+  }
+}
+
+class TraktSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     trakt: PropTypes.shape({
       usercode: PropTypes.string,
@@ -54,15 +69,19 @@ class TraktSettings extends React.PureComponent<Props> {
   }
 
   handleChange = (field: string, value: string) => {
-    this.setState({ fields: Object.assign({}, this.state.fields, { [field]: value }) });
+    const { fields } = this.state;
+    this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    this.props.saveSettings(this.state.fields);
+    const { fields } = this.state;
+    const { saveSettings } = this.props;
+    saveSettings(fields);
   };
 
   renderTraktCode() {
-    const { usercode, url } = this.props.trakt;
+    const { trakt } = this.props;
+    const { usercode, url } = trakt;
     const { fetching, getTraktCode } = this.props;
     if (usercode === '') {
       return (
@@ -83,7 +102,7 @@ class TraktSettings extends React.PureComponent<Props> {
     return [
       <FormGroup className="flex">
         <Col sm={6} className="text-large vcenter">{usercode}</Col>
-        <Col sm={6} className="text-right text-medium vcenter"><a href={url} target="_blank">{url}</a></Col>
+        <Col sm={6} className="text-right text-medium vcenter"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></Col>
       </FormGroup>,
       <FormGroup>
         <Col sm={12}>
@@ -96,7 +115,9 @@ class TraktSettings extends React.PureComponent<Props> {
   }
 
   render() {
-    const fields = Object.assign({}, this.props.fields, this.state.fields);
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
+    const formFields = Object.assign({}, fields, stateFields);
 
     return (
       <Col lg={4}>
@@ -111,19 +132,21 @@ class TraktSettings extends React.PureComponent<Props> {
             <SettingsYesNoToggle
               name="Trakt_IsEnabled"
               label="Trakt Enabled"
-              value={fields.Trakt_IsEnabled}
+              value={formFields.Trakt_IsEnabled}
               onChange={this.handleChange}
             />
-            {fields.Trakt_TokenExpirationDate === '' ? this.renderTraktCode() :
-            <FormGroup>
-              <Col sm={6}><ControlLabel>Token valid until:</ControlLabel></Col>
-              <Col sm={6} className="text-right"> <FormControl.Static>{moment(fields.Trakt_TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</FormControl.Static></Col>
-            </FormGroup>}
+            {formFields.Trakt_TokenExpirationDate === '' ? this.renderTraktCode()
+              : (
+                <FormGroup>
+                  <Col sm={6}><ControlLabel>Token valid until:</ControlLabel></Col>
+                  <Col sm={6} className="text-right"> <FormControl.Static>{moment(formFields.Trakt_TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</FormControl.Static></Col>
+                </FormGroup>
+              )}
             <SettingsDropdown
               name="Trakt_UpdateFrequency"
               label="Automatically Update Data"
               values={updateFrequencyType}
-              value={fields.Trakt_UpdateFrequency}
+              value={formFields.Trakt_UpdateFrequency}
               onChange={this.handleChange}
             />
           </Form>

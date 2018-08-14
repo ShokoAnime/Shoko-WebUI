@@ -81,7 +81,8 @@ class TreeNode extends React.Component<Props, State> {
   };
 
   toggleSelected = (event: Event) => {
-    this.props.onSelect(this);
+    const { onSelect } = this.props;
+    onSelect(this);
     const { expanded, loaded } = this.state;
     if (expanded === false && loaded === false) {
       this.toggleExpanded(event);
@@ -114,10 +115,12 @@ class TreeNode extends React.Component<Props, State> {
         )}
         onClick={this.toggleSelected}
       >
-        {fetching ? <i className="fa fa-refresh fa-spin" /> : <i
-          className={cx(s.caret, 'fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
-          onClick={this.toggleExpanded}
-        />}
+        {fetching ? <i className="fa fa-refresh fa-spin" /> : (
+          <i
+            className={cx(s.caret, 'fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
+            onClick={this.toggleExpanded}
+          />
+        )}
         <span>{text}</span>
         <ul>{children}</ul>
       </li>
