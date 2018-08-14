@@ -1,10 +1,7 @@
 import test from 'ava';
 import { reducerTest } from 'redux-ava';
-import { createAction } from 'redux-actions';
-import { WEBUI_VERSION_UPDATE } from '../../src/core/actions';
+import { updateWebui as action } from '../../src/core/actions';
 import { webuiVersionUpdate as reducer } from '../../src/core/reducers';
-
-const action = createAction(WEBUI_VERSION_UPDATE);
 
 test('webuiVersionUpdate detects error', reducerTest(
   reducer,
