@@ -62,7 +62,7 @@ env:
     extractStyles: false
   production:
     styleLoaders:
-      - style-loader
       - css-loader
+      - postcss-loader
       - sass-loader
     extractStyles: true

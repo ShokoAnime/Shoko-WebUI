@@ -5,6 +5,7 @@ const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
@@ -14,9 +15,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
+    'bootstrap-loader',
     '!!font-awesome-sass-loader!./font-awesome.config.js',
     'roboto-npm-webfont',
-    'bootstrap-loader',
     './css/main.scss',
     './src/main.jsx',
   ],
@@ -31,7 +32,7 @@ const config = {
   devServer: {
     hot: true,
   },
-  devtool: isDebug ? 'source-map' : false,
+  devtool: isDebug ? 'eval-source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -65,6 +66,9 @@ const config = {
       ignoreOrder: true,
       disable: isDebug,
     }),
+    new MiniCssExtractPlugin({
+      filename: 'styles/[name].css',
+    }),
   ],
   module: {
     rules: [
@@ -90,7 +94,7 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: true,
-              importLoaders: 2,
+              importLoaders: 1,
               sourceMap: isDebug,
               localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
               minimize: !isDebug,
@@ -110,7 +114,7 @@ const config = {
             loader: 'css-loader',
             options: {
               modules: false,
-              importLoaders: 3,
+              importLoaders: 1,
               sourceMap: isDebug,
               localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
               minimize: !isDebug,
