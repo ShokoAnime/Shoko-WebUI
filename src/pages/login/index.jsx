@@ -118,13 +118,13 @@ class LoginPage extends React.Component<Props, State> {
             <Columns centered>
               <Columns.Column size="one-quarter">
                 <Card className={s['login-form']}>
-                  <h2>You know what to do</h2>
+                  <h2>You know what to do..</h2>
                   {firstRun !== true && this.renderVersion()}
                   <FormGroup>
-                    <InputGroup inputRef={(ref) => { this.user = ref; }} placeholder="Username" />
+                    <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.user = ref; }} placeholder="Username" />
                   </FormGroup>
                   <FormGroup>
-                    <InputGroup inputRef={(ref) => { this.pass = ref; }} placeholder="Password" />
+                    <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.pass = ref; }} placeholder="Password" />
                   </FormGroup>
                   <Button onClick={this.handleSignIn}>Login</Button>
                 </Card>
