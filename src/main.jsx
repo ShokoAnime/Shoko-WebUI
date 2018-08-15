@@ -13,6 +13,7 @@ import ErrorBoundary from './pages/error';
 
 const container = document && document.getElementById('app-container');
 const render = () => {
+  if (!container) { return; }
   ReactDOM.render(
     <AppContainer>
       <Provider store={store}>

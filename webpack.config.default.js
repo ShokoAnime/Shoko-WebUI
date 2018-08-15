@@ -15,7 +15,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    'bootstrap-loader',
+    //'bootstrap-loader',
+    'bulma/bulma.sass',
+    '@blueprintjs/core/src/blueprint.scss',
     '!!font-awesome-sass-loader!./font-awesome.config.js',
     'roboto-npm-webfont',
     './css/main.scss',
@@ -32,7 +34,7 @@ const config = {
   devServer: {
     hot: true,
   },
-  devtool: isDebug ? 'eval-source-map' : false,
+  devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
   },
@@ -101,6 +103,26 @@ const config = {
             },
           },
           { loader: 'postcss-loader' },
+          ],
+        }),
+      },
+      {
+        test: /\.sass$/,
+        exclude: '/node_modules/',
+        use: ExtractTextPlugin.extract({
+          disable: isDebug,
+          fallback: 'style-loader',
+          use: [{
+            loader: 'css-loader',
+            options: {
+              modules: false,
+              importLoaders: 1,
+              sourceMap: isDebug,
+              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
+              minimize: !isDebug,
+            },
+          },
+          { loader: 'sass-loader' },
           ],
         }),
       },

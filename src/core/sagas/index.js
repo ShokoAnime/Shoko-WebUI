@@ -12,6 +12,7 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
+  apiSession,
   GLOBAL_ALERT,
   IMPORT_FOLDER_SERIES,
   JMM_VERSION,
@@ -45,6 +46,8 @@ import {
 import queueGlobalAlert from './QueueGlobalAlert';
 import apiPollingDriver from './apiPollingDriver';
 import settings from './settings';
+import store from "../store";
+import history from "../history";
 
 const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
@@ -431,6 +434,24 @@ function* logout(): Saga<void> {
   yield put(push({ pathname: '/' }));
 }
 
+function* login(action): Saga<void> {
+  const { payload } = action;
+  yield put({ type: Events.START_FETCHING, payload: 'login' });
+  const resultJson = yield call(ApiCommon.postAuth, payload);
+  yield put({ type: Events.STOP_FETCHING, payload: 'login' });
+  if (resultJson.error) {
+    let errorMessage = resultJson.message;
+    if (resultJson.status === 417) {
+      errorMessage = 'Invalid Username or Password';
+    }
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: errorMessage } });
+    return;
+  }
+
+  yield put(apiSession({ apikey: resultJson.data.apikey, username: payload.user }));
+  yield put(push({ pathname: '/dashboard' }));
+}
+
 function* checkUpdates(): Saga<void> {
   const { updateChannel } = yield select(state => state.settings.other);
   const resultJson = yield call(ApiCommon.webuiLatest, updateChannel);
@@ -529,5 +550,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
+    takeEvery(Events.LOGIN, login),
   ]);
 }

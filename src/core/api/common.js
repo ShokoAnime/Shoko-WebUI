@@ -1,8 +1,9 @@
 // @flow
 import Api from './index';
 import type { SettingType } from '../sagas/settings';
+import type { ApiLoginType } from '../types/api';
 
-function* getLogDelta(data: {delta: number, position: number}) {
+function* getLogDelta(data: {delta: number, position: number}): {} {
   const query = data ? `${data.delta}/${data.position}` : '';
   const json = yield Api.call({ action: '/log/get/', query });
   if (json.error && json.code === 404) {
@@ -175,6 +176,10 @@ function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
 }
 
+function postAuth(params: ApiLoginType) {
+  return Api.call({ action: '/auth', method: 'POST', params });
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -218,4 +223,5 @@ export default {
   postOsFolder,
   postConfigSet,
   getTraktCode,
+  postAuth,
 };
