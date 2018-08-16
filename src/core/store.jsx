@@ -4,7 +4,7 @@ import { createLogger } from 'redux-logger';
 import { createStore, applyMiddleware } from 'redux';
 import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import throttle from 'lodash/throttle';
+import { throttle } from 'lodash';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { saveState, loadState } from './localStorage';
 import rootReducer from './reducers';

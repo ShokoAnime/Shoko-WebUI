@@ -17,7 +17,7 @@
         "preventFullImport": true
       },
       "lodash": {
-        "transform": "lodash/${member}",
+        "transform": "lodash-es/${member}",
         "preventFullImport": true
       }
     }]
