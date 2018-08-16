@@ -3,7 +3,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Panel } from 'react-bootstrap';
 import { connect } from 'react-redux';
-import history from '../../core/history';
 import Events from '../../core/events';
 import { getSettings } from '../../core/actions/settings/Api';
 import Layout from '../../components/Layout/Layout';
@@ -25,23 +24,17 @@ import MoviedbSettings from './MoviedbSettings';
 import { uiVersion } from '../../core/util';
 
 type Props = {
-  apiKey: string,
   loadSettings: () => void,
 }
 
 class SettingsPage extends React.Component<Props> {
   static propTypes = {
-    apiKey: PropTypes.string,
     loadSettings: PropTypes.func.isRequired,
   };
 
   componentDidMount() {
     document.title = `Shoko Server Web UI ${uiVersion()}`;
-    const { apiKey, loadSettings } = this.props;
-    if (apiKey === '') {
-      history.push('/');
-      return;
-    }
+    const { loadSettings } = this.props;
     loadSettings();
   }
 
@@ -88,11 +81,8 @@ class SettingsPage extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state) {
-  const { apiKey } = state.apiSession;
-  return {
-    apiKey,
-  };
+function mapStateToProps() {
+  return {};
 }
 
 function mapDispatchToProps(dispatch) {

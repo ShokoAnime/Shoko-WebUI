@@ -14,9 +14,7 @@ import { uiVersion } from '../../core/util';
 import type { State } from '../../core/store';
 
 type Props = {
-  apiKey: string,
   autoUpdate: boolean,
-  logout: () => void,
   stopPolling: () => void,
 }
 
@@ -24,13 +22,6 @@ class MainPage extends React.Component<Props> {
   componentDidMount() {
     // eslint-disable-next-line no-undef
     document.title = `Shoko Server Web UI ${uiVersion()}`;
-
-    const { apiKey, logout } = this.props;
-
-    if (apiKey === '') {
-      logout();
-      return;
-    }
 
     store.dispatch({ type: Events.DASHBOARD_LOAD, payload: null });
   }
@@ -65,17 +56,15 @@ class MainPage extends React.Component<Props> {
 }
 
 function mapStateToProps(state: State) {
-  const { autoUpdate, apiSession } = state;
+  const { autoUpdate } = state;
 
   return {
-    apiKey: apiSession.apikey,
     autoUpdate,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => dispatch({ type: Events.LOGOUT }),
     stopPolling: () => dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
   };
 }

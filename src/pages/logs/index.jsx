@@ -13,9 +13,7 @@ import { uiVersion } from '../../core/util';
 import type { State } from '../../core/store';
 
 type Props = {
-  apiKey: string,
   autoUpdate: boolean,
-  logout: () => void,
   logsLoad: () => void,
   startPolling: () => void,
   updateDelta: (number) => void,
@@ -27,12 +25,8 @@ class LogsPage extends React.Component<Props> {
     document.title = `Shoko Server Web UI ${uiVersion()}`;
 
     const {
-      apiKey, logout, logsLoad, startPolling, updateDelta, autoUpdate,
+      logsLoad, startPolling, updateDelta, autoUpdate,
     } = this.props;
-    if (apiKey === '') {
-      logout();
-      return;
-    }
 
     logsLoad();
     // Reset buffer and fetch current log
@@ -70,17 +64,15 @@ class LogsPage extends React.Component<Props> {
 }
 
 function mapStateToProps(state: State) {
-  const { autoUpdate, apiSession } = state;
+  const { autoUpdate } = state;
 
   return {
-    apiKey: apiSession.apikey,
     autoUpdate,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    logout: () => dispatch({ type: Events.LOGOUT }),
     updateDelta: () => dispatch(getDelta()),
     startPolling: () => dispatch({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } }),
     logsLoad: () => dispatch({ type: Events.PAGE_LOGS_LOAD, payload: null }),
