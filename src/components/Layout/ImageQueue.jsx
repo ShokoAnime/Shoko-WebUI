@@ -31,10 +31,9 @@ class ImageQueue extends React.Component<Props> {
 
 function mapStateToProps(state): Props {
   const { queueStatus } = state;
-  const items = queueStatus.items || {};
 
   return {
-    count: items.image ? items.image.count : 0,
+    count: queueStatus.image ? queueStatus.image.count : 0,
   };
 }
 

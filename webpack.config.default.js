@@ -4,7 +4,6 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
@@ -16,7 +15,7 @@ const config = {
   context: __dirname,
   entry: [
     'bootstrap-loader',
-    '!!font-awesome-sass-loader!./font-awesome.config.js',
+    'font-awesome/scss/font-awesome.scss',
     'roboto-npm-webfont',
     './css/main.scss',
     './src/main.jsx',
@@ -60,14 +59,8 @@ const config = {
       filename: 'assets.json',
       prettyPrint: true,
     }),
-    new ExtractTextPlugin({
-      filename: 'styles.css',
-      allChunks: true,
-      ignoreOrder: true,
-      disable: isDebug,
-    }),
     new MiniCssExtractPlugin({
-      filename: 'styles/[name].css',
+      filename: '[contenthash].css',
     }),
   ],
   module: {
@@ -87,10 +80,9 @@ const config = {
       {
         test: /\.css$/,
         exclude: ['/node_modules/', '/css/'],
-        use: ExtractTextPlugin.extract({
-          disable: isDebug,
-          fallback: 'style-loader',
-          use: [{
+        use: [
+          isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
             loader: 'css-loader',
             options: {
               modules: true,
@@ -101,16 +93,14 @@ const config = {
             },
           },
           { loader: 'postcss-loader' },
-          ],
-        }),
+        ],
       },
       {
         test: /\.scss$/,
         exclude: '/node_modules/',
-        use: ExtractTextPlugin.extract({
-          disable: isDebug,
-          fallback: 'style-loader',
-          use: [{
+        use: [
+          isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
             loader: 'css-loader',
             options: {
               modules: false,
@@ -122,8 +112,7 @@ const config = {
           },
           { loader: 'postcss-loader' },
           { loader: 'sass-loader?includePaths[]=./node_modules/bootstrap-sass/assets/stylesheets' },
-          ],
-        }),
+        ],
       },
       {
         test: /\.(woff|woff2)$/,
@@ -147,6 +136,18 @@ if (!isDebug) {
     },
   }));
   config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
+  config.optimization = {
+    splitChunks: {
+      cacheGroups: {
+        main: {
+          name: 'main',
+          test: /\.css$/,
+          chunks: 'all',
+          enforce: true,
+        },
+      },
+    },
+  };
 }
 
 if (isDebug && useHMR) {
