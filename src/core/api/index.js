@@ -38,7 +38,7 @@ function* apiCall(userOptions: ApiCallOptions): Saga<void> {
           'Content-Type': 'application/json',
           apikey: apiKey,
         },
-        body: options.params,
+        body: JSON.stringify(options.params),
         method: 'POST',
       };
       fetchUrl = `${options.endpoint}${options.action}`;

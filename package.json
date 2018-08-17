@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.3.5-dev",
+  "version": "0.3.5-dev2",
   "private": true,
   "engines": {
     "node": ">=6",
@@ -82,7 +82,6 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.4.0",
     "exports-loader": "^0.7.0",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "file-loader": "^1.1.11",
     "flow-bin": "^0.75.0",
     "font-awesome-sass-loader": "^2.0.1",
