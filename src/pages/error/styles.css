@@ -16,12 +16,6 @@ a:focus {
   color: #36ad6f !important; */
 }
 
-body {
-  /* Mozilla,Firefox/Gecko */
-  background: #15827c linear-gradient(to top, #0e5753, #15827c) no-repeat;
-  font-family: Roboto, sans-serif;
-}
-
 .container {
   position: absolute;
   top: 0;
