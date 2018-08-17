@@ -31,10 +31,9 @@ class GeneralQueue extends React.Component<Props> {
 
 function mapStateToProps(state): Props {
   const { queueStatus } = state;
-  const items = queueStatus.items || {};
 
   return {
-    count: items.general ? items.general.count : 0,
+    count: queueStatus.general ? queueStatus.general.count : 0,
   };
 }
 

@@ -31,10 +31,9 @@ class HasherQueue extends React.Component<Props> {
 
 function mapStateToProps(state): Props {
   const { queueStatus } = state;
-  const items = queueStatus.items || {};
 
   return {
-    count: items.hash ? items.hash.count : 0,
+    count: queueStatus.hash ? queueStatus.hash.count : 0,
   };
 }
 
