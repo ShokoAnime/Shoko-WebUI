@@ -14,12 +14,11 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    '@fortawesome/fontawesome-free/scss/fontawesome.scss',
     'bulma/bulma.sass',
     '@blueprintjs/core/src/blueprint.scss',
     'roboto-npm-webfont',
     './css/main.scss',
-    './src/main.jsx',
+    isDebug ? './src/main-hmr.jsx' : './src/main.jsx',
   ],
   mode: isDebug ? 'development' : 'production',
   output: {
@@ -46,6 +45,7 @@ const config = {
     chunkModules: isVerbose,
     cached: isVerbose,
     cachedAssets: isVerbose,
+    optimizationBailout: true,
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
@@ -85,13 +85,7 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              importLoaders: 1,
-              sourceMap: isDebug,
-              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
-              minimize: !isDebug,
-            },
+            options: { modules: true, importLoaders: 1 },
           },
           { loader: 'postcss-loader' },
         ],
@@ -103,13 +97,7 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: {
-              modules: false,
-              importLoaders: 1,
-              sourceMap: isDebug,
-              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
-              minimize: !isDebug,
-            },
+            options: { modules: false, importLoaders: 1 },
           },
           { loader: 'postcss-loader' },
           { loader: 'sass-loader' },
@@ -130,14 +118,22 @@ const config = {
 };
 
 if (!isDebug) {
-  config.plugins.push(new UglifyJsPlugin({
-    uglifyOptions: {
-      mangle: false,
-      compress: { warnings: isVerbose },
-    },
-  }));
-  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
   config.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          mangle: false,
+          compress: {
+            warnings: false, // Suppress uglification warnings
+            collapse_vars: false,
+          },
+          output: {
+            comments: false,
+          },
+          exclude: [/\.min\.js$/gi], // skip pre-minified libs
+        },
+      }),
+    ],
     splitChunks: {
       cacheGroups: {
         main: {
@@ -149,6 +145,9 @@ if (!isDebug) {
       },
     },
   };
+} else {
+  /* const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+  config.plugins.push(new BundleAnalyzerPlugin()); */
 }
 
 if (isDebug && useHMR) {

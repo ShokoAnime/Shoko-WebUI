@@ -13,6 +13,10 @@
     "react-hot-loader/babel",
     "@babel/plugin-proposal-class-properties",
     ["transform-imports", {
+      "lodash": {
+        "transform": "lodash-es/${member}",
+        "preventFullImport": true
+      },
       "@fortawesome/free-solid-svg-icons": {
         "transform": "@fortawesome/free-solid-svg-icons/${member}",
         "skipDefaultConversion": true
