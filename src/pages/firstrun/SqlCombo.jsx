@@ -7,7 +7,6 @@ import Autosuggest from 'react-bootstrap-autosuggest';
 import {
   Col, ControlLabel, Button, FormGroup,
 } from 'react-bootstrap';
-import 'react-bootstrap-autosuggest/src/Autosuggest.scss';
 import Events from '../../core/events';
 
 type Props = {

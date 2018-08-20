@@ -1,5 +1,6 @@
 // @flow
 import React from 'react';
+import { hot } from 'react-hot-loader';
 import { Provider } from 'react-redux';
 import history from './history';
 import store from './store';
@@ -14,4 +15,4 @@ const App = () => (
   </Provider>
 );
 
-export default App;
+export default hot(module)(App);

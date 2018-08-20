@@ -8,8 +8,8 @@ class Logo extends React.Component<{}> {
   render() {
     return (
       <Media>
-        <Media.Item renderAs="figure" position="left">
-          <Image renderAs="p" size={64} alt="64x64" src="/logo.png" />
+        <Media.Item renderAs="figure" className="image is-48x48" position="left">
+          <img alt="" src="/logo.png" />
         </Media.Item>
         <Media.Item>
           <Content>

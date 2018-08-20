@@ -1,13 +1,17 @@
-.header {
+:global(.hero .navbar).primary-navbar {
   min-height: 60px;
   padding: 0 15px;
-  position: fixed;
-  left: 0;
-  right: 0;
-  z-index: 1002;
+  background: #393f4f;
+  align-items: center;
 }
 
-.white-bg {
-  background: #fff;
-  border-bottom: 1px solid #f1f2f7;
+:global(.hero .navbar).secondary-navbar {
+  min-height: 60px;
+  padding: 0 15px;
+  background: #5a6273;
+  align-items: center;
+}
+
+:global(.navbar-item) {
+  padding: 3rem .75rem;
 }
