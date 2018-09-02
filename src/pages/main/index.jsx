@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
+import { Columns, Container, Section } from 'react-bulma-components';
 import store from '../../core/store';
 import Events from '../../core/events';
 import Layout from '../../components/Layout/Layout';
@@ -36,20 +37,28 @@ class MainPage extends React.Component<Props> {
   render() {
     return (
       <Layout>
-        <section className="main-content">
-          <section className="wrapper">
-            <Overview />
-            <div className="row">
+        <Section>
+          <Overview />
+          <Columns>
+            <Columns.Column>
               <Commands className="col-sm-4 fa-icon-20" />
+            </Columns.Column>
+            <Columns.Column>
               <RecentFiles className="col-sm-8" />
-            </div>
-            <div className="row">
+            </Columns.Column>
+          </Columns>
+          <Columns>
+            <Columns.Column>
               <News className="col-sm-4" />
+            </Columns.Column>
+            <Columns.Column>
               <QuickActions className="col-sm-4" />
+            </Columns.Column>
+            <Columns.Column>
               <ImportFolders className="col-sm-4" />
-            </div>
-          </section>
-        </section>
+            </Columns.Column>
+          </Columns>
+        </Section>
       </Layout>
     );
   }

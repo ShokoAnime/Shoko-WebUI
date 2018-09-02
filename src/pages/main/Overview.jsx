@@ -2,6 +2,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
+import { Section, Tile, Level } from 'react-bulma-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faTv, faFolder, faServer } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   importCount: number,
@@ -18,11 +21,35 @@ class Overview extends React.Component<Props> {
     filesCount: PropTypes.number,
   };
 
+  renderTile = (icon, count, text) => (
+    <Tile kind="parent">
+      <Tile renderAs="article" kind="child" className="box">
+        <Level>
+          <Level.Side align="left">
+            <Level.Item><FontAwesomeIcon icon={icon} /></Level.Item>
+          </Level.Side>
+          <Level.Item renderAs="p" textAlignment="centered">{count}</Level.Item>
+        </Level>
+        <p className="subtitle">{text}</p>
+      </Tile>
+    </Tile>
+  );
+
   render() {
     const {
       importCount, commandCount, seriesCount, filesCount,
     } = this.props;
+
     return (
+      <Tile kind="ancestor" textAlignment="centered" className="overview">
+        {this.renderTile(faSave, filesCount, 'files')}
+        {this.renderTile(faTv, seriesCount, 'series')}
+        {this.renderTile(faFolder, importCount, 'import folders')}
+        {this.renderTile(faServer, commandCount, 'commands')}
+      </Tile>
+    );
+
+    /*return (
       <div className="row overview">
         <div className="col-lg-3 col-sm-6">
           <section className="panel">
@@ -69,7 +96,7 @@ class Overview extends React.Component<Props> {
           </section>
         </div>
       </div>
-    );
+    );*/
   }
 }
 

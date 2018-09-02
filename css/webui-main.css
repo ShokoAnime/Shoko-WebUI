@@ -2,3 +2,21 @@
     width: 100%;
     height: 100%;
 }
+
+body {
+    font-family: Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+}
+
+.tile.overview {
+    font-size: 5em;
+}
+.tile.overview .is-child {
+    position: relative;
+}
+
+.tile.overview .subtitle {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-right: 10px;
+}

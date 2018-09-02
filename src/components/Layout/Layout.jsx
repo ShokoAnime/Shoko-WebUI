@@ -2,12 +2,11 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Hero } from 'react-bulma-components';
+import { Container } from 'react-bulma-components';
 import cx from 'classnames';
 import Header from './Header';
 import Sidebar from '../Sidebar/Sidebar';
 import Footer from './Footer';
-import s from './Layout.css';
 import AlertContainer from '../AlertContainer';
 
 type Props = {
@@ -24,13 +23,11 @@ class Layout extends Component<Props> {
   render() {
     const { sidebarToggle, children } = this.props;
 
-    return (
-      <Hero size="fullheight" className={s['login-image']}>
-        <Header />
-        <Hero.Body>{children}</Hero.Body>
-        <Footer />
-      </Hero>
-    );
+    return [
+      <Header />,
+      children,
+      <Footer />,
+    ];
     /*return (
       <section className={cx(s.container, sidebarToggle ? null : s['hide-sidebar'])}>
         <Header />

@@ -1,17 +1,14 @@
-:global(.hero .navbar).primary-navbar {
+:global(.navbar).primary-navbar {
   min-height: 60px;
   padding: 0 15px;
   background: #393f4f;
   align-items: center;
 }
 
-:global(.hero .navbar).secondary-navbar {
-  min-height: 60px;
-  padding: 0 15px;
+:global(.navbar).secondary-navbar {
   background: #5a6273;
-  align-items: center;
 }
 
 :global(.navbar-item) {
-  padding: 3rem .75rem;
+  color: #fff;
 }

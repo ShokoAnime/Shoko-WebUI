@@ -14,9 +14,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
+    'typeface-roboto',
     'bulma/bulma.sass',
     '@blueprintjs/core/src/blueprint.scss',
-    'roboto-npm-webfont',
     './css/main.scss',
     isDebug ? './src/main-hmr.jsx' : './src/main.jsx',
   ],
@@ -37,7 +37,7 @@ const config = {
   },
   stats: {
     colors: true,
-    reasons: isDebug,
+    reasons: false,
     hash: isVerbose,
     version: isVerbose,
     timings: true,
@@ -80,7 +80,7 @@ const config = {
       },
       {
         test: /\.css$/,
-        exclude: ['/node_modules/', '/css/'],
+        exclude: [/node_modules/],
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
@@ -91,8 +91,15 @@ const config = {
         ],
       },
       {
+        test: /\.css$/,
+        include: [/node_modules/],
+        use: [
+          isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
+          { loader: 'css-loader' },
+        ],
+      },
+      {
         test: /\.(scss|sass)$/,
-        exclude: '/node_modules/',
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {

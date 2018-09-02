@@ -2730,11 +2730,7 @@ class-utils@^0.3.5:
     isobject "^3.0.0"
     static-extend "^0.1.1"
 
-classnames@2.2.5:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
-
-classnames@^2.2, classnames@^2.2.5, classnames@^2.2.6:
+classnames@2.2.6, classnames@^2.2, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.6.tgz#43935bffdd291f326dad0a205309b38d00f650ce"
 
@@ -8377,12 +8373,12 @@ react-bootstrap@^0.32.1:
     uncontrollable "^4.1.0"
     warning "^3.0.0"
 
-react-bulma-components@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/react-bulma-components/-/react-bulma-components-1.5.0.tgz#eafbb2e7b4d5ff0b87908f7ec6bf2c51ea9c24a5"
+react-bulma-components@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/react-bulma-components/-/react-bulma-components-2.0.0.tgz#7a826cd13c8f4637dd7139f75446b3f2f65927c2"
   dependencies:
     bulma "0.7.1"
-    classnames "2.2.5"
+    classnames "2.2.6"
 
 react-dom@^16.4.1:
   version "16.4.2"
@@ -9073,10 +9069,6 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
   dependencies:
     hash-base "^3.0.0"
     inherits "^2.0.1"
-
-roboto-npm-webfont@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/roboto-npm-webfont/-/roboto-npm-webfont-1.0.1.tgz#d0b67d8e4b461e48242d2214809757136fee248a"
 
 rst-selector-parser@^2.2.3:
   version "2.2.3"
@@ -10114,6 +10106,10 @@ typed-styles@^0.0.5:
 typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
+
+typeface-roboto@^0.0.54:
+  version "0.0.54"
+  resolved "https://registry.yarnpkg.com/typeface-roboto/-/typeface-roboto-0.0.54.tgz#8f02c9a18d1cfa7f49381a6ff0d21ff061f38ad2"
 
 ua-parser-js@0.7.17:
   version "0.7.17"

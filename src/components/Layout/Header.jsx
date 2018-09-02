@@ -8,52 +8,45 @@ import { Link } from 'react-router-dom';
 import s from './Header.css';
 
 import Logo from './Logo';
+import QueueStatus from './QueueStatus';
 import GeneralQueue from './GeneralQueue';
 import HasherQueue from './HasherQueue';
 import ImageQueue from './ImageQueue';
 import RefreshSwitch from '../Buttons/AutoRefreshSwitch';
-import SidebarToggle from '../Buttons/SidebarToggle';
 import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
 import UserDropdown from '../UserDropdown/UserDropdown';
 
 export default class Header extends React.Component<{}> {
   render() {
-    return (
-      <Hero.Head>
-        <Navbar className={s['primary-navbar']}>
-          <Navbar.Brand>
-            <Logo />
-          </Navbar.Brand>
-          <Navbar.Container position="end">
-            <Media>
-              <Media.Item>
-                <p>Lorem Ipsum</p>
-              </Media.Item>
-              <Media.Item renderAs="figure" className="image is-48x48" position="right">
-                <img className="is-rounded" alt="64x64" src="http://bulma.io/images/placeholders/48x48.png" />
-              </Media.Item>
-            </Media>
-          </Navbar.Container>
-        </Navbar>
-        <Navbar className={s['secondary-navbar']}>
-          <Navbar.Container position="start">
-            <Navbar.Item>
-              <Link to="/dashboard"><FontAwesomeIcon icon={faChartBar} />Dashboard</Link>
-            </Navbar.Item>
-            <Navbar.Item>
-              <Link to="/import"><FontAwesomeIcon icon={faFolderOpen} />Import Folders</Link>
-            </Navbar.Item>
-            <Navbar.Item>
-              <Link to="/actions"><FontAwesomeIcon icon={faListAlt} />Actions</Link>
-            </Navbar.Item>
-            <Navbar.Item>
-              <Link to="/settings"><FontAwesomeIcon icon={faSlidersH} />Settings</Link>
-            </Navbar.Item>
-          </Navbar.Container>
-        </Navbar>
-      </Hero.Head>
-    );
+    return ([
+      <Navbar className={s['primary-navbar']}>
+        <Navbar.Brand>
+          <Logo />
+        </Navbar.Brand>
+        <Navbar.Container position="end">
+          <Media>
+            <Media.Item>
+              <p>Lorem Ipsum</p>
+            </Media.Item>
+            <Media.Item renderAs="figure" className="image is-48x48" position="right">
+              <img className="is-rounded" alt="64x64" src="http://bulma.io/images/placeholders/48x48.png" />
+            </Media.Item>
+          </Media>
+        </Navbar.Container>
+      </Navbar>,
+      <Navbar className={s['secondary-navbar']}>
+        <Navbar.Container position="start">
+          <Link className="navbar-item" to="/dashboard"><FontAwesomeIcon icon={faChartBar} />Dashboard</Link>
+          <Link className="navbar-item" to="/import"><FontAwesomeIcon icon={faFolderOpen} />Import Folders</Link>
+          <Link className="navbar-item" to="/actions"><FontAwesomeIcon icon={faListAlt} />Actions</Link>
+          <Link className="navbar-item" to="/settings"><FontAwesomeIcon icon={faSlidersH} />Settings</Link>
+        </Navbar.Container>
+        <Navbar.Container position="end">
+          <QueueStatus />
+        </Navbar.Container>
+      </Navbar>,
+    ]);
 
     /*return (
       <header className="header white-bg">
