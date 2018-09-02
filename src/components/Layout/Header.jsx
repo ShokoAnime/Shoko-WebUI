@@ -1,17 +1,16 @@
 // @flow
 import React from 'react';
-import { Navbar, Hero, Media, Image, Level, Icon } from 'react-bulma-components';
+import {
+  Navbar, Media, Icon,
+} from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChartBar, faFolderOpen, faListAlt, faSlidersH } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChartBar, faFolderOpen, faListAlt, faSlidersH,
+} from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
-
-import s from './Header.css';
 
 import Logo from './Logo';
 import QueueStatus from './QueueStatus';
-import GeneralQueue from './GeneralQueue';
-import HasherQueue from './HasherQueue';
-import ImageQueue from './ImageQueue';
 import RefreshSwitch from '../Buttons/AutoRefreshSwitch';
 import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
@@ -20,7 +19,7 @@ import UserDropdown from '../UserDropdown/UserDropdown';
 export default class Header extends React.Component<{}> {
   render() {
     return ([
-      <Navbar className={s['primary-navbar']}>
+      <Navbar className="primary-navbar">
         <Navbar.Brand>
           <Logo />
         </Navbar.Brand>
@@ -35,39 +34,29 @@ export default class Header extends React.Component<{}> {
           </Media>
         </Navbar.Container>
       </Navbar>,
-      <Navbar className={s['secondary-navbar']}>
+      <Navbar className="secondary-navbar">
         <Navbar.Container position="start">
-          <Link className="navbar-item" to="/dashboard"><FontAwesomeIcon icon={faChartBar} />Dashboard</Link>
-          <Link className="navbar-item" to="/import"><FontAwesomeIcon icon={faFolderOpen} />Import Folders</Link>
-          <Link className="navbar-item" to="/actions"><FontAwesomeIcon icon={faListAlt} />Actions</Link>
-          <Link className="navbar-item" to="/settings"><FontAwesomeIcon icon={faSlidersH} />Settings</Link>
+          <Link className="navbar-item" to="/dashboard">
+            <Icon><FontAwesomeIcon icon={faChartBar} /></Icon>
+            <span>Dashboard</span>
+          </Link>
+          <Link className="navbar-item" to="/import">
+            <Icon><FontAwesomeIcon icon={faFolderOpen} /></Icon>
+            <span>Import Folders</span>
+          </Link>
+          <Link className="navbar-item" to="/actions">
+            <Icon><FontAwesomeIcon icon={faListAlt} /></Icon>
+            <span>Actions</span>
+          </Link>
+          <Link className="navbar-item" to="/settings">
+            <Icon><FontAwesomeIcon icon={faSlidersH} /></Icon>
+            <span>Settings</span>
+          </Link>
         </Navbar.Container>
         <Navbar.Container position="end">
           <QueueStatus />
         </Navbar.Container>
       </Navbar>,
     ]);
-
-    /*return (
-      <header className="header white-bg">
-        <SidebarToggle />
-        <Logo />
-        <div className="nav notifications">
-          <ul className="nav">
-            <HasherQueue />
-            <GeneralQueue />
-            <ImageQueue />
-            <UpdateButton />
-          </ul>
-        </div>
-        <div className="nav notifications pull-right">
-          <ul className="nav">
-            <Notifications />
-            <RefreshSwitch />
-          </ul>
-        </div>
-        <UserDropdown />
-      </header>
-    );*/
   }
 }
