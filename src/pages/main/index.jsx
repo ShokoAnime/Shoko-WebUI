@@ -44,7 +44,7 @@ class MainPage extends React.Component<Props> {
               <Commands className="col-sm-4 fa-icon-20" />
             </Columns.Column>
             <Columns.Column>
-              <RecentFiles className="col-sm-8" />
+              <RecentFiles />
             </Columns.Column>
           </Columns>
           <Columns>

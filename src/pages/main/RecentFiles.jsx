@@ -8,18 +8,16 @@ import RecentFilesItem from './RecentFilesItem';
 import type { RecentFileType } from './RecentFilesItem';
 
 type Props = {
-  className: string,
   items: Array<RecentFileType>
 }
 
 class RecentFiles extends React.Component<Props> {
   static propTypes = {
-    className: PropTypes.string,
     items: PropTypes.object,
   };
 
   render() {
-    const { items, className } = this.props;
+    const { items } = this.props;
     const files = [];
     let i = 0;
     forEach(items, (item) => {
@@ -27,9 +25,9 @@ class RecentFiles extends React.Component<Props> {
       files.push(<RecentFilesItem key={i} index={i} {...item} />);
     });
     return (
-      <div className={className}>
+      <div className="recent-files">
         <FixedPanel
-          title="Recent Files"
+          title={<span>Recent <span className="color">Files</span></span>}
           description="List of recently added files and their import status"
         >
           <table className="table">

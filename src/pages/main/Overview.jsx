@@ -2,9 +2,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Section, Tile, Level } from 'react-bulma-components';
+import { Tile, Level } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faTv, faFolder, faServer } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSave, faTv, faFolder, faServer,
+} from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   importCount: number,
@@ -28,7 +30,7 @@ class Overview extends React.Component<Props> {
           <Level.Side align="left">
             <Level.Item><FontAwesomeIcon icon={icon} /></Level.Item>
           </Level.Side>
-          <Level.Item renderAs="p" textAlignment="centered">{count}</Level.Item>
+          <Level.Item renderAs="article" textAlignment="centered">{count}</Level.Item>
         </Level>
         <p className="subtitle">{text}</p>
       </Tile>
@@ -48,55 +50,6 @@ class Overview extends React.Component<Props> {
         {this.renderTile(faServer, commandCount, 'commands')}
       </Tile>
     );
-
-    /*return (
-      <div className="row overview">
-        <div className="col-lg-3 col-sm-6">
-          <section className="panel">
-            <div className="symbol green">
-              <i className="fa fa-files-o" />
-            </div>
-            <div className="value">
-              <h1>{filesCount}</h1>
-              <p>Files</p>
-            </div>
-          </section>
-        </div>
-        <div className="col-lg-3 col-sm-6">
-          <section className="panel">
-            <div className="symbol red">
-              <i className="fa fa-television" />
-            </div>
-            <div className="value">
-              <h1>{seriesCount}</h1>
-              <p>Series</p>
-            </div>
-          </section>
-        </div>
-        <div className="col-lg-3 col-sm-6">
-          <section className="panel">
-            <div className="symbol yellow">
-              <i className="fa fa-folder-o" />
-            </div>
-            <div className="value">
-              <h1>{importCount}</h1>
-              <p>Import Folders</p>
-            </div>
-          </section>
-        </div>
-        <div className="col-lg-3 col-sm-6">
-          <section className="panel">
-            <div className="symbol blue">
-              <i className="fa fa-server" />
-            </div>
-            <div className="value">
-              <h1>{commandCount}</h1>
-              <p>Queued Commands</p>
-            </div>
-          </section>
-        </div>
-      </div>
-    );*/
   }
 }
 

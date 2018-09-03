@@ -3,9 +3,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
+import { Table } from 'react-bulma-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTasks, faListAlt, faImage } from '@fortawesome/free-solid-svg-icons';
 import FixedPanel from '../../components/Panels/FixedPanel';
-import CommandsItem from './CommandsItem';
-import CommandsItemStatus from './CommandsItemStatus';
+
+const icons = { hash: faTasks, general: faListAlt, image: faImage };
+const names = { hash: 'Hasher', general: 'General', image: 'Images' };
 
 type Props = {
   className: string,
@@ -21,16 +25,29 @@ class Commands extends React.Component<Props> {
     items: PropTypes.object,
   };
 
+  renderCount = (name, count) => (
+    <tr>
+      <td className="icon-column">
+        <FontAwesomeIcon icon={icons[name]} />
+      </td>
+      <td>{names[name]}</td>
+      <td>{count}</td>
+    </tr>
+  );
+
+  renderStatus = status => (
+    <tr>
+      <td />
+      <td colSpan="2">{status}</td>
+    </tr>
+  );
+
   render() {
     const { items, className } = this.props;
     const commands = [];
     forEach(items, (item, key) => {
-      commands.push(<CommandsItem
-        key={`main-${key}`}
-        count={item.count}
-        name={key}
-      />);
-      commands.push(<CommandsItemStatus key={`details-${key}`} state={item.state} />);
+      commands.push(this.renderCount(key, item.count));
+      commands.push(this.renderStatus(item.state));
     });
 
     return (
@@ -39,11 +56,11 @@ class Commands extends React.Component<Props> {
           title="Commands"
           description="Commands currently being processed"
         >
-          <table className="table">
+          <Table>
             <tbody>
               {commands}
             </tbody>
-          </table>
+          </Table>
         </FixedPanel>
       </div>
     );
