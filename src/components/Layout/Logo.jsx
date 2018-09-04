@@ -1,23 +1,24 @@
 // @flow
 import React from 'react';
-import { Content, Image, Heading, Media } from 'react-bulma-components';
-import Link from '../Link/Link';
+import {
+  Level, Content, Image, Element,
+} from 'react-bulma-components';
 
 
 class Logo extends React.Component<{}> {
   render() {
     return (
-      <Media>
-        <Media.Item renderAs="figure" className="image is-48x48" position="left">
-          <img alt="" src="/logo.png" />
-        </Media.Item>
-        <Media.Item>
+      <Level>
+        <Level.Item>
+          <Image src="/logo.png" className="image is-48x48" />
+        </Level.Item>
+        <Level.Item>
           <Content>
-            <Heading size={4}>Shoko</Heading>
-            <Heading subtitle size={6}>Server</Heading>
+            <Element renderAs="span" className="title" textSize={6}>Shoko</Element>
+            <Element renderAs="span" className="subtitle" textSize={4}>Server</Element>
           </Content>
-        </Media.Item>
-      </Media>
+        </Level.Item>
+      </Level>
     );
   }
 }

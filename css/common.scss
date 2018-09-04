@@ -22,6 +22,21 @@ body {
     padding: 0 15px;
     background: $panel-header-color;
     align-items: center;
+
+    .navbar-brand {
+      .image {
+        margin-right: 1em;
+      }
+
+      .title {
+        color: #fff;
+        display: block;
+      }
+
+      .subtitle {
+        color: $green-text-color;
+      }
+    }
   }
 
   &.secondary-navbar {
@@ -44,7 +59,8 @@ a.navbar-item {
     position: absolute;
     bottom: 0;
     right: 0;
-    margin-right: 1em;
+    margin-right: 1rem;
+    margin-bottom: .5rem;
     text-transform: capitalize;
     font-weight: 300;
     font-size: .5em;
@@ -55,6 +71,10 @@ a.navbar-item {
     &:nth-child(2) { .level-left { color: #f86a6a; } }
     &:nth-child(3) { .level-left { color: #f78ffe; } }
     &:nth-child(4) { .level-left { color: #fcb44c; } }
+  }
+
+  .box {
+    padding: 1rem;
   }
 
   .is-child {

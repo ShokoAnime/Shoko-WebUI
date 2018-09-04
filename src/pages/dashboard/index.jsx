@@ -37,8 +37,8 @@ class MainPage extends React.Component<Props> {
         <Section className="dashboard">
           <Overview />
           <Columns>
-            <Columns.Column>
-              <Commands className="col-sm-4 fa-icon-20" />
+            <Columns.Column size={3}>
+              <Commands />
             </Columns.Column>
             <Columns.Column>
               <RecentFiles />

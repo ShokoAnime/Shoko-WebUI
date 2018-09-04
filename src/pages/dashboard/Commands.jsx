@@ -12,7 +12,6 @@ const icons = { hash: faTasks, general: faListAlt, image: faImage };
 const names = { hash: 'Hasher', general: 'General', image: 'Images' };
 
 type Props = {
-  className: string,
   items: {
     count: number,
     state: string,
@@ -21,7 +20,6 @@ type Props = {
 
 class Commands extends React.Component<Props> {
   static propTypes = {
-    className: PropTypes.string,
     items: PropTypes.object,
   };
 
@@ -43,7 +41,7 @@ class Commands extends React.Component<Props> {
   );
 
   render() {
-    const { items, className } = this.props;
+    const { items } = this.props;
     const commands = [];
     forEach(items, (item, key) => {
       commands.push(this.renderCount(key, item.count));
@@ -51,18 +49,17 @@ class Commands extends React.Component<Props> {
     });
 
     return (
-      <div className={className}>
-        <FixedPanel
-          title="Commands"
-          description="Commands currently being processed"
-        >
-          <Table>
-            <tbody>
-              {commands}
-            </tbody>
-          </Table>
-        </FixedPanel>
-      </div>
+      <FixedPanel
+        className="commands"
+        title="Commands"
+        description="Commands currently being processed"
+      >
+        <Table>
+          <tbody>
+            {commands}
+          </tbody>
+        </Table>
+      </FixedPanel>
     );
   }
 }

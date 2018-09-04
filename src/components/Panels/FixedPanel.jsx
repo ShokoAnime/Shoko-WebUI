@@ -8,6 +8,7 @@ import { faCog } from '@fortawesome/free-solid-svg-icons';
 type Props = {
   title: any,
   description: string,
+  className?: string,
   children: any,
   actionName?: string,
   onAction?: () => void
@@ -43,10 +44,10 @@ class FixedPanel extends React.Component<Props> {
 
   render() {
     const {
-      children, title,
+      children, title, className,
     } = this.props;
     return (
-      <Panel>
+      <Panel className={className}>
         <Panel.Header>
           <Level>
             <Level.Item>
