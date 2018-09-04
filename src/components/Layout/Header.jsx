@@ -53,7 +53,7 @@ class Header extends React.Component<Props> {
       <Navbar className="secondary-navbar">
         <Navbar.Container position="start">
           {this.renderLink('/dashboard', 'Dashboard', faChartBar)}
-          {this.renderLink('/import', 'Import Folders', faFolderOpen)}
+          {this.renderLink('/import-folders', 'Import Folders', faFolderOpen)}
           {this.renderLink('/actions', 'Actions', faListAlt)}
           {this.renderLink('/settings', 'Settings', faSlidersH)}
         </Navbar.Container>
