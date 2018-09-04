@@ -1,6 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Table } from 'react-bulma-components';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import { setStatus } from '../../core/actions/modals/ImportFolder';
@@ -35,7 +36,7 @@ class ImportFolders extends React.Component<Props> {
 
   render() {
     const {
-      items, className, description, importModal, importFolders,
+      items, importModal, importFolders,
     } = this.props;
     const folders = [];
     let i = 0;
@@ -44,23 +45,20 @@ class ImportFolders extends React.Component<Props> {
       folders.push(<ImportFoldersItem key={i} index={i} {...item} />);
     });
 
-    return (
-      <div className={className}>
-        <FixedPanel
-          title="Import Folders Overview"
-          description={description || 'Use Import Folders section to manage'}
-          actionName="Manage"
-          onAction={this.handleAction}
-        >
-          <table className="table">
-            <tbody>
-              {folders}
-            </tbody>
-          </table>
-        </FixedPanel>
-        <ImportModal {...importModal} importFolders={importFolders} />
-      </div>
-    );
+    return [
+      <FixedPanel
+        title="Import Folders Overview"
+        actionName="Manage"
+        onAction={this.handleAction}
+      >
+        <Table>
+          <tbody>
+            {folders}
+          </tbody>
+        </Table>
+      </FixedPanel>,
+      <ImportModal {...importModal} importFolders={importFolders} />,
+    ];
   }
 }
 

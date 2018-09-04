@@ -1,6 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Table } from 'react-bulma-components';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
@@ -8,18 +9,16 @@ import NewsItem from './NewsItem';
 import type { NewsItemType } from './NewsItem';
 
 type Props = {
-  className: string,
   items: Array<NewsItemType>,
 }
 
 class News extends React.Component<Props> {
   static propTypes = {
-    className: PropTypes.string,
     items: PropTypes.object,
   };
 
   render() {
-    const { items, className } = this.props;
+    const { items } = this.props;
     const news = [];
     let i = 0;
     forEach(items, (item) => {
@@ -28,18 +27,13 @@ class News extends React.Component<Props> {
     });
 
     return (
-      <div className={className}>
-        <FixedPanel
-          title="Shoko News"
-          description="Click title to read full article"
-        >
-          <table className="table news">
-            <tbody>
-              {news}
-            </tbody>
-          </table>
-        </FixedPanel>
-      </div>
+      <FixedPanel title="Shoko News">
+        <Table>
+          <tbody>
+            {news}
+          </tbody>
+        </Table>
+      </FixedPanel>
     );
   }
 }

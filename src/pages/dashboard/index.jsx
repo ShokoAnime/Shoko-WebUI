@@ -46,7 +46,7 @@ class MainPage extends React.Component<Props> {
           </Columns>
           <Columns>
             <Columns.Column>
-              <News className="col-sm-4" />
+              <News />
             </Columns.Column>
             <Columns.Column>
               <QuickActions className="col-sm-4" />

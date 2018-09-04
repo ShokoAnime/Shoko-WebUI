@@ -1,7 +1,8 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { HTMLSelect } from '@blueprintjs/core';
+import { Table, Panel } from 'react-bulma-components';
 import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
 import FixedPanel from '../../components/Panels/FixedPanel';
@@ -38,9 +39,10 @@ class ImportFolderSeries extends React.Component<Props> {
     fetchImportFolderSeries: PropTypes.func,
   };
 
-  findFolder = (folders: Array<ImportFolder>, id: number): ?ImportFolder => find(folders, ['ImportFolderID', id]);
+  findFolder = (folders: Array<ImportFolder>, id: number): ?ImportFolder => find(folders, ['ImportFolderID', parseInt(id, 10)]);
 
-  handleSelect = (folderId) => {
+  handleSelect = (event) => {
+    const folderId = event.currentTarget.value;
     const { fetchImportFolderSeries, importFolders } = this.props;
     const folder = this.findFolder(importFolders, folderId);
     if (!folder) { return; }
@@ -64,35 +66,28 @@ class ImportFolderSeries extends React.Component<Props> {
 
     forEach(importFolders, (folder) => {
     // eslint-disable-next-line max-len
-      folders.push(<MenuItem eventKey={folder.ImportFolderID}>{folder.ImportFolderLocation}</MenuItem>);
+      folders.push(<option value={folder.ImportFolderID}>{folder.ImportFolderLocation}</option>);
     });
 
-    const importFoldersSelector = [
-      <span>Series In Import Folder
-        <DropdownButton
-          bsStyle="link"
-          onSelect={this.handleSelect}
-          title={selectedFolder.name || ''}
-        >
-          {folders}
-        </DropdownButton>
-      </span>,
-    ];
-
     return (
-      <div className={className}>
-        <FixedPanel
-          title={importFoldersSelector}
-          description="Use Import Folders section to manage"
-          isFetching={isFetching}
-        >
-          <table className="table">
+      <FixedPanel
+        nowrap
+        title="Series In Import Folder"
+        isFetching={isFetching}
+      >
+        <Panel.Block>
+          <HTMLSelect value={selectedFolder.id} onChange={this.handleSelect}>
+            {folders}
+          </HTMLSelect>
+        </Panel.Block>
+        <Panel.Block>
+          <Table>
             <tbody>
               {series}
             </tbody>
-          </table>
-        </FixedPanel>
-      </div>
+          </Table>
+        </Panel.Block>
+      </FixedPanel>
     );
   }
 }

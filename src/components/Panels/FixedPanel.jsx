@@ -1,25 +1,26 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
+import { forEach } from 'lodash';
 import { Level, Panel } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   title: any,
-  description: string,
   className?: string,
   children: any,
   actionName?: string,
+  nowrap?: boolean,
   onAction?: () => void
 }
 
 class FixedPanel extends React.Component<Props> {
   static propTypes = {
     title: PropTypes.any,
-    description: PropTypes.string,
     children: PropTypes.any,
     actionName: PropTypes.string,
+    nowrap: PropTypes.bool,
     onAction: PropTypes.func,
   };
 
@@ -30,7 +31,7 @@ class FixedPanel extends React.Component<Props> {
     }
   };
 
-  renderButton() {
+  renderButton = () => {
     const { actionName } = this.props;
     if (!actionName) { return null; }
     return (
@@ -40,25 +41,37 @@ class FixedPanel extends React.Component<Props> {
         </Level.Item>
       </Level.Side>
     );
-  }
+  };
+
+  renderTitle = () => {
+    const { title } = this.props;
+    if (typeof title !== 'string') { return title; }
+    const output = [];
+    forEach(title.split(' '), (word, index) => {
+      output.push(index % 2 !== 1 ? word : <span className="color">{word}</span>);
+    });
+    return output;
+  };
 
   render() {
     const {
-      children, title, className,
+      children, nowrap, className,
     } = this.props;
     return (
       <Panel className={className}>
         <Panel.Header>
           <Level>
             <Level.Item>
-              {title}
+              {this.renderTitle()}
             </Level.Item>
             {this.renderButton()}
           </Level>
         </Panel.Header>
-        <Panel.Block>
-          {children}
-        </Panel.Block>
+        {nowrap === true ? children : (
+          <Panel.Block>
+            {children}
+          </Panel.Block>
+        )}
       </Panel>
     );
   }

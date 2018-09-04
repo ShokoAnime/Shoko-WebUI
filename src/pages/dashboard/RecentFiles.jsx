@@ -26,10 +26,7 @@ class RecentFiles extends React.Component<Props> {
     });
     return (
       <div className="recent-files">
-        <FixedPanel
-          title={<span>Recent <span className="color">Files</span></span>}
-          description="List of recently added files and their import status"
-        >
+        <FixedPanel title="Recent Files">
           <table className="table">
             <tbody>
               {files}
