@@ -1,5 +1,7 @@
 // @flow
+import cx from 'classnames';
 import React from 'react';
+import { connect } from 'react-redux';
 import {
   Navbar, Media, Icon,
 } from 'react-bulma-components';
@@ -16,7 +18,21 @@ import UpdateButton from '../Buttons/UpdateButton';
 import Notifications from './Notifications';
 import UserDropdown from '../UserDropdown/UserDropdown';
 
-export default class Header extends React.Component<{}> {
+type Props = {
+  pathname: string,
+}
+
+class Header extends React.Component<Props> {
+  renderLink = (url, text, icon) => {
+    const { pathname } = this.props;
+    return (
+      <Link className={cx(['navbar-item', url === pathname && 'is-active'])} to={url}>
+        <Icon><FontAwesomeIcon icon={icon} /></Icon>
+        <span>{text}</span>
+      </Link>
+    );
+  };
+
   render() {
     return ([
       <Navbar className="primary-navbar">
@@ -36,22 +52,10 @@ export default class Header extends React.Component<{}> {
       </Navbar>,
       <Navbar className="secondary-navbar">
         <Navbar.Container position="start">
-          <Link className="navbar-item" to="/dashboard">
-            <Icon><FontAwesomeIcon icon={faChartBar} /></Icon>
-            <span>Dashboard</span>
-          </Link>
-          <Link className="navbar-item" to="/import">
-            <Icon><FontAwesomeIcon icon={faFolderOpen} /></Icon>
-            <span>Import Folders</span>
-          </Link>
-          <Link className="navbar-item" to="/actions">
-            <Icon><FontAwesomeIcon icon={faListAlt} /></Icon>
-            <span>Actions</span>
-          </Link>
-          <Link className="navbar-item" to="/settings">
-            <Icon><FontAwesomeIcon icon={faSlidersH} /></Icon>
-            <span>Settings</span>
-          </Link>
+          {this.renderLink('/dashboard', 'Dashboard', faChartBar)}
+          {this.renderLink('/import', 'Import Folders', faFolderOpen)}
+          {this.renderLink('/actions', 'Actions', faListAlt)}
+          {this.renderLink('/settings', 'Settings', faSlidersH)}
         </Navbar.Container>
         <Navbar.Container position="end">
           <QueueStatus />
@@ -60,3 +64,15 @@ export default class Header extends React.Component<{}> {
     ]);
   }
 }
+
+
+function mapStateToProps(state): Props {
+  const { router } = state;
+  const { location } = router;
+
+  return {
+    pathname: location.pathname,
+  };
+}
+
+export default connect(mapStateToProps, () => ({}))(Header);

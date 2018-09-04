@@ -7,7 +7,7 @@ import Events from '../../core/events';
 import { getSettings } from '../../core/actions/settings/Api';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
-import Overview from '../main/Overview';
+import Overview from '../dashboard/Overview';
 import StyleSettings from './StyleSettings';
 import LogOptions from './LogOptions';
 import OtherSettings from './OtherSettings';

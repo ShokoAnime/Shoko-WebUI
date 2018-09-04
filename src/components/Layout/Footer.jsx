@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React from 'react';
-import { Container, Content } from 'react-bulma-components';
+import { Container, Content, Footer as BulmaFooter, Icon } from 'react-bulma-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { uiVersion } from '../../core/util';
 
 const UI_VERSION = uiVersion();
@@ -19,16 +21,16 @@ class Footer extends React.Component<Props> {
   render() {
     const { version } = this.props;
     return (
-      <footer>
+      <BulmaFooter>
         <Container textAlignment="centered">
           <Content>
             Shoko Server {version} Web UI {UI_VERSION}
-            <a className="go-top">
-              <i className="fa fa-angle-up" />
-            </a>
+            <Icon>
+              <FontAwesomeIcon icon={faAngleUp} />
+            </Icon>
           </Content>
         </Container>
-      </footer>
+      </BulmaFooter>
     );
   }
 }

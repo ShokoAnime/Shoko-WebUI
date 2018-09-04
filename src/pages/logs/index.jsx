@@ -6,7 +6,7 @@ import Events from '../../core/events';
 import { getDelta } from '../../core/actions/logs/Delta';
 import Layout from '../../components/Layout/Layout';
 import InfoPanel from '../../components/Panels/InfoPanel';
-import Overview from '../main/Overview';
+import Overview from '../dashboard/Overview';
 import LogSettings from './LogSettings';
 import LogContents from './LogContents';
 import { uiVersion } from '../../core/util';

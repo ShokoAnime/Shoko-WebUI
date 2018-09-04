@@ -5,7 +5,7 @@ import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
 import LoginPage from '../../pages/login/index';
 import ErrorPage from '../../pages/error/index';
-import DashboardPage from '../../pages/main/index';
+import DashboardPage from '../../pages/dashboard/index';
 import ImportPage from '../../pages/import/index';
 import SettingsPage from '../../pages/settings/index';
 import LogsPage from '../../pages/logs/index';

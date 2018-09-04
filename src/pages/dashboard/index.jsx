@@ -1,8 +1,7 @@
 // @flow
 import React from 'react';
 import { connect } from 'react-redux';
-import { Columns, Container, Section } from 'react-bulma-components';
-import store from '../../core/store';
+import { Columns, Section } from 'react-bulma-components';
 import Events from '../../core/events';
 import Layout from '../../components/Layout/Layout';
 import Overview from './Overview';
@@ -11,20 +10,18 @@ import RecentFiles from './RecentFiles';
 import News from './News';
 import ImportFolders from './ImportFolders';
 import QuickActions from './QuickActions';
-import { uiVersion } from '../../core/util';
 import type { State } from '../../core/store';
 
 type Props = {
   autoUpdate: boolean,
   stopPolling: () => void,
+  load: () => void,
 }
 
 class MainPage extends React.Component<Props> {
   componentDidMount() {
-    // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${uiVersion()}`;
-
-    store.dispatch({ type: Events.DASHBOARD_LOAD, payload: null });
+    const { load } = this.props;
+    load();
   }
 
   componentWillUnmount() {
@@ -37,7 +34,7 @@ class MainPage extends React.Component<Props> {
   render() {
     return (
       <Layout>
-        <Section>
+        <Section className="dashboard">
           <Overview />
           <Columns>
             <Columns.Column>
@@ -75,6 +72,7 @@ function mapStateToProps(state: State) {
 function mapDispatchToProps(dispatch) {
   return {
     stopPolling: () => dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
+    load: () => dispatch({ type: Events.DASHBOARD_LOAD, payload: null }),
   };
 }
 

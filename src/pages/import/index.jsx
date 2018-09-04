@@ -1,21 +1,20 @@
 // @flow
 import React from 'react';
-import { Panel } from 'react-bootstrap';
-import store from '../../core/store';
+import { connect } from 'react-redux';
 import Events from '../../core/events';
 import Layout from '../../components/Layout/Layout';
-import InfoPanel from '../../components/Panels/InfoPanel';
-import Overview from '../main/Overview';
-import ImportFolders from '../main/ImportFolders';
+import Overview from '../dashboard/Overview';
+import ImportFolders from '../dashboard/ImportFolders';
 import ImportFolderSeries from './ImportFolderSeries';
-import { uiVersion } from '../../core/util';
 
-class ImportFoldersPage extends React.Component<{}> {
+type Props = {
+  load: () => void,
+}
+
+class ImportFoldersPage extends React.Component<Props> {
   componentDidMount() {
-    // eslint-disable-next-line no-undef
-    document.title = `Shoko Server Web UI ${uiVersion()}`;
-
-    store.dispatch({ type: Events.PAGE_IMPORT_FOLDERS_LOAD, payload: null });
+    const { load } = this.props;
+    load();
   }
 
   render() {
@@ -24,13 +23,6 @@ class ImportFoldersPage extends React.Component<{}> {
         <section className="main-content">
           <section className="wrapper">
             <Overview />
-            <div className="row">
-              <InfoPanel title="Info Box Example" className="col-sm-12">
-                <Panel>
-                Import folder management and information about your collection.
-                </Panel>
-              </InfoPanel>
-            </div>
             <div className="row">
               <ImportFolders
                 description="Location, Type, Provider and Status"
@@ -45,4 +37,10 @@ class ImportFoldersPage extends React.Component<{}> {
   }
 }
 
-export default ImportFoldersPage;
+function mapDispatchToProps(dispatch) {
+  return {
+    load: () => dispatch({ type: Events.PAGE_IMPORT_FOLDERS_LOAD, payload: null }),
+  };
+}
+
+export default connect(null, mapDispatchToProps)(ImportFoldersPage);
