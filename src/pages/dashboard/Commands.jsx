@@ -23,18 +23,18 @@ class Commands extends React.Component<Props> {
     items: PropTypes.object,
   };
 
-  renderCount = (name, count) => (
-    <tr>
+  renderCount = (key, count) => (
+    <tr key={`count-${key}`}>
       <td className="icon-column">
-        <FontAwesomeIcon icon={icons[name]} />
+        <FontAwesomeIcon icon={icons[key]} />
       </td>
-      <td>{names[name]}</td>
+      <td>{names[key]}</td>
       <td>{count}</td>
     </tr>
   );
 
-  renderStatus = status => (
-    <tr>
+  renderStatus = (key, status) => (
+    <tr key={`status-${key}`}>
       <td />
       <td colSpan="2">{status}</td>
     </tr>
@@ -45,7 +45,7 @@ class Commands extends React.Component<Props> {
     const commands = [];
     forEach(items, (item, key) => {
       commands.push(this.renderCount(key, item.count));
-      commands.push(this.renderStatus(item.state));
+      commands.push(this.renderStatus(key, item.state));
     });
 
     return (

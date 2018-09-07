@@ -45,20 +45,22 @@ class ImportFolders extends React.Component<Props> {
       folders.push(<ImportFoldersItem key={i} index={i} {...item} />);
     });
 
-    return [
-      <FixedPanel
-        title="Import Folders Overview"
-        actionName="Manage"
-        onAction={this.handleAction}
-      >
-        <Table>
-          <tbody>
-            {folders}
-          </tbody>
-        </Table>
-      </FixedPanel>,
-      <ImportModal {...importModal} importFolders={importFolders} />,
-    ];
+    return (
+      <React.Fragment>
+        <FixedPanel
+          title="Import Folders Overview"
+          actionName="Manage"
+          onAction={this.handleAction}
+        >
+          <Table>
+            <tbody>
+              {folders}
+            </tbody>
+          </Table>
+        </FixedPanel>
+        <ImportModal {...importModal} importFolders={importFolders} />
+      </React.Fragment>
+    );
   }
 }
 

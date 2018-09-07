@@ -1,11 +1,8 @@
-/* eslint-disable prefer-destructuring */
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
-import {
-  FormGroup, ControlLabel, Col, FormControl,
-} from 'react-bootstrap';
+import { FormGroup, Slider } from '@blueprintjs/core';
 import SettingsTooltip from '../SettingsTooltip';
 
 type Props = {
@@ -16,7 +13,7 @@ type Props = {
   onChange: (string, string) => void,
 }
 
-export default class SettingsInput extends React.Component<Props> {
+export default class SettingsSlider extends React.Component<Props> {
   static propTypes = {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
@@ -32,19 +29,20 @@ export default class SettingsInput extends React.Component<Props> {
 
   render() {
     const {
-      name, label, value, tooltip,
+      label, value, tooltip,
     } = this.props;
     return (
-      <FormGroup controlId={name}>
-        <Col sm={6}>
-          <ControlLabel>
-            {label}
-            {tooltip && <SettingsTooltip name={name} text={tooltip} />}
-          </ControlLabel>
-        </Col>
-        <Col sm={6}>
-          <FormControl id={name} value={value} type="number" min="0" max="50" className="pull-right" onChange={this.handleChange} />
-        </Col>
+      <FormGroup
+        inline
+        label={tooltip ? <SettingsTooltip label={label} text={tooltip} /> : label}
+      >
+        <Slider
+          stepSize={5}
+          min={0}
+          max={20}
+          onChange={this.handleChange}
+          value={parseFloat(value)}
+        />
       </FormGroup>
     );
   }

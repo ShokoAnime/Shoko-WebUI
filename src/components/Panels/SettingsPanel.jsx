@@ -4,23 +4,23 @@ import React from 'react';
 import { forEach } from 'lodash';
 import { Level, Panel } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { faSave } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   title: any,
   className?: string,
   children: any,
-  actionName?: string,
   nowrap?: boolean,
+  fetching?: boolean,
   onAction?: () => void
 }
 
-class FixedPanel extends React.Component<Props> {
+class SettingsPanel extends React.Component<Props> {
   static propTypes = {
     title: PropTypes.any,
     children: PropTypes.any,
-    actionName: PropTypes.string,
     nowrap: PropTypes.bool,
+    fetching: PropTypes.bool,
     onAction: PropTypes.func,
   };
 
@@ -32,12 +32,12 @@ class FixedPanel extends React.Component<Props> {
   };
 
   renderButton = () => {
-    const { actionName } = this.props;
-    if (!actionName) { return null; }
+    const { onAction, fetching } = this.props;
+    if (typeof onAction !== 'function') { return null; }
     return (
       <Level.Side align="right">
         <Level.Item className="action">
-          <FontAwesomeIcon icon={faCog} onClick={this.handleAction} alt={actionName} />
+          <FontAwesomeIcon icon={faSave} spin={fetching === true} onClick={this.handleAction} />
         </Level.Item>
       </Level.Side>
     );
@@ -77,4 +77,4 @@ class FixedPanel extends React.Component<Props> {
   }
 }
 
-export default FixedPanel;
+export default SettingsPanel;

@@ -3,9 +3,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import Events from '../../core/events';
 
@@ -61,42 +60,38 @@ class TvdbDownloadSettings extends React.PureComponent<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="TvDB download"
-          description="TvDB image download settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsYesNoToggle
-              name="TvDB_AutoFanart"
-              label="Fanart"
-              value={formFields.TvDB_AutoFanart}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="TvDB_AutoPosters"
-              label="Posters"
-              value={formFields.TvDB_AutoPosters}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="TvDB_AutoWideBanners"
-              label="Wide Banners"
-              value={formFields.TvDB_AutoWideBanners}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="TvDB_AutoLink"
-              label="Auto link"
-              value={formFields.TvDB_AutoLink}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="TvDB download"
+        description="TvDB image download settings"
+        actionName="Save"
+        onAction={this.saveSettings}
+        form
+      >
+        <SettingsYesNoToggle
+          name="TvDB_AutoFanart"
+          label="Fanart"
+          value={formFields.TvDB_AutoFanart}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="TvDB_AutoPosters"
+          label="Posters"
+          value={formFields.TvDB_AutoPosters}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="TvDB_AutoWideBanners"
+          label="Wide Banners"
+          value={formFields.TvDB_AutoWideBanners}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="TvDB_AutoLink"
+          label="Auto link"
+          value={formFields.TvDB_AutoLink}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

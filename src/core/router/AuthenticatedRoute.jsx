@@ -4,18 +4,20 @@ import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router';
 import { connect } from 'react-redux';
 
+import type { Node } from 'react';
+
 type Props = {
-  component: React.Component<any>,
+  component: Node,
   isAuthenticated: boolean,
 }
 
 class AuthenticatedRoute extends React.Component<Props> {
   static propTypes = {
-    component: PropTypes.object,
+    component: PropTypes.func,
     isAuthenticated: PropTypes.bool,
   };
 
-  renderComponent = (props) => {
+  renderComponent = (props): Node => {
     const { isAuthenticated, component: Component } = this.props;
     if (!isAuthenticated) {
       return (
@@ -30,7 +32,7 @@ class AuthenticatedRoute extends React.Component<Props> {
     return <Component {...props} />;
   };
 
-  render() {
+  render(): Node {
     const { component, ...rest } = this.props;
     return (
       <Route {...rest} render={this.renderComponent} />
@@ -42,7 +44,7 @@ function mapStateToProps(state) {
   const { apiSession } = state;
 
   return {
-    isAuthenticated: apiSession && apiSession.apikey,
+    isAuthenticated: apiSession && apiSession.apikey !== '',
   };
 }
 

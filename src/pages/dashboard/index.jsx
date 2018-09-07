@@ -34,7 +34,7 @@ class MainPage extends React.Component<Props> {
   render() {
     return (
       <Layout>
-        <Section className="dashboard">
+        <Section className="dashboard page-wrap">
           <Overview />
           <Columns>
             <Columns.Column size={3}>

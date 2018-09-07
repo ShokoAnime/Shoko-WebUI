@@ -10,7 +10,7 @@ import {
 } from '@blueprintjs/core';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
-import type { ApiLoginType } from '../../core/types/api';
+import type { ApiLoginType, GlobalAlertType } from '../../core/types/api';
 
 const UI_VERSION = uiVersion();
 
@@ -21,7 +21,7 @@ type Props = {
   serverVersion: () => void,
   signIn: (payload: ApiLoginType) => void,
   firstRun: boolean,
-  globalAlert: [],
+  globalAlert: Array<GlobalAlertType>,
 }
 
 type State = {
@@ -88,7 +88,7 @@ class LoginPage extends React.Component<Props, State> {
     let key = 0;
 
     forEach(globalAlert, (alert) => {
-      toasts.push(<Toast key={key} intent={alert.type === 'error'?Intent.DANGER:Intent.SUCCESS} message={alert.text} />);
+      toasts.push(<Toast key={key} intent={alert.type === 'error' ? Intent.DANGER : Intent.SUCCESS} message={alert.text} />);
       key += 1;
     });
 
@@ -108,7 +108,7 @@ class LoginPage extends React.Component<Props, State> {
             <Columns centered>
               <Columns.Column size="one-quarter">
                 <Card className="login-form">
-                  <h2>You know what to do..</h2>
+                  <h2>Welcome to Shoko Server!</h2>
                   {firstRun !== true && this.renderVersion()}
                   <FormGroup>
                     <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.user = ref; }} placeholder="Username" />
@@ -128,7 +128,9 @@ class LoginPage extends React.Component<Props, State> {
 }
 
 function mapStateToProps(state) {
-  const { jmmVersion, firstrun, fetching, globalAlert } = state;
+  const {
+    jmmVersion, firstrun, fetching, globalAlert,
+  } = state;
 
   return {
     globalAlert,

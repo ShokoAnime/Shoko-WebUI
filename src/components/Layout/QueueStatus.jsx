@@ -22,11 +22,13 @@ class QueueStatus extends React.Component<Props> {
 
   render() {
     const { hasher, general, images } = this.props;
-    return [
-      <Navbar.Item><FontAwesomeIcon icon={faColumns} />{hasher > 0 && hasher}</Navbar.Item>,
-      <Navbar.Item><FontAwesomeIcon icon={faImage} />{general > 0 && general}</Navbar.Item>,
-      <Navbar.Item><FontAwesomeIcon icon={faServer} />{images > 0 && images}</Navbar.Item>,
-    ];
+    return (
+      <React.Fragment>
+        <Navbar.Item><FontAwesomeIcon icon={faColumns} />{hasher > 0 && hasher}</Navbar.Item>
+        <Navbar.Item><FontAwesomeIcon icon={faImage} />{general > 0 && general}</Navbar.Item>
+        <Navbar.Item><FontAwesomeIcon icon={faServer} />{images > 0 && images}</Navbar.Item>
+      </React.Fragment>
+    );
   }
 }
 

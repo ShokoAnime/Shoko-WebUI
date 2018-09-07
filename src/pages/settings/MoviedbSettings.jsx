@@ -7,7 +7,7 @@ import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
 import FixedPanel from '../../components/Panels/FixedPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
-import SettingsInput from '../../components/Buttons/SettingsInput';
+import SettingsSlider from '../../components/Buttons/SettingsSlider';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
@@ -77,7 +77,7 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
               value={formFields.MovieDB_AutoFanart}
               onChange={this.handleChange}
             />
-            <SettingsInput
+            <SettingsSlider
               name="MovieDB_AutoFanartAmount"
               label="Max Posters"
               value={formFields.MovieDB_AutoFanartAmount}
@@ -89,7 +89,7 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
               value={formFields.MovieDB_AutoPosters}
               onChange={this.handleChange}
             />
-            <SettingsInput
+            <SettingsSlider
               name="MovieDB_AutoPostersAmount"
               label="Max Posters"
               value={formFields.MovieDB_AutoPostersAmount}

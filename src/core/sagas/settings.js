@@ -4,7 +4,7 @@ import Ajv from 'ajv';
 import { forEach } from 'lodash';
 import type { Saga } from 'redux-saga';
 import { QUEUE_GLOBAL_ALERT } from '../actions';
-import Api from '../api';
+import Api from '../api/common';
 import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';

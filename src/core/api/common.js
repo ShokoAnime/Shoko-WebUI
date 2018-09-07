@@ -1,6 +1,5 @@
 // @flow
 import Api from './index';
-import type { SettingType } from '../sagas/settings';
 import type { ApiLoginType } from '../types/api';
 
 function* getLogDelta(data: {delta: number, position: number}): {} {
@@ -168,7 +167,7 @@ function postOsFolder(params: {}) {
   return Api.call({ action: '/os/folder', method: 'POST', params });
 }
 
-function postConfigSet(params: Array<SettingType>) {
+function postConfigSet(params: {}) {
   return Api.call({ action: '/config/set', method: 'POST', params });
 }
 

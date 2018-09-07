@@ -3,9 +3,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import Events from '../../core/events';
 
@@ -61,42 +60,36 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="AniDB Images"
-          description="AniDB image download settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsYesNoToggle
-              name="AniDB_DownloadCharacters"
-              label="Character Images"
-              value={formFields.AniDB_DownloadCharacters}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_DownloadCreators"
-              label="Creator Images"
-              value={formFields.AniDB_DownloadCreators}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_DownloadReviews"
-              label="Reviews"
-              value={formFields.AniDB_DownloadReviews}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_DownloadReleaseGroups"
-              label="Release Groups"
-              value={formFields.AniDB_DownloadReleaseGroups}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="AniDB Images"
+        onAction={this.saveSettings}
+        form
+      >
+        <SettingsYesNoToggle
+          name="AniDB_DownloadCharacters"
+          label="Character Images"
+          value={formFields.AniDB_DownloadCharacters}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_DownloadCreators"
+          label="Creator Images"
+          value={formFields.AniDB_DownloadCreators}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_DownloadReviews"
+          label="Reviews"
+          value={formFields.AniDB_DownloadReviews}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_DownloadReleaseGroups"
+          label="Release Groups"
+          value={formFields.AniDB_DownloadReleaseGroups}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

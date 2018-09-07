@@ -23,7 +23,7 @@ const defaultOptions = {
   params: {},
 };
 
-function* apiCall(userOptions: ApiCallOptions): Saga<void> {
+function* apiCall(userOptions: ApiCallOptions): Saga<ApiResponseType> {
   const options = Object.assign({}, defaultOptions, userOptions);
   let fetchOptions;
   let fetchUrl;

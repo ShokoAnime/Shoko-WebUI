@@ -3,11 +3,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  Form, Col, FormGroup, FormControl,
-} from 'react-bootstrap';
+import { Button } from '@blueprintjs/core';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
@@ -52,32 +50,16 @@ class PlexSettings extends React.PureComponent<Props, ComponentState> {
     const { url } = this.props;
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="Plex Preferences"
-          description="Plex preferences"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <FormGroup controlId="MAL_Username">
-              <Col sm={12}>
-                <FormControl
-                  type="button"
-                  value="Link"
-                  onClick={this.handleLink}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup controlId="Plex_url">
-              <Col sm={12}>
-                {url}
-              </Col>
-            </FormGroup>
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="Plex Preferences"
+        onAction={this.saveSettings}
+      >
+        <Button
+          text="Link"
+          onClick={this.handleLink}
+        />
+        <span>{url}</span>
+      </SettingsPanel>
     );
   }
 }

@@ -3,9 +3,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
 import Events from '../../core/events';
@@ -77,74 +76,67 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="AniDB Mylist"
-          description="AniDB Mylist settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsYesNoToggle
-              name="AniDB_MyList_AddFiles"
-              label="Add Files"
-              tooltip="If selected when importing files, the files will be added to your AniDB account"
-              value={formFields.AniDB_MyList_AddFiles}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_MyList_StorageState"
-              label="Storage State"
-              tooltip="The storage state files will be set to when added to your list"
-              values={mylistStorageTypes}
-              value={formFields.AniDB_MyList_StorageState}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_MyList_DeleteType"
-              label="Delete Action"
-              tooltip={'What action to take for a file when you delete it from you local collection.\n'
-              + 'Delete File (AniDB) - Removes file from your AniDB MyList.\n'
-              + 'Delete File (Local DB) - Remove file from your local DB only.\n'
-              + 'Mark Deleted - Leaves the file on your list, but changes the state to deleted.\n'
-              + 'Mark External (CD/DVD) - Leaves the file on your list, but changes the state to external storage.\n'
-              + 'Mark Unknown - Leaves the file on your list, but changes the state to unkown.'}
-              values={mylistDeleteTypes}
-              value={formFields.AniDB_MyList_DeleteType}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_MyList_ReadWatched"
-              label="Read Watched"
-              tooltip="If the file is set as watched on AniDB, it will also be set as watched on your local collection"
-              value={formFields.AniDB_MyList_ReadWatched}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_MyList_ReadUnwatched"
-              label="Read Unwatched"
-              tooltip="If the file is set as un-watched on AniDB, it will also be set as un-watched on your local collection"
-              value={formFields.AniDB_MyList_ReadUnwatched}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_MyList_SetWatched"
-              label="Set Watched"
-              tooltip="When you finish watching a video, or manually mark a video as watched, AniDB will also be updated"
-              value={formFields.AniDB_MyList_SetWatched}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="AniDB_MyList_SetUnwatched"
-              label="Set Unwatched"
-              tooltip="When you manually mark a video as watched, AniDB will also be updated"
-              value={formFields.AniDB_MyList_SetUnwatched}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="AniDB Mylist"
+        onAction={this.saveSettings}
+      >
+        <SettingsYesNoToggle
+          name="AniDB_MyList_AddFiles"
+          label="Add Files"
+          tooltip="If selected when importing files, the files will be added to your AniDB account"
+          value={formFields.AniDB_MyList_AddFiles}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_MyList_StorageState"
+          label="Storage State"
+          tooltip="The storage state files will be set to when added to your list"
+          values={mylistStorageTypes}
+          value={formFields.AniDB_MyList_StorageState}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_MyList_DeleteType"
+          label="Delete Action"
+          tooltip={'What action to take for a file when you delete it from you local collection.\n'
+          + 'Delete File (AniDB) - Removes file from your AniDB MyList.\n'
+          + 'Delete File (Local DB) - Remove file from your local DB only.\n'
+          + 'Mark Deleted - Leaves the file on your list, but changes the state to deleted.\n'
+          + 'Mark External (CD/DVD) - Leaves the file on your list, but changes the state to external storage.\n'
+          + 'Mark Unknown - Leaves the file on your list, but changes the state to unkown.'}
+          values={mylistDeleteTypes}
+          value={formFields.AniDB_MyList_DeleteType}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_MyList_ReadWatched"
+          label="Read Watched"
+          tooltip="If the file is set as watched on AniDB, it will also be set as watched on your local collection"
+          value={formFields.AniDB_MyList_ReadWatched}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_MyList_ReadUnwatched"
+          label="Read Unwatched"
+          tooltip="If the file is set as un-watched on AniDB, it will also be set as un-watched on your local collection"
+          value={formFields.AniDB_MyList_ReadUnwatched}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_MyList_SetWatched"
+          label="Set Watched"
+          tooltip="When you finish watching a video, or manually mark a video as watched, AniDB will also be updated"
+          value={formFields.AniDB_MyList_SetWatched}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="AniDB_MyList_SetUnwatched"
+          label="Set Unwatched"
+          tooltip="When you manually mark a video as watched, AniDB will also be updated"
+          value={formFields.AniDB_MyList_SetUnwatched}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

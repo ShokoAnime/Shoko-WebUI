@@ -21,7 +21,7 @@ class ImportFoldersPage extends React.Component<Props> {
   render() {
     return (
       <Layout>
-        <Section className="import-folders">
+        <Section className="import-folders page-wrap">
           <Overview />
           <Columns>
             <Columns.Column>
