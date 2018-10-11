@@ -3,9 +3,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import SettingsSlider from '../../components/Buttons/SettingsSlider';
 import Events from '../../core/events';
@@ -20,10 +19,10 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    MovieDB_AutoFanart: SettingBoolean,
-    MovieDB_AutoFanartAmount: string,
-    MovieDB_AutoPosters: SettingBoolean,
-    MovieDB_AutoPostersAmount: string,
+    MovieDB_AutoFanart?: SettingBoolean,
+    MovieDB_AutoFanartAmount?: string,
+    MovieDB_AutoPosters?: SettingBoolean,
+    MovieDB_AutoPostersAmount?: string,
   }
 }
 
@@ -62,42 +61,38 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="MovieDB settings"
-          description="MovieDB image download settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsYesNoToggle
-              name="MovieDB_AutoFanart"
-              label="Fanart"
-              value={formFields.MovieDB_AutoFanart}
-              onChange={this.handleChange}
-            />
-            <SettingsSlider
-              name="MovieDB_AutoFanartAmount"
-              label="Max Posters"
-              value={formFields.MovieDB_AutoFanartAmount}
-              onChange={this.handleChange}
-            />
-            <SettingsYesNoToggle
-              name="MovieDB_AutoPosters"
-              label="Posters"
-              value={formFields.MovieDB_AutoPosters}
-              onChange={this.handleChange}
-            />
-            <SettingsSlider
-              name="MovieDB_AutoPostersAmount"
-              label="Max Posters"
-              value={formFields.MovieDB_AutoPostersAmount}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="MovieDB settings"
+        description="MovieDB image download settings"
+        actionName="Save"
+        onAction={this.saveSettings}
+        form
+      >
+        <SettingsYesNoToggle
+          name="MovieDB_AutoFanart"
+          label="Fanart"
+          value={formFields.MovieDB_AutoFanart}
+          onChange={this.handleChange}
+        />
+        <SettingsSlider
+          name="MovieDB_AutoFanartAmount"
+          label="Max Posters"
+          value={formFields.MovieDB_AutoFanartAmount}
+          onChange={this.handleChange}
+        />
+        <SettingsYesNoToggle
+          name="MovieDB_AutoPosters"
+          label="Posters"
+          value={formFields.MovieDB_AutoPosters}
+          onChange={this.handleChange}
+        />
+        <SettingsSlider
+          name="MovieDB_AutoPostersAmount"
+          label="Max Posters"
+          value={formFields.MovieDB_AutoPostersAmount}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

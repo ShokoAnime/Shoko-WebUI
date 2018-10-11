@@ -22,9 +22,9 @@ export default class SettingsSlider extends React.Component<Props> {
     onChange: PropTypes.func.isRequired,
   };
 
-  handleChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
+  handleChange = (value: string) => {
     const { name, onChange } = this.props;
-    onChange(name, event.target.value);
+    onChange(name, value);
   };
 
   render() {
@@ -37,7 +37,8 @@ export default class SettingsSlider extends React.Component<Props> {
         label={tooltip ? <SettingsTooltip label={label} text={tooltip} /> : label}
       >
         <Slider
-          stepSize={5}
+          stepSize={1}
+          labelStepSize={5}
           min={0}
           max={20}
           onChange={this.handleChange}

@@ -6,12 +6,9 @@ import {
   Col,
   FormControl,
   ControlLabel,
-  Button,
-  Form,
-  FormGroup,
   Checkbox,
-  InputGroup,
 } from 'react-bootstrap';
+import { Button, ControlGroup, FormGroup, InputGroup } from '@blueprintjs/core';
 import BrowseFolderModal from '../BrowseFolderModal';
 import { setStatus as setBrowseStatus } from '../../../core/actions/modals/BrowseFolder';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
@@ -65,22 +62,28 @@ class AddTab extends React.Component<Props> {
     } = form;
 
     return (
-      <Form horizontal>
-        <FormGroup>
-          <Col sm={2}>
-            <ControlLabel>Name</ControlLabel>
-          </Col>
-          <Col sm={10}>
-            <FormControl
-              type="text"
-              id="ImportFolderName"
-              value={ImportFolderName}
-              placeholder="Enter friendly name"
-              onChange={this.onChange}
-            />
-          </Col>
+      <React.Fragment>
+        <FormGroup inline label="Name">
+          <InputGroup
+            id="ImportFolderName"
+            value={ImportFolderName}
+            placeholder="Enter friendly name"
+            onChange={this.onChange}
+          />
         </FormGroup>
-        <FormGroup>
+        <FormGroup inline label="Location">
+          <ControlGroup fill>
+            <InputGroup
+              id="ImportFolderLocation"
+              value={ImportFolderLocation}
+              placeholder="Enter folder location"
+              onChange={this.onChange}
+              readonly
+            />
+            <Button onClick={this.handleBrowse}>Browse</Button>
+          </ControlGroup>
+        </FormGroup>
+        {/*<FormGroup>
           <Col sm={2}>
             <ControlLabel>Location</ControlLabel>
           </Col>
@@ -124,9 +127,9 @@ class AddTab extends React.Component<Props> {
             >Watch folder
             </Checkbox>
           </Col>
-        </FormGroup>
+        </FormGroup>*/}
         <BrowseFolderModal onSelect={this.onFolderSelect} />
-      </Form>
+      </React.Fragment>
     );
   }
 }

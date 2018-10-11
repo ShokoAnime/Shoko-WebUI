@@ -1,6 +1,10 @@
 $panel-header-color: #393f4f;
 $green-text-color: #59c777;
 
+input, button, textarea, :focus {
+  outline: none;
+}
+
 #container, #app-container {
   width: 100%;
   height: 100%;

@@ -3,11 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
-import {
-  Panel,
-  Button,
-  ButtonToolbar,
-} from 'react-bootstrap';
+import { Button } from '@blueprintjs/core';
 import FolderItem from './FolderItem';
 import FolderForm from './Form';
 import { setFormData, setStatus } from '../../../core/actions/modals/ImportFolder';
@@ -64,27 +60,23 @@ class EditTab extends React.Component<Props> {
         </table>
       );
       buttons = (
-        <ButtonToolbar className="pull-right">
-          <Button onClick={handleClose}>Cancel</Button>
-        </ButtonToolbar>
+        <Button onClick={handleClose}>Cancel</Button>
       );
     } else {
       panel = [<StatusPanel {...editFolder} />, <FolderForm />];
       buttons = (
-        <ButtonToolbar className="pull-right">
-          <Button onClick={this.handleSubmit} bsStyle="primary">
-            {isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : 'Update'}
-          </Button>
+        <React.Fragment>
+          <Button loading={isFetching} onClick={this.handleSubmit}>Update</Button>
           <Button onClick={handleCancel}>Cancel</Button>
-        </ButtonToolbar>
+        </React.Fragment>
       );
     }
 
     return (
-      <Panel>
+      <React.Fragment>
         {panel}
         {buttons}
-      </Panel>
+      </React.Fragment>
     );
   }
 }
