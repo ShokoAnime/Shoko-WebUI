@@ -2,7 +2,9 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import React from 'react';
-import { Container, Content, Footer as BulmaFooter, Icon } from 'react-bulma-components';
+import {
+  Container, Content, Footer as BulmaFooter, Icon,
+} from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleUp } from '@fortawesome/free-solid-svg-icons';
 import { uiVersion } from '../../core/util';

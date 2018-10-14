@@ -54,7 +54,7 @@ class ImportFolderSeries extends React.Component<Props> {
 
   render() {
     const {
-      items, isFetching, importFolders, selectedFolder, className,
+      items, isFetching, importFolders, selectedFolder,
     } = this.props;
     const series = [];
     const folders = [];
