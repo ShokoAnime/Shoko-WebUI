@@ -1,82 +1,56 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import {
-  Modal,
-  Panel,
-  Button,
-  Grid,
-  Row,
-  Col,
-  ButtonToolbar,
-} from 'react-bootstrap';
+import { Modal, Container } from 'react-bulma-components';
+import { Button } from '@blueprintjs/core';
 import { connect } from 'react-redux';
-import s from './ImportModal.css';
 import { setStatus } from '../../core/actions/modals/BrowseFolder';
 import TreeView from '../TreeView/TreeView';
+import FixedPanel from '../Panels/FixedPanel';
+
+import type { SelectedNodeType } from '../TreeView/TreeNode';
 
 type Props = {
   show: boolean,
   onSelect: (string) => void,
   status: (boolean) => void,
+  selectedNode: SelectedNodeType,
 }
 
-type State = {
-  folder: string,
-}
-
-class BrowseFolderModal extends React.Component<Props, State> {
+class BrowseFolderModal extends React.Component<Props> {
   static propTypes = {
     show: PropTypes.bool,
     onSelect: PropTypes.func,
     status: PropTypes.func.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = { folder: '' };
-  }
-
   handleClose = () => {
     const { status } = this.props;
     status(false);
   };
 
-  handleSelectionChange = (folder) => {
-    this.setState({ folder });
-  };
-
   handleSelect = () => {
-    const { onSelect, status } = this.props;
+    const { onSelect, status, selectedNode } = this.props;
     status(false);
 
     if (typeof onSelect === 'function') {
-      const { folder } = this.state;
-      onSelect(folder);
+      onSelect(selectedNode.path);
     }
   };
 
   render() {
     const { show } = this.props;
     return (
-      <Modal show={show} className={s.modal} backdrop={false}>
-        <Panel header="Select import folder">
-          <Grid fluid>
-            <Row>
-              <Col>
-                <TreeView onSelect={this.handleSelectionChange} />
-              </Col>
-            </Row>
-            <Row>
-              <Col>
-                <ButtonToolbar className="pull-right">
-                  <Button onClick={this.handleSelect} bsStyle="primary">Select</Button>
-                  <Button onClick={this.handleClose}>Cancel</Button>
-                </ButtonToolbar>
-              </Col>
-            </Row>
-          </Grid>
-        </Panel>
+      <Modal show={show}>
+        <Modal.Content>
+          <FixedPanel title="Select import folder">
+            <Container>
+              <TreeView />
+              <Button onClick={this.handleSelect} bsStyle="primary">Select</Button>
+              <Button onClick={this.handleClose}>Cancel</Button>
+            </Container>
+          </FixedPanel>
+        </Modal.Content>
       </Modal>
     );
   }
@@ -84,9 +58,12 @@ class BrowseFolderModal extends React.Component<Props, State> {
 
 function mapStateToProps(state) {
   const { modals } = state;
+  const { browseFolder } = modals;
+  const { status, selectedNode } = browseFolder;
 
   return {
-    show: modals.browseFolder.status,
+    show: status,
+    selectedNode,
   };
 }
 

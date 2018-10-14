@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { Modal, Tabs, Container } from 'react-bulma-components';
-import { setFormData } from '../../../core/actions/modals/ImportFolder';
+import { setFormData, setStatus } from '../../../core/actions/modals/ImportFolder';
 import AddTab from './AddTab';
 import EditTab from './EditTab';
 import type { FormType } from './Form';
@@ -12,6 +12,7 @@ import FixedPanel from '../../Panels/FixedPanel';
 type Props = {
   status: boolean,
   formData: (FormType) => void,
+  handleClose: () => void,
 }
 
 type State = {
@@ -48,11 +49,11 @@ class ImportModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { status } = this.props;
+    const { status, handleClose } = this.props;
     const { activeTab } = this.state;
 
     return (
-      <Modal show={status} className="import-modal">
+      <Modal show={status} onClose={handleClose} className="import-modal">
         <Modal.Content>
           <FixedPanel title="Manage import folders">
             <Container>
@@ -81,6 +82,7 @@ class ImportModal extends React.Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     formData: value => dispatch(setFormData(value)),
+    handleClose: () => dispatch(setStatus(false)),
   };
 }
 

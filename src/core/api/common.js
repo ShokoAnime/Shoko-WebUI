@@ -163,8 +163,8 @@ function getOsDrives() {
   return Api.call({ action: '/os/drives' });
 }
 
-function postOsFolder(params: {}) {
-  return Api.call({ action: '/os/folder', method: 'POST', params });
+function postOsFolder(path) {
+  return Api.call({ action: '/os/folder', method: 'POST', params: { dir: path, full_path: path } });
 }
 
 function postConfigSet(params: {}) {

@@ -3,3 +3,34 @@
     background: #fff;
   }
 }
+
+.treeview {
+  min-height: 400px;
+  max-height: 600px;
+  overflow: auto;
+
+  .list-group-item {
+    cursor: pointer;
+    margin-left: 16px;
+    font-size: 12pt;
+
+    &.root {
+      cursor: pointer;
+      margin-left: 0;
+    }
+
+    &.selected > span {
+      color: #49a2df;
+    }
+
+    .caret {
+      position: relative;
+      top: 1px;
+    }
+  }
+
+  .svg-inline--fa {
+    margin-left: 10px;
+    margin-right: 5px;
+  }
+}

@@ -1,38 +1,49 @@
 // @flow
-import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { forEach } from 'lodash';
 import cx from 'classnames';
-import Api from '../../core/api';
-import type { ApiResponseType } from '../../core/api';
-import s from './TreeView.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faCaretRight, faCaretDown,
+} from '@fortawesome/free-solid-svg-icons';
+import connect from 'react-redux/es/connect/connect';
+import Events from '../../core/events';
+import { setSelectedItems } from '../../core/actions/modals/BrowseFolder';
 
-function fetchApiFolder(path = '') {
-  if (path === '') {
-    return Api.getOsDrives();
-  }
-  return Api.postOsFolder({ full_path: path });
+export type SelectedNodeType = {
+  path: string,
+  id: number,
+}
+
+type ApiNodeType = {
+  nodeId: number,
+  full_path: string,
+  dir: string,
 }
 
 type NodeType = {
-  path: string,
+  nodeId: number,
+  basePath: string,
   text: string,
+  level: number,
 }
 
 type State = {
   fetching: boolean,
   expanded: boolean,
   loaded: boolean,
-  nodes: Array<NodeType>,
 }
 
 type Props = {
-  selectedNode: NodeType,
+  selectedNode: SelectedNodeType,
   level: number,
   basePath: string,
-  onSelect: (any) => void,
+  fetch: (number, string) => void,
+  select: (SelectedNodeType) => void,
   text: string,
+  nodeId: number,
+  items: Array<NodeType>,
 }
 
 class TreeNode extends React.Component<Props, State> {
@@ -40,40 +51,25 @@ class TreeNode extends React.Component<Props, State> {
     basePath: PropTypes.string,
     text: PropTypes.string,
     level: PropTypes.number,
-    onSelect: PropTypes.func.isRequired,
-    selectedNode: PropTypes.object,
+    selectedNode: PropTypes.number,
   };
 
   constructor(props: Props) {
     super(props);
-    this.toggleExpanded = this.toggleExpanded.bind(this);
-    this.toggleSelected = this.toggleSelected.bind(this);
     this.state = {
       fetching: false,
       expanded: false,
       loaded: false,
-      nodes: [],
     };
   }
 
   toggleExpanded = (event: Event) => {
     const { expanded, loaded } = this.state;
-    const { basePath } = this.props;
+    const { basePath, fetch, nodeId } = this.props;
 
     if (!loaded) {
-      this.setState({ fetching: true });
-      fetchApiFolder(basePath)
-        .then((json: ApiResponseType): Array<NodeType> => {
-          if (json.error) { return []; }
-          const nodes = [];
-          // $FlowFixMe
-          forEach(json.data.subdir, (item) => {
-            nodes.push({ path: item.full_path, text: item.dir });
-          });
-          return nodes;
-        })
-        .then(nodes => this.setState({ loaded: true, expanded: !expanded, nodes }))
-        .finally(() => { this.setState({ fetching: false }); });
+      fetch(nodeId, basePath);
+      this.setState({ expanded: true, loaded: true });
     } else {
       this.setState({ expanded: !expanded });
     }
@@ -81,28 +77,26 @@ class TreeNode extends React.Component<Props, State> {
   };
 
   toggleSelected = (event: Event) => {
-    const { onSelect } = this.props;
-    onSelect(this);
-    const { expanded, loaded } = this.state;
-    if (expanded === false && loaded === false) {
-      this.toggleExpanded(event);
-      return;
-    }
+    const { select, nodeId, basePath } = this.props;
+    select({ id: nodeId, path: basePath });
     event.stopPropagation();
   };
 
   render() {
-    const { text, level, selectedNode } = this.props;
-    const { fetching, expanded, nodes } = this.state;
-    const selected = this === selectedNode;
+    const {
+      text, level, selectedNode, items, nodeId,
+    } = this.props;
+    const { fetching, expanded } = this.state;
+    const selected = nodeId === selectedNode.id;
 
     const children = [];
     if (expanded) {
-      forEach(nodes, (node) => {
-        children.push(<TreeNode
-          {...this.props}
-          basePath={node.path}
-          text={node.text}
+      forEach(items, (node: ApiNodeType) => {
+        children.push(<ConnectedTreeNode
+          key={node.nodeId}
+          nodeId={node.nodeId}
+          basePath={node.full_path}
+          text={node.dir}
           level={level + 1}
         />);
       });
@@ -110,17 +104,16 @@ class TreeNode extends React.Component<Props, State> {
     return (
       <li
         className={cx(
-          s['list-group-item'],
-          level === 1 ? s.root : null, selected ? s.selected : null,
+          'list-group-item',
+          level === 1 ? 'root' : null, selected ? 'selected' : null,
         )}
         onClick={this.toggleSelected}
       >
-        {fetching ? <i className="fa fa-refresh fa-spin" /> : (
-          <i
-            className={cx(s.caret, 'fa', expanded ? 'fa-caret-down' : 'fa-caret-right')}
-            onClick={this.toggleExpanded}
-          />
-        )}
+        <FontAwesomeIcon
+          onClick={this.toggleExpanded}
+          spin={fetching}
+          icon={expanded ? faCaretDown : faCaretRight}
+        />
         <span>{text}</span>
         <ul>{children}</ul>
       </li>
@@ -128,4 +121,24 @@ class TreeNode extends React.Component<Props, State> {
   }
 }
 
-export default TreeNode;
+function mapStateToProps(state, props) {
+  const { modals, fetching } = state;
+  const { browseFolder } = modals;
+  const { items, nodeId, selectedNode } = browseFolder;
+
+  return {
+    items: items[props.nodeId] || [],
+    fetching: fetching[`browse-treenode-${nodeId}`] === true,
+    selectedNode,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    fetch: (id, path) => dispatch({ type: Events.OS_BROWSE, payload: { id, path } }),
+    select: value => dispatch(setSelectedItems(value)),
+  };
+}
+
+const ConnectedTreeNode = connect(mapStateToProps, mapDispatchToProps)(TreeNode);
+export default ConnectedTreeNode;

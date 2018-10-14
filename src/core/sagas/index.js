@@ -42,11 +42,13 @@ import {
   SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
+import {
+  setItems as setBrowseModalItems,
+  setId as setBrowseModalId,
+} from '../actions/modals/BrowseFolder';
 import queueGlobalAlert from './QueueGlobalAlert';
 import apiPollingDriver from './apiPollingDriver';
 import settings from './settings';
-import store from "../store";
-import history from "../history";
 
 const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
@@ -508,6 +510,25 @@ function* fetchImportFolderSeries(action): Saga<void> {
   yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data.series);
 }
 
+function* osBrowse(action): Saga<void> {
+  let genId = yield select(state => state.modals.browseFolder.id);
+  const { id, path } = action.payload;
+  yield dispatchAction(Events.START_FETCHING, `browse-treenode-${id}`);
+  const resultJson = yield call(path === '' ? ApiCommon.getOsDrives : ApiCommon.postOsFolder, path);
+  yield dispatchAction(Events.STOP_FETCHING, `browse-treenode-${id}`);
+  if (resultJson.error) {
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
+    return;
+  }
+  const nodes = [];
+  forEach(resultJson.data.subdir, (node) => {
+    genId += 1;
+    nodes.push(Object.assign({}, node, { nodeId: genId }));
+  });
+  yield put(setBrowseModalId(genId));
+  yield put(setBrowseModalItems({ key: id, nodes }));
+}
+
 export default function* rootSaga(): Saga<void> {
   yield all([
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
@@ -550,5 +571,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
     takeEvery(Events.LOGIN, login),
+    takeEvery(Events.OS_BROWSE, osBrowse),
   ]);
 }
