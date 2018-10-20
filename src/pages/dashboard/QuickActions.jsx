@@ -23,11 +23,11 @@ class QuickActions extends React.Component<Props> {
       <FixedPanel title="Quick Actions">
         <Table>
           <tbody>
-            <QuickActionsItem index={1} name="Run Import" action="import" onAction={handleAction} />
-            <QuickActionsItem index={2} name="Remove Missing Files" action="remove_missing_files" onAction={handleAction} />
-            <QuickActionsItem index={3} name="Update All Stats" action="stats_update" onAction={handleAction} />
-            <QuickActionsItem index={4} name="Update All Media Info" action="mediainfo_update" onAction={handleAction} />
-            <QuickActionsItem index={5} name="Plex Sync All" action="plex_sync" onAction={handleAction} />
+            <QuickActionsItem index={1} name="Run Import" action="folder-import" onAction={handleAction} />
+            <QuickActionsItem index={2} name="Remove Missing Files" action="remove-missing-files" onAction={handleAction} />
+            <QuickActionsItem index={3} name="Update All Stats" action="stats-update" onAction={handleAction} />
+            <QuickActionsItem index={4} name="Update All Media Info" action="mediainfo-update" onAction={handleAction} />
+            <QuickActionsItem index={5} name="Plex Sync All" action="plex-sync" onAction={handleAction} />
           </tbody>
         </Table>
       </FixedPanel>

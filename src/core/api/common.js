@@ -63,28 +63,8 @@ function postLogRotate(params: {}) {
   return Api.call({ action: '/log/rotate', method: 'POST', params });
 }
 
-function getRescan() {
-  return Api.call({ action: '/rescan' });
-}
-
-function getRemoveMissingFiles() {
-  return Api.call({ action: '/remove_missing_files' });
-}
-
-function getStatsUpdate() {
-  return Api.call({ action: '/stats_update' });
-}
-
-function getMediainfoUpdate() {
-  return Api.call({ action: '/mediainfo_update' });
-}
-
 function getFolderList() {
   return Api.call({ action: '/folder/list' });
-}
-
-function getFolderImport() {
-  return Api.call({ action: '/folder/import' });
 }
 
 function postFolderAdd(params: {}) {
@@ -97,10 +77,6 @@ function postFolderEdit(params: {}) {
 
 function postWebuiConfig(params: {}) {
   return Api.call({ action: '/webui/config', method: 'POST', params });
-}
-
-function getPlexSync() {
-  return Api.call({ action: '/sync/all', endpoint: '/plex' });
 }
 
 function getPlexLoginurl() {
@@ -193,16 +169,10 @@ export default {
   configImport,
   getLogRotate,
   postLogRotate,
-  getRescan,
-  getRemoveMissingFiles,
-  getStatsUpdate,
-  getMediainfoUpdate,
   getFolderList,
   postFolderAdd,
   postFolderEdit,
   postWebuiConfig,
-  getFolderImport,
-  getPlexSync,
   getPlexLoginurl,
   getInit,
   getInitDatabase,

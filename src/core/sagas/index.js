@@ -4,10 +4,11 @@ import { delay } from 'redux-saga';
 import {
   all, call, put, select, takeEvery,
 } from 'redux-saga/effects';
-import { forEach, without } from 'lodash';
+import { capitalize, forEach, map, without } from 'lodash';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import ApiCommon from '../api/common';
+import ApiActions from '../api/actions';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
@@ -196,29 +197,16 @@ function* settingsSaveLogRotate(action): Saga<void> {
 }
 
 function* runQuickAction(action): Saga<void> {
-  let actionFunc;
-  switch (action.payload) {
-    case 'import':
-      actionFunc = ApiCommon.getFolderImport;
-      break;
-    case 'remove_missing_files':
-      actionFunc = ApiCommon.getRemoveMissingFiles;
-      break;
-    case 'stats_update':
-      actionFunc = ApiCommon.getStatsUpdate;
-      break;
-    case 'mediainfo_update':
-      actionFunc = ApiCommon.getMediainfoUpdate;
-      break;
-    case 'plex_sync':
-      actionFunc = ApiCommon.getPlexSync;
-      break;
-    default:
-      yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
-      return;
+  const { payload } = action;
+  const capitalizedName = map(payload.split('-'), word => capitalize(word)).join('');
+  const funcName = `get${capitalizedName}`;
+
+  if (typeof ApiActions[funcName] !== 'function') {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
+    return;
   }
 
-  const resultJson = yield call(actionFunc);
+  const resultJson = yield call(ApiActions[funcName]);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
