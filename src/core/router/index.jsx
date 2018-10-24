@@ -9,7 +9,7 @@ import NoMatchPage from '../../pages/nomatch/index';
 import DashboardPage from '../../pages/dashboard/index';
 import ImportPage from '../../pages/import/index';
 import SettingsPage from '../../pages/settings/index';
-import LogsPage from '../../pages/logs/index';
+import ActionsPage from '../../pages/actions/index';
 import FirstRunPage from '../../pages/firstrun/index';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
@@ -23,7 +23,7 @@ const Router = ({ history }) => (
       <AuthenticatedRoute exact path="/dashboard" component={DashboardPage} />
       <AuthenticatedRoute exact path="/import-folders" component={ImportPage} />
       <AuthenticatedRoute exact path="/settings" component={SettingsPage} />
-      <AuthenticatedRoute exact path="/logs" component={LogsPage} />
+      <AuthenticatedRoute exact path="/actions" component={ActionsPage} />
       <Route component={NoMatchPage} />
     </Switch>
   </ConnectedRouter>
