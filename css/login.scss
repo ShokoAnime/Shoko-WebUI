@@ -1,5 +1,5 @@
 .login-image {
-  background-image: url('/api/image/7/random');
+  background-image: url('/api/image/7/random'), url('/background.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -7,4 +7,19 @@
 
 .login-form {
   background: rgba(255,255,255,0.7);
+
+  .welcome {
+      text-align: center;
+      font-weight: bold;
+      font-size: 1.5em;
+  }
+
+  .version {
+    text-align: center;
+  }
+
+  .firstrun-notice {
+    background-color: rgba(217,130,43, 0.7);
+    margin: 1em 0;
+  }
 }

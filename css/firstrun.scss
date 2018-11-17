@@ -1,0 +1,21 @@
+.firstrun-page {
+  background-color: $panel-header-color;
+  background-image: url('/firstrun.png');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  a {
+    color: #49a2df;
+    font-weight: 600;
+  }
+
+  .firstrun-form {
+    background: rgba(255, 255, 255, 1);
+
+    .bp3-label {
+      min-width: 150px;
+      text-align: right;
+    }
+  }
+}

@@ -4,12 +4,17 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
-import { Columns, Container, Hero } from 'react-bulma-components';
 import {
-  Button, Card, FormGroup, InputGroup, Intent, Toaster, Toast,
+  Columns, Container, Hero,
+} from 'react-bulma-components';
+import {
+  Button, Card, Callout, FormGroup, InputGroup, Intent, Toaster, Toast,
 } from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
+import Link from '../../components/Link/Link';
 import type { ApiLoginType, GlobalAlertType } from '../../core/types/api';
 
 const UI_VERSION = uiVersion();
@@ -73,7 +78,7 @@ class LoginPage extends React.Component<Props, State> {
     const { version, isFetching } = this.props;
 
     return (
-      <h4>{isFetching ? <i className="fa fa-refresh fa-spin" /> : null }
+      <h4 className="version">{isFetching ? <FontAwesomeIcon icon={faSpinner} spin /> : null }
         {version === null ? '' : version}
         (WebUI {UI_VERSION})
       </h4>
@@ -108,8 +113,9 @@ class LoginPage extends React.Component<Props, State> {
             <Columns centered>
               <Columns.Column size="one-quarter">
                 <Card className="login-form">
-                  <h2>Welcome to Shoko Server!</h2>
+                  <h2 className="welcome">Welcome to Shoko Server!</h2>
                   {firstRun !== true && this.renderVersion()}
+                  {firstRun === true && <Callout className="firstrun-notice" intent="warning">Looks like a first run. Try the <Link to="/firstrun">wizard</Link></Callout>}
                   <FormGroup>
                     <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.user = ref; }} placeholder="Username" />
                   </FormGroup>

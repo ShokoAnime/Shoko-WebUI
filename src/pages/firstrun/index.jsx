@@ -1,101 +1,63 @@
 // @flow
-import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  TabContainer, Row, Col, Nav, NavItem, TabPane, TabContent, Grid,
-} from 'react-bootstrap';
-import cx from 'classnames';
-import s from './styles.css';
+import { Container, Hero } from 'react-bulma-components';
+import { Card, Tab, Tabs } from '@blueprintjs/core';
 import Events from '../../core/events';
-import { uiVersion } from '../../core/util';
 import TabDatabase from './TabDatabase';
 import TabAnidb from './TabAnidb';
 import TabUser from './TabUser';
 import TabInit from './TabInit';
 import AlertContainer from '../../components/AlertContainer';
-
-const UI_VERSION = uiVersion();
+import { activeTab as activeTabAction } from '../../core/actions/firstrun';
 
 type Props = {
   getDatabaseInfo: () => void,
+  setActiveTab: (string) => void,
+  activeTab: string,
   status: {
     server_started: boolean,
   },
 }
 
-type State = {
-  activeTab: string,
-}
-
-class FirstRunPage extends React.Component<Props, State> {
+class FirstRunPage extends React.Component<Props> {
   static propTypes = {
     getDatabaseInfo: PropTypes.func,
+    setActiveTab: PropTypes.func,
     status: PropTypes.object,
+    activeTab: PropTypes.string,
   };
 
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      activeTab: 'tabDatabase',
-    };
-  }
-
   componentDidMount() {
-    document.title = `Shoko Server Web UI ${UI_VERSION}`;
     const { getDatabaseInfo } = this.props;
     getDatabaseInfo();
   }
 
-  setActiveTab = (key) => {
-    this.setState({ activeTab: key });
+  handleTabChange = (key) => {
+    const { setActiveTab } = this.props;
+    setActiveTab(key);
   };
 
   render() {
-    const { activeTab } = this.state;
-    const { status } = this.props;
+    const { activeTab, status } = this.props;
     const isStarted = status.server_started === true;
     return (
-      <div className={s.wrapper}>
-        <div className={s['wrapper-inner']}>
-          <div className="container-fluid">
-            <AlertContainer />
-            <section className="panel">
-              <TabContainer id="first-run" className={cx(s.container)} onSelect={this.setActiveTab} activeKey={activeTab}>
-                <Grid>
-                  <Row>
-                    <Col sm={12}>
-                      <Nav bsStyle="pills">
-                        <NavItem disabled={isStarted} eventKey="tabDatabase">Database</NavItem>
-                        <NavItem disabled={isStarted} eventKey="tabAnidb">AniDB Account</NavItem>
-                        <NavItem disabled={isStarted} eventKey="tabUser">Local Account</NavItem>
-                        <NavItem eventKey="tabInit">Init</NavItem>
-                      </Nav>
-                    </Col>
-                  </Row>
-                  <Row>
-                    <TabContent className={cx(s['tab-content'])}>
-                      <TabPane eventKey="tabDatabase">
-                        <TabDatabase setActiveTab={this.setActiveTab} />
-                      </TabPane>
-                      <TabPane eventKey="tabAnidb">
-                        <TabAnidb setActiveTab={this.setActiveTab} />
-                      </TabPane>
-                      <TabPane eventKey="tabUser">
-                        <TabUser setActiveTab={this.setActiveTab} />
-                      </TabPane>
-                      <TabPane eventKey="tabInit">
-                        <TabInit setActiveTab={this.setActiveTab} />
-                      </TabPane>
-                    </TabContent>
-                  </Row>
-                </Grid>
-              </TabContainer>
-            </section>
-          </div>
-        </div>
-      </div>
+      <Hero size="fullheight" className="firstrun-page">
+        <Hero.Body>
+          <AlertContainer />
+          <Container textAlignment="centered">
+            <Card className="firstrun-form">
+              <Tabs id="first-run" onChange={this.handleTabChange} selectedTabId={activeTab}>
+                <Tab id="tabDatabase" disabled={isStarted} title="Database" panel={<TabDatabase />} />
+                <Tab id="tabAnidb" disabled={isStarted} title="AniDB Account" panel={<TabAnidb />} />
+                <Tab id="tabUser" disabled={isStarted} title="Local Account" panel={<TabUser />} />
+                <Tab id="tabInit" title="Init" panel={<TabInit />} />
+              </Tabs>
+            </Card>
+          </Container>
+        </Hero.Body>
+      </Hero>
     );
   }
 }
@@ -114,6 +76,7 @@ function mapDispatchToProps(dispatch) {
       dispatch({ type: Events.INIT_STATUS });
       dispatch({ type: Events.FIRSTRUN_GET_DATABASE });
     },
+    setActiveTab: value => dispatch(activeTabAction(value)),
   };
 }
 
