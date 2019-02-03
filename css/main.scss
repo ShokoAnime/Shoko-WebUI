@@ -1,2 +1,8 @@
-@import "./bootstrap-reset.css";
-@import "./webui-main.css";
+@import "common";
+@import "modals";
+@import "login";
+@import "dashboard";
+@import "error-page";
+@import "settings";
+@import "firstrun";
+@import "actions";

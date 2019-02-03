@@ -6,6 +6,7 @@ import {
   FIRSTRUN_DATABASE,
   FIRSTRUN_STATUS,
   FIRSTRUN_USER,
+  FIRSTRUN_ACTIVE_TAB,
 } from '../actions/firstrun';
 
 const defaultState = { status: {} };
@@ -30,9 +31,15 @@ const user = handleAction(FIRSTRUN_USER, (state, action) => {
   return Object.assign({}, state, defaultState, action.payload || {});
 }, defaultState);
 
+const activeTab = handleAction(FIRSTRUN_ACTIVE_TAB, (state, action) => {
+  if (action.error) { return state; }
+  return action.payload;
+}, 'tabDatabase');
+
 export default combineReducers({
   database,
   status,
   anidb,
   user,
+  activeTab,
 });

@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  Alert, Button, ButtonToolbar, Col, Form, FormGroup,
-} from 'react-bootstrap';
+  Button, Callout, ControlGroup,
+} from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import { getAnidb } from '../../core/actions/firstrun';
 import Events from '../../core/events';
 import FieldGroup from '../../components/FieldGroup';
@@ -44,20 +47,16 @@ class TabAnidb extends React.Component<Props> {
     } = this.props;
 
     return (
-      <Form horizontal>
-        {isFetching && <Alert onDismiss={() => {}} bsStyle="warning"><i className="fa fa-refresh fa-spin" />Loading...</Alert>}
-        {!isFetching && anidb.status.text && <Alert onDismiss={() => {}} bsStyle={anidb.status.type === 'error' ? 'danger' : 'success'}>{anidb.status.text}</Alert>}
+      <React.Fragment>
+        {isFetching && <Callout intent="warning"><FontAwesomeIcon icon={faSpinner} spin />Loading...</Callout>}
+        {!isFetching && anidb.status.text && <Callout intent={anidb.status.type === 'error' ? 'danger' : 'success'}>{anidb.status.text}</Callout>}
         <FieldGroup id="formAnidbUsername" label="Username:" data={anidb} field="login" onChange={changeSetting} isHidden={false} />
         <FieldGroup id="formAnidbPassword" label="Password:" data={anidb} field="password" onChange={changeSetting} isHidden={false} />
-        <FormGroup>
-          <Col smOffset={2} sm={6}>
-            <ButtonToolbar>
-              <Button className="pull-right" bsStyle="primary" onClick={saveAnidb}>Save</Button>
-              <Button className="pull-right" bsStyle="info" onClick={testAnidb}>Test</Button>
-            </ButtonToolbar>
-          </Col>
-        </FormGroup>
-      </Form>
+        <ControlGroup>
+          <Button className="pull-right" intent="info" onClick={testAnidb}>Test</Button>
+          <Button className="pull-right" intent="primary" onClick={saveAnidb}>Save</Button>
+        </ControlGroup>
+      </React.Fragment>
     );
   }
 }

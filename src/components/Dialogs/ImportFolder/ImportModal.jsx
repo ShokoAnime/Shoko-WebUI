@@ -2,22 +2,17 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  Modal,
-  Tabs,
-  Tab,
-  Panel,
-} from 'react-bootstrap';
-import cx from 'classnames';
-import { setFormData } from '../../../core/actions/modals/ImportFolder';
-import s from '../ImportModal.css';
+import { Modal, Tabs, Container } from 'react-bulma-components';
+import { setFormData, setStatus } from '../../../core/actions/modals/ImportFolder';
 import AddTab from './AddTab';
 import EditTab from './EditTab';
 import type { FormType } from './Form';
+import FixedPanel from '../../Panels/FixedPanel';
 
 type Props = {
   status: boolean,
   formData: (FormType) => void,
+  handleClose: () => void,
 }
 
 type State = {
@@ -54,18 +49,31 @@ class ImportModal extends React.Component<Props, State> {
   };
 
   render() {
-    const { status } = this.props;
+    const { status, handleClose } = this.props;
     const { activeTab } = this.state;
 
     return (
-      <Modal show={status} className={cx(s.modal, s['import-modal'])}>
-        <Panel header="Manage import folders">
-          <Tabs activeKey={activeTab} onSelect={this.onTabChange} id="import-modal-tabs">
-            <Tab eventKey={1} title="Add new"><AddTab /></Tab>
-            <Tab eventKey={2} title="Edit / Delete"><EditTab /></Tab>
-            <Tab eventKey={3} title="Providers" disabled />
-          </Tabs>
-        </Panel>
+      <Modal show={status} onClose={handleClose} className="import-modal">
+        <Modal.Content>
+          <FixedPanel title="Manage import folders">
+            <Container>
+              <Tabs activeKey={activeTab} onSelect={this.onTabChange} id="import-modal-tabs">
+                <Tabs.Tab
+                  onClick={() => { this.onTabChange(1); }}
+                  active={activeTab === 1}
+                >Add new
+                </Tabs.Tab>
+                <Tabs.Tab
+                  onClick={() => { this.onTabChange(2); }}
+                  active={activeTab === 2}
+                >Edit / Delete
+                </Tabs.Tab>
+              </Tabs>
+              {activeTab === 1 && <AddTab />}
+              {activeTab === 2 && <EditTab />}
+            </Container>
+          </FixedPanel>
+        </Modal.Content>
       </Modal>
     );
   }
@@ -74,6 +82,7 @@ class ImportModal extends React.Component<Props, State> {
 function mapDispatchToProps(dispatch) {
   return {
     formData: value => dispatch(setFormData(value)),
+    handleClose: () => dispatch(setStatus(false)),
   };
 }
 

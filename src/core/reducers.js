@@ -15,7 +15,6 @@ import {
   SELECT_IMPORT_FOLDER_SERIES,
   GLOBAL_ALERT,
   LOGOUT,
-  WEBUI_VERSION_UPDATE,
   JMM_VERSION,
   IMPORT_FOLDER_SERIES,
   SET_FETCHING,
@@ -39,12 +38,6 @@ export const apiSession = handleActions({
     (action.error ? state : Object.assign({}, state, action.payload)),
   [LOGOUT]: (state: apiSessionState): apiSessionState => Object.assign({}, state, { apikey: '' }),
 }, { apikey: '' });
-
-export const webuiVersionUpdate = handleAction(
-  WEBUI_VERSION_UPDATE,
-  (state, action) => Object.assign({}, action.payload || state),
-  { status: false },
-);
 
 export const importFolderSeries = handleAction(
   IMPORT_FOLDER_SERIES,
@@ -102,7 +95,6 @@ const reducers = {
   filesCount,
   sidebarToggle,
   updateAvailable,
-  webuiVersionUpdate,
   jmmVersion,
   importFolderSeries,
   selectedImportFolderSeries,

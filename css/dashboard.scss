@@ -1,0 +1,40 @@
+.recent-files .panel-block {
+  height: 15em;
+  overflow-y: auto;
+  align-items: start;
+}
+
+.commands .table .icon-column {
+  width: 2em;
+}
+
+.user-dropdown {
+  .avatar {
+    background: #157f79;
+    height: 48px;
+    width: 48px;
+    border-radius: 24px;
+    text-align: center;
+    line-height: 48px;
+    font-size: 24px;
+    color: #fff;
+  }
+
+  .username {
+    line-height: 48px;
+    color: #fff;
+    font-size: 1.5em;
+    margin-bottom: 0;
+  }
+
+  .navbar-item {
+    &.has-dropdown:hover .navbar-link,
+    &.is-active .navbar-link {
+      background-color: $secondary-toolbar-bg-color;
+    }
+
+    .icon {
+      margin-right: 0.5em;
+    }
+  }
+}

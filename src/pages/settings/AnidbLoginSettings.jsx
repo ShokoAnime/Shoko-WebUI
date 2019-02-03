@@ -3,14 +3,13 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  Form, FormControl, FormGroup, ControlLabel, Col,
-} from 'react-bootstrap';
+import { FormGroup, InputGroup } from '@blueprintjs/core';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
+
 
 type Props = {
   fields: {
@@ -65,89 +64,32 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
     saveSettings(fields);
   };
 
+  renderField = (label, field, formFields, type = 'text') => (
+    <FormGroup key={field} inline label={label}>
+      <InputGroup
+        value={formFields[field]}
+        type={type}
+        onChange={this.handleChange}
+      />
+    </FormGroup>
+  );
+
   render() {
     const { fields } = this.props;
     const { fields: stateFields } = this.state;
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="AniDB Login"
-          description="AniDB Login settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <FormGroup controlId="AniDB_Username">
-              <Col sm={3}>
-                <ControlLabel>Username</ControlLabel>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={formFields.AniDB_Username}
-                  onChange={this.handleChange}
-                />
-              </Col>
-              <FormControl.Feedback />
-            </FormGroup>
-            <FormGroup controlId="AniDB_Password">
-              <Col sm={3}>
-                <ControlLabel>Password</ControlLabel>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="password"
-                  value={formFields.AniDB_Password}
-                  onChange={this.handleChange}
-                />
-              </Col>
-              <FormControl.Feedback />
-            </FormGroup>
-            <FormGroup controlId="AniDB_ClientPort">
-              <Col sm={3}>
-                <ControlLabel>Port</ControlLabel>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={formFields.AniDB_ClientPort}
-                  onChange={this.handleChange}
-                />
-              </Col>
-              <FormControl.Feedback />
-            </FormGroup>
-            <FormGroup controlId="AniDB_AVDumpKey">
-              <Col sm={3}>
-                <ControlLabel>AvDump Key</ControlLabel>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={formFields.AniDB_AVDumpKey}
-                  onChange={this.handleChange}
-                />
-              </Col>
-              <FormControl.Feedback />
-            </FormGroup>
-            <FormGroup controlId="AniDB_AVDumpClientPort">
-              <Col sm={3}>
-                <ControlLabel>AvDump Port</ControlLabel>
-              </Col>
-              <Col sm={9}>
-                <FormControl
-                  type="text"
-                  value={formFields.AniDB_AVDumpClientPort}
-                  onChange={this.handleChange}
-                />
-              </Col>
-              <FormControl.Feedback />
-            </FormGroup>
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="AniDB Login"
+        onAction={this.saveSettings}
+      >
+        {this.renderField('Username', 'AniDB_Username', formFields)}
+        {this.renderField('Password', 'AniDB_Password', formFields, 'password')}
+        {this.renderField('Port', 'AniDB_ClientPort', formFields)}
+        {this.renderField('AvDump Key', 'AniDB_AVDumpKey', formFields)}
+        {this.renderField('AvDump Port', 'AniDB_AVDumpClientPort', formFields)}
+      </SettingsPanel>
     );
   }
 }

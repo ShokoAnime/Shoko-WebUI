@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Button } from 'react-bootstrap';
+import { Button } from '@blueprintjs/core';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
 
 export type FolderItemType = {
@@ -63,7 +63,7 @@ class FolderItem extends React.Component<Props> {
         <td>{flags.join(' ')}</td>
         <td>{ImportFolderType === 0 ? 'Local' : '??'}</td>
         <td className="text-right">
-          <Button bsSize="xsmall" onClick={this.onEdit}>Edit</Button>
+          <Button size="small" onClick={this.onEdit}>Edit</Button>
         </td>
       </tr>
     );

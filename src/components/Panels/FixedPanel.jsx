@@ -1,36 +1,27 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import cx from 'classnames';
-import TimeUpdated from './TimeUpdated';
-import s from './styles.css';
+import { forEach } from 'lodash';
+import { Level, Panel } from 'react-bulma-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCog } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
-  lastUpdated?: number,
   title: any,
-  description: string,
-  isFetching: boolean,
+  className?: string,
   children: any,
-  form: boolean,
   actionName?: string,
+  nowrap?: boolean,
   onAction?: () => void
 }
 
 class FixedPanel extends React.Component<Props> {
   static propTypes = {
-    lastUpdated: PropTypes.number,
     title: PropTypes.any,
-    description: PropTypes.string,
-    isFetching: PropTypes.bool,
     children: PropTypes.any,
-    form: PropTypes.bool,
     actionName: PropTypes.string,
+    nowrap: PropTypes.bool,
     onAction: PropTypes.func,
-  };
-
-  static defaultProps = {
-    isFetching: false,
-    form: false,
   };
 
   handleAction = () => {
@@ -40,39 +31,48 @@ class FixedPanel extends React.Component<Props> {
     }
   };
 
-  renderButton() {
+  renderButton = () => {
     const { actionName } = this.props;
     if (!actionName) { return null; }
     return (
-      <div className="pull-right">
-        <a className="btn btn-primary pull-right" onClick={this.handleAction}>{actionName}</a>
-      </div>
+      <Level.Side align="right">
+        <Level.Item className="action">
+          <FontAwesomeIcon icon={faCog} onClick={this.handleAction} alt={actionName} />
+        </Level.Item>
+      </Level.Side>
     );
-  }
+  };
+
+  renderTitle = () => {
+    const { title } = this.props;
+    if (typeof title !== 'string') { return title; }
+    const output = [];
+    forEach(title.split(' '), (word, index) => {
+      output.push(index % 2 !== 1 ? word : <span key={index} className="color">{word}</span>);
+    });
+    return output;
+  };
 
   render() {
     const {
-      children, title, isFetching, lastUpdated, description, form,
+      children, nowrap, className,
     } = this.props;
     return (
-      <section className="panel">
-        <header className={cx('panel-heading', s.header)}>
-          <div className="pull-left">
-            {title}<h6>{description}</h6>
-          </div>
-          {this.renderButton()}
-          <div className="clearfix" />
-        </header>
-        <div className={cx(s['fixed-panel'], form && s.form)}>
-          {children}
-        </div>
-        {lastUpdated || isFetching ? (
-          <TimeUpdated
-            className={s.timer}
-            timestamp={lastUpdated}
-            isFetching={isFetching}
-          />) : null}
-      </section>
+      <Panel className={className}>
+        <Panel.Header>
+          <Level>
+            <Level.Item>
+              {this.renderTitle()}
+            </Level.Item>
+            {this.renderButton()}
+          </Level>
+        </Panel.Header>
+        {nowrap === true ? children : (
+          <Panel.Block>
+            {children}
+          </Panel.Block>
+        )}
+      </Panel>
     );
   }
 }

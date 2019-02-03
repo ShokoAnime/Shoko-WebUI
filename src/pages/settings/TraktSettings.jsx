@@ -2,14 +2,11 @@
 /* eslint-disable camelcase */
 import PropTypes from 'prop-types';
 import React from 'react';
-import cx from 'classnames';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import {
-  Form, Col, HelpBlock, FormGroup, ControlLabel, FormControl,
-} from 'react-bootstrap';
+import { Button, FormGroup } from '@blueprintjs/core';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
 import Events from '../../core/events';
@@ -85,32 +82,21 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
     const { fetching, getTraktCode } = this.props;
     if (usercode === '') {
       return (
-        <FormGroup>
-          <Col sm={12}>
-            <button
-              onClick={getTraktCode}
-              type="button"
-              className="btn btn-info btn-sm pull-right"
-            >
-              {fetching ? 'Requesting...' : 'Get Trakt Code'}
-              <i className={cx('fa fa-refresh', fetching ? 'fa-spin' : 'hidden')} />
-            </button>
-          </Col>
+        <FormGroup inline label="Log Delta">
+          <Button
+            text={fetching ? 'Requesting...' : 'Get Trakt Code'}
+            onClick={getTraktCode}
+            loading={fetching}
+          />
         </FormGroup>
       );
     }
     return [
-      <FormGroup className="flex">
-        <Col sm={6} className="text-large vcenter">{usercode}</Col>
-        <Col sm={6} className="text-right text-medium vcenter"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></Col>
-      </FormGroup>,
-      <FormGroup>
-        <Col sm={12}>
-          <HelpBlock>You have approximately 10 minutes to visit the URL provided and enter the code,
-            server is polling for access token, it will be acquired automatically.
-          </HelpBlock>
-        </Col>
-      </FormGroup>,
+      <span sm={6} className="text-large vcenter">{usercode}</span>,
+      <span sm={6} className="text-right text-medium vcenter"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span>,
+      <span>You have approximately 10 minutes to visit the URL provided and enter the code,
+          server is polling for access token, it will be acquired automatically.
+      </span>,
     ];
   }
 
@@ -120,38 +106,31 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="Trakt Token"
-          description="Trakt authorisation"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsYesNoToggle
-              name="Trakt_IsEnabled"
-              label="Trakt Enabled"
-              value={formFields.Trakt_IsEnabled}
-              onChange={this.handleChange}
-            />
-            {formFields.Trakt_TokenExpirationDate === '' ? this.renderTraktCode()
-              : (
-                <FormGroup>
-                  <Col sm={6}><ControlLabel>Token valid until:</ControlLabel></Col>
-                  <Col sm={6} className="text-right"> <FormControl.Static>{moment(formFields.Trakt_TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</FormControl.Static></Col>
-                </FormGroup>
-              )}
-            <SettingsDropdown
-              name="Trakt_UpdateFrequency"
-              label="Automatically Update Data"
-              values={updateFrequencyType}
-              value={formFields.Trakt_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="Trakt Token"
+        onAction={this.saveSettings}
+      >
+        <SettingsYesNoToggle
+          name="Trakt_IsEnabled"
+          label="Trakt Enabled"
+          value={formFields.Trakt_IsEnabled}
+          onChange={this.handleChange}
+        />
+        {formFields.Trakt_TokenExpirationDate === '' ? this.renderTraktCode()
+          : (
+            <div>
+              <span>Token valid until:</span>
+              <span className="text-right">{moment(formFields.Trakt_TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</span>
+            </div>
+          )}
+        <SettingsDropdown
+          name="Trakt_UpdateFrequency"
+          label="Automatically Update Data"
+          values={updateFrequencyType}
+          value={formFields.Trakt_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

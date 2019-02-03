@@ -3,8 +3,11 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  Alert, Button, ButtonToolbar, Col, Form, FormGroup,
-} from 'react-bootstrap';
+  Button, Callout,
+} from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSpinner } from '@fortawesome/free-solid-svg-icons';
+
 import { getUser } from '../../core/actions/firstrun';
 import Events from '../../core/events';
 import FieldGroup from '../../components/FieldGroup';
@@ -42,19 +45,13 @@ class TabUser extends React.Component<Props> {
     } = this.props;
 
     return (
-      <Form horizontal>
-        {isFetching && <Alert onDismiss={() => {}} bsStyle="warning"><i className="fa fa-refresh fa-spin" />Loading...</Alert>}
-        {!isFetching && user.status.text && <Alert onDismiss={() => {}} bsStyle={user.status.type === 'error' ? 'danger' : 'success'}>{user.status.text}</Alert>}
+      <React.Fragment>
+        {isFetching && <Callout intent="warning"><FontAwesomeIcon icon={faSpinner} spin />Loading...</Callout>}
+        {!isFetching && user.status.text && <Callout intent={user.status.type === 'error' ? 'danger' : 'success'}>{user.status.text}</Callout>}
         <FieldGroup id="formUsername" label="Username:" data={user} field="login" onChange={changeSetting} isHidden={false} />
         <FieldGroup id="formPassword" label="Password:" data={user} field="password" onChange={changeSetting} isHidden={false} />
-        <FormGroup>
-          <Col smOffset={2} sm={6}>
-            <ButtonToolbar>
-              <Button className="pull-right" bsStyle="primary" onClick={saveUser}>Save</Button>
-            </ButtonToolbar>
-          </Col>
-        </FormGroup>
-      </Form>
+        <Button intent="primary" onClick={saveUser}>Save</Button>
+      </React.Fragment>
     );
   }
 }

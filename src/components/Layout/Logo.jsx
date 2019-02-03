@@ -1,11 +1,24 @@
 // @flow
 import React from 'react';
-import Link from '../Link/Link';
+import {
+  Level, Content, Image, Element,
+} from 'react-bulma-components';
+
 
 class Logo extends React.Component<{}> {
   render() {
     return (
-      <Link to="/dashboard" className="logo">Shoko<span>Server</span></Link>
+      <Level>
+        <Level.Item>
+          <Image src="/logo.png" className="image is-48x48" />
+        </Level.Item>
+        <Level.Item>
+          <Content>
+            <Element renderAs="span" className="title" textSize={6}>Shoko</Element>
+            <Element renderAs="span" className="subtitle" textSize={4}>Server</Element>
+          </Content>
+        </Level.Item>
+      </Level>
     );
   }
 }

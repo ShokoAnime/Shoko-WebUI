@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
 import {
-  Col, ControlLabel, FormControl, FormGroup,
-} from 'react-bootstrap';
+  Collapse, FormGroup, InputGroup,
+} from '@blueprintjs/core';
 
 type Props = {
   id: string,
@@ -31,14 +31,11 @@ export default class FieldGroup extends React.Component<Props> {
     } = this.props;
 
     return (
-      <FormGroup controlId={id} className={cx({ hidden: isHidden })}>
-        <Col sm={2}>
-          <ControlLabel>{label}</ControlLabel>
-        </Col>
-        <Col sm={6}>
-          <FormControl placeholder="" value={data[field]} onChange={event => onChange(field, event.target.value)} />
-        </Col>
-      </FormGroup>
+      <Collapse isOpen={!isHidden}>
+        <FormGroup inline label={label} className={cx({ hidden: isHidden })}>
+          <InputGroup id={id} placeholder="" value={data[field]} onChange={event => onChange(field, event.target.value)} />
+        </FormGroup>
+      </Collapse>
     );
   }
 }

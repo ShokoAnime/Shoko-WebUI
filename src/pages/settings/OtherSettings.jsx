@@ -2,13 +2,14 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { ButtonGroup, Button, FormControl } from 'react-bootstrap';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import {
+  ButtonGroup, Button, FormGroup, InputGroup,
+} from '@blueprintjs/core';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import Events from '../../core/events';
 import { setUpdateChannel, setLogDelta } from '../../core/actions/settings/Other';
 
 type Props = {
-  className: string,
   other: {
     updateChannel: string,
     logDelta: number,
@@ -20,7 +21,6 @@ type Props = {
 
 class OtherSettings extends React.Component<Props> {
   static propTypes = {
-    className: PropTypes.string,
     other: PropTypes.shape({
       updateChannel: PropTypes.string,
       logDelta: PropTypes.number,
@@ -40,53 +40,36 @@ class OtherSettings extends React.Component<Props> {
 
   render() {
     const {
-      other, className, changeUpdateChannel, changeLogDelta,
+      other, changeUpdateChannel, changeLogDelta,
     } = this.props;
     const { updateChannel, logDelta } = other;
 
     return (
-      <div className={className}>
-        <FixedPanel
-          title="Other Options"
-          description="General settings"
-          actionName="Save"
-          onAction={this.saveSettings}
-        >
-          <table className="table">
-            <tbody>
-              <tr>
-                <td>Update Channel</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <Button
-                      onClick={() => { changeUpdateChannel('unstable'); }}
-                      bsStyle={updateChannel === 'unstable' ? 'success' : 'default'}
-                    >Unstable
-                    </Button>
-                    <Button
-                      onClick={() => { changeUpdateChannel('stable'); }}
-                      bsStyle={updateChannel === 'stable' ? 'success' : 'default'}
-                    >Stable
-                    </Button>
-                  </ButtonGroup>
-                </td>
-              </tr>
-              <tr>
-                <td>Log Delta</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <FormControl
-                      type="text"
-                      value={logDelta}
-                      onChange={(ref) => { changeLogDelta(ref.getValue()); }}
-                    />
-                  </ButtonGroup>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </FixedPanel>
-      </div>
+      <SettingsPanel
+        title="Other Options"
+        onAction={this.saveSettings}
+      >
+        <FormGroup inline label="Update Channel">
+          <ButtonGroup>
+            <Button
+              onClick={() => { changeUpdateChannel('unstable'); }}
+              active={updateChannel === 'unstable'}
+            >Unstable
+            </Button>
+            <Button
+              onClick={() => { changeUpdateChannel('stable'); }}
+              active={updateChannel === 'stable'}
+            >Stable
+            </Button>
+          </ButtonGroup>
+        </FormGroup>
+        <FormGroup inline label="Log Delta">
+          <InputGroup
+            value={logDelta}
+            onChange={(event) => { changeLogDelta(event.target.value); }}
+          />
+        </FormGroup>
+      </SettingsPanel>
     );
   }
 }
@@ -104,7 +87,9 @@ function mapDispatchToProps(dispatch) {
   return {
     changeUpdateChannel: (value) => { dispatch(setUpdateChannel(value)); },
     changeLogDelta: (value) => { dispatch(setLogDelta(value)); },
-    saveSettings: (value) => { dispatch({ type: Events.SETTINGS_POST_WEBUI, payload: value }); },
+    saveSettings: (value) => {
+      dispatch({ type: Events.SETTINGS_POST_WEBUI, payload: value });
+    },
   };
 }
 

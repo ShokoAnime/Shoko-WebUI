@@ -14,11 +14,11 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    'bootstrap-loader',
-    'font-awesome/scss/font-awesome.scss',
-    'roboto-npm-webfont',
+    'typeface-roboto',
+    'bulma/bulma.sass',
+    '@blueprintjs/core/src/blueprint.scss',
     './css/main.scss',
-    './src/main.jsx',
+    isDebug ? './src/main-hmr.jsx' : './src/main.jsx',
   ],
   mode: isDebug ? 'development' : 'production',
   output: {
@@ -31,13 +31,13 @@ const config = {
   devServer: {
     hot: true,
   },
-  devtool: isDebug ? 'eval-source-map' : false,
+  devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx'],
   },
   stats: {
     colors: true,
-    reasons: isDebug,
+    reasons: false,
     hash: isVerbose,
     version: isVerbose,
     timings: true,
@@ -45,6 +45,7 @@ const config = {
     chunkModules: isVerbose,
     cached: isVerbose,
     cachedAssets: isVerbose,
+    optimizationBailout: true,
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
@@ -79,39 +80,34 @@ const config = {
       },
       {
         test: /\.css$/,
-        exclude: ['/node_modules/', '/css/'],
+        exclude: [/node_modules/],
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: {
-              modules: true,
-              importLoaders: 1,
-              sourceMap: isDebug,
-              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
-              minimize: !isDebug,
-            },
+            options: { modules: true, importLoaders: 1 },
           },
           { loader: 'postcss-loader' },
         ],
       },
       {
-        test: /\.scss$/,
-        exclude: '/node_modules/',
+        test: /\.css$/,
+        include: [/node_modules/],
+        use: [
+          isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
+          { loader: 'css-loader' },
+        ],
+      },
+      {
+        test: /\.(scss|sass)$/,
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: {
-              modules: false,
-              importLoaders: 1,
-              sourceMap: isDebug,
-              localIdentName: isDebug ? '[name]_[local]_[hash:base64:3]' : '[hash:base64:4]',
-              minimize: !isDebug,
-            },
+            options: { modules: false, importLoaders: 1 },
           },
           { loader: 'postcss-loader' },
-          { loader: 'sass-loader?includePaths[]=./node_modules/bootstrap-sass/assets/stylesheets' },
+          { loader: 'sass-loader' },
         ],
       },
       {
@@ -129,14 +125,22 @@ const config = {
 };
 
 if (!isDebug) {
-  config.plugins.push(new UglifyJsPlugin({
-    uglifyOptions: {
-      mangle: false,
-      compress: { warnings: isVerbose },
-    },
-  }));
-  config.plugins.push(new webpack.optimize.AggressiveMergingPlugin());
   config.optimization = {
+    minimizer: [
+      new UglifyJsPlugin({
+        uglifyOptions: {
+          mangle: false,
+          compress: {
+            warnings: false, // Suppress uglification warnings
+            collapse_vars: false,
+          },
+          output: {
+            comments: false,
+          },
+          exclude: [/\.min\.js$/gi], // skip pre-minified libs
+        },
+      }),
+    ],
     splitChunks: {
       cacheGroups: {
         main: {
@@ -148,6 +152,9 @@ if (!isDebug) {
       },
     },
   };
+} else {
+  /* const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+  config.plugins.push(new BundleAnalyzerPlugin()); */
 }
 
 if (isDebug && useHMR) {

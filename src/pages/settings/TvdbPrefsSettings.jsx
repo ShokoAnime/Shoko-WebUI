@@ -3,11 +3,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
-import SettingsInput from '../../components/Buttons/SettingsInput';
+import SettingsSlider from '../../components/Buttons/SettingsSlider';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
@@ -99,50 +98,46 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="TvDB Preferences"
-          description="TvDB preferences"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsInput
-              name="TvDB_AutoFanartAmount"
-              label="Max Fanart"
-              value={formFields.TvDB_AutoFanartAmount}
-              onChange={this.handleChange}
-            />
-            <SettingsInput
-              name="TvDB_AutoPostersAmount"
-              label="Max Posters"
-              value={formFields.TvDB_AutoPostersAmount}
-              onChange={this.handleChange}
-            />
-            <SettingsInput
-              name="TvDB_AutoWideBannersAmount"
-              label="Max Wide Banners"
-              value={formFields.TvDB_AutoWideBannersAmount}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="TvDB_Language"
-              label="Language"
-              values={tvdbLanguages}
-              value={formFields.TvDB_Language}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_Calendar_UpdateFrequency"
-              label="Calendar"
-              values={updateFrequencyType}
-              value={formFields.AniDB_Calendar_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="TvDB Preferences"
+        description="TvDB preferences"
+        actionName="Save"
+        onAction={this.saveSettings}
+        form
+      >
+        <SettingsSlider
+          name="TvDB_AutoFanartAmount"
+          label="Max Fanart"
+          value={formFields.TvDB_AutoFanartAmount}
+          onChange={this.handleChange}
+        />
+        <SettingsSlider
+          name="TvDB_AutoPostersAmount"
+          label="Max Posters"
+          value={formFields.TvDB_AutoPostersAmount}
+          onChange={this.handleChange}
+        />
+        <SettingsSlider
+          name="TvDB_AutoWideBannersAmount"
+          label="Max Wide Banners"
+          value={formFields.TvDB_AutoWideBannersAmount}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="TvDB_Language"
+          label="Language"
+          values={tvdbLanguages}
+          value={formFields.TvDB_Language}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_Calendar_UpdateFrequency"
+          label="Calendar"
+          values={updateFrequencyType}
+          value={formFields.AniDB_Calendar_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }
