@@ -4,7 +4,7 @@ import type { Saga } from 'redux-saga';
 import {
   take, cancel, fork, call, put, select, cancelled,
 } from 'redux-saga/effects';
-import Api from '../api';
+import Api from '../api/common';
 import Events from '../events';
 import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE } from '../actions';
 import { getStatus } from '../actions/firstrun';

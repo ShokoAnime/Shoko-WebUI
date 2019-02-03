@@ -7,6 +7,7 @@ import json from './settings/Json';
 import server from './settings/Server';
 import trakt from './settings/Trakt';
 import plex from './settings/Plex';
+import quickActions from './settings/QuickActions';
 
 export default combineReducers({
   logs,
@@ -16,4 +17,5 @@ export default combineReducers({
   server,
   trakt,
   plex,
+  quickActions,
 });

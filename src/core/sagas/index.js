@@ -4,14 +4,17 @@ import { delay } from 'redux-saga';
 import {
   all, call, put, select, takeEvery,
 } from 'redux-saga/effects';
-import { without } from 'lodash/array';
-import { forEach } from 'lodash';
+import {
+  capitalize, forEach, map, without,
+} from 'lodash';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import ApiCommon from '../api/common';
+import ApiActions from '../api/actions';
 import Events from '../events';
 import Dashboard from './dashboard';
 import {
+  apiSession,
   GLOBAL_ALERT,
   IMPORT_FOLDER_SERIES,
   JMM_VERSION,
@@ -21,7 +24,6 @@ import {
   SET_FETCHING,
   SHOW_GLOBAL_ALERT,
   UPDATE_AVAILABLE,
-  WEBUI_VERSION_UPDATE,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { APPEND_CONTENTS, SET_CONTENTS } from '../actions/logs/Contents';
@@ -42,6 +44,10 @@ import {
   SET_FORM_DATA,
   SET_STATUS,
 } from '../actions/modals/ImportFolder';
+import {
+  setItems as setBrowseModalItems,
+  setId as setBrowseModalId,
+} from '../actions/modals/BrowseFolder';
 import queueGlobalAlert from './QueueGlobalAlert';
 import apiPollingDriver from './apiPollingDriver';
 import settings from './settings';
@@ -192,29 +198,16 @@ function* settingsSaveLogRotate(action): Saga<void> {
 }
 
 function* runQuickAction(action): Saga<void> {
-  let actionFunc;
-  switch (action.payload) {
-    case 'import':
-      actionFunc = ApiCommon.getFolderImport;
-      break;
-    case 'remove_missing_files':
-      actionFunc = ApiCommon.getRemoveMissingFiles;
-      break;
-    case 'stats_update':
-      actionFunc = ApiCommon.getStatsUpdate;
-      break;
-    case 'mediainfo_update':
-      actionFunc = ApiCommon.getMediainfoUpdate;
-      break;
-    case 'plex_sync':
-      actionFunc = ApiCommon.getPlexSync;
-      break;
-    default:
-      yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
-      return;
+  const { payload } = action;
+  const capitalizedName = map(payload.split('-'), word => capitalize(word)).join('');
+  const funcName = `get${capitalizedName}`;
+
+  if (typeof ApiActions[funcName] !== 'function') {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
+    return;
   }
 
-  const resultJson = yield call(actionFunc);
+  const resultJson = yield call(ApiActions[funcName]);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
@@ -431,6 +424,24 @@ function* logout(): Saga<void> {
   yield put(push({ pathname: '/' }));
 }
 
+function* login(action): Saga<void> {
+  const { payload } = action;
+  yield put({ type: Events.START_FETCHING, payload: 'login' });
+  const resultJson = yield call(ApiCommon.postAuth, payload);
+  yield put({ type: Events.STOP_FETCHING, payload: 'login' });
+  if (resultJson.error) {
+    let errorMessage = resultJson.message;
+    if (resultJson.status === 417) {
+      errorMessage = 'Invalid Username or Password';
+    }
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: errorMessage } });
+    return;
+  }
+
+  yield put(apiSession({ apikey: resultJson.data.apikey, username: payload.user }));
+  yield put(push({ pathname: '/dashboard' }));
+}
+
 function* checkUpdates(): Saga<void> {
   const { updateChannel } = yield select(state => state.settings.other);
   const resultJson = yield call(ApiCommon.webuiLatest, updateChannel);
@@ -468,11 +479,13 @@ function* downloadUpdates(): Saga<void> {
   const resultJson = yield call(ApiCommon.getWebuiUpdate, channel);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
   if (resultJson.error) {
-    yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
+    const message = `Oops! Something went wrong! Submit an issue on GitHub so we can fix it. ${resultJson.message}`;
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: message, duration: 10000 });
     return;
   }
 
-  yield dispatchAction(WEBUI_VERSION_UPDATE, { status: true });
+  const message = 'Update Successful! Please reload the page for the updated version.';
+  yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'success', text: message, duration: 10000 });
 }
 
 function* fetchImportFolderSeries(action): Saga<void> {
@@ -486,6 +499,25 @@ function* fetchImportFolderSeries(action): Saga<void> {
     return;
   }
   yield dispatchAction(IMPORT_FOLDER_SERIES, resultJson.data.series);
+}
+
+function* osBrowse(action): Saga<void> {
+  let genId = yield select(state => state.modals.browseFolder.id);
+  const { id, path } = action.payload;
+  yield dispatchAction(Events.START_FETCHING, `browse-treenode-${id}`);
+  const resultJson = yield call(path === '' ? ApiCommon.getOsDrives : ApiCommon.postOsFolder, path);
+  yield dispatchAction(Events.STOP_FETCHING, `browse-treenode-${id}`);
+  if (resultJson.error) {
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
+    return;
+  }
+  const nodes = [];
+  forEach(resultJson.data.subdir, (node) => {
+    genId += 1;
+    nodes.push(Object.assign({}, node, { nodeId: genId }));
+  });
+  yield put(setBrowseModalId(genId));
+  yield put(setBrowseModalItems({ key: id, nodes }));
 }
 
 export default function* rootSaga(): Saga<void> {
@@ -529,5 +561,8 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.FETCH_IMPORT_FOLDER_SERIES, fetchImportFolderSeries),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
+    takeEvery(Events.LOGIN, login),
+    takeEvery(Events.OS_BROWSE, osBrowse),
+    takeEvery(Events.SETTINGS_SAVE_QUICK_ACTION, settings.saveQuickAction),
   ]);
 }

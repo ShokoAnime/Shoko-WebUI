@@ -2,9 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
-import {
-  FormGroup, ControlLabel, Col, ToggleButtonGroup, ToggleButton,
-} from 'react-bootstrap';
+import { Switch } from '@blueprintjs/core';
 import SettingsTooltip from '../SettingsTooltip';
 
 import type { SettingBoolean } from '../../core/reducers/settings/Server';
@@ -26,36 +24,18 @@ export default class SettingsYesNoToggle extends React.Component<Props> {
     onChange: PropTypes.func.isRequired,
   };
 
-  handleChange = (value: number) => {
+  handleChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
     const { name, onChange } = this.props;
-    onChange(name, value === 1 ? 'True' : 'False');
+    onChange(name, event.target.checked ? 'True' : 'False');
   };
 
   render() {
     const {
-      value, name, label, tooltip,
+      value, label, tooltip,
     } = this.props;
-    return (
-      <FormGroup controlId={name}>
-        <Col sm={6}>
-          <ControlLabel>
-            {label}
-            {tooltip && <SettingsTooltip name={name} text={tooltip} />}
-          </ControlLabel>
-        </Col>
-        <Col sm={6}>
-          <ToggleButtonGroup
-            type="radio"
-            name={name}
-            value={value === 'True' ? 1 : 0}
-            onChange={this.handleChange}
-            className="pull-right"
-          >
-            <ToggleButton bsStyle="settings-no" value={0}>No</ToggleButton>
-            <ToggleButton bsStyle="settings-yes" value={1}>Yes</ToggleButton>
-          </ToggleButtonGroup>
-        </Col>
-      </FormGroup>
-    );
+    if (tooltip) {
+      return <Switch labelElement={<SettingsTooltip label={label} text={tooltip} />} large checked={value === 'True' ? 1 : 0} onChange={this.handleChange} />;
+    }
+    return <Switch label={label} large checked={value === 'True' ? 1 : 0} onChange={this.handleChange} />;
   }
 }

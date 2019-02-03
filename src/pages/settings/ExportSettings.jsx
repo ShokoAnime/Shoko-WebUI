@@ -2,11 +2,11 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  ButtonToolbar, Button, FormControl, Panel, FormGroup, Form, Col,
-} from 'react-bootstrap';
+import { Notification } from 'react-bulma-components';
+import { Button, FormGroup, Text } from '@blueprintjs/core';
 import Events from '../../core/events';
 import { settingsJson } from '../../core/actions/settings/Json';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 
 
 type Props = {
@@ -36,26 +36,17 @@ class ExportSettings extends React.Component<Props> {
 
   render() {
     const { json, exportSettings } = this.props;
-    const header = [
-      <span>Settings import / export</span>,
-      <h6>WARNING! Importing invalid configuration WILL break your server.</h6>,
-    ];
     return (
-      <Col md={12}>
-        <Panel header={header}>
-          <Form>
-            <FormGroup>
-              <FormControl onChange={this.updateSettings} componentClass="textarea" value={json} />
-            </FormGroup>
-            <FormGroup>
-              <ButtonToolbar>
-                <Button onClick={exportSettings} bsStyle="primary">Export</Button>
-                <Button onClick={this.importSettings} bsStyle="primary">Import</Button>
-              </ButtonToolbar>
-            </FormGroup>
-          </Form>
-        </Panel>
-      </Col>
+      <SettingsPanel title="Settings Import Export">
+        <Notification color="danger">
+          <h6>WARNING! Importing invalid configuration WILL break your server.</h6>
+        </Notification>
+        <Text onChange={this.updateSettings}>{json}</Text>
+        <FormGroup>
+          <Button onClick={exportSettings}>Export</Button>
+          <Button onClick={this.importSettings}>Import</Button>
+        </FormGroup>
+      </SettingsPanel>
     );
   }
 }

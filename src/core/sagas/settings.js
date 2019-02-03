@@ -4,7 +4,7 @@ import Ajv from 'ajv';
 import { forEach } from 'lodash';
 import type { Saga } from 'redux-saga';
 import { QUEUE_GLOBAL_ALERT } from '../actions';
-import Api from '../api';
+import Api from '../api/common';
 import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';
@@ -12,7 +12,6 @@ import { settingsPlex } from '../actions/settings/Plex';
 
 import type { Action } from '../actions';
 import type { State } from '../store';
-
 
 export const settingsSelector = (state: State) => state.settings;
 
@@ -117,10 +116,16 @@ function* settingsGetPlexLoginUrl(): Saga<void> {
   }
 }
 
+function* settingsSaveQuickAction(): Saga<void> {
+  const actions = yield select(state => state.settings.quickActions);
+  yield call(settingsSaveWebui, { type: '', payload: { actions } });
+}
+
 export default {
   saveWebui: settingsSaveWebui,
   getServer: settingsGetServer,
   saveServer: settingsSaveServer,
   getTraktCode: settingsGetTraktCode,
   getPlexLoginUrl: settingsGetPlexLoginUrl,
+  saveQuickAction: settingsSaveQuickAction,
 };

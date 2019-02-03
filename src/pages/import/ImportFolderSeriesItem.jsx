@@ -5,7 +5,6 @@ import prettysize from 'prettysize';
 
 export type FolderSeriesItemType = {
   name: string,
-  id: number,
   filesize: number,
   size: number,
   paths: Array<string>,

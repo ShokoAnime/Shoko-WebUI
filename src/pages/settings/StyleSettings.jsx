@@ -3,14 +3,13 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  ButtonGroup, Button, Dropdown, MenuItem,
-} from 'react-bootstrap';
-import FixedPanel from '../../components/Panels/FixedPanel';
+  ButtonGroup, Button, FormGroup, HTMLSelect,
+} from '@blueprintjs/core';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import { setTheme, setNotifications } from '../../core/actions/settings/UI';
 import Events from '../../core/events';
 
 type Props = {
-  className: string,
   ui: {
     theme: string,
     notifications: boolean,
@@ -22,7 +21,6 @@ type Props = {
 
 class StyleSettings extends React.Component<Props> {
   static propTypes = {
-    className: PropTypes.string,
     ui: PropTypes.shape({
       theme: PropTypes.string,
       notifications: PropTypes.bool,
@@ -42,78 +40,55 @@ class StyleSettings extends React.Component<Props> {
 
   render() {
     const {
-      ui, className, changeTheme, changeNotifications,
+      ui, changeTheme, changeNotifications,
     } = this.props;
     const { theme, notifications } = ui;
 
     return (
-      <div className={className}>
-        <FixedPanel
-          title="Style Options"
-          description="Settings related to Web UI style"
-          actionName="Save"
-          onAction={this.saveSettings}
-        >
-          <table className="table">
-            <tbody>
-              <tr>
-                <td>Theme</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <Button
-                      onClick={() => { changeTheme('light'); }}
-                      bsStyle={theme === 'light' ? 'success' : 'default'}
-                    >Light
-                    </Button>
-                    <Button
-                      onClick={() => { changeTheme('dark'); }}
-                      bsStyle={theme === 'dark' ? 'success' : 'default'}
-                    >Dark
-                    </Button>
-                    <Button
-                      onClick={() => { changeTheme('custom'); }}
-                      bsStyle={theme === 'custom' ? 'success' : 'default'}
-                    >Custom
-                    </Button>
-                  </ButtonGroup>
-                </td>
-              </tr>
-              <tr>
-                <td>Custom Theme</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <Dropdown id="theme">
-                      <Dropdown.Toggle>
-                        Default
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu className="super-colors">
-                        <MenuItem>Default</MenuItem>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </ButtonGroup>
-                </td>
-              </tr>
-              <tr>
-                <td>Turn Off Global Notifications</td>
-                <td>
-                  <ButtonGroup className="pull-right">
-                    <Button
-                      onClick={() => { changeNotifications(false); }}
-                      bsStyle={notifications ? 'default' : 'danger'}
-                    >No
-                    </Button>
-                    <Button
-                      onClick={() => { changeNotifications(true); }}
-                      bsStyle={notifications ? 'success' : 'default'}
-                    >Yes
-                    </Button>
-                  </ButtonGroup>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </FixedPanel>
-      </div>
+      <SettingsPanel
+        title="Style Options"
+        actionName="Save"
+        onAction={this.saveSettings}
+      >
+        <FormGroup inline label="Theme">
+          <ButtonGroup>
+            <Button
+              onClick={() => { changeTheme('light'); }}
+              active={theme === 'light'}
+            >Light
+            </Button>
+            <Button
+              onClick={() => { changeTheme('dark'); }}
+              active={theme === 'dark'}
+            >Dark
+            </Button>
+            <Button
+              onClick={() => { changeTheme('custom'); }}
+              active={theme === 'custom'}
+            >Custom
+            </Button>
+          </ButtonGroup>
+        </FormGroup>
+        <FormGroup inline label="Custom Theme">
+          <HTMLSelect>
+            <option>Default</option>
+          </HTMLSelect>
+        </FormGroup>
+        <FormGroup inline label="Turn Off Global Notifications">
+          <ButtonGroup>
+            <Button
+              onClick={() => { changeNotifications(false); }}
+              active={notifications !== true}
+            >No
+            </Button>
+            <Button
+              onClick={() => { changeNotifications(true); }}
+              active={notifications === true}
+            >Yes
+            </Button>
+          </ButtonGroup>
+        </FormGroup>
+      </SettingsPanel>
     );
   }
 }

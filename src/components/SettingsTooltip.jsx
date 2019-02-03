@@ -1,26 +1,25 @@
 // @flow
 import React from 'react';
 import type { ComponentType } from 'react';
-import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Tooltip } from '@blueprintjs/core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
-  name: string,
+  label?: string,
   text: string | ComponentType<any>,
 }
 
 export default class SettingsTooltip extends React.Component<Props> {
   render() {
-    const { name, text } = this.props;
-    const component = (
-      <Tooltip className="settings" id={`tip-${name}`}>
-        {text}
-      </Tooltip>
-    );
+    const { label, text } = this.props;
 
     return (
-      <OverlayTrigger placement="top" overlay={component}>
-        <i className="fa fa-question-circle icon-settings-info" />
-      </OverlayTrigger>
+      <Tooltip content={text} className="settings-tooltip-icon">
+        {label
+          ? <span>{label}<FontAwesomeIcon icon={faQuestionCircle} /></span>
+          : <FontAwesomeIcon icon={faQuestionCircle} />}
+      </Tooltip>
     );
   }
 }

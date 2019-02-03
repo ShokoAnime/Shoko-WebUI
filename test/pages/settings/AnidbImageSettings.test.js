@@ -32,7 +32,7 @@ test('AnidbImageSettings', (t) => {
     t.is(field.prop('value'), data[f], `renders ${f}`);
     field.simulate('change', f, changedData[f]);
   });
-  wrapper.find('FixedPanel').prop('onAction').call();
+  wrapper.find('SettingsPanel').prop('onAction').call();
   const actions = store.getActions();
   const expectedPayload = [{ type: Events.SETTINGS_SAVE_SERVER, payload: changedData }];
   t.deepEqual(expectedPayload, actions, 'action with changed settings is dispatched');

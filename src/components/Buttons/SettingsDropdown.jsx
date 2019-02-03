@@ -4,9 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import type { ComponentType } from 'react';
 import { forEach } from 'lodash';
-import {
-  FormGroup, ControlLabel, Col, MenuItem, Dropdown,
-} from 'react-bootstrap';
+import { FormGroup, HTMLSelect } from '@blueprintjs/core';
 import SettingsTooltip from '../SettingsTooltip';
 
 type Props = {
@@ -38,7 +36,7 @@ export default class SettingsDropdown extends React.Component<Props> {
     const items = [];
     let title;
     forEach(values, (tuple) => {
-      items.push(<MenuItem active={tuple[0] === value} eventKey={tuple[0]}>{tuple[1]}</MenuItem>);
+      items.push(<option key={tuple[0]} value={tuple[0]}>{tuple[1]}</option>);
       if (tuple[0] === value) title = tuple[1];
     });
     if (title === undefined && values.length !== 0) title = values[0][1];
@@ -46,24 +44,16 @@ export default class SettingsDropdown extends React.Component<Props> {
   }
 
   render() {
-    const { name, label, tooltip } = this.props;
+    const { label, tooltip } = this.props;
     const { title, items } = this.renderItems();
     return (
-      <FormGroup controlId={name}>
-        <Col sm={6}>
-          <ControlLabel>
-            {label}
-            {tooltip && <SettingsTooltip name={name} text={tooltip} />}
-          </ControlLabel>
-        </Col>
-        <Col sm={6}>
-          <Dropdown id={name} pullRight className="pull-right" onSelect={this.handleChange}>
-            <Dropdown.Toggle>{title}</Dropdown.Toggle>
-            <Dropdown.Menu>
-              {items}
-            </Dropdown.Menu>
-          </Dropdown>
-        </Col>
+      <FormGroup
+        inline
+        label={tooltip ? <SettingsTooltip label={label} text={tooltip} /> : label}
+      >
+        <HTMLSelect onChange={this.handleChange} value={title}>
+          {items}
+        </HTMLSelect>
       </FormGroup>
     );
   }

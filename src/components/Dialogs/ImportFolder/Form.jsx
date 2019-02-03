@@ -3,15 +3,8 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  Col,
-  FormControl,
-  ControlLabel,
-  Button,
-  Form,
-  FormGroup,
-  Checkbox,
-  InputGroup,
-} from 'react-bootstrap';
+  Button, Classes, ControlGroup, FormGroup, InputGroup, Switch,
+} from '@blueprintjs/core';
 import BrowseFolderModal from '../BrowseFolderModal';
 import { setStatus as setBrowseStatus } from '../../../core/actions/modals/BrowseFolder';
 import { setFormData } from '../../../core/actions/modals/ImportFolder';
@@ -37,7 +30,7 @@ class AddTab extends React.Component<Props> {
     browseStatus: PropTypes.func.isRequired,
   };
 
-  onChange = (event) => {
+  onChange = (event: SyntheticInputEvent<HTMLInputElement>) => {
     const item = event.target;
     const { formData } = this.props;
     if (item.type === 'checkbox') {
@@ -65,68 +58,32 @@ class AddTab extends React.Component<Props> {
     } = form;
 
     return (
-      <Form horizontal>
-        <FormGroup>
-          <Col sm={2}>
-            <ControlLabel>Name</ControlLabel>
-          </Col>
-          <Col sm={10}>
-            <FormControl
-              type="text"
-              id="ImportFolderName"
-              value={ImportFolderName}
-              placeholder="Enter friendly name"
+      <React.Fragment>
+        <FormGroup label="Name">
+          <InputGroup
+            id="ImportFolderName"
+            value={ImportFolderName}
+            placeholder="Enter friendly name"
+            onChange={this.onChange}
+          />
+        </FormGroup>
+        <FormGroup label="Location">
+          <ControlGroup fill>
+            <InputGroup
+              id="ImportFolderLocation"
+              value={ImportFolderLocation}
+              placeholder="Enter folder location"
               onChange={this.onChange}
+              readonly
             />
-          </Col>
+            <Button className={Classes.FIXED} onClick={this.handleBrowse}>Browse</Button>
+          </ControlGroup>
         </FormGroup>
-        <FormGroup>
-          <Col sm={2}>
-            <ControlLabel>Location</ControlLabel>
-          </Col>
-          <Col sm={10}>
-            <InputGroup>
-              <FormControl
-                type="text"
-                id="ImportFolderLocation"
-                value={ImportFolderLocation}
-                placeholder="Enter folder location"
-                readOnly
-              />
-              <InputGroup.Button>
-                <Button onClick={this.handleBrowse}>Browse</Button>
-              </InputGroup.Button>
-            </InputGroup>
-          </Col>
-        </FormGroup>
-        <FormGroup>
-          <Col smOffset={2} sm={10}>
-            <Checkbox
-              id="IsDropSource"
-              onChange={this.onChange}
-              checked={IsDropSource}
-            >Drop source
-            </Checkbox>
-          </Col>
-          <Col smOffset={2} sm={10}>
-            <Checkbox
-              id="IsDropDestination"
-              onChange={this.onChange}
-              checked={IsDropDestination}
-            >Drop destination
-            </Checkbox>
-          </Col>
-          <Col smOffset={2} sm={10}>
-            <Checkbox
-              id="IsWatched"
-              onChange={this.onChange}
-              checked={IsWatched}
-            >Watch folder
-            </Checkbox>
-          </Col>
-        </FormGroup>
+        <Switch label="Drop source" onChange={this.onChange} checked={IsDropSource} />
+        <Switch label="Drop destination" onChange={this.onChange} checked={IsDropDestination} />
+        <Switch label="Watch folder" onChange={this.onChange} checked={IsWatched} />
         <BrowseFolderModal onSelect={this.onFolderSelect} />
-      </Form>
+      </React.Fragment>
     );
   }
 }

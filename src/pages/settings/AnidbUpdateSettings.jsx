@@ -3,9 +3,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import { Form, Col } from 'react-bootstrap';
 import { createSelector } from 'reselect';
-import FixedPanel from '../../components/Panels/FixedPanel';
+import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsDropdown from '../../components/Buttons/SettingsDropdown';
 import Events from '../../core/events';
 
@@ -69,53 +68,49 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
     const formFields = Object.assign({}, fields, stateFields);
 
     return (
-      <Col lg={4}>
-        <FixedPanel
-          title="AniDB Updates"
-          description="AniDB scheduled updates"
-          actionName="Save"
-          onAction={this.saveSettings}
-          form
-        >
-          <Form horizontal>
-            <SettingsDropdown
-              name="AniDB_Calendar_UpdateFrequency"
-              label="Calendar"
-              values={updateFrequencyType}
-              value={formFields.AniDB_Calendar_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_Anime_UpdateFrequency"
-              label="Anime and Episode Information"
-              values={updateFrequencyType}
-              value={formFields.AniDB_Anime_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_MyList_UpdateFrequency"
-              label="Sync Mylist"
-              values={updateFrequencyType}
-              value={formFields.AniDB_MyList_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_MyListStats_UpdateFrequency"
-              label="Get Mylist Stats"
-              values={updateFrequencyType}
-              value={formFields.AniDB_MyListStats_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-            <SettingsDropdown
-              name="AniDB_File_UpdateFrequency"
-              label="Files With Missing Info"
-              values={updateFrequencyType}
-              value={formFields.AniDB_File_UpdateFrequency}
-              onChange={this.handleChange}
-            />
-          </Form>
-        </FixedPanel>
-      </Col>
+      <SettingsPanel
+        title="AniDB Updates"
+        description="AniDB scheduled updates"
+        actionName="Save"
+        onAction={this.saveSettings}
+        form
+      >
+        <SettingsDropdown
+          name="AniDB_Calendar_UpdateFrequency"
+          label="Calendar"
+          values={updateFrequencyType}
+          value={formFields.AniDB_Calendar_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_Anime_UpdateFrequency"
+          label="Anime and Episode Information"
+          values={updateFrequencyType}
+          value={formFields.AniDB_Anime_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_MyList_UpdateFrequency"
+          label="Sync Mylist"
+          values={updateFrequencyType}
+          value={formFields.AniDB_MyList_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_MyListStats_UpdateFrequency"
+          label="Get Mylist Stats"
+          values={updateFrequencyType}
+          value={formFields.AniDB_MyListStats_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+        <SettingsDropdown
+          name="AniDB_File_UpdateFrequency"
+          label="Files With Missing Info"
+          values={updateFrequencyType}
+          value={formFields.AniDB_File_UpdateFrequency}
+          onChange={this.handleChange}
+        />
+      </SettingsPanel>
     );
   }
 }

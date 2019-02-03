@@ -2,11 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  Panel,
-  Button,
-  ButtonToolbar,
-} from 'react-bootstrap';
+import { Button } from '@blueprintjs/core';
 import StatusPanel from '../../Panels/StatusPanel';
 import { setStatus as setImportStatus } from '../../../core/actions/modals/ImportFolder';
 import FolderForm from './Form';
@@ -40,18 +36,16 @@ class AddTab extends React.Component<Props> {
     const { addFolder, handleClose } = this.props;
     const { isFetching } = addFolder;
     return (
-      <Panel>
+      <React.Fragment>
         <StatusPanel {...addFolder} />
         <FolderForm />
-        <ButtonToolbar className="pull-right">
-          <Button onClick={this.handleSubmit} bsStyle="primary">
-            {isFetching ? [<i className="fa fa-refresh fa-spin" />, 'Sending...'] : 'Add'}
-          </Button>
-          <Button onClick={handleClose}>
-            Cancel
-          </Button>
-        </ButtonToolbar>
-      </Panel>
+        <Button loading={isFetching} onClick={this.handleSubmit}>
+          Add
+        </Button>
+        <Button onClick={handleClose}>
+          Cancel
+        </Button>
+      </React.Fragment>
     );
   }
 }

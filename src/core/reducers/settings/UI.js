@@ -18,7 +18,7 @@ export const theme = handleAction(
 export const notifications = handleAction(
   SET_NOTIFICATIONS,
   (state: boolean, action: Action): boolean => {
-    if (!action.payload) { return state; }
+    if (action.payload === undefined) { return state; }
     return !!action.payload;
   },
   true,

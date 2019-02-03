@@ -1,8 +1,8 @@
 // @flow
 import Api from './index';
-import type { SettingType } from '../sagas/settings';
+import type { ApiLoginType } from '../types/api';
 
-function* getLogDelta(data: {delta: number, position: number}) {
+function* getLogDelta(data: {delta: number, position: number}): {} {
   const query = data ? `${data.delta}/${data.position || 0}` : '';
   const json = yield Api.call({ action: '/log/get/', query });
   if (json.error && json.code === 404) {
@@ -63,28 +63,8 @@ function postLogRotate(params: {}) {
   return Api.call({ action: '/log/rotate', method: 'POST', params });
 }
 
-function getRescan() {
-  return Api.call({ action: '/rescan' });
-}
-
-function getRemoveMissingFiles() {
-  return Api.call({ action: '/remove_missing_files' });
-}
-
-function getStatsUpdate() {
-  return Api.call({ action: '/stats_update' });
-}
-
-function getMediainfoUpdate() {
-  return Api.call({ action: '/mediainfo_update' });
-}
-
 function getFolderList() {
   return Api.call({ action: '/folder/list' });
-}
-
-function getFolderImport() {
-  return Api.call({ action: '/folder/import' });
 }
 
 function postFolderAdd(params: {}) {
@@ -97,10 +77,6 @@ function postFolderEdit(params: {}) {
 
 function postWebuiConfig(params: {}) {
   return Api.call({ action: '/webui/config', method: 'POST', params });
-}
-
-function getPlexSync() {
-  return Api.call({ action: '/sync/all', endpoint: '/plex' });
 }
 
 function getPlexLoginurl() {
@@ -163,16 +139,20 @@ function getOsDrives() {
   return Api.call({ action: '/os/drives' });
 }
 
-function postOsFolder(params: {}) {
-  return Api.call({ action: '/os/folder', method: 'POST', params });
+function postOsFolder(path) {
+  return Api.call({ action: '/os/folder', method: 'POST', params: { dir: path, full_path: path } });
 }
 
-function postConfigSet(params: Array<SettingType>) {
+function postConfigSet(params: {}) {
   return Api.call({ action: '/config/set', method: 'POST', params });
 }
 
 function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
+}
+
+function postAuth(params: ApiLoginType) {
+  return Api.call({ action: '/auth', method: 'POST', params });
 }
 
 export default {
@@ -189,16 +169,10 @@ export default {
   configImport,
   getLogRotate,
   postLogRotate,
-  getRescan,
-  getRemoveMissingFiles,
-  getStatsUpdate,
-  getMediainfoUpdate,
   getFolderList,
   postFolderAdd,
   postFolderEdit,
   postWebuiConfig,
-  getFolderImport,
-  getPlexSync,
   getPlexLoginurl,
   getInit,
   getInitDatabase,
@@ -218,4 +192,5 @@ export default {
   postOsFolder,
   postConfigSet,
   getTraktCode,
+  postAuth,
 };

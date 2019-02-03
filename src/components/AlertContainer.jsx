@@ -3,16 +3,12 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { connect } from 'react-redux';
 import { forEach } from 'lodash';
-import s from './AlertContainer.css';
-import Notification from './Notification';
+import { Notification } from 'react-bulma-components';
 
-type AlertType = {
-  type: 'success' | 'error',
-  text: string,
-}
+import type { GlobalAlertType } from '../core/types/api';
 
 type Props = {
-  globalAlert: Array<AlertType>
+  globalAlert: Array<GlobalAlertType>
 }
 
 class AlertContainer extends React.Component<Props> {
@@ -26,12 +22,12 @@ class AlertContainer extends React.Component<Props> {
     let key = 0;
 
     forEach(globalAlert, (alert) => {
-      alerts.push(<Notification key={key} type={alert.type} text={alert.text} />);
+      alerts.push(<Notification key={key} color={alert.type === 'error' ? 'danger' : 'success'}>{alert.text}</Notification>);
       key += 1;
     });
 
     return (
-      <div className={s.alertContainer}>
+      <div className="alert-container">
         {alerts}
       </div>
     );
