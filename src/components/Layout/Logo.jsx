@@ -10,7 +10,7 @@ class Logo extends React.Component<{}> {
     return (
       <Level>
         <Level.Item>
-          <Image src="/logo.png" className="image is-48x48" />
+          <Image src="/webui/logo.png" className="image is-48x48" />
         </Level.Item>
         <Level.Item>
           <Content>
