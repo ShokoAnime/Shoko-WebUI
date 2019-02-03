@@ -178,6 +178,10 @@ tasks.set('start', () => {
             baseDir: 'public',
             middleware,
           },
+          serveStatic: [{
+            route: ['/webui'],
+            dir: 'public',
+          }],
         }, resolve);
       }
     });
