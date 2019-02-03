@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React from 'react';
 
 const actions = {
@@ -7,11 +8,11 @@ const actions = {
   'stats-update': '',
   'mediainfo-update': '',
   'hash-sync': '',
-  'rescanunlinked': '',
-  'rescanmanuallinks': '',
-  'rehashunlinked': '',
-  'rehashmanuallinks': '',
-  'avdumpmismatchedfiles': '',
+  rescanunlinked: '',
+  rescanmanuallinks: '',
+  rehashunlinked: '',
+  rehashmanuallinks: '',
+  avdumpmismatchedfiles: '',
   'core-anidb-votes-sync': '',
   'core-anidb-list-sync': '',
   'core-anidb-update': '',

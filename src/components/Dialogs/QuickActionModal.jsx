@@ -9,7 +9,7 @@ import FixedPanel from '../Panels/FixedPanel';
 import QuickActionName from '../../pages/actions/QuickActionName';
 import Events from '../../core/events';
 
-import type QuickActionPayloadType from '../../core/reducers/settings/QuickActions';
+import type { QuickActionPayloadType } from '../../core/reducers/settings/QuickActions';
 
 type Props = {
   status: boolean,

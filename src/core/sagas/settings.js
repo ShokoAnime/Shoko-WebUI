@@ -9,12 +9,9 @@ import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';
 import { settingsPlex } from '../actions/settings/Plex';
-import { settingsQuickActions } from '../actions/settings/QuickActions';
 
 import type { Action } from '../actions';
 import type { State } from '../store';
-import type { ActionType as QuickActionType } from '../reducers/settings/QuickActions';
-
 
 export const settingsSelector = (state: State) => state.settings;
 

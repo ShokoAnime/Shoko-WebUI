@@ -2,7 +2,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { Icon, Media } from 'react-bulma-components';
+import { Media } from 'react-bulma-components';
 import { connect } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

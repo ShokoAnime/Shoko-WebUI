@@ -8,14 +8,15 @@
     "npm": ">=3.8"
   },
   "dependencies": {
-    "@babel/runtime": "^7.0.0-rc.1",
-    "@blueprintjs/core": "^3.3.0",
+    "@babel/polyfill": "^7.2.5",
+    "@babel/runtime": "^7.3.1",
+    "@blueprintjs/core": "^3.12.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
-    "ajv": "^6.5.2",
-    "browser-sync": "^2.24.5",
-    "bulma": "^0.7.1",
+    "ajv": "^6.8.1",
+    "browser-sync": "^2.26.3",
+    "bulma": "^0.7.2",
     "classnames": "^2.2.6",
     "connect-history-api-fallback": "^1.5.0",
     "connected-react-router": "^4.4.1",
@@ -27,7 +28,7 @@
     "http-proxy-middleware": "^0.18.0",
     "isomorphic-fetch": "^2.2.1",
     "lodash": "^2.4.2",
-    "moment": "^2.22.2",
+    "moment": "^2.24.0",
     "object-path": "^0.9.2",
     "path-to-regexp": "^2.2.1",
     "pixrem": "^4.0.1",
@@ -42,10 +43,10 @@
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "redux": "^4.0.0",
-    "redux-actions": "^2.4.0",
+    "redux": "^4.0.1",
+    "redux-actions": "^2.6.4",
     "redux-ava": "^2.2.0",
-    "redux-devtools-extension": "^2.13.5",
+    "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^0.16.0",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
@@ -63,7 +64,7 @@
     "@babel/preset-react": "^7.0.0-rc.1",
     "@babel/register": "^7.0.0-rc.1",
     "assets-webpack-plugin": "^3.8.4",
-    "ava": "^0.25.0",
+    "ava": "^1.2.0",
     "babel-cli": "^6.26.0",
     "babel-eslint": "^8.2.5",
     "babel-loader": "^8.0.0-beta.4",
@@ -182,7 +183,7 @@
     "files": [
       "test/**/*.test.js"
     ],
-    "source": [
+    "sources": [
       "src/**/*.{js,jsx}"
     ],
     "concurrency": 5,
@@ -191,11 +192,10 @@
     "tap": true,
     "powerAssert": false,
     "require": [
-      "babel-register",
-      "babel-polyfill",
+      "@babel/register",
+      "@babel/polyfill",
       "css-modules-require-hook/preset"
-    ],
-    "babel": "inherit"
+    ]
   },
   "nyc": {
     "sourceMap": false,
@@ -212,7 +212,7 @@
     "start": "cross-env NODE_ENV=development node run",
     "test": "cross-env NODE_ENV=test ava",
     "test:coverage": "cross-env NODE_ENV=test nyc --extension .jsx ava",
-    "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbImageSettings.test.js",
+    "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbLoginSettings.test.js",
     "report": "nyc report --reporter=html",
     "coveralls": "nyc report --reporter=text-lcov | coveralls"
   }

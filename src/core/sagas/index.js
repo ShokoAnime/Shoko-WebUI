@@ -4,7 +4,9 @@ import { delay } from 'redux-saga';
 import {
   all, call, put, select, takeEvery,
 } from 'redux-saga/effects';
-import { capitalize, forEach, map, without } from 'lodash';
+import {
+  capitalize, forEach, map, without,
+} from 'lodash';
 import { push } from 'connected-react-router';
 import { createAction } from 'redux-actions';
 import ApiCommon from '../api/common';

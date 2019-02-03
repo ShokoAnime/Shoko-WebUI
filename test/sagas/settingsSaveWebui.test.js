@@ -21,7 +21,7 @@ const mockApi = {
 };
 
 const settingsSagas = proxyquire('../../src/core/sagas/settings', {
-  '../api': mockApi,
+  '../api/common': mockApi,
 });
 
 test('settingsSaveWebui', (t) => {

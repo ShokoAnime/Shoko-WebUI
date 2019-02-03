@@ -26,7 +26,8 @@ class AuthenticatedRoute extends React.Component<Props> {
             pathname: '/',
             state: { from: props.location },
           }}
-        />);
+        />
+      );
     }
 
     return <Component {...props} />;

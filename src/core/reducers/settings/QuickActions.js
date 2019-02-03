@@ -1,6 +1,5 @@
 // @flow
 import { handleAction } from 'redux-actions';
-import { without } from 'lodash';
 import { SETTINGS_QUICK_ACTION_SET } from '../../actions/settings/QuickActions';
 import type { Action } from '../../actions';
 

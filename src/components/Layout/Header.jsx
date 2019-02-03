@@ -13,9 +13,8 @@ import { Link } from 'react-router-dom';
 
 import Logo from './Logo';
 import QueueStatus from './QueueStatus';
-import RefreshSwitch from '../Buttons/AutoRefreshSwitch';
+// import RefreshSwitch from '../Buttons/AutoRefreshSwitch';
 import UpdateButton from '../Buttons/UpdateButton';
-import Notifications from './Notifications';
 import UserDropdown from '../UserDropdown/UserDropdown';
 
 type Props = {
