@@ -1,7 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { Button } from '@blueprintjs/core';
 
 type Props = {
   index: number,
@@ -30,7 +30,7 @@ class QuickActionsItem extends React.Component<Props> {
         <td>{index}</td>
         <td>{name}</td>
         <td className="text-right">
-          <Button bsStyle="primary" bsSize="small" onClick={this.handleAction}>Run</Button>
+          <Button onClick={this.handleAction}>Run</Button>
         </td>
       </tr>
     );

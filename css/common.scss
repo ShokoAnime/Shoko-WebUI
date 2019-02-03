@@ -1,4 +1,5 @@
 $panel-header-color: #393f4f;
+$secondary-toolbar-bg-color: #5a6273;
 $green-text-color: #59c777;
 
 input, button, textarea, :focus {
@@ -34,6 +35,7 @@ body {
     padding: 0 15px;
     background: $panel-header-color;
     align-items: center;
+    z-index: 31;
 
     .navbar-brand {
       .image {
@@ -49,10 +51,18 @@ body {
         color: $green-text-color;
       }
     }
+
+    .user-dropdown {
+      padding: 0;
+    }
   }
 
   &.secondary-navbar {
-    background: #5a6273;
+    background: $secondary-toolbar-bg-color;
+
+    .navbar-item.update-button:hover {
+      background-color: $secondary-toolbar-bg-color;
+    }
   }
 }
 

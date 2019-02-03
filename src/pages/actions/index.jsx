@@ -1,47 +1,78 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { Section, Tile, Button } from 'react-bulma-components';
+import { chunk } from 'lodash';
+import { Columns, Section } from 'react-bulma-components';
+import {
+  ControlGroup, Button, Label, Classes,
+} from '@blueprintjs/core';
+import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import Layout from '../../components/Layout/Layout';
 import Overview from '../dashboard/Overview';
-import Events from '../../core/events';
 import { getSettings } from '../../core/actions/settings/Api';
-import { faThumbtack } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FixedPanel from '../../components/Panels/FixedPanel';
+import QuickActionName from './QuickActionName';
+import { setStatus, setAction } from '../../core/actions/modals/QuickActions';
+import QuickActionModal from '../../components/Dialogs/QuickActionModal';
 
-type Props = {};
+type Props = {
+  pinAction: (string) => void,
+  loadSettings: () => void,
+};
 
 const actions = [
-  'Action 1',
-  'Action 2',
-  'Action 3',
-  'Action 4',
-  'Action 5',
-  'Action 6',
+  ['Import', ['folder-import', 'folder-scan', 'remove-missing-files']],
+  ['Update Info', ['stats-update', 'mediainfo-update']],
+  ['Rescan', ['rescanunlinked', 'rescanmanuallinks', 'rehashunlinked', 'rehashmanuallinks']],
+  ['AniDB', ['core-anidb-votes-sync', 'core-anidb-list-sync', 'core-anidb-update', 'core-anidb-updatemissingcache']],
+  ['Trakt', ['core-trakt-sync', 'core-trakt-scan']],
+  ['TvDB', ['core-tvdb-update', 'core-tvdb-regenlinks', 'core-tvdb-checklinks']],
+  ['MovieDB', ['core-moviedb-update']],
+  ['Images', ['core-images-update', 'image-validateall']],
+  ['Plex', ['plex-sync']],
 ];
 
 class ActionsPage extends React.Component<Props> {
-  renderAction = action => (
-    <React.Fragment>
-      <Tile kind="parent" size={4}>
-        <Tile color="primary" kind="child">
-          <FontAwesomeIcon icon={faThumbtack} alt="" />
-          {action}
-        </Tile>
-      </Tile>
-    </React.Fragment>
+  componentDidMount() {
+    const { loadSettings } = this.props;
+    loadSettings();
+  }
+
+  renderAction = (action) => {
+    const { pinAction } = this.props;
+    return (
+      <ControlGroup fill id={action} key={action}>
+        <Button onClick={() => pinAction(action)} className={Classes.FIXED}><FontAwesomeIcon icon={faThumbtack} alt="" /></Button>
+        <Label className={Classes.INLINE}><QuickActionName id={action} /></Label>
+        <Button className={Classes.FIXED}>Run</Button>
+      </ControlGroup>
+    );
+  };
+
+  renderGroup = group => (
+    <Columns.Column size={4}>
+      <FixedPanel title={group[0]} className="quick-action">
+        {group[1].map(this.renderAction)}
+      </FixedPanel>
+    </Columns.Column>
+  );
+
+  renderColumns = actionsChunk => (
+    <Columns>
+      {actionsChunk.map(this.renderGroup)}
+    </Columns>
   );
 
   render() {
     return (
       <Layout>
-        <Overview />
-        <Section>
-          <Tile kind="ancestor">
-            {actions.map(this.renderAction)}
-          </Tile>
+        <Section className="actions page-wrap">
+          <Overview />
+          {chunk(actions, 3).map(this.renderColumns)}
         </Section>
+        <QuickActionModal />
       </Layout>
     );
   }
@@ -54,9 +85,11 @@ function mapStateToProps() {
 function mapDispatchToProps(dispatch) {
   return {
     loadSettings: () => {
-      dispatch({ type: Events.PAGE_SETTINGS_LOAD, payload: null });
       dispatch(getSettings());
-      dispatch({ type: Events.SETTINGS_GET_SERVER, payload: null });
+    },
+    pinAction: (value) => {
+      dispatch(setAction(value));
+      dispatch(setStatus(true));
     },
   };
 }

@@ -22,7 +22,6 @@ import {
   SET_FETCHING,
   SHOW_GLOBAL_ALERT,
   UPDATE_AVAILABLE,
-  WEBUI_VERSION_UPDATE,
 } from '../actions';
 import { GET_DELTA } from '../actions/logs/Delta';
 import { APPEND_CONTENTS, SET_CONTENTS } from '../actions/logs/Contents';
@@ -478,11 +477,13 @@ function* downloadUpdates(): Saga<void> {
   const resultJson = yield call(ApiCommon.getWebuiUpdate, channel);
   yield dispatchAction(Events.STOP_FETCHING, 'downloadUpdates');
   if (resultJson.error) {
-    yield dispatchAction(WEBUI_VERSION_UPDATE, { error: resultJson.message });
+    const message = `Oops! Something went wrong! Submit an issue on GitHub so we can fix it. ${resultJson.message}`;
+    yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'error', text: message, duration: 10000 });
     return;
   }
 
-  yield dispatchAction(WEBUI_VERSION_UPDATE, { status: true });
+  const message = 'Update Successful! Please reload the page for the updated version.';
+  yield dispatchAction(QUEUE_GLOBAL_ALERT, { type: 'success', text: message, duration: 10000 });
 }
 
 function* fetchImportFolderSeries(action): Saga<void> {
@@ -560,5 +561,6 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
     takeEvery(Events.LOGIN, login),
     takeEvery(Events.OS_BROWSE, osBrowse),
+    takeEvery(Events.SETTINGS_SAVE_QUICK_ACTION, settings.saveQuickAction),
   ]);
 }

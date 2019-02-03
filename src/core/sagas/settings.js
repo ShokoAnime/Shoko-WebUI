@@ -9,9 +9,11 @@ import Events from '../events';
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';
 import { settingsPlex } from '../actions/settings/Plex';
+import { settingsQuickActions } from '../actions/settings/QuickActions';
 
 import type { Action } from '../actions';
 import type { State } from '../store';
+import type { ActionType as QuickActionType } from '../reducers/settings/QuickActions';
 
 
 export const settingsSelector = (state: State) => state.settings;
@@ -117,10 +119,16 @@ function* settingsGetPlexLoginUrl(): Saga<void> {
   }
 }
 
+function* settingsSaveQuickAction(): Saga<void> {
+  const actions = yield select(state => state.settings.quickActions);
+  yield call(settingsSaveWebui, { type: '', payload: { actions } });
+}
+
 export default {
   saveWebui: settingsSaveWebui,
   getServer: settingsGetServer,
   saveServer: settingsSaveServer,
   getTraktCode: settingsGetTraktCode,
   getPlexLoginUrl: settingsGetPlexLoginUrl,
+  saveQuickAction: settingsSaveQuickAction,
 };

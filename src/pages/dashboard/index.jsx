@@ -49,10 +49,10 @@ class MainPage extends React.Component<Props> {
               <News />
             </Columns.Column>
             <Columns.Column>
-              <QuickActions className="col-sm-4" />
+              <QuickActions />
             </Columns.Column>
             <Columns.Column>
-              <ImportFolders className="col-sm-4" />
+              <ImportFolders />
             </Columns.Column>
           </Columns>
         </Section>

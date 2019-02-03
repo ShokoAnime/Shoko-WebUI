@@ -2,36 +2,72 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import cx from 'classnames';
-import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Icon, Media } from 'react-bulma-components';
 import { connect } from 'react-redux';
-import s from './UserDropdown.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faUser, faKey, faSignOutAlt,
+} from '@fortawesome/free-solid-svg-icons';
 import Events from '../../core/events';
 
 type Props = {
-  user: string,
+  username: string,
   logout: () => void,
 }
 
-class UserDropdown extends React.Component<Props> {
+type State = {
+  open: boolean,
+}
+
+class UserDropdown extends React.Component<Props, State> {
   static propTypes = {
-    user: PropTypes.string,
+    username: PropTypes.string,
     logout: PropTypes.func,
   };
 
+  state = {
+    open: false,
+  };
+
+  toggle = (evt) => {
+    if (evt) {
+      evt.preventDefault();
+    }
+    this.setState(({ open }) => ({ open: !open }));
+  };
+
   render() {
-    const { user, logout } = this.props;
+    const { username, logout } = this.props;
+    const { open } = this.state;
     return (
-      <div className={cx('nav notifications pull-right', s['user-dropdown'])}>
-        <Dropdown bsStyle="white" title="User" className="pull-right" id="user">
-          <Dropdown.Toggle className={s['user-toggle']} useAnchor>{user}</Dropdown.Toggle>
-          <Dropdown.Menu className={cx('dropdown-menu', s.menu)} bsRole="menu">
-            <MenuItem eventKey="1"><i className="fa fa-user" />Profile</MenuItem>
-            <MenuItem divider />
-            <MenuItem eventKey="2"><i className="fa fa-key" />Change password</MenuItem>
-            <MenuItem onClick={logout} eventKey="3"><i className="fa fa-sign-out" />Logout</MenuItem>
-          </Dropdown.Menu>
-        </Dropdown>
-      </div>
+      <React.Fragment>
+        <nav className="navbar primary-navbar user-dropdown" role="navigation" aria-label="dropdown navigation">
+          <div className={cx('navbar-item has-dropdown', { 'is-active': open })}>
+            <div className="navbar-link" onClick={this.toggle}>
+              <Media>
+                <Media.Item>
+                  <p className="username">{username}</p>
+                </Media.Item>
+                <Media.Item renderAs="figure" className="image is-48x48" position="right">
+                  <div className="avatar">{username.substr(0, 1)}</div>
+                </Media.Item>
+              </Media>
+            </div>
+            <div className="navbar-dropdown">
+              <div className="navbar-item">
+                <FontAwesomeIcon className="icon" icon={faUser} />Profile
+              </div>
+              <div className="navbar-item">
+                <FontAwesomeIcon className="icon" icon={faKey} />Change password
+              </div>
+              <hr className="navbar-divider" />
+              <div onClick={logout} className="navbar-item">
+                <FontAwesomeIcon className="icon" icon={faSignOutAlt} />Logout
+              </div>
+            </div>
+          </div>
+        </nav>
+      </React.Fragment>
     );
   }
 }

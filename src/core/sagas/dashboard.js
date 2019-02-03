@@ -1,6 +1,7 @@
 // @flow
 import type { Saga } from 'redux-saga';
-import { put, call } from 'redux-saga/effects';
+import { all, put, call } from 'redux-saga/effects';
+import { forEach } from 'lodash';
 import Api from '../api/common';
 import {
   QUEUE_GLOBAL_ALERT,
@@ -14,6 +15,7 @@ import {
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
 import Events from '../events';
+import { settingsQuickActions } from '../actions/settings/QuickActions';
 
 function* getSettings(): Saga<void> {
   const resultJson = yield call(Api.getWebuiConfig);
@@ -29,6 +31,13 @@ function* getSettings(): Saga<void> {
   yield put({ type: SET_NOTIFICATIONS, payload: data.uiNotifications });
   yield put({ type: SET_LOG_DELTA, payload: data.otherLogDelta });
   yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
+  if (data.quickActions) {
+    let slot = 0;
+    yield all(forEach(data.quickActions, (item) => {
+      slot += 1;
+      return put(settingsQuickActions({ slot, id: item }));
+    }));
+  }
 }
 
 function* getQueueStatus(): Saga<void> {
@@ -119,10 +128,11 @@ function* eventDashboardLoad(): Saga<void> {
   resultJson = yield call(Api.newsGet);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-    return;
+  } else {
+    yield put({ type: JMM_NEWS, payload: resultJson.data });
   }
 
-  yield put({ type: JMM_NEWS, payload: resultJson.data });
+
   yield put({ type: Events.CHECK_UPDATES });
   yield put({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } });
 }

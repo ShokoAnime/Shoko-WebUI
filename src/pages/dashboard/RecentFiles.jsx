@@ -27,7 +27,7 @@ class RecentFiles extends React.Component<Props> {
     return (
       <div className="recent-files">
         <FixedPanel title="Recent Files">
-          <table className="table">
+          <table className="table is-fullwidth is-striped is-hoverable">
             <tbody>
               {files}
             </tbody>

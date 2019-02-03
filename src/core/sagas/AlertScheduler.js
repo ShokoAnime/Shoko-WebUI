@@ -15,7 +15,7 @@ export default function* alertScheduler(action: Action): Saga<void> {
   if (activeAlerts.length < maxAlerts) {
     activeAlerts = [...activeAlerts, alert];
     yield put({ type: GLOBAL_ALERT, payload: activeAlerts });
-    yield call(delay, alertDisplayTime);
+    yield call(delay, alert.duration || alertDisplayTime);
     activeAlerts = without(activeAlerts, alert);
     yield put({ type: GLOBAL_ALERT, payload: activeAlerts });
   } else {

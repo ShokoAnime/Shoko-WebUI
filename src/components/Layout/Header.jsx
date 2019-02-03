@@ -3,7 +3,7 @@ import cx from 'classnames';
 import React from 'react';
 import { connect } from 'react-redux';
 import {
-  Navbar, Media, Icon,
+  Navbar, Icon,
 } from 'react-bulma-components';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -41,14 +41,7 @@ class Header extends React.Component<Props> {
             <Logo />
           </Navbar.Brand>
           <Navbar.Container position="end">
-            <Media>
-              <Media.Item>
-                <p>Lorem Ipsum</p>
-              </Media.Item>
-              <Media.Item renderAs="figure" className="image is-48x48" position="right">
-                <img className="is-rounded" alt="64x64" src="http://bulma.io/images/placeholders/48x48.png" />
-              </Media.Item>
-            </Media>
+            <UserDropdown />
           </Navbar.Container>
         </Navbar>
         <Navbar className="secondary-navbar">
@@ -58,6 +51,9 @@ class Header extends React.Component<Props> {
             {this.renderLink('/actions', 'Actions', faListAlt)}
             {this.renderLink('/settings', 'Settings', faSlidersH)}
           </Navbar.Container>
+          <Navbar.Item className="update-button">
+            <UpdateButton />
+          </Navbar.Item>
           <Navbar.Container position="end">
             <QueueStatus />
           </Navbar.Container>
