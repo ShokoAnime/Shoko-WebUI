@@ -3,7 +3,7 @@ import Api from './index';
 import type { ApiLoginType } from '../types/api';
 
 function* getLogDelta(data: {delta: number, position: number}): {} {
-  const query = data ? `${data.delta}/${data.position}` : '';
+  const query = data ? `${data.delta}/${data.position || 0}` : '';
   const json = yield Api.call({ action: '/log/get/', query });
   if (json.error && json.code === 404) {
     return { data: [] };
