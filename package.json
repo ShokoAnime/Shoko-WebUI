@@ -205,7 +205,7 @@
     "instrument": false
   },
   "scripts": {
-    "eslint": "eslint --ext .js --ext .jsx --cache --format=node_modules/eslint-formatter-pretty src run.js webpack.config.js",
+    "eslint": "eslint --ext .js --ext .jsx --cache --format=node_modules/eslint-formatter-pretty src run.js webpack.config.default.js",
     "stylelint": "stylelint \"src/**/*.css\"",
     "lint": "yarn run build:version && yarn run eslint && yarn run stylelint",
     "clean": "node run clean",
