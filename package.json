@@ -47,7 +47,7 @@
     "redux-actions": "^2.6.4",
     "redux-ava": "^2.2.0",
     "redux-devtools-extension": "^2.13.8",
-    "redux-saga": "^0.16.0",
+    "redux-saga": "^1.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^3.0.1",
     "sessionstorage": "^0.1.0",

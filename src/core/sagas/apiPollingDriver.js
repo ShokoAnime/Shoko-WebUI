@@ -1,8 +1,7 @@
 // @flow
-import { delay } from 'redux-saga';
 import type { Saga } from 'redux-saga';
 import {
-  take, cancel, fork, call, put, select, cancelled,
+  take, cancel, fork, call, put, select, cancelled, delay,
 } from 'redux-saga/effects';
 import Api from '../api/common';
 import Events from '../events';
@@ -20,7 +19,7 @@ function* pollServerStatus() {
     } else {
       yield put(getStatus(resultJson.data));
     }
-    yield call(delay, 2000);
+    yield delay(2000);
   }
 }
 
@@ -41,7 +40,7 @@ function* pollAutoRefresh() {
         yield put(getDelta(payload));
       }
 
-      yield call(delay, 4000);
+      yield delay(4000);
     }
   } finally {
     if (yield cancelled()) {

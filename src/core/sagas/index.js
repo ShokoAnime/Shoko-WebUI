@@ -1,8 +1,7 @@
 // @flow
 import type { Saga } from 'redux-saga';
-import { delay } from 'redux-saga';
 import {
-  all, call, put, select, takeEvery,
+  all, call, put, select, takeEvery, delay,
 } from 'redux-saga/effects';
 import {
   capitalize, forEach, map, without,
@@ -66,11 +65,11 @@ function* alertScheduler(action): Saga<void> {
   if (activeAlerts.length < maxAlerts) {
     activeAlerts = [...activeAlerts, alert];
     yield put({ type: GLOBAL_ALERT, payload: activeAlerts });
-    yield call(delay, alertDisplayTime);
+    yield delay(alertDisplayTime);
     activeAlerts = without(activeAlerts, alert);
     yield put({ type: GLOBAL_ALERT, payload: activeAlerts });
   } else {
-    yield call(delay, alertDisplayTime / 2);
+    yield delay(alertDisplayTime / 2);
     yield put({ type: SHOW_GLOBAL_ALERT, payload: alert });
   }
 }
@@ -261,7 +260,7 @@ function* firstrunGetDatabase(): Saga<void> {
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
-    yield call(delay, 1000);
+    yield delay(1000);
     yield put({ type: FIRSTRUN_DATABASE, payload: { } });
   } else {
     yield put({ type: FIRSTRUN_DATABASE, payload: resultJson.data });
@@ -277,7 +276,7 @@ function* firstrunTestDatabase(): Saga<void> {
   } else {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'success', text: 'Database test successful!' } } });
   }
-  yield call(delay, 1000);
+  yield delay(1000);
   yield put({ type: FIRSTRUN_DATABASE, payload: { } });
 }
 
@@ -298,7 +297,7 @@ function* firstrunInitDatabase(): Saga<void> {
   } else {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'success', text: 'Database settings saved!' } } });
   }
-  yield call(delay, 1000);
+  yield delay(1000);
   yield put({ type: FIRSTRUN_DATABASE, payload: { } });
 
   // 2. Test connection
@@ -314,7 +313,7 @@ function* firstrunInitDatabase(): Saga<void> {
     yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
     yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
-    yield call(delay, 1000);
+    yield delay(1000);
     yield put({ type: FIRSTRUN_DATABASE, payload: { } });
   }
 }
@@ -333,7 +332,7 @@ function* firstrunGetAnidb(): Saga<void> {
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
-    yield call(delay, 1000);
+    yield delay(1000);
     yield put({ type: FIRSTRUN_ANIDB, payload: { } });
   } else {
     yield put({ type: FIRSTRUN_ANIDB, payload: resultJson.data });
@@ -356,7 +355,7 @@ function* firstrunSetAnidb(): Saga<void> {
   } else {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'success', text: 'AniDB settings saved!' } } });
   }
-  yield call(delay, 1000);
+  yield delay(1000);
   yield put({ type: FIRSTRUN_ANIDB, payload: { } });
 }
 
@@ -369,7 +368,7 @@ function* firstrunTestAnidb(): Saga<void> {
   } else {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'success', text: 'AniDB credentials are correct!' } } });
   }
-  yield call(delay, 1000);
+  yield delay(1000);
   yield put({ type: FIRSTRUN_ANIDB, payload: { } });
 }
 
@@ -379,7 +378,7 @@ function* firstrunGetDefaultuser(): Saga<void> {
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunUser' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'error', text: resultJson.message } } });
-    yield call(delay, 1000);
+    yield delay(1000);
     yield put({ type: FIRSTRUN_USER, payload: { } });
   } else {
     yield put({ type: FIRSTRUN_USER, payload: resultJson.data });
@@ -402,7 +401,7 @@ function* firstrunSetDefaultuser(): Saga<void> {
   } else {
     yield put({ type: FIRSTRUN_USER, payload: { status: { type: 'success', text: 'User saved!' } } });
   }
-  yield call(delay, 1000);
+  yield delay(1000);
   yield put({ type: FIRSTRUN_USER, payload: { } });
 }
 
@@ -412,7 +411,7 @@ function* firstrunGetDatabaseSqlserverinstance(): Saga<void> {
   yield put({ type: Events.STOP_FETCHING, payload: 'firstrunDatabase' });
   if (resultJson.error) {
     yield put({ type: FIRSTRUN_DATABASE, payload: { status: { type: 'error', text: resultJson.message } } });
-    yield call(delay, 1000);
+    yield delay(1000);
     yield put({ type: FIRSTRUN_DATABASE, payload: { } });
   } else {
     yield put({ type: FIRSTRUN_DATABASE, payload: { instances: resultJson.data } });
