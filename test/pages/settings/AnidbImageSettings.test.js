@@ -2,9 +2,10 @@
 import React from 'react';
 import test from 'ava';
 import { forEach } from 'lodash';
-import { configure, shallow } from 'enzyme';
+import { configure, mount } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import configureStore from 'redux-mock-store';
+import { Provider } from 'react-redux';
 import Component from '../../../src/pages/settings/AnidbImageSettings';
 import Events from '../../../src/core/events';
 
@@ -26,11 +27,11 @@ const store = mockStore({
 });
 
 test('AnidbImageSettings', (t) => {
-  const wrapper = shallow(<Component store={store} />).dive();
+  const wrapper = mount(<Provider store={store}><Component /></Provider>);
   forEach(fields, (f) => {
     const field = wrapper.find(`SettingsYesNoToggle[name="${f}"]`);
     t.is(field.prop('value'), data[f], `renders ${f}`);
-    field.simulate('change', f, changedData[f]);
+    field.prop('onChange').call(this, f, changedData[f]);
   });
   wrapper.find('SettingsPanel').prop('onAction').call();
   const actions = store.getActions();

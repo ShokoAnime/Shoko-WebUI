@@ -17,3 +17,4 @@ run.config.js
 /coverage/
 .eslintcache
 flow-typed/npm/
+/yarn.lock

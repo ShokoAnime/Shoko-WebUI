@@ -1,5 +1,6 @@
 // @flow
 import { combineReducers } from 'redux';
+import { connectRouter } from 'connected-react-router';
 import { handleAction, handleActions } from 'redux-actions';
 import {
   QUEUE_STATUS,
@@ -24,6 +25,7 @@ import settings from './reducers/settings';
 import logs from './reducers/logs';
 import firstrun from './reducers/firstrun';
 import Version from '../../public/version.json';
+import history from './history';
 
 function apiReducer(state, action) {
   return action.error ? state : Object.assign({}, state, action.payload);
@@ -103,6 +105,7 @@ const reducers = {
   logs,
   firstrun,
   fetching,
+  router: connectRouter(history),
 };
 
 export type Reducers = typeof reducers;

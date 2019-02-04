@@ -1,5 +1,5 @@
 import { select, call, put } from 'redux-saga/effects';
-import { cloneableGenerator } from 'redux-saga/utils';
+import { cloneableGenerator } from '@redux-saga/testing-utils';
 import proxyquire from 'proxyquire';
 import test from 'ava';
 import { createStore } from 'redux';
