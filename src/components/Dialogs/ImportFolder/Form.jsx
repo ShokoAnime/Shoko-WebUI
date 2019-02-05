@@ -79,9 +79,9 @@ class AddTab extends React.Component<Props> {
             <Button className={Classes.FIXED} onClick={this.handleBrowse}>Browse</Button>
           </ControlGroup>
         </FormGroup>
-        <Switch label="Drop source" onChange={this.onChange} checked={IsDropSource} />
-        <Switch label="Drop destination" onChange={this.onChange} checked={IsDropDestination} />
-        <Switch label="Watch folder" onChange={this.onChange} checked={IsWatched} />
+        <Switch id="IsDropSource" label="Drop source" onChange={this.onChange} checked={IsDropSource} />
+        <Switch id="IsDropDestination" label="Drop destination" onChange={this.onChange} checked={IsDropDestination} />
+        <Switch id="IsWatched" label="Watch folder" onChange={this.onChange} checked={IsWatched} />
         <BrowseFolderModal onSelect={this.onFolderSelect} />
       </React.Fragment>
     );

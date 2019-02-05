@@ -1,7 +1,7 @@
 // @flow
 import PropTypes from 'prop-types';
 import React from 'react';
-import { HTMLSelect } from '@blueprintjs/core';
+import { HTMLSelect, Button, ControlGroup } from '@blueprintjs/core';
 import { Table, Panel } from 'react-bulma-components';
 import { connect } from 'react-redux';
 import { forEach, find } from 'lodash';
@@ -39,10 +39,15 @@ class ImportFolderSeries extends React.Component<Props> {
     fetchImportFolderSeries: PropTypes.func,
   };
 
+  constructor() {
+    super();
+    this.folderSelect = React.createRef();
+  }
+
   findFolder = (folders: Array<ImportFolder>, id: number): ?ImportFolder => find(folders, ['ImportFolderID', parseInt(id, 10)]);
 
-  handleSelect = (event) => {
-    const folderId = event.currentTarget.value;
+  handleSelect = () => {
+    const folderId = this.folderSelect.value;
     const { fetchImportFolderSeries, importFolders } = this.props;
     const folder = this.findFolder(importFolders, folderId);
     if (!folder) { return; }
@@ -51,6 +56,8 @@ class ImportFolderSeries extends React.Component<Props> {
       name: folder.ImportFolderLocation || '',
     });
   };
+
+  folderSelect: ?HTMLButtonElement;
 
   render() {
     const {
@@ -66,7 +73,7 @@ class ImportFolderSeries extends React.Component<Props> {
 
     forEach(importFolders, (folder) => {
     // eslint-disable-next-line max-len
-      folders.push(<option value={folder.ImportFolderID}>{folder.ImportFolderLocation}</option>);
+      folders.push(<option key={folder.ImportFolderID} value={folder.ImportFolderID}>{folder.ImportFolderLocation}</option>);
     });
 
     return (
@@ -76,9 +83,16 @@ class ImportFolderSeries extends React.Component<Props> {
         isFetching={isFetching}
       >
         <Panel.Block>
-          <HTMLSelect value={selectedFolder.id} onChange={this.handleSelect}>
-            {folders}
-          </HTMLSelect>
+          <ControlGroup className="folder-select">
+            <HTMLSelect
+              fill
+              defaultValue={selectedFolder.id}
+              elementRef={(ref) => { this.folderSelect = ref; }}
+            >
+              {folders}
+            </HTMLSelect>
+            <Button intent="primary" onClick={this.handleSelect}>Calculate</Button>
+          </ControlGroup>
         </Panel.Block>
         <Panel.Block>
           <Table>
