@@ -45,7 +45,7 @@ const config = {
     chunkModules: isVerbose,
     cached: isVerbose,
     cachedAssets: isVerbose,
-    optimizationBailout: true,
+    optimizationBailout: isVerbose,
   },
   plugins: [
     new webpack.LoaderOptionsPlugin({
