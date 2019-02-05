@@ -37,7 +37,7 @@ class FixedPanel extends React.Component<Props> {
     return (
       <Level.Side align="right">
         <Level.Item className="action">
-          <FontAwesomeIcon icon={faCog} onClick={this.handleAction} alt={actionName} />
+          <FontAwesomeIcon icon={faCog} onClick={this.handleAction} title={actionName} />
         </Level.Item>
       </Level.Side>
     );
