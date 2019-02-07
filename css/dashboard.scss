@@ -4,8 +4,20 @@
   align-items: start;
 }
 
-.commands .table .icon-column {
-  width: 2em;
+.commands .table {
+  table-layout: fixed;
+
+  .icon-column {
+    width: 2em;
+  }
+
+  .status {
+    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow-ellipsis: '...';
+    font-size: 0.85rem;
+    max-height: 2rem;
+  }
 }
 
 .user-dropdown {

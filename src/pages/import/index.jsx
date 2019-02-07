@@ -27,11 +27,10 @@ class ImportFoldersPage extends React.Component<Props> {
             <Columns.Column>
               <ImportFolders
                 description="Location, Type, Provider and Status"
-                className="col-sm-4"
               />
             </Columns.Column>
             <Columns.Column>
-              <ImportFolderSeries className="col-sm-8" />
+              <ImportFolderSeries />
             </Columns.Column>
           </Columns>
         </Section>

@@ -36,7 +36,7 @@ class Commands extends React.Component<Props> {
   renderStatus = (key, status) => (
     <tr key={`status-${key}`}>
       <td />
-      <td colSpan="2">{status}</td>
+      <td colSpan="2"><div className="status">{status}</div></td>
     </tr>
   );
 
