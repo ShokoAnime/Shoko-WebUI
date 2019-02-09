@@ -15,7 +15,7 @@ const settingsSagas = proxyquire('../../src/core/sagas/settings', {
   '../api/common': mockApi,
 });
 
-test('settingsGetTraktCode', (t) => {
+test('settingsGetPlexLoginUrl', (t) => {
   const generator = cloneableGenerator(settingsSagas.default.getPlexLoginUrl)();
   const effectPutStartFetching = put({ type: Events.START_FETCHING, payload: 'plex_login_url' });
   t.deepEqual(effectPutStartFetching, generator.next().value, 'put effect with START_FETCHING');
