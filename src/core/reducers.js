@@ -22,7 +22,6 @@ import {
 } from './actions';
 import modals from './reducers/modals';
 import settings from './reducers/settings';
-import logs from './reducers/logs';
 import firstrun from './reducers/firstrun';
 import Version from '../../public/version.json';
 import history from './history';
@@ -102,7 +101,6 @@ const reducers = {
   selectedImportFolderSeries,
   settings,
   modals,
-  logs,
   firstrun,
   fetching,
   router: connectRouter(history),

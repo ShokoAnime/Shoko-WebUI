@@ -110,6 +110,7 @@
     "redux-mock-store": "^1.5.3",
     "redux-saga-testing": "^1.0.5",
     "resolve-url-loader": "^3.0.0",
+    "rimraf": "^2.6.3",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "stylelint": "^9.3.0",
@@ -217,6 +218,8 @@
     "test:coverage": "cross-env NODE_ENV=test nyc --extension .jsx ava",
     "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbLoginSettings.test.js",
     "report": "nyc report --reporter=html",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
+    "postinstall": "yarn flow-typed",
+    "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true"
   }
 }

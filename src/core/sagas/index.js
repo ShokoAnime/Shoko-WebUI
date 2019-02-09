@@ -24,8 +24,6 @@ import {
   SHOW_GLOBAL_ALERT,
   UPDATE_AVAILABLE,
 } from '../actions';
-import { GET_DELTA } from '../actions/logs/Delta';
-import { APPEND_CONTENTS, SET_CONTENTS } from '../actions/logs/Contents';
 import { SETTINGS_API_GET } from '../actions/settings/Api';
 import { SET_NOTIFICATIONS, SET_THEME } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
@@ -75,68 +73,6 @@ function* alertScheduler(action): Saga<void> {
 }
 
 /* ALERT SYSTEM */
-
-/**
- * Fetches more log lines from server
- */
-function splitLogLines(json) {
-  const lines = [];
-  let currentLine = null;
-  const logRegex = /^\[([0-9-]+\s{1}[0-9:]+)]\s(\w+)\|(.*)/g;
-
-  try {
-    forEach(json.lines, (line) => {
-      logRegex.lastIndex = 0;
-      const tags = logRegex.exec(line);
-      if (tags !== null) {
-        if (currentLine !== null) {
-          lines.push(currentLine);
-        }
-        currentLine = Object.assign({}, {
-          stamp: tags[1],
-          tag: tags[2],
-          text: tags[3],
-        });
-      } else {
-        if (currentLine === null) {
-          currentLine = Object.assign({}, {
-            stamp: null,
-            tag: null,
-            text: tags !== null ? line : '',
-          });
-        }
-        currentLine.text += line;
-      }
-    });
-    if (currentLine !== null) {
-      lines.push(currentLine);
-    }
-
-    return { data: lines };
-  } catch (ex) {
-    return { error: true, message: ex.message };
-  }
-}
-
-function* getLogDelta(action): Saga<void> {
-  const resultJson = yield call(ApiCommon.getLogDelta, action.payload);
-
-  if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-    return;
-  }
-
-  const result = splitLogLines(resultJson.data);
-  if (result.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: result.message } });
-    return;
-  }
-
-  yield put({
-    type: action.payload ? APPEND_CONTENTS : SET_CONTENTS,
-    payload: { lines: result.data, position: resultJson.data.position },
-  });
-}
 
 function* getSettings(): Saga<void> {
   const resultJson = yield call(ApiCommon.getWebuiConfig);
@@ -523,7 +459,6 @@ export default function* rootSaga(): Saga<void> {
   yield all([
     takeEvery(QUEUE_GLOBAL_ALERT, queueGlobalAlert),
     takeEvery(SHOW_GLOBAL_ALERT, alertScheduler),
-    takeEvery(GET_DELTA, getLogDelta),
     takeEvery(SETTINGS_API_GET, getSettings),
     takeEvery(Events.DASHBOARD_LOAD, Dashboard.eventDashboardLoad),
     takeEvery(Events.DASHBOARD_QUEUE_STATUS, Dashboard.eventDashboardQueueStatus),
