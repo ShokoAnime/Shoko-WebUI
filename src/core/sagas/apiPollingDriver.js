@@ -8,7 +8,6 @@ import Events from '../events';
 import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE } from '../actions';
 import { getStatus } from '../actions/firstrun';
 import type { Action } from '../actions';
-import { getDelta } from '../actions/logs/Delta';
 
 
 function* pollServerStatus() {
@@ -32,12 +31,6 @@ function* pollAutoRefresh() {
       if (location === '/dashboard') {
         yield put({ type: Events.DASHBOARD_QUEUE_STATUS, payload: null });
         yield put({ type: Events.DASHBOARD_RECENT_FILES, payload: null });
-      } else if (location === '/logs') {
-        const payload = yield select(state => ({
-          delta: state.settings.other.logDelta,
-          position: state.logs.contents.position,
-        }));
-        yield put(getDelta(payload));
       }
 
       yield delay(4000);
