@@ -120,7 +120,7 @@ class LoginPage extends React.Component<Props, State> {
                     <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.user = ref; }} placeholder="Username" />
                   </FormGroup>
                   <FormGroup>
-                    <InputGroup onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.pass = ref; }} placeholder="Password" />
+                    <InputGroup type="password" onKeyPress={this.handleKeyPress} inputRef={(ref) => { this.pass = ref; }} placeholder="Password" />
                   </FormGroup>
                   <Button onClick={this.handleSignIn}>Login</Button>
                 </Card>
