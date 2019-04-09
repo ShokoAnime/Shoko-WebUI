@@ -1,6 +1,6 @@
 // @flow
-import 'babel-polyfill';
-import 'isomorphic-fetch';
+import 'core-js/stable';
+import 'regenerator-runtime/runtime';
 import 'es6-promise/auto';
 import React from 'react';
 import ReactDOM from 'react-dom';
