@@ -8,8 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTasks, faListAlt, faImage } from '@fortawesome/free-solid-svg-icons';
 import FixedPanel from '../../components/Panels/FixedPanel';
 
-const icons = { hash: faTasks, general: faListAlt, image: faImage };
-const names = { hash: 'Hasher', general: 'General', image: 'Images' };
+const icons = { hasher: faTasks, general: faListAlt, images: faImage };
+const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
 type Props = {
   items: {

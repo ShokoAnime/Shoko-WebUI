@@ -4,6 +4,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { createStore, applyMiddleware } from 'redux';
 import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
+import signalrMiddleware from './middlewares/signalr';
 import { throttle } from 'lodash';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import { saveState, loadState } from './localStorage';
@@ -19,7 +20,7 @@ export type State = $ObjMap<Reducers, $ExtractFunctionReturn>;
 
 const sagaMiddleware = createSagaMiddleware();
 const routeMiddleware = routerMiddleware(history);
-const middleware = [routeMiddleware, sagaMiddleware, thunkMiddleware];
+const middleware = [routeMiddleware, sagaMiddleware, signalrMiddleware, thunkMiddleware];
 
 function configureStore(): ReduxStore<State, Action> {
   return createStore(

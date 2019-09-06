@@ -1,8 +1,8 @@
 // @flow
-import createHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 
-const history = createHistory({
+const browserHistory = createBrowserHistory({
   basename: '/webui',
 });
 
-export default history;
+export default browserHistory;
