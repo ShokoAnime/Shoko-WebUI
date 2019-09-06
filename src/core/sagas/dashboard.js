@@ -10,7 +10,7 @@ import {
   IMPORT_FOLDERS,
   SERIES_COUNT,
   FILES_COUNT,
-  JMM_NEWS,
+//  JMM_NEWS,
 } from '../actions';
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';

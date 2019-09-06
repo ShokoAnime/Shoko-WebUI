@@ -44,6 +44,10 @@ class LoginPage extends React.Component<Props, State> {
     globalAlert: PropTypes.array,
   };
 
+  user: ?HTMLInputElement;
+
+  pass: ?HTMLInputElement;
+
   componentDidMount() {
     if (this.user) this.user.focus();
     const { handleInit, serverVersion } = this.props;
@@ -69,10 +73,6 @@ class LoginPage extends React.Component<Props, State> {
       device: 'web-ui',
     });
   };
-
-  user: ?HTMLInputElement;
-
-  pass: ?HTMLInputElement;
 
   renderVersion() {
     const { version, isFetching } = this.props;
