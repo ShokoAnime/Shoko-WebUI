@@ -4,7 +4,6 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { createStore, applyMiddleware } from 'redux';
 import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
-import signalrMiddleware from './middlewares/signalr';
 import { throttle } from 'lodash';
 import { connectRouter, routerMiddleware } from 'connected-react-router';
 import signalrMiddleware from './middlewares/signalr';
