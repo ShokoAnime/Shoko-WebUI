@@ -10,7 +10,7 @@ import {
   IMPORT_FOLDERS,
   SERIES_COUNT,
   FILES_COUNT,
-  JMM_NEWS,
+//  JMM_NEWS,
 } from '../actions';
 import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
 import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
@@ -125,16 +125,16 @@ function* eventDashboardLoad(): Saga<void> {
 
   yield put({ type: FILES_COUNT, payload: resultJson.data });
 
-  resultJson = yield call(Api.newsGet);
+  /* resultJson = yield call(Api.newsGet);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put({ type: JMM_NEWS, payload: resultJson.data });
-  }
+  } */
 
 
   yield put({ type: Events.CHECK_UPDATES });
-  yield put({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } });
+  // yield put({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } });
 }
 
 export default {

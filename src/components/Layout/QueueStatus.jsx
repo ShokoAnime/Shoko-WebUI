@@ -34,12 +34,12 @@ class QueueStatus extends React.Component<Props> {
 
 function mapStateToProps(state): Props {
   const { queueStatus } = state;
-  const { general, hash, image } = queueStatus;
+  const { general, hasher, images } = queueStatus;
 
   return {
-    hasher: hash ? hash.count : 0,
+    hasher: hasher ? hasher.count : 0,
     general: general ? general.count : 0,
-    images: image ? image.count : 0,
+    images: images ? images.count : 0,
   };
 }
 

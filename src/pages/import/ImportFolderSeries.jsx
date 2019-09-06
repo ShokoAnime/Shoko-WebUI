@@ -39,6 +39,8 @@ class ImportFolderSeries extends React.Component<Props> {
     fetchImportFolderSeries: PropTypes.func,
   };
 
+  folderSelect: ?HTMLButtonElement;
+
   constructor() {
     super();
     this.folderSelect = React.createRef();
@@ -56,8 +58,6 @@ class ImportFolderSeries extends React.Component<Props> {
       name: folder.ImportFolderLocation || '',
     });
   };
-
-  folderSelect: ?HTMLButtonElement;
 
   render() {
     const {

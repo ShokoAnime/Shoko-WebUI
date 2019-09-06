@@ -64,9 +64,9 @@ function mapStateToProps(state) {
     commandCount = (Object.keys(queueStatus).length === 0
     && queueStatus.constructor === Object) ? 0
       : (
-        (queueStatus.hash.count || 0)
+        (queueStatus.hasher.count || 0)
         + (queueStatus.general.count || 0)
-        + (queueStatus.image.count || 0)
+        + (queueStatus.images.count || 0)
       );
   } catch (ex) {
     commandCount = 0;
