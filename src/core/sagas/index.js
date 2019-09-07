@@ -296,10 +296,25 @@ function* firstrunSetAnidb(): Saga<void> {
 }
 
 function* firstrunTestAnidb(): Saga<void> {
+  // Save first, so we test the actual credential users sees
+  const data = yield select((state) => {
+    const { anidb } = state.firstrun;
+    return {
+      login: anidb.login,
+      password: anidb.password,
+    };
+  });
   yield put({ type: Events.START_FETCHING, payload: 'firstrunAnidb' });
-  const resultJson = yield call(ApiCommon.getInitAnidbTest);
-  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+  const resultJson = yield call(ApiCommon.postInitAnidb, data);
   if (resultJson.error) {
+    yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+    yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
+    return;
+  }
+
+  const resultTestJson = yield call(ApiCommon.getInitAnidbTest);
+  yield put({ type: Events.STOP_FETCHING, payload: 'firstrunAnidb' });
+  if (resultTestJson.error) {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'error', text: resultJson.message } } });
   } else {
     yield put({ type: FIRSTRUN_ANIDB, payload: { status: { type: 'success', text: 'AniDB credentials are correct!' } } });
