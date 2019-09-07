@@ -131,9 +131,9 @@ if (!isDebug) {
         uglifyOptions: {
           mangle: false,
           compress: {
-            warnings: false, // Suppress uglification warnings
             collapse_vars: false,
           },
+          warnings: false, // Suppress uglification warnings
           output: {
             comments: false,
           },
