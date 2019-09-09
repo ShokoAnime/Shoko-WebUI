@@ -24,7 +24,6 @@ import modals from './reducers/modals';
 import settings from './reducers/settings';
 import firstrun from './reducers/firstrun';
 import Version from '../../public/version.json';
-import history from './history';
 
 function apiReducer(state, action) {
   return action.error ? state : Object.assign({}, state, action.payload);
@@ -103,9 +102,8 @@ const reducers = {
   modals,
   firstrun,
   fetching,
-  router: connectRouter(history),
 };
 
 export type Reducers = typeof reducers;
 
-export default combineReducers(reducers);
+export default history => combineReducers({ router: connectRouter(history), ...reducers });

@@ -5,10 +5,10 @@ import { createStore, applyMiddleware } from 'redux';
 import type { Store as ReduxStore } from 'redux';
 import createSagaMiddleware from 'redux-saga';
 import { throttle } from 'lodash';
-import { connectRouter, routerMiddleware } from 'connected-react-router';
+import { routerMiddleware } from 'connected-react-router';
 import signalrMiddleware from './middlewares/signalr';
 import { saveState, loadState } from './localStorage';
-import rootReducer from './reducers';
+import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import history from './history';
 
@@ -24,7 +24,7 @@ const middleware = [routeMiddleware, sagaMiddleware, signalrMiddleware, thunkMid
 
 function configureStore(): ReduxStore<State, Action> {
   return createStore(
-    connectRouter(history)(rootReducer),
+    createRootReducer(history),
     loadState(),
     process.env.NODE_ENV !== 'production' ? composeWithDevTools(applyMiddleware(...middleware)) : applyMiddleware(...middleware),
   );
