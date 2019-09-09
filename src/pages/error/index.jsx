@@ -39,15 +39,15 @@ class ErrorBoundary extends React.Component<Props, State> {
     document.title = 'Error';
   }
 
-  goBack = (event: Event) => {
-    event.preventDefault();
-    history.goBack();
-  };
-
   componentDidCatch(error: {}, info: {componentStack?: {}}) {
     // Display fallback UI
     this.setState({ hasError: true, error, info });
   }
+
+  goBack = (event: Event) => {
+    event.preventDefault();
+    history.goBack();
+  };
 
   render() {
     const { hasError } = this.state;
