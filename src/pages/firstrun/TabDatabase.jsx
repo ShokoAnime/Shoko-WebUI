@@ -54,7 +54,7 @@ class TabDatabase extends React.Component<Props> {
         {!isFetching && database.status.text && <Callout intent={database.status.type === 'error' ? 'danger' : 'success'}>{database.status.text}</Callout>}
         <FormGroup inline label="Database type:">
           <HTMLSelect placeholder="Database" value={database.db_type} onChange={event => changeSetting('db_type', event.target.value)}>
-            <option value="" />
+            <option aria-label="Empty" value="" />
             <option value="SQLite">SQLite</option>
             <option value="MySQL">MySQL</option>
             <option value="SQLServer">SQLServer</option>
