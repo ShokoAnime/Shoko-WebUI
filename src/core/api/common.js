@@ -40,7 +40,7 @@ function fileCount() {
 }
 
 function newsGet() {
-  return Api.call({ action: '/news/get' });
+  return Api.call({ action: '/news/get', query: '?max=5' });
 }
 
 function webuiLatest(channel: 'stable' | 'unstable') {
