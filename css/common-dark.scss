@@ -1,0 +1,20 @@
+$main-background-dark: #475166;
+$main-background-dark-light: #5E6C83;
+$main-text-color: #fff;
+
+#app-container.dark {
+  background: $main-background-dark;
+}
+
+.dark {
+  .table {
+    background: $main-background-dark;
+    color: $main-text-color;
+  }
+  .panel-block {
+    color: $main-text-color;
+  }
+  .table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
+    background-color: $main-background-dark-light;
+  }
+}

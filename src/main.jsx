@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './core/app';
 
-const container = document && document.getElementById('app-container');
+const container = document && document.getElementById('app-root');
 
 if (container !== null) {
   ReactDOM.render(<App />, container);
