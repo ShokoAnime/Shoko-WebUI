@@ -21,6 +21,7 @@ const defaultOptions = {
   method: 'GET',
   query: '',
   params: {},
+  expectEmpty: false,
 };
 
 function* apiCall(userOptions: ApiCallOptions): Saga<ApiResponseType> {
@@ -68,6 +69,7 @@ function* apiCall(userOptions: ApiCallOptions): Saga<ApiResponseType> {
       return { error: true, message: `Network error: ${options.action} ${response.status}: ${response.statusText}` };
     }
 
+    if (options.expectEmpty === true) { return {}; }
     const json = yield response.json();
     if (json.code && json.code !== 200) {
       return { error: true, code: json.code, message: json.message || 'No error message given.' };
