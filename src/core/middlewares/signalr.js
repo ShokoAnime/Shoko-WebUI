@@ -18,12 +18,12 @@ const maxTimeout = 60000;
 
 const onQueueStateChange = (dispatch, getState) => (queue, state) => {
   const newState = Object.assign({},
-    { [queue]: getState().queueStatus[queue] }, { [queue]: { state } });
+    { [queue]: Object.assign({}, getState().queueStatus[queue], { state }) });
   dispatch({ type: QUEUE_STATUS, payload: newState });
 };
 const onQueueCountChange = (dispatch, getState) => (queue, count) => {
   const newState = Object.assign({},
-    { [queue]: getState().queueStatus[queue] }, { [queue]: { count } });
+    { [queue]: Object.assign({}, getState().queueStatus[queue], { count }) });
   dispatch({ type: QUEUE_STATUS, payload: newState });
 };
 const onQueueRefreshState = dispatch => (state) => {
