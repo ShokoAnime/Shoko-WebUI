@@ -6,10 +6,12 @@ import { connect } from 'react-redux';
 import { createSelector } from 'reselect';
 import SettingsPanel from '../../components/Panels/SettingsPanel';
 import SettingsYesNoToggle from '../../components/Buttons/SettingsYesNoToggle';
+import SettingsSlider from '../../components/Buttons/SettingsSlider';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
-import type { SettingsAnidbImagesType, SettingBoolean } from '../../core/reducers/settings/Server';
+import type { SettingsAnidbImagesType } from '../../core/reducers/settings/Server';
+
 
 type Props = {
   fields: SettingsAnidbImagesType,
@@ -18,20 +20,20 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    AniDB_DownloadCharacters?: SettingBoolean,
-    AniDB_DownloadCreators?: SettingBoolean,
-    AniDB_DownloadReviews?: SettingBoolean,
-    AniDB_DownloadReleaseGroups?: SettingBoolean,
+    DownloadCharacters?: boolean,
+    DownloadCreators?: boolean,
+    DownloadRelatedAnime: boolean,
+    MaxRelationDepth: number,
   }
 }
 
 class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AniDB_DownloadCharacters: PropTypes.oneOf(['True', 'False']),
-      AniDB_DownloadCreators: PropTypes.oneOf(['True', 'False']),
-      AniDB_DownloadReviews: PropTypes.oneOf(['True', 'False']),
-      AniDB_DownloadReleaseGroups: PropTypes.oneOf(['True', 'False']),
+      DownloadCharacters: PropTypes.bool,
+      DownloadCreators: PropTypes.bool,
+      DownloadRelatedAnime: PropTypes.bool,
+      MaxRelationDepth: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -43,15 +45,17 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
     };
   }
 
-  handleChange = (field: string, value: SettingBoolean) => {
+  handleChange = (field: string, value: boolean | number) => {
     const { fields } = this.state;
     this.setState({ fields: Object.assign({}, fields, { [field]: value }) });
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'AniDb', original: fields, changed: formFields });
   };
 
   render() {
@@ -61,32 +65,32 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
 
     return (
       <SettingsPanel
-        title="AniDB Images"
+        title="AniDB Download"
         onAction={this.saveSettings}
         form
       >
         <SettingsYesNoToggle
-          name="AniDB_DownloadCharacters"
+          name="DownloadCharacters"
           label="Character Images"
-          value={formFields.AniDB_DownloadCharacters}
+          value={formFields.DownloadCharacters}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_DownloadCreators"
+          name="DownloadCreators"
           label="Creator Images"
-          value={formFields.AniDB_DownloadCreators}
+          value={formFields.DownloadCreators}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_DownloadReviews"
-          label="Reviews"
-          value={formFields.AniDB_DownloadReviews}
+          name="DownloadRelatedAnime"
+          label="Related Anime"
+          value={formFields.DownloadRelatedAnime}
           onChange={this.handleChange}
         />
-        <SettingsYesNoToggle
-          name="AniDB_DownloadReleaseGroups"
-          label="Release Groups"
-          value={formFields.AniDB_DownloadReleaseGroups}
+        <SettingsSlider
+          name="MaxRelationDepth"
+          label="Relation Depth"
+          value={formFields.MaxRelationDepth}
           onChange={this.handleChange}
         />
       </SettingsPanel>
@@ -95,12 +99,12 @@ class AnidbImageSettings extends React.PureComponent<Props, ComponentState> {
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
-  server => ({
-    AniDB_DownloadCharacters: server.AniDB_DownloadCharacters,
-    AniDB_DownloadCreators: server.AniDB_DownloadCreators,
-    AniDB_DownloadReviews: server.AniDB_DownloadReviews,
-    AniDB_DownloadReleaseGroups: server.AniDB_DownloadReleaseGroups,
+  state => state.settings.server.AniDb,
+  AniDB => ({
+    DownloadCharacters: AniDB.DownloadCharacters,
+    DownloadCreators: AniDB.DownloadCreators,
+    DownloadRelatedAnime: AniDB.DownloadRelatedAnime,
+    MaxRelationDepth: AniDB.MaxRelationDepth,
   }),
 );
 
@@ -116,4 +120,4 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AnidbImageSettings);
+export default connect<ComponentState, {}>(mapStateToProps, mapDispatchToProps)(AnidbImageSettings);

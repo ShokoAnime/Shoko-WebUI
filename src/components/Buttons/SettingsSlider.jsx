@@ -18,7 +18,7 @@ export default class SettingsSlider extends React.Component<Props> {
     name: PropTypes.string.isRequired,
     label: PropTypes.string.isRequired,
     tooltip: PropTypes.any,
-    value: PropTypes.string,
+    value: PropTypes.number,
     onChange: PropTypes.func.isRequired,
   };
 

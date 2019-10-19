@@ -2,166 +2,183 @@
 import { handleAction } from 'redux-actions';
 import { SETTINGS_SERVER } from '../../actions/settings/Server';
 import type { Action } from '../../actions';
+import { mergeDeep } from '../../util';
 
 export type SettingBoolean = 'True' | 'False';
 
 export type SettingsDatabaseType = {
+  MySqliteDirectory: string,
+  DatabaseBackupDirectory: string,
+  Type: string,
+  Username: string,
+  Password: string,
+  Schema: string,
+  Hostname: string,
   SQLite_DatabaseFile: string,
-  MySQL_Hostname: string,
-  MySQL_SchemaName: string,
-  MySQL_Username: string,
-  MySQL_Password: string,
-  SQLServer_DatabaseName: string,
-  SQLServer_DatabaseServer: string,
-  SQLServer_Username: string,
-  SQLServer_Password: string,
 }
 
 export type SettingsAnidbType = {
-  AniDB_Username: string,
-  AniDB_Password: string,
-  AniDB_AVDumpKey: string,
-  AniDB_ClientPort: string,
-  AniDB_AVDumpClientPort: string,
+  Username: string,
+  Password: string,
+  AVDumpKey: string,
+  ClientPort: string,
+  AVDumpClientPort: string,
 }
 
-export type SettingsAnidbImagesType = {
-  AniDB_DownloadCharacters: SettingBoolean,
-  AniDB_DownloadCreators: SettingBoolean,
-  AniDB_DownloadReviews: SettingBoolean,
-  AniDB_DownloadReleaseGroups: SettingBoolean,
+export type SettingsAnidbDownloadType = {
+  DownloadCharacters: boolean,
+  DownloadCreators: boolean,
+  DownloadRelatedAnime: boolean,
+  MaxRelationDepth: 3,
 }
 
 export type SettingsAnidbMylistType = {
-  AniDB_MyList_AddFiles: SettingBoolean,
+  MyList_AddFiles: SettingBoolean,
 // Delete, DeleteLocalOnly, MarkDeleted, MarkExternalStorage, MarkUnknown, MarkDisk
-  AniDB_MyList_DeleteType: '0' | '1' | '2' | '3' | '4' | '5',
-  AniDB_MyList_ReadUnwatched: SettingBoolean,
-  AniDB_MyList_ReadWatched: SettingBoolean,
-  AniDB_MyList_SetUnwatched: SettingBoolean,
-  AniDB_MyList_SetWatched: SettingBoolean,
+  MyList_DeleteType: '0' | '1' | '2' | '3' | '4' | '5',
+  MyList_ReadUnwatched: SettingBoolean,
+  MyList_ReadWatched: SettingBoolean,
+  MyList_SetUnwatched: SettingBoolean,
+  MyList_SetWatched: SettingBoolean,
 // Unknown, HDD, Disk, Deleted, Remote
-  AniDB_MyList_StorageState: '0' | '1' | '2' | '3' | '4',
+  MyList_StorageState: '0' | '1' | '2' | '3' | '4',
 }
 // Never = 1, HoursSix = 2, HoursTwelve = 3, Daily = 4, WeekOne = 5, MonthOne = 6
 export type SettingsUpdateFrequencyType = '1' | '2' | '3' | '4' | '5' | '6';
 
 export type SettingsAnidbUpdateType = {
-  AniDB_Calendar_UpdateFrequency: SettingsUpdateFrequencyType,
-  AniDB_Anime_UpdateFrequency: SettingsUpdateFrequencyType,
-  AniDB_MyList_UpdateFrequency: SettingsUpdateFrequencyType,
-  AniDB_MyListStats_UpdateFrequency: SettingsUpdateFrequencyType,
-  AniDB_File_UpdateFrequency: SettingsUpdateFrequencyType
+  Calendar_UpdateFrequency: SettingsUpdateFrequencyType,
+  Anime_UpdateFrequency: SettingsUpdateFrequencyType,
+  MyList_UpdateFrequency: SettingsUpdateFrequencyType,
+  MyListStats_UpdateFrequency: SettingsUpdateFrequencyType,
+  File_UpdateFrequency: SettingsUpdateFrequencyType
 }
 
 export type SettingsTvdbDownloadType = {
-  TvDB_AutoFanart: SettingBoolean,
-  TvDB_AutoPosters: SettingBoolean,
-  TvDB_AutoWideBanners: SettingBoolean,
-  TvDB_AutoLink: SettingBoolean,
+  AutoFanart: SettingBoolean,
+  AutoPosters: SettingBoolean,
+  AutoWideBanners: SettingBoolean,
+  AutoLink: SettingBoolean,
 }
 
 export type SettingsTvdbLanguageType = 'zh' | 'en' | 'sv' | 'no' | 'da' | 'fi' | 'nl' | 'de' | 'it' | 'es' | 'fr' | 'pl' | 'hu' | 'el' | 'tr' | 'ru' | 'he' | 'ja' | 'pt' | 'cs' | 'sl' | 'hr' | 'ko';
 
 export type SettingsTvdbPrefsType = {
-  TvDB_AutoFanartAmount: string,
-  TvDB_AutoPostersAmount: string,
-  TvDB_AutoWideBannersAmount: string,
-  TvDB_Language: SettingsTvdbLanguageType,
-  TvDB_UpdateFrequency: SettingsUpdateFrequencyType,
+  AutoFanartAmount: string,
+  AutoPostersAmount: string,
+  AutoWideBannersAmount: string,
+  Language: SettingsTvdbLanguageType,
+  UpdateFrequency: SettingsUpdateFrequencyType,
 }
 
 export type SettingsTraktType = {
-  Trakt_IsEnabled: SettingBoolean,
-  Trakt_TokenExpirationDate: string,
-  Trakt_UpdateFrequency: SettingsUpdateFrequencyType,
-}
-
-export type SettingsMalType = {
-  MAL_AutoLink: SettingBoolean,
-  MAL_NeverDecreaseWatchedNums: SettingBoolean,
-  MAL_Password: string,
-  MAL_Username: string,
-  MAL_UpdateFrequency: SettingsUpdateFrequencyType,
+  Enabled: SettingBoolean,
+  TokenExpirationDate: string,
+  UpdateFrequency: SettingsUpdateFrequencyType,
 }
 
 export type SettingsMoviedbType = {
-  MovieDB_AutoFanart: SettingBoolean,
-  MovieDB_AutoFanartAmount: string,
-  MovieDB_AutoPosters: SettingBoolean,
-  MovieDB_AutoPostersAmount: string,
+  AutoFanart: SettingBoolean,
+  AutoFanartAmount: string,
+  AutoPosters: SettingBoolean,
+  AutoPostersAmount: string,
 }
 
 export type SettingsPlexType = {
-  Plex_Server: string,
-  Plex_Libraries: string,
+  Server: string,
+  Libraries: string,
 }
 
-export type SettingsServerType = SettingsDatabaseType & SettingsAnidbType & SettingsAnidbImagesType
-  & SettingsAnidbMylistType & SettingsAnidbUpdateType & SettingsTvdbDownloadType
-  & SettingsTvdbPrefsType & SettingsTraktType & SettingsMalType & SettingsMoviedbType
-  & SettingsPlexType;
+export type SettingsWebCacheType = {
+  Address: string,
+}
 
+export type SettingsServerType = {
+  AniDb: SettingsAnidbType & SettingsAnidbDownloadType & SettingsAnidbMylistType
+    & SettingsAnidbUpdateType,
+  Database: SettingsDatabaseType,
+  WebCache: SettingsWebCacheType,
+  TvDB: SettingsTvdbDownloadType & SettingsTvdbPrefsType,
+  MovieDb: SettingsMoviedbType,
+  TraktTv: SettingsTraktType,
+  Plex: SettingsPlexType,
+}
 const defaultState = {
-  AniDB_Username: '',
-  AniDB_Password: '',
-  AniDB_AVDumpKey: '',
-  AniDB_ClientPort: '',
-  AniDB_AVDumpClientPort: '',
-  SQLite_DatabaseFile: '',
-  MySQL_Hostname: '',
-  MySQL_SchemaName: '',
-  MySQL_Username: '',
-  MySQL_Password: '',
-  SQLServer_DatabaseName: '',
-  SQLServer_DatabaseServer: '',
-  SQLServer_Username: '',
-  SQLServer_Password: '',
-  AniDB_DownloadCharacters: 'False',
-  AniDB_DownloadCreators: 'False',
-  AniDB_DownloadReviews: 'False',
-  AniDB_DownloadReleaseGroups: 'False',
-  AniDB_MyList_AddFiles: 'False',
-  AniDB_MyList_DeleteType: '0',
-  AniDB_MyList_ReadUnwatched: 'False',
-  AniDB_MyList_ReadWatched: 'False',
-  AniDB_MyList_SetUnwatched: 'False',
-  AniDB_MyList_SetWatched: 'False',
-  AniDB_MyList_StorageState: '0',
-  AniDB_Calendar_UpdateFrequency: '1',
-  AniDB_Anime_UpdateFrequency: '1',
-  AniDB_MyList_UpdateFrequency: '1',
-  AniDB_MyListStats_UpdateFrequency: '1',
-  AniDB_File_UpdateFrequency: '1',
-  TvDB_AutoFanart: 'True',
-  TvDB_AutoPosters: 'True',
-  TvDB_AutoWideBanners: 'True',
-  TvDB_AutoLink: 'True',
-  TvDB_AutoFanartAmount: '10',
-  TvDB_AutoPostersAmount: '10',
-  TvDB_AutoWideBannersAmount: '10',
-  TvDB_Language: 'en',
-  TvDB_UpdateFrequency: '1',
-  Trakt_IsEnabled: 'False',
-  Trakt_TokenExpirationDate: '',
-  Trakt_UpdateFrequency: '1',
-  MAL_AutoLink: 'False',
-  MAL_NeverDecreaseWatchedNums: 'True',
-  MAL_Password: '',
-  MAL_UpdateFrequency: '4',
-  MAL_Username: '',
-  MovieDB_AutoFanart: 'True',
-  MovieDB_AutoFanartAmount: '10',
-  MovieDB_AutoPosters: 'True',
-  MovieDB_AutoPostersAmount: '10',
-  Plex_Server: '',
-  Plex_Libraries: '',
+  AniDb: {
+    Username: '',
+    Password: '',
+    AVDumpKey: '',
+    ClientPort: '',
+    AVDumpClientPort: '',
+    DownloadCharacters: false,
+    DownloadCreators: false,
+    DownloadRelatedAnime: true,
+    MaxRelationDepth: 3,
+    MyList_AddFiles: 'False',
+    MyList_DeleteType: '0',
+    MyList_ReadUnwatched: 'False',
+    MyList_ReadWatched: 'False',
+    MyList_SetUnwatched: 'False',
+    MyList_SetWatched: 'False',
+    MyList_StorageState: '0',
+    Calendar_UpdateFrequency: '1',
+    Anime_UpdateFrequency: '1',
+    MyList_UpdateFrequency: '1',
+    MyListStats_UpdateFrequency: '1',
+    File_UpdateFrequency: '1',
+  },
+  Database: {
+    MySqliteDirectory: '',
+    DatabaseBackupDirectory: '',
+    Type: '',
+    Username: '',
+    Password: '',
+    Schema: '',
+    Hostname: '',
+    SQLite_DatabaseFile: '',
+  },
+  WebCache: {
+    Address: '127.0.0.1',
+  },
+  TvDB: {
+    AutoLink: 'True',
+    AutoFanart: 'True',
+    AutoFanartAmount: '10',
+    AutoWideBanners: 'True',
+    AutoWideBannersAmount: '10',
+    AutoPosters: 'True',
+    AutoPostersAmount: '10',
+    UpdateFrequency: '1',
+    Language: 'en',
+  },
+  MovieDb: {
+    AutoFanart: 'True',
+    AutoFanartAmount: '10',
+    AutoPosters: 'True',
+    AutoPostersAmount: '10',
+  },
+  TraktTv: {
+    Enabled: 'False',
+    TokenExpirationDate: '',
+    UpdateFrequency: '1',
+    SyncFrequency: '1',
+  },
+  Import: {
+    VideoExtensions: [],
+    DefaultSeriesLanguage: 1,
+    DefaultEpisodeLanguage: 1,
+    UseExistingFileWatchedStatus: true,
+  },
+  Plex: {
+    Server: '',
+    Libraries: '',
+  },
 };
 
 const server = handleAction(
   SETTINGS_SERVER,
   (state: SettingsServerType, action: Action): SettingsServerType =>
-    Object.assign({}, state, action.payload),
+    mergeDeep({}, state, action.payload),
   defaultState,
 );
 
