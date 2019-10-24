@@ -10,7 +10,7 @@
   "dependencies": {
     "@aspnet/signalr": "^1.1.4",
     "@babel/runtime": "^7.6.0",
-    "@blueprintjs/core": "^3.12.0",
+    "@blueprintjs/core": "^3.19.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",

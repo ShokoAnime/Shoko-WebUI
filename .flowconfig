@@ -1,13 +1,16 @@
-[ignore]
-node_modules/
+[untyped]
+.*/node_modules/*
 
 [include]
+./src/
 
 [libs]
 flow-typed/es6-promise_v4.2.4.js
 flow-typed/promise.js
 
 [options]
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=src
 experimental.const_params=true
 module.file_ext=.js
 module.file_ext=.jsx

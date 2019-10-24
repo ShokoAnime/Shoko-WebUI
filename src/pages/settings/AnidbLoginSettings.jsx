@@ -13,33 +13,33 @@ import type { State } from '../../core/store';
 
 type Props = {
   fields: {
-    AniDB_Username: string,
-    AniDB_Password: string,
-    AniDB_AVDumpKey: string,
-    AniDB_ClientPort: string,
-    AniDB_AVDumpClientPort: string,
+    Username: string,
+    Password: string,
+    AVDumpKey: string,
+    ClientPort: string,
+    AVDumpClientPort: string,
   },
   saveSettings: ({}) => void,
 }
 
 type ComponentState = {
   fields: {
-    AniDB_Username?: string,
-    AniDB_Password?: string,
-    AniDB_AVDumpKey?: string,
-    AniDB_ClientPort?: string,
-    AniDB_AVDumpClientPort?: string,
+    Username?: string,
+    Password?: string,
+    AVDumpKey?: string,
+    ClientPort?: string,
+    AVDumpClientPort?: string,
   }
 }
 
 class AnidbLoginSettings extends React.Component<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AniDB_Username: PropTypes.string,
-      AniDB_Password: PropTypes.string,
-      AniDB_AVDumpKey: PropTypes.string,
-      AniDB_ClientPort: PropTypes.string,
-      AniDB_AVDumpClientPort: PropTypes.string,
+      Username: PropTypes.string,
+      Password: PropTypes.string,
+      AVDumpKey: PropTypes.string,
+      ClientPort: PropTypes.string,
+      AVDumpClientPort: PropTypes.string,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -59,9 +59,11 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'AniDb', original: fields, changed: formFields });
   };
 
   renderField = (label, field, formFields, type = 'text') => (
@@ -84,24 +86,24 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
         title="AniDB Login"
         onAction={this.saveSettings}
       >
-        {this.renderField('Username', 'AniDB_Username', formFields)}
-        {this.renderField('Password', 'AniDB_Password', formFields, 'password')}
-        {this.renderField('Port', 'AniDB_ClientPort', formFields)}
-        {this.renderField('AvDump Key', 'AniDB_AVDumpKey', formFields)}
-        {this.renderField('AvDump Port', 'AniDB_AVDumpClientPort', formFields)}
+        {this.renderField('Username', 'Username', formFields)}
+        {this.renderField('Password', 'Password', formFields, 'password')}
+        {this.renderField('Port', 'ClientPort', formFields)}
+        {this.renderField('AvDump Key', 'AVDumpKey', formFields)}
+        {this.renderField('AvDump Port', 'AVDumpClientPort', formFields)}
       </SettingsPanel>
     );
   }
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
+  state => state.settings.server.AniDb,
   server => ({
-    AniDB_Password: server.AniDB_Password,
-    AniDB_Username: server.AniDB_Username,
-    AniDB_AVDumpKey: server.AniDB_AVDumpKey,
-    AniDB_ClientPort: server.AniDB_ClientPort,
-    AniDB_AVDumpClientPort: server.AniDB_AVDumpClientPort,
+    Password: server.Password,
+    Username: server.Username,
+    AVDumpKey: server.AVDumpKey,
+    ClientPort: server.ClientPort,
+    AVDumpClientPort: server.AVDumpClientPort,
   }),
 );
 
