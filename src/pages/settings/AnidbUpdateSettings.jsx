@@ -21,25 +21,23 @@ type ComponentState = {
 }
 
 const updateFrequencyType = [
-  ['1', 'Never'],
-  ['2', 'Every 6 Hours'],
-  ['3', 'Every 12 Hours'],
-  ['4', 'Every 24 Hours'],
-  ['5', 'Once a Week'],
-  ['6', 'Once a Month'],
+  [1, 'Never'],
+  [2, 'Every 6 Hours'],
+  [3, 'Every 12 Hours'],
+  [4, 'Every 24 Hours'],
+  [5, 'Once a Week'],
+  [6, 'Once a Month'],
 ];
 
 
 class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AniDB_MyList_AddFiles: PropTypes.string,
-      AniDB_MyList_DeleteType: PropTypes.string,
-      AniDB_MyList_ReadUnwatched: PropTypes.string,
-      AniDB_MyList_ReadWatched: PropTypes.string,
-      AniDB_MyList_SetUnwatched: PropTypes.string,
-      AniDB_MyList_SetWatched: PropTypes.string,
-      AniDB_MyList_StorageState: PropTypes.string,
+      Calendar_UpdateFrequency: PropTypes.number,
+      Anime_UpdateFrequency: PropTypes.number,
+      MyList_UpdateFrequency: PropTypes.number,
+      MyListStats_UpdateFrequency: PropTypes.number,
+      File_UpdateFrequency: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -57,9 +55,11 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'AniDb', original: fields, changed: formFields });
   };
 
   render() {
@@ -76,38 +76,38 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
         form
       >
         <SettingsDropdown
-          name="AniDB_Calendar_UpdateFrequency"
+          name="Calendar_UpdateFrequency"
           label="Calendar"
           values={updateFrequencyType}
-          value={formFields.AniDB_Calendar_UpdateFrequency}
+          value={formFields.Calendar_UpdateFrequency}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_Anime_UpdateFrequency"
+          name="Anime_UpdateFrequency"
           label="Anime and Episode Information"
           values={updateFrequencyType}
-          value={formFields.AniDB_Anime_UpdateFrequency}
+          value={formFields.Anime_UpdateFrequency}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_MyList_UpdateFrequency"
+          name="MyList_UpdateFrequency"
           label="Sync Mylist"
           values={updateFrequencyType}
-          value={formFields.AniDB_MyList_UpdateFrequency}
+          value={formFields.MyList_UpdateFrequency}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_MyListStats_UpdateFrequency"
+          name="MyListStats_UpdateFrequency"
           label="Get Mylist Stats"
           values={updateFrequencyType}
-          value={formFields.AniDB_MyListStats_UpdateFrequency}
+          value={formFields.MyListStats_UpdateFrequency}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_File_UpdateFrequency"
+          name="File_UpdateFrequency"
           label="Files With Missing Info"
           values={updateFrequencyType}
-          value={formFields.AniDB_File_UpdateFrequency}
+          value={formFields.File_UpdateFrequency}
           onChange={this.handleChange}
         />
       </SettingsPanel>
@@ -116,13 +116,13 @@ class AnidbUpdateSettings extends React.Component<Props, ComponentState> {
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
+  state => state.settings.server.AniDb,
   server => ({
-    AniDB_Calendar_UpdateFrequency: server.AniDB_Calendar_UpdateFrequency,
-    AniDB_Anime_UpdateFrequency: server.AniDB_Anime_UpdateFrequency,
-    AniDB_MyList_UpdateFrequency: server.AniDB_MyList_UpdateFrequency,
-    AniDB_MyListStats_UpdateFrequency: server.AniDB_MyListStats_UpdateFrequency,
-    AniDB_File_UpdateFrequency: server.AniDB_File_UpdateFrequency,
+    Calendar_UpdateFrequency: server.Calendar_UpdateFrequency,
+    Anime_UpdateFrequency: server.Anime_UpdateFrequency,
+    MyList_UpdateFrequency: server.MyList_UpdateFrequency,
+    MyListStats_UpdateFrequency: server.MyListStats_UpdateFrequency,
+    File_UpdateFrequency: server.File_UpdateFrequency,
   }),
 );
 
