@@ -34,8 +34,22 @@ export default class SettingsYesNoToggle extends React.Component<Props> {
       value, label, tooltip,
     } = this.props;
     if (tooltip) {
-      return <Switch labelElement={<SettingsTooltip label={label} text={tooltip} />} large checked={value === true ? 1 : 0} onChange={this.handleChange} />;
+      return (
+        <Switch
+          labelElement={<SettingsTooltip label={label} text={tooltip} />}
+          large
+          checked={value === true ? 1 : 0}
+          onChange={this.handleChange}
+        />
+      );
     }
-    return <Switch label={label} large checked={value === true ? 1 : 0} onChange={this.handleChange} />;
+    return (
+      <Switch
+        label={label}
+        large
+        checked={value === true ? 1 : 0}
+        onChange={this.handleChange}
+      />
+    );
   }
 }

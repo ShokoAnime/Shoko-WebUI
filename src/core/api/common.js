@@ -144,7 +144,9 @@ function postOsFolder(path) {
 }
 
 function patchConfigSet(params: {}) {
-  return Api.call({ action: '/v3/Settings', method: 'PATCH', expectEmpty: true, params });
+  return Api.call({
+    action: '/v3/Settings', method: 'PATCH', expectEmpty: true, params,
+  });
 }
 
 function getTraktCode() {

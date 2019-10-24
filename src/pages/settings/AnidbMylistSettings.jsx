@@ -41,13 +41,13 @@ const mylistStorageTypes = [
 class AnidbMylistSettings extends React.Component<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AniDB_MyList_AddFiles: PropTypes.string,
-      AniDB_MyList_DeleteType: PropTypes.string,
-      AniDB_MyList_ReadUnwatched: PropTypes.string,
-      AniDB_MyList_ReadWatched: PropTypes.string,
-      AniDB_MyList_SetUnwatched: PropTypes.string,
-      AniDB_MyList_SetWatched: PropTypes.string,
-      AniDB_MyList_StorageState: PropTypes.string,
+      MyList_AddFiles: PropTypes.string,
+      MyList_DeleteType: PropTypes.string,
+      MyList_ReadUnwatched: PropTypes.string,
+      MyList_ReadWatched: PropTypes.string,
+      MyList_SetUnwatched: PropTypes.string,
+      MyList_SetWatched: PropTypes.string,
+      MyList_StorageState: PropTypes.string,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -65,9 +65,11 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'AniDb', original: fields, changed: formFields });
   };
 
   render() {
@@ -81,22 +83,22 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
         onAction={this.saveSettings}
       >
         <SettingsYesNoToggle
-          name="AniDB_MyList_AddFiles"
+          name="MyList_AddFiles"
           label="Add Files"
           tooltip="If selected when importing files, the files will be added to your AniDB account"
-          value={formFields.AniDB_MyList_AddFiles}
+          value={formFields.MyList_AddFiles}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_MyList_StorageState"
+          name="MyList_StorageState"
           label="Storage State"
           tooltip="The storage state files will be set to when added to your list"
           values={mylistStorageTypes}
-          value={formFields.AniDB_MyList_StorageState}
+          value={formFields.MyList_StorageState}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_MyList_DeleteType"
+          name="MyList_DeleteType"
           label="Delete Action"
           tooltip={'What action to take for a file when you delete it from you local collection.\n'
           + 'Delete File (AniDB) - Removes file from your AniDB MyList.\n'
@@ -105,35 +107,35 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
           + 'Mark External (CD/DVD) - Leaves the file on your list, but changes the state to external storage.\n'
           + 'Mark Unknown - Leaves the file on your list, but changes the state to unkown.'}
           values={mylistDeleteTypes}
-          value={formFields.AniDB_MyList_DeleteType}
+          value={formFields.MyList_DeleteType}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_MyList_ReadWatched"
+          name="MyList_ReadWatched"
           label="Read Watched"
           tooltip="If the file is set as watched on AniDB, it will also be set as watched on your local collection"
-          value={formFields.AniDB_MyList_ReadWatched}
+          value={formFields.MyList_ReadWatched}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_MyList_ReadUnwatched"
+          name="MyList_ReadUnwatched"
           label="Read Unwatched"
           tooltip="If the file is set as un-watched on AniDB, it will also be set as un-watched on your local collection"
-          value={formFields.AniDB_MyList_ReadUnwatched}
+          value={formFields.MyList_ReadUnwatched}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_MyList_SetWatched"
+          name="MyList_SetWatched"
           label="Set Watched"
           tooltip="When you finish watching a video, or manually mark a video as watched, AniDB will also be updated"
-          value={formFields.AniDB_MyList_SetWatched}
+          value={formFields.MyList_SetWatched}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="AniDB_MyList_SetUnwatched"
+          name="MyList_SetUnwatched"
           label="Set Unwatched"
           tooltip="When you manually mark a video as watched, AniDB will also be updated"
-          value={formFields.AniDB_MyList_SetUnwatched}
+          value={formFields.MyList_SetUnwatched}
           onChange={this.handleChange}
         />
       </SettingsPanel>
@@ -142,15 +144,15 @@ class AnidbMylistSettings extends React.Component<Props, ComponentState> {
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
+  state => state.settings.server.AniDb,
   server => ({
-    AniDB_MyList_AddFiles: server.AniDB_MyList_AddFiles,
-    AniDB_MyList_DeleteType: server.AniDB_MyList_DeleteType,
-    AniDB_MyList_ReadUnwatched: server.AniDB_MyList_ReadUnwatched,
-    AniDB_MyList_ReadWatched: server.AniDB_MyList_ReadWatched,
-    AniDB_MyList_SetUnwatched: server.AniDB_MyList_SetUnwatched,
-    AniDB_MyList_SetWatched: server.AniDB_MyList_SetWatched,
-    AniDB_MyList_StorageState: server.AniDB_MyList_StorageState,
+    MyList_AddFiles: server.MyList_AddFiles,
+    MyList_DeleteType: server.MyList_DeleteType,
+    MyList_ReadUnwatched: server.MyList_ReadUnwatched,
+    MyList_ReadWatched: server.MyList_ReadWatched,
+    MyList_SetUnwatched: server.MyList_SetUnwatched,
+    MyList_SetWatched: server.MyList_SetWatched,
+    MyList_StorageState: server.MyList_StorageState,
   }),
 );
 
