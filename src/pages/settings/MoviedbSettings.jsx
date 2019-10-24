@@ -10,7 +10,7 @@ import SettingsSlider from '../../components/Buttons/SettingsSlider';
 import Events from '../../core/events';
 
 import type { State } from '../../core/store';
-import type { SettingsMoviedbType, SettingBoolean } from '../../core/reducers/settings/Server';
+import type { SettingsMoviedbType } from '../../core/reducers/settings/Server';
 
 type Props = {
   fields: SettingsMoviedbType,
@@ -19,20 +19,20 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    MovieDB_AutoFanart?: SettingBoolean,
-    MovieDB_AutoFanartAmount?: string,
-    MovieDB_AutoPosters?: SettingBoolean,
-    MovieDB_AutoPostersAmount?: string,
+    AutoFanart?: boolean,
+    AutoFanartAmount?: string,
+    AutoPosters?: boolean,
+    AutoPostersAmount?: string,
   }
 }
 
 class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      MovieDB_AutoFanart: PropTypes.oneOf(['True', 'False']),
-      MovieDB_AutoFanartAmount: PropTypes.string,
-      MovieDB_AutoPosters: PropTypes.oneOf(['True', 'False']),
-      MovieDB_AutoPostersAmount: PropTypes.string,
+      AutoFanart: PropTypes.bool,
+      AutoFanartAmount: PropTypes.string,
+      AutoPosters: PropTypes.bool,
+      AutoPostersAmount: PropTypes.string,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -50,9 +50,11 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'MovieDb', original: fields, changed: formFields });
   };
 
   render() {
@@ -69,27 +71,27 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
         form
       >
         <SettingsYesNoToggle
-          name="MovieDB_AutoFanart"
+          name="AutoFanart"
           label="Fanart"
-          value={formFields.MovieDB_AutoFanart}
+          value={formFields.AutoFanart}
           onChange={this.handleChange}
         />
         <SettingsSlider
-          name="MovieDB_AutoFanartAmount"
+          name="AutoFanartAmount"
           label="Max Posters"
-          value={formFields.MovieDB_AutoFanartAmount}
+          value={formFields.AutoFanartAmount}
           onChange={this.handleChange}
         />
         <SettingsYesNoToggle
-          name="MovieDB_AutoPosters"
+          name="AutoPosters"
           label="Posters"
-          value={formFields.MovieDB_AutoPosters}
+          value={formFields.AutoPosters}
           onChange={this.handleChange}
         />
         <SettingsSlider
-          name="MovieDB_AutoPostersAmount"
+          name="AutoPostersAmount"
           label="Max Posters"
-          value={formFields.MovieDB_AutoPostersAmount}
+          value={formFields.AutoPostersAmount}
           onChange={this.handleChange}
         />
       </SettingsPanel>
@@ -98,12 +100,12 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
+  state => state.settings.server.MovieDb,
   server => ({
-    MovieDB_AutoFanart: server.MovieDB_AutoFanart,
-    MovieDB_AutoFanartAmount: server.MovieDB_AutoFanartAmount,
-    MovieDB_AutoPosters: server.MovieDB_AutoPosters,
-    MovieDB_AutoPostersAmount: server.MovieDB_AutoPostersAmount,
+    AutoFanart: server.AutoFanart,
+    AutoFanartAmount: server.AutoFanartAmount,
+    AutoPosters: server.AutoPosters,
+    AutoPostersAmount: server.AutoPostersAmount,
   }),
 );
 

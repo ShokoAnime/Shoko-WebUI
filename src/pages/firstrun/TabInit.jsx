@@ -42,11 +42,12 @@ class TabInit extends React.Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentDidUpdate(prevProps) {
     const { stopPolling, setActiveTab, status } = this.props;
-    if (nextProps.status.server_started !== status.server_started
-      && nextProps.status.server_started === true) {
+    if (prevProps.status.server_started !== status.server_started
+      && status.server_started === true) {
       stopPolling();
+      // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ useStatus: true }, () => { setActiveTab('tabInit'); });
     }
   }

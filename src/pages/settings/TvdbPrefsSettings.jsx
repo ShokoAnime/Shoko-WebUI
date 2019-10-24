@@ -54,22 +54,22 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    TvDB_AutoFanartAmount?: string,
-    TvDB_AutoPostersAmount?: string,
-    TvDB_AutoWideBannersAmount?: string,
-    TvDB_Language?: SettingsTvdbLanguageType,
-    TvDB_UpdateFrequency?: SettingsUpdateFrequencyType,
+    AutoFanartAmount?: string,
+    AutoPostersAmount?: string,
+    AutoWideBannersAmount?: string,
+    Language?: SettingsTvdbLanguageType,
+    UpdateFrequency?: SettingsUpdateFrequencyType,
   }
 }
 
 class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      TvDB_AutoFanartAmount: PropTypes.string,
-      TvDB_AutoPostersAmount: PropTypes.string,
-      TvDB_AutoWideBannersAmount: PropTypes.string,
-      TvDB_Language: PropTypes.string,
-      TvDB_UpdateFrequency: PropTypes.string,
+      AutoFanartAmount: PropTypes.string,
+      AutoPostersAmount: PropTypes.string,
+      AutoWideBannersAmount: PropTypes.string,
+      Language: PropTypes.string,
+      UpdateFrequency: PropTypes.string,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
@@ -87,9 +87,11 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'TvDB', original: fields, changed: formFields });
   };
 
   render() {
@@ -106,28 +108,28 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
         form
       >
         <SettingsSlider
-          name="TvDB_AutoFanartAmount"
+          name="AutoFanartAmount"
           label="Max Fanart"
-          value={formFields.TvDB_AutoFanartAmount}
+          value={formFields.AutoFanartAmount}
           onChange={this.handleChange}
         />
         <SettingsSlider
-          name="TvDB_AutoPostersAmount"
+          name="AutoPostersAmount"
           label="Max Posters"
-          value={formFields.TvDB_AutoPostersAmount}
+          value={formFields.AutoPostersAmount}
           onChange={this.handleChange}
         />
         <SettingsSlider
-          name="TvDB_AutoWideBannersAmount"
+          name="AutoWideBannersAmount"
           label="Max Wide Banners"
-          value={formFields.TvDB_AutoWideBannersAmount}
+          value={formFields.AutoWideBannersAmount}
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="TvDB_Language"
+          name="Language"
           label="Language"
           values={tvdbLanguages}
-          value={formFields.TvDB_Language}
+          value={formFields.Language}
           onChange={this.handleChange}
         />
         <SettingsDropdown
@@ -143,13 +145,13 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
 }
 
 const selectComputedData = createSelector(
-  state => state.settings.server,
+  state => state.settings.server.TvDB,
   server => ({
-    TvDB_AutoFanartAmount: server.TvDB_AutoFanartAmount,
-    TvDB_AutoPostersAmount: server.TvDB_AutoPostersAmount,
-    TvDB_AutoWideBannersAmount: server.TvDB_AutoWideBannersAmount,
-    TvDB_Language: server.TvDB_Language,
-    TvDB_UpdateFrequency: server.TvDB_UpdateFrequency,
+    AutoFanartAmount: server.AutoFanartAmount,
+    AutoPostersAmount: server.AutoPostersAmount,
+    AutoWideBannersAmount: server.AutoWideBannersAmount,
+    Language: server.Language,
+    UpdateFrequency: server.UpdateFrequency,
   }),
 );
 

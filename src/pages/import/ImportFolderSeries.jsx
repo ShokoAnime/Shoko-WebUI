@@ -30,6 +30,8 @@ type Props = {
 }
 
 class ImportFolderSeries extends React.Component<Props> {
+  folderSelect: ?HTMLButtonElement;
+
   static propTypes = {
     className: PropTypes.string,
     isFetching: PropTypes.bool,
@@ -38,8 +40,6 @@ class ImportFolderSeries extends React.Component<Props> {
     selectedFolder: PropTypes.object,
     fetchImportFolderSeries: PropTypes.func,
   };
-
-  folderSelect: ?HTMLButtonElement;
 
   constructor() {
     super();

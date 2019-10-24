@@ -36,9 +36,9 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    Trakt_IsEnabled?: 'True' | 'False',
-    Trakt_TokenExpirationDate?: string,
-    Trakt_UpdateFrequency?: string,
+    Enabled?: boolean,
+    TokenExpirationDate?: string,
+    UpdateFrequency?: string,
   }
 }
 
@@ -49,9 +49,9 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
       url: PropTypes.string,
     }),
     fields: PropTypes.shape({
-      Trakt_IsEnabled: PropTypes.oneOf(['True', 'False']),
-      Trakt_TokenExpirationDate: PropTypes.string,
-      Trakt_UpdateFrequency: PropTypes.string,
+      Enabled: PropTypes.bool,
+      TokenExpirationDate: PropTypes.string,
+      UpdateFrequency: PropTypes.string,
     }),
     fetching: PropTypes.bool,
     getTraktCode: PropTypes.func.isRequired,
@@ -71,9 +71,11 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
   };
 
   saveSettings = () => {
-    const { fields } = this.state;
+    const { fields } = this.props;
+    const { fields: stateFields } = this.state;
     const { saveSettings } = this.props;
-    saveSettings(fields);
+    const formFields = Object.assign({}, fields, stateFields);
+    saveSettings({ context: 'TraktTv', original: fields, changed: formFields });
   };
 
   renderTraktCode() {
@@ -82,7 +84,7 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
     const { fetching, getTraktCode } = this.props;
     if (usercode === '') {
       return (
-        <FormGroup inline label="Log Delta">
+        <FormGroup inline label="Trakt code">
           <Button
             text={fetching ? 'Requesting...' : 'Get Trakt Code'}
             onClick={getTraktCode}
@@ -111,23 +113,23 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
         onAction={this.saveSettings}
       >
         <SettingsYesNoToggle
-          name="Trakt_IsEnabled"
+          name="Enabled"
           label="Trakt Enabled"
-          value={formFields.Trakt_IsEnabled}
+          value={formFields.Enabled}
           onChange={this.handleChange}
         />
-        {formFields.Trakt_TokenExpirationDate === '' ? this.renderTraktCode()
+        {formFields.TokenExpirationDate === '' ? this.renderTraktCode()
           : (
             <div>
               <span>Token valid until:</span>
-              <span className="text-right">{moment(formFields.Trakt_TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</span>
+              <span className="text-right">{moment(formFields.TokenExpirationDate, 'X').format('YYYY-MM-DD HH:mm Z')}</span>
             </div>
           )}
         <SettingsDropdown
-          name="Trakt_UpdateFrequency"
+          name="UpdateFrequency"
           label="Automatically Update Data"
           values={updateFrequencyType}
-          value={formFields.Trakt_UpdateFrequency}
+          value={formFields.UpdateFrequency}
           onChange={this.handleChange}
         />
       </SettingsPanel>
@@ -137,15 +139,15 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
 
 const selectComputedData = createSelector(
   state => state.settings.trakt,
-  state => state.settings.server,
+  state => state.settings.server.TraktTv,
   state => state.fetching.trakt_code === true,
   (trakt, server, fetching) => ({
     trakt,
     fields: {
-      Trakt_IsEnabled: server.Trakt_IsEnabled,
-      Trakt_TokenExpirationDate: server.Trakt_TokenExpirationDate,
-      Trakt_SyncFrequency: server.Trakt_SyncFrequency,
-      Trakt_UpdateFrequency: server.Trakt_UpdateFrequency,
+      Enabled: server.Enabled,
+      TokenExpirationDate: server.TokenExpirationDate,
+      SyncFrequency: server.SyncFrequency,
+      UpdateFrequency: server.UpdateFrequency,
     },
     fetching,
   }),

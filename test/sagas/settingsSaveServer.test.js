@@ -9,12 +9,25 @@ import { settingsServer } from '../../src/core/actions/settings/Server';
 const action = {
   type: Events.SETTINGS_SAVE_SERVER,
   payload: {
-    field: 'value',
+    context: 'test',
+    original: { field: 'value' },
+    changed: { field: 'value2' },
+  },
+};
+
+const actionChanges = { test: { field: 'value2' } };
+
+const actionNoChanges = {
+  type: Events.SETTINGS_SAVE_SERVER,
+  payload: {
+    context: 'test',
+    original: { field: 'value' },
+    changed: { field: 'value' },
   },
 };
 
 const mockApi = {
-  postConfigSet: () => ({}),
+  patchConfigSet: () => ({}),
   '@noCallThru': true,
 };
 
@@ -23,10 +36,14 @@ const settingsSagas = proxyquire('../../src/core/sagas/settings', {
 });
 
 test('settingsSaveServer', (t) => {
+  const generatorNoChanges = cloneableGenerator(settingsSagas.default.saveServer)(actionNoChanges);
+  t.deepEqual(undefined, generatorNoChanges.next().value, 'no changes does nothing');
+  t.true(generatorNoChanges.next().done, 'should be done');
+
   const generator = cloneableGenerator(settingsSagas.default.saveServer)(action);
-  const postData = settingsSagas.saveSettingsConverter(action.payload);
-  const effectCall = call(mockApi.postConfigSet, postData);
-  t.deepEqual(effectCall, generator.next().value, 'call effect with Api.postConfigSet');
+  const postData = settingsSagas.saveSettingsPatch(action.payload);
+  const effectCall = call(mockApi.patchConfigSet, postData);
+  t.deepEqual(effectCall, generator.next().value, 'call effect with Api.patchConfigSet');
 
   const cloneError = generator.clone();
   const responseError = { error: true, message: 'Test error' };
@@ -36,7 +53,7 @@ test('settingsSaveServer', (t) => {
 
   const cloneSuccess = generator.clone();
   const responseSuccess = { data: 'Test data' };
-  const effectPut = put(settingsServer(action.payload));
+  const effectPut = put(settingsServer(actionChanges));
   t.deepEqual(effectPut, cloneSuccess.next(responseSuccess).value, 'put effect with settingsServer');
   const effectSuccess = put({
     type: QUEUE_GLOBAL_ALERT,

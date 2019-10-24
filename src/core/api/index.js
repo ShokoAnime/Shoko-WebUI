@@ -33,6 +33,7 @@ function* apiCall(userOptions: ApiCallOptions): Saga<ApiResponseType> {
 
   switch (options.method) {
     case 'POST':
+    case 'PATCH':
       fetchOptions = {
         headers: {
           Accept: 'application/json',
@@ -40,7 +41,7 @@ function* apiCall(userOptions: ApiCallOptions): Saga<ApiResponseType> {
           apikey: apiKey,
         },
         body: JSON.stringify(options.params),
-        method: 'POST',
+        method: options.method,
       };
       fetchUrl = `${options.endpoint}${options.action}`;
       break;

@@ -34,6 +34,10 @@ type State = {
 }
 
 class LoginPage extends React.Component<Props, State> {
+  user: ?HTMLInputElement;
+
+  pass: ?HTMLInputElement;
+
   static propTypes = {
     version: PropTypes.string,
     isFetching: PropTypes.bool,
@@ -43,10 +47,6 @@ class LoginPage extends React.Component<Props, State> {
     firstRun: PropTypes.bool,
     globalAlert: PropTypes.array,
   };
-
-  user: ?HTMLInputElement;
-
-  pass: ?HTMLInputElement;
 
   componentDidMount() {
     if (this.user) this.user.focus();

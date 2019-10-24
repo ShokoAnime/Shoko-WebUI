@@ -26,34 +26,28 @@ export default class SettingsDropdown extends React.Component<Props> {
     onChange: PropTypes.func.isRequired,
   };
 
-  handleChange = (value: string) => {
-    const { name, onChange } = this.props;
-    onChange(name, value);
-  };
-
-  renderItems() {
-    const { values, value } = this.props;
+  getItems() {
+    const { values } = this.props;
     const items = [];
-    let title;
     forEach(values, (tuple) => {
-      items.push(<option key={tuple[0]} value={tuple[0]}>{tuple[1]}</option>);
-      if (tuple[0] === value) title = tuple[1];
+      items.push({ label: tuple[1], value: tuple[0] });
     });
-    if (title === undefined && values.length !== 0) title = values[0][1];
-    return { title, items };
+    return items;
   }
 
+  handleChange = (event: SyntheticEvent) => {
+    const { name, onChange } = this.props;
+    onChange(name, event.currentTarget.value);
+  };
+
   render() {
-    const { label, tooltip } = this.props;
-    const { title, items } = this.renderItems();
+    const { label, tooltip, value } = this.props;
     return (
       <FormGroup
         inline
         label={tooltip ? <SettingsTooltip label={label} text={tooltip} /> : label}
       >
-        <HTMLSelect onChange={this.handleChange} value={title}>
-          {items}
-        </HTMLSelect>
+        <HTMLSelect options={this.getItems()} onChange={this.handleChange} value={value} />
       </FormGroup>
     );
   }

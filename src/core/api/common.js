@@ -143,8 +143,10 @@ function postOsFolder(path) {
   return Api.call({ action: '/os/folder', method: 'POST', params: { dir: path, full_path: path } });
 }
 
-function postConfigSet(params: {}) {
-  return Api.call({ action: '/config/set', method: 'POST', params });
+function patchConfigSet(params: {}) {
+  return Api.call({
+    action: '/v3/Settings', method: 'PATCH', expectEmpty: true, params,
+  });
 }
 
 function getTraktCode() {
@@ -190,7 +192,7 @@ export default {
   getSerieInfobyfolder,
   getOsDrives,
   postOsFolder,
-  postConfigSet,
+  patchConfigSet,
   getTraktCode,
   postAuth,
 };

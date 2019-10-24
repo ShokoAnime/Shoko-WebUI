@@ -1,8 +1,9 @@
 // @flow
 import { call, put, select } from 'redux-saga/effects';
 import Ajv from 'ajv';
-import { forEach } from 'lodash';
 import type { Saga } from 'redux-saga';
+import jsonpatch from 'fast-json-patch';
+
 import { QUEUE_GLOBAL_ALERT } from '../actions';
 import Api from '../api/common';
 import Events from '../events';
@@ -67,26 +68,31 @@ function* settingsGetServer(): Saga<void> {
   }
 }
 
-export type SettingType = {
-  setting: string,
-  value: string,
+export type SettingSaveActionType = {
+  context?: string,
+  original: {},
+  changed: {},
 }
 
-export function saveSettingsConverter(data: {}): Array<SettingType> {
-  const result = [];
-  forEach(data, (value, setting) => {
-    result.push({ setting, value });
-  });
-  return result;
+export function saveSettingsPatch(data: {}): Array<any> {
+  const { context, original, changed } = data;
+  return jsonpatch.compare(
+    context ? { [context]: original } : original,
+    context ? { [context]: changed } : changed,
+  );
 }
 
-function* settingsSaveServer(action: Action): Saga<void> {
-  const postData = saveSettingsConverter(action.payload);
-  const resultJson = yield call(Api.postConfigSet, postData);
+function* settingsSaveServer(action: SettingSaveActionType): Saga<void> {
+  const postData = saveSettingsPatch(action.payload);
+  const { context, changed } = action.payload;
+  if (postData.length === 0) {
+    return;
+  }
+  const resultJson = yield call(Api.patchConfigSet, postData);
   if (resultJson.error) {
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
-    yield put(settingsServer(action.payload));
+    yield put(settingsServer(context ? { [context]: changed } : changed));
     yield put({
       type: QUEUE_GLOBAL_ALERT,
       payload: { type: 'success', text: 'Settings saved!' },
