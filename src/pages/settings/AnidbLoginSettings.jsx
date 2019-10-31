@@ -51,10 +51,9 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
     };
   }
 
-  handleChange = (e: SyntheticInputEvent<HTMLInputElement>) => {
-    const field = e.target;
+  handleChange = (value, field) => {
     const { fields } = this.state;
-    const newState = Object.assign({}, fields, { [field.id]: field.value });
+    const newState = Object.assign({}, fields, { [field]: value });
     this.setState({ fields: newState });
   };
 
@@ -71,7 +70,7 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
       <InputGroup
         value={formFields[field]}
         type={type}
-        onChange={this.handleChange}
+        onChange={e => this.handleChange(e.target.value, field)}
       />
     </FormGroup>
   );
