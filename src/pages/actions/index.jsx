@@ -21,6 +21,7 @@ import Events from '../../core/events';
 type Props = {
   pinAction: (string) => void,
   loadSettings: () => void,
+  handleAction: () => void,
 };
 
 const actions = [
