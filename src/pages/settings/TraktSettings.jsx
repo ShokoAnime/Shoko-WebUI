@@ -97,7 +97,7 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
       <span sm={6} className="text-large vcenter">{usercode}</span>,
       <span sm={6} className="text-right text-medium vcenter"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span>,
       <span>You have approximately 10 minutes to visit the URL provided and enter the code,
-          server is polling for access token, it will be acquired automatically.
+        server is polling for access token, it will be acquired automatically.
       </span>,
     ];
   }
