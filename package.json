@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -14,6 +14,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
+    "@sentry/browser": "^5.10.2",
     "ajv": "^6.8.1",
     "browser-sync": "^2.26.3",
     "bulma": "^0.7.2",
