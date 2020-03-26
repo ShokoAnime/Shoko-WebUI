@@ -16,6 +16,7 @@ import FixedPanel from '../../components/Panels/FixedPanel';
 import QuickActionName from './QuickActionName';
 import { setStatus, setAction } from '../../core/actions/modals/QuickActions';
 import QuickActionModal from '../../components/Dialogs/QuickActionModal';
+import Events from '../../core/events';
 
 type Props = {
   pinAction: (string) => void,
@@ -41,12 +42,12 @@ class ActionsPage extends React.Component<Props> {
   }
 
   renderAction = (action) => {
-    const { pinAction } = this.props;
+    const { pinAction, handleAction } = this.props;
     return (
       <ControlGroup fill id={action} key={action}>
         <Button onClick={() => pinAction(action)} className={Classes.FIXED}><FontAwesomeIcon icon={faThumbtack} alt="" /></Button>
         <Label className={Classes.INLINE}><QuickActionName id={action} /></Label>
-        <Button className={Classes.FIXED}>Run</Button>
+        <Button onClick={() => handleAction(action)} className={Classes.FIXED}>Run</Button>
       </ControlGroup>
     );
   };
@@ -90,6 +91,9 @@ function mapDispatchToProps(dispatch) {
     pinAction: (value) => {
       dispatch(setAction(value));
       dispatch(setStatus(true));
+    },
+    handleAction: (value) => {
+      dispatch({ type: Events.RUN_QUICK_ACTION, payload: value });
     },
   };
 }
