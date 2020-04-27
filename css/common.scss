@@ -66,6 +66,15 @@ body {
   }
 }
 
+div.navbar-item {
+  cursor: pointer;
+  color: #000;
+
+  :hover {
+    color: $green-text-color;
+  }
+}
+
 a.navbar-item {
   color: #fff;
 

@@ -385,11 +385,37 @@ function* login(action): Saga<void> {
       errorMessage = 'Invalid Username or Password';
     }
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: errorMessage } });
+    yield put({ type: Events.LOGOUT, payload: null })
     return;
   }
 
   yield put(apiSession({ apikey: resultJson.data.apikey, username: payload.user }));
+
+  yield put({ type: Events.START_FETCHING, payload: 'jmmuserid' });
+  const useridResultJson = yield call(ApiCommon.getJMMUserID);
+  yield put({ type: Events.STOP_FETCHING, payload: 'jmmuserid' });
+
+  yield put(apiSession({ userid: useridResultJson.data.userid }));
+
   yield put(push({ pathname: '/dashboard' }));
+}
+
+function* changePassword(action): Saga<void> {
+  const { payload } = action;
+  const resultJson = yield call(ApiCommon.postChangePassword, payload.formData);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    return;
+  }
+
+  yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Password changed successfully!' } });
+
+  const loginPayload = {
+    user: payload.username,
+    pass: payload.formData.password,
+    device: 'web-ui',
+  };
+  yield put({ type: Events.LOGIN, payload: loginPayload })
 }
 
 function* checkUpdates(): Saga<void> {
@@ -511,6 +537,7 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, settings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, settings.getPlexLoginUrl),
     takeEvery(Events.LOGIN, login),
+    takeEvery(Events.CHANGE_PASSWORD, changePassword),
     takeEvery(Events.OS_BROWSE, osBrowse),
     takeEvery(Events.SETTINGS_SAVE_QUICK_ACTION, settings.saveQuickAction),
   ]);
