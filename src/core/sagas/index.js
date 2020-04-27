@@ -385,7 +385,7 @@ function* login(action): Saga<void> {
       errorMessage = 'Invalid Username or Password';
     }
     yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: errorMessage } });
-    yield put({ type: Events.LOGOUT, payload: null })
+    yield put({ type: Events.LOGOUT, payload: null });
     return;
   }
 
@@ -415,7 +415,7 @@ function* changePassword(action): Saga<void> {
     pass: payload.formData.password,
     device: 'web-ui',
   };
-  yield put({ type: Events.LOGIN, payload: loginPayload })
+  yield put({ type: Events.LOGIN, payload: loginPayload });
 }
 
 function* checkUpdates(): Saga<void> {

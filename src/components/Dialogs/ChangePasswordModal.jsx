@@ -3,12 +3,20 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import { Modal, Container } from 'react-bulma-components';
 import {
-  Button, Classes, ControlGroup, FormGroup, InputGroup, Switch,
+  Button, FormGroup, InputGroup,
 } from '@blueprintjs/core';
 import { connect } from 'react-redux';
 import FixedPanel from '../Panels/FixedPanel';
 import Events from '../../core/events';
 import { setStatus } from '../../core/actions/modals/ChangePassword';
+
+type passwordForm = {
+  username: string,
+  formData: {
+    JMMUserID: number,
+    password: string,
+  },
+}
 
 type Props = {
   status: boolean,
@@ -22,16 +30,9 @@ type State = {
   errorMessage: string | null,
 }
 
-type passwordForm = {
-  username: string,
-  formData: {
-    JMMUserID: number,
-    password: string,
-  },
-}
-
 class ChangePasswordModal extends React.Component<Props, State> {
   password: ?HTMLInputElement;
+
   confirmPassword: ?HTMLInputElement;
 
   static propTypes = {
@@ -49,18 +50,23 @@ class ChangePasswordModal extends React.Component<Props, State> {
   }
 
   handleChangePassword = () => {
-    const { userid, username, changePasswordSubmit, handleClose } = this.props;
+    const {
+      userid,
+      username,
+      changePasswordSubmit,
+      handleClose,
+    } = this.props;
     if (!this.password || !this.confirmPassword) { return; }
     const password = this.password.value;
     const confirmPassword = this.confirmPassword.value;
     if (password === '' || confirmPassword === '') { return; }
-    if (password !== confirmPassword) { return; };
+    if (password !== confirmPassword) { return; }
     changePasswordSubmit({
       username,
       formData: {
         JMMUserID: userid,
         password,
-      }
+      },
     });
     handleClose();
   }

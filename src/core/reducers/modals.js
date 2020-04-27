@@ -9,5 +9,5 @@ export default combineReducers({
   importFolder,
   browseFolder,
   quickActions,
-  changePassword
+  changePassword,
 });

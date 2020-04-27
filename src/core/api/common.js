@@ -162,7 +162,7 @@ function getJMMUserID() {
 }
 
 function postChangePassword(params: {}) {
-  return Api.call({ action: '/user/password', method: 'POST', params});
+  return Api.call({ action: '/user/password', method: 'POST', params });
 }
 
 export default {
