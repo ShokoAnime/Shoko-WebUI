@@ -23,6 +23,16 @@ body {
   z-index: 35;
 }
 
+.site {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-content {
+  flex: 1;
+}
+
 .footer {
   background-color: $panel-header-color;
   color: #fff;
