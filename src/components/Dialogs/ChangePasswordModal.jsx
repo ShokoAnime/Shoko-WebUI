@@ -8,7 +8,7 @@ import {
 import { connect } from 'react-redux';
 import FixedPanel from '../Panels/FixedPanel';
 import Events from '../../core/events';
-import { setStatus, setFormData } from '../../core/actions/modals/ChangePassword';
+import { setStatus } from '../../core/actions/modals/ChangePassword';
 
 type Props = {
   status: boolean,
