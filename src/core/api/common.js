@@ -157,6 +157,14 @@ function postAuth(params: ApiLoginType) {
   return Api.call({ action: '/auth', method: 'POST', params });
 }
 
+function getJMMUserID() {
+  return Api.call({ action: '/myid/get' });
+}
+
+function postChangePassword(params: {}) {
+  return Api.call({ action: '/user/password', method: 'POST', params });
+}
+
 export default {
   getLogDelta,
   getWebuiConfig,
@@ -195,4 +203,6 @@ export default {
   patchConfigSet,
   getTraktCode,
   postAuth,
+  getJMMUserID,
+  postChangePassword,
 };

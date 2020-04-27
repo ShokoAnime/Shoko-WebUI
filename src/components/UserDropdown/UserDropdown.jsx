@@ -9,10 +9,13 @@ import {
   faUser, faKey, faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import Events from '../../core/events';
+import ChangePasswordModal from '../Dialogs/ChangePasswordModal';
+import { setStatus } from '../../core/actions/modals/ChangePassword';
 
 type Props = {
   username: string,
   logout: () => void,
+  updateStatus: (boolean) => void,
 }
 
 type State = {
@@ -23,10 +26,16 @@ class UserDropdown extends React.Component<Props, State> {
   static propTypes = {
     username: PropTypes.string,
     logout: PropTypes.func,
+    updateStatus: PropTypes.func.isRequired,
   };
 
   state = {
     open: false,
+  };
+
+  handleActionChangePassword = () => {
+    const { updateStatus } = this.props;
+    updateStatus(true);
   };
 
   toggle = (evt) => {
@@ -57,7 +66,7 @@ class UserDropdown extends React.Component<Props, State> {
               <div className="navbar-item">
                 <FontAwesomeIcon className="icon" icon={faUser} />Profile
               </div>
-              <div className="navbar-item">
+              <div onClick={this.handleActionChangePassword} className="navbar-item">
                 <FontAwesomeIcon className="icon" icon={faKey} />Change password
               </div>
               <hr className="navbar-divider" />
@@ -67,6 +76,7 @@ class UserDropdown extends React.Component<Props, State> {
             </div>
           </div>
         </nav>
+        <ChangePasswordModal />
       </React.Fragment>
     );
   }
@@ -83,6 +93,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     logout: () => { dispatch({ type: Events.LOGOUT, payload: null }); },
+    updateStatus: value => dispatch(setStatus(value)),
   };
 }
 
