@@ -12,9 +12,11 @@ type Props = {
 
 export default ({ children }: Props) => (
   <React.Fragment>
-    <Header />
-    {children}
-    <Footer />
+    <div className="site">
+      <Header />
+      <div className="site-content">{children}</div>
+      <Footer />
+    </div>
     <AlertContainer />
   </React.Fragment>
 );
