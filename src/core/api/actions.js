@@ -48,54 +48,54 @@ function getAvdumpmismatchedfiles() {
 }
 // Sync AniDB votes
 function getCoreAnidbVotesSync() {
-  return Api.call({ action: '/core/anidb/votes/sync', expectEmpty: true });
+  return Api.call({ action: '/anidb/votes/sync', expectEmpty: true });
 }
 // Sync AniDB list
 function getCoreAnidbListSync() {
-  return Api.call({ action: '/core/anidb/list/sync', expectEmpty: true });
+  return Api.call({ action: '/anidb/list/sync', expectEmpty: true });
 }
 // Update AniDB info
 function getCoreAnidbUpdate() {
-  return Api.call({ action: '/core/anidb/update', expectEmpty: true });
+  return Api.call({ action: '/anidb/update', expectEmpty: true });
 }
 // Update AniDB missing files
 function getCoreAnidbUpdatemissingcache() {
-  return Api.call({ action: '/core/anidb/updatemissingcache', expectEmpty: true });
+  return Api.call({ action: '/anidb/updatemissingcache', expectEmpty: true });
 }
 // Sync Trakt
 function getCoreTraktSync() {
-  return Api.call({ action: '/core/trakt/sync', expectEmpty: true });
+  return Api.call({ action: '/trakt/sync', expectEmpty: true });
 }
 // Scan Trakt
 function getCoreTraktScan() {
-  return Api.call({ action: '/core/trakt/scan', expectEmpty: true });
+  return Api.call({ action: '/trakt/scan', expectEmpty: true });
 }
 // Update TvDB info
 function getCoreTvdbUpdate() {
-  return Api.call({ action: '/core/tvdb/update', expectEmpty: true });
+  return Api.call({ action: '/tvdb/update', expectEmpty: true });
 }
 // Regen TvDB links
 function getCoreTvdbRegenlinks() {
-  return Api.call({ action: '/core/tvdb/regenlinks', expectEmpty: true });
+  return Api.call({ action: '/tvdb/regenlinks', expectEmpty: true });
 }
 // Check TvDB links
 function getCoreTvdbChecklinks() {
-  return Api.call({ action: '/core/tvdb/checklinks', expectEmpty: true });
+  return Api.call({ action: '/tvdb/checklinks', expectEmpty: true });
 }
 // Update MovieDB info
 function getCoreMoviedbUpdate() {
-  return Api.call({ action: '/core/moviedb/update', expectEmpty: true });
+  return Api.call({ action: '/moviedb/update', expectEmpty: true });
 }
 // Update images
 function getCoreImagesUpdate() {
-  return Api.call({ action: '/core/images/update', expectEmpty: true });
+  return Api.call({ action: '/images/update', expectEmpty: true });
 }
 // Validate images
 function getImageValidateall() {
   return Api.call({ action: '/image/validateall', expectEmpty: true });
 }
 function getPlexSync() {
-  return Api.call({ action: '/sync/all', endpoint: '/plex', expectEmpty: true });
+  return Api.call({ action: '/plex/sync/all', expectEmpty: true });
 }
 
 export default {
