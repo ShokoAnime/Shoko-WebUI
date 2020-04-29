@@ -15,12 +15,12 @@ import type { State } from '../../core/store';
 import type { SettingsTraktType } from '../../core/reducers/settings/Trakt';
 
 const updateFrequencyType = [
-  ['1', 'Never'],
-  ['2', 'Every 6 Hours'],
-  ['3', 'Every 12 Hours'],
-  ['4', 'Every 24 Hours'],
-  ['5', 'Once a Week'],
-  ['6', 'Once a Month'],
+  [1, 'Never'],
+  [2, 'Every 6 Hours'],
+  [3, 'Every 12 Hours'],
+  [4, 'Every 24 Hours'],
+  [5, 'Once a Week'],
+  [6, 'Once a Month'],
 ];
 
 type Props = {
@@ -36,9 +36,9 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    Enabled?: boolean,
+    Enabled?: string,
     TokenExpirationDate?: string,
-    UpdateFrequency?: string,
+    UpdateFrequency?: number,
   }
 }
 
@@ -51,7 +51,7 @@ class TraktSettings extends React.PureComponent<Props, ComponentState> {
     fields: PropTypes.shape({
       Enabled: PropTypes.bool,
       TokenExpirationDate: PropTypes.string,
-      UpdateFrequency: PropTypes.string,
+      UpdateFrequency: PropTypes.number,
     }),
     fetching: PropTypes.bool,
     getTraktCode: PropTypes.func.isRequired,

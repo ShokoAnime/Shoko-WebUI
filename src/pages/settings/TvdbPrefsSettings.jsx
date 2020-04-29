@@ -13,12 +13,12 @@ import type { State } from '../../core/store';
 import type { SettingsUpdateFrequencyType, SettingsTvdbPrefsType, SettingsTvdbLanguageType } from '../../core/reducers/settings/Server';
 
 const updateFrequencyType = [
-  ['1', 'Never'],
-  ['2', 'Every 6 Hours'],
-  ['3', 'Every 12 Hours'],
-  ['4', 'Every 24 Hours'],
-  ['5', 'Once a Week'],
-  ['6', 'Once a Month'],
+  [1, 'Never'],
+  [2, 'Every 6 Hours'],
+  [3, 'Every 12 Hours'],
+  [4, 'Every 24 Hours'],
+  [5, 'Once a Week'],
+  [6, 'Once a Month'],
 ];
 
 const tvdbLanguages = [
@@ -54,9 +54,9 @@ type Props = {
 
 type ComponentState = {
   fields: {
-    AutoFanartAmount?: string,
-    AutoPostersAmount?: string,
-    AutoWideBannersAmount?: string,
+    AutoFanartAmount?: number,
+    AutoPostersAmount?: number,
+    AutoWideBannersAmount?: number,
     Language?: SettingsTvdbLanguageType,
     UpdateFrequency?: SettingsUpdateFrequencyType,
   }
@@ -65,11 +65,11 @@ type ComponentState = {
 class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      AutoFanartAmount: PropTypes.string,
-      AutoPostersAmount: PropTypes.string,
-      AutoWideBannersAmount: PropTypes.string,
+      AutoFanartAmount: PropTypes.number,
+      AutoPostersAmount: PropTypes.number,
+      AutoWideBannersAmount: PropTypes.number,
       Language: PropTypes.string,
-      UpdateFrequency: PropTypes.string,
+      UpdateFrequency: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };

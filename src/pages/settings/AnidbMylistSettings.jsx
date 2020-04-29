@@ -22,32 +22,32 @@ type ComponentState = {
 }
 
 const mylistDeleteTypes = [
-  ['0', 'Delete File (AniDB)'],
-  ['1', 'Delete File (Local)'],
-  ['2', 'Mark Deleted'],
-  ['3', 'Mark External (CD/DVD)'],
-  ['4', 'Mark Unknown'],
-  ['5', 'DVD/BD'],
+  [0, 'Delete File (AniDB)'],
+  [1, 'Delete File (Local)'],
+  [2, 'Mark Deleted'],
+  [3, 'Mark External (CD/DVD)'],
+  [4, 'Mark Unknown'],
+  [5, 'DVD/BD'],
 ];
 
 const mylistStorageTypes = [
-  ['0', 'Unknown'],
-  ['1', 'HDD'],
-  ['2', 'Disk'],
-  ['3', 'Deleted'],
-  ['4', 'Remote'],
+  [0, 'Unknown'],
+  [1, 'HDD'],
+  [2, 'Disk'],
+  [3, 'Deleted'],
+  [4, 'Remote'],
 ];
 
 class AnidbMylistSettings extends React.Component<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
-      MyList_AddFiles: PropTypes.string,
-      MyList_DeleteType: PropTypes.string,
-      MyList_ReadUnwatched: PropTypes.string,
-      MyList_ReadWatched: PropTypes.string,
-      MyList_SetUnwatched: PropTypes.string,
-      MyList_SetWatched: PropTypes.string,
-      MyList_StorageState: PropTypes.string,
+      MyList_AddFiles: PropTypes.bool,
+      MyList_DeleteType: PropTypes.number,
+      MyList_ReadUnwatched: PropTypes.bool,
+      MyList_ReadWatched: PropTypes.bool,
+      MyList_SetUnwatched: PropTypes.bool,
+      MyList_SetWatched: PropTypes.bool,
+      MyList_StorageState: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };

@@ -20,9 +20,9 @@ type Props = {
 type ComponentState = {
   fields: {
     AutoFanart?: boolean,
-    AutoFanartAmount?: string,
+    AutoFanartAmount?: number,
     AutoPosters?: boolean,
-    AutoPostersAmount?: string,
+    AutoPostersAmount?: number,
   }
 }
 
@@ -30,9 +30,9 @@ class MoviedbSettings extends React.PureComponent<Props, ComponentState> {
   static propTypes = {
     fields: PropTypes.shape({
       AutoFanart: PropTypes.bool,
-      AutoFanartAmount: PropTypes.string,
+      AutoFanartAmount: PropTypes.number,
       AutoPosters: PropTypes.bool,
-      AutoPostersAmount: PropTypes.string,
+      AutoPostersAmount: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };
