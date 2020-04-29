@@ -47,48 +47,48 @@ function getAvdumpmismatchedfiles() {
   return Api.call({ action: '/avdumpmismatchedfiles', expectEmpty: true });
 }
 // Sync AniDB votes
-function getCoreAnidbVotesSync() {
-  return Api.call({ action: '/core/anidb/votes/sync', expectEmpty: true });
+function getAnidbVotesSync() {
+  return Api.call({ action: '/anidb/votes/sync', expectEmpty: true });
 }
 // Sync AniDB list
-function getCoreAnidbListSync() {
-  return Api.call({ action: '/core/anidb/list/sync', expectEmpty: true });
+function getAnidbListSync() {
+  return Api.call({ action: '/anidb/list/sync', expectEmpty: true });
 }
 // Update AniDB info
-function getCoreAnidbUpdate() {
-  return Api.call({ action: '/core/anidb/update', expectEmpty: true });
+function getAnidbUpdate() {
+  return Api.call({ action: '/anidb/update', expectEmpty: true });
 }
 // Update AniDB missing files
-function getCoreAnidbUpdatemissingcache() {
-  return Api.call({ action: '/core/anidb/updatemissingcache', expectEmpty: true });
+function getAnidbUpdatemissingcache() {
+  return Api.call({ action: '/anidb/updatemissingcache', expectEmpty: true });
 }
 // Sync Trakt
-function getCoreTraktSync() {
-  return Api.call({ action: '/core/trakt/sync', expectEmpty: true });
+function getTraktSync() {
+  return Api.call({ action: '/trakt/sync', expectEmpty: true });
 }
 // Scan Trakt
-function getCoreTraktScan() {
-  return Api.call({ action: '/core/trakt/scan', expectEmpty: true });
+function getTraktScan() {
+  return Api.call({ action: '/trakt/scan', expectEmpty: true });
 }
 // Update TvDB info
-function getCoreTvdbUpdate() {
-  return Api.call({ action: '/core/tvdb/update', expectEmpty: true });
+function getTvdbUpdate() {
+  return Api.call({ action: '/tvdb/update', expectEmpty: true });
 }
 // Regen TvDB links
-function getCoreTvdbRegenlinks() {
-  return Api.call({ action: '/core/tvdb/regenlinks', expectEmpty: true });
+function getTvdbRegenlinks() {
+  return Api.call({ action: '/tvdb/regenlinks', expectEmpty: true });
 }
 // Check TvDB links
-function getCoreTvdbChecklinks() {
-  return Api.call({ action: '/core/tvdb/checklinks', expectEmpty: true });
+function getTvdbChecklinks() {
+  return Api.call({ action: '/tvdb/checklinks', expectEmpty: true });
 }
 // Update MovieDB info
-function getCoreMoviedbUpdate() {
-  return Api.call({ action: '/core/moviedb/update', expectEmpty: true });
+function getMoviedbUpdate() {
+  return Api.call({ action: '/moviedb/update', expectEmpty: true });
 }
 // Update images
-function getCoreImagesUpdate() {
-  return Api.call({ action: '/core/images/update', expectEmpty: true });
+function getImagesUpdate() {
+  return Api.call({ action: '/images/update', expectEmpty: true });
 }
 // Validate images
 function getImageValidateall() {
@@ -110,17 +110,17 @@ export default {
   getRehashunlinked,
   getRehashmanuallinks,
   getAvdumpmismatchedfiles,
-  getCoreAnidbVotesSync,
-  getCoreAnidbListSync,
-  getCoreAnidbUpdate,
-  getCoreAnidbUpdatemissingcache,
-  getCoreTraktSync,
-  getCoreTraktScan,
-  getCoreTvdbUpdate,
-  getCoreTvdbRegenlinks,
-  getCoreTvdbChecklinks,
-  getCoreMoviedbUpdate,
-  getCoreImagesUpdate,
+  getAnidbVotesSync,
+  getAnidbListSync,
+  getAnidbUpdate,
+  getAnidbUpdatemissingcache,
+  getTraktSync,
+  getTraktScan,
+  getTvdbUpdate,
+  getTvdbRegenlinks,
+  getTvdbChecklinks,
+  getMoviedbUpdate,
+  getImagesUpdate,
   getImageValidateall,
   getPlexSync,
 };

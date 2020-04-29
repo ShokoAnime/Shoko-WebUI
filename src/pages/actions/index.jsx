@@ -28,11 +28,11 @@ const actions = [
   ['Import', ['folder-import', 'folder-scan', 'remove-missing-files']],
   ['Update Info', ['stats-update', 'mediainfo-update']],
   ['Rescan', ['rescanunlinked', 'rescanmanuallinks', 'rehashunlinked', 'rehashmanuallinks']],
-  ['AniDB', ['core-anidb-votes-sync', 'core-anidb-list-sync', 'core-anidb-update', 'core-anidb-updatemissingcache']],
-  ['Trakt', ['core-trakt-sync', 'core-trakt-scan']],
-  ['TvDB', ['core-tvdb-update', 'core-tvdb-regenlinks', 'core-tvdb-checklinks']],
-  ['MovieDB', ['core-moviedb-update']],
-  ['Images', ['core-images-update', 'image-validateall']],
+  ['AniDB', ['anidb-votes-sync', 'anidb-list-sync', 'anidb-update', 'anidb-updatemissingcache']],
+  ['Trakt', ['trakt-sync', 'trakt-scan']],
+  ['TvDB', ['tvdb-update', 'tvdb-regenlinks', 'tvdb-checklinks']],
+  ['MovieDB', ['moviedb-update']],
+  ['Images', ['images-update', 'image-validateall']],
   ['Plex', ['plex-sync']],
 ];
 
