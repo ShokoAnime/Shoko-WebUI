@@ -47,47 +47,47 @@ function getAvdumpmismatchedfiles() {
   return Api.call({ action: '/avdumpmismatchedfiles', expectEmpty: true });
 }
 // Sync AniDB votes
-function getCoreAnidbVotesSync() {
+function getAnidbVotesSync() {
   return Api.call({ action: '/anidb/votes/sync', expectEmpty: true });
 }
 // Sync AniDB list
-function getCoreAnidbListSync() {
+function getAnidbListSync() {
   return Api.call({ action: '/anidb/list/sync', expectEmpty: true });
 }
 // Update AniDB info
-function getCoreAnidbUpdate() {
+function getAnidbUpdate() {
   return Api.call({ action: '/anidb/update', expectEmpty: true });
 }
 // Update AniDB missing files
-function getCoreAnidbUpdatemissingcache() {
+function getAnidbUpdatemissingcache() {
   return Api.call({ action: '/anidb/updatemissingcache', expectEmpty: true });
 }
 // Sync Trakt
-function getCoreTraktSync() {
+function getTraktSync() {
   return Api.call({ action: '/trakt/sync', expectEmpty: true });
 }
 // Scan Trakt
-function getCoreTraktScan() {
+function getTraktScan() {
   return Api.call({ action: '/trakt/scan', expectEmpty: true });
 }
 // Update TvDB info
-function getCoreTvdbUpdate() {
+function getTvdbUpdate() {
   return Api.call({ action: '/tvdb/update', expectEmpty: true });
 }
 // Regen TvDB links
-function getCoreTvdbRegenlinks() {
+function getTvdbRegenlinks() {
   return Api.call({ action: '/tvdb/regenlinks', expectEmpty: true });
 }
 // Check TvDB links
-function getCoreTvdbChecklinks() {
+function getTvdbChecklinks() {
   return Api.call({ action: '/tvdb/checklinks', expectEmpty: true });
 }
 // Update MovieDB info
-function getCoreMoviedbUpdate() {
+function getMoviedbUpdate() {
   return Api.call({ action: '/moviedb/update', expectEmpty: true });
 }
 // Update images
-function getCoreImagesUpdate() {
+function getImagesUpdate() {
   return Api.call({ action: '/images/update', expectEmpty: true });
 }
 // Validate images
@@ -110,17 +110,17 @@ export default {
   getRehashunlinked,
   getRehashmanuallinks,
   getAvdumpmismatchedfiles,
-  getCoreAnidbVotesSync,
-  getCoreAnidbListSync,
-  getCoreAnidbUpdate,
-  getCoreAnidbUpdatemissingcache,
-  getCoreTraktSync,
-  getCoreTraktScan,
-  getCoreTvdbUpdate,
-  getCoreTvdbRegenlinks,
-  getCoreTvdbChecklinks,
-  getCoreMoviedbUpdate,
-  getCoreImagesUpdate,
+  getAnidbVotesSync,
+  getAnidbListSync,
+  getAnidbUpdate,
+  getAnidbUpdatemissingcache,
+  getTraktSync,
+  getTraktScan,
+  getTvdbUpdate,
+  getTvdbRegenlinks,
+  getTvdbChecklinks,
+  getMoviedbUpdate,
+  getImagesUpdate,
   getImageValidateall,
   getPlexSync,
 };
