@@ -133,10 +133,10 @@ class TvdbPrefsSettings extends React.PureComponent<Props, ComponentState> {
           onChange={this.handleChange}
         />
         <SettingsDropdown
-          name="AniDB_Calendar_UpdateFrequency"
-          label="Calendar"
+          name="UpdateFrequency"
+          label="Automatically Update Data"
           values={updateFrequencyType}
-          value={formFields.AniDB_Calendar_UpdateFrequency}
+          value={formFields.UpdateFrequency}
           onChange={this.handleChange}
         />
       </SettingsPanel>
