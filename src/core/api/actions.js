@@ -95,7 +95,7 @@ function getImageValidateall() {
   return Api.call({ action: '/image/validateall', expectEmpty: true });
 }
 function getPlexSync() {
-  return Api.call({ action: '/plex/sync/all', expectEmpty: true });
+  return Api.call({ action: '/sync/all', endpoint: '/plex', expectEmpty: true });
 }
 
 export default {
