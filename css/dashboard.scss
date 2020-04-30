@@ -7,8 +7,20 @@
 .commands .table {
   table-layout: fixed;
 
+  .command-item {
+    vertical-align: middle;
+  }
+
   .icon-column {
     width: 2em;
+  }
+
+  .operations-column {
+    width: 6.5em;
+
+    .operation-button-1 {
+      margin-right: 1em;
+    }
   }
 
   .status {

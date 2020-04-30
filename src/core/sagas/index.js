@@ -506,6 +506,7 @@ export default function* rootSaga(): Saga<void> {
     takeEvery(Events.DASHBOARD_RECENT_FILES, Dashboard.eventDashboardRecentFiles),
     takeEvery(Events.PAGE_IMPORT_FOLDERS_LOAD, Dashboard.updateOverview),
     takeEvery(Events.PAGE_LOGS_LOAD, Dashboard.updateOverview),
+    takeEvery(Events.QUEUE_OPERATION, Dashboard.queueOperation),
     takeEvery(Events.PAGE_SETTINGS_LOAD, pageSettingsLoad),
     takeEvery(Events.SETTINGS_EXPORT, settingsExport),
     takeEvery(Events.SETTINGS_IMPORT, settingsImport),
