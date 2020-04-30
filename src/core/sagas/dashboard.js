@@ -50,6 +50,23 @@ function* getQueueStatus(): Saga<void> {
   yield put({ type: QUEUE_STATUS, payload: resultJson.data });
 }
 
+function* queueOperation(action): Saga<void> {
+  const { payload } = action;
+  const funcName = `get${payload}`;
+
+  if (typeof Api[funcName] !== 'function') {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
+    return;
+  }
+
+  const resultJson = yield call(Api[funcName]);
+  if (resultJson.error) {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+  } else {
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
+  }
+}
+
 function* getRecentFiles(): Saga<void> {
   const resultJson = yield call(Api.fileRecent);
   if (resultJson.error) {
@@ -137,6 +154,7 @@ function* eventDashboardLoad(): Saga<void> {
 }
 
 export default {
+  queueOperation,
   eventDashboardLoad,
   eventDashboardQueueStatus,
   eventDashboardRecentFiles,
