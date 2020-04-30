@@ -16,8 +16,8 @@ type Props = {
     Username: string,
     Password: string,
     AVDumpKey: string,
-    ClientPort: string,
-    AVDumpClientPort: string,
+    ClientPort: number,
+    AVDumpClientPort: number,
   },
   saveSettings: ({}) => void,
 }
@@ -27,8 +27,8 @@ type ComponentState = {
     Username?: string,
     Password?: string,
     AVDumpKey?: string,
-    ClientPort?: string,
-    AVDumpClientPort?: string,
+    ClientPort?: number,
+    AVDumpClientPort?: number,
   }
 }
 
@@ -38,8 +38,8 @@ class AnidbLoginSettings extends React.Component<Props, ComponentState> {
       Username: PropTypes.string,
       Password: PropTypes.string,
       AVDumpKey: PropTypes.string,
-      ClientPort: PropTypes.string,
-      AVDumpClientPort: PropTypes.string,
+      ClientPort: PropTypes.number,
+      AVDumpClientPort: PropTypes.number,
     }),
     saveSettings: PropTypes.func.isRequired,
   };

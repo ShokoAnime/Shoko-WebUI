@@ -13,7 +13,7 @@ type Props = {
 
 class AuthenticatedRoute extends React.Component<Props> {
   static propTypes = {
-    component: PropTypes.func,
+    component: PropTypes.object,
     isAuthenticated: PropTypes.bool,
   };
 

@@ -12,7 +12,7 @@ type Props = {
   label: string,
   tooltip?: string | ComponentType<any>,
   values: Array<Array<string>>,
-  value: string,
+  value: string | number,
   onChange: (string, string) => void,
 }
 
@@ -22,7 +22,7 @@ export default class SettingsDropdown extends React.Component<Props> {
     label: PropTypes.string.isRequired,
     tooltip: PropTypes.any,
     values: PropTypes.array,
-    value: PropTypes.string,
+    value: PropTypes.any,
     onChange: PropTypes.func.isRequired,
   };
 
