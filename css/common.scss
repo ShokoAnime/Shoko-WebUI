@@ -1,25 +1,75 @@
 $panel-header-color: #393f4f;
 $secondary-toolbar-bg-color: #5a6273;
-$green-text-color: #59c777;
+
+$accent-color: #4ac767;
+$accent-color-hover: #3ab857;
+$accent-color-secondary: #279ceb;
+$sidebar-background-color: #0a0b1d;
+$sidebar-item-color: white;
+
+$panel-background-color: #f5f6f8;
+$secondary-panel-background-color: white;
+$panel-text-color: #5a5a5a;
+
+$website-background-color: #e9edf2;
+
+$form-text-color: #333333;
+
+@font-face {
+  font-family: 'Exo 2';
+  src: local('Exo 2'), url(../src/fonts/Exo2-VariableFont_wght.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Exo 2ebi';
+  src: local('Exo 2ebi'), url(../src/fonts/Exo2-ExtraBold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: local('Muli'), url(../src/fonts/Muli-VariableFont_wght.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Muli SemiBold';
+  src: local('Muli SemiBold'), url(../src/fonts/Muli-SemiBold.ttf) format('truetype');
+}
 
 input, button, textarea, :focus {
   outline: none;
 }
 
-#container, #app-container {
-  width: 100%;
-  height: 100%;
+body {
+  font-family: 'Exo 2', Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+  background-color: $website-background-color;
 }
 
-body {
-    font-family: Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+.color-accent {
+  color: $accent-color;
+}
+
+.bg-color-accent {
+  background-color: $accent-color;
+  color: white;
+}
+
+.color-accent-secondary {
+  color: $accent-color-secondary;
+}
+
+.bg-color-accent-secondary {
+  background-color: $accent-color-secondary;
+}
+
+.fa-layer-icon-bg {
+  color: $panel-background-color;
 }
 
 .alert-container {
   position: fixed;
   top: 20px;
   width: 50%;
-  left: 35%;
+  left: 25%;
   z-index: 35;
 }
 
@@ -39,59 +89,48 @@ body {
   padding: 1.5rem 0;
 }
 
-.navbar {
-  &.primary-navbar {
-    min-height: 60px;
-    padding: 0 15px;
-    background: $panel-header-color;
-    align-items: center;
-    z-index: 31;
-
-    .navbar-brand {
-      .image {
-        margin-right: 1em;
-      }
-
-      .title {
-        color: #fff;
-        display: block;
-      }
-
-      .subtitle {
-        color: $green-text-color;
-      }
-    }
-
-    .user-dropdown {
-      padding: 0;
-    }
-  }
-
-  &.secondary-navbar {
-    background: $secondary-toolbar-bg-color;
-
-    .navbar-item.update-button:hover {
-      background-color: $secondary-toolbar-bg-color;
-    }
-  }
+.sidebar {
+  background-color: $sidebar-background-color;
+  color: $sidebar-item-color;
 }
 
-div.navbar-item {
+.sidebar-heading {
+  font-family: 'Exo 2ebi';
+}
+
+div.sidebar-item {
   cursor: pointer;
-  color: #000;
 
   :hover {
-    color: $green-text-color;
+    color: $accent-color-hover;
   }
-}
-
-a.navbar-item {
-  color: #fff;
 
   &.is-active {
-    color: $green-text-color;
+    color: $accent-color;
+  }
+
+  .sidebar-item-text {
+    margin-top: -0.15rem;
   }
 }
+
+.header {
+  background-color: $panel-background-color;
+}
+
+.fixed-panel {
+  background-color: $panel-background-color;
+  color: $panel-text-color;
+}
+
+.fixed-panel-text {
+  font-family: 'Muli SemiBold';
+}
+
+.font-muli {
+  font-family: 'Muli';
+}
+
 
 .section.page-wrap {
   padding: 1.5rem;
@@ -146,7 +185,7 @@ a.navbar-item {
   }
 
   .color {
-    color: $green-text-color;
+    color: $accent-color;
     padding: 0 0.2em;
   }
 

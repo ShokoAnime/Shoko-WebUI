@@ -15,10 +15,9 @@ const config = {
   context: __dirname,
   entry: [
     'typeface-roboto',
-    'bulma/bulma.sass',
     '@blueprintjs/core/src/blueprint.scss',
     './css/main.scss',
-    isDebug ? './src/main-hmr.jsx' : './src/main.jsx',
+    isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
   mode: isDebug ? 'development' : 'production',
   output: {
@@ -33,7 +32,7 @@ const config = {
   },
   devtool: isDebug ? 'source-map' : false,
   resolve: {
-    extensions: ['.js', '.jsx'],
+    extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   stats: {
     colors: true,
@@ -67,16 +66,20 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.jsx?$/,
+        test: /\.(t|j)sx?$/,
         exclude: /node_modules/,
-        include: [
-          path.resolve(__dirname, './src'),
-        ],
+        include: [path.resolve(__dirname, './src')],
         use: [
           {
-            loader: 'babel-loader',
+            loader: 'ts-loader',
           },
         ],
+      },
+      {
+        enforce: 'pre',
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'source-map-loader',
       },
       {
         test: /\.css$/,
@@ -116,9 +119,7 @@ const config = {
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
-        use: [
-          'file-loader',
-        ],
+        use: ['file-loader'],
       },
     ],
   },

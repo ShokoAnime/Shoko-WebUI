@@ -5,5 +5,7 @@ module.exports = {
       browsers: 'last 2 versions',
     },
     cssnano: { zindex: false },
+    tailwindcss: {},
+    autoprefixer: {},
   },
 };
