@@ -7,13 +7,15 @@
         "jsx": "react",
         "target": "es5",
         "allowJs": true,
-        // "checkJs": true,
+        "checkJs": true,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
         "resolveJsonModule": true
     },
     "include": [
-        "./src/"
+        "./src/",
+        "run.js",
+        "./webpack.config.default.js"
     ],
     "exclude": [
         "node_modules"

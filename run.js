@@ -7,12 +7,12 @@ const webpack = require('webpack');
 let configPath = './run.config';
 let webpackConfigPath = './webpack.config';
 try {
-  fs.accessSync(`${configPath}.js`, fs.F_OK);
+  fs.accessSync(`${configPath}.js`, fs.constants.F_OK);
 } catch (ex) {
   configPath += '.default';
 }
 try {
-  fs.accessSync(`${webpackConfigPath}.js`, fs.F_OK);
+  fs.accessSync(`${webpackConfigPath}.js`, fs.constants.F_OK);
 } catch (ex) {
   webpackConfigPath += '.default';
 }

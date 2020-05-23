@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable react/no-unused-prop-types */
-
 import 'isomorphic-fetch';
 import PropTypes from 'prop-types';
 import React from 'react';
@@ -12,7 +9,6 @@ import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import { Toast, Toaster, Intent } from '@blueprintjs/core';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
-import Link from '../../components/Link/Link';
 import { ApiLoginType, GlobalAlertType } from '../../core/types/api';
 import Button from '../../components/Buttons/Button';
 import Input from '../../components/Input/Input';
@@ -135,6 +131,7 @@ class LoginPage extends React.Component<Props, State> {
   }
 
   render() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { firstRun } = this.props;
     const { username, password, remember } = this.state;
 

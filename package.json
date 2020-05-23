@@ -17,9 +17,12 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "@sentry/browser": "^5.10.2",
+    "@types/assets-webpack-plugin": "^3.9.0",
     "@types/classnames": "^2.2.10",
     "@types/dateformat": "^3.0.1",
+    "@types/ejs": "^3.0.4",
     "@types/lodash": "^4.14.152",
+    "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.35",
     "@types/react-dom": "^16.9.8",
@@ -27,6 +30,8 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.7",
     "@types/redux-actions": "^2.6.1",
+    "@types/uglifyjs-webpack-plugin": "^1.1.0",
+    "@types/webpack": "^4.41.13",
     "ajv": "^6.8.1",
     "browser-sync": "^2.26.3",
     "classnames": "^2.2.6",
@@ -67,7 +72,7 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "sessionstorage": "^0.1.0",
-    "tailwindcss": "^1.4.4",
+    "tailwindcss": "1.2.0",
     "typeface-roboto": "^0.0.75",
     "uglifyjs-webpack-plugin": "^2.1.1",
     "zip-folder": "^1.0.0"
@@ -80,8 +85,8 @@
     "@babel/preset-react": "^7.0.0-rc.1",
     "@babel/register": "^7.6.0",
     "@redux-saga/testing-utils": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^2.24.0",
-    "@typescript-eslint/parser": "^3.0.0",
+    "@typescript-eslint/eslint-plugin": "2.31.0",
+    "@typescript-eslint/parser": "2.31.0",
     "assets-webpack-plugin": "^3.8.4",
     "ava": "^2.3.0",
     "babel-cli": "^6.26.0",
@@ -130,7 +135,7 @@
     "style-loader": "^1.0.0",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.2.0",
-    "ts-loader": "^7.0.4",
+    "ts-loader": "^6.2.2",
     "typescript": "^3.9.3",
     "url-loader": "^2.1.0",
     "webpack": "^4.16.5",
@@ -138,8 +143,14 @@
     "webpack-dev-middleware": "^3.1.3",
     "webpack-hot-middleware": "^2.22.3"
   },
+  "resolutions": {
+    "eslint-config-airbnb-typescript/**/@typescript-eslint/parser": "2.31.0"
+  },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json"
+    },
     "extends": [
       "airbnb-typescript"
     ],
@@ -238,9 +249,9 @@
     "build:version": "cross-env NODE_ENV=production node run version",
     "start": "cross-env NODE_ENV=development node run",
     "test": "cross-env NODE_ENV=test ava",
-    "test:coverage": "cross-env NODE_ENV=test nyc --extension .jsx ava",
+    "test:coverage": "",
     "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbImageSettings.test.js",
     "report": "nyc report --reporter=html",
-    "coveralls": "nyc report --reporter=text-lcov | coveralls"
+    "coveralls": ""
   }
 }
