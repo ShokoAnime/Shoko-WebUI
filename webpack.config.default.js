@@ -15,7 +15,8 @@ const config = {
   context: __dirname,
   entry: [
     'typeface-roboto',
-    '@blueprintjs/core/src/blueprint.scss',
+    'typeface-exo-2',
+    'typeface-muli',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],

@@ -7,19 +7,16 @@
 
 .login-panel {
   background-color: $secondary-panel-background-color;
-  height: 24rem;
+  width: 62rem;
+  height: 25rem;
 }
 
 .logo {
+  width: 32rem;
   color: $secondary-panel-background-color;
   background-color: rgba($sidebar-background-color, 0.6);
 }
 
 .help {
   background-color: $sidebar-background-color;
-}
-
-.sign-in-button {
-  background-color: $accent-color;
-  color: white;
 }

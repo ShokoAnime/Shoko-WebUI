@@ -1,4 +1,3 @@
-
 import { handleAction } from 'redux-actions';
 import { SETTINGS_PLEX } from '../../actions/settings/Plex';
 import { Action } from '../../actions';

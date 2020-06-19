@@ -1,6 +1,4 @@
-
 import Api from './index';
-import { ApiLoginType } from '../types/api';
 
 function* getLogDelta(data: {delta: number;position: number;}): {} {
   const query = data ? `${data.delta}/${data.position || 0}` : '';
@@ -19,7 +17,7 @@ function getVersion() {
   return Api.call({ action: '/version' });
 }
 
-function queueStatus() {
+function getQueue() {
   return Api.call({ action: '/queue/get' });
 }
 
@@ -59,28 +57,20 @@ function getQueueImagesClear() {
   return Api.call({ action: '/queue/images/clear', expectEmpty: true });
 }
 
+function getQueuePause() {
+  return Api.call({ action: '/queue/pause', expectEmpty: true });
+}
+
+function getQueueStart() {
+  return Api.call({ action: '/queue/start', expectEmpty: true });
+}
+
 function getFileRecent() {
   return Api.call({ action: '/file/recent' });
 }
 
-function getFileAniDB(id: string) {
-  return Api.call({ action: `/v3/File/${id}/AniDB` });
-}
-
-function getFile(id: string) {
-  return Api.call({ action: `/v3/File/${id}` });
-}
-
-function getImportFolder() {
-  return Api.call({ action: '/v3/ImportFolder' });
-}
-
-function getDashboardStats() {
-  return Api.call({ action: '/v3/Dashboard/Stats' });
-}
-
-function getDashboardSeriesSummary() {
-  return Api.call({ action: '/v3/Dashboard/SeriesSummary' });
+function getFolderList() {
+  return Api.call({ action: '/folder/list' });
 }
 
 function newsGet() {
@@ -183,27 +173,10 @@ function postOsFolder(path) {
   return Api.call({ action: '/os/folder', method: 'POST', params: { dir: path, full_path: path } });
 }
 
-function patchConfigSet(params: {}) {
-  return Api.call({
-    action: '/v3/Settings', method: 'PATCH', expectEmpty: true, params,
-  });
-}
-
 function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
 }
 
-function postAuth(params: ApiLoginType) {
-  return Api.call({ action: '/auth', method: 'POST', params });
-}
-
-function getJMMUserID() {
-  return Api.call({ action: '/myid/get' });
-}
-
-function postChangePassword(params: {}) {
-  return Api.call({ action: '/user/password', method: 'POST', params });
-}
 
 function getEp(id: string) {
   return Api.call({ action: '/ep', query: `?id=${id}` });
@@ -217,7 +190,7 @@ function getSerie(id: string) {
 export default {
   getLogDelta,
   getWebuiConfig,
-  queueStatus,
+  getQueue,
   getQueueHasherPause,
   getQueueHasherStart,
   getQueueHasherClear,
@@ -227,12 +200,10 @@ export default {
   getQueueImagesPause,
   getQueueImagesStart,
   getQueueImagesClear,
+  getQueuePause,
+  getQueueStart,
   getFileRecent,
-  getFileAniDB,
-  getFile,
-  getImportFolder,
-  getDashboardStats,
-  getDashboardSeriesSummary,
+  getFolderList,
   newsGet,
   webuiLatest,
   configExport,
@@ -259,11 +230,7 @@ export default {
   getSerieInfobyfolder,
   getOsDrives,
   postOsFolder,
-  patchConfigSet,
   getTraktCode,
-  postAuth,
-  getJMMUserID,
-  postChangePassword,
   getEp,
   getSerie,
 };

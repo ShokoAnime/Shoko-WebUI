@@ -1,33 +1,29 @@
-
-import PropTypes from 'prop-types';
 import React from 'react';
 
-type OwnProps = {
+type Props = {
   title: any;
   children: any;
+  options?: any;
+  className?: string;
 };
 
-type Props = OwnProps;
-
 class FixedPanel extends React.Component<Props> {
-  static propTypes = {
-    title: PropTypes.any,
-    children: PropTypes.any,
-  };
-
   render() {
-    const { children, title } = this.props;
+    const {
+      children, title, className, options,
+    } = this.props;
 
     return (
-      <div className="overflow-hidden rounded shadow-sm fixed-panel h-full flex flex-col p-5">
-        <div className="font-semibold text-xl uppercase flex-none">
-          {title}
+      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded shadow-sm fixed-panel h-full p-5`}>
+        <div className="flex justify-between items-center">
+          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">{title}</span>
+          <div className="flex">
+            {options}
+          </div>
         </div>
-        <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-none" />
-        <div className="overflow-y-auto h-auto text-base fixed-panel-text">
-          <table className="table-auto w-full">
-            <tbody>{children}</tbody>
-          </table>
+        <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+        <div className="overflow-y-auto flex flex-col h-full font-muli">
+          {children}
         </div>
       </div>
     );

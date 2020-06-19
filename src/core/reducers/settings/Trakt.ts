@@ -1,4 +1,3 @@
-
 import { handleAction } from 'redux-actions';
 import { SETTINGS_TRAKT } from '../../actions/settings/Trakt';
 import { Action } from '../../actions';

@@ -1,38 +1,25 @@
-import thunkMiddleware from 'redux-thunk';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import { createStore, applyMiddleware, Store as ReduxStore } from 'redux';
-
 import createSagaMiddleware from 'redux-saga';
 import { throttle } from 'lodash';
 import { routerMiddleware } from 'connected-react-router';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import signalrMiddleware from './middlewares/signalr';
 import { saveState, loadState } from './localStorage';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
 import history from './history';
 
-
-import { Action } from './actions';
-
-// type ExtractFunctionReturn = <V>(v: (...args: any) => V) => V;
-export type State = any;
-// export type State2 = {
-//   [P in keyof Reducers]: ExtractFunctionReturn
-// };
+const rootReducer = createRootReducer(history);
+export type RootState = ReturnType<typeof rootReducer>;
 
 const sagaMiddleware = createSagaMiddleware();
 const routeMiddleware = routerMiddleware(history);
-const middleware = [routeMiddleware, sagaMiddleware, signalrMiddleware, thunkMiddleware];
+const middleware = [...getDefaultMiddleware(), routeMiddleware, sagaMiddleware, signalrMiddleware];
 
-function configureStore(): ReduxStore<State, Action> {
-  return createStore(
-    createRootReducer(history),
-    loadState(),
-    process.env.NODE_ENV !== 'production' ? composeWithDevTools(applyMiddleware(...middleware)) : applyMiddleware(...middleware),
-  );
-}
-
-const store = configureStore();
+const store = configureStore({
+  reducer: rootReducer,
+  middleware,
+  preloadedState: loadState(),
+});
 
 store.subscribe(throttle(() => {
   saveState(store.getState());

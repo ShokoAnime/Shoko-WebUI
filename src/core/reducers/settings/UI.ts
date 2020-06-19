@@ -1,4 +1,3 @@
-
 import { combineReducers } from 'redux';
 import { handleAction } from 'redux-actions';
 import { SET_THEME, SET_NOTIFICATIONS } from '../../actions/settings/UI';

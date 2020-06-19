@@ -1,4 +1,3 @@
-
 import { createAction } from 'redux-actions';
 
 export const SET_UPDATE_CHANNEL = 'SETTINGS_SET_UPDATE_CHANNEL';

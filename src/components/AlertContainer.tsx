@@ -1,50 +1,42 @@
-
-import PropTypes from 'prop-types';
 import React from 'react';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 import { forEach } from 'lodash';
+import cx from 'classnames';
 
+import { RootState } from '../core/store';
 import { GlobalAlertType } from '../core/types/api';
 
-type Props = {
-  globalAlert: Array<GlobalAlertType>;
-};
-
 class AlertContainer extends React.Component<Props> {
-  static propTypes = {
-    globalAlert: PropTypes.array.isRequired,
-  };
+  renderAlert = (key: number, alert: GlobalAlertType) => (
+    <div className={cx(['flex px-4 py-3 rounded relative mt-2 w-1/2', alert.type === 'error' ? 'bg-color-danger' : 'bg-color-accent'])} role="alert" key={key}>
+      {alert.text}
+    </div>
+  );
 
   render() {
-    const {
-      globalAlert,
-    } = this.props;
+    const { globalAlert } = this.props;
     const alerts: Array<any> = [];
     let key = 0;
 
     forEach(globalAlert, (alert) => {
-      // alerts.push(<Notification key={key}
-      // color={alert.type === 'error' ? 'danger' : 'success'}>{alert.text}</Notification>);
-      alerts.push(<div key={key}>{alert.text}</div>);
+      alerts.push(this.renderAlert(key, alert));
       key += 1;
     });
 
     return (
-      <div className="alert-container">
+      <div className="flex flex-col fixed z-50 top-0 w-full items-center">
         {alerts}
       </div>
     );
   }
 }
 
-function mapStateToProps(state) {
-  const {
-    globalAlert,
-  } = state;
+const mapState = (state: RootState) => ({
+  globalAlert: state.globalAlert as Array<GlobalAlertType>,
+});
 
-  return {
-    globalAlert,
-  };
-}
+const connector = connect(mapState);
 
-export default connect(mapStateToProps, () => ({}))(AlertContainer);
+type Props = ConnectedProps<typeof connector>;
+
+export default connector(AlertContainer);

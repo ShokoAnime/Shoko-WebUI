@@ -1,4 +1,3 @@
-
 import { createAction } from 'redux-actions';
 
 export const SETTINGS_QUICK_ACTION_SET = 'SETTINGS_QUICK_ACTION_SET';

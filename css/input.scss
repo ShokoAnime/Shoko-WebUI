@@ -1,3 +1,7 @@
-.input-item {
-  color: $form-text-color;
+.input-field {
+  border-color: $text-color;
+}
+
+.select-field {
+  background-color: $secondary-panel-background-color;
 }

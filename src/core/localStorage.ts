@@ -1,10 +1,8 @@
+import { RootState } from './store';
 
-import sessionStorage from 'sessionstorage';
-import { State } from './store';
-
-export const loadState = (): State => {
+export const loadState = (): RootState => {
   try {
-    const serializedState = sessionStorage.getItem('state');
+    const serializedState = global.localStorage.getItem('state') ?? global.sessionStorage.getItem('state');
     if (serializedState === null) {
       return ({} as any);
     }
@@ -14,10 +12,14 @@ export const loadState = (): State => {
   }
 };
 
-export const saveState = (state: State) => {
+export const saveState = (state: RootState) => {
   try {
     const serializedState = JSON.stringify(state);
-    sessionStorage.setItem('state', serializedState);
+    if (state.apiSession.rememberUser) {
+      global.localStorage.setItem('state', serializedState);
+    } else {
+      global.sessionStorage.setItem('state', serializedState);
+    }
   } catch (err) { // Ignore write errors.
   }
 };

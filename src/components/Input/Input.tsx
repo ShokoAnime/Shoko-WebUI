@@ -1,45 +1,39 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import cx from 'classnames';
 
 type Props = {
   id: string;
-  label: string;
+  label?: string;
   type: string;
   placeholder?: string;
-  value: string;
+  value: string | number;
   onChange: (event: any) => void;
   onKeyPress?: (event: any) => void;
+  className?: string;
+  autoFocus?: boolean;
 };
 
 class Input extends React.Component<Props> {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    placeholder: PropTypes.string,
-    value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    onKeyPress: PropTypes.func,
-  };
-
   render() {
     const {
-      id, label, type, placeholder, value, onChange, onKeyPress,
+      id, label, type, placeholder, value, className, autoFocus, onChange, onKeyPress,
     } = this.props;
 
     return (
       <React.Fragment>
-        <div className="py-2 input-item">
-          <label className="block font-bold mb-2" htmlFor={id}>
+        <div className={`${className ?? ''}`}>
+          <label className="font-bold mb-2" htmlFor={id}>
             {label}
             <input
-              className="appearance-none border-b-2 w-full py-2 leading-tight focus:shadow-none focus:outline-none"
+              className={cx(['appearance-none border-b input-field w-full leading-tight text-sm font-muli focus:shadow-none focus:outline-none', label && 'py-2'])}
               id={id}
               type={type}
-              placeholder={placeholder || ''}
+              placeholder={placeholder ?? ''}
               value={value}
               onChange={onChange}
               onKeyPress={onKeyPress}
+              // eslint-disable-next-line jsx-a11y/no-autofocus
+              autoFocus={autoFocus}
             />
           </label>
         </div>

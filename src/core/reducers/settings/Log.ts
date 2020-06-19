@@ -1,4 +1,3 @@
-
 import { handleAction } from 'redux-actions';
 import { GET_LOG } from '../../actions/settings/Log';
 

@@ -1,4 +1,3 @@
-
 import { handleAction } from 'redux-actions';
 import { SETTINGS_QUICK_ACTION_SET } from '../../actions/settings/QuickActions';
 import { Action } from '../../actions';

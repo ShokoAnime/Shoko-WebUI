@@ -1,0 +1,81 @@
+import { createSlice } from '@reduxjs/toolkit';
+
+import type { SeriesInfoType, QueueStatusType, RecentFileType } from '../types/api';
+import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
+import type { ImportFolderType } from '../types/api/import-folder';
+
+type State = {
+  activeTab: string;
+  avdump: {
+    [key: string]: {
+      fetching: boolean,
+      hash?: string,
+    },
+  };
+  fetched: {
+    [key: string]: boolean,
+  };
+  importFolders: Array<ImportFolderType>;
+  importFolderSeries: Array<SeriesInfoType>;
+  queueStatus: QueueStatusType;
+  recentFiles: Array<RecentFileType>;
+  selectedImportFolderSeries: number;
+  seriesSummary: DashboardSeriesSummaryType;
+  stats: DashboardStatsType;
+};
+
+const mainpageSlice = createSlice({
+  name: 'mainpage',
+  initialState: {
+    activeTab: 'dashboard',
+    avdump: {},
+    fetched: {},
+    importFolders: [],
+    importFolderSeries: [],
+    queueStatus: {} as QueueStatusType,
+    recentFiles: [],
+    selectedImportFolderSeries: 1,
+    seriesSummary: {},
+    stats: {},
+  } as State,
+  reducers: {
+    setActiveTab(sliceState, action) {
+      sliceState.activeTab = action.payload;
+    },
+    setAvdump(sliceState, action) {
+      sliceState.avdump = Object.assign(sliceState.avdump, action.payload);
+    },
+    setFetched(sliceState, action) {
+      sliceState.fetched = Object.assign(sliceState.fetched, { [action.payload]: true });
+    },
+    setImportFolders(sliceState, action) {
+      sliceState.importFolders = action.payload;
+    },
+    setImportFolderSeries(sliceState, action) {
+      sliceState.importFolderSeries = action.payload;
+    },
+    setQueueStatus(sliceState, action) {
+      sliceState.queueStatus = Object.assign(sliceState.queueStatus, action.payload);
+    },
+    setRecentFiles(sliceState, action) {
+      sliceState.recentFiles = action.payload;
+    },
+    setSelectedImportFolderSeries(sliceState, action) {
+      sliceState.selectedImportFolderSeries = action.payload;
+    },
+    setSeriesSummary(sliceState, action) {
+      sliceState.seriesSummary = action.payload;
+    },
+    setStats(sliceState, action) {
+      sliceState.stats = action.payload;
+    },
+  },
+});
+
+export const {
+  setActiveTab, setAvdump, setFetched, setImportFolders,
+  setImportFolderSeries, setQueueStatus, setRecentFiles,
+  setSelectedImportFolderSeries, setSeriesSummary, setStats,
+} = mainpageSlice.actions;
+
+export default mainpageSlice.reducer;

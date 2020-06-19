@@ -3,7 +3,7 @@ import {
 } from 'redux-saga/effects';
 import Api from '../api/common';
 import Events from '../events';
-import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE, Action } from '../actions';
+import { SET_AUTOUPDATE, Action } from '../actions';
 import { getStatus } from '../actions/firstrun';
 
 
@@ -11,7 +11,7 @@ function* pollServerStatus() {
   while (true) {
     const resultJson = yield call(Api.getInit.bind(this, 'status'));
     if (resultJson.error) {
-      yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+      yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     } else {
       yield put(getStatus(resultJson.data));
     }
@@ -25,9 +25,9 @@ function* pollAutoRefresh() {
     while (true) {
       const location = yield select(state => state.router.location.pathname);
 
-      if (location === '/dashboard') {
-        yield put({ type: Events.DASHBOARD_QUEUE_STATUS, payload: null });
-        yield put({ type: Events.DASHBOARD_RECENT_FILES, payload: null });
+      if (location === '/mainpage') {
+        yield put({ type: Events.MAINPAGE_QUEUE_STATUS, payload: null });
+        yield put({ type: Events.MAINPAGE_RECENT_FILES, payload: null });
       }
 
       yield delay(4000);

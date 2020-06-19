@@ -1,4 +1,3 @@
-
 import { handleAction } from 'redux-actions';
 import { SETTINGS_SERVER } from '../../actions/settings/Server';
 import { Action } from '../../actions';
@@ -31,9 +30,9 @@ export type SettingsAnidbDownloadType = {
 };
 
 // Delete, DeleteLocalOnly, MarkDeleted, MarkExternalStorage, MarkUnknown, MarkDisk
-type MyListDeleteType = 0 | 1 | 2 | 3 | 4 | 5;
+export type MyListDeleteType = 0 | 1 | 2 | 3 | 4 | 5;
 // Unknown, HDD, Disk, Deleted, Remote
-type MyListStorageState = 0 | 1 | 2 | 3 | 4;
+export type MyListStorageState = 0 | 1 | 2 | 3 | 4;
 
 export type SettingsAnidbMylistType = {
   MyList_AddFiles: boolean;
@@ -88,7 +87,8 @@ export type SettingsMoviedbType = {
 
 export type SettingsPlexType = {
   Server: string;
-  Libraries: string;
+  Libraries: Array<number>;
+  Token: string;
 };
 
 export type SettingsWebCacheType = {
@@ -173,7 +173,8 @@ const defaultState = {
   },
   Plex: {
     Server: '',
-    Libraries: '',
+    Libraries: [],
+    Token: '',
   },
 };
 

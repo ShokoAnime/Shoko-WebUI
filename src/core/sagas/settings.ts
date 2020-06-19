@@ -1,20 +1,23 @@
-
 import { call, put, select } from 'redux-saga/effects';
 import Ajv from 'ajv';
 import jsonpatch from 'fast-json-patch';
 
-import { QUEUE_GLOBAL_ALERT, Action } from '../actions';
-import Api from '../api/common';
 import Events from '../events';
+
+import Api from '../api/common';
+import ApiSettings from '../api/v3/settings';
+
 import { settingsServer } from '../actions/settings/Server';
 import { settingsTrakt } from '../actions/settings/Trakt';
 import { settingsPlex } from '../actions/settings/Plex';
 
-import { State } from '../store';
+import { startFetching, stopFetching } from '../slices/fetching';
 
-export const settingsSelector = (state: State) => state.settings;
+import { RootState } from '../store';
 
-function* settingsSaveWebui(action: Action) {
+export const settingsSelector = (state: RootState) => state.settings;
+
+function* settingsSaveWebui(action) {
   const settings = yield select(settingsSelector);
   const currentSettings = {
     uiTheme: settings.ui.theme,
@@ -40,7 +43,7 @@ function* settingsSaveWebui(action: Action) {
   const result = validator(data);
   if (result !== true) {
     yield put({
-      type: QUEUE_GLOBAL_ALERT,
+      type: Events.QUEUE_GLOBAL_ALERT,
       payload: { type: 'error', text: 'Schema validation failed!' },
     });
     return;
@@ -48,10 +51,10 @@ function* settingsSaveWebui(action: Action) {
 
   const resultJson = yield call(Api.postWebuiConfig, data);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put({
-      type: QUEUE_GLOBAL_ALERT,
+      type: Events.QUEUE_GLOBAL_ALERT,
       payload: { type: 'success', text: 'WebUI settings saved!' },
     });
   }
@@ -60,7 +63,7 @@ function* settingsSaveWebui(action: Action) {
 function* settingsGetServer() {
   const resultJson = yield call(Api.configExport);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put(settingsServer(resultJson.data));
   }
@@ -91,37 +94,37 @@ function* settingsSaveServer(action) {
   if (postData.length === 0) {
     return;
   }
-  const resultJson = yield call(Api.patchConfigSet, postData);
+  const resultJson = yield call(ApiSettings.patchSettings, postData);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put(settingsServer(context ? { [context]: changed } : changed));
     yield put({
-      type: QUEUE_GLOBAL_ALERT,
+      type: Events.QUEUE_GLOBAL_ALERT,
       payload: { type: 'success', text: 'Settings saved!' },
     });
   }
 }
 
 function* settingsGetTraktCode() {
-  yield put({ type: Events.START_FETCHING, payload: 'trakt_code' });
+  yield put(startFetching('trakt_code'));
   const resultJson = yield call(Api.getTraktCode);
-  yield put({ type: Events.STOP_FETCHING, payload: 'trakt_code' });
+  yield put(stopFetching('trakt_code'));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put(settingsTrakt(resultJson.data));
   }
 }
 
 function* settingsGetPlexLoginUrl() {
-  yield put({ type: Events.START_FETCHING, payload: 'plex_login_url' });
+  yield put(startFetching('plex_login_url'));
   const resultJson = yield call(Api.getPlexLoginurl);
-  yield put({ type: Events.STOP_FETCHING, payload: 'plex_login_url' });
+  yield put(stopFetching('plex_login_url'));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
-    yield put(settingsPlex(resultJson.data));
+    yield put(settingsPlex({ url: resultJson.data }));
   }
 }
 

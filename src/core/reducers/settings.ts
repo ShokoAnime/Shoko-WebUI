@@ -1,4 +1,3 @@
-
 import { combineReducers } from 'redux';
 import { logs } from './settings/Log';
 import ui from './settings/UI';
@@ -8,6 +7,7 @@ import server from './settings/Server';
 import trakt from './settings/Trakt';
 import plex from './settings/Plex';
 import quickActions from './settings/QuickActions';
+import importFolder from './settings/ImportFolder';
 
 export default combineReducers({
   logs,
@@ -18,4 +18,5 @@ export default combineReducers({
   trakt,
   plex,
   quickActions,
+  importFolder,
 });

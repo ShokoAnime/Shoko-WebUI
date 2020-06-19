@@ -8,22 +8,22 @@ import {
 } from 'lodash';
 
 import Events from '../events';
-import { QUEUE_STATUS } from '../actions';
+import { setQueueStatus } from '../slices/mainpage';
 
 let lastRetry = moment();
 let attempts = 0;
 const maxTimeout = 60000;
 
 const onQueueStateChange = (dispatch, getState) => (queue, state) => {
-  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().queueStatus[queue], { state }) });
-  dispatch({ type: QUEUE_STATUS, payload: newState });
+  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().mainpage.queueStatus[queue], { state }) });
+  dispatch(setQueueStatus(newState));
 };
 const onQueueCountChange = (dispatch, getState) => (queue, count) => {
-  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().queueStatus[queue], { count }) });
-  dispatch({ type: QUEUE_STATUS, payload: newState });
+  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().mainpage.queueStatus[queue], { count }) });
+  dispatch(setQueueStatus(newState));
 };
 const onQueueRefreshState = dispatch => (state) => {
-  dispatch({ type: QUEUE_STATUS, payload: state });
+  dispatch(setQueueStatus(state));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
@@ -49,7 +49,7 @@ const signalRMiddleware = ({
   getState,
 }) => next => async (action) => {
   // register signalR after the user logged in
-  if (action.type === Events.DASHBOARD_LOAD) {
+  if (action.type === Events.MAINPAGE_LOAD) {
     const connectionHub = '/signalr/events';
 
     const protocol = new JsonHubProtocol();

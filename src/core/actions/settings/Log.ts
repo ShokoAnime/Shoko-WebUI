@@ -1,4 +1,3 @@
-
 import { createAction } from 'redux-actions';
 
 export const GET_LOG = 'SETTINGS_GET_LOG';
