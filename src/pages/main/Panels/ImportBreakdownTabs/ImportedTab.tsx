@@ -7,8 +7,10 @@ import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 
 import { RootState } from '../../../../core/store';
+import Events from '../../../../core/events';
 import Button from '../../../../components/Buttons/Button';
-import type { RecentFileType } from '../../../../core/types/api';
+
+import type { RecentFileType } from '../../../../core/types/api/file';
 
 type State = {
   expandedItems: any;
@@ -21,7 +23,7 @@ class ImportedTab extends React.Component<Props, State> {
     const expandedItems = {};
 
     forEach(items, (item) => {
-      expandedItems[item.id] = false;
+      expandedItems[item.ID] = false;
     });
 
     this.state = {
@@ -29,28 +31,30 @@ class ImportedTab extends React.Component<Props, State> {
     };
   }
 
-  handleExpand = (idx: number) => {
-    const {
-      expandedItems,
-    } = this.state;
+  handleExpand = (item: RecentFileType) => {
+    const { expandedItems } = this.state;
+    const { getDetails } = this.props;
 
-    expandedItems[idx] = !expandedItems[idx];
+    expandedItems[item.ID] = !expandedItems[item.ID];
+
+    const { SeriesIDs } = item;
+    getDetails(item.ID, SeriesIDs[0].SeriesID.ID, SeriesIDs[0].EpisodeIDs[0].ID);
 
     this.setState({
       expandedItems,
     });
   };
 
-  renderDate = (idx: number, date: string) => {
+  renderDate = (item: RecentFileType) => {
     const {
       expandedItems,
     } = this.state;
     return (
-      <div key={`${idx}-date`} className="flex mt-2">
-        <span className="font-semibold">{moment(date).format('yyyy-MM-DD')} / {moment(date).format('hh:mm A')}</span>
-        <Button className="color-accent ml-2" onClick={() => this.handleExpand(idx)}>
+      <div key={`${item.ID}-date`} className="flex mt-2">
+        <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
+        <Button className="color-accent ml-2" onClick={() => this.handleExpand(item)}>
           {
-            expandedItems[idx]
+            expandedItems[item.ID]
               ? <FontAwesomeIcon icon={faCaretUp} />
               : <FontAwesomeIcon icon={faCaretDown} />
           }
@@ -63,14 +67,16 @@ class ImportedTab extends React.Component<Props, State> {
     <span key={`${idx}-name`} className="my-2 break-words">{serverPath}</span>
   );
 
-  renderDetails = (idx: number, item: RecentFileType) => {
+  renderDetails = (item: RecentFileType) => {
     const { expandedItems } = this.state;
-    const { isFetching } = this.props;
+    const { recentFileDetails } = this.props;
+    const fileDetails = recentFileDetails[item.ID];
+    const { fetched, details } = fileDetails ?? {};
 
     return (
-      <div key={`${idx}-details`} className="flex mb-1">
+      <div key={`${item.ID}-details`} className="flex mb-1">
         {
-          expandedItems[idx] && (isFetching
+          expandedItems[item.ID] && (!fetched
             ? (
               <div className="flex px-4 flex-grow">
                 <FontAwesomeIcon icon={faCircleNotch} spin className="text-2xl color-accent-secondary" />
@@ -80,23 +86,25 @@ class ImportedTab extends React.Component<Props, State> {
               <div className="flex flex-col px-4 flex-grow">
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Series</span>
-                  {item.name ?? 'Unknown'}
+                  {details.SeriesName ?? 'Unknown'}
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Episode</span>
-                  {this.getEpisodeName(item.eptype, item.epnumber, item.epname)}
+                  {this.getEpisodeName(
+                    details.EpisodeType, details.EpisodeNumber, details.EpisodeName,
+                  )}
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Size</span>
-                  {prettyBytes(item.size)}
+                  {prettyBytes(item.Size)}
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Info</span>
                   {this.getFileInfo(
-                    item.resolution,
-                    item.source,
-                    item.audioLanguages,
-                    item.subtitleLanguages,
+                    item.RoundedStandardResolution,
+                    details.Source,
+                    details.AudioLanguages,
+                    details.SubtitleLanguages,
                   )}
                 </div>
               </div>
@@ -107,13 +115,13 @@ class ImportedTab extends React.Component<Props, State> {
     );
   };
 
-  getEpisodeName = (eptype: string, epnumber: number, epname: string) => {
-    if (!eptype) return 'Unknown';
+  getEpisodeName = (type: string, number: number, name: string) => {
+    if (!type) return 'Unknown';
 
     let epTypeCode = '';
-    if (eptype === 'Credits') epTypeCode = 'C'; else if (eptype === 'Special') epTypeCode = 'S'; else if (eptype === 'Episode') epTypeCode = 'E'; else epTypeCode = 'X';
+    if (type === 'Credits') epTypeCode = 'C'; else if (type === 'Special') epTypeCode = 'S'; else if (type === 'Episode') epTypeCode = 'E'; else epTypeCode = 'X';
 
-    return `${epTypeCode + epnumber}: ${epname}`;
+    return `${epTypeCode + number}: ${name}`;
   };
 
   getFileInfo = (
@@ -136,10 +144,10 @@ class ImportedTab extends React.Component<Props, State> {
 
     const files: Array<any> = [];
 
-    forEach(items, (item, idx) => {
-      files.push(this.renderDate(idx, item.created));
-      files.push(this.renderName(idx, item.server_path));
-      files.push(this.renderDetails(idx, item));
+    forEach(items, (item) => {
+      files.push(this.renderDate(item));
+      files.push(this.renderName(item.ID, item.Locations[0].RelativePath));
+      files.push(this.renderDetails(item));
     });
 
     return files;
@@ -147,10 +155,16 @@ class ImportedTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  isFetching: state.fetching.recentFileDetails,
+  recentFileDetails: state.mainpage.recentFileDetails,
 });
 
-const connector = connect(mapState);
+const mapDispatch = {
+  getDetails: (fileId: number, seriesId: number, episodeId: number) => (
+    { type: Events.MAINPAGE_RECENT_FILE_DETAILS, payload: { fileId, seriesId, episodeId } }
+  ),
+};
+
+const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector> & {
   items: Array<RecentFileType>;

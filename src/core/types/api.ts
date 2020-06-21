@@ -35,21 +35,3 @@ export type QueueStatusType = {
   general: QueueItemType;
   images: QueueItemType;
 };
-
-export type RecentFileType = {
-  id: number;
-  filename: string;
-  recognized: boolean;
-  created: string;
-  updated: string;
-  server_path: string;
-  size: number;
-  epnumber: number;
-  epname: string;
-  eptype: string;
-  name: string;
-  source: string;
-  audioLanguages: Array<string>;
-  subtitleLanguages: Array<string>;
-  resolution: string;
-};

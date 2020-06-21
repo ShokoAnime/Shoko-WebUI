@@ -2,14 +2,56 @@ import { call, put } from 'redux-saga/effects';
 
 import Events from '../events';
 
-import ApiCommon from '../api/common';
+import ApiEpisode from '../api/v3/episode';
 import ApiFile from '../api/v3/file';
+import ApiSeries from '../api/v3/series';
 
-import { setAvdump, setFetched, setRecentFiles } from '../slices/mainpage';
-import { startFetching, stopFetching } from '../slices/fetching';
+import {
+  setAvdump, setFetched, setRecentFileDetails, setRecentFiles,
+} from '../slices/mainpage';
+
+import type { RecentFileDetailsType } from '../types/api/file';
+
+function* getRecentFileDetails(action) {
+  const { seriesId, episodeId, fileId } = action.payload;
+  const details = {} as RecentFileDetailsType;
+
+  const seriesJson = yield call(ApiSeries.getSeries, seriesId);
+  if (seriesJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    return;
+  }
+  details.SeriesName = seriesJson.data.Name;
+
+  const episodeAniDBJson = yield call(ApiEpisode.getEpisodeAniDB, episodeId);
+  if (episodeAniDBJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    return;
+  }
+  details.EpisodeNumber = episodeAniDBJson.data.EpisodeNumber;
+  details.EpisodeType = episodeAniDBJson.data.EpisodeType;
+
+  const episodeTvDBJson = yield call(ApiEpisode.getEpisodeTvDB, episodeId);
+  if (episodeTvDBJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    return;
+  }
+  details.EpisodeName = episodeTvDBJson.data[0].Title;
+
+  const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
+  if (fileAniDBJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    return;
+  }
+  details.Source = fileAniDBJson.data.Source;
+  details.AudioLanguages = fileAniDBJson.data.AudioLanguages;
+  details.SubtitleLanguages = fileAniDBJson.data.SubLanguages;
+
+  yield put(setRecentFileDetails({ [fileId]: { fetched: true, details } }));
+}
 
 function* getRecentFiles() {
-  const resultJson = yield call(ApiCommon.getFileRecent);
+  const resultJson = yield call(ApiFile.getFileRecent);
   if (resultJson.error) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
@@ -17,44 +59,6 @@ function* getRecentFiles() {
 
   yield put(setRecentFiles(resultJson.data));
   yield put(setFetched('recentFiles'));
-
-  yield put(startFetching('recentFileDetails'));
-  for (let i = 0; i < resultJson.data.length; i += 1) { // yield cannot be used in a forEach loop
-    if (resultJson.data[i].ep_id) {
-      const episodeJson = yield call(ApiCommon.getEp, resultJson.data[i].ep_id);
-      if (episodeJson.error) {
-        yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: episodeJson.message } });
-        return;
-      }
-      resultJson.data[i].epnumber = episodeJson.data.epnumber;
-      resultJson.data[i].epname = episodeJson.data.name;
-      resultJson.data[i].eptype = episodeJson.data.eptype;
-
-      const seriesJson = yield call(ApiCommon.getSerie, resultJson.data[i].series_id);
-      if (seriesJson.error) {
-        yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
-        return;
-      }
-      resultJson.data[i].name = seriesJson.data.name;
-
-      const aniDBJson = yield call(ApiFile.getFileAniDB, resultJson.data[i].id);
-      if (aniDBJson.error) {
-        yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: aniDBJson.message } });
-        return;
-      }
-      resultJson.data[i].source = aniDBJson.data.Source;
-      resultJson.data[i].audioLanguages = aniDBJson.data.AudioLanguages;
-      resultJson.data[i].subtitleLanguages = aniDBJson.data.SubLanguages;
-
-      const fileJson = yield call(ApiFile.getFile, resultJson.data[i].id);
-      if (fileJson.error) {
-        yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: fileJson.message } });
-        return;
-      }
-      resultJson.data[i].resolution = fileJson.data.RoundedStandardResolution;
-    }
-  }
-  yield put(stopFetching('recentFileDetails'));
 }
 
 function* runAvdump(action) {
@@ -67,6 +71,7 @@ function* runAvdump(action) {
 }
 
 export default {
+  getRecentFileDetails,
   getRecentFiles,
   runAvdump,
 };

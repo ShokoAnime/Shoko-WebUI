@@ -425,6 +425,7 @@ export default function* rootSaga() {
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     takeEvery(Events.MAINPAGE_RECENT_FILES, SagaFile.getRecentFiles),
+    takeEvery(Events.MAINPAGE_RECENT_FILE_DETAILS, SagaFile.getRecentFileDetails),
     takeEvery(Events.PAGE_LOGS_LOAD, SagaMainPage.getSettings),
     takeEvery(Events.PAGE_SETTINGS_LOAD, pageSettingsLoad),
     takeEvery(Events.SETTINGS_EXPORT, settingsExport),

@@ -1,15 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { SeriesInfoType, QueueStatusType, RecentFileType } from '../types/api';
+import type { SeriesInfoType, QueueStatusType } from '../types/api';
 import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
+import type { RecentFileDetailsType, RecentFileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 
 type State = {
   activeTab: string;
   avdump: {
     [key: string]: {
-      fetching: boolean,
-      hash?: string,
+      fetching: boolean;
+      hash?: string;
     },
   };
   fetched: {
@@ -18,6 +19,12 @@ type State = {
   importFolders: Array<ImportFolderType>;
   importFolderSeries: Array<SeriesInfoType>;
   queueStatus: QueueStatusType;
+  recentFileDetails: {
+    [key: number]: {
+      fetched: boolean;
+      details: RecentFileDetailsType;
+    }
+  };
   recentFiles: Array<RecentFileType>;
   selectedImportFolderSeries: number;
   seriesSummary: DashboardSeriesSummaryType;
@@ -34,6 +41,7 @@ const mainpageSlice = createSlice({
     importFolderSeries: [],
     queueStatus: {} as QueueStatusType,
     recentFiles: [],
+    recentFileDetails: {},
     selectedImportFolderSeries: 1,
     seriesSummary: {},
     stats: {},
@@ -57,6 +65,9 @@ const mainpageSlice = createSlice({
     setQueueStatus(sliceState, action) {
       sliceState.queueStatus = Object.assign(sliceState.queueStatus, action.payload);
     },
+    setRecentFileDetails(sliceState, action) {
+      sliceState.recentFileDetails = Object.assign(sliceState.recentFileDetails, action.payload);
+    },
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
     },
@@ -74,8 +85,9 @@ const mainpageSlice = createSlice({
 
 export const {
   setActiveTab, setAvdump, setFetched, setImportFolders,
-  setImportFolderSeries, setQueueStatus, setRecentFiles,
-  setSelectedImportFolderSeries, setSeriesSummary, setStats,
+  setImportFolderSeries, setQueueStatus, setRecentFileDetails,
+  setRecentFiles, setSelectedImportFolderSeries, setSeriesSummary,
+  setStats,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

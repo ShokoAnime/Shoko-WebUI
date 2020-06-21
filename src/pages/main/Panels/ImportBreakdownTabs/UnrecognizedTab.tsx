@@ -5,29 +5,29 @@ import moment from 'moment';
 
 import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
-import type { RecentFileType } from '../../../../core/types/api';
+import type { RecentFileType } from '../../../../core/types/api/file';
 import Button from '../../../../components/Buttons/Button';
 
 
 class UnrecognizedTab extends React.Component<Props> {
-  renderItem = (date: string, serverPath: string, fileId: number) => {
+  renderItem = (item: RecentFileType) => {
     const { runAvdump, avdumpList } = this.props;
     return (
-      <div className="flex flex-col mt-2">
-        <span className="font-semibold">{moment(date).format('yyyy-MM-DD')} / {moment(date).format('hh:mm A')}</span>
+      <div key={item.ID} className="flex flex-col mt-2">
+        <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <div className="flex my-2 justify-between">
-          <span className="flex break-words">{serverPath}</span>
+          <span className="flex break-words">{item.Locations[0].RelativePath}</span>
           <span>
-            <Button onClick={() => runAvdump(fileId)} className="font-exo font-bold text-sm bg-color-accent py-1 px-2" loading={avdumpList[fileId]?.fetching}>
+            <Button onClick={() => runAvdump(item.ID)} className="font-exo font-bold text-sm bg-color-accent py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
               Avdump
             </Button>
           </span>
         </div>
         <div className="flex mb-1">
-          {avdumpList[fileId].hash && (
+          {avdumpList[item.ID].hash && (
             <div className="flex">
               <span className="w-48 font-semibold">ED2K Hash:</span>
-              <span className="break-all">{avdumpList[fileId].hash}</span>
+              <span className="break-all">{avdumpList[item.ID].hash}</span>
             </div>
           )}
         </div>
@@ -41,7 +41,7 @@ class UnrecognizedTab extends React.Component<Props> {
     const files: Array<any> = [];
 
     forEach(items, (item) => {
-      files.push(this.renderItem(item.created, item.server_path, item.id));
+      files.push(this.renderItem(item));
     });
 
     return files;

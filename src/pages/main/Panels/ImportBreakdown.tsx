@@ -11,7 +11,7 @@ import Button from '../../../components/Buttons/Button';
 import ImportedTab from './ImportBreakdownTabs/ImportedTab';
 import UnrecognizedTab from './ImportBreakdownTabs/UnrecognizedTab';
 
-import { RecentFileType } from '../../../core/types/api';
+import { RecentFileType } from '../../../core/types/api/file';
 
 type State = {
   activeTab: string,
@@ -48,7 +48,7 @@ class ImportBreakdown extends React.Component<Props, State> {
     const unrecognizedItems: Array<RecentFileType> = [];
 
     forEach(items, item => (
-      item.recognized ? importedItems.push(item) : unrecognizedItems.push(item)
+      item.SeriesIDs ? importedItems.push(item) : unrecognizedItems.push(item)
     ));
 
     switch (activeTab) {
