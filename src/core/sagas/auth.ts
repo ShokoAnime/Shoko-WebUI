@@ -10,7 +10,7 @@ import { startFetching, stopFetching } from '../slices/fetching';
 
 function* changePassword(action) {
   const { payload } = action;
-  const resultJson = yield call(ApiAuth.postChangePassword, payload.formData);
+  const resultJson = yield call(ApiAuth.postChangePassword, payload.password);
   if (resultJson.error) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
@@ -20,7 +20,7 @@ function* changePassword(action) {
 
   const loginPayload = {
     user: payload.username,
-    pass: payload.formData.password,
+    pass: payload.password,
     device: 'web-ui',
   };
   yield call(login, loginPayload);

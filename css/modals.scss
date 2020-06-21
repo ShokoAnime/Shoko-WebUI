@@ -1,3 +1,21 @@
+.profile-modal {
+  height: 18.5rem;
+  width: 42rem;
+}
+
+.profile-modal-image {
+  background-image: url('/webui/left-img.jpg');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  width: 22rem;
+}
+
+.profile-modal-image-alpha {
+  color: $secondary-panel-background-color;
+  background-color: rgba($sidebar-background-color, 0.8);
+}
+
 .modal-content {
   .panel-block {
     background: #fff;

@@ -4,7 +4,6 @@ import { handleAction } from 'redux-actions';
 import {
   SET_AUTOUPDATE, JMM_NEWS, SIDEBAR_TOGGLE, UPDATE_AVAILABLE, JMM_VERSION,
 } from './actions';
-import modals from './reducers/modals';
 import settings from './reducers/settings';
 import firstrun from './reducers/firstrun';
 import Version from '../../public/version.json';
@@ -13,6 +12,7 @@ import apiSessionReducer from './slices/apiSession';
 import globalAlertReducer from './slices/globalAlert';
 import fetchingReducer from './slices/fetching';
 import mainpageReducer from './slices/mainpage';
+import modalsReducer from './slices/modals';
 
 export function apiReducer(state, action) {
   // return action.error ? state : Object.assign({}, state, action.payload);
@@ -39,13 +39,13 @@ const reducers = {
   globalAlert: globalAlertReducer,
   fetching: fetchingReducer,
   mainpage: mainpageReducer,
+  modals: modalsReducer,
   autoUpdate,
   jmmNews,
   sidebarToggle,
   updateAvailable,
   jmmVersion,
   settings,
-  modals,
   firstrun,
 };
 

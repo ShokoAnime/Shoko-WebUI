@@ -4,9 +4,9 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../core/store';
 import type { SelectedNodeType } from '../TreeView/TreeNode';
 import Button from '../Buttons/Button';
-import { setStatus } from '../../core/actions/modals/BrowseFolder';
+import { setStatus } from '../../core/slices/modals/browseFolder';
 import TreeView from '../TreeView/TreeView';
-import FixedPanel from '../Panels/FixedPanel';
+import ModalPanel from '../Panels/ModalPanel';
 
 class BrowseFolderModal extends React.Component<Props> {
   handleClose = () => {
@@ -26,23 +26,17 @@ class BrowseFolderModal extends React.Component<Props> {
   render() {
     const { show } = this.props;
     return (
-      <div className="flex pointer-events-none fixed w-full inset-0 z-50">
-        {show && (
-          <div className="flex justify-center items-center h-full w-full bg-black bg-opacity-75">
-            <div className="flex pointer-events-auto w-1/3">
-              <FixedPanel title="Select import folder" className="flex-grow">
-                <div className="flex h-auto overflow-y-auto">
-                  <TreeView />
-                </div>
-                <div className="flex justify-end mt-2">
-                  <Button onClick={this.handleClose} className="bg-color-accent px-5 py-2 mr-2">Cancel</Button>
-                  <Button onClick={this.handleSelect} className="bg-color-accent px-5 py-2">Select</Button>
-                </div>
-              </FixedPanel>
-            </div>
+      <ModalPanel show={show} className="p-5">
+        <div className="flex flex-col w-full">
+          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">Select Import Folder</span>
+          <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+          <TreeView />
+          <div className="flex justify-end mt-2">
+            <Button onClick={this.handleClose} className="bg-color-accent px-5 py-2 mr-2">Cancel</Button>
+            <Button onClick={this.handleSelect} className="bg-color-accent px-5 py-2">Select</Button>
           </div>
-        )}
-      </div>
+        </div>
+      </ModalPanel>
     );
   }
 }

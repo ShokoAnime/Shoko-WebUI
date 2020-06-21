@@ -8,7 +8,7 @@ import {
   faCaretRight, faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 import Events from '../../core/events';
-import { setSelectedItems } from '../../core/actions/modals/BrowseFolder';
+import { setSelectedNode } from '../../core/slices/modals/browseFolder';
 import { RootState } from '../../core/store';
 
 export type SelectedNodeType = {
@@ -111,7 +111,7 @@ const mapState = (state: RootState, props: any) => ({
 
 const mapDispatch = {
   fetch: (id: number, path: string) => ({ type: Events.OS_BROWSE, payload: { id, path } }),
-  select: (value: SelectedNodeType) => (setSelectedItems(value)),
+  select: (value: SelectedNodeType) => (setSelectedNode(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

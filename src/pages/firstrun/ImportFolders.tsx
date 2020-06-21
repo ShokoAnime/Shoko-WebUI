@@ -11,7 +11,7 @@ import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 import Footer from './Footer';
 import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
-import { setStatus as setBrowseStatus } from '../../core/actions/modals/BrowseFolder';
+import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFolder';
 import { setFormData } from '../../core/actions/settings/ImportFolder';
 import type { ImportFolderType } from '../../core/types/api/import-folder';
 

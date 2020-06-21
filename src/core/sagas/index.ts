@@ -32,7 +32,7 @@ import {
 } from '../actions/settings/ImportFolder';
 import {
   setItems as setBrowseModalItems, setId as setBrowseModalId,
-} from '../actions/modals/BrowseFolder';
+} from '../slices/modals/browseFolder';
 import apiPollingDriver from './apiPollingDriver';
 import settings from './settings';
 

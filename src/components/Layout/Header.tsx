@@ -4,12 +4,14 @@ import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTasks, faListAlt, faImage, faCaretDown,
-  faUser, faKey, faSignOutAlt,
+  faUser, faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Button from '../Buttons/Button';
+import { setStatus } from '../../core/slices/modals/profile';
+import ProfileModal from '../Dialogs/ProfileModal';
 
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 
@@ -30,14 +32,11 @@ class Header extends React.Component<Props, State> {
   );
 
   renderDropdown = () => {
-    const { logout } = this.props;
+    const { logout, showProfile } = this.props;
     return (
       <div className="flex flex-col absolute right-0 w-48 shadow-lg z-50 px-4 py-2 rounded-lg user-dropdown border items-start">
-        <Button onClick={() => {}} className="py-2">
+        <Button onClick={() => showProfile(true)} className="py-2">
           <FontAwesomeIcon icon={faUser} className="mr-2" />Profile
-        </Button>
-        <Button onClick={() => {}} className="py-2">
-          <FontAwesomeIcon icon={faKey} className="mr-2" />Change Password
         </Button>
         <Button onClick={() => logout()} className="py-2">
           <FontAwesomeIcon icon={faSignOutAlt} className="mr-2" />Logout
@@ -83,6 +82,7 @@ class Header extends React.Component<Props, State> {
             </div>
           </div>
         </div>
+        <ProfileModal />
       </React.Fragment>
     );
   }
@@ -97,6 +97,7 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = {
   logout: () => ({ type: Events.LOGOUT }),
+  showProfile: (value: boolean) => (setStatus(value)),
 };
 
 const connector = connect(mapState, mapDispatch);
