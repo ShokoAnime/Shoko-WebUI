@@ -10,7 +10,7 @@ function ApiRequest(action: string, method: ApiRequestMethodType = 'GET', params
 
 // List all Import Folders
 function getImportFolder() {
-  return ApiRequest('');
+  return ApiRequest('', undefined, undefined, false);
 }
 
 // Edit Import Folder. This replaces all values.
