@@ -9,7 +9,7 @@ class ActionItems extends React.Component<Props> {
     const { handleAction } = this.props;
 
     return (
-      <div className="flex py-2 justify-between items-center">
+      <div className="flex my-2 justify-between items-center">
         <span className="flex">{name}</span>
         <Button onClick={() => handleAction(action)} className="bg-color-accent font-exo text-sm font-bold px-6 py-1">
           Run

@@ -8,12 +8,12 @@ import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 
 class CollectionBreakdown extends React.Component<Props> {
-  renderItem = (title: string, value: string | number = 0) => (
-    <div className="flex">
-      <div className="flex-grow py-2">
+  renderItem = (title: string, value: string | number = 0, key: string) => (
+    <div key={key} className="flex my-2">
+      <div className="flex-grow">
         {title}
       </div>
-      <div className="color-accent py-2">
+      <div className="color-accent">
         {value}
       </div>
     </div>
@@ -26,14 +26,14 @@ class CollectionBreakdown extends React.Component<Props> {
     } = this.props;
 
     const childrenLeft = [
-      this.renderItem('Series', SeriesCount),
-      this.renderItem('Files', FileCount),
-      this.renderItem('Collection Size', `${prettyBytes(FileSize || 0)}`),
+      this.renderItem('Series', SeriesCount, 'series'),
+      this.renderItem('Files', FileCount, 'files'),
+      this.renderItem('Collection Size', `${prettyBytes(FileSize || 0)}`, 'collection-size'),
     ];
     const childrenRight = [
-      this.renderItem('Series Completed', FinishedSeries),
-      this.renderItem('Episodes Watched', WatchedEpisodes),
-      this.renderItem('Hours Watched', `${WatchedHours || 0} H`)];
+      this.renderItem('Series Completed', FinishedSeries, 'series-completed'),
+      this.renderItem('Episodes Watched', WatchedEpisodes, 'episodes-watched'),
+      this.renderItem('Hours Watched', `${WatchedHours || 0} H`, 'hours-watched')];
 
     return (
       <FixedPanel title="Collection Breakdown">

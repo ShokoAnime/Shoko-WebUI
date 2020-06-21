@@ -33,7 +33,7 @@ class ImportFolders extends React.Component<Props> {
     }
 
     return (
-      <div className="flex font-semibold my-2">
+      <div key={`${ID}-type`} className="flex font-semibold my-2">
         <span className="flex-grow">{flags}</span>
         <span className="color-accent">Online</span>
       </div>
@@ -43,7 +43,7 @@ class ImportFolders extends React.Component<Props> {
   renderPath = (ID: number, Path: string) => {
     const { rescanFolder } = this.props;
     return (
-      <div className="flex mb-2">
+      <div key={`${ID}-path`} className="flex mb-2">
         <span className="flex flex-grow mr-1">{Path}</span>
         <div className="flex color-accent items-start">
           <Button className="color-accent mr-3" onClick={() => rescanFolder!(ID)}>
@@ -62,7 +62,7 @@ class ImportFolders extends React.Component<Props> {
   };
 
   renderSize = (ID: number, FileSize = 0, Size = 0) => (
-    <span className="mb-2">
+    <span key={`${ID}-size`} className="mb-2">
       Series: {Size} / Size: {prettyBytes(FileSize)}
     </span>
   );

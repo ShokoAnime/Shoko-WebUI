@@ -15,11 +15,11 @@ const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
 class CommandQueue extends React.Component<Props> {
-  renderItem = (key = '', count = 0, status = 'Unknown') => {
+  renderItem = (key: string, count = 0, status = 'Unknown') => {
     const { handleOperation } = this.props;
 
     return (
-      <div className="flex justify-between my-2">
+      <div key={`${key}-item`} className="flex justify-between my-2">
         <div className="flex w-1/12 items-center">
           <FontAwesomeIcon icon={icons[key]} className="mr-4" />
           <span className="font-semibold">{names[key]}</span>
@@ -43,8 +43,8 @@ class CommandQueue extends React.Component<Props> {
     );
   };
 
-  renderStatus = (status = 'Unknown') => (
-    <div className="flex mb-2 break-all">{status}</div>
+  renderStatus = (key: string, status = 'Unknown') => (
+    <div key={`${key}-status`} className="flex mb-2 break-all">{status}</div>
   );
 
   renderOptions = () => {
@@ -76,7 +76,7 @@ class CommandQueue extends React.Component<Props> {
 
     forEach(items, (item, key) => {
       commands.push(this.renderItem(key, item.count, item.state));
-      commands.push(this.renderStatus(item.state));
+      commands.push(this.renderStatus(key, item.state));
     });
 
     return (

@@ -7,12 +7,12 @@ import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 
 class SeriesBreakdown extends React.Component<Props> {
-  renderItem = (title: string, value = 0) => (
-    <div className="flex">
-      <div className="flex-grow py-2">
+  renderItem = (title: string, value = 0, key: string) => (
+    <div key={key} className="flex my-2">
+      <div className="flex-grow">
         {title}
       </div>
-      <div className="color-accent py-2">
+      <div className="color-accent">
         {value}
       </div>
     </div>
@@ -27,14 +27,14 @@ class SeriesBreakdown extends React.Component<Props> {
     } = this.props;
 
     const childrenLeft = [
-      this.renderItem('Missing Episodes (Collecting)', MissingEpisodesCollecting),
-      this.renderItem('Missing Episodes (Total)', MissingEpisodes),
-      this.renderItem('Missing TvDB/TMDB Links', SeriesWithMissingLinks),
+      this.renderItem('Missing Episodes (Collecting)', MissingEpisodesCollecting, 'missing-episodes-collecting'),
+      this.renderItem('Missing Episodes (Total)', MissingEpisodes, 'missing-episodes'),
+      this.renderItem('Missing TvDB/TMDB Links', SeriesWithMissingLinks, 'missing-links'),
     ];
     const childrenRight = [
-      this.renderItem('Unrecognized Files', UnrecognizedFiles),
-      this.renderItem('Multiple Files', EpisodesWithMultipleFiles),
-      this.renderItem('Duplicate Files', FilesWithDuplicateLocations),
+      this.renderItem('Unrecognized Files', UnrecognizedFiles, 'unrecognized-files'),
+      this.renderItem('Multiple Files', EpisodesWithMultipleFiles, 'multiple-files'),
+      this.renderItem('Duplicate Files', FilesWithDuplicateLocations, 'duplicate-files'),
     ];
 
     return (

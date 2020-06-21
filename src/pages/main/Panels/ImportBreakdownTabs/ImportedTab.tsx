@@ -46,7 +46,7 @@ class ImportedTab extends React.Component<Props, State> {
       expandedItems,
     } = this.state;
     return (
-      <div className="flex mt-2">
+      <div key={`${idx}-date`} className="flex mt-2">
         <span className="font-semibold">{moment(date).format('yyyy-MM-DD')} / {moment(date).format('hh:mm A')}</span>
         <Button className="color-accent ml-2" onClick={() => this.handleExpand(idx)}>
           {
@@ -59,8 +59,8 @@ class ImportedTab extends React.Component<Props, State> {
     );
   };
 
-  renderName = (serverPath: string) => (
-    <span className="my-2 break-words">{serverPath}</span>
+  renderName = (idx: number, serverPath: string) => (
+    <span key={`${idx}-name`} className="my-2 break-words">{serverPath}</span>
   );
 
   renderDetails = (idx: number, item: RecentFileType) => {
@@ -68,7 +68,7 @@ class ImportedTab extends React.Component<Props, State> {
     const { isFetching } = this.props;
 
     return (
-      <div className="flex mb-1">
+      <div key={`${idx}-details`} className="flex mb-1">
         {
           expandedItems[idx] && (isFetching
             ? (
@@ -138,7 +138,7 @@ class ImportedTab extends React.Component<Props, State> {
 
     forEach(items, (item, idx) => {
       files.push(this.renderDate(idx, item.created));
-      files.push(this.renderName(item.server_path));
+      files.push(this.renderName(idx, item.server_path));
       files.push(this.renderDetails(idx, item));
     });
 
