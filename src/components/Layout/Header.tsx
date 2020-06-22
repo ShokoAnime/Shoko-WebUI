@@ -24,6 +24,17 @@ class Header extends React.Component<Props, State> {
     userDropdown: false,
   };
 
+  componentDidMount() {
+    const { showProfile } = this.props;
+    showProfile(false);
+  };
+
+  handleShowProfile = () => {
+    const { showProfile } = this.props;
+    showProfile(true);
+    this.setState({ userDropdown: false });
+  };
+
   renderItem = (key = '', count = 0) => (
     <div className="flex items-center">
       <FontAwesomeIcon icon={icons[key]} className="mr-2 text-lg" />
@@ -32,10 +43,10 @@ class Header extends React.Component<Props, State> {
   );
 
   renderDropdown = () => {
-    const { logout, showProfile } = this.props;
+    const { logout } = this.props;
     return (
       <div className="flex flex-col absolute right-0 w-48 shadow-lg z-50 px-4 py-2 rounded-lg user-dropdown border items-start">
-        <Button onClick={() => showProfile(true)} className="py-2">
+        <Button onClick={() => this.handleShowProfile()} className="py-2">
           <FontAwesomeIcon icon={faUser} className="mr-2" />Profile
         </Button>
         <Button onClick={() => logout()} className="py-2">

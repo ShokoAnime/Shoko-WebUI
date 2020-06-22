@@ -78,8 +78,8 @@ class ProfileModal extends React.Component<Props, State> {
     return (
       <ModalPanel show={show} className="profile-modal">
         <div className="flex w-full h-full">
-          <div className="flex profile-modal-image">
-            <div className="flex flex-grow profile-modal-image-alpha justify-center items-center">
+          <div className="flex profile-modal-image rounded-l-lg">
+            <div className="flex flex-grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
               <span className="flex items-center justify-center bg-color-accent w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
             </div>
           </div>
