@@ -21,9 +21,11 @@ function* changePassword(action) {
   const loginPayload = {
     user: payload.username,
     pass: payload.password,
+    rememberUser: payload.rememberUser,
     device: 'web-ui',
+    redirect: false,
   };
-  yield call(login, loginPayload);
+  yield put({ type: Events.LOGIN, payload: loginPayload });
 }
 
 function* login(action) {
@@ -46,7 +48,9 @@ function* login(action) {
     apikey: resultJson.data.apikey, username: payload.user, rememberUser: payload.rememberUser,
   }));
 
-  yield put(push({ pathname: '/main' }));
+  if ((payload.redirect) ?? true) {
+    yield put(push({ pathname: '/main' }));
+  }
   yield put(stopFetching('login'));
 }
 

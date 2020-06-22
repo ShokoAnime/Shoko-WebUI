@@ -33,12 +33,12 @@ class ProfileModal extends React.Component<Props, State> {
   }
 
   handleClose = (save = false) => {
-    const { setStatus, changePassword } = this.props;
+    const { rememberUser, setStatus, changePassword } = this.props;
     const { username, password } = this.state;
 
     if (save) {
       if (password !== 'notchanged') {
-        changePassword(username, password);
+        changePassword(username, password, rememberUser);
       }
     }
 
@@ -125,12 +125,13 @@ class ProfileModal extends React.Component<Props, State> {
 const mapState = (state: RootState) => ({
   show: state.modals.profile.status,
   username: state.apiSession.username,
+  rememberUser: state.apiSession.rememberUser,
 });
 
 const mapDispatch = {
   setStatus: (value: boolean) => (setProfileModalStatus(value)),
-  changePassword: (username: string, password: string) => (
-    { type: Events.CHANGE_PASSWORD, payload: { username, password } }
+  changePassword: (username: string, password: string, rememberUser: boolean) => (
+    { type: Events.CHANGE_PASSWORD, payload: { username, password, rememberUser } }
   ),
 };
 
