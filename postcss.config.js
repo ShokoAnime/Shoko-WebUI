@@ -6,12 +6,9 @@ module.exports = {
     },
     cssnano: { zindex: false },
     tailwindcss: {
-      purge: {
-        mode: 'all',
-        content: [
-          './src/**/*.tsx',
-        ]
-      }
+      purge: [
+        './src/**/*.tsx',
+      ],
     },
     autoprefixer: {},
   },
