@@ -78,8 +78,13 @@ class ImportFolders extends React.Component<Props> {
       folders.push(this.renderSize(folder.ID, folder.FileSize, folder.Size));
     });
 
+    if (folders.length === 0) {
+      folders.push(<div className="flex justify-center font-bold mt-4">No import folders added!</div>);
+    }
+
     return (
       <FixedPanel title="Import Folders">
+        {/* eslint-disable-next-line no-nested-ternary */}
         {!hasFetched ? (
           <div className="flex justify-center items-center h-full">
             <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />

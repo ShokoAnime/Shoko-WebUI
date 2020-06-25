@@ -12,7 +12,10 @@ function* getDashboardSeriesSummary() {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
     return;
   }
-  resultJson.data.Other += resultJson.data.Special + resultJson.data.Web;
+
+  if (resultJson.data.Other) {
+    resultJson.data.Other += resultJson.data.Special + resultJson.data.Web;
+  }
   delete resultJson.data.Special;
   delete resultJson.data.Web;
 

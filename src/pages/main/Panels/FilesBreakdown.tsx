@@ -44,7 +44,10 @@ class FilesBreakdown extends React.Component<Props> {
     const items: Array<any> = [];
 
     forEach(seriesSummaryArray, (item) => {
-      const countPercentage = (item[1] / total) * 100;
+      let countPercentage = 0;
+      if (total) {
+        countPercentage = (item[1] / total) * 100;
+      }
       items.push(this.renderName(item[0], item[1], countPercentage));
       items.push(this.renderBar(item[0], countPercentage));
     });

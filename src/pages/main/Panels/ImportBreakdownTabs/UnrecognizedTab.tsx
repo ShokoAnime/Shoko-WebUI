@@ -44,6 +44,10 @@ class UnrecognizedTab extends React.Component<Props> {
       files.push(this.renderItem(item));
     });
 
+    if (files.length === 0) {
+      files.push(<div className="flex justify-center font-bold mt-4">No unrecognized files!</div>);
+    }
+
     return files;
   }
 }
