@@ -43,7 +43,12 @@ const mainpageSlice = createSlice({
     recentFiles: [],
     recentFileDetails: {},
     selectedImportFolderSeries: 1,
-    seriesSummary: {},
+    seriesSummary: {
+      Series: 0,
+      OVA: 0,
+      Movie: 0,
+      Other: 0,
+    },
     stats: {},
   } as State,
   reducers: {
@@ -75,7 +80,7 @@ const mainpageSlice = createSlice({
       sliceState.selectedImportFolderSeries = action.payload;
     },
     setSeriesSummary(sliceState, action) {
-      sliceState.seriesSummary = action.payload;
+      sliceState.seriesSummary = Object.assign(sliceState.seriesSummary, action.payload);
     },
     setStats(sliceState, action) {
       sliceState.stats = action.payload;

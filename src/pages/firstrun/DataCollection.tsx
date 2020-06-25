@@ -1,7 +1,5 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 
-import { activeTab as activeTabAction } from '../../core/actions/firstrun';
 import Footer from './Footer';
 import Checkbox from '../../components/Input/Checkbox';
 
@@ -9,7 +7,7 @@ type State = {
   collectData: boolean,
 };
 
-class DataCollection extends React.Component<Props, State> {
+class DataCollection extends React.Component<{}, State> {
   state = {
     collectData: false,
   };
@@ -41,18 +39,10 @@ class DataCollection extends React.Component<Props, State> {
             </span>
           </div>
         </div>
-        <Footer prevTabKey="tab-import-folders" nextTabKey="" />
+        <Footer prevTabKey="import-folders" nextTabKey="" finish />
       </React.Fragment>
     );
   }
 }
 
-const mapDispatch = {
-  setActiveTab: (value: string) => (activeTabAction(value)),
-};
-
-const connector = connect(() => ({}), mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(DataCollection);
+export default DataCollection;

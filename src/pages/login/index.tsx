@@ -82,7 +82,7 @@ class LoginPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { firstRun, isFetchingLogin } = this.props;
+    const { initStatus, isFetchingLogin } = this.props;
     const { username, password, rememberUser } = this.state;
 
     return (
@@ -98,7 +98,7 @@ class LoginPage extends React.Component<Props, State> {
           </div>
           <div className="flex flex-col flex-grow justify-between">
             <div className="px-10 flex flex-grow flex-col justify-center">
-              {firstRun && (
+              {initStatus.State === 4 && (
                 <div className="border-sm px-4 py-3 rounded relative text-center">
                   <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
                   Looks like a first run. Try the <Link to="/firstrun"><span className="color-accent-secondary">wizard</span></Link>
@@ -139,15 +139,17 @@ const mapState = (state: RootState) => ({
   version: state.jmmVersion,
   isFetching: state.fetching.serverVersion,
   isFetchingLogin: state.fetching.login,
-  firstRun: state.firstrun.status && state.firstrun.status.first_run,
+  initStatus: state.firstrun.status,
   rememberUser: state.apiSession.rememberUser,
   apikey: state.apiSession.apikey,
 });
 
 const mapDispatch = {
-  handleInit: () => ({ type: Events.INIT_STATUS }),
+  handleInit: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
-  signIn: (payload: ApiLoginType & { rememberUser: boolean }) => ({ type: Events.LOGIN, payload }),
+  signIn: (payload: ApiLoginType & { rememberUser: boolean }) => (
+    { type: Events.AUTH_LOGIN, payload }
+  ),
 };
 
 const connector = connect(mapState, mapDispatch);

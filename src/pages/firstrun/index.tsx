@@ -8,38 +8,23 @@ import { RootState } from '../../core/store';
 import { uiVersion } from '../../core/util';
 import Events from '../../core/events';
 import AlertContainer from '../../components/AlertContainer';
-import { activeTab as activeTabAction } from '../../core/actions/firstrun';
 import Acknowledgement from './Acknowledgement';
 import DatabaseSetup from './DatabaseSetup';
 import LocalAccount from './LocalAccount';
 import AniDBAccount from './AniDBAccount';
 import CommunitySites from './CommunitySites';
+import StartServer from './StartServer';
 import ImportFolders from './ImportFolders';
 import DataCollection from './DataCollection';
-import Button from '../../components/Buttons/Button';
 
 const UI_VERSION = uiVersion();
 
-const tabIndex = {
-  'tab-acknowledgement': 0,
-  'tab-db-setup': 1,
-  'tab-local-account': 2,
-  'tab-anidb-account': 3,
-  'tab-community-sites': 4,
-  'tab-import-folders': 5,
-  'tab-data-collection': 6,
-};
-
 class FirstRunPage extends React.Component<Props> {
   componentDidMount() {
-    const { serverVersion } = this.props;
+    const { serverVersion, getSettings } = this.props;
     serverVersion();
+    getSettings();
   }
-
-  handleTabChange = (key: string) => {
-    const { setActiveTab } = this.props;
-    setActiveTab(key);
-  };
 
   renderVersion() {
     const {
@@ -55,22 +40,22 @@ class FirstRunPage extends React.Component<Props> {
   }
 
   renderItem = (text: string, key: string) => {
-    const { activeTab, status } = this.props;
+    const { activeTab, saved } = this.props;
 
     return (
       <tr key={key}>
         <td className="py-4">
-          <Button onClick={() => this.handleTabChange(key)} className="font-muli font-bold flex" disabled={status.server_started}>
+          <div className="font-muli font-bold flex cursor-default">
             <FontAwesomeIcon
               icon={
                 // eslint-disable-next-line no-nested-ternary
                 activeTab === key ? faCircleSolid
-                  : (tabIndex[key] < tabIndex[activeTab] ? faCheckCircle : faCircle)
+                  : (saved[key] ? faCheckCircle : faCircle)
                 }
               className="mr-5 color-accent text-xl"
             />
             {text}
-          </Button>
+          </div>
         </td>
       </tr>
     );
@@ -80,19 +65,21 @@ class FirstRunPage extends React.Component<Props> {
     const { activeTab } = this.props;
 
     switch (activeTab) {
-      case 'tab-acknowledgement':
+      case 'acknowledgement':
         return (<Acknowledgement />);
-      case 'tab-db-setup':
+      case 'db-setup':
         return (<DatabaseSetup />);
-      case 'tab-local-account':
+      case 'local-account':
         return (<LocalAccount />);
-      case 'tab-anidb-account':
+      case 'anidb-account':
         return (<AniDBAccount />);
-      case 'tab-community-sites':
+      case 'community-sites':
         return (<CommunitySites />);
-      case 'tab-import-folders':
+      case 'start-server':
+        return (<StartServer />);
+      case 'import-folders':
         return (<ImportFolders />);
-      case 'tab-data-collection':
+      case 'data-collection':
         return (<DataCollection />);
       default:
         return (<Acknowledgement />);
@@ -110,16 +97,17 @@ class FirstRunPage extends React.Component<Props> {
                 <div className="text-center text-3xl2 font-extrabold uppercase italic">Shoko <span className="color-accent">Server</span></div>
                 {this.renderVersion()}
               </div>
-              <div className="flex flex-col flex-grow mt-12 ml-16">
+              <div className="flex flex-col flex-grow justify-center ml-16">
                 <table>
                   <tbody>
-                    {this.renderItem('Acknowledgement', 'tab-acknowledgement')}
-                    {this.renderItem('Database Setup', 'tab-db-setup')}
-                    {this.renderItem('Local Account', 'tab-local-account')}
-                    {this.renderItem('AniDB Account', 'tab-anidb-account')}
-                    {this.renderItem('Community Sites', 'tab-community-sites')}
-                    {this.renderItem('Import Folders', 'tab-import-folders')}
-                    {this.renderItem('Data Collection', 'tab-data-collection')}
+                    {this.renderItem('Acknowledgement', 'acknowledgement')}
+                    {this.renderItem('Database Setup', 'db-setup')}
+                    {this.renderItem('Local Account', 'local-account')}
+                    {this.renderItem('AniDB Account', 'anidb-account')}
+                    {this.renderItem('Community Sites', 'community-sites')}
+                    {this.renderItem('Start Server', 'start-server')}
+                    {this.renderItem('Import Folders', 'import-folders')}
+                    {this.renderItem('Data Collection', 'data-collection')}
                   </tbody>
                 </table>
               </div>
@@ -138,12 +126,12 @@ const mapState = (state: RootState) => ({
   version: state.jmmVersion,
   isFetching: state.fetching.serverVersion,
   activeTab: state.firstrun.activeTab,
-  status: state.firstrun.status,
+  saved: state.firstrun.saved,
 });
 
 const mapDispatch = {
-  setActiveTab: (value: string) => (activeTabAction(value)),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
+  getSettings: () => ({ type: Events.SETTINGS_GET_SERVER }),
 };
 
 const connector = connect(mapState, mapDispatch);

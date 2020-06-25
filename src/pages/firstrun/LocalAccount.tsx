@@ -1,15 +1,16 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { getUser } from '../../core/actions/firstrun';
-import Input from '../../components/Input/Input';
-import Events from '../../core/events';
+
 import { RootState } from '../../core/store';
+import Events from '../../core/events';
+import { setSaved as setFirstRunSaved, setUser } from '../../core/slices/firstrun';
 import Footer from './Footer';
+import Input from '../../components/Input/Input';
 
 class LocalAccount extends React.Component<Props> {
   componentDidMount() {
-    const { getUserFunc } = this.props;
-    getUserFunc();
+    const { getUser } = this.props;
+    getUser();
   }
 
   handleInputChange = (event: any) => {
@@ -19,8 +20,16 @@ class LocalAccount extends React.Component<Props> {
     changeSetting(name, value);
   };
 
+  handleSave = () => {
+    const { setSaved, saveUser } = this.props;
+    saveUser();
+    setSaved('local-account');
+  };
+
   render() {
-    const { login, password, saveUser } = this.props;
+    const {
+      Username, Password,
+    } = this.props;
 
     return (
       <React.Fragment>
@@ -32,11 +41,11 @@ class LocalAccount extends React.Component<Props> {
             provided later on.
           </div>
           <div className="flex flex-col w-1/2 mt-4">
-            <Input id="login" value={login} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-            <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
+            <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
+            <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
           </div>
         </div>
-        <Footer prevTabKey="tab-db-setup" nextTabKey="tab-anidb-account" saveFunc={saveUser} />
+        <Footer prevTabKey="db-setup" nextTabKey="anidb-account" saveFunction={this.handleSave} />
       </React.Fragment>
     );
   }
@@ -47,9 +56,10 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  changeSetting: (field: string, value: string) => (getUser({ [field]: value })),
   saveUser: () => ({ type: Events.FIRSTRUN_SET_USER }),
-  getUserFunc: () => ({ type: Events.FIRSTRUN_GET_USER }),
+  getUser: () => ({ type: Events.FIRSTRUN_GET_USER }),
+  changeSetting: (id: string, value: string) => (setUser({ [id]: value })),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

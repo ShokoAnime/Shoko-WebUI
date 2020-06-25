@@ -23,7 +23,7 @@ class Button extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <button type="button" className={cx([`${className ?? ''} rounded focus:shadow-none focus:outline-none`, loading && 'cursor-not-allowed'])} onClick={onClick} disabled={disabled}>
+        <button type="button" className={cx([`${className ?? ''} rounded focus:shadow-none focus:outline-none`, (loading || disabled) && 'cursor-not-allowed'])} onClick={onClick} disabled={disabled}>
           {
             loading
               ? <FontAwesomeIcon icon={faSpinner} spin />

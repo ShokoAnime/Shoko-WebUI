@@ -25,8 +25,8 @@ function postImportFolder(params: ImportFolderType) {
 
 // Delete an Import Folder. This removes records and send deleted commands to AniDB,
 // so don't use it frivolously
-function deleteImportFolder(id: string) {
-  return ApiRequest(id, 'DELETE');
+function deleteImportFolder(id: number) {
+  return ApiRequest(id.toString(), 'DELETE');
 }
 
 // Scan a Specific Import Folder. This checks ALL files, not just new ones.

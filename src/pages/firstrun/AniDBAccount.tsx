@@ -6,29 +6,45 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import { getAnidb } from '../../core/actions/firstrun';
+import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
+import { initialState as SettingsState } from '../../core/slices/serverSettings';
+import type { SettingsAnidbType } from '../../core/types/api/settings';
 import Button from '../../components/Buttons/Button';
 import Input from '../../components/Input/Input';
 import Footer from './Footer';
 
 
-class AniDBAccount extends React.Component<Props> {
+type State = SettingsAnidbType;
+
+class AniDBAccount extends React.Component<Props, State> {
+  state = SettingsState.AniDb;
+
   componentDidMount() {
-    const { getAnidbFunc } = this.props;
-    getAnidbFunc();
+    const { AniDb } = this.props;
+    this.setState(AniDb);
   }
 
   handleInputChange = (event: any) => {
-    const { changeSetting } = this.props;
-    const name = event.target.id;
+    const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    changeSetting(name, value);
+    this.setState(state => Object.assign(state, { [id]: value }));
+  };
+
+  handleSave = () => {
+    const { setSaved, saveSettings } = this.props;
+    saveSettings({ context: 'AniDb', newSettings: this.state });
+    setSaved('anidb-account');
+  };
+
+  handleTest = () => {
+    const { testAnidb } = this.props;
+    this.handleSave();
+    testAnidb();
   };
 
   render() {
-    const {
-      login, password, port, status, isFetching, testAnidb, saveAnidb,
-    } = this.props;
+    const { saved, status, isFetching } = this.props;
+    const { Username, Password, ClientPort } = this.state;
 
     return (
       <React.Fragment>
@@ -43,12 +59,12 @@ class AniDBAccount extends React.Component<Props> {
             An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-accent-secondary">Click Here</a> to create one.
           </div>
           <div className="flex flex-col w-1/2 mt-3">
-            <Input id="login" value={login} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-            <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
-            <Input id="port" value={port} label="Port" type="text" placeholder="Port" onChange={this.handleInputChange} className="py-2" />
+            <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
+            <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
+            <Input id="ClientPort" value={ClientPort} label="Port" type="text" placeholder="Port" onChange={this.handleInputChange} className="py-2" />
           </div>
           <div className="flex mt-4 items-center">
-            <Button onClick={() => testAnidb()} className="bg-color-accent-secondary  py-2 px-3 rounded mr-4">Test</Button>
+            <Button onClick={() => this.handleTest()} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
             {isFetching ? (
               <div>
                 <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
@@ -60,22 +76,23 @@ class AniDBAccount extends React.Component<Props> {
             )}
           </div>
         </div>
-        <Footer prevTabKey="tab-local-setup" nextTabKey="tab-community-sites" saveFunc={saveAnidb} />
+        <Footer prevTabKey="local-account" nextTabKey="community-sites" nextDisabled={!saved} />
       </React.Fragment>
     );
   }
 }
 
 const mapState = (state: RootState) => ({
-  ...(state.firstrun.anidb),
+  AniDb: state.localSettings.AniDb,
+  status: state.firstrun.anidbStatus,
   isFetching: state.fetching.firstrunAnidb,
+  saved: state.firstrun.saved['anidb-account'],
 });
 
 const mapDispatch = {
-  changeSetting: (field: string, value: string) => (getAnidb({ [field]: value })),
-  saveAnidb: () => ({ type: Events.FIRSTRUN_SET_ANIDB }),
   testAnidb: () => ({ type: Events.FIRSTRUN_TEST_ANIDB }),
-  getAnidbFunc: () => ({ type: Events.FIRSTRUN_GET_ANIDB }),
+  saveSettings: (payload: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload }),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

@@ -3,10 +3,6 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import {
-  SettingsTvdbDownloadType, SettingsTvdbPrefsType, SettingsUpdateFrequencyType,
-  SettingsTvdbLanguageType,
-} from '../../../core/reducers/settings/Server';
 import Checkbox from '../../../components/Input/Checkbox';
 import Input from '../../../components/Input/Input';
 import Select from '../../../components/Input/Select';
@@ -46,35 +42,12 @@ const tvdbLanguages = [
   ['zh', 'Chinese'],
 ];
 
-type State = SettingsTvdbDownloadType & SettingsTvdbPrefsType;
-
-class TvDBTab extends React.Component<Props, State> {
-  state = {
-    AutoLink: true,
-    AutoFanart: true,
-    AutoFanartAmount: 10,
-    AutoWideBanners: true,
-    AutoWideBannersAmount: 10,
-    AutoPosters: true,
-    AutoPostersAmount: 10,
-    UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    Language: 'en' as SettingsTvdbLanguageType,
-  };
-
-  componentDidMount() {
-    const { oldSettings } = this.props;
-    this.setState(Object.assign({}, oldSettings));
-  }
-
-  componentWillUnmount() {
-    const { oldSettings, saveSettings } = this.props;
-    saveSettings({ context: 'TvDB', original: oldSettings, changed: this.state });
-  }
-
+class TvDBTab extends React.Component<Props> {
   handleInputChange = (event: any) => {
-    const name = event.target.id;
+    const { saveSettings } = this.props;
+    const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    saveSettings({ context: 'TvDB', newSettings: { [id]: value } });
   };
 
   render() {
@@ -82,7 +55,7 @@ class TvDBTab extends React.Component<Props, State> {
       AutoLink, AutoFanart, AutoWideBanners, AutoPosters,
       AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount,
       UpdateFrequency, Language,
-    } = this.state;
+    } = this.props;
 
     const updateFrequencyOptions: Array<any> = [];
     const languageOptions: Array<any> = [];
@@ -144,7 +117,7 @@ class TvDBTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  oldSettings: state.settings.server.TvDB,
+  ...(state.localSettings.TvDB),
 });
 
 const mapDispatch = {

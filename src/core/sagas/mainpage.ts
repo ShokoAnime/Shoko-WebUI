@@ -1,13 +1,7 @@
-import { all, put, call } from 'redux-saga/effects';
-import { forEach } from 'lodash';
+import { put, call } from 'redux-saga/effects';
 
 import Events from '../events';
 import ApiCommon from '../api/common';
-
-import { SET_LOG_DELTA, SET_UPDATE_CHANNEL } from '../actions/settings/Other';
-import { SET_THEME, SET_NOTIFICATIONS } from '../actions/settings/UI';
-import { settingsQuickActions } from '../actions/settings/QuickActions';
-
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
 import SagaDashboard from './dashboard';
@@ -25,36 +19,10 @@ function* getQueueStatus() {
   yield put(setFetched('queueStatus'));
 }
 
-function* getSettings() {
-  const resultJson = yield call(ApiCommon.getWebuiConfig);
-
-  if (resultJson.error) {
-    if (resultJson.code === 404) { return; }
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-    return;
-  }
-  const {
-    data,
-  } = resultJson;
-
-  yield put({ type: SET_THEME, payload: data.uiTheme });
-  yield put({ type: SET_NOTIFICATIONS, payload: data.uiNotifications });
-  yield put({ type: SET_LOG_DELTA, payload: data.otherLogDelta });
-  yield put({ type: SET_UPDATE_CHANNEL, payload: data.otherUpdateChannel });
-  if (data.quickActions) {
-    let slot = 0;
-    yield all(forEach(data.quickActions, (item) => {
-      slot += 1;
-      return put(settingsQuickActions({ slot, id: item }));
-    }));
-  }
-}
-
 // Events
 
 function* eventMainPageLoad() {
   yield call(getQueueStatus);
-  yield call(getSettings);
   yield call(SagaDashboard.getDashboardStats);
   yield call(SagaDashboard.getDashboardSeriesSummary);
   yield call(SagaImportFolder.getImportFolders);
@@ -84,7 +52,6 @@ function* eventQueueOperation(action) {
 
 export default {
   getQueueStatus,
-  getSettings,
   eventMainPageLoad,
   eventQueueOperation,
 };

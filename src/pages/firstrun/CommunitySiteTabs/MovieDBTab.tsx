@@ -3,41 +3,22 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import { SettingsMoviedbType } from '../../../core/reducers/settings/Server';
 import Checkbox from '../../../components/Input/Checkbox';
 import Input from '../../../components/Input/Input';
 
-type State = SettingsMoviedbType;
-
-class MovieDBTab extends React.Component<Props, State> {
-  state = {
-    AutoFanart: true,
-    AutoFanartAmount: 10,
-    AutoPosters: true,
-    AutoPostersAmount: 10,
-  };
-
-  componentDidMount() {
-    const { oldSettings } = this.props;
-    this.setState(Object.assign({}, oldSettings));
-  }
-
-  componentWillUnmount() {
-    const { oldSettings, saveSettings } = this.props;
-    saveSettings({ context: 'MovieDb', original: oldSettings, changed: this.state });
-  }
-
+class MovieDBTab extends React.Component<Props> {
   handleInputChange = (event: any) => {
-    const name = event.target.id;
+    const { saveSettings } = this.props;
+    const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    saveSettings({ context: 'MovieDb', newSettings: { [id]: value } });
   };
 
   render() {
     const {
       AutoFanart, AutoPosters,
       AutoFanartAmount, AutoPostersAmount,
-    } = this.state;
+    } = this.props;
 
     return (
       <React.Fragment>
@@ -64,7 +45,7 @@ class MovieDBTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  oldSettings: state.settings.server.MovieDb,
+  ...(state.localSettings.MovieDb),
 });
 
 const mapDispatch = {

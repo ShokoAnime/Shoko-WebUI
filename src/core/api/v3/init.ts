@@ -1,24 +1,26 @@
 import Api from '../index';
 import type { ApiRequestMethodType } from '../index';
-import type { defaultUser } from '../../types/api/init';
+import type { DefaultUserType } from '../../types/api/init';
 
-function ApiRequest(action: string, method: ApiRequestMethodType = 'GET', params?: any) {
-  return Api.call({ action: `/v3/Init/${action}`, method, params });
+function ApiRequest(action: string, expectEmpty = true, method: ApiRequestMethodType = 'GET', params?: any) {
+  return Api.call({
+    action: `/v3/Init/${action}`, method, params, expectEmpty,
+  });
 }
 
 // Gets various information about the startup status of the server This will work after init
 function getStatus() {
-  return ApiRequest('status');
+  return ApiRequest('status', false);
 }
 
 // Gets the Default user's credentials. Will only return on first run
 function getDefaultUser() {
-  return ApiRequest('defaultuser');
+  return ApiRequest('defaultuser', false);
 }
 
 // Sets the default user's credentials
-function postDefaultUser(payload: defaultUser) {
-  return ApiRequest('defaultuser', 'POST', payload);
+function postDefaultUser(payload: DefaultUserType) {
+  return ApiRequest('defaultuser', true, 'POST', payload);
 }
 
 // Starts the server, or does nothing

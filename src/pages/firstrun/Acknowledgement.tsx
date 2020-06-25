@@ -5,7 +5,7 @@ import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
-import { activeTab as activeTabAction } from '../../core/actions/firstrun';
+import { setActiveTab as setFirstRunTab, setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Buttons/Button';
 
 class Acknowledgement extends React.Component<Props> {
@@ -14,8 +14,14 @@ class Acknowledgement extends React.Component<Props> {
     else if (value === 'docs') window.open('https://docs.shokoanime.com', '_blank');
   };
 
+  handleNext = () => {
+    const { setActiveTab, setSaved } = this.props;
+    setSaved('acknowledgement');
+    setActiveTab('db-setup');
+  };
+
   render() {
-    const { setActiveTab, status } = this.props;
+    const { status } = this.props;
 
     return (
       <React.Fragment>
@@ -30,7 +36,7 @@ class Acknowledgement extends React.Component<Props> {
             mollit anim id est laborum.
           </div>
           <div className="flex justify-center">
-            <Button onClick={() => setActiveTab('tab-db-setup')} className="bg-color-accent  py-2 px-5 rounded" disabled={status.server_started}>Continue Setup</Button>
+            <Button onClick={() => this.handleNext()} className="bg-color-accent  py-2 px-5 rounded" disabled={status.State !== 4}>Continue Setup</Button>
           </div>
         </div>
         <div className="help flex px-10 py-2 rounded-br-lg justify-between">
@@ -56,7 +62,8 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  setActiveTab: (value: string) => (activeTabAction(value)),
+  setActiveTab: (value: string) => (setFirstRunTab(value)),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

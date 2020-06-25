@@ -61,7 +61,7 @@ function* apiCall(userOptions: ApiCallOptions) {
     const response = yield call(fetch, fetchUrl, fetchOptions);
 
     if (response.status === 401) {
-      yield put({ type: Events.LOGOUT, payload: null });
+      yield put({ type: Events.AUTH_LOGOUT, payload: null });
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } });
     }
     if (response.status !== 200) {

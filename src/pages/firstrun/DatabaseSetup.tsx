@@ -7,79 +7,72 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import { getDatabase } from '../../core/actions/firstrun';
+import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
+import { initialState as SettingsState } from '../../core/slices/serverSettings';
+import type { SettingsDatabaseType } from '../../core/types/api/settings';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Input/Select';
 import Button from '../../components/Buttons/Button';
 
-class DatabaseSetup extends React.Component<Props> {
-  componentDidMount() {
-    const { getDatabaseFunc } = this.props;
-    getDatabaseFunc();
-  }
+type State = SettingsDatabaseType;
+
+class DatabaseSetup extends React.Component<Props, State> {
+  state = SettingsState.Database;
+
+  componentDidMount = () => {
+    const { Database } = this.props;
+    this.setState(Database);
+  };
 
   handleInputChange = (event: any) => {
-    const { changeSetting } = this.props;
-    const name = event.target.id;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    changeSetting(name, value);
+    const { id, value } = event.target;
+    this.setState(state => Object.assign(state, { [id]: value }));
+  };
+
+  handleTest = () => {
+    const { setSaved, saveSettings, testDatabase } = this.props;
+    saveSettings({ context: 'Database', newSettings: this.state });
+    setSaved('db-setup');
+    testDatabase();
   };
 
   renderSqliteOptions = () => {
-    const { sqlite_databasefile } = this.props;
+    const { SQLite_DatabaseFile } = this.state;
     return (
-      <Input id="sqlite_databasefile" value={sqlite_databasefile} label="Database File" type="text" placeholder="Database File" onChange={this.handleInputChange} className="py-2 mt-2 w-1/2" />
+      <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={this.handleInputChange} className="py-2 mt-2 w-1/2" />
     );
   };
 
-  renderMysqlOptions = () => {
+  renderLegacyDBOptions = () => {
     const {
-      mysql_hostname, mysql_schemaname, mysql_username, mysql_password,
-    } = this.props;
+      Hostname, Schema, Username, Password,
+    } = this.state;
     return (
       <div className="flex flex-col w-1/2 mt-2">
-        <Input id="mysql_hostname" value={mysql_hostname} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="py-2" />
-        <Input id="mysql_schemaname" value={mysql_schemaname} label="Schema Name" type="text" placeholder="Schema Name" onChange={this.handleInputChange} className="py-2" />
-        <Input id="mysql_username" value={mysql_username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-        <Input id="mysql_password" value={mysql_password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
-      </div>
-    );
-  };
-
-  renderSqlServerOptions = () => {
-    const {
-      sqlserver_databaseserver, sqlserver_databasename,
-      sqlserver_username, sqlserver_password,
-    } = this.props;
-    return (
-      <div className="flex flex-col w-1/2 mt-2">
-        <Input id="sqlserver_databaseserver" value={sqlserver_databaseserver} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="py-2" />
-        <Input id="sqlserver_databasename" value={sqlserver_databasename} label="Database" type="text" placeholder="Database" onChange={this.handleInputChange} className="py-2" />
-        <Input id="sqlserver_username" value={sqlserver_username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-        <Input id="sqlserver_password" value={sqlserver_password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
+        <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="py-2" />
+        <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={this.handleInputChange} className="py-2" />
+        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
+        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
       </div>
     );
   };
 
   renderDBOptions = () => {
-    const { db_type } = this.props;
-    switch (db_type) {
+    const { Type } = this.state;
+    switch (Type) {
       case 'SQLite':
         return this.renderSqliteOptions();
-      case 'MySQL':
-        return this.renderMysqlOptions();
-      case 'SQLServer':
-        return this.renderSqlServerOptions();
+      case 'MySQL': case 'SQLServer':
+        return this.renderLegacyDBOptions();
       default:
         return this.renderSqliteOptions();
     }
   };
 
   render() {
-    const {
-      db_type, isFetching, status, testDatabase,
-    } = this.props;
+    const { Type } = this.state;
+    const { isFetching, status, saved } = this.props;
 
     return (
       <React.Fragment>
@@ -92,14 +85,14 @@ class DatabaseSetup extends React.Component<Props> {
           </div>
           <div className="flex flex-col mt-4 overflow-y-auto flex-shrink">
             <span className="font-bold my-2">Database Type</span>
-            <Select id="db_type" value={db_type} className="relative w-1/5" onChange={this.handleInputChange}>
+            <Select id="Type" value={Type} className="relative w-1/5" onChange={this.handleInputChange}>
               <option value="SQLite">SQLite</option>
               <option value="MySQL">MySQL</option>
               <option value="SQLServer">SQLServer</option>
             </Select>
             {this.renderDBOptions()}
             <div className="flex my-4 items-center">
-              <Button onClick={() => testDatabase()} className="bg-color-accent-secondary py-2 px-3 rounded mr-4">Test</Button>
+              <Button onClick={() => this.handleTest()} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
               {isFetching ? (
                 <div>
                   <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
@@ -112,21 +105,23 @@ class DatabaseSetup extends React.Component<Props> {
             </div>
           </div>
         </div>
-        <Footer prevTabKey="tab-acknowledgement" nextTabKey="tab-local-account" />
+        <Footer prevTabKey="acknowledgement" nextTabKey="local-account" nextDisabled={!saved} />
       </React.Fragment>
     );
   }
 }
 
 const mapState = (state: RootState) => ({
-  ...(state.firstrun.database),
+  Database: state.serverSettings.Database,
+  status: state.firstrun.databaseStatus,
   isFetching: state.fetching.firstrunDatabase,
+  saved: state.firstrun.saved['db-setup'],
 });
 
 const mapDispatch = {
-  changeSetting: (field: string, value: string) => (getDatabase({ [field]: value })),
   testDatabase: () => ({ type: Events.FIRSTRUN_TEST_DATABASE }),
-  getDatabaseFunc: () => ({ type: Events.FIRSTRUN_GET_DATABASE }),
+  saveSettings: (payload: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload }),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

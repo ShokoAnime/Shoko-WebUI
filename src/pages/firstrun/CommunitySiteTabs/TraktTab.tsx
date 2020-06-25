@@ -4,7 +4,6 @@ import moment from 'moment';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import { SettingsTraktType, SettingsUpdateFrequencyType } from '../../../core/reducers/settings/Server';
 import Checkbox from '../../../components/Input/Checkbox';
 import Select from '../../../components/Input/Select';
 import Button from '../../../components/Buttons/Button';
@@ -18,31 +17,12 @@ const updateFrequencyType = [
   [6, 'Once a Month'],
 ];
 
-type State = SettingsTraktType;
-
-class TraktTab extends React.Component<Props, State> {
-  state = {
-    Enabled: false,
-    TokenExpirationDate: '',
-    UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    // eslint-disable-next-line react/no-unused-state
-    SyncFrequency: 1 as SettingsUpdateFrequencyType,
-  };
-
-  componentDidMount() {
-    const { oldSettings } = this.props;
-    this.setState(Object.assign({}, oldSettings));
-  }
-
-  componentWillUnmount() {
-    const { oldSettings, saveSettings } = this.props;
-    saveSettings({ context: 'TraktTv', original: oldSettings, changed: this.state });
-  }
-
+class TraktTab extends React.Component<Props> {
   handleInputChange = (event: any) => {
-    const name = event.target.id;
+    const { saveSettings } = this.props;
+    const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    saveSettings({ context: 'MovieDb', newSettings: { [id]: value } });
   };
 
   renderTraktCode() {
@@ -74,7 +54,7 @@ class TraktTab extends React.Component<Props, State> {
   render() {
     const {
       Enabled, TokenExpirationDate, UpdateFrequency,
-    } = this.state;
+    } = this.props;
 
     const updateFrequencyOptions: Array<any> = [];
 
@@ -111,9 +91,9 @@ class TraktTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  oldSettings: state.settings.server.TraktTv,
+  ...(state.localSettings.TraktTv),
   fetching: state.fetching.trakt_code,
-  trakt: state.settings.trakt,
+  trakt: state.misc.trakt,
 });
 
 const mapDispatch = {

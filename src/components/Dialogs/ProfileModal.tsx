@@ -131,7 +131,7 @@ const mapState = (state: RootState) => ({
 const mapDispatch = {
   setStatus: (value: boolean) => (setProfileModalStatus(value)),
   changePassword: (username: string, password: string, rememberUser: boolean) => (
-    { type: Events.CHANGE_PASSWORD, payload: { username, password, rememberUser } }
+    { type: Events.AUTH_CHANGE_PASSWORD, payload: { username, password, rememberUser } }
   ),
 };
 

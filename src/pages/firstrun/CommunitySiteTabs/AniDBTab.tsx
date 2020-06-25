@@ -4,10 +4,6 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import {
-  SettingsAnidbDownloadType, SettingsAnidbMylistType, SettingsAnidbUpdateType,
-  MyListDeleteType, MyListStorageState, SettingsUpdateFrequencyType,
-} from '../../../core/reducers/settings/Server';
 import Checkbox from '../../../components/Input/Checkbox';
 import Input from '../../../components/Input/Input';
 import Select from '../../../components/Input/Select';
@@ -21,42 +17,12 @@ const updateFrequencyType = [
   [6, 'Once a Month'],
 ];
 
-type State = SettingsAnidbDownloadType & SettingsAnidbMylistType & SettingsAnidbUpdateType;
-
-class AniDBTab extends React.Component<Props, State> {
-  state = {
-    DownloadCharacters: false,
-    DownloadCreators: false,
-    DownloadRelatedAnime: true,
-    MaxRelationDepth: 3,
-    MyList_AddFiles: false,
-    MyList_DeleteType: 0 as MyListDeleteType,
-    MyList_ReadUnwatched: false,
-    MyList_ReadWatched: false,
-    MyList_SetUnwatched: false,
-    MyList_SetWatched: false,
-    MyList_StorageState: 0 as MyListStorageState,
-    Calendar_UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    Anime_UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    MyList_UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    MyListStats_UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-    File_UpdateFrequency: 1 as SettingsUpdateFrequencyType,
-  };
-
-  componentDidMount() {
-    const { oldSettings } = this.props;
-    this.setState(Object.assign({}, oldSettings));
-  }
-
-  componentWillUnmount() {
-    const { oldSettings, saveSettings } = this.props;
-    saveSettings({ context: 'AniDb', original: oldSettings, changed: this.state });
-  }
-
+class AniDBTab extends React.Component<Props> {
   handleInputChange = (event: any) => {
-    const name = event.target.id;
+    const { saveSettings } = this.props;
+    const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    saveSettings({ context: 'AniDb', newSettings: { [id]: value } });
   };
 
   render() {
@@ -66,7 +32,7 @@ class AniDBTab extends React.Component<Props, State> {
       MyList_SetUnwatched, MyList_SetWatched, MyList_StorageState, Calendar_UpdateFrequency,
       Anime_UpdateFrequency, MyList_UpdateFrequency, MyListStats_UpdateFrequency,
       File_UpdateFrequency,
-    } = this.state;
+    } = this.props;
 
     const updateFrequencyOptions: Array<any> = [];
 
@@ -172,7 +138,7 @@ class AniDBTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  oldSettings: state.settings.server.AniDb,
+  ...(state.localSettings.AniDb),
 });
 
 const mapDispatch = {

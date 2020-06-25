@@ -25,7 +25,7 @@ function* changePassword(action) {
     device: 'web-ui',
     redirect: false,
   };
-  yield put({ type: Events.LOGIN, payload: loginPayload });
+  yield put({ type: Events.AUTH_LOGIN, payload: loginPayload });
 }
 
 function* login(action) {

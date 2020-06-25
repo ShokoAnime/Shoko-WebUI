@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
 
-import Events from '../../core/events';
+import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
 import Button from '../../components/Buttons/Button';
 import AniDBTab from './CommunitySiteTabs/AniDBTab';
@@ -19,11 +19,6 @@ class CommunitySites extends React.Component<Props, State> {
   state = {
     activeTab: 'anidb',
   };
-
-  componentDidMount() {
-    const { getSettings } = this.props;
-    getSettings();
-  }
 
   changeTab = (tab: string) => {
     this.setState({
@@ -60,6 +55,8 @@ class CommunitySites extends React.Component<Props, State> {
   };
 
   render() {
+    const { setSaved } = this.props;
+
     return (
       <React.Fragment>
         <div className="flex flex-col flex-grow px-10 pt-10 overflow-y-auto">
@@ -80,17 +77,17 @@ class CommunitySites extends React.Component<Props, State> {
             {this.renderTabContent()}
           </div>
         </div>
-        <Footer prevTabKey="tab-anidb-account" nextTabKey="tab-import-folders" />
+        <Footer prevTabKey="anidb-account" nextTabKey="start-server" saveFunction={() => setSaved('community-sites')} />
       </React.Fragment>
     );
   }
 }
 
 const mapDispatch = {
-  getSettings: () => ({ type: Events.SETTINGS_GET_SERVER }),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
-const connector = connect(() => ({}), mapDispatch);
+const connector = connect(() => {}, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 

@@ -27,7 +27,7 @@ class Header extends React.Component<Props, State> {
   componentDidMount() {
     const { showProfile } = this.props;
     showProfile(false);
-  };
+  }
 
   handleShowProfile = () => {
     const { showProfile } = this.props;
@@ -107,7 +107,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  logout: () => ({ type: Events.LOGOUT }),
+  logout: () => ({ type: Events.AUTH_LOGOUT }),
   showProfile: (value: boolean) => (setStatus(value)),
 };
 

@@ -10,6 +10,7 @@ class TraktTab extends React.Component<Props> {
     const {
       fetching, plexUrl, getPlexUrl,
     } = this.props;
+
     if (plexUrl === '') {
       return (
         <div className="flex w-3/5 justify-between mt-2">
@@ -51,8 +52,8 @@ class TraktTab extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   fetching: state.fetching.plex_login_url,
-  plexUrl: state.settings.plex.url,
-  plexToken: state.settings.server.Plex.Token,
+  plexUrl: state.misc.plex.url,
+  plexToken: state.localSettings.Plex.Token,
 });
 
 const mapDispatch = {

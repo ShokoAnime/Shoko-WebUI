@@ -12,6 +12,39 @@ import {
 } from '../slices/mainpage';
 import { startFetching, stopFetching } from '../slices/fetching';
 
+function* addImportFolder(action) {
+  const resultJson = yield call(ApiImportFolder.postImportFolder, action.payload);
+  if (resultJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    return;
+  }
+
+  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder added!' } });
+  yield call(getImportFolders);
+}
+
+function* editImportFolder(action) {
+  const resultJson = yield call(ApiImportFolder.putImportFolder, action.payload);
+  if (resultJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    return;
+  }
+
+  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder edited!' } });
+  yield call(getImportFolders);
+}
+
+function* deleteImportFolder(action) {
+  const resultJson = yield call(ApiImportFolder.deleteImportFolder, action.payload);
+  if (resultJson.error) {
+    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    return;
+  }
+
+  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder deleted!' } });
+  yield call(getImportFolders);
+}
+
 function* getImportFolders() {
   const resultJson = yield call(ApiImportFolder.getImportFolder);
   if (resultJson.error) {
@@ -57,6 +90,9 @@ function* runImportFolderRescan(action) {
 }
 
 export default {
+  addImportFolder,
+  editImportFolder,
+  deleteImportFolder,
   getImportFolders,
   getImportFolderSeries,
   runImportFolderRescan,

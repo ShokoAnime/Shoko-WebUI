@@ -38,7 +38,7 @@ const Router = ({
 );
 
 const mapState = (state: RootState) => ({
-  theme: state.settings.ui.theme,
+  theme: state.webuiSettings.ui.theme,
 });
 
 const connector = connect(mapState);
