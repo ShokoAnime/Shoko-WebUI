@@ -5,7 +5,14 @@ module.exports = {
       browsers: 'last 2 versions',
     },
     cssnano: { zindex: false },
-    tailwindcss: {},
+    tailwindcss: {
+      purge: {
+        mode: 'all',
+        content: [
+          './src/**/*.tsx',
+        ]
+      }
+    },
     autoprefixer: {},
   },
 };
