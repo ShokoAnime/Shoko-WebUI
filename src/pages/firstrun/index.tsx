@@ -7,7 +7,6 @@ import { faCircle } from '@fortawesome/free-regular-svg-icons';
 import { RootState } from '../../core/store';
 import { uiVersion } from '../../core/util';
 import Events from '../../core/events';
-import AlertContainer from '../../components/AlertContainer';
 import Acknowledgement from './Acknowledgement';
 import DatabaseSetup from './DatabaseSetup';
 import LocalAccount from './LocalAccount';
@@ -89,7 +88,6 @@ class FirstRunPage extends React.Component<Props> {
   render() {
     return (
       <div className="flex flex-grow items-center justify-center h-screen">
-        <AlertContainer />
         <div className="flex rounded-lg shadow-lg firstrun-panel">
           <div className="flex flex-grow firstrun-image rounded-l-lg">
             <div className="flex flex-col flex-grow firstrun-sidebar h-full rounded-l-lg py-5">

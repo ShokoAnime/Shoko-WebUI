@@ -6,7 +6,7 @@ import { push } from 'connected-react-router';
 import Events from '../events';
 import { startFetching, stopFetching } from '../slices/fetching';
 import {
-  setDatabaseStatus, setStatus, setUser, setAnidbStatus,
+  setActiveTab, setDatabaseStatus, setStatus, setUserStatus, setUser, setAnidbStatus,
 } from '../slices/firstrun';
 
 import ApiInit from '../api/v3/init';
@@ -18,7 +18,9 @@ function* finishSetup() {
 function* getDefaultUser() {
   const resultJson = yield call(ApiInit.getDefaultUser);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put(setUserStatus({ type: 'error', text: resultJson.message }));
+    yield delay(2000);
+    yield put(setUserStatus({ type: '', text: '' }));
   } else {
     yield put(setUser(resultJson.data));
   }
@@ -27,7 +29,7 @@ function* getDefaultUser() {
 function* getInitStatus() {
   const resultJson = yield call(ApiInit.getStatus);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    yield put(setStatus(resultJson.message));
   } else {
     yield put(setStatus(resultJson.data));
   }
@@ -51,9 +53,10 @@ function* setDefaultUser() {
   });
   const resultJson = yield call(ApiInit.postDefaultUser, data);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'User Saved!' } });
+    yield put(setActiveTab('local-account'));
+    yield put(setUserStatus({ type: 'error', text: resultJson.message }));
+    yield delay(2000);
+    yield put(setUserStatus({ type: '', text: '' }));
   }
 }
 

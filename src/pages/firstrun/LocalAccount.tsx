@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import cx from 'classnames';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -28,7 +29,7 @@ class LocalAccount extends React.Component<Props> {
 
   render() {
     const {
-      Username, Password,
+      Username, Password, status,
     } = this.props;
 
     return (
@@ -44,6 +45,9 @@ class LocalAccount extends React.Component<Props> {
             <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
             <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
           </div>
+          <div className={cx(['flex mt-2', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
+            {status.text}
+          </div>
         </div>
         <Footer prevTabKey="db-setup" nextTabKey="anidb-account" saveFunction={this.handleSave} />
       </React.Fragment>
@@ -53,6 +57,7 @@ class LocalAccount extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   ...(state.firstrun.user),
+  status: state.firstrun.userStatus,
 });
 
 const mapDispatch = {

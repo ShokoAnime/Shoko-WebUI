@@ -11,6 +11,7 @@ type State = {
   activeTab: string;
   anidbStatus: TestStatusType;
   databaseStatus: TestStatusType;
+  userStatus: TestStatusType;
   saved: {
     [key: string]: boolean;
   };
@@ -22,6 +23,7 @@ const initialState = {
   activeTab: 'acknowledgement',
   anidbStatus: {},
   databaseStatus: {},
+  userStatus: {},
   saved: {},
   status: {},
   user: {},
@@ -40,6 +42,9 @@ const firstrunSlice = createSlice({
     setDatabaseStatus(sliceState, action: PayloadAction<TestStatusType>) {
       sliceState.databaseStatus = action.payload;
     },
+    setUserStatus(sliceState, action: PayloadAction<TestStatusType>) {
+      sliceState.userStatus = action.payload;
+    },
     setSaved(sliceState, action: PayloadAction<string>) {
       sliceState.saved = Object.assign(sliceState.saved, { [action.payload]: true });
     },
@@ -54,7 +59,7 @@ const firstrunSlice = createSlice({
 
 export const {
   setActiveTab, setAnidbStatus, setDatabaseStatus,
-  setSaved, setStatus, setUser,
+  setUserStatus, setSaved, setStatus, setUser,
 } = firstrunSlice.actions;
 
 export default firstrunSlice.reducer;
