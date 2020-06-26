@@ -37,13 +37,15 @@ class StartServer extends React.Component<Props> {
             After the startup and database creation process is complete you will be able to setup
             import folders.
           </div>
-          <div className="flex flex-col mt-4 items-center">
-            <div className="flex w-full">
+          <div className="flex flex-col flex-grow mt-4">
+            <div className="flex">
               <span className="font-bold mr-1">Status:</span>{status.State === 2 ? 'Started!' : (status.StartupMessage || 'Idle')}
             </div>
-            {status.State === 4 && (
-              <Button onClick={() => this.handleSave()} className="bg-color-accent-secondary py-2 px-3 rounded mt-4">Start</Button>
-            )}
+            <div className="flex h-full justify-center items-center">
+              {status.State === 4 && (
+                <Button onClick={() => this.handleSave()} className="bg-color-accent-secondary py-2 px-3 rounded">Start Server</Button>
+              )}
+            </div>
           </div>
         </div>
         <Footer prevTabKey="community-sites" nextTabKey="import-folders" prevDisabled={status.State !== 4} nextDisabled={!saved} saveFunction={this.handleNext} />
