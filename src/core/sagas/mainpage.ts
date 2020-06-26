@@ -29,7 +29,7 @@ function* eventMainPageLoad() {
   yield call(SagaFile.getRecentFiles);
   yield call(SagaImportFolder.getImportFolderSeries, { payload: 1 });
 
-  yield put({ type: Events.CHECK_UPDATES });
+  // yield put({ type: Events.CHECK_UPDATES });
   // yield put({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } });
 }
 
