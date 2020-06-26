@@ -50,7 +50,6 @@ tasks.set('version', () => {
   fs.writeFileSync('./public/version.json', output, 'utf8');
 });
 
-
 //
 // Clean up the output directory
 // -----------------------------------------------------------------------------

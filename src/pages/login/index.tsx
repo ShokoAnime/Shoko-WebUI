@@ -15,7 +15,6 @@ import Checkbox from '../../components/Input/Checkbox';
 import Link from '../../components/Link/Link';
 import AlertContainer from '../../components/AlertContainer';
 
-
 const UI_VERSION = uiVersion();
 
 type State = {

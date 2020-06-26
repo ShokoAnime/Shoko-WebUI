@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 

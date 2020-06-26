@@ -99,7 +99,6 @@ class Header extends React.Component<Props, State> {
   }
 }
 
-
 const mapState = (state: RootState) => ({
   items: state.mainpage.queueStatus,
   username: state.apiSession.username,

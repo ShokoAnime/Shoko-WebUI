@@ -1,12 +1,9 @@
 import {
   all, call, put, select, takeEvery,
 } from 'redux-saga/effects';
-import {
-  capitalize, forEach, map,
-} from 'lodash';
+import { forEach } from 'lodash';
 import { createAction } from 'redux-actions';
 import ApiCommon from '../api/common';
-import ApiActions from '../api/actions';
 
 import Events from '../events';
 
@@ -15,6 +12,7 @@ import SagaAuth from './auth';
 import SagaFile from './file';
 import SagaImportFolder from './import-folder';
 import SagaInit from './init';
+import SagaQuickAction from './quick-actions';
 import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
 
@@ -36,26 +34,6 @@ function* settingsSaveLogRotate(action) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   } else {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Log settings saved!' } });
-  }
-}
-
-function* runQuickAction(action) {
-  const {
-    payload,
-  } = action;
-  const capitalizedName = map(payload.split('-'), word => capitalize(word)).join('');
-  const funcName = `get${capitalizedName}`;
-
-  if (typeof ApiActions[funcName] !== 'function') {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
-    return;
-  }
-
-  const resultJson = yield call(ApiActions[funcName]);
-  if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
   }
 }
 
@@ -134,7 +112,6 @@ export default function* rootSaga() {
     // OLD
     takeEvery(Events.PAGE_LOGS_LOAD, SagaSettings.getSettings),
     takeEvery(Events.SETTINGS_POST_LOG_ROTATE, settingsSaveLogRotate),
-    takeEvery(Events.RUN_QUICK_ACTION, runQuickAction),
     takeEvery(Events.CHECK_UPDATES, checkUpdates),
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
@@ -156,6 +133,8 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_START_SERVER, SagaInit.startServer),
     takeEvery(Events.FIRSTRUN_TEST_ANIDB, SagaInit.testAniDB),
     takeEvery(Events.FIRSTRUN_TEST_DATABASE, SagaInit.testDatabase),
+    // QUICK ACTIONS
+    takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE
     takeEvery(Events.MAINPAGE_FILE_AVDUMP, SagaFile.runAvdump),
     takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),

@@ -13,7 +13,6 @@ import Button from '../../components/Buttons/Button';
 import Input from '../../components/Input/Input';
 import Footer from './Footer';
 
-
 type State = SettingsAnidbType;
 
 class AniDBAccount extends React.Component<Props, State> {

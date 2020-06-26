@@ -95,7 +95,6 @@ function getUpdateSeriesStats() {
   return ApiRequest('UpdateSeriesStats');
 }
 
-
 export default {
   getRunImport,
   getSyncHashes,

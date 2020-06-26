@@ -177,7 +177,6 @@ function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
 }
 
-
 function getEp(id: string) {
   return Api.call({ action: '/ep', query: `?id=${id}` });
 }
@@ -185,7 +184,6 @@ function getEp(id: string) {
 function getSerie(id: string) {
   return Api.call({ action: '/serie', query: `?id=${id}` });
 }
-
 
 export default {
   getLogDelta,

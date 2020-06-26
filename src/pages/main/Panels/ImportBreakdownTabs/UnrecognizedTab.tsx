@@ -8,7 +8,6 @@ import Events from '../../../../core/events';
 import type { RecentFileType } from '../../../../core/types/api/file';
 import Button from '../../../../components/Buttons/Button';
 
-
 class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
     const { runAvdump, avdumpList } = this.props;

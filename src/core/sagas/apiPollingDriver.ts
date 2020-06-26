@@ -6,7 +6,6 @@ import Events from '../events';
 import { SET_AUTOUPDATE, Action } from '../actions';
 import { setStatus } from '../slices/firstrun';
 
-
 function* pollServerStatus() {
   while (true) {
     const resultJson = yield call(ApiInit.getStatus.bind(this));
