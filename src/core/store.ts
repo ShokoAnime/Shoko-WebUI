@@ -19,7 +19,7 @@ const store = configureStore({
   reducer: rootReducer,
   middleware,
   preloadedState: loadState(),
-  devTools: process.env.NODE_ENV === 'production' && false,
+  devTools: process.env.NODE_ENV !== 'production',
 });
 
 store.subscribe(throttle(() => {
