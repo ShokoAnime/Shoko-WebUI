@@ -67,7 +67,7 @@ function* getImportFolderSeries(action) {
   const seriesArray = resultJson.data.series;
   const seriesTypes = ['Movie', 'OVA', 'TV Series', 'Special', 'Web Series', 'Other'];
 
-  for (let i = 0; i < seriesArray.length; i += 1) { // yield cannot be used in a forEach loop4
+  for (let i = 0; i < (seriesArray ?? []).length; i += 1) { // yield cannot be used in forEach loop
     resultJson = yield call(ApiSeries.getSeriesAniDB, seriesArray[i].id);
     seriesArray[i].type = seriesTypes[resultJson.data.SeriesType];
   }
