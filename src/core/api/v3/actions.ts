@@ -1,4 +1,5 @@
 import Api from '../index';
+import { getPlexSyncAll } from '../plex';
 
 function ApiRequest(action: string, expectEmpty = true) {
   return Api.call({ action: `/v3/Action/${action}`, expectEmpty });
@@ -113,4 +114,5 @@ export default {
   getUpdateAllAniDBInfo,
   getUpdateAllMediaInfo,
   getUpdateSeriesStats,
+  getPlexSyncAll,
 };

@@ -12,7 +12,8 @@ import ImportFoldersTab from './Tabs/ImportFoldersTab';
 
 class MainPage extends React.Component<Props> {
   componentDidMount() {
-    const { load } = this.props;
+    const { load, getSettings } = this.props;
+    getSettings();
     load();
   }
 
@@ -62,6 +63,7 @@ const mapState = (state: RootState) => ({
 const mapDispatch = {
   stopPolling: () => ({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
   load: () => ({ type: Events.MAINPAGE_LOAD }),
+  getSettings: () => ({ type: Events.SETTINGS_GET_SERVER }),
 };
 
 const connector = connect(mapState, mapDispatch);

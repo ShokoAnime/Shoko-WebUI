@@ -3,7 +3,7 @@ import { push } from 'connected-react-router';
 
 import Events from '../events';
 
-import ApiAuth from '../api/v3/auth';
+import ApiAuth from '../api/auth';
 
 import { setDetails, unsetDetails } from '../slices/apiSession';
 import { startFetching, stopFetching } from '../slices/fetching';

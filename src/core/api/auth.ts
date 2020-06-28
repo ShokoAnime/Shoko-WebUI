@@ -1,5 +1,5 @@
-import Api from '../index';
-import { ApiLoginType } from '../../types/api';
+import Api from './index';
+import { ApiLoginType } from '../types/api';
 
 // Get an authentication token for the user.
 function postAuth(params: ApiLoginType) {

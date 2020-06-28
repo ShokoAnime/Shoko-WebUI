@@ -3,9 +3,11 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import jsonpatch from 'fast-json-patch';
 import { isEmpty } from 'lodash';
 
+import { RootState } from '../store';
 import Events from '../events';
 
 import ApiCommon from '../api/common';
+import ApiPlex from '../api/plex';
 import ApiSettings from '../api/v3/settings';
 
 import { startFetching, stopFetching } from '../slices/fetching';
@@ -13,11 +15,10 @@ import { setItem as setMiscItem } from '../slices/misc';
 import { changeLocalSettings, saveLocalSettings } from '../slices/localSettings';
 import { saveServerSettings } from '../slices/serverSettings';
 import { saveWebUISettings as changeWebUISettings } from '../slices/webuiSettings';
-import { RootState } from '../store';
 
 function* getPlexLoginUrl() {
   yield put(startFetching('plex_login_url'));
-  const resultJson = yield call(ApiCommon.getPlexLoginurl);
+  const resultJson = yield call(ApiPlex.getPlexLoginUrl);
   yield put(stopFetching('plex_login_url'));
   if (resultJson.error) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
@@ -79,9 +80,7 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   yield call(getSettings);
 }
 
-function* saveWebUISettings(action) {
-  const { payload } = action;
-  yield put(changeWebUISettings(payload));
+function* saveWebUISettings() {
   const data = JSON.stringify(yield select((state: RootState) => state.webuiSettings));
   yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
 }
