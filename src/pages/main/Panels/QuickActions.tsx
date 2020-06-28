@@ -1,6 +1,9 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { forEach } from 'lodash';
+import cx from 'classnames';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -8,15 +11,18 @@ import quickActions from '../../../core/quick-actions';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
 
-class ActionItems extends React.Component<Props> {
+class QuickActions extends React.Component<Props> {
   renderRow = (key: string) => {
-    const { runAction } = this.props;
+    const { pinnedActions, runAction, togglePinnedAction } = this.props;
     const action = quickActions[key];
 
     return (
       <div className="flex mt-3 justify-between items-center">
         <span className="flex">{action.name}</span>
         <div className="flex">
+          <Button onClick={() => togglePinnedAction(key)} className={cx(['px-2 mr-2', pinnedActions.indexOf(key) === -1 ? 'bg-color-unselected' : 'bg-color-accent'])}>
+            <FontAwesomeIcon icon={faThumbtack} />
+          </Button>
           <Button onClick={() => runAction(action.function, action.data)} className="bg-color-accent font-exo text-sm font-bold px-6 py-1">
             Run
           </Button>
@@ -26,15 +32,15 @@ class ActionItems extends React.Component<Props> {
   };
 
   render() {
-    const { pinnedActions } = this.props;
+    const { title, actions } = this.props;
     const items: Array<any> = [];
 
-    forEach(pinnedActions, (action) => {
+    forEach(actions, (action) => {
       items.push(this.renderRow(action));
     });
 
     return (
-      <FixedPanel title="Action Items">
+      <FixedPanel title={title}>
         {items}
       </FixedPanel>
     );
@@ -49,10 +55,16 @@ const mapDispatch = {
   runAction: (key: string, data: any) => (
     { type: Events.QUICK_ACTION_RUN, payload: { key, data } }
   ),
+  togglePinnedAction: (payload: string) => (
+    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload }
+  ),
 };
 
 const connector = connect(mapState, mapDispatch);
 
-type Props = ConnectedProps<typeof connector>;
+type Props = ConnectedProps<typeof connector> & {
+  title: string;
+  actions: Array<string>;
+};
 
-export default connector(ActionItems);
+export default connector(QuickActions);

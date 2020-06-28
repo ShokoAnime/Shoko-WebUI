@@ -16,6 +16,8 @@ $website-background-color: #e9edf2;
 
 $text-color: #333333;
 
+$button-unselected: #8F9290;
+
 input, button, textarea, :focus {
   outline: none;
 }
@@ -42,6 +44,11 @@ body {
 
 .text-3xl2 {
   font-size: 2.5rem;
+}
+
+.bg-color-unselected {
+  background-color: $button-unselected;
+  color: white;
 }
 
 .color-accent {

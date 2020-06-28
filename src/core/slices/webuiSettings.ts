@@ -8,12 +8,20 @@ type uiType = {
 type updateChannelType = 'stable' | 'unstable';
 
 type State = {
+  actions: Array<string>,
   ui: uiType
   updateChannel: updateChannelType;
   logDelta: number;
 };
 
 const initialState = {
+  actions: [
+    'remove-missing-files-mylist',
+    'update-series-stats',
+    'update-all-anidb-info',
+    'update-all-tvdb-info',
+    'plex-sync-all',
+  ],
   ui: {
     theme: '',
     notifications: true,
@@ -38,11 +46,20 @@ const webuiSettingsSlice = createSlice({
     saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
       return Object.assign(sliceState, action.payload);
     },
+    addAction(sliceState, action: PayloadAction<string>) {
+      sliceState.actions.push(action.payload);
+    },
+    removeAction(sliceState, action: PayloadAction<string>) {
+      const tempSet = new Set(sliceState.actions);
+      tempSet.delete(action.payload);
+      sliceState.actions = Array.from(tempSet);
+    },
   },
 });
 
 export const {
   setUi, setUpdateChannel, setLogDelta, saveWebUISettings,
+  addAction, removeAction,
 } = webuiSettingsSlice.actions;
 
 export default webuiSettingsSlice.reducer;

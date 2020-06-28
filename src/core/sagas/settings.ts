@@ -14,7 +14,7 @@ import { startFetching, stopFetching } from '../slices/fetching';
 import { setItem as setMiscItem } from '../slices/misc';
 import { changeLocalSettings, saveLocalSettings } from '../slices/localSettings';
 import { saveServerSettings } from '../slices/serverSettings';
-import { saveWebUISettings as changeWebUISettings } from '../slices/webuiSettings';
+import { addAction, removeAction, saveWebUISettings as changeWebUISettings } from '../slices/webuiSettings';
 
 function* getPlexLoginUrl() {
   yield put(startFetching('plex_login_url'));
@@ -85,10 +85,22 @@ function* saveWebUISettings() {
   yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
 }
 
+function* togglePinnedAction(action) {
+  const { payload } = action;
+  const pinnedActions = yield select((state: RootState) => state.webuiSettings.actions);
+  if (pinnedActions.indexOf(payload) === -1) {
+    yield put(addAction(payload));
+  } else {
+    yield put(removeAction(payload));
+  }
+  yield call(saveWebUISettings);
+}
+
 export default {
   getPlexLoginUrl,
   getSettings,
   getTraktCode,
   saveSettings,
   saveWebUISettings,
+  togglePinnedAction,
 };
