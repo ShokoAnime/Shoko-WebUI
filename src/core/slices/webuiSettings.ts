@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { mergeDeep } from '../util';
-
 type uiType = {
   theme: string;
   notifications: boolean;
@@ -37,15 +35,11 @@ const layout = {
   },
   importFolders: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
+      i: 'importBreakdown', x: 0, y: 0, w: 8, h: 11,
     }, {
-      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
+      i: 'importFolders', x: 8, y: 0, w: 4, h: 11,
     }, {
-      i: 'importBreakdown', x: 0, y: 6, w: 6, h: 11,
-    }, {
-      i: 'importFolders', x: 6, y: 6, w: 6, h: 11,
-    }, {
-      i: 'seriesInImportFolder', x: 0, y: 17, w: 12, h: 11,
+      i: 'seriesInImportFolder', x: 0, y: 11, w: 12, h: 11,
     }],
   },
   actions: {
@@ -90,11 +84,8 @@ const webuiSettingsSlice = createSlice({
   name: 'webuiSettings',
   initialState,
   reducers: {
-    changeWebUISettings(sliceState, action: PayloadAction<any>) {
-      return mergeDeep(sliceState, action.payload);
-    },
     saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      return mergeDeep(sliceState, action.payload);
+      return Object.assign(sliceState, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
       sliceState.actions.push(action.payload);
@@ -111,8 +102,8 @@ const webuiSettingsSlice = createSlice({
 });
 
 export const {
-  changeWebUISettings, saveWebUISettings,
-  addAction, removeAction, saveLayout,
+  saveWebUISettings, saveLayout,
+  addAction, removeAction,
 } = webuiSettingsSlice.actions;
 
 export default webuiSettingsSlice.reducer;
