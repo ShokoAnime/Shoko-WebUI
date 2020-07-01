@@ -4,8 +4,6 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import CollectionBreakdown from '../Panels/CollectionBreakdown';
-import SeriesBreakdown from '../Panels/SeriesBreakdown';
 import ImportBreakdown from '../Panels/ImportBreakdown';
 import ImportFolders from '../Panels/ImportFolders';
 import SeriesInImportFolder from '../Panels/SeriesInImportFolder';
@@ -36,13 +34,8 @@ class ImportFoldersTab extends React.Component<Props> {
           containerPadding={[40, 40]}
           margin={[40, 40]}
           className="w-full"
+          onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
-          <div key="collectionBreakdown">
-            <CollectionBreakdown />
-          </div>
-          <div key="seriesBreakdown">
-            <SeriesBreakdown />
-          </div>
           <div key="importBreakdown">
             <ImportBreakdown />
           </div>

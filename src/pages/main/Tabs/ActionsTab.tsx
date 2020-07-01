@@ -107,6 +107,7 @@ class ActionsTab extends React.Component<Props> {
           containerPadding={[40, 40]}
           margin={[40, 40]}
           className="w-full"
+          onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
           {panels}
         </ResponsiveGridLayout>
