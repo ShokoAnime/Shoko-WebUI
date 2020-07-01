@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
+import { RootState } from '../../../core/store';
+import Events from '../../../core/events';
 import CollectionBreakdown from '../Panels/CollectionBreakdown';
 import SeriesBreakdown from '../Panels/SeriesBreakdown';
 import ImportBreakdown from '../Panels/ImportBreakdown';
@@ -9,29 +12,20 @@ import SeriesInImportFolder from '../Panels/SeriesInImportFolder';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class ImportFoldersPage extends React.Component {
+class ImportFoldersTab extends React.Component<Props> {
+  handleOnLayoutChange = (layout: any) => {
+    const { fetched, changeLayout } = this.props;
+    if (fetched) {
+      changeLayout(layout);
+    }
+  };
+
   render() {
-    const layout = {
-      lg: [{
-        i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
-      }, {
-        i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
-      }, {
-        i: 'importBreakdown', x: 0, y: 6, w: 6, h: 11,
-      }, {
-        i: 'importFolders', x: 6, y: 6, w: 6, h: 11,
-      }, {
-        i: 'seriesInImportFolder', x: 0, y: 17, w: 12, h: 11,
-      }],
-    };
+    const { layout } = this.props;
 
     const cols = {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
-
-    const containerPadding = [40, 40] as [number, number];
-
-    const margin = [40, 40] as [number, number];
 
     return (
       <React.Fragment>
@@ -39,8 +33,8 @@ class ImportFoldersPage extends React.Component {
           layouts={layout}
           cols={cols}
           rowHeight={0}
-          containerPadding={containerPadding}
-          margin={margin}
+          containerPadding={[40, 40]}
+          margin={[40, 40]}
           className="w-full"
         >
           <div key="collectionBreakdown">
@@ -64,4 +58,20 @@ class ImportFoldersPage extends React.Component {
   }
 }
 
-export default ImportFoldersPage;
+const mapState = (state: RootState) => ({
+  layout: state.webuiSettings.layout.importFolders,
+  fetched: state.mainpage.fetched.settings,
+});
+
+const mapDispatch = {
+  changeLayout: (layout: any) => ({
+    type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
+    payload: { importFolders: layout },
+  }),
+};
+
+const connector = connect(mapState, mapDispatch);
+
+type Props = ConnectedProps<typeof connector>;
+
+export default connector(ImportFoldersTab);

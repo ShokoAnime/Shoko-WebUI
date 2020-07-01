@@ -154,6 +154,7 @@ export default function* rootSaga() {
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),
     takeEvery(Events.SETTINGS_SAVE_SERVER, SagaSettings.saveSettings),
     takeEvery(Events.SETTINGS_SAVE_WEBUI, SagaSettings.saveWebUISettings),
+    takeEvery(Events.SETTINGS_SAVE_WEBUI_LAYOUT, SagaSettings.saveLayout),
     takeEvery(Events.SETTINGS_TOGGLE_PINNED_ACTION, SagaSettings.togglePinnedAction),
   ]);
 }

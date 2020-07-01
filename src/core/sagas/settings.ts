@@ -11,10 +11,14 @@ import ApiPlex from '../api/plex';
 import ApiSettings from '../api/v3/settings';
 
 import { startFetching, stopFetching } from '../slices/fetching';
+import { saveLocalSettings } from '../slices/localSettings';
+import { setFetched } from '../slices/mainpage';
 import { setItem as setMiscItem } from '../slices/misc';
-import { changeLocalSettings, saveLocalSettings } from '../slices/localSettings';
 import { saveServerSettings } from '../slices/serverSettings';
-import { addAction, removeAction, saveWebUISettings as changeWebUISettings } from '../slices/webuiSettings';
+import {
+  addAction, removeAction, saveLayout as saveLayoutAction,
+  saveWebUISettings as saveWebUISettingsAction,
+} from '../slices/webuiSettings';
 
 function* getPlexLoginUrl() {
   yield put(startFetching('plex_login_url'));
@@ -37,10 +41,11 @@ function* getSettings() {
 
   const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
   if (!isEmpty(webUISettings)) {
-    yield put(changeWebUISettings(webUISettings));
+    yield put(saveWebUISettingsAction(webUISettings));
   }
   yield put(saveServerSettings(resultJson.data));
   yield put(saveLocalSettings(resultJson.data));
+  yield put(setFetched('settings'));
 }
 
 function* getTraktCode() {
@@ -54,6 +59,11 @@ function* getTraktCode() {
   }
 }
 
+function* saveLayout(action) {
+  yield put(saveLayoutAction(action.payload));
+  yield call(uploadWebUISettings);
+}
+
 type SaveSettingsType = {
   context?: string;
   newSettings: {};
@@ -61,7 +71,7 @@ type SaveSettingsType = {
 
 function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   const { context, newSettings } = action.payload;
-  yield put(changeLocalSettings(context ? { [context]: newSettings } : newSettings));
+  yield put(saveLocalSettings(context ? { [context]: newSettings } : newSettings));
   const { original, changed } = yield select((state: RootState) => {
     const { localSettings, serverSettings } = state;
     return {
@@ -80,9 +90,10 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   yield call(getSettings);
 }
 
-function* saveWebUISettings() {
-  const data = JSON.stringify(yield select((state: RootState) => state.webuiSettings));
-  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
+function* saveWebUISettings(action) {
+  const { context, setting } = action.payload;
+  yield put(saveWebUISettingsAction(context ? { [context]: setting } : setting));
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: setting } });
 }
 
 function* togglePinnedAction(action) {
@@ -93,13 +104,19 @@ function* togglePinnedAction(action) {
   } else {
     yield put(removeAction(payload));
   }
-  yield call(saveWebUISettings);
+  yield call(uploadWebUISettings);
+}
+
+function* uploadWebUISettings() {
+  const data = JSON.stringify(yield select((state: RootState) => state.webuiSettings));
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
 }
 
 export default {
   getPlexLoginUrl,
   getSettings,
   getTraktCode,
+  saveLayout,
   saveSettings,
   saveWebUISettings,
   togglePinnedAction,

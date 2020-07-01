@@ -1,6 +1,9 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
+import { RootState } from '../../../core/store';
+import Events from '../../../core/events';
 import CollectionBreakdown from '../Panels/CollectionBreakdown';
 import SeriesBreakdown from '../Panels/SeriesBreakdown';
 import ImportBreakdown from '../Panels/ImportBreakdown';
@@ -11,33 +14,20 @@ import CommandQueue from '../Panels/CommandQueue';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class DashboardTab extends React.Component {
+class DashboardTab extends React.Component<Props> {
+  handleOnLayoutChange = (layout: any) => {
+    const { fetched, changeLayout } = this.props;
+    if (fetched) {
+      changeLayout(layout);
+    }
+  };
+
   render() {
-    const layout = {
-      lg: [{
-        i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
-      }, {
-        i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
-      }, {
-        i: 'commandQueue', x: 0, y: 6, w: 5, h: 9, minW: 5, minH: 5,
-      }, {
-        i: 'importFolders', x: 5, y: 6, w: 4, h: 9,
-      }, {
-        i: 'importBreakdown', x: 0, y: 15, w: 9, h: 11,
-      }, {
-        i: 'actionItems', x: 9, y: 11, w: 3, h: 9,
-      }, {
-        i: 'filesBreakdown', x: 9, y: 15, w: 3, h: 11,
-      }],
-    };
+    const { layout } = this.props;
 
     const cols = {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
-
-    const containerPadding = [40, 40] as [number, number];
-
-    const margin = [40, 40] as [number, number];
 
     return (
       <React.Fragment>
@@ -45,9 +35,10 @@ class DashboardTab extends React.Component {
           layouts={layout}
           cols={cols}
           rowHeight={0}
-          containerPadding={containerPadding}
-          margin={margin}
+          containerPadding={[40, 40]}
+          margin={[40, 40]}
           className="w-full"
+          onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
           <div key="collectionBreakdown">
             <CollectionBreakdown />
@@ -76,4 +67,20 @@ class DashboardTab extends React.Component {
   }
 }
 
-export default DashboardTab;
+const mapState = (state: RootState) => ({
+  layout: state.webuiSettings.layout.dashboard,
+  fetched: state.mainpage.fetched.settings,
+});
+
+const mapDispatch = {
+  changeLayout: (layout: any) => ({
+    type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
+    payload: { dashboard: layout },
+  }),
+};
+
+const connector = connect(mapState, mapDispatch);
+
+type Props = ConnectedProps<typeof connector>;
+
+export default connector(DashboardTab);
