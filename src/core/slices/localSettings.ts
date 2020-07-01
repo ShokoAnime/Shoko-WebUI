@@ -7,15 +7,12 @@ const localSettingsSlice = createSlice({
   name: 'localSettings',
   initialState,
   reducers: {
-    changeLocalSettings(sliceState, action: PayloadAction<any>) {
-      return mergeDeep(sliceState, action.payload);
-    },
     saveLocalSettings(sliceState, action: PayloadAction<any>) {
-      return Object.assign(sliceState, action.payload);
+      return mergeDeep(sliceState, action.payload);
     },
   },
 });
 
-export const { changeLocalSettings, saveLocalSettings } = localSettingsSlice.actions;
+export const { saveLocalSettings } = localSettingsSlice.actions;
 
 export default localSettingsSlice.reducer;
