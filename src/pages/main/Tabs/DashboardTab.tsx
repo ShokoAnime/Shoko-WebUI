@@ -4,6 +4,8 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
+import type { layoutType } from '../../../core/slices/webuiSettings';
+import { defaultLayout } from '../../../core/slices/webuiSettings';
 import CollectionBreakdown from '../Panels/CollectionBreakdown';
 import SeriesBreakdown from '../Panels/SeriesBreakdown';
 import ImportBreakdown from '../Panels/ImportBreakdown';
@@ -14,17 +16,25 @@ import CommandQueue from '../Panels/CommandQueue';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class DashboardTab extends React.Component<Props> {
+type State = layoutType;
+
+class DashboardTab extends React.Component<Props, State> {
+  state = defaultLayout.dashboard;
+
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   handleOnLayoutChange = (layout: any) => {
     const { fetched, changeLayout } = this.props;
+    this.setState(layout);
     if (fetched) {
       changeLayout(layout);
     }
   };
 
   render() {
-    const { layout } = this.props;
-
     const cols = {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
@@ -32,7 +42,7 @@ class DashboardTab extends React.Component<Props> {
     return (
       <React.Fragment>
         <ResponsiveGridLayout
-          layouts={layout}
+          layouts={this.state}
           cols={cols}
           rowHeight={0}
           containerPadding={[40, 40]}

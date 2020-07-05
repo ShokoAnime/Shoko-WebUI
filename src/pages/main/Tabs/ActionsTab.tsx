@@ -4,10 +4,14 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import { forEach } from 'lodash';
 
 import { RootState } from '../../../core/store';
+import type { layoutType } from '../../../core/slices/webuiSettings';
+import { defaultLayout } from '../../../core/slices/webuiSettings';
 import Events from '../../../core/events';
 import QuickActions from '../Panels/QuickActions';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
+
+type State = layoutType;
 
 const actions = {
   anidb: {
@@ -71,9 +75,17 @@ const actions = {
   },
 };
 
-class ActionsTab extends React.Component<Props> {
+class ActionsTab extends React.Component<Props, State> {
+  state = defaultLayout.actions;
+
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   handleOnLayoutChange = (layout: any) => {
     const { fetched, changeLayout } = this.props;
+    this.setState(layout);
     if (fetched) {
       changeLayout(layout);
     }
@@ -86,8 +98,6 @@ class ActionsTab extends React.Component<Props> {
   );
 
   render() {
-    const { layout } = this.props;
-
     const cols = {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
@@ -101,7 +111,7 @@ class ActionsTab extends React.Component<Props> {
     return (
       <React.Fragment>
         <ResponsiveGridLayout
-          layouts={layout}
+          layouts={this.state}
           cols={cols}
           rowHeight={0}
           containerPadding={[40, 40]}

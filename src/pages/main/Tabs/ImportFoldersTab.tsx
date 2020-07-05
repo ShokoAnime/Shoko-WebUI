@@ -4,23 +4,32 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
+import type { layoutType } from '../../../core/slices/webuiSettings';
+import { defaultLayout } from '../../../core/slices/webuiSettings';
 import ImportBreakdown from '../Panels/ImportBreakdown';
 import ImportFolders from '../Panels/ImportFolders';
 import SeriesInImportFolder from '../Panels/SeriesInImportFolder';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-class ImportFoldersTab extends React.Component<Props> {
+type State = layoutType;
+class ImportFoldersTab extends React.Component<Props, State> {
+  state = defaultLayout.importFolders;
+
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   handleOnLayoutChange = (layout: any) => {
     const { fetched, changeLayout } = this.props;
+    this.setState(layout);
     if (fetched) {
       changeLayout(layout);
     }
   };
 
   render() {
-    const { layout } = this.props;
-
     const cols = {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
@@ -28,7 +37,7 @@ class ImportFoldersTab extends React.Component<Props> {
     return (
       <React.Fragment>
         <ResponsiveGridLayout
-          layouts={layout}
+          layouts={this.state}
           cols={cols}
           rowHeight={0}
           containerPadding={[40, 40]}

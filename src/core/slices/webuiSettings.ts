@@ -1,5 +1,23 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+type layoutItemType = {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  minW?: number;
+  maxW?: number;
+  minH?: number;
+  maxH?: number;
+  static?: boolean;
+  moved?: boolean;
+};
+
+export type layoutType = {
+  [breakpoint: string]: Array<layoutItemType>
+};
+
 type uiType = {
   theme: string;
   notifications: boolean;
@@ -9,13 +27,15 @@ type updateChannelType = 'stable' | 'unstable';
 
 type State = {
   actions: Array<string>,
-  layout: any,
+  layout: {
+    [key: string]: layoutType;
+  },
   ui: uiType
   updateChannel: updateChannelType;
   logDelta: number;
 };
 
-const layout = {
+export const defaultLayout = {
   dashboard: {
     lg: [{
       i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
@@ -61,6 +81,11 @@ const layout = {
       i: 'tvdb', x: 0, y: 9, w: 4, h: 5, minW: 3, minH: 5, maxH: 10,
     }],
   },
+  settings: {
+    lg: [{
+      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+    }],
+  },
 };
 
 const initialState = {
@@ -71,7 +96,7 @@ const initialState = {
     'update-all-tvdb-info',
     'plex-sync-all',
   ],
-  layout,
+  layout: defaultLayout,
   ui: {
     theme: '',
     notifications: true,

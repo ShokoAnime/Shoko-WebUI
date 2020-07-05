@@ -85,6 +85,9 @@ const mainpageSlice = createSlice({
     setStats(sliceState, action) {
       sliceState.stats = action.payload;
     },
+    unsetFetched(sliceState, action) {
+      sliceState.fetched = Object.assign(sliceState.fetched, { [action.payload]: false });
+    },
   },
 });
 
@@ -92,7 +95,7 @@ export const {
   setActiveTab, setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSelectedImportFolderSeries, setSeriesSummary,
-  setStats,
+  setStats, unsetFetched,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
