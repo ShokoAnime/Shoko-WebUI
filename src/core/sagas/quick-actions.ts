@@ -5,7 +5,7 @@ import Events from '../events';
 import ApiActions from '../api/v3/actions';
 
 function* runQuickAction(action) {
-  const { key, data } = action;
+  const { key, data } = action.payload;
 
   if (typeof ApiActions[key] !== 'function') {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
