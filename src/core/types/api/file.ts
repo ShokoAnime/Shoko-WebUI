@@ -2,7 +2,7 @@ export type RecentFileDetailsType = {
   SeriesName: string;
   EpisodeNumber: number;
   EpisodeName: string;
-  EpisodeType: string;
+  EpisodeType: number;
   Source: string;
   AudioLanguages: Array<string>;
   SubtitleLanguages: Array<string>;

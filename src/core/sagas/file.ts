@@ -29,14 +29,14 @@ function* getRecentFileDetails(action) {
     return;
   }
   details.EpisodeNumber = episodeAniDBJson.data.EpisodeNumber;
-  details.EpisodeType = episodeAniDBJson.data.EpisodeType;
+  details.EpisodeType = episodeAniDBJson.data.Type;
 
   const episodeTvDBJson = yield call(ApiEpisode.getEpisodeTvDB, episodeId);
   if (episodeTvDBJson.error) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
     return;
   }
-  details.EpisodeName = episodeTvDBJson.data[0].Title;
+  details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown';
 
   const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
   if (fileAniDBJson.error) {

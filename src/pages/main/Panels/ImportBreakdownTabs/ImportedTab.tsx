@@ -16,6 +16,8 @@ type State = {
   expandedItems: any;
 };
 
+const epTypes = ['X', 'E', 'C', 'S', 'T', 'P', 'O'];
+
 class ImportedTab extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -90,9 +92,7 @@ class ImportedTab extends React.Component<Props, State> {
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Episode</span>
-                  {this.getEpisodeName(
-                    details.EpisodeType, details.EpisodeNumber, details.EpisodeName,
-                  )}
+                  {`${(epTypes[details.EpisodeType ?? 0] ?? 'X') + details.EpisodeNumber}: ${details.EpisodeName ?? 'Unknown'}`}
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Size</span>
@@ -113,15 +113,6 @@ class ImportedTab extends React.Component<Props, State> {
         }
       </div>
     );
-  };
-
-  getEpisodeName = (type: string, number: number, name: string) => {
-    if (!type) return 'Unknown';
-
-    let epTypeCode = '';
-    if (type === 'Credits') epTypeCode = 'C'; else if (type === 'Special') epTypeCode = 'S'; else if (type === 'Episode') epTypeCode = 'E'; else epTypeCode = 'X';
-
-    return `${epTypeCode + number}: ${name}`;
   };
 
   getFileInfo = (
