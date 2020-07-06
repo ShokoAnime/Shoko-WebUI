@@ -23,7 +23,7 @@ class UnrecognizedTab extends React.Component<Props> {
           </span>
         </div>
         <div className="flex mb-1">
-          {avdumpList[item.ID].hash && (
+          {avdumpList[item.ID]?.hash && (
             <div className="flex">
               <span className="w-48 font-semibold">ED2K Hash:</span>
               <span className="break-all">{avdumpList[item.ID].hash}</span>
