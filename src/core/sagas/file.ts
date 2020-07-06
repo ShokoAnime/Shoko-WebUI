@@ -36,7 +36,7 @@ function* getRecentFileDetails(action) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
     return;
   }
-  details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown';
+  details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown'; // GET THIS FROM ANIDB INSTEAD OF TVDB
 
   const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
   if (fileAniDBJson.error) {
