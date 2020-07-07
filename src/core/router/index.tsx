@@ -10,9 +10,6 @@ import LoginPage from '../../pages/login/index';
 import ErrorPage from '../../pages/error/index';
 import NoMatchPage from '../../pages/nomatch/index';
 import MainPage from '../../pages/main/index';
-// import ImportPage from '../../pages/dashboard/LayoutTabs/ImportFolders';
-// import SettingsPage from '../../pages/settings/index';
-// import ActionsPage from '../../pages/actions/index';
 import FirstRunPage from '../../pages/firstrun/index';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
@@ -28,9 +25,6 @@ const Router = ({
         <Route exact path="/firstrun" component={FirstRunPage} />
         <Route exact path="/error" component={ErrorPage} />
         <AuthenticatedRoute exact path="/main" component={MainPage} />
-        {/* <AuthenticatedRoute exact path="/import-folders" component={ImportPage} /> */}
-        {/* <AuthenticatedRoute exact path="/settings" component={SettingsPage} />
-        <AuthenticatedRoute exact path="/actions" component={ActionsPage} /> */}
         <Route component={NoMatchPage} />
       </Switch>
     </ConnectedRouter>
@@ -38,7 +32,7 @@ const Router = ({
 );
 
 const mapState = (state: RootState) => ({
-  theme: state.webuiSettings.ui.theme,
+  theme: state.webuiSettings.theme,
 });
 
 const connector = connect(mapState);

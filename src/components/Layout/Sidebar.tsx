@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTachometerAlt, faFolderOpen, faListAlt, faFileAlt, faSlidersH, faThLarge, faQuestionCircle,
+  faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
@@ -47,9 +47,9 @@ class Sidebar extends React.Component<Props> {
               {this.renderItem('dashboard', 'Dashboard', faTachometerAlt)}
               {this.renderItem('import-folders', 'Import Folders', faFolderOpen)}
               {this.renderItem('actions', 'Actions', faListAlt)}
-              {this.renderItem('log', 'Log', faFileAlt)}
+              {/* {this.renderItem('log', 'Log', faFileAlt)} */}
               {this.renderItem('settings', 'Settings', faSlidersH)}
-              {this.renderItem('manager', 'Manage', faThLarge)}
+              {/* {this.renderItem('manager', 'Manage', faThLarge)} */}
             </div>
             <div className="flex flex-col">
               {this.renderLink('https://docs.shokoanime.com', 'Support', faQuestionCircle)}
