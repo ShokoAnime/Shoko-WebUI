@@ -22,7 +22,7 @@ class TraktTab extends React.Component<Props> {
     const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveSettings({ context: 'MovieDb', newSettings: { [id]: value } });
+    saveSettings({ context: 'TraktTv', newSettings: { [id]: value } });
   };
 
   renderTraktCode() {
@@ -31,7 +31,7 @@ class TraktTab extends React.Component<Props> {
     const { fetching, getTraktCode } = this.props;
     if (usercode === '') {
       return (
-        <div className="flex w-3/5 justify-between items-center mt-2">
+        <div className="flex w-3/5 justify-between items-center my-1">
           Trakt Code
           <Button onClick={getTraktCode} className="bg-color-accent-secondary px-2 py-1 text-sm">
             {fetching ? 'Requesting...' : 'Get Trakt Code'}
@@ -40,9 +40,9 @@ class TraktTab extends React.Component<Props> {
       );
     }
     return (
-      <div className="flex w-full justify-between my-2 items-center">
-        Trakt Code: {usercode}
-        <span className="w-2/3">
+      <div className="flex justify-between my-2 items-center">
+        <span className="w-64">Trakt Code: <span className="font-semibold">{usercode}</span></span>
+        <span>
           <span className="color-accent-secondary"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span><br />
           You have approximately 10 minutes to visit the URL provided and enter the code,
           server is polling for access token, it will be acquired automatically.
@@ -65,23 +65,20 @@ class TraktTab extends React.Component<Props> {
     return (
       <React.Fragment>
         <span className="font-bold">Trakt.TV Options</span>
-        <div className="flex w-3/5 justify-between mt-2">
-          Enabled
-          <Checkbox id="Enabled" isChecked={Enabled} onChange={this.handleInputChange} />
-        </div>
+        <Checkbox label="Enabled" id="Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-3/5" />
         {
           TokenExpirationDate === ''
             ? this.renderTraktCode()
             : (
-              <div className="flex w-3/5 justify-between mt-1">
+              <div className="flex justify-between my-1">
                 Token valid until:
                 <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
               </div>
             )
         }
-        <div className="flex w-3/5 justify-between mt-2">
+        <div className="flex w-3/5 justify-between my-1">
           Automatically Update Data
-          <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-2/5" onChange={this.handleInputChange}>
+          <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
             {updateFrequencyOptions}
           </Select>
         </div>

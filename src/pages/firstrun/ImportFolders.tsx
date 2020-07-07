@@ -102,29 +102,24 @@ class ImportFolders extends React.Component<Props, State> {
       WatchForNewFiles, DropFolderType, Path, showEdit,
     } = this.state;
     return (
-      <div className="flex flex-col mt-4">
+      <div className="flex flex-col mt-4 w-3/5">
         <div className="flex items-end">
-          <span className="w-2/3">
-            <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="py-2" />
-          </span>
+          <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="my-1 w-full" />
           <Button onClick={this.handleBrowse} className="color-accent ml-2 mb-2 text-lg">
             <FontAwesomeIcon icon={faFolderOpen} />
           </Button>
         </div>
-        <span className="flex font-bold mt-7">Type</span>
-        <div className="flex items-center justify-between w-2/3">
-          <span className="w-1/2">Watch For New Files</span>
-          <Checkbox id="WatchForNewFiles" isChecked={WatchForNewFiles} onChange={this.handleInputChange} />
-        </div>
-        <div className="flex item-center justify-between w-2/3">
-          <span className="w-1/2">Drop Type</span>
+        <span className="flex font-bold mt-2">Type</span>
+        <Checkbox label="Watch For New Files" id="WatchForNewFiles" isChecked={WatchForNewFiles} onChange={this.handleInputChange} />
+        <div className="flex item-center justify-between">
+          Drop Type
           <Select id="DropFolderType" value={DropFolderType} onChange={this.handleInputChange}>
             <option value="0">None</option>
             <option value="1">Source</option>
             <option value="2">Destination</option>
           </Select>
         </div>
-        <span className="flex mt-8">
+        <span className="flex mt-6">
           {showEdit ? (
             <Button onClick={() => this.handleEditFolder()} className="bg-color-accent py-2 px-3 rounded text-sm">
               Edit Import Folder

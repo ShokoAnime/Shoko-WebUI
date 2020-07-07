@@ -77,21 +77,21 @@ class TvDBSettings extends React.Component<Props> {
         {AutoFanart && (
           <div className="flex justify-between my-1">
             Max Fanart
-            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" />
           </div>
         )}
         <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
         {AutoPosters && (
           <div className="flex justify-between my-1">
             Max Posters
-            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" />
           </div>
         )}
         <Checkbox label="Wide Banners" id="AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
         {AutoWideBanners && (
           <div className="flex justify-between my-1">
             Max Wide Banners
-            <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+            <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" />
           </div>
         )}
         <span className="font-bold mt-4">Preferences</span>

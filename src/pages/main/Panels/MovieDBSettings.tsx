@@ -25,23 +25,21 @@ class MovieDBSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="MovieDB">
-        <span className="font-bold mt-2">The MovieDB Options</span>
-        <div className="flex justify-between mt-2">
-          Fanart
-          <Checkbox id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
-        </div>
-        <div className="flex justify-between mt-1">
-          Max Fanart
-          <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
-        </div>
-        <div className="flex justify-between mt-1">
-          Posters
-          <Checkbox id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
-        </div>
-        <div className="flex justify-between mt-1">
-          Max Posters
-          <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
-        </div>
+        <span className="font-bold mt-2">Download Options</span>
+        <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
+        {AutoFanart && (
+          <div className="flex justify-between my-1">
+            Max Fanart
+            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+          </div>
+        )}
+        <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
+        {AutoPosters && (
+          <div className="flex justify-between my-1">
+            Max Posters
+            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+          </div>
+        )}
       </FixedPanel>
     );
   }

@@ -5,11 +5,11 @@ function ApiRequest(action: string, expectEmpty = false, endpoint = '/plex' as '
 }
 
 function getPlexLoginUrl() {
-  ApiRequest('loginurl');
+  return ApiRequest('loginurl');
 }
 
 export function getPlexSyncAll() {
-  ApiRequest('sync/all', true);
+  return ApiRequest('sync/all', true);
 }
 
 export default {

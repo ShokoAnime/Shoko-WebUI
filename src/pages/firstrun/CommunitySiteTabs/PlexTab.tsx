@@ -13,18 +13,18 @@ class TraktTab extends React.Component<Props> {
 
     if (plexUrl === '') {
       return (
-        <div className="flex w-3/5 justify-between mt-2">
+        <div className="flex w-3/5 justify-between my-1">
           Plex Login:
-          <Button onClick={getPlexUrl} className="bg-color-accent-secondary px-2 py-1 text-sm">
+          <Button onClick={() => getPlexUrl()} className="bg-color-accent-secondary px-2 py-1 text-sm">
             {fetching ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>
       );
     }
     return (
-      <div className="flex w-full justify-between mt-2 items-center">
-        <span className="w-1/3">Plex Login URL:</span>
-        <span className="color-accent-secondary w-2/3"><a href={plexUrl} rel="noopener noreferrer" target="_blank">{plexUrl}</a></span><br />
+      <div className="flex justify-between my-1 items-center">
+        <span className="w-64">Plex Login URL:</span>
+        <span className="color-accent-secondary break-all"><a href={plexUrl} rel="noopener noreferrer" target="_blank">{plexUrl}</a></span><br />
       </div>
     );
   }
@@ -34,12 +34,12 @@ class TraktTab extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <span className="font-bold">Plex Options</span>
+        <span className="font-bold">Options</span>
         {
           plexToken === ''
             ? this.renderPlexUrl()
             : (
-              <div className="flex w-3/5 justify-between mt-2">
+              <div className="flex w-3/5 justify-between my-1">
                 Plex Authenticated:
                 <span>Yes</span>
               </div>

@@ -22,22 +22,22 @@ class MovieDBTab extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <span className="font-bold">The MovieDB Options</span>
-        <div className="flex w-3/5 justify-between mt-2">
-          Fanart
-          <Checkbox id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
-        </div>
-        <div className="flex w-3/5 justify-between mt-1">
-          Max Fanart
-          <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-8" />
-        </div>
-        <div className="flex w-3/5 justify-between mt-1">
-          Posters
-          <Checkbox id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
-        </div>
-        <div className="flex w-3/5 justify-between mt-1">
-          Max Posters
-          <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-8" />
+        <div className="flex flex-col w-3/5">
+          <span className="font-bold">Download Options</span>
+          <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
+          {AutoFanart && (
+            <div className="flex justify-between my-1">
+              Max Fanart
+              <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+            </div>
+          )}
+          <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
+          {AutoPosters && (
+            <div className="flex justify-between my-1">
+              Max Posters
+              <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4 mr-1" />
+            </div>
+          )}
         </div>
       </React.Fragment>
     );

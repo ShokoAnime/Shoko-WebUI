@@ -73,7 +73,7 @@ class CommunitySites extends React.Component<Props, State> {
             {this.renderTabButton('Trakt.TV', 'trakt')}
             {this.renderTabButton('Plex', 'plex')}
           </div>
-          <div className="flex flex-col mt-4 overflow-y-auto flex-shrink">
+          <div className="flex flex-col my-4 overflow-y-auto flex-shrink">
             {this.renderTabContent()}
           </div>
         </div>

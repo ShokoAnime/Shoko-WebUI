@@ -81,7 +81,7 @@ class LoginPage extends React.Component<Props, State> {
   }
 
   render() {
-    const { initStatus, isFetchingLogin } = this.props;
+    const { initStatus, isFetching, isFetchingLogin } = this.props;
     const { username, password, rememberUser } = this.state;
 
     return (
@@ -108,7 +108,7 @@ class LoginPage extends React.Component<Props, State> {
                 <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
                 <div className="flex justify-between items-center mt-4">
-                  <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin}>Sign In</Button>
+                  <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || initStatus.State === 4}>Sign In</Button>
                   <Link to="/"><span className="color-accent-secondary font-muli font-bold text-xs">Create New Account</span></Link>
                 </div>
               </div>

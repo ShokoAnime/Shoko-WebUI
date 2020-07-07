@@ -85,11 +85,13 @@ class DatabaseSetup extends React.Component<Props, State> {
           </div>
           <div className="flex flex-col mt-4 overflow-y-auto flex-shrink">
             <span className="font-bold my-2">Database Type</span>
-            <Select id="Type" value={Type} className="relative w-1/5" onChange={this.handleInputChange}>
-              <option value="SQLite">SQLite</option>
-              <option value="MySQL">MySQL</option>
-              <option value="SQLServer">SQLServer</option>
-            </Select>
+            <div className="flex">
+              <Select id="Type" value={Type} onChange={this.handleInputChange}>
+                <option value="SQLite">SQLite</option>
+                <option value="MySQL">MySQL</option>
+                <option value="SQLServer">SQLServer</option>
+              </Select>
+            </div>
             {this.renderDBOptions()}
             <div className="flex my-4 items-center">
               <Button onClick={() => this.handleTest()} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>

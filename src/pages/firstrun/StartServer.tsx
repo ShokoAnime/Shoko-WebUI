@@ -39,7 +39,7 @@ class StartServer extends React.Component<Props> {
           </div>
           <div className="flex flex-col flex-grow mt-4">
             <div className="flex">
-              <span className="font-bold mr-1">Status:</span>{status.State === 2 ? 'Started!' : (status.StartupMessage || 'Idle')}
+              <span className="font-bold mr-1">Status:</span>{status.State === 2 ? 'Started!' : (status.StartupMessage || 'Not Started!')}
             </div>
             <div className="flex h-full justify-center items-center">
               {status.State === 4 && (
