@@ -10,6 +10,7 @@ import Sidebar from '../../components/Layout/Sidebar';
 import DasboardTab from './Tabs/DashboardTab';
 import ImportFoldersTab from './Tabs/ImportFoldersTab';
 import ActionsTab from './Tabs/ActionsTab';
+import SettingsTab from './Tabs/SettingsTab';
 
 class MainPage extends React.Component<Props> {
   componentDidMount() {
@@ -35,6 +36,8 @@ class MainPage extends React.Component<Props> {
         return (<ImportFoldersTab />);
       case 'actions':
         return (<ActionsTab />);
+      case 'settings':
+        return (<SettingsTab />);
       default:
         return (<DasboardTab />);
     }

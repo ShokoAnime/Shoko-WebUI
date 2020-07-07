@@ -87,6 +87,13 @@ export type SettingsPlexType = {
   Server: string;
 };
 
+export type SettingsLogRotatorType = {
+  Enabled: boolean;
+  Zip: boolean;
+  Delete: boolean;
+  Delete_Days: string;
+};
+
 export type SettingsServerType = {
   WebUI_Settings: string;
   FirstRun: boolean;
@@ -97,4 +104,5 @@ export type SettingsServerType = {
   MovieDb: SettingsMoviedbType;
   TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
+  LogRotator: SettingsLogRotatorType;
 };

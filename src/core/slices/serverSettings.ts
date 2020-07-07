@@ -66,6 +66,12 @@ export const initialState = {
     Libraries: [],
     Token: '',
   },
+  LogRotator: {
+    Enabled: true,
+    Zip: true,
+    Delete: true,
+    Delete_Days: '0',
+  },
 } as SettingsServerType;
 
 const serverSettingsSlice = createSlice({

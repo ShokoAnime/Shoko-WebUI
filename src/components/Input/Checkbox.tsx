@@ -9,6 +9,7 @@ type Props = {
   label?: string;
   isChecked: any;
   className?: string;
+  labelRight?: boolean;
   onChange: (event: any) => void;
 };
 
@@ -16,23 +17,31 @@ class Checkbox extends React.Component<Props> {
   render() {
     const {
       id, label, isChecked, className, onChange,
+      labelRight,
     } = this.props;
 
     return (
       <React.Fragment>
-        <div className={cx([`${className ?? ''} w-auto`, label && 'py-2'])}>
-          <label className="block font-muli" htmlFor={id} style={{ cursor: 'pointer' }}>
+        <div className={cx([`${className ?? ''} w-auto`, label && 'my-1'])}>
+          <label className="flex justify-between block font-muli" htmlFor={id} style={{ cursor: 'pointer' }}>
+            {!labelRight && (
+              <span>
+                {label}
+              </span>
+            )}
             <input className="w-0 h-0" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
-            <span className="mr-2 color-accent">
+            <span className="color-accent">
               {
                 isChecked
                   ? (<FontAwesomeIcon icon={faCheckCircle} />)
                   : (<FontAwesomeIcon icon={faCircle} />)
               }
             </span>
-            <span>
-              {label}
-            </span>
+            {labelRight && (
+              <span className="ml-2">
+                {label}
+              </span>
+            )}
           </label>
         </div>
       </React.Fragment>

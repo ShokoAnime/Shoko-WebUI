@@ -18,11 +18,6 @@ export type layoutType = {
   [breakpoint: string]: Array<layoutItemType>
 };
 
-type uiType = {
-  theme: string;
-  notifications: boolean;
-};
-
 type updateChannelType = 'stable' | 'unstable';
 
 type State = {
@@ -30,9 +25,9 @@ type State = {
   layout: {
     [key: string]: layoutType;
   },
-  ui: uiType
+  notifications: boolean;
+  theme: string;
   updateChannel: updateChannelType;
-  logDelta: number;
 };
 
 export const defaultLayout = {
@@ -83,7 +78,17 @@ export const defaultLayout = {
   },
   settings: {
     lg: [{
-      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 20, minW: 3, minH: 5,
+    }, {
+      i: 'moviedb', x: 8, y: 13, w: 4, h: 7, minW: 3, minH: 5,
+    }, {
+      i: 'tvdb', x: 8, y: 0, w: 4, h: 13, minW: 3, minH: 5,
+    }, {
+      i: 'general', x: 0, y: 0, w: 4, h: 6, minW: 3, minH: 5,
+    }, {
+      i: 'log-rotator', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5,
+    }, {
+      i: 'anidb-login', x: 0, y: 6, w: 4, h: 7, minW: 3, minH: 5,
     }],
   },
 };
@@ -97,12 +102,9 @@ const initialState = {
     'plex-sync-all',
   ],
   layout: defaultLayout,
-  ui: {
-    theme: '',
-    notifications: true,
-  },
+  notifications: true,
+  theme: '',
   updateChannel: 'stable',
-  logDelta: 1000,
 } as State;
 
 const webuiSettingsSlice = createSlice({

@@ -92,9 +92,9 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
 }
 
 function* saveWebUISettings(action) {
-  const { context, setting } = action.payload;
-  yield put(saveWebUISettingsAction(context ? { [context]: setting } : setting));
-  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: setting } });
+  yield put(saveWebUISettingsAction(action.payload));
+  const data = JSON.stringify(action.payload);
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
 }
 
 function* togglePinnedAction(action) {

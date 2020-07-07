@@ -1,7 +1,14 @@
 .input-field {
   border-color: $text-color;
+  background-color: inherit;
 }
 
 .select-field {
-  background-color: $secondary-panel-background-color;
+  background-color: inherit;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
 }
