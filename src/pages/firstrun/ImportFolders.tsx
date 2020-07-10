@@ -26,7 +26,7 @@ const defaultState = {
   WatchForNewFiles: false,
   DropFolderType: 0,
   Path: '',
-  Name: 'NA',
+  Name: '',
   ID: 0,
 };
 
@@ -60,6 +60,7 @@ class ImportFolders extends React.Component<Props, State> {
     this.setState({
       showAddNew: true,
       showEdit: true,
+      Name: folder.Name,
       WatchForNewFiles: folder.WatchForNewFiles,
       DropFolderType: folder.DropFolderType,
       Path: folder.Path,
@@ -88,21 +89,27 @@ class ImportFolders extends React.Component<Props, State> {
         <Button onClick={() => this.handleEdit(folder)} className="flex mr-2 color-accent">
           <FontAwesomeIcon icon={faEdit} />
         </Button>
-        <Button onClick={() => deleteImportFolder(folder.ID!)} className="flex mr-6 color-accent">
+        <Button onClick={() => deleteImportFolder(folder.ID!)} className="flex mr-4 color-accent">
           <FontAwesomeIcon icon={faTrashAlt} />
         </Button>
-        <span className="flex font-bold mr-6">{flags}</span>
-        <span className="flex">{folder.Path}</span>
+        <div className="flex flex-col">
+          <div className="flex">
+            <span className="flex font-semibold mr-1">{`${folder.Name} -`}</span>
+            <span className="flex">{folder.Path}</span>
+          </div>
+          <span className="flex">{flags}</span>
+        </div>
       </div>
     );
   };
 
   renderForm = () => {
     const {
-      WatchForNewFiles, DropFolderType, Path, showEdit,
+      Name, WatchForNewFiles, DropFolderType, Path, showEdit,
     } = this.state;
     return (
-      <div className="flex flex-col mt-4 w-3/5">
+      <div className="flex flex-col flmt-4 w-3/5">
+        <Input id="Name" value={Name} label="Name" type="text" placeholder="Name" onChange={this.handleInputChange} className="my-1 w-full" />
         <div className="flex items-end">
           <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="my-1 w-full" />
           <Button onClick={this.handleBrowse} className="color-accent ml-2 mb-2 text-lg">
