@@ -1,0 +1,29 @@
+name: CI
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - name: Install depenencies
+        run: yarn install --production=false
+      - name: Lint
+        run: yarn lint --quiet
+      - name: Build
+        if: github.event_name == 'push'
+        run: yarn build
+      - name: Upload artifacts
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v2
+        with:
+          name: shoko-webui-latest
+          path: build/latest.zip
