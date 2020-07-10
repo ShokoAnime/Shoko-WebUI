@@ -12,7 +12,7 @@ class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
     const { runAvdump, avdumpList } = this.props;
     return (
-      <div key={item.ID} className="flex flex-col mt-2">
+      <div key={item.ID} className="flex flex-col mt-3">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <div className="flex my-2 justify-between">
           <span className="flex break-words">{item.Locations[0].RelativePath}</span>
@@ -22,7 +22,7 @@ class UnrecognizedTab extends React.Component<Props> {
             </Button>
           </span>
         </div>
-        <div className="flex mb-1">
+        <div className="flex">
           {avdumpList[item.ID]?.hash && (
             <div className="flex">
               <span className="w-48 font-semibold">ED2K Hash:</span>

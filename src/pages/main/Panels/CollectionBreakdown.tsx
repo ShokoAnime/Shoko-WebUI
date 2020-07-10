@@ -9,7 +9,7 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 
 class CollectionBreakdown extends React.Component<Props> {
   renderItem = (title: string, value: string | number = 0, key: string) => (
-    <div key={key} className="flex my-2">
+    <div key={key} className="flex mt-3">
       <div className="flex-grow">
         {title}
       </div>

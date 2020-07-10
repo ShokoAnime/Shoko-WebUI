@@ -16,14 +16,14 @@ const colors = {
 
 class FilesBreakdown extends React.Component<Props> {
   renderName = (item: string, count: number, countPercentage: number) => (
-    <div key={`${item}-name`} className="flex my-2">
+    <div key={`${item}-name`} className="flex mt-3 mb-2">
       <span className="flex-grow">{item} - {count}</span>
       {countPercentage.toFixed(2)}%
     </div>
   );
 
   renderBar = (item: string, countPercentage: number) => (
-    <div key={`${item}-bar`} className="flex bg-white rounded-lg mb-6">
+    <div key={`${item}-bar`} className="flex bg-white rounded-lg mb-5">
       <div className="rounded-lg h-4" style={{ width: `${countPercentage}%`, backgroundColor: colors[item] }} />
     </div>
   );

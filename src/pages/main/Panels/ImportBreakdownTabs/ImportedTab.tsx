@@ -52,7 +52,7 @@ class ImportedTab extends React.Component<Props, State> {
       expandedItems,
     } = this.state;
     return (
-      <div key={`${item.ID}-date`} className="flex mt-2">
+      <div key={`${item.ID}-date`} className="flex mt-3">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <Button className="color-accent ml-2" onClick={() => this.handleExpand(item)}>
           {
@@ -66,7 +66,7 @@ class ImportedTab extends React.Component<Props, State> {
   };
 
   renderName = (idx: number, serverPath: string) => (
-    <span key={`${idx}-name`} className="my-2 break-words">{serverPath}</span>
+    <span key={`${idx}-name`} className="my-1 break-words">{serverPath}</span>
   );
 
   renderDetails = (item: RecentFileType) => {
@@ -76,7 +76,7 @@ class ImportedTab extends React.Component<Props, State> {
     const { fetched, details } = fileDetails ?? {};
 
     return (
-      <div key={`${item.ID}-details`} className="flex mb-1">
+      <div key={`${item.ID}-details`} className="flex">
         {
           expandedItems[item.ID] && (!fetched
             ? (

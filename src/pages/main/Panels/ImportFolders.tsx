@@ -24,49 +24,42 @@ type ImportFolderType = {
 };
 
 class ImportFolders extends React.Component<Props> {
-  renderType = (ID: number, dropFolderType = 0, watchForNewFiles = false) => {
-    let flags = '';
-
-    if (dropFolderType === 1) flags = 'Drop Source'; else if (dropFolderType === 2) flags = 'Drop Destination';
-
-    if (watchForNewFiles) {
-      flags += dropFolderType ? ', Watch For New Files' : 'Watch For New Files';
-    }
-
-    return (
-      <div key={`${ID}-type`} className="flex font-semibold my-2">
-        <span className="flex-grow">{flags}</span>
-        <span className="color-accent">Online</span>
-      </div>
-    );
-  };
-
-  renderPath = (ID: number, Path: string) => {
+  renderFolder = (folder: ImportFolderType) => {
     const { rescanFolder, openImportFolderModalEdit } = this.props;
+
+    let flags = '';
+    if (folder.DropFolderType === 1) flags = 'Drop Source'; else if (folder.DropFolderType === 2) flags = 'Drop Destination';
+    if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch For New Files' : 'Watch For New Files';
+
     return (
-      <div key={`${ID}-path`} className="flex mb-2">
-        <span className="flex flex-grow mr-1">{Path}</span>
-        <div className="flex color-accent items-start">
-          <Button className="color-accent mr-3" onClick={() => rescanFolder!(ID)}>
-            <span className="fa-layers fa-fw">
-              <FontAwesomeIcon icon={faServer} />
-              <FontAwesomeIcon icon={faSquare} transform="shrink-5 down-2 right-6" className="fa-layer-icon-bg" />
-              <FontAwesomeIcon icon={faSearch} transform="shrink-6 down-2.75 right-6" />
-            </span>
-          </Button>
-          <Button className="color-accent" onClick={() => openImportFolderModalEdit(ID)}>
-            <FontAwesomeIcon icon={faEdit} />
-          </Button>
+      <div key={folder.ID} className="flex flex-col mt-3">
+        <div className="flex justify-between">
+          <span className="font-semibold">{folder.Name}</span>
+          <span className="color-accent">Online</span>
+        </div>
+        <div className="flex justify-between mt-1">
+          <div className="flex mr-1">{folder.Path}</div>
+          <div className="flex color-accent items-start">
+            <Button className="color-accent mr-3" onClick={() => rescanFolder(folder.ID)}>
+              <span className="fa-layers fa-fw">
+                <FontAwesomeIcon icon={faServer} />
+                <FontAwesomeIcon icon={faSquare} transform="shrink-5 down-2 right-6" className="fa-layer-icon-bg" />
+                <FontAwesomeIcon icon={faSearch} transform="shrink-6 down-2.75 right-6" />
+              </span>
+            </Button>
+            <Button className="color-accent" onClick={() => openImportFolderModalEdit(folder.ID)}>
+              <FontAwesomeIcon icon={faEdit} />
+            </Button>
+          </div>
+        </div>
+        {flags !== '' && (<div className="mt-1">{flags}</div>)}
+        <div className="mt-1">
+          Series: {folder.Size ?? 0} / Size: {prettyBytes(folder.FileSize ?? 0)}
         </div>
       </div>
+
     );
   };
-
-  renderSize = (ID: number, FileSize = 0, Size = 0) => (
-    <span key={`${ID}-size`} className="mb-2">
-      Series: {Size} / Size: {prettyBytes(FileSize)}
-    </span>
-  );
 
   renderOptions = () => {
     const { setImportFolderModalStatus } = this.props;
@@ -77,7 +70,7 @@ class ImportFolders extends React.Component<Props> {
           <FontAwesomeIcon icon={faPlus} />
         </Button>
       </div>
-  );
+    );
   };
 
   render() {
@@ -86,9 +79,7 @@ class ImportFolders extends React.Component<Props> {
     const folders: Array<any> = [];
 
     forEach(importFolders, (folder: ImportFolderType) => {
-      folders.push(this.renderType(folder.ID, folder.DropFolderType, folder.WatchForNewFiles));
-      folders.push(this.renderPath(folder.ID, folder.Path));
-      folders.push(this.renderSize(folder.ID, folder.FileSize, folder.Size));
+      folders.push(this.renderFolder(folder));
     });
 
     if (folders.length === 0) {
@@ -101,7 +92,7 @@ class ImportFolders extends React.Component<Props> {
           <div className="flex justify-center items-center h-full">
             <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
           </div>
-        ) : (folders)}
+        ) : folders}
       </FixedPanel>
     );
   }
