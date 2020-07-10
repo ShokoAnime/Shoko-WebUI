@@ -1,3 +1,16 @@
+.modal { // React-Modal
+  background-color: white;
+}
+
+.modal-overlay { // React-Modal Overlay
+  background-color: rgba(0,0,0,0.5);
+}
+
+.import-folder-modal {
+  height: 22rem;
+  width: 38rem;
+}
+
 .profile-modal {
   height: 18.5rem;
   width: 42rem;
@@ -18,12 +31,6 @@
 
 .browse-folder-modal {
   width: 42rem;
-}
-
-.modal-content {
-  .panel-block {
-    background: #fff;
-  }
 }
 
 .error-message {

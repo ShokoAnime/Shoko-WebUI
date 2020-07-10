@@ -11,7 +11,6 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Button from '../Buttons/Button';
 import { setStatus } from '../../core/slices/modals/profile';
-import ProfileModal from '../Dialogs/ProfileModal';
 
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 
@@ -93,7 +92,6 @@ class Header extends React.Component<Props, State> {
             </div>
           </div>
         </div>
-        <ProfileModal />
       </React.Fragment>
     );
   }

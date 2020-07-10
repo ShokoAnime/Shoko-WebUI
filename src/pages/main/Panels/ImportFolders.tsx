@@ -4,13 +4,14 @@ import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSquare, faEdit, faServer, faSearch, faCircleNotch,
+  faSquare, faEdit, faServer, faSearch, faCircleNotch, faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
+import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
 type ImportFolderType = {
   ID: number;
@@ -41,7 +42,7 @@ class ImportFolders extends React.Component<Props> {
   };
 
   renderPath = (ID: number, Path: string) => {
-    const { rescanFolder } = this.props;
+    const { rescanFolder, openImportFolderModalEdit } = this.props;
     return (
       <div key={`${ID}-path`} className="flex mb-2">
         <span className="flex flex-grow mr-1">{Path}</span>
@@ -53,7 +54,7 @@ class ImportFolders extends React.Component<Props> {
               <FontAwesomeIcon icon={faSearch} transform="shrink-6 down-2.75 right-6" />
             </span>
           </Button>
-          <Button className="color-accent" onClick={() => { }}>
+          <Button className="color-accent" onClick={() => openImportFolderModalEdit(ID)}>
             <FontAwesomeIcon icon={faEdit} />
           </Button>
         </div>
@@ -66,6 +67,18 @@ class ImportFolders extends React.Component<Props> {
       Series: {Size} / Size: {prettyBytes(FileSize)}
     </span>
   );
+
+  renderOptions = () => {
+    const { setImportFolderModalStatus } = this.props;
+
+    return (
+      <div>
+        <Button className="color-accent mx-2" onClick={() => setImportFolderModalStatus(true)}>
+          <FontAwesomeIcon icon={faPlus} />
+        </Button>
+      </div>
+  );
+  };
 
   render() {
     const { importFolders, hasFetched } = this.props;
@@ -83,8 +96,7 @@ class ImportFolders extends React.Component<Props> {
     }
 
     return (
-      <FixedPanel title="Import Folders">
-        {/* eslint-disable-next-line no-nested-ternary */}
+      <FixedPanel title="Import Folders" options={this.renderOptions()}>
         {!hasFetched ? (
           <div className="flex justify-center items-center h-full">
             <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
@@ -101,6 +113,8 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
+  setImportFolderModalStatus: (payload: boolean) => (setStatus(payload)),
+  openImportFolderModalEdit: (ID: number) => (setEdit(ID)),
   rescanFolder: (payload: number) => ({ type: Events.IMPORT_FOLDER_RESCAN, payload }),
 };
 

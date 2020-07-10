@@ -26,7 +26,7 @@ class BrowseFolderModal extends React.Component<Props> {
   render() {
     const { show } = this.props;
     return (
-      <ModalPanel show={show} className="p-5 browse-folder-modal">
+      <ModalPanel show={show} className="p-5 browse-folder-modal" onRequestClose={() => this.handleClose()}>
         <div className="flex flex-col w-full">
           <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">Select Import Folder</span>
           <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />

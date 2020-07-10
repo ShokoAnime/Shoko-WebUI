@@ -76,7 +76,7 @@ class ProfileModal extends React.Component<Props, State> {
     } = this.state;
 
     return (
-      <ModalPanel show={show} className="profile-modal">
+      <ModalPanel show={show} className="profile-modal" onRequestClose={() => this.handleClose()}>
         <div className="flex w-full h-full">
           <div className="flex profile-modal-image rounded-l-lg">
             <div className="flex flex-grow profile-modal-image-alpha justify-center items-center rounded-l-lg">

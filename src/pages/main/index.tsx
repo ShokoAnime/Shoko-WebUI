@@ -12,6 +12,9 @@ import ImportFoldersTab from './Tabs/ImportFoldersTab';
 import ActionsTab from './Tabs/ActionsTab';
 import SettingsTab from './Tabs/SettingsTab';
 
+import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
+import ProfileModal from '../../components/Dialogs/ProfileModal';
+
 class MainPage extends React.Component<Props> {
   componentDidMount() {
     const { load, getSettings } = this.props;
@@ -47,6 +50,8 @@ class MainPage extends React.Component<Props> {
     return (
       <div className="flex flex-grow h-full">
         <AlertContainer />
+        <ImportFolderModal />
+        <ProfileModal />
         <div className="flex h-screen sidebar-container">
           <Sidebar />
         </div>
