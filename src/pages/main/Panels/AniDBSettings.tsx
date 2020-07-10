@@ -18,24 +18,41 @@ const updateFrequencyType = [
   [6, 'Once a Month'],
 ];
 
-class AniDBSettings extends React.Component<Props> {
+type State = {
+  MaxRelationDepth: number;
+};
+
+class AniDBSettings extends React.Component<Props, State> {
+  state = {
+    MaxRelationDepth: 3,
+  };
+
+  componentDidMount = () => {
+    const { MaxRelationDepth } = this.props;
+    this.setState({ MaxRelationDepth });
+  };
+
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (value) {
+    if (event.target.type === 'number') {
+      this.setState(state => Object.assign(state, { [id]: value }));
+    }
+    if (value !== '') {
       saveSettings({ context: 'AniDb', newSettings: { [id]: value } });
     }
   };
 
   render() {
     const {
-      DownloadCharacters, DownloadCreators, DownloadRelatedAnime, MaxRelationDepth,
+      DownloadCharacters, DownloadCreators, DownloadRelatedAnime,
       MyList_AddFiles, MyList_DeleteType, MyList_ReadUnwatched, MyList_ReadWatched,
       MyList_SetUnwatched, MyList_SetWatched, MyList_StorageState, Calendar_UpdateFrequency,
       Anime_UpdateFrequency, MyList_UpdateFrequency, MyListStats_UpdateFrequency,
       File_UpdateFrequency,
     } = this.props;
+    const { MaxRelationDepth } = this.state;
 
     const updateFrequencyOptions: Array<any> = [];
 

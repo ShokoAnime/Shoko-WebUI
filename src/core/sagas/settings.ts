@@ -88,7 +88,7 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   if (resultJson.error) {
     yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
   }
-  yield call(getSettings);
+  // yield call(getSettings);
 }
 
 function* saveWebUISettings(action) {

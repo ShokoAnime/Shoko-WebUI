@@ -11,7 +11,7 @@ class AniDBLoginSettings extends React.Component<Props> {
     const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveSettings({ context: 'LogRotator', newSettings: { [id]: value } });
+    saveSettings({ context: 'AniDB', newSettings: { [id]: value } });
   };
 
   render() {

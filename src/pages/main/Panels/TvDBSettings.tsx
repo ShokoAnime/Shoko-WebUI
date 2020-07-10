@@ -43,12 +43,34 @@ const tvdbLanguages = [
   ['zh', 'Chinese'],
 ];
 
-class TvDBSettings extends React.Component<Props> {
+type State = {
+  AutoFanartAmount: number;
+  AutoPostersAmount: number;
+  AutoWideBannersAmount: number;
+};
+
+class TvDBSettings extends React.Component<Props, State> {
+  state = {
+    AutoFanartAmount: 10,
+    AutoPostersAmount: 10,
+    AutoWideBannersAmount: 10,
+  };
+
+  componentDidMount = () => {
+    const {
+      AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount,
+    } = this.props;
+    this.setState({ AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount });
+  };
+
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (value) {
+    if (event.target.type === 'number') {
+      this.setState(state => Object.assign(state, { [id]: value }));
+    }
+    if (value !== '') {
       saveSettings({ context: 'TvDB', newSettings: { [id]: value } });
     }
   };
@@ -56,9 +78,9 @@ class TvDBSettings extends React.Component<Props> {
   render() {
     const {
       AutoLink, AutoFanart, AutoWideBanners, AutoPosters,
-      AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount,
       UpdateFrequency, Language,
     } = this.props;
+    const { AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount } = this.state;
 
     const updateFrequencyOptions: Array<any> = [];
     const languageOptions: Array<any> = [];

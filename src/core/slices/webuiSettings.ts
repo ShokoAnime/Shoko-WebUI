@@ -84,11 +84,9 @@ export const defaultLayout = {
     }, {
       i: 'tvdb', x: 8, y: 0, w: 4, h: 13, minW: 3, minH: 5,
     }, {
-      i: 'general', x: 0, y: 0, w: 4, h: 6, minW: 3, minH: 5,
+      i: 'general', x: 0, y: 0, w: 4, h: 13, minW: 3, minH: 5,
     }, {
-      i: 'log-rotator', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5,
-    }, {
-      i: 'anidb-login', x: 0, y: 6, w: 4, h: 7, minW: 3, minH: 5,
+      i: 'anidb-login', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5,
     }],
   },
 };

@@ -10,7 +10,6 @@ import { defaultLayout } from '../../../core/slices/webuiSettings';
 import AniDBSettings from '../Panels/AniDBSettings';
 import AniDBLoginSettings from '../Panels/AniDBLoginSettings';
 import GeneralSettings from '../Panels/GeneralSettings';
-import LogRotatorSettings from '../Panels/LogRotatorSettings';
 import MovieDBSettings from '../Panels/MovieDBSettings';
 import TvDBSettings from '../Panels/TvDBSettings';
 
@@ -61,9 +60,6 @@ class SettingsTab extends React.Component<Props, State> {
           </div>
           <div key="moviedb">
             <MovieDBSettings />
-          </div>
-          <div key="log-rotator">
-            <LogRotatorSettings />
           </div>
           <div key="anidb-login">
             <AniDBLoginSettings />
