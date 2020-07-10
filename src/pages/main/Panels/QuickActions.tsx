@@ -15,12 +15,13 @@ class QuickActions extends React.Component<Props> {
   renderRow = (key: string) => {
     const { pinnedActions, runAction, togglePinnedAction } = this.props;
     const action = quickActions[key];
+    const pinned = pinnedActions.indexOf(key) === -1;
 
     return (
       <div className="flex mt-3 justify-between items-center">
         <span className="flex">{action.name}</span>
         <div className="flex">
-          <Button onClick={() => togglePinnedAction(key)} className={cx(['px-2 mr-2', pinnedActions.indexOf(key) === -1 ? 'bg-color-unselected' : 'bg-color-accent'])}>
+          <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-color-accent'])}>
             <FontAwesomeIcon icon={faThumbtack} />
           </Button>
           <Button onClick={() => runAction(action.function, action.data)} className="bg-color-accent font-exo text-sm font-bold px-6 py-1">

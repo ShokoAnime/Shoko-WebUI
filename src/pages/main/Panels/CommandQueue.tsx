@@ -26,15 +26,15 @@ class CommandQueue extends React.Component<Props> {
         </div>
         <div className="flex">{count}</div>
         <div className="flex">
-          <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)}>
+          <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
             <FontAwesomeIcon icon={faTimes} />
           </Button>
           {status === 'Paused' ? (
-            <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Start`)}>
+            <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
               <FontAwesomeIcon icon={faPlay} />
             </Button>
           ) : (
-            <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)}>
+            <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
               <FontAwesomeIcon icon={faPause} />
             </Button>
           )}
@@ -58,11 +58,11 @@ class CommandQueue extends React.Component<Props> {
     return (
       <div>
         {paused ? (
-          <Button className="color-accent mx-2" onClick={() => handleOperation!('Start')}>
+          <Button className="color-accent mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
             <FontAwesomeIcon icon={faPlay} />
           </Button>
         ) : (
-          <Button className="color-accent mx-2" onClick={() => handleOperation!('Pause')}>
+          <Button className="color-accent mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
             <FontAwesomeIcon icon={faPause} />
           </Button>
         )}

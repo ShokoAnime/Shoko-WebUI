@@ -54,7 +54,11 @@ class ImportedTab extends React.Component<Props, State> {
     return (
       <div key={`${item.ID}-date`} className="flex mt-3">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
-        <Button className="color-accent ml-2" onClick={() => this.handleExpand(item)}>
+        <Button
+          className="color-accent ml-2"
+          onClick={() => this.handleExpand(item)}
+          tooltip={expandedItems[item.ID] ? 'Hide Details' : 'Show Details'}
+        >
           {
             expandedItems[item.ID]
               ? <FontAwesomeIcon icon={faCaretUp} />

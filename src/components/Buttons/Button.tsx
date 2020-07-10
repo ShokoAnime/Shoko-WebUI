@@ -8,6 +8,7 @@ type Props = {
   children: any;
   loading?: boolean;
   disabled?: boolean;
+  tooltip?: string;
   onClick: (...args: any) => void;
 };
 
@@ -18,12 +19,13 @@ class Button extends React.Component<Props> {
       children,
       loading,
       disabled,
+      tooltip,
       onClick,
     } = this.props;
 
     return (
       <React.Fragment>
-        <button type="button" className={cx([`${className ?? ''} rounded focus:shadow-none focus:outline-none`, (loading || disabled) && 'cursor-not-allowed'])} onClick={onClick} disabled={disabled}>
+        <button type="button" title={tooltip} className={cx([`${className ?? ''} rounded focus:shadow-none focus:outline-none`, (loading || disabled) && 'cursor-not-allowed'])} onClick={onClick} disabled={disabled}>
           {
             loading
               ? <FontAwesomeIcon icon={faSpinner} spin />
