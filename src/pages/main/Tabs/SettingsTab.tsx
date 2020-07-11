@@ -22,6 +22,11 @@ type State = layoutType;
 class SettingsTab extends React.Component<Props, State> {
   state = defaultLayout.settings;
 
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   componentDidUpdate = (prevProps) => {
     const { layout } = this.props;
     if (!isEqual(prevProps, this.props)) this.setState(layout);

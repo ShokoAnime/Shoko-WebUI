@@ -23,6 +23,11 @@ type State = layoutType;
 class DashboardTab extends React.Component<Props, State> {
   state = defaultLayout.dashboard;
 
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   componentDidUpdate = (prevProps) => {
     const { layout } = this.props;
     if (!isEqual(prevProps, this.props)) this.setState(layout);

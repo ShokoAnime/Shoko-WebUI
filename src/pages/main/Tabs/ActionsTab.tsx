@@ -79,6 +79,11 @@ const actions = {
 class ActionsTab extends React.Component<Props, State> {
   state = defaultLayout.actions;
 
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   componentDidUpdate = (prevProps) => {
     const { layout } = this.props;
     if (!isEqual(prevProps, this.props)) this.setState(layout);

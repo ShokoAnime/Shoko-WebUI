@@ -18,6 +18,11 @@ type State = layoutType;
 class ImportFoldersTab extends React.Component<Props, State> {
   state = defaultLayout.importFolders;
 
+  componentDidMount = () => {
+    const { layout } = this.props;
+    this.setState(layout);
+  };
+
   componentDidUpdate = (prevProps) => {
     const { layout } = this.props;
     if (!isEqual(prevProps, this.props)) this.setState(layout);
