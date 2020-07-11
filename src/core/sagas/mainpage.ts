@@ -1,4 +1,4 @@
-import { put, call } from 'redux-saga/effects';
+import { put, call, all } from 'redux-saga/effects';
 
 import Events from '../events';
 import ApiCommon from '../api/common';
@@ -22,12 +22,12 @@ function* getQueueStatus() {
 // Events
 
 function* eventMainPageLoad() {
-  yield call(getQueueStatus);
-  yield call(SagaDashboard.getDashboardStats);
-  yield call(SagaDashboard.getDashboardSeriesSummary);
-  yield call(SagaImportFolder.getImportFolders);
-  yield call(SagaFile.getRecentFiles);
-  yield call(SagaImportFolder.getImportFolderSeries, { payload: 1 });
+  yield all([
+    yield call(SagaDashboard.getDashboardStats),
+    yield call(SagaDashboard.getDashboardSeriesSummary),
+    yield call(SagaImportFolder.getImportFolders),
+    yield call(SagaFile.getRecentFiles),
+  ]);
 
   // yield put({ type: Events.CHECK_UPDATES });
 }

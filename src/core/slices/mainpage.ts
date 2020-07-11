@@ -26,7 +26,6 @@ type State = {
     }
   };
   recentFiles: Array<RecentFileType>;
-  selectedImportFolderSeries: number;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
 };
@@ -78,9 +77,6 @@ const mainpageSlice = createSlice({
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
     },
-    setSelectedImportFolderSeries(sliceState, action) {
-      sliceState.selectedImportFolderSeries = action.payload;
-    },
     setSeriesSummary(sliceState, action) {
       sliceState.seriesSummary = Object.assign({}, sliceState.seriesSummary, action.payload);
     },
@@ -96,8 +92,7 @@ const mainpageSlice = createSlice({
 export const {
   setActiveTab, setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
-  setRecentFiles, setSelectedImportFolderSeries, setSeriesSummary,
-  setStats, unsetFetched,
+  setRecentFiles, setSeriesSummary, setStats, unsetFetched,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

@@ -4,7 +4,7 @@ import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCircleNotch,
+  faCircleNotch, faRedoAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
@@ -12,8 +12,17 @@ import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Select from '../../../components/Input/Select';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
+import Button from '../../../components/Buttons/Button';
+
+type State = {
+  selectedFolder: number;
+};
 
 class SeriesInImportFolders extends React.Component<Props> {
+  state = {
+    selectedFolder: 1,
+  };
+
   renderItem = (series: any, idx: number) => {
     let paths = '';
 
@@ -35,12 +44,12 @@ class SeriesInImportFolders extends React.Component<Props> {
   };
 
   handleInputChange = (event: any) => {
-    const { getSeries } = this.props;
-    getSeries(event.target.value);
+    this.setState({ selectedFolder: event.target.value });
   };
 
   renderOptions = () => {
-    const { importFolders, selectedFolder } = this.props;
+    const { importFolders, getSeries } = this.props;
+    const { selectedFolder } = this.state;
 
     const folders: Array<any> = [];
 
@@ -49,10 +58,13 @@ class SeriesInImportFolders extends React.Component<Props> {
     });
 
     return (
-      <div className="font-muli font-bold">
-        <Select id="selectedFolder" value={selectedFolder} onChange={this.handleInputChange}>
+      <div className="flex font-muli font-bold">
+        <Select id="selectedFolder" value={selectedFolder} onChange={this.handleInputChange} className="mr-2">
           {folders}
         </Select>
+        <Button onClick={() => getSeries(selectedFolder)} className="color-accent">
+          <FontAwesomeIcon icon={faRedoAlt} />
+        </Button>
       </div>
     );
   };
@@ -86,7 +98,6 @@ class SeriesInImportFolders extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   importFolders: state.mainpage.importFolders,
-  selectedFolder: state.mainpage.selectedImportFolderSeries,
   isFetching: state.fetching.importFolderSeries,
   seriesInFolder: state.mainpage.importFolderSeries,
 });

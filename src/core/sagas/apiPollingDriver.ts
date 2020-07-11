@@ -28,7 +28,7 @@ function* pollAutoRefresh() {
         yield put({ type: Events.MAINPAGE_LOAD, payload: null });
       }
 
-      yield delay(4000);
+      yield delay(1500);
     }
   } finally {
     if (yield cancelled()) {

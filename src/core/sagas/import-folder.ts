@@ -6,10 +6,7 @@ import ApiCommon from '../api/common';
 import ApiImportFolder from '../api/v3/import-folder';
 import ApiSeries from '../api/v3/series';
 
-import {
-  setFetched, setImportFolders, setImportFolderSeries,
-  setSelectedImportFolderSeries,
-} from '../slices/mainpage';
+import { setFetched, setImportFolders, setImportFolderSeries } from '../slices/mainpage';
 import { startFetching, stopFetching } from '../slices/fetching';
 
 function* addImportFolder(action) {
@@ -57,7 +54,6 @@ function* getImportFolders() {
 }
 
 function* getImportFolderSeries(action) {
-  yield put(setSelectedImportFolderSeries(action.payload));
   yield put(startFetching('importFolderSeries'));
   let resultJson = yield call(ApiCommon.getSerieInfobyfolder, `?id=${action.payload}`);
   if (resultJson.error) {
