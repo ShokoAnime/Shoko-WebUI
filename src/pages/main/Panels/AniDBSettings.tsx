@@ -69,7 +69,7 @@ class AniDBSettings extends React.Component<Props, State> {
         {DownloadRelatedAnime && (
           <div className="flex justify-between my-1">
             Related Depth
-            <Input id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={this.handleInputChange} className="w-4" />
+            <Input id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
         <span className="font-bold mt-4">Mylist Options</span>

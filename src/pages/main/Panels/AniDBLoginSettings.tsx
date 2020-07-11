@@ -6,11 +6,42 @@ import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Input from '../../../components/Input/Input';
 
-class AniDBLoginSettings extends React.Component<Props> {
+type State = {
+  Username: string;
+  Password: string;
+  ClientPort: number;
+  AVDumpKey: string;
+  AVDumpClientPort: number;
+};
+
+class AniDBLoginSettings extends React.Component<Props, State> {
+  state = {
+    Username: '',
+    Password: '',
+    ClientPort: 4556,
+    AVDumpKey: '',
+    AVDumpClientPort: 4557,
+  };
+
+  componentDidMount = () => {
+    const {
+      Username, Password, ClientPort,
+      AVDumpKey, AVDumpClientPort,
+    } = this.props;
+    this.setState({
+      Username,
+      Password,
+      ClientPort,
+      AVDumpKey,
+      AVDumpClientPort,
+    });
+  };
+
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    this.setState(state => Object.assign(state, { [id]: value }));
     saveSettings({ context: 'AniDB', newSettings: { [id]: value } });
   };
 
@@ -18,7 +49,7 @@ class AniDBLoginSettings extends React.Component<Props> {
     const {
       Username, Password, ClientPort,
       AVDumpKey, AVDumpClientPort,
-    } = this.props;
+    } = this.state;
 
     return (
       <FixedPanel title="AniDB Login">
@@ -32,7 +63,7 @@ class AniDBLoginSettings extends React.Component<Props> {
         </div>
         <div className="flex justify-between my-1">
           Port
-          <Input id="ClientPort" value={ClientPort} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
+          <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
         </div>
         <div className="flex justify-between my-1">
           AvDump Key
@@ -40,7 +71,7 @@ class AniDBLoginSettings extends React.Component<Props> {
         </div>
         <div className="flex justify-between my-1">
           AvDump Port
-          <Input id="AVDumpClientPort" value={AVDumpClientPort} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
+          <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
         </div>
       </FixedPanel>
     );

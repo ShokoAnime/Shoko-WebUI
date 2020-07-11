@@ -46,14 +46,14 @@ class MovieDBSettings extends React.Component<Props, State> {
         {AutoFanart && (
           <div className="flex justify-between my-1">
             Max Fanart
-            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" />
+            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
         <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
         {AutoPosters && (
           <div className="flex justify-between my-1">
             Max Posters
-            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" />
+            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
       </FixedPanel>
