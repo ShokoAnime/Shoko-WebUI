@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
-import { forEach } from 'lodash';
+import { forEach, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
@@ -44,10 +44,11 @@ class ImportBreakdown extends React.Component<Props, State> {
     const { activeTab } = this.state;
     const { items } = this.props;
 
+    const sortedItems = orderBy(items, ['ID'], ['desc']);
     const importedItems: Array<RecentFileType> = [];
     const unrecognizedItems: Array<RecentFileType> = [];
 
-    forEach(items, item => (
+    forEach(sortedItems, item => (
       item.SeriesIDs ? importedItems.push(item) : unrecognizedItems.push(item)
     ));
 
