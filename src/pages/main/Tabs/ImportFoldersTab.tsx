@@ -63,7 +63,6 @@ class ImportFoldersTab extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   layout: state.webuiSettings.v3.layout.importFolders,
-  fetched: state.mainpage.fetched.settings,
 });
 
 const mapDispatch = {

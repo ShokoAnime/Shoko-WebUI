@@ -128,7 +128,6 @@ class ActionsTab extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   layout: state.webuiSettings.v3.layout.actions,
-  fetched: state.mainpage.fetched.settings,
 });
 
 const mapDispatch = {

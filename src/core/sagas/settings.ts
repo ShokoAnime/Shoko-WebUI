@@ -12,7 +12,6 @@ import ApiSettings from '../api/v3/settings';
 
 import { startFetching, stopFetching } from '../slices/fetching';
 import { saveLocalSettings } from '../slices/localSettings';
-import { setFetched, unsetFetched } from '../slices/mainpage';
 import { setItem as setMiscItem } from '../slices/misc';
 import { saveServerSettings } from '../slices/serverSettings';
 import {
@@ -32,7 +31,6 @@ function* getPlexLoginUrl() {
 }
 
 function* getSettings() {
-  yield put(unsetFetched('settings'));
   yield put(startFetching('settings'));
   const resultJson = yield call(ApiSettings.getSettings);
   yield put(stopFetching('settings'));
@@ -46,7 +44,6 @@ function* getSettings() {
   }
   yield put(saveServerSettings(resultJson.data));
   yield put(saveLocalSettings(resultJson.data));
-  yield put(setFetched('settings'));
 }
 
 function* getTraktCode() {
