@@ -8,7 +8,7 @@ const localSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveLocalSettings(sliceState, action: PayloadAction<any>) {
-      return mergeDeep(sliceState, action.payload);
+      return mergeDeep({}, sliceState, action.payload);
     },
   },
 });

@@ -13,7 +13,7 @@ const miscSlice = createSlice({
   } as any,
   reducers: {
     setItem(sliceState, action: PayloadAction<any>) {
-      return Object.assign(sliceState, action.payload);
+      return Object.assign({}, sliceState, action.payload);
     },
   },
 });

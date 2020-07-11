@@ -46,13 +46,13 @@ const firstrunSlice = createSlice({
       sliceState.userStatus = action.payload;
     },
     setSaved(sliceState, action: PayloadAction<string>) {
-      sliceState.saved = Object.assign(sliceState.saved, { [action.payload]: true });
+      sliceState.saved = Object.assign({}, sliceState.saved, { [action.payload]: true });
     },
     setStatus(sliceState, action: PayloadAction<any>) {
       sliceState.status = action.payload;
     },
     setUser(sliceState, action: PayloadAction<any>) {
-      sliceState.user = Object.assign(sliceState.user, action.payload);
+      sliceState.user = Object.assign({}, sliceState.user, action.payload);
     },
   },
 });

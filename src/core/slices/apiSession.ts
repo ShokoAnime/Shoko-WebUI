@@ -9,10 +9,10 @@ const apiSessionSlice = createSlice({
   },
   reducers: {
     setDetails(sliceState, action) {
-      return Object.assign(sliceState, action.payload);
+      return Object.assign({}, sliceState, action.payload);
     },
     unsetDetails(sliceState) {
-      return Object.assign(sliceState, { apikey: '', username: '', rememberUser: false });
+      return Object.assign({}, sliceState, { apikey: '', username: '', rememberUser: false });
     },
   },
 });

@@ -36,7 +36,7 @@ class ImportFolders extends React.Component<Props, State> {
   handleInputChange = (event: any) => {
     const name = event.target.id;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    this.setState(prevState => Object.assign({}, prevState, { [name]: value }));
   };
 
   handleAddFolder = () => {
@@ -150,7 +150,7 @@ class ImportFolders extends React.Component<Props, State> {
   };
 
   onFolderSelect = (folder: string) => {
-    this.setState(prevState => Object.assign(prevState, { Path: folder }));
+    this.setState(prevState => Object.assign({}, prevState, { Path: folder }));
   };
 
   render() {

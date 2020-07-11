@@ -79,7 +79,7 @@ const serverSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveServerSettings(sliceState, action: PayloadAction<Partial<SettingsServerType>>) {
-      return Object.assign(sliceState, action.payload);
+      return Object.assign({}, sliceState, action.payload);
     },
   },
 });

@@ -15,7 +15,7 @@ class DataCollection extends React.Component<{}, State> {
   handleInputChange = (event: any) => {
     const name = event.target.id;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign(prevState, { [name]: value }));
+    this.setState(prevState => Object.assign({}, prevState, { [name]: value }));
   };
 
   render() {

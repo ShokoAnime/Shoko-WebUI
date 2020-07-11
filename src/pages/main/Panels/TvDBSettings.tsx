@@ -68,7 +68,7 @@ class TvDBSettings extends React.Component<Props, State> {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     if (event.target.type === 'number') {
-      this.setState(state => Object.assign(state, { [id]: value }));
+      this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
     }
     if (value !== '') {
       saveSettings({ context: 'TvDB', newSettings: { [id]: value } });

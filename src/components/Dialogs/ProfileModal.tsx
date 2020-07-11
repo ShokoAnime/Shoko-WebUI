@@ -53,7 +53,7 @@ class ProfileModal extends React.Component<Props, State> {
 
   handleInputChange = (event: any) => {
     const { id, value } = event.target;
-    this.setState(prevState => Object.assign(prevState, { [id]: value }));
+    this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
   };
 
   editUsername = () => {

@@ -5,10 +5,10 @@ const fetchingSlice = createSlice({
   initialState: {} as { [key: string]: boolean },
   reducers: {
     startFetching(sliceState, action) {
-      return Object.assign(sliceState, { [action.payload]: true });
+      return Object.assign({}, sliceState, { [action.payload]: true });
     },
     stopFetching(sliceState, action) {
-      return Object.assign(sliceState, { [action.payload]: false });
+      return Object.assign({}, sliceState, { [action.payload]: false });
     },
   },
 });

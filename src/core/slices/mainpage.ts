@@ -56,10 +56,10 @@ const mainpageSlice = createSlice({
       sliceState.activeTab = action.payload;
     },
     setAvdump(sliceState, action) {
-      sliceState.avdump = Object.assign(sliceState.avdump, action.payload);
+      sliceState.avdump = Object.assign({}, sliceState.avdump, action.payload);
     },
     setFetched(sliceState, action) {
-      sliceState.fetched = Object.assign(sliceState.fetched, { [action.payload]: true });
+      sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
     },
     setImportFolders(sliceState, action) {
       sliceState.importFolders = action.payload;
@@ -68,10 +68,12 @@ const mainpageSlice = createSlice({
       sliceState.importFolderSeries = action.payload;
     },
     setQueueStatus(sliceState, action) {
-      sliceState.queueStatus = Object.assign(sliceState.queueStatus, action.payload);
+      sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
     setRecentFileDetails(sliceState, action) {
-      sliceState.recentFileDetails = Object.assign(sliceState.recentFileDetails, action.payload);
+      sliceState.recentFileDetails = Object.assign(
+        {}, sliceState.recentFileDetails, action.payload,
+      );
     },
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
@@ -80,13 +82,13 @@ const mainpageSlice = createSlice({
       sliceState.selectedImportFolderSeries = action.payload;
     },
     setSeriesSummary(sliceState, action) {
-      sliceState.seriesSummary = Object.assign(sliceState.seriesSummary, action.payload);
+      sliceState.seriesSummary = Object.assign({}, sliceState.seriesSummary, action.payload);
     },
     setStats(sliceState, action) {
       sliceState.stats = action.payload;
     },
     unsetFetched(sliceState, action) {
-      sliceState.fetched = Object.assign(sliceState.fetched, { [action.payload]: false });
+      sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: false });
     },
   },
 });

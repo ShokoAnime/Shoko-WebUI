@@ -114,7 +114,7 @@ const webuiSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      return Object.assign(sliceState, action.payload);
+      return Object.assign({}, sliceState, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
       sliceState.v3.actions.push(action.payload);
@@ -125,7 +125,7 @@ const webuiSettingsSlice = createSlice({
       sliceState.v3.actions = Array.from(tempSet);
     },
     saveLayout(sliceState, action) {
-      sliceState.v3.layout = Object.assign(sliceState.v3.layout, action.payload);
+      sliceState.v3.layout = Object.assign({}, sliceState.v3.layout, action.payload);
     },
   },
 });
