@@ -99,7 +99,7 @@ function* saveWebUISettings(action) {
 
 function* togglePinnedAction(action) {
   const { payload } = action;
-  const pinnedActions = yield select((state: RootState) => state.webuiSettings.actions);
+  const pinnedActions = yield select((state: RootState) => state.webuiSettings.v3.actions);
   if (pinnedActions.indexOf(payload) === -1) {
     yield put(addAction(payload));
   } else {

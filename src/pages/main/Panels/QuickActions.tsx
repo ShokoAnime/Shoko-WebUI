@@ -49,7 +49,7 @@ class QuickActions extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  pinnedActions: state.webuiSettings.actions,
+  pinnedActions: state.webuiSettings.v3.actions,
 });
 
 const mapDispatch = {

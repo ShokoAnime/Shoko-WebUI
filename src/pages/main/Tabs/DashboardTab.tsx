@@ -1,6 +1,8 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { isEqual, isUndefined } from 'lodash';
+import { omitDeepBy } from '../../../core/util';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -21,15 +23,14 @@ type State = layoutType;
 class DashboardTab extends React.Component<Props, State> {
   state = defaultLayout.dashboard;
 
-  componentDidMount = () => {
+  componentDidUpdate = (prevProps) => {
     const { layout } = this.props;
-    this.setState(layout);
+    if (!isEqual(prevProps, this.props)) this.setState(layout);
   };
 
   handleOnLayoutChange = (layout: any) => {
-    const { fetched, changeLayout } = this.props;
-    this.setState(layout);
-    if (fetched) {
+    const { changeLayout } = this.props;
+    if (!isEqual(this.state, omitDeepBy(layout, isUndefined))) {
       changeLayout(layout);
     }
   };
@@ -78,7 +79,7 @@ class DashboardTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.layout.dashboard,
+  layout: state.webuiSettings.v3.layout.dashboard,
   fetched: state.mainpage.fetched.settings,
 });
 

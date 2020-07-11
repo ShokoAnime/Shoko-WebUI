@@ -173,6 +173,7 @@
       "react/static-property-placement": "off",
       "react/jsx-fragments": "off",
       "react/jsx-props-no-spreading": "off",
+      "react/no-did-update-set-state": "off",
       "prefer-object-spread": "off",
       "no-param-reassign": [
         "error",

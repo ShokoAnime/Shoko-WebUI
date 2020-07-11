@@ -57,7 +57,7 @@ class GeneralSettings extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  ...(state.webuiSettings),
+  ...(state.webuiSettings.v3),
   ...(state.localSettings.LogRotator),
 });
 

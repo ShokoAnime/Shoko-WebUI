@@ -10,8 +10,8 @@ type layoutItemType = {
   maxW?: number;
   minH?: number;
   maxH?: number;
-  static?: boolean;
-  moved?: boolean;
+  static: boolean;
+  moved: boolean;
 };
 
 export type layoutType = {
@@ -21,88 +21,92 @@ export type layoutType = {
 type updateChannelType = 'stable' | 'unstable';
 
 type State = {
-  actions: Array<string>,
-  layout: {
-    [key: string]: layoutType;
-  },
-  notifications: boolean;
-  theme: string;
-  updateChannel: updateChannelType;
+  v3: {
+    actions: Array<string>,
+    layout: {
+      [key: string]: layoutType;
+    },
+    notifications: boolean;
+    theme: string;
+    updateChannel: updateChannelType;
+  }
 };
 
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
     }, {
-      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8,
+      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
     }, {
-      i: 'commandQueue', x: 0, y: 6, w: 5, h: 9, minW: 5, minH: 5,
+      i: 'commandQueue', x: 0, y: 6, w: 5, h: 9, minW: 5, minH: 5, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 5, y: 6, w: 4, h: 9,
+      i: 'importFolders', x: 5, y: 6, w: 4, h: 9, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 0, y: 15, w: 9, h: 11,
+      i: 'importBreakdown', x: 0, y: 15, w: 9, h: 11, moved: false, static: false,
     }, {
-      i: 'actionItems', x: 9, y: 11, w: 3, h: 9,
+      i: 'actionItems', x: 9, y: 6, w: 3, h: 9, moved: false, static: false,
     }, {
-      i: 'filesBreakdown', x: 9, y: 15, w: 3, h: 11,
+      i: 'filesBreakdown', x: 9, y: 15, w: 3, h: 11, moved: false, static: false,
     }],
   },
   importFolders: {
     lg: [{
-      i: 'importBreakdown', x: 0, y: 0, w: 8, h: 11,
+      i: 'importBreakdown', x: 0, y: 0, w: 8, h: 11, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 8, y: 0, w: 4, h: 11,
+      i: 'importFolders', x: 8, y: 0, w: 4, h: 11, moved: false, static: false,
     }, {
-      i: 'seriesInImportFolder', x: 0, y: 11, w: 12, h: 11,
+      i: 'seriesInImportFolder', x: 0, y: 11, w: 12, h: 11, moved: false, static: false,
     }],
   },
   actions: {
     lg: [{
-      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
-      i: 'shoko', x: 4, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+      i: 'shoko', x: 4, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
-      i: 'import', x: 8, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+      i: 'import', x: 8, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
-      i: 'moviedb', x: 0, y: 14, w: 4, h: 4, minW: 3, minH: 4, maxH: 10,
+      i: 'moviedb', x: 0, y: 14, w: 4, h: 4, minW: 3, minH: 4, maxH: 10, moved: false, static: false,
     }, {
-      i: 'images', x: 4, y: 9, w: 4, h: 9, minW: 3, minH: 5, maxH: 10,
+      i: 'images', x: 4, y: 9, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
-      i: 'plex', x: 8, y: 9, w: 4, h: 4, minW: 3, minH: 4, maxH: 10,
+      i: 'plex', x: 8, y: 9, w: 4, h: 4, minW: 3, minH: 4, maxH: 10, moved: false, static: false,
     }, {
-      i: 'trakt', x: 8, y: 14, w: 4, h: 5, minW: 3, minH: 5, maxH: 10,
+      i: 'trakt', x: 8, y: 14, w: 4, h: 5, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
-      i: 'tvdb', x: 0, y: 9, w: 4, h: 5, minW: 3, minH: 5, maxH: 10,
+      i: 'tvdb', x: 0, y: 9, w: 4, h: 5, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }],
   },
   settings: {
     lg: [{
-      i: 'anidb', x: 4, y: 0, w: 4, h: 20, minW: 3, minH: 5,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 20, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'moviedb', x: 8, y: 13, w: 4, h: 7, minW: 3, minH: 5,
+      i: 'moviedb', x: 8, y: 13, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'tvdb', x: 8, y: 0, w: 4, h: 13, minW: 3, minH: 5,
+      i: 'tvdb', x: 8, y: 0, w: 4, h: 13, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'general', x: 0, y: 0, w: 4, h: 13, minW: 3, minH: 5,
+      i: 'general', x: 0, y: 0, w: 4, h: 13, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'anidb-login', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5,
+      i: 'anidb-login', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
     }],
   },
 };
 
 const initialState = {
-  actions: [
-    'remove-missing-files-mylist',
-    'update-series-stats',
-    'update-all-anidb-info',
-    'update-all-tvdb-info',
-    'plex-sync-all',
-  ],
-  layout: defaultLayout,
-  notifications: true,
-  theme: '',
-  updateChannel: 'stable',
+  v3: {
+    actions: [
+      'remove-missing-files-mylist',
+      'update-series-stats',
+      'update-all-anidb-info',
+      'update-all-tvdb-info',
+      'plex-sync-all',
+    ],
+    layout: defaultLayout,
+    notifications: true,
+    theme: '',
+    updateChannel: 'stable',
+  },
 } as State;
 
 const webuiSettingsSlice = createSlice({
@@ -113,15 +117,15 @@ const webuiSettingsSlice = createSlice({
       return Object.assign(sliceState, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
-      sliceState.actions.push(action.payload);
+      sliceState.v3.actions.push(action.payload);
     },
     removeAction(sliceState, action: PayloadAction<string>) {
-      const tempSet = new Set(sliceState.actions);
+      const tempSet = new Set(sliceState.v3.actions);
       tempSet.delete(action.payload);
-      sliceState.actions = Array.from(tempSet);
+      sliceState.v3.actions = Array.from(tempSet);
     },
     saveLayout(sliceState, action) {
-      sliceState.layout = Object.assign(sliceState.layout, action.payload);
+      sliceState.v3.layout = Object.assign(sliceState.v3.layout, action.payload);
     },
   },
 });

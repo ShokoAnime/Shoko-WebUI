@@ -1,4 +1,5 @@
 /* eslint-disable no-param-reassign */
+import { each, unset, isObject } from 'lodash';
 import Version from '../../public/version.json';
 
 export function uiVersion() {
@@ -6,8 +7,6 @@ export function uiVersion() {
 }
 
 export function mergeDeep(...objects) {
-  const isObject = obj => obj && typeof obj === 'object';
-
   return objects.reduce((prev, obj) => {
     Object.keys(obj).forEach((key) => {
       const pVal = prev[key];
@@ -24,6 +23,20 @@ export function mergeDeep(...objects) {
 
     return prev;
   }, {});
+}
+
+// Needed to compare layout properties.
+// Stolen from https://stackoverflow.com/questions/37246775/
+export function omitDeepBy(value: any, iteratee: Function) {
+  each(value, (v, k) => {
+    if (iteratee(v, k)) {
+      unset(value, k);
+    } else if (isObject(v)) {
+      omitDeepBy(v, iteratee);
+    }
+  });
+
+  return value;
 }
 
 export default {};
