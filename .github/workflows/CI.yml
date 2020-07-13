@@ -1,7 +1,7 @@
 name: CI
 on:
   push:
-    branches: [ master ]
+    branches: [ master, NewWebUI ]
   pull_request:
 
 jobs:
