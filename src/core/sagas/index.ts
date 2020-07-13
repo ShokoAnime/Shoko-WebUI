@@ -10,6 +10,7 @@ import Events from '../events';
 import SagaAlerts from './alerts';
 import SagaAuth from './auth';
 import SagaFile from './file';
+import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
 import SagaInit from './init';
 import SagaQuickAction from './quick-actions';
@@ -19,23 +20,11 @@ import SagaSettings from './settings';
 import {
   JMM_VERSION, UPDATE_AVAILABLE,
 } from '../actions';
-import {
-  setItems as setBrowseModalItems, setId as setBrowseModalId,
-} from '../slices/modals/browseFolder';
 import apiPollingDriver from './apiPollingDriver';
 
 import { startFetching, stopFetching } from '../slices/fetching';
 
 const dispatchAction = (type, payload) => put(createAction(type)(payload));
-
-function* settingsSaveLogRotate(action) {
-  const resultJson = yield call(ApiCommon.postLogRotate.bind(this, action.payload));
-  if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Log settings saved!' } });
-  }
-}
 
 function* checkUpdates() {
   const {
@@ -84,38 +73,13 @@ function* downloadUpdates() {
   yield dispatchAction(Events.QUEUE_GLOBAL_ALERT, { type: 'success', text: message, duration: 10000 });
 }
 
-function* osBrowse(action) {
-  let genId = yield select(state => state.modals.browseFolder.id);
-  const {
-    id,
-    path,
-  } = action.payload;
-  yield put(startFetching(`browse-treenode-${id}`));
-  const resultJson = yield call(path === '' ? ApiCommon.getOsDrives : ApiCommon.postOsFolder,
-    path);
-  yield put(stopFetching(`browse-treenode-${id}`));
-  if (resultJson.error) {
-    yield dispatchAction(Events.QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
-    return;
-  }
-  const nodes: Array<any> = [];
-  forEach(resultJson.data.subdir, (node) => {
-    genId += 1;
-    nodes.push(Object.assign({}, node, { nodeId: genId }));
-  });
-  yield put(setBrowseModalId(genId));
-  yield put(setBrowseModalItems({ key: id, nodes }));
-}
-
 export default function* rootSaga() {
   yield all([
     // OLD
     takeEvery(Events.PAGE_LOGS_LOAD, SagaSettings.getSettings),
-    takeEvery(Events.SETTINGS_POST_LOG_ROTATE, settingsSaveLogRotate),
     takeEvery(Events.CHECK_UPDATES, checkUpdates),
     takeEvery(Events.SERVER_VERSION, serverVersion),
     takeEvery(Events.WEBUI_UPDATE, downloadUpdates),
-    takeEvery(Events.OS_BROWSE, osBrowse),
     // ALERTS
     takeEvery(Events.QUEUE_GLOBAL_ALERT, SagaAlerts.queueGlobalAlert),
     // API POLLING
@@ -133,6 +97,8 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_START_SERVER, SagaInit.startServer),
     takeEvery(Events.FIRSTRUN_TEST_ANIDB, SagaInit.testAniDB),
     takeEvery(Events.FIRSTRUN_TEST_DATABASE, SagaInit.testDatabase),
+    // FOLDER
+    takeEvery(Events.OS_BROWSE, SagaFolder.folderBrowse),
     // QUICK ACTIONS
     takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE

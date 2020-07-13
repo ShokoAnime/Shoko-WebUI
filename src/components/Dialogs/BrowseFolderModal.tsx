@@ -19,7 +19,7 @@ class BrowseFolderModal extends React.Component<Props> {
     status(false);
 
     if (typeof onSelect === 'function') {
-      onSelect(selectedNode.path);
+      onSelect(selectedNode.Path);
     }
   };
 
