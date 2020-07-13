@@ -25,7 +25,7 @@ function* pollAutoRefresh() {
       const location = yield select(state => state.router.location.pathname);
 
       if (location === '/main') {
-        yield put({ type: Events.MAINPAGE_LOAD, payload: null });
+        yield put({ type: Events.MAINPAGE_REFRESH, payload: null });
       }
 
       yield delay(1500);
