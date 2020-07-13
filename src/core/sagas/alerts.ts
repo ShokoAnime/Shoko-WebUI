@@ -1,6 +1,7 @@
-import { put, delay, call } from 'redux-saga/effects';
+import { put, delay } from 'redux-saga/effects';
 import { without } from 'lodash';
 
+import QUEUE_GLOBAL_ALERT from '../events';
 import { setGlobalAlert } from '../slices/globalAlert';
 
 const maxAlerts = 2;
@@ -18,7 +19,7 @@ function* queueGlobalAlert(action) {
     yield put(setGlobalAlert(activeAlerts));
   } else {
     yield delay(alertDisplayTime / 2);
-    yield call(queueGlobalAlert, alert);
+    yield put({ type: QUEUE_GLOBAL_ALERT, payload: alert });
   }
 }
 export default {
