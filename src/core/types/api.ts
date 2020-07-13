@@ -23,7 +23,7 @@ export type SeriesInfoType = {
   paths: Array<string>,
 };
 
-type QueueItemType = {
+export type QueueItemType = {
   count?: number;
   state: string;
   isrunning?: boolean;

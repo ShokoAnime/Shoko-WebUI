@@ -39,15 +39,15 @@ export const defaultLayout = {
     }, {
       i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
     }, {
-      i: 'commandQueue', x: 0, y: 6, w: 5, h: 9, minW: 5, minH: 5, moved: false, static: false,
+      i: 'commandQueue', x: 0, y: 6, w: 5, h: 10, minW: 5, minH: 5, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 5, y: 6, w: 4, h: 9, moved: false, static: false,
+      i: 'importFolders', x: 5, y: 6, w: 4, h: 10, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 0, y: 15, w: 9, h: 11, moved: false, static: false,
+      i: 'importBreakdown', x: 0, y: 16, w: 9, h: 11, moved: false, static: false,
     }, {
-      i: 'actionItems', x: 9, y: 6, w: 3, h: 9, moved: false, static: false,
+      i: 'actionItems', x: 9, y: 6, w: 3, h: 10, moved: false, static: false,
     }, {
-      i: 'filesBreakdown', x: 9, y: 15, w: 3, h: 11, moved: false, static: false,
+      i: 'filesBreakdown', x: 9, y: 16, w: 3, h: 11, moved: false, static: false,
     }],
   },
   importFolders: {
