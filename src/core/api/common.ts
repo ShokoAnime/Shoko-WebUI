@@ -81,14 +81,6 @@ function getSerieInfobyfolder(data: string) {
   return Api.call({ action: '/serie/infobyfolder', query: data });
 }
 
-function getOsDrives() {
-  return Api.call({ action: '/os/drives' });
-}
-
-function postOsFolder(path) {
-  return Api.call({ action: '/os/folder', method: 'POST', params: { dir: path, full_path: path } });
-}
-
 function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
 }
@@ -113,7 +105,5 @@ export default {
   getVersion,
   getWebuiUpdate,
   getSerieInfobyfolder,
-  getOsDrives,
-  postOsFolder,
   getTraktCode,
 };
