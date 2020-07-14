@@ -11,8 +11,8 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Select from '../../../components/Input/Select';
-import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import Button from '../../../components/Buttons/Button';
+import type { ImportFolderType } from '../../../core/types/api/import-folder';
 
 type State = {
   selectedFolder: number;
@@ -21,6 +21,15 @@ type State = {
 class SeriesInImportFolders extends React.Component<Props> {
   state = {
     selectedFolder: 1,
+  };
+
+  componentDidMount = () => {
+    const { importFolders, getSeries } = this.props;
+    const selectedFolder = importFolders[0]?.ID;
+    if (selectedFolder) {
+      getSeries(selectedFolder);
+      this.setState({ selectedFolder });
+    }
   };
 
   renderItem = (series: any, idx: number) => {
