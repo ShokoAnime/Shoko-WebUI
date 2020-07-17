@@ -39,7 +39,7 @@ class DataCollection extends React.Component<{}, State> {
             </span>
           </div>
         </div>
-        <Footer prevTabKey="import-folders" nextTabKey="" finish />
+        <Footer prevTabKey="import-folders" nextTabKey="" finish nextDisabled={!collectData} />
       </React.Fragment>
     );
   }

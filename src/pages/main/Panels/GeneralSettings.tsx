@@ -1,14 +1,25 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRedo } from '@fortawesome/free-solid-svg-icons';
 
+import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
 import Select from '../../../components/Input/Select';
+import Button from '../../../components/Buttons/Button';
+
+const UI_VERSION = uiVersion();
 
 class GeneralSettings extends React.Component<Props> {
+  componentDidMount = () => {
+    const { serverVersion } = this.props;
+    serverVersion();
+  };
+
   handleStyleInputChange = (event: any) => {
     const { saveStyleSettings } = this.props;
     const { id } = event.target;
@@ -25,12 +36,26 @@ class GeneralSettings extends React.Component<Props> {
 
   render() {
     const {
-      notifications, Enabled, Zip, Delete, Delete_Days,
+      notifications, Enabled, Zip, Delete, Delete_Days, version,
     } = this.props;
 
     return (
       <FixedPanel title="General">
-        <span className="font-bold mt-2">Style Options</span>
+        <div className="flex justify-between mt-2">
+          <span className="font-bold">Information</span>
+          <Button onClick={() => ({})} className="color-accent text-xs" tooltip="Check for updates">
+            <FontAwesomeIcon icon={faRedo} />
+          </Button>
+        </div>
+        <div className="flex justify-between my-1">
+          Shoko Version
+          <span className="uppercase"> {version}</span>
+        </div>
+        <div className="flex justify-between my-1">
+          WebUI Version
+          <span className="uppercase">{UI_VERSION}</span>
+        </div>
+        <span className="font-bold mt-4">Style Options</span>
         <div className="flex justify-between my-1">
           Theme
           <span className="color-accent font-bold">Shoko Modern</span>
@@ -59,11 +84,13 @@ class GeneralSettings extends React.Component<Props> {
 const mapState = (state: RootState) => ({
   ...(state.webuiSettings.v3),
   ...(state.localSettings.LogRotator),
+  version: state.jmmVersion,
 });
 
 const mapDispatch = {
   saveStyleSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_WEBUI, payload: value }),
   saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
+  serverVersion: () => ({ type: Events.SERVER_VERSION }),
 };
 
 const connector = connect(mapState, mapDispatch);

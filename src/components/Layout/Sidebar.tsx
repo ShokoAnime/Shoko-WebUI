@@ -8,10 +8,7 @@ import {
 import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
-import { uiVersion } from '../../core/util';
 import { setActiveTab } from '../../core/slices/mainpage';
-
-const UI_VERSION = uiVersion();
 
 class Sidebar extends React.Component<Props> {
   renderItem = (key: string, text: string, icon) => {
@@ -38,10 +35,9 @@ class Sidebar extends React.Component<Props> {
     return (
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10 h-screen fixed sidebar">
-          <div className="h-auto italic font-extrabold text-2xl2 text-center uppercase">
+          <div className="h-auto italic font-extrabold text-4xl text-center uppercase">
             Shoko <span className="color-accent">Server</span>
           </div>
-          <div className="h-auto mt-3 text-center font-semibold uppercase">{UI_VERSION}</div>
           <div className="flex flex-col flex-grow justify-between">
             <div className="flex flex-col">
               {this.renderItem('dashboard', 'Dashboard', faTachometerAlt)}

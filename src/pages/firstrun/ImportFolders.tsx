@@ -6,6 +6,7 @@ import { faEdit, faFolderOpen, faTrashAlt } from '@fortawesome/free-solid-svg-ic
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
+import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Buttons/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
@@ -37,6 +38,11 @@ class ImportFolders extends React.Component<Props, State> {
     const name = event.target.id;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     this.setState(prevState => Object.assign({}, prevState, { [name]: value }));
+  };
+
+  handleSave = () => {
+    const { setSaved } = this.props;
+    setSaved('import-folders');
   };
 
   handleAddFolder = () => {
@@ -181,7 +187,7 @@ class ImportFolders extends React.Component<Props, State> {
             {showAddNew && this.renderForm()}
           </div>
         </div>
-        <Footer prevTabKey="start-server" nextTabKey="data-collection" />
+        <Footer prevTabKey="start-server" nextTabKey="data-collection" saveFunction={this.handleSave} />
         <BrowseFolderModal onSelect={this.onFolderSelect} />
       </React.Fragment>
     );
@@ -197,6 +203,7 @@ const mapDispatch = {
   addImportFolder: (payload: ImportFolderType) => ({ type: Events.IMPORT_FOLDER_ADD, payload }),
   editImportFolder: (payload: ImportFolderType) => ({ type: Events.IMPORT_FOLDER_EDIT, payload }),
   deleteImportFolder: (payload: number) => ({ type: Events.IMPORT_FOLDER_DELETE, payload }),
+  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);

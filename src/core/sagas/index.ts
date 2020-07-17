@@ -90,7 +90,6 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
     takeEvery(Events.AUTH_SKIP_LOGIN, SagaAuth.skipLogin),
     // FIRSTRUN
-    takeEvery(Events.FIRSTRUN_FINISH_SETUP, SagaInit.finishSetup),
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),
     takeEvery(Events.FIRSTRUN_SET_USER, SagaInit.setDefaultUser),

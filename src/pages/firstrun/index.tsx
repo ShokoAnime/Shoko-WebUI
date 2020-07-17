@@ -3,6 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSpinner, faCircle as faCircleSolid, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { replace } from 'connected-react-router';
 
 import { RootState } from '../../core/store';
 import { uiVersion } from '../../core/util';
@@ -20,7 +21,13 @@ const UI_VERSION = uiVersion();
 
 class FirstRunPage extends React.Component<Props> {
   componentDidMount() {
-    const { serverVersion, getSettings } = this.props;
+    const {
+      status, redirectToLogin, serverVersion, getSettings,
+    } = this.props;
+    if (status.State !== 4) {
+      redirectToLogin();
+      return;
+    }
     serverVersion();
     getSettings();
   }
@@ -92,7 +99,7 @@ class FirstRunPage extends React.Component<Props> {
           <div className="flex flex-grow firstrun-image rounded-l-lg">
             <div className="flex flex-col flex-grow firstrun-sidebar h-full rounded-l-lg py-5">
               <div>
-                <div className="text-center text-3xl2 font-extrabold uppercase italic">Shoko <span className="color-accent">Server</span></div>
+                <div className="text-center text-4xl2 font-extrabold uppercase italic">Shoko <span className="color-accent">Server</span></div>
                 {this.renderVersion()}
               </div>
               <div className="flex flex-col flex-grow justify-center ml-16">
@@ -125,11 +132,13 @@ const mapState = (state: RootState) => ({
   isFetching: state.fetching.serverVersion,
   activeTab: state.firstrun.activeTab,
   saved: state.firstrun.saved,
+  status: state.firstrun.status,
 });
 
 const mapDispatch = {
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
   getSettings: () => ({ type: Events.SETTINGS_GET_SERVER }),
+  redirectToLogin: () => (replace('/')),
 };
 
 const connector = connect(mapState, mapDispatch);

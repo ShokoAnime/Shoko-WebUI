@@ -1,7 +1,6 @@
 import {
   call, delay, put, select,
 } from 'redux-saga/effects';
-import { push } from 'connected-react-router';
 
 import Events from '../events';
 import { startFetching, stopFetching } from '../slices/fetching';
@@ -10,10 +9,6 @@ import {
 } from '../slices/firstrun';
 
 import ApiInit from '../api/v3/init';
-
-function* finishSetup() {
-  yield put(push({ pathname: '/main' }));
-}
 
 function* getDefaultUser() {
   const resultJson = yield call(ApiInit.getDefaultUser);
@@ -91,7 +86,6 @@ function* testDatabase() {
 }
 
 export default {
-  finishSetup,
   getDefaultUser,
   getInitStatus,
   startServer,

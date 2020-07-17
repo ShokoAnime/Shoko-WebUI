@@ -1,11 +1,11 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { replace } from 'connected-react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import { setActiveTab as setFirstRunTab } from '../../core/slices/firstrun';
 import Button from '../../components/Buttons/Button';
 
@@ -45,7 +45,7 @@ class Footer extends React.Component<Props> {
           <div className="flex">
             <Button onClick={() => this.handleBack()} className="bg-color-accent py-2 px-3 mr-4" disabled={prevDisabled}>Back</Button>
             {finish ? (
-              <Button onClick={() => finishSetup()} className="bg-color-accent py-2 px-3">Finish</Button>
+              <Button onClick={() => finishSetup()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Finish</Button>
             ) : (
               <Button onClick={() => this.handleNext()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Next</Button>
             )}
@@ -62,7 +62,7 @@ const mapState = (state: RootState) => ({
 
 const mapDispatch = {
   setActiveTab: (value: string) => (setFirstRunTab(value)),
-  finishSetup: () => ({ type: Events.FIRSTRUN_FINISH_SETUP }),
+  finishSetup: () => (replace({ pathname: '/main' })),
 };
 
 const connector = connect(mapState, mapDispatch);

@@ -25,6 +25,7 @@ input, button, textarea, :focus {
 body {
   font-family: 'Exo 2', Muli, Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
   font-size: 16px;
+  font-weight: 500;
   background-color: $website-background-color;
   color: $text-color;
 }
@@ -42,8 +43,16 @@ body {
   font-size: 1.75rem;
 }
 
-.text-3xl2 {
+.text-4xl2 {
   font-size: 2.5rem;
+}
+
+.text-5xl2 {
+  font-size: 3.5rem;
+}
+
+.text-6xl2 {
+  font-size: 4.25rem;
 }
 
 .bg-color-unselected {

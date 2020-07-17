@@ -35,7 +35,7 @@ class Acknowledgement extends React.Component<Props> {
             Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
             mollit anim id est laborum.
           </div>
-          <div className="flex justify-center">
+          <div className="flex h-full justify-center items-center">
             <Button onClick={() => this.handleNext()} className="bg-color-accent  py-2 px-5 rounded" disabled={status.State !== 4}>Continue Setup</Button>
           </div>
         </div>

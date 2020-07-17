@@ -74,7 +74,7 @@ class LoginPage extends React.Component<Props, State> {
     } = this.props;
 
     return (
-      <div className="text-center text-sm font-semibold mt-4">{isFetching ? <FontAwesomeIcon icon={faSpinner} spin /> : null}
+      <div className="flex flex-grow text-center text-sm font-semibold items-end mb-4">{isFetching ? <FontAwesomeIcon icon={faSpinner} spin /> : null}
         {version} (WebUI {UI_VERSION})
       </div>
     );
@@ -89,18 +89,24 @@ class LoginPage extends React.Component<Props, State> {
         <AlertContainer />
         <div className="flex rounded-lg shadow-lg login-panel">
           <div className="login-image rounded-l-lg">
-            <div className="flex flex-col justify-center items-center logo h-full rounded-l-lg text-center text-3xl2 font-bold">
-              <span>Shoko</span>
-              <span>Server</span>
+            <div className="flex flex-col justify-center items-center logo h-full rounded-l-lg text-center font-extrabold">
+              <div className="flex flex-col flex-grow justify-end mt-4">
+                <div className="text-4xl2">
+                  <span className="text-5xl2">S</span>HOKO
+                </div>
+                <div className="color-accent text-5xl -mt-6">
+                  <span className="text-6xl2">S</span>ERVER
+                </div>
+              </div>
               {this.renderVersion()}
             </div>
           </div>
           <div className="flex flex-col flex-grow justify-between">
             <div className="px-10 flex flex-grow flex-col justify-center">
               {initStatus.State === 4 && (
-                <div className="border-sm px-4 py-3 rounded relative text-center">
+                <div className="border bg-color-danger px-4 py-3 rounded-lg relative text-center">
                   <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
-                  Looks like a first run. Try the <Link to="/firstrun"><span className="color-accent-secondary">wizard</span></Link>
+                  Looks like a first run. Try the <Link to="/firstrun"><span className="color-accent font-bold hover:underline">wizard</span></Link>
                 </div>
               )}
               <div className="flex flex-col">
@@ -109,7 +115,9 @@ class LoginPage extends React.Component<Props, State> {
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
                 <div className="flex justify-between items-center mt-4">
                   <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || initStatus.State === 4}>Sign In</Button>
-                  <Link to="/"><span className="color-accent-secondary font-muli font-bold text-xs">Create New Account</span></Link>
+                  {(!isFetching && initStatus.State !== 4) && (
+                    <Link to="/"><span className="color-accent-secondary font-muli font-bold text-xs hover:underline">Create New Account</span></Link>
+                  )}
                 </div>
               </div>
             </div>
