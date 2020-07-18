@@ -37,7 +37,7 @@ class Header extends React.Component<Props, State> {
   renderItem = (key = '', item: QueueItemType) => (
     <div className="flex items-center" key={key}>
       <FontAwesomeIcon icon={icons[key]} className="mr-2 text-lg" />
-      <span className="font-semibold text-lg color-accent mr-4">{item.count}</span>
+      <span className="font-semibold text-lg color-accent mr-4">{item?.count ?? 0}</span>
     </div>
   );
 
