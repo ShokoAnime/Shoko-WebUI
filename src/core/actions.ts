@@ -1,5 +1,4 @@
 import 'isomorphic-fetch';
-import { createAction } from 'redux-actions';
 
 export type Action = {
   type: string;

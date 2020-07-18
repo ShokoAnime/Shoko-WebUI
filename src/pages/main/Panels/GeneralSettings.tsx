@@ -47,9 +47,10 @@ class GeneralSettings extends React.Component<Props> {
           Shoko Version
           <div className="flex uppercase items-center">
             {version}
+            { /* eslint-disable-next-line max-len */ }
             {/* <Button onClick={() => ({})} className="color-accent text-xs ml-2" tooltip="Check for updates">
               <FontAwesomeIcon icon={faRedo} />
-            </Button> */}
+            </Button> // NEED API FOR SERVER VERSION CHECK */}
           </div>
         </div>
         <div className="flex justify-between my-1">
