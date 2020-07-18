@@ -10,6 +10,7 @@ const miscSlice = createSlice({
     plex: {
       url: '',
     },
+    webuiUpdateAvailable: false,
   } as any,
   reducers: {
     setItem(sliceState, action: PayloadAction<any>) {

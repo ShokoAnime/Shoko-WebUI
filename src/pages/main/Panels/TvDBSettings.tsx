@@ -86,10 +86,10 @@ class TvDBSettings extends React.Component<Props, State> {
     const languageOptions: Array<any> = [];
 
     updateFrequencyType.forEach((item) => {
-      updateFrequencyOptions.push(<option value={item[0]}>{item[1]}</option>);
+      updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
     });
     tvdbLanguages.forEach((item) => {
-      languageOptions.push(<option value={item[0]}>{item[1]}</option>);
+      languageOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
     });
 
     return (

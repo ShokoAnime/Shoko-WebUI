@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faRedo, faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
@@ -36,24 +36,42 @@ class GeneralSettings extends React.Component<Props> {
 
   render() {
     const {
-      notifications, Enabled, Zip, Delete, Delete_Days, version,
+      notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
+      webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates,
     } = this.props;
 
     return (
       <FixedPanel title="General">
-        <div className="flex justify-between mt-2">
-          <span className="font-bold">Information</span>
-          <Button onClick={() => ({})} className="color-accent text-xs" tooltip="Check for updates">
-            <FontAwesomeIcon icon={faRedo} />
-          </Button>
-        </div>
+        <span className="font-bold mt-2">Information</span>
         <div className="flex justify-between my-1">
           Shoko Version
-          <span className="uppercase"> {version}</span>
+          <div className="flex uppercase items-center">
+            {version}
+            {/* <Button onClick={() => ({})} className="color-accent text-xs ml-2" tooltip="Check for updates">
+              <FontAwesomeIcon icon={faRedo} />
+            </Button> */}
+          </div>
         </div>
         <div className="flex justify-between my-1">
-          WebUI Version
-          <span className="uppercase">{UI_VERSION}</span>
+          <div className="flex items-center">
+            WebUI Version
+            {webuiUpdateAvailable && (
+              <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-accent" tooltip="Download Latest Version">
+                Update Available
+                <FontAwesomeIcon
+                  icon={downloadingUpdates ? faSpinner : faDownload}
+                  spin={downloadingUpdates}
+                  className="text-xs ml-1"
+                />
+              </Button>
+            )}
+          </div>
+          <div className="flex uppercase items-center">
+            {UI_VERSION}
+            <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
+              <FontAwesomeIcon icon={faRedo} />
+            </Button>
+          </div>
         </div>
         <span className="font-bold mt-4">Style Options</span>
         <div className="flex justify-between my-1">
@@ -61,6 +79,14 @@ class GeneralSettings extends React.Component<Props> {
           <span className="color-accent font-bold">Shoko Modern</span>
         </div>
         <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleStyleInputChange} className="w-full" />
+        <span className="font-bold mt-4">Other Options</span>
+        <div className="flex justify-between my-1">
+          Update Channel
+          <Select id="updateChannel" value={updateChannel} onChange={this.handleInputChange}>
+            <option value="stable">Stable</option>
+            <option value="unstable">Unstable</option>
+          </Select>
+        </div>
         <span className="font-bold mt-4">Log Options</span>
         <Checkbox label="Enable Log Rotation" id="Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
         <Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />
@@ -85,12 +111,16 @@ const mapState = (state: RootState) => ({
   ...(state.webuiSettings.v3),
   ...(state.localSettings.LogRotator),
   version: state.jmmVersion,
+  webuiUpdateAvailable: state.misc.webuiUpdateAvailable,
+  downloadingUpdates: state.fetching.downloadUpdates,
 });
 
 const mapDispatch = {
   saveStyleSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_WEBUI, payload: value }),
   saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
+  checkWebUIUpdate: () => ({ type: Events.WEBUI_CHECK_UPDATES }),
+  updateWebUI: () => ({ type: Events.WEBUI_UPDATE }),
 };
 
 const connector = connect(mapState, mapDispatch);

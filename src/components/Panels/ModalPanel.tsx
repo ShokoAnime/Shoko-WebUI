@@ -15,6 +15,8 @@ class ModalPanel extends React.Component<Props> {
       children, show, className, onRequestClose, onAfterOpen,
     } = this.props;
 
+    Modal.setAppElement('#app-root');
+
     return (
       <Modal
         isOpen={show}

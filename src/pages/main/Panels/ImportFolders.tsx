@@ -83,7 +83,7 @@ class ImportFolders extends React.Component<Props> {
     });
 
     if (folders.length === 0) {
-      folders.push(<div className="flex justify-center font-bold mt-4">No import folders added!</div>);
+      folders.push(<div className="flex justify-center font-bold mt-4" key="no-folders">No import folders added!</div>);
     }
 
     return (

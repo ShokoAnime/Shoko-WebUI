@@ -80,15 +80,15 @@ export const defaultLayout = {
   },
   settings: {
     lg: [{
-      i: 'anidb', x: 4, y: 0, w: 4, h: 20, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 22, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'moviedb', x: 8, y: 13, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
+      i: 'moviedb', x: 8, y: 15, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'tvdb', x: 8, y: 0, w: 4, h: 13, minW: 3, minH: 5, moved: false, static: false,
+      i: 'tvdb', x: 8, y: 0, w: 4, h: 15, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'general', x: 0, y: 0, w: 4, h: 13, minW: 3, minH: 5, moved: false, static: false,
+      i: 'general', x: 0, y: 0, w: 4, h: 15, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'anidb-login', x: 0, y: 13, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb-login', x: 0, y: 15, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
     }],
   },
 };

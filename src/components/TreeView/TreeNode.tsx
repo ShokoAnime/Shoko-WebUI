@@ -104,7 +104,7 @@ const mapState = (state: RootState, props: any) => ({
 });
 
 const mapDispatch = {
-  fetch: (id: number, path: string) => ({ type: Events.OS_BROWSE, payload: { id, path } }),
+  fetch: (id: number, path: string) => ({ type: Events.FOLDER_BROWSE, payload: { id, path } }),
   select: (value: SelectedNodeType) => (setSelectedNode(value)),
 };
 

@@ -87,6 +87,10 @@ body {
   color: white;
 }
 
+.border-color-danger {
+  border-color: $danger-color;
+}
+
 .fa-layer-icon-bg {
   color: $panel-background-color;
 }

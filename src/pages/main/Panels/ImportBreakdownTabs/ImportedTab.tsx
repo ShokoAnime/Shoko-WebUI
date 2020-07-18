@@ -146,7 +146,7 @@ class ImportedTab extends React.Component<Props, State> {
     });
 
     if (files.length === 0) {
-      files.push(<div className="flex justify-center font-bold mt-4">No imported files!</div>);
+      return (<div className="flex justify-center font-bold mt-4" key="no-imported">No imported files!</div>);
     }
 
     return files;

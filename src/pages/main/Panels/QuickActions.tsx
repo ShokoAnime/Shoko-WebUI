@@ -18,7 +18,7 @@ class QuickActions extends React.Component<Props> {
     const pinned = pinnedActions.indexOf(key) === -1;
 
     return (
-      <div className="flex mt-3 justify-between items-center">
+      <div className="flex mt-3 justify-between items-center" key={key}>
         <span className="flex">{action.name}</span>
         <div className="flex">
           <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-color-accent'])}>

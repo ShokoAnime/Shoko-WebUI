@@ -2,7 +2,7 @@ import 'isomorphic-fetch';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faQuestionCircle, faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
+import { faSpinner, faQuestionCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
@@ -94,7 +94,7 @@ class LoginPage extends React.Component<Props, State> {
                 <div className="text-4xl2">
                   <span className="text-5xl2">S</span>HOKO
                 </div>
-                <div className="color-accent text-5xl -mt-6">
+                <div className="color-accent text-5xl -mt-10">
                   <span className="text-6xl2">S</span>ERVER
                 </div>
               </div>
@@ -104,9 +104,12 @@ class LoginPage extends React.Component<Props, State> {
           <div className="flex flex-col flex-grow justify-between">
             <div className="px-10 flex flex-grow flex-col justify-center">
               {initStatus.State === 4 && (
-                <div className="border bg-color-danger px-4 py-3 rounded-lg relative text-center">
-                  <FontAwesomeIcon icon={faExclamationTriangle} className="mr-2" />
-                  Looks like a first run. Try the <Link to="/firstrun"><span className="color-accent font-bold hover:underline">wizard</span></Link>
+                <div className="flex border-t-4 border-color-danger px-4 py-3 rounded-b-lg relative fixed-panel shadow-md items-center">
+                  <FontAwesomeIcon icon={faInfoCircle} className="mr-6 text-2xl" />
+                  <div className="justify-center">
+                    <div className="text font-bold">First Time? We&apos;ve all been there.</div>
+                    <div className="text-sm">Please complete the <Link to="/firstrun"><span className="color-accent hover:underline">First-Run Wizard</span></Link> to continue.</div>
+                  </div>
                 </div>
               )}
               <div className="flex flex-col">

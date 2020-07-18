@@ -61,20 +61,12 @@ function getQueueStart() {
   return Api.call({ action: '/queue/start', expectEmpty: true });
 }
 
-function webuiLatest(channel: 'stable' | 'unstable') {
-  return Api.call({ action: '/webui/latest/', query: channel });
-}
-
 function getLogRotate() {
   return Api.call({ action: '/log/rotate' });
 }
 
 function postLogRotate(params: {}) {
   return Api.call({ action: '/log/rotate', method: 'POST', params });
-}
-
-function getWebuiUpdate(channel: string) {
-  return Api.call({ action: '/webui/update/', query: channel });
 }
 
 function getSerieInfobyfolder(data: string) {
@@ -99,11 +91,9 @@ export default {
   getQueueImagesClear,
   getQueuePause,
   getQueueStart,
-  webuiLatest,
   getLogRotate,
   postLogRotate,
   getVersion,
-  getWebuiUpdate,
   getSerieInfobyfolder,
   getTraktCode,
 };

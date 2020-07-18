@@ -20,7 +20,7 @@ class CommandQueue extends React.Component<Props> {
     const { handleOperation } = this.props;
 
     return (
-      <div className="flex flex-col">
+      <div className="flex flex-col" key={key}>
         <div className="flex justify-between mt-3">
           <div className="flex items-center w-24">
             <FontAwesomeIcon icon={icons[key]} className="mr-4" />

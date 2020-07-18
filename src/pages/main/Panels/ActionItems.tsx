@@ -14,7 +14,7 @@ class ActionItems extends React.Component<Props> {
     const action = quickActions[key];
 
     return (
-      <div className="flex mt-3 justify-between items-center">
+      <div className="flex mt-3 justify-between items-center" key={key}>
         <span className="flex">{action.name}</span>
         <div className="flex">
           <Button onClick={() => runAction(action.function, action.data)} className="bg-color-accent font-exo text-sm font-bold px-6 py-1">

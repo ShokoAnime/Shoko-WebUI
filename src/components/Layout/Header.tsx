@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTasks, faListAlt, faImage, faCaretDown,
@@ -10,6 +9,7 @@ import {
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Button from '../Buttons/Button';
+import type { QueueItemType } from '../../core/types/api';
 import { setStatus } from '../../core/slices/modals/profile';
 
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };
@@ -34,10 +34,10 @@ class Header extends React.Component<Props, State> {
     this.setState({ userDropdown: false });
   };
 
-  renderItem = (key = '', count = 0) => (
-    <div className="flex items-center">
+  renderItem = (key = '', item: QueueItemType) => (
+    <div className="flex items-center" key={key}>
       <FontAwesomeIcon icon={icons[key]} className="mr-2 text-lg" />
-      <span className="font-semibold text-lg color-accent mr-4">{count}</span>
+      <span className="font-semibold text-lg color-accent mr-4">{item.count}</span>
     </div>
   );
 
@@ -66,9 +66,11 @@ class Header extends React.Component<Props, State> {
 
     const commands: Array<any> = [];
 
-    forEach(items, (item, key) => {
-      commands.push(this.renderItem(key, item.count));
-    });
+    if (items) {
+      commands.push(this.renderItem('hasher', items.hasher));
+      commands.push(this.renderItem('general', items.general));
+      commands.push(this.renderItem('images', items.images));
+    }
 
     return (
       <React.Fragment>
