@@ -1,5 +1,6 @@
 import { call, put } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import { toast } from 'react-toastify';
 
 import Events from '../events';
 
@@ -12,11 +13,11 @@ function* changePassword(action) {
   const { payload } = action;
   const resultJson = yield call(ApiAuth.postChangePassword, payload.password);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
-  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Password changed successfully!' } });
+  toast.success('Password changed successfully!');
 
   const loginPayload = {
     user: payload.username,
@@ -38,7 +39,7 @@ function* login(action) {
     if (resultJson.message.includes('401:')) {
       errorMessage = 'Invalid Username or Password';
     }
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: errorMessage } });
+    toast.error(errorMessage);
     yield call(logout);
     yield put(stopFetching('login'));
     return;

@@ -1,6 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-
-import Events from '../events';
+import { toast } from 'react-toastify';
 
 import ApiDashboard from '../api/v3/dashboard';
 
@@ -9,7 +8,7 @@ import { setFetched, setSeriesSummary, setStats } from '../slices/mainpage';
 function* getDashboardSeriesSummary() {
   const resultJson = yield call(ApiDashboard.getDashboardSeriesSummary);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
@@ -26,7 +25,7 @@ function* getDashboardSeriesSummary() {
 function* getDashboardStats() {
   const resultJson = yield call(ApiDashboard.getDashboardStats);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 

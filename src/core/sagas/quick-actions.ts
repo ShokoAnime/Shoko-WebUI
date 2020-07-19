@@ -1,6 +1,5 @@
-import { call, put } from 'redux-saga/effects';
-
-import Events from '../events';
+import { call } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 
 import ApiActions from '../api/v3/actions';
 
@@ -8,7 +7,7 @@ function* runQuickAction(action) {
   const { key, data } = action.payload;
 
   if (typeof ApiActions[key] !== 'function') {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
+    toast.error('Unknown action!');
   }
 
   let resultJson: any = {};
@@ -19,9 +18,9 @@ function* runQuickAction(action) {
   }
 
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
+    toast.success('Request Sent!');
   }
 }
 

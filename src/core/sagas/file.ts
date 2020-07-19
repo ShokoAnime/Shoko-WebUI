@@ -1,6 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-
-import Events from '../events';
+import { toast } from 'react-toastify';
 
 import ApiEpisode from '../api/v3/episode';
 import ApiFile from '../api/v3/file';
@@ -18,14 +17,14 @@ function* getRecentFileDetails(action) {
 
   const seriesJson = yield call(ApiSeries.getSeries, seriesId);
   if (seriesJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    toast.error(seriesJson.message);
     return;
   }
   details.SeriesName = seriesJson.data.Name;
 
   const episodeAniDBJson = yield call(ApiEpisode.getEpisodeAniDB, episodeId);
   if (episodeAniDBJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    toast.error(seriesJson.message);
     return;
   }
   details.EpisodeNumber = episodeAniDBJson.data.EpisodeNumber;
@@ -33,14 +32,14 @@ function* getRecentFileDetails(action) {
 
   const episodeTvDBJson = yield call(ApiEpisode.getEpisodeTvDB, episodeId);
   if (episodeTvDBJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    toast.error(seriesJson.message);
     return;
   }
   details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown'; // GET THIS FROM ANIDB INSTEAD OF TVDB
 
   const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
   if (fileAniDBJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: seriesJson.message } });
+    toast.error(seriesJson.message);
     return;
   }
   details.Source = fileAniDBJson.data.Source;
@@ -53,7 +52,7 @@ function* getRecentFileDetails(action) {
 function* getRecentFiles() {
   const resultJson = yield call(ApiFile.getFileRecent);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 

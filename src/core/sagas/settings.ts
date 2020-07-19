@@ -2,6 +2,7 @@ import { call, put, select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import jsonpatch from 'fast-json-patch';
 import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
 
 import { RootState } from '../store';
 import Events from '../events';
@@ -24,7 +25,7 @@ function* getPlexLoginUrl() {
   const resultJson = yield call(ApiPlex.getPlexLoginUrl);
   yield put(stopFetching('plex_login_url'));
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
     yield put(setMiscItem({ plex: { url: resultJson.data } }));
   }
@@ -35,7 +36,7 @@ function* getSettings() {
   const resultJson = yield call(ApiSettings.getSettings);
   yield put(stopFetching('settings'));
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   }
 
   const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
@@ -51,7 +52,7 @@ function* getTraktCode() {
   const resultJson = yield call(ApiCommon.getTraktCode);
   yield put(stopFetching('trakt_code'));
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
     yield put(setMiscItem({ trakt: resultJson.data }));
   }
@@ -83,15 +84,20 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   }
   const resultJson = yield call(ApiSettings.patchSettings, postData);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   }
   // yield call(getSettings);
 }
 
 function* saveWebUISettings(action) {
   yield put(saveWebUISettingsAction(action.payload));
-  const data = JSON.stringify(action.payload);
-  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
+  const webUISettings = Object.assign(
+    {},
+    yield select((state: RootState) => state.webuiSettings.v3),
+    action.payload,
+  );
+  const newSettings = JSON.stringify(webUISettings);
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings } });
 }
 
 function* togglePinnedAction(action) {

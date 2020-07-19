@@ -28,6 +28,7 @@ type State = {
     },
     notifications: boolean;
     theme: string;
+    toastPosition: 'top-right' | 'bottom-right';
     updateChannel: updateChannelType;
   }
 };
@@ -101,10 +102,12 @@ const initialState = {
       'update-all-anidb-info',
       'update-all-tvdb-info',
       'plex-sync-all',
+      'run-import',
     ],
     layout: defaultLayout,
     notifications: true,
     theme: '',
+    toastPosition: 'bottom-right',
     updateChannel: 'stable',
   },
 } as State;
@@ -114,7 +117,7 @@ const webuiSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      return Object.assign({}, sliceState, action.payload);
+      sliceState.v3 = Object.assign({}, sliceState.v3, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
       sliceState.v3.actions.push(action.payload);

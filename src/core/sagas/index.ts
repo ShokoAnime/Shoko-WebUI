@@ -3,11 +3,12 @@ import {
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
 import { createAction } from 'redux-actions';
+import { toast } from 'react-toastify';
+
 import ApiCommon from '../api/common';
 
 import Events from '../events';
 
-import SagaAlerts from './alerts';
 import SagaAuth from './auth';
 import SagaFile from './file';
 import SagaFolder from './folder';
@@ -32,7 +33,7 @@ function* serverVersion() {
   const resultJson = yield call(ApiCommon.getVersion);
   yield put(stopFetching('serverVersion'));
   if (resultJson.error) {
-    yield dispatchAction(Events.QUEUE_GLOBAL_ALERT, { type: 'error', text: resultJson.message });
+    toast.error(resultJson.message);
     return;
   }
 
@@ -48,8 +49,6 @@ function* serverVersion() {
 
 export default function* rootSaga() {
   yield all([
-    // ALERTS
-    takeEvery(Events.QUEUE_GLOBAL_ALERT, SagaAlerts.queueGlobalAlert),
     // API POLLING
     takeEvery(Events.START_API_POLLING, apiPollingDriver),
     // AUTH

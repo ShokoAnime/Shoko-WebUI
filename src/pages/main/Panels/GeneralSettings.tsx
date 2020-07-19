@@ -20,11 +20,11 @@ class GeneralSettings extends React.Component<Props> {
     serverVersion();
   };
 
-  handleStyleInputChange = (event: any) => {
-    const { saveStyleSettings } = this.props;
+  handleWebUIInputChange = (event: any) => {
+    const { saveWebUISettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveStyleSettings({ [id]: value });
+    saveWebUISettings({ [id]: value });
   };
 
   handleInputChange = (event: any) => {
@@ -37,7 +37,7 @@ class GeneralSettings extends React.Component<Props> {
   render() {
     const {
       notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
-      webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates,
+      webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates, toastPosition,
     } = this.props;
 
     return (
@@ -79,11 +79,20 @@ class GeneralSettings extends React.Component<Props> {
           Theme
           <span className="color-accent font-bold">Shoko Modern</span>
         </div>
-        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleStyleInputChange} className="w-full" />
+        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
+        {notifications && (
+          <div className="flex justify-between my-1">
+            Notifications Position
+            <Select id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
+              <option value="bottom-right">Bottom</option>
+              <option value="top-right">Top</option>
+            </Select>
+          </div>
+        )}
         <span className="font-bold mt-4">Other Options</span>
         <div className="flex justify-between my-1">
           Update Channel
-          <Select id="updateChannel" value={updateChannel} onChange={this.handleInputChange}>
+          <Select id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
             <option value="stable">Stable</option>
             <option value="unstable">Unstable</option>
           </Select>
@@ -117,7 +126,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  saveStyleSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_WEBUI, payload: value }),
+  saveWebUISettings: (value: any) => ({ type: Events.SETTINGS_SAVE_WEBUI, payload: value }),
   saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
   checkWebUIUpdate: () => ({ type: Events.WEBUI_CHECK_UPDATES }),

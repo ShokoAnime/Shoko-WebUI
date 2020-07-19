@@ -1,6 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-
-import Events from '../events';
+import { toast } from 'react-toastify';
 
 import ApiCommon from '../api/common';
 import ApiImportFolder from '../api/v3/import-folder';
@@ -12,40 +11,40 @@ import { startFetching, stopFetching } from '../slices/fetching';
 function* addImportFolder(action) {
   const resultJson = yield call(ApiImportFolder.postImportFolder, action.payload);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
-  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder added!' } });
+  toast.success('Import folder added!');
   yield call(getImportFolders);
 }
 
 function* editImportFolder(action) {
   const resultJson = yield call(ApiImportFolder.putImportFolder, action.payload);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
-  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder edited!' } });
+  toast.success('Import folder edited!');
   yield call(getImportFolders);
 }
 
 function* deleteImportFolder(action) {
   const resultJson = yield call(ApiImportFolder.deleteImportFolder, action.payload);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
-  yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Import folder deleted!' } });
+  toast.success('Import folder deleted!');
   yield call(getImportFolders);
 }
 
 function* getImportFolders() {
   const resultJson = yield call(ApiImportFolder.getImportFolder);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
@@ -57,7 +56,7 @@ function* getImportFolderSeries(action) {
   yield put(startFetching('importFolderSeries'));
   let resultJson = yield call(ApiCommon.getSerieInfobyfolder, `?id=${action.payload}`);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
   const seriesArray = resultJson.data.series;
@@ -79,9 +78,9 @@ function* runImportFolderRescan(action) {
   const resultJson = yield call(ApiImportFolder.getImportFolderScan, payload);
 
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
+    toast.success('Request Sent!');
   }
 }
 

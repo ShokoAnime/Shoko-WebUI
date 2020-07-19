@@ -1,6 +1,6 @@
 import { put, call, all } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
 
-import Events from '../events';
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
@@ -8,10 +8,12 @@ import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaImportFolder from './import-folder';
 
+// const alert = useAlert();
+
 function* getQueueStatus() {
   const resultJson = yield call(ApiCommon.getQueue);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 
@@ -37,15 +39,15 @@ function* eventQueueOperation(action) {
   const funcName = `getQueue${payload}`;
 
   if (typeof ApiCommon[funcName] !== 'function') {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: 'Unknown action!' } });
+    toast.error('Unknown operation!');
     return;
   }
 
   const resultJson = yield call(ApiCommon[funcName]);
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'success', text: 'Request sent!' } });
+    toast.success('Request Sent!');
   }
 }
 

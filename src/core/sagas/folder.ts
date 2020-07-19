@@ -1,7 +1,6 @@
 import { call, put, select } from 'redux-saga/effects';
 import { forEach } from 'lodash';
-
-import Events from '../events';
+import { toast } from 'react-toastify';
 
 import ApiFolder from '../api/v3/folder';
 
@@ -21,7 +20,7 @@ function* folderBrowse(action) {
   yield put(stopFetching(`browse-treenode-${id}`));
 
   if (resultJson.error) {
-    yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
     return;
   }
 

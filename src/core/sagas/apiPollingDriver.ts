@@ -1,6 +1,8 @@
 import {
   take, cancel, fork, call, put, select, cancelled, delay,
 } from 'redux-saga/effects';
+import { toast } from 'react-toastify';
+
 import ApiInit from '../api/v3/init';
 import Events from '../events';
 import { SET_AUTOUPDATE, Action } from '../actions';
@@ -10,7 +12,7 @@ function* pollServerStatus() {
   while (true) {
     const resultJson = yield call(ApiInit.getStatus.bind(this));
     if (resultJson.error) {
-      yield put({ type: Events.QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+      toast.error(resultJson.message);
     } else {
       yield put(setStatus(resultJson.data));
     }

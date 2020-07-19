@@ -95,12 +95,14 @@ body {
   color: $panel-background-color;
 }
 
-.alert-container {
-  position: fixed;
-  top: 20px;
-  width: 50%;
-  left: 25%;
-  z-index: 35;
+.Toastify__toast--success {
+  background: $accent-color !important;
+  color: white;
+}
+
+.Toastify__toast--error {
+  background: $danger-color !important;
+  color: white;
 }
 
 .site {
