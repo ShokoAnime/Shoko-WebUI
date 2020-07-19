@@ -29,7 +29,7 @@ class Checkbox extends React.Component<Props> {
                 {label}
               </span>
             )}
-            <input className="w-0 h-0" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
+            <input className="hidden" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
             <span className="color-accent">
               {
                 isChecked
