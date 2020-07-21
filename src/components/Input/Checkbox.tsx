@@ -1,44 +1,47 @@
-import PropTypes from 'prop-types';
 import React from 'react';
+import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 
 type Props = {
   id: string;
-  label: string;
+  label?: string;
   isChecked: any;
+  className?: string;
+  labelRight?: boolean;
   onChange: (event: any) => void;
 };
 
 class Checkbox extends React.Component<Props> {
-  static propTypes = {
-    id: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired,
-    isChecked: PropTypes.any.isRequired,
-    onChange: PropTypes.func.isRequired,
-  };
-
   render() {
     const {
-      id, label, isChecked, onChange,
+      id, label, isChecked, className, onChange,
+      labelRight,
     } = this.props;
 
     return (
       <React.Fragment>
-        <div className="py-2 w-1/3 input-item">
-          <label className="block" htmlFor={id} style={{ cursor: 'pointer' }}>
-            <input className="w-0 h-0" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
-            <span className="mr-2 color-accent">
+        <div className={cx([`${className ?? ''} w-auto`, label && 'my-1'])}>
+          <label className="flex justify-between block font-muli" htmlFor={id} style={{ cursor: 'pointer' }}>
+            {!labelRight && (
+              <span>
+                {label}
+              </span>
+            )}
+            <input className="hidden" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
+            <span className="color-accent">
               {
                 isChecked
                   ? (<FontAwesomeIcon icon={faCheckCircle} />)
                   : (<FontAwesomeIcon icon={faCircle} />)
               }
             </span>
-            <span>
-              {label}
-            </span>
+            {labelRight && (
+              <span className="ml-2">
+                {label}
+              </span>
+            )}
           </label>
         </div>
       </React.Fragment>

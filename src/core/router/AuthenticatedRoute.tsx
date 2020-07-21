@@ -1,27 +1,16 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import type { ReactNode } from 'react';
-import PropTypes from 'prop-types';
 import { Route, Redirect } from 'react-router';
-import { connect } from 'react-redux';
+import { connect, ConnectedProps } from 'react-redux';
 
-type OwnProps = {
-  exact?: boolean;
-  path: string;
-  component: React.ComponentType<any>;
-};
-
-type StateProps = {
-  isAuthenticated?: boolean;
-};
-
-type Props = OwnProps & StateProps;
+import { RootState } from '../store';
 
 class AuthenticatedRoute extends React.Component<Props> {
   static propTypes = {
     exact: PropTypes.bool,
     path: PropTypes.string.isRequired,
     component: PropTypes.any.isRequired,
-    isAuthenticated: PropTypes.bool,
   };
 
   renderComponent = (props): ReactNode => {
@@ -48,12 +37,16 @@ class AuthenticatedRoute extends React.Component<Props> {
   }
 }
 
-function mapStateToProps(state): StateProps {
-  const { apiSession } = state;
+const mapState = (state: RootState) => ({
+  isAuthenticated: state.apiSession && state.apiSession.apikey !== '',
+});
 
-  return {
-    isAuthenticated: apiSession && apiSession.apikey !== '',
-  };
-}
+const connector = connect(mapState);
 
-export default connect(mapStateToProps, () => ({}))(AuthenticatedRoute);
+type Props = ConnectedProps<typeof connector> & {
+  exact?: boolean;
+  path: string;
+  component: React.ComponentType<any>;
+};
+
+export default connector(AuthenticatedRoute);

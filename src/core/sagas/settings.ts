@@ -1,140 +1,127 @@
-
 import { call, put, select } from 'redux-saga/effects';
-import Ajv from 'ajv';
+import { PayloadAction } from '@reduxjs/toolkit';
 import jsonpatch from 'fast-json-patch';
+import { isEmpty } from 'lodash';
+import { toast } from 'react-toastify';
 
-import { QUEUE_GLOBAL_ALERT, Action } from '../actions';
-import Api from '../api/common';
+import { RootState } from '../store';
 import Events from '../events';
-import { settingsServer } from '../actions/settings/Server';
-import { settingsTrakt } from '../actions/settings/Trakt';
-import { settingsPlex } from '../actions/settings/Plex';
 
-import { State } from '../store';
+import ApiCommon from '../api/common';
+import ApiPlex from '../api/plex';
+import ApiSettings from '../api/v3/settings';
 
-export const settingsSelector = (state: State) => state.settings;
+import { startFetching, stopFetching } from '../slices/fetching';
+import { saveLocalSettings } from '../slices/localSettings';
+import { setItem as setMiscItem } from '../slices/misc';
+import { saveServerSettings } from '../slices/serverSettings';
+import {
+  addAction, removeAction, saveLayout as saveLayoutAction,
+  saveWebUISettings as saveWebUISettingsAction,
+} from '../slices/webuiSettings';
 
-function* settingsSaveWebui(action: Action) {
-  const settings = yield select(settingsSelector);
-  const currentSettings = {
-    uiTheme: settings.ui.theme,
-    uiNotifications: settings.ui.notifications,
-    otherUpdateChannel: settings.other.updateChannel,
-    logDelta: settings.other.logDelta,
-  };
-  const data = { ...currentSettings, ...action.payload };
-
-  const schema = {
-    type: 'object',
-    required: ['uiTheme', 'uiNotifications', 'otherUpdateChannel', 'logDelta'],
-    properties: {
-      uiTheme: { enum: ['light', 'dark', 'custom'] },
-      uiNotifications: { type: 'boolean' },
-      otherUpdateChannel: { enum: ['stable', 'unstable'] },
-      logDelta: { type: 'integer', minimum: 1, maximum: 1000 },
-    },
-  };
-  // $FlowFixMe
-  const ajv = new Ajv();
-  const validator = ajv.compile(schema);
-  const result = validator(data);
-  if (result !== true) {
-    yield put({
-      type: QUEUE_GLOBAL_ALERT,
-      payload: { type: 'error', text: 'Schema validation failed!' },
-    });
-    return;
-  }
-
-  const resultJson = yield call(Api.postWebuiConfig, data);
+function* getPlexLoginUrl() {
+  yield put(startFetching('plex_login_url'));
+  const resultJson = yield call(ApiPlex.getPlexLoginUrl);
+  yield put(stopFetching('plex_login_url'));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
   } else {
-    yield put({
-      type: QUEUE_GLOBAL_ALERT,
-      payload: { type: 'success', text: 'WebUI settings saved!' },
-    });
+    yield put(setMiscItem({ plex: { url: resultJson.data } }));
   }
 }
 
-function* settingsGetServer() {
-  const resultJson = yield call(Api.configExport);
+function* getSettings() {
+  yield put(startFetching('settings'));
+  const resultJson = yield call(ApiSettings.getSettings);
+  yield put(stopFetching('settings'));
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+    toast.error(resultJson.message);
+  }
+
+  const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
+  if (!isEmpty(webUISettings)) {
+    yield put(saveWebUISettingsAction(webUISettings));
+  }
+  yield put(saveServerSettings(resultJson.data));
+  yield put(saveLocalSettings(resultJson.data));
+}
+
+function* getTraktCode() {
+  yield put(startFetching('trakt_code'));
+  const resultJson = yield call(ApiCommon.getTraktCode);
+  yield put(stopFetching('trakt_code'));
+  if (resultJson.error) {
+    toast.error(resultJson.message);
   } else {
-    yield put(settingsServer(resultJson.data));
+    yield put(setMiscItem({ trakt: resultJson.data }));
   }
 }
 
-export type SettingSaveActionType = {
+function* saveLayout(action) {
+  yield put(saveLayoutAction(action.payload));
+  yield call(uploadWebUISettings);
+}
+
+type SaveSettingsType = {
   context?: string;
-  original: {};
-  changed: {};
+  newSettings: {};
 };
 
-export function saveSettingsPatch(data: any): Array<any> {
-  const {
-    context,
-    original,
-    changed,
-  } = data;
-  return jsonpatch.compare(
-    context ? { [context]: original } : original,
-    context ? { [context]: changed } : changed,
-  );
-}
-
-function* settingsSaveServer(action) {
-  const { payload }: { payload: SettingSaveActionType } = action;
-  const postData = saveSettingsPatch(payload);
-  const { context, changed } = payload;
+function* saveSettings(action: PayloadAction<SaveSettingsType>) {
+  const { context, newSettings } = action.payload;
+  yield put(saveLocalSettings(context ? { [context]: newSettings } : newSettings));
+  const { original, changed } = yield select((state: RootState) => {
+    const { localSettings, serverSettings } = state;
+    return {
+      original: serverSettings,
+      changed: localSettings,
+    };
+  });
+  const postData = jsonpatch.compare(original, changed);
   if (postData.length === 0) {
     return;
   }
-  const resultJson = yield call(Api.patchConfigSet, postData);
+  const resultJson = yield call(ApiSettings.patchSettings, postData);
   if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put(settingsServer(context ? { [context]: changed } : changed));
-    yield put({
-      type: QUEUE_GLOBAL_ALERT,
-      payload: { type: 'success', text: 'Settings saved!' },
-    });
+    toast.error(resultJson.message);
   }
+  // yield call(getSettings);
 }
 
-function* settingsGetTraktCode() {
-  yield put({ type: Events.START_FETCHING, payload: 'trakt_code' });
-  const resultJson = yield call(Api.getTraktCode);
-  yield put({ type: Events.STOP_FETCHING, payload: 'trakt_code' });
-  if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
-  } else {
-    yield put(settingsTrakt(resultJson.data));
-  }
+function* saveWebUISettings(action) {
+  yield put(saveWebUISettingsAction(action.payload));
+  const webUISettings = Object.assign(
+    {},
+    yield select((state: RootState) => state.webuiSettings.v3),
+    action.payload,
+  );
+  const newSettings = JSON.stringify(webUISettings);
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings } });
 }
 
-function* settingsGetPlexLoginUrl() {
-  yield put({ type: Events.START_FETCHING, payload: 'plex_login_url' });
-  const resultJson = yield call(Api.getPlexLoginurl);
-  yield put({ type: Events.STOP_FETCHING, payload: 'plex_login_url' });
-  if (resultJson.error) {
-    yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+function* togglePinnedAction(action) {
+  const { payload } = action;
+  const pinnedActions = yield select((state: RootState) => state.webuiSettings.v3.actions);
+  if (pinnedActions.indexOf(payload) === -1) {
+    yield put(addAction(payload));
   } else {
-    yield put(settingsPlex(resultJson.data));
+    yield put(removeAction(payload));
   }
+  yield call(uploadWebUISettings);
 }
 
-function* settingsSaveQuickAction() {
-  const actions = yield select(state => state.settings.quickActions);
-  yield call(settingsSaveWebui, { type: '', payload: { actions } });
+function* uploadWebUISettings() {
+  const data = JSON.stringify(yield select((state: RootState) => state.webuiSettings));
+  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
 }
 
 export default {
-  saveWebui: settingsSaveWebui,
-  getServer: settingsGetServer,
-  saveServer: settingsSaveServer,
-  getTraktCode: settingsGetTraktCode,
-  getPlexLoginUrl: settingsGetPlexLoginUrl,
-  saveQuickAction: settingsSaveQuickAction,
+  getPlexLoginUrl,
+  getSettings,
+  getTraktCode,
+  saveLayout,
+  saveSettings,
+  saveWebUISettings,
+  togglePinnedAction,
 };

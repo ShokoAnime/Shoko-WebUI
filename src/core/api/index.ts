@@ -1,12 +1,10 @@
-
 import { call, put, select } from 'redux-saga/effects';
-// import { Saga } from 'redux-saga';
 import Events from '../events';
 
 export type ApiResponseSuccessType = {data: any;};
 export type ApiResponseErrorType = {error: boolean; code?: number; message: string;};
 export type ApiResponseType = ApiResponseSuccessType | ApiResponseErrorType;
-type ApiRequestMethodType = 'POST' | 'GET' | 'PATCH';
+export type ApiRequestMethodType = 'POST' | 'GET' | 'PATCH' | 'PUT' | 'DELETE';
 type ApiCallOptions = {
   action: string;
   endpoint?: '/api' | '/plex';
@@ -33,7 +31,7 @@ function* apiCall(userOptions: ApiCallOptions) {
   const apiKey = yield select(state => state.apiSession.apikey);
 
   switch (options.method) {
-    case 'POST': case 'PATCH':
+    case 'POST': case 'PATCH': case 'PUT': case 'DELETE':
       fetchOptions = {
         headers: {
           Accept: 'application/json',
@@ -63,7 +61,7 @@ function* apiCall(userOptions: ApiCallOptions) {
     const response = yield call(fetch, fetchUrl, fetchOptions);
 
     if (response.status === 401) {
-      yield put({ type: Events.LOGOUT, payload: null });
+      yield put({ type: Events.AUTH_LOGOUT, payload: null });
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } });
     }
     if (response.status !== 200) {

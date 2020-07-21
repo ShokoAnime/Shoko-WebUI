@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 const path = require('path');
 const webpack = require('webpack');
@@ -15,7 +15,8 @@ const config = {
   context: __dirname,
   entry: [
     'typeface-roboto',
-    '@blueprintjs/core/src/blueprint.scss',
+    'typeface-exo-2',
+    'typeface-muli',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
@@ -128,8 +129,8 @@ const config = {
 if (!isDebug) {
   config.optimization = {
     minimizer: [
-      new UglifyJsPlugin({
-        uglifyOptions: {
+      new TerserPlugin({
+        terserOptions: {
           mangle: false,
           compress: {
             collapse_vars: false,

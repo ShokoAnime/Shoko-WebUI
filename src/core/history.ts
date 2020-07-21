@@ -1,4 +1,3 @@
-
 import { createBrowserHistory } from 'history';
 
 const browserHistory = createBrowserHistory({

@@ -1,21 +1,22 @@
 import {
   take, cancel, fork, call, put, select, cancelled, delay,
 } from 'redux-saga/effects';
-import Api from '../api/common';
-import Events from '../events';
-import { QUEUE_GLOBAL_ALERT, SET_AUTOUPDATE, Action } from '../actions';
-import { getStatus } from '../actions/firstrun';
+import { toast } from 'react-toastify';
 
+import ApiInit from '../api/v3/init';
+import Events from '../events';
+import { SET_AUTOUPDATE, Action } from '../actions';
+import { setStatus } from '../slices/firstrun';
 
 function* pollServerStatus() {
   while (true) {
-    const resultJson = yield call(Api.getInit.bind(this, 'status'));
+    const resultJson = yield call(ApiInit.getStatus.bind(this));
     if (resultJson.error) {
-      yield put({ type: QUEUE_GLOBAL_ALERT, payload: { type: 'error', text: resultJson.message } });
+      toast.error(resultJson.message);
     } else {
-      yield put(getStatus(resultJson.data));
+      yield put(setStatus(resultJson.data));
     }
-    yield delay(2000);
+    yield delay(100);
   }
 }
 
@@ -25,12 +26,11 @@ function* pollAutoRefresh() {
     while (true) {
       const location = yield select(state => state.router.location.pathname);
 
-      if (location === '/dashboard') {
-        yield put({ type: Events.DASHBOARD_QUEUE_STATUS, payload: null });
-        yield put({ type: Events.DASHBOARD_RECENT_FILES, payload: null });
+      if (location === '/main') {
+        yield put({ type: Events.MAINPAGE_REFRESH, payload: null });
       }
 
-      yield delay(4000);
+      yield delay(1500);
     }
   } finally {
     if (yield cancelled()) {

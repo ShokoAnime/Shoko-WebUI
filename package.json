@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "0.3.7",
+  "version": "1.0.0-dev20",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -10,27 +10,27 @@
   "dependencies": {
     "@aspnet/signalr": "^1.1.4",
     "@babel/runtime": "^7.6.0",
-    "@blueprintjs/core": "^3.19.1",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
+    "@reduxjs/toolkit": "^1.3.6",
     "@sentry/browser": "^5.10.2",
     "@types/assets-webpack-plugin": "^3.9.0",
     "@types/classnames": "^2.2.10",
-    "@types/dateformat": "^3.0.1",
     "@types/ejs": "^3.0.4",
     "@types/lodash": "^4.14.152",
     "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.35",
+    "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/react-dom": "^16.9.8",
     "@types/react-grid-layout": "^0.17.1",
+    "@types/react-modal": "^3.10.6",
     "@types/react-redux": "^7.1.9",
     "@types/react-router": "^5.1.7",
     "@types/redux-actions": "^2.6.1",
-    "@types/uglifyjs-webpack-plugin": "^1.1.0",
     "@types/webpack": "^4.41.13",
     "ajv": "^6.8.1",
     "browser-sync": "^2.26.3",
@@ -38,7 +38,6 @@
     "connect-history-api-fallback": "^1.5.0",
     "connected-react-router": "^6.2.2",
     "core-js": "3",
-    "dateformat": "^3.0.3",
     "del": "^5.1.0",
     "ejs": "^2.6.1",
     "es6-promise": "^4.2.4",
@@ -58,12 +57,15 @@
     "prop-types": "^15.7.2",
     "proxyquire": "^2.0.1",
     "react": "^16.13.1",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.4.1",
     "react-grid-layout": "^0.18.3",
+    "react-modal": "^3.11.2",
     "react-motion": "^0.5.2",
     "react-redux": "^7.2.0",
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
+    "react-toastify": "^6.0.8",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.4",
     "redux-ava": "^2.2.0",
@@ -72,9 +74,10 @@
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
     "sessionstorage": "^0.1.0",
-    "tailwindcss": "1.2.0",
+    "tailwindcss": "^1.4.6",
+    "typeface-exo-2": "^1.1.4",
+    "typeface-muli": "^1.1.3",
     "typeface-roboto": "^0.0.75",
-    "uglifyjs-webpack-plugin": "^2.1.1",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
@@ -85,8 +88,8 @@
     "@babel/preset-react": "^7.0.0-rc.1",
     "@babel/register": "^7.6.0",
     "@redux-saga/testing-utils": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "2.31.0",
-    "@typescript-eslint/parser": "2.31.0",
+    "@typescript-eslint/eslint-plugin": "^2.31.0",
+    "@typescript-eslint/parser": "^2.31.0",
     "assets-webpack-plugin": "^3.8.4",
     "ava": "^2.3.0",
     "babel-cli": "^6.26.0",
@@ -135,6 +138,7 @@
     "style-loader": "^1.0.0",
     "stylelint": "^10.1.0",
     "stylelint-config-standard": "^18.2.0",
+    "terser-webpack-plugin": "^3.0.6",
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.3",
     "url-loader": "^2.1.0",
@@ -142,9 +146,6 @@
     "webpack-bundle-analyzer": "^3.0.3",
     "webpack-dev-middleware": "^3.1.3",
     "webpack-hot-middleware": "^2.22.3"
-  },
-  "resolutions": {
-    "eslint-config-airbnb-typescript/**/@typescript-eslint/parser": "2.31.0"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
@@ -176,7 +177,23 @@
       "react/static-property-placement": "off",
       "react/jsx-fragments": "off",
       "react/jsx-props-no-spreading": "off",
+      "react/no-did-update-set-state": "off",
       "prefer-object-spread": "off",
+      "no-param-reassign": [
+        "error",
+        {
+          "props": true,
+          "ignorePropertyModificationsFor": [
+            "sliceState"
+          ]
+        }
+      ],
+      "@typescript-eslint/no-use-before-define": [
+        "error",
+        {
+          "functions": false
+        }
+      ],
       "arrow-parens": [
         "error",
         "as-needed",
