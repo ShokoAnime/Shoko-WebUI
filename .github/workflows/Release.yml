@@ -1,0 +1,28 @@
+name: Release
+on:
+  release:
+    types:
+      - created
+    branches: master
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Node.js v12
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - name: Install depenencies
+        run: yarn install --production=false
+      - name: Lint
+        run: yarn lint --quiet
+      - name: Build
+        run: yarn build
+      - name: Update release
+        uses: johnwbyrd/update-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: ./build/latest.zip
