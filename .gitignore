@@ -18,3 +18,4 @@ run.config.js
 .eslintcache
 flow-typed/npm/
 /yarn.lock
+package-lock.json

@@ -1,26 +1,108 @@
 $panel-header-color: #393f4f;
 $secondary-toolbar-bg-color: #5a6273;
-$green-text-color: #59c777;
+
+$accent-color: #4ac767;
+$accent-color-hover: #3ab857;
+$accent-color-secondary: #279ceb;
+$danger-color: #FF3F57;
+$sidebar-background-color: #0a0b1d;
+$sidebar-item-color: white;
+
+$panel-background-color: #f5f6f8;
+$secondary-panel-background-color: white;
+$panel-header-color: #5a5a5a;
+
+$website-background-color: #e9edf2;
+
+$text-color: #333333;
+
+$button-unselected: #8F9290;
 
 input, button, textarea, :focus {
   outline: none;
 }
 
-#container, #app-container {
-  width: 100%;
-  height: 100%;
-}
-
 body {
-    font-family: Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+  font-family: 'Exo 2', Muli, Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: $website-background-color;
+  color: $text-color;
 }
 
-.alert-container {
-  position: fixed;
-  top: 20px;
-  width: 50%;
-  left: 35%;
-  z-index: 35;
+#app-root {
+  flex: 1;
+  height: 100vh;
+}
+
+.text-xl2 {
+  font-size: 1.375rem;
+}
+
+.text-2xl2 {
+  font-size: 1.75rem;
+}
+
+.text-4xl2 {
+  font-size: 2.5rem;
+}
+
+.text-5xl2 {
+  font-size: 3.5rem;
+}
+
+.text-6xl2 {
+  font-size: 4.25rem;
+}
+
+.bg-color-unselected {
+  background-color: $button-unselected;
+  color: white;
+}
+
+.color-accent {
+  color: $accent-color;
+}
+
+.bg-color-accent {
+  background-color: $accent-color;
+  color: white;
+}
+
+.color-accent-secondary {
+  color: $accent-color-secondary;
+}
+
+.bg-color-accent-secondary {
+  background-color: $accent-color-secondary;
+  color: white;
+}
+
+.color-danger {
+  color: $danger-color;
+}
+
+.bg-color-danger {
+  background-color: $danger-color;
+  color: white;
+}
+
+.border-color-danger {
+  border-color: $danger-color;
+}
+
+.fa-layer-icon-bg {
+  color: $panel-background-color;
+}
+
+.Toastify__toast--success {
+  background: $accent-color !important;
+  color: white;
+}
+
+.Toastify__toast--error {
+  background: $danger-color !important;
+  color: white;
 }
 
 .site {
@@ -39,58 +121,56 @@ body {
   padding: 1.5rem 0;
 }
 
-.navbar {
-  &.primary-navbar {
-    min-height: 60px;
-    padding: 0 15px;
-    background: $panel-header-color;
-    align-items: center;
-    z-index: 31;
-
-    .navbar-brand {
-      .image {
-        margin-right: 1em;
-      }
-
-      .title {
-        color: #fff;
-        display: block;
-      }
-
-      .subtitle {
-        color: $green-text-color;
-      }
-    }
-
-    .user-dropdown {
-      padding: 0;
-    }
-  }
-
-  &.secondary-navbar {
-    background: $secondary-toolbar-bg-color;
-
-    .navbar-item.update-button:hover {
-      background-color: $secondary-toolbar-bg-color;
-    }
-  }
+.sidebar-container {
+  width: 24.5rem;
 }
 
-div.navbar-item {
+.sidebar {
+  background-color: $sidebar-background-color;
+  color: $sidebar-item-color;
+  width: 24.5rem;
+}
+
+.sidebar-item {
   cursor: pointer;
-  color: #000;
-
-  :hover {
-    color: $green-text-color;
-  }
 }
 
-a.navbar-item {
-  color: #fff;
+.sidebar-item:hover {
+  color: $accent-color;
+}
 
-  &.is-active {
-    color: $green-text-color;
-  }
+.sidebar-item > a:hover {
+  color: $accent-color;
+}
+
+.header {
+  background-color: $panel-background-color;
+  border-color: $panel-header-color;
+}
+
+.user-dropdown-toggle:hover {
+  background-color: $website-background-color;
+}
+
+.user-dropdown {
+  background-color: $panel-background-color;
+  border-color: $panel-header-color;
+}
+
+.fixed-panel {
+  background-color: $panel-background-color;
+}
+
+.fixed-panel-header {
+  color: $panel-header-color;
+}
+
+.font-muli {
+  font-family: 'Muli';
+}
+
+.font-exo2 {
+  font-family: 'Exo 2';
 }
 
 .section.page-wrap {
@@ -146,7 +226,7 @@ a.navbar-item {
   }
 
   .color {
-    color: $green-text-color;
+    color: $accent-color;
     padding: 0 0.2em;
   }
 

@@ -1,35 +1,15 @@
+button.color-accent:hover {
+  color: $accent-color-hover;
+}
+
 .recent-files .panel-block {
   height: 15em;
   overflow-y: auto;
   align-items: start;
 }
 
-.commands .table {
-  table-layout: fixed;
-
-  .command-item {
-    vertical-align: middle;
-  }
-
-  .icon-column {
-    width: 2em;
-  }
-
-  .operations-column {
-    width: 6.5em;
-
-    .operation-button-1 {
-      margin-right: 1em;
-    }
-  }
-
-  .status {
-    word-wrap: break-word;
-    overflow: hidden;
-    text-overflow-ellipsis: '...';
-    font-size: 0.85rem;
-    max-height: 2rem;
-  }
+.queue-item {
+  min-height: 3rem;
 }
 
 .user-dropdown {
