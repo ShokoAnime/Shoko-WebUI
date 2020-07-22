@@ -22,7 +22,10 @@ jobs:
       - name: Build
         run: yarn build
       - name: Update release
-        uses: johnwbyrd/update-release@v1.0.0
+        uses: svenstaro/upload-release-action@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: ./build/latest.zip
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ./build/latest.zip
+          asset_name: latest.zip
+          tag: ${{ github.ref }}
+          overwrite: true
