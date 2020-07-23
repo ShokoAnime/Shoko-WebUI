@@ -1,8 +1,5 @@
-name: CI
-on:
-  push:
-    branches: [ master, NewWebUI ]
-  pull_request:
+name: Test PR
+on: pull_request
 
 jobs:
   lint-and-build:
@@ -19,11 +16,9 @@ jobs:
       - name: Lint
         run: yarn lint --quiet
       - name: Build
-        if: github.event_name == 'push'
         run: yarn build
       - name: Upload artifacts
-        if: github.event_name == 'push'
         uses: actions/upload-artifact@v2
         with:
-          name: shoko-webui-latest
+          name: shoko-webui-test
           path: build/latest.zip
