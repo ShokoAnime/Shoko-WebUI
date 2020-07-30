@@ -64,7 +64,10 @@ function* apiCall(userOptions: ApiCallOptions) {
       yield put({ type: Events.AUTH_LOGOUT, payload: null });
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } });
     }
-    if (response.status !== 200) {
+    if (response.status === 400) {
+      const json = yield response.json(); // Assuming every 400 bad request returns a body.
+      if (json) return { error: true, message: json };
+    } else if (response.status !== 200) {
       return { error: true, message: `Network error: ${options.action} ${response.status}: ${response.statusText}` };
     }
 

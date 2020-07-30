@@ -60,11 +60,7 @@ function* testAniDB() {
   const resultJson = yield call(ApiInit.getAniDBTest);
   yield put(stopFetching('firstrunAnidb'));
   if (resultJson.error) {
-    let errorMessage = resultJson.message;
-    if (errorMessage.includes('400: Bad Request')) {
-      errorMessage = 'Failed to login.';
-    }
-    yield put(setAnidbStatus({ type: 'error', text: errorMessage }));
+    yield put(setAnidbStatus({ type: 'error', text: resultJson.message }));
   } else {
     yield put(setAnidbStatus({ type: 'success', text: 'AniDB test successful!' }));
   }
