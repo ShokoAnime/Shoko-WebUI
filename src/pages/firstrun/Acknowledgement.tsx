@@ -30,19 +30,19 @@ class Acknowledgement extends React.Component<Props> {
           <div className="font-muli mt-5">
             We want to stress that Shoko is an anime cataloging program and not a stand-alone
             streaming service and requires access to physical files for playback. Shoko also does
-            not provide any services on how to obtain or download anime series. 
+            not provide any services on how to obtain or download anime series.
           </div>
           <div className="font-muli mt-4">
-            THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-            INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+            THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
             PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
             HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
             CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
             THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           </div>
           <div className="font-muli font-bold mt-8">
-            We're always looking for more individuals to join our team! If you think you can help,
-            come talk with us on Discord. 
+            We&apos;re always looking for more individuals to join our team! If you think you can
+            help, come talk with us on Discord.
           </div>
           <div className="flex h-full justify-center items-center mt-6">
             <Button onClick={() => this.handleNext()} className="bg-color-accent font-semibold py-2 px-5 rounded" disabled={status.State !== 4}>Continue</Button>

@@ -27,15 +27,16 @@ class DataCollection extends React.Component<{}, State> {
           <div className="overflow-y-auto">
             <div className="font-muli mt-5">
               Shoko is open-source and is worked on by volunteers in our free time so in order to
-              more effectively improve Shoko, we've implemented two different services for data
+              more effectively improve Shoko, we&apos;ve implemented two different services for data
               collection. We understand the hesitations a lot of people have with data collection
-              services so we're listing what services we use and what data we collect.
+              services so we&apos;re listing what services we use and what data we collect.
             </div>
             <div className="font-muli mt-4">
-              We also want to make something very clear, <span className="font-bold">all data
-              collected is non-identifiable.</span>We don’t care about what specific titles you have
-              in your collection or what you watch. We only care about making Shoko better which is
-              what this data will allow us to do. 
+              We also want to make something very clear,
+              <span className="font-bold">all data collected is non-identifiable.</span>
+              We don’t care about what specific titles you have in your collection or what you
+              watch. We only care about making Shoko better which is what this data will allow us
+              to do.
             </div>
             <div className="font-muli mt-4">
               <span className="font-bold">Sentry</span>
