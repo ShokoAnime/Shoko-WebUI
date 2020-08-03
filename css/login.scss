@@ -1,25 +1,22 @@
 .login-image {
-  background-image: url('/api/v2/image/7/random'), url('/webui/background.jpg');
+  background-image: url('/webui/left-img.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
 }
 
-.login-form {
-  background: rgba(255,255,255,0.7);
+.login-panel {
+  background-color: $secondary-panel-background-color;
+  width: 62rem;
+  height: 25rem;
+}
 
-  .welcome {
-      text-align: center;
-      font-weight: bold;
-      font-size: 1.5em;
-  }
+.logo {
+  width: 32rem;
+  color: $secondary-panel-background-color;
+  background-color: rgba($sidebar-background-color, 0.6);
+}
 
-  .version {
-    text-align: center;
-  }
-
-  .firstrun-notice {
-    background-color: rgba(217,130,43, 0.7);
-    margin: 1em 0;
-  }
+.help {
+  background-color: $sidebar-background-color;
 }

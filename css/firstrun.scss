@@ -1,21 +1,22 @@
-.firstrun-page {
-  background-color: $panel-header-color;
-  background-image: url('/firstrun.png');
+.firstrun-panel {
+  background-color: $secondary-panel-background-color;
+  width: 64rem;
+  height: 40rem;
+}
+
+.firstrun-image {
+  background-image: url('/webui/left-img.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  width: 23rem;
+}
 
-  a {
-    color: #49a2df;
-    font-weight: 600;
-  }
+.firstrun-content {
+  width: 41rem;
+}
 
-  .firstrun-form {
-    background: rgba(255, 255, 255, 1);
-
-    .bp3-label {
-      min-width: 150px;
-      text-align: right;
-    }
-  }
+.firstrun-sidebar {
+  color: $secondary-panel-background-color;
+  background-color: rgba($sidebar-background-color, 0.8);
 }
