@@ -105,4 +105,5 @@ export type SettingsServerType = {
   TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
   LogRotator: SettingsLogRotatorType;
+  GA_OptOutPlzDont: boolean;
 };
