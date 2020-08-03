@@ -19,7 +19,10 @@ const onQueueStateChange = (dispatch, getState) => (queue, state) => {
   dispatch(setQueueStatus(newState));
 };
 const onQueueCountChange = (dispatch, getState) => (queue, count) => {
-  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().mainpage.queueStatus[queue], { count }) });
+  const currentQueue = getState().mainpage.queueStatus[queue];
+  if (queue === 'general' && currentQueue.count > count) dispatch({ type: Events.MAINPAGE_REFRESH });
+
+  const newState = Object.assign({}, { [queue]: Object.assign({}, currentQueue, { count }) });
   dispatch(setQueueStatus(newState));
 };
 const onQueueRefreshState = dispatch => (state) => {
