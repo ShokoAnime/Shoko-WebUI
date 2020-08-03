@@ -28,15 +28,24 @@ class Acknowledgement extends React.Component<Props> {
         <div className="flex flex-col flex-grow p-10">
           <div className="font-bold text-lg">Thanks For Installing Shoko Server!</div>
           <div className="font-muli mt-5">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-            incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-            exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure
-            dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-            Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt
-            mollit anim id est laborum.
+            We want to stress that Shoko is an anime cataloging program and not a stand-alone
+            streaming service and requires access to physical files for playback. Shoko also does
+            not provide any services on how to obtain or download anime series.
           </div>
-          <div className="flex h-full justify-center items-center">
-            <Button onClick={() => this.handleNext()} className="bg-color-accent  py-2 px-5 rounded" disabled={status.State !== 4}>Continue Setup</Button>
+          <div className="font-muli mt-4">
+            THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+            IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+            PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+            HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+            CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+            THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+          </div>
+          <div className="font-muli font-bold mt-8">
+            We&apos;re always looking for more individuals to join our team! If you think you can
+            help, come talk with us on Discord.
+          </div>
+          <div className="flex h-full justify-center items-center mt-6">
+            <Button onClick={() => this.handleNext()} className="bg-color-accent font-semibold py-2 px-5 rounded" disabled={status.State !== 4}>Continue</Button>
           </div>
         </div>
         <div className="help flex px-10 py-2 rounded-br-lg justify-between">

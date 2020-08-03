@@ -72,6 +72,7 @@ export const initialState = {
     Delete: true,
     Delete_Days: '0',
   },
+  GA_OptOutPlzDont: false,
 } as SettingsServerType;
 
 const serverSettingsSlice = createSlice({
