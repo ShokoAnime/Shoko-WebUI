@@ -1,5 +1,5 @@
 import {
-  all, call, put, takeEvery,
+  all, call, put, takeEvery, throttle,
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
 import { createAction } from 'redux-actions';
@@ -75,7 +75,7 @@ export default function* rootSaga() {
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     takeEvery(Events.MAINPAGE_RECENT_FILE_DETAILS, SagaFile.getRecentFileDetails),
     takeEvery(Events.MAINPAGE_RECENT_FILES, SagaFile.getRecentFiles),
-    takeEvery(Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageLoad),
+    throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageLoad),
     // IMPORT FOLDER
     takeEvery(Events.IMPORT_FOLDER_ADD, SagaImportFolder.addImportFolder),
     takeEvery(Events.IMPORT_FOLDER_EDIT, SagaImportFolder.editImportFolder),

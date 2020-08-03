@@ -19,19 +19,11 @@ import ProfileModal from '../../components/Dialogs/ProfileModal';
 class MainPage extends React.Component<Props> {
   componentDidMount() {
     const {
-      load, getSettings, startPolling, getQueueStatus,
+      load, getSettings, getQueueStatus,
     } = this.props;
     getSettings();
     load();
     getQueueStatus();
-    startPolling();
-  }
-
-  componentWillUnmount() {
-    const { autoUpdate, stopPolling } = this.props;
-    if (autoUpdate) {
-      stopPolling();
-    }
   }
 
   renderContent = () => {
@@ -85,14 +77,11 @@ class MainPage extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   activeTab: state.mainpage.activeTab,
-  autoUpdate: state.autoUpdate,
   toastPosition: state.webuiSettings.v3.toastPosition,
   notifications: state.webuiSettings.v3.notifications,
 });
 
 const mapDispatch = {
-  startPolling: () => ({ type: Events.START_API_POLLING, payload: { type: 'auto-refresh' } }),
-  stopPolling: () => ({ type: Events.STOP_API_POLLING, payload: { type: 'auto-refresh' } }),
   getQueueStatus: () => ({ type: Events.MAINPAGE_QUEUE_STATUS }),
   getSettings: () => ({ type: Events.SETTINGS_GET_SERVER }),
   load: () => ({ type: Events.MAINPAGE_LOAD }),
