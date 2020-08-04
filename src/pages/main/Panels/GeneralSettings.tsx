@@ -38,6 +38,7 @@ class GeneralSettings extends React.Component<Props> {
     const {
       notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
       webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates, toastPosition,
+      checkingUpdates,
     } = this.props;
 
     return (
@@ -70,7 +71,7 @@ class GeneralSettings extends React.Component<Props> {
           <div className="flex uppercase items-center">
             {UI_VERSION}
             <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
-              <FontAwesomeIcon icon={faRedo} />
+              <FontAwesomeIcon icon={checkingUpdates ? faSpinner : faRedo} spin={checkingUpdates} />
             </Button>
           </div>
         </div>
@@ -123,6 +124,7 @@ const mapState = (state: RootState) => ({
   version: state.jmmVersion,
   webuiUpdateAvailable: state.misc.webuiUpdateAvailable,
   downloadingUpdates: state.fetching.downloadUpdates,
+  checkingUpdates: state.fetching.checkingUpdates,
 });
 
 const mapDispatch = {
