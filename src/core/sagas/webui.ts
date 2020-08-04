@@ -10,8 +10,10 @@ import { startFetching, stopFetching } from '../slices/fetching';
 import { setItem } from '../slices/misc';
 
 function* checkUpdates() {
+  yield put(startFetching('checkingUpdates'));
   const channel = yield select((state: RootState) => state.webuiSettings.v3.updateChannel);
   const resultJson = yield call(ApiWebUi.getWebuiLatest, channel);
+  yield put(stopFetching('checkingUpdates'));
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
