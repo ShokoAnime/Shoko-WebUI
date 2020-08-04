@@ -1,6 +1,7 @@
 import 'isomorphic-fetch';
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { push } from 'connected-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -32,9 +33,13 @@ class LoginPage extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { handleInit, serverVersion } = this.props;
-    handleInit();
+    const {
+      getInitStatus, serverVersion, skipLogin,
+      rememberUser,
+    } = this.props;
+    getInitStatus();
     serverVersion();
+    if (rememberUser) skipLogin();
   }
 
   handleKeyPress = (event) => {
@@ -163,11 +168,12 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  handleInit: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
+  getInitStatus: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
   signIn: (payload: ApiLoginType & { rememberUser: boolean }) => (
     { type: Events.AUTH_LOGIN, payload }
   ),
+  skipLogin: () => (push({ pathname: '/main' })),
 };
 
 const connector = connect(mapState, mapDispatch);

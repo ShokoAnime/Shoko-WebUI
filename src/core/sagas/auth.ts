@@ -61,13 +61,8 @@ function* logout() {
   yield put(push({ pathname: '/' }));
 }
 
-function* skipLogin() {
-  yield put(push({ pathname: '/main' }));
-}
-
 export default {
   changePassword,
   login,
   logout,
-  skipLogin,
 };

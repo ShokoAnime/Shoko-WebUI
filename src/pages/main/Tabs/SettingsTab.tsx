@@ -23,8 +23,9 @@ class SettingsTab extends React.Component<Props, State> {
   state = defaultLayout.settings;
 
   componentDidMount = () => {
-    const { layout } = this.props;
+    const { layout, checkWebUIUpdate } = this.props;
     this.setState(layout);
+    checkWebUIUpdate();
   };
 
   componentDidUpdate = (prevProps) => {
@@ -85,6 +86,7 @@ const mapDispatch = {
     type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
     payload: { settings: layout },
   }),
+  checkWebUIUpdate: () => ({ type: Events.WEBUI_CHECK_UPDATES }),
 };
 
 const connector = connect(mapState, mapDispatch);
