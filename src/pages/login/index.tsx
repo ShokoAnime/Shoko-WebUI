@@ -32,8 +32,8 @@ class LoginPage extends React.Component<Props, State> {
   };
 
   componentDidMount() {
-    const { handleInit, serverVersion } = this.props;
-    handleInit();
+    const { getInitStatus, serverVersion } = this.props;
+    getInitStatus();
     serverVersion();
   }
 
@@ -163,7 +163,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  handleInit: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
+  getInitStatus: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
   signIn: (payload: ApiLoginType & { rememberUser: boolean }) => (
     { type: Events.AUTH_LOGIN, payload }
