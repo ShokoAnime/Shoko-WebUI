@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle,
+  faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle, faFileAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
@@ -43,7 +43,7 @@ class Sidebar extends React.Component<Props> {
               {this.renderItem('dashboard', 'Dashboard', faTachometerAlt)}
               {this.renderItem('import-folders', 'Import Folders', faFolderOpen)}
               {this.renderItem('actions', 'Actions', faListAlt)}
-              {/* {this.renderItem('log', 'Log', faFileAlt)} */}
+              {this.renderItem('logs', 'Log', faFileAlt)}
               {this.renderItem('settings', 'Settings', faSlidersH)}
               {/* {this.renderItem('manager', 'Manage', faThLarge)} */}
             </div>

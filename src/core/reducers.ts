@@ -12,6 +12,7 @@ import firstrunReducer from './slices/firstrun';
 import localSettingsReducer from './slices/localSettings';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
+import logsReducer from './slices/logs';
 import modalsReducer from './slices/modals';
 import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
@@ -28,6 +29,7 @@ const reducers = {
   localSettings: localSettingsReducer,
   mainpage: mainpageReducer,
   misc: miscReducer,
+  logs: logsReducer,
   modals: modalsReducer,
   serverSettings: serverSettingsReducer,
   webuiSettings: webuiSettingsReducer,
