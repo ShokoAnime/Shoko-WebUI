@@ -9,10 +9,14 @@ import {
 
 import Events from '../events';
 import { setQueueStatus } from '../slices/mainpage';
+import { prependLines, appendLines } from '../slices/logs';
 
 let lastRetry = moment();
 let attempts = 0;
 const maxTimeout = 60000;
+
+let connectionEvents;
+let connectionLog;
 
 const onQueueStateChange = (dispatch, getState) => (queue, state) => {
   const newState = Object.assign({}, { [queue]: Object.assign({}, getState().mainpage.queueStatus[queue], { state }) });
@@ -27,6 +31,14 @@ const onQueueCountChange = (dispatch, getState) => (queue, count) => {
 };
 const onQueueRefreshState = dispatch => (state) => {
   dispatch(setQueueStatus(state));
+};
+
+const onLogsGetBacklog = dispatch => (state) => {
+  dispatch(prependLines(state));
+};
+
+const onLogsLog = dispatch => (state) => {
+  dispatch(appendLines(state));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
@@ -53,6 +65,7 @@ const signalRMiddleware = ({
 }) => next => async (action) => {
   // register signalR after the user logged in
   if (action.type === Events.MAINPAGE_LOAD) {
+    if (connectionEvents !== undefined) { return next(action); }
     const connectionHub = '/signalr/events';
 
     const protocol = new JsonHubProtocol();
@@ -69,17 +82,33 @@ const signalRMiddleware = ({
     };
 
     // create the connection instance
-    const connection = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
+    connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
 
     // event handlers, you can use these to dispatch actions to update your Redux store
-    connection.on('QueueStateChanged', onQueueStateChange(dispatch, getState));
-    connection.on('QueueCountChanged', onQueueCountChange(dispatch, getState));
-    connection.on('CommandProcessingStatus', onQueueRefreshState(dispatch));
+    connectionEvents.on('QueueStateChanged', onQueueStateChange(dispatch, getState));
+    connectionEvents.on('QueueCountChanged', onQueueCountChange(dispatch, getState));
+    connectionEvents.on('CommandProcessingStatus', onQueueRefreshState(dispatch));
 
     // re-establish the connection if connection dropped
-    connection.onclose(() => debounce(() => { handleReconnect(connection); }, 5000));
+    connectionEvents.onclose(() => debounce(() => { handleReconnect(connectionEvents); }, 5000));
 
-    startSignalRConnection(connection);
+    startSignalRConnection(connectionEvents);
+  } else if (action.type === Events.LOGPAGE_LOAD) {
+    if (connectionLog !== undefined) { return next(action); }
+    const connectionLogHub = '/signalr/logging';
+    const protocol = new JsonHubProtocol();
+    // eslint-disable-next-line no-bitwise
+    const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+    const options = {
+      transport,
+      logMessageContent: true,
+      logger: LogLevel.Warning,
+      accessTokenFactory: () => getState().apiSession.apikey,
+    };
+    connectionLog = new HubConnectionBuilder().withUrl(connectionLogHub, options).withHubProtocol(protocol).build();
+    connectionLog.on('GetBacklog', onLogsGetBacklog(dispatch));
+    connectionLog.on('Log', onLogsLog(dispatch));
+    startSignalRConnection(connectionLog);
   }
 
   return next(action);

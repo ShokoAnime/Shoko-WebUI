@@ -12,6 +12,7 @@ import DasboardTab from './Tabs/DashboardTab';
 import ImportFoldersTab from './Tabs/ImportFoldersTab';
 import ActionsTab from './Tabs/ActionsTab';
 import SettingsTab from './Tabs/SettingsTab';
+import LogsTab from './Tabs/LogsTab';
 
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
@@ -38,6 +39,8 @@ class MainPage extends React.Component<Props> {
         return (<ActionsTab />);
       case 'settings':
         return (<SettingsTab />);
+      case 'logs':
+        return (<LogsTab />);
       default:
         return (<DasboardTab />);
     }
@@ -65,7 +68,7 @@ class MainPage extends React.Component<Props> {
           </div>
           <div className="flex flex-col flex-grow h-full">
             <Header />
-            <div className="overflow-y-auto">
+            <div className="overflow-y-auto flex-grow">
               {this.renderContent()}
             </div>
           </div>
