@@ -4,7 +4,7 @@ import {
 } from '@aspnet/signalr';
 import moment from 'moment';
 import {
-  debounce, delay, defer, round,
+  debounce, delay, defer, round, forEach,
 } from 'lodash';
 
 import Events from '../events';
@@ -18,19 +18,30 @@ const maxTimeout = 60000;
 let connectionEvents;
 let connectionLog;
 
-const onQueueStateChange = (dispatch, getState) => (queue, state) => {
-  const newState = Object.assign({}, { [queue]: Object.assign({}, getState().mainpage.queueStatus[queue], { state }) });
+const onQueueStateChange = dispatch => (queue, state) => {
+  const newState = Object.assign({}, { [queue]: state });
   dispatch(setQueueStatus(newState));
 };
 const onQueueCountChange = (dispatch, getState) => (queue, count) => {
   const currentQueue = getState().mainpage.queueStatus[queue];
-  if (queue === 'general' && currentQueue.count > count) dispatch({ type: Events.MAINPAGE_REFRESH });
+  if (queue === 'GeneralQueueCount' && currentQueue.count > count) dispatch({ type: Events.MAINPAGE_REFRESH });
 
-  const newState = Object.assign({}, { [queue]: Object.assign({}, currentQueue, { count }) });
+  const newState = Object.assign({}, { [queue]: count });
   dispatch(setQueueStatus(newState));
 };
 const onQueueRefreshState = dispatch => (state) => {
-  dispatch(setQueueStatus(state));
+  const fixedState = {};
+  forEach(state, (item, key) => {
+    const letter = key.substr(0, 1);
+    const letterUp = letter.toUpperCase();
+    if (letter === letterUp) {
+      fixedState[key] = item;
+      return;
+    }
+    const fixedKey = `${letterUp}${key.substr(1)}`;
+    fixedState[fixedKey] = item;
+  });
+  dispatch(setQueueStatus(fixedState));
 };
 
 const onLogsGetBacklog = dispatch => (state) => {
@@ -85,7 +96,7 @@ const signalRMiddleware = ({
     connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
 
     // event handlers, you can use these to dispatch actions to update your Redux store
-    connectionEvents.on('QueueStateChanged', onQueueStateChange(dispatch, getState));
+    connectionEvents.on('QueueStateChanged', onQueueStateChange(dispatch));
     connectionEvents.on('QueueCountChanged', onQueueCountChange(dispatch, getState));
     connectionEvents.on('CommandProcessingStatus', onQueueRefreshState(dispatch));
 

@@ -24,14 +24,15 @@ export type SeriesInfoType = {
 };
 
 export type QueueItemType = {
-  count?: number;
-  state: string;
-  isrunning?: boolean;
-  ispause?: boolean;
+  state: number;
+  description: string;
 };
 
 export type QueueStatusType = {
-  hasher: QueueItemType;
-  general: QueueItemType;
-  images: QueueItemType;
+  HasherQueueState: QueueItemType;
+  GeneralQueueState: QueueItemType;
+  ImageQueueState: QueueItemType;
+  HasherQueueCount: number;
+  GeneralQueueCount: number;
+  ImageQueueCount: number;
 };
