@@ -26,12 +26,13 @@ class MovieDBSettings extends React.Component<Props, State> {
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
+    const propId = id.replace('MovieDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     if (event.target.type === 'number') {
-      this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
+      this.setState(prevState => Object.assign({}, prevState, { [propId]: value }));
     }
     if (value !== '') {
-      saveSettings({ context: 'MovieDb', newSettings: { [id]: value } });
+      saveSettings({ context: 'MovieDb', newSettings: { [propId]: value } });
     }
   };
 
@@ -42,14 +43,14 @@ class MovieDBSettings extends React.Component<Props, State> {
     return (
       <FixedPanel title="MovieDB">
         <span className="font-bold mt-2">Download Options</span>
-        <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
+        <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
         {AutoFanart && (
           <div className="flex justify-between my-1">
             Max Fanart
             <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
-        <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
+        <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
         {AutoPosters && (
           <div className="flex justify-between my-1">
             Max Posters

@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "1.0.0-dev24",
+  "version": "1.0.0-dev26",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -66,6 +66,7 @@
     "react-router": "^5.0.1",
     "react-router-dom": "^5.0.1",
     "react-toastify": "^6.0.8",
+    "react-virtualized": "^9.21.2",
     "redux": "^4.0.1",
     "redux-actions": "^2.6.4",
     "redux-ava": "^2.2.0",

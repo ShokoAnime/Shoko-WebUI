@@ -66,12 +66,13 @@ class TvDBSettings extends React.Component<Props, State> {
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
+    const propId = id.replace('TvDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     if (event.target.type === 'number') {
-      this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
+      this.setState(prevState => Object.assign({}, prevState, { [propId]: value }));
     }
     if (value !== '') {
-      saveSettings({ context: 'TvDB', newSettings: { [id]: value } });
+      saveSettings({ context: 'TvDB', newSettings: { [propId]: value } });
     }
   };
 
@@ -95,21 +96,21 @@ class TvDBSettings extends React.Component<Props, State> {
     return (
       <FixedPanel title="TvDB">
         <span className="font-bold mt-2">Download Options</span>
-        <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
+        <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
         {AutoFanart && (
           <div className="flex justify-between my-1">
             Max Fanart
             <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
-        <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
+        <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
         {AutoPosters && (
           <div className="flex justify-between my-1">
             Max Posters
             <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
-        <Checkbox label="Wide Banners" id="AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
+        <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
         {AutoWideBanners && (
           <div className="flex justify-between my-1">
             Max Wide Banners
@@ -117,7 +118,7 @@ class TvDBSettings extends React.Component<Props, State> {
           </div>
         )}
         <span className="font-bold mt-4">Preferences</span>
-        <Checkbox label="Auto Link" id="AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
+        <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
         <div className="flex justify-between my-1">
           Language
           <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
