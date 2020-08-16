@@ -9,7 +9,6 @@ import {
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Button from '../Buttons/Button';
-import type { QueueItemType } from '../../core/types/api';
 import { setStatus } from '../../core/slices/modals/profile';
 
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };

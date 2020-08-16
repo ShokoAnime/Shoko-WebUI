@@ -2,10 +2,9 @@
 import {
   JsonHubProtocol, HttpTransportType, HubConnectionBuilder, LogLevel,
 } from '@aspnet/signalr';
-import { forEach } from 'lodash';
 import moment from 'moment';
 import {
-  debounce, delay, defer, round,
+  debounce, delay, defer, round, forEach,
 } from 'lodash';
 
 import Events from '../events';
@@ -19,7 +18,7 @@ const maxTimeout = 60000;
 let connectionEvents;
 let connectionLog;
 
-const onQueueStateChange = (dispatch) => (queue, state) => {
+const onQueueStateChange = dispatch => (queue, state) => {
   const newState = Object.assign({}, { [queue]: state });
   dispatch(setQueueStatus(newState));
 };
