@@ -34,10 +34,10 @@ class Header extends React.Component<Props, State> {
     this.setState({ userDropdown: false });
   };
 
-  renderItem = (key = '', item: QueueItemType) => (
+  renderItem = (key = '', count: number) => (
     <div className="flex items-center" key={key}>
       <FontAwesomeIcon icon={icons[key]} className="mr-2 text-lg" />
-      <span className="font-semibold text-lg color-accent mr-4">{item?.count ?? 0}</span>
+      <span className="font-semibold text-lg color-accent mr-4">{count ?? 0}</span>
     </div>
   );
 
@@ -67,9 +67,9 @@ class Header extends React.Component<Props, State> {
     const commands: Array<any> = [];
 
     if (items) {
-      commands.push(this.renderItem('hasher', items.hasher));
-      commands.push(this.renderItem('general', items.general));
-      commands.push(this.renderItem('images', items.images));
+      commands.push(this.renderItem('hasher', items.HasherQueueCount));
+      commands.push(this.renderItem('general', items.GeneralQueueCount));
+      commands.push(this.renderItem('images', items.ImageQueueCount));
     }
 
     return (

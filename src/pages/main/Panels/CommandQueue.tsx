@@ -16,7 +16,7 @@ const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
 class CommandQueue extends React.Component<Props> {
-  renderItem = (key: string, item: QueueItemType) => {
+  renderItem = (key: string, item: QueueItemType, count: number) => {
     const { handleOperation } = this.props;
 
     return (
@@ -26,12 +26,12 @@ class CommandQueue extends React.Component<Props> {
             <FontAwesomeIcon icon={icons[key]} className="mr-4" />
             <span className="font-semibold">{names[key]}</span>
           </div>
-          <div className="flex">{item?.count ?? 0}</div>
+          <div className="flex">{count ?? 0}</div>
           <div className="flex items-center">
             <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
               <FontAwesomeIcon icon={faTimes} />
             </Button>
-            {item?.state === 'Paused' ? (
+            {item?.state === 17 ? (
               <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
                 <FontAwesomeIcon icon={faPlay} />
               </Button>
@@ -43,7 +43,7 @@ class CommandQueue extends React.Component<Props> {
           </div>
         </div>
         <div className="flex break-all queue-item mt-2">
-          {item?.state ?? 'Idle'}
+          {item?.description ?? 'Idle'}
         </div>
       </div>
     );
@@ -58,7 +58,8 @@ class CommandQueue extends React.Component<Props> {
     let paused = true;
 
     forEach(items, (item) => {
-      paused = paused && item.state === 'Paused';
+      if (typeof item === 'number') return;
+      paused = item?.state === 18;
     });
 
     return (
@@ -81,9 +82,9 @@ class CommandQueue extends React.Component<Props> {
     const commands: Array<any> = [];
 
     if (items) {
-      commands.push(this.renderItem('hasher', items.hasher));
-      commands.push(this.renderItem('general', items.general));
-      commands.push(this.renderItem('images', items.images));
+      commands.push(this.renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));
+      commands.push(this.renderItem('general', items.GeneralQueueState, items.GeneralQueueCount));
+      commands.push(this.renderItem('images', items.ImageQueueState, items.ImageQueueCount));
     }
 
     return (
