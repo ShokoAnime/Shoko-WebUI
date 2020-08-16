@@ -68,7 +68,7 @@ class MainPage extends React.Component<Props> {
           </div>
           <div className="flex flex-col flex-grow h-full">
             <Header />
-            <div className="overflow-y-auto">
+            <div className="overflow-y-auto flex-grow">
               {this.renderContent()}
             </div>
           </div>

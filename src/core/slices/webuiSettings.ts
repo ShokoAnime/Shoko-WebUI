@@ -92,11 +92,6 @@ export const defaultLayout = {
       i: 'anidb-login', x: 0, y: 15, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
     }],
   },
-  logs: {
-    lg: [{
-      i: 'logs', x: 0, y: 0, w: 12, h: 9, maxH: 12, moved: false, static: false,
-    }],
-  },
 };
 
 const initialState = {
