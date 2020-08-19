@@ -1,4 +1,5 @@
 import Api from '../index';
+import type { SettingsAnidbLoginType } from '../../types/api/settings';
 
 // Get all settings
 function getSettings() {
@@ -12,7 +13,15 @@ function patchSettings(params: {}) {
   });
 }
 
+// Tests a Login with the given Credentials. This does not save the credentials.
+function postAniDBTestLogin(params: SettingsAnidbLoginType) {
+  return Api.call({
+    action: '/v3/Settings/AniDB/TestLogin', method: 'POST', expectEmpty: true, params,
+  });
+}
+
 export default {
   getSettings,
   patchSettings,
+  postAniDBTestLogin,
 };

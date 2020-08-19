@@ -7,7 +7,6 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import { initialState as SettingsState } from '../../core/slices/serverSettings';
 import type { SettingsDatabaseType } from '../../core/types/api/settings';
 import Footer from './Footer';
@@ -30,11 +29,10 @@ class DatabaseSetup extends React.Component<Props, State> {
     this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
   };
 
-  handleTest = () => {
-    const { setSaved, saveSettings, testDatabase } = this.props;
+  handleTest = (changeTab: boolean) => {
+    const { saveSettings, testDatabase } = this.props;
     saveSettings({ context: 'Database', newSettings: this.state });
-    setSaved('db-setup');
-    testDatabase();
+    testDatabase(changeTab);
   };
 
   renderSqliteOptions = () => {
@@ -93,21 +91,23 @@ class DatabaseSetup extends React.Component<Props, State> {
               </Select>
             </div>
             {this.renderDBOptions()}
-            <div className="flex my-4 items-center">
-              <Button onClick={() => this.handleTest()} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
-              {isFetching ? (
-                <div>
-                  <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
-                </div>
-              ) : (
-                <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
-                  {status.text}
-                </div>
-              )}
-            </div>
+            {Type !== 'SQLite' && (
+              <div className="flex my-4 items-center">
+                <Button onClick={() => this.handleTest(false)} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
+                {isFetching ? (
+                  <div>
+                    <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
+                  </div>
+                ) : (
+                  <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
+                    {status.text}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
-        <Footer prevTabKey="acknowledgement" nextTabKey="local-account" nextDisabled={!saved} />
+        <Footer prevTabKey="acknowledgement" nextDisabled={Type !== 'SQLite' && !saved} saveFunction={() => this.handleTest(true)} isFetching={isFetching} />
       </React.Fragment>
     );
   }
@@ -121,9 +121,8 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  testDatabase: () => ({ type: Events.FIRSTRUN_TEST_DATABASE }),
+  testDatabase: (payload: boolean) => ({ type: Events.FIRSTRUN_TEST_DATABASE, payload }),
   saveSettings: (payload: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload }),
-  setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
 const connector = connect(mapState, mapDispatch);
