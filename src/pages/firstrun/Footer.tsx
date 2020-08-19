@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { replace } from 'connected-react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
+import { faQuestionCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
@@ -23,12 +23,13 @@ class Footer extends React.Component<Props> {
   handleNext = () => {
     const { nextTabKey, saveFunction: saveFunc, setActiveTab } = this.props;
     if (saveFunc) saveFunc();
-    setActiveTab(nextTabKey);
+    if (nextTabKey) setActiveTab(nextTabKey);
   };
 
   render() {
     const {
       prevDisabled, nextDisabled, finish, finishSetup,
+      isFetching,
     } = this.props;
 
     return (
@@ -47,7 +48,9 @@ class Footer extends React.Component<Props> {
             {finish ? (
               <Button onClick={() => finishSetup()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Finish</Button>
             ) : (
-              <Button onClick={() => this.handleNext()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Next</Button>
+              <Button onClick={() => this.handleNext()} className="bg-color-accent py-2 px-3 flex items-center" disabled={nextDisabled || isFetching}>
+                {isFetching ? (<FontAwesomeIcon icon={faSpinner} spin className="mx-2" />) : 'Next'}
+              </Button>
             )}
           </div>
         </div>
@@ -69,9 +72,10 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector> & {
   prevTabKey: string,
-  nextTabKey: string,
+  nextTabKey?: string,
   prevDisabled?: boolean,
   nextDisabled?: boolean,
+  isFetching?: boolean,
   finish?: boolean,
   saveFunction?: () => void;
 };

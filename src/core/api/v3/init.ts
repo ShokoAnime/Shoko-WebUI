@@ -28,11 +28,6 @@ function getStartServer() {
   return ApiRequest('startserver');
 }
 
-// Test AniDB Creditentials
-function getAniDBTest() {
-  return ApiRequest('anidb/test');
-}
-
 // Test Database Connection with Current Settings
 function getDatabaseTest() {
   return ApiRequest('database/test');
@@ -43,6 +38,5 @@ export default {
   getDefaultUser,
   postDefaultUser,
   getStartServer,
-  getAniDBTest,
   getDatabaseTest,
 };

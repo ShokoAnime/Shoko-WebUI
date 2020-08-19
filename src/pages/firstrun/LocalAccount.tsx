@@ -8,6 +8,8 @@ import { setSaved as setFirstRunSaved, setUser } from '../../core/slices/firstru
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 
+import type { DefaultUserType } from '../../core/types/api/init';
+
 class LocalAccount extends React.Component<Props> {
   componentDidMount() {
     const { getUser } = this.props;
@@ -16,20 +18,14 @@ class LocalAccount extends React.Component<Props> {
 
   handleInputChange = (event: any) => {
     const { changeSetting } = this.props;
-    const name = event.target.id;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    changeSetting(name, value);
-  };
-
-  handleSave = () => {
-    const { setSaved, saveUser } = this.props;
-    saveUser();
-    setSaved('local-account');
+    const { id, value } = event.target;
+    changeSetting(id, value);
   };
 
   render() {
     const {
-      Username, Password, status,
+      Username, Password, status, saveUser,
+      isFetching,
     } = this.props;
 
     return (
@@ -49,7 +45,7 @@ class LocalAccount extends React.Component<Props> {
             {status.text}
           </div>
         </div>
-        <Footer prevTabKey="db-setup" nextTabKey="anidb-account" saveFunction={this.handleSave} />
+        <Footer prevTabKey="db-setup" saveFunction={() => saveUser({ Username, Password })} isFetching={isFetching} />
       </React.Fragment>
     );
   }
@@ -58,10 +54,11 @@ class LocalAccount extends React.Component<Props> {
 const mapState = (state: RootState) => ({
   ...(state.firstrun.user),
   status: state.firstrun.userStatus,
+  isFetching: state.fetching.firstrunLocalAcc,
 });
 
 const mapDispatch = {
-  saveUser: () => ({ type: Events.FIRSTRUN_SET_USER }),
+  saveUser: (payload: DefaultUserType) => ({ type: Events.FIRSTRUN_SET_USER, payload }),
   getUser: () => ({ type: Events.FIRSTRUN_GET_USER }),
   changeSetting: (id: string, value: string) => (setUser({ [id]: value })),
   setSaved: (value: string) => (setFirstRunSaved(value)),

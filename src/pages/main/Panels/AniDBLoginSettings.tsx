@@ -1,10 +1,13 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Input from '../../../components/Input/Input';
+import Button from '../../../components/Buttons/Button';
 
 type State = {
   Username: string;
@@ -38,13 +41,25 @@ class AniDBLoginSettings extends React.Component<Props, State> {
   };
 
   handleInputChange = (event: any) => {
-    const { saveSettings } = this.props;
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
-    if (value !== '') {
-      saveSettings({ context: 'AniDb', newSettings: { [id]: value } });
-    }
+  };
+
+  testAndSave = () => {
+    const { testAnidb } = this.props;
+    testAnidb(this.state);
+  };
+
+  renderOptions = () => {
+    const { isTesting } = this.props;
+    return (
+      <div className="flex">
+        <Button onClick={() => this.testAndSave()} tooltip="Test and Save" className="color-accent">
+          <FontAwesomeIcon icon={isTesting ? faSpinner : faSave} spin={isTesting} />
+        </Button>
+      </div>
+    );
   };
 
   render() {
@@ -54,8 +69,8 @@ class AniDBLoginSettings extends React.Component<Props, State> {
     } = this.state;
 
     return (
-      <FixedPanel title="AniDB Login">
-        <div className="flex justify-between my-1">
+      <FixedPanel title="AniDB Login" options={this.renderOptions()}>
+        <div className="flex justify-between mt-2 mb-1">
           Username
           <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
         </div>
@@ -82,10 +97,11 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   ...(state.localSettings.AniDb),
+  isTesting: state.fetching.aniDBTest,
 });
 
 const mapDispatch = {
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
+  testAnidb: (payload: State) => ({ type: Events.SETTINGS_ANIDB_TEST, payload }),
 };
 
 const connector = connect(mapState, mapDispatch);

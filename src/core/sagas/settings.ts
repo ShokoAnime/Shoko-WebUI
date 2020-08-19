@@ -20,6 +20,21 @@ import {
   saveWebUISettings as saveWebUISettingsAction,
 } from '../slices/webuiSettings';
 
+import type { SettingsAnidbLoginType } from '../types/api/settings';
+
+function* aniDBTest(action: PayloadAction<SettingsAnidbLoginType>) {
+  const { Username, Password } = action.payload;
+  yield put(startFetching('aniDBTest'));
+  const resultJson = yield call(ApiSettings.postAniDBTestLogin, { Username, Password });
+  yield put(stopFetching('aniDBTest'));
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+  } else {
+    toast.success('Saved Successfully!');
+    yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'AniDb', newSettings: action.payload } });
+  }
+}
+
 function* getPlexLoginUrl() {
   yield put(startFetching('plex_login_url'));
   const resultJson = yield call(ApiPlex.getPlexLoginUrl);
@@ -41,7 +56,7 @@ function* getSettings() {
 
   const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
   if (!isEmpty(webUISettings)) {
-    yield put(saveWebUISettingsAction(webUISettings));
+    yield put(saveWebUISettingsAction(webUISettings.v3));
   }
   yield put(saveServerSettings(resultJson.data));
   yield put(saveLocalSettings(resultJson.data));
@@ -117,6 +132,7 @@ function* uploadWebUISettings() {
 }
 
 export default {
+  aniDBTest,
   getPlexLoginUrl,
   getSettings,
   getTraktCode,

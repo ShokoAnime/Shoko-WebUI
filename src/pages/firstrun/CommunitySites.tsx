@@ -87,7 +87,7 @@ const mapDispatch = {
   setSaved: (value: string) => (setFirstRunSaved(value)),
 };
 
-const connector = connect(() => {}, mapDispatch);
+const connector = connect(() => ({}), mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 

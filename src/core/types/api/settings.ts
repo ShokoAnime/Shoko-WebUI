@@ -9,9 +9,12 @@ export type SettingsDatabaseType = {
   SQLite_DatabaseFile: string;
 };
 
-export type SettingsAnidbType = {
+export type SettingsAnidbLoginType = {
   Username: string;
   Password: string;
+};
+
+export type SettingsAnidbType = {
   AVDumpKey: string;
   ClientPort: number;
   AVDumpClientPort: number;
@@ -98,7 +101,7 @@ export type SettingsServerType = {
   WebUI_Settings: string;
   FirstRun: boolean;
   Database: SettingsDatabaseType;
-  AniDb: SettingsAnidbType & SettingsAnidbDownloadType
+  AniDb: SettingsAnidbLoginType & SettingsAnidbType & SettingsAnidbDownloadType
   & SettingsAnidbMylistType & SettingsAnidbUpdateType;
   TvDB: SettingsTvdbDownloadType & SettingsTvdbPrefsType;
   MovieDb: SettingsMoviedbType;
