@@ -56,7 +56,7 @@ function* getSettings() {
 
   const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
   if (!isEmpty(webUISettings)) {
-    yield put(saveWebUISettingsAction(webUISettings));
+    yield put(saveWebUISettingsAction(webUISettings.v3));
   }
   yield put(saveServerSettings(resultJson.data));
   yield put(saveLocalSettings(resultJson.data));
