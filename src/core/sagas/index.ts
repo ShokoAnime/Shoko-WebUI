@@ -83,6 +83,7 @@ export default function* rootSaga() {
     // SERVER
     takeEvery(Events.SERVER_VERSION, serverVersion),
     // SETTINGS
+    takeEvery(Events.SETTINGS_ANIDB_TEST, SagaSettings.aniDBTest),
     takeEvery(Events.SETTINGS_GET_SERVER, SagaSettings.getSettings),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, SagaSettings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),
