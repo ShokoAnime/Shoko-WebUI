@@ -21,7 +21,6 @@ type ApiNodeType = {
 };
 
 type State = {
-  fetching: boolean,
   expanded: boolean,
   loaded: boolean,
 };
@@ -30,7 +29,6 @@ class TreeNode extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
-      fetching: false,
       expanded: false,
       loaded: false,
     };
@@ -61,8 +59,9 @@ class TreeNode extends React.Component<Props, State> {
   render() {
     const {
       Path, level, selectedNode, items, nodeId,
+      fetching,
     } = this.props;
-    const { fetching, expanded } = this.state;
+    const { expanded } = this.state;
     const selected = nodeId === selectedNode.id;
 
     const children: Array<any> = [];
@@ -83,6 +82,7 @@ class TreeNode extends React.Component<Props, State> {
           level === 1 ? 'root' : null, selected ? 'selected' : null,
         )}
         onClick={this.toggleSelected}
+        onDoubleClick={this.toggleExpanded}
       >
         <FontAwesomeIcon
           onClick={this.toggleExpanded}
@@ -90,7 +90,7 @@ class TreeNode extends React.Component<Props, State> {
           // eslint-disable-next-line no-nested-ternary
           icon={fetching ? faCircleNotch : (expanded ? faCaretDown : faCaretRight)}
         />
-        <span>{Path}</span>
+        <span className="select-none">{Path}</span>
         <ul>{children}</ul>
       </li>
     );
