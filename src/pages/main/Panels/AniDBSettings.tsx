@@ -81,22 +81,22 @@ class AniDBSettings extends React.Component<Props, State> {
         <div className="flex justify-between my-1">
           Storage State
           <Select id="MyList_DeleteType" value={MyList_DeleteType} onChange={this.handleInputChange}>
-            <option value="0">Unknown</option>
-            <option value="1">HDD</option>
-            <option value="2">Disk</option>
-            <option value="3">Deleted</option>
-            <option value="4">Remote</option>
+            <option value={0}>Unknown</option>
+            <option value={1}>HDD</option>
+            <option value={2}>Disk</option>
+            <option value={3}>Deleted</option>
+            <option value={4}>Remote</option>
           </Select>
         </div>
         <div className="flex justify-between my-1">
           Delete Action
           <Select id="MyList_StorageState" value={MyList_StorageState} onChange={this.handleInputChange}>
-            <option value="0">Delete File (AniDB)</option>
-            <option value="1">Delete File (Local)</option>
-            <option value="2">Mark Deleted</option>
-            <option value="3">Mark External (CD/DVD)</option>
-            <option value="4">Mark Unknown</option>
-            <option value="5">DVD/BD</option>
+            <option value={0}>Delete File (AniDB)</option>
+            <option value={1}>Delete File (Local)</option>
+            <option value={2}>Mark Deleted</option>
+            <option value={3}>Mark External (CD/DVD)</option>
+            <option value={4}>Mark Unknown</option>
+            <option value={5}>DVD/BD</option>
           </Select>
         </div>
         <span className="font-bold mt-4">Update Options</span>

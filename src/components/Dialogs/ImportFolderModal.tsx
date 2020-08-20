@@ -112,10 +112,10 @@ class ImportFolderModal extends React.Component<Props, State> {
               <div className="flex item-center justify-between">
                 Drop Type
                 <Select id="DropFolderType" value={DropFolderType} onChange={this.handleInputChange}>
-                  <option value="0">None</option>
-                  <option value="1">Source</option>
-                  <option value="2">Destination</option>
-                  <option value="3">Both</option>
+                  <option value={0}>None</option>
+                  <option value={1}>Source</option>
+                  <option value={2}>Destination</option>
+                  <option value={3}>Both</option>
                 </Select>
               </div>
             </div>
