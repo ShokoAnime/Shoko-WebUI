@@ -17,7 +17,7 @@ function getImportFolder() {
 
 // Edit Import Folder. This replaces all values.
 function putImportFolder(params: ImportFolderType) {
-  return ApiRequest('', 'PUT', omit(params, ['FileSize', 'Size', 'ID']));
+  return ApiRequest('', 'PUT', omit(params, ['FileSize', 'Size']));
 }
 
 // Add an Import Folder. Does not run import on the folder, so you must scan it yourself.
