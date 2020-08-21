@@ -31,7 +31,7 @@ class CommandQueue extends React.Component<Props> {
             <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
               <FontAwesomeIcon icon={faTimes} />
             </Button>
-            {item?.state === 17 ? (
+            {item?.state === 18 ? (
               <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
                 <FontAwesomeIcon icon={faPlay} />
               </Button>

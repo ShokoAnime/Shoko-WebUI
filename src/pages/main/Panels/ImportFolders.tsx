@@ -13,22 +13,25 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
-type ImportFolderType = {
-  ID: number;
-  WatchForNewFiles?: boolean;
-  DropFolderType?: number;
-  Path: string;
-  FileSize?: number;
-  Name: string;
-  Size?: number;
-};
+import type { ImportFolderType } from '../../../core/types/api/import-folder';
 
 class ImportFolders extends React.Component<Props> {
   renderFolder = (folder: ImportFolderType) => {
     const { rescanFolder, openImportFolderModalEdit } = this.props;
 
     let flags = '';
-    if (folder.DropFolderType === 1) flags = 'Drop Source'; else if (folder.DropFolderType === 2) flags = 'Drop Destination';
+    switch (folder.DropFolderType) {
+      case 1:
+        flags = 'Drop Source';
+        break;
+      case 2:
+        flags = 'Drop Destination';
+        break;
+      case 3:
+        flags = 'Both Drop Source and Destination';
+        break;
+      default:
+    }
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch For New Files' : 'Watch For New Files';
 
     return (

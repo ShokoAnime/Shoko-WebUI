@@ -17,12 +17,20 @@ class FixedPanel extends React.Component<Props> {
       <div className={`${className ?? ''} flex flex-col overflow-hidden rounded shadow-sm fixed-panel h-full px-5 py-4`}>
         <div className="flex justify-between items-center">
           <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">{title}</span>
-          <div className="flex">
+          <div
+            className="flex"
+            onMouseDown={event => event.stopPropagation()}
+            onTouchStart={event => event.stopPropagation()}
+          >
             {options}
           </div>
         </div>
         <span className="bg-color-accent-secondary mt-2 h-1 w-10 flex-shrink-0" />
-        <div className="overflow-y-auto flex flex-col h-full font-muli">
+        <div
+          className="overflow-y-auto flex flex-col h-full font-muli"
+          onMouseDown={event => event.stopPropagation()}
+          onTouchStart={event => event.stopPropagation()}
+        >
           {children}
         </div>
       </div>

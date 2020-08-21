@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
+import { forEach, omit } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faFolderOpen, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
@@ -25,7 +25,7 @@ const defaultState = {
   showAddNew: false,
   showEdit: false,
   WatchForNewFiles: false,
-  DropFolderType: 0,
+  DropFolderType: 0 as 0 | 1 | 2 | 3,
   Path: '',
   Name: '',
   ID: 0,
@@ -47,7 +47,7 @@ class ImportFolders extends React.Component<Props, State> {
 
   handleAddFolder = () => {
     const { addImportFolder } = this.props;
-    addImportFolder(this.state);
+    addImportFolder(omit(this.state, ['showAddNew', 'showEdit']));
     this.setState(defaultState);
   };
 
@@ -84,8 +84,18 @@ class ImportFolders extends React.Component<Props, State> {
     const { deleteImportFolder } = this.props;
     let flags = '';
 
-    if (folder.DropFolderType === 1) flags = 'Drop Source'; else if (folder.DropFolderType === 2) flags = 'Drop Destination';
-
+    switch (folder.DropFolderType) {
+      case 1:
+        flags = 'Drop Source';
+        break;
+      case 2:
+        flags = 'Drop Destination';
+        break;
+      case 3:
+        flags = 'Both Drop Source and Destination';
+        break;
+      default:
+    }
     if (folder.WatchForNewFiles) {
       flags += folder.DropFolderType ? ', Watch For New Files' : 'Watch For New Files';
     }
@@ -127,9 +137,10 @@ class ImportFolders extends React.Component<Props, State> {
         <div className="flex item-center justify-between">
           Drop Type
           <Select id="DropFolderType" value={DropFolderType} onChange={this.handleInputChange}>
-            <option value="0">None</option>
-            <option value="1">Source</option>
-            <option value="2">Destination</option>
+            <option value={0}>None</option>
+            <option value={1}>Source</option>
+            <option value={2}>Destination</option>
+            <option value={3}>Both</option>
           </Select>
         </div>
         <span className="flex mt-6">
