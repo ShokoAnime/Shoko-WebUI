@@ -127,11 +127,8 @@ class LoginPage extends React.Component<Props, State> {
                   <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
                   <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
                   <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
-                  <div className="flex justify-between items-center mt-4">
+                  <div className="flex mt-4">
                     <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || initStatus.State === 4}>Sign In</Button>
-                    {(!isFetching && initStatus.State !== 4) && (
-                      <Link to="/"><span className="color-accent-secondary font-muli font-bold text-xs hover:underline">Create New Account</span></Link>
-                    )}
                   </div>
                 </div>
               </div>
