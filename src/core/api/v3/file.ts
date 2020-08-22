@@ -1,8 +1,8 @@
 import Api from '../index';
 import type { ApiRequestMethodType } from '../index';
 
-function ApiRequest(action: string, method: ApiRequestMethodType = 'GET') {
-  return Api.call({ action: `/v3/File/${action}`, method });
+function ApiRequest(action: string, method: ApiRequestMethodType = 'GET', query = '') {
+  return Api.call({ action: `/v3/File/${action}`, method, query });
 }
 
 // Get File Details
@@ -30,10 +30,16 @@ function getFileRecent(limit = 50) {
   return ApiRequest(`Recent/${limit}`);
 }
 
+// Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
+function getFileUnrecognized(page = 0) {
+  return ApiRequest('Unrecognized', 'GET', `?pageSize=50&page=${page}`);
+}
+
 export default {
   getFile,
   getFileAniDB,
   getFileMediaInfo,
   postFileAvdump,
   getFileRecent,
+  getFileUnrecognized,
 };

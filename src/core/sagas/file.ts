@@ -7,6 +7,7 @@ import ApiSeries from '../api/v3/series';
 
 import {
   setAvdump, setFetched, setRecentFileDetails, setRecentFiles,
+  setUnrecognizedFiles,
 } from '../slices/mainpage';
 
 import type { RecentFileDetailsType } from '../types/api/file';
@@ -60,6 +61,17 @@ function* getRecentFiles() {
   yield put(setFetched('recentFiles'));
 }
 
+function* getUnrecognizedFiles() {
+  const resultJson = yield call(ApiFile.getFileUnrecognized);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+
+  yield put(setUnrecognizedFiles(resultJson.data));
+  yield put(setFetched('unrecognizedFiles'));
+}
+
 function* runAvdump(action) {
   const fileId = action.payload;
 
@@ -72,5 +84,6 @@ function* runAvdump(action) {
 export default {
   getRecentFileDetails,
   getRecentFiles,
+  getUnrecognizedFiles,
   runAvdump,
 };

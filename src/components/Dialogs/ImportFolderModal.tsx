@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { find } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFolderOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
 
@@ -32,7 +33,8 @@ class ImportFolderModal extends React.Component<Props, State> {
     const { edit, ID, importFolders } = this.props;
     this.setState(defaultState);
     if (edit) {
-      this.setState(importFolders[ID - 1]);
+      const folderDetails = find(importFolders, { ID }) ?? {};
+      this.setState(folderDetails);
     }
   };
 

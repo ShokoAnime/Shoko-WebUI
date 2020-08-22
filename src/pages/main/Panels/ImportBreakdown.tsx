@@ -1,23 +1,16 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
-import { forEach, orderBy } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
-import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
 import ImportedTab from './ImportBreakdownTabs/ImportedTab';
 import UnrecognizedTab from './ImportBreakdownTabs/UnrecognizedTab';
 
-import { RecentFileType } from '../../../core/types/api/file';
-
 type State = {
   activeTab: string,
 };
 
-class ImportBreakdown extends React.Component<Props, State> {
+class ImportBreakdown extends React.Component<{}, State> {
   state = {
     activeTab: 'imported',
   };
@@ -42,48 +35,24 @@ class ImportBreakdown extends React.Component<Props, State> {
 
   renderContent = () => {
     const { activeTab } = this.state;
-    const { items } = this.props;
-
-    const sortedItems = orderBy(items, ['ID'], ['desc']);
-    const importedItems: Array<RecentFileType> = [];
-    const unrecognizedItems: Array<RecentFileType> = [];
-
-    forEach(sortedItems, item => (
-      item.SeriesIDs ? importedItems.push(item) : unrecognizedItems.push(item)
-    ));
 
     switch (activeTab) {
       case 'imported':
-        return <ImportedTab items={importedItems} />;
+        return <ImportedTab />;
       case 'unrecognized':
-        return <UnrecognizedTab items={unrecognizedItems} />;
+        return <UnrecognizedTab />;
       default:
-        return <ImportedTab items={importedItems} />;
+        return <ImportedTab />;
     }
   };
 
   render() {
-    const { hasFetched } = this.props;
-
     return (
       <FixedPanel title="Import Breakdown" options={this.renderOptions()}>
-        {!hasFetched ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : this.renderContent()}
+        {this.renderContent()}
       </FixedPanel>
     );
   }
 }
 
-const mapState = (state: RootState) => ({
-  items: state.mainpage.recentFiles as Array<RecentFileType>,
-  hasFetched: state.mainpage.fetched.recentFiles,
-});
-
-const connector = connect(mapState);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(ImportBreakdown);
+export default ImportBreakdown;
