@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
+import { forEach, orderBy } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import prettyBytes from 'pretty-bytes';
@@ -135,14 +135,25 @@ class ImportedTab extends React.Component<Props, State> {
   };
 
   render() {
-    const { items } = this.props;
+    const { items, hasFetched } = this.props;
 
+    if (!hasFetched) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+        </div>
+      );
+    }
+
+    const sortedItems = orderBy(items, ['ID'], ['desc']);
     const files: Array<any> = [];
 
-    forEach(items, (item) => {
-      files.push(this.renderDate(item));
-      files.push(this.renderName(item.ID, item.Locations[0].RelativePath));
-      files.push(this.renderDetails(item));
+    forEach(sortedItems, (item) => {
+      if (item.SeriesIDs) {
+        files.push(this.renderDate(item));
+        files.push(this.renderName(item.ID, item.Locations[0].RelativePath));
+        files.push(this.renderDetails(item));
+      }
     });
 
     if (files.length === 0) {
@@ -154,7 +165,9 @@ class ImportedTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
+  items: state.mainpage.recentFiles as Array<RecentFileType>,
   recentFileDetails: state.mainpage.recentFileDetails,
+  hasFetched: state.mainpage.fetched.recentFiles,
 });
 
 const mapDispatch = {
@@ -165,8 +178,6 @@ const mapDispatch = {
 
 const connector = connect(mapState, mapDispatch);
 
-type Props = ConnectedProps<typeof connector> & {
-  items: Array<RecentFileType>;
-};
+type Props = ConnectedProps<typeof connector>;
 
 export default connector(ImportedTab);

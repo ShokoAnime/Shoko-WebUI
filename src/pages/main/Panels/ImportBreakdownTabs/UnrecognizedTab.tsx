@@ -1,14 +1,17 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
+import { forEach, orderBy } from 'lodash';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
 
 import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
-import type { RecentFileType } from '../../../../core/types/api/file';
 import Button from '../../../../components/Buttons/Button';
+
+import type { RecentFileType } from '../../../../core/types/api/file';
 
 class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
@@ -39,11 +42,20 @@ class UnrecognizedTab extends React.Component<Props> {
   };
 
   render() {
-    const { items } = this.props;
+    const { items, hasFetched } = this.props;
 
+    if (!hasFetched) {
+      return (
+        <div className="flex justify-center items-center h-full">
+          <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+        </div>
+      );
+    }
+
+    const sortedItems = orderBy(items, ['ID'], ['desc']);
     const files: Array<any> = [];
 
-    forEach(items, (item) => {
+    forEach(sortedItems, (item) => {
       files.push(this.renderItem(item));
     });
 
@@ -57,6 +69,8 @@ class UnrecognizedTab extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   avdumpList: state.mainpage.avdump,
+  items: state.mainpage.unrecognizedFiles as Array<RecentFileType>,
+  hasFetched: state.mainpage.fetched.unrecognizedFiles,
 });
 
 const mapDispatch = {
@@ -67,8 +81,6 @@ const mapDispatch = {
 
 const connector = connect(mapState, mapDispatch);
 
-type Props = ConnectedProps<typeof connector> & {
-  items: Array<RecentFileType>,
-};
+type Props = ConnectedProps<typeof connector>;
 
 export default connector(UnrecognizedTab);

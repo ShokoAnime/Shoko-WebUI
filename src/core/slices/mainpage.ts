@@ -28,6 +28,7 @@ type State = {
   recentFiles: Array<RecentFileType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
+  unrecognizedFiles: Array<Omit<RecentFileType, 'SeriesIDs'>>
 };
 
 const mainpageSlice = createSlice({
@@ -49,6 +50,7 @@ const mainpageSlice = createSlice({
       Other: 0,
     },
     stats: {},
+    unrecognizedFiles: [],
   } as State,
   reducers: {
     setActiveTab(sliceState, action) {
@@ -83,6 +85,9 @@ const mainpageSlice = createSlice({
     setStats(sliceState, action) {
       sliceState.stats = action.payload;
     },
+    setUnrecognizedFiles(sliceState, action) {
+      sliceState.unrecognizedFiles = action.payload;
+    },
     unsetFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: false });
     },
@@ -92,7 +97,8 @@ const mainpageSlice = createSlice({
 export const {
   setActiveTab, setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
-  setRecentFiles, setSeriesSummary, setStats, unsetFetched,
+  setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
+  unsetFetched,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
