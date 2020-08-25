@@ -26,13 +26,13 @@ class StartServer extends React.Component<Props> {
   };
 
   render() {
-    const { status, saved } = this.props;
+    const { status } = this.props;
 
     return (
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10">
           <div className="font-bold text-lg">Start Server</div>
-          <div className="font-muli mt-5">
+          <div className="font-muli mt-5 text-justify">
             On this page you can try and start the server, startup progress will be reported below.
             After the startup and database creation process is complete you will be able to setup
             import folders.
@@ -49,7 +49,7 @@ class StartServer extends React.Component<Props> {
             </div>
           </div>
         </div>
-        <Footer prevTabKey="community-sites" nextTabKey="import-folders" prevDisabled={status.State !== 4} nextDisabled={!saved} saveFunction={this.handleNext} />
+        <Footer prevTabKey="community-sites" nextTabKey="import-folders" prevDisabled={status.State !== 4} nextDisabled={status.State !== 2} saveFunction={this.handleNext} />
       </React.Fragment>
     );
   }
@@ -57,7 +57,6 @@ class StartServer extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   status: state.firstrun.status,
-  saved: state.firstrun.saved['start-server'],
   user: state.firstrun.user,
 });
 

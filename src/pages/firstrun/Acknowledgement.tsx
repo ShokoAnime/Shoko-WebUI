@@ -25,7 +25,7 @@ class Acknowledgement extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <div className="flex flex-col flex-grow p-10">
+        <div className="flex flex-col flex-grow p-10 text-justify">
           <div className="font-bold text-lg">Thanks For Installing Shoko Server!</div>
           <div className="font-muli mt-5">
             We want to stress that Shoko is an anime cataloging program and not a stand-alone

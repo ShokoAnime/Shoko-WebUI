@@ -7,9 +7,13 @@ function getSettings() {
 }
 
 // JsonPatch the settings
-function patchSettings(params: {}) {
+function patchSettings(params: any) {
   return Api.call({
-    action: '/v3/Settings', method: 'PATCH', expectEmpty: true, params,
+    action: '/v3/Settings',
+    method: 'PATCH',
+    expectEmpty: true,
+    params: params.postData,
+    query: `?skipValidation=${params.skipValidation ?? false}`,
   });
 }
 

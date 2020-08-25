@@ -41,7 +41,7 @@ function* apiCall(userOptions: ApiCallOptions) {
         body: JSON.stringify(options.params),
         method: options.method,
       };
-      fetchUrl = `${options.endpoint}${options.action}`;
+      fetchUrl = `${options.endpoint}${options.action}${options.query}`;
       break;
     case 'GET':
       fetchOptions = {

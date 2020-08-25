@@ -81,10 +81,11 @@ function* saveLayout(action) {
 type SaveSettingsType = {
   context?: string;
   newSettings: {};
+  skipValidation?: boolean;
 };
 
 function* saveSettings(action: PayloadAction<SaveSettingsType>) {
-  const { context, newSettings } = action.payload;
+  const { context, newSettings, skipValidation } = action.payload;
   yield put(saveLocalSettings(context ? { [context]: newSettings } : newSettings));
   const { original, changed } = yield select((state: RootState) => {
     const { localSettings, serverSettings } = state;
@@ -97,7 +98,7 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   if (postData.length === 0) {
     return;
   }
-  const resultJson = yield call(ApiSettings.patchSettings, postData);
+  const resultJson = yield call(ApiSettings.patchSettings, { postData, skipValidation });
   if (resultJson.error) {
     toast.error(resultJson.message);
   }
