@@ -184,7 +184,7 @@ class ImportFolders extends React.Component<Props, State> {
       <React.Fragment>
         <div className="flex flex-col flex-grow px-10 pt-10 pb-4 overflow-y-auto">
           <div className="font-bold text-lg">Import Folders</div>
-          <div className="font-muli mt-5">
+          <div className="font-muli mt-5 text-justify">
             Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can
             have as many import folders as you&apos;d like. Please note you can only have <span className="font-bold">one</span> folder
             designated as your drop destination.

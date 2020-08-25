@@ -35,12 +35,12 @@ class AniDBAccount extends React.Component<Props, State> {
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10">
           <div className="font-bold text-lg">Adding Your AniDB Account</div>
-          <div className="font-muli mt-5">
+          <div className="font-muli mt-5 text-justify">
             Shoko uses AniDB to compare your file hashes with its extensive database to quickly
             figure out and add series to your collection. AniDB also provides additional series
             and episode information that enhances your usage.
           </div>
-          <div className="font-muli mt-2">
+          <div className="font-muli mt-2 text-justify">
             An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-accent-secondary hover:underline">Click Here</a> to create one.
           </div>
           <div className="flex flex-col w-1/2 mt-3">

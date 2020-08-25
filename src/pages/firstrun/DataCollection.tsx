@@ -20,13 +20,13 @@ class DataCollection extends React.Component<Props> {
         <div className="flex flex-col flex-grow pt-10 px-10 pb-5 overflow-y-auto">
           <div className="font-bold text-lg">Data Collection</div>
           <div className="overflow-y-auto">
-            <div className="font-muli mt-5">
+            <div className="font-muli mt-5 pr-2 text-justify">
               Shoko is open-source and is worked on by volunteers in our free time so in order to
               more effectively improve Shoko, we&apos;ve implemented two different services for data
               collection. We understand the hesitations a lot of people have with data collection
               services so we&apos;re listing what services we use and what data we collect.
             </div>
-            <div className="font-muli mt-4">
+            <div className="font-muli mt-4 pr-2 text-justify">
               We also want to make something very clear,
               <span className="font-bold"> all data collected is non-identifiable.</span>
               We don’t care about what specific titles you have in your collection or what you

@@ -57,7 +57,7 @@ function getValidateAllImages() {
 }
 
 // Gets files whose data does not match AniDB
-function getAVDumpMisMatchedFiles() {
+function getAVDumpMismatchedFiles() {
   return ApiRequest('AVDumpMismatchedFiles');
 }
 
@@ -107,7 +107,7 @@ export default {
   getUpdateAllMovieDBInfo,
   getUpdateAllTraktInfo,
   getValidateAllImages,
-  getAVDumpMisMatchedFiles,
+  getAVDumpMismatchedFiles,
   getDownloadMissingAniDBAnimeData,
   getRegenerateAllTvDBEpisodeMatchings,
   getSyncMyList,
