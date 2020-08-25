@@ -5,7 +5,9 @@ import { push } from 'connected-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner, faQuestionCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+  faSpinner, faQuestionCircle, faCircleNotch, faTimesCircle,
+} from '@fortawesome/free-solid-svg-icons';
 import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
@@ -15,7 +17,6 @@ import { ApiLoginType, GlobalAlertType } from '../../core/types/api';
 import Button from '../../components/Buttons/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
-import Link from '../../components/Link/Link';
 
 const UI_VERSION = uiVersion();
 
@@ -34,12 +35,17 @@ class LoginPage extends React.Component<Props, State> {
 
   componentDidMount() {
     const {
-      getInitStatus, serverVersion, skipLogin,
+      startPollingStatus, serverVersion, skipLogin,
       rememberUser,
     } = this.props;
-    getInitStatus();
+    startPollingStatus();
     serverVersion();
     if (rememberUser) skipLogin();
+  }
+
+  componentWillUnmount() {
+    const { stopPollingStatus } = this.props;
+    stopPollingStatus();
   }
 
   handleKeyPress = (event) => {
@@ -85,7 +91,8 @@ class LoginPage extends React.Component<Props, State> {
 
   render() {
     const {
-      initStatus, isFetching, isFetchingLogin, toastPosition,
+      initStatus, isFetching, isFetchingLogin,
+      toastPosition, openWizard,
     } = this.props;
     const { username, password, rememberUser } = this.state;
 
@@ -114,23 +121,58 @@ class LoginPage extends React.Component<Props, State> {
             </div>
             <div className="flex flex-col flex-grow justify-between">
               <div className="px-10 flex flex-grow flex-col justify-center">
-                {initStatus.State === 4 && (
-                  <div className="flex border-t-4 border-color-danger px-4 py-3 rounded-b-lg relative fixed-panel shadow-md items-center">
-                    <FontAwesomeIcon icon={faInfoCircle} className="mr-6 text-2xl" />
-                    <div className="justify-center">
-                      <div className="text font-bold">First Time? We&apos;ve all been there.</div>
-                      <div className="text-sm">Please complete the <Link to="/firstrun"><span className="color-accent hover:underline">First-Run Wizard</span></Link> to continue.</div>
+                {!initStatus?.State && (
+                  <div className="flex justify-center items-center">
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
+                  </div>
+                )}
+                {initStatus.State === 1 && (
+                  <div className="flex flex-col justify-center items-center">
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
+                    <div className="mt-8 text-2xl2">Server is starting. Please wait!</div>
+                    <div className="mt-2 text-sm">
+                      <span className="font-muli font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
                     </div>
                   </div>
                 )}
-                <div className="flex flex-col">
-                  <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
-                  <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
-                  <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
-                  <div className="flex mt-4">
-                    <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || initStatus.State === 4}>Sign In</Button>
+                {initStatus.State === 2 && (
+                  <div className="flex flex-col">
+                    <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
+                    <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
+                    <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
+                    <div className="flex mt-4">
+                      <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching}>Sign In</Button>
+                    </div>
                   </div>
-                </div>
+                )}
+                {initStatus.State === 3 && (
+                  <div className="flex flex-col justify-center items-center">
+                    <FontAwesomeIcon icon={faTimesCircle} className="color-danger text-5xl" />
+                    <div className="mt-4 text-2xl2">Server startup failed!</div>
+                    <div className="mt-2 text-sm">
+                      <span className="font-muli font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
+                    </div>
+                  </div>
+                )}
+                {initStatus.State === 4 && (
+                  <div className="flex flex-col flex-grow py-8">
+                    <div className="flex flex-col">
+                      <div className="font-bold text-xl">First Time? We&apos;ve All Been There</div>
+                      <div className="mt-6 font-muli text-justify">
+                        Before Shoko can get started indexing your anime collection, you&apos;ll
+                        need to go through our <span className="font-bold">First Time Wizard </span>
+                        and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
+                        takes a couple of minutes.
+                      </div>
+                      <div className="mt-6 font-muli">
+                        Click <span className="font-bold">Continue</span> below to proceed.
+                      </div>
+                    </div>
+                    <div className="flex justify-center items-center flex-grow mt-8">
+                      <Button onClick={() => openWizard()} className="flex bg-color-accent px-4 py-2 font-semibold">CONTINUE</Button>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="help flex px-4 py-2 rounded-br-lg justify-between">
                 <div className="color-accent font-muli font-bold text-xs flex items-center ml-6">
@@ -165,12 +207,14 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  getInitStatus: () => ({ type: Events.FIRSTRUN_INIT_STATUS }),
+  startPollingStatus: () => ({ type: Events.START_API_POLLING, payload: { type: 'server-status' } }),
+  stopPollingStatus: () => ({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } }),
   serverVersion: () => ({ type: Events.SERVER_VERSION }),
   signIn: (payload: ApiLoginType & { rememberUser: boolean }) => (
     { type: Events.AUTH_LOGIN, payload }
   ),
   skipLogin: () => (push({ pathname: '/main' })),
+  openWizard: () => (push({ pathname: '/firstrun' })),
 };
 
 const connector = connect(mapState, mapDispatch);

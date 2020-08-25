@@ -13,8 +13,12 @@ function* pollServerStatus() {
     const resultJson = yield call(ApiInit.getStatus.bind(this));
     if (resultJson.error) {
       toast.error(resultJson.message);
+      yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
     } else {
       yield put(setStatus(resultJson.data));
+      if (resultJson.data.State !== 1) {
+        yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
+      }
     }
     yield delay(100);
   }
