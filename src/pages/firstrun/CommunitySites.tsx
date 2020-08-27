@@ -8,8 +8,8 @@ import Button from '../../components/Buttons/Button';
 import AniDBTab from './CommunitySiteTabs/AniDBTab';
 import TvDBTab from './CommunitySiteTabs/TvDBTab';
 import MovieDBTab from './CommunitySiteTabs/MovieDBTab';
-import TraktTab from './CommunitySiteTabs/TraktTab';
-import PlexTab from './CommunitySiteTabs/PlexTab';
+// import TraktTab from './CommunitySiteTabs/TraktTab';
+// import PlexTab from './CommunitySiteTabs/PlexTab';
 
 type State = {
   activeTab: string,
@@ -45,10 +45,10 @@ class CommunitySites extends React.Component<Props, State> {
         return (<TvDBTab />);
       case 'moviedb':
         return (<MovieDBTab />);
-      case 'trakt':
-        return (<TraktTab />);
-      case 'plex':
-        return (<PlexTab />);
+      // case 'trakt':
+      //   return (<TraktTab />);
+      // case 'plex':
+      //   return (<PlexTab />);
       default:
         return (<AniDBTab />);
     }
@@ -70,8 +70,8 @@ class CommunitySites extends React.Component<Props, State> {
             {this.renderTabButton('AniDB', 'anidb')}
             {this.renderTabButton('The TvDB', 'tvdb')}
             {this.renderTabButton('The Movie DB', 'moviedb')}
-            {this.renderTabButton('Trakt.TV', 'trakt')}
-            {this.renderTabButton('Plex', 'plex')}
+            {/* {this.renderTabButton('Trakt.TV', 'trakt')}
+            {this.renderTabButton('Plex', 'plex')} */}
           </div>
           <div className="flex flex-col my-4 overflow-y-auto flex-shrink">
             {this.renderTabContent()}
