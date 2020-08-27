@@ -5,7 +5,7 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Button from '../../../components/Buttons/Button';
 
-class TraktTab extends React.Component<Props> {
+class PlexTab extends React.Component<Props> {
   renderPlexUrl() {
     const {
       fetching, plexUrl, getPlexUrl,
@@ -65,4 +65,4 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(TraktTab);
+export default connector(PlexTab);

@@ -4,9 +4,11 @@ import {
 import { toast } from 'react-toastify';
 
 import ApiInit from '../api/v3/init';
+import ApiPlex from '../api/v3/plex';
 import Events from '../events';
 import { SET_AUTOUPDATE, Action } from '../actions';
 import { setStatus } from '../slices/firstrun';
+import { setItem as setMiscItem } from '../slices/misc';
 
 function* pollServerStatus() {
   while (true) {
@@ -43,9 +45,27 @@ function* pollAutoRefresh() {
   }
 }
 
+function* pollPlexAuthentication() {
+  while (true) {
+    const resultJson = yield call(ApiPlex.getPlexPinAuthenticated.bind(this));
+    if (resultJson.error) {
+      toast.error(resultJson.message);
+      yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
+    } else {
+      yield put(setStatus(resultJson.data));
+      if (resultJson.data) {
+        yield put(setMiscItem({ plex: { authenticated: true } }));
+        yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
+      }
+    }
+    yield delay(1000);
+  }
+}
+
 const typeMap = {
   'server-status': pollServerStatus,
   'auto-refresh': pollAutoRefresh,
+  'plex-auth': pollPlexAuthentication,
 };
 
 export default function* apiPollingDriver(action: Action) {

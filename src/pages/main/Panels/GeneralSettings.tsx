@@ -30,8 +30,9 @@ class GeneralSettings extends React.Component<Props> {
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id } = event.target;
+    const propId = id.replace('LogRotation_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveSettings({ context: 'LogRotator', newSettings: { [id]: value } });
+    saveSettings({ context: 'LogRotator', newSettings: { [propId]: value } });
   };
 
   render() {
@@ -99,10 +100,10 @@ class GeneralSettings extends React.Component<Props> {
           </Select>
         </div>
         <span className="font-bold mt-4">Log Options</span>
-        <Checkbox label="Enable Log Rotation" id="Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
-        <Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />
-        {Delete && (
+        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
+        {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
+        {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
+        {Enabled && Delete && (
           <div className="flex justify-between my-1">
             Delete Interval
             <Select id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
