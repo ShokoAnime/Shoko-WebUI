@@ -78,6 +78,7 @@ function* getTraktCode() {
   if (resultJson.error) {
     toast.error(resultJson.message);
   } else {
+    toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', { autoClose: 10000 });
     yield put(setMiscItem({ trakt: resultJson.data }));
   }
 }
