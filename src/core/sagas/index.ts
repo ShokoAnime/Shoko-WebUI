@@ -84,6 +84,7 @@ export default function* rootSaga() {
     takeEvery(Events.SERVER_VERSION, serverVersion),
     // SETTINGS
     takeEvery(Events.SETTINGS_ANIDB_TEST, SagaSettings.aniDBTest),
+    takeEvery(Events.SETTINGS_CHECK_PLEX_AUTHENTICATED, SagaSettings.getPlexAuthenticated),
     takeEvery(Events.SETTINGS_GET_SERVER, SagaSettings.getSettings),
     takeEvery(Events.SETTINGS_GET_TRAKT_CODE, SagaSettings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),
@@ -91,6 +92,7 @@ export default function* rootSaga() {
     takeEvery(Events.SETTINGS_SAVE_WEBUI, SagaSettings.saveWebUISettings),
     takeEvery(Events.SETTINGS_SAVE_WEBUI_LAYOUT, SagaSettings.saveLayout),
     takeEvery(Events.SETTINGS_TOGGLE_PINNED_ACTION, SagaSettings.togglePinnedAction),
+    takeEvery(Events.SETTINGS_UNLINK_PLEX, SagaSettings.unlinkPlex),
     // WEBUI
     takeEvery(Events.WEBUI_CHECK_UPDATES, SagaWebUi.checkUpdates),
     takeEvery(Events.WEBUI_UPDATE, SagaWebUi.downloadUpdates),

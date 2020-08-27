@@ -8,7 +8,7 @@ import { RootState } from '../store';
 import Events from '../events';
 
 import ApiCommon from '../api/common';
-import ApiPlex from '../api/plex';
+import ApiPlex from '../api/v3/plex';
 import ApiSettings from '../api/v3/settings';
 
 import { startFetching, stopFetching } from '../slices/fetching';
@@ -32,6 +32,15 @@ function* aniDBTest(action: PayloadAction<SettingsAnidbLoginType>) {
   } else {
     toast.success('Saved Successfully!');
     yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'AniDb', newSettings: action.payload } });
+  }
+}
+
+function* getPlexAuthenticated() {
+  const resultJson = yield call(ApiPlex.getPlexPinAuthenticated);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+  } else {
+    yield put(setMiscItem({ plex: { authenticated: resultJson.data } }));
   }
 }
 
@@ -127,6 +136,17 @@ function* togglePinnedAction(action) {
   yield call(uploadWebUISettings);
 }
 
+function* unlinkPlex() {
+  yield put(startFetching('plex_unlink'));
+  const resultJson = yield call(ApiPlex.getPlexTokenInvalidate);
+  yield put(stopFetching('plex_unlink'));
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+  } else {
+    yield put(setMiscItem({ plex: { authenticated: false, url: '' } }));
+  }
+}
+
 function* uploadWebUISettings() {
   const data = JSON.stringify(yield select((state: RootState) => state.webuiSettings));
   yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings: data } });
@@ -134,6 +154,7 @@ function* uploadWebUISettings() {
 
 export default {
   aniDBTest,
+  getPlexAuthenticated,
   getPlexLoginUrl,
   getSettings,
   getTraktCode,
@@ -141,4 +162,5 @@ export default {
   saveSettings,
   saveWebUISettings,
   togglePinnedAction,
+  unlinkPlex,
 };

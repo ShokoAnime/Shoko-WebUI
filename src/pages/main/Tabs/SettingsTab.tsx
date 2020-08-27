@@ -13,6 +13,7 @@ import AniDBSettings from '../Panels/AniDBSettings';
 import AniDBLoginSettings from '../Panels/AniDBLoginSettings';
 import GeneralSettings from '../Panels/GeneralSettings';
 import MovieDBSettings from '../Panels/MovieDBSettings';
+import PlexSettings from '../Panels/PlexSettings';
 import TvDBSettings from '../Panels/TvDBSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -70,6 +71,9 @@ class SettingsTab extends React.Component<Props, State> {
           </div>
           <div key="anidb-login">
             <AniDBLoginSettings />
+          </div>
+          <div key="plex">
+            <PlexSettings />
           </div>
         </ResponsiveGridLayout>
       </React.Fragment>

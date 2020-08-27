@@ -9,6 +9,7 @@ const miscSlice = createSlice({
     },
     plex: {
       url: '',
+      authenticated: false,
     },
     webuiUpdateAvailable: false,
   } as any,
