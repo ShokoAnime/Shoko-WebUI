@@ -15,17 +15,17 @@ import type { RecentFileType } from '../../../../core/types/api/file';
 
 class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
-    const { runAvdump, avdumpList } = this.props;
+    const { runAvdump, avdumpList, avdumpKeyExists } = this.props;
     return (
       <div key={item.ID} className="flex flex-col mt-3">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <div className="flex my-2 justify-between">
           <span className="flex break-words">{item.Locations[0].RelativePath}</span>
-          <span>
+          {avdumpKeyExists && (
             <Button onClick={() => runAvdump(item.ID)} className="font-exo font-bold text-sm bg-color-accent py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
               Avdump
             </Button>
-          </span>
+          )}
         </div>
         <div className="flex">
           {avdumpList[item.ID]?.hash && (
@@ -71,6 +71,7 @@ const mapState = (state: RootState) => ({
   avdumpList: state.mainpage.avdump,
   items: state.mainpage.unrecognizedFiles as Array<RecentFileType>,
   hasFetched: state.mainpage.fetched.unrecognizedFiles,
+  avdumpKeyExists: !!state.localSettings.AniDb.AVDumpKey,
 });
 
 const mapDispatch = {
