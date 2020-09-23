@@ -109,4 +109,7 @@ export type SettingsServerType = {
   Plex: SettingsPlexType;
   LogRotator: SettingsLogRotatorType;
   GA_OptOutPlzDont: boolean;
+  AutoGroupSeries: boolean;
+  AutoGroupSeriesUseScoreAlgorithm: boolean;
+  AutoGroupSeriesRelationExclusions: string;
 };

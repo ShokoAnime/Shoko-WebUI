@@ -73,6 +73,9 @@ export const initialState = {
     Delete_Days: '0',
   },
   GA_OptOutPlzDont: false,
+  AutoGroupSeries: true,
+  AutoGroupSeriesUseScoreAlgorithm: true,
+  AutoGroupSeriesRelationExclusions: 'same setting|character',
 } as SettingsServerType;
 
 const serverSettingsSlice = createSlice({

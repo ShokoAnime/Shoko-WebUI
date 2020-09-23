@@ -14,6 +14,7 @@ import AniDBLoginSettings from '../Panels/AniDBLoginSettings';
 import GeneralSettings from '../Panels/GeneralSettings';
 import MovieDBSettings from '../Panels/MovieDBSettings';
 import PlexSettings from '../Panels/PlexSettings';
+import RelationSettings from '../Panels/RelationSettings';
 import TraktSettings from '../Panels/TraktSettings';
 import TvDBSettings from '../Panels/TvDBSettings';
 
@@ -63,6 +64,9 @@ class SettingsTab extends React.Component<Props, State> {
           </div>
           <div key="anidb">
             <AniDBSettings />
+          </div>
+          <div key="relation">
+            <RelationSettings />
           </div>
           <div key="tvdb">
             <TvDBSettings />
