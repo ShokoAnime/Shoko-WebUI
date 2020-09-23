@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -79,7 +81,7 @@ class TvDBSettings extends React.Component<Props, State> {
   render() {
     const {
       AutoLink, AutoFanart, AutoWideBanners, AutoPosters,
-      UpdateFrequency, Language,
+      UpdateFrequency, Language, isFetching,
     } = this.props;
     const { AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount } = this.state;
 
@@ -95,42 +97,50 @@ class TvDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="TvDB">
-        <span className="font-bold mt-2">Download Options</span>
-        <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
-        {AutoFanart && (
-          <div className="flex justify-between my-1">
-            Max Fanart
-            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
           </div>
+        ) : (
+          <React.Fragment>
+            <span className="font-bold mt-2">Download Options</span>
+            <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
+            {AutoFanart && (
+              <div className="flex justify-between my-1">
+                Max Fanart
+                <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+              </div>
+            )}
+            <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
+            {AutoPosters && (
+              <div className="flex justify-between my-1">
+                Max Posters
+                <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+              </div>
+            )}
+            <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
+            {AutoWideBanners && (
+              <div className="flex justify-between my-1">
+                Max Wide Banners
+                <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+              </div>
+            )}
+            <span className="font-bold mt-4">Preferences</span>
+            <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
+            <div className="flex justify-between my-1">
+              Language
+              <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
+                {languageOptions}
+              </Select>
+            </div>
+            <div className="flex justify-between my-1">
+              Automatically Update Stats
+              <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
+                {updateFrequencyOptions}
+              </Select>
+            </div>
+          </React.Fragment>
         )}
-        <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
-        {AutoPosters && (
-          <div className="flex justify-between my-1">
-            Max Posters
-            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-          </div>
-        )}
-        <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
-        {AutoWideBanners && (
-          <div className="flex justify-between my-1">
-            Max Wide Banners
-            <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-          </div>
-        )}
-        <span className="font-bold mt-4">Preferences</span>
-        <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
-        <div className="flex justify-between my-1">
-          Language
-          <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
-            {languageOptions}
-          </Select>
-        </div>
-        <div className="flex justify-between my-1">
-          Automatically Update Stats
-          <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
-            {updateFrequencyOptions}
-          </Select>
-        </div>
       </FixedPanel>
     );
   }
@@ -138,6 +148,7 @@ class TvDBSettings extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   ...(state.localSettings.TvDB),
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

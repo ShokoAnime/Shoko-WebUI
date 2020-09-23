@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -50,24 +52,33 @@ class PlexSettings extends React.Component<Props> {
   }
 
   render() {
-    const { authenticated, fetchingUnlink, unlinkPlex } = this.props;
+    const {
+      authenticated, fetchingUnlink, unlinkPlex,
+      isFetching,
+    } = this.props;
 
     return (
       <FixedPanel title="Plex">
-        <div className="flex justify-between my-1">
-          {
-            !authenticated
-              ? this.renderPlexUrl()
-              : (
-                <div className="flex flex-grow justify-between items-center">
-                  Plex Authenticated!
-                  <Button onClick={() => unlinkPlex()} className="bg-color-danger py-1 px-2 text-sm">
-                    {fetchingUnlink ? 'Unlinking...' : 'Unlink'}
-                  </Button>
-                </div>
-              )
-          }
-        </div>
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+          </div>
+        ) : (
+          <div className="flex justify-between my-1">
+            {
+              !authenticated
+                ? this.renderPlexUrl()
+                : (
+                  <div className="flex flex-grow justify-between items-center">
+                    Plex Authenticated!
+                    <Button onClick={() => unlinkPlex()} className="bg-color-danger py-1 px-2 text-sm">
+                      {fetchingUnlink ? 'Unlinking...' : 'Unlink'}
+                    </Button>
+                  </div>
+                )
+            }
+          </div>
+        )}
       </FixedPanel>
     );
   }
@@ -78,6 +89,7 @@ const mapState = (state: RootState) => ({
   plexUrl: state.misc.plex.url,
   authenticated: state.misc.plex.authenticated,
   fetchingUnlink: state.fetching.plex_unlink,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

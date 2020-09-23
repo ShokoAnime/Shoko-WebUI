@@ -2,7 +2,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedo, faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faRedo, faDownload, faSpinner, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
@@ -39,80 +39,92 @@ class GeneralSettings extends React.Component<Props> {
     const {
       notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
       webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates, toastPosition,
-      checkingUpdates,
+      checkingUpdates, isFetching,
     } = this.props;
 
     return (
       <FixedPanel title="General">
-        <span className="font-bold mt-2">Information</span>
-        <div className="flex justify-between my-1">
-          Shoko Version
-          <div className="flex uppercase items-center">
-            {version}
-            { /* eslint-disable-next-line max-len */ }
-            {/* <Button onClick={() => ({})} className="color-accent text-xs ml-2" tooltip="Check for updates">
-              <FontAwesomeIcon icon={faRedo} />
-            </Button> // NEED API FOR SERVER VERSION CHECK */}
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
           </div>
-        </div>
-        <div className="flex justify-between my-1">
-          <div className="flex items-center">
-            WebUI Version
-            {webuiUpdateAvailable && (
-              <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-accent" tooltip="Download Latest Version">
-                Update Available
-                <FontAwesomeIcon
-                  icon={downloadingUpdates ? faSpinner : faDownload}
-                  spin={downloadingUpdates}
-                  className="text-xs ml-1"
-                />
-              </Button>
+        ) : (
+          // <div className="flex flex-col">
+          <React.Fragment>
+            <span className="font-bold mt-2">Information</span>
+            <div className="flex justify-between my-1">
+              Shoko Version
+              <div className="flex uppercase items-center">
+                {version}
+                { /* eslint-disable-next-line max-len */ }
+                {/* <Button onClick={() => ({})} className="color-accent text-xs ml-2" tooltip="Check for updates">
+                  <FontAwesomeIcon icon={faRedo} />
+                </Button> // NEED API FOR SERVER VERSION CHECK */}
+              </div>
+            </div>
+            <div className="flex justify-between my-1">
+              <div className="flex items-center">
+                WebUI Version
+                {webuiUpdateAvailable && (
+                  <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-accent" tooltip="Download Latest Version">
+                    Update Available
+                    <FontAwesomeIcon
+                      icon={downloadingUpdates ? faSpinner : faDownload}
+                      spin={downloadingUpdates}
+                      className="text-xs ml-1"
+                    />
+                  </Button>
+                )}
+              </div>
+              <div className="flex items-center">
+                {UI_VERSION}
+                <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
+                  <FontAwesomeIcon
+                    icon={checkingUpdates ? faSpinner : faRedo}
+                    spin={checkingUpdates}
+                  />
+                </Button>
+              </div>
+            </div>
+            <span className="font-bold mt-4">Style Options</span>
+            <div className="flex justify-between my-1">
+              Theme
+              <span className="color-accent font-bold">Shoko Modern</span>
+            </div>
+            <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
+            {notifications && (
+              <div className="flex justify-between my-1">
+                Notifications Position
+                <Select id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
+                  <option value="bottom-right">Bottom</option>
+                  <option value="top-right">Top</option>
+                </Select>
+              </div>
             )}
-          </div>
-          <div className="flex items-center">
-            {UI_VERSION}
-            <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
-              <FontAwesomeIcon icon={checkingUpdates ? faSpinner : faRedo} spin={checkingUpdates} />
-            </Button>
-          </div>
-        </div>
-        <span className="font-bold mt-4">Style Options</span>
-        <div className="flex justify-between my-1">
-          Theme
-          <span className="color-accent font-bold">Shoko Modern</span>
-        </div>
-        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
-        {notifications && (
-          <div className="flex justify-between my-1">
-            Notifications Position
-            <Select id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
-              <option value="bottom-right">Bottom</option>
-              <option value="top-right">Top</option>
-            </Select>
-          </div>
-        )}
-        <span className="font-bold mt-4">Other Options</span>
-        <div className="flex justify-between my-1">
-          Update Channel
-          <Select id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
-            <option value="stable">Stable</option>
-            <option value="unstable">Unstable</option>
-          </Select>
-        </div>
-        <span className="font-bold mt-4">Log Options</span>
-        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
-        {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
-        {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
-        {Enabled && Delete && (
-          <div className="flex justify-between my-1">
-            Delete Interval
-            <Select id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
-              <option value="0">Never</option>
-              <option value="7">Daily</option>
-              <option value="30">Monthly</option>
-              <option value="90">Quarterly</option>
-            </Select>
-          </div>
+            <span className="font-bold mt-4">Other Options</span>
+            <div className="flex justify-between my-1">
+              Update Channel
+              <Select id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
+                <option value="stable">Stable</option>
+                <option value="unstable">Unstable</option>
+              </Select>
+            </div>
+            <span className="font-bold mt-4">Log Options</span>
+            <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
+            {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
+            {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
+            {Enabled && Delete && (
+              <div className="flex justify-between my-1">
+                Delete Interval
+                <Select id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
+                  <option value="0">Never</option>
+                  <option value="7">Daily</option>
+                  <option value="30">Monthly</option>
+                  <option value="90">Quarterly</option>
+                </Select>
+              </div>
+            )}
+          </React.Fragment>
         )}
       </FixedPanel>
     );
@@ -126,6 +138,7 @@ const mapState = (state: RootState) => ({
   webuiUpdateAvailable: state.misc.webuiUpdateAvailable,
   downloadingUpdates: state.fetching.downloadUpdates,
   checkingUpdates: state.fetching.checkingUpdates,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

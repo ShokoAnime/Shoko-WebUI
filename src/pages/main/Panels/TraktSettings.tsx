@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 
 import { RootState } from '../../../core/store';
@@ -61,6 +63,7 @@ class TraktSettings extends React.Component<Props> {
   render() {
     const {
       Enabled, TokenExpirationDate, UpdateFrequency,
+      isFetching,
     } = this.props;
 
     const updateFrequencyOptions: Array<any> = [];
@@ -71,24 +74,32 @@ class TraktSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="Trakt">
-        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
-        {Enabled && (
-          TokenExpirationDate === ''
-            ? this.renderTraktCode()
-            : (
-              <div className="flex justify-between my-1">
-                Token valid until:
-                <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
-              </div>
-            )
-        )}
-        {Enabled && TokenExpirationDate !== '' && (
-          <div className="flex justify-between my-1">
-            Automatically Update Data
-            <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
-              {updateFrequencyOptions}
-            </Select>
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
           </div>
+        ) : (
+          <React.Fragment>
+            <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
+            {Enabled && (
+              TokenExpirationDate === ''
+                ? this.renderTraktCode()
+                : (
+                  <div className="flex justify-between my-1">
+                    Token valid until:
+                    <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
+                  </div>
+                )
+            )}
+            {Enabled && TokenExpirationDate !== '' && (
+              <div className="flex justify-between my-1">
+                Automatically Update Data
+                <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
+                  {updateFrequencyOptions}
+                </Select>
+              </div>
+            )}
+          </React.Fragment>
         )}
       </FixedPanel>
     );
@@ -99,6 +110,7 @@ const mapState = (state: RootState) => ({
   ...(state.localSettings.TraktTv),
   fetching: state.fetching.trakt_code,
   trakt: state.misc.trakt,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

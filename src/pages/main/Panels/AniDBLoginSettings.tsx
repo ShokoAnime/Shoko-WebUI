@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { faCircleNotch, faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -63,6 +63,7 @@ class AniDBLoginSettings extends React.Component<Props, State> {
   };
 
   render() {
+    const { isFetching } = this.props;
     const {
       Username, Password, ClientPort,
       AVDumpKey, AVDumpClientPort,
@@ -70,26 +71,34 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB Login" options={this.renderOptions()}>
-        <div className="flex justify-between mt-2 mb-1">
-          Username
-          <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          Password
-          <Input id="Password" value={Password} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          Port
-          <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          AvDump Key
-          <Input id="AVDumpKey" value={AVDumpKey} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          AvDump Port
-          <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+          </div>
+        ) : (
+          <React.Fragment>
+            <div className="flex justify-between mt-2 mb-1">
+              Username
+              <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
+            </div>
+            <div className="flex justify-between my-1">
+              Password
+              <Input id="Password" value={Password} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
+            </div>
+            <div className="flex justify-between my-1">
+              Port
+              <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
+            </div>
+            <div className="flex justify-between my-1">
+              AvDump Key
+              <Input id="AVDumpKey" value={AVDumpKey} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
+            </div>
+            <div className="flex justify-between my-1">
+              AvDump Port
+              <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
+            </div>
+          </React.Fragment>
+        )}
       </FixedPanel>
     );
   }
@@ -98,6 +107,7 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 const mapState = (state: RootState) => ({
   ...(state.localSettings.AniDb),
   isTesting: state.fetching.aniDBTest,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {
