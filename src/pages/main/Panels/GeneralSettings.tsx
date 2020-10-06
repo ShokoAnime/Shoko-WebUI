@@ -2,7 +2,9 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedo, faDownload, faSpinner, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import {
+  faRedo, faDownload, faSpinner, faCircleNotch,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
