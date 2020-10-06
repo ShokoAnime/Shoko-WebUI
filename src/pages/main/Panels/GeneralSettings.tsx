@@ -51,7 +51,6 @@ class GeneralSettings extends React.Component<Props> {
             <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
           </div>
         ) : (
-          // <div className="flex flex-col">
           <React.Fragment>
             <span className="font-bold mt-2">Information</span>
             <div className="flex justify-between my-1">
