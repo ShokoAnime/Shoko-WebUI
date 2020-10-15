@@ -3,9 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleNotch, faRedoAlt,
-} from '@fortawesome/free-solid-svg-icons';
+import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -88,18 +86,12 @@ class SeriesInImportFolders extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Series In Import Folder" options={this.renderOptions()}>
-        {isFetching ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (
-          <table className="table-auto">
-            <tbody>
-              {seriesItems}
-            </tbody>
-          </table>
-        )}
+      <FixedPanel title="Series In Import Folder" options={this.renderOptions()} isFetching={isFetching}>
+        <table className="table-auto">
+          <tbody>
+            {seriesItems}
+          </tbody>
+        </table>
       </FixedPanel>
     );
   }

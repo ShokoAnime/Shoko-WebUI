@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { forEach, orderBy } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
@@ -42,15 +40,7 @@ class UnrecognizedTab extends React.Component<Props> {
   };
 
   render() {
-    const { items, hasFetched } = this.props;
-
-    if (!hasFetched) {
-      return (
-        <div className="flex justify-center items-center h-full">
-          <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-        </div>
-      );
-    }
+    const { items } = this.props;
 
     const sortedItems = orderBy(items, ['ID'], ['desc']);
     const files: Array<any> = [];
@@ -70,7 +60,6 @@ class UnrecognizedTab extends React.Component<Props> {
 const mapState = (state: RootState) => ({
   avdumpList: state.mainpage.avdump,
   items: state.mainpage.unrecognizedFiles as Array<RecentFileType>,
-  hasFetched: state.mainpage.fetched.unrecognizedFiles,
   avdumpKeyExists: !!state.localSettings.AniDb.AVDumpKey,
 });
 

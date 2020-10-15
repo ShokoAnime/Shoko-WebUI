@@ -135,15 +135,7 @@ class ImportedTab extends React.Component<Props, State> {
   };
 
   render() {
-    const { items, hasFetched } = this.props;
-
-    if (!hasFetched) {
-      return (
-        <div className="flex justify-center items-center h-full">
-          <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-        </div>
-      );
-    }
+    const { items } = this.props;
 
     const sortedItems = orderBy(items, ['ID'], ['desc']);
     const files: Array<any> = [];
@@ -167,7 +159,6 @@ class ImportedTab extends React.Component<Props, State> {
 const mapState = (state: RootState) => ({
   items: state.mainpage.recentFiles as Array<RecentFileType>,
   recentFileDetails: state.mainpage.recentFileDetails,
-  hasFetched: state.mainpage.fetched.recentFiles,
 });
 
 const mapDispatch = {

@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { forEach } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
@@ -53,12 +51,8 @@ class FilesBreakdown extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Files Breakdown">
-        {!hasFetched ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (items)}
+      <FixedPanel title="Files Breakdown" isFetching={!hasFetched}>
+        {items}
       </FixedPanel>
     );
   }

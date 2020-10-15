@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -43,30 +41,24 @@ class MovieDBSettings extends React.Component<Props, State> {
     const { AutoFanartAmount, AutoPostersAmount } = this.state;
 
     return (
-      <FixedPanel title="MovieDB">
-        {isFetching ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (
-          <React.Fragment>
-            <span className="font-bold mt-2">Download Options</span>
-            <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
-            {AutoFanart && (
-              <div className="flex justify-between my-1">
-                Max Fanart
-                <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-              </div>
-            )}
-            <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
-            {AutoPosters && (
-              <div className="flex justify-between my-1">
-                Max Posters
-                <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-              </div>
-            )}
-          </React.Fragment>
-        )}
+      <FixedPanel title="MovieDB" isFetching={isFetching}>
+        <React.Fragment>
+          <span className="font-bold mt-2">Download Options</span>
+          <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
+          {AutoFanart && (
+            <div className="flex justify-between my-1">
+              Max Fanart
+              <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+            </div>
+          )}
+          <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
+          {AutoPosters && (
+            <div className="flex justify-between my-1">
+              Max Posters
+              <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+            </div>
+          )}
+        </React.Fragment>
       </FixedPanel>
     );
   }

@@ -1,7 +1,5 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -58,27 +56,21 @@ class PlexSettings extends React.Component<Props> {
     } = this.props;
 
     return (
-      <FixedPanel title="Plex">
-        {isFetching ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (
-          <div className="flex justify-between my-1">
-            {
-              !authenticated
-                ? this.renderPlexUrl()
-                : (
-                  <div className="flex flex-grow justify-between items-center">
-                    Plex Authenticated!
-                    <Button onClick={() => unlinkPlex()} className="bg-color-danger py-1 px-2 text-sm">
-                      {fetchingUnlink ? 'Unlinking...' : 'Unlink'}
-                    </Button>
-                  </div>
-                )
-            }
-          </div>
-        )}
+      <FixedPanel title="Plex" isFetching={isFetching}>
+        <div className="flex justify-between my-1">
+          {
+            !authenticated
+              ? this.renderPlexUrl()
+              : (
+                <div className="flex flex-grow justify-between items-center">
+                  Plex Authenticated!
+                  <Button onClick={() => unlinkPlex()} className="bg-color-danger py-1 px-2 text-sm">
+                    {fetchingUnlink ? 'Unlinking...' : 'Unlink'}
+                  </Button>
+                </div>
+              )
+          }
+        </div>
       </FixedPanel>
     );
   }

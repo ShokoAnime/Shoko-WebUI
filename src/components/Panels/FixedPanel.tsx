@@ -1,16 +1,20 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 type Props = {
   title: string;
   children: any;
   options?: any;
   className?: string;
+  isFetching?: boolean;
 };
 
 class FixedPanel extends React.Component<Props> {
   render() {
     const {
       children, title, className, options,
+      isFetching,
     } = this.props;
 
     return (
@@ -31,7 +35,13 @@ class FixedPanel extends React.Component<Props> {
           onMouseDown={event => event.stopPropagation()}
           onTouchStart={event => event.stopPropagation()}
         >
-          {children}
+          {isFetching ? (
+            <div className="flex justify-center items-center h-full">
+              <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+            </div>
+          ) : (
+            children
+          )}
         </div>
       </div>
     );
