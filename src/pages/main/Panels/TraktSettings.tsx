@@ -72,27 +72,25 @@ class TraktSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="Trakt" isFetching={isFetching}>
-        <React.Fragment>
-          <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
-          {Enabled && (
-            TokenExpirationDate === ''
-              ? this.renderTraktCode()
-              : (
-                <div className="flex justify-between my-1">
-                  Token valid until:
-                  <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
-                </div>
-              )
-          )}
-          {Enabled && TokenExpirationDate !== '' && (
-            <div className="flex justify-between my-1">
-              Automatically Update Data
-              <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
-                {updateFrequencyOptions}
-              </Select>
-            </div>
-          )}
-        </React.Fragment>
+        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
+        {Enabled && (
+          TokenExpirationDate === ''
+            ? this.renderTraktCode()
+            : (
+              <div className="flex justify-between my-1">
+                Token valid until:
+                <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
+              </div>
+            )
+        )}
+        {Enabled && TokenExpirationDate !== '' && (
+          <div className="flex justify-between my-1">
+            Automatically Update Data
+            <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
+              {updateFrequencyOptions}
+            </Select>
+          </div>
+        )}
       </FixedPanel>
     );
   }

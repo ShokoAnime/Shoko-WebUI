@@ -71,28 +71,26 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB Login" options={this.renderOptions()} isFetching={isFetching}>
-        <React.Fragment>
-          <div className="flex justify-between mt-2 mb-1">
-            Username
-            <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
-          </div>
-          <div className="flex justify-between my-1">
-            Password
-            <Input id="Password" value={Password} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-          </div>
-          <div className="flex justify-between my-1">
-            Port
-            <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-          </div>
-          <div className="flex justify-between my-1">
-            AvDump Key
-            <Input id="AVDumpKey" value={AVDumpKey} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-          </div>
-          <div className="flex justify-between my-1">
-            AvDump Port
-            <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-          </div>
-        </React.Fragment>
+        <div className="flex justify-between mt-2 mb-1">
+          Username
+          <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
+        </div>
+        <div className="flex justify-between my-1">
+          Password
+          <Input id="Password" value={Password} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
+        </div>
+        <div className="flex justify-between my-1">
+          Port
+          <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
+        </div>
+        <div className="flex justify-between my-1">
+          AvDump Key
+          <Input id="AVDumpKey" value={AVDumpKey} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
+        </div>
+        <div className="flex justify-between my-1">
+          AvDump Port
+          <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
+        </div>
       </FixedPanel>
     );
   }

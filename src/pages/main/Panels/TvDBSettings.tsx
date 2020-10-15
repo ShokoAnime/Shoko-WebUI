@@ -95,44 +95,42 @@ class TvDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="TvDB" isFetching={isFetching}>
-        <React.Fragment>
-          <span className="font-bold mt-2">Download Options</span>
-          <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
-          {AutoFanart && (
-            <div className="flex justify-between my-1">
-              Max Fanart
-              <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-            </div>
-          )}
-          <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
-          {AutoPosters && (
-            <div className="flex justify-between my-1">
-              Max Posters
-              <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-            </div>
-          )}
-          <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
-          {AutoWideBanners && (
-            <div className="flex justify-between my-1">
-              Max Wide Banners
-              <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-            </div>
-          )}
-          <span className="font-bold mt-4">Preferences</span>
-          <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
+        <span className="font-bold mt-2">Download Options</span>
+        <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
+        {AutoFanart && (
           <div className="flex justify-between my-1">
-            Language
-            <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
-              {languageOptions}
-            </Select>
+            Max Fanart
+            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
+        )}
+        <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
+        {AutoPosters && (
           <div className="flex justify-between my-1">
-            Automatically Update Stats
-            <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
-              {updateFrequencyOptions}
-            </Select>
+            Max Posters
+            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
-        </React.Fragment>
+        )}
+        <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
+        {AutoWideBanners && (
+          <div className="flex justify-between my-1">
+            Max Wide Banners
+            <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
+          </div>
+        )}
+        <span className="font-bold mt-4">Preferences</span>
+        <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
+        <div className="flex justify-between my-1">
+          Language
+          <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
+            {languageOptions}
+          </Select>
+        </div>
+        <div className="flex justify-between my-1">
+          Automatically Update Stats
+          <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
+            {updateFrequencyOptions}
+          </Select>
+        </div>
       </FixedPanel>
     );
   }
