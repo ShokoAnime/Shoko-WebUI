@@ -12,11 +12,11 @@ function* getDashboardSeriesSummary() {
     return;
   }
 
-  if (resultJson.data.Other) {
-    resultJson.data.Other += resultJson.data.Special + resultJson.data.Web;
-  }
-  delete resultJson.data.Special;
-  delete resultJson.data.Web;
+  const { data } = resultJson;
+  if (data?.Other === null) data.Other = 0;
+  data.Other += (data?.Special ?? 0) + (data?.Web ?? 0);
+  delete data.Special;
+  delete data.Web;
 
   yield put(setSeriesSummary(resultJson.data));
   yield put(setFetched('seriesSummary'));

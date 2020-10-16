@@ -26,7 +26,7 @@ class ActionItems extends React.Component<Props> {
   };
 
   render() {
-    const { pinnedActions } = this.props;
+    const { pinnedActions, isFetching } = this.props;
     const items: Array<any> = [];
 
     forEach(pinnedActions, (action) => {
@@ -34,7 +34,7 @@ class ActionItems extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Action Items">
+      <FixedPanel title="Action Items" isFetching={isFetching}>
         {items}
       </FixedPanel>
     );
@@ -43,6 +43,7 @@ class ActionItems extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   pinnedActions: state.webuiSettings.v3.actions,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

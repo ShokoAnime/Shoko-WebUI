@@ -50,7 +50,7 @@ class AniDBSettings extends React.Component<Props, State> {
       MyList_AddFiles, MyList_DeleteType, MyList_ReadUnwatched, MyList_ReadWatched,
       MyList_SetUnwatched, MyList_SetWatched, MyList_StorageState, Calendar_UpdateFrequency,
       Anime_UpdateFrequency, MyList_UpdateFrequency, MyListStats_UpdateFrequency,
-      File_UpdateFrequency,
+      File_UpdateFrequency, isFetching,
     } = this.props;
     const { MaxRelationDepth } = this.state;
 
@@ -61,7 +61,7 @@ class AniDBSettings extends React.Component<Props, State> {
     });
 
     return (
-      <FixedPanel title="AniDB">
+      <FixedPanel title="AniDB" isFetching={isFetching}>
         <span className="font-bold mt-2">Download Options</span>
         <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={this.handleInputChange} className="w-full" />
@@ -80,16 +80,6 @@ class AniDBSettings extends React.Component<Props, State> {
         <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={this.handleInputChange} className="w-full" />
         <div className="flex justify-between my-1">
           Storage State
-          <Select id="MyList_DeleteType" value={MyList_DeleteType} onChange={this.handleInputChange}>
-            <option value={0}>Unknown</option>
-            <option value={1}>HDD</option>
-            <option value={2}>Disk</option>
-            <option value={3}>Deleted</option>
-            <option value={4}>Remote</option>
-          </Select>
-        </div>
-        <div className="flex justify-between my-1">
-          Delete Action
           <Select id="MyList_StorageState" value={MyList_StorageState} onChange={this.handleInputChange}>
             <option value={0}>Delete File (AniDB)</option>
             <option value={1}>Delete File (Local)</option>
@@ -97,6 +87,16 @@ class AniDBSettings extends React.Component<Props, State> {
             <option value={3}>Mark External (CD/DVD)</option>
             <option value={4}>Mark Unknown</option>
             <option value={5}>DVD/BD</option>
+          </Select>
+        </div>
+        <div className="flex justify-between my-1">
+          Delete Action
+          <Select id="MyList_DeleteType" value={MyList_DeleteType} onChange={this.handleInputChange}>
+            <option value={0}>Unknown</option>
+            <option value={1}>HDD</option>
+            <option value={2}>Disk</option>
+            <option value={3}>Deleted</option>
+            <option value={4}>Remote</option>
           </Select>
         </div>
         <span className="font-bold mt-4">Update Options</span>
@@ -137,6 +137,7 @@ class AniDBSettings extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   ...(state.localSettings.AniDb),
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

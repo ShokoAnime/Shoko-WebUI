@@ -61,6 +61,7 @@ class TraktSettings extends React.Component<Props> {
   render() {
     const {
       Enabled, TokenExpirationDate, UpdateFrequency,
+      isFetching,
     } = this.props;
 
     const updateFrequencyOptions: Array<any> = [];
@@ -70,7 +71,7 @@ class TraktSettings extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Trakt">
+      <FixedPanel title="Trakt" isFetching={isFetching}>
         <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
         {Enabled && (
           TokenExpirationDate === ''
@@ -99,6 +100,7 @@ const mapState = (state: RootState) => ({
   ...(state.localSettings.TraktTv),
   fetching: state.fetching.trakt_code,
   trakt: state.misc.trakt,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

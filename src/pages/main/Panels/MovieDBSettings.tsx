@@ -37,11 +37,11 @@ class MovieDBSettings extends React.Component<Props, State> {
   };
 
   render() {
-    const { AutoFanart, AutoPosters } = this.props;
+    const { AutoFanart, AutoPosters, isFetching } = this.props;
     const { AutoFanartAmount, AutoPostersAmount } = this.state;
 
     return (
-      <FixedPanel title="MovieDB">
+      <FixedPanel title="MovieDB" isFetching={isFetching}>
         <span className="font-bold mt-2">Download Options</span>
         <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
         {AutoFanart && (
@@ -64,6 +64,7 @@ class MovieDBSettings extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   ...(state.localSettings.MovieDb),
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

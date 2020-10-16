@@ -4,7 +4,7 @@ import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSquare, faEdit, faServer, faSearch, faCircleNotch, faPlus,
+  faSquare, faEdit, faServer, faSearch, faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
@@ -90,12 +90,8 @@ class ImportFolders extends React.Component<Props> {
     }
 
     return (
-      <FixedPanel title="Import Folders" options={this.renderOptions()}>
-        {!hasFetched ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : folders}
+      <FixedPanel title="Import Folders" options={this.renderOptions()} isFetching={!hasFetched}>
+        {folders}
       </FixedPanel>
     );
   }

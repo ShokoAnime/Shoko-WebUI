@@ -1,6 +1,8 @@
 import React from 'react';
+import { connect, ConnectedProps } from 'react-redux';
 import cx from 'classnames';
 
+import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
 import ImportedTab from './ImportBreakdownTabs/ImportedTab';
@@ -10,7 +12,7 @@ type State = {
   activeTab: string,
 };
 
-class ImportBreakdown extends React.Component<{}, State> {
+class ImportBreakdown extends React.Component<Props, State> {
   state = {
     activeTab: 'imported',
   };
@@ -47,12 +49,26 @@ class ImportBreakdown extends React.Component<{}, State> {
   };
 
   render() {
+    const { activeTab } = this.state;
+    const { hasFetchedRecents, hasFetchedUnrecognized } = this.props;
+
+    const hasFetched = activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents;
+
     return (
-      <FixedPanel title="Import Breakdown" options={this.renderOptions()}>
+      <FixedPanel title="Import Breakdown" options={this.renderOptions()} isFetching={!hasFetched}>
         {this.renderContent()}
       </FixedPanel>
     );
   }
 }
 
-export default ImportBreakdown;
+const mapState = (state: RootState) => ({
+  hasFetchedRecents: state.mainpage.fetched.recentFiles,
+  hasFetchedUnrecognized: state.mainpage.fetched.unrecognizedFiles,
+});
+
+const connector = connect(mapState);
+
+type Props = ConnectedProps<typeof connector>;
+
+export default connector(ImportBreakdown);

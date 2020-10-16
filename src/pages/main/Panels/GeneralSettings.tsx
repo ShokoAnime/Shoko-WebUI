@@ -2,7 +2,9 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedo, faDownload, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import {
+  faRedo, faDownload, faSpinner,
+} from '@fortawesome/free-solid-svg-icons';
 
 import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
@@ -39,11 +41,11 @@ class GeneralSettings extends React.Component<Props> {
     const {
       notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
       webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates, toastPosition,
-      checkingUpdates,
+      checkingUpdates, isFetching,
     } = this.props;
 
     return (
-      <FixedPanel title="General">
+      <FixedPanel title="General" isFetching={isFetching}>
         <span className="font-bold mt-2">Information</span>
         <div className="flex justify-between my-1">
           Shoko Version
@@ -72,7 +74,10 @@ class GeneralSettings extends React.Component<Props> {
           <div className="flex items-center">
             {UI_VERSION}
             <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
-              <FontAwesomeIcon icon={checkingUpdates ? faSpinner : faRedo} spin={checkingUpdates} />
+              <FontAwesomeIcon
+                icon={checkingUpdates ? faSpinner : faRedo}
+                spin={checkingUpdates}
+              />
             </Button>
           </div>
         </div>
@@ -126,6 +131,7 @@ const mapState = (state: RootState) => ({
   webuiUpdateAvailable: state.misc.webuiUpdateAvailable,
   downloadingUpdates: state.fetching.downloadUpdates,
   checkingUpdates: state.fetching.checkingUpdates,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

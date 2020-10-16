@@ -25,7 +25,9 @@ const initialState = {
   databaseStatus: {},
   userStatus: {},
   saved: {},
-  status: {},
+  status: {
+    State: 1,
+  },
   user: {},
 } as State;
 

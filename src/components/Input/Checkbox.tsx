@@ -31,11 +31,7 @@ class Checkbox extends React.Component<Props> {
             )}
             <input className="hidden" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
             <span className="color-accent">
-              {
-                isChecked
-                  ? (<FontAwesomeIcon icon={faCheckCircle} />)
-                  : (<FontAwesomeIcon icon={faCircle} />)
-              }
+              <FontAwesomeIcon icon={isChecked ? faCheckCircle : faCircle} className="align-middle" />
             </span>
             {labelRight && (
               <span className="ml-2">

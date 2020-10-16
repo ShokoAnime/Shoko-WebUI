@@ -50,10 +50,13 @@ class PlexSettings extends React.Component<Props> {
   }
 
   render() {
-    const { authenticated, fetchingUnlink, unlinkPlex } = this.props;
+    const {
+      authenticated, fetchingUnlink, unlinkPlex,
+      isFetching,
+    } = this.props;
 
     return (
-      <FixedPanel title="Plex">
+      <FixedPanel title="Plex" isFetching={isFetching}>
         <div className="flex justify-between my-1">
           {
             !authenticated
@@ -78,6 +81,7 @@ const mapState = (state: RootState) => ({
   plexUrl: state.misc.plex.url,
   authenticated: state.misc.plex.authenticated,
   fetchingUnlink: state.fetching.plex_unlink,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

@@ -79,7 +79,7 @@ class TvDBSettings extends React.Component<Props, State> {
   render() {
     const {
       AutoLink, AutoFanart, AutoWideBanners, AutoPosters,
-      UpdateFrequency, Language,
+      UpdateFrequency, Language, isFetching,
     } = this.props;
     const { AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount } = this.state;
 
@@ -94,7 +94,7 @@ class TvDBSettings extends React.Component<Props, State> {
     });
 
     return (
-      <FixedPanel title="TvDB">
+      <FixedPanel title="TvDB" isFetching={isFetching}>
         <span className="font-bold mt-2">Download Options</span>
         <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
         {AutoFanart && (
@@ -138,6 +138,7 @@ class TvDBSettings extends React.Component<Props, State> {
 
 const mapState = (state: RootState) => ({
   ...(state.localSettings.TvDB),
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

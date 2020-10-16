@@ -63,13 +63,14 @@ class AniDBLoginSettings extends React.Component<Props, State> {
   };
 
   render() {
+    const { isFetching } = this.props;
     const {
       Username, Password, ClientPort,
       AVDumpKey, AVDumpClientPort,
     } = this.state;
 
     return (
-      <FixedPanel title="AniDB Login" options={this.renderOptions()}>
+      <FixedPanel title="AniDB Login" options={this.renderOptions()} isFetching={isFetching}>
         <div className="flex justify-between mt-2 mb-1">
           Username
           <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
@@ -98,6 +99,7 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 const mapState = (state: RootState) => ({
   ...(state.localSettings.AniDb),
   isTesting: state.fetching.aniDBTest,
+  isFetching: state.fetching.settings,
 });
 
 const mapDispatch = {

@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { forEach, orderBy } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
@@ -15,17 +13,17 @@ import type { RecentFileType } from '../../../../core/types/api/file';
 
 class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
-    const { runAvdump, avdumpList } = this.props;
+    const { runAvdump, avdumpList, avdumpKeyExists } = this.props;
     return (
       <div key={item.ID} className="flex flex-col mt-3">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <div className="flex my-2 justify-between">
           <span className="flex break-words">{item.Locations[0].RelativePath}</span>
-          <span>
+          {avdumpKeyExists && (
             <Button onClick={() => runAvdump(item.ID)} className="font-exo font-bold text-sm bg-color-accent py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
               Avdump
             </Button>
-          </span>
+          )}
         </div>
         <div className="flex">
           {avdumpList[item.ID]?.hash && (
@@ -42,15 +40,7 @@ class UnrecognizedTab extends React.Component<Props> {
   };
 
   render() {
-    const { items, hasFetched } = this.props;
-
-    if (!hasFetched) {
-      return (
-        <div className="flex justify-center items-center h-full">
-          <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-        </div>
-      );
-    }
+    const { items } = this.props;
 
     const sortedItems = orderBy(items, ['ID'], ['desc']);
     const files: Array<any> = [];
@@ -70,7 +60,7 @@ class UnrecognizedTab extends React.Component<Props> {
 const mapState = (state: RootState) => ({
   avdumpList: state.mainpage.avdump,
   items: state.mainpage.unrecognizedFiles as Array<RecentFileType>,
-  hasFetched: state.mainpage.fetched.unrecognizedFiles,
+  avdumpKeyExists: !!state.localSettings.AniDb.AVDumpKey,
 });
 
 const mapDispatch = {

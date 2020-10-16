@@ -43,6 +43,11 @@ class LoginPage extends React.Component<Props, State> {
     if (rememberUser) skipLogin();
   }
 
+  componentDidUpdate() {
+    const { initStatus, stopPollingStatus } = this.props;
+    if (initStatus.State !== 1) stopPollingStatus();
+  }
+
   componentWillUnmount() {
     const { stopPollingStatus } = this.props;
     stopPollingStatus();

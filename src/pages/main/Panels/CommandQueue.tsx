@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faTasks, faListAlt, faImage, faTimes, faPause, faPlay, faCircleNotch,
+  faTasks, faListAlt, faImage, faTimes, faPause, faPlay,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
@@ -88,12 +88,8 @@ class CommandQueue extends React.Component<Props> {
     }
 
     return (
-      <FixedPanel title="Commands" options={this.renderOptions()}>
-        {!hasFetched ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (commands)}
+      <FixedPanel title="Commands" options={this.renderOptions()} isFetching={!hasFetched}>
+        {commands}
       </FixedPanel>
     );
   }

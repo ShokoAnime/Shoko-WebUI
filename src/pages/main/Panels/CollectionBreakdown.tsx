@@ -1,8 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
@@ -36,21 +34,15 @@ class CollectionBreakdown extends React.Component<Props> {
       this.renderItem('Hours Watched', `${WatchedHours || 0} H`, 'hours-watched')];
 
     return (
-      <FixedPanel title="Collection Breakdown">
-        {!hasFetched ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+      <FixedPanel title="Collection Breakdown" isFetching={!hasFetched}>
+        <div className="flex font-semibold">
+          <div className="flex flex-col w-1/2 mr-6">
+            {childrenLeft}
           </div>
-        ) : (
-          <div className="flex font-semibold">
-            <div className="flex flex-col w-1/2 mr-6">
-              {childrenLeft}
-            </div>
-            <div className="flex flex-col w-1/2 ml-6">
-              {childrenRight}
-            </div>
+          <div className="flex flex-col w-1/2 ml-6">
+            {childrenRight}
           </div>
-        )}
+        </div>
       </FixedPanel>
     );
   }
