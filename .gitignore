@@ -1,6 +1,7 @@
 # Include your project-specific ignores in this file
 # Read about how to use .gitignore: https://help.github.com/articles/ignoring-files
 .idea/
+.vscode/
 
 # Compiled output
 public/dist
@@ -19,3 +20,6 @@ run.config.js
 flow-typed/npm/
 /yarn.lock
 package-lock.json
+
+# VS Code dev container config
+.devcontainer/
