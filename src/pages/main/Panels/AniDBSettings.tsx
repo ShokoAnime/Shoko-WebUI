@@ -62,7 +62,7 @@ class AniDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB" isFetching={isFetching}>
-        <span className="font-bold mt-2">Download Options</span>
+        <span className="font-extrabold">Download Options</span>
         <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={this.handleInputChange} className="w-full" />
@@ -72,7 +72,7 @@ class AniDBSettings extends React.Component<Props, State> {
             <Input id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
-        <span className="font-bold mt-4">Mylist Options</span>
+        <span className="font-extrabold mt-3">Mylist Options</span>
         <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={this.handleInputChange} className="w-full" />
@@ -99,7 +99,7 @@ class AniDBSettings extends React.Component<Props, State> {
             <option value={4}>Remote</option>
           </Select>
         </div>
-        <span className="font-bold mt-4">Update Options</span>
+        <span className="font-extrabold mt-3">Update Options</span>
         <div className="flex justify-between my-1">
           Calendar
           <Select id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={this.handleInputChange}>

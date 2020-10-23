@@ -89,9 +89,9 @@ export const defaultLayout = {
     }, {
       i: 'general', x: 0, y: 0, w: 4, h: 15, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'anidb-login', x: 0, y: 15, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb-login', x: 0, y: 15, w: 4, h: 8, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'plex', x: 0, y: 22, w: 4, h: 6, minW: 3, minH: 3, moved: false, static: false,
+      i: 'plex', x: 0, y: 23, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
     }, {
       i: 'trakt', x: 4, y: 22, w: 4, h: 6, minW: 3, minH: 3, moved: false, static: false,
     }, {

@@ -42,7 +42,7 @@ class MovieDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="MovieDB" isFetching={isFetching}>
-        <span className="font-bold mt-2">Download Options</span>
+        <span className="font-extrabold">Download Options</span>
         <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
         {AutoFanart && (
           <div className="flex justify-between my-1">

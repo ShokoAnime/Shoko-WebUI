@@ -2,7 +2,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { forEach, remove } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import type { DropResult } from 'react-beautiful-dnd';
 
 import { RootState } from '../../../core/store';
@@ -44,10 +44,10 @@ class LanguageSettings extends React.Component<Props> {
   };
 
   renderItem = (language: string) => (
-    <div className="flex justify-between my-1">
+    <div className="flex justify-between items-center my-1">
       {languageDescription[language]}
       <Button onClick={() => this.removeLanguage(language)} tooltip="Remove" className="color-danger">
-        <FontAwesomeIcon icon={faTrash} className="align-middle" />
+        <FontAwesomeIcon icon={faTrash} className="align-middle text-sm" />
       </Button>
     </div>
   );
@@ -77,18 +77,10 @@ class LanguageSettings extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Language" options={this.renderOptions()}>
-        {isFetching ? (
-          <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-          </div>
-        ) : (
-          <React.Fragment>
-            <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={this.handleInputChange} className="w-full mt-2 mb-1" />
-            <span className="font-bold mt-4">Priority (Drag to Reorder)</span>
-            <DnDList onDragEnd={this.onDragEnd}>{items}</DnDList>
-          </React.Fragment>
-        )}
+      <FixedPanel title="Language" options={this.renderOptions()} isFetching={isFetching}>
+        <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={this.handleInputChange} className="w-full mt-0 mb-1" />
+        <span className="font-extrabold mt-3">Priority (Drag to Reorder)</span>
+        <DnDList onDragEnd={this.onDragEnd}>{items}</DnDList>
       </FixedPanel>
     );
   }

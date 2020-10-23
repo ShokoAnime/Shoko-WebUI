@@ -6,7 +6,7 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 
 class SeriesBreakdown extends React.Component<Props> {
   renderItem = (title: string, value = 0, key: string) => (
-    <div key={key} className="flex mt-3">
+    <div key={key} className="flex mt-3 last:mt-0">
       <div className="flex-grow">
         {title}
       </div>

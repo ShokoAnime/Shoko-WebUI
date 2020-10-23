@@ -52,7 +52,7 @@ class ImportedTab extends React.Component<Props, State> {
       expandedItems,
     } = this.state;
     return (
-      <div key={`${item.ID}-date`} className="flex mt-3">
+      <div key={`${item.ID}-date`} className="flex mt-3 first:mt-0">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <Button
           className="color-accent ml-2"
