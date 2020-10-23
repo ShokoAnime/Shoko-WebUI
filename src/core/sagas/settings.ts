@@ -86,10 +86,9 @@ function* getTraktCode() {
 function* saveLayout(action) {
   const oldLayout = yield select((state: RootState) => state.webuiSettings.v3.layout);
   const newLayout = Object.assign({}, oldLayout, action.payload);
-  if (!isEqual(oldLayout, newLayout)) {
-    yield put(saveLayoutAction(action.payload));
-    yield call(uploadWebUISettings);
-  }
+  if (isEqual(oldLayout, newLayout)) return;
+  yield put(saveLayoutAction(action.payload));
+  yield call(uploadWebUISettings);
 }
 
 type SaveSettingsType = {
