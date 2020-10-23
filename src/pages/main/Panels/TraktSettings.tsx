@@ -42,8 +42,8 @@ class TraktSettings extends React.Component<Props> {
       return (
         <div className="flex justify-between items-center my-1">
           Trakt Code
-          <Button onClick={() => getTraktCode()} className="bg-color-accent-secondary px-2 py-1 text-sm">
-            {fetching ? 'Requesting...' : 'Get Trakt Code'}
+          <Button onClick={() => getTraktCode()} className="bg-color-accent-secondary px-2 py-1 text-xs">
+            {fetching ? 'Requesting...' : 'Get Code'}
           </Button>
         </div>
       );
@@ -72,7 +72,7 @@ class TraktSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="Trakt" isFetching={isFetching}>
-        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-2 mb-1" />
+        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-0 mb-1" />
         {Enabled && (
           TokenExpirationDate === ''
             ? this.renderTraktCode()

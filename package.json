@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "1.1.0-dev1",
+  "version": "1.1.0-dev2",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -24,6 +24,7 @@
     "@types/mini-css-extract-plugin": "^0.9.1",
     "@types/prop-types": "^15.7.3",
     "@types/react": "^16.9.35",
+    "@types/react-beautiful-dnd": "^13.0.0",
     "@types/react-copy-to-clipboard": "^4.3.0",
     "@types/react-dom": "^16.9.8",
     "@types/react-grid-layout": "^0.17.1",
@@ -57,6 +58,7 @@
     "prop-types": "^15.7.2",
     "proxyquire": "^2.0.1",
     "react": "^16.13.1",
+    "react-beautiful-dnd": "^13.0.0",
     "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.4.1",
     "react-grid-layout": "^0.18.3",

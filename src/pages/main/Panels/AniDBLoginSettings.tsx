@@ -71,7 +71,7 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB Login" options={this.renderOptions()} isFetching={isFetching}>
-        <div className="flex justify-between mt-2 mb-1">
+        <div className="flex justify-between mb-1">
           Username
           <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
         </div>

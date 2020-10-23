@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { mergeWith } from 'lodash';
 
-import { mergeDeep } from '../util';
 import { initialState } from './serverSettings';
 
 const localSettingsSlice = createSlice({
@@ -8,7 +8,12 @@ const localSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveLocalSettings(sliceState, action: PayloadAction<any>) {
-      return mergeDeep({}, sliceState, action.payload);
+      // eslint-disable-next-line consistent-return
+      return mergeWith({}, sliceState, action.payload, (oldVal, newVal) => {
+        if (Array.isArray(newVal)) {
+          return newVal;
+        }
+      });
     },
   },
 });

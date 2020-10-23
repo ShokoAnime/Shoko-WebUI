@@ -1,7 +1,7 @@
 import { call, put, select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import jsonpatch from 'fast-json-patch';
-import { isEmpty } from 'lodash';
+import { isEmpty, isEqual } from 'lodash';
 import { toast } from 'react-toastify';
 
 import { RootState } from '../store';
@@ -84,6 +84,9 @@ function* getTraktCode() {
 }
 
 function* saveLayout(action) {
+  const oldLayout = yield select((state: RootState) => state.webuiSettings.v3.layout);
+  const newLayout = Object.assign({}, oldLayout, action.payload);
+  if (isEqual(oldLayout, newLayout)) return;
   yield put(saveLayoutAction(action.payload));
   yield call(uploadWebUISettings);
 }

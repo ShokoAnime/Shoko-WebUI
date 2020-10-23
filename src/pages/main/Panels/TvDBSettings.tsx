@@ -95,7 +95,7 @@ class TvDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="TvDB" isFetching={isFetching}>
-        <span className="font-bold mt-2">Download Options</span>
+        <span className="font-extrabold">Download Options</span>
         <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
         {AutoFanart && (
           <div className="flex justify-between my-1">
@@ -117,7 +117,7 @@ class TvDBSettings extends React.Component<Props, State> {
             <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
           </div>
         )}
-        <span className="font-bold mt-4">Preferences</span>
+        <span className="font-extrabold mt-3">Preferences</span>
         <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
         <div className="flex justify-between my-1">
           Language

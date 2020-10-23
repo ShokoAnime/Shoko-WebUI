@@ -35,7 +35,7 @@ class ImportFolders extends React.Component<Props> {
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch For New Files' : 'Watch For New Files';
 
     return (
-      <div key={folder.ID} className="flex flex-col mt-3">
+      <div key={folder.ID} className="flex flex-col mt-3 first:mt-0">
         <div className="flex justify-between">
           <span className="font-semibold">{folder.Name}</span>
           <span className="color-accent">Online</span>

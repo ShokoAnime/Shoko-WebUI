@@ -15,7 +15,7 @@ class UnrecognizedTab extends React.Component<Props> {
   renderItem = (item: RecentFileType) => {
     const { runAvdump, avdumpList, avdumpKeyExists } = this.props;
     return (
-      <div key={item.ID} className="flex flex-col mt-3">
+      <div key={item.ID} className="flex flex-col mt-3 first:mt-0">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <div className="flex my-2 justify-between">
           <span className="flex break-words">{item.Locations[0].RelativePath}</span>

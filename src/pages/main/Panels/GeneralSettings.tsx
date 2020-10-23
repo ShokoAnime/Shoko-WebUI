@@ -46,7 +46,7 @@ class GeneralSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="General" isFetching={isFetching}>
-        <span className="font-bold mt-2">Information</span>
+        <span className="font-extrabold">Information</span>
         <div className="flex justify-between my-1">
           Shoko Version
           <div className="flex uppercase items-center">
@@ -81,7 +81,7 @@ class GeneralSettings extends React.Component<Props> {
             </Button>
           </div>
         </div>
-        <span className="font-bold mt-4">Style Options</span>
+        <span className="font-extrabold mt-3">Style Options</span>
         <div className="flex justify-between my-1">
           Theme
           <span className="color-accent font-bold">Shoko Modern</span>
@@ -96,7 +96,7 @@ class GeneralSettings extends React.Component<Props> {
             </Select>
           </div>
         )}
-        <span className="font-bold mt-4">Other Options</span>
+        <span className="font-extrabold mt-3">Other Options</span>
         <div className="flex justify-between my-1">
           Update Channel
           <Select id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
@@ -104,8 +104,8 @@ class GeneralSettings extends React.Component<Props> {
             <option value="unstable">Unstable</option>
           </Select>
         </div>
-        <span className="font-bold mt-4">Log Options</span>
-        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full mt-2" />
+        <span className="font-extrabold mt-3">Log Options</span>
+        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full my-1" />
         {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
         {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
         {Enabled && Delete && (

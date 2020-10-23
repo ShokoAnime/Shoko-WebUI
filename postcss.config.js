@@ -9,6 +9,9 @@ module.exports = {
       purge: [
         './src/**/*.tsx',
       ],
+      variants: {
+        margin: ['responsive', 'first'],
+      }
     },
     autoprefixer: {},
   },

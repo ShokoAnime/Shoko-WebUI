@@ -15,20 +15,20 @@ class Sidebar extends React.Component<Props> {
     const { activeTab, changeTab } = this.props;
 
     return (
-      <div key={key} className={cx(['sidebar-item mt-12', activeTab === key && 'color-accent'])} onClick={() => changeTab(key)}>
-        <FontAwesomeIcon icon={icon} className="text-xl mr-8" />
-        <span className="font-semibold uppercase text-lg sidebar-item-text">{text}</span>
+      <div key={key} className={cx(['flex items-center sidebar-item mt-12', activeTab === key && 'color-accent'])} onClick={() => changeTab(key)}>
+        <span className="w-8"><FontAwesomeIcon icon={icon} className="text-xl" /></span>
+        <span className="ml-6 font-semibold uppercase text-lg">{text}</span>
       </div>
     );
   };
 
   renderLink = (url: string, text: string, icon) => (
-    <div key={url} className="sidebar-item flex mt-12">
-      <a href={url} className="flex no-underline" target="_blank" rel="noreferrer">
-        <FontAwesomeIcon icon={icon} className="text-xl mr-4" />
-        <span className="w-11/12 font-semibold uppercase text-lg ml-4 no-underline">{text}</span>
-      </a>
-    </div>
+    <a href={url} target="_blank" rel="noreferrer">
+      <div key={url} className="flex items-center sidebar-item mt-12">
+        <span className="w-8"><FontAwesomeIcon icon={icon} className="text-xl" /></span>
+        <span className="ml-6 font-semibold uppercase text-lg no-underline">{text}</span>
+      </div>
+    </a>
   );
 
   render() {

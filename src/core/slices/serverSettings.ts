@@ -76,6 +76,8 @@ export const initialState = {
   AutoGroupSeries: true,
   AutoGroupSeriesUseScoreAlgorithm: true,
   AutoGroupSeriesRelationExclusions: 'same setting|character',
+  LanguagePreference: ['x-jat', 'en'],
+  LanguageUseSynonyms: true,
 } as SettingsServerType;
 
 const serverSettingsSlice = createSlice({

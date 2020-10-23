@@ -103,10 +103,10 @@ class RelationSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="Relation" isFetching={isFetching}>
-        <span className="font-bold mt-2">Relation Options</span>
+        <span className="font-extrabold">Relation Options</span>
         <Checkbox label="Auto Group Series" id="AutoGroupSeries" isChecked={AutoGroupSeries} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Determine Main Series Using Relation Weighing" id="AutoGroupSeriesUseScoreAlgorithm" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={this.handleInputChange} className="w-full" />
-        <span className="font-bold mt-4">Exclude following relations</span>
+        <span className="font-extrabold mt-3">Exclude following relations</span>
         <Checkbox label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={this.handleExclusionChange} className="w-full" />
         <Checkbox label="Prequel" id="prequel" isChecked={prequel} onChange={this.handleExclusionChange} className="w-full" />
         <Checkbox label="Sequel" id="sequel" isChecked={sequel} onChange={this.handleExclusionChange} className="w-full" />
