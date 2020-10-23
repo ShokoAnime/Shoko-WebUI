@@ -124,7 +124,7 @@ class ImportFolders extends React.Component<Props, State> {
       Name, WatchForNewFiles, DropFolderType, Path, showEdit,
     } = this.state;
     return (
-      <div className="flex flex-col flmt-4 w-3/5">
+      <div className="flex flex-col mt-4 w-3/5">
         <Input id="Name" value={Name} label="Name" type="text" placeholder="Name" onChange={this.handleInputChange} className="my-1 w-full" />
         <div className="flex items-end">
           <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="my-1 w-full" />
