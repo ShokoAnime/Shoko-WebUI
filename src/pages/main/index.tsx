@@ -15,6 +15,7 @@ import SettingsTab from './Tabs/SettingsTab';
 import LogsTab from './Tabs/LogsTab';
 
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
+import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
 
 class MainPage extends React.Component<Props> {
@@ -62,6 +63,7 @@ class MainPage extends React.Component<Props> {
         )}
         <div className="flex flex-grow h-full">
           <ImportFolderModal />
+          <LanguagesModal />
           <ProfileModal />
           <div className="flex h-screen sidebar-container">
             <Sidebar />

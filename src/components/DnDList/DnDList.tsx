@@ -1,0 +1,52 @@
+import React from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import type {
+  DraggableProvided, DroppableProvided, DraggableStateSnapshot, DropResult,
+} from 'react-beautiful-dnd';
+
+import PortalAwareItem from './PortalAwareItem';
+
+type Props = {
+  onDragEnd: (result: DropResult) => void;
+  children: Array<{ key: string, item: React.ReactNode }>;
+};
+
+class DnDList extends React.Component<Props> {
+  render() {
+    const { onDragEnd, children } = this.props;
+    return (
+      <DragDropContext onDragEnd={onDragEnd}>
+        <Droppable droppableId="droppable">
+          {(droppableProvided: DroppableProvided) => (
+            <div
+              ref={droppableProvided.innerRef}
+              {...droppableProvided.droppableProps}
+            >
+              {children.map((child, index) => (
+                <Draggable
+                  key={child.key}
+                  draggableId={child.key}
+                  index={index}
+                >
+                  {(
+                    draggableProvided: DraggableProvided,
+                    draggableSnapshot: DraggableStateSnapshot,
+                  ) => (
+                    <PortalAwareItem
+                      provided={draggableProvided}
+                      snapshot={draggableSnapshot}
+                    >
+                      {child.item}
+                    </PortalAwareItem>
+                  )}
+                </Draggable>
+              ))}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
+    );
+  }
+}
+
+export default DnDList;

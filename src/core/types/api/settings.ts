@@ -112,4 +112,6 @@ export type SettingsServerType = {
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string;
+  LanguagePreference: Array<string>;
+  LanguageUseSynonyms: boolean;
 };
