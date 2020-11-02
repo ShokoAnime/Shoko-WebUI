@@ -14,9 +14,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    'typeface-roboto',
-    'typeface-exo-2',
-    'typeface-muli',
+    'fontsource-roboto/latin.css',
+    'fontsource-exo-2/latin.css',
+    'fontsource-muli/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],

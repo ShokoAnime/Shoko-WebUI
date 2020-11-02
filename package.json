@@ -44,6 +44,9 @@
     "es6-promise": "^4.2.4",
     "fast-json-patch": "^3.0.0-1",
     "fastclick": "^1.0.6",
+    "fontsource-exo-2": "^3.0.5",
+    "fontsource-muli": "^3.0.5",
+    "fontsource-roboto": "^3.0.3",
     "history": "^4.7.2",
     "http-proxy-middleware": "^0.20.0",
     "isomorphic-fetch": "^2.2.1",
@@ -78,9 +81,6 @@
     "reselect": "^4.0.0",
     "sessionstorage": "^0.1.0",
     "tailwindcss": "^1.4.6",
-    "typeface-exo-2": "^1.1.4",
-    "typeface-muli": "^1.1.3",
-    "typeface-roboto": "^0.0.75",
     "zip-folder": "^1.0.0"
   },
   "devDependencies": {
