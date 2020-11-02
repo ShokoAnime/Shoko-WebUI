@@ -10,7 +10,7 @@ class ImportSettings extends React.Component<Props> {
   handleInputChange = (event: any) => {
     const { saveSettings } = this.props;
     const { id, checked: value } = event.target;
-    saveSettings({ newSettings: { [id]: value } });
+    saveSettings({ newSettings: { [id]: value }, context: 'Import' });
   };
 
   render() {
