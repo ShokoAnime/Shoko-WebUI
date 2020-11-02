@@ -78,6 +78,10 @@ export const initialState = {
   AutoGroupSeriesRelationExclusions: 'same setting|character',
   LanguagePreference: ['x-jat', 'en'],
   LanguageUseSynonyms: true,
+  Import: {
+    RunOnStart: false,
+    UseExistingFileWatchedStatus: true,
+  },
 } as SettingsServerType;
 
 const serverSettingsSlice = createSlice({

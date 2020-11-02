@@ -12,6 +12,7 @@ import { defaultLayout } from '../../../core/slices/webuiSettings';
 import AniDBSettings from '../Panels/AniDBSettings';
 import AniDBLoginSettings from '../Panels/AniDBLoginSettings';
 import GeneralSettings from '../Panels/GeneralSettings';
+import ImportSettings from '../Panels/ImportSettings';
 import LanguageSettings from '../Panels/LanguageSettings';
 import MovieDBSettings from '../Panels/MovieDBSettings';
 import PlexSettings from '../Panels/PlexSettings';
@@ -86,6 +87,9 @@ class SettingsTab extends React.Component<Props, State> {
           </div>
           <div key="language">
             <LanguageSettings />
+          </div>
+          <div key="import">
+            <ImportSettings />
           </div>
         </ResponsiveGridLayout>
       </React.Fragment>

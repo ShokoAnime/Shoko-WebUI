@@ -97,6 +97,11 @@ export type SettingsLogRotatorType = {
   Delete_Days: string;
 };
 
+export type SettingsImportType = {
+  RunOnStart: boolean;
+  UseExistingFileWatchedStatus: boolean;
+};
+
 export type SettingsServerType = {
   WebUI_Settings: string;
   FirstRun: boolean;
@@ -114,4 +119,5 @@ export type SettingsServerType = {
   AutoGroupSeriesRelationExclusions: string;
   LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
+  Import: SettingsImportType;
 };
