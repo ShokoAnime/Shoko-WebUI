@@ -125,7 +125,7 @@ class LoginPage extends React.Component<Props, State> {
               </div>
             </div>
             <div className="flex flex-col flex-grow justify-between">
-              <div className="px-10 flex flex-grow flex-col justify-center">
+              <div className="px-10 flex flex-grow flex-col justify-center overflow-y-auto">
                 {!initStatus?.State && (
                   <div className="flex justify-center items-center">
                     <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
@@ -151,12 +151,11 @@ class LoginPage extends React.Component<Props, State> {
                   </div>
                 )}
                 {initStatus.State === 3 && (
-                  <div className="flex flex-col justify-center items-center">
+                  <div className="flex flex-col justify-center items-center overflow-y-auto pt-4 pb-2">
                     <FontAwesomeIcon icon={faTimesCircle} className="color-danger text-5xl" />
-                    <div className="mt-4 text-2xl2">Server startup failed!</div>
-                    <div className="mt-2 text-sm">
-                      <span className="font-muli font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
-                    </div>
+                    <div className="mt-3 text-2xl2">Server startup failed!</div>
+                    Check the error message below
+                    <div className="mt-1 text-xs break-all overflow-y-auto">{initStatus.StartupMessage ?? 'Unknown'}</div>
                   </div>
                 )}
                 {initStatus.State === 4 && (
