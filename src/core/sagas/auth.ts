@@ -63,8 +63,7 @@ function* logout(action) {
 
   if (payload && payload.clearState) {
     yield put({ type: Events.STORE_CLEAR_STATE });
-  }
-  else {
+  } else {
     yield put(replace({ pathname: '/' }));
   }
 }

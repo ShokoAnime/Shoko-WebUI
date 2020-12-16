@@ -105,7 +105,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  logout: () => ({ type: Events.AUTH_LOGOUT }),
+  logout: () => ({ type: Events.AUTH_LOGOUT, payload: { clearState: true } }),
   showProfile: (value: boolean) => (setStatus(value)),
 };
 

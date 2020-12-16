@@ -11,7 +11,8 @@ import Events from './events';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
-  if (action.type === Events.STORE_CLEAR_STATE) { // check for action type 
+  if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
+    // eslint-disable-next-line no-param-reassign
     state = {} as any;
   }
   return combinedReducer(state, action);

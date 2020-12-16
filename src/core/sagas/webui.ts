@@ -1,4 +1,6 @@
-import { call, put, select, delay } from 'redux-saga/effects';
+import {
+  call, put, select, delay,
+} from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import ApiWebUi from '../api/webui';
@@ -35,7 +37,7 @@ function* downloadUpdates() {
     });
     return;
   }
-  
+
   toast.success('Update Successful! You will be logged out in 5 seconds. Please login again to use the WebUI.', {
     autoClose: 5000,
   });
