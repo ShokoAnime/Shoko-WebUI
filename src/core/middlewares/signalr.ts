@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import {
-  JsonHubProtocol, HttpTransportType, HubConnectionBuilder, LogLevel,
+  JsonHubProtocol, HttpTransportType, HubConnectionBuilder, LogLevel, HubConnection,
 } from '@aspnet/signalr';
 import moment from 'moment';
 import {
@@ -15,8 +15,8 @@ let lastRetry = moment();
 let attempts = 0;
 const maxTimeout = 60000;
 
-let connectionEvents;
-let connectionLog;
+let connectionEvents: HubConnection;
+let connectionLog: HubConnection;
 
 const onQueueStateChange = dispatch => (queue, state) => {
   const newState = Object.assign({}, { [queue]: state });
@@ -120,6 +120,9 @@ const signalRMiddleware = ({
     connectionLog.on('GetBacklog', onLogsGetBacklog(dispatch));
     connectionLog.on('Log', onLogsLog(dispatch));
     startSignalRConnection(connectionLog);
+  } else if (action.type === Events.AUTH_LOGOUT) {
+    if (connectionEvents !== undefined) connectionEvents.stop();
+    if (connectionLog !== undefined) connectionLog.stop();
   }
 
   return next(action);

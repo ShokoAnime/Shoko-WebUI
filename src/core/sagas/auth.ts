@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { push } from 'connected-react-router';
+import { push, replace } from 'connected-react-router';
 import { toast } from 'react-toastify';
 
 import Events from '../events';
@@ -40,7 +40,6 @@ function* login(action) {
       errorMessage = 'Invalid Username or Password';
     }
     toast.error(errorMessage);
-    yield call(logout);
     yield put(stopFetching('login'));
     return;
   }
@@ -55,10 +54,19 @@ function* login(action) {
   yield put(stopFetching('login'));
 }
 
-function* logout() {
+function* logout(action) {
+  const { payload } = action;
+
   yield put(unsetDetails());
   global.localStorage.clear();
-  yield put(push({ pathname: '/' }));
+  global.sessionStorage.clear();
+
+  if (payload && payload.clearState) {
+    yield put({ type: Events.STORE_CLEAR_STATE });
+  }
+  else {
+    yield put(replace({ pathname: '/' }));
+  }
 }
 
 export default {
