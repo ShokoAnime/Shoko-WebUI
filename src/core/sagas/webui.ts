@@ -1,10 +1,13 @@
-import { call, put, select } from 'redux-saga/effects';
+import {
+  call, put, select, delay,
+} from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import ApiWebUi from '../api/webui';
 
 import { RootState } from '../store';
 import Version from '../../../public/version.json';
+import Events from '../events';
 
 import { startFetching, stopFetching } from '../slices/fetching';
 import { setItem } from '../slices/misc';
@@ -35,10 +38,11 @@ function* downloadUpdates() {
     return;
   }
 
-  const message = 'Update Successful! Please reload the page for the updated version.';
-  toast.success(message, {
-    autoClose: 10000,
+  toast.success('Update Successful! You will be logged out in 5 seconds. Please login again to use the WebUI.', {
+    autoClose: 5000,
   });
+  yield delay(5000);
+  yield put({ type: Events.AUTH_LOGOUT, payload: { clearState: true } });
 }
 
 export default {
