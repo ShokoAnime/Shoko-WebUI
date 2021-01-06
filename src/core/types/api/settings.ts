@@ -98,6 +98,9 @@ export type SettingsLogRotatorType = {
 };
 
 export type SettingsImportType = {
+  MoveOnImport: boolean;
+  RenameOnImport: boolean;
+  RenameThenMove: boolean;
   RunOnStart: boolean;
   UseExistingFileWatchedStatus: boolean;
 };

@@ -15,12 +15,15 @@ class ImportSettings extends React.Component<Props> {
 
   render() {
     const {
-      RunOnStart, UseExistingFileWatchedStatus, isFetching,
+      RunOnStart, UseExistingFileWatchedStatus, MoveOnImport,
+      RenameOnImport, isFetching,
     } = this.props;
 
     return (
       <FixedPanel title="Import" isFetching={isFetching}>
         <Checkbox label="Import on start" id="RunOnStart" isChecked={RunOnStart} onChange={this.handleInputChange} className="w-full mt-0 mb-1" />
+        <Checkbox label="Rename on import" id="RenameOnImport" isChecked={RenameOnImport} onChange={this.handleInputChange} className="w-full" />
+        <Checkbox label="Move on import" id="MoveOnImport" isChecked={MoveOnImport} onChange={this.handleInputChange} className="w-full" />
         <Checkbox label="Set file as watched if episode is watched" id="UseExistingFileWatchedStatus" isChecked={UseExistingFileWatchedStatus} onChange={this.handleInputChange} className="w-full" />
       </FixedPanel>
     );
@@ -30,6 +33,9 @@ class ImportSettings extends React.Component<Props> {
 const mapState = (state: RootState) => ({
   RunOnStart: state.localSettings.Import.RunOnStart,
   UseExistingFileWatchedStatus: state.localSettings.Import.UseExistingFileWatchedStatus,
+  RenameThenMove: state.localSettings.Import.RenameThenMove,
+  RenameOnImport: state.localSettings.Import.RenameOnImport,
+  MoveOnImport: state.localSettings.Import.MoveOnImport,
   isFetching: state.fetching.settings,
 });
 

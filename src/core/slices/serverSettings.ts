@@ -79,6 +79,9 @@ export const initialState = {
   LanguagePreference: ['x-jat', 'en'],
   LanguageUseSynonyms: false,
   Import: {
+    MoveOnImport: false,
+    RenameOnImport: false,
+    RenameThenMove: false,
     RunOnStart: false,
     UseExistingFileWatchedStatus: false,
   },
