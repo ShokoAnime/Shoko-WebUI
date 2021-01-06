@@ -87,9 +87,9 @@ export const defaultLayout = {
     }, {
       i: 'relation', x: 0, y: 23, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'anidb', x: 4, y: 0, w: 4, h: 23, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 21, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'import', x: 4, y: 23, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
+      i: 'import', x: 4, y: 21, w: 4, h: 7, minW: 3, minH: 3, moved: false, static: false,
     }, {
       i: 'plex', x: 4, y: 28, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
     }, {
