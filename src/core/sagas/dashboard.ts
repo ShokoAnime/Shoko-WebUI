@@ -13,8 +13,7 @@ function* getDashboardSeriesSummary() {
   }
 
   const { data } = resultJson;
-  if (data?.Other === null) data.Other = 0;
-  data.Other += (data?.Special ?? 0) + (data?.Web ?? 0);
+  data.Other = (data?.Other ?? 0) + (data?.Special ?? 0) + (data?.Web ?? 0);
   delete data.Special;
   delete data.Web;
 
