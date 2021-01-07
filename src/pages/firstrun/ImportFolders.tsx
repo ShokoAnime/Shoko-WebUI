@@ -149,7 +149,7 @@ class ImportFolders extends React.Component<Props, State> {
               Edit Import Folder
             </Button>
           ) : (
-            <Button onClick={() => this.handleAddFolder()} className="bg-color-accent py-2 px-3 rounded text-sm">
+            <Button onClick={() => this.handleAddFolder()} className="bg-color-accent py-2 px-3 rounded text-sm" disabled={Name === '' || Path === ''}>
               Add Import Folder
             </Button>
           )}
