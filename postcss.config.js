@@ -11,6 +11,8 @@ module.exports = {
       ],
       variants: {
         margin: ['responsive', 'first'],
+        opacity: ['disabled'],
+        cursor: ['disabled'],
       }
     },
     autoprefixer: {},

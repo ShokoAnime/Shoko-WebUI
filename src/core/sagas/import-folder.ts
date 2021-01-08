@@ -7,6 +7,7 @@ import ApiSeries from '../api/v3/series';
 
 import { setFetched, setImportFolders, setImportFolderSeries } from '../slices/mainpage';
 import { startFetching, stopFetching } from '../slices/fetching';
+import { setStatus as setImportFolderModalStatus } from '../slices/modals/importFolder';
 
 function* addImportFolder(action) {
   const resultJson = yield call(ApiImportFolder.postImportFolder, action.payload);
@@ -16,6 +17,7 @@ function* addImportFolder(action) {
   }
 
   toast.success('Import folder added!');
+  yield put(setImportFolderModalStatus(false));
   yield call(getImportFolders);
 }
 
@@ -27,6 +29,7 @@ function* editImportFolder(action) {
   }
 
   toast.success('Import folder edited!');
+  yield put(setImportFolderModalStatus(false));
   yield call(getImportFolders);
 }
 
@@ -38,6 +41,7 @@ function* deleteImportFolder(action) {
   }
 
   toast.success('Import folder deleted!');
+  yield put(setImportFolderModalStatus(false));
   yield call(getImportFolders);
 }
 

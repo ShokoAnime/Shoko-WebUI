@@ -58,7 +58,6 @@ class ImportFolderModal extends React.Component<Props, State> {
     const { ID } = this.props;
     const { deleteImportFolder } = this.props;
     deleteImportFolder(ID!);
-    this.handleClose();
   };
 
   handleSave = () => {
@@ -68,7 +67,6 @@ class ImportFolderModal extends React.Component<Props, State> {
     } else {
       addImportFolder(this.state);
     }
-    this.handleClose();
   };
 
   onFolderSelect = (folder: string) => {
@@ -125,7 +123,7 @@ class ImportFolderModal extends React.Component<Props, State> {
               {edit && (
                 <Button onClick={this.handleDelete} className="bg-color-danger px-5 py-2 mr-2">Delete</Button>
               )}
-              <Button onClick={this.handleSave} className="bg-color-accent px-5 py-2">Save</Button>
+              <Button onClick={this.handleSave} className="bg-color-accent px-5 py-2" disabled={Name === '' || Path === ''}>Save</Button>
             </div>
           </div>
         </ModalPanel>

@@ -69,7 +69,7 @@ class DatabaseSetup extends React.Component<Props, State> {
   };
 
   render() {
-    const { Type } = this.state;
+    const { SQLite_DatabaseFile, Type } = this.state;
     const { isFetching, status, saved } = this.props;
 
     return (
@@ -107,7 +107,7 @@ class DatabaseSetup extends React.Component<Props, State> {
             )}
           </div>
         </div>
-        <Footer prevTabKey="acknowledgement" nextDisabled={Type !== 'SQLite' && !saved} saveFunction={() => this.handleTest(true)} isFetching={isFetching} />
+        <Footer prevTabKey="acknowledgement" nextDisabled={(Type !== 'SQLite' && !saved) || SQLite_DatabaseFile === ''} saveFunction={() => this.handleTest(true)} isFetching={isFetching} />
       </React.Fragment>
     );
   }

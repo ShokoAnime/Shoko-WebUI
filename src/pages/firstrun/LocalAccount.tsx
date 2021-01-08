@@ -45,7 +45,7 @@ class LocalAccount extends React.Component<Props> {
             {status.text}
           </div>
         </div>
-        <Footer prevTabKey="db-setup" saveFunction={() => saveUser({ Username, Password })} isFetching={isFetching} />
+        <Footer prevTabKey="db-setup" nextDisabled={Username === ''} saveFunction={() => saveUser({ Username, Password })} isFetching={isFetching} />
       </React.Fragment>
     );
   }
