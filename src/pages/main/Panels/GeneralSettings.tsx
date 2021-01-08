@@ -71,9 +71,9 @@ class GeneralSettings extends React.Component<Props> {
               </Button>
             )}
           </div>
-          <div className="flex items-center">
+          <div className="flex items-center overflow-x-hidden">
             {UI_VERSION}
-            <Button onClick={() => checkWebUIUpdate()} className="color-accent text-xs ml-2" tooltip="Check for updates">
+            <Button onClick={() => checkWebUIUpdate()} className="flex color-accent text-xs ml-2" tooltip="Check for updates">
               <FontAwesomeIcon
                 icon={checkingUpdates ? faSpinner : faRedo}
                 spin={checkingUpdates}
