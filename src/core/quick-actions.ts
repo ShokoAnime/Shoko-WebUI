@@ -77,6 +77,11 @@ const quickActions = {
     function: 'getRemoveMissingFiles',
     data: false,
   },
+  'recreate-all-groups': {
+    name: 'Recreate All Groups',
+    function: 'getRecreateAllGroups',
+    data: false,
+  },
 };
 
 export default quickActions;
