@@ -100,7 +100,7 @@ class ImportedTab extends React.Component<Props, State> {
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Size</span>
-                  {prettyBytes(item.Size)}
+                  {prettyBytes(item.Size, { binary: true })}
                 </div>
                 <div className="flex mb-2">
                   <span className="w-1/6 font-semibold">Info</span>

@@ -57,7 +57,7 @@ class ImportFolders extends React.Component<Props> {
         </div>
         {flags !== '' && (<div className="mt-1">{flags}</div>)}
         <div className="mt-1">
-          Series: {folder.Size ?? 0} / Size: {prettyBytes(folder.FileSize ?? 0)}
+          Series: {folder.Size ?? 0} / Size: {prettyBytes(folder.FileSize ?? 0, { binary: true })}
         </div>
       </div>
 

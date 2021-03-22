@@ -13,9 +13,10 @@ function* getDashboardSeriesSummary() {
   }
 
   const { data } = resultJson;
-  data.Other = (data?.Other ?? 0) + (data?.Special ?? 0) + (data?.Web ?? 0);
+  data.Other = data.Other + data.Special + data.Web + data.None;
   delete data.Special;
   delete data.Web;
+  delete data.None;
 
   yield put(setSeriesSummary(resultJson.data));
   yield put(setFetched('seriesSummary'));

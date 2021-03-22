@@ -48,6 +48,7 @@ const actions = {
     title: 'Shoko',
     data: [
       'avdump-mismatched-files',
+      'recreate-all-groups',
       'sync-hashes',
       'update-all-mediainfo',
       'update-series-stats',

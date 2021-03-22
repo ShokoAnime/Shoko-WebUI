@@ -26,7 +26,7 @@ class CollectionBreakdown extends React.Component<Props> {
     const childrenLeft = [
       this.renderItem('Series', SeriesCount, 'series'),
       this.renderItem('Files', FileCount, 'files'),
-      this.renderItem('Collection Size', `${prettyBytes(FileSize || 0)}`, 'collection-size'),
+      this.renderItem('Collection Size', `${prettyBytes(FileSize || 0, { binary: true })}`, 'collection-size'),
     ];
     const childrenRight = [
       this.renderItem('Series Completed', FinishedSeries, 'series-completed'),

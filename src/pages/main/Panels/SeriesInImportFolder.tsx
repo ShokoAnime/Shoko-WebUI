@@ -45,7 +45,7 @@ class SeriesInImportFolders extends React.Component<Props> {
         <td className="w-4/12 p-2">{paths}</td>
         <td className="p-2">{series.type}</td>
         <td className="p-2">{series.size} Files</td>
-        <td className="p-2">{prettyBytes(series.filesize)}</td>
+        <td className="p-2">{prettyBytes(series.filesize, { binary: true })}</td>
       </tr>
     );
   };

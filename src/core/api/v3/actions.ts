@@ -1,4 +1,5 @@
 import Api from '../index';
+import { getRecreateAllGroups } from './group';
 import { getPlexSyncAll } from './plex';
 
 function ApiRequest(action: string, expectEmpty = true) {
@@ -115,4 +116,5 @@ export default {
   getUpdateAllMediaInfo,
   getUpdateSeriesStats,
   getPlexSyncAll,
+  getRecreateAllGroups,
 };
