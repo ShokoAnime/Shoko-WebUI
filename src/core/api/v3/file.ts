@@ -32,7 +32,7 @@ function getFileRecent(limit = 50) {
 
 // Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
 function getFileUnrecognized(page = 0) {
-  return ApiRequest('Unrecognized', 'GET', `?pageSize=50&page=${page}`);
+  return ApiRequest('Unrecognized', 'GET', `?pageSize=0&page=${page}`);
 }
 
 export default {
