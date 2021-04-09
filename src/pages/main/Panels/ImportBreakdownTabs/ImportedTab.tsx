@@ -141,7 +141,7 @@ class ImportedTab extends React.Component<Props, State> {
     const files: Array<any> = [];
 
     forEach(sortedItems, (item) => {
-      if (item.SeriesIDs) {
+      if (item?.SeriesIDs && item?.Locations && item?.Locations?.length !== 0) {
         files.push(this.renderDate(item));
         files.push(this.renderName(item.ID, item.Locations[0].RelativePath));
         files.push(this.renderDetails(item));
