@@ -46,7 +46,9 @@ class UnrecognizedTab extends React.Component<Props> {
     const files: Array<any> = [];
 
     forEach(sortedItems, (item) => {
-      files.push(this.renderItem(item));
+      if (item?.Locations && item?.Locations?.length !== 0) {
+        files.push(this.renderItem(item));
+      }
     });
 
     if (files.length === 0) {
