@@ -49,7 +49,7 @@ function* login(action) {
   }));
 
   if ((payload.redirect) ?? true) {
-    yield put(push({ pathname: '/main' }));
+    yield put(push({ pathname: '/dashboard' }));
   }
   yield put(stopFetching('login'));
 }
@@ -64,7 +64,7 @@ function* logout(action) {
   if (payload && payload.clearState) {
     yield put({ type: Events.STORE_CLEAR_STATE });
   } else {
-    yield put(replace({ pathname: '/' }));
+    yield put(replace({ pathname: '/login' }));
   }
 }
 

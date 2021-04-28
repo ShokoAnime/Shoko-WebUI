@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
+import { push } from 'connected-react-router';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -8,14 +9,13 @@ import {
 import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
-import { setActiveTab } from '../../core/slices/mainpage';
 
 class Sidebar extends React.Component<Props> {
   renderItem = (key: string, text: string, icon) => {
-    const { activeTab, changeTab } = this.props;
+    const { pathname, changePage } = this.props;
 
     return (
-      <div key={key} className={cx(['flex items-center sidebar-item mt-12', activeTab === key && 'color-accent'])} onClick={() => changeTab(key)}>
+      <div key={key} className={cx(['flex items-center sidebar-item mt-12', pathname === `/${key}` && 'color-accent'])} onClick={() => changePage(key)}>
         <span className="flex w-8"><FontAwesomeIcon icon={icon} className="text-xl" /></span>
         <span className="ml-6 font-semibold uppercase text-lg">{text}</span>
       </div>
@@ -60,11 +60,11 @@ class Sidebar extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  activeTab: state.mainpage.activeTab,
+  pathname: state.router.location.pathname,
 });
 
 const mapDispatch = {
-  changeTab: (tab: string) => (setActiveTab(tab)),
+  changePage: (tab: string) => (push(`${tab}`)),
 };
 
 const connector = connect(mapState, mapDispatch);

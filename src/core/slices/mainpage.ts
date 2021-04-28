@@ -6,7 +6,6 @@ import type { RecentFileDetailsType, RecentFileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 
 type State = {
-  activeTab: string;
   avdump: {
     [key: string]: {
       fetching: boolean;
@@ -34,7 +33,6 @@ type State = {
 const mainpageSlice = createSlice({
   name: 'mainpage',
   initialState: {
-    activeTab: 'dashboard',
     avdump: {},
     fetched: {},
     importFolders: [],
@@ -53,9 +51,6 @@ const mainpageSlice = createSlice({
     unrecognizedFiles: [],
   } as State,
   reducers: {
-    setActiveTab(sliceState, action) {
-      sliceState.activeTab = action.payload;
-    },
     setAvdump(sliceState, action) {
       sliceState.avdump = Object.assign({}, sliceState.avdump, action.payload);
     },
@@ -95,7 +90,7 @@ const mainpageSlice = createSlice({
 });
 
 export const {
-  setActiveTab, setAvdump, setFetched, setImportFolders,
+  setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
   unsetFetched,
