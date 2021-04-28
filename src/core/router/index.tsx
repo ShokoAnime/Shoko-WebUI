@@ -6,11 +6,11 @@ import { ConnectedRouter } from 'connected-react-router';
 import { connect } from 'react-redux';
 
 import { RootState } from '../store';
-import LoginPage from '../../pages/login/index';
-import ErrorPage from '../../pages/error/index';
+import LoginPage from '../../pages/login/LoginPage';
+import ErrorPage from '../../pages/error/ErrorPage';
 import NoMatchPage from '../../pages/nomatch/index';
-import MainPage from '../../pages/main/index';
-import FirstRunPage from '../../pages/firstrun/index';
+import MainPage from '../../pages/main/MainPage';
+import FirstRunPage from '../../pages/firstrun/FirstRunPage';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
 const Router = ({
@@ -20,11 +20,11 @@ const Router = ({
   <div id="app-container" className={`${theme} flex h-screen`}>
     <ConnectedRouter history={history}>
       <Switch>
-        <Route exact path="/" component={LoginPage} />
-        <Route exact path="/index.html" component={LoginPage} />
+        <Route exact path="/login" component={LoginPage} />
         <Route exact path="/firstrun" component={FirstRunPage} />
         <Route exact path="/error" component={ErrorPage} />
-        <AuthenticatedRoute exact path="/main" component={MainPage} />
+        <AuthenticatedRoute exact path="/index.html" component={MainPage} />
+        <AuthenticatedRoute path="/" component={MainPage} />
         <Route component={NoMatchPage} />
       </Switch>
     </ConnectedRouter>

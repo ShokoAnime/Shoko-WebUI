@@ -2,13 +2,13 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { forEach, isEqual, isUndefined } from 'lodash';
-import { omitDeepBy } from '../../../core/util';
+import { omitDeepBy } from '../../core/util';
 
-import { RootState } from '../../../core/store';
-import type { layoutType } from '../../../core/slices/webuiSettings';
-import { defaultLayout } from '../../../core/slices/webuiSettings';
-import Events from '../../../core/events';
-import QuickActions from '../Panels/QuickActions';
+import { RootState } from '../../core/store';
+import type { layoutType } from '../../core/slices/webuiSettings';
+import { defaultLayout } from '../../core/slices/webuiSettings';
+import Events from '../../core/events';
+import QuickActions from './panels/QuickActions';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -77,7 +77,7 @@ const actions = {
   },
 };
 
-class ActionsTab extends React.Component<Props, State> {
+class ActionsPage extends React.Component<Props, State> {
   state = defaultLayout.actions;
 
   componentDidMount = () => {
@@ -147,4 +147,4 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(ActionsTab);
+export default connector(ActionsPage);

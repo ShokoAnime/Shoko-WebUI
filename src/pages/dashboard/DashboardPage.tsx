@@ -2,21 +2,26 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { isEqual, isUndefined } from 'lodash';
-import { omitDeepBy } from '../../../core/util';
+import { omitDeepBy } from '../../core/util';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
-import type { layoutType } from '../../../core/slices/webuiSettings';
-import { defaultLayout } from '../../../core/slices/webuiSettings';
-import ImportBreakdown from '../Panels/ImportBreakdown';
-import ImportFolders from '../Panels/ImportFolders';
-import SeriesInImportFolder from '../Panels/SeriesInImportFolder';
+import { RootState } from '../../core/store';
+import Events from '../../core/events';
+import type { layoutType } from '../../core/slices/webuiSettings';
+import { defaultLayout } from '../../core/slices/webuiSettings';
+import CollectionBreakdown from './panels/CollectionBreakdown';
+import SeriesBreakdown from './panels/SeriesBreakdown';
+import ImportBreakdown from './panels/ImportBreakdown';
+import FilesBreakdown from './panels/FilesBreakdown';
+import ActionItems from './panels/ActionItems';
+import ImportFolders from './panels/ImportFolders';
+import CommandQueue from './panels/CommandQueue';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 type State = layoutType;
-class ImportFoldersTab extends React.Component<Props, State> {
-  state = defaultLayout.importFolders;
+
+class DashboardPage extends React.Component<Props, State> {
+  state = defaultLayout.dashboard;
 
   componentDidMount = () => {
     const { layout } = this.props;
@@ -51,14 +56,26 @@ class ImportFoldersTab extends React.Component<Props, State> {
           className="w-full"
           onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
-          <div key="importBreakdown">
-            <ImportBreakdown />
+          <div key="collectionBreakdown">
+            <CollectionBreakdown />
+          </div>
+          <div key="seriesBreakdown">
+            <SeriesBreakdown />
+          </div>
+          <div key="commandQueue">
+            <CommandQueue />
           </div>
           <div key="importFolders">
             <ImportFolders />
           </div>
-          <div key="seriesInImportFolder">
-            <SeriesInImportFolder />
+          <div key="importBreakdown">
+            <ImportBreakdown />
+          </div>
+          <div key="actionItems">
+            <ActionItems />
+          </div>
+          <div key="filesBreakdown">
+            <FilesBreakdown />
           </div>
         </ResponsiveGridLayout>
       </React.Fragment>
@@ -67,13 +84,13 @@ class ImportFoldersTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.v3.layout.importFolders,
+  layout: state.webuiSettings.v3.layout.dashboard,
 });
 
 const mapDispatch = {
   changeLayout: (layout: any) => ({
     type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-    payload: { importFolders: layout },
+    payload: { dashboard: layout },
   }),
 };
 
@@ -81,4 +98,4 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(ImportFoldersTab);
+export default connector(DashboardPage);

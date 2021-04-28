@@ -2,29 +2,29 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { isEqual, isUndefined } from 'lodash';
-import { omitDeepBy } from '../../../core/util';
+import { omitDeepBy } from '../../core/util';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
-import type { layoutType } from '../../../core/slices/webuiSettings';
-import { defaultLayout } from '../../../core/slices/webuiSettings';
+import { RootState } from '../../core/store';
+import Events from '../../core/events';
+import type { layoutType } from '../../core/slices/webuiSettings';
+import { defaultLayout } from '../../core/slices/webuiSettings';
 
-import AniDBSettings from '../Panels/AniDBSettings';
-import AniDBLoginSettings from '../Panels/AniDBLoginSettings';
-import GeneralSettings from '../Panels/GeneralSettings';
-import ImportSettings from '../Panels/ImportSettings';
-import LanguageSettings from '../Panels/LanguageSettings';
-import MovieDBSettings from '../Panels/MovieDBSettings';
-import PlexSettings from '../Panels/PlexSettings';
-import RelationSettings from '../Panels/RelationSettings';
-import TraktSettings from '../Panels/TraktSettings';
-import TvDBSettings from '../Panels/TvDBSettings';
+import AniDBSettings from './panels/AniDBSettings';
+import AniDBLoginSettings from './panels/AniDBLoginSettings';
+import GeneralSettings from './panels/GeneralSettings';
+import ImportSettings from './panels/ImportSettings';
+import LanguageSettings from './panels/LanguageSettings';
+import MovieDBSettings from './panels/MovieDBSettings';
+import PlexSettings from './panels/PlexSettings';
+import RelationSettings from './panels/RelationSettings';
+import TraktSettings from './panels/TraktSettings';
+import TvDBSettings from './panels/TvDBSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 type State = layoutType;
 
-class SettingsTab extends React.Component<Props, State> {
+class SettingsPage extends React.Component<Props, State> {
   state = defaultLayout.settings;
 
   componentDidMount = () => {
@@ -113,4 +113,4 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(SettingsTab);
+export default connector(SettingsPage);
