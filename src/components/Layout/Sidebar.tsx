@@ -64,7 +64,7 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  changePage: (tab: string) => (push(`${tab}`)),
+  changePage: (page: string) => (push(`${page}`)),
 };
 
 const connector = connect(mapState, mapDispatch);
