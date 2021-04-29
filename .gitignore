@@ -18,7 +18,15 @@ run.config.js
 /coverage/
 .eslintcache
 flow-typed/npm/
-/yarn.lock
 
 # VS Code dev container config
 .devcontainer/
+
+#Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+.pnp.*

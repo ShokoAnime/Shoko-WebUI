@@ -158,9 +158,9 @@ tasks.set('start', () => {
     middleware.push(require('webpack-hot-middleware')(compiler));
     middleware.push(require('connect-history-api-fallback')());
 
-    compiler.plugin('done', (stats) => {
+    compiler.hooks.done.tap('run', (stats) => {
       // Generate index.html page
-      const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
+      const bundle = Array.from(stats.compilation.chunks).find(x => x.name === 'main').files.values().next().value;
       const template = fs.readFileSync('./templates/index.ejs', 'utf8');
       const render = ejs.compile(template, { filename: './templates/index.ejs' });
       const output = render({ debug: true, bundle: `/dist/${bundle}`, config });
