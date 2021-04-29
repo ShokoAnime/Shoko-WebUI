@@ -117,7 +117,7 @@ const config = {
       {
         test: /\.(woff|woff2)$/,
         loader: 'url-loader',
-        options: { limit: 100000, mimetype: 'application/font-woff'},
+        options: { limit: 100000, mimetype: 'application/font-woff' },
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
@@ -166,7 +166,7 @@ if (isDebug && useHMR) {
   config.optimization = {
     emitOnErrors: false,
     moduleIds: 'named',
-  }
+  };
 }
 
 module.exports = config;
