@@ -24,7 +24,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, './public/dist'),
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
-    filename: isDebug ? '[name].js?[hash]' : '[name].[hash].js',
+    filename: isDebug ? '[name].js?[contenthash]' : '[name].[contenthash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     sourcePrefix: '  ',
   },
@@ -116,7 +116,8 @@ const config = {
       },
       {
         test: /\.(woff|woff2)$/,
-        loader: 'url-loader?limit=100000&mimetype=application/font-woff',
+        loader: 'url-loader',
+        options: { limit: 100000, mimetype: 'application/font-woff'},
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
@@ -161,9 +162,11 @@ if (!isDebug) {
 
 if (isDebug && useHMR) {
   config.entry.unshift('webpack-hot-middleware/client');
-  config.plugins.push(new webpack.NamedModulesPlugin());
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  config.optimization = {
+    emitOnErrors: false,
+    moduleIds: 'named',
+  }
 }
 
 module.exports = config;
