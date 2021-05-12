@@ -27,12 +27,12 @@ class Acknowledgement extends React.Component<Props> {
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10 text-justify">
           <div className="font-bold text-lg">Thanks For Installing Shoko Server!</div>
-          <div className="font-muli mt-5">
+          <div className="font-mulish mt-5">
             We want to stress that Shoko is an anime cataloging program and not a stand-alone
             streaming service and requires access to physical files for playback. Shoko also does
             not provide any services on how to obtain or download anime series.
           </div>
-          <div className="font-muli mt-4">
+          <div className="font-mulish mt-4">
             THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
             IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
             PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -40,7 +40,7 @@ class Acknowledgement extends React.Component<Props> {
             CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
             THE USE OR OTHER DEALINGS IN THE SOFTWARE.
           </div>
-          <div className="font-muli font-bold mt-8">
+          <div className="font-mulish font-bold mt-8">
             We&apos;re always looking for more individuals to join our team! If you think you can
             help, come talk with us on Discord.
           </div>
@@ -49,7 +49,7 @@ class Acknowledgement extends React.Component<Props> {
           </div>
         </div>
         <div className="help flex px-10 py-2 rounded-br-lg justify-between">
-          <div className="color-accent font-muli font-bold text-xs flex items-center">
+          <div className="color-accent font-mulish font-bold text-xs flex items-center">
             Need Help Setting Shoko Server Up?
           </div>
           <div className="flex">

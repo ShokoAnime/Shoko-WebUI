@@ -23,7 +23,7 @@ class Checkbox extends React.Component<Props> {
     return (
       <React.Fragment>
         <div className={cx([`${className ?? ''} w-auto`, label && 'my-1'])}>
-          <label className="flex justify-between block font-muli" htmlFor={id} style={{ cursor: 'pointer' }}>
+          <label className="flex justify-between block font-mulish" htmlFor={id} style={{ cursor: 'pointer' }}>
             {!labelRight && (
               <span>
                 {label}

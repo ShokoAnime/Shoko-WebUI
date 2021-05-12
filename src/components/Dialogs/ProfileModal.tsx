@@ -112,7 +112,7 @@ class ProfileModal extends React.Component<Props, State> {
                 </div>
               </div>
               <div className="flex justify-end mb-2">
-                <Button onClick={() => this.handleClose(true)} className="py-1 px-4 bg-color-accent font-muli font-semibold text-sm">Save</Button>
+                <Button onClick={() => this.handleClose(true)} className="py-1 px-4 bg-color-accent font-mulish font-semibold text-sm">Save</Button>
               </div>
             </div>
           </div>

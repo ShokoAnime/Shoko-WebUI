@@ -31,7 +31,7 @@ class FixedPanel extends React.Component<Props> {
         </div>
         <span className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
         <div
-          className="overflow-y-auto flex flex-col h-full font-muli"
+          className="overflow-y-auto flex flex-col h-full font-mulish"
           onMouseDown={event => event.stopPropagation()}
           onTouchStart={event => event.stopPropagation()}
         >

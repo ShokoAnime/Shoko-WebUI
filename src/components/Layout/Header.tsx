@@ -81,11 +81,11 @@ class Header extends React.Component<Props, State> {
             <div className="flex cursor-pointer justify-end user-dropdown-toggle px-2 py-2" onClick={() => this.toggleDropdown()}>
               <span className="flex items-center justify-center bg-color-accent w-12 h-12 text-xl rounded-full mr-2">{username.charAt(0)}</span>
               <div className="flex flex-col justify-center">
-                <div className="font-semibold font-muli">
+                <div className="font-semibold font-mulish">
                   <span className="mr-2">{username}</span>
                   <FontAwesomeIcon icon={faCaretDown} className="color-accent" />
                 </div>
-                <span className="font-bold font-muli color-accent-secondary">Admin</span>
+                <span className="font-bold font-mulish color-accent-secondary">Admin</span>
               </div>
             </div>
             <div className="flex relative mt-2">

@@ -76,7 +76,7 @@ class DatabaseSetup extends React.Component<Props, State> {
       <React.Fragment>
         <div className="flex flex-col flex-grow px-10 pt-10 overflow-y-auto">
           <span className="font-bold text-lg">Setting Up Your Database</span>
-          <div className="font-muli mt-5 text-justify">
+          <div className="font-mulish mt-5 text-justify">
             Shoko uses SQLite for your database and will automatically create the database for you.
             If you&apos;d like to select a different location for your database file, you can do
             so by changing the directory below.

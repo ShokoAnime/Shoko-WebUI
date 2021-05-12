@@ -51,7 +51,7 @@ class FirstRunPage extends React.Component<Props> {
     return (
       <tr key={key}>
         <td className="py-4">
-          <div className="font-muli font-bold flex cursor-default">
+          <div className="font-mulish font-bold flex cursor-default">
             <FontAwesomeIcon
               icon={
                 // eslint-disable-next-line no-nested-ternary

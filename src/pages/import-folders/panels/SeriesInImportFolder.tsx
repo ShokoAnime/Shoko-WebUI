@@ -65,7 +65,7 @@ class SeriesInImportFolders extends React.Component<Props> {
     });
 
     return (
-      <div className="flex font-muli font-bold">
+      <div className="flex font-mulish font-bold">
         <Select id="selectedFolder" value={selectedFolder} onChange={this.handleInputChange} className="mr-2">
           {folders}
         </Select>

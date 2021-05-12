@@ -136,7 +136,7 @@ class LoginPage extends React.Component<Props, State> {
                     <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
                     <div className="mt-8 text-2xl2">Server is starting. Please wait!</div>
                     <div className="mt-2 text-sm">
-                      <span className="font-muli font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
+                      <span className="font-mulish font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
                     </div>
                   </div>
                 )}
@@ -162,13 +162,13 @@ class LoginPage extends React.Component<Props, State> {
                   <div className="flex flex-col flex-grow py-8">
                     <div className="flex flex-col">
                       <div className="font-bold text-xl">First Time? We&apos;ve All Been There</div>
-                      <div className="mt-6 font-muli text-justify">
+                      <div className="mt-6 font-mulish text-justify">
                         Before Shoko can get started indexing your anime collection, you&apos;ll
                         need to go through our <span className="font-bold">First Time Wizard </span>
                         and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
                         takes a couple of minutes.
                       </div>
-                      <div className="mt-6 font-muli">
+                      <div className="mt-6 font-mulish">
                         Click <span className="font-bold">Continue</span> below to proceed.
                       </div>
                     </div>
@@ -179,7 +179,7 @@ class LoginPage extends React.Component<Props, State> {
                 )}
               </div>
               <div className="help flex px-4 py-2 rounded-br-lg justify-between">
-                <div className="color-accent font-muli font-bold text-xs flex items-center ml-6">
+                <div className="color-accent font-mulish font-bold text-xs flex items-center ml-6">
                   Need help logging in?
                 </div>
                 <div className="flex">

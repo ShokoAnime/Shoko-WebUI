@@ -1321,6 +1321,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/exo-2@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@fontsource/exo-2@npm:4.3.0"
+  checksum: de374031803337e7739873be05192dc2b0410b3eb4059f64e3e5cdbff1257bef02d111d5a6684999877e7147f3d4ec4b22f834e6964be6a57cf7c140d1c8e391
+  languageName: node
+  linkType: hard
+
+"@fontsource/mulish@npm:^4.3.0":
+  version: 4.3.0
+  resolution: "@fontsource/mulish@npm:4.3.0"
+  checksum: 32b7bebd044d2366a928618cd094cc3e89586bcde86913717a64cf6bacf29285e4225722b3eab4ea51c6371ad9e50762ca99ff26a010eb28dcb4e912295fd494
+  languageName: node
+  linkType: hard
+
 "@fortawesome/fontawesome-common-types@npm:^0.2.35":
   version: 0.2.35
   resolution: "@fortawesome/fontawesome-common-types@npm:0.2.35"
@@ -7440,27 +7454,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fontsource-exo-2@npm:^3.0.5":
-  version: 3.1.6
-  resolution: "fontsource-exo-2@npm:3.1.6"
-  checksum: d211abc3410deafa8a01dc5393a76b78d74409a817ef7c3d0e181ea50d631e695ffdabfff624b2f1c996e59319adeef9b0213e2b3baedd47cdce3b23859fa07b
-  languageName: node
-  linkType: hard
-
-"fontsource-muli@npm:^3.0.5":
-  version: 3.1.5
-  resolution: "fontsource-muli@npm:3.1.5"
-  checksum: 0e78f86323386fa74e27c405be8bb84754144c0c34a8d0447c8ed3f78cb199f86b75e60a4dd634131af0189ce83808a03be0bb5400d8cfc3b740eb0d7be983d5
-  languageName: node
-  linkType: hard
-
-"fontsource-roboto@npm:^3.0.3":
-  version: 3.1.5
-  resolution: "fontsource-roboto@npm:3.1.5"
-  checksum: b27da86d862d3105662954a41a1b34961a4e352a8a826980e616e76a03ffd1a0f5471dab6b997642e1203c7eb19b9887f3b063b0bb8a2dd74775249bfe7c5055
-  languageName: node
-  linkType: hard
-
 "for-in@npm:^1.0.1, for-in@npm:^1.0.2":
   version: 1.0.2
   resolution: "for-in@npm:1.0.2"
@@ -9608,6 +9601,8 @@ fsevents@~2.3.1:
     "@babel/preset-react": ^7.0.0-rc.1
     "@babel/register": ^7.6.0
     "@babel/runtime": ^7.6.0
+    "@fontsource/exo-2": ^4.3.0
+    "@fontsource/mulish": ^4.3.0
     "@fortawesome/fontawesome-svg-core": ^1.2.0-14
     "@fortawesome/free-brands-svg-icons": ^5.13.0
     "@fortawesome/free-regular-svg-icons": ^5.13.0
@@ -9672,9 +9667,6 @@ fsevents@~2.3.1:
     fast-json-patch: ^3.0.0-1
     fastclick: ^1.0.6
     file-loader: ^6.2.0
-    fontsource-exo-2: ^3.0.5
-    fontsource-muli: ^3.0.5
-    fontsource-roboto: ^3.0.3
     history: ^4.7.2
     http-proxy-middleware: ^0.20.0
     imports-loader: ^2.0.0

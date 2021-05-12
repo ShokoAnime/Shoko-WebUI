@@ -32,7 +32,7 @@ class StartServer extends React.Component<Props> {
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10">
           <div className="font-bold text-lg">Start Server</div>
-          <div className="font-muli mt-5 text-justify">
+          <div className="font-mulish mt-5 text-justify">
             On this page you can try and start the server, startup progress will be reported below.
             After the startup and database creation process is complete you will be able to setup
             import folders.

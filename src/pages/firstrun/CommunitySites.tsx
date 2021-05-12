@@ -61,7 +61,7 @@ class CommunitySites extends React.Component<Props, State> {
       <React.Fragment>
         <div className="flex flex-col flex-grow px-10 pt-10 overflow-y-auto">
           <div className="font-bold text-lg">Community Sites</div>
-          <div className="font-muli mt-5 text-justify">
+          <div className="font-mulish mt-5 text-justify">
             Shoko supports multiple community sites that can be used to download additional
             metadata for the series in your collection. We highly recommend going through each
             sites settings and configuring them to your liking.

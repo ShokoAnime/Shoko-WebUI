@@ -32,7 +32,7 @@ class LocalAccount extends React.Component<Props> {
       <React.Fragment>
         <div className="flex flex-col flex-grow p-10">
           <div className="font-bold text-lg">Create Your Account</div>
-          <div className="font-muli mt-5 text-justify">
+          <div className="font-mulish mt-5 text-justify">
             In order to use Shoko you&apos;ll need to create an account. This local account will
             allow you to login to Shoko and will link your account with any community site accounts
             provided later on.

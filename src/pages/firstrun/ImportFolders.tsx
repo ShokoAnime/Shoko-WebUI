@@ -101,7 +101,7 @@ class ImportFolders extends React.Component<Props, State> {
     }
 
     return (
-      <div className="flex font-muli items-center w-full my-2">
+      <div className="flex font-mulish items-center w-full my-2">
         <Button onClick={() => this.handleEdit(folder)} className="flex mr-2 color-accent">
           <FontAwesomeIcon icon={faEdit} />
         </Button>
@@ -184,7 +184,7 @@ class ImportFolders extends React.Component<Props, State> {
       <React.Fragment>
         <div className="flex flex-col flex-grow px-10 pt-10 pb-4 overflow-y-auto">
           <div className="font-bold text-lg">Import Folders</div>
-          <div className="font-muli mt-5 text-justify">
+          <div className="font-mulish mt-5 text-justify">
             Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can
             have as many import folders as you&apos;d like. Please note you can only have <span className="font-bold">one</span> folder
             designated as your drop destination.

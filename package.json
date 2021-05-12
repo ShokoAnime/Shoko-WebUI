@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.6.0",
+    "@fontsource/exo-2": "^4.3.0",
+    "@fontsource/mulish": "^4.3.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
     "@fortawesome/free-brands-svg-icons": "^5.13.0",
     "@fortawesome/free-regular-svg-icons": "^5.13.0",
@@ -44,9 +46,6 @@
     "es6-promise": "^4.2.4",
     "fast-json-patch": "^3.0.0-1",
     "fastclick": "^1.0.6",
-    "fontsource-exo-2": "^3.0.5",
-    "fontsource-muli": "^3.0.5",
-    "fontsource-roboto": "^3.0.3",
     "history": "^4.7.2",
     "http-proxy-middleware": "^0.20.0",
     "isomorphic-fetch": "^2.2.1",
