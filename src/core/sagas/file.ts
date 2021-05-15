@@ -23,6 +23,13 @@ function* getRecentFileDetails(action) {
   }
   details.SeriesName = seriesJson.data.Name;
 
+  const episodeJson = yield call(ApiEpisode.getEpisode, episodeId);
+  if (episodeJson.error) {
+    toast.error(seriesJson.message);
+    return;
+  }
+  details.EpisodeName = episodeJson.data.Name;
+
   const episodeAniDBJson = yield call(ApiEpisode.getEpisodeAniDB, episodeId);
   if (episodeAniDBJson.error) {
     toast.error(seriesJson.message);
@@ -30,13 +37,6 @@ function* getRecentFileDetails(action) {
   }
   details.EpisodeNumber = episodeAniDBJson.data.EpisodeNumber;
   details.EpisodeType = episodeAniDBJson.data.Type;
-
-  const episodeTvDBJson = yield call(ApiEpisode.getEpisodeTvDB, episodeId);
-  if (episodeTvDBJson.error) {
-    toast.error(seriesJson.message);
-    return;
-  }
-  details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown'; // GET THIS FROM ANIDB INSTEAD OF TVDB
 
   const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
   if (fileAniDBJson.error) {
