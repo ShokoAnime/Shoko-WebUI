@@ -12,9 +12,9 @@ const colors = {
   Other: '#DA3FFF',
 };
 
-class FilesBreakdown extends React.Component<Props> {
+class CollectionTypeBreakdown extends React.Component<Props> {
   renderName = (item: string, count: number, countPercentage: number) => (
-    <div key={`${item}-name`} className="flex mt-8 first:mt-0">
+    <div key={`${item}-name`} className="flex mt-3 first:mt-0">
       <span className="flex-grow">{item} - {count}</span>
       {countPercentage.toFixed(2)}%
     </div>
@@ -51,7 +51,7 @@ class FilesBreakdown extends React.Component<Props> {
     });
 
     return (
-      <FixedPanel title="Files Breakdown" isFetching={!hasFetched}>
+      <FixedPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
         {items}
       </FixedPanel>
     );
@@ -67,4 +67,4 @@ const connector = connect(mapState);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(FilesBreakdown);
+export default connector(CollectionTypeBreakdown);

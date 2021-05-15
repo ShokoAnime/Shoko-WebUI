@@ -25,10 +25,10 @@ class ImportBreakdown extends React.Component<Props, State> {
     const { activeTab } = this.state;
     return (
       <div className="font-mulish font-bold">
-        <Button onClick={() => this.handleTabChange('imported')} className={cx(['mr-2 font-mulish font-bold', activeTab === 'imported' && 'color-accent'])}>
+        <Button onClick={() => this.handleTabChange('imported')} className={cx(['mr-2 font-mulish font-bold', activeTab === 'imported' && 'color-highlight-1'])}>
           Imported
         </Button>
-        <Button onClick={() => this.handleTabChange('unrecognized')} className={cx(['mr-2 font-mulish font-bold', activeTab === 'unrecognized' && 'color-accent'])}>
+        <Button onClick={() => this.handleTabChange('unrecognized')} className={cx(['mr-2 font-mulish font-bold', activeTab === 'unrecognized' && 'color-highlight-1'])}>
           Unrecognized
         </Button>
       </div>

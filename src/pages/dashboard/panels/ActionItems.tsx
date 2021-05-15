@@ -17,7 +17,7 @@ class ActionItems extends React.Component<Props> {
       <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
         <span className="flex">{action.name}</span>
         <div className="flex">
-          <Button onClick={() => runAction(action.function, action.data)} className="bg-color-accent font-exo text-xs font-bold px-6 py-1">
+          <Button onClick={() => runAction(action.function, action.data)} className="bg-color-highlight-1 font-exo text-xs font-bold px-6 py-1">
             Run
           </Button>
         </div>
@@ -42,7 +42,7 @@ class ActionItems extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  pinnedActions: state.webuiSettings.v3.actions,
+  pinnedActions: state.webuiSettings.webui_v2.actions,
   isFetching: state.fetching.settings,
 });
 

@@ -89,7 +89,7 @@ class ImportFolderModal extends React.Component<Props, State> {
         >
           <div className="flex flex-col w-full">
             <div className="flex justify-between">
-              <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">
+              <span className="flex font-semibold text-xl2 uppercase">
                 {edit ? 'Edit Import Folder' : 'Add New Import Folder'}
               </span>
               <span className="flex">
@@ -98,12 +98,12 @@ class ImportFolderModal extends React.Component<Props, State> {
                 </Button>
               </span>
             </div>
-            <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+            <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
             <div className="flex flex-col flex-grow w-3/5">
               <Input id="Name" value={Name} label="Name" type="text" placeholder="Name" onChange={this.handleInputChange} className="my-1 w-full" />
               <div className="flex items-end">
                 <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="my-1 w-full" />
-                <Button onClick={this.handleBrowse} className="color-accent ml-2 mb-2 text-lg">
+                <Button onClick={this.handleBrowse} className="color-highlight-1 ml-2 mb-2 text-lg">
                   <FontAwesomeIcon icon={faFolderOpen} />
                 </Button>
               </div>
@@ -123,7 +123,7 @@ class ImportFolderModal extends React.Component<Props, State> {
               {edit && (
                 <Button onClick={this.handleDelete} className="bg-color-danger px-5 py-2 mr-2">Delete</Button>
               )}
-              <Button onClick={this.handleSave} className="bg-color-accent px-5 py-2" disabled={Name === '' || Path === ''}>Save</Button>
+              <Button onClick={this.handleSave} className="bg-color-highlight-1 px-5 py-2" disabled={Name === '' || Path === ''}>Save</Button>
             </div>
           </div>
         </ModalPanel>

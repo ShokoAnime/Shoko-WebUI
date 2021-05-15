@@ -45,18 +45,18 @@ class Acknowledgement extends React.Component<Props> {
             help, come talk with us on Discord.
           </div>
           <div className="flex h-full justify-center items-center mt-6">
-            <Button onClick={() => this.handleNext()} className="bg-color-accent font-semibold py-2 px-5 rounded" disabled={status.State !== 4}>Continue</Button>
+            <Button onClick={() => this.handleNext()} className="bg-color-highlight-1 font-semibold py-2 px-5 rounded" disabled={status.State !== 4}>Continue</Button>
           </div>
         </div>
         <div className="help flex px-10 py-2 rounded-br-lg justify-between">
-          <div className="color-accent font-mulish font-bold text-xs flex items-center">
+          <div className="color-highlight-1 font-mulish font-bold text-xs flex items-center">
             Need Help Setting Shoko Server Up?
           </div>
           <div className="flex">
-            <Button className="color-accent mr-5" onClick={() => this.handleHelpButton('discord')}>
+            <Button className="color-highlight-1 mr-5" onClick={() => this.handleHelpButton('discord')}>
               <FontAwesomeIcon icon={faDiscord} className="text-xl" />
             </Button>
-            <Button className="color-accent" onClick={() => this.handleHelpButton('docs')}>
+            <Button className="color-highlight-1" onClick={() => this.handleHelpButton('docs')}>
               <FontAwesomeIcon icon={faQuestionCircle} className="text-xl" />
             </Button>
           </div>

@@ -52,7 +52,7 @@ class GeneralSettings extends React.Component<Props> {
           <div className="flex uppercase items-center">
             {version}
             { /* eslint-disable-next-line max-len */ }
-            {/* <Button onClick={() => ({})} className="color-accent text-xs ml-2" tooltip="Check for updates">
+            {/* <Button onClick={() => ({})} className="color-highlight-1 text-xs ml-2" tooltip="Check for updates">
               <FontAwesomeIcon icon={faRedo} />
             </Button> // NEED API FOR SERVER VERSION CHECK */}
           </div>
@@ -61,7 +61,7 @@ class GeneralSettings extends React.Component<Props> {
           <div className="flex items-center">
             WebUI Version
             {webuiUpdateAvailable && (
-              <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-accent" tooltip="Download Latest Version">
+              <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-highlight-1" tooltip="Download Latest Version">
                 Update Available
                 <FontAwesomeIcon
                   icon={downloadingUpdates ? faSpinner : faDownload}
@@ -73,7 +73,7 @@ class GeneralSettings extends React.Component<Props> {
           </div>
           <div className="flex items-center overflow-x-hidden">
             {UI_VERSION}
-            <Button onClick={() => checkWebUIUpdate()} className="flex color-accent text-xs ml-2" tooltip="Check for updates">
+            <Button onClick={() => checkWebUIUpdate()} className="flex color-highlight-1 text-xs ml-2" tooltip="Check for updates">
               <FontAwesomeIcon
                 icon={checkingUpdates ? faSpinner : faRedo}
                 spin={checkingUpdates}
@@ -84,7 +84,7 @@ class GeneralSettings extends React.Component<Props> {
         <span className="font-extrabold mt-3">Style Options</span>
         <div className="flex justify-between my-1">
           Theme
-          <span className="color-accent font-bold">Shoko Modern</span>
+          <span className="color-highlight-1 font-bold">Shoko Modern</span>
         </div>
         <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
         {notifications && (
@@ -125,7 +125,7 @@ class GeneralSettings extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  ...(state.webuiSettings.v3),
+  ...(state.webuiSettings.webui_v2),
   ...(state.localSettings.LogRotator),
   version: state.jmmVersion,
   webuiUpdateAvailable: state.misc.webuiUpdateAvailable,

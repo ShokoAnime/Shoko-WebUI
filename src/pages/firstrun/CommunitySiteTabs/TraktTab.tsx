@@ -33,7 +33,7 @@ class TraktTab extends React.Component<Props> {
       return (
         <div className="flex w-3/5 justify-between items-center my-1">
           Trakt Code
-          <Button onClick={getTraktCode} className="bg-color-accent-secondary px-2 py-1 text-sm">
+          <Button onClick={getTraktCode} className="bg-color-highlight-2 px-2 py-1 text-sm">
             {fetching ? 'Requesting...' : 'Get Trakt Code'}
           </Button>
         </div>
@@ -43,7 +43,7 @@ class TraktTab extends React.Component<Props> {
       <div className="flex justify-between my-2 items-center">
         <span className="w-64">Trakt Code: <span className="font-semibold">{usercode}</span></span>
         <span>
-          <span className="color-accent-secondary"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span><br />
+          <span className="color-highlight-2"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span><br />
           You have approximately 10 minutes to visit the URL provided and enter the code,
           server is polling for access token, it will be acquired automatically.
         </span>

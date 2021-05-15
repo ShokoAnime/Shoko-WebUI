@@ -55,7 +55,7 @@ class AniDBLoginSettings extends React.Component<Props, State> {
     const { isTesting } = this.props;
     return (
       <div className="flex">
-        <Button onClick={() => this.testAndSave()} tooltip="Test and Save" className="color-accent">
+        <Button onClick={() => this.testAndSave()} tooltip="Test and Save" className="color-highlight-1">
           <FontAwesomeIcon icon={isTesting ? faSpinner : faSave} spin={isTesting} />
         </Button>
       </div>

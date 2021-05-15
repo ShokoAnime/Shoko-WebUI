@@ -15,28 +15,28 @@ import type { QueueItemType } from '../../../core/types/api';
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
-class CommandQueue extends React.Component<Props> {
+class QueueProcessor extends React.Component<Props> {
   renderItem = (key: string, item: QueueItemType, count: number) => {
     const { handleOperation } = this.props;
 
     return (
       <div className="flex flex-col" key={key}>
-        <div className="flex justify-between mt-3 first:mt-0">
+        <div className="flex justify-between">
           <div className="flex items-center w-24">
             <FontAwesomeIcon icon={icons[key]} className="mr-4" />
             <span className="font-semibold">{names[key]}</span>
           </div>
           <div className="flex">{count ?? 0}</div>
           <div className="flex items-center">
-            <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
+            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
               <FontAwesomeIcon icon={faTimes} />
             </Button>
             {item?.state === 18 ? (
-              <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
+              <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
                 <FontAwesomeIcon icon={faPlay} />
               </Button>
             ) : (
-              <Button className="color-accent mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
+              <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
                 <FontAwesomeIcon icon={faPause} />
               </Button>
             )}
@@ -65,11 +65,11 @@ class CommandQueue extends React.Component<Props> {
     return (
       <div>
         {paused ? (
-          <Button className="color-accent mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
+          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
             <FontAwesomeIcon icon={faPlay} />
           </Button>
         ) : (
-          <Button className="color-accent mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
+          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
             <FontAwesomeIcon icon={faPause} />
           </Button>
         )}
@@ -88,8 +88,10 @@ class CommandQueue extends React.Component<Props> {
     }
 
     return (
-      <FixedPanel title="Commands" options={this.renderOptions()} isFetching={!hasFetched}>
-        {commands}
+      <FixedPanel title="Queue Processor" options={this.renderOptions()} isFetching={!hasFetched}>
+        <div className="flex flex-col justify-between h-full">
+          {commands}
+        </div>
       </FixedPanel>
     );
   }
@@ -108,4 +110,4 @@ const connector = connect(mapState, mapDispatch);
 
 type Props = ConnectedProps<typeof connector>;
 
-export default connector(CommandQueue);
+export default connector(QueueProcessor);

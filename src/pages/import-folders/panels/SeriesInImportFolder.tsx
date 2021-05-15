@@ -69,7 +69,7 @@ class SeriesInImportFolders extends React.Component<Props> {
         <Select id="selectedFolder" value={selectedFolder} onChange={this.handleInputChange} className="mr-2">
           {folders}
         </Select>
-        <Button onClick={() => getSeries(selectedFolder)} className="color-accent">
+        <Button onClick={() => getSeries(selectedFolder)} className="color-highlight-1">
           <FontAwesomeIcon icon={faRedoAlt} />
         </Button>
       </div>

@@ -35,7 +35,7 @@ class PlexSettings extends React.Component<Props> {
       return (
         <div className="flex justify-between flex-grow items-center">
           Plex Login:
-          <Button onClick={() => getPlexUrl()} className="bg-color-accent-secondary px-2 py-1 text-xs">
+          <Button onClick={() => getPlexUrl()} className="bg-color-highlight-2 px-2 py-1 text-xs">
             {fetching ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>
@@ -44,7 +44,7 @@ class PlexSettings extends React.Component<Props> {
     return (
       <div className="flex flex-grow justify-between items-center">
         Plex Login:
-        <Button onClick={() => this.handleLinkOpen()} className="color-accent-secondary hover:underline py-1 px-2 text-xs">Click here to login</Button>
+        <Button onClick={() => this.handleLinkOpen()} className="color-highlight-2 hover:underline py-1 px-2 text-xs">Click here to login</Button>
       </div>
     );
   }

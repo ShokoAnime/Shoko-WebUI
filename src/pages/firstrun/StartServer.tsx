@@ -44,7 +44,7 @@ class StartServer extends React.Component<Props> {
             </div>
             <div className="flex h-full justify-center items-center">
               {status.State === 4 && (
-                <Button onClick={() => this.handleSave()} className="bg-color-accent-secondary py-2 px-3 rounded">Start Server</Button>
+                <Button onClick={() => this.handleSave()} className="bg-color-highlight-2 py-2 px-3 rounded">Start Server</Button>
               )}
             </div>
           </div>

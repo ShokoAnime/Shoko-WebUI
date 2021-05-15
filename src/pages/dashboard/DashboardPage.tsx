@@ -11,10 +11,10 @@ import { defaultLayout } from '../../core/slices/webuiSettings';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
-import FilesBreakdown from './panels/FilesBreakdown';
+import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
 import ActionItems from './panels/ActionItems';
-import ImportFolders from './panels/ImportFolders';
-import CommandQueue from './panels/CommandQueue';
+import QueueProcessor from './panels/QueueProcessor';
+import ShokoNews from './panels/ShokoNews';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -51,8 +51,8 @@ class DashboardPage extends React.Component<Props, State> {
           layouts={this.state}
           cols={cols}
           rowHeight={0}
-          containerPadding={[40, 40]}
-          margin={[40, 40]}
+          containerPadding={[30, 30]}
+          margin={[25, 25]}
           className="w-full"
           onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
@@ -62,20 +62,23 @@ class DashboardPage extends React.Component<Props, State> {
           <div key="seriesBreakdown">
             <SeriesBreakdown />
           </div>
-          <div key="commandQueue">
-            <CommandQueue />
-          </div>
-          <div key="importFolders">
-            <ImportFolders />
+          <div key="queueProcessor">
+            <QueueProcessor />
           </div>
           <div key="importBreakdown">
             <ImportBreakdown />
           </div>
+          <div key="shokoNews">
+            <ShokoNews />
+          </div>
           <div key="actionItems">
             <ActionItems />
           </div>
-          <div key="filesBreakdown">
-            <FilesBreakdown />
+          <div key="actionItems2">
+            <ActionItems />
+          </div>
+          <div key="collectionTypeBreakdown">
+            <CollectionTypeBreakdown />
           </div>
         </ResponsiveGridLayout>
       </React.Fragment>
@@ -84,7 +87,7 @@ class DashboardPage extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.v3.layout.dashboard,
+  layout: state.webuiSettings.webui_v2.layout.dashboard,
 });
 
 const mapDispatch = {

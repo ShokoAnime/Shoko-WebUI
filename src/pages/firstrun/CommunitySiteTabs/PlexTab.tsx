@@ -15,7 +15,7 @@ class PlexTab extends React.Component<Props> {
       return (
         <div className="flex w-3/5 justify-between my-1">
           Plex Login:
-          <Button onClick={() => getPlexUrl()} className="bg-color-accent-secondary px-2 py-1 text-sm">
+          <Button onClick={() => getPlexUrl()} className="bg-color-highlight-2 px-2 py-1 text-sm">
             {fetching ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>
@@ -24,7 +24,7 @@ class PlexTab extends React.Component<Props> {
     return (
       <div className="flex justify-between my-1 items-center">
         <span className="w-64">Plex Login URL:</span>
-        <span className="color-accent-secondary break-all"><a href={plexUrl} rel="noopener noreferrer" target="_blank">{plexUrl}</a></span><br />
+        <span className="color-highlight-2 break-all"><a href={plexUrl} rel="noopener noreferrer" target="_blank">{plexUrl}</a></span><br />
       </div>
     );
   }

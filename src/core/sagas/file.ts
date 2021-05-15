@@ -46,6 +46,9 @@ function* getRecentFileDetails(action) {
   details.Source = fileAniDBJson.data.Source;
   details.AudioLanguages = fileAniDBJson.data.AudioLanguages;
   details.SubtitleLanguages = fileAniDBJson.data.SubLanguages;
+  details.ReleaseGroup = fileAniDBJson.data.ReleaseGroup.Name;
+  // eslint-disable-next-line prefer-destructuring
+  details.VideoCodec = fileAniDBJson.data.VideoCodec.split('/')[0];
 
   yield put(setRecentFileDetails({ [fileId]: { fetched: true, details } }));
 }

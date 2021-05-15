@@ -11,7 +11,7 @@ class CollectionBreakdown extends React.Component<Props> {
       <div className="flex-grow">
         {title}
       </div>
-      <div className="color-accent">
+      <div className="color-highlight-1">
         {value}
       </div>
     </div>
@@ -35,7 +35,7 @@ class CollectionBreakdown extends React.Component<Props> {
 
     return (
       <FixedPanel title="Collection Breakdown" isFetching={!hasFetched}>
-        <div className="flex font-semibold">
+        <div className="flex">
           <div className="flex flex-col w-1/2 mr-6">
             {childrenLeft}
           </div>

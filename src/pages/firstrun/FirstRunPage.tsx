@@ -58,7 +58,7 @@ class FirstRunPage extends React.Component<Props> {
                 activeTab === key ? faCircleSolid
                   : (saved[key] ? faCheckCircle : faCircle)
                 }
-              className="mr-5 color-accent text-xl"
+              className="mr-5 color-highlight-1 text-xl"
             />
             {text}
           </div>
@@ -99,7 +99,7 @@ class FirstRunPage extends React.Component<Props> {
           <div className="flex flex-grow firstrun-image rounded-l-lg">
             <div className="flex flex-col flex-grow firstrun-sidebar h-full rounded-l-lg py-5">
               <div>
-                <div className="text-center text-4xl2 font-extrabold uppercase italic">Shoko <span className="color-accent">Server</span></div>
+                <div className="text-center text-4xl2 font-extrabold uppercase italic">Shoko <span className="color-highlight-1">Server</span></div>
                 {this.renderVersion()}
               </div>
               <div className="flex flex-col flex-grow justify-center ml-16">

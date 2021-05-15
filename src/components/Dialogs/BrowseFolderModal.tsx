@@ -28,12 +28,12 @@ class BrowseFolderModal extends React.Component<Props> {
     return (
       <ModalPanel show={show} className="p-5 browse-folder-modal" onRequestClose={() => this.handleClose()}>
         <div className="flex flex-col w-full">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">Select Import Folder</span>
-          <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+          <span className="flex font-semibold text-xl2 uppercase">Select Import Folder</span>
+          <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
           <TreeView />
           <div className="flex justify-end mt-2">
-            <Button onClick={this.handleClose} className="bg-color-accent px-5 py-2 mr-2">Cancel</Button>
-            <Button onClick={this.handleSelect} className="bg-color-accent px-5 py-2">Select</Button>
+            <Button onClick={this.handleClose} className="bg-color-highlight-1 px-5 py-2 mr-2">Cancel</Button>
+            <Button onClick={this.handleSelect} className="bg-color-highlight-1 px-5 py-2">Select</Button>
           </div>
         </div>
       </ModalPanel>

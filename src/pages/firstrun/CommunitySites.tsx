@@ -29,7 +29,7 @@ class CommunitySites extends React.Component<Props, State> {
   renderTabButton = (title: string, key: string) => {
     const { activeTab } = this.state;
     return (
-      <Button onClick={() => this.changeTab(key)} className={cx(['mr-6 font-bold', activeTab === key && 'color-accent'])}>
+      <Button onClick={() => this.changeTab(key)} className={cx(['mr-6 font-bold', activeTab === key && 'color-highlight-1'])}>
         {title}
       </Button>
     );

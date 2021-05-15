@@ -102,10 +102,10 @@ class ImportFolders extends React.Component<Props, State> {
 
     return (
       <div className="flex font-mulish items-center w-full my-2">
-        <Button onClick={() => this.handleEdit(folder)} className="flex mr-2 color-accent">
+        <Button onClick={() => this.handleEdit(folder)} className="flex mr-2 color-highlight-1">
           <FontAwesomeIcon icon={faEdit} />
         </Button>
-        <Button onClick={() => deleteImportFolder(folder.ID!)} className="flex mr-4 color-accent">
+        <Button onClick={() => deleteImportFolder(folder.ID!)} className="flex mr-4 color-highlight-1">
           <FontAwesomeIcon icon={faTrashAlt} />
         </Button>
         <div className="flex flex-col">
@@ -128,7 +128,7 @@ class ImportFolders extends React.Component<Props, State> {
         <Input id="Name" value={Name} label="Name" type="text" placeholder="Name" onChange={this.handleInputChange} className="my-1 w-full" />
         <div className="flex items-end">
           <Input id="Path" value={Path} label="Location" type="text" placeholder="Location" onChange={this.handleInputChange} className="my-1 w-full" />
-          <Button onClick={this.handleBrowse} className="color-accent ml-2 mb-2 text-lg">
+          <Button onClick={this.handleBrowse} className="color-highlight-1 ml-2 mb-2 text-lg">
             <FontAwesomeIcon icon={faFolderOpen} />
           </Button>
         </div>
@@ -145,15 +145,15 @@ class ImportFolders extends React.Component<Props, State> {
         </div>
         <span className="flex mt-6">
           {showEdit ? (
-            <Button onClick={() => this.handleEditFolder()} className="bg-color-accent py-2 px-3 rounded text-sm">
+            <Button onClick={() => this.handleEditFolder()} className="bg-color-highlight-1 py-2 px-3 rounded text-sm">
               Edit Import Folder
             </Button>
           ) : (
-            <Button onClick={() => this.handleAddFolder()} className="bg-color-accent py-2 px-3 rounded text-sm" disabled={Name === '' || Path === ''}>
+            <Button onClick={() => this.handleAddFolder()} className="bg-color-highlight-1 py-2 px-3 rounded text-sm" disabled={Name === '' || Path === ''}>
               Add Import Folder
             </Button>
           )}
-          <Button onClick={() => this.handleCancel()} className="bg-color-accent py-2 px-3 rounded text-sm ml-2">
+          <Button onClick={() => this.handleCancel()} className="bg-color-highlight-1 py-2 px-3 rounded text-sm ml-2">
             Cancel
           </Button>
         </span>
@@ -193,7 +193,7 @@ class ImportFolders extends React.Component<Props, State> {
             <div className="font-bold">Current Import Folders</div>
             <div className="flex flex-col">{items}</div>
             <div className="flex mt-2">
-              <Button onClick={() => this.handleAddNew()} className="bg-color-accent py-2 px-3 rounded">Add New</Button>
+              <Button onClick={() => this.handleAddNew()} className="bg-color-highlight-1 py-2 px-3 rounded">Add New</Button>
             </div>
             {showAddNew && this.renderForm()}
           </div>

@@ -38,19 +38,19 @@ class ImportFolders extends React.Component<Props> {
       <div key={folder.ID} className="flex flex-col mt-3 first:mt-0">
         <div className="flex justify-between">
           <span className="font-semibold">{folder.Name}</span>
-          <span className="color-accent">Online</span>
+          <span className="color-highlight-1">Online</span>
         </div>
         <div className="flex justify-between mt-1">
           <div className="flex mr-1">{folder.Path}</div>
-          <div className="flex color-accent items-start">
-            <Button className="color-accent mr-3" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
+          <div className="flex color-highlight-1 items-start">
+            <Button className="color-highlight-1 mr-3" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
               <span className="fa-layers fa-fw">
                 <FontAwesomeIcon icon={faServer} />
                 <FontAwesomeIcon icon={faSquare} transform="shrink-5 down-2 right-6" className="fa-layer-icon-bg" />
                 <FontAwesomeIcon icon={faSearch} transform="shrink-6 down-2.75 right-6" />
               </span>
             </Button>
-            <Button className="color-accent" onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
+            <Button className="color-highlight-1" onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
               <FontAwesomeIcon icon={faEdit} />
             </Button>
           </div>
@@ -69,7 +69,7 @@ class ImportFolders extends React.Component<Props> {
 
     return (
       <div>
-        <Button className="color-accent mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
+        <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
           <FontAwesomeIcon icon={faPlus} />
         </Button>
       </div>

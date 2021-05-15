@@ -6,7 +6,6 @@ import 'react-toastify/dist/ReactToastify.min.css';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Header from '../../components/Layout/Header';
 import Sidebar from '../../components/Layout/Sidebar';
 
 import DashboardPage from '../dashboard/DashboardPage';
@@ -47,11 +46,10 @@ class MainPage extends React.Component<Props> {
           <ImportFolderModal />
           <LanguagesModal />
           <ProfileModal />
-          <div className="flex h-screen sidebar-container">
+          <div className="flex h-screen">
             <Sidebar />
           </div>
           <div className="flex flex-col flex-grow h-full">
-            <Header />
             <div className="overflow-y-auto flex-grow">
               <Route exact path="/">
                 <Redirect to="/dashboard" />
@@ -70,8 +68,8 @@ class MainPage extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  toastPosition: state.webuiSettings.v3.toastPosition,
-  notifications: state.webuiSettings.v3.notifications,
+  toastPosition: state.webuiSettings.webui_v2.toastPosition,
+  notifications: state.webuiSettings.webui_v2.notifications,
 });
 
 const mapDispatch = {

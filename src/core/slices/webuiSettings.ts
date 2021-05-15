@@ -21,7 +21,7 @@ export type layoutType = {
 type updateChannelType = 'stable' | 'unstable';
 
 type State = {
-  v3: {
+  webui_v2: {
     actions: Array<string>,
     layout: {
       [key: string]: layoutType;
@@ -36,19 +36,21 @@ type State = {
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
     }, {
-      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
     }, {
-      i: 'commandQueue', x: 0, y: 6, w: 5, h: 10, minW: 5, minH: 5, moved: false, static: false,
+      i: 'queueProcessor', x: 0, y: 9, w: 6, h: 17, minW: 5, minH: 5, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 5, y: 6, w: 4, h: 10, moved: false, static: false,
+      i: 'importBreakdown', x: 6, y: 14, w: 6, h: 17, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 0, y: 16, w: 9, h: 11, moved: false, static: false,
+      i: 'shokoNews', x: 0, y: 26, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'actionItems', x: 9, y: 6, w: 3, h: 10, moved: false, static: false,
+      i: 'actionItems', x: 3, y: 26, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'filesBreakdown', x: 9, y: 16, w: 3, h: 11, moved: false, static: false,
+      i: 'actionItems2', x: 6, y: 26, w: 3, h: 14, moved: false, static: false,
+    }, {
+      i: 'collectionTypeBreakdown', x: 9, y: 26, w: 3, h: 14, moved: false, static: false,
     }],
   },
   importFolders: {
@@ -105,7 +107,7 @@ export const defaultLayout = {
 };
 
 const initialState = {
-  v3: {
+  webui_v2: {
     actions: [
       'remove-missing-files-mylist',
       'update-series-stats',
@@ -127,18 +129,19 @@ const webuiSettingsSlice = createSlice({
   initialState,
   reducers: {
     saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      sliceState.v3 = Object.assign({}, sliceState.v3, action.payload);
+      // eslint-disable-next-line no-param-reassign
+      sliceState = Object.assign({}, sliceState, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
-      sliceState.v3.actions.push(action.payload);
+      sliceState.webui_v2.actions.push(action.payload);
     },
     removeAction(sliceState, action: PayloadAction<string>) {
-      const tempSet = new Set(sliceState.v3.actions);
+      const tempSet = new Set(sliceState.webui_v2.actions);
       tempSet.delete(action.payload);
-      sliceState.v3.actions = Array.from(tempSet);
+      sliceState.webui_v2.actions = Array.from(tempSet);
     },
     saveLayout(sliceState, action) {
-      sliceState.v3.layout = Object.assign({}, sliceState.v3.layout, action.payload);
+      sliceState.webui_v2.layout = Object.assign({}, sliceState.webui_v2.layout, action.payload);
     },
   },
 });

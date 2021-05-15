@@ -117,7 +117,7 @@ class LoginPage extends React.Component<Props, State> {
                   <div className="text-4xl2">
                     <span className="text-5xl2">S</span>HOKO
                   </div>
-                  <div className="color-accent text-5xl -mt-10">
+                  <div className="color-highlight-1 text-5xl -mt-10">
                     <span className="text-6xl2">S</span>ERVER
                   </div>
                 </div>
@@ -128,12 +128,12 @@ class LoginPage extends React.Component<Props, State> {
               <div className="px-10 flex flex-grow flex-col justify-center overflow-y-auto">
                 {!initStatus?.State && (
                   <div className="flex justify-center items-center">
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-5xl" />
                   </div>
                 )}
                 {initStatus.State === 1 && (
                   <div className="flex flex-col justify-center items-center">
-                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
+                    <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-5xl" />
                     <div className="mt-8 text-2xl2">Server is starting. Please wait!</div>
                     <div className="mt-2 text-sm">
                       <span className="font-mulish font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
@@ -146,7 +146,7 @@ class LoginPage extends React.Component<Props, State> {
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
                     <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex" labelRight />
                     <div className="flex mt-4">
-                      <Button className="bg-color-accent py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Sign In</Button>
+                      <Button className="bg-color-highlight-1 py-2 px-5 rounded text-xs" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Sign In</Button>
                     </div>
                   </div>
                 )}
@@ -173,20 +173,20 @@ class LoginPage extends React.Component<Props, State> {
                       </div>
                     </div>
                     <div className="flex justify-center items-center flex-grow mt-8">
-                      <Button onClick={() => openWizard()} className="flex bg-color-accent px-4 py-2 font-semibold">CONTINUE</Button>
+                      <Button onClick={() => openWizard()} className="flex bg-color-highlight-1 px-4 py-2 font-semibold">CONTINUE</Button>
                     </div>
                   </div>
                 )}
               </div>
               <div className="help flex px-4 py-2 rounded-br-lg justify-between">
-                <div className="color-accent font-mulish font-bold text-xs flex items-center ml-6">
+                <div className="color-highlight-1 font-mulish font-bold text-xs flex items-center ml-6">
                   Need help logging in?
                 </div>
                 <div className="flex">
-                  <Button className="color-accent mr-5" onClick={() => this.handleHelpButton('discord')}>
+                  <Button className="color-highlight-1 mr-5" onClick={() => this.handleHelpButton('discord')}>
                     <FontAwesomeIcon icon={faDiscord} className="text-xl" />
                   </Button>
-                  <Button className="color-accent mr-6" onClick={() => this.handleHelpButton('docs')}>
+                  <Button className="color-highlight-1 mr-6" onClick={() => this.handleHelpButton('docs')}>
                     <FontAwesomeIcon icon={faQuestionCircle} className="text-xl" />
                   </Button>
                 </div>
@@ -207,7 +207,7 @@ const mapState = (state: RootState) => ({
   initStatus: state.firstrun.status,
   rememberUser: state.apiSession.rememberUser,
   apikey: state.apiSession.apikey,
-  toastPosition: state.webuiSettings.v3.toastPosition,
+  toastPosition: state.webuiSettings.webui_v2.toastPosition,
 });
 
 const mapDispatch = {

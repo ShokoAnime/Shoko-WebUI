@@ -8,7 +8,7 @@ import { GlobalAlertType } from '../core/types/api';
 
 class AlertContainer extends React.Component<Props> {
   renderAlert = (key: number, alert: GlobalAlertType) => (
-    <div className={cx(['flex px-4 py-3 rounded relative mt-2 w-1/2', alert.type === 'error' ? 'bg-color-danger' : 'bg-color-accent'])} role="alert" key={key}>
+    <div className={cx(['flex px-4 py-3 rounded relative mt-2 w-1/2', alert.type === 'error' ? 'bg-color-danger' : 'bg-color-highlight-1'])} role="alert" key={key}>
       {alert.text}
     </div>
   );

@@ -120,8 +120,8 @@ class ActionsPage extends React.Component<Props, State> {
           layouts={this.state}
           cols={cols}
           rowHeight={0}
-          containerPadding={[40, 40]}
-          margin={[40, 40]}
+          containerPadding={[30, 30]}
+          margin={[25, 25]}
           className="w-full"
           onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
@@ -133,7 +133,7 @@ class ActionsPage extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.v3.layout.actions,
+  layout: state.webuiSettings.webui_v2.layout.actions,
 });
 
 const mapDispatch = {

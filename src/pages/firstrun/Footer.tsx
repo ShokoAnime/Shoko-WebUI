@@ -36,19 +36,19 @@ class Footer extends React.Component<Props> {
       <React.Fragment>
         <div className="help flex px-10 py-4 rounded-br-lg justify-between">
           <div className="flex">
-            <Button className="color-accent mr-6" onClick={() => this.handleHelpButton('discord')}>
+            <Button className="color-highlight-1 mr-6" onClick={() => this.handleHelpButton('discord')}>
               <FontAwesomeIcon icon={faDiscord} className="text-3xl" />
             </Button>
-            <Button className="color-accent" onClick={() => this.handleHelpButton('docs')}>
+            <Button className="color-highlight-1" onClick={() => this.handleHelpButton('docs')}>
               <FontAwesomeIcon icon={faQuestionCircle} className="text-3xl" />
             </Button>
           </div>
           <div className="flex">
-            <Button onClick={() => this.handleBack()} className="bg-color-accent py-2 px-3 mr-4" disabled={prevDisabled}>Back</Button>
+            <Button onClick={() => this.handleBack()} className="bg-color-highlight-1 py-2 px-3 mr-4" disabled={prevDisabled}>Back</Button>
             {finish ? (
-              <Button onClick={() => finishSetup()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Finish</Button>
+              <Button onClick={() => finishSetup()} className="bg-color-highlight-1 py-2 px-3" disabled={nextDisabled}>Finish</Button>
             ) : (
-              <Button onClick={() => this.handleNext()} className="bg-color-accent py-2 px-3 flex items-center" disabled={nextDisabled || isFetching}>
+              <Button onClick={() => this.handleNext()} className="bg-color-highlight-1 py-2 px-3 flex items-center" disabled={nextDisabled || isFetching}>
                 {isFetching ? (<FontAwesomeIcon icon={faSpinner} spin className="mx-2" />) : 'Next'}
               </Button>
             )}

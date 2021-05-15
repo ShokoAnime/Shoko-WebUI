@@ -42,7 +42,7 @@ class TraktSettings extends React.Component<Props> {
       return (
         <div className="flex justify-between items-center my-1">
           Trakt Code
-          <Button onClick={() => getTraktCode()} className="bg-color-accent-secondary px-2 py-1 text-xs">
+          <Button onClick={() => getTraktCode()} className="bg-color-highlight-2 px-2 py-1 text-xs">
             {fetching ? 'Requesting...' : 'Get Code'}
           </Button>
         </div>
@@ -53,7 +53,7 @@ class TraktSettings extends React.Component<Props> {
         <div className="flex">
           Trakt Code:<span className="font-bold ml-1">{usercode}</span>
         </div>
-        <a href={url} rel="noopener noreferrer" target="_blank" className="color-accent-secondary hover:underline">Click here to activate</a>
+        <a href={url} rel="noopener noreferrer" target="_blank" className="color-highlight-2 hover:underline">Click here to activate</a>
       </div>
     );
   }

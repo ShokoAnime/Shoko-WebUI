@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretDown, faCaretUp, faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
+import cx from 'classnames';
 
 import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
@@ -16,7 +17,15 @@ type State = {
   expandedItems: any;
 };
 
-const epTypes = ['X', 'E', 'C', 'S', 'T', 'P', 'O'];
+const epTypes = {
+  Normal: 'E',
+  Special: 'S',
+  Parody: 'P',
+  ThemeSong: 'C',
+  Trailer: 'T',
+  Other: 'O',
+  Unknown: 'X',
+};
 
 class ImportedTab extends React.Component<Props, State> {
   constructor(props: Props) {
@@ -55,7 +64,7 @@ class ImportedTab extends React.Component<Props, State> {
       <div key={`${item.ID}-date`} className="flex mt-3 first:mt-0">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
         <Button
-          className="color-accent ml-2"
+          className="color-highlight-1 ml-2"
           onClick={() => this.handleExpand(item)}
           tooltip={expandedItems[item.ID] ? 'Hide Details' : 'Show Details'}
         >
@@ -69,9 +78,14 @@ class ImportedTab extends React.Component<Props, State> {
     );
   };
 
-  renderName = (idx: number, serverPath: string) => (
-    <span key={`${idx}-name`} className="my-1 break-words">{serverPath}</span>
-  );
+  renderName = (idx: number, serverPath: string) => {
+    const {
+      expandedItems,
+    } = this.state;
+    return (
+      <span key={`${idx}-name`} className={cx(['my-1 break-words', expandedItems[idx] && 'bg-color-4 px-3 py-1'])}>{serverPath}</span>
+    );
+  };
 
   renderDetails = (item: RecentFileType) => {
     const { expandedItems } = this.state;
@@ -85,30 +99,35 @@ class ImportedTab extends React.Component<Props, State> {
           expandedItems[item.ID] && (!fetched
             ? (
               <div className="flex px-4 flex-grow">
-                <FontAwesomeIcon icon={faCircleNotch} spin className="text-2xl color-accent-secondary" />
+                <FontAwesomeIcon icon={faCircleNotch} spin className="text-2xl color-highlight-2" />
               </div>
             )
             : (
-              <div className="flex flex-col px-4 flex-grow">
-                <div className="flex mb-2">
-                  <span className="w-1/6 font-semibold">Series</span>
+              <div className="flex flex-col flex-grow px-2">
+                <div className="flex py-1 px-4">
+                  <span className="w-1/6">Series</span>
                   {details.SeriesName ?? 'Unknown'}
                 </div>
-                <div className="flex mb-2">
-                  <span className="w-1/6 font-semibold">Episode</span>
-                  {`${(epTypes[details.EpisodeType ?? 0] ?? 'X') + details.EpisodeNumber}: ${details.EpisodeName ?? 'Unknown'}`}
+                <div className="flex py-1 px-4 bg-color-3">
+                  <span className="w-1/6">Episode</span>
+                  {`${(epTypes[details.EpisodeType ?? 'Unknown']) + details.EpisodeNumber}: ${details.EpisodeName ?? 'Unknown'}`}
                 </div>
-                <div className="flex mb-2">
-                  <span className="w-1/6 font-semibold">Size</span>
+                <div className="flex py-1 px-4">
+                  <span className="w-1/6">Group</span>
+                  {details.ReleaseGroup ?? 'Unknown'}
+                </div>
+                <div className="flex py-1 px-4 bg-color-3">
+                  <span className="w-1/6">Size</span>
                   {prettyBytes(item.Size, { binary: true })}
                 </div>
-                <div className="flex mb-2">
-                  <span className="w-1/6 font-semibold">Info</span>
+                <div className="flex py-1 px-4">
+                  <span className="w-1/6">Info</span>
                   {this.getFileInfo(
                     item.RoundedStandardResolution,
                     details.Source,
                     details.AudioLanguages,
                     details.SubtitleLanguages,
+                    details.VideoCodec,
                   )}
                 </div>
               </div>
@@ -124,8 +143,9 @@ class ImportedTab extends React.Component<Props, State> {
     source = 'Unknown',
     audioLanguages: Array<string> = [],
     subtitleLanguages: Array<string> = [],
+    videoCodec = 'Unknown',
   ) => {
-    let info = `${resolution.toUpperCase()} / ${source} / `;
+    let info = `${resolution} | ${videoCodec} | ${source.toUpperCase()} | `;
     if (audioLanguages.length > 2) info += 'Multi Audio';
     else if (audioLanguages.length === 2) info += 'Dual Audio';
     else if (subtitleLanguages[0] !== 'none') info += 'Subbed';

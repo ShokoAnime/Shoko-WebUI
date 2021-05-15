@@ -41,13 +41,13 @@ class AniDBAccount extends React.Component<Props, State> {
             and episode information that enhances your usage.
           </div>
           <div className="font-mulish mt-2 text-justify">
-            An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-accent-secondary hover:underline">Click Here</a> to create one.
+            An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-highlight-2 hover:underline">Click Here</a> to create one.
           </div>
           <div className="flex flex-col w-1/2 mt-3">
             <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
             <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
           </div>
-          <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
+          <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-highlight-1'])}>
             {status.text}
           </div>
         </div>

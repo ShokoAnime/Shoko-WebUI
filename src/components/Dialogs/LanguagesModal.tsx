@@ -128,16 +128,16 @@ class LanguagesModal extends React.Component<Props, State> {
     return (
       <ModalPanel show={show} className="languages-modal px-6 pt-3 pb-5" onRequestClose={() => this.handleClose()}>
         <div className="flex flex-col w-full">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">
+          <span className="flex font-semibold text-xl2 uppercase">
             Languages
           </span>
-          <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+          <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
           <div className="flex flex-col flex-grow overflow-y-auto my-2">
             {items}
           </div>
           <div className="flex justify-end mt-2">
             <Button onClick={this.handleClose} className="bg-color-danger px-5 py-2 mr-2">Discard</Button>
-            <Button onClick={this.handleSave} className="bg-color-accent px-5 py-2">Save</Button>
+            <Button onClick={this.handleSave} className="bg-color-highlight-1 px-5 py-2">Save</Button>
           </div>
         </div>
       </ModalPanel>

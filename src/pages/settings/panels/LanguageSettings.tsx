@@ -57,7 +57,7 @@ class LanguageSettings extends React.Component<Props> {
 
     return (
       <div className="flex">
-        <Button onClick={() => setLanguagesModalStatus(true)} tooltip="Add Language" className="color-accent">
+        <Button onClick={() => setLanguagesModalStatus(true)} tooltip="Add Language" className="color-highlight-1">
           <FontAwesomeIcon icon={faPlus} />
         </Button>
       </div>

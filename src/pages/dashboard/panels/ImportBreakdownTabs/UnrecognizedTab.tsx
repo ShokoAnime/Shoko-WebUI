@@ -20,7 +20,7 @@ class UnrecognizedTab extends React.Component<Props> {
         <div className="flex my-2 justify-between">
           <span className="flex break-words">{item.Locations[0].RelativePath}</span>
           {avdumpKeyExists && (
-            <Button onClick={() => runAvdump(item.ID)} className="font-exo font-bold text-sm bg-color-accent py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
+            <Button onClick={() => runAvdump(item.ID)} className="font-exo font-bold text-sm bg-color-highlight-1 py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
               Avdump
             </Button>
           )}

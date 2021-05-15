@@ -18,9 +18,9 @@ class FixedPanel extends React.Component<Props> {
     } = this.props;
 
     return (
-      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded shadow-sm fixed-panel h-full px-5 py-4`}>
+      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full px-5 py-4`}>
         <div className="flex justify-between items-center">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">{title}</span>
+          <span className="flex font-semibold text-xl">{title}</span>
           <div
             className="flex"
             onMouseDown={event => event.stopPropagation()}
@@ -29,7 +29,12 @@ class FixedPanel extends React.Component<Props> {
             {options}
           </div>
         </div>
-        <span className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+        <span
+          className="bg-color-highlight-2 my-2 h-1 flex-shrink-0"
+          style={{
+            width: `${title.length / 1.25}rem`,
+          }}
+        />
         <div
           className="overflow-y-auto flex flex-col h-full font-mulish"
           onMouseDown={event => event.stopPropagation()}
@@ -37,7 +42,7 @@ class FixedPanel extends React.Component<Props> {
         >
           {isFetching ? (
             <div className="flex justify-center items-center h-full">
-              <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
+              <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-highlight-2" />
             </div>
           ) : (
             children

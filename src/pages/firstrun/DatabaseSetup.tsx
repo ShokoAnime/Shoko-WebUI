@@ -93,13 +93,13 @@ class DatabaseSetup extends React.Component<Props, State> {
             {this.renderDBOptions()}
             {Type !== 'SQLite' && (
               <div className="flex my-4 items-center">
-                <Button onClick={() => this.handleTest(false)} className="bg-color-accent-secondary py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
+                <Button onClick={() => this.handleTest(false)} className="bg-color-highlight-2 py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
                 {isFetching ? (
                   <div>
                     <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
                   </div>
                 ) : (
-                  <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
+                  <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-highlight-1'])}>
                     {status.text}
                   </div>
                 )}
