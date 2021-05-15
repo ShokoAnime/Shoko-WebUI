@@ -121,7 +121,7 @@ class ImportedTab extends React.Component<Props, State> {
                   {prettyBytes(item.Size, { binary: true })}
                 </div>
                 <div className="flex py-1 px-4">
-                  <span className="w-1/6">Info</span>
+                  <span className="w-1/6">Video Info</span>
                   {this.getFileInfo(
                     item.RoundedStandardResolution,
                     details.Source,
