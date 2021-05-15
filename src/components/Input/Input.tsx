@@ -25,10 +25,10 @@ class Input extends React.Component<Props> {
     return (
       <React.Fragment>
         <div className={`${className ?? ''}`}>
-          <label className="font-bold mb-2" htmlFor={id}>
-            {label}
+          <label className="text-lg font-bold" htmlFor={id}>
+            {label && <div className="mb-4">{label}</div>}
             <input
-              className={cx(['appearance-none input-field w-full leading-tight text-sm font-mulish focus:shadow-none focus:outline-none', label && 'py-2', !disabled && 'border-b', center && 'text-center'])}
+              className={cx(['appearance-none bg-color-1 w-full focus:shadow-none focus:outline-none p-4 rounded-lg', center && 'text-center'])}
               id={id}
               type={type}
               placeholder={placeholder ?? ''}
