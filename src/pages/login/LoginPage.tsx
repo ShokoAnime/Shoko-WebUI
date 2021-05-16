@@ -5,9 +5,9 @@ import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faSpinner, faCircleNotch, faTimesCircle,
+  faSpinner, faCircleNotch, faTimesCircle, faGlobe,
 } from '@fortawesome/free-solid-svg-icons';
-// import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -167,9 +167,20 @@ class LoginPage extends React.Component<Props, State> {
                 </div>
               )}
             </div>
-            <div className="flex justify-self-end self-end items-center">
-              Server Version: {isFetching ? <FontAwesomeIcon icon={faCircleNotch} spin className="mx-2 color-highlight-2" /> : `${version} `}
-              | UI Version: {UI_VERSION}
+            <div className="flex justify-between w-full px-10">
+              <div className="flex items-center">
+                Server Version: {isFetching ? <FontAwesomeIcon icon={faCircleNotch} spin className="mx-2 color-highlight-2" /> : `${version} `}
+                | UI Version: {UI_VERSION}
+              </div>
+              <div className="flex items-center">
+                Get Support:
+                <Button className="color-highlight-1 ml-4 text-xl2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+                  <FontAwesomeIcon icon={faDiscord} />
+                </Button>
+                <Button className="color-highlight-1 ml-4 text-xl2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+                  <FontAwesomeIcon icon={faGlobe} />
+                </Button>
+              </div>
             </div>
           </div>
         </div>

@@ -113,6 +113,10 @@ body {
   background-color: $background-color-4;
 }
 
+button.color-highlight-1:hover {
+  color: $highlight-color-2 !important;
+}
+
 .color-danger {
   color: $danger-color;
 }
