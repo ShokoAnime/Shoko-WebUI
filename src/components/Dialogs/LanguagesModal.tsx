@@ -6,7 +6,7 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus as setLanguageModalStatus } from '../../core/slices/modals/languages';
 import ModalPanel from '../Panels/ModalPanel';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
 
 export const languageDescription = {

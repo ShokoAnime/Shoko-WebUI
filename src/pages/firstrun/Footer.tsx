@@ -7,7 +7,7 @@ import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 
 import { RootState } from '../../core/store';
 import { setActiveTab as setFirstRunTab } from '../../core/slices/firstrun';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 
 class Footer extends React.Component<Props> {
   handleHelpButton = (value: string) => {

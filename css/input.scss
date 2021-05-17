@@ -1,5 +1,25 @@
-.select-field {
-  background-color: inherit;
+.input-field {
+  border: 1px solid transparent;
+}
+
+.input-field:focus {
+  border: 1px solid $highlight-color-1;
+}
+
+.checkbox {
+  border: 1px solid transparent;
+}
+
+.checkbox-focused {
+  border: 1px solid $highlight-color-1;
+}
+
+.button {
+  border: 2px solid transparent;
+}
+
+.button:focus-visible {
+  border: 2px solid $text-color;
 }
 
 // For Chrome, Safari, Edge

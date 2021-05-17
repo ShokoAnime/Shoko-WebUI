@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../core/store';
 import type { SelectedNodeType } from '../TreeView/TreeNode';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import { setStatus } from '../../core/slices/modals/browseFolder';
 import TreeView from '../TreeView/TreeView';
 import ModalPanel from '../Panels/ModalPanel';

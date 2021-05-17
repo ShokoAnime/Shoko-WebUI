@@ -9,7 +9,7 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import quickActions from '../../../core/quick-actions';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 class QuickActions extends React.Component<Props> {
   renderRow = (key: string) => {

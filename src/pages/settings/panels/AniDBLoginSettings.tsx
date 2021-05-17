@@ -7,7 +7,7 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Input from '../../../components/Input/Input';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 type State = {
   Username: string;

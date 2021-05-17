@@ -12,7 +12,7 @@ import type { SettingsDatabaseType } from '../../core/types/api/settings';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Input/Select';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 
 type State = SettingsDatabaseType;
 

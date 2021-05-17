@@ -6,7 +6,7 @@ import { faFolderOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import Input from '../Input/Input';
 import Checkbox from '../Input/Checkbox';
 import Select from '../Input/Select';

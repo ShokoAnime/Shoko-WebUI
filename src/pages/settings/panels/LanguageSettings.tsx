@@ -10,7 +10,7 @@ import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import DnDList from '../../../components/DnDList/DnDList';
 import Checkbox from '../../../components/Input/Checkbox';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 import { setStatus } from '../../../core/slices/modals/languages';
 import { languageDescription } from '../../../components/Dialogs/LanguagesModal';
 

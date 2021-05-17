@@ -28,7 +28,7 @@ class Input extends React.Component<Props> {
           <label className="text-lg font-bold" htmlFor={id}>
             {label && <div className="mb-4">{label}</div>}
             <input
-              className={cx(['appearance-none bg-color-1 w-full focus:shadow-none focus:outline-none p-4 rounded-lg', center && 'text-center'])}
+              className={cx(['appearance-none bg-color-1 w-full focus:shadow-none focus:outline-none p-4 rounded-lg input-field transition duration-300 ease-in-out', center && 'text-center'])}
               id={id}
               type={type}
               placeholder={placeholder ?? ''}

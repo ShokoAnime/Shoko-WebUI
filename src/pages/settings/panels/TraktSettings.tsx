@@ -5,7 +5,7 @@ import moment from 'moment';
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 import Checkbox from '../../../components/Input/Checkbox';
 import Select from '../../../components/Input/Select';
 

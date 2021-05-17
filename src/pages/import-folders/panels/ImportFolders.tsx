@@ -10,7 +10,7 @@ import {
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
 import type { ImportFolderType } from '../../../core/types/api/import-folder';

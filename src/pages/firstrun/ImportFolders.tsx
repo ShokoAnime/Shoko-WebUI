@@ -7,7 +7,7 @@ import { faEdit, faFolderOpen, faTrashAlt } from '@fortawesome/free-solid-svg-ic
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 import Footer from './Footer';

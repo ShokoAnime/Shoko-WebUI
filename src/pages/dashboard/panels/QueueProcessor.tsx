@@ -9,7 +9,7 @@ import {
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 import type { QueueItemType } from '../../../core/types/api';
 
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };

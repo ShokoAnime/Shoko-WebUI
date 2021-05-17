@@ -3,7 +3,7 @@ import { connect, ConnectedProps } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 class PlexTab extends React.Component<Props> {
   renderPlexUrl() {

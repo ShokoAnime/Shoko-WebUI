@@ -5,7 +5,7 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 
 class StartServer extends React.Component<Props> {
   handleSave = () => {

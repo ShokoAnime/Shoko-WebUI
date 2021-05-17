@@ -6,7 +6,7 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Checkbox from '../../../components/Input/Checkbox';
 import Select from '../../../components/Input/Select';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 const updateFrequencyType = [
   [1, 'Never'],

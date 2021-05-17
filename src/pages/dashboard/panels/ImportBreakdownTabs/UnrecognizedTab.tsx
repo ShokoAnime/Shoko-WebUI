@@ -7,7 +7,7 @@ import { toast } from 'react-toastify';
 
 import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
-import Button from '../../../../components/Buttons/Button';
+import Button from '../../../../components/Input/Button';
 
 import type { RecentFileType } from '../../../../core/types/api/file';
 

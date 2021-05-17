@@ -24,15 +24,13 @@ class Button extends React.Component<Props> {
     } = this.props;
 
     return (
-      <React.Fragment>
-        <button type="button" title={tooltip} className={cx([`${className ?? ''} rounded focus:shadow-none focus:outline-none disabled:opacity-50 disabled:cursor-default`, loading && 'cursor-default'])} onClick={onClick} disabled={disabled}>
-          {
-            loading
-              ? <FontAwesomeIcon icon={faSpinner} spin />
-              : children
-          }
-        </button>
-      </React.Fragment>
+      <button type="button" title={tooltip} className={cx([`${className ?? ''} rounded-md focus:shadow-none focus:outline-none disabled:opacity-50 disabled:cursor-default button transition duration-300 ease-in-out`, loading && 'cursor-default'])} onClick={onClick} disabled={disabled}>
+        {
+          loading
+            ? <FontAwesomeIcon icon={faSpinner} spin />
+            : children
+        }
+      </button>
     );
   }
 }

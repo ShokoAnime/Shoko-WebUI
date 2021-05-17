@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { RootState } from '../../../core/store';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 import ImportedTab from './ImportBreakdownTabs/ImportedTab';
 import UnrecognizedTab from './ImportBreakdownTabs/UnrecognizedTab';
 

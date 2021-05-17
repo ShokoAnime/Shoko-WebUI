@@ -12,7 +12,7 @@ import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
 import Select from '../../../components/Input/Select';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 const UI_VERSION = uiVersion();
 

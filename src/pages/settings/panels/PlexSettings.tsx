@@ -4,7 +4,7 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
 import { setItem as setMiscItem } from '../../../core/slices/misc';
 

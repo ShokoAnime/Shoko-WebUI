@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 import AniDBTab from './CommunitySiteTabs/AniDBTab';
 import TvDBTab from './CommunitySiteTabs/TvDBTab';
 import MovieDBTab from './CommunitySiteTabs/MovieDBTab';

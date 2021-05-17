@@ -19,10 +19,10 @@ class Select extends React.Component<Props> {
     return (
       <React.Fragment>
         <div className={`${className ?? ''} w-auto relative`}>
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none border text-sm font-exo2 rounded pl-2 pr-5 focus:shadow-none focus:outline-none select-field">
+          <select id={id} value={value} onChange={onChange} className="w-full appearance-none text-lg font-exo2 rounded-lg py-4 pl-4 pr-7 focus:shadow-none focus:outline-none bg-color-1">
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 px-2">
+          <div className="pointer-events-none absolute inset-y-0 right-0 p-4">
             <FontAwesomeIcon icon={faCaretDown} />
           </div>
         </div>

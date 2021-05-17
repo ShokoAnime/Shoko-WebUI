@@ -5,7 +5,7 @@ import { faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import { setStatus as setProfileModalStatus } from '../../core/slices/modals/profile';
 import ModalPanel from '../Panels/ModalPanel';
 import Input from '../Input/Input';

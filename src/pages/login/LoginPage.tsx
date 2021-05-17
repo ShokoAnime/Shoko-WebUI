@@ -13,7 +13,7 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
 import { ApiLoginType, GlobalAlertType } from '../../core/types/api';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 
@@ -135,7 +135,7 @@ class LoginPage extends React.Component<Props, State> {
                   </div>
                   <div className="flex justify-between items-center mt-16">
                     <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex font-bold text-lg" labelRight />
-                    <Button className="bg-color-highlight-1 py-5 px-24 rounded-md text-lg" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Log In</Button>
+                    <Button className="bg-color-highlight-1 py-3 px-28 text-lg font-bold" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Log In</Button>
                   </div>
                 </React.Fragment>
               )}
