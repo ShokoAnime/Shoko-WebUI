@@ -4,8 +4,9 @@ import { connect, ConnectedProps } from 'react-redux';
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Checkbox from '../../../components/Input/Checkbox';
-import Input from '../../../components/Input/Input';
-import Select from '../../../components/Input/Select';
+import InputSmall from '../../../components/Input/InputSmall';
+import SelectSmall from '../../../components/Input/SelectSmall';
+import TransitionDiv from '../../../components/TransitionDiv';
 
 const updateFrequencyType = [
   [1, 'Never'],
@@ -68,46 +69,38 @@ class TvDBTab extends React.Component<Props> {
     });
 
     return (
-      <React.Fragment>
-        <div className="flex flex-col w-3/5">
-          <span className="font-bold">Download Options</span>
-          <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full" />
-          {AutoFanart && (
-            <div className="flex justify-between my-1">
-              Max Fanart
-              <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" />
-            </div>
-          )}
-          <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full" />
-          {AutoPosters && (
-            <div className="flex justify-between my-1">
-              Max Posters
-              <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" />
-            </div>
-          )}
-          <Checkbox label="Wide Banners" id="AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full" />
-          {AutoWideBanners && (
-            <div className="flex justify-between my-1">
-              Max Wide Banners
-              <Input id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-4" />
-            </div>
-          )}
-          <span className="font-bold mt-4">Preferences</span>
-          <Checkbox label="Auto Link" id="AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
-          <div className="flex justify-between my-1">
-            Language
-            <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
-              {languageOptions}
-            </Select>
+      <TransitionDiv className="flex flex-col w-3/5" enterFrom="opacity-0">
+        <div className="font-bold">Download Options</div>
+        <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full mt-2 mb-1 pr-3" />
+        {AutoFanart && (
+          <div className="flex justify-between items-center font-mulish">
+            Max Fanart
+            <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="my-1 w-10 text-center px-2" />
           </div>
-          <div className="flex justify-between my-1">
-            Automatically Update Stats
-            <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
-              {updateFrequencyOptions}
-            </Select>
+        )}
+        <Checkbox label="Posters" id="AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="w-full my-1 pr-3" />
+        {AutoPosters && (
+          <div className="flex justify-between items-center font-mulish">
+            Max Posters
+            <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="my-1 w-10 text-center px-2" />
           </div>
-        </div>
-      </React.Fragment>
+        )}
+        <Checkbox label="Wide Banners" id="AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="w-full my-1 pr-3" />
+        {AutoWideBanners && (
+          <div className="flex justify-between items-center font-mulish">
+            Max Wide Banners
+            <InputSmall id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="my-1 w-10 text-center px-2" />
+          </div>
+        )}
+        <span className="font-bold mt-4">Preferences</span>
+        <Checkbox label="Auto Link" id="AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full mt-2 mb-1 pr-3" />
+        <SelectSmall label="Language" id="Language" value={Language} className="my-1" onChange={this.handleInputChange}>
+          {languageOptions}
+        </SelectSmall>
+        <SelectSmall label="Automatically Update Stats" id="UpdateFrequency" value={UpdateFrequency} className="my-1" onChange={this.handleInputChange}>
+          {updateFrequencyOptions}
+        </SelectSmall>
+      </TransitionDiv>
     );
   }
 }

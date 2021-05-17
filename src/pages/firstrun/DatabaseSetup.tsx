@@ -1,18 +1,16 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
+import { unsetSaved as unsetFirstRunSaved, setDatabaseStatus } from '../../core/slices/firstrun';
 import { initialState as SettingsState } from '../../core/slices/serverSettings';
 import type { SettingsDatabaseType } from '../../core/types/api/settings';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Input/Select';
-import Button from '../../components/Input/Button';
+import TransitionDiv from '../../components/TransitionDiv';
 
 type State = SettingsDatabaseType;
 
@@ -20,25 +18,29 @@ class DatabaseSetup extends React.Component<Props, State> {
   state = SettingsState.Database;
 
   componentDidMount = () => {
-    const { Database } = this.props;
+    const { Database, resetStatus } = this.props;
     this.setState(Database);
+    resetStatus();
   };
 
   handleInputChange = (event: any) => {
+    const { saved, resetStatus, unsetSaved } = this.props;
     const { id, value } = event.target;
     this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
+    resetStatus();
+    if (saved) unsetSaved();
   };
 
-  handleTest = (changeTab: boolean) => {
+  handleTest = () => {
     const { saveSettings, testDatabase } = this.props;
     saveSettings({ context: 'Database', newSettings: this.state, skipValidation: true });
-    testDatabase(changeTab);
+    testDatabase();
   };
 
   renderSqliteOptions = () => {
     const { SQLite_DatabaseFile } = this.state;
     return (
-      <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={this.handleInputChange} className="py-2 mt-2 w-1/2" />
+      <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={this.handleInputChange} className="mt-6" />
     );
   };
 
@@ -47,11 +49,11 @@ class DatabaseSetup extends React.Component<Props, State> {
       Hostname, Schema, Username, Password,
     } = this.state;
     return (
-      <div className="flex flex-col w-1/2 mt-2">
-        <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="py-2" />
-        <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={this.handleInputChange} className="py-2" />
-        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
+      <div className="flex flex-col">
+        <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="mt-6" />
+        <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={this.handleInputChange} className="mt-6" />
+        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="mt-6" />
+        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="mt-6" />
       </div>
     );
   };
@@ -69,46 +71,38 @@ class DatabaseSetup extends React.Component<Props, State> {
   };
 
   render() {
-    const { SQLite_DatabaseFile, Type } = this.state;
-    const { isFetching, status, saved } = this.props;
+    const {
+      SQLite_DatabaseFile, Type,
+      Hostname, Schema, Username,
+    } = this.state;
+    const { isFetching, status } = this.props;
 
     return (
-      <React.Fragment>
-        <div className="flex flex-col flex-grow px-10 pt-10 overflow-y-auto">
-          <span className="font-bold text-lg">Setting Up Your Database</span>
-          <div className="font-mulish mt-5 text-justify">
-            Shoko uses SQLite for your database and will automatically create the database for you.
-            If you&apos;d like to select a different location for your database file, you can do
-            so by changing the directory below.
-          </div>
-          <div className="flex flex-col mt-4 overflow-y-auto flex-shrink">
-            <span className="font-bold my-2">Database Type</span>
-            <div className="flex">
-              <Select id="Type" value={Type} onChange={this.handleInputChange}>
-                <option value="SQLite">SQLite</option>
-                <option value="MySQL">MySQL</option>
-                <option value="SQLServer">SQLServer</option>
-              </Select>
-            </div>
-            {this.renderDBOptions()}
-            {Type !== 'SQLite' && (
-              <div className="flex my-4 items-center">
-                <Button onClick={() => this.handleTest(false)} className="bg-color-highlight-2 py-2 px-3 rounded mr-4" disabled={isFetching}>Test</Button>
-                {isFetching ? (
-                  <div>
-                    <FontAwesomeIcon icon={faSpinner} spin className="mr-2" />Testing...
-                  </div>
-                ) : (
-                  <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-highlight-1'])}>
-                    {status.text}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+      <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center" enterFrom="opacity-0">
+        <span className="font-bold text-lg">Setting Up Your Database</span>
+        <div className="font-mulish mt-5 text-justify">
+          Shoko uses SQLite for your database and will automatically create the database for you.
+          If you&apos;d like to select a different location for your database file, you can do
+          so by changing the directory below.
         </div>
-        <Footer prevTabKey="acknowledgement" nextDisabled={(Type !== 'SQLite' && !saved) || SQLite_DatabaseFile === ''} saveFunction={() => this.handleTest(true)} isFetching={isFetching} />
-      </React.Fragment>
+        <div className="flex flex-col my-8 overflow-y-auto flex-shrink">
+          <div className="font-bold mb-4 text-lg">Database Type</div>
+          <div className="flex">
+            <Select id="Type" value={Type} onChange={this.handleInputChange} className="w-full">
+              <option value="SQLite">SQLite</option>
+              <option value="MySQL">MySQL</option>
+              <option value="SQLServer">SQLServer</option>
+            </Select>
+          </div>
+          {this.renderDBOptions()}
+        </div>
+        <Footer
+          nextDisabled={(Type !== 'SQLite' && (Hostname === '' || Schema === '' || Username === '')) || SQLite_DatabaseFile === ''}
+          saveFunction={() => this.handleTest()}
+          isFetching={isFetching}
+          status={status}
+        />
+      </TransitionDiv>
     );
   }
 }
@@ -121,8 +115,10 @@ const mapState = (state: RootState) => ({
 });
 
 const mapDispatch = {
-  testDatabase: (payload: boolean) => ({ type: Events.FIRSTRUN_TEST_DATABASE, payload }),
+  testDatabase: () => ({ type: Events.FIRSTRUN_TEST_DATABASE }),
   saveSettings: (payload: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload }),
+  resetStatus: () => (setDatabaseStatus({ type: 'success', text: '' })),
+  unsetSaved: () => (unsetFirstRunSaved('db-setup')),
 };
 
 const connector = connect(mapState, mapDispatch);

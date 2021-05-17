@@ -76,12 +76,9 @@ class TraktTab extends React.Component<Props> {
               </div>
             )
         }
-        <div className="flex w-3/5 justify-between my-1">
-          Automatically Update Data
-          <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
-            {updateFrequencyOptions}
-          </Select>
-        </div>
+        <Select label="Automatically Update Data" id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
+          {updateFrequencyOptions}
+        </Select>
       </React.Fragment>
     );
   }

@@ -134,7 +134,7 @@ class LoginPage extends React.Component<Props, State> {
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="mt-12" />
                   </div>
                   <div className="flex justify-between items-center mt-16">
-                    <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="flex font-bold text-lg" labelRight />
+                    <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={this.handleInputChange} className="font-bold text-lg" labelRight />
                     <Button className="bg-color-highlight-1 py-3 px-28 text-lg font-bold" onClick={this.handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Log In</Button>
                   </div>
                 </React.Fragment>
@@ -194,7 +194,7 @@ const mapState = (state: RootState) => ({
   version: state.jmmVersion,
   isFetching: state.fetching.serverVersion,
   isFetchingLogin: state.fetching.login,
-  initStatus: state.firstrun.status,
+  initStatus: state.firstrun.serverStatus,
   rememberUser: state.apiSession.rememberUser,
   apikey: state.apiSession.apikey,
   toastPosition: state.webuiSettings.webui_v2.toastPosition,
@@ -207,8 +207,8 @@ const mapDispatch = {
   signIn: (payload: ApiLoginType & { rememberUser: boolean }) => (
     { type: Events.AUTH_LOGIN, payload }
   ),
-  skipLogin: () => (push({ pathname: '/main' })),
-  openWizard: () => (push({ pathname: '/firstrun' })),
+  skipLogin: () => (push({ pathname: '/' })),
+  openWizard: () => (push({ pathname: '/firstrun/acknowledgement' })),
 };
 
 const connector = connect(mapState, mapDispatch);

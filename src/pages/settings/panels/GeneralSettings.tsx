@@ -88,36 +88,27 @@ class GeneralSettings extends React.Component<Props> {
         </div>
         <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
         {notifications && (
-          <div className="flex justify-between my-1">
-            Notifications Position
-            <Select id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
-              <option value="bottom-right">Bottom</option>
-              <option value="top-right">Top</option>
-            </Select>
-          </div>
+          <Select label="Notifications Position" id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
+            <option value="bottom-right">Bottom</option>
+            <option value="top-right">Top</option>
+          </Select>
         )}
         <span className="font-extrabold mt-3">Other Options</span>
-        <div className="flex justify-between my-1">
-          Update Channel
-          <Select id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
-            <option value="stable">Stable</option>
-            <option value="unstable">Unstable</option>
-          </Select>
-        </div>
+        <Select label="Update Channel" id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
+          <option value="stable">Stable</option>
+          <option value="unstable">Unstable</option>
+        </Select>
         <span className="font-extrabold mt-3">Log Options</span>
         <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full my-1" />
         {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
         {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
         {Enabled && Delete && (
-          <div className="flex justify-between my-1">
-            Delete Interval
-            <Select id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
-              <option value="0">Never</option>
-              <option value="7">Daily</option>
-              <option value="30">Monthly</option>
-              <option value="90">Quarterly</option>
-            </Select>
-          </div>
+          <Select label="Delete Interval" id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
+            <option value="0">Never</option>
+            <option value="7">Daily</option>
+            <option value="30">Monthly</option>
+            <option value="90">Quarterly</option>
+          </Select>
         )}
       </FixedPanel>
     );

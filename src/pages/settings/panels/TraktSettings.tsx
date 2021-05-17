@@ -84,12 +84,9 @@ class TraktSettings extends React.Component<Props> {
             )
         )}
         {Enabled && TokenExpirationDate !== '' && (
-          <div className="flex justify-between my-1">
-            Automatically Update Data
-            <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
-              {updateFrequencyOptions}
-            </Select>
-          </div>
+          <Select label="Automatically Update Data" id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
+            {updateFrequencyOptions}
+          </Select>
         )}
       </FixedPanel>
     );

@@ -1,5 +1,5 @@
 .modal { // React-Modal
-  background-color: white;
+  background-color: $background-color-1;
 }
 
 .modal-overlay { // React-Modal Overlay
@@ -30,7 +30,7 @@
 }
 
 .profile-modal-image-alpha {
-  color: $secondary-panel-background-color;
+  color: $background-color-2;
   background-color: rgba($background-color-1, 0.6);
 }
 

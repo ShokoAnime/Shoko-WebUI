@@ -109,15 +109,12 @@ class ImportFolderModal extends React.Component<Props, State> {
               </div>
               <span className="flex font-bold mt-2">Type</span>
               <Checkbox label="Watch For New Files" id="WatchForNewFiles" isChecked={WatchForNewFiles} onChange={this.handleInputChange} />
-              <div className="flex item-center justify-between">
-                Drop Type
-                <Select id="DropFolderType" value={DropFolderType} onChange={this.handleInputChange}>
-                  <option value={0}>None</option>
-                  <option value={1}>Source</option>
-                  <option value={2}>Destination</option>
-                  <option value={3}>Both</option>
-                </Select>
-              </div>
+              <Select label="Drop Type" id="DropFolderType" value={DropFolderType} onChange={this.handleInputChange}>
+                <option value={0}>None</option>
+                <option value={1}>Source</option>
+                <option value={2}>Destination</option>
+                <option value={3}>Both</option>
+              </Select>
             </div>
             <div className="flex justify-end mt-2">
               {edit && (

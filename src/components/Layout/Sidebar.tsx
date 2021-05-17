@@ -5,7 +5,7 @@ import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle, faFileAlt,
-  faServer,
+  faServer, faSignOutAlt,
 } from '@fortawesome/free-solid-svg-icons';
 import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
@@ -43,7 +43,7 @@ class Sidebar extends React.Component<Props> {
   );
 
   render() {
-    const { items, username } = this.props;
+    const { items, username, logout } = this.props;
 
     return (
       <React.Fragment>
@@ -65,6 +65,9 @@ class Sidebar extends React.Component<Props> {
               {this.renderItem('actions', 'Actions', faListAlt)}
               {this.renderItem('logs', 'Log', faFileAlt)}
               {this.renderItem('settings', 'Settings', faSlidersH)}
+              <div key="logout" className="flex items-center sidebar-item mt-10" onClick={() => logout()}>
+                <FontAwesomeIcon icon={faSignOutAlt} className="text-xl2" title="Logout" />
+              </div>
             </div>
             <div className="flex flex-col">
               {this.renderLink('https://docs.shokoanime.com', 'Support', faQuestionCircle)}

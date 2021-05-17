@@ -118,16 +118,15 @@ button.color-highlight-1:hover {
 }
 
 .color-danger {
-  color: $danger-color;
+  color: $highlight-color-4;
 }
 
 .bg-color-danger {
-  background-color: $danger-color;
-  color: white;
+  background-color: $highlight-color-4;
 }
 
 .border-color-danger {
-  border-color: $danger-color;
+  border-color: $highlight-color-4;
 }
 
 .fa-layer-icon-bg {

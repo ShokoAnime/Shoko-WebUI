@@ -6,6 +6,7 @@ import Events from '../../core/events';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
 import Button from '../../components/Input/Button';
+import TransitionDiv from '../../components/TransitionDiv';
 
 class StartServer extends React.Component<Props> {
   handleSave = () => {
@@ -29,34 +30,32 @@ class StartServer extends React.Component<Props> {
     const { status } = this.props;
 
     return (
-      <React.Fragment>
-        <div className="flex flex-col flex-grow p-10">
-          <div className="font-bold text-lg">Start Server</div>
-          <div className="font-mulish mt-5 text-justify">
-            On this page you can try and start the server, startup progress will be reported below.
-            After the startup and database creation process is complete you will be able to setup
-            import folders.
+      <TransitionDiv className="flex flex-col flex-grow justify-center" enterFrom="opacity-0">
+        <div className="font-bold text-lg">Start Server</div>
+        <div className="font-mulish mt-5 text-justify">
+          On this page you can try and start the server, startup progress will be reported below.
+          After the startup and database creation process is complete you will be able to setup
+          import folders.
+        </div>
+        <div className="flex flex-col my-8">
+          <div className="flex">
+            <span className="font-bold mr-2">Status:</span>
+            {status.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.StartupMessage || <span className="font-semibold">Not Started!</span>)}
           </div>
-          <div className="flex flex-col flex-grow mt-4">
-            <div className="flex">
-              <span className="font-bold mr-2">Status:</span>
-              {status.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.StartupMessage || <span className="font-semibold">Not Started!</span>)}
-            </div>
-            <div className="flex h-full justify-center items-center">
-              {status.State === 4 && (
-                <Button onClick={() => this.handleSave()} className="bg-color-highlight-2 py-2 px-3 rounded">Start Server</Button>
-              )}
-            </div>
+          <div className="flex justify-center items-center mt-24">
+            {status.State === 4 && (
+              <Button onClick={() => this.handleSave()} className="bg-color-highlight-2 py-2 px-3 rounded">Start Server</Button>
+            )}
           </div>
         </div>
-        <Footer prevTabKey="community-sites" nextTabKey="import-folders" prevDisabled={status.State !== 4} nextDisabled={status.State !== 2} saveFunction={this.handleNext} />
-      </React.Fragment>
+        <Footer nextPage="import-folders" prevDisabled={status.State !== 4} nextDisabled={status.State !== 2} saveFunction={this.handleNext} />
+      </TransitionDiv>
     );
   }
 }
 
 const mapState = (state: RootState) => ({
-  status: state.firstrun.status,
+  status: state.firstrun.serverStatus,
   user: state.firstrun.user,
 });
 

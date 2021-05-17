@@ -22,6 +22,14 @@
   border: 2px solid $text-color;
 }
 
+.select-field {
+  border: 1px solid transparent;
+}
+
+.select-field:focus-visible {
+  border: 1px solid $highlight-color-1;
+}
+
 // For Chrome, Safari, Edge
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 

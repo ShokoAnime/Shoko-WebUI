@@ -3,7 +3,8 @@ import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
-import { Transition } from '@headlessui/react';
+
+import TransitionDiv from '../TransitionDiv';
 
 type Props = {
   id: string;
@@ -32,42 +33,40 @@ class Checkbox extends React.Component<Props, State> {
     const { focused } = this.state;
 
     return (
-      <label htmlFor={id} className={cx([`${className ?? ''} cursor-pointer checkbox flex`, focused ? 'checkbox-focused' : 'checkbox'])}>
-        <div className="flex items-center">
-          <input
-            id={id}
-            type="checkbox"
-            checked={isChecked}
-            onChange={onChange}
-            className="border-0 overflow-hidden p-0 absolute whitespace-nowrap w-0 h-0"
-            style={{
-              clip: 'rect(0 0 0 0)',
-              clipPath: 'inset(50%)',
-            }}
-            onKeyUp={() => this.setState({ focused: true })}
-            onBlur={() => this.setState({ focused: false })}
-          />
-          {!labelRight && (
-            <span>
-              {label}
-            </span>
-          )}
-          {isChecked && (
-            <Transition appear show enter="transition-opacity duration-300" enterFrom="opacity-50" enterTo="opacity-100" className="flex color-highlight-1">
-              <FontAwesomeIcon icon={faCheckCircle} />
-            </Transition>
-          )}
-          {!isChecked && (
-            <Transition appear show enter="transition-opacity duration-300" enterFrom="opacity-50" enterTo="opacity-100" className="flex color-highlight-1">
-              <FontAwesomeIcon icon={faCircle} />
-            </Transition>
-          )}
-          {labelRight && (
-            <span className="ml-2">
-              {label}
-            </span>
-          )}
-        </div>
+      <label htmlFor={id} className={cx([`${className ?? ''} cursor-pointer checkbox flex items-center justify-between font-mulish`, focused ? 'checkbox-focused' : 'checkbox'])}>
+        <input
+          id={id}
+          type="checkbox"
+          checked={isChecked}
+          onChange={onChange}
+          className="border-0 overflow-hidden p-0 absolute whitespace-nowrap w-0 h-0"
+          style={{
+            clip: 'rect(0 0 0 0)',
+            clipPath: 'inset(50%)',
+          }}
+          onKeyUp={() => this.setState({ focused: true })}
+          onBlur={() => this.setState({ focused: false })}
+        />
+        {!labelRight && (
+          <span className="flex items-center ">
+            {label}
+          </span>
+        )}
+        {isChecked && (
+          <TransitionDiv className="flex color-highlight-1">
+            <FontAwesomeIcon icon={faCheckCircle} />
+          </TransitionDiv>
+        )}
+        {!isChecked && (
+          <TransitionDiv className="flex color-highlight-1">
+            <FontAwesomeIcon icon={faCircle} />
+          </TransitionDiv>
+        )}
+        {labelRight && (
+          <span className="flex items-center ml-2">
+            {label}
+          </span>
+        )}
       </label>
     );
   }

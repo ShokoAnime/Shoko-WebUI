@@ -119,18 +119,12 @@ class TvDBSettings extends React.Component<Props, State> {
         )}
         <span className="font-extrabold mt-3">Preferences</span>
         <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="w-full" />
-        <div className="flex justify-between my-1">
-          Language
-          <Select id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
-            {languageOptions}
-          </Select>
-        </div>
-        <div className="flex justify-between my-1">
-          Automatically Update Stats
-          <Select id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
-            {updateFrequencyOptions}
-          </Select>
-        </div>
+        <Select label="Language" id="Language" value={Language} className="relative w-24" onChange={this.handleInputChange}>
+          {languageOptions}
+        </Select>
+        <Select label="Automatically Update Stats" id="UpdateFrequency" value={UpdateFrequency} className="relative w-32" onChange={this.handleInputChange}>
+          {updateFrequencyOptions}
+        </Select>
       </FixedPanel>
     );
   }

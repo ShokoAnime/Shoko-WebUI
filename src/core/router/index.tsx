@@ -21,8 +21,8 @@ const Router = ({
     <ConnectedRouter history={history}>
       <Switch>
         <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/firstrun" component={FirstRunPage} />
         <Route exact path="/error" component={ErrorPage} />
+        <Route path="/firstrun" component={FirstRunPage} />
         <AuthenticatedRoute exact path="/index.html" component={MainPage} />
         <AuthenticatedRoute path="/" component={MainPage} />
         <Route component={NoMatchPage} />
