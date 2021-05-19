@@ -59,7 +59,7 @@ class CommunitySites extends React.Component<Props, State> {
     const { setSaved } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center">
         <div className="font-bold text-lg">Community Sites</div>
         <div className="font-mulish mt-5 text-justify">
           Shoko supports multiple community sites that can be used to download additional

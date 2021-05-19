@@ -42,7 +42,7 @@ class AniDBTab extends React.Component<Props> {
     });
 
     return (
-      <TransitionDiv className="flex flex-col w-3/5" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col w-3/5">
         <div className="font-bold">Download Options</div>
         <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={this.handleInputChange} className="w-full mt-2 mb-1 pr-3" />
         <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={this.handleInputChange} className="w-full my-1 pr-3" />

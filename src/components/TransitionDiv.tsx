@@ -21,7 +21,7 @@ class TransitionDiv extends React.Component<Props> {
         appear
         show
         enter={enter ?? 'transition-opacity duration-300'}
-        enterFrom={enterFrom ?? 'opacity-50'}
+        enterFrom={enterFrom ?? 'opacity-0'}
         enterTo={enterTo ?? 'opacity-100'}
         className={className}
       >

@@ -78,7 +78,7 @@ class DatabaseSetup extends React.Component<Props, State> {
     const { isFetching, status } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center">
         <span className="font-bold text-lg">Setting Up Your Database</span>
         <div className="font-mulish mt-5 text-justify">
           Shoko uses SQLite for your database and will automatically create the database for you.

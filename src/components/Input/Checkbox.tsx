@@ -53,12 +53,12 @@ class Checkbox extends React.Component<Props, State> {
           </span>
         )}
         {isChecked && (
-          <TransitionDiv className="flex color-highlight-1">
+          <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
             <FontAwesomeIcon icon={faCheckCircle} />
           </TransitionDiv>
         )}
         {!isChecked && (
-          <TransitionDiv className="flex color-highlight-1">
+          <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
             <FontAwesomeIcon icon={faCircle} />
           </TransitionDiv>
         )}

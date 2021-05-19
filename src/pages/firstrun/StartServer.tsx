@@ -30,7 +30,7 @@ class StartServer extends React.Component<Props> {
     const { status } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow justify-center">
         <div className="font-bold text-lg">Start Server</div>
         <div className="font-mulish mt-5 text-justify">
           On this page you can try and start the server, startup progress will be reported below.

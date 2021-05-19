@@ -22,7 +22,7 @@ class MovieDBTab extends React.Component<Props> {
     } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col w-3/5" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col w-3/5">
         <div className="font-bold">Download Options</div>
         <Checkbox label="Fanart" id="AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="w-full mt-2 mb-1 pr-3" />
         {AutoFanart && (

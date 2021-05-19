@@ -17,7 +17,7 @@ class DataCollection extends React.Component<Props> {
   render() {
     const { analyticsOptOut } = this.props;
     return (
-      <TransitionDiv className="flex flex-col flex-grow justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow justify-center">
         <div className="font-bold text-lg">Data Collection</div>
         <div className="font-mulish mt-5 pr-2 text-justify">
           Shoko is open-source and is worked on by volunteers in our free time so in order to

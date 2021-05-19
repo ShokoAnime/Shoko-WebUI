@@ -18,7 +18,7 @@ class Acknowledgement extends React.Component<Props> {
     const { status } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow text-justify justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow text-justify justify-center">
         <div className="font-bold text-lg">Thanks For Installing Shoko Server!</div>
         <div className="font-mulish mt-6">
           We want to stress that Shoko is an anime cataloging program and not a stand-alone

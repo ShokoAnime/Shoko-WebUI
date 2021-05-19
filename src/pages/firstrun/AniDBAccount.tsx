@@ -37,7 +37,7 @@ class AniDBAccount extends React.Component<Props, State> {
     const { Username, Password } = this.state;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow justify-center">
         <div className="font-bold text-lg">Adding Your AniDB Account</div>
         <div className="font-mulish mt-5 text-justify">
           Shoko uses AniDB to compare your file hashes with its extensive database to quickly

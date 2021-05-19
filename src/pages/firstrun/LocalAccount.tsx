@@ -29,7 +29,7 @@ class LocalAccount extends React.Component<Props> {
     } = this.props;
 
     return (
-      <TransitionDiv className="flex flex-col flex-grow justify-center" enterFrom="opacity-0">
+      <TransitionDiv className="flex flex-col flex-grow justify-center">
         <div className="font-bold text-lg">Create Your Account</div>
         <div className="font-mulish mt-5 text-justify">
           In order to use Shoko you&apos;ll need to create an account. This local account will
