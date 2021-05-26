@@ -37,7 +37,7 @@ class Sidebar extends React.Component<Props> {
 
   renderLink = (url: string, text: string, icon) => (
     <Button className="flex items-center sidebar-item mt-8 first:mt-12" onClick={() => window.open(url, '_blank')}>
-        <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
+      <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
     </Button>
   );
 
