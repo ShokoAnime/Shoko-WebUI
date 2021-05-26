@@ -9,10 +9,10 @@ import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
 import Button from '../../../../components/Input/Button';
 
-import type { RecentFileType } from '../../../../core/types/api/file';
+import type { FileDetailedType } from '../../../../core/types/api/file';
 
 class UnrecognizedTab extends React.Component<Props> {
-  renderItem = (item: RecentFileType) => {
+  renderItem = (item: FileDetailedType) => {
     const { runAvdump, avdumpList, avdumpKeyExists } = this.props;
     return (
       <div key={item.ID} className="flex flex-col mt-3 first:mt-0">
@@ -43,7 +43,7 @@ class UnrecognizedTab extends React.Component<Props> {
     const { items } = this.props;
 
     const sortedItems = orderBy(items, ['ID'], ['desc']);
-    const files: Array<any> = [];
+    const files: Array<React.ReactNode> = [];
 
     forEach(sortedItems, (item) => {
       if (item?.Locations && item?.Locations?.length !== 0) {
@@ -61,7 +61,7 @@ class UnrecognizedTab extends React.Component<Props> {
 
 const mapState = (state: RootState) => ({
   avdumpList: state.mainpage.avdump,
-  items: state.mainpage.unrecognizedFiles as Array<RecentFileType>,
+  items: state.mainpage.unrecognizedFiles as Array<FileDetailedType>,
   avdumpKeyExists: !!state.localSettings.AniDb.AVDumpKey,
 });
 

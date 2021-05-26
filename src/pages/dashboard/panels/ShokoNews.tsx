@@ -15,7 +15,7 @@ class ShokoNews extends React.Component<Props> {
 
   render() {
     const { isFetching } = this.props;
-    const items: Array<any> = [];
+    const items: Array<React.ReactNode> = [];
 
     forEach(['Shoko Released', 'Shoko Released', 'Shoko Released', 'Shoko Released'], (action) => {
       items.push(this.renderRow(action));

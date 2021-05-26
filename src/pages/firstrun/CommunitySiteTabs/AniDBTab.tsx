@@ -35,7 +35,7 @@ class AniDBTab extends React.Component<Props> {
       File_UpdateFrequency,
     } = this.props;
 
-    const updateFrequencyOptions: Array<any> = [];
+    const updateFrequencyOptions: Array<React.ReactNode> = [];
 
     updateFrequencyType.forEach((item) => {
       updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);

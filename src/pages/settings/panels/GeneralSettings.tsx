@@ -3,7 +3,7 @@ import React from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faRedo, faDownload, faSpinner,
+  faRedo, faDownload, faCircleNotch,
 } from '@fortawesome/free-solid-svg-icons';
 
 import { uiVersion } from '../../../core/util';
@@ -11,7 +11,7 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
-import Select from '../../../components/Input/Select';
+import SelectSmall from '../../../components/Input/SelectSmall';
 import Button from '../../../components/Input/Button';
 
 const UI_VERSION = uiVersion();
@@ -46,10 +46,11 @@ class GeneralSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="General" isFetching={isFetching}>
-        <span className="font-extrabold">Information</span>
-        <div className="flex justify-between my-1">
+
+        <div className="font-bold">Information</div>
+        <div className="flex justify-between mt-1">
           Shoko Version
-          <div className="flex uppercase items-center">
+          <div className="flex">
             {version}
             { /* eslint-disable-next-line max-len */ }
             {/* <Button onClick={() => ({})} className="color-highlight-1 text-xs ml-2" tooltip="Check for updates">
@@ -57,16 +58,16 @@ class GeneralSettings extends React.Component<Props> {
             </Button> // NEED API FOR SERVER VERSION CHECK */}
           </div>
         </div>
-        <div className="flex justify-between my-1">
+        <div className="flex justify-between mt-1">
           <div className="flex items-center">
             WebUI Version
             {webuiUpdateAvailable && (
-              <Button onClick={() => updateWebUI()} className="flex text-sm ml-2 items-center color-highlight-1" tooltip="Download Latest Version">
+              <Button onClick={() => updateWebUI()} className="flex text-xs ml-2 color-highlight-1 items-end" tooltip="Download Latest Version">
                 Update Available
                 <FontAwesomeIcon
-                  icon={downloadingUpdates ? faSpinner : faDownload}
+                  icon={downloadingUpdates ? faCircleNotch : faDownload}
                   spin={downloadingUpdates}
-                  className="text-xs ml-1"
+                  className="ml-1"
                 />
               </Button>
             )}
@@ -75,41 +76,45 @@ class GeneralSettings extends React.Component<Props> {
             {UI_VERSION}
             <Button onClick={() => checkWebUIUpdate()} className="flex color-highlight-1 text-xs ml-2" tooltip="Check for updates">
               <FontAwesomeIcon
-                icon={checkingUpdates ? faSpinner : faRedo}
+                icon={checkingUpdates ? faCircleNotch : faRedo}
                 spin={checkingUpdates}
               />
             </Button>
           </div>
         </div>
-        <span className="font-extrabold mt-3">Style Options</span>
-        <div className="flex justify-between my-1">
+
+        <div className="font-bold mt-3">Style Options</div>
+        <div className="flex justify-between mt-1">
           Theme
           <span className="color-highlight-1 font-bold">Shoko Modern</span>
         </div>
-        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="w-full" />
+        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="mt-1" />
         {notifications && (
-          <Select label="Notifications Position" id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange}>
+          <SelectSmall label="Notifications Position" id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange} className="mt-1">
             <option value="bottom-right">Bottom</option>
             <option value="top-right">Top</option>
-          </Select>
+          </SelectSmall>
         )}
-        <span className="font-extrabold mt-3">Other Options</span>
-        <Select label="Update Channel" id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange}>
+
+        <div className="font-bold mt-3">Other Options</div>
+        <SelectSmall label="Update Channel" id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange} className="mt-1">
           <option value="stable">Stable</option>
           <option value="unstable">Unstable</option>
-        </Select>
-        <span className="font-extrabold mt-3">Log Options</span>
-        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-full my-1" />
-        {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="w-full" />)}
-        {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="w-full" />)}
+        </SelectSmall>
+
+        <div className="font-bold mt-3">Log Options</div>
+        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-1" />
+        {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="mt-1" />)}
+        {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="mt-1" />)}
         {Enabled && Delete && (
-          <Select label="Delete Interval" id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange}>
+          <SelectSmall label="Delete Interval" id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange} className="mt-1">
             <option value="0">Never</option>
             <option value="7">Daily</option>
             <option value="30">Monthly</option>
             <option value="90">Quarterly</option>
-          </Select>
+          </SelectSmall>
         )}
+
       </FixedPanel>
     );
   }

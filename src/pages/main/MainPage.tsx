@@ -46,10 +46,10 @@ class MainPage extends React.Component<Props> {
           <ImportFolderModal />
           <LanguagesModal />
           <ProfileModal />
-          <div className="flex h-screen">
+          <div className="flex">
             <Sidebar />
           </div>
-          <div className="flex flex-col flex-grow h-full">
+          <div className="flex flex-col flex-grow">
             <div className="overflow-y-auto flex-grow">
               <Route exact path="/">
                 <Redirect to="/dashboard" />

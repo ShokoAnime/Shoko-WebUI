@@ -11,7 +11,8 @@ import { RootState } from '../../../../core/store';
 import Events from '../../../../core/events';
 import Button from '../../../../components/Input/Button';
 
-import type { RecentFileType } from '../../../../core/types/api/file';
+import type { FileDetailedType } from '../../../../core/types/api/file';
+import TransitionDiv from '../../../../components/TransitionDiv';
 
 type State = {
   expandedItems: any;
@@ -42,7 +43,7 @@ class ImportedTab extends React.Component<Props, State> {
     };
   }
 
-  handleExpand = (item: RecentFileType) => {
+  handleExpand = (item: FileDetailedType) => {
     const { expandedItems } = this.state;
     const { getDetails } = this.props;
 
@@ -56,7 +57,7 @@ class ImportedTab extends React.Component<Props, State> {
     });
   };
 
-  renderDate = (item: RecentFileType) => {
+  renderDate = (item: FileDetailedType) => {
     const {
       expandedItems,
     } = this.state;
@@ -83,11 +84,11 @@ class ImportedTab extends React.Component<Props, State> {
       expandedItems,
     } = this.state;
     return (
-      <span key={`${idx}-name`} className={cx(['my-1 break-words', expandedItems[idx] && 'bg-color-4 px-3 py-1'])}>{serverPath}</span>
+      <span key={`${idx}-name`} className={cx(['my-1 break-words mr-2', expandedItems[idx] && 'bg-color-4 px-3 py-1'])}>{serverPath}</span>
     );
   };
 
-  renderDetails = (item: RecentFileType) => {
+  renderDetails = (item: FileDetailedType) => {
     const { expandedItems } = this.state;
     const { recentFileDetails } = this.props;
     const fileDetails = recentFileDetails[item.ID];
@@ -103,7 +104,7 @@ class ImportedTab extends React.Component<Props, State> {
               </div>
             )
             : (
-              <div className="flex flex-col flex-grow px-2">
+              <TransitionDiv className="flex flex-col flex-grow px-2" enter="duration-1000">
                 <div className="flex py-1 px-4">
                   <span className="w-1/6">Series</span>
                   {details.SeriesName ?? 'Unknown'}
@@ -130,7 +131,7 @@ class ImportedTab extends React.Component<Props, State> {
                     details.VideoCodec,
                   )}
                 </div>
-              </div>
+              </TransitionDiv>
             )
           )
         }
@@ -158,7 +159,7 @@ class ImportedTab extends React.Component<Props, State> {
     const { items } = this.props;
 
     const sortedItems = orderBy(items, ['ID'], ['desc']);
-    const files: Array<any> = [];
+    const files: Array<React.ReactNode> = [];
 
     forEach(sortedItems, (item) => {
       if (item?.SeriesIDs && item?.Locations && item?.Locations?.length !== 0) {
@@ -177,7 +178,7 @@ class ImportedTab extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  items: state.mainpage.recentFiles as Array<RecentFileType>,
+  items: state.mainpage.recentFiles as Array<FileDetailedType>,
   recentFileDetails: state.mainpage.recentFileDetails,
 });
 

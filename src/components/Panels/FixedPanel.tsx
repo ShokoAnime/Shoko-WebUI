@@ -18,8 +18,8 @@ class FixedPanel extends React.Component<Props> {
     } = this.props;
 
     return (
-      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full px-5 py-4`}>
-        <div className="flex justify-between items-center">
+      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full pl-5 pr-3 py-4`}>
+        <div className="flex justify-between items-center mr-2">
           <span className="flex font-semibold text-xl">{title}</span>
           <div
             className="flex"
@@ -45,7 +45,9 @@ class FixedPanel extends React.Component<Props> {
               <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-highlight-2" />
             </div>
           ) : (
-            children
+            <div className="flex flex-col mr-2">
+              {children}
+            </div>
           )}
         </div>
       </div>

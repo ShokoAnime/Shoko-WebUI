@@ -103,24 +103,27 @@ class RelationSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="Relation" isFetching={isFetching}>
-        <span className="font-extrabold">Relation Options</span>
-        <Checkbox label="Auto Group Series" id="AutoGroupSeries" isChecked={AutoGroupSeries} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Determine Main Series Using Relation Weighing" id="AutoGroupSeriesUseScoreAlgorithm" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={this.handleInputChange} className="w-full" />
-        <span className="font-extrabold mt-3">Exclude following relations</span>
-        <Checkbox label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Prequel" id="prequel" isChecked={prequel} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Sequel" id="sequel" isChecked={sequel} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="OVA" id="ova" isChecked={ova} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Movie" id="movie" isChecked={movie} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Same Setting" id="sameSetting" isChecked={sameSetting} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Alternative Setting" id="altSetting" isChecked={altSetting} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Alternative Version" id="altVersion" isChecked={altVersion} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Parent Story" id="parentStory" isChecked={parentStory} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Side Story" id="sideStory" isChecked={sideStory} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Full Story" id="fullStory" isChecked={fullStory} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Summary" id="summary" isChecked={summary} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Character" id="character" isChecked={character} onChange={this.handleExclusionChange} className="w-full" />
-        <Checkbox label="Other" id="other" isChecked={other} onChange={this.handleExclusionChange} className="w-full" />
+
+        <div className="font-bold">Relation Options</div>
+        <Checkbox label="Auto Group Series" id="AutoGroupSeries" isChecked={AutoGroupSeries} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Determine Main Series Using Relation Weighing" id="AutoGroupSeriesUseScoreAlgorithm" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={this.handleInputChange} className="mt-1" />
+
+        <div className="font-bold mt-3">Exclude following relations</div>
+        <Checkbox label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Prequel" id="prequel" isChecked={prequel} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Sequel" id="sequel" isChecked={sequel} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="OVA" id="ova" isChecked={ova} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Movie" id="movie" isChecked={movie} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Same Setting" id="sameSetting" isChecked={sameSetting} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Alternative Setting" id="altSetting" isChecked={altSetting} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Alternative Version" id="altVersion" isChecked={altVersion} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Parent Story" id="parentStory" isChecked={parentStory} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Side Story" id="sideStory" isChecked={sideStory} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Full Story" id="fullStory" isChecked={fullStory} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Summary" id="summary" isChecked={summary} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Character" id="character" isChecked={character} onChange={this.handleExclusionChange} className="mt-1" />
+        <Checkbox label="Other" id="other" isChecked={other} onChange={this.handleExclusionChange} className="mt-1" />
+
       </FixedPanel>
     );
   }

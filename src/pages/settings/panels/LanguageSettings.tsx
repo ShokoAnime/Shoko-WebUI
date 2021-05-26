@@ -44,7 +44,7 @@ class LanguageSettings extends React.Component<Props> {
   };
 
   renderItem = (language: string) => (
-    <div className="flex justify-between items-center my-1">
+    <div className="flex justify-between items-center mt-1">
       {languageDescription[language]}
       <Button onClick={() => this.removeLanguage(language)} tooltip="Remove" className="color-danger">
         <FontAwesomeIcon icon={faTrash} className="align-middle text-sm" />
@@ -78,9 +78,12 @@ class LanguageSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="Language" options={this.renderOptions()} isFetching={isFetching}>
-        <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={this.handleInputChange} className="w-full mt-0 mb-1" />
-        <span className="font-extrabold mt-3">Priority (Drag to Reorder)</span>
+
+        <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={this.handleInputChange} />
+
+        <div className="font-bold mt-3">Priority (Drag to Reorder)</div>
         <DnDList onDragEnd={this.onDragEnd}>{items}</DnDList>
+
       </FixedPanel>
     );
   }

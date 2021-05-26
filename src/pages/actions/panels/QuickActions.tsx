@@ -34,7 +34,7 @@ class QuickActions extends React.Component<Props> {
 
   render() {
     const { title, actions } = this.props;
-    const items: Array<any> = [];
+    const items: Array<React.ReactNode> = [];
 
     forEach(actions, (action) => {
       items.push(this.renderRow(action));

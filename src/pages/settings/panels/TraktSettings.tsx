@@ -7,7 +7,7 @@ import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Input/Button';
 import Checkbox from '../../../components/Input/Checkbox';
-import Select from '../../../components/Input/Select';
+import SelectSmall from '../../../components/Input/SelectSmall';
 
 import { setItem as setMiscItem } from '../../../core/slices/misc';
 
@@ -40,16 +40,16 @@ class TraktSettings extends React.Component<Props> {
     const { fetching, getTraktCode } = this.props;
     if (usercode === '') {
       return (
-        <div className="flex justify-between items-center my-1">
+        <div className="flex justify-between items-center mt-1">
           Trakt Code
-          <Button onClick={() => getTraktCode()} className="bg-color-highlight-2 px-2 py-1 text-xs">
+          <Button onClick={() => getTraktCode()} className="bg-color-highlight-1 px-2 py-1 text-xs">
             {fetching ? 'Requesting...' : 'Get Code'}
           </Button>
         </div>
       );
     }
     return (
-      <div className="flex justify-between my-1 items-center">
+      <div className="flex justify-between mt-1 items-center">
         <div className="flex">
           Trakt Code:<span className="font-bold ml-1">{usercode}</span>
         </div>
@@ -64,7 +64,7 @@ class TraktSettings extends React.Component<Props> {
       isFetching,
     } = this.props;
 
-    const updateFrequencyOptions: Array<any> = [];
+    const updateFrequencyOptions: Array<React.ReactNode> = [];
 
     updateFrequencyType.forEach((item) => {
       updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
@@ -72,21 +72,21 @@ class TraktSettings extends React.Component<Props> {
 
     return (
       <FixedPanel title="Trakt" isFetching={isFetching}>
-        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-0 mb-1" />
+        <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={Enabled} onChange={this.handleInputChange} />
         {Enabled && (
           TokenExpirationDate === ''
             ? this.renderTraktCode()
             : (
-              <div className="flex justify-between my-1">
+              <div className="flex justify-between mt-1">
                 Token valid until:
                 <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
               </div>
             )
         )}
         {Enabled && TokenExpirationDate !== '' && (
-          <Select label="Automatically Update Data" id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
+          <SelectSmall label="Automatically Update Data" id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
             {updateFrequencyOptions}
-          </Select>
+          </SelectSmall>
         )}
       </FixedPanel>
     );

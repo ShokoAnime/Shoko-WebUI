@@ -79,7 +79,7 @@ class ImportFolders extends React.Component<Props> {
   render() {
     const { importFolders, hasFetched } = this.props;
 
-    const folders: Array<any> = [];
+    const folders: Array<React.ReactNode> = [];
 
     forEach(importFolders, (folder: ImportFolderType) => {
       folders.push(this.renderFolder(folder));

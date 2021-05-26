@@ -6,8 +6,8 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
-import Input from '../../../components/Input/Input';
-import Select from '../../../components/Input/Select';
+import InputSmall from '../../../components/Input/InputSmall';
+import SelectSmall from '../../../components/Input/SelectSmall';
 
 const updateFrequencyType = [
   [1, 'Never'],
@@ -54,7 +54,7 @@ class AniDBSettings extends React.Component<Props, State> {
     } = this.props;
     const { MaxRelationDepth } = this.state;
 
-    const updateFrequencyOptions: Array<any> = [];
+    const updateFrequencyOptions: Array<React.ReactNode> = [];
 
     updateFrequencyType.forEach((item) => {
       updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
@@ -62,53 +62,57 @@ class AniDBSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB" isFetching={isFetching}>
-        <span className="font-extrabold">Download Options</span>
-        <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={this.handleInputChange} className="w-full" />
+
+        <div className="font-bold">Download Options</div>
+        <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={this.handleInputChange} className="mt-1" />
         {DownloadRelatedAnime && (
-          <div className="flex justify-between my-1">
+          <div className="flex justify-between mt-1">
             Related Depth
-            <Input id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={this.handleInputChange} className="w-4" center />
+            <InputSmall id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={this.handleInputChange} className="w-10 text-center px-2" />
           </div>
         )}
-        <span className="font-extrabold mt-3">Mylist Options</span>
-        <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={this.handleInputChange} className="w-full" />
-        <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={this.handleInputChange} className="w-full" />
-        <Select label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={this.handleInputChange}>
+
+        <div className="font-bold mt-3">Mylist Options</div>
+        <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={this.handleInputChange} className="mt-1" />
+        <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={this.handleInputChange} className="mt-1" />
+        <SelectSmall label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={this.handleInputChange} className="mt-1">
           <option value={0}>Unknown</option>
           <option value={1}>HDD</option>
           <option value={2}>Disk</option>
           <option value={3}>Deleted</option>
           <option value={4}>Remote</option>
-        </Select>
-        <Select label="Delete Action" id="MyList_DeleteType" value={MyList_DeleteType} onChange={this.handleInputChange}>
+        </SelectSmall>
+        <SelectSmall label="Delete Action" id="MyList_DeleteType" value={MyList_DeleteType} onChange={this.handleInputChange} className="mt-1">
           <option value={0}>Delete File (AniDB)</option>
           <option value={1}>Delete File (Local)</option>
           <option value={2}>Mark Deleted</option>
           <option value={3}>Mark External (CD/DVD)</option>
           <option value={4}>Mark Unknown</option>
           <option value={5}>DVD/BD</option>
-        </Select>
-        <span className="font-extrabold mt-3">Update Options</span>
-        <Select label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={this.handleInputChange}>
+        </SelectSmall>
+
+        <div className="font-bold mt-3">Update Options</div>
+        <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
           {updateFrequencyOptions}
-        </Select>
-        <Select label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={this.handleInputChange}>
+        </SelectSmall>
+        <SelectSmall label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
           {updateFrequencyOptions}
-        </Select>
-        <Select label="Sync Mylist" id="MyList_UpdateFrequency" value={MyList_UpdateFrequency} onChange={this.handleInputChange}>
+        </SelectSmall>
+        <SelectSmall label="Sync Mylist" id="MyList_UpdateFrequency" value={MyList_UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
           {updateFrequencyOptions}
-        </Select>
-        <Select label="Get Mylist Stats" id="MyListStats_UpdateFrequency" value={MyListStats_UpdateFrequency} onChange={this.handleInputChange}>
+        </SelectSmall>
+        <SelectSmall label="Get Mylist Stats" id="MyListStats_UpdateFrequency" value={MyListStats_UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
           {updateFrequencyOptions}
-        </Select>
-        <Select label="Files With Missing Info" id="File_UpdateFrequency" value={File_UpdateFrequency} onChange={this.handleInputChange}>
+        </SelectSmall>
+        <SelectSmall label="Files With Missing Info" id="File_UpdateFrequency" value={File_UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
           {updateFrequencyOptions}
-        </Select>
+        </SelectSmall>
+
       </FixedPanel>
     );
   }

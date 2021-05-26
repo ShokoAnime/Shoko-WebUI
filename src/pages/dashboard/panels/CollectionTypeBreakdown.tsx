@@ -39,7 +39,7 @@ class CollectionTypeBreakdown extends React.Component<Props> {
 
     seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
 
-    const items: Array<any> = [];
+    const items: Array<React.ReactNode> = [];
 
     forEach(seriesSummaryArray, (item) => {
       let countPercentage = 0;

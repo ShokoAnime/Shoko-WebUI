@@ -12,6 +12,7 @@ import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
+import Button from '../Input/Button';
 
 class Sidebar extends React.Component<Props> {
   componentDidMount() {
@@ -28,18 +29,16 @@ class Sidebar extends React.Component<Props> {
     const { pathname, changePage } = this.props;
 
     return (
-      <div key={key} className={cx(['flex items-center sidebar-item mt-10 first:mt-16', pathname === `/${key}` && 'color-highlight-1'])} onClick={() => changePage(key)}>
+      <Button key={key} className={cx(['flex items-center sidebar-item mt-8 first:mt-12', pathname === `/${key}` && 'color-highlight-1'])} onClick={() => changePage(key)}>
         <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
-      </div>
+      </Button>
     );
   };
 
   renderLink = (url: string, text: string, icon) => (
-    <a href={url} target="_blank" rel="noreferrer">
-      <div key={url} className="flex items-center sidebar-item mt-10">
+    <Button className="flex items-center sidebar-item mt-8 first:mt-12" onClick={() => window.open(url, '_blank')}>
         <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
-      </div>
-    </a>
+    </Button>
   );
 
   render() {
@@ -47,7 +46,7 @@ class Sidebar extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <div className="flex flex-col flex-grow items-center p-4 h-screen bg-color-1">
+        <div className="flex flex-col flex-grow items-center p-4 h-screen bg-color-1 overflow-y-auto">
           <div className="flex flex-col">
             <img src="logo.png" alt="logo" className="w-12" />
             <div className="flex cursor-pointer items-center justify-center user-icon w-12 h-12 text-xl rounded-full mt-12" onClick={() => this.handleShowProfile()}>

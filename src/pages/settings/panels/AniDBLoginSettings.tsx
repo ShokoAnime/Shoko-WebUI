@@ -6,7 +6,7 @@ import { faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Input from '../../../components/Input/Input';
+import InputSmall from '../../../components/Input/InputSmall';
 import Button from '../../../components/Input/Button';
 
 type State = {
@@ -62,6 +62,13 @@ class AniDBLoginSettings extends React.Component<Props, State> {
     );
   };
 
+  renderInput = (key: string, value: string | number, type: string) => (
+    <div className="flex justify-between mt-1 first:mt-0" key={key}>
+      {key}
+      <InputSmall id={key} value={value} type={type} onChange={this.handleInputChange} className="w-32 px-2 py-0.5" />
+    </div>
+  );
+
   render() {
     const { isFetching } = this.props;
     const {
@@ -71,26 +78,11 @@ class AniDBLoginSettings extends React.Component<Props, State> {
 
     return (
       <FixedPanel title="AniDB Login" options={this.renderOptions()} isFetching={isFetching}>
-        <div className="flex justify-between mb-1">
-          Username
-          <Input id="Username" value={Username} type="text" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          Password
-          <Input id="Password" value={Password} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          Port
-          <Input id="ClientPort" value={ClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          AvDump Key
-          <Input id="AVDumpKey" value={AVDumpKey} type="password" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
-        <div className="flex justify-between my-1">
-          AvDump Port
-          <Input id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={this.handleInputChange} className="w-32 mr-1" />
-        </div>
+        {this.renderInput('Username', Username, 'text')}
+        {this.renderInput('Password', Password, 'password')}
+        {this.renderInput('ClientPort', ClientPort, 'number')}
+        {this.renderInput('AVDumpKey', AVDumpKey, 'password')}
+        {this.renderInput('AVDumpClientPort', AVDumpClientPort, 'number')}
       </FixedPanel>
     );
   }

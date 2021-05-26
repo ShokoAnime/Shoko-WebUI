@@ -83,25 +83,25 @@ export const defaultLayout = {
   },
   settings: {
     lg: [{
-      i: 'general', x: 0, y: 0, w: 4, h: 15, minW: 3, minH: 5, moved: false, static: false,
+      i: 'general', x: 0, y: 0, w: 4, h: 22, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'anidb-login', x: 0, y: 15, w: 4, h: 8, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb-login', x: 0, y: 22, w: 4, h: 11, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'relation', x: 0, y: 23, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
+      i: 'relation', x: 0, y: 33, w: 4, h: 15, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'anidb', x: 4, y: 0, w: 4, h: 21, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 28, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'import', x: 4, y: 21, w: 4, h: 7, minW: 3, minH: 3, moved: false, static: false,
+      i: 'import', x: 4, y: 28, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'plex', x: 4, y: 28, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
+      i: 'plex', x: 4, y: 38, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'tvdb', x: 8, y: 0, w: 4, h: 12, minW: 3, minH: 5, moved: false, static: false,
+      i: 'tvdb', x: 8, y: 0, w: 4, h: 17, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'moviedb', x: 8, y: 12, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
+      i: 'moviedb', x: 8, y: 17, w: 4, h: 10, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'language', x: 8, y: 19, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
+      i: 'language', x: 8, y: 27, w: 4, h: 11, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'trakt', x: 8, y: 28, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
+      i: 'trakt', x: 8, y: 38, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
     }],
   },
 };

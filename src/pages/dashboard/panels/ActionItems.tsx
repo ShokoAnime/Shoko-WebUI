@@ -27,7 +27,7 @@ class ActionItems extends React.Component<Props> {
 
   render() {
     const { pinnedActions, isFetching } = this.props;
-    const items: Array<any> = [];
+    const items: Array<React.ReactNode> = [];
 
     forEach(pinnedActions, (action) => {
       items.push(this.renderRow(action));

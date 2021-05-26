@@ -108,7 +108,7 @@ class ActionsPage extends React.Component<Props, State> {
       lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
     };
 
-    const panels: Array<any> = [];
+    const panels: Array<React.ReactNode> = [];
 
     forEach(actions, (action, key) => {
       panels.push(this.renderPanel(action, key));

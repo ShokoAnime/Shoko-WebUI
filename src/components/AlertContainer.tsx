@@ -15,7 +15,7 @@ class AlertContainer extends React.Component<Props> {
 
   render() {
     const { globalAlert } = this.props;
-    const alerts: Array<any> = [];
+    const alerts: Array<React.ReactNode> = [];
     let key = 0;
 
     forEach(globalAlert, (alert) => {

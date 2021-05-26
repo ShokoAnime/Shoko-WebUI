@@ -26,10 +26,10 @@ class SelectSmall extends React.Component<Props> {
           </div>
         )}
         <div className="w-auto relative">
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none font-exo2 rounded-md py-1 pl-2 pr-5 focus:shadow-none focus:outline-none bg-color-1 text-sm select-field transition duration-300 ease-in-out">
+          <select id={id} value={value} onChange={onChange} className="w-full appearance-none font-exo2 rounded-md py-0.5 pl-2 pr-5 focus:shadow-none focus:outline-none bg-color-2 text-sm select-field transition duration-300 ease-in-out">
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 px-2 py-1">
+          <div className="pointer-events-none absolute inset-y-0 right-0 px-2 py-0.5">
             <FontAwesomeIcon icon={faCaretDown} />
           </div>
         </div>

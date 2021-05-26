@@ -64,7 +64,7 @@ class TreeNode extends React.Component<Props, State> {
     const { expanded } = this.state;
     const selected = nodeId === selectedNode.id;
 
-    const children: Array<any> = [];
+    const children: Array<React.ReactNode> = [];
     if (expanded) {
       forEach(items, (node: ApiNodeType) => {
         children.push(<ConnectedTreeNode

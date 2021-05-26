@@ -12,7 +12,7 @@ import { faDiscord } from '@fortawesome/free-brands-svg-icons';
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { uiVersion } from '../../core/util';
-import { ApiLoginType, GlobalAlertType } from '../../core/types/api';
+import { ApiLoginType } from '../../core/types/api';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
@@ -110,16 +110,16 @@ class LoginPage extends React.Component<Props, State> {
         />
         <div className="flex h-screen w-screen">
           <div className="flex flex-grow login-image" />
-          <div className="flex flex-col p-5 mt-16 items-center" style={{ width: '41rem' }}>
+          <div className="flex flex-col p-5 mt-16 items-center justify-between" style={{ width: '41rem' }}>
             <img src="logo.png" className="w-32" alt="logo" />
-            <div className="flex flex-col flex-grow mt-32 w-full px-10">
+            <div className="flex flex-col flex-grow w-full px-10 justify-center">
               {!initStatus?.State && (
-                <div className="flex justify-center items-center mt-32">
+                <div className="flex justify-center items-center">
                   <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-6xl2" />
                 </div>
               )}
               {initStatus.State === 1 && (
-                <div className="flex flex-col justify-center items-center mt-24">
+                <div className="flex flex-col justify-center items-center">
                   <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-6xl2" />
                   <div className="mt-8 text-3xl">Server is starting. Please wait!</div>
                   <div className="mt-2 text-lg">
@@ -190,7 +190,7 @@ class LoginPage extends React.Component<Props, State> {
 }
 
 const mapState = (state: RootState) => ({
-  globalAlert: state.globalAlert as Array<GlobalAlertType>,
+  globalAlert: state.globalAlert,
   version: state.jmmVersion,
   isFetching: state.fetching.serverVersion,
   isFetchingLogin: state.fetching.login,

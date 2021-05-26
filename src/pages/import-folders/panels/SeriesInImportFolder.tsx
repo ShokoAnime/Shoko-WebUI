@@ -58,7 +58,7 @@ class SeriesInImportFolders extends React.Component<Props> {
     const { importFolders, getSeries } = this.props;
     const { selectedFolder } = this.state;
 
-    const folders: Array<any> = [];
+    const folders: Array<React.ReactNode> = [];
 
     forEach(importFolders, (folder: ImportFolderType) => {
       folders.push(<option value={folder.ID}>{folder.Path}</option>);
@@ -79,7 +79,7 @@ class SeriesInImportFolders extends React.Component<Props> {
   render() {
     const { seriesInFolder, isFetching } = this.props;
 
-    const seriesItems: Array<any> = [];
+    const seriesItems: Array<React.ReactNode> = [];
 
     forEach(seriesInFolder, (series, idx) => {
       seriesItems.push(this.renderItem(series, idx + 1));

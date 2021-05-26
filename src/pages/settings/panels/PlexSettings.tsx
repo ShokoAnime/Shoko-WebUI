@@ -35,7 +35,7 @@ class PlexSettings extends React.Component<Props> {
       return (
         <div className="flex justify-between flex-grow items-center">
           Plex Login:
-          <Button onClick={() => getPlexUrl()} className="bg-color-highlight-2 px-2 py-1 text-xs">
+          <Button onClick={() => getPlexUrl()} className="bg-color-highlight-1 px-2 py-1 text-xs">
             {fetching ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>

@@ -79,7 +79,7 @@ class QueueProcessor extends React.Component<Props> {
 
   render() {
     const { items, hasFetched } = this.props;
-    const commands: Array<any> = [];
+    const commands: Array<React.ReactNode> = [];
 
     if (items) {
       commands.push(this.renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));

@@ -21,7 +21,7 @@ class InputSmall extends React.Component<Props> {
 
     return (
       <input
-        className={`${className} appearance-none bg-color-1 focus:shadow-none focus:outline-none rounded-md text-sm input-field transition duration-300 ease-in-out`}
+        className={`${className} appearance-none bg-color-2 focus:shadow-none focus:outline-none rounded-md text-sm input-field transition duration-300 ease-in-out`}
         id={id}
         type={type}
         placeholder={placeholder ?? ''}

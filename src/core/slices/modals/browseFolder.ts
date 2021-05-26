@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { FolderType } from '../../types/api/folder';
+
 const browseFolderSlice = createSlice({
   name: 'browseFolder',
   initialState: {
     status: false,
     id: 0,
-    items: [] as Array<any>,
+    items: [] as Array<Array<FolderType>>,
     selectedNode: {
       id: 0,
       Path: '',
@@ -18,7 +20,10 @@ const browseFolderSlice = createSlice({
     setId(sliceState, action: PayloadAction<number>) {
       sliceState.id = action.payload;
     },
-    setItems(sliceState, action: PayloadAction<any>) {
+    setItems(
+      sliceState,
+      action: PayloadAction<{ key: number; nodes: Array<FolderType>}>,
+    ) {
       const { key, nodes } = action.payload;
       sliceState.items[key] = nodes;
     },

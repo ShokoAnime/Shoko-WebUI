@@ -58,8 +58,8 @@ class TvDBTab extends React.Component<Props> {
       UpdateFrequency, Language,
     } = this.props;
 
-    const updateFrequencyOptions: Array<any> = [];
-    const languageOptions: Array<any> = [];
+    const updateFrequencyOptions: Array<React.ReactNode> = [];
+    const languageOptions: Array<React.ReactNode> = [];
 
     updateFrequencyType.forEach((item) => {
       updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
