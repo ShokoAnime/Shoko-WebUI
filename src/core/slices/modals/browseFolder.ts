@@ -22,7 +22,7 @@ const browseFolderSlice = createSlice({
     },
     setItems(
       sliceState,
-      action: PayloadAction<{ key: number; nodes: Array<FolderType>}>,
+      action: PayloadAction<{ key: number; nodes: Array<FolderType> }>,
     ) {
       const { key, nodes } = action.payload;
       sliceState.items[key] = nodes;

@@ -39,7 +39,7 @@ class ErrorBoundary extends React.Component<Props, State> {
     document.title = 'Error';
   }
 
-  componentDidCatch(error: {}, info: {componentStack?: {};}) {
+  componentDidCatch(error: {}, info: { componentStack?: {}; }) {
     // Display fallback UI
     this.setState({ hasError: true, error, info });
   }
