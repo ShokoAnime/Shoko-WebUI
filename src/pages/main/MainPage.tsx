@@ -17,7 +17,6 @@ import LogsPage from '../logs/LogsPage';
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
-import CollectionPage from '../collection/CollectionPage';
 
 function MainPage() {
   const dispatch = useDispatch();
