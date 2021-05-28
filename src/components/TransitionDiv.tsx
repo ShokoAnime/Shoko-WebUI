@@ -9,26 +9,23 @@ type Props = {
   enterTo?: string;
 };
 
-class TransitionDiv extends React.Component<Props> {
-  render() {
-    const {
-      children, className, enter,
-      enterFrom, enterTo,
-    } = this.props;
+function TransitionDiv(props: Props) {
+  const {
+    enter, enterFrom, enterTo, className, children,
+  } = props;
 
-    return (
-      <Transition
-        appear
-        show
-        enter={enter ?? 'transition-opacity duration-300'}
-        enterFrom={enterFrom ?? 'opacity-0'}
-        enterTo={enterTo ?? 'opacity-100'}
-        className={className}
-      >
-        {children}
-      </Transition>
-    );
-  }
+  return (
+    <Transition
+      appear
+      show
+      enter={enter ?? 'transition-opacity duration-300'}
+      enterFrom={enterFrom ?? 'opacity-0'}
+      enterTo={enterTo ?? 'opacity-100'}
+      className={className}
+    >
+      {children}
+    </Transition>
+  );
 }
 
 export default TransitionDiv;

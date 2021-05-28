@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
 
@@ -9,97 +9,63 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 import InputSmall from '../../../components/Input/InputSmall';
 import Button from '../../../components/Input/Button';
 
-type State = {
-  Username: string;
-  Password: string;
-  ClientPort: number;
-  AVDumpKey: string;
-  AVDumpClientPort: number;
-};
+function AniDBLoginSettings() {
+  const dispatch = useDispatch();
 
-class AniDBLoginSettings extends React.Component<Props, State> {
-  state = {
-    Username: '',
-    Password: '',
-    ClientPort: 4556,
-    AVDumpKey: '',
-    AVDumpClientPort: 4557,
-  };
+  const aniDBSettings = useSelector((state: RootState) => state.localSettings.AniDb);
+  const isFetching = useSelector((state: RootState) => state.fetching.settings);
+  const isTesting = useSelector((state: RootState) => state.fetching.aniDBTest);
 
-  componentDidMount = () => {
-    const {
-      Username, Password, ClientPort,
-      AVDumpKey, AVDumpClientPort,
-    } = this.props;
-    this.setState({
-      Username,
-      Password,
-      ClientPort,
-      AVDumpKey,
-      AVDumpClientPort,
-    });
-  };
+  const [Username, setUsername] = useState('');
+  const [Password, setPassword] = useState('');
+  const [ClientPort, setClientPort] = useState(4556);
+  const [AVDumpKey, setAVDumpKey] = useState('');
+  const [AVDumpClientPort, setAVDumpClientPort] = useState(4557);
 
-  handleInputChange = (event: any) => {
-    const { id } = event.target;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
-  };
+  useEffect(() => {
+    setUsername(aniDBSettings.Username);
+    setPassword(aniDBSettings.Password);
+    setClientPort(aniDBSettings.ClientPort);
+    setAVDumpKey(aniDBSettings.AVDumpKey);
+    setAVDumpClientPort(aniDBSettings.AVDumpClientPort);
+  }, []);
 
-  testAndSave = () => {
-    const { testAnidb } = this.props;
-    testAnidb(this.state);
-  };
+  const testAndSave = (payload = {
+    Username, Password, ClientPort, AVDumpKey, AVDumpClientPort,
+  }) => dispatch({ type: Events.SETTINGS_ANIDB_TEST, payload });
 
-  renderOptions = () => {
-    const { isTesting } = this.props;
-    return (
-      <div className="flex">
-        <Button onClick={() => this.testAndSave()} tooltip="Test and Save" className="color-highlight-1">
-          <FontAwesomeIcon icon={isTesting ? faSpinner : faSave} spin={isTesting} />
-        </Button>
-      </div>
-    );
-  };
-
-  renderInput = (key: string, value: string | number, type: string) => (
-    <div className="flex justify-between mt-1 first:mt-0" key={key}>
-      {key}
-      <InputSmall id={key} value={value} type={type} onChange={this.handleInputChange} className="w-32 px-2 py-0.5" />
+  const renderOptions = () => (
+    <div className="flex">
+      <Button onClick={() => testAndSave()} tooltip="Test and Save" className="color-highlight-1">
+        <FontAwesomeIcon icon={isTesting ? faSpinner : faSave} spin={isTesting} />
+      </Button>
     </div>
   );
 
-  render() {
-    const { isFetching } = this.props;
-    const {
-      Username, Password, ClientPort,
-      AVDumpKey, AVDumpClientPort,
-    } = this.state;
-
-    return (
-      <FixedPanel title="AniDB Login" options={this.renderOptions()} isFetching={isFetching}>
-        {this.renderInput('Username', Username, 'text')}
-        {this.renderInput('Password', Password, 'password')}
-        {this.renderInput('ClientPort', ClientPort, 'number')}
-        {this.renderInput('AVDumpKey', AVDumpKey, 'password')}
-        {this.renderInput('AVDumpClientPort', AVDumpClientPort, 'number')}
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title="AniDB Login" options={renderOptions()} isFetching={isFetching}>
+      <div className="flex justify-between mt-1">
+        Username
+        <InputSmall id="Username" value={Username} type="text" onChange={e => setUsername(e.target.value)} className="w-32 px-2 py-0.5" />
+      </div>
+      <div className="flex justify-between mt-1">
+        Password
+        <InputSmall id="Password" value={Password} type="password" onChange={e => setPassword(e.target.value)} className="w-32 px-2 py-0.5" />
+      </div>
+      <div className="flex justify-between mt-1">
+        Port
+        <InputSmall id="ClientPort" value={ClientPort} type="number" onChange={e => setClientPort(e.target.value)} className="w-32 px-2 py-0.5" />
+      </div>
+      <div className="flex justify-between mt-1">
+        AvDump Key
+        <InputSmall id="AVDumpKey" value={AVDumpKey} type="password" onChange={e => setAVDumpKey(e.target.value)} className="w-32 px-2 py-0.5" />
+      </div>
+      <div className="flex justify-between mt-1">
+        AvDump Port
+        <InputSmall id="AVDumpClientPort" value={AVDumpClientPort} type="number" onChange={e => setAVDumpClientPort(e.target.value)} className="w-32 px-2 py-0.5" />
+      </div>
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  ...(state.localSettings.AniDb),
-  isTesting: state.fetching.aniDBTest,
-  isFetching: state.fetching.settings,
-});
-
-const mapDispatch = {
-  testAnidb: (payload: State) => ({ type: Events.SETTINGS_ANIDB_TEST, payload }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(AniDBLoginSettings);
+export default AniDBLoginSettings;

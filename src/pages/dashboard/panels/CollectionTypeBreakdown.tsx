@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
 import { RootState } from '../../../core/store';
@@ -12,59 +12,49 @@ const colors = {
   Other: '#DA3FFF',
 };
 
-class CollectionTypeBreakdown extends React.Component<Props> {
-  renderName = (item: string, count: number, countPercentage: number) => (
+function CollectionTypeBreakdown() {
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.seriesSummary);
+  const seriesSummary = useSelector((state: RootState) => state.mainpage.seriesSummary);
+
+  const renderName = (item: string, count: number, countPercentage: number) => (
     <div key={`${item}-name`} className="flex mt-3 first:mt-0">
       <span className="flex-grow">{item} - {count}</span>
       {countPercentage.toFixed(2)}%
     </div>
   );
 
-  renderBar = (item: string, countPercentage: number) => (
+  const renderBar = (item: string, countPercentage: number) => (
     <div key={`${item}-bar`} className="flex bg-white rounded-lg mt-2">
       <div className="rounded-lg h-4" style={{ width: `${countPercentage}%`, backgroundColor: colors[item] }} />
     </div>
   );
 
-  render() {
-    const { seriesSummary, hasFetched } = this.props;
+  let total = 0;
+  const seriesSummaryArray: Array<any> = [];
 
-    let total = 0;
-    const seriesSummaryArray: Array<any> = [];
+  forEach(seriesSummary, (item, key) => {
+    total += (item ?? 0);
+    seriesSummaryArray.push([key, item]);
+  });
 
-    forEach(seriesSummary, (item, key) => {
-      total += (item ?? 0);
-      seriesSummaryArray.push([key, item]);
-    });
+  seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
 
-    seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
+  const items: Array<React.ReactNode> = [];
 
-    const items: Array<React.ReactNode> = [];
+  forEach(seriesSummaryArray, (item) => {
+    let countPercentage = 0;
+    if (total) {
+      countPercentage = (item[1] / total) * 100;
+    }
+    items.push(renderName(item[0], item[1], countPercentage));
+    items.push(renderBar(item[0], countPercentage));
+  });
 
-    forEach(seriesSummaryArray, (item) => {
-      let countPercentage = 0;
-      if (total) {
-        countPercentage = (item[1] / total) * 100;
-      }
-      items.push(this.renderName(item[0], item[1], countPercentage));
-      items.push(this.renderBar(item[0], countPercentage));
-    });
-
-    return (
-      <FixedPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
-        {items}
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
+      {items}
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  seriesSummary: state.mainpage.seriesSummary,
-  hasFetched: state.mainpage.fetched.seriesSummary,
-});
-
-const connector = connect(mapState);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(CollectionTypeBreakdown);
+export default CollectionTypeBreakdown;

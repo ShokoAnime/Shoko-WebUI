@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faRedo, faDownload, faCircleNotch,
@@ -16,33 +15,36 @@ import Button from '../../../components/Input/Button';
 
 const UI_VERSION = uiVersion();
 
-class GeneralSettings extends React.Component<Props> {
-  componentDidMount = () => {
-    const { serverVersion } = this.props;
-    serverVersion();
-  };
+function GeneralSettings() {
+  const dispatch = useDispatch();
 
-  handleWebUIInputChange = (event: any) => {
-    const { saveWebUISettings } = this.props;
+  const checkingUpdates = useSelector((state: RootState) => state.fetching.checkingUpdates);
+  const downloadingUpdates = useSelector((state: RootState) => state.fetching.downloadUpdates);
+  const isFetching = useSelector((state: RootState) => state.fetching.settings);
+  const logRotatorSettings = useSelector((state: RootState) => state.localSettings.LogRotator);
+  const version = useSelector((state: RootState) => state.jmmVersion);
+  const webuiSettings = useSelector((state: RootState) => state.webuiSettings.webui_v2);
+  const webuiUpdateAvailable = useSelector((state: RootState) => state.misc.webuiUpdateAvailable);
+
+  useEffect(() => {
+    dispatch(({ type: Events.SERVER_VERSION }));
+  }, []);
+
+  const checkWebUIUpdate = () => dispatch({ type: Events.WEBUI_CHECK_UPDATES });
+
+  const updateWebUI = () => dispatch(({ type: Events.WEBUI_UPDATE }));
+
+  const handleWebUISettingChange = (event: any) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveWebUISettings({ [id]: value });
+    dispatch({ type: Events.SETTINGS_SAVE_WEBUI, payload: { [id]: value } });
   };
 
-  handleInputChange = (event: any) => {
-    const { saveSettings } = this.props;
-    const { id } = event.target;
-    const propId = id.replace('LogRotation_', '');
+  const handleLogRotatorSettingChange = (event: any) => {
+    const propId = event.target.id.replace('LogRotation_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveSettings({ context: 'LogRotator', newSettings: { [propId]: value } });
+    dispatch({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'LogRotator', newSettings: { [propId]: value } } });
   };
-
-  render() {
-    const {
-      notifications, Enabled, Zip, Delete, Delete_Days, version, updateChannel,
-      webuiUpdateAvailable, checkWebUIUpdate, updateWebUI, downloadingUpdates, toastPosition,
-      checkingUpdates, isFetching,
-    } = this.props;
 
     return (
       <FixedPanel title="General" isFetching={isFetching}>
@@ -88,26 +90,26 @@ class GeneralSettings extends React.Component<Props> {
           Theme
           <span className="color-highlight-1 font-bold">Shoko Modern</span>
         </div>
-        <Checkbox label="Global Notifications" id="notifications" isChecked={notifications} onChange={this.handleWebUIInputChange} className="mt-1" />
-        {notifications && (
-          <SelectSmall label="Notifications Position" id="toastPosition" value={toastPosition} onChange={this.handleWebUIInputChange} className="mt-1">
+      <Checkbox label="Global Notifications" id="notifications" isChecked={webuiSettings.notifications} onChange={handleWebUISettingChange} className="mt-1" />
+      {webuiSettings.notifications && (
+        <SelectSmall label="Notifications Position" id="toastPosition" value={webuiSettings.toastPosition} onChange={handleWebUISettingChange} className="mt-1">
             <option value="bottom-right">Bottom</option>
             <option value="top-right">Top</option>
           </SelectSmall>
         )}
 
         <div className="font-bold mt-3">Other Options</div>
-        <SelectSmall label="Update Channel" id="updateChannel" value={updateChannel} onChange={this.handleWebUIInputChange} className="mt-1">
+      <SelectSmall label="Update Channel" id="updateChannel" value={webuiSettings.updateChannel} onChange={handleWebUISettingChange} className="mt-1">
           <option value="stable">Stable</option>
           <option value="unstable">Unstable</option>
         </SelectSmall>
 
         <div className="font-bold mt-3">Log Options</div>
-        <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="mt-1" />
-        {Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={Zip} onChange={this.handleInputChange} className="mt-1" />)}
-        {Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={Delete} onChange={this.handleInputChange} className="mt-1" />)}
-        {Enabled && Delete && (
-          <SelectSmall label="Delete Interval" id="Delete_Days" value={Delete_Days} onChange={this.handleInputChange} className="mt-1">
+      <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={logRotatorSettings.Enabled} onChange={handleLogRotatorSettingChange} className="mt-1" />
+      {logRotatorSettings.Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={logRotatorSettings.Zip} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
+      {logRotatorSettings.Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={logRotatorSettings.Delete} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
+      {logRotatorSettings.Enabled && logRotatorSettings.Delete && (
+        <SelectSmall label="Delete Interval" id="Delete_Days" value={logRotatorSettings.Delete_Days} onChange={handleLogRotatorSettingChange} className="mt-1">
             <option value="0">Never</option>
             <option value="7">Daily</option>
             <option value="30">Monthly</option>
@@ -118,28 +120,5 @@ class GeneralSettings extends React.Component<Props> {
       </FixedPanel>
     );
   }
-}
 
-const mapState = (state: RootState) => ({
-  ...(state.webuiSettings.webui_v2),
-  ...(state.localSettings.LogRotator),
-  version: state.jmmVersion,
-  webuiUpdateAvailable: state.misc.webuiUpdateAvailable,
-  downloadingUpdates: state.fetching.downloadUpdates,
-  checkingUpdates: state.fetching.checkingUpdates,
-  isFetching: state.fetching.settings,
-});
-
-const mapDispatch = {
-  saveWebUISettings: (value: any) => ({ type: Events.SETTINGS_SAVE_WEBUI, payload: value }),
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-  serverVersion: () => ({ type: Events.SERVER_VERSION }),
-  checkWebUIUpdate: () => ({ type: Events.WEBUI_CHECK_UPDATES }),
-  updateWebUI: () => ({ type: Events.WEBUI_UPDATE }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(GeneralSettings);
+export default GeneralSettings;

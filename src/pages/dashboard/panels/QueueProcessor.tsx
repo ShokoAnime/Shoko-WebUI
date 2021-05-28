@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -15,46 +15,46 @@ import type { QueueItemType } from '../../../core/types/api';
 const icons = { hasher: faTasks, general: faListAlt, images: faImage };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
-class QueueProcessor extends React.Component<Props> {
-  renderItem = (key: string, item: QueueItemType, count: number) => {
-    const { handleOperation } = this.props;
+function QueueProcessor() {
+  const dispatch = useDispatch();
 
-    return (
-      <div className="flex flex-col" key={key}>
-        <div className="flex justify-between">
-          <div className="flex items-center w-24">
-            <FontAwesomeIcon icon={icons[key]} className="mr-4" />
-            <span className="font-semibold">{names[key]}</span>
-          </div>
-          <div className="flex">{count ?? 0}</div>
-          <div className="flex items-center">
-            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-              <FontAwesomeIcon icon={faTimes} />
-            </Button>
-            {item?.state === 18 ? (
-              <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-                <FontAwesomeIcon icon={faPlay} />
-              </Button>
-            ) : (
-              <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-                <FontAwesomeIcon icon={faPause} />
-              </Button>
-            )}
-          </div>
-        </div>
-        <div className="flex break-all queue-item mt-2">
-          {item?.description ?? 'Idle'}
-        </div>
-      </div>
-    );
-  };
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
+  const items = useSelector((state: RootState) => state.mainpage.queueStatus);
 
-  renderStatus = (key: string, status = 'Unknown') => (
-    <div key={`${key}-status`} className="flex mb-2 break-all">{status}</div>
+  const handleOperation = (value: string) => dispatch(
+    { type: Events.MAINPAGE_QUEUE_OPERATION, payload: value },
   );
 
-  renderOptions = () => {
-    const { items, handleOperation } = this.props;
+  const renderItem = (key: string, item: QueueItemType, count: number) => (
+    <div className="flex flex-col" key={key}>
+      <div className="flex justify-between">
+        <div className="flex items-center w-24">
+          <FontAwesomeIcon icon={icons[key]} className="mr-4" />
+          <span className="font-semibold">{names[key]}</span>
+        </div>
+        <div className="flex">{count ?? 0}</div>
+        <div className="flex items-center">
+          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
+            <FontAwesomeIcon icon={faTimes} />
+          </Button>
+          {item?.state === 18 ? (
+            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
+              <FontAwesomeIcon icon={faPlay} />
+            </Button>
+          ) : (
+            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
+              <FontAwesomeIcon icon={faPause} />
+            </Button>
+          )}
+        </div>
+      </div>
+      <div className="flex break-all queue-item mt-2">
+        {item?.description ?? 'Idle'}
+      </div>
+    </div>
+  );
+
+  const renderOptions = () => {
     let paused = true;
 
     forEach(items, (item) => {
@@ -77,37 +77,21 @@ class QueueProcessor extends React.Component<Props> {
     );
   };
 
-  render() {
-    const { items, hasFetched } = this.props;
-    const commands: Array<React.ReactNode> = [];
+  const commands: Array<React.ReactNode> = [];
 
-    if (items) {
-      commands.push(this.renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));
-      commands.push(this.renderItem('general', items.GeneralQueueState, items.GeneralQueueCount));
-      commands.push(this.renderItem('images', items.ImageQueueState, items.ImageQueueCount));
-    }
-
-    return (
-      <FixedPanel title="Queue Processor" options={this.renderOptions()} isFetching={!hasFetched}>
-        <div className="flex flex-col justify-between h-full">
-          {commands}
-        </div>
-      </FixedPanel>
-    );
+  if (items) {
+    commands.push(renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));
+    commands.push(renderItem('general', items.GeneralQueueState, items.GeneralQueueCount));
+    commands.push(renderItem('images', items.ImageQueueState, items.ImageQueueCount));
   }
+
+  return (
+    <FixedPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched}>
+      <div className="flex flex-col justify-between h-full">
+        {commands}
+      </div>
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  items: state.mainpage.queueStatus,
-  hasFetched: state.mainpage.fetched.queueStatus,
-});
-
-const mapDispatch = {
-  handleOperation: (value: string) => ({ type: Events.MAINPAGE_QUEUE_OPERATION, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(QueueProcessor);
+export default QueueProcessor;

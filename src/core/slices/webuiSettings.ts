@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type layoutItemType = {
+type LayoutItemType = {
   i: string;
   x: number;
   y: number;
@@ -14,22 +14,22 @@ type layoutItemType = {
   moved: boolean;
 };
 
-export type layoutType = {
-  [breakpoint: string]: Array<layoutItemType>
+export type LayoutType = {
+  [breakpoint: string]: Array<LayoutItemType>
 };
 
-type updateChannelType = 'stable' | 'unstable';
+type UpdateChannelType = 'stable' | 'unstable';
 
 type State = {
   webui_v2: {
     actions: Array<string>,
     layout: {
-      [key: string]: layoutType;
+      [key: string]: LayoutType;
     },
     notifications: boolean;
     theme: string;
     toastPosition: 'top-right' | 'bottom-right';
-    updateChannel: updateChannelType;
+    updateChannel: UpdateChannelType;
   }
 };
 
@@ -52,7 +52,7 @@ export const defaultLayout = {
     }, {
       i: 'collectionTypeBreakdown', x: 9, y: 26, w: 3, h: 14, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   importFolders: {
     lg: [{
       i: 'importBreakdown', x: 0, y: 0, w: 8, h: 11, moved: false, static: false,
@@ -61,7 +61,7 @@ export const defaultLayout = {
     }, {
       i: 'seriesInImportFolder', x: 0, y: 11, w: 12, h: 11, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   actions: {
     lg: [{
       i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
@@ -80,7 +80,7 @@ export const defaultLayout = {
     }, {
       i: 'tvdb', x: 0, y: 9, w: 4, h: 5, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   settings: {
     lg: [{
       i: 'general', x: 0, y: 0, w: 4, h: 22, minW: 3, minH: 5, moved: false, static: false,
@@ -91,19 +91,19 @@ export const defaultLayout = {
     }, {
       i: 'anidb', x: 4, y: 0, w: 4, h: 28, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'import', x: 4, y: 28, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
+      i: 'import', x: 4, y: 28, w: 4, h: 11, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'plex', x: 4, y: 38, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
+      i: 'plex', x: 4, y: 39, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
     }, {
       i: 'tvdb', x: 8, y: 0, w: 4, h: 17, minW: 3, minH: 5, moved: false, static: false,
     }, {
       i: 'moviedb', x: 8, y: 17, w: 4, h: 10, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'language', x: 8, y: 27, w: 4, h: 11, minW: 3, minH: 3, moved: false, static: false,
+      i: 'language', x: 8, y: 27, w: 4, h: 12, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'trakt', x: 8, y: 38, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
+      i: 'trakt', x: 8, y: 39, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
 };
 
 const initialState = {

@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -10,111 +10,81 @@ import Events from '../../core/events';
 import { setSelectedNode } from '../../core/slices/modals/browseFolder';
 import { RootState } from '../../core/store';
 
-export type SelectedNodeType = {
-  Path: string,
-  id: number,
-};
-
 type ApiNodeType = {
   nodeId: number,
   Path: string,
 };
 
-type State = {
-  expanded: boolean,
-  loaded: boolean,
-};
-
-class TreeNode extends React.Component<Props, State> {
-  constructor(props: Props) {
-    super(props);
-    this.state = {
-      expanded: false,
-      loaded: false,
-    };
-  }
-
-  toggleExpanded = (event: React.MouseEvent) => {
-    const { expanded, loaded } = this.state;
-    const { fetch, nodeId } = this.props;
-    let { Path } = this.props;
-
-    if (Path === 'Shoko Server') Path = '';
-
-    if (!loaded) {
-      fetch(nodeId, Path);
-      this.setState({ expanded: true, loaded: true });
-    } else {
-      this.setState({ expanded: !expanded });
-    }
-    event.stopPropagation();
-  };
-
-  toggleSelected = (event: React.MouseEvent) => {
-    const { select, nodeId, Path } = this.props;
-    select({ id: nodeId, Path });
-    event.stopPropagation();
-  };
-
-  render() {
-    const {
-      Path, level, selectedNode, items, nodeId,
-      fetching,
-    } = this.props;
-    const { expanded } = this.state;
-    const selected = nodeId === selectedNode.id;
-
-    const children: Array<React.ReactNode> = [];
-    if (expanded) {
-      forEach(items, (node: ApiNodeType) => {
-        children.push(<ConnectedTreeNode
-          key={node.nodeId}
-          nodeId={node.nodeId}
-          Path={node.Path}
-          level={level + 1}
-        />);
-      });
-    }
-    return (
-      <li
-        className={cx(
-          'list-group-item',
-          level === 1 ? 'root' : null, selected ? 'selected' : null,
-        )}
-        onClick={this.toggleSelected}
-        onDoubleClick={this.toggleExpanded}
-      >
-        <FontAwesomeIcon
-          onClick={this.toggleExpanded}
-          spin={fetching}
-          // eslint-disable-next-line no-nested-ternary
-          icon={fetching ? faCircleNotch : (expanded ? faCaretDown : faCaretRight)}
-        />
-        <span className="select-none">{Path}</span>
-        <ul>{children}</ul>
-      </li>
-    );
-  }
-}
-
-const mapState = (state: RootState, props: any) => ({
-  items: state.modals.browseFolder.items[props.nodeId],
-  fetching: state.fetching[`browse-treenode-${state.modals.browseFolder.id}`],
-  selectedNode: state.modals.browseFolder.selectedNode as SelectedNodeType,
-});
-
-const mapDispatch = {
-  fetch: (id: number, path: string) => ({ type: Events.FOLDER_BROWSE, payload: { id, path } }),
-  select: (value: SelectedNodeType) => (setSelectedNode(value)),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector> & {
+type Props = {
   level: number,
   Path: string,
   nodeId: number,
 };
 
-const ConnectedTreeNode = connector(TreeNode);
-export default ConnectedTreeNode;
+function TreeNode(props: Props) {
+  const dispatch = useDispatch();
+
+  const fetching = useSelector((state: RootState) => state.fetching[`browse-treenode-${state.modals.browseFolder.id}`]);
+  const items = useSelector((state: RootState) => state.modals.browseFolder.items[props.nodeId]);
+  const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
+
+  const [expanded, setExpanded] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  const toggleExpanded = (event: React.MouseEvent) => {
+    const { nodeId } = props;
+    let { Path } = props;
+
+    if (Path === 'Shoko Server') Path = '';
+
+    if (!loaded) {
+      dispatch({ type: Events.FOLDER_BROWSE, payload: { nodeId, Path } });
+      setExpanded(true);
+      setLoaded(true);
+    } else {
+      setExpanded(!expanded);
+    }
+    event.stopPropagation();
+  };
+
+  const toggleSelected = (event: React.MouseEvent) => {
+    const { nodeId, Path } = props;
+    dispatch(setSelectedNode({ id: nodeId, Path }));
+    event.stopPropagation();
+  };
+
+  const children: Array<React.ReactNode> = [];
+  if (expanded) {
+    forEach(items, (node: ApiNodeType) => {
+      children.push(<TreeNode
+        key={node.nodeId}
+        nodeId={node.nodeId}
+        Path={node.Path}
+        level={props.level + 1}
+      />);
+    });
+  }
+
+  const { level, Path, nodeId } = props;
+  return (
+    <li
+      className={cx(
+        'list-group-item',
+        level === 1 ? 'root' : null, (nodeId === selectedNode.id) ? 'selected' : null,
+      )}
+      onClick={toggleSelected}
+      onDoubleClick={toggleExpanded}
+    >
+      <FontAwesomeIcon
+        onClick={toggleExpanded}
+        spin={fetching}
+        // eslint-disable-next-line no-nested-ternary
+        icon={fetching ? faCircleNotch : (expanded ? faCaretDown : faCaretRight)}
+      />
+      <span className="select-none">{Path}</span>
+      <ul>{children}</ul>
+    </li>
+  );
+}
+
+export default TreeNode;

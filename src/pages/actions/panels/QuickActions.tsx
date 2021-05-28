@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
@@ -11,9 +10,25 @@ import quickActions from '../../../core/quick-actions';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Input/Button';
 
-class QuickActions extends React.Component<Props> {
-  renderRow = (key: string) => {
-    const { pinnedActions, runAction, togglePinnedAction } = this.props;
+type Props = {
+  title: string;
+  actions: Array<string>;
+};
+
+function QuickActions(props: Props) {
+  const dispatch = useDispatch();
+
+  const pinnedActions = useSelector((state: RootState) => state.webuiSettings.webui_v2.actions);
+
+  const runAction = (key: string, data: any) => dispatch(
+    { type: Events.QUICK_ACTION_RUN, payload: { key, data } },
+  );
+
+  const togglePinnedAction = (payload: string) => dispatch(
+    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload },
+  );
+
+  const renderRow = (key: string) => {
     const action = quickActions[key];
     const pinned = pinnedActions.indexOf(key) === -1;
 
@@ -32,40 +47,13 @@ class QuickActions extends React.Component<Props> {
     );
   };
 
-  render() {
-    const { title, actions } = this.props;
-    const items: Array<React.ReactNode> = [];
+  const { title, actions } = props;
 
-    forEach(actions, (action) => {
-      items.push(this.renderRow(action));
-    });
-
-    return (
-      <FixedPanel title={title}>
-        {items}
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title={title}>
+      {actions.map(action => renderRow(action))}
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  pinnedActions: state.webuiSettings.webui_v2.actions,
-});
-
-const mapDispatch = {
-  runAction: (key: string, data: any) => (
-    { type: Events.QUICK_ACTION_RUN, payload: { key, data } }
-  ),
-  togglePinnedAction: (payload: string) => (
-    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload }
-  ),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector> & {
-  title: string;
-  actions: Array<string>;
-};
-
-export default connector(QuickActions);
+export default QuickActions;

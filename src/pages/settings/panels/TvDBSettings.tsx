@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -43,106 +43,78 @@ const tvdbLanguages = [
   ['zh', 'Chinese'],
 ];
 
-type State = {
-  AutoFanartAmount: number;
-  AutoPostersAmount: number;
-  AutoWideBannersAmount: number;
-};
+function TvDBSettings() {
+  const dispatch = useDispatch();
 
-class TvDBSettings extends React.Component<Props, State> {
-  state = {
-    AutoFanartAmount: 10,
-    AutoPostersAmount: 10,
-    AutoWideBannersAmount: 10,
-  };
+  const isFetching = useSelector((state: RootState) => state.fetching.settings);
+  const tvDBSettings = useSelector((state: RootState) => state.localSettings.TvDB);
 
-  componentDidMount = () => {
-    const {
-      AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount,
-    } = this.props;
-    this.setState({ AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount });
-  };
+  const [AutoFanartAmount, setAutoFanartAmount] = useState(10);
+  const [AutoPostersAmount, setAutoPostersAmount] = useState(10);
+  const [AutoWideBannersAmount, setAutoWideBannersAmount] = useState(10);
 
-  handleInputChange = (event: any) => {
-    const { saveSettings } = this.props;
-    const { id } = event.target;
-    const propId = id.replace('TvDB_', '');
+  const saveSettings = (newSettings: { [id: string]: any }) => dispatch(
+    { type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'TvDB', newSettings } },
+  );
+
+  useEffect(() => {
+    setAutoFanartAmount(tvDBSettings.AutoFanartAmount);
+    setAutoPostersAmount(tvDBSettings.AutoPostersAmount);
+    setAutoWideBannersAmount(tvDBSettings.AutoWideBannersAmount);
+  }, []);
+
+  useEffect(() => {
+    saveSettings({ AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount });
+  }, [AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount]);
+
+  const handleInputChange = (event: any) => {
+    const propId = event.target.id.replace('TvDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (event.target.type === 'number') {
-      this.setState(prevState => Object.assign({}, prevState, { [propId]: value }));
-    }
     if (value !== '') {
-      saveSettings({ context: 'TvDB', newSettings: { [propId]: value } });
+      saveSettings({ [propId]: value });
     }
   };
 
-  render() {
-    const {
-      AutoLink, AutoFanart, AutoWideBanners, AutoPosters,
-      UpdateFrequency, Language, isFetching,
-    } = this.props;
-    const { AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount } = this.state;
+  return (
+    <FixedPanel title="TvDB" isFetching={isFetching}>
 
-    const updateFrequencyOptions: Array<React.ReactNode> = [];
-    const languageOptions: Array<React.ReactNode> = [];
+      <div className="font-bold">Download Options</div>
+      <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={tvDBSettings.AutoFanart} onChange={handleInputChange} className="mt-1" />
+      {tvDBSettings.AutoFanart && (
+        <div className="flex justify-between mt-1">
+          Max Fanart
+          <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={e => setAutoFanartAmount(e.target.value)} className="w-10 text-center px-2" />
+        </div>
+      )}
+      <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={tvDBSettings.AutoPosters} onChange={handleInputChange} className="mt-1" />
+      {tvDBSettings.AutoPosters && (
+        <div className="flex justify-between mt-1">
+          Max Posters
+          <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={e => setAutoPostersAmount(e.target.value)} className="w-10 text-center px-2" />
+        </div>
+      )}
+      <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={tvDBSettings.AutoWideBanners} onChange={handleInputChange} className="mt-1" />
+      {tvDBSettings.AutoWideBanners && (
+        <div className="flex justify-between mt-1">
+          Max Wide Banners
+          <InputSmall id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={e => setAutoWideBannersAmount(e.target.value)} className="w-10 text-center px-2" />
+        </div>
+      )}
 
-    updateFrequencyType.forEach((item) => {
-      updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
-    });
-    tvdbLanguages.forEach((item) => {
-      languageOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
-    });
-
-    return (
-      <FixedPanel title="TvDB" isFetching={isFetching}>
-
-        <div className="font-bold">Download Options</div>
-        <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} className="mt-1" />
-        {AutoFanart && (
-          <div className="flex justify-between mt-1">
-            Max Fanart
-            <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-10 text-center px-2" />
-          </div>
+      <div className="font-bold mt-3">Preferences</div>
+      <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={tvDBSettings.AutoLink} onChange={handleInputChange} className="mt-1" />
+      <SelectSmall label="Language" id="Language" value={tvDBSettings.Language} onChange={handleInputChange} className="mt-1">
+        {tvdbLanguages.map(
+          item => (<option value={item[0]} key={item[0]}>{item[1]}</option>),
         )}
-        <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} className="mt-1" />
-        {AutoPosters && (
-          <div className="flex justify-between mt-1">
-            Max Posters
-            <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-10 text-center px-2" />
-          </div>
+      </SelectSmall>
+      <SelectSmall label="Automatically Update Stats" id="UpdateFrequency" value={tvDBSettings.UpdateFrequency} onChange={handleInputChange} className="mt-1">
+        {updateFrequencyType.map(
+          item => (<option value={item[0]} key={item[0]}>{item[1]}</option>),
         )}
-        <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={AutoWideBanners} onChange={this.handleInputChange} className="mt-1" />
-        {AutoWideBanners && (
-          <div className="flex justify-between mt-1">
-            Max Wide Banners
-            <InputSmall id="AutoWideBannersAmount" value={AutoWideBannersAmount} type="number" onChange={this.handleInputChange} className="w-10 text-center px-2" />
-          </div>
-        )}
-
-        <div className="font-bold mt-3">Preferences</div>
-        <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={AutoLink} onChange={this.handleInputChange} className="mt-1" />
-        <SelectSmall label="Language" id="Language" value={Language} onChange={this.handleInputChange} className="mt-1">
-          {languageOptions}
-        </SelectSmall>
-        <SelectSmall label="Automatically Update Stats" id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange} className="mt-1">
-          {updateFrequencyOptions}
-        </SelectSmall>
-      </FixedPanel>
-    );
-  }
+      </SelectSmall>
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  ...(state.localSettings.TvDB),
-  isFetching: state.fetching.settings,
-});
-
-const mapDispatch = {
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(TvDBSettings);
+export default TvDBSettings;

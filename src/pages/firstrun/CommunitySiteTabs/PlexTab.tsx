@@ -1,68 +1,72 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Button from '../../../components/Input/Button';
+import TransitionDiv from '../../../components/TransitionDiv';
 
-class PlexTab extends React.Component<Props> {
-  renderPlexUrl() {
-    const {
-      fetching, plexUrl, getPlexUrl,
-    } = this.props;
+import { setItem as setMiscItem } from '../../../core/slices/misc';
 
-    if (plexUrl === '') {
+function PlexTab() {
+  const dispatch = useDispatch();
+
+  const isAuthenticated = useSelector((state: RootState) => state.misc.plex.authenticated);
+  const isFetchingUnlink = useSelector((state: RootState) => state.fetching.plex_unlink);
+  const isFetchingUrl = useSelector((state: RootState) => state.fetching.plex_login_url);
+  const plexUrl = useSelector((state: RootState) => state.misc.plex.url);
+
+  useEffect(() => {
+    dispatch({ type: Events.SETTINGS_CHECK_PLEX_AUTHENTICATED });
+    dispatch(setMiscItem({ plex: { url: '' } }));
+
+    return function cleanup() {
+      dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
+    };
+  }, []);
+
+  const handleLinkOpen = () => {
+    window.open(plexUrl, '_blank');
+    dispatch({ type: Events.START_API_POLLING, payload: { type: 'plex-auth' } });
+  };
+
+  const renderPlexUrl = () => {
+    if (!plexUrl || plexUrl === '') {
       return (
-        <div className="flex w-3/5 justify-between my-1">
+        <div className="flex justify-between flex-grow items-center">
           Plex Login:
-          <Button onClick={() => getPlexUrl()} className="bg-color-highlight-2 px-2 py-1 text-sm">
-            {fetching ? 'Requesting...' : 'Authenticate'}
+          <Button onClick={() => dispatch({ type: Events.SETTINGS_PLEX_LOGIN_URL })} className="bg-color-highlight-1 px-2 py-1 text-xs">
+            {isFetchingUrl ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>
       );
     }
     return (
-      <div className="flex justify-between my-1 items-center">
-        <span className="w-64">Plex Login URL:</span>
-        <span className="color-highlight-2 break-all"><a href={plexUrl} rel="noopener noreferrer" target="_blank">{plexUrl}</a></span><br />
+      <div className="flex flex-grow justify-between items-center">
+        Plex Login:
+        <Button onClick={() => handleLinkOpen()} className="color-highlight-2 hover:underline py-1 px-2 text-xs">Click here to login</Button>
       </div>
     );
-  }
+  };
 
-  render() {
-    const { plexToken } = this.props;
-
-    return (
-      <React.Fragment>
-        <span className="font-bold">Options</span>
+  return (
+    <TransitionDiv className="flex flex-col w-3/5">
+      <div className="flex justify-between">
         {
-          plexToken === ''
-            ? this.renderPlexUrl()
+          !isAuthenticated
+            ? renderPlexUrl()
             : (
-              <div className="flex w-3/5 justify-between my-1">
-                Plex Authenticated:
-                <span>Yes</span>
+              <div className="flex flex-grow justify-between items-center">
+                Plex Authenticated!
+                <Button onClick={() => dispatch({ type: Events.SETTINGS_UNLINK_PLEX })} className="bg-color-danger py-1 px-2 text-xs">
+                  {isFetchingUnlink ? 'Unlinking...' : 'Unlink'}
+                </Button>
               </div>
             )
         }
-      </React.Fragment>
-    );
-  }
+      </div>
+    </TransitionDiv>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  fetching: state.fetching.plex_login_url,
-  plexUrl: state.misc.plex.url,
-  plexToken: state.localSettings.Plex.Token,
-});
-
-const mapDispatch = {
-  getPlexUrl: () => ({ type: Events.SETTINGS_PLEX_LOGIN_URL }),
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(PlexTab);
+export default PlexTab;

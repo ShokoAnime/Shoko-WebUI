@@ -3,7 +3,8 @@
 import React from 'react';
 import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import type { History } from 'history';
 
 import { RootState } from '../store';
 import LoginPage from '../../pages/login/LoginPage';
@@ -13,28 +14,29 @@ import MainPage from '../../pages/main/MainPage';
 import FirstRunPage from '../../pages/firstrun/FirstRunPage';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
-const Router = ({
-  history,
-  theme,
-}) => (
-  <div id="app-container" className={`${theme} flex h-screen`}>
-    <ConnectedRouter history={history}>
-      <Switch>
-        <Route exact path="/login" component={LoginPage} />
-        <Route exact path="/error" component={ErrorPage} />
-        <Route path="/firstrun" component={FirstRunPage} />
-        <AuthenticatedRoute exact path="/index.html" component={MainPage} />
-        <AuthenticatedRoute path="/" component={MainPage} />
-        <Route component={NoMatchPage} />
-      </Switch>
-    </ConnectedRouter>
-  </div>
-);
+type Props = {
+  history: History<any>;
+};
 
-const mapState = (state: RootState) => ({
-  theme: state.webuiSettings.webui_v2.theme,
-});
+function Router(props: Props) {
+  const theme = useSelector((state: RootState) => state.webuiSettings.webui_v2.theme);
 
-const connector = connect(mapState);
+  const { history } = props;
 
-export default connector(Router);
+  return (
+    <div id="app-container" className={`${theme} flex h-screen`}>
+      <ConnectedRouter history={history}>
+        <Switch>
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/error" component={ErrorPage} />
+          <Route path="/firstrun" component={FirstRunPage} />
+          <AuthenticatedRoute exact path="/index.html" component={MainPage} />
+          <AuthenticatedRoute path="/" component={MainPage} />
+          <Route component={NoMatchPage} />
+        </Switch>
+      </ConnectedRouter>
+    </div>
+  );
+}
+
+export default Router;

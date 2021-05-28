@@ -1,7 +1,6 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
-import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faSquare, faEdit, faServer, faSearch, faPlus,
@@ -15,10 +14,17 @@ import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 
-class ImportFolders extends React.Component<Props> {
-  renderFolder = (folder: ImportFolderType) => {
-    const { rescanFolder, openImportFolderModalEdit } = this.props;
+function ImportFolders() {
+  const dispatch = useDispatch();
 
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.importFolders);
+  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+
+  const rescanFolder = (ID: number) => dispatch({ type: Events.IMPORT_FOLDER_RESCAN, payload: ID });
+  const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
+  const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
+
+  const renderFolder = (folder: ImportFolderType) => {
     let flags = '';
     switch (folder.DropFolderType) {
       case 1:
@@ -64,52 +70,21 @@ class ImportFolders extends React.Component<Props> {
     );
   };
 
-  renderOptions = () => {
-    const { setImportFolderModalStatus } = this.props;
+  const renderOptions = () => (
+    <div>
+      <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
+        <FontAwesomeIcon icon={faPlus} />
+      </Button>
+    </div>
+  );
 
-    return (
-      <div>
-        <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
-          <FontAwesomeIcon icon={faPlus} />
-        </Button>
-      </div>
-    );
-  };
-
-  render() {
-    const { importFolders, hasFetched } = this.props;
-
-    const folders: Array<React.ReactNode> = [];
-
-    forEach(importFolders, (folder: ImportFolderType) => {
-      folders.push(this.renderFolder(folder));
-    });
-
-    if (folders.length === 0) {
-      folders.push(<div className="flex justify-center font-bold mt-4" key="no-folders">No import folders added!</div>);
-    }
-
-    return (
-      <FixedPanel title="Import Folders" options={this.renderOptions()} isFetching={!hasFetched}>
-        {folders}
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title="Import Folders" options={renderOptions()} isFetching={!hasFetched}>
+      return {importFolders.length === 0
+      ? (<div className="flex justify-center font-bold mt-4" key="no-folders">No import folders added!</div>)
+      : importFolders.map(importFolder => renderFolder(importFolder))}
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  importFolders: state.mainpage.importFolders,
-  hasFetched: state.mainpage.fetched.importFolders,
-});
-
-const mapDispatch = {
-  setImportFolderModalStatus: (payload: boolean) => (setStatus(payload)),
-  openImportFolderModalEdit: (ID: number) => (setEdit(ID)),
-  rescanFolder: (payload: number) => ({ type: Events.IMPORT_FOLDER_RESCAN, payload }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(ImportFolders);
+export default ImportFolders;

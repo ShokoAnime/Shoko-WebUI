@@ -9,27 +9,25 @@ type Props = {
   onAfterOpen?: () => void;
 };
 
-class ModalPanel extends React.Component<Props> {
-  render() {
-    const {
-      children, show, className, onRequestClose, onAfterOpen,
-    } = this.props;
+function ModalPanel(props: Props) {
+  const {
+    children, show, className, onRequestClose, onAfterOpen,
+  } = props;
 
-    Modal.setAppElement('#app-root');
+  Modal.setAppElement('#app-root');
 
-    return (
-      <Modal
-        isOpen={show}
-        overlayClassName="modal-overlay fixed inset-0 flex items-center justify-center pointer-events-auto"
-        className={`${className} modal flex rounded-lg`}
-        shouldCloseOnOverlayClick
-        onRequestClose={onRequestClose}
-        onAfterOpen={onAfterOpen}
-      >
-        {children}
-      </Modal>
-    );
-  }
+  return (
+    <Modal
+      isOpen={show}
+      overlayClassName="modal-overlay fixed inset-0 flex items-center justify-center pointer-events-auto"
+      className={`${className} modal flex rounded-lg`}
+      shouldCloseOnOverlayClick
+      onRequestClose={onRequestClose}
+      onAfterOpen={onAfterOpen}
+    >
+      {children}
+    </Modal>
+  );
 }
 
 export default ModalPanel;

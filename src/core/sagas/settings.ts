@@ -56,7 +56,7 @@ function* getPlexLoginUrl() {
 }
 
 function* getSettings() {
-  yield put(startFetching('settings'));
+  // yield put(startFetching('settings'));
   const resultJson = yield call(ApiSettings.getSettings);
   yield put(stopFetching('settings'));
   if (resultJson.error) {
@@ -115,7 +115,7 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   if (resultJson.error) {
     toast.error(resultJson.message);
   }
-  // yield call(getSettings);
+  yield call(getSettings);
 }
 
 function* saveWebUISettings(action) {
