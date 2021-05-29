@@ -16,7 +16,7 @@ type State = {
   selectedFolder: number;
 };
 
-class SeriesInImportFolders extends React.Component<Props> {
+class SeriesInImportFolders extends React.Component<Props, State> {
   state = {
     selectedFolder: 1,
   };

@@ -5,14 +5,14 @@ import { forEach, isEqual, isUndefined } from 'lodash';
 import { omitDeepBy } from '../../core/util';
 
 import { RootState } from '../../core/store';
-import type { layoutType } from '../../core/slices/webuiSettings';
+import type { LayoutType } from '../../core/slices/webuiSettings';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import Events from '../../core/events';
 import QuickActions from './panels/QuickActions';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type State = layoutType;
+type State = LayoutType;
 
 const actions = {
   anidb: {

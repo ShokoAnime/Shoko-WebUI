@@ -6,7 +6,7 @@ import { omitDeepBy } from '../../core/util';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import type { layoutType } from '../../core/slices/webuiSettings';
+import type { LayoutType } from '../../core/slices/webuiSettings';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import ImportBreakdown from '../dashboard/panels/ImportBreakdown';
 import ImportFolders from '../dashboard/panels/ImportFolders';
@@ -14,7 +14,7 @@ import SeriesInImportFolder from './panels/SeriesInImportFolder';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type State = layoutType;
+type State = LayoutType;
 class ImportFoldersPage extends React.Component<Props, State> {
   state = defaultLayout.importFolders;
 

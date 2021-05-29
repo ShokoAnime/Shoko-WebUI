@@ -67,6 +67,7 @@ class TreeNode extends React.Component<Props, State> {
     const children: Array<any> = [];
     if (expanded) {
       forEach(items, (node: ApiNodeType) => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
         children.push(<ConnectedTreeNode
           key={node.nodeId}
           nodeId={node.nodeId}

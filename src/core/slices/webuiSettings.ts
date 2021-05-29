@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type layoutItemType = {
+type LayoutItemType = {
   i: string;
   x: number;
   y: number;
@@ -14,22 +14,22 @@ type layoutItemType = {
   moved: boolean;
 };
 
-export type layoutType = {
-  [breakpoint: string]: Array<layoutItemType>
+export type LayoutType = {
+  [breakpoint: string]: Array<LayoutItemType>
 };
 
-type updateChannelType = 'stable' | 'unstable';
+type UpdateChannelType = 'stable' | 'unstable';
 
 type State = {
   v3: {
     actions: Array<string>,
     layout: {
-      [key: string]: layoutType;
+      [key: string]: LayoutType;
     },
     notifications: boolean;
     theme: string;
     toastPosition: 'top-right' | 'bottom-right';
-    updateChannel: updateChannelType;
+    updateChannel: UpdateChannelType;
   }
 };
 

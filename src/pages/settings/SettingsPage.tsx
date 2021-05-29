@@ -6,7 +6,7 @@ import { omitDeepBy } from '../../core/util';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import type { layoutType } from '../../core/slices/webuiSettings';
+import type { LayoutType } from '../../core/slices/webuiSettings';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 
 import AniDBSettings from './panels/AniDBSettings';
@@ -22,7 +22,7 @@ import TvDBSettings from './panels/TvDBSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type State = layoutType;
+type State = LayoutType;
 
 class SettingsPage extends React.Component<Props, State> {
   state = defaultLayout.settings;
