@@ -25,10 +25,6 @@ function MovieDBSettings() {
     setAutoPostersAmount(movieDBSettings.AutoPostersAmount);
   }, []);
 
-  useEffect(() => {
-    saveSettings({ AutoFanartAmount, AutoPostersAmount });
-  }, [AutoFanartAmount, AutoPostersAmount]);
-
   const handleInputChange = (event: any) => {
     const propId = event.target.id.replace('MovieDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;

@@ -64,7 +64,7 @@ function RelationSettings() {
       if (key) result[key] = true;
     }, exclusions);
     setExclusions(newExclusions);
-  });
+  }, [AutoGroupSeriesRelationExclusions]);
 
   const handleInputChange = (event: any) => {
     const { id, checked: value } = event.target;

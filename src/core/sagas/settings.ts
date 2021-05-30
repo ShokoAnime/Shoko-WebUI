@@ -65,7 +65,7 @@ function* getSettings() {
 
   const webUISettings = JSON.parse(resultJson.data.WebUI_Settings || '{}');
   if (!isEmpty(webUISettings)) {
-    yield put(saveWebUISettingsAction(webUISettings));
+    yield put(saveWebUISettingsAction(webUISettings.webui_v2));
   }
   yield put(saveServerSettings(resultJson.data));
   yield put(saveLocalSettings(resultJson.data));
@@ -122,7 +122,7 @@ function* saveWebUISettings(action) {
   yield put(saveWebUISettingsAction(action.payload));
   const webUISettings = Object.assign(
     {},
-    yield select((state: RootState) => state.webuiSettings),
+    yield select((state: RootState) => state.webuiSettings.webui_v2),
     action.payload,
   );
   const newSettings = JSON.stringify(webUISettings);

@@ -63,10 +63,6 @@ function TvDBSettings() {
     setAutoWideBannersAmount(tvDBSettings.AutoWideBannersAmount);
   }, []);
 
-  useEffect(() => {
-    saveSettings({ AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount });
-  }, [AutoFanartAmount, AutoPostersAmount, AutoWideBannersAmount]);
-
   const handleInputChange = (event: any) => {
     const propId = event.target.id.replace('TvDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;

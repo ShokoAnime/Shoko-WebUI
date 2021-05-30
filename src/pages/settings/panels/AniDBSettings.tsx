@@ -34,10 +34,6 @@ function AniDBSettings() {
     setMaxRelationDepth(aniDBSettings.MaxRelationDepth);
   }, []);
 
-  useEffect(() => {
-    saveSettings({ MaxRelationDepth });
-  }, [MaxRelationDepth]);
-
   const handleInputChange = (event: any) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;

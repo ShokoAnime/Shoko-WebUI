@@ -36,9 +36,9 @@ type State = {
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 9, moved: false, static: false,
     }, {
-      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 9, moved: false, static: false,
     }, {
       i: 'queueProcessor', x: 0, y: 9, w: 6, h: 17, minW: 5, minH: 5, moved: false, static: false,
     }, {
@@ -128,9 +128,8 @@ const webuiSettingsSlice = createSlice({
   name: 'webuiSettings',
   initialState,
   reducers: {
-    saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      // eslint-disable-next-line no-param-reassign
-      sliceState = Object.assign({}, sliceState, action.payload);
+    saveWebUISettings(sliceState, action: PayloadAction<any>) {
+      sliceState.webui_v2 = Object.assign({}, sliceState.webui_v2, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
       sliceState.webui_v2.actions.push(action.payload);

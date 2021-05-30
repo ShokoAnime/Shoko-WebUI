@@ -39,7 +39,7 @@ function SettingsPage() {
     if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
       dispatch({
         type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-        payload: { dashboard: newLayout },
+        payload: { settings: newLayout },
       });
     }
   };
