@@ -10,42 +10,47 @@ type Props = {
   isFetching?: boolean;
 };
 
-class FixedPanel extends React.Component<Props> {
-  render() {
-    const {
-      children, title, className, options,
-      isFetching,
-    } = this.props;
+function FixedPanel(props: Props) {
+  const {
+    children, title, className, options,
+    isFetching,
+  } = props;
 
-    return (
-      <div className={`${className ?? ''} flex flex-col overflow-hidden rounded shadow-sm fixed-panel h-full px-5 py-4`}>
-        <div className="flex justify-between items-center">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">{title}</span>
-          <div
-            className="flex"
-            onMouseDown={event => event.stopPropagation()}
-            onTouchStart={event => event.stopPropagation()}
-          >
-            {options}
-          </div>
-        </div>
-        <span className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
+  return (
+    <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full pl-5 pr-3 py-4`}>
+      <div className="flex justify-between items-center mr-2">
+        <span className="flex font-semibold text-xl">{title}</span>
         <div
-          className="overflow-y-auto flex flex-col h-full font-muli"
+          className="flex"
           onMouseDown={event => event.stopPropagation()}
           onTouchStart={event => event.stopPropagation()}
         >
-          {isFetching ? (
-            <div className="flex justify-center items-center h-full">
-              <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-accent-secondary" />
-            </div>
-          ) : (
-            children
-          )}
+          {options}
         </div>
       </div>
-    );
-  }
+      <span
+        className="bg-color-highlight-2 my-2 h-1 flex-shrink-0"
+        style={{
+          width: `${title.length / 1.25}rem`,
+        }}
+      />
+      <div
+        className="overflow-y-auto flex flex-col h-full font-mulish"
+        onMouseDown={event => event.stopPropagation()}
+        onTouchStart={event => event.stopPropagation()}
+      >
+        {isFetching ? (
+          <div className="flex justify-center items-center h-full">
+            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-highlight-2" />
+          </div>
+        ) : (
+          <div className="flex flex-col mr-2">
+            {children}
+          </div>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default FixedPanel;

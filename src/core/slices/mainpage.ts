@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
 import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
-import type { RecentFileDetailsType, RecentFileType } from '../types/api/file';
+import type { RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 
 type State = {
@@ -24,10 +24,10 @@ type State = {
       details: RecentFileDetailsType;
     }
   };
-  recentFiles: Array<RecentFileType>;
+  recentFiles: Array<FileDetailedType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
-  unrecognizedFiles: Array<Omit<RecentFileType, 'SeriesIDs'>>
+  unrecognizedFiles: Array<FileType>
 };
 
 const mainpageSlice = createSlice({

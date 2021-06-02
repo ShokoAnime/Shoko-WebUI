@@ -5,15 +5,13 @@ import history from '../../core/history';
 type Props = {
   to: string;
   onClick?: (event: React.MouseEvent<HTMLAnchorElement>) => void;
+  children: any;
 };
 
-class Link extends React.Component<Props> {
-  handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    const {
-      onClick,
-    } = this.props;
-    if (onClick) {
-      onClick(event);
+function Link(props: Props) {
+  const handleClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    if (props.onClick) {
+      props.onClick(event);
     }
 
     if (event.button !== 0
@@ -31,19 +29,12 @@ class Link extends React.Component<Props> {
     }
 
     event.preventDefault();
-    const {
-      to,
-    } = this.props;
-    history.push(to);
+    history.push(props.to);
   };
 
-  render() {
-    const {
-      to,
-      ...props
-    } = this.props;
-    return <a href={to} {...props} onClick={this.handleClick} />;
-  }
+  const { to, ...otherProps } = props;
+
+  return <a href={to} {...otherProps} onClick={handleClick} />;
 }
 
 export default Link;

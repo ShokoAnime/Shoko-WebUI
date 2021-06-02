@@ -1,84 +1,63 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { isEqual, isUndefined } from 'lodash';
 import { omitDeepBy } from '../../core/util';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import type { LayoutType } from '../../core/slices/webuiSettings';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import ImportBreakdown from '../dashboard/panels/ImportBreakdown';
-import ImportFolders from '../dashboard/panels/ImportFolders';
+import ImportFolders from './panels/ImportFolders';
 import SeriesInImportFolder from './panels/SeriesInImportFolder';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type State = LayoutType;
-class ImportFoldersPage extends React.Component<Props, State> {
-  state = defaultLayout.importFolders;
+function ImportFoldersPage() {
+  const dispatch = useDispatch();
 
-  componentDidMount = () => {
-    const { layout } = this.props;
-    this.setState(layout);
-  };
+  const layout = useSelector(
+    (state: RootState) => state.webuiSettings.webui_v2.layout.importFolders,
+  );
 
-  componentDidUpdate = (prevProps) => {
-    const { layout } = this.props;
-    if (!isEqual(prevProps, this.props)) this.setState(layout);
-  };
+  const [currentLayout, setCurrentLayout] = useState(defaultLayout.importFolders);
 
-  handleOnLayoutChange = (layout: any) => {
-    const { changeLayout } = this.props;
-    if (!isEqual(this.state, omitDeepBy(layout, isUndefined))) {
-      changeLayout(layout);
+  useEffect(() => {
+    setCurrentLayout(layout);
+  }, []);
+
+  const handleOnLayoutChange = (newLayout: ReactGridLayout.Layouts) => {
+    if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
+      dispatch({
+        type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
+        payload: { importFolders: newLayout },
+      });
     }
   };
 
-  render() {
-    const cols = {
-      lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
-    };
-
-    return (
-      <React.Fragment>
-        <ResponsiveGridLayout
-          layouts={this.state}
-          cols={cols}
-          rowHeight={0}
-          containerPadding={[40, 40]}
-          margin={[40, 40]}
-          className="w-full"
-          onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
-        >
-          <div key="importBreakdown">
-            <ImportBreakdown />
-          </div>
-          <div key="importFolders">
-            <ImportFolders />
-          </div>
-          <div key="seriesInImportFolder">
-            <SeriesInImportFolder />
-          </div>
-        </ResponsiveGridLayout>
-      </React.Fragment>
-    );
-  }
+  return (
+    <ResponsiveGridLayout
+      layouts={currentLayout}
+      cols={{
+        lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
+      }}
+      rowHeight={0}
+      containerPadding={[30, 30]}
+      margin={[25, 25]}
+      className="w-full"
+      onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
+    >
+      <div key="importBreakdown">
+        <ImportBreakdown />
+      </div>
+      <div key="importFolders">
+        <ImportFolders />
+      </div>
+      <div key="seriesInImportFolder">
+        <SeriesInImportFolder />
+      </div>
+    </ResponsiveGridLayout>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.v3.layout.importFolders,
-});
-
-const mapDispatch = {
-  changeLayout: (layout: any) => ({
-    type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-    payload: { importFolders: layout },
-  }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(ImportFoldersPage);
+export default ImportFoldersPage;

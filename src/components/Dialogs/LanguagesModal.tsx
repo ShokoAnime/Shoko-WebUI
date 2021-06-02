@@ -1,12 +1,12 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { forEach, remove, isEqual } from 'lodash';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { forEach, remove } from 'lodash';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus as setLanguageModalStatus } from '../../core/slices/modals/languages';
 import ModalPanel from '../Panels/ModalPanel';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
 
 export const languageDescription = {
@@ -61,43 +61,31 @@ export const languageDescription = {
   vi: 'Vietnamese (vi)',
 };
 
-type State = {
-  languages: Array<string>;
-  ownUpdate: boolean;
-};
+function LanguagesModal() {
+  const dispatch = useDispatch();
 
-class LanguagesModal extends React.Component<Props, State> {
-  state = {
-    languages: [] as Array<string>,
-    ownUpdate: false,
+  const status = useSelector((state: RootState) => state.modals.languages.status);
+  const LanguagePreference = useSelector(
+    (state: RootState) => state.localSettings.LanguagePreference,
+  );
+
+  const [languages, setLanguages] = useState([] as Array<string>);
+
+  const handleClose = () => dispatch(setLanguageModalStatus(false));
+
+  const handleSave = () => {
+    dispatch({
+      type: Events.SETTINGS_SAVE_SERVER,
+      payload: { newSettings: { LanguagePreference: languages } },
+    });
+    handleClose();
   };
 
-  static getDerivedStateFromProps(props: Props, state: State) {
-    if (state.ownUpdate) {
-      return { ownUpdate: false };
-    }
+  useEffect(() => {
+    if (status) setLanguages(LanguagePreference);
+  }, [status]);
 
-    if (!isEqual(props.languages, state.languages)) {
-      return { languages: props.languages };
-    }
-
-    return null;
-  }
-
-  handleClose = () => {
-    const { setStatus } = this.props;
-    setStatus(false);
-  };
-
-  handleSave = () => {
-    const { saveSettings } = this.props;
-    const { languages } = this.state;
-    saveSettings({ newSettings: { LanguagePreference: languages } });
-    this.handleClose();
-  };
-
-  handleInputChange = (event: any) => {
-    const { languages } = this.state;
+  const handleInputChange = (event: any) => {
     const { id, checked: value } = event.target;
 
     const newLanguages = languages.slice();
@@ -105,58 +93,39 @@ class LanguagesModal extends React.Component<Props, State> {
     if (value) newLanguages.push(id);
     else remove(newLanguages, item => item === id);
 
-    this.setState({ languages: newLanguages, ownUpdate: true });
+    setLanguages(newLanguages);
   };
 
-  render() {
-    const { show } = this.props;
-    const { languages } = this.state;
+  const items: Array<React.ReactNode> = [];
 
-    const items: Array<React.ReactNode> = [];
+  forEach(languageDescription, (language, key) => {
+    items.push(<Checkbox
+      label={language}
+      id={key}
+      key={key}
+      isChecked={languages.includes(key)}
+      onChange={handleInputChange}
+      className="mr-2"
+    />);
+  });
 
-    forEach(languageDescription, (language, key) => {
-      items.push(<Checkbox
-        label={language}
-        id={key}
-        key={key}
-        isChecked={languages.includes(key)}
-        onChange={this.handleInputChange}
-        className="mr-2"
-      />);
-    });
-
-    return (
-      <ModalPanel show={show} className="languages-modal px-6 pt-3 pb-5" onRequestClose={() => this.handleClose()}>
-        <div className="flex flex-col w-full">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">
-            Languages
-          </span>
-          <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
-          <div className="flex flex-col flex-grow overflow-y-auto my-2">
-            {items}
-          </div>
-          <div className="flex justify-end mt-2">
-            <Button onClick={this.handleClose} className="bg-color-danger px-5 py-2 mr-2">Discard</Button>
-            <Button onClick={this.handleSave} className="bg-color-accent px-5 py-2">Save</Button>
-          </div>
+  return (
+    <ModalPanel show={status} className="languages-modal px-6 pt-3 pb-5" onRequestClose={() => handleClose()}>
+      <div className="flex flex-col w-full">
+        <span className="flex font-semibold text-xl2 uppercase">
+          Languages
+        </span>
+        <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
+        <div className="flex flex-col flex-grow overflow-y-auto my-2">
+          {items}
         </div>
-      </ModalPanel>
-    );
-  }
+        <div className="flex justify-end mt-2">
+          <Button onClick={handleClose} className="bg-color-danger px-5 py-2 mr-2">Discard</Button>
+          <Button onClick={handleSave} className="bg-color-highlight-1 px-5 py-2">Save</Button>
+        </div>
+      </div>
+    </ModalPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  show: state.modals.languages.status,
-  languages: state.localSettings.LanguagePreference,
-});
-
-const mapDispatch = {
-  setStatus: (value: boolean) => (setLanguageModalStatus(value)),
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(LanguagesModal);
+export default LanguagesModal;

@@ -1,10 +1,11 @@
 import { call, delay, put } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
+import { push } from 'connected-react-router';
 
 import Events from '../events';
 import { startFetching, stopFetching } from '../slices/fetching';
 import {
-  setActiveTab, setDatabaseStatus, setStatus, setUserStatus, setUser, setAnidbStatus,
+  setDatabaseStatus, setServerStatus, setUserStatus, setUser, setAnidbStatus,
   setSaved as setFirstRunSaved,
 } from '../slices/firstrun';
 
@@ -28,9 +29,9 @@ function* getDefaultUser() {
 function* getInitStatus() {
   const resultJson = yield call(ApiInit.getStatus);
   if (resultJson.error) {
-    yield put(setStatus(resultJson.message));
+    yield put(setServerStatus(resultJson.message));
   } else {
-    yield put(setStatus(resultJson.data));
+    yield put(setServerStatus(resultJson.data));
   }
 }
 
@@ -51,7 +52,7 @@ function* setDefaultUser(action: PayloadAction<DefaultUserType>) {
   } else {
     yield put(setUserStatus({ type: 'success', text: 'Account creation successful!' }));
     yield put(setFirstRunSaved('local-account'));
-    yield put(setActiveTab('anidb-account'));
+    yield put(push('anidb-account'));
   }
 }
 
@@ -65,11 +66,11 @@ function* testAniDB(action: PayloadAction<SettingsAnidbLoginType>) {
     yield put(setAnidbStatus({ type: 'success', text: 'AniDB test successful!' }));
     yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'AniDb', newSettings: action.payload } });
     yield put(setFirstRunSaved('anidb-account'));
-    yield put(setActiveTab('community-sites'));
+    yield put(push('community-sites'));
   }
 }
 
-function* testDatabase(action: PayloadAction<boolean>) {
+function* testDatabase() {
   yield put(startFetching('firstrunDatabase'));
   const resultJson = yield call(ApiInit.getDatabaseTest);
   yield put(stopFetching('firstrunDatabase'));
@@ -78,7 +79,7 @@ function* testDatabase(action: PayloadAction<boolean>) {
   } else {
     yield put(setFirstRunSaved('db-setup'));
     yield put(setDatabaseStatus({ type: 'success', text: 'Database test successful!' }));
-    if (action.payload) yield put(setActiveTab('local-account'));
+    yield put(push('local-account'));
   }
 }
 

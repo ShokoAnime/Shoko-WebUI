@@ -14,7 +14,7 @@ import { setItem } from '../slices/misc';
 
 function* checkUpdates() {
   yield put(startFetching('checkingUpdates'));
-  const channel = yield select((state: RootState) => state.webuiSettings.v3.updateChannel);
+  const channel = yield select((state: RootState) => state.webuiSettings.webui_v2.updateChannel);
   const resultJson = yield call(ApiWebUi.getWebuiLatest, channel);
   yield put(stopFetching('checkingUpdates'));
   if (resultJson.error) {
@@ -27,7 +27,7 @@ function* checkUpdates() {
 
 function* downloadUpdates() {
   yield put(startFetching('downloadUpdates'));
-  const channel = yield select((state: RootState) => state.webuiSettings.v3.updateChannel);
+  const channel = yield select((state: RootState) => state.webuiSettings.webui_v2.updateChannel);
   const resultJson = yield call(ApiWebUi.getWebuiUpdate, channel);
   yield put(stopFetching('downloadUpdates'));
   if (resultJson.error) {

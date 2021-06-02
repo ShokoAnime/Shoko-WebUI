@@ -1,6 +1,5 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { forEach } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
@@ -9,11 +8,27 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import quickActions from '../../../core/quick-actions';
 import FixedPanel from '../../../components/Panels/FixedPanel';
-import Button from '../../../components/Buttons/Button';
+import Button from '../../../components/Input/Button';
 
-class QuickActions extends React.Component<Props> {
-  renderRow = (key: string) => {
-    const { pinnedActions, runAction, togglePinnedAction } = this.props;
+type Props = {
+  title: string;
+  actions: Array<string>;
+};
+
+function QuickActions(props: Props) {
+  const dispatch = useDispatch();
+
+  const pinnedActions = useSelector((state: RootState) => state.webuiSettings.webui_v2.actions);
+
+  const runAction = (key: string, data: any) => dispatch(
+    { type: Events.QUICK_ACTION_RUN, payload: { key, data } },
+  );
+
+  const togglePinnedAction = (payload: string) => dispatch(
+    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload },
+  );
+
+  const renderRow = (key: string) => {
     const action = quickActions[key];
     const pinned = pinnedActions.indexOf(key) === -1;
 
@@ -21,10 +36,10 @@ class QuickActions extends React.Component<Props> {
       <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
         <span className="flex">{action.name}</span>
         <div className="flex">
-          <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-color-accent'])}>
+          <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-color-highlight-1'])}>
             <FontAwesomeIcon icon={faThumbtack} className="text-xs" />
           </Button>
-          <Button onClick={() => runAction(action.function, action.data)} className="bg-color-accent font-exo text-xs font-bold px-6 py-1">
+          <Button onClick={() => runAction(action.function, action.data)} className="bg-color-highlight-1 font-exo text-xs font-bold px-6 py-1">
             Run
           </Button>
         </div>
@@ -32,40 +47,13 @@ class QuickActions extends React.Component<Props> {
     );
   };
 
-  render() {
-    const { title, actions } = this.props;
-    const items: Array<any> = [];
+  const { title, actions } = props;
 
-    forEach(actions, (action) => {
-      items.push(this.renderRow(action));
-    });
-
-    return (
-      <FixedPanel title={title}>
-        {items}
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title={title}>
+      {actions.map(action => renderRow(action))}
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  pinnedActions: state.webuiSettings.v3.actions,
-});
-
-const mapDispatch = {
-  runAction: (key: string, data: any) => (
-    { type: Events.QUICK_ACTION_RUN, payload: { key, data } }
-  ),
-  togglePinnedAction: (payload: string) => (
-    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload }
-  ),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector> & {
-  title: string;
-  actions: Array<string>;
-};
-
-export default connector(QuickActions);
+export default QuickActions;

@@ -1,101 +1,80 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { Responsive, WidthProvider } from 'react-grid-layout';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import ReactGridLayout, { Responsive, WidthProvider } from 'react-grid-layout';
 import { isEqual, isUndefined } from 'lodash';
 import { omitDeepBy } from '../../core/util';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import type { LayoutType } from '../../core/slices/webuiSettings';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
-import FilesBreakdown from './panels/FilesBreakdown';
+import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
 import ActionItems from './panels/ActionItems';
-import ImportFolders from './panels/ImportFolders';
-import CommandQueue from './panels/CommandQueue';
+import QueueProcessor from './panels/QueueProcessor';
+import ShokoNews from './panels/ShokoNews';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-type State = LayoutType;
+function DashboardPage() {
+  const dispatch = useDispatch();
 
-class DashboardPage extends React.Component<Props, State> {
-  state = defaultLayout.dashboard;
+  const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.dashboard);
 
-  componentDidMount = () => {
-    const { layout } = this.props;
-    this.setState(layout);
-  };
+  const [currentLayout, setCurrentLayout] = useState(defaultLayout.dashboard);
 
-  componentDidUpdate = (prevProps) => {
-    const { layout } = this.props;
-    if (!isEqual(prevProps, this.props)) this.setState(layout);
-  };
+  useEffect(() => {
+    setCurrentLayout(layout);
+  }, []);
 
-  handleOnLayoutChange = (layout: any) => {
-    const { changeLayout } = this.props;
-    if (!isEqual(this.state, omitDeepBy(layout, isUndefined))) {
-      changeLayout(layout);
+  const handleOnLayoutChange = (newLayout: ReactGridLayout.Layouts) => {
+    if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
+      dispatch({
+        type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
+        payload: { dashboard: newLayout },
+      });
     }
   };
 
-  render() {
-    const cols = {
-      lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
-    };
-
-    return (
-      <React.Fragment>
-        <ResponsiveGridLayout
-          layouts={this.state}
-          cols={cols}
-          rowHeight={0}
-          containerPadding={[40, 40]}
-          margin={[40, 40]}
-          className="w-full"
-          onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
-        >
-          <div key="collectionBreakdown">
-            <CollectionBreakdown />
-          </div>
-          <div key="seriesBreakdown">
-            <SeriesBreakdown />
-          </div>
-          <div key="commandQueue">
-            <CommandQueue />
-          </div>
-          <div key="importFolders">
-            <ImportFolders />
-          </div>
-          <div key="importBreakdown">
-            <ImportBreakdown />
-          </div>
-          <div key="actionItems">
-            <ActionItems />
-          </div>
-          <div key="filesBreakdown">
-            <FilesBreakdown />
-          </div>
-        </ResponsiveGridLayout>
-      </React.Fragment>
-    );
-  }
+  return (
+    <ResponsiveGridLayout
+      layouts={currentLayout}
+      cols={{
+        lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
+      }}
+      rowHeight={0}
+      containerPadding={[30, 30]}
+      margin={[25, 25]}
+      className="w-full"
+      onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
+    >
+      <div key="collectionBreakdown">
+        <CollectionBreakdown />
+      </div>
+      <div key="seriesBreakdown">
+        <SeriesBreakdown />
+      </div>
+      <div key="queueProcessor">
+        <QueueProcessor />
+      </div>
+      <div key="importBreakdown">
+        <ImportBreakdown />
+      </div>
+      <div key="shokoNews">
+        <ShokoNews />
+      </div>
+      <div key="actionItems">
+        <ActionItems />
+      </div>
+      <div key="actionItems2">
+        <ActionItems />
+      </div>
+      <div key="collectionTypeBreakdown">
+        <CollectionTypeBreakdown />
+      </div>
+    </ResponsiveGridLayout>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  layout: state.webuiSettings.v3.layout.dashboard,
-});
-
-const mapDispatch = {
-  changeLayout: (layout: any) => ({
-    type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-    payload: { dashboard: layout },
-  }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(DashboardPage);
+export default DashboardPage;
