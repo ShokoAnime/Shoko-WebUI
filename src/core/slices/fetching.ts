@@ -2,7 +2,9 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const fetchingSlice = createSlice({
   name: 'fetching',
-  initialState: {} as { [key: string]: boolean },
+  initialState: {
+    settings: true,
+  } as { [key: string]: boolean },
   reducers: {
     startFetching(sliceState, action) {
       return Object.assign({}, sliceState, { [action.payload]: true });

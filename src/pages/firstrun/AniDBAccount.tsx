@@ -1,75 +1,51 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import cx from 'classnames';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Input from '../../components/Input/Input';
 import Footer from './Footer';
+import TransitionDiv from '../../components/TransitionDiv';
+import { unsetSaved as unsetFirstRunSaved, setAnidbStatus } from '../../core/slices/firstrun';
 
-import type { SettingsAnidbLoginType } from '../../core/types/api/settings';
+function AniDBAccount() {
+  const dispatch = useDispatch();
 
-type State = SettingsAnidbLoginType;
+  const aniDBSettings = useSelector((state: RootState) => state.localSettings.AniDb);
+  const isFetching = useSelector((state: RootState) => state.fetching.firstrunAnidb);
+  const status = useSelector((state: RootState) => state.firstrun.anidbStatus);
 
-class AniDBAccount extends React.Component<Props, State> {
-  state = {
-    Username: '',
-    Password: '',
-  };
+  const [Username, setUsername] = useState('');
+  const [Password, setPassword] = useState('');
 
-  componentDidMount() {
-    const { AniDb } = this.props;
-    this.setState(AniDb);
-  }
+  useEffect(() => {
+    setUsername(aniDBSettings.Username);
+    setPassword(aniDBSettings.Password);
+  }, []);
 
-  handleInputChange = (event: any) => {
-    const { id, value } = event.target;
-    this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
-  };
+  useEffect(() => {
+    dispatch(setAnidbStatus({ type: 'success', text: '' }));
+    dispatch(unsetFirstRunSaved('anidb-account'));
+  }, [Username, Password]);
 
-  render() {
-    const { status, isFetching, testAnidb } = this.props;
-    const { Username, Password } = this.state;
-
-    return (
-      <React.Fragment>
-        <div className="flex flex-col flex-grow p-10">
-          <div className="font-bold text-lg">Adding Your AniDB Account</div>
-          <div className="font-muli mt-5 text-justify">
-            Shoko uses AniDB to compare your file hashes with its extensive database to quickly
-            figure out and add series to your collection. AniDB also provides additional series
-            and episode information that enhances your usage.
-          </div>
-          <div className="font-muli mt-2 text-justify">
-            An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-accent-secondary hover:underline">Click Here</a> to create one.
-          </div>
-          <div className="flex flex-col w-1/2 mt-3">
-            <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
-            <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
-          </div>
-          <div className={cx(['flex ', status.type === 'error' ? 'color-danger' : 'color-accent'])}>
-            {status.text}
-          </div>
-        </div>
-        <Footer prevTabKey="local-account" nextDisabled={Username === '' || Password === ''} saveFunction={() => testAnidb(this.state)} isFetching={isFetching} />
-      </React.Fragment>
-    );
-  }
+  return (
+    <TransitionDiv className="flex flex-col flex-grow justify-center">
+      <div className="font-bold text-lg">Adding Your AniDB Account</div>
+      <div className="font-mulish mt-5 text-justify">
+        Shoko uses AniDB to compare your file hashes with its extensive database to quickly
+        figure out and add series to your collection. AniDB also provides additional series
+        and episode information that enhances your usage.
+      </div>
+      <div className="font-mulish mt-4 text-justify">
+        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-highlight-2 hover:underline">Click Here</a> to create one.
+      </div>
+      <div className="flex flex-col my-8">
+        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-6" />
+      </div>
+      <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => dispatch({ type: Events.FIRSTRUN_TEST_ANIDB, payload: { Username, Password } })} isFetching={isFetching} status={status} />
+    </TransitionDiv>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  AniDb: state.localSettings.AniDb,
-  status: state.firstrun.anidbStatus,
-  isFetching: state.fetching.firstrunAnidb,
-});
-
-const mapDispatch = {
-  testAnidb: (payload: SettingsAnidbLoginType) => ({ type: Events.FIRSTRUN_TEST_ANIDB, payload }),
-  saveSettings: (payload: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(AniDBAccount);
+export default AniDBAccount;

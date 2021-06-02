@@ -21,6 +21,7 @@ export type SeriesInfoType = {
   filesize: number,
   size: number,
   paths: Array<string>,
+  type: string,
 };
 
 export type QueueItemType = {

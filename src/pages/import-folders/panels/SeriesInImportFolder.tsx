@@ -1,5 +1,5 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,28 +9,28 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Select from '../../../components/Input/Select';
-import Button from '../../../components/Buttons/Button';
-import type { ImportFolderType } from '../../../core/types/api/import-folder';
+import Button from '../../../components/Input/Button';
+import { SeriesInfoType } from '../../../core/types/api';
 
-type State = {
-  selectedFolder: number;
-};
+function SeriesInImportFolders() {
+  const dispatch = useDispatch();
 
-class SeriesInImportFolders extends React.Component<Props> {
-  state = {
-    selectedFolder: 1,
-  };
+  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const isFetching = useSelector((state: RootState) => state.fetching.importFolderSeries);
+  const seriesInFolder = useSelector((state: RootState) => state.mainpage.importFolderSeries);
 
-  componentDidMount = () => {
-    const { importFolders, getSeries } = this.props;
-    const selectedFolder = importFolders[0]?.ID;
-    if (selectedFolder) {
-      getSeries(selectedFolder);
-      this.setState({ selectedFolder });
-    }
-  };
+  const getSeries = (id: number) => dispatch(
+    { type: Events.MAINPAGE_IMPORT_FOLDER_SERIES, payload: id },
+  );
 
-  renderItem = (series: any, idx: number) => {
+  const [selectedFolder, setSelectedFolder] = useState(1);
+
+  useEffect(() => {
+    setSelectedFolder(importFolders[0]?.ID);
+    getSeries(selectedFolder);
+  }, []);
+
+  const renderItem = (series: SeriesInfoType, idx: number) => {
     let paths = '';
 
     forEach(series.paths, (path, index) => {
@@ -50,65 +50,28 @@ class SeriesInImportFolders extends React.Component<Props> {
     );
   };
 
-  handleInputChange = (event: any) => {
-    this.setState({ selectedFolder: event.target.value });
-  };
+  const renderOptions = () => (
+    <div className="flex font-mulish font-bold">
+      <Select id="selectedFolder" value={selectedFolder} onChange={e => setSelectedFolder(e.target.value)} className="mr-2">
+        {importFolders.map(
+          folder => (<option value={folder.ID}>{folder.Path}</option>),
+        )}
+      </Select>
+      <Button onClick={() => getSeries(selectedFolder)} className="color-highlight-1">
+        <FontAwesomeIcon icon={faRedoAlt} />
+      </Button>
+    </div>
+  );
 
-  renderOptions = () => {
-    const { importFolders, getSeries } = this.props;
-    const { selectedFolder } = this.state;
-
-    const folders: Array<any> = [];
-
-    forEach(importFolders, (folder: ImportFolderType) => {
-      folders.push(<option value={folder.ID}>{folder.Path}</option>);
-    });
-
-    return (
-      <div className="flex font-muli font-bold">
-        <Select id="selectedFolder" value={selectedFolder} onChange={this.handleInputChange} className="mr-2">
-          {folders}
-        </Select>
-        <Button onClick={() => getSeries(selectedFolder)} className="color-accent">
-          <FontAwesomeIcon icon={faRedoAlt} />
-        </Button>
-      </div>
-    );
-  };
-
-  render() {
-    const { seriesInFolder, isFetching } = this.props;
-
-    const seriesItems: Array<any> = [];
-
-    forEach(seriesInFolder, (series, idx) => {
-      seriesItems.push(this.renderItem(series, idx + 1));
-    });
-
-    return (
-      <FixedPanel title="Series In Import Folder" options={this.renderOptions()} isFetching={isFetching}>
-        <table className="table-auto">
-          <tbody>
-            {seriesItems}
-          </tbody>
-        </table>
-      </FixedPanel>
-    );
-  }
+  return (
+    <FixedPanel title="Series In Import Folder" options={renderOptions()} isFetching={isFetching}>
+      <table className="table-auto">
+        <tbody>
+          {seriesInFolder.map((series, index) => renderItem(series, index + 1))}
+        </tbody>
+      </table>
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  importFolders: state.mainpage.importFolders,
-  isFetching: state.fetching.importFolderSeries,
-  seriesInFolder: state.mainpage.importFolderSeries,
-});
-
-const mapDispatch = {
-  getSeries: (id: number) => ({ type: Events.MAINPAGE_IMPORT_FOLDER_SERIES, payload: id }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(SeriesInImportFolders);
+export default SeriesInImportFolders;

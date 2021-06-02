@@ -1,78 +1,59 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
-import Input from '../../../components/Input/Input';
+import InputSmall from '../../../components/Input/InputSmall';
 
-type State = {
-  AutoFanartAmount: number;
-  AutoPostersAmount: number;
-};
+function MovieDBSettings() {
+  const dispatch = useDispatch();
 
-class MovieDBSettings extends React.Component<Props, State> {
-  state = {
-    AutoFanartAmount: 10,
-    AutoPostersAmount: 10,
-  };
+  const isFetching = useSelector((state: RootState) => state.fetching.settings);
+  const movieDBSettings = useSelector((state: RootState) => state.localSettings.MovieDb);
 
-  componentDidMount = () => {
-    const { AutoFanartAmount, AutoPostersAmount } = this.props;
-    this.setState({ AutoFanartAmount, AutoPostersAmount });
-  };
+  const [AutoFanartAmount, setAutoFanartAmount] = useState(10);
+  const [AutoPostersAmount, setAutoPostersAmount] = useState(10);
 
-  handleInputChange = (event: any) => {
-    const { saveSettings } = this.props;
-    const { id } = event.target;
-    const propId = id.replace('MovieDB_', '');
+  const saveSettings = (newSettings: { [id: string]: any }) => dispatch(
+    { type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'MovieDb', newSettings } },
+  );
+
+  useEffect(() => {
+    setAutoFanartAmount(movieDBSettings.AutoFanartAmount);
+    setAutoPostersAmount(movieDBSettings.AutoPostersAmount);
+  }, []);
+
+  const handleInputChange = (event: any) => {
+    const propId = event.target.id.replace('MovieDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (event.target.type === 'number') {
-      this.setState(prevState => Object.assign({}, prevState, { [propId]: value }));
-    }
     if (value !== '') {
-      saveSettings({ context: 'MovieDb', newSettings: { [propId]: value } });
+      saveSettings({ [propId]: value });
     }
   };
 
-  render() {
-    const { AutoFanart, AutoPosters, isFetching } = this.props;
-    const { AutoFanartAmount, AutoPostersAmount } = this.state;
+  return (
+    <FixedPanel title="MovieDB" isFetching={isFetching}>
 
-    return (
-      <FixedPanel title="MovieDB" isFetching={isFetching}>
-        <span className="font-extrabold">Download Options</span>
-        <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={this.handleInputChange} />
-        {AutoFanart && (
-          <div className="flex justify-between my-1">
-            Max Fanart
-            <Input id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-          </div>
-        )}
-        <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={this.handleInputChange} />
-        {AutoPosters && (
-          <div className="flex justify-between my-1">
-            Max Posters
-            <Input id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={this.handleInputChange} className="w-4" center />
-          </div>
-        )}
-      </FixedPanel>
-    );
-  }
+      <div className="font-bold">Download Options</div>
+      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} className="mt-1" />
+      {movieDBSettings.AutoFanart && (
+        <div className="flex justify-between mt-1">
+          Max Fanart
+          <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={e => setAutoFanartAmount(e.target.value)} className="w-10 text-center px-2" />
+        </div>
+      )}
+      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={movieDBSettings.AutoPosters} onChange={handleInputChange} className="mt-1" />
+      {movieDBSettings.AutoPosters && (
+        <div className="flex justify-between mt-1">
+          Max Posters
+          <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={e => setAutoPostersAmount(e.target.value)} className="w-10 text-center px-2" />
+        </div>
+      )}
+
+    </FixedPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  ...(state.localSettings.MovieDb),
-  isFetching: state.fetching.settings,
-});
-
-const mapDispatch = {
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(MovieDBSettings);
+export default MovieDBSettings;

@@ -1,48 +1,64 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 import { faCircle } from '@fortawesome/free-regular-svg-icons';
 
+import TransitionDiv from '../TransitionDiv';
+
 type Props = {
   id: string;
   label?: string;
-  isChecked: any;
+  isChecked: boolean;
   className?: string;
   labelRight?: boolean;
   onChange: (event: any) => void;
 };
 
-class Checkbox extends React.Component<Props> {
-  render() {
-    const {
-      id, label, isChecked, className, onChange,
-      labelRight,
-    } = this.props;
+function Checkbox(props: Props) {
+  const [focused, setFocused] = useState(false);
+  const {
+    id, label, isChecked, className, onChange,
+    labelRight,
+  } = props;
 
-    return (
-      <React.Fragment>
-        <div className={cx([`${className ?? ''} w-auto`, label && 'my-1'])}>
-          <label className="flex justify-between block font-muli" htmlFor={id} style={{ cursor: 'pointer' }}>
-            {!labelRight && (
-              <span>
-                {label}
-              </span>
-            )}
-            <input className="hidden" type="checkbox" id={id} checked={isChecked} onChange={onChange} />
-            <span className="color-accent">
-              <FontAwesomeIcon icon={isChecked ? faCheckCircle : faCircle} className="align-middle" />
-            </span>
-            {labelRight && (
-              <span className="ml-2">
-                {label}
-              </span>
-            )}
-          </label>
-        </div>
-      </React.Fragment>
-    );
-  }
+  return (
+    <label htmlFor={id} className={cx([`${className ?? ''} cursor-pointer checkbox flex items-center justify-between font-mulish`, focused ? 'checkbox-focused' : 'checkbox'])}>
+      <input
+        id={id}
+        type="checkbox"
+        checked={isChecked}
+        onChange={onChange}
+        className="border-0 overflow-hidden p-0 absolute whitespace-nowrap w-0 h-0"
+        style={{
+          clip: 'rect(0 0 0 0)',
+          clipPath: 'inset(50%)',
+        }}
+        onKeyUp={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      />
+      {!labelRight && (
+        <span className="flex items-center ">
+          {label}
+        </span>
+      )}
+      {isChecked && (
+        <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
+          <FontAwesomeIcon icon={faCheckCircle} />
+        </TransitionDiv>
+      )}
+      {!isChecked && (
+        <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
+          <FontAwesomeIcon icon={faCircle} />
+        </TransitionDiv>
+      )}
+      {labelRight && (
+        <span className="flex items-center ml-2">
+          {label}
+        </span>
+      )}
+    </label>
+  );
 }
 
 export default Checkbox;

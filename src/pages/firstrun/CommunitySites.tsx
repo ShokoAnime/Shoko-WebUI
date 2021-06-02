@@ -1,43 +1,27 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 import AniDBTab from './CommunitySiteTabs/AniDBTab';
 import TvDBTab from './CommunitySiteTabs/TvDBTab';
 import MovieDBTab from './CommunitySiteTabs/MovieDBTab';
-// import TraktTab from './CommunitySiteTabs/TraktTab';
-// import PlexTab from './CommunitySiteTabs/PlexTab';
+import TransitionDiv from '../../components/TransitionDiv';
 
-type State = {
-  activeTab: string,
-};
+function CommunitySites() {
+  const dispatch = useDispatch();
 
-class CommunitySites extends React.Component<Props, State> {
-  state = {
-    activeTab: 'anidb',
-  };
+  const [activeTab, setActiveTab] = useState('anidb');
 
-  changeTab = (tab: string) => {
-    this.setState({
-      activeTab: tab,
-    });
-  };
+  const renderTabButton = (title: string, key: string) => (
+    <Button onClick={() => setActiveTab(key)} className={cx(['mr-6 font-bold', activeTab === key && 'color-highlight-1'])}>
+      {title}
+    </Button>
+  );
 
-  renderTabButton = (title: string, key: string) => {
-    const { activeTab } = this.state;
-    return (
-      <Button onClick={() => this.changeTab(key)} className={cx(['mr-6 font-bold', activeTab === key && 'color-accent'])}>
-        {title}
-      </Button>
-    );
-  };
-
-  renderTabContent = () => {
-    const { activeTab } = this.state;
-
+  const renderTabContent = () => {
     switch (activeTab) {
       case 'anidb':
         return (<AniDBTab />);
@@ -45,50 +29,30 @@ class CommunitySites extends React.Component<Props, State> {
         return (<TvDBTab />);
       case 'moviedb':
         return (<MovieDBTab />);
-      // case 'trakt':
-      //   return (<TraktTab />);
-      // case 'plex':
-      //   return (<PlexTab />);
       default:
         return (<AniDBTab />);
     }
   };
 
-  render() {
-    const { setSaved } = this.props;
-
-    return (
-      <React.Fragment>
-        <div className="flex flex-col flex-grow px-10 pt-10 overflow-y-auto">
-          <div className="font-bold text-lg">Community Sites</div>
-          <div className="font-muli mt-5 text-justify">
-            Shoko supports multiple community sites that can be used to download additional
-            metadata for the series in your collection. We highly recommend going through each
-            sites settings and configuring them to your liking.
-          </div>
-          <div className="flex mt-6 border-b pb-4">
-            {this.renderTabButton('AniDB', 'anidb')}
-            {this.renderTabButton('The TvDB', 'tvdb')}
-            {this.renderTabButton('The Movie DB', 'moviedb')}
-            {/* {this.renderTabButton('Trakt.TV', 'trakt')}
-            {this.renderTabButton('Plex', 'plex')} */}
-          </div>
-          <div className="flex flex-col my-4 overflow-y-auto flex-shrink">
-            {this.renderTabContent()}
-          </div>
-        </div>
-        <Footer prevTabKey="anidb-account" nextTabKey="start-server" saveFunction={() => setSaved('community-sites')} />
-      </React.Fragment>
-    );
-  }
+  return (
+    <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center">
+      <div className="font-bold text-lg">Community Sites</div>
+      <div className="font-mulish mt-5 text-justify">
+        Shoko supports multiple community sites that can be used to download additional
+        metadata for the series in your collection. We highly recommend going through each
+        sites settings and configuring them to your liking.
+      </div>
+      <div className="flex mt-5 border-b pb-4">
+        {renderTabButton('AniDB', 'anidb')}
+        {renderTabButton('The TvDB', 'tvdb')}
+        {renderTabButton('The Movie DB', 'moviedb')}
+      </div>
+      <div className="flex flex-col mt-4 mb-8 overflow-y-auto flex-shrink">
+        {renderTabContent()}
+      </div>
+      <Footer nextPage="start-server" saveFunction={() => dispatch(setFirstRunSaved('community-sites'))} />
+    </TransitionDiv>
+  );
 }
 
-const mapDispatch = {
-  setSaved: (value: string) => (setFirstRunSaved(value)),
-};
-
-const connector = connect(() => ({}), mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(CommunitySites);
+export default CommunitySites;

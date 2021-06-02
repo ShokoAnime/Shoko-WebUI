@@ -1,9 +1,11 @@
 import { call, put, select } from 'redux-saga/effects';
+import { PayloadAction } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 import { toast } from 'react-toastify';
 
 import ApiFolder from '../api/v3/folder';
 
+import { RootState } from '../store';
 import { startFetching, stopFetching } from '../slices/fetching';
 import {
   setItems as setBrowseModalItems, setId as setBrowseModalId,
@@ -11,8 +13,8 @@ import {
 
 import type { FolderType } from '../types/api/folder';
 
-function* folderBrowse(action) {
-  let genId = yield select(state => state.modals.browseFolder.id);
+function* folderBrowse(action: PayloadAction<{ id: number; path: string }>) {
+  let genId = yield select((state: RootState) => state.modals.browseFolder.id);
   const { id, path } = action.payload;
 
   yield put(startFetching(`browse-treenode-${id}`));
@@ -24,7 +26,7 @@ function* folderBrowse(action) {
     return;
   }
 
-  const nodes: Array<any> = [];
+  const nodes: Array<FolderType> = [];
   forEach(resultJson.data, (node: FolderType) => {
     if (node.CanAccess && node.DriveType !== 'Ram') {
       genId += 1;
