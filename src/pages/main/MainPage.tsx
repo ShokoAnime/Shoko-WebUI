@@ -62,7 +62,6 @@ function MainPage() {
             <Route exact path="/actions" component={ActionsPage} />
             <Route exact path="/logs" component={LogsPage} />
             <Route exact path="/settings" component={SettingsPage} />
-            <Route exact path="/collection" component={CollectionPage} />
           </div>
         </div>
       </div>
