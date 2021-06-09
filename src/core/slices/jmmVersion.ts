@@ -5,7 +5,7 @@ const jmmVersionSlice = createSlice({
   initialState: '',
   reducers: {
     version(sliceState, action) {
-      return action.payload ? sliceState : action.payload;
+      return action.payload;
     },
   },
 });

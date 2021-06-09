@@ -39,7 +39,7 @@ function* serverVersion() {
     }
   });
 
-  yield jmmVersionAction(version);
+  yield put(jmmVersionAction(version));
 }
 
 export default function* rootSaga() {
