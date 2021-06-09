@@ -2,7 +2,6 @@ import {
   all, call, put, takeEvery, throttle,
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
-import { createAction } from 'redux-actions';
 import { toast } from 'react-toastify';
 
 import ApiCommon from '../api/common';
@@ -19,14 +18,10 @@ import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
 import SagaWebUi from './webui';
 
-import {
-  JMM_VERSION,
-} from '../actions';
+import { version as jmmVersionAction } from '../slices/jmmVersion';
 import apiPollingDriver from './apiPollingDriver';
 
 import { startFetching, stopFetching } from '../slices/fetching';
-
-const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
 function* serverVersion() {
   yield put(startFetching('serverVersion'));
@@ -44,7 +39,7 @@ function* serverVersion() {
     }
   });
 
-  yield dispatchAction(JMM_VERSION, version);
+  yield jmmVersionAction(version);
 }
 
 export default function* rootSaga() {
