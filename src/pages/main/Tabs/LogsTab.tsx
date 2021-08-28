@@ -33,7 +33,7 @@ class LogsTab extends React.Component<Props> {
         {({ registerChild }) => (
           <div ref={registerChild} key={key} style={style} className="text-sm bg-dark-gray">
             <div className="content flex flex-row">
-              <div className="px-1 text-pink-500">{lines[index].timeStamp}</div>
+              <div className="px-1 text-pink-500 whitespace-no-wrap">{lines[index].timeStamp}</div>
               <div className="px-1">{lines[index].message}</div>
             </div>
           </div>
