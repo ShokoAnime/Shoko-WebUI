@@ -1,10 +1,12 @@
+import { Integration } from '@sentry/types';
+import { Integrations } from '@sentry/tracing';
+import * as Sentry from '@sentry/browser';
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
 import 'isomorphic-fetch';
 import 'es6-promise/auto';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import * as Sentry from '@sentry/browser';
 import App from './core/app';
 import { uiVersion } from './core/util';
 
@@ -19,6 +21,8 @@ Sentry.init({
   },
   environment: 'production',
   release: uiVersion(),
+  integrations: [new Integrations.BrowserTracing() as Integration],
+  tracesSampleRate: 1.0,
 });
 
 const container = document && document.getElementById('app-root');
