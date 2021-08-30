@@ -111,6 +111,7 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^7.27.0",
+    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-airbnb-typescript": "^14.0.0",
     "eslint-formatter-pretty": "^4.0.0",
     "eslint-plugin-import": "^2.23.3",
@@ -160,6 +161,12 @@
     "extends": [
       "airbnb-typescript"
     ],
+    "plugins": [
+      "import",
+      "react",
+      "react-hooks",
+      "jsx-a11y"
+    ],
     "env": {
       "browser": true
     },
@@ -199,6 +206,7 @@
           "functions": false
         }
       ],
+      "@typescript-eslint/no-redeclare": "off",
       "arrow-parens": [
         "error",
         "as-needed",
