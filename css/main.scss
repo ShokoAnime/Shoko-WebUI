@@ -1,3 +1,8 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+@import "react-grid-layout/css/styles";
+@import "react-resizable/css/styles";
 @import "common";
 @import "common-dark";
 @import "modals";
@@ -8,8 +13,3 @@
 @import "actions";
 @import "import-folders";
 @import "input";
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "react-grid-layout/css/styles";
-@import "react-resizable/css/styles";
