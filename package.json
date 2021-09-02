@@ -89,9 +89,19 @@
     "@babel/preset-env": "^7.6.0",
     "@babel/preset-react": "^7.0.0-rc.1",
     "@babel/register": "^7.6.0",
+    "@mdx-js/react": "^1.6.22",
     "@redux-saga/testing-utils": "^1.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.25.0",
-    "@typescript-eslint/parser": "^4.25.0",
+    "@storybook/addon-actions": "^6.3.7",
+    "@storybook/addon-docs": "^6.3.7",
+    "@storybook/addon-essentials": "^6.3.7",
+    "@storybook/addon-links": "^6.3.7",
+    "@storybook/addon-postcss": "^2.0.0",
+    "@storybook/builder-webpack5": "next",
+    "@storybook/manager-webpack5": "next",
+    "@storybook/preset-scss": "^1.0.3",
+    "@storybook/react": "^6.3.7",
+    "@typescript-eslint/eslint-plugin": "^4.29.3",
+    "@typescript-eslint/parser": "^4.29.3",
     "assets-webpack-plugin": "^3.8.4",
     "autoprefixer": "^10.2.5",
     "ava": "^3.15.0",
@@ -111,7 +121,8 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^7.27.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-airbnb-typescript": "^14.0.0",
     "eslint-formatter-pretty": "^4.0.0",
     "eslint-plugin-import": "^2.23.3",
     "eslint-plugin-jsx-a11y": "^6.4.1",
@@ -129,14 +140,14 @@
     "postcss": "^8.2.15",
     "postcss-import": "^14.0.2",
     "postcss-load-config": "^3.0.1",
-    "postcss-loader": "^5.3.0",
+    "postcss-loader": "^6.1.1",
     "postcss-preset-env": "^6.7.0",
     "react-hot-loader": "^4.3.3",
     "redux-mock-store": "^1.5.3",
     "redux-saga-testing": "^1.0.5",
     "resolve-url-loader": "^3.1.2",
     "rimraf": "^3.0.0",
-    "sass-loader": "^8.0.2",
+    "sass-loader": "^12.1.0",
     "source-map-loader": "^2.0.1",
     "style-loader": "^1.3.0",
     "stylelint": "^10.1.0",
@@ -159,6 +170,12 @@
     },
     "extends": [
       "airbnb-typescript"
+    ],
+    "plugins": [
+      "import",
+      "react",
+      "react-hooks",
+      "jsx-a11y"
     ],
     "env": {
       "browser": true
@@ -199,6 +216,7 @@
           "functions": false
         }
       ],
+      "@typescript-eslint/no-redeclare": "off",
       "arrow-parens": [
         "error",
         "as-needed",
@@ -274,6 +292,8 @@
     "test:coverage": "",
     "test:debug": "cross-env NODE_ENV=test ava --verbose test/pages/settings/AnidbImageSettings.test.js",
     "report": "nyc report --reporter=html",
-    "coveralls": ""
+    "coveralls": "",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   }
 }

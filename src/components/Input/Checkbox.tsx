@@ -12,6 +12,7 @@ type Props = {
   isChecked: boolean;
   className?: string;
   labelRight?: boolean;
+  justify?: boolean;
   onChange: (event: any) => void;
 };
 
@@ -19,11 +20,11 @@ function Checkbox(props: Props) {
   const [focused, setFocused] = useState(false);
   const {
     id, label, isChecked, className, onChange,
-    labelRight,
+    labelRight, justify,
   } = props;
 
   return (
-    <label htmlFor={id} className={cx([`${className ?? ''} cursor-pointer checkbox flex items-center justify-between font-mulish`, focused ? 'checkbox-focused' : 'checkbox'])}>
+    <label htmlFor={id} className={cx({ 'justify-between': justify === true }, [`${className ?? ''} cursor-pointer checkbox flex items-center`, focused ? 'checkbox-focused' : 'checkbox'])}>
       <input
         id={id}
         type="checkbox"

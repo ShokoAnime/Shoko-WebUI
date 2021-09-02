@@ -55,10 +55,10 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: $background-color-2; 
+  background: $background-color-2;
   border-radius: 10px;
 }
- 
+
 ::-webkit-scrollbar-thumb {
   background: $highlight-color-2;
   border-radius: 10px;
@@ -137,6 +137,10 @@ button.color-highlight-1:hover {
 
 .bg-color-danger {
   background-color: $highlight-color-4;
+}
+
+.button-color-primary {
+  background-color: $accent-color-secondary
 }
 
 .border-color-danger {
