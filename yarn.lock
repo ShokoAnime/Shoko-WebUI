@@ -2999,6 +2999,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@mdi/js@npm:^6.1.95":
+  version: 6.1.95
+  resolution: "@mdi/js@npm:6.1.95"
+  checksum: 42fe326895039c9057daf880ca80011eece5eae83462ff5b4216e6b48220d33560e68b69653d6d86f3bffa35c44d6aa3fc76f333fcc6edda7c994a405b771b1e
+  languageName: node
+  linkType: hard
+
+"@mdi/react@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@mdi/react@npm:1.5.0"
+  checksum: e2c3612d39bc96ebef58b8b9971b502d7aaad587dc20ccdad22f6b657e8e38121f7cf6b41a0122174266ad29b17f83625f43e1cdc008dba69a54c5e7a09c7c75
+  languageName: node
+  linkType: hard
+
 "@mdx-js/loader@npm:^1.6.22":
   version: 1.6.22
   resolution: "@mdx-js/loader@npm:1.6.22"
@@ -15511,6 +15525,8 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^5.1.0-11
     "@fortawesome/react-fontawesome": ^0.1.0-11
     "@headlessui/react": ^1.2.0
+    "@mdi/js": ^6.1.95
+    "@mdi/react": ^1.5.0
     "@mdx-js/react": ^1.6.22
     "@microsoft/signalr": ^5.0.5
     "@redux-saga/testing-utils": ^1.0.1

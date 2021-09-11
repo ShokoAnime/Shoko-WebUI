@@ -1,20 +1,21 @@
 import React from 'react';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
-import { faDatabase } from '@fortawesome/free-solid-svg-icons';
-import { faTachometerAlt } from '@fortawesome/free-solid-svg-icons';
-import { faWrench } from '@fortawesome/free-solid-svg-icons';
-import { faList } from '@fortawesome/free-solid-svg-icons';
-import { faListAlt } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@mdi/react';
+
+import { mdiCogOutline } from '@mdi/js';
+import { mdiTabletDashboard } from '@mdi/js';
+import { mdiLayersTripleOutline } from '@mdi/js';
+import { mdiTools } from '@mdi/js';
+import { mdiFormatListBulletedSquare } from '@mdi/js';
+import { mdiTextBoxOutline } from '@mdi/js';
 
 const iconMap = {
-  dashboard: faTachometerAlt,
-  collection: faDatabase,
-  utilities: faWrench,
-  actions: faList,
-  log: faListAlt,
-  settings: faCog,
+  dashboard: mdiTabletDashboard,
+  collection: mdiLayersTripleOutline,
+  utilities: mdiTools,
+  actions: mdiFormatListBulletedSquare,
+  log: mdiTextBoxOutline,
+  settings: mdiCogOutline,
 };
 
 enum IconType {
@@ -40,8 +41,10 @@ function MenuItem(props: MenuItemProps) {
 
   return (
         <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
-            <div className="w-5 flex justify-center content-center"><FontAwesomeIcon icon={iconMap[icon]} /></div>
-            <div className="pl-4 font-semibold">{label}</div>
+          <div className="w-5 flex justify-center content-center">
+            <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180} color='#CFD8E3' />
+          </div>
+          <div className="pl-4 font-semibold">{label}</div>
         </div>
   );
 }
