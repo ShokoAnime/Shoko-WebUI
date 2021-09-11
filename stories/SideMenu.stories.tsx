@@ -1,7 +1,7 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
-import SideMenu from '../components/Layout/SideMenu';
+import SideMenu from '../src/components/Layout/SideMenu';
 import { Default as MenuItemDefaults } from './MenuItem.stories';
 
 export default {
