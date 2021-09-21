@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import { call, put, select } from 'redux-saga/effects';
 import Events from '../events';
 

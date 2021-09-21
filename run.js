@@ -96,6 +96,8 @@ tasks.set('bundle', () => {
 tasks.set('release', () => {
   const zipFolder = require('zip-folder');
 
+  fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
+
   return new Promise((resolve, reject) => {
     zipFolder('./public', process.env.NODE_ENV === 'development'
       ? './build/latest-unstable.zip' : './build/latest.zip',
