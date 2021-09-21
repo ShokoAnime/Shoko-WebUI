@@ -18,7 +18,7 @@ Sentry.init({
     return event;
   },
   environment: 'staging',
-  release: uiVersion(),
+  release: 'dev',
 });
 
 document.title = `Shoko Server Web UI ${uiVersion()}`;

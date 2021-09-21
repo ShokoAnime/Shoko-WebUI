@@ -5,6 +5,9 @@ const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+
+const Version = require('./public/version.json');
 
 const isDebug = global.DEBUG === false ? false : !process.argv.includes('--release');
 const isVerbose = process.argv.includes('--verbose') || process.argv.includes('-v');
@@ -26,12 +29,13 @@ const config = {
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
     filename: isDebug ? '[name].js?[hash]' : '[name].[hash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
+    sourceMapFilename: 'sourcemaps/[name].[chunkhash].map.js',
     sourcePrefix: '  ',
   },
   devServer: {
     hot: true,
   },
-  devtool: isDebug ? 'source-map' : false,
+  devtool: 'source-map',
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
@@ -54,6 +58,7 @@ const config = {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
       __DEV__: isDebug,
+      'process.env.SENTRY_AUTH_TOKEN': JSON.stringify(process.env.SENTRY_AUTH_TOKEN),
     }),
     new AssetsPlugin({
       path: path.resolve(__dirname, './public/dist'),
@@ -62,6 +67,14 @@ const config = {
     }),
     new MiniCssExtractPlugin({
       filename: '[contenthash].css',
+    }),
+    new SentryWebpackPlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'shoko-anime',
+      project: 'shoko-webui',
+      release: isDebug ? 'dev' : Version.package,
+      include: './public/dist',
+      ignore: [],
     }),
   ],
   module: {

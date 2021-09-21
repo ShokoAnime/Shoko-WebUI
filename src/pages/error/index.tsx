@@ -43,8 +43,6 @@ class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: {}, info: {componentStack?: {};}) {
     Sentry.captureException(error);
     // Display fallback UI
-    console.log("ERROR");
-    console.log(error);
     this.setState({ hasError: true, error, info });
   }
 
