@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/browser';
+import * as Sentry from '@sentry/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import history from '../../core/history';
@@ -43,6 +43,8 @@ class ErrorBoundary extends React.Component<Props, State> {
   componentDidCatch(error: {}, info: {componentStack?: {};}) {
     Sentry.captureException(error);
     // Display fallback UI
+    console.log("ERROR");
+    console.log(error);
     this.setState({ hasError: true, error, info });
   }
 
