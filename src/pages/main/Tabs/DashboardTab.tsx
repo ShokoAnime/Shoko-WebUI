@@ -54,6 +54,7 @@ class DashboardTab extends React.Component<Props, State> {
           containerPadding={[40, 40]}
           margin={[40, 40]}
           className="w-full"
+          draggableHandle=".fixed-panel-header"
           onLayoutChange={(_layout, layouts) => this.handleOnLayoutChange(layouts)}
         >
           <div key="collectionBreakdown">
