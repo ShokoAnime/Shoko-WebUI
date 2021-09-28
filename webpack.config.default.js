@@ -68,14 +68,6 @@ const config = {
     new MiniCssExtractPlugin({
       filename: '[contenthash].css',
     }),
-    new SentryWebpackPlugin({
-      authToken: process.env.SENTRY_AUTH_TOKEN,
-      org: 'shoko-anime',
-      project: 'shoko-webui',
-      release: isDebug ? 'dev' : Version.package,
-      include: './public/dist',
-      ignore: [],
-    }),
   ],
   module: {
     rules: [
@@ -167,6 +159,14 @@ if (!isDebug) {
       },
     },
   };
+  config.plugins.push(new SentryWebpackPlugin({
+    authToken: process.env.SENTRY_AUTH_TOKEN,
+    org: 'shoko-anime',
+    project: 'shoko-webui',
+    release: isDebug ? 'dev' : Version.package,
+    include: './public/dist',
+    ignore: [],
+  }));
 } else {
   /* const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
   config.plugins.push(new BundleAnalyzerPlugin()); */
