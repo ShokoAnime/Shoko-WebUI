@@ -47,7 +47,7 @@ class LogsTab extends React.Component<Props> {
 
     return (
       <React.Fragment>
-        <div key="logs" className="bg-gray-700 text-white font-mono min-h-full">
+        <div key="logs" className="bg-gray-700 text-white font-mono min-h-full overflow-x-hidden">
           {lines.length === 0 && <span key="empty">Nothing here. Make sure you have server version that supports log streaming.</span> }
           <AutoSizer>
             {({ width, height }) => (
