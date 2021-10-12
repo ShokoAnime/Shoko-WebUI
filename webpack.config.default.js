@@ -71,7 +71,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/,
+        test: /\.[tj]sx?$/,
         exclude: /node_modules/,
         include: [path.resolve(__dirname, './src')],
         use: [
