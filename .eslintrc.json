@@ -1,61 +1,45 @@
 {
-  "parser": "@typescript-eslint/parser",
-  "parserOptions": {
-    "project": "./tsconfig.json"
-  },
   "extends": ["airbnb-typescript"],
   "ignorePatterns": ["build/**"],
 
   "env": {
     "browser": true
   },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
   "rules": {
-    "import/no-extraneous-dependencies": "off",
-    "react/prefer-stateless-function": "off",
-    "react/jsx-filename-extension": "off",
-    "react/require-default-props": "off",
-    "jsx-a11y/no-static-element-interactions": "off",
-    "jsx-a11y/anchor-has-content": "off",
-    "jsx-a11y/no-noninteractive-element-interactions": "off",
-    "react/forbid-prop-types": "off",
-    "jsx-a11y/click-events-have-key-events": "off",
-    "jsx-a11y/anchor-is-valid": "off",
-    "prefer-promise-reject-errors": "off",
-    "jsx-a11y/label-has-for": "off",
-    "import/no-cycle": "off",
-    "implicit-arrow-linebreak": "off",
-    "react/jsx-one-expression-per-line": "off",
-    "react/static-property-placement": "off",
-    "react/jsx-fragments": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/no-did-update-set-state": "off",
-    "prefer-object-spread": "off",
-    "no-param-reassign": [
-      "error",
-      {
-        "props": true,
-        "ignorePropertyModificationsFor": ["sliceState"]
-      }
-    ],
     "@typescript-eslint/no-use-before-define": [
       "error",
-      {
-        "functions": false
-      }
+      { "functions": false }
     ],
-    "arrow-parens": [
+    "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "implicit-arrow-linebreak": "off",
+    "import/no-cycle": "off",
+    "import/no-extraneous-dependencies": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-param-reassign": [
       "error",
-      "as-needed",
-      {
-        "requireForBlockBody": true
-      }
+      { "props": true, "ignorePropertyModificationsFor": ["sliceState"] }
     ],
+    "prefer-object-spread": "off",
+    "prefer-promise-reject-errors": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-filename-extension": "off",
+    "react/jsx-fragments": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-did-update-set-state": "off",
+    "react/prefer-stateless-function": "off",
+    "react/require-default-props": "off",
     "react/state-in-constructor": "off",
-    "no-console": [
-      "error",
-      {
-        "allow": ["warn", "error"]
-      }
-    ]
+    "react/static-property-placement": "off"
   }
 }
