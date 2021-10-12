@@ -162,6 +162,7 @@ if (isDebug && useHMR) {
   config.entry.unshift('webpack-hot-middleware/client');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.optimization = {
+    ...config.optimization,
     emitOnErrors: false,
     moduleIds: 'named',
   };
