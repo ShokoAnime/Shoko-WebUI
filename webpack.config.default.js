@@ -172,10 +172,13 @@ if (!isDebug) {
 }
 
 if (isDebug && useHMR) {
+  config.optimization = {
+    ...config.optimization,
+    namedModules: true,
+    noEmitOnErrors: true,
+  };
   config.entry.unshift('webpack-hot-middleware/client');
-  config.plugins.push(new webpack.NamedModulesPlugin());
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
 }
 
 module.exports = config;
