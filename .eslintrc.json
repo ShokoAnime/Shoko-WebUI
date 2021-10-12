@@ -10,6 +10,11 @@
     "project": "./tsconfig.json"
   },
   "rules": {
+    "@typescript-eslint/await-thenable": "warn",
+    "@typescript-eslint/no-floating-promises": [
+      "warn",
+      { "ignoreIIFE": true, "ignoreVoid": false }
+    ],
     "@typescript-eslint/no-use-before-define": [
       "error",
       { "functions": false }
@@ -52,6 +57,8 @@
       ],
       "parser": "espree",
       "rules": {
+        "@typescript-eslint/await-thenable": "off",
+        "@typescript-eslint/no-floating-promises": "off",
         "@typescript-eslint/no-implied-eval": "off",
         "@typescript-eslint/no-throw-literal": "off",
         "global-require": "off",
