@@ -4,6 +4,7 @@
 .vscode/
 
 # Compiled output
+build/**
 public/dist
 public/index.html
 public/version.json
@@ -19,6 +20,7 @@ run.config.js
 .eslintcache
 flow-typed/npm/
 .yarn/
+yarn-error.log
 
 # VS Code dev container config
 .devcontainer/
