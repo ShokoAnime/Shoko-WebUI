@@ -41,5 +41,23 @@
     "react/require-default-props": "off",
     "react/state-in-constructor": "off",
     "react/static-property-placement": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [
+        "postcss.config.js",
+        "run.js",
+        "run.config.default.js",
+        "webpack.config.default.js"
+      ],
+      "parser": "espree",
+      "rules": {
+        "@typescript-eslint/no-implied-eval": "off",
+        "@typescript-eslint/no-throw-literal": "off",
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "no-console": "off"
+      }
+    }
+  ]
 }
