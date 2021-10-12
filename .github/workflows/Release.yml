@@ -16,7 +16,7 @@ jobs:
         with:
           node-version: 14
       - name: Install dependencies
-        run: yarn install --production=false
+        run: yarn install --frozen-lockfile --production=false
       - name: Lint
         run: yarn lint --quiet
       - name: Build
