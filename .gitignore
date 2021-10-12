@@ -4,6 +4,7 @@
 .vscode/
 
 # Compiled output
+build/**
 public/dist
 public/index.html
 public/version.json
@@ -29,4 +30,5 @@ flow-typed/npm/
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+yarn-error.log
 .pnp.*
