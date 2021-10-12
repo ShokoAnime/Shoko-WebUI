@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 const TerserPlugin = require('terser-webpack-plugin');
 
 const path = require('path');

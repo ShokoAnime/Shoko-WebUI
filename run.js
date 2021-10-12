@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require,no-console,global-require */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
