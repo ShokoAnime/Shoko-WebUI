@@ -121,8 +121,8 @@ const signalRMiddleware = ({
     connectionLog.on('Log', onLogsLog(dispatch));
     startSignalRConnection(connectionLog);
   } else if (action.type === Events.AUTH_LOGOUT) {
-    if (connectionEvents !== undefined) connectionEvents.stop();
-    if (connectionLog !== undefined) connectionLog.stop();
+    await connectionEvents?.stop();
+    await connectionLog?.stop();
   }
 
   return next(action);
