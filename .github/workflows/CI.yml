@@ -1,5 +1,8 @@
-name: Test PR
-on: pull_request
+name: Test
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   lint-and-build:
@@ -8,9 +11,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: 14
       - name: Install dependencies
         run: yarn install
       - name: Lint
@@ -18,6 +21,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Upload artifacts
+        if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@v2
         with:
           name: shoko-webui-test

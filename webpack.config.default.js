@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 const TerserPlugin = require('terser-webpack-plugin');
 
 const path = require('path');
@@ -66,7 +65,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/,
+        test: /\.[tj]sx?$/,
         exclude: /node_modules/,
         include: [path.resolve(__dirname, './src')],
         use: [
@@ -163,6 +162,7 @@ if (isDebug && useHMR) {
   config.entry.unshift('webpack-hot-middleware/client');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.optimization = {
+    ...config.optimization,
     emitOnErrors: false,
     moduleIds: 'named',
   };

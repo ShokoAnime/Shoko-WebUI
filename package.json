@@ -22,22 +22,8 @@
     "@microsoft/signalr": "^5.0.5",
     "@reduxjs/toolkit": "^1.3.6",
     "@sentry/browser": "^5.10.2",
-    "@types/assets-webpack-plugin": "^3.9.0",
-    "@types/classnames": "^2.2.10",
-    "@types/ejs": "^3.0.4",
-    "@types/lodash": "^4.14.152",
-    "@types/mini-css-extract-plugin": "^0.9.1",
-    "@types/prop-types": "^15.7.3",
-    "@types/react": "^16.9.35",
-    "@types/react-beautiful-dnd": "^13.0.0",
-    "@types/react-copy-to-clipboard": "^4.3.0",
-    "@types/react-dom": "^16.9.8",
-    "@types/react-grid-layout": "^0.17.1",
-    "@types/react-modal": "^3.10.6",
-    "@types/react-redux": "^7.1.9",
-    "@types/react-router": "^5.1.7",
-    "@types/redux-actions": "^2.6.1",
-    "@types/webpack": "^4.41.13",
+    "@sentry/react": "^6.13.2",
+    "@sentry/tracing": "^6.11.0",
     "ajv": "^6.8.1",
     "browser-sync": "^2.26.3",
     "classnames": "^2.2.6",
@@ -102,6 +88,22 @@
     "@storybook/manager-webpack5": "next",
     "@storybook/preset-scss": "^1.0.3",
     "@storybook/react": "^6.3.7",
+    "@types/assets-webpack-plugin": "^3.9.0",
+    "@types/classnames": "^2.2.10",
+    "@types/ejs": "^3.0.4",
+    "@types/lodash": "^4.14.152",
+    "@types/mini-css-extract-plugin": "^0.9.1",
+    "@types/prop-types": "^15.7.3",
+    "@types/react": "^16.9.35",
+    "@types/react-beautiful-dnd": "^13.0.0",
+    "@types/react-copy-to-clipboard": "^4.3.0",
+    "@types/react-dom": "^16.9.8",
+    "@types/react-grid-layout": "^0.17.1",
+    "@types/react-modal": "^3.10.6",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router": "^5.1.7",
+    "@types/redux-actions": "^2.6.1",
+    "@types/webpack": "^4.41.13",
     "@typescript-eslint/eslint-plugin": "^4.29.3",
     "@typescript-eslint/parser": "^4.29.3",
     "assets-webpack-plugin": "^3.8.4",
@@ -165,82 +167,6 @@
     "webpack-dev-middleware": "^4.1.0",
     "webpack-hot-middleware": "^2.25.0"
   },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "./tsconfig.json"
-    },
-    "extends": [
-      "airbnb-typescript"
-    ],
-    "plugins": [
-      "import",
-      "react",
-      "react-hooks",
-      "jsx-a11y"
-    ],
-    "env": {
-      "browser": true
-    },
-    "rules": {
-      "import/no-extraneous-dependencies": "off",
-      "react/prefer-stateless-function": "off",
-      "react/jsx-filename-extension": "off",
-      "react/require-default-props": "off",
-      "jsx-a11y/no-static-element-interactions": "off",
-      "jsx-a11y/anchor-has-content": "off",
-      "jsx-a11y/no-noninteractive-element-interactions": "off",
-      "react/forbid-prop-types": "off",
-      "jsx-a11y/click-events-have-key-events": "off",
-      "jsx-a11y/anchor-is-valid": "off",
-      "prefer-promise-reject-errors": "off",
-      "jsx-a11y/label-has-for": "off",
-      "import/no-cycle": "off",
-      "implicit-arrow-linebreak": "off",
-      "react/jsx-one-expression-per-line": "off",
-      "react/static-property-placement": "off",
-      "react/jsx-fragments": "off",
-      "react/jsx-props-no-spreading": "off",
-      "react/no-did-update-set-state": "off",
-      "prefer-object-spread": "off",
-      "no-param-reassign": [
-        "error",
-        {
-          "props": true,
-          "ignorePropertyModificationsFor": [
-            "sliceState"
-          ]
-        }
-      ],
-      "@typescript-eslint/no-use-before-define": [
-        "error",
-        {
-          "functions": false
-        }
-      ],
-      "@typescript-eslint/no-redeclare": "off",
-      "arrow-parens": [
-        "error",
-        "as-needed",
-        {
-          "requireForBlockBody": true
-        }
-      ],
-      "react/state-in-constructor": "off",
-      "no-console": [
-        "error",
-        {
-          "allow": [
-            "warn",
-            "error"
-          ]
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "build/*"
-  ],
   "stylelint": {
     "extends": "stylelint-config-standard",
     "rules": {
