@@ -94,22 +94,10 @@ tasks.set('bundle', () => {
 // Make release zip file
 //
 tasks.set('release', () => {
-  const zipFolder = require('zip-folder');
+  const zipFolder = require('zip-a-folder');
 
   fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
-
-  return new Promise((resolve, reject) => {
-    zipFolder('./public', process.env.NODE_ENV === 'development'
-      ? './build/latest-unstable.zip' : './build/latest.zip',
-    (err) => {
-      if (err) {
-        reject(err);
-      } else {
-        console.log('Release build created!');
-        resolve();
-      }
-    });
-  });
+  return zipFolder.zip('./public', process.env.NODE_ENV === 'development' ? './build/latest-unstable.zip' : './build/latest.zip');
 });
 
 //
