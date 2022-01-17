@@ -28,8 +28,8 @@
   }
 
   .navbar-item {
-    &.has-dropdown:hover .navbar-link,
-    &.is-active .navbar-link {
+    &.is-active .navbar-link,
+    &.has-dropdown:hover .navbar-link {
       background-color: $secondary-toolbar-bg-color;
     }
 
