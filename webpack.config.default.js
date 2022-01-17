@@ -89,7 +89,7 @@ const config = {
             loader: 'css-loader',
             options: { modules: true, importLoaders: 1 },
           },
-          { loader: 'postcss-loader' },
+          'postcss-loader',
         ],
       },
       {
@@ -97,7 +97,9 @@ const config = {
         include: [/node_modules/],
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
-          { loader: 'css-loader' },
+          { loader: 'css-loader',
+            options: { url: false },
+          },
         ],
       },
       {
@@ -106,7 +108,7 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: { modules: false, importLoaders: 1 },
+            options: { modules: false, importLoaders: 1, url: false },
           },
           { loader: 'postcss-loader' },
           { loader: 'sass-loader' },

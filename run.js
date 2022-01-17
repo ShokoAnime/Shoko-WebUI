@@ -133,7 +133,7 @@ tasks.set('start', () => {
   return run('clean').then(() => run('version')).then(() => new Promise((resolve) => {
     const bs = require('browser-sync').create();
     const webpackConfig = require(webpackConfigPath);
-    const proxy = require('http-proxy-middleware');
+    const { createProxyMiddleware } = require('http-proxy-middleware');
 
     const compiler = webpack(webpackConfig);
     // Node.js middleware that compiles application in watch mode with HMR support
@@ -145,7 +145,7 @@ tasks.set('start', () => {
 
     const middleware = [];
     if (config.apiProxyIP) {
-      const proxyMiddleware = proxy(['/api', '/plex', '/signalr'], {
+      const proxyMiddleware = createProxyMiddleware(['/api', '/plex', '/signalr'], {
         target: `http://${config.apiProxyIP}:8111`,
         ws: true,
         logLevel: 'error',
