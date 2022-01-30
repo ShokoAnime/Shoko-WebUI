@@ -140,8 +140,8 @@ if (!isDebug) {
           output: {
             comments: false,
           },
-          exclude: [/\.min\.js$/gi], // skip pre-minified libs
         },
+        exclude: [/\.min\.js$/gi], // skip pre-minified libs
       }),
     ],
     splitChunks: {
