@@ -6,14 +6,9 @@ module.exports = {
     },
     cssnano: { zindex: false },
     tailwindcss: {
-      purge: [
+      content: [
         './src/**/*.tsx',
       ],
-      variants: {
-        margin: ['responsive', 'first'],
-        opacity: ['disabled'],
-        cursor: ['disabled'],
-      }
     },
     autoprefixer: {},
   },

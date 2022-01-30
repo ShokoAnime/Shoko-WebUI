@@ -8,7 +8,7 @@ function SeriesBreakdown() {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.stats);
   const stats = useSelector((state: RootState) => state.mainpage.stats);
 
-  const renderItem = (title: string, value = 0, key: string) => (
+  const renderItem = (key: string, title: string, value = 0) => (
     <div key={key} className="flex mt-3 first:mt-2">
       <div className="flex-grow">
         {title}
@@ -20,14 +20,14 @@ function SeriesBreakdown() {
   );
 
   const childrenLeft = [
-    renderItem('Missing Episodes (Collecting)', stats.MissingEpisodesCollecting, 'missing-episodes-collecting'),
-    renderItem('Missing Episodes (Total)', stats.MissingEpisodes, 'missing-episodes'),
-    renderItem('Missing TvDB/TMDB Links', stats.SeriesWithMissingLinks, 'missing-links'),
+    renderItem('missing-episodes-collecting', 'Missing Episodes (Collecting)', stats.MissingEpisodesCollecting),
+    renderItem('missing-episodes', 'Missing Episodes (Total)', stats.MissingEpisodes),
+    renderItem('missing-links', 'Missing TvDB/TMDB Links', stats.SeriesWithMissingLinks),
   ];
   const childrenRight = [
-    renderItem('Unrecognized Files', stats.UnrecognizedFiles, 'unrecognized-files'),
-    renderItem('Multiple Files', stats.EpisodesWithMultipleFiles, 'multiple-files'),
-    renderItem('Duplicate Files', stats.FilesWithDuplicateLocations, 'duplicate-files'),
+    renderItem('unrecognized-files', 'Unrecognized Files', stats.UnrecognizedFiles),
+    renderItem('multiple-files', 'Multiple Files', stats.EpisodesWithMultipleFiles),
+    renderItem('duplicate-files', 'Duplicate Files', stats.FilesWithDuplicateLocations),
   ];
 
   return (
