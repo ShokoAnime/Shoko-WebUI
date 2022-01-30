@@ -24,11 +24,6 @@ $background-color-4: #1B202B;
 
 $border-color-1: #3C3C53;
 
-$highlight-color-1: #279CEB;
-$highlight-color-2: #3E7BFA;
-$highlight-color-4: #FF3F57;
-$highlight-color-6: #F1C40F;
-
 $icon-color: #C6CED2;
 
 $text-color: #CFD8E3;
@@ -45,8 +40,8 @@ input, button, textarea, :focus {
 
 body {
   font-family: 'Exo 2', Mulish, -apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
-  background-color: $background-color-2;
-  color: $text-color;
+  background-color: $background-color-main;
+  color: $font-color;
 }
 
 ::-webkit-scrollbar {
@@ -69,6 +64,18 @@ body {
   flex: 1;
   height: 100vh;
 }
+
+/* new */
+
+.bg-color-nav { 
+  background-color: $background-color-nav;
+}
+
+.bg-color-alt {
+  background-color: $background-color-alt;
+}
+
+/* new */
 
 .text-xl2 {
   font-size: 1.375rem;
@@ -111,10 +118,6 @@ body {
   background-color: $highlight-color-2;
 }
 
-.bg-color-1 {
-  background-color: $background-color-1;
-}
-
 .bg-color-2 {
   background-color: $background-color-2;
 }
@@ -127,9 +130,9 @@ body {
   background-color: $background-color-4;
 }
 
-button.color-highlight-1:hover {
-  color: $highlight-color-2 !important;
-}
+// button.color-highlight-1:hover {
+//   color: $highlight-color-2 !important;
+// }
 
 .color-danger {
   color: $highlight-color-4;
@@ -179,12 +182,12 @@ button.color-highlight-1:hover {
 
 
 .sidebar-item {
-  color: $icon-color;
   cursor: pointer;
-}
 
-.sidebar-item:hover {
-  color: $highlight-color-1;
+  :hover
+  {
+    color: $highlight-color-1;
+  }
 }
 
 .header {

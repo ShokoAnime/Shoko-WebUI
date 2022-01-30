@@ -17,7 +17,7 @@ function FixedPanel(props: Props) {
   } = props;
 
   return (
-    <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full pl-5 pr-3 py-4`}>
+    <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm h-full pl-5 pr-3 py-4`}>
       <div className="flex justify-between items-center mr-2">
         <span className="flex font-semibold text-xl">{title}</span>
         <div

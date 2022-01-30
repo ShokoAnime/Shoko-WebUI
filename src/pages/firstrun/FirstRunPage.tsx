@@ -54,7 +54,7 @@ function FirstRunPage() {
 
   return (
     <div className="flex h-screen w-screen">
-      <div className="flex flex-col w-1/4 bg-color-1 items-center">
+      <div className="flex flex-col w-1/4 bg-color-alt items-center">
         <img src="/logo.png" className="w-32 mt-24" alt="logo" />
         <div className="flex flex-col flex-grow mt-24 justify-between">
           <div className="flex flex-col">
