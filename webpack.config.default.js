@@ -97,9 +97,7 @@ const config = {
         include: [/node_modules/],
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
-          { loader: 'css-loader',
-            options: { url: false },
-          },
+          'css-loader',
         ],
       },
       {
@@ -108,20 +106,19 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: { modules: false, importLoaders: 1, url: false },
+            options: { modules: false, importLoaders: 1 },
           },
-          { loader: 'postcss-loader' },
-          { loader: 'sass-loader' },
+          'postcss-loader',
+          'sass-loader',
         ],
       },
       {
         test: /\.(woff|woff2)$/,
-        loader: 'url-loader',
-        options: { limit: 100000, mimetype: 'application/font-woff' },
+        type: 'asset/resource',
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
-        use: ['file-loader'],
+        type: 'asset/resource',
       },
     ],
   },

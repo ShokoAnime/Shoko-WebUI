@@ -10,15 +10,8 @@ module.exports = {
   ],
   "addons": [
     "@storybook/addon-links",
-    "@storybook/addon-essentials",
-    {
-      name: '@storybook/preset-scss',
-      options: {
-        cssLoaderOptions: {
-          url: false,
-        },
-      },
-    },
+    "@storybook/addon-essentials", 
+    "@storybook/preset-scss",
     {
       name: '@storybook/addon-postcss',
       options: {
