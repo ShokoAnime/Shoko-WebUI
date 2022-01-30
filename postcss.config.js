@@ -9,6 +9,9 @@ module.exports = {
       content: [
         './src/**/*.tsx',
       ],
+      variants: {
+        margin: ['first'],
+      },
     },
     autoprefixer: {},
   },
