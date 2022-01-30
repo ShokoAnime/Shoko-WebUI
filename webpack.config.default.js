@@ -50,7 +50,7 @@ const config = {
       debug: isDebug,
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(isDebug ? 'development' : 'production'),
       __DEV__: isDebug,
     }),
     new AssetsPlugin({

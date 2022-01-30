@@ -9,7 +9,7 @@ function CollectionBreakdown() {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.stats);
   const stats = useSelector((state: RootState) => state.mainpage.stats);
 
-  const renderItem = (title: string, value: string | number = 0, key: string) => (
+  const renderItem = (key: string, title: string, value: string | number = 0) => (
     <div key={key} className="flex mt-3 first:mt-2">
       <div className="flex-grow">
         {title}
@@ -21,14 +21,14 @@ function CollectionBreakdown() {
   );
 
   const childrenLeft = [
-    renderItem('Series', stats.SeriesCount, 'series'),
-    renderItem('Files', stats.FileCount, 'files'),
-    renderItem('Collection Size', `${prettyBytes(stats.FileSize || 0, { binary: true })}`, 'collection-size'),
+    renderItem('series', 'Series', stats.SeriesCount),
+    renderItem('files', 'Files', stats.FileCount),
+    renderItem('collection-size', 'Collection Size', `${prettyBytes(stats.FileSize || 0, { binary: true })}`),
   ];
   const childrenRight = [
-    renderItem('Series Completed', stats.FinishedSeries, 'series-completed'),
-    renderItem('Episodes Watched', stats.WatchedEpisodes, 'episodes-watched'),
-    renderItem('Hours Watched', `${stats.WatchedHours || 0} H`, 'hours-watched'),
+    renderItem('series-completed', 'Series Completed', stats.FinishedSeries),
+    renderItem('episodes-watched', 'Episodes Watched', stats.WatchedEpisodes),
+    renderItem('hours-watched', 'Hours Watched', `${stats.WatchedHours || 0} H`),
   ];
 
   return (

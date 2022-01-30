@@ -12,6 +12,14 @@ module.exports = {
     "@storybook/addon-links",
     "@storybook/addon-essentials",
     {
+      name: '@storybook/preset-scss',
+      options: {
+        cssLoaderOptions: {
+          url: false,
+        },
+      },
+    },
+    {
       name: '@storybook/addon-postcss',
       options: {
         cssLoaderOptions: {
@@ -27,18 +35,4 @@ module.exports = {
       },
     },
   ],
-  webpackFinal: async (config) => {
-    config.module.rules.push({
-      test: /\.scss$/,
-      sideEffects: true,
-      use: [
-        'style-loader',
-        'css-loader',
-        'postcss-loader',
-        'sass-loader'
-      ],
-      include: path.resolve(__dirname, '../'),
-    });
-    return config
-  },
 }
