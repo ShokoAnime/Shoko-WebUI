@@ -2,18 +2,25 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icon } from '@mdi/react';
 import {
-  faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle, faFileAlt,
-  faServer, faSignOutAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
-import type { IconProp } from '@fortawesome/fontawesome-svg-core';
+  mdiServer,
+  mdiCogOutline,
+  mdiFormatListBulletedSquare,
+  mdiLayersTripleOutline,
+  mdiTabletDashboard, mdiTextBoxOutline,
+  mdiTools,
+  mdiFolder,
+  mdiMagnify,
+  mdiDiscord,
+  mdiHelpCircleOutline,
+  mdiGithub,
+  mdiLogout,
+} from '@mdi/js';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
-import Button from '../Input/Button';
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -25,47 +32,59 @@ function Sidebar() {
   useEffect(() => {
     dispatch(setStatus(false));
   }, []);
-
-  const renderItem = (key: string, text: string, icon: IconProp) => (
-    <Button key={key} className={cx(['flex items-center sidebar-item mt-8 first:mt-12', pathname === `/${key}` && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
-      <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
-    </Button>
-  );
-
-  const renderLink = (url: string, text: string, icon: IconProp) => (
-    <Button className="flex items-center sidebar-item mt-8 first:mt-12" onClick={() => window.open(url, '_blank')}>
-      <FontAwesomeIcon icon={icon} className="text-xl2" title={text} />
-    </Button>
+  
+  const renderMenuItem = (key: string, text: string, icon: string) => {
+    const isHighlighted = pathname === `/${key}`; 
+    return (
+      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
+        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180} color={isHighlighted ? '#279ceb' : '#CFD8E3'} /></div>
+        <span className="text-lg">{text}</span>
+      </div>
+    );
+  };
+  
+  const renderMenuLink = (url: string, icon: string) => (
+      <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
   );
 
   return (
-    <div className="flex flex-col flex-grow items-center p-4 h-screen bg-color-1 overflow-y-auto">
-      <div className="flex flex-col">
-        <img src="logo.png" alt="logo" className="w-12" />
-        <div className="flex cursor-pointer items-center justify-center user-icon w-12 h-12 text-xl rounded-full mt-12" onClick={() => dispatch(setStatus(true))}>
+    <div className="flex flex-col flex-grow items-center h-screen bg-color-1 overflow-y-auto w-65.5 box-border font-semibold">
+      <div className="flex flex-col p-10">
+        <img src="logo.png" alt="logo" className="w-20" />
+      </div>
+      <div className="flex cursor-pointer items-center justify-center bg-shoko-blue-background-alt w-full py-4">
+        <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
           {username.charAt(0)}
         </div>
-        <div className="flex flex-col mt-10 items-center">
-          <FontAwesomeIcon icon={faServer} className="text-xl2" title="Queue Count" />
-          <span className="mt-2 color-highlight-1">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+        <p className="ml-4"><span className="text-sm opacity-75">Welcome back,</span> <br/> {username}</p>
+      </div>
+      <div className="flex items-center mt-11 w-full px-7">
+        <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+        <span className="text-shoko-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+      </div>
+      <div className="flex flex-col justify-between mt-11 w-full">
+        {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
+        {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
+        {renderMenuItem('utilities', 'Utilities', mdiTools)}
+        {renderMenuItem('actions', 'Actions', mdiFormatListBulletedSquare)}
+        {renderMenuItem('import-folders', 'Import Folders', mdiFolder)}
+        {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
+        {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+        <div key="logout" className="flex items-center w-full px-7 cursor-pointer mt-11" onClick={() => dispatch({ type: Events.AUTH_LOGOUT, payload: { clearState: true } })}>
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiLogout} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+          <span className="text-lg">Logout</span>
         </div>
       </div>
-      <div className="flex flex-col flex-grow justify-between">
-        <div className="flex flex-col">
-          {renderItem('dashboard', 'Dashboard', faTachometerAlt)}
-          {renderItem('import-folders', 'Import Folders', faFolderOpen)}
-          {renderItem('actions', 'Actions', faListAlt)}
-          {renderItem('logs', 'Log', faFileAlt)}
-          {renderItem('settings', 'Settings', faSlidersH)}
-          <div key="logout" className="flex items-center sidebar-item mt-10" onClick={() => dispatch({ type: Events.AUTH_LOGOUT, payload: { clearState: true } })}>
-            <FontAwesomeIcon icon={faSignOutAlt} className="text-xl2" title="Logout" />
-          </div>
+      <div className="flex flex-col justify-between mt-11 w-full bg-shoko-blue-background-alt">
+        <div className="flex items-center w-full px-7">
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+          <span className="text-lg">Search...</span>
         </div>
-        <div className="flex flex-col">
-          {renderLink('https://docs.shokoanime.com', 'Support', faQuestionCircle)}
-          {renderLink('https://discord.gg/vpeHDsg', 'Discord', faDiscord)}
-          {renderLink('https://github.com/ShokoAnime', 'Github', faGithubSquare)}
-        </div>
+      </div>
+      <div className="flex justify-between w-full self-end px-6 mt-auto py-6">
+        {renderMenuLink('https://discord.gg/vpeHDsg', mdiDiscord)}
+        {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
+        {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
       </div>
     </div>
   );
