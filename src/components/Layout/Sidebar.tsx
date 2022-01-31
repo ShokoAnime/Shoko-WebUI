@@ -48,11 +48,11 @@ function Sidebar() {
   );
 
   return (
-    <div className="flex flex-col flex-grow items-center h-screen bg-color-1 overflow-y-auto w-65.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
+    <div className="flex flex-col flex-grow items-center h-screen bg-background-nav overflow-y-auto w-65.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col p-10">
         <img src="logo.png" alt="logo" className="w-20" />
       </div>
-      <div className="flex cursor-pointer items-center justify-center bg-shoko-blue-background-alt w-full py-4">
+      <div className="flex cursor-pointer items-center justify-center bg-background-alt w-full py-4">
         <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
           {username.charAt(0)}
         </div>
@@ -60,7 +60,7 @@ function Sidebar() {
       </div>
       <div className="flex items-center mt-11 w-full px-7">
         <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
-        <span className="text-shoko-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+        <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
       </div>
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
@@ -75,7 +75,7 @@ function Sidebar() {
           <span className="text-lg">Logout</span>
         </div>
       </div>
-      <div className="flex flex-col justify-between mt-11 w-full bg-shoko-blue-background-alt">
+      <div className="flex flex-col justify-between mt-11 w-full bg-background-alt">
         <div className="flex items-center w-full px-7">
           <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
           <span className="text-lg">Search...</span>

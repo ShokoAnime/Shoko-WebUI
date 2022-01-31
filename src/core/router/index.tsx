@@ -24,7 +24,7 @@ function Router(props: Props) {
   const { history } = props;
 
   return (
-    <div id="app-container" className={`${theme} flex h-screen`}>
+    <div id="app-container" className={`${theme} theme-shoko-blue flex h-screen`}>
       <ConnectedRouter history={history}>
         <Switch>
           <Route exact path="/login" component={LoginPage} />
