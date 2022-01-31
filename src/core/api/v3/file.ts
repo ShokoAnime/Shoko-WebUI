@@ -19,15 +19,44 @@ function getFileAniDB(id: string) {
 function getFileMediaInfo(id: string) {
   return ApiRequest(`${id}/MediaInfo`);
 }
+// Run a file through AVDump
+function patchFileWatched(id: string, watched: boolean = true) {
+  return ApiRequest(`${id}/Scrobble`, 'PATCH', `?watched=${watched}`);
+}
+
+// Mark or unmark the file as ignored
+function patchFileIgnore(id: string, ignore: boolean = true) {
+  return ApiRequest(`${id}/Ignore`, 'PATCH', `?value=${ignore}`);
+}
 
 // Run a file through AVDump
 function postFileAvdump(id: string) {
-  return ApiRequest(`${id}/avdump`, 'POST');
+  return ApiRequest(`${id}/AVDump`, 'POST');
+}
+
+// Rescan the file.
+function postFileRescan(id: string) {
+  return ApiRequest(`${id}/Rescan`, 'POST');
+}
+
+// Rehash the file.
+function postFileRehash(id: string) {
+  return ApiRequest(`${id}/Rehash`, 'POST');
 }
 
 // Get Recently Added Files
-function getFileRecent(limit = 50) {
-  return ApiRequest(`Recent/${limit}`);
+function getFileRecent(pageSize = 50, page = 0) {
+  return ApiRequest('Recent', "GET", `?pageSize=${pageSize}&page=${page}`);
+}
+
+// Get files marked as ignored.
+function getFileIgnored(pageSize = 50, page = 0) {
+  return ApiRequest('Ignored', "GET", `?pageSize=${pageSize}&page=${page}`)
+}
+
+// Get files with more than one location.
+function getFileDuplicates(pageSize = 50, page = 0) {
+  return ApiRequest('Duplicates', "GET", `?pageSize=${pageSize}&page=${page}`)
 }
 
 // Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
@@ -39,7 +68,13 @@ export default {
   getFile,
   getFileAniDB,
   getFileMediaInfo,
+  patchFileWatched,
+  patchFileIgnore,
   postFileAvdump,
+  postFileRescan,
+  postFileRehash,
   getFileRecent,
+  getFileIgnored,
+  getFileDuplicates,
   getFileUnrecognized,
 };
