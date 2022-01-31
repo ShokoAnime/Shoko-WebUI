@@ -46,17 +46,17 @@ function postFileRehash(id: string) {
 
 // Get Recently Added Files
 function getFileRecent(pageSize = 50, page = 0) {
-  return ApiRequest('Recent', "GET", `?pageSize=${pageSize}&page=${page}`);
+  return ApiRequest('Recent', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
 // Get files marked as ignored.
 function getFileIgnored(pageSize = 50, page = 0) {
-  return ApiRequest('Ignored', "GET", `?pageSize=${pageSize}&page=${page}`)
+  return ApiRequest('Ignored', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
 // Get files with more than one location.
 function getFileDuplicates(pageSize = 50, page = 0) {
-  return ApiRequest('Duplicates', "GET", `?pageSize=${pageSize}&page=${page}`)
+  return ApiRequest('Duplicates', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
 // Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
