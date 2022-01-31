@@ -106,7 +106,14 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: { modules: false, importLoaders: 1 },
+            options: {
+              modules: false,
+              importLoaders: 1,
+              url: {
+                //Fix for random login image
+                filter: url => !url.startsWith('/api/'),
+              },
+            },
           },
           'postcss-loader',
           'sass-loader',
