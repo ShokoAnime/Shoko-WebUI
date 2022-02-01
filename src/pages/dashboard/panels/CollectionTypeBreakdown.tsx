@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
 import { RootState } from '../../../core/store';
-import FixedPanel from '../../../components/Panels/FixedPanel';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 const colors = {
   Series: '#FF3F57',
@@ -51,9 +51,9 @@ function CollectionTypeBreakdown() {
   });
 
   return (
-    <FixedPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
+    <ShokoPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
       {items}
-    </FixedPanel>
+    </ShokoPanel>
   );
 }
 
