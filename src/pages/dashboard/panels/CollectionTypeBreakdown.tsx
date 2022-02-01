@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
 import { RootState } from '../../../core/store';
-import ShokoPanel from "../../../components/Panels/ShokoPanel";
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 const colors = {
   Series: '#FF3F57',
