@@ -48,7 +48,7 @@ function Sidebar() {
   );
 
   return (
-    <div className="flex flex-col flex-grow items-center h-screen bg-background-nav overflow-y-auto w-65.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
+    <div className="flex flex-col flex-grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col p-10">
         <img src="logo.png" alt="logo" className="w-20" />
       </div>
