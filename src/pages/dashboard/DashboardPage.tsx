@@ -52,6 +52,9 @@ function DashboardPage() {
       <div key="collectionBreakdown">
         <CollectionBreakdown />
       </div>
+      <div key="collectionTypeBreakdown">
+        <CollectionTypeBreakdown />
+      </div>
       <div key="seriesBreakdown">
         <SeriesBreakdown />
       </div>
@@ -69,9 +72,6 @@ function DashboardPage() {
       </div>
       <div key="actionItems2">
         <ActionItems />
-      </div>
-      <div key="collectionTypeBreakdown">
-        <CollectionTypeBreakdown />
       </div>
     </ResponsiveGridLayout>
   );
