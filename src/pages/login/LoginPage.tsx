@@ -3,20 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCircleNotch, faTimesCircle, faGlobe,
-} from '@fortawesome/free-solid-svg-icons';
-import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { Icon } from '@mdi/react';
+import { mdiLoading, mdiDiscord, mdiCloseCircle } from '@mdi/js';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import { uiVersion } from '../../core/util';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
-
-const UI_VERSION = uiVersion();
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -32,6 +26,7 @@ function LoginPage() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [serverIp, setServerIp] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
 
   useEffect(() => {
@@ -85,18 +80,21 @@ function LoginPage() {
       />
       <div className="flex h-screen w-screen">
         <div className="flex flex-grow login-image" />
-        <div className="flex flex-col p-5 mt-16 items-center justify-between" style={{ width: '41rem' }}>
-          <img src="logo.png" className="w-32" alt="logo" />
-          <div className="flex flex-col flex-grow w-full px-10 justify-center">
+        <div className="flex flex-col px-13 items-center justify-between w-125 bg-background-nav">
+          <img src="logo.png" className="w-32 mt-16" alt="logo" />
+          <div className="flex items-center font-mulish font-semibold mt-6">
+            Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
+          </div>
+          <div className="flex flex-col flex-grow w-full justify-center">
             {!initStatus?.State && (
               <div className="flex justify-center items-center">
-                <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-6xl2" />
+                <Icon path={mdiLoading} spin className="text-highlight-1" size={5} />
               </div>
             )}
             {initStatus.State === 1 && (
               <div className="flex flex-col justify-center items-center">
-                <FontAwesomeIcon icon={faCircleNotch} spin className="color-highlight-2 text-6xl2" />
-                <div className="mt-8 text-3xl">Server is starting. Please wait!</div>
+                <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
+                <div className="mt-4 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="mt-2 text-lg">
                   <span className="font-mulish font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
                 </div>
@@ -106,56 +104,46 @@ function LoginPage() {
               <React.Fragment>
                 <div className="flex flex-col">
                   <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} onKeyPress={handleKeyPress} />
-                  <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-12" />
+                  <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-7" />
+                  <Input id="serverIp" value={serverIp} label="Server IP Address" type="text" placeholder="IP Address" onChange={e => setServerIp(e.target.value)} onKeyPress={handleKeyPress} className="mt-7" />
                 </div>
-                <div className="flex justify-between items-center mt-16">
-                  <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.value)} className="font-bold text-lg" labelRight />
-                  <Button className="bg-color-highlight-1 py-3 px-28 text-lg font-bold" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Log In</Button>
-                </div>
+                <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-bold text-lg mt-7" labelRight />
+                <Button className="bg-highlight-1 mt-14" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
               </React.Fragment>
             )}
             {initStatus.State === 3 && (
               <div className="flex flex-col justify-center items-center overflow-y-auto pb-2">
-                <FontAwesomeIcon icon={faTimesCircle} className="color-danger text-6xl2" />
-                <div className="mt-3 text-3xl">Server startup failed!</div>
+                <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
+                <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto">{initStatus.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-mulish font-semibold">{initStatus.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
             {initStatus.State === 4 && (
-              <div className="flex flex-col">
-                <div className="flex flex-col">
-                  <div className="font-semibold text-lg">First Time? We&apos;ve All Been There</div>
-                  <div className="mt-6 font-mulish text-justify">
+              <div className="flex flex-col -mt-32">
+                <div className="flex flex-col font-semibold">
+                  <div className="text-lg">First Time? We&apos;ve All Been There</div>
+                  <div className="mt-10 font-mulish text-justify">
                     Before Shoko can get started indexing your anime collection, you&apos;ll
-                    need to go through our <span className="color-highlight-1">First Time Wizard </span>
+                    need to go through our <span className="text-highlight-2">First Time Wizard </span>
                     and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
                     takes a couple of minutes.
                   </div>
                   <div className="mt-6 font-mulish">
-                    Click <span className="color-highlight-1">Continue</span> below to proceed.
+                    Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <div className="flex justify-center items-center flex-grow mt-32">
-                  <Button onClick={() => openFirstRunWizard()} className="flex bg-color-highlight-1 px-24 py-5 font-semibold">Continue</Button>
-                </div>
+                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 mt-20">Continue</Button>
               </div>
             )}
           </div>
-          <div className="flex justify-between w-full px-10">
-            <div className="flex items-center">
-              Server Version: {isFetching ? <FontAwesomeIcon icon={faCircleNotch} spin className="mx-2 color-highlight-2" /> : `${version} `}
-              | UI Version: {UI_VERSION}
-            </div>
-            <div className="flex items-center">
-              Get Support:
-              <Button className="color-highlight-1 ml-4 text-xl2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
-                <FontAwesomeIcon icon={faDiscord} />
-              </Button>
-              <Button className="color-highlight-1 ml-4 text-xl2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
-                <FontAwesomeIcon icon={faGlobe} />
-              </Button>
-            </div>
+          <div className="flex flex-col w-full pb-13">
+            <Button className="bg-highlight-2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+              Documentation
+            </Button>
+            <Button className="flex bg-highlight-2 mt-5 items-center justify-center" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+              Get help on <Icon path={mdiDiscord} size={0.75} className="mx-1" /> Discord
+            </Button>
           </div>
         </div>
       </div>

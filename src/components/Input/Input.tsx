@@ -24,10 +24,10 @@ function Input(props: Props) {
   return (
     <React.Fragment>
       <div className={`${className ?? ''}`}>
-        <label className="text-lg font-bold" htmlFor={id}>
-          {label && <div className="mb-4">{label}</div>}
+        <label htmlFor={id}>
+          {label && <div className="mb-2 font-semibold text-lg">{label}</div>}
           <input
-            className={cx(['appearance-none bg-color-1 w-full focus:shadow-none focus:outline-none p-4 rounded-lg input-field transition duration-300 ease-in-out', center && 'text-center'])}
+            className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-2 py-1.5 rounded transition duration-300 ease-in-out border border-background-border focus:border-highlight-1', center && 'text-center'])}
             id={id}
             type={type}
             placeholder={placeholder ?? ''}

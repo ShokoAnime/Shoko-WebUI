@@ -31,11 +31,15 @@ module.exports = {
           'highlight-3': withOpacityValue('--color-highlight-3'),
           'highlight-4': withOpacityValue('--color-highlight-4'),
           'highlight-5': withOpacityValue('--color-highlight-5'),
+          transparent: 'transparent',
         },
         extend: {
           spacing: {
+            '13': '3.25rem',
             '15': '3.75rem',
+            '25': '6.25rem',
             '62.5':'15.625rem',
+            '125':  '31.25rem',
           },
         },
       },
