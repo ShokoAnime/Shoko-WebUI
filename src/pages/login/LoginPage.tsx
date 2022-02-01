@@ -26,7 +26,6 @@ function LoginPage() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [serverIp, setServerIp] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
 
   useEffect(() => {
@@ -102,10 +101,9 @@ function LoginPage() {
             )}
             {initStatus.State === 2 && (
               <React.Fragment>
-                <div className="flex flex-col">
+                <div className="flex flex-col -mt-32">
                   <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} onKeyPress={handleKeyPress} />
                   <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-7" />
-                  <Input id="serverIp" value={serverIp} label="Server IP Address" type="text" placeholder="IP Address" onChange={e => setServerIp(e.target.value)} onKeyPress={handleKeyPress} className="mt-7" />
                 </div>
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-bold text-lg mt-7" labelRight />
                 <Button className="bg-highlight-1 mt-14" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
