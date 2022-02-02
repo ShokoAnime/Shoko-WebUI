@@ -36,7 +36,9 @@ type State = {
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 9, moved: false, static: false,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 2, h: 15, minW: 2, minH: 15, maxH: 15, moved: false, static: false,
+    }, {
+      i: 'collectionTypeBreakdown', x: 2, y: 0, w: 2, h: 15, moved: false, static: false,
     }, {
       i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 9, minW: 5, minH: 6, maxH: 9, moved: false, static: false,
     }, {
@@ -49,8 +51,6 @@ export const defaultLayout = {
       i: 'actionItems', x: 3, y: 26, w: 3, h: 14, moved: false, static: false,
     }, {
       i: 'actionItems2', x: 6, y: 26, w: 3, h: 14, moved: false, static: false,
-    }, {
-      i: 'collectionTypeBreakdown', x: 9, y: 26, w: 3, h: 14, moved: false, static: false,
     }],
   } as LayoutType,
   importFolders: {
