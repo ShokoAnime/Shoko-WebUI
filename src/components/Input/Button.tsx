@@ -1,7 +1,7 @@
 import React from 'react';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@mdi/react';
+import { mdiLoading } from '@mdi/js';
 
 type Props = {
   className?: string;
@@ -19,10 +19,10 @@ function Button(props: Props) {
   } = props;
 
   return (
-    <button type="button" title={tooltip} className={cx([`${className ?? ''} text-white text-sm font-semibold px-2.5 py-2 rounded-md focus:shadow-none focus:outline-none disabled:opacity-50 disabled:cursor-default button transition duration-300 ease-in-out`, loading && 'cursor-default'])} onClick={onClick} disabled={disabled}>
+    <button type="button" title={tooltip} className={cx([`${className ?? ''} text-secondary text-sm font-semibold uppercase px-2.5 py-2 rounded-md focus:shadow-none focus:outline-none disabled:opacity-50 disabled:cursor-default button transition duration-300 ease-in-out`, loading && 'cursor-default'])} onClick={onClick} disabled={disabled}>
       {
         loading
-          ? <FontAwesomeIcon icon={faCircleNotch} spin />
+          ? <Icon path={mdiLoading} spin size={1} />
           : children
       }
     </button>

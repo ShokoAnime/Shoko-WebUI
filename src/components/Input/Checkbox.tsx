@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCheckCircle } from '@fortawesome/free-solid-svg-icons';
-import { faCircle } from '@fortawesome/free-regular-svg-icons';
+import { Icon } from '@mdi/react';
+import {
+  mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline,
+} from '@mdi/js';
 
 import TransitionDiv from '../TransitionDiv';
 
@@ -24,7 +25,7 @@ function Checkbox(props: Props) {
   } = props;
 
   return (
-    <label htmlFor={id} className={cx({ 'justify-between': justify === true }, [`${className ?? ''} cursor-pointer checkbox flex items-center`, focused ? 'checkbox-focused' : 'checkbox'])}>
+    <label htmlFor={id} className={cx({ 'justify-between': justify === true }, [`${className ?? ''} cursor-pointer flex items-center border transition duration-300 ease-in-out`, focused ? 'border-highlight-1' : 'border-transparent'])}>
       <input
         id={id}
         type="checkbox"
@@ -39,22 +40,22 @@ function Checkbox(props: Props) {
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center ">
+        <span className="flex items-center font-semibold font-mulish">
           {label}
         </span>
       )}
       {isChecked && (
         <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
-          <FontAwesomeIcon icon={faCheckCircle} />
+          <Icon path={mdiCheckboxMarkedCircleOutline} size={0.75} />
         </TransitionDiv>
       )}
       {!isChecked && (
         <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
-          <FontAwesomeIcon icon={faCircle} />
+          <Icon path={mdiCheckboxBlankCircleOutline} size={0.75} />
         </TransitionDiv>
       )}
       {labelRight && (
-        <span className="flex items-center ml-2">
+        <span className="flex items-center font-semibold font-mulish ml-2">
           {label}
         </span>
       )}
