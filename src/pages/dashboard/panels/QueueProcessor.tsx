@@ -1,18 +1,23 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icon } from '@mdi/react';
 import {
-  faTasks, faListAlt, faImage, faTimes, faPause, faPlay,
-} from '@fortawesome/free-solid-svg-icons';
+  mdiPauseCircleOutline,
+  mdiCloseCircleOutline,
+  mdiPoundBox,
+  mdiFormatListBulletedSquare,
+  mdiPanoramaVariantOutline,
+  mdiPlayCircleOutline,
+} from '@mdi/js';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Input/Button';
 import type { QueueItemType } from '../../../core/types/api';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-const icons = { hasher: faTasks, general: faListAlt, images: faImage };
+const icons = { hasher: mdiPoundBox, general: mdiFormatListBulletedSquare, images: mdiPanoramaVariantOutline };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
 function QueueProcessor() {
@@ -29,21 +34,21 @@ function QueueProcessor() {
     <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-24">
-          <FontAwesomeIcon icon={icons[key]} className="mr-4" />
+          <Icon className="mr-4" path={icons[key]} size={1} horizontal vertical rotate={180} color="#CFD8E3" />
           <span className="font-semibold">{names[key]}</span>
         </div>
-        <div className="flex">{count ?? 0}</div>
+        <div className="flex text-highlight-2">{count ?? 0}</div>
         <div className="flex items-center">
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-            <FontAwesomeIcon icon={faTimes} />
+            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
           </Button>
           {item?.state === 18 ? (
             <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-              <FontAwesomeIcon icon={faPlay} />
+              <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
             </Button>
           ) : (
             <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-              <FontAwesomeIcon icon={faPause} />
+              <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
             </Button>
           )}
         </div>
@@ -63,17 +68,17 @@ function QueueProcessor() {
     });
 
     return (
-      <div>
+      <React.Fragment>
         {paused ? (
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
-            <FontAwesomeIcon icon={faPlay} />
+            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
           </Button>
         ) : (
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
-            <FontAwesomeIcon icon={faPause} />
+            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
           </Button>
         )}
-      </div>
+      </React.Fragment>
     );
   };
 
@@ -86,11 +91,11 @@ function QueueProcessor() {
   }
 
   return (
-    <FixedPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched}>
+    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched}>
       <div className="flex flex-col justify-between h-full">
         {commands}
       </div>
-    </FixedPanel>
+    </ShokoPanel>
   );
 }
 
