@@ -8,7 +8,6 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import CollectionBreakdown from './panels/CollectionBreakdown';
-import SeriesBreakdown from './panels/SeriesBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
 import ActionItems from './panels/ActionItems';
@@ -54,9 +53,6 @@ function DashboardPage() {
       </div>
       <div key="collectionTypeBreakdown">
         <CollectionTypeBreakdown />
-      </div>
-      <div key="seriesBreakdown">
-        <SeriesBreakdown />
       </div>
       <div key="queueProcessor">
         <QueueProcessor />
