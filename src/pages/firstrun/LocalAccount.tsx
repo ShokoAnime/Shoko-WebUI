@@ -20,16 +20,19 @@ function LocalAccount() {
   }, []);
 
   return (
-    <TransitionDiv className="flex flex-col flex-grow justify-center">
-      <div className="font-bold text-lg">Create Your Account</div>
-      <div className="font-mulish mt-5 text-justify">
+    <TransitionDiv className="flex flex-col justify-center px-96">
+      <div className="font-semibold text-lg">Create Your Account</div>
+      <div className="font-mulish font-semibold mt-10 text-justify">
         In order to use Shoko you&apos;ll need to create an account. This local account will
         allow you to login to Shoko and will link your account with any community site accounts
         provided later on.
       </div>
-      <div className="flex flex-col my-8">
+      <div className="flex flex-col my-10">
         <Input id="Username" value={user.Username} label="Username" type="text" placeholder="Username" onChange={e => dispatch(setUser({ Username: e.target.value }))} />
         <Input id="Password" value={user.Password} label="Password" type="password" placeholder="Password" onChange={e => dispatch(setUser({ Password: e.target.value }))} className="mt-6" />
+        {/* TODO: Add functionality for setting avatar */}
+        {/* <Input id="Avatar" value={user.Avatar} label="Avatar" type="text" placeholder="Avatar" onChange={e => dispatch(setUser({ Password: e.target.value }))} className="mt-6" /> */}
+        {/* TODO: Display uploaded avatar */}
       </div>
       <Footer
         nextDisabled={user.Username === ''}

@@ -40,7 +40,7 @@ function Checkbox(props: Props) {
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center font-semibold font-mulish">
+        <span className="flex items-center font-mulish">
           {label}
         </span>
       )}

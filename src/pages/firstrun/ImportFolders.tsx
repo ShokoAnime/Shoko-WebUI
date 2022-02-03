@@ -1,20 +1,22 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { omit } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faFolderOpen, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@mdi/react';
+import {
+  mdiFolderOpen, mdiSquareEditOutline,
+  mdiTrashCanOutline,
+} from '@mdi/js';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
-import InputSmall from '../../components/Input/InputSmall';
-import Checkbox from '../../components/Input/Checkbox';
+import Input from '../../components/Input/Input';
 import Footer from './Footer';
 import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
 import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFolder';
 import type { ImportFolderType } from '../../core/types/api/import-folder';
-import SelectSmall from '../../components/Input/SelectSmall';
+import Select from '../../components/Input/Select';
 import TransitionDiv from '../../components/TransitionDiv';
 
 const defaultState = {
@@ -36,7 +38,9 @@ function ImportFolders() {
 
   const handleInputChange = (event: any) => {
     const name = event.target.id;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    let value = event.target.value;
+    if (value === 'True') value = true;
+    if (value === 'False') value = false;
     setNewImportFolder({ ...newImportFolder, [name]: value });
   };
 
@@ -87,19 +91,19 @@ function ImportFolders() {
     }
 
     return (
-      <div className="flex font-mulish items-center w-full my-2">
-        <Button onClick={() => handleEdit(folder)} className="flex mr-2 color-highlight-1">
-          <FontAwesomeIcon icon={faEdit} />
+      <div className="flex font-mulish items-center w-full mt-2 first:mt-0">
+        <Button onClick={() => handleEdit(folder)} className="text-highlight-1">
+          <Icon path={mdiSquareEditOutline} size={1} />
         </Button>
-        <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="flex mr-4 color-highlight-1">
-          <FontAwesomeIcon icon={faTrashAlt} />
+        <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="mr-2 text-highlight-3">
+          <Icon path={mdiTrashCanOutline} size={1} />
         </Button>
-        <div className="flex flex-col">
-          <div className="flex">
-            <span className="flex font-semibold mr-1">{`${Name} -`}</span>
-            <span className="flex">{Path}</span>
+        <div className="flex flex-grow">
+          <div className="flex-grow">
+            <span className="font-bold mr-1">{Name}</span>
+            <span className="opacity-75 text-xs">({flags})</span>
           </div>
-          <span className="flex">{flags}</span>
+          <div className="font-semibol opacity-50">{Path}</div>
         </div>
       </div>
     );
@@ -110,35 +114,32 @@ function ImportFolders() {
       Name, WatchForNewFiles, DropFolderType, Path, showEdit,
     } = newImportFolder;
     return (
-      <div className="flex flex-col mt-4 w-3/5">
-        <div className="flex justify-between items-center font-mulish">
-          Name
-          <InputSmall id="Name" value={Name} type="text" placeholder="Name" onChange={handleInputChange} className="my-1 w-80 p-2" />
+      <TransitionDiv className="flex flex-col mt-6 w-3/5">
+        <Input label="Name" id="Name" value={Name} type="text" placeholder="Name" onChange={handleInputChange} />
+        <div className="flex mt-6 items-end">
+          <Input label="Location" id="Path" value={Path} type="text" placeholder="Location" onChange={handleInputChange} className="flex-grow" />
+          {/* TODO: Move folder icon into the input field */}
+          <Button onClick={() => dispatch(setBrowseStatus(true))} className="text-highlight-1 ml-2 mb-1">
+            <Icon path={mdiFolderOpen} size={1} />
+          </Button>
         </div>
-        <div className="flex justify-between items-center font-mulish">
-          Path
-          <div className="flex">
-            <InputSmall id="Path" value={Path} type="text" placeholder="Path" onChange={handleInputChange} className="my-1 w-72 p-2" />
-            <Button onClick={() => dispatch(setBrowseStatus(true))} className="color-highlight-1 ml-2 text-lg">
-              <FontAwesomeIcon icon={faFolderOpen} className="align-middle" />
-            </Button>
-          </div>
-        </div>
-        <div className="flex font-bold mt-2">Type</div>
-        <Checkbox label="Watch For New Files" id="WatchForNewFiles" isChecked={WatchForNewFiles} onChange={handleInputChange} className="mt-2 mb-1" />
-        <SelectSmall label="Drop Type" id="DropFolderType" value={DropFolderType} onChange={handleInputChange} className="my-1">
+        <Select label="Drop Type" id="DropFolderType" value={DropFolderType} onChange={handleInputChange} className="mt-6">
           <option value={0}>None</option>
           <option value={1}>Source</option>
           <option value={2}>Destination</option>
           <option value={3}>Both</option>
-        </SelectSmall>
+        </Select>
+        <Select label="Watch For New Files" id="WatchForNewFiles" value={WatchForNewFiles ? 'True' : 'False'} onChange={handleInputChange} className="mt-6">
+          <option value="False">No</option>
+          <option value="True">Yes</option>
+        </Select>
         <span className="flex mt-6">
           {showEdit ? (
-            <Button onClick={() => handleEditFolder()} className="bg-color-highlight-1 py-2 px-3 rounded text-sm">
+            <Button onClick={() => handleEditFolder()} className="bg-highlight-1 py-2 px-3">
               Edit Import Folder
             </Button>
           ) : (
-            <Button onClick={() => handleAddFolder()} className="bg-color-highlight-1 py-2 px-3 rounded text-sm" disabled={Name === '' || Path === ''}>
+            <Button onClick={() => handleAddFolder()} className="bg-highlight-1 py-2 px-3" disabled={Name === '' || Path === ''}>
               Add Import Folder
             </Button>
           )}
@@ -146,26 +147,29 @@ function ImportFolders() {
             Cancel
           </Button>
         </span>
-      </div>
+      </TransitionDiv>
     );
   };
 
   return (
     <React.Fragment>
-      <TransitionDiv className="flex flex-col flex-grow justify-center overflow-y-auto">
-        <div className="font-bold text-lg">Import Folders</div>
-        <div className="font-mulish mt-5 text-justify">
+      <TransitionDiv className="flex flex-col justify-center overflow-y-auto px-96">
+        <div className="font-semibold text-lg">Import Folders</div>
+        <div className="font-mulish font-semibold mt-10 text-justify">
           Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can
           have as many import folders as you&apos;d like. Please note you can only have <span className="font-bold">one</span> folder
           designated as your drop destination.
         </div>
-        <div className="flex flex-col my-8 overflow-y-auto">
-          <div className="font-bold">Current Import Folders</div>
-          <div className="flex flex-col">{importFolders.map(folder => renderFolder(folder))}</div>
-          <div className="flex mt-2">
-            <Button onClick={() => setNewImportFolder({ ...newImportFolder, showAddNew: !newImportFolder.showAddNew })} className="bg-color-highlight-1 py-1 px-2 text-sm">Add New</Button>
-          </div>
-          {newImportFolder.showAddNew && renderForm()}
+        <div className="flex flex-col my-10 overflow-y-auto">
+          <div className="font-bold text-lg border-b border-background-border pb-4">Current Import Folders</div>
+          {!newImportFolder.showAddNew ? (
+            <React.Fragment>
+              <div className="flex flex-col my-6">{importFolders.map(folder => renderFolder(folder))}</div>
+              <div className="flex">
+                <Button onClick={() => setNewImportFolder({ ...newImportFolder, showAddNew: !newImportFolder.showAddNew })} className="bg-highlight-1 py-2 px-3">Add Import Folder</Button>
+              </div>
+            </React.Fragment>
+          ) : renderForm()}
         </div>
         <Footer nextPage="data-collection" saveFunction={() => dispatch(setFirstRunSaved('import-folders'))} />
       </TransitionDiv>

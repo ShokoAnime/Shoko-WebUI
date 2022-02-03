@@ -37,22 +37,22 @@ function MovieDBTab() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col w-3/5">
+    <TransitionDiv className="flex flex-col w-96">
 
-      <div className="font-bold">Download Options</div>
-      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} className="mt-1" />
+      <div className="font-mulish font-bold">Download Options</div>
+      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} justify className="mt-1" />
       {movieDBSettings.AutoFanart && (
-        <div className="flex justify-between mt-1">
+        <TransitionDiv className="flex justify-between mt-1">
           Max Fanart
           <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={e => setAutoFanartAmount(e.target.value)} className="w-10 text-center px-2" />
-        </div>
+        </TransitionDiv>
       )}
-      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={movieDBSettings.AutoPosters} onChange={handleInputChange} className="mt-1" />
+      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={movieDBSettings.AutoPosters} onChange={handleInputChange} justify className="mt-1" />
       {movieDBSettings.AutoPosters && (
-        <div className="flex justify-between mt-1">
+        <TransitionDiv className="flex justify-between mt-1">
           Max Posters
           <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={e => setAutoPostersAmount(e.target.value)} className="w-10 text-center px-2" />
-        </div>
+        </TransitionDiv>
       )}
 
     </TransitionDiv>
