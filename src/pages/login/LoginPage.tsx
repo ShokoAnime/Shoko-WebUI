@@ -106,7 +106,7 @@ function LoginPage() {
                   <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-7" />
                 </div>
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-bold text-lg mt-7" labelRight />
-                <Button className="bg-highlight-1 mt-14" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
+                <Button className="bg-highlight-1 mt-14 py-2" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
               </React.Fragment>
             )}
             {initStatus.State === 3 && (
@@ -136,10 +136,10 @@ function LoginPage() {
             )}
           </div>
           <div className="flex flex-col w-full pb-13">
-            <Button className="bg-highlight-2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+            <Button className="bg-highlight-2 py-2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
               Documentation
             </Button>
-            <Button className="flex bg-highlight-2 mt-5 items-center justify-center" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+            <Button className="flex bg-highlight-2 mt-5 items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
               Get help on <Icon path={mdiDiscord} size={0.75} className="mx-1" /> Discord
             </Button>
           </div>
