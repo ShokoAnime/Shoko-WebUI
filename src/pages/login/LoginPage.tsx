@@ -79,7 +79,7 @@ function LoginPage() {
       />
       <div className="flex h-screen w-screen">
         <div className="flex flex-grow login-image" />
-        <div className="flex flex-col px-13 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
+        <div className="flex flex-col flex-none px-13 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <img src="logo.png" className="w-32 mt-16" alt="logo" />
           <div className="flex items-center font-mulish font-semibold mt-6">
             Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
