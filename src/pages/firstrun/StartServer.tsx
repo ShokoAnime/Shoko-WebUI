@@ -34,21 +34,21 @@ function StartServer() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col flex-grow justify-center">
-      <div className="font-bold text-lg">Start Server</div>
-      <div className="font-mulish mt-5 text-justify">
+    <TransitionDiv className="flex flex-col justify-center px-96">
+      <div className="font-semibold text-lg">Start Server</div>
+      <div className="font-mulish font-semibold mt-10 text-justify">
         On this page you can try and start the server, startup progress will be reported below.
         After the startup and database creation process is complete you will be able to setup
         import folders.
       </div>
-      <div className="flex flex-col my-8">
+      <div className="flex flex-col my-10">
         <div className="flex">
           <span className="font-bold mr-2">Status:</span>
           {status.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.StartupMessage || <span className="font-semibold">Not Started!</span>)}
         </div>
         <div className="flex justify-center items-center mt-24">
           {status.State === 4 && (
-            <Button onClick={() => handleSave()} className="bg-color-highlight-2 py-2 px-3 rounded">Start Server</Button>
+            <Button onClick={() => handleSave()} className="bg-highlight-2 py-2 w-64">Start Server</Button>
           )}
         </div>
       </div>

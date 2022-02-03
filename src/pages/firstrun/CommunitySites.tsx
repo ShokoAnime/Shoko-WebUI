@@ -4,7 +4,6 @@ import cx from 'classnames';
 
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
-import Button from '../../components/Input/Button';
 import AniDBTab from './CommunitySiteTabs/AniDBTab';
 import TvDBTab from './CommunitySiteTabs/TvDBTab';
 import MovieDBTab from './CommunitySiteTabs/MovieDBTab';
@@ -16,9 +15,9 @@ function CommunitySites() {
   const [activeTab, setActiveTab] = useState('anidb');
 
   const renderTabButton = (title: string, key: string) => (
-    <Button onClick={() => setActiveTab(key)} className={cx(['mr-6 font-bold', activeTab === key && 'color-highlight-1'])}>
+    <button onClick={() => setActiveTab(key)} className={cx(['mr-5 font-semibold text-lg', activeTab === key && 'text-highlight-1'])}>
       {title}
-    </Button>
+    </button>
   );
 
   const renderTabContent = () => {
@@ -35,19 +34,20 @@ function CommunitySites() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center">
-      <div className="font-bold text-lg">Community Sites</div>
-      <div className="font-mulish mt-5 text-justify">
+    <TransitionDiv className="flex flex-col overflow-y-auto justify-center px-96">
+      <div className="font-semibold text-lg">Community Sites</div>
+      <div className="font-mulish font-semibold mt-10 text-justify">
         Shoko supports multiple community sites that can be used to download additional
         metadata for the series in your collection. We highly recommend going through each
         sites settings and configuring them to your liking.
       </div>
-      <div className="flex mt-5 border-b pb-4">
+      <div className="flex mt-10 border-b border-background-border pb-4">
         {renderTabButton('AniDB', 'anidb')}
-        {renderTabButton('The TvDB', 'tvdb')}
         {renderTabButton('The Movie DB', 'moviedb')}
+        {renderTabButton('The TvDB', 'tvdb')}
+        {/* TODO: Add plex and trakt settings. Currently they only work after the setup is completed. */}
       </div>
-      <div className="flex flex-col mt-4 mb-8 overflow-y-auto flex-shrink">
+      <div className="flex flex-col mt-5 mb-8 overflow-y-auto flex-shrink">
         {renderTabContent()}
       </div>
       <Footer nextPage="start-server" saveFunction={() => dispatch(setFirstRunSaved('community-sites'))} />

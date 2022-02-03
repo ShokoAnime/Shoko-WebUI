@@ -29,15 +29,15 @@ function AniDBAccount() {
   }, [Username, Password]);
 
   return (
-    <TransitionDiv className="flex flex-col flex-grow justify-center">
-      <div className="font-bold text-lg">Adding Your AniDB Account</div>
-      <div className="font-mulish mt-5 text-justify">
+    <TransitionDiv className="flex flex-col justify-center px-96">
+      <div className="font-semibold text-lg">Adding Your AniDB Account</div>
+      <div className="font-mulish font-semibold mt-10 text-justify">
         Shoko uses AniDB to compare your file hashes with its extensive database to quickly
         figure out and add series to your collection. AniDB also provides additional series
         and episode information that enhances your usage.
       </div>
-      <div className="font-mulish mt-4 text-justify">
-        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="color-highlight-2 hover:underline">Click Here</a> to create one.
+      <div className="font-mulish font-semibold mt-6 text-justify">
+        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
       </div>
       <div className="flex flex-col my-8">
         <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />

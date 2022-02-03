@@ -69,22 +69,20 @@ function DatabaseSetup() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col flex-grow overflow-y-auto justify-center">
-      <span className="font-bold text-lg">Setting Up Your Database</span>
-      <div className="font-mulish mt-5 text-justify">
+    // TODO: Change the UI to the new one. Keeping the old for now.
+    <TransitionDiv className="flex flex-col overflow-y-auto justify-center px-96">
+      <div className="font-semibold text-lg">Setting Up Your Database</div>
+      <div className="font-mulish font-semibold mt-10 text-justify">
         Shoko uses SQLite for your database and will automatically create the database for you.
         If you&apos;d like to select a different location for your database file, you can do
         so by changing the directory below.
       </div>
-      <div className="flex flex-col my-8 overflow-y-auto flex-shrink">
-        <div className="font-bold mb-4 text-lg">Database Type</div>
-        <div className="flex">
-          <Select id="Type" value={newDbSettings.Type} onChange={handleInputChange} className="w-full">
-            <option value="SQLite">SQLite</option>
-            <option value="MySQL">MySQL</option>
-            <option value="SQLServer">SQLServer</option>
-          </Select>
-        </div>
+      <div className="flex flex-col my-10 overflow-y-auto flex-shrink">
+        <Select label="Database Type" id="Type" value={newDbSettings.Type} onChange={handleInputChange} className="w-32">
+          <option value="SQLite">SQLite</option>
+          <option value="MySQL">MySQL</option>
+          <option value="SQLServer">SQLServer</option>
+        </Select>
         {renderDBOptions()}
       </div>
       <Footer

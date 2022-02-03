@@ -21,6 +21,10 @@ function TransitionDiv(props: Props) {
       enter={enter ?? 'transition-opacity duration-300'}
       enterFrom={enterFrom ?? 'opacity-0'}
       enterTo={enterTo ?? 'opacity-100'}
+      // FIXME: Leave transitions don't seem to be working
+      leave={enter ?? 'transition-opacity duration-300'}
+      leaveFrom={enterTo ?? 'opacity-100'}
+      leaveTo={enterFrom ?? 'opacity-0'}
       className={className}
     >
       {children}

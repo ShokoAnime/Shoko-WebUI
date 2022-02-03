@@ -131,7 +131,7 @@ function LoginPage() {
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 mt-20">Continue</Button>
+                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 py-2 mt-20">Continue</Button>
               </div>
             )}
           </div>

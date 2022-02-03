@@ -1,8 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { goBack, push, replace } from 'connected-react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 import cx from 'classnames';
 
 import Button from '../../components/Input/Button';
@@ -33,17 +31,17 @@ function Footer(props: Props) {
   } = props;
 
   return (
-    <div className="flex justify-between text-lg">
-      <div className={cx(['flex items-center', status?.type === 'error' ? 'color-danger' : 'color-highlight-1'])}>
+    <div className="flex flex-col text-lg">
+      <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-highlight-3' : 'text-highlight-2'])}>
         {status?.text}
       </div>
-      <div className="flex">
-        <Button onClick={() => dispatch(goBack())} className="flex bg-color-highlight-1 py-2 px-3 mr-4 items-center font-semibold" disabled={prevDisabled}>Back</Button>
+      <div className="flex justify-between">
+        <Button onClick={() => dispatch(goBack())} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
-          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-color-highlight-1 py-2 px-3" disabled={nextDisabled}>Finish</Button>
+          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (
-          <Button onClick={() => handleNext()} className="flex bg-color-highlight-1 py-2 px-3 items-center font-semibold" disabled={nextDisabled || isFetching}>
-            {isFetching ? (<FontAwesomeIcon icon={faCircleNotch} spin className="text-xl mx-2" />) : 'Next'}
+          <Button onClick={() => handleNext()} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
+            Next
           </Button>
         )}
       </div>

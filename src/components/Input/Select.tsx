@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretDown } from '@fortawesome/free-solid-svg-icons';
+import { Icon } from '@mdi/react';
+import { mdiChevronDown } from '@mdi/js';
 
 type Props = {
   id: string;
@@ -19,18 +19,18 @@ function Select(props:Props) {
 
   return (
     <div className={`${className ?? ''}`}>
-      <label className="flex justify-between items-center" htmlFor={id}>
+      <label className="font-mulish" htmlFor={id}>
         {label && (
-          <div className="flex justify-center">
+          <div className="mb-1.5 font-bold">
             {label}
           </div>
         )}
         <div className="w-auto relative">
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none text-lg font-exo2 rounded-lg py-4 pl-4 pr-7 focus:shadow-none focus:outline-none bg-color-1 select-field transition duration-300 ease-in-out">
+          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-background-alt border border-background-border focus:border-highlight-1 transition duration-300 ease-in-out">
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 p-4">
-            <FontAwesomeIcon icon={faCaretDown} />
+          <div className="pointer-events-none absolute inset-y-0 right-0 pr-2 py-2">
+            <Icon path={mdiChevronDown} size={1} />
           </div>
         </div>
       </label>

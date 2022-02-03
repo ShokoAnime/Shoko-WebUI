@@ -59,25 +59,25 @@ function AniDBTab() {
   } = aniDBSettings;
 
   return (
-    <TransitionDiv className="flex flex-col w-3/5">
+    <TransitionDiv className="flex flex-col w-96">
 
-      <div className="font-bold">Download Options</div>
-      <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} className="mt-1" />
+      <div className="font-mulish font-bold">Download Options</div>
+      <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} justify className="mt-3" />
+      <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} justify className="mt-1" />
+      <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} justify className="mt-1" />
       {DownloadRelatedAnime && (
-        <div className="flex justify-between mt-1">
+        <TransitionDiv className="flex justify-between mt-1">
           Related Depth
           <InputSmall id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={e => setMaxRelationDepth(e.target.value)} className="w-10 text-center px-2" />
-        </div>
+        </TransitionDiv>
       )}
 
-      <div className="font-bold mt-3">Mylist Options</div>
-      <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} className="mt-1" />
+      <div className="font-mulish font-bold mt-5">Mylist Options</div>
+      <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} justify className="mt-3" />
+      <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} justify className="mt-1" />
+      <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} justify className="mt-1" />
+      <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} justify className="mt-1" />
+      <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} justify className="mt-1" />
       <SelectSmall label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={handleInputChange} className="mt-1">
         <option value={0}>Unknown</option>
         <option value={1}>HDD</option>
@@ -94,8 +94,8 @@ function AniDBTab() {
         <option value={5}>DVD/BD</option>
       </SelectSmall>
 
-      <div className="font-bold mt-3">Update Options</div>
-      <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={handleInputChange} className="mt-1">
+      <div className="font-mulish font-bold mt-5">Update Options</div>
+      <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={handleInputChange} className="mt-3">
         {updateFrequencyOptions}
       </SelectSmall>
       <SelectSmall label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={handleInputChange} className="mt-1">
