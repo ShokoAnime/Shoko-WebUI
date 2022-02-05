@@ -12,6 +12,14 @@ module.exports = {
     './src/**/*.tsx',
     './public/**/*.html',
   ],
+  //Any class that is generated dynamically goes here
+  safelist: [
+    'bg-highlight-1',
+    'bg-highlight-2',
+    'bg-highlight-3',
+    'bg-highlight-4',
+    'bg-highlight-5',
+  ],
   theme: {
     colors: {
       primary: withOpacityValue('--color-primary'),

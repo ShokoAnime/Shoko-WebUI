@@ -40,7 +40,7 @@ export const defaultLayout = {
     }, {
       i: 'collectionTypeBreakdown', x: 2, y: 0, w: 2, h: 15, moved: false, static: false,
     }, {
-      i: 'queueProcessor', x: 4, y: 0, w: 8, h: 17, minW: 6, minH: 17, moved: false, static: false,
+      i: 'queueProcessor', x: 4, y: 0, w: 8, h: 15, minW: 6, minH: 15, moved: false, static: false,
     }, {
       i: 'importBreakdown', x: 6, y: 14, w: 6, h: 17, moved: false, static: false,
     }, {
