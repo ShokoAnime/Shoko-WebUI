@@ -9,23 +9,30 @@ module.exports = {
     "../stories/**/*.stories.@(js|jsx|ts|tsx)"
   ],
   "addons": [
-    "@storybook/addon-links",
-    "@storybook/addon-essentials", 
-    "@storybook/preset-scss",
-    {
-      name: '@storybook/addon-postcss',
-      options: {
-        cssLoaderOptions: {
-          importLoaders: 1,
-          modules: true,
-        },
-        postcssLoaderOptions: {
-          implementation: require('postcss'),
-        },
-        rule: {
-          exclude: [/node_modules/],
-        }
-      },
-    },
+    "@storybook/addon-essentials",
   ],
+  webpackFinal: async (config) => {
+    config.module.rules.push({
+      test: /\.scss$/,
+      sideEffects: true,
+      use: [
+        'style-loader',
+        {
+          loader: 'css-loader',
+          options: {
+            modules: false,
+            importLoaders: 1,
+            url: {
+              //Fix for random login image
+              filter: url => !url.startsWith('/api/'),
+            },
+          },
+        },
+        'postcss-loader',
+        'sass-loader'
+      ],
+      include: path.resolve(__dirname, '../'),
+    });
+    return config
+  },
 }
