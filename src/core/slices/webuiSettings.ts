@@ -42,13 +42,15 @@ export const defaultLayout = {
     }, {
       i: 'queueProcessor', x: 4, y: 0, w: 8, h: 15, minW: 6, minH: 15, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 6, y: 14, w: 6, h: 17, moved: false, static: false,
+      i: 'recentlyImported', x: 0, y: 15, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'shokoNews', x: 0, y: 26, w: 3, h: 14, moved: false, static: false,
+      i: 'importBreakdown', x: 9, y: 34, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'actionItems', x: 3, y: 26, w: 3, h: 14, moved: false, static: false,
+      i: 'shokoNews', x: 0, y: 34, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'actionItems2', x: 6, y: 26, w: 3, h: 14, moved: false, static: false,
+      i: 'actionItems', x: 3, y: 34, w: 3, h: 14, moved: false, static: false,
+    }, {
+      i: 'actionItems2', x: 6, y: 34, w: 3, h: 14, moved: false, static: false,
     }],
   } as LayoutType,
   importFolders: {

@@ -21,6 +21,7 @@ $background-color-1: #1F2531;
 $background-color-2: #171C28;
 $background-color-3: #151B29;
 $background-color-4: #1B202B;
+$background-border: #0B0E17;
 
 $border-color-1: #3C3C53;
 
@@ -62,6 +63,11 @@ body {
   background: $highlight-color-2;
   border-radius: 10px;
   border: 2px solid $background-color-2;
+}
+
+.theme-shoko-blue .shoko-scrollbar {
+  scrollbar-color: $highlight-color-1 $background-border;
+  scrollbar-width: thin;
 }
 
 #app-root {

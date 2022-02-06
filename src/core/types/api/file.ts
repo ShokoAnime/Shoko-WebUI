@@ -32,6 +32,8 @@ type FileIDsType = {
 };
 
 export type RecentFileDetailsType = {
+  SeriesImageID?: string;
+  SeriesImageSource?: string;
   SeriesName: string;
   EpisodeNumber: number;
   EpisodeName: string;
@@ -41,4 +43,16 @@ export type RecentFileDetailsType = {
   SubtitleLanguages: Array<string>;
   ReleaseGroup: string;
   VideoCodec: string;
+};
+
+export type RecentSeriesDetailsType = {
+  SeriesName: string,
+  SeriesImageID?: string;
+  SeriesImageSource?: string;
+};
+
+export type RecentEpisodeDetailsType = {
+  EpisodeNumber: number;
+  EpisodeName: string;
+  EpisodeType: string;
 };

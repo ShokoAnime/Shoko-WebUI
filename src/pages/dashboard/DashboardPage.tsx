@@ -13,6 +13,7 @@ import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
 import ActionItems from './panels/ActionItems';
 import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
+import RecentlyImported from './panels/RecentlyImported';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -56,6 +57,9 @@ function DashboardPage() {
       </div>
       <div key="queueProcessor">
         <QueueProcessor />
+      </div>
+      <div key="recentlyImported">
+        <RecentlyImported />
       </div>
       <div key="importBreakdown">
         <ImportBreakdown />
