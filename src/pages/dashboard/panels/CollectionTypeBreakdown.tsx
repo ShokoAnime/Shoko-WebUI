@@ -5,11 +5,8 @@ import { forEach } from 'lodash';
 import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-const colors = {
-  Series: '#FF3F57',
-  OVA: '#F1C40F',
-  Movie: '#279CEB',
-  Other: '#DA3FFF',
+const names = {
+  Series: 'TV Series',
 };
 
 function CollectionTypeBreakdown() {
@@ -18,14 +15,14 @@ function CollectionTypeBreakdown() {
 
   const renderName = (item: string, count: number, countPercentage: number) => (
     <div key={`${item}-name`} className="flex mt-3 first:mt-0">
-      <span className="flex-grow">{item} - {count}</span>
+      <span className="flex-grow">{names[item] ?? item} - {count}</span>
       {countPercentage.toFixed(2)}%
     </div>
   );
 
-  const renderBar = (item: string, countPercentage: number) => (
+  const renderBar = (item: string, countPercentage: number, counter: number) => (
     <div key={`${item}-bar`} className="flex bg-white rounded-lg mt-2">
-      <div className="rounded-lg h-4" style={{ width: `${countPercentage}%`, backgroundColor: colors[item] }} />
+      <div className={`rounded-lg h-4 bg-highlight-${counter}`} style={{ width: `${countPercentage}%` }} />
     </div>
   );
 
@@ -40,14 +37,16 @@ function CollectionTypeBreakdown() {
   seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
 
   const items: Array<React.ReactNode> = [];
+  let counter = 0;
 
   forEach(seriesSummaryArray, (item) => {
     let countPercentage = 0;
+    counter++;
     if (total) {
       countPercentage = (item[1] / total) * 100;
     }
     items.push(renderName(item[0], item[1], countPercentage));
-    items.push(renderBar(item[0], countPercentage));
+    items.push(renderBar(item[0], countPercentage, counter));
   });
 
   return (

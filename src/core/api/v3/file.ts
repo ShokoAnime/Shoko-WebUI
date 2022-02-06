@@ -45,6 +45,11 @@ function postFileRehash(id: string) {
 }
 
 // Get Recently Added Files
+function getFileRecentLegacy(limit = 50) {
+  return ApiRequest(`Recent/${limit}`, 'GET');
+}
+
+// Get Recently Added Files
 function getFileRecent(pageSize = 50, page = 0) {
   return ApiRequest('Recent', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
@@ -77,4 +82,5 @@ export default {
   getFileIgnored,
   getFileDuplicates,
   getFileUnrecognized,
+  getFileRecentLegacy,
 };

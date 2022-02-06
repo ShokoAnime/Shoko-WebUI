@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
 import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
-import type { RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
+import type { RecentEpisodeDetailsType, RecentSeriesDetailsType, RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 
 type State = {
@@ -24,6 +24,18 @@ type State = {
       details: RecentFileDetailsType;
     }
   };
+  recentSeriesDetails: {
+    [key: number]: {
+      fetched: boolean;
+      details: RecentSeriesDetailsType;
+    }
+  };
+  recentEpisodeDetails: {
+    [key: number]: {
+      fetched: boolean;
+      details: RecentEpisodeDetailsType;
+    }
+  };
   recentFiles: Array<FileDetailedType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
@@ -40,6 +52,8 @@ const mainpageSlice = createSlice({
     queueStatus: {} as QueueStatusType,
     recentFiles: [],
     recentFileDetails: {},
+    recentSeriesDetails: {},
+    recentEpisodeDetails: {},
     selectedImportFolderSeries: 1,
     seriesSummary: {
       Series: 0,
@@ -71,6 +85,16 @@ const mainpageSlice = createSlice({
         {}, sliceState.recentFileDetails, action.payload,
       );
     },
+    setRecentSeriesDetails(sliceState, action) {
+      sliceState.recentSeriesDetails = Object.assign(
+        {}, sliceState.recentSeriesDetails, action.payload,
+      );
+    },
+    setRecentEpisodeDetails(sliceState, action) {
+      sliceState.recentEpisodeDetails = Object.assign(
+        {}, sliceState.recentEpisodeDetails, action.payload,
+      );
+    },
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
     },
@@ -93,7 +117,7 @@ export const {
   setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
-  unsetFetched,
+  unsetFetched, setRecentSeriesDetails, setRecentEpisodeDetails,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
