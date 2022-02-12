@@ -23,17 +23,19 @@ class ErrorBoundary extends React.Component<Props, State> {
   };
 
   fallback = ({ error, componentStack }) => (
-    <React.Fragment>
-      <h1 className="code">ERROR</h1>
-      <p className="title">You broke the Web UI, congratulations.</p>
-      <p className="text">Hopefully useful information:</p>
-      <p className="title">{error.toString()}</p>
-      <p className="text">Trace:<pre>{componentStack}</pre></p>
-      <p className="text">
-        <a href="/" onClick={(event) => { event.preventDefault(); history.goBack(); }}>Go back</a>, or head over to the&nbsp;
-        <Link to="/">home page</Link> to choose a new direction.
-      </p>
-    </React.Fragment>
+    <div className="error-page flex h-screen">
+      <div className="m-auto">
+        <h1 className="code">ERROR</h1>
+        <p className="title">You broke the Web UI, congratulations.</p>
+        <p className="text">Hopefully useful information:</p>
+        <p className="title">{error.toString()}</p>
+        <p className="text">Trace:<pre>{componentStack}</pre></p>
+        <p className="text">
+          <a href="/" onClick={(event) => { event.preventDefault(); history.goBack(); }}>Go back</a>, or head over to the&nbsp;
+          <Link to="/">home page</Link> to choose a new direction.
+        </p>
+      </div>
+    </div>
   );
 
   render() {

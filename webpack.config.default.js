@@ -159,14 +159,16 @@ if (!isDebug) {
       },
     },
   };
-  config.plugins.push(new SentryWebpackPlugin({
-    authToken: process.env.SENTRY_AUTH_TOKEN,
-    org: 'shoko-anime',
-    project: 'shoko-webui',
-    release: isDebug ? 'dev' : Version.package,
-    include: './public/dist',
-    ignore: [],
-  }));
+  if (process.env.SENTRY_AUTH_TOKEN) {
+    config.plugins.push(new SentryWebpackPlugin({
+      authToken: process.env.SENTRY_AUTH_TOKEN,
+      org: 'shoko-anime',
+      project: 'shoko-webui',
+      release: isDebug ? 'dev' : Version.package,
+      include: './public/dist',
+      ignore: [],
+    }));
+  }
 } else {
   /* const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
   config.plugins.push(new BundleAnalyzerPlugin()); */
