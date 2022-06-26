@@ -77,7 +77,7 @@ function TvDBTab() {
   return (
     <TransitionDiv className="flex flex-col w-96">
 
-      <div className="font-mulish font-bold">Download Options</div>
+      <div className="font-rubik font-bold">Download Options</div>
       <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={tvDBSettings.AutoFanart} onChange={handleInputChange} justify className="mt-3" />
       {tvDBSettings.AutoFanart && (
         <div className="flex justify-between mt-1">
@@ -100,7 +100,7 @@ function TvDBTab() {
         </div>
       )}
 
-      <div className="font-mulish font-bold mt-5">Preferences</div>
+      <div className="font-rubik font-bold mt-5">Preferences</div>
       <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={tvDBSettings.AutoLink} onChange={handleInputChange} justify className="mt-3" />
       <SelectSmall label="Language" id="Language" value={tvDBSettings.Language} onChange={handleInputChange} className="mt-1">
         {tvdbLanguages.map(

@@ -21,7 +21,7 @@ const ShokoPanel = ({ className, title, options, children }: Props) => (
             </div>
         </div>
       <span className="bg-background-border my-2 h-0.5 flex-shrink-0" />
-      <div className="flex flex-col mr-2 font-mulish">
+      <div className="flex flex-col mr-2 font-rubik">
         {children}
       </div>
     </div>

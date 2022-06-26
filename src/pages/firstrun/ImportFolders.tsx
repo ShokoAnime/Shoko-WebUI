@@ -91,7 +91,7 @@ function ImportFolders() {
     }
 
     return (
-      <div className="flex font-mulish items-center w-full mt-2 first:mt-0">
+      <div className="flex font-rubik items-center w-full mt-2 first:mt-0">
         <Button onClick={() => handleEdit(folder)} className="text-highlight-1">
           <Icon path={mdiSquareEditOutline} size={1} />
         </Button>
@@ -155,7 +155,7 @@ function ImportFolders() {
     <React.Fragment>
       <TransitionDiv className="flex flex-col justify-center overflow-y-auto px-96">
         <div className="font-semibold text-lg">Import Folders</div>
-        <div className="font-mulish font-semibold mt-10 text-justify">
+        <div className="font-rubik font-semibold mt-10 text-justify">
           Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can
           have as many import folders as you&apos;d like. Please note you can only have <span className="font-bold">one</span> folder
           designated as your drop destination.

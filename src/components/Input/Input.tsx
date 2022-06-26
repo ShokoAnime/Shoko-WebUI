@@ -23,7 +23,7 @@ function Input(props: Props) {
 
   return (
     <React.Fragment>
-      <div className={`${className ?? ''} font-mulish`}>
+      <div className={`${className ?? ''} font-rubik`}>
         <label htmlFor={id}>
           {label && <div className="mb-1.5 font-bold">{label}</div>}
           <input

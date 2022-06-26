@@ -81,7 +81,7 @@ function LoginPage() {
         <div className="flex flex-grow login-image" />
         <div className="flex flex-col flex-none px-13 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <img src="logo.png" className="w-32 mt-16" alt="logo" />
-          <div className="flex items-center font-mulish font-semibold mt-6">
+          <div className="flex items-center font-rubik font-semibold mt-6">
             Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
           </div>
           <div className="flex flex-col flex-grow w-full justify-center">
@@ -95,7 +95,7 @@ function LoginPage() {
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="mt-2 text-lg">
-                  <span className="font-mulish font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
+                  <span className="font-rubik font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
                 </div>
               </div>
             )}
@@ -114,20 +114,20 @@ function LoginPage() {
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-mulish font-semibold">{initStatus.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-rubik font-semibold">{initStatus.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
             {initStatus.State === 4 && (
               <div className="flex flex-col -mt-32">
                 <div className="flex flex-col font-semibold">
                   <div className="text-lg">First Time? We&apos;ve All Been There</div>
-                  <div className="mt-10 font-mulish text-justify">
+                  <div className="mt-10 font-rubik text-justify">
                     Before Shoko can get started indexing your anime collection, you&apos;ll
                     need to go through our <span className="text-highlight-2">First Time Wizard </span>
                     and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
                     takes a couple of minutes.
                   </div>
-                  <div className="mt-6 font-mulish">
+                  <div className="mt-6 font-rubik">
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>

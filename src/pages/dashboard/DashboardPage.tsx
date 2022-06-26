@@ -10,10 +10,10 @@ import { defaultLayout } from '../../core/slices/webuiSettings';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
-import ActionItems from './panels/ActionItems';
 import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
 import RecentlyImported from './panels/RecentlyImported';
+import ImportFolders from './panels/ImportFolders';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -61,17 +61,14 @@ function DashboardPage() {
       <div key="recentlyImported">
         <RecentlyImported />
       </div>
-      <div key="importBreakdown">
-        <ImportBreakdown />
-      </div>
       <div key="shokoNews">
         <ShokoNews />
       </div>
-      <div key="actionItems">
-        <ActionItems />
+      <div key="importFolders">
+        <ImportFolders />
       </div>
-      <div key="actionItems2">
-        <ActionItems />
+      <div key="importBreakdown">
+        <ImportBreakdown />
       </div>
     </ResponsiveGridLayout>
   );

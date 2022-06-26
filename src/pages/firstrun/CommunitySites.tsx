@@ -36,7 +36,7 @@ function CommunitySites() {
   return (
     <TransitionDiv className="flex flex-col overflow-y-auto justify-center px-96">
       <div className="font-semibold text-lg">Community Sites</div>
-      <div className="font-mulish font-semibold mt-10 text-justify">
+      <div className="font-rubik font-semibold mt-10 text-justify">
         Shoko supports multiple community sites that can be used to download additional
         metadata for the series in your collection. We highly recommend going through each
         sites settings and configuring them to your liking.

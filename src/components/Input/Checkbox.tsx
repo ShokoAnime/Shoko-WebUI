@@ -40,7 +40,7 @@ function Checkbox(props: Props) {
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center font-mulish">
+        <span className="flex items-center font-rubik">
           {label}
         </span>
       )}
@@ -55,7 +55,7 @@ function Checkbox(props: Props) {
         </TransitionDiv>
       )}
       {labelRight && (
-        <span className="flex items-center font-semibold font-mulish ml-2">
+        <span className="flex items-center font-semibold font-rubik ml-2">
           {label}
         </span>
       )}
