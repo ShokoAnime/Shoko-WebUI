@@ -4,12 +4,13 @@ import prettyBytes from 'pretty-bytes';
 import {
   mdiDatabaseEditOutline,
   mdiDatabaseSearchOutline,
+  mdiFolderPlusOutline,
 } from '@mdi/js';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Button from '../../../components/Input/Button';
-import { setEdit } from '../../../core/slices/modals/importFolder';
+import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
@@ -22,6 +23,7 @@ function ImportFolders() {
   const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
 
   const rescanFolder = (ID: number) => dispatch({ type: Events.IMPORT_FOLDER_RESCAN, payload: ID });
+  const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
   const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
 
   const renderFolder = (folder: ImportFolderType) => {
@@ -65,8 +67,16 @@ function ImportFolders() {
     );
   };
 
+  const renderOptions = () => (
+    <div>
+      <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
+        <Icon path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+      </Button>
+    </div>
+  );
+
   return (
-    <ShokoPanel title="Import Folders" isFetching={!hasFetched}>
+    <ShokoPanel title="Import Folders" options={renderOptions()} isFetching={!hasFetched}>
       {importFolders.length === 0
         ? (<div className="flex justify-center font-bold mt-4" key="no-folders">No import folders added!</div>)
         : importFolders.map(importFolder => renderFolder(importFolder))}
