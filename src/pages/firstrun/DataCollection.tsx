@@ -8,7 +8,7 @@ function DataCollection() {
   return (
     <TransitionDiv className="flex flex-col justify-center px-96">
       <div className="font-semibold text-lg">Data Collection</div>
-      <div className="font-mulish font-semibold mt-10 text-justify">
+      <div className="font-rubik font-semibold mt-10 text-justify">
         Shoko is open-source and is worked on by volunteers in our free time so in order to
         more effectively improve Shoko, we&apos;ve implemented two different services for data
         collection. We understand the hesitations a lot of people have with data collection
@@ -21,7 +21,7 @@ function DataCollection() {
         watch. We only care about making Shoko better which is what this data will allow us
         to do.
       </div>
-      <div className="font-mulish mt-5 mb-8">
+      <div className="font-rubik mt-5 mb-8">
         <div className="font-bold">Sentry</div>
         <ul>
           <li>- Error information and context</li>

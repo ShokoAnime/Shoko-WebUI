@@ -41,9 +41,9 @@ const RecentlyImported = () => {
       return renderPlaceholder(item); 
     }
     
-    return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-mulish justify-center flex flex-col">
+    return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-exo2 justify-center flex flex-col">
       <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${series.SeriesImageSource}/Poster/${series.SeriesImageID}')` }} className="h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black" />
-      <p className="truncate text-xl font-bold" title={series.SeriesName}>{series.SeriesName}</p>
+      <p className="truncate text-base font-semibold" title={series.SeriesName}>{series.SeriesName}</p>
       <p className="truncate text-sm" title={`${episode.EpisodeNumber} - ${episode.EpisodeName}`}>{episode.EpisodeNumber} - {episode.EpisodeName}</p>
     </div>); 
   };

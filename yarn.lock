@@ -3206,10 +3206,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/mulish@npm:^4.5.3":
-  version: 4.5.3
-  resolution: "@fontsource/mulish@npm:4.5.3"
-  checksum: 4992698fa3097bec20102da5237c919acd6082b26f0d74a98c7249ef5223d9ed2b655757ad98a66975e2dcc94a1d51d6821b05ed78f4cf7d2834962b5a34f8a3
+"@fontsource/rubik@npm:^4.5.10":
+  version: 4.5.10
+  resolution: "@fontsource/rubik@npm:4.5.10"
+  checksum: 1edab2ac569fa44fe18ed987413684f35a52abccfa073cfae90c131a4d5b7234ed38bc7be8a9bc5a42ec94193e71bcab2551834ecc9faff9449073f521ed7a1f
   languageName: node
   linkType: hard
 
@@ -15573,7 +15573,7 @@ __metadata:
     "@babel/register": ^7.16.9
     "@babel/runtime": ^7.16.7
     "@fontsource/exo-2": ^4.5.2
-    "@fontsource/mulish": ^4.5.3
+    "@fontsource/rubik": ^4.5.10
     "@fortawesome/fontawesome-svg-core": ^1.2.36
     "@fortawesome/free-brands-svg-icons": ^5.15.4
     "@fortawesome/free-regular-svg-icons": ^5.15.4
