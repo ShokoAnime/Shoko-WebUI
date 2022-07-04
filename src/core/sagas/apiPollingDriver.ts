@@ -19,7 +19,7 @@ function* pollServerStatus() {
     } else {
       yield put(setStatus(resultJson.data));
     }
-    yield delay(100);
+    yield delay(1000);
   }
 }
 
