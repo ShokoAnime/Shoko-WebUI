@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 import {
   JsonHubProtocol, HttpTransportType, HubConnectionBuilder, LogLevel, HubConnection,
-} from '@aspnet/signalr';
+} from '@microsoft/signalr';
 import moment from 'moment';
 import {
   debounce, delay, defer, round, forEach,
