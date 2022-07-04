@@ -39,7 +39,8 @@ type State = {
   recentFiles: Array<FileDetailedType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
-  unrecognizedFiles: Array<FileType>
+  unrecognizedFiles: Array<FileType>;
+  unrecognizedMark: Array<string>;
 };
 
 const mainpageSlice = createSlice({
@@ -63,6 +64,7 @@ const mainpageSlice = createSlice({
     },
     stats: {},
     unrecognizedFiles: [],
+    unrecognizedMark: [],
   } as State,
   reducers: {
     setAvdump(sliceState, action) {
@@ -110,6 +112,9 @@ const mainpageSlice = createSlice({
     unsetFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: false });
     },
+    markUnrecognizedFile(sliceState, action) {
+      sliceState.unrecognizedMark = action.payload.state === true ? [...sliceState.unrecognizedMark, action.payload.id] : sliceState.unrecognizedMark.filter(id => id !== action.payload.id);
+    },
   },
 });
 
@@ -118,6 +123,7 @@ export const {
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
   unsetFetched, setRecentSeriesDetails, setRecentEpisodeDetails,
+  markUnrecognizedFile,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
