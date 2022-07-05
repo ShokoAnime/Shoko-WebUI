@@ -45,14 +45,14 @@ function UnrecognizedTab() {
       )}
       <div className="flex my-2 justify-between">
         {avdumpKeyExists && avdumpList[item.ID] === undefined && (
-          <Button onClick={() => runAvdump(item.ID)} className="py-1 px-2" loading={avdumpList[item.ID]?.fetching}>
-            <Icon path={mdiFileFindOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+          <Button onClick={() => runAvdump(item.ID)} className="py-1 px-2 color-highlight-1" loading={avdumpList[item.ID]?.fetching}>
+            <Icon path={mdiFileFindOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
         )}
         {avdumpList[item.ID] && (
-          <div className="py-1 px-2 cursor-pointer">
+          <div className="py-1 px-2 cursor-pointer color-highlight-2">
           <CopyToClipboard text={avdumpList[item.ID]?.hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
-            <Icon path={mdiClipboardTextMultipleOutline} size={1} horizontal vertical rotate={180} color="#06c270" />
+            <Icon path={mdiClipboardTextMultipleOutline} size={1} horizontal vertical rotate={180} /> 
           </CopyToClipboard>
           </div>
         )}

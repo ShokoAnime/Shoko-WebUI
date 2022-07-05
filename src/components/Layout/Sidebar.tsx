@@ -37,18 +37,18 @@ function Sidebar() {
     const isHighlighted = pathname === `/${key}`; 
     return (
       <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
-        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180} color={isHighlighted ? '#279ceb' : '#CFD8E3'} /></div>
+        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </div>
     );
   };
   
   const renderMenuLink = (url: string, icon: string) => (
-      <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+      <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} /></div>
   );
 
   return (
-    <div className="flex flex-col flex-grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
+    <div className="flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col p-10">
         <img src="logo.svg" alt="logo" className="w-20" />
       </div>
@@ -59,7 +59,7 @@ function Sidebar() {
         <p className="ml-4"><span className="text-sm opacity-75">Welcome back,</span> <br/> {username}</p>
       </div>
       <div className="flex items-center mt-11 w-full px-7">
-        <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+        <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} /></div>
         <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
       </div>
       <div className="flex flex-col justify-between mt-11 w-full">
@@ -71,13 +71,13 @@ function Sidebar() {
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
         <div key="logout" className="flex items-center w-full px-7 cursor-pointer mt-11" onClick={() => dispatch({ type: Events.AUTH_LOGOUT, payload: { clearState: true } })}>
-          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiLogout} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiLogout} size={1} horizontal vertical rotate={180} /></div>
           <span className="text-lg">Logout</span>
         </div>
       </div>
       <div className="flex flex-col justify-between mt-11 w-full bg-background-alt">
         <div className="flex items-center w-full px-7">
-          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} color="#CFD8E3" /></div>
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} /></div>
           <span className="text-lg">Search...</span>
         </div>
       </div>

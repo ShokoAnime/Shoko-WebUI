@@ -116,7 +116,7 @@ function LanguagesModal() {
           Languages
         </span>
         <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-        <div className="flex flex-col flex-grow overflow-y-auto my-2">
+        <div className="flex flex-col grow overflow-y-auto my-2">
           {items}
         </div>
         <div className="flex justify-end mt-2">

@@ -33,7 +33,7 @@ function PlexTab() {
   const renderPlexUrl = () => {
     if (!plexUrl || plexUrl === '') {
       return (
-        <div className="flex justify-between flex-grow items-center">
+        <div className="flex justify-between grow items-center">
           Plex Login:
           <Button onClick={() => dispatch({ type: Events.SETTINGS_PLEX_LOGIN_URL })} className="bg-color-highlight-1 px-2 py-1 text-xs">
             {isFetchingUrl ? 'Requesting...' : 'Authenticate'}
@@ -42,7 +42,7 @@ function PlexTab() {
       );
     }
     return (
-      <div className="flex flex-grow justify-between items-center">
+      <div className="flex grow justify-between items-center">
         Plex Login:
         <Button onClick={() => handleLinkOpen()} className="color-highlight-2 hover:underline py-1 px-2 text-xs">Click here to login</Button>
       </div>
@@ -56,7 +56,7 @@ function PlexTab() {
           !isAuthenticated
             ? renderPlexUrl()
             : (
-              <div className="flex flex-grow justify-between items-center">
+              <div className="flex grow justify-between items-center">
                 Plex Authenticated!
                 <Button onClick={() => dispatch({ type: Events.SETTINGS_UNLINK_PLEX })} className="bg-color-danger py-1 px-2 text-xs">
                   {isFetchingUnlink ? 'Unlinking...' : 'Unlink'}

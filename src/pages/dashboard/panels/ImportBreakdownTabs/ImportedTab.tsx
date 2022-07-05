@@ -99,12 +99,12 @@ function ImportedTab() {
         {
           expandedItems[item.ID] && (!fetched
             ? (
-              <div className="flex px-4 flex-grow">
+              <div className="flex px-4 grow">
                 <FontAwesomeIcon icon={faCircleNotch} spin className="text-2xl color-highlight-2" />
               </div>
             )
             : (
-              <TransitionDiv className="flex flex-col flex-grow px-2" enter="duration-1000">
+              <TransitionDiv className="flex flex-col grow px-2" enter="duration-1000">
                 <div className="flex py-1 px-4">
                   <span className="w-1/6">Series</span>
                   {details.SeriesName ?? 'Unknown'}

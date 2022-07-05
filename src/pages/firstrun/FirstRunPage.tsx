@@ -69,7 +69,7 @@ function FirstRunPage() {
         <div className="flex items-center font-rubik font-semibold mt-6">
           Version: {isFetchingVersion ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
         </div>
-        <div className="flex flex-col flex-grow justify-center -mt-16">
+        <div className="flex flex-col grow justify-center -mt-16">
           <div className="flex flex-col">
             {renderItem('Acknowledgement', 'acknowledgement')}
             {renderItem('Database Setup', 'db-setup')}

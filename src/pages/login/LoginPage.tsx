@@ -78,13 +78,13 @@ function LoginPage() {
         bodyClassName="font-bold font-exo2"
       />
       <div className="flex h-screen w-screen">
-        <div className="flex flex-grow login-image" />
+        <div className="flex grow login-image" />
         <div className="flex flex-col flex-none px-13 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <img src="logo.png" className="w-32 mt-16" alt="logo" />
           <div className="flex items-center font-rubik font-semibold mt-6">
             Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
           </div>
-          <div className="flex flex-col flex-grow w-full justify-center">
+          <div className="flex flex-col grow w-full justify-center">
             {!initStatus?.State && (
               <div className="flex justify-center items-center">
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={5} />

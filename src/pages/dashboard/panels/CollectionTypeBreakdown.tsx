@@ -15,7 +15,7 @@ function CollectionTypeBreakdown() {
 
   const renderName = (item: string, count: number, countPercentage: number) => (
     <div key={`${item}-name`} className="flex mt-3 first:mt-0">
-      <span className="flex-grow">{names[item] ?? item} - {count}</span>
+      <span className="grow">{names[item] ?? item} - {count}</span>
       {countPercentage.toFixed(2)}%
     </div>
   );

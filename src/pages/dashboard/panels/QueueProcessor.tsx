@@ -34,21 +34,21 @@ function QueueProcessor() {
     <div className="flex flex-col mt-8 first:mt-0" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-24">
-          <Icon className="mr-4" path={icons[key]} size={1} horizontal vertical rotate={180} color="#CFD8E3" />
+          <Icon className="mr-4" path={icons[key]} size={1} horizontal vertical rotate={180}/>
           <span className="font-semibold">{names[key]}</span>
         </div>
         <div className="flex text-highlight-2">{count ?? 0}</div>
-        <div className="flex items-center">
+        <div className="flex items-center fill-highlight-1">
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
           {item?.state === 18 ? (
             <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-              <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+              <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
           ) : (
             <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-              <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+              <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
           )}
         </div>
@@ -71,11 +71,11 @@ function QueueProcessor() {
       <React.Fragment>
         {paused ? (
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
-            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} />
           </Button>
         ) : (
           <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
-            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} color="#279ceb" />
+            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
           </Button>
         )}
       </React.Fragment>

@@ -42,7 +42,7 @@ function MenuItem(props: MenuItemProps) {
   return (
         <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
           <div className="w-5 flex justify-center content-center">
-            <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180} color='#CFD8E3' />
+            <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180}/>
           </div>
           <div className="pl-4 font-semibold">{label}</div>
         </div>

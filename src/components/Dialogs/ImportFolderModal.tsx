@@ -82,7 +82,7 @@ function ImportFolderModal() {
             </span>
           </div>
           <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-          <div className="flex flex-col flex-grow w-3/5">
+          <div className="flex flex-col grow w-3/5">
             <Input id="Name" value={importFolder.Name} label="Name" type="text" placeholder="Name" onChange={handleInputChange} className="my-1 w-full" />
             <div className="flex items-end">
               <Input id="Path" value={importFolder.Path} label="Location" type="text" placeholder="Location" onChange={handleInputChange} className="my-1 w-full" />
