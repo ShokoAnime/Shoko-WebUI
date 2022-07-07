@@ -3,6 +3,7 @@ import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {
   mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline,
+  mdiCheckboxBlankOutline, mdiCheckboxMarkedOutline,
 } from '@mdi/js';
 
 import TransitionDiv from '../TransitionDiv';
@@ -15,14 +16,12 @@ type Props = {
   labelRight?: boolean;
   justify?: boolean;
   onChange: (event: any) => void;
+  isSquare?: boolean;
 };
 
-function Checkbox(props: Props) {
+function Checkbox({ id, label, isChecked, className, onChange, labelRight, justify, isSquare = false }: Props) {
   const [focused, setFocused] = useState(false);
-  const {
-    id, label, isChecked, className, onChange,
-    labelRight, justify,
-  } = props;
+  
 
   return (
     <label htmlFor={id} className={cx({ 'justify-between': justify === true }, [`${className ?? ''} cursor-pointer flex items-center border transition duration-300 ease-in-out`, focused ? 'border-highlight-1' : 'border-transparent'])}>
@@ -46,12 +45,12 @@ function Checkbox(props: Props) {
       )}
       {isChecked && (
         <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
-          <Icon path={mdiCheckboxMarkedCircleOutline} size={0.75} />
+          <Icon path={isSquare ? mdiCheckboxMarkedOutline : mdiCheckboxMarkedCircleOutline} size={0.75} />
         </TransitionDiv>
       )}
       {!isChecked && (
         <TransitionDiv className="flex color-highlight-1" enterFrom="opacity-50">
-          <Icon path={mdiCheckboxBlankCircleOutline} size={0.75} />
+          <Icon path={isSquare ? mdiCheckboxBlankOutline : mdiCheckboxBlankCircleOutline} size={0.75} />
         </TransitionDiv>
       )}
       {labelRight && (

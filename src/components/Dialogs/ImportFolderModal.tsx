@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { find } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFolderOpen, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { mdiFolderOpen } from '@mdi/js';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Button from '../Input/Button';
 import Input from '../Input/Input';
-import Checkbox from '../Input/Checkbox';
 import Select from '../Input/Select';
 import ModalPanel from '../Panels/ModalPanel';
 import BrowseFolderModal from './BrowseFolderModal';
@@ -44,7 +42,7 @@ function ImportFolderModal() {
 
   const handleInputChange = (event: any) => {
     const name = event.target.id;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    const value = name === 'WatchForNewFiles' ? event.target.value === 1 : event.target.value;
     setImportFolder(({ ...importFolder, [name]: value }));
   };
 
@@ -66,44 +64,36 @@ function ImportFolderModal() {
     <React.Fragment>
       <ModalPanel
         show={status}
-        className="import-folder-modal px-6 pt-3 pb-6"
+        className="pb-6"
         onRequestClose={() => handleClose()}
         onAfterOpen={() => getFolderDetails()}
       >
         <div className="flex flex-col w-full">
-          <div className="flex justify-between">
-            <span className="flex font-semibold text-xl2 uppercase">
-              {edit ? 'Edit Import Folder' : 'Add New Import Folder'}
-            </span>
-            <span className="flex">
-              <Button onClick={() => handleClose()}>
-                <FontAwesomeIcon icon={faTimes} />
-              </Button>
-            </span>
-          </div>
-          <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-          <div className="flex flex-col flex-grow w-3/5">
-            <Input id="Name" value={importFolder.Name} label="Name" type="text" placeholder="Name" onChange={handleInputChange} className="my-1 w-full" />
-            <div className="flex items-end">
-              <Input id="Path" value={importFolder.Path} label="Location" type="text" placeholder="Location" onChange={handleInputChange} className="my-1 w-full" />
-              <Button onClick={handleBrowse} className="color-highlight-1 ml-2 mb-2 text-lg">
-                <FontAwesomeIcon icon={faFolderOpen} />
-              </Button>
+          <div className="flex flex-col items-center justify-start bg-color-nav shadow">
+            <div className="grow px-4 py-2 bg-gray-800 self-stretch">
+              <p className="text-base font-semibold text-gray-300">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</p>
             </div>
-            <span className="flex font-bold mt-2">Type</span>
-            <Checkbox label="Watch For New Files" id="WatchForNewFiles" isChecked={importFolder.WatchForNewFiles} onChange={handleInputChange} />
-            <Select label="Drop Type" id="DropFolderType" value={importFolder.DropFolderType} onChange={handleInputChange}>
-              <option value={0}>None</option>
-              <option value={1}>Source</option>
-              <option value={2}>Destination</option>
-              <option value={3}>Both</option>
-            </Select>
-          </div>
-          <div className="flex justify-end mt-2">
-            {edit && (
-              <Button onClick={handleDelete} className="bg-color-danger px-5 py-2 mr-2">Delete</Button>
-            )}
-            <Button onClick={handleSave} className="bg-color-highlight-1 px-5 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
+            <div className="flex flex-col space-y-4 items-end justify-center p-4 w-full">
+              <Input id="Name" value={importFolder.Name} label="Name" type="text" placeholder="Folder name" onChange={handleInputChange} className="w-full" />
+              <Input id="Path" value={importFolder.Path} label="Location" type="text" placeholder="Location" onChange={handleInputChange} className="w-full" endIcon={mdiFolderOpen} endIconClick={handleBrowse}/>
+              <Select label="Drop Type" id="DropFolderType" value={importFolder.DropFolderType} onChange={handleInputChange} className="w-full">
+                <option value={0}>None</option>
+                <option value={1}>Source</option>
+                <option value={2}>Destination</option>
+                <option value={3}>Both</option>
+              </Select>
+              <Select label="Watch For New Files" id="WatchForNewFiles" value={importFolder.WatchForNewFiles ? 1 : 0} onChange={handleInputChange} className="w-full">
+                <option value={0}>No</option>
+                <option value={1}>Yes</option>
+              </Select>
+              <div className="flex justify-end px-4">
+                {edit && (
+                  <Button onClick={handleDelete} className="bg-background-alt px-2.5 py-2 mr-2">Delete</Button>
+                )}
+                <Button onClick={handleClose} className="bg-background-alt border-background-border px-2.5 py-2 mr-2">Cancel</Button>
+                <Button onClick={handleSave} className="bg-primary border-background-border px-2.5 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
+              </div>
+            </div>
           </div>
         </div>
       </ModalPanel>

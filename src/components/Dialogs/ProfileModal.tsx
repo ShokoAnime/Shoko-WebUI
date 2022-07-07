@@ -45,11 +45,11 @@ function ProfileModal() {
     <ModalPanel show={status} className="profile-modal" onRequestClose={() => handleClose()}>
       <div className="flex w-full h-full">
         <div className="flex profile-modal-image rounded-l-lg">
-          <div className="flex flex-grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
-            <span className="flex items-center justify-center bg-color-highlight-1 w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
+          <div className="flex grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
+            <span className="flex items-center justify-center bg-highlight-1 w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
           </div>
         </div>
-        <div className="flex flex-grow flex-col px-4 py-2">
+        <div className="flex grow flex-col px-4 py-2">
           <div className="flex justify-between">
             <span className="flex font-semibold text-xl2 uppercase">User Profile</span>
             <span className="flex">
@@ -59,7 +59,7 @@ function ProfileModal() {
             </span>
           </div>
           <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-          <div className="flex flex-col flex-grow justify-between">
+          <div className="flex flex-col grow justify-between">
             <div className="flex flex-col">
               <div className="flex">
                 <Input className="w-24" label="Username" id="username" value={username} type="text" disabled={usernameDisabled} onChange={e => setUsername(e.target.value)} />
@@ -78,7 +78,7 @@ function ProfileModal() {
               </div>
             </div>
             <div className="flex justify-end mb-2">
-              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-color-highlight-1 font-rubik font-semibold text-sm">Save</Button>
+              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-rubik font-semibold text-sm">Save</Button>
             </div>
           </div>
         </div>

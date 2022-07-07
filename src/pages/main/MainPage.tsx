@@ -45,15 +45,15 @@ function MainPage() {
           className="mt-20"
         />
       )}
-      <div className="flex flex-grow h-full">
+      <div className="flex grow h-full">
         <ImportFolderModal />
         <LanguagesModal />
         <ProfileModal />
         <div className="flex">
           <Sidebar />
         </div>
-        <div className="flex flex-col flex-grow">
-          <div className="overflow-y-auto flex-grow">
+        <div className="flex flex-col grow">
+          <div className="overflow-y-auto grow">
             <Route exact path="/">
               <Redirect to="/dashboard" />
             </Route>

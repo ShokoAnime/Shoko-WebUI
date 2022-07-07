@@ -38,7 +38,7 @@ function TreeNode(props: Props) {
     if (Path === 'Shoko Server') Path = '';
 
     if (!loaded) {
-      dispatch({ type: Events.FOLDER_BROWSE, payload: { nodeId, Path } });
+      dispatch({ type: Events.FOLDER_BROWSE, payload: { id: nodeId, path: Path } });
       setExpanded(true);
       setLoaded(true);
     } else {

@@ -98,8 +98,8 @@ function ImportFolders() {
         <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="mr-2 text-highlight-3">
           <Icon path={mdiTrashCanOutline} size={1} />
         </Button>
-        <div className="flex flex-grow">
-          <div className="flex-grow">
+        <div className="flex grow">
+          <div className="grow">
             <span className="font-bold mr-1">{Name}</span>
             <span className="opacity-75 text-xs">({flags})</span>
           </div>
@@ -117,7 +117,7 @@ function ImportFolders() {
       <TransitionDiv className="flex flex-col mt-6 w-3/5">
         <Input label="Name" id="Name" value={Name} type="text" placeholder="Name" onChange={handleInputChange} />
         <div className="flex mt-6 items-end">
-          <Input label="Location" id="Path" value={Path} type="text" placeholder="Location" onChange={handleInputChange} className="flex-grow" />
+          <Input label="Location" id="Path" value={Path} type="text" placeholder="Location" onChange={handleInputChange} className="grow" />
           {/* TODO: Move folder icon into the input field */}
           <Button onClick={() => dispatch(setBrowseStatus(true))} className="text-highlight-1 ml-2 mb-1">
             <Icon path={mdiFolderOpen} size={1} />
@@ -143,7 +143,7 @@ function ImportFolders() {
               Add Import Folder
             </Button>
           )}
-          <Button onClick={() => setNewImportFolder(defaultState)} className="bg-color-highlight-1 py-2 px-3 rounded text-sm ml-2">
+          <Button onClick={() => setNewImportFolder(defaultState)} className="bg-highlight-1 py-2 px-3 rounded text-sm ml-2">
             Cancel
           </Button>
         </span>

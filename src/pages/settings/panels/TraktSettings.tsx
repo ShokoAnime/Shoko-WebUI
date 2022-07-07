@@ -49,7 +49,7 @@ function TraktSettings() {
       return (
         <div className="flex justify-between items-center mt-1">
           Trakt Code
-          <Button onClick={() => dispatch({ type: Events.SETTINGS_GET_TRAKT_CODE })} className="bg-color-highlight-1 px-2 py-1 text-xs">
+          <Button onClick={() => dispatch({ type: Events.SETTINGS_GET_TRAKT_CODE })} className="bg-highlight-1 px-2 py-1 text-xs">
             {isFetchingTraktCode ? 'Requesting...' : 'Get Code'}
           </Button>
         </div>

@@ -36,10 +36,10 @@ function QuickActions(props: Props) {
       <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
         <span className="flex">{action.name}</span>
         <div className="flex">
-          <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-color-highlight-1'])}>
+          <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-highlight-1'])}>
             <FontAwesomeIcon icon={faThumbtack} className="text-xs" />
           </Button>
-          <Button onClick={() => runAction(action.function, action.data)} className="bg-color-highlight-1 font-exo text-xs font-bold px-6 py-1">
+          <Button onClick={() => runAction(action.function, action.data)} className="bg-highlight-1 font-exo text-xs font-bold px-6 py-1">
             Run
           </Button>
         </div>

@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import cx from 'classnames';
 
 import { RootState } from '../../../core/store';
-import FixedPanel from '../../../components/Panels/FixedPanel';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Button from '../../../components/Input/Button';
 import ImportedTab from './ImportBreakdownTabs/ImportedTab';
 import UnrecognizedTab from './ImportBreakdownTabs/UnrecognizedTab';
@@ -14,7 +14,7 @@ function ImportBreakdown() {
     (state: RootState) => state.mainpage.fetched.unrecognizedFiles,
   );
 
-  const [activeTab, setActiveTab] = useState('imported');
+  const [activeTab, setActiveTab] = useState('unrecognized');
 
   const renderOptions = () => (
     <div className="font-rubik font-bold">
@@ -34,14 +34,14 @@ function ImportBreakdown() {
       case 'unrecognized':
         return <UnrecognizedTab />;
       default:
-        return <ImportedTab />;
+        return <UnrecognizedTab />;
     }
   };
 
   return (
-    <FixedPanel title="Import Breakdown" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
+    <ShokoPanel title="Import Breakdown" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
       {renderContent()}
-    </FixedPanel>
+    </ShokoPanel>
   );
 }
 

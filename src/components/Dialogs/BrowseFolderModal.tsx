@@ -34,8 +34,8 @@ function BrowseFolderModal(props: Props) {
         <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
         <TreeView />
         <div className="flex justify-end mt-2">
-          <Button onClick={handleClose} className="bg-color-highlight-1 px-5 py-2 mr-2">Cancel</Button>
-          <Button onClick={handleSelect} className="bg-color-highlight-1 px-5 py-2">Select</Button>
+          <Button onClick={handleClose} className="bg-highlight-1 px-5 py-2 mr-2">Cancel</Button>
+          <Button onClick={handleSelect} className="bg-highlight-1 px-5 py-2">Select</Button>
         </div>
       </div>
     </ModalPanel>

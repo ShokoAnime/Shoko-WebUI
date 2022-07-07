@@ -11,7 +11,7 @@ function AlertContainer() {
   const [key, setKey] = useState(-1);
 
   const renderAlert = (alert: GlobalAlertType) => (
-    <div className={cx(['flex px-4 py-3 rounded relative mt-2 w-1/2', alert.type === 'error' ? 'bg-color-danger' : 'bg-color-highlight-1'])} role="alert" key={key}>
+    <div className={cx(['flex px-4 py-3 rounded relative mt-2 w-1/2', alert.type === 'error' ? 'bg-color-danger' : 'bg-highlight-1'])} role="alert" key={key}>
       {alert.text}
     </div>
   );
