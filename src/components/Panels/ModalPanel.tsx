@@ -20,7 +20,7 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName="modal-overlay fixed inset-0 flex items-center justify-end pointer-events-auto"
-      className={`${className} modal flex h-full`}
+      className={`${className} bg-background-nav flex h-full min-w-[25rem]`}
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}
       onAfterOpen={onAfterOpen}

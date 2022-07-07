@@ -35,7 +35,7 @@ function PlexTab() {
       return (
         <div className="flex justify-between grow items-center">
           Plex Login:
-          <Button onClick={() => dispatch({ type: Events.SETTINGS_PLEX_LOGIN_URL })} className="bg-color-highlight-1 px-2 py-1 text-xs">
+          <Button onClick={() => dispatch({ type: Events.SETTINGS_PLEX_LOGIN_URL })} className="bg-highlight-1 px-2 py-1 text-xs">
             {isFetchingUrl ? 'Requesting...' : 'Authenticate'}
           </Button>
         </div>

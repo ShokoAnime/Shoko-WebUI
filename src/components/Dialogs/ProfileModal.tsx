@@ -46,7 +46,7 @@ function ProfileModal() {
       <div className="flex w-full h-full">
         <div className="flex profile-modal-image rounded-l-lg">
           <div className="flex grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
-            <span className="flex items-center justify-center bg-color-highlight-1 w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
+            <span className="flex items-center justify-center bg-highlight-1 w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
           </div>
         </div>
         <div className="flex grow flex-col px-4 py-2">
@@ -78,7 +78,7 @@ function ProfileModal() {
               </div>
             </div>
             <div className="flex justify-end mb-2">
-              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-color-highlight-1 font-rubik font-semibold text-sm">Save</Button>
+              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-rubik font-semibold text-sm">Save</Button>
             </div>
           </div>
         </div>

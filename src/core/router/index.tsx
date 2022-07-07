@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
 import { useSelector } from 'react-redux';
@@ -20,6 +20,9 @@ type Props = {
 
 function Router(props: Props) {
   const theme = useSelector((state: RootState) => state.webuiSettings.webui_v2.theme);
+  useEffect(() => {
+    document.body.className = 'theme-shoko-blue';
+  }, []);
 
   const { history } = props;
 

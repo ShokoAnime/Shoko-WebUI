@@ -143,7 +143,7 @@ function ImportFolders() {
               Add Import Folder
             </Button>
           )}
-          <Button onClick={() => setNewImportFolder(defaultState)} className="bg-color-highlight-1 py-2 px-3 rounded text-sm ml-2">
+          <Button onClick={() => setNewImportFolder(defaultState)} className="bg-highlight-1 py-2 px-3 rounded text-sm ml-2">
             Cancel
           </Button>
         </span>
