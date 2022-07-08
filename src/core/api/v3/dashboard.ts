@@ -14,7 +14,13 @@ function getDashboardSeriesSummary() {
   return ApiRequest('SeriesSummary');
 }
 
+// Get a list of the episodes to continue watching (soon-to-be) in recently watched order
+function getDashboardContinueWatchingEpisodes() {
+  return ApiRequest('ContinueWatchingEpisodes');
+}
+
 export default {
   getDashboardStats,
   getDashboardSeriesSummary,
+  getDashboardContinueWatchingEpisodes,
 };
