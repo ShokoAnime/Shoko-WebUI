@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
-import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
+import type { DashboardSeriesSummaryType, DashboardStatsType, DashboardContinueWatchingEpisodeType } from '../types/api/dashboard';
 import type { RecentEpisodeDetailsType, RecentSeriesDetailsType, RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 
@@ -41,6 +41,7 @@ type State = {
   stats: DashboardStatsType;
   unrecognizedFiles: Array<FileType>;
   unrecognizedMark: Array<string>;
+  continueWatching: Array<DashboardContinueWatchingEpisodeType>;
 };
 
 const mainpageSlice = createSlice({
@@ -65,6 +66,7 @@ const mainpageSlice = createSlice({
     stats: {},
     unrecognizedFiles: [],
     unrecognizedMark: [],
+    continueWatching: [],
   } as State,
   reducers: {
     setAvdump(sliceState, action) {
@@ -115,6 +117,9 @@ const mainpageSlice = createSlice({
     markUnrecognizedFile(sliceState, action) {
       sliceState.unrecognizedMark = action.payload.state === true ? [...sliceState.unrecognizedMark, action.payload.id] : sliceState.unrecognizedMark.filter(id => id !== action.payload.id);
     },
+    setContinueWatching(sliceState, action) {
+      sliceState.continueWatching = action.payload;
+    },
   },
 });
 
@@ -123,7 +128,7 @@ export const {
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
   unsetFetched, setRecentSeriesDetails, setRecentEpisodeDetails,
-  markUnrecognizedFile,
+  markUnrecognizedFile, setContinueWatching,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 
 import ApiDashboard from '../api/v3/dashboard';
 
-import { setFetched, setSeriesSummary, setStats } from '../slices/mainpage';
+import { setFetched, setSeriesSummary, setStats, setContinueWatching } from '../slices/mainpage';
 
 function* getDashboardSeriesSummary() {
   const resultJson = yield call(ApiDashboard.getDashboardSeriesSummary);
@@ -32,7 +32,18 @@ function* getDashboardStats() {
   yield put(setFetched('stats'));
 }
 
+function* getDashboardContinueWatching() {
+  const resultJson = yield call(ApiDashboard.getDashboardContinueWatchingEpisodes);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+  
+  yield put(setContinueWatching(resultJson.data));
+}
+
 export default {
   getDashboardSeriesSummary,
   getDashboardStats,
+  getDashboardContinueWatching,
 };

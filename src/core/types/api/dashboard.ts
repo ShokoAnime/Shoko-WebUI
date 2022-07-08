@@ -24,3 +24,24 @@ export type DashboardStatsType = {
   EpisodesWithMultipleFiles?: number,
   FilesWithDuplicateLocations?: number,
 };
+
+export type DashboardContinueWatchingEpisodeType = {
+  ID: number,
+  Title: string,
+  Number: number,
+  Type: string,
+  AirDate: string,
+  InCollection: boolean,
+  SeriesID: number,
+  SeriesTitle: string,
+  SeriesPoster: {
+    Source: string,
+    Type: string,
+    ID: string,
+    RelativeFilepath: string,
+    Preferred: boolean,
+    Width: number,
+    Height: number,
+    Disabled: boolean,
+  }
+};

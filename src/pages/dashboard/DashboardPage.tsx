@@ -14,6 +14,7 @@ import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
 import RecentlyImported from './panels/RecentlyImported';
 import ImportFolders from './panels/ImportFolders';
+import ContinueWatching from './panels/ContinueWatching';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -69,6 +70,9 @@ function DashboardPage() {
       </div>
       <div key="importBreakdown">
         <ImportBreakdown />
+      </div>
+      <div key="continueWatching">
+        <ContinueWatching />
       </div>
     </ResponsiveGridLayout>
   );

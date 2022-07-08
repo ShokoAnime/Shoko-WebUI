@@ -30,6 +30,7 @@ function* eventMainPageLoad() {
     yield call(SagaImportFolder.getImportFolders),
     yield call(SagaFile.getRecentFiles),
     yield call(SagaFile.getUnrecognizedFiles),
+    yield call(SagaDashboard.getDashboardContinueWatching),
   ]);
 
   // yield put({ type: Events.CHECK_UPDATES });

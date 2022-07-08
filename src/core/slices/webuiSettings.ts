@@ -49,6 +49,8 @@ export const defaultLayout = {
       i: 'importFolders', x: 3, y: 34, w: 3, h: 14, moved: false, static: false,
     }, {
       i: 'importBreakdown', x: 6, y: 34, w: 6, h: 14, moved: false, static: false,
+    }, {
+      i: 'continueWatching', x: 0, y: 48, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }],
   } as LayoutType,
   importFolders: {
