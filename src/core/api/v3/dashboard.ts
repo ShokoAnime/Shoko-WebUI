@@ -1,7 +1,7 @@
 import Api from '../index';
 
 function ApiRequest(action: string, query?: string) {
-  return Api.call({ action: `/v3/Dashboard/${action}`, query });
+  return Api.call({ action: `/v3/Dashboard/${action}`, ...query && { query } });
 }
 
 // Get the counters of various collection stats
