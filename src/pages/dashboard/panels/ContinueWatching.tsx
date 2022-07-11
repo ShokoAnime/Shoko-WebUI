@@ -2,12 +2,12 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import React from 'react';
-import { DashboardContinueWatchingEpisodeType } from '../../../core/types/api/dashboard';
+import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
 
 const ContinueWatching = () => {
   const items = useSelector((state: RootState) => state.mainpage.continueWatching);
 
-  const renderDetails = (item: DashboardContinueWatchingEpisodeType ) => {
+  const renderDetails = (item: DashboardEpisodeDetailsType ) => {
 
     return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-exo2 justify-center flex flex-col">
       <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${item.SeriesPoster.Source}/Poster/${item.SeriesPoster.ID}')` }} className="h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black" />

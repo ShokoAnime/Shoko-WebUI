@@ -31,6 +31,7 @@ function* eventMainPageLoad() {
     yield call(SagaFile.getRecentFiles),
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
+    yield call(SagaDashboard.getDashboardUpcomingAnime),
   ]);
 
   // yield put({ type: Events.CHECK_UPDATES });

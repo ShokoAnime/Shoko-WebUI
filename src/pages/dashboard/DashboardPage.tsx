@@ -15,6 +15,7 @@ import ShokoNews from './panels/ShokoNews';
 import RecentlyImported from './panels/RecentlyImported';
 import ImportFolders from './panels/ImportFolders';
 import ContinueWatching from './panels/ContinueWatching';
+import UpcomingAnime from './panels/UpcomingAnime';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -73,6 +74,9 @@ function DashboardPage() {
       </div>
       <div key="continueWatching">
         <ContinueWatching />
+      </div>
+      <div key="upcomingAnime">
+        <UpcomingAnime />
       </div>
     </ResponsiveGridLayout>
   );

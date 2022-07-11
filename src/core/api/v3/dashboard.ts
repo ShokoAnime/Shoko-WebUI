@@ -1,7 +1,7 @@
 import Api from '../index';
 
-function ApiRequest(action: string) {
-  return Api.call({ action: `/v3/Dashboard/${action}` });
+function ApiRequest(action: string, query?: string) {
+  return Api.call({ action: `/v3/Dashboard/${action}`, query });
 }
 
 // Get the counters of various collection stats
@@ -19,8 +19,14 @@ function getDashboardContinueWatchingEpisodes() {
   return ApiRequest('ContinueWatchingEpisodes');
 }
 
+// Get a list of the episodes to continue watching (soon-to-be) in recently watched order
+function getDashboardAniDBCalendar() {
+  return ApiRequest('AniDBCalendar', '?showAll=true');
+}
+
 export default {
   getDashboardStats,
   getDashboardSeriesSummary,
   getDashboardContinueWatchingEpisodes,
+  getDashboardAniDBCalendar,
 };
