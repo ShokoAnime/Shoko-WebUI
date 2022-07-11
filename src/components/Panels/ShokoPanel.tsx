@@ -1,17 +1,18 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 type Props = {
   title: string;
   children: any;
   options?: any;
   className?: string;
-  isFetching?: boolean;
+  isFetching?: boolean; 
+  titleTabs?: ReactNode;
 };
 
-const ShokoPanel = ({ className, title, options, children }: Props) => (
+const ShokoPanel = ({ className, title, options, children, titleTabs }: Props) => (
     <div className={`${className ?? ''} flex flex-col overflow-hidden h-full`}>
         <div className="flex justify-between items-center mr-2">
-            <span className="flex font-semibold text-xl">{title}</span>
+          <span className="flex font-semibold text-xl">{title}{titleTabs}</span>
             <div
                 className="flex"
                 onMouseDown={event => event.stopPropagation()}

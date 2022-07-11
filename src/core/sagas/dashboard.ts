@@ -3,7 +3,13 @@ import { toast } from 'react-toastify';
 
 import ApiDashboard from '../api/v3/dashboard';
 
-import { setFetched, setSeriesSummary, setStats, setContinueWatching } from '../slices/mainpage';
+import {
+  setFetched,
+  setSeriesSummary,
+  setStats,
+  setContinueWatching,
+  setUpcomingAnime,
+} from '../slices/mainpage';
 
 function* getDashboardSeriesSummary() {
   const resultJson = yield call(ApiDashboard.getDashboardSeriesSummary);
@@ -42,8 +48,19 @@ function* getDashboardContinueWatching() {
   yield put(setContinueWatching(resultJson.data));
 }
 
+function* getDashboardUpcomingAnime() {
+  const resultJson = yield call(ApiDashboard.getDashboardAniDBCalendar);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+
+  yield put(setUpcomingAnime(resultJson.data));
+}
+
 export default {
   getDashboardSeriesSummary,
   getDashboardStats,
   getDashboardContinueWatching,
+  getDashboardUpcomingAnime,
 };

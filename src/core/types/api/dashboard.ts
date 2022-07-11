@@ -25,7 +25,7 @@ export type DashboardStatsType = {
   FilesWithDuplicateLocations?: number,
 };
 
-export type DashboardContinueWatchingEpisodeType = {
+export type DashboardEpisodeDetailsType = {
   ID: number,
   Title: string,
   Number: number,
