@@ -112,7 +112,7 @@ function LanguagesModal() {
   return (
     <ModalPanel show={status} className="languages-modal px-6 pt-3 pb-5" onRequestClose={() => handleClose()}>
       <div className="flex flex-col w-full">
-        <span className="flex font-semibold text-xl2 uppercase">
+        <span className="flex font-semibold text-base uppercase">
           Languages
         </span>
         <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />

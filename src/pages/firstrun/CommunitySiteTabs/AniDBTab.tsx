@@ -61,7 +61,7 @@ function AniDBTab() {
   return (
     <TransitionDiv className="flex flex-col w-96">
 
-      <div className="font-rubik font-bold">Download Options</div>
+      <div className="font-open-sans font-bold">Download Options</div>
       <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} justify className="mt-3" />
       <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} justify className="mt-1" />
       <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} justify className="mt-1" />
@@ -72,7 +72,7 @@ function AniDBTab() {
         </TransitionDiv>
       )}
 
-      <div className="font-rubik font-bold mt-5">Mylist Options</div>
+      <div className="font-open-sans font-bold mt-5">Mylist Options</div>
       <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} justify className="mt-3" />
       <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} justify className="mt-1" />
       <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} justify className="mt-1" />
@@ -94,7 +94,7 @@ function AniDBTab() {
         <option value={5}>DVD/BD</option>
       </SelectSmall>
 
-      <div className="font-rubik font-bold mt-5">Update Options</div>
+      <div className="font-open-sans font-bold mt-5">Update Options</div>
       <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={handleInputChange} className="mt-3">
         {updateFrequencyOptions}
       </SelectSmall>

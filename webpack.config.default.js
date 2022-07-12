@@ -13,8 +13,7 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    '@fontsource/exo-2/latin.css',
-    '@fontsource/rubik/latin.css',
+    '@fontsource/open-sans/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
