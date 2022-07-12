@@ -10,6 +10,7 @@ import {
   setContinueWatching,
   setUpcomingAnime,
 } from '../slices/mainpage';
+import { PayloadAction } from '@reduxjs/toolkit';
 
 function* getDashboardSeriesSummary() {
   const resultJson = yield call(ApiDashboard.getDashboardSeriesSummary);
@@ -48,8 +49,8 @@ function* getDashboardContinueWatching() {
   yield put(setContinueWatching(resultJson.data));
 }
 
-function* getDashboardUpcomingAnime() {
-  const resultJson = yield call(ApiDashboard.getDashboardAniDBCalendar);
+function* getDashboardUpcomingAnime(action: PayloadAction<boolean>) {
+  const resultJson = yield call(ApiDashboard.getDashboardAniDBCalendar, action.payload);
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
