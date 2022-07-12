@@ -17,11 +17,11 @@ function ImportBreakdown() {
   const [activeTab, setActiveTab] = useState('unrecognized');
 
   const renderOptions = () => (
-    <div className="font-rubik font-bold">
-      <Button onClick={() => setActiveTab('imported')} className={cx(['mr-2 font-rubik font-bold', activeTab === 'imported' && 'color-highlight-1'])}>
+    <div className="font-open-sans font-bold">
+      <Button onClick={() => setActiveTab('imported')} className={cx(['mr-2 font-open-sans font-bold', activeTab === 'imported' && 'color-highlight-1'])}>
         Imported
       </Button>
-      <Button onClick={() => setActiveTab('unrecognized')} className={cx(['mr-2 font-rubik font-bold', activeTab === 'unrecognized' && 'color-highlight-1'])}>
+      <Button onClick={() => setActiveTab('unrecognized')} className={cx(['mr-2 font-open-sans font-bold', activeTab === 'unrecognized' && 'color-highlight-1'])}>
         Unrecognized
       </Button>
     </div>

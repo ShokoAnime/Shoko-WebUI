@@ -51,7 +51,7 @@ function SeriesInImportFolders() {
   };
 
   const renderOptions = () => (
-    <div className="flex font-rubik font-bold">
+    <div className="flex font-open-sans font-bold">
       <Select id="selectedFolder" value={selectedFolder} onChange={e => setSelectedFolder(e.target.value)} className="mr-2">
         {importFolders.map(
           folder => (<option value={folder.ID}>{folder.Path}</option>),

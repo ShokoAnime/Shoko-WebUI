@@ -22,7 +22,7 @@ function LocalAccount() {
   return (
     <TransitionDiv className="flex flex-col justify-center px-96">
       <div className="font-semibold text-lg">Create Your Account</div>
-      <div className="font-rubik font-semibold mt-10 text-justify">
+      <div className="font-open-sans font-semibold mt-10 text-justify">
         In order to use Shoko you&apos;ll need to create an account. This local account will
         allow you to login to Shoko and will link your account with any community site accounts
         provided later on.

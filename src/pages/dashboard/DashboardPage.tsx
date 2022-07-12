@@ -46,8 +46,8 @@ function DashboardPage() {
         lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
       }}
       rowHeight={0}
-      containerPadding={[30, 30]}
-      margin={[25, 25]}
+      containerPadding={[36, 36]}
+      margin={[26, 26]}
       className="w-full"
       onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
     >

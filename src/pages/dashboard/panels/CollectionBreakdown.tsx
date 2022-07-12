@@ -11,10 +11,10 @@ function CollectionBreakdown() {
 
   const renderItem = (key: string, title: string, value: string | number = 0) => (
     <div key={key} className="flex">
-      <div className="grow">
+      <div className="grow pb-1 last:pb-0">
         {title}
       </div>
-      <div className="font-semibold">{value}</div>
+      <div className="font-base">{value}</div>
     </div>
   );
 

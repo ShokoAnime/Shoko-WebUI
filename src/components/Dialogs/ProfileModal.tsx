@@ -51,7 +51,7 @@ function ProfileModal() {
         </div>
         <div className="flex grow flex-col px-4 py-2">
           <div className="flex justify-between">
-            <span className="flex font-semibold text-xl2 uppercase">User Profile</span>
+            <span className="flex font-semibold text-base uppercase">User Profile</span>
             <span className="flex">
               <Button onClick={() => handleClose()}>
                 <FontAwesomeIcon icon={faTimes} />
@@ -78,7 +78,7 @@ function ProfileModal() {
               </div>
             </div>
             <div className="flex justify-end mb-2">
-              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-rubik font-semibold text-sm">Save</Button>
+              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-open-sans font-semibold text-sm">Save</Button>
             </div>
           </div>
         </div>

@@ -19,7 +19,7 @@ function FixedPanel(props: Props) {
   return (
     <div className={`${className ?? ''} flex flex-col overflow-hidden rounded-xl shadow-sm bg-color-1 h-full pl-5 pr-3 py-4`}>
       <div className="flex justify-between items-center mr-2">
-        <span className="flex font-semibold text-xl">{title}</span>
+        <span className="flex font-semibold text-base">{title}</span>
         <div
           className="flex"
           onMouseDown={event => event.stopPropagation()}
@@ -35,7 +35,7 @@ function FixedPanel(props: Props) {
         }}
       />
       <div
-        className="overflow-y-auto flex flex-col h-full font-rubik"
+        className="overflow-y-auto flex flex-col h-full font-open-sans"
         onMouseDown={event => event.stopPropagation()}
         onTouchStart={event => event.stopPropagation()}
       >

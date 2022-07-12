@@ -3199,17 +3199,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/exo-2@npm:^4.5.2":
-  version: 4.5.2
-  resolution: "@fontsource/exo-2@npm:4.5.2"
-  checksum: 76633da2df0b019af73c825b3deec0a991c9a0322b101de5b7297fd8c326a855c1abe656cd73056100be77d439f426ac4c23eb25d2d8a17dca2953a019f76701
-  languageName: node
-  linkType: hard
-
-"@fontsource/rubik@npm:^4.5.10":
+"@fontsource/open-sans@npm:^4.5.10":
   version: 4.5.10
-  resolution: "@fontsource/rubik@npm:4.5.10"
-  checksum: 1edab2ac569fa44fe18ed987413684f35a52abccfa073cfae90c131a4d5b7234ed38bc7be8a9bc5a42ec94193e71bcab2551834ecc9faff9449073f521ed7a1f
+  resolution: "@fontsource/open-sans@npm:4.5.10"
+  checksum: a79c0eb4cea63671a26e17355de92ac8fd7e76f92e062686d4f49725204c589cba21463633b1775152883089132b3f805ddb9845995632babcae380aa25589ec
   languageName: node
   linkType: hard
 
@@ -15572,8 +15565,7 @@ __metadata:
     "@babel/preset-react": ^7.16.7
     "@babel/register": ^7.16.9
     "@babel/runtime": ^7.16.7
-    "@fontsource/exo-2": ^4.5.2
-    "@fontsource/rubik": ^4.5.10
+    "@fontsource/open-sans": ^4.5.10
     "@fortawesome/fontawesome-svg-core": ^1.2.36
     "@fortawesome/free-brands-svg-icons": ^5.15.4
     "@fortawesome/free-regular-svg-icons": ^5.15.4

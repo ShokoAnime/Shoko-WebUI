@@ -72,7 +72,7 @@ function DatabaseSetup() {
     // TODO: Change the UI to the new one. Keeping the old for now.
     <TransitionDiv className="flex flex-col overflow-y-auto justify-center px-96">
       <div className="font-semibold text-lg">Setting Up Your Database</div>
-      <div className="font-rubik font-semibold mt-10 text-justify">
+      <div className="font-open-sans font-semibold mt-10 text-justify">
         Shoko uses SQLite for your database and will automatically create the database for you.
         If you&apos;d like to select a different location for your database file, you can do
         so by changing the directory below.

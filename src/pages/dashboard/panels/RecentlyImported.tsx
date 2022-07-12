@@ -41,10 +41,10 @@ const RecentlyImported = () => {
       return renderPlaceholder(item); 
     }
     
-    return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-exo2 justify-center flex flex-col">
-      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${series.SeriesImageSource}/Poster/${series.SeriesImageID}')` }} className="h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black" />
-      <p className="truncate text-base font-semibold" title={series.SeriesName}>{series.SeriesName}</p>
-      <p className="truncate text-sm" title={`${episode.EpisodeNumber} - ${episode.EpisodeName}`}>{episode.EpisodeNumber} - {episode.EpisodeName}</p>
+    return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-open-sans justify-center flex flex-col">
+      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${series.SeriesImageSource}/Poster/${series.SeriesImageID}')` }} className="h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-2" />
+      <p className="truncate text-center text-base font-semibold" title={series.SeriesName}>{series.SeriesName}</p>
+      <p className="truncate text-center text-sm" title={`${episode.EpisodeNumber} - ${episode.EpisodeName}`}>{episode.EpisodeNumber} - {episode.EpisodeName}</p>
     </div>); 
   };
   
@@ -52,7 +52,7 @@ const RecentlyImported = () => {
   const haveEpisode = item => get(recentEpisodeDetails, get(item, 'SeriesIDs.0.EpisodeIDs.0.ID', '0'), null) !== null;
   
   return (
-    <ShokoPanel title="Recently imported">
+    <ShokoPanel title="Recently Imported">
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{items.map(item => haveSeries(item) && haveEpisode(item) ? renderDetails(item) : renderPlaceholder(item))}</div>
     </ShokoPanel>
   );

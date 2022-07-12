@@ -36,7 +36,7 @@ function StartServer() {
   return (
     <TransitionDiv className="flex flex-col justify-center px-96">
       <div className="font-semibold text-lg">Start Server</div>
-      <div className="font-rubik font-semibold mt-10 text-justify">
+      <div className="font-open-sans font-semibold mt-10 text-justify">
         On this page you can try and start the server, startup progress will be reported below.
         After the startup and database creation process is complete you will be able to setup
         import folders.

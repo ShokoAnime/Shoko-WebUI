@@ -41,7 +41,7 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          bodyClassName="font-bold font-exo2"
+          bodyClassName="font-bold font-open-sans"
           className="mt-20"
         />
       )}

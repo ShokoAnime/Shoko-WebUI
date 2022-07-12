@@ -30,7 +30,7 @@ function BrowseFolderModal(props: Props) {
   return (
     <ModalPanel show={status} className="p-5 browse-folder-modal" onRequestClose={() => handleClose()}>
       <div className="flex flex-col w-full">
-        <span className="flex font-semibold text-xl2 uppercase">Select Import Folder</span>
+        <span className="flex font-semibold text-base uppercase">Select Import Folder</span>
         <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
         <TreeView />
         <div className="flex justify-end mt-2">

@@ -39,7 +39,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center font-rubik">
+        <span className="flex items-center font-open-sans">
           {label}
         </span>
       )}
@@ -54,7 +54,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         </TransitionDiv>
       )}
       {labelRight && (
-        <span className="flex items-center font-semibold font-rubik ml-2">
+        <span className="flex items-center font-semibold font-open-sans ml-2">
           {label}
         </span>
       )}

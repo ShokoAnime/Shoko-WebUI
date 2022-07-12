@@ -9,8 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.7",
-    "@fontsource/exo-2": "^4.5.2",
-    "@fontsource/rubik": "^4.5.10",
+    "@fontsource/open-sans": "^4.5.10",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-brands-svg-icons": "^5.15.4",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
