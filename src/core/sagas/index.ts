@@ -9,6 +9,7 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 
 import SagaAuth from './auth';
+import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
@@ -50,6 +51,8 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_CHANGE_PASSWORD, SagaAuth.changePassword),
     takeEvery(Events.AUTH_LOGIN, SagaAuth.login),
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
+    // DASHBOARD
+    takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),
