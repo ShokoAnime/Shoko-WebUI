@@ -17,6 +17,7 @@ import LogsPage from '../logs/LogsPage';
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
+import CollectionPage from '../collection/CollectionPage';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -60,7 +61,8 @@ function MainPage() {
             <Route exact path="/dashboard" component={DashboardPage} />
             <Route exact path="/import-folders" component={ImportFoldersPage} />
             <Route exact path="/actions" component={ActionsPage} />
-            <Route exact path="/logs" component={LogsPage} />
+            <Route exact path="/log" component={LogsPage} />
+            <Route exact path="/collection" component={CollectionPage} />
             <Route exact path="/settings" component={SettingsPage} />
           </div>
         </div>
