@@ -1,22 +1,30 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import React, { useState } from 'react';
 import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
 import moment from 'moment';
 import cx from 'classnames';
+import Events from '../../../core/events';
 
 const Title = ({ showAll, setShowAll }) => (<div>
     <span className="px-2">&gt;</span>
-    <span className={cx({ 'font-semibold': showAll === false, 'text-highlight-1': showAll === false })} onClick={() => { setShowAll(true);}}>My Collection</span>
+    <span className={cx({ 'font-semibold': showAll === false, 'text-highlight-1': showAll === false })} onClick={() => { setShowAll(false);}}>My Collection</span>
   <span className="mx-2">|</span>
-  <span className={cx({ 'font-semibold': showAll, 'text-highlight-1': showAll })} onClick={() => { setShowAll(false);}}>All</span>
+  <span className={cx({ 'font-semibold': showAll, 'text-highlight-1': showAll })} onClick={() => { setShowAll(true);}}>All</span>
 </div>
 );
 
 const UpcomingAnime = () => {
   const items = useSelector((state: RootState) => state.mainpage.upcomingAnime);
-  const [showAll, setShowAll] = useState(false);
+  const [showAll, setShowAll] = useState(true);
+
+  const dispatch = useDispatch();
+
+  const updatePanel = (state: boolean) => {
+    setShowAll(state);
+    dispatch({ type: Events.DASHBOARD_UPCOMING_ANIME, payload: state });
+  };
 
   const renderDetails = (item: DashboardEpisodeDetailsType ) => {
     const airDate = moment(item.AirDate);
@@ -29,9 +37,9 @@ const UpcomingAnime = () => {
       <p className="truncate text-center text-sm" title={`${item.Number} - ${item.Title}`}>{item.Number} - {item.Title}</p>
     </div>);
   };
-  //TODO: make title tabs actually switch stuff 
+
   return (
-    <ShokoPanel title="Upcoming Anime" titleTabs={<Title showAll={showAll} setShowAll={setShowAll} />}>
+    <ShokoPanel title="Upcoming Anime" titleTabs={<Title showAll={showAll} setShowAll={updatePanel} />}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{items.map(item => renderDetails(item))}</div>
     </ShokoPanel>
   );

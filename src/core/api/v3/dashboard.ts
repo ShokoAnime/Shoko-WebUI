@@ -20,8 +20,8 @@ function getDashboardContinueWatchingEpisodes() {
 }
 
 // Get a list of the episodes to continue watching (soon-to-be) in recently watched order
-function getDashboardAniDBCalendar() {
-  return ApiRequest('AniDBCalendar', '?showAll=true');
+function getDashboardAniDBCalendar(showAll: boolean) {
+  return ApiRequest('AniDBCalendar', `?showAll=${showAll ? 'true' : 'false'}`);
 }
 
 export default {
