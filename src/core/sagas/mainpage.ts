@@ -29,6 +29,7 @@ function* eventMainPageLoad() {
     yield call(SagaDashboard.getDashboardStats),
     yield call(SagaDashboard.getDashboardSeriesSummary),
     yield call(SagaImportFolder.getImportFolders),
+    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
     yield call(SagaFile.getRecentFiles),
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
