@@ -21,6 +21,7 @@ import {
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
+import { default as ShokoIcon } from '../ShokoIcon';
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ function Sidebar() {
   return (
     <div className="flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col p-10">
-        <img src="logo.svg" alt="logo" className="w-20" />
+        <ShokoIcon/>
       </div>
       <div className="flex cursor-pointer items-center justify-center bg-background-alt w-full py-4">
         <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
