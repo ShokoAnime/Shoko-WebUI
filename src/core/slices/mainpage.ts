@@ -37,6 +37,7 @@ type State = {
     }
   };
   recentFiles: Array<FileDetailedType>;
+  recentEpisodes: Array<DashboardEpisodeDetailsType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
   unrecognizedFiles: Array<FileType>;
@@ -54,6 +55,7 @@ const mainpageSlice = createSlice({
     importFolderSeries: [],
     queueStatus: {} as QueueStatusType,
     recentFiles: [],
+    recentEpisodes: [],
     recentFileDetails: {},
     recentSeriesDetails: {},
     recentEpisodeDetails: {},
@@ -91,15 +93,8 @@ const mainpageSlice = createSlice({
         {}, sliceState.recentFileDetails, action.payload,
       );
     },
-    setRecentSeriesDetails(sliceState, action) {
-      sliceState.recentSeriesDetails = Object.assign(
-        {}, sliceState.recentSeriesDetails, action.payload,
-      );
-    },
-    setRecentEpisodeDetails(sliceState, action) {
-      sliceState.recentEpisodeDetails = Object.assign(
-        {}, sliceState.recentEpisodeDetails, action.payload,
-      );
+    setRecentEpisodes(sliceState, action) {
+      sliceState.recentEpisodes = action.payload;
     },
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
@@ -132,7 +127,7 @@ export const {
   setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
-  unsetFetched, setRecentSeriesDetails, setRecentEpisodeDetails,
+  unsetFetched, setRecentEpisodes,
   markUnrecognizedFile, setContinueWatching, setUpcomingAnime,
 } = mainpageSlice.actions;
 
