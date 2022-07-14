@@ -17,6 +17,7 @@ import modalsReducer from './slices/modals';
 import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
 import jmmVersionReducer from './slices/jmmVersion';
+import collectionReducer from './slices/collection';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -34,6 +35,7 @@ const reducers = {
   webuiSettings: webuiSettingsReducer,
   autoUpdate,
   jmmVersion: jmmVersionReducer,
+  collection: collectionReducer,
 };
 
 export type Reducers = typeof reducers;
