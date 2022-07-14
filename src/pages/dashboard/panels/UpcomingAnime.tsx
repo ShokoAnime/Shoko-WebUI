@@ -7,6 +7,15 @@ import moment from 'moment';
 import cx from 'classnames';
 import Events from '../../../core/events';
 
+const CalendarConfig: moment.CalendarSpec = {
+  sameDay: '[Today]',
+  nextDay: '[Tomorrow]',
+  nextWeek: 'dddd',
+  lastDay: '[Today]', // hack for time zone miss-alignment.
+  lastWeek: '[Last] dddd',
+  sameElse: 'dddd',
+};
+
 const Title = ({ showAll, setShowAll }) => (<div>
     <span className="px-2">&gt;</span>
     <span className={cx({ 'font-semibold': showAll === false, 'text-highlight-1': showAll === false })} onClick={() => { setShowAll(false);}}>My Collection</span>
@@ -27,12 +36,8 @@ const UpcomingAnime = () => {
   };
 
   const renderDetails = (item: DashboardEpisodeDetailsType ) => {
-    const airDate = moment(item.AirDate);
-    let relativeTime = airDate.fromNow();
-    if (relativeTime.includes('ago'))
-      relativeTime = 'today';
-    if (relativeTime === 'in a day' || relativeTime.includes('hours'))
-      relativeTime = 'tomorrow';
+    const airDate = moment(item.AirDate).utcOffset(9);
+    let relativeTime = airDate.calendar(CalendarConfig);
 
     return (<div key={`file-${item.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 h-[25.5rem] font-open-sans content-center flex flex-col">
       <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
