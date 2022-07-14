@@ -29,7 +29,7 @@ const UpcomingAnime = () => {
   const renderDetails = (item: DashboardEpisodeDetailsType ) => {
     const airDate = moment(item.AirDate);
     
-    return (<div key={`file-${item.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 h-[25.5rem] font-open-sans content-center flex flex-col">
+    return (<div key={`file-${item.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 h-[25.5rem] font-open-sans content-center flex flex-col">
       <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Mo, YYYY')}</p>
       <p className="truncate text-center text-sm">{airDate.toNow()}</p>
       <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${item.SeriesPoster.Source}/Poster/${item.SeriesPoster.ID}')` }} className="grow rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
