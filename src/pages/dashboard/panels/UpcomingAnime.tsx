@@ -17,7 +17,7 @@ const Title = ({ showAll, setShowAll }) => (<div>
 
 const UpcomingAnime = () => {
   const items = useSelector((state: RootState) => state.mainpage.upcomingAnime);
-  const [showAll, setShowAll] = useState(true);
+  const [showAll, setShowAll] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -28,10 +28,15 @@ const UpcomingAnime = () => {
 
   const renderDetails = (item: DashboardEpisodeDetailsType ) => {
     const airDate = moment(item.AirDate);
-    
+    let relativeTime = airDate.fromNow();
+    if (relativeTime.includes('ago'))
+      relativeTime = 'today';
+    if (relativeTime === 'in a day' || relativeTime.includes('hours'))
+      relativeTime = 'tomorrow';
+
     return (<div key={`file-${item.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 h-[25.5rem] font-open-sans content-center flex flex-col">
-      <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Mo, YYYY')}</p>
-      <p className="truncate text-center text-sm">{airDate.toNow()}</p>
+      <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
+      <p className="truncate text-center text-sm">{relativeTime}</p>
       <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${item.SeriesPoster.Source}/Poster/${item.SeriesPoster.ID}')` }} className="grow rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       <p className="truncate text-center text-base font-semibold" title={item.SeriesTitle}>{item.SeriesTitle}</p>
       <p className="truncate text-center text-sm" title={`${item.Number} - ${item.Title}`}>{item.Number} - {item.Title}</p>
