@@ -39,8 +39,7 @@ function ImportBreakdown() {
   };
 
   return (
-    // <ShokoPanel title="Unrecognized" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
-    <ShokoPanel title="Unrecognized" isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
+    <ShokoPanel title="Unrecognized" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
       {renderContent()}
     </ShokoPanel>
   );
