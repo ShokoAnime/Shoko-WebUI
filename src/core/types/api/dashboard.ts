@@ -26,13 +26,20 @@ export type DashboardStatsType = {
 };
 
 export type DashboardEpisodeDetailsType = {
-  ID: number,
+  IDs: {
+    ID: number,
+    Series: number,
+    ShokoFile: number | null,
+    ShokoEpisode: number | null,
+    ShokoSeries: number | null,
+  },
   Title: string,
   Number: number,
   Type: string,
   AirDate: string,
-  InCollection: boolean,
-  SeriesID: number,
+  Duration: string,
+  ResumePosition: string | null,
+  Watched: string | null,
   SeriesTitle: string,
   SeriesPoster: {
     Source: string,
