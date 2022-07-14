@@ -4,6 +4,7 @@ import type { SeriesInfoType, QueueStatusType } from '../types/api';
 import type { DashboardSeriesSummaryType, DashboardStatsType, DashboardEpisodeDetailsType } from '../types/api/dashboard';
 import type { RecentEpisodeDetailsType, RecentSeriesDetailsType, RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
+import type { SeriesType } from '../types/api/series';
 
 type State = {
   avdump: {
@@ -38,6 +39,7 @@ type State = {
   };
   recentFiles: Array<FileDetailedType>;
   recentEpisodes: Array<DashboardEpisodeDetailsType>;
+  recentSeries: Array<SeriesType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
   unrecognizedFiles: Array<FileType>;
@@ -56,6 +58,7 @@ const mainpageSlice = createSlice({
     queueStatus: {} as QueueStatusType,
     recentFiles: [],
     recentEpisodes: [],
+    recentSeries: [],
     recentFileDetails: {},
     recentSeriesDetails: {},
     recentEpisodeDetails: {},
@@ -93,6 +96,9 @@ const mainpageSlice = createSlice({
         {}, sliceState.recentFileDetails, action.payload,
       );
     },
+    setRecentSeries(sliceState, action) {
+      sliceState.recentSeries = action.payload;
+    },
     setRecentEpisodes(sliceState, action) {
       sliceState.recentEpisodes = action.payload;
     },
@@ -127,7 +133,7 @@ export const {
   setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
-  unsetFetched, setRecentEpisodes,
+  unsetFetched, setRecentEpisodes, setRecentSeries,
   markUnrecognizedFile, setContinueWatching, setUpcomingAnime,
 } = mainpageSlice.actions;
 

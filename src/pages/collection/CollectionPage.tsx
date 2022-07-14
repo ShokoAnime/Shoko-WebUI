@@ -2,17 +2,17 @@ import React, { useEffect } from 'react';
 import Events from '../../core/events';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../core/store';
-import { CollectionGroup } from '../../core/types/api/collection';
+import { CollectionGroupType } from '../../core/types/api/collection';
 
 function CollectionPage() {
-  const items: Array<CollectionGroup> = useSelector((state: RootState) => state.collection.groups);
+  const items: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
   const dispatch = useDispatch();
   
   useEffect(() => {
     dispatch({ type: Events.COLLECTION_PAGE_LOAD });
   }, []);
   
-  const renderDetails = (item: CollectionGroup) => {
+  const renderDetails = (item: CollectionGroupType) => {
     const posters = item.Images.Posters.filter(p => p.Source === 'AniDB');
     
     return (
