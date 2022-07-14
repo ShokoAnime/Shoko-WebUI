@@ -17,11 +17,11 @@ function ImportBreakdown() {
   const [activeTab, setActiveTab] = useState('unrecognized');
 
   const renderOptions = () => (
-    <div className="font-open-sans font-bold">
-      <Button onClick={() => setActiveTab('imported')} className={cx(['mr-2 font-open-sans font-bold', activeTab === 'imported' && 'color-highlight-1'])}>
+    <div className="font-open-sans font-semibold">
+      <Button onClick={() => setActiveTab('imported')} className={cx(['mr-2 font-open-sans font-semibold', activeTab === 'imported' && 'color-highlight-1'])}>
         Imported
       </Button>
-      <Button onClick={() => setActiveTab('unrecognized')} className={cx(['mr-2 font-open-sans font-bold', activeTab === 'unrecognized' && 'color-highlight-1'])}>
+      <Button onClick={() => setActiveTab('unrecognized')} className={cx(['mr-2 font-open-sans font-semibold', activeTab === 'unrecognized' && 'color-highlight-1'])}>
         Unrecognized
       </Button>
     </div>
@@ -39,7 +39,8 @@ function ImportBreakdown() {
   };
 
   return (
-    <ShokoPanel title="Import Breakdown" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
+    // <ShokoPanel title="Unrecognized" options={renderOptions()} isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
+    <ShokoPanel title="Unrecognized" isFetching={!(activeTab === 'unrecognized' ? hasFetchedUnrecognized : hasFetchedRecents)}>
       {renderContent()}
     </ShokoPanel>
   );

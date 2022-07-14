@@ -151,7 +151,7 @@ function ImportedTab() {
   });
 
   if (files.length === 0) {
-    return (<div className="flex justify-center font-bold mt-4" key="no-imported">No imported files!</div>);
+    return (<div className="flex justify-center font-semibold mt-4" key="no-imported">No imported files!</div>);
   }
 
   return (<React.Fragment>{files}</React.Fragment>);
