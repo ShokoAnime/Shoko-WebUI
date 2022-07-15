@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CollectionGroup } from '../types/api/collection';
+import { CollectionGroupType } from '../types/api/collection';
 
 type State = {
-  groups: Array<CollectionGroup>;
+  groups: Array<CollectionGroupType>;
 };
 
 const collectionSlice = createSlice({

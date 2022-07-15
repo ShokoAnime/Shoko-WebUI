@@ -1,3 +1,5 @@
+import { ImageType } from './common';
+
 export type DashboardSeriesSummaryType = {
   Series?: number,
   OVA?: number,
@@ -41,14 +43,5 @@ export type DashboardEpisodeDetailsType = {
   ResumePosition: string | null,
   Watched: string | null,
   SeriesTitle: string,
-  SeriesPoster: {
-    Source: string,
-    Type: string,
-    ID: string,
-    RelativeFilepath: string,
-    Preferred: boolean,
-    Width: number,
-    Height: number,
-    Disabled: boolean,
-  }
+  SeriesPoster: ImageType,
 };
