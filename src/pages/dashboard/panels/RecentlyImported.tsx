@@ -10,9 +10,9 @@ import { SeriesType } from '../../../core/types/api/series';
 
 const Title = ({ showSeries, setShowSeries }) => (<div>
   <span className="px-2">&gt;</span>
-  <span className={cx({ 'font-semibold': showSeries === false, 'text-highlight-1': showSeries === false })} onClick={() => { setShowSeries(false);}}>Episodes</span>
+  <span className={cx({ 'cursor-pointer': true, 'font-semibold': showSeries === false, 'text-highlight-1': showSeries === false })} onClick={() => { setShowSeries(false);}}>Episodes</span>
 <span className="mx-2">|</span>
-<span className={cx({ 'font-semibold': showSeries, 'text-highlight-1': showSeries })} onClick={() => { setShowSeries(true);}}>Series</span>
+<span className={cx({ 'cursor-pointer': true, 'font-semibold': showSeries, 'text-highlight-1': showSeries })} onClick={() => { setShowSeries(true);}}>Series</span>
 </div>
 );
 

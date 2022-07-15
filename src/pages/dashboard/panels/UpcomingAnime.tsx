@@ -18,14 +18,15 @@ const CalendarConfig: moment.CalendarSpec = {
 
 const Title = ({ showAll, setShowAll }) => (<div>
     <span className="px-2">&gt;</span>
-    <span className={cx({ 'font-semibold': showAll === false, 'text-highlight-1': showAll === false })} onClick={() => { setShowAll(false);}}>My Collection</span>
+    <span className={cx({ 'cursor-pointer': true, 'font-semibold': showAll === false, 'text-highlight-1': showAll === false })} onClick={() => { setShowAll(false);}}>My Collection</span>
   <span className="mx-2">|</span>
-  <span className={cx({ 'font-semibold': showAll, 'text-highlight-1': showAll })} onClick={() => { setShowAll(true);}}>All</span>
+  <span className={cx({ 'cursor-pointer': true, 'font-semibold': showAll, 'text-highlight-1': showAll })} onClick={() => { setShowAll(true);}}>All</span>
 </div>
 );
 
 const UpcomingAnime = () => {
   const items = useSelector((state: RootState) => state.mainpage.upcomingAnime);
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.upcomingAnime);
   const [showAll, setShowAll] = useState(false);
 
   const dispatch = useDispatch();
@@ -49,7 +50,7 @@ const UpcomingAnime = () => {
   };
 
   return (
-    <ShokoPanel title="Upcoming Anime" titleTabs={<Title showAll={showAll} setShowAll={updatePanel} />}>
+    <ShokoPanel title="Upcoming Anime" isFetching={!hasFetched} titleTabs={<Title showAll={showAll} setShowAll={updatePanel} />}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{items.map(item => renderDetails(item))}</div>
     </ShokoPanel>
   );

@@ -68,10 +68,8 @@ function ImportFolders() {
   };
 
   const renderOptions = () => (
-    <div>
-      <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
+    <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
         <Icon path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
-      </Button>
     </div>
   );
 

@@ -31,7 +31,6 @@ function* eventMainPageLoad() {
     yield call(SagaImportFolder.getImportFolders),
     yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
     yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
-    yield call(SagaFile.getRecentFiles),
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
     yield call(SagaDashboard.getDashboardUpcomingAnime, { type: Events.DASHBOARD_UPCOMING_ANIME, payload: false }),
