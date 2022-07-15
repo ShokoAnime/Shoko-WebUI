@@ -51,7 +51,10 @@ const UpcomingAnime = () => {
 
   return (
     <ShokoPanel title="Upcoming Anime" isFetching={!hasFetched} titleTabs={<Title showAll={showAll} setShowAll={updatePanel} />}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{items.map(item => renderDetails(item))}</div>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">
+        {items.length === 0 && <div className="flex justify-center font-semibold mt-4">It Looks like Your Not Watching Anything Currently Airing.</div>}
+        {items.map(item => renderDetails(item))}
+      </div>
     </ShokoPanel>
   );
 };
