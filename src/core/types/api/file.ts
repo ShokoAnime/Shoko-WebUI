@@ -12,8 +12,9 @@ export type FileType = {
     RelativePath: string;
     Accessible: boolean;
   }>;
-  Watched?: string;
-  ResumePosition?: number;
+  Duration: string;
+  ResumePosition: string | null;
+  Watched: string | null;
   RoundedStandardResolution: string;
   Created: string;
 };
