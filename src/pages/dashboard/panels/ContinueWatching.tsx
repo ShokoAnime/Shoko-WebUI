@@ -6,6 +6,7 @@ import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
 
 const ContinueWatching = () => {
   const items = useSelector((state: RootState) => state.mainpage.continueWatching);
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.continueWatching);
 
   const renderDetails = (item: DashboardEpisodeDetailsType ) => {
 
@@ -17,7 +18,7 @@ const ContinueWatching = () => {
   };
   
   return (
-    <ShokoPanel title="Continue Watching">
+    <ShokoPanel title="Continue Watching" isFetching={!hasFetched}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.map(item => renderDetails(item))}</div>
     </ShokoPanel>
   );

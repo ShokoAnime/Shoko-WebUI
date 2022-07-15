@@ -70,13 +70,13 @@ function QueueProcessor() {
     return (
       <React.Fragment>
         {paused ? (
-          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Start')} tooltip="Resume All">
+          <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Start')} title="Resume All">
             <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} />
-          </Button>
+          </div>
         ) : (
-          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!('Pause')} tooltip="Pause All">
+          <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Pause')} title="Pause All">
             <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
-          </Button>
+          </div>
         )}
       </React.Fragment>
     );
