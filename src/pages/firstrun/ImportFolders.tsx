@@ -100,10 +100,10 @@ function ImportFolders() {
         </Button>
         <div className="flex grow">
           <div className="grow">
-            <span className="font-bold mr-1">{Name}</span>
+            <span className="font-semibold mr-1">{Name}</span>
             <span className="opacity-75 text-xs">({flags})</span>
           </div>
-          <div className="font-semibol opacity-50">{Path}</div>
+          <div className="font-semibold opacity-50">{Path}</div>
         </div>
       </div>
     );

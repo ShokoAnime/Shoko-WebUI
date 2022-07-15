@@ -69,8 +69,8 @@ function ImportFolderModal() {
         onAfterOpen={() => getFolderDetails()}
       >
         <div className="flex flex-col w-full">
-          <div className="flex flex-col items-center justify-start bg-color-nav shadow">
-            <div className="grow px-4 py-2 bg-gray-800 self-stretch">
+          <div className="flex flex-col items-center justify-start bg-color-nav">
+            <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow">
               <p className="text-base font-semibold text-gray-300">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</p>
             </div>
             <div className="flex flex-col space-y-4 items-end justify-center p-4 w-full">
@@ -86,12 +86,12 @@ function ImportFolderModal() {
                 <option value={0}>No</option>
                 <option value={1}>Yes</option>
               </Select>
-              <div className="flex justify-end px-4">
+              <div className="flex justify-end">
                 {edit && (
-                  <Button onClick={handleDelete} className="bg-background-alt px-2.5 py-2 mr-2">Delete</Button>
+                  <Button onClick={handleDelete} className="bg-background-alt px-6 py-2 mr-2">Delete</Button>
                 )}
-                <Button onClick={handleClose} className="bg-background-alt border-background-border px-2.5 py-2 mr-2">Cancel</Button>
-                <Button onClick={handleSave} className="bg-primary border-background-border px-2.5 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
+                <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
+                <Button onClick={handleSave} className="bg-primary px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
               </div>
             </div>
           </div>
