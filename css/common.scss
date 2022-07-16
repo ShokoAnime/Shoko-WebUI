@@ -4,7 +4,7 @@ $secondary-toolbar-bg-color: #5a6273;
 $accent-color: #4ac767;
 $accent-color-hover: #3ab857;
 $accent-color-secondary: #279ceb;
-$danger-color: #FF3F57;
+$danger-color: #ff3f57;
 $sidebar-item-color: white;
 
 $panel-background-color: #f5f6f8;
@@ -13,38 +13,48 @@ $panel-header-color: #5a5a5a;
 
 $website-background-color: #e9edf2;
 
-$button-unselected: #8F9290;
+$button-unselected: #8f9290;
 
+$background-color-1: #1f2531;
+$background-color-2: #171c28;
+$background-color-3: #151b29;
+$background-color-4: #1b202b;
+$background-border: #0b0e17;
 
+$border-color-1: #3c3c53;
 
-$background-color-1: #1F2531;
-$background-color-2: #171C28;
-$background-color-3: #151B29;
-$background-color-4: #1B202B;
-$background-border: #0B0E17;
+$highlight-color-1: #279ceb;
+$highlight-color-2: #3e7bfa;
+$highlight-color-4: #ff3f57;
+$highlight-color-6: #f1c40f;
 
-$border-color-1: #3C3C53;
+$icon-color: #c6ced2;
 
-$highlight-color-1: #279CEB;
-$highlight-color-2: #3E7BFA;
-$highlight-color-4: #FF3F57;
-$highlight-color-6: #F1C40F;
-
-$icon-color: #C6CED2;
-
-$text-color: #CFD8E3;
-
+$text-color: #cfd8e3;
 
 $temp-color-2: #00000029;
-$temp-color-3: #FFFFFF;
-$temp-color-5: #DA3FFF;
+$temp-color-3: #fff;
+$temp-color-5: #da3fff;
 
-input, button, textarea, :focus {
+input,
+button,
+textarea,
+:focus {
   outline: none;
 }
 
 body {
-  font-family: 'Open Sans', -apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
+  font-family:
+    'Open Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Helvetica Neue',
+    'Icons16',
+    sans-serif;
   background-color: $background-color-2;
   color: $text-color;
 }
@@ -156,11 +166,13 @@ button.color-highlight-1:hover {
   color: $panel-background-color;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast--success {
   background: $accent-color !important;
   color: white;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast--error {
   background: $danger-color !important;
   color: white;
@@ -181,7 +193,6 @@ button.color-highlight-1:hover {
   color: #fff;
   padding: 1.5rem 0;
 }
-
 
 .sidebar-item {
   color: $icon-color;
@@ -206,6 +217,7 @@ button.color-highlight-1:hover {
 }
 
 .font-open-sans {
+  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
   font-family: 'Open Sans';
 }
 
@@ -221,10 +233,10 @@ button.color-highlight-1:hover {
     bottom: 0;
     right: 0;
     margin-right: 1rem;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     text-transform: capitalize;
     font-weight: 300;
-    font-size: .5em;
+    font-size: 0.5em;
   }
 
   .is-parent {
@@ -250,7 +262,7 @@ button.color-highlight-1:hover {
 
 .panel-heading {
   background-color: $panel-header-color;
-  border-radius: .5em .5em 0 0;
+  border-radius: 0.5em 0.5em 0 0;
   color: #fff;
   border-bottom: 1px solid $panel-header-color;
   border-left: 1px solid $panel-header-color;
