@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import { call, put, select } from 'redux-saga/effects';
 import Events from '../events';
 
@@ -89,6 +90,7 @@ function* apiCall(userOptions: ApiCallOptions) {
     }
     return { data: json };
   } catch (ex) {
+    Sentry.captureException(ex);
     return { error: true, message: ex.message };
   }
 }

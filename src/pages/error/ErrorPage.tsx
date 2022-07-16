@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/react';
 import React from 'react';
 import PropTypes from 'prop-types';
 import history from '../../core/history';
@@ -18,66 +19,29 @@ type State = {
 
 class ErrorBoundary extends React.Component<Props, State> {
   static propTypes = {
-    error: PropTypes.object,
     children: PropTypes.node,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      hasError: false,
-      error: {},
-      info: {},
-    };
-  }
-
-  componentDidMount() {
-    const {
-      hasError,
-    } = this.state;
-    if (hasError !== true) { return; }
-    document.title = 'Error';
-  }
-
-  componentDidCatch(error: {}, info: { componentStack?: {}; }) {
-    // Display fallback UI
-    this.setState({ hasError: true, error, info });
-  }
-
-  goBack = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    history.goBack();
-  };
-
-  render() {
-    const {
-      hasError,
-    } = this.state;
-    const {
-      children,
-      error,
-    } = this.props;
-    if (hasError === false) {
-      return children;
-    }
-    if (error) console.error(error); // eslint-disable-line no-console
-    const {
-      error: pageError,
-      info,
-    } = this.state;
-
-    return (
-      <div>
+  fallback = ({ error, componentStack }) => (
+    <div className="error-page flex h-screen">
+      <div className="m-auto">
         <h1 className="code">ERROR</h1>
         <p className="title">You broke the Web UI, congratulations.</p>
         <p className="text">Hopefully useful information:</p>
-        <p className="title">{pageError.toString()}</p>
-        {info && info.componentStack ? <p className="text">Trace:<pre>{info.componentStack.toString()}</pre></p> : null}
+        <p className="title">{error.toString()}</p>
+        <p className="text">Trace:<pre>{componentStack}</pre></p>
         <p className="text">
-          <a href="/" onClick={this.goBack}>Go back</a>, or head over to the&nbsp;
+          <a href="/" onClick={(event) => { event.preventDefault(); history.goBack(); }}>Go back</a>, or head over to the&nbsp;
           <Link to="/">home page</Link> to choose a new direction.
         </p>
       </div>
+    </div>
+  );
+
+  render() {
+    const { children } = this.props;
+    return (
+      <Sentry.ErrorBoundary fallback={this.fallback}>{children}</Sentry.ErrorBoundary>
     );
   }
 }
