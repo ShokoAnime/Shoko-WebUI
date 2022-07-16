@@ -28,14 +28,17 @@ function BrowseFolderModal(props: Props) {
   };
 
   return (
-    <ModalPanel show={status} className="p-5 browse-folder-modal" onRequestClose={() => handleClose()}>
-      <div className="flex flex-col w-full">
-        <span className="flex font-semibold text-base uppercase">Select Import Folder</span>
-        <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-        <TreeView />
-        <div className="flex justify-end mt-2">
-          <Button onClick={handleClose} className="bg-highlight-1 px-5 py-2 mr-2">Cancel</Button>
-          <Button onClick={handleSelect} className="bg-highlight-1 px-5 py-2">Select</Button>
+    <ModalPanel show={status} className="w-25" onRequestClose={() => handleClose()}>
+      <div className="flex flex-col w-full space-y-4">
+        <div className="px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow">
+          <p className="text-base font-semibold text-gray-300">Select Import Folder</p>
+        </div>
+        <div className="mx-4 px-3 py-2 bg-background-alt rounded border border-background-border text-sm">
+          <TreeView />
+        </div>
+        <div className="flex justify-end mx-4">
+          <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
+          <Button onClick={handleSelect} className="bg-primary px-6 py-2">Select</Button>
         </div>
       </div>
     </ModalPanel>

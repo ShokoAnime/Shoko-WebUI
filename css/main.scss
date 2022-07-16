@@ -15,16 +15,16 @@
   --color-primary: 59 130 246;
   --color-secondary: 255 255 255;
 }
-
-@import "react-grid-layout/css/styles";
-@import "react-resizable/css/styles";
-@import "common";
-@import "common-dark";
-@import "modals";
-@import "login";
-@import "dashboard";
-@import "error-page";
-@import "settings";
-@import "actions";
-@import "import-folders";
-@import "input";
+/* stylelint-disable no-invalid-position-at-import-rule */
+@import 'react-grid-layout/css/styles';
+@import 'react-resizable/css/styles';
+@import 'common';
+@import 'common-dark';
+@import 'modals';
+@import 'login';
+@import 'dashboard';
+@import 'error-page';
+@import 'settings';
+@import 'actions';
+@import 'import-folders';
+@import 'input';

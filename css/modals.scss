@@ -1,5 +1,5 @@
 .modal-overlay { // React-Modal Overlay
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .languages-modal {
@@ -23,24 +23,20 @@
   background-color: rgba($background-color-1, 0.6);
 }
 
-.browse-folder-modal {
-  width: 42rem;
-}
-
 .error-message {
   color: red;
   text-align: center;
 }
 
 .treeview {
-  min-height: 400px;
-  max-height: 600px;
-  overflow: auto;
+  min-height: 27.75rem;
+  max-height: 27.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .list-group-item {
     cursor: pointer;
-    margin-left: 16px;
-    font-size: 12pt;
+    margin-left: 0.75rem;
 
     &.root {
       cursor: pointer;
@@ -55,10 +51,5 @@
       position: relative;
       top: 1px;
     }
-  }
-
-  .svg-inline--fa {
-    margin-left: 10px;
-    margin-right: 5px;
   }
 }

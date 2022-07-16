@@ -46,6 +46,9 @@ module.exports = {
         '62.5': '15.625rem',
         '125': '31.25rem',
       },
+      width: {
+        '400': '25rem',
+      }
     },
   },
   variants: {
