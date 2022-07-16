@@ -45,3 +45,11 @@ export type DashboardEpisodeDetailsType = {
   SeriesTitle: string,
   SeriesPoster: ImageType,
 };
+
+export type DashboardNewsType = {
+  link: string,
+  title: string,
+  content_text: string;
+  url: string;
+  date_published: string;
+};

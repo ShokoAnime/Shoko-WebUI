@@ -93,4 +93,21 @@ function* apiCall(userOptions: ApiCallOptions) {
   }
 }
 
-export default { call: apiCall };
+function* fetchNewsfeed() {
+  const fetchUrl = 'https://shokoanime.com/jsonfeed/index.json';
+  try {
+    const response = yield call(fetch, fetchUrl);
+    if (response.status !== 200) {
+      return {
+        error: true,
+        message: `Network error: ${fetchUrl} ${response.status}: ${response.statusText}`,
+      };
+    }
+    const json = yield response.json();
+    return { data: json };
+  } catch (ex) {
+    return { error: true, message: ex.message };
+  }
+}
+
+export default { call: apiCall, fetchNews: fetchNewsfeed };

@@ -5377,6 +5377,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tailwindcss/line-clamp@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@tailwindcss/line-clamp@npm:0.4.0"
+  peerDependencies:
+    tailwindcss: ">=2.0.0 || >=3.0.0 || >=3.0.0-alpha.1"
+  checksum: f9709dd960fd38154350dbd01dad90df6e4fb2d1ecce46f070c5ef63c588dc34989b45e92647a6b0c9da55d401b248a5f69499b58ec5ee76c18f0b186f6ddf31
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -15585,6 +15594,7 @@ __metadata:
     "@storybook/builder-webpack5": ^6.4.16
     "@storybook/manager-webpack5": ^6.4.16
     "@storybook/react": ^6.4.18
+    "@tailwindcss/line-clamp": ^0.4.0
     "@types/assets-webpack-plugin": ^7.1.0
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.0

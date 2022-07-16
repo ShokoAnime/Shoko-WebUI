@@ -1,6 +1,9 @@
 import { call, put } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
+import { get } from 'lodash';
+import { PayloadAction } from '@reduxjs/toolkit';
 
+import Api from '../api/index';
 import ApiDashboard from '../api/v3/dashboard';
 
 import {
@@ -12,8 +15,8 @@ import {
   setRecentSeries,
   setContinueWatching,
   setUpcomingAnime,
+  setNews,
 } from '../slices/mainpage';
-import { PayloadAction } from '@reduxjs/toolkit';
 
 function* getDashboardSeriesSummary() {
   const resultJson = yield call(ApiDashboard.getDashboardSeriesSummary);
@@ -87,6 +90,16 @@ function* getDashboardUpcomingAnime(action: PayloadAction<boolean>) {
   yield put(setFetched('upcomingAnime'));
 }
 
+function* getDashboardNews() {
+  const resultJson = yield call(Api.fetchNews);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+  yield put(setNews(get(resultJson, 'data.items', [])));
+  yield put(setFetched('news'));
+}
+
 export default {
   getDashboardSeriesSummary,
   getDashboardStats,
@@ -94,4 +107,5 @@ export default {
   getDashboardRecentlyAddedSeries,
   getDashboardContinueWatching,
   getDashboardUpcomingAnime,
+  getDashboardNews,
 };
