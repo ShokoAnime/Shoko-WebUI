@@ -25,8 +25,13 @@ function getDashboardRecentlyAddedSeries(pageSize = 20, page = 0) {
 }
 
 // Get a list of the episodes to continue watching in recently watched order
-function getDashboardContinueWatchingEpisodes(pageSize = 30, page = 0) {
+function getDashboardContinueWatchingEpisodes(pageSize = 20, page = 0) {
   return ApiRequest('ContinueWatchingEpisodes', `?pageSize=${pageSize}&page=${page}`);
+}
+
+// Get the next episodes for series that currently don't have an active watch session for the user.
+function getDashboardNextUpEpisodes(pageSize = 20, page = 0) {
+  return ApiRequest('NextUpEpisodes', `?pageSize=${pageSize}&page=${page}`);
 }
 
 // Get a list of the episodes to continue watching (soon-to-be) in recently watched order
@@ -40,5 +45,6 @@ export default {
   getDashboardRecentlyAddedEpisodes,
   getDashboardRecentlyAddedSeries,
   getDashboardContinueWatchingEpisodes,
+  getDashboardNextUpEpisodes,
   getDashboardAniDBCalendar,
 };
