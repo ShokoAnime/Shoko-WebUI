@@ -3,13 +3,9 @@ import TreeNode from './TreeNode';
 
 function TreeView() {
   return (
-    <div className="treeview w-full">
+    <div className="treeview w-full shoko-scrollbar">
       <ul className="list-group">
-        <TreeNode
-          nodeId={0}
-          level={1}
-          Path="Shoko Server"
-        />
+        <TreeNode nodeId={0} level={1} Path="Shoko Server" />
       </ul>
     </div>
   );

@@ -174,7 +174,21 @@
           ]
         }
       ],
-      "indentation": 2
+      "indentation": 2,
+      "at-rule-no-unknown": [
+        true,
+        {
+          "ignoreAtRules": [
+            "tailwind",
+            "apply",
+            "variants",
+            "responsive",
+            "screen"
+          ]
+        }
+      ],
+      "declaration-block-trailing-semicolon": null,
+      "no-descending-specificity": null
     }
   },
   "ava": {
@@ -202,7 +216,7 @@
   },
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src run.js webpack.config.default.js",
-    "stylelint": "stylelint \"src/**/*.css\"",
+    "stylelint": "stylelint \"css/*.scss\"",
     "lint": "yarn run build:version && yarn run eslint && yarn run stylelint",
     "clean": "node run clean",
     "build": "cross-env NODE_ENV=production node run build",
