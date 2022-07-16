@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
+import { mdiCheckboxMarked, mdiChevronUp, mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faCaretRight, faCaretDown, faCircleNotch,
-} from '@fortawesome/free-solid-svg-icons';
+
 import Events from '../../core/events';
 import { setSelectedNode } from '../../core/slices/modals/browseFolder';
 import { RootState } from '../../core/store';
@@ -64,6 +63,15 @@ function TreeNode(props: Props) {
       />);
     });
   }
+  
+  const chopPath = (path) => {
+    const splitPath = path.split('\\');
+    let part = splitPath.pop();
+    if (part === '') { 
+      part = splitPath.pop();
+    }
+    return part;
+  };
 
   const { level, Path, nodeId } = props;
   return (
@@ -75,13 +83,20 @@ function TreeNode(props: Props) {
       onClick={toggleSelected}
       onDoubleClick={toggleExpanded}
     >
-      <FontAwesomeIcon
-        onClick={toggleExpanded}
-        spin={fetching}
-        // eslint-disable-next-line no-nested-ternary
-        icon={fetching ? faCircleNotch : (expanded ? faCaretDown : faCaretRight)}
-      />
-      <span className="select-none">{Path}</span>
+      <div className="flex justify-between">
+        <div className="flex space-x-1">
+          <div className="inline-block" onClick={toggleExpanded}>
+            <Icon
+              path={fetching ? mdiLoading : mdiChevronUp}
+              spin={fetching}
+              size={1}
+              rotate={expanded ? 180 : 0}
+            />
+          </div>
+          <span className="select-none">{chopPath(Path)}</span>
+        </div>
+        <Icon className={cx('inline-block justify-self-end mr-3 text-highlight-1', { 'hidden': level === 1 || nodeId !== selectedNode.id })} path={mdiCheckboxMarked} size={1} />
+      </div>
       <ul>{children}</ul>
     </li>
   );
