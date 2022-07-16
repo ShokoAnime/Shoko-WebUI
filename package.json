@@ -23,6 +23,7 @@
     "@sentry/browser": "^6.17.3",
     "@sentry/react": "^6.17.3",
     "@sentry/tracing": "^6.17.3",
+    "@tailwindcss/line-clamp": "^0.4.0",
     "ajv": "^8.9.0",
     "browser-sync": "^2.27.7",
     "classnames": "^2.3.1",

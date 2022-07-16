@@ -34,6 +34,19 @@ function* eventMainPageLoad() {
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
     yield call(SagaDashboard.getDashboardUpcomingAnime, { type: Events.DASHBOARD_UPCOMING_ANIME, payload: false }),
+    yield call(SagaDashboard.getDashboardNews),
+  ]);
+
+  // yield put({ type: Events.CHECK_UPDATES });
+}
+
+function* eventMainPageRefresh() {
+  yield all([
+    yield call(SagaDashboard.getDashboardStats),
+    yield call(SagaDashboard.getDashboardSeriesSummary),
+    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
+    yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
+    yield call(SagaFile.getUnrecognizedFiles),
   ]);
 
   // yield put({ type: Events.CHECK_UPDATES });
@@ -59,5 +72,6 @@ function* eventQueueOperation(action) {
 export default {
   getQueueStatus,
   eventMainPageLoad,
+  eventMainPageRefresh,
   eventQueueOperation,
 };
