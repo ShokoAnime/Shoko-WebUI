@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { push, replace } from 'connected-react-router';
+import { push, replace } from '@lagunovsky/redux-react-router';
 import { toast } from 'react-toastify';
 
 import Events from '../events';

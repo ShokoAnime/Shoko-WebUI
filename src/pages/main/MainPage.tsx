@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
+import { Route, Routes, Navigate } from 'react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
@@ -55,15 +55,15 @@ function MainPage() {
         </div>
         <div className="flex flex-col grow">
           <div className="overflow-y-auto grow">
-            <Route exact path="/">
-              <Redirect to="/dashboard" />
-            </Route>
-            <Route exact path="/dashboard" component={DashboardPage} />
-            <Route exact path="/import-folders" component={ImportFoldersPage} />
-            <Route exact path="/actions" component={ActionsPage} />
-            <Route exact path="/log" component={LogsPage} />
-            <Route exact path="/collection" component={CollectionPage} />
-            <Route exact path="/settings" component={SettingsPage} />
+            <Routes>
+              <Route path="/" element={() => <Navigate to="/dashboard" /> } />
+              <Route path="/dashboard" element={DashboardPage} />
+              <Route path="/import-folders" element={ImportFoldersPage} />
+              <Route path="/actions" element={ActionsPage} />
+              <Route path="/log" element={LogsPage} />
+              <Route path="/collection" element={CollectionPage} />
+              <Route path="/settings" element={SettingsPage} />
+            </Routes>
           </div>
         </div>
       </div>

@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
 
 import React, { useEffect } from 'react';
-import { Route, Switch } from 'react-router';
-import { ConnectedRouter } from 'connected-react-router';
+import { Route, Routes } from 'react-router';
+import { ReduxRouter } from '@lagunovsky/redux-react-router';
 import { useSelector } from 'react-redux';
 import type { History } from 'history';
 
@@ -28,16 +28,16 @@ function Router(props: Props) {
 
   return (
     <div id="app-container" className={`${theme} theme-shoko-blue flex h-screen`}>
-      <ConnectedRouter history={history}>
-        <Switch>
-          <Route exact path="/login" component={LoginPage} />
-          <Route exact path="/error" component={ErrorPage} />
-          <Route path="/firstrun" component={FirstRunPage} />
-          <AuthenticatedRoute exact path="/index.html" component={MainPage} />
-          <AuthenticatedRoute path="/" component={MainPage} />
-          <Route component={NoMatchPage} />
-        </Switch>
-      </ConnectedRouter>
+      <ReduxRouter history={history}>
+        <Routes>
+          <Route path="/login" element={LoginPage} />
+          <Route path="/error" element={ErrorPage} />
+          <Route path="/firstrun/*" element={FirstRunPage} />
+          <Route path="/index.html" element={() => <AuthenticatedRoute><MainPage /></AuthenticatedRoute>} />
+          <Route path="/*" element={() => <AuthenticatedRoute><MainPage /></AuthenticatedRoute>} />
+          <Route element={NoMatchPage} />
+        </Routes>
+      </ReduxRouter>
     </div>
   );
 }

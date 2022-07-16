@@ -2990,7 +2990,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3":
+"@babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.16.3":
   version: 7.16.7
   resolution: "@babel/runtime@npm:7.16.7"
   dependencies:
@@ -3595,6 +3595,20 @@ __metadata:
     "@jridgewell/resolve-uri": ^3.0.3
     "@jridgewell/sourcemap-codec": ^1.4.10
   checksum: dcdca692185c9145fb84d270d87b2093eda91c1612c4c32d92620d5f82dc235f76571ed9d19526b77a091779975e43db147618ece84221a9f5fc7f0dda7822c9
+  languageName: node
+  linkType: hard
+
+"@lagunovsky/redux-react-router@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@lagunovsky/redux-react-router@npm:4.0.0"
+  peerDependencies:
+    history: ^5
+    react: ^16.8 || ^17 || ^18
+    react-dom: ^16.8 || ^17 || ^18
+    react-redux: ^6 || ^7 || ^8
+    react-router: ^6
+    redux: ^4
+  checksum: 15ff2e5589e97fa14661b4b1020c029f12f09ab57c536b85303e9b9dd014f8bd77637a5e7f0ba49c197dc98a1e914b2667935142647202eefc9c0892cac4b15f
   languageName: node
   linkType: hard
 
@@ -10317,29 +10331,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"connected-react-router@npm:^6.9.2":
-  version: 6.9.2
-  resolution: "connected-react-router@npm:6.9.2"
-  dependencies:
-    immutable: ^3.8.1 || ^4.0.0
-    lodash.isequalwith: ^4.4.0
-    prop-types: ^15.7.2
-    seamless-immutable: ^7.1.3
-  peerDependencies:
-    history: ^4.7.2
-    react: ^16.4.0 || ^17.0.0
-    react-redux: ^6.0.0 || ^7.1.0
-    react-router: ^4.3.1 || ^5.0.0
-    redux: ^3.6.0 || ^4.0.0
-  dependenciesMeta:
-    immutable:
-      optional: true
-    seamless-immutable:
-      optional: true
-  checksum: 76490f3e22e41b0e2864d2c599c6d6eb031746fd194e6370b6032828b878d4dff53ec810fefa11ccf0237569f05804ff01d2e8806781c5b96b8f6cfca7b3702b
-  languageName: node
-  linkType: hard
-
 "console-browserify@npm:^1.1.0":
   version: 1.2.0
   resolution: "console-browserify@npm:1.2.0"
@@ -14294,7 +14285,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"history@npm:^4.10.1, history@npm:^4.9.0":
+"history@npm:^4.10.1":
   version: 4.10.1
   resolution: "history@npm:4.10.1"
   dependencies:
@@ -14328,7 +14319,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"hoist-non-react-statics@npm:^3.1.0, hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.2":
+"hoist-non-react-statics@npm:^3.3.0, hoist-non-react-statics@npm:^3.3.2":
   version: 3.3.2
   resolution: "hoist-non-react-statics@npm:3.3.2"
   dependencies:
@@ -14733,13 +14724,6 @@ __metadata:
   version: 3.8.2
   resolution: "immutable@npm:3.8.2"
   checksum: 08e65dd0579e7d274e0959872aa3cda7b0da30ed2efebbd23fc2cff26ff7a5416f47e21dbf9b56d337c94b98399a15511df1b7a5db2fadae3e77cd60483c4205
-  languageName: node
-  linkType: hard
-
-"immutable@npm:^3.8.1 || ^4.0.0":
-  version: 4.0.0
-  resolution: "immutable@npm:4.0.0"
-  checksum: b213379f1a5e764c9c301c5aee26342ca1486e50b8e1bf7cdcb5586ddcedcab4f75cffc8cd50b7a44133e4ecce71cbd066af016b11024b86c18ee6d6cf3209d0
   languageName: node
   linkType: hard
 
@@ -15604,13 +15588,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"isarray@npm:0.0.1":
-  version: 0.0.1
-  resolution: "isarray@npm:0.0.1"
-  checksum: daeda3c23646200b0b464b7a9030d10008d7701fc6b7a1b45cafe42b4f4d2dde20835b56f19a49e04bb218245b7f7a2bcc6d0f696cff3711e4eddaa2031c611f
-  languageName: node
-  linkType: hard
-
 "isarray@npm:1.0.0, isarray@npm:^1.0.0, isarray@npm:~1.0.0":
   version: 1.0.0
   resolution: "isarray@npm:1.0.0"
@@ -15912,6 +15889,7 @@ __metadata:
     "@fortawesome/free-solid-svg-icons": ^5.15.4
     "@fortawesome/react-fontawesome": ^0.1.17
     "@headlessui/react": ^1.4.3
+    "@lagunovsky/redux-react-router": ^4.0.0
     "@mdi/js": ^6.5.95
     "@mdi/react": ^1.5.0
     "@mdx-js/react": ^1.6.22
@@ -15961,7 +15939,6 @@ __metadata:
     browserslist: latest
     classnames: ^2.3.1
     connect-history-api-fallback: ^1.6.0
-    connected-react-router: ^6.9.2
     core-js: 3.20.3
     coveralls: ^3.1.1
     cross-env: ^7.0.3
@@ -16017,8 +15994,7 @@ __metadata:
     react-modal: ^3.14.4
     react-motion: ^0.5.2
     react-redux: ^7.2.6
-    react-router: ^5.2.1
-    react-router-dom: ^5.3.0
+    react-router-dom: ^6.3.0
     react-toastify: ^8.1.0
     react-virtualized: ^9.22.3
     redux: ^4.1.2
@@ -16713,13 +16689,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash.isequalwith@npm:^4.4.0":
-  version: 4.4.0
-  resolution: "lodash.isequalwith@npm:4.4.0"
-  checksum: b23b6d15e4c0056d3c049954152a0c2a0ae307fcf5625d33ccd56f64e8e3163b2b5727c3ad99850c52d72b8f4b8d35df31f7bd33789eccc03b59cba7d7cf031d
-  languageName: node
-  linkType: hard
-
 "lodash.isfinite@npm:^3.3.2":
   version: 3.3.2
   resolution: "lodash.isfinite@npm:3.3.2"
@@ -16793,7 +16762,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"loose-envify@npm:^1.0.0, loose-envify@npm:^1.1.0, loose-envify@npm:^1.2.0, loose-envify@npm:^1.3.1, loose-envify@npm:^1.4.0":
+"loose-envify@npm:^1.0.0, loose-envify@npm:^1.1.0, loose-envify@npm:^1.2.0, loose-envify@npm:^1.4.0":
   version: 1.4.0
   resolution: "loose-envify@npm:1.4.0"
   dependencies:
@@ -17376,19 +17345,6 @@ __metadata:
   version: 1.0.1
   resolution: "min-indent@npm:1.0.1"
   checksum: c3aeea46bc432e6ce69b86717e98fbb544e338abb5e3c93cfa196c427e3d5a4a6ee4f76e6931a9e424fb53e83451b90fc417ce7db04440a92d68369704ad11d1
-  languageName: node
-  linkType: hard
-
-"mini-create-react-context@npm:^0.4.0":
-  version: 0.4.1
-  resolution: "mini-create-react-context@npm:0.4.1"
-  dependencies:
-    "@babel/runtime": ^7.12.1
-    tiny-warning: ^1.0.3
-  peerDependencies:
-    prop-types: ^15.0.0
-    react: ^0.14.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 26de37b293ecf37c3f858e7dfe545e652a0c177373985ec6059a54b22f1083c28b0c5b3a13910ad4bd61636a603db6f4c085752b56e007907799c9df9767f754
   languageName: node
   linkType: hard
 
@@ -18978,15 +18934,6 @@ __metadata:
   version: 0.1.7
   resolution: "path-to-regexp@npm:0.1.7"
   checksum: 342fdb0ca48415d6eccdbe6d4180fd0fa4786ccc96ab3f74fcdf7acfc99e075af25e6077c8086c341dcfb4f5f84401ecd21e6cd7b24e0c3b556fb7ffb2570da7
-  languageName: node
-  linkType: hard
-
-"path-to-regexp@npm:^1.7.0":
-  version: 1.8.0
-  resolution: "path-to-regexp@npm:1.8.0"
-  dependencies:
-    isarray: 0.0.1
-  checksum: 4c0d9aaf3fc55db0b2d9aab379856acbf4e437f2252bbc2a178aec9f707c8457f8084ea6243a80e0b37c8c1c20d23e918cd43e772a7e71142a8ad67af699686b
   languageName: node
   linkType: hard
 
@@ -20917,7 +20864,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-is@npm:^16.13.1, react-is@npm:^16.6.0, react-is@npm:^16.7.0, react-is@npm:^16.8.1, react-is@npm:^16.8.6":
+"react-is@npm:^16.13.1, react-is@npm:^16.7.0, react-is@npm:^16.8.1, react-is@npm:^16.8.6":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
   checksum: 11bcf1267a314a522615f626f3ce3727a3a24cdbf61c4d452add3550a7875326669631326cfb1ba3e92b6f72244c32ffecf93ad21c0cad8455d3e169d0e3f060
@@ -21047,23 +20994,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router-dom@npm:^5.3.0":
-  version: 5.3.0
-  resolution: "react-router-dom@npm:5.3.0"
-  dependencies:
-    "@babel/runtime": ^7.12.13
-    history: ^4.9.0
-    loose-envify: ^1.3.1
-    prop-types: ^15.6.2
-    react-router: 5.2.1
-    tiny-invariant: ^1.0.2
-    tiny-warning: ^1.0.0
-  peerDependencies:
-    react: ">=15"
-  checksum: 921c7f08354c6d7a64682d6015b46aec4d7cd89d5d3b0b9e478330630cf1c5de4adc8e5a28b871246bb91c86dc679790c76cccfefad4d4bfd3860655b0778fb3
-  languageName: node
-  linkType: hard
-
 "react-router-dom@npm:^6.0.0":
   version: 6.2.1
   resolution: "react-router-dom@npm:6.2.1"
@@ -21077,23 +21007,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-router@npm:5.2.1, react-router@npm:^5.2.1":
-  version: 5.2.1
-  resolution: "react-router@npm:5.2.1"
+"react-router-dom@npm:^6.3.0":
+  version: 6.3.0
+  resolution: "react-router-dom@npm:6.3.0"
   dependencies:
-    "@babel/runtime": ^7.12.13
-    history: ^4.9.0
-    hoist-non-react-statics: ^3.1.0
-    loose-envify: ^1.3.1
-    mini-create-react-context: ^0.4.0
-    path-to-regexp: ^1.7.0
-    prop-types: ^15.6.2
-    react-is: ^16.6.0
-    tiny-invariant: ^1.0.2
-    tiny-warning: ^1.0.0
+    history: ^5.2.0
+    react-router: 6.3.0
   peerDependencies:
-    react: ">=15"
-  checksum: fd2fb21a46caabd4cc8ebaeb54c1e74733658e90eee50fd585c52e37110576ac479072d919b8a422586c361f7939c2d43dbf6d072700f6c8342808839948088a
+    react: ">=16.8"
+    react-dom: ">=16.8"
+  checksum: ea986038ffccd885026bcef7c2ddaa7ccb7f5c3e9401b5fe2dc5d7b9131c889cd36f413532e78475064d59bcd0f84437e1ee1494340cbde5ba53ae9b8a61eff2
   languageName: node
   linkType: hard
 
@@ -21105,6 +21028,17 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: b67e73a18e56780fe3e10c1fc93b82e416f9e549afd9549ffb8a0b22b0587a9c4e8f77f380d7ee5de98a074e543917a096bd0c33eecf49ede881cb67c64ac515
+  languageName: node
+  linkType: hard
+
+"react-router@npm:6.3.0":
+  version: 6.3.0
+  resolution: "react-router@npm:6.3.0"
+  dependencies:
+    history: ^5.2.0
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 9854c8adc97d8e1183d2e1f6bf108805077fb599fcaa19d18a0112dba1f159ff2f6c042c93d71477ab66370a493ddcfa6ccb6450de97d8b3b9bb93592ab4397f
   languageName: node
   linkType: hard
 
@@ -22230,13 +22164,6 @@ resolve@^2.0.0-next.3:
     js-base64: ^2.4.3
     source-map: ^0.7.1
   checksum: 3540acecaa00ab61e8b8b24df4a83508f6d721ed42de87df7533d7da7fcf4379e0c258a049aa9abbaebda98a0fef664c5b77f6cfeba3cbcaafd59954b77613eb
-  languageName: node
-  linkType: hard
-
-"seamless-immutable@npm:^7.1.3":
-  version: 7.1.4
-  resolution: "seamless-immutable@npm:7.1.4"
-  checksum: bf78796df3333fc9784531ac08ddffa08faa897eb19ac4d1879d4df5344ff6f16a351ef5330f023296a32137c136f635c839a0a99fac1d79ceb2b1a3ac4aa8e7
   languageName: node
   linkType: hard
 
@@ -23979,7 +23906,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tiny-warning@npm:^1.0.0, tiny-warning@npm:^1.0.3":
+"tiny-warning@npm:^1.0.0":
   version: 1.0.3
   resolution: "tiny-warning@npm:1.0.3"
   checksum: 6cf9f66cb765b893976b8cd1c1310338861f30fb04d02ef2c8e0a748cbc2ed5acd8bb1954b78c15f640ad4116def67134d7d705f2a0c9bf27e6e2eb3e92bff29

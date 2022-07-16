@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
-import { replace } from 'connected-react-router';
+import { Route, Routes, Navigate } from 'react-router';
+import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
   mdiLoading, mdiDiscord, mdiCheckboxBlankCircle,
@@ -52,17 +52,17 @@ function FirstRunPage() {
   return (
     <div className="flex h-screen w-screen">
       <div className="flex grow">
-        <Route exact path="/firstrun">
-          <Redirect to="/firstrun/acknowledgement" />
-        </Route>
-        <Route exact path="/firstrun/acknowledgement" component={Acknowledgement} />
-        <Route exact path="/firstrun/db-setup" component={DatabaseSetup} />
-        <Route exact path="/firstrun/local-account" component={LocalAccount} />
-        <Route exact path="/firstrun/anidb-account" component={AniDBAccount} />
-        <Route exact path="/firstrun/community-sites" component={CommunitySites} />
-        <Route exact path="/firstrun/start-server" component={StartServer} />
-        <Route exact path="/firstrun/import-folders" component={ImportFolders} />
-        <Route exact path="/firstrun/data-collection" component={DataCollection} />
+        <Routes>
+          <Route path="/firstrun" element={() => <Navigate to="/firstrun/acknowledgement" /> } />
+          <Route path="/firstrun/acknowledgement" element={Acknowledgement} />
+          <Route path="/firstrun/db-setup" element={DatabaseSetup} />
+          <Route path="/firstrun/local-account" element={LocalAccount} />
+          <Route path="/firstrun/anidb-account" element={AniDBAccount} />
+          <Route path="/firstrun/community-sites" element={CommunitySites} />
+          <Route path="/firstrun/start-server" element={StartServer} />
+          <Route path="/firstrun/import-folders" element={ImportFolders} />
+          <Route path="/firstrun/data-collection" element={DataCollection} />
+        </Routes>
       </div>
       <div className="flex flex-col flex-none px-13 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
         <img src="/logo.png" className="w-32 mt-16" alt="logo" />
