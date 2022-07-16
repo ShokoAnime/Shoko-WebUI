@@ -1,142 +1,90 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import { setStatus as setProfileModalStatus } from '../../core/slices/modals/profile';
 import ModalPanel from '../Panels/ModalPanel';
 import Input from '../Input/Input';
 
-type State = {
-  username: string;
-  password: string;
-  usernameDisabled: boolean;
-  passwordDisabled: boolean;
-};
+function ProfileModal() {
+  const dispatch = useDispatch();
 
-class ProfileModal extends React.Component<Props, State> {
-  state = {
-    username: 'username',
-    password: 'notchanged',
-    usernameDisabled: true,
-    passwordDisabled: true,
-  };
+  const status = useSelector((state: RootState) => state.modals.profile.status);
+  const oldUsername = useSelector((state: RootState) => state.apiSession.username);
+  const rememberUser = useSelector((state: RootState) => state.apiSession.rememberUser);
 
-  componentDidMount() {
-    const { username } = this.props;
-    this.setState({
-      username,
-    });
-  }
+  const [username, setUsername] = useState('username');
+  const [password, setPassword] = useState('notchanged');
+  const [usernameDisabled, setUsernameDisabled] = useState(true);
+  const [passwordDisabled, setPasswordDisabled] = useState(true);
 
-  handleClose = (save = false) => {
-    const { rememberUser, setStatus, changePassword } = this.props;
-    const { username, password } = this.state;
+  useEffect(() => {
+    setUsername(oldUsername);
+  }, [oldUsername]);
 
-    if (save) {
-      if (password !== 'notchanged') {
-        changePassword(username, password, rememberUser);
-      }
+  const handleClose = (save = false) => {
+    if (save && password !== 'notchanged') {
+      dispatch({
+        type: Events.AUTH_CHANGE_PASSWORD,
+        payload: { username, password, rememberUser },
+      });
     }
 
-    this.setState({
-      password: 'notchanged',
-      usernameDisabled: true,
-      passwordDisabled: true,
-    });
+    setPassword('notchanged');
+    setPasswordDisabled(true);
+    setUsernameDisabled(true);
 
-    setStatus(false);
+    dispatch(setProfileModalStatus(false));
   };
 
-  handleInputChange = (event: any) => {
-    const { id, value } = event.target;
-    this.setState(prevState => Object.assign({}, prevState, { [id]: value }));
-  };
-
-  editUsername = () => {
-    this.setState({
-      usernameDisabled: false,
-    });
-  };
-
-  editPassword = () => {
-    this.setState({
-      password: '',
-      passwordDisabled: false,
-    });
-  };
-
-  render() {
-    const { show, username: oldUsername } = this.props;
-    const {
-      username, password, usernameDisabled, passwordDisabled,
-    } = this.state;
-
-    return (
-      <ModalPanel show={show} className="profile-modal" onRequestClose={() => this.handleClose()}>
-        <div className="flex w-full h-full">
-          <div className="flex profile-modal-image rounded-l-lg">
-            <div className="flex flex-grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
-              <span className="flex items-center justify-center bg-color-accent w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
-            </div>
+  return (
+    <ModalPanel show={status} className="profile-modal" onRequestClose={() => handleClose()}>
+      <div className="flex w-full h-full">
+        <div className="flex profile-modal-image rounded-l-lg">
+          <div className="flex grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
+            <span className="flex items-center justify-center bg-highlight-1 w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
           </div>
-          <div className="flex flex-grow flex-col px-4 py-2">
-            <div className="flex justify-between">
-              <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">User Profile</span>
-              <span className="flex">
-                <Button onClick={() => this.handleClose()}>
-                  <FontAwesomeIcon icon={faTimes} />
+        </div>
+        <div className="flex grow flex-col px-4 py-2">
+          <div className="flex justify-between">
+            <span className="flex font-semibold text-base uppercase">User Profile</span>
+            <span className="flex">
+              <Button onClick={() => handleClose()}>
+                <FontAwesomeIcon icon={faTimes} />
+              </Button>
+            </span>
+          </div>
+          <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
+          <div className="flex flex-col grow justify-between">
+            <div className="flex flex-col">
+              <div className="flex">
+                <Input className="w-24" label="Username" id="username" value={username} type="text" disabled={usernameDisabled} onChange={e => setUsername(e.target.value)} />
+                <Button onClick={() => setUsernameDisabled(false)} className="flex mt-1 color-highlight-1">
+                  <FontAwesomeIcon icon={faEdit} />
                 </Button>
-              </span>
+              </div>
+              <div className="flex mt-1">
+                <Input className="w-24" label="Password" id="password" value={password} type="password" placeholder="Password" disabled={passwordDisabled} onChange={e => setPassword(e.target.value)} />
+                <Button onClick={() => setPasswordDisabled(false)} className="flex mt-1 color-highlight-1">
+                  <FontAwesomeIcon icon={faEdit} />
+                </Button>
+              </div>
+              <div className="flex mt-1">
+                <Input className="w-24" label="User Group" id="user-group" value="Admin" type="text" disabled onChange={() => { }} />
+              </div>
             </div>
-            <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
-            <div className="flex flex-col flex-grow justify-between">
-              <div className="flex flex-col">
-                <div className="flex">
-                  <Input className="w-24" label="Username" id="username" value={username} type="text" disabled={usernameDisabled} onChange={this.handleInputChange} />
-                  <Button onClick={() => this.editUsername()} className="flex mt-1 color-accent">
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
-                </div>
-                <div className="flex mt-1">
-                  <Input className="w-24" label="Password" id="password" value={password} type="password" placeholder="Password" disabled={passwordDisabled} onChange={this.handleInputChange} />
-                  <Button onClick={() => this.editPassword()} className="flex mt-1 color-accent">
-                    <FontAwesomeIcon icon={faEdit} />
-                  </Button>
-                </div>
-                <div className="flex mt-1">
-                  <Input className="w-24" label="User Group" id="user-group" value="Admin" type="text" disabled onChange={() => {}} />
-                </div>
-              </div>
-              <div className="flex justify-end mb-2">
-                <Button onClick={() => this.handleClose(true)} className="py-1 px-4 bg-color-accent font-muli font-semibold text-sm">Save</Button>
-              </div>
+            <div className="flex justify-end mb-2">
+              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-open-sans font-semibold text-sm">Save</Button>
             </div>
           </div>
         </div>
-      </ModalPanel>
-    );
-  }
+      </div>
+    </ModalPanel>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  show: state.modals.profile.status,
-  username: state.apiSession.username,
-  rememberUser: state.apiSession.rememberUser,
-});
-
-const mapDispatch = {
-  setStatus: (value: boolean) => (setProfileModalStatus(value)),
-  changePassword: (username: string, password: string, rememberUser: boolean) => (
-    { type: Events.AUTH_CHANGE_PASSWORD, payload: { username, password, rememberUser } }
-  ),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(ProfileModal);
+export default ProfileModal;

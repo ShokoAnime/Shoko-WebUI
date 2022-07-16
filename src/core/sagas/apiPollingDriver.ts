@@ -7,7 +7,7 @@ import ApiInit from '../api/v3/init';
 import ApiPlex from '../api/v3/plex';
 import Events from '../events';
 import { SET_AUTOUPDATE, Action } from '../actions';
-import { setStatus } from '../slices/firstrun';
+import { setServerStatus } from '../slices/firstrun';
 import { setItem as setMiscItem } from '../slices/misc';
 
 function* pollServerStatus() {
@@ -17,7 +17,7 @@ function* pollServerStatus() {
       toast.error(resultJson.message);
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
     } else {
-      yield put(setStatus(resultJson.data));
+      yield put(setServerStatus(resultJson.data));
     }
     yield delay(1000);
   }
@@ -49,7 +49,7 @@ function* pollPlexAuthentication() {
       toast.error(resultJson.message);
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
     } else {
-      yield put(setStatus(resultJson.data));
+      yield put(setServerStatus(resultJson.data));
       if (resultJson.data) {
         yield put(setMiscItem({ plex: { authenticated: true } }));
         yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });

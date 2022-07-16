@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require,no-console,global-require */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
@@ -125,7 +124,7 @@ tasks.set('start', () => {
   return run('clean').then(() => run('version')).then(() => new Promise((resolve) => {
     const bs = require('browser-sync').create();
     const webpackConfig = require(webpackConfigPath);
-    const proxy = require('http-proxy-middleware');
+    const { createProxyMiddleware } = require('http-proxy-middleware');
 
     const compiler = webpack(webpackConfig);
     // Node.js middleware that compiles application in watch mode with HMR support
@@ -137,7 +136,7 @@ tasks.set('start', () => {
 
     const middleware = [];
     if (config.apiProxyIP) {
-      const proxyMiddleware = proxy(['/api', '/plex', '/signalr'], {
+      const proxyMiddleware = createProxyMiddleware(['/api', '/plex', '/signalr'], {
         target: `http://${config.apiProxyIP}:8111`,
         ws: true,
         logLevel: 'error',
@@ -149,9 +148,9 @@ tasks.set('start', () => {
     middleware.push(require('webpack-hot-middleware')(compiler));
     middleware.push(require('connect-history-api-fallback')());
 
-    compiler.plugin('done', (stats) => {
+    compiler.hooks.done.tap('run', (stats) => {
       // Generate index.html page
-      const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
+      const bundle = Array.from(stats.compilation.chunks).find(x => x.name === 'main').files.values().next().value;
       const template = fs.readFileSync('./templates/index.ejs', 'utf8');
       const render = ejs.compile(template, { filename: './templates/index.ejs' });
       const output = render({ debug: true, bundle: `/dist/${bundle}`, config });

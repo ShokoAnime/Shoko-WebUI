@@ -4,8 +4,7 @@ $secondary-toolbar-bg-color: #5a6273;
 $accent-color: #4ac767;
 $accent-color-hover: #3ab857;
 $accent-color-secondary: #279ceb;
-$danger-color: #FF3F57;
-$sidebar-background-color: #0a0b1d;
+$danger-color: #ff3f57;
 $sidebar-item-color: white;
 
 $panel-background-color: #f5f6f8;
@@ -14,20 +13,71 @@ $panel-header-color: #5a5a5a;
 
 $website-background-color: #e9edf2;
 
-$text-color: #333333;
+$button-unselected: #8f9290;
 
-$button-unselected: #8F9290;
+$background-color-1: #1f2531;
+$background-color-2: #171c28;
+$background-color-3: #151b29;
+$background-color-4: #1b202b;
+$background-border: #0b0e17;
 
-input, button, textarea, :focus {
+$border-color-1: #3c3c53;
+
+$highlight-color-1: #279ceb;
+$highlight-color-2: #3e7bfa;
+$highlight-color-4: #ff3f57;
+$highlight-color-6: #f1c40f;
+
+$icon-color: #c6ced2;
+
+$text-color: #cfd8e3;
+
+$temp-color-2: #00000029;
+$temp-color-3: #fff;
+$temp-color-5: #da3fff;
+
+input,
+button,
+textarea,
+:focus {
   outline: none;
 }
 
 body {
-  font-family: 'Exo 2', Muli, Roboto,-apple-system,BlinkMacSystemFont,Segoe UI,Oxygen,Ubuntu,Cantarell,Open Sans,Helvetica Neue,Icons16,sans-serif;
-  font-size: 16px;
-  font-weight: 500;
-  background-color: $website-background-color;
+  font-family:
+    'Open Sans',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Helvetica Neue',
+    'Icons16',
+    sans-serif;
+  background-color: $background-color-2;
   color: $text-color;
+}
+
+::-webkit-scrollbar {
+  height: 12px;
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: $background-border;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: $highlight-color-2;
+  border-radius: 10px;
+  border: 2px solid $background-color-2;
+}
+
+.theme-shoko-blue .shoko-scrollbar {
+  scrollbar-color: $highlight-color-1 $background-border;
+  scrollbar-width: thin;
 }
 
 #app-root {
@@ -60,46 +110,69 @@ body {
   color: white;
 }
 
-.color-accent {
-  color: $accent-color;
+.color-highlight-1 {
+  color: $highlight-color-1 !important;
 }
 
-.bg-color-accent {
-  background-color: $accent-color;
-  color: white;
+.color-highlight-2 {
+  color: $highlight-color-2 !important;
 }
 
-.color-accent-secondary {
-  color: $accent-color-secondary;
+.bg-color-highlight-1 {
+  background-color: $highlight-color-1;
 }
 
-.bg-color-accent-secondary {
-  background-color: $accent-color-secondary;
-  color: white;
+.bg-color-highlight-2 {
+  background-color: $highlight-color-2;
+}
+
+.bg-color-1 {
+  background-color: $background-color-1;
+}
+
+.bg-color-2 {
+  background-color: $background-color-2;
+}
+
+.bg-color-3 {
+  background-color: $background-color-3;
+}
+
+.bg-color-4 {
+  background-color: $background-color-4;
+}
+
+button.color-highlight-1:hover {
+  color: $highlight-color-2 !important;
 }
 
 .color-danger {
-  color: $danger-color;
+  color: $highlight-color-4;
 }
 
 .bg-color-danger {
-  background-color: $danger-color;
-  color: white;
+  background-color: $highlight-color-4;
+}
+
+.button-color-primary {
+  background-color: $accent-color-secondary
 }
 
 .border-color-danger {
-  border-color: $danger-color;
+  border-color: $highlight-color-4;
 }
 
 .fa-layer-icon-bg {
   color: $panel-background-color;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast--success {
   background: $accent-color !important;
   color: white;
 }
 
+/* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast--error {
   background: $danger-color !important;
   color: white;
@@ -121,22 +194,13 @@ body {
   padding: 1.5rem 0;
 }
 
-.sidebar-container {
-  width: 24.5rem;
-}
-
-.sidebar {
-  background-color: $sidebar-background-color;
-  color: $sidebar-item-color;
-  width: 24.5rem;
-}
-
 .sidebar-item {
+  color: $icon-color;
   cursor: pointer;
 }
 
 .sidebar-item:hover {
-  color: $accent-color;
+  color: $highlight-color-1;
 }
 
 .header {
@@ -144,29 +208,17 @@ body {
   border-color: $panel-header-color;
 }
 
-.user-dropdown-toggle:hover {
-  background-color: $website-background-color;
+.user-icon {
+  background-color: $highlight-color-1;
 }
 
-.user-dropdown {
-  background-color: $panel-background-color;
-  border-color: $panel-header-color;
+.user-icon:hover {
+  background-color: $highlight-color-2;
 }
 
-.fixed-panel {
-  background-color: $panel-background-color;
-}
-
-.fixed-panel-header {
-  color: $panel-header-color;
-}
-
-.font-muli {
-  font-family: 'Muli';
-}
-
-.font-exo2 {
-  font-family: 'Exo 2';
+.font-open-sans {
+  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
+  font-family: 'Open Sans';
 }
 
 .section.page-wrap {
@@ -181,10 +233,10 @@ body {
     bottom: 0;
     right: 0;
     margin-right: 1rem;
-    margin-bottom: .5rem;
+    margin-bottom: 0.5rem;
     text-transform: capitalize;
     font-weight: 300;
-    font-size: .5em;
+    font-size: 0.5em;
   }
 
   .is-parent {
@@ -210,7 +262,7 @@ body {
 
 .panel-heading {
   background-color: $panel-header-color;
-  border-radius: .5em .5em 0 0;
+  border-radius: 0.5em 0.5em 0 0;
   color: #fff;
   border-bottom: 1px solid $panel-header-color;
   border-left: 1px solid $panel-header-color;

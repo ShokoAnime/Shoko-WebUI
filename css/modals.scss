@@ -1,28 +1,17 @@
-.modal { // React-Modal
-  background-color: white;
-}
-
 .modal-overlay { // React-Modal Overlay
-  background-color: rgba(0,0,0,0.5);
-}
-
-.import-folder-modal {
-  height: 22rem;
-  width: 38rem;
+  background-color: rgb(0 0 0 / 50%);
 }
 
 .languages-modal {
-  height: 40rem;
   width: 30rem;
 }
 
 .profile-modal {
-  height: 18.5rem;
   width: 42rem;
 }
 
 .profile-modal-image {
-  background-image: url('/webui/left-img.jpg');
+  background-image: url('/public/left-img.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -30,12 +19,8 @@
 }
 
 .profile-modal-image-alpha {
-  color: $secondary-panel-background-color;
-  background-color: rgba($sidebar-background-color, 0.6);
-}
-
-.browse-folder-modal {
-  width: 42rem;
+  color: $background-color-2;
+  background-color: rgba($background-color-1, 0.6);
 }
 
 .error-message {
@@ -44,14 +29,14 @@
 }
 
 .treeview {
-  min-height: 400px;
-  max-height: 600px;
-  overflow: auto;
+  min-height: 27.75rem;
+  max-height: 27.75rem;
+  overflow-y: auto;
+  overflow-x: hidden;
 
   .list-group-item {
     cursor: pointer;
-    margin-left: 16px;
-    font-size: 12pt;
+    margin-left: 0.75rem;
 
     &.root {
       cursor: pointer;
@@ -66,10 +51,5 @@
       position: relative;
       top: 1px;
     }
-  }
-
-  .svg-inline--fa {
-    margin-left: 10px;
-    margin-right: 5px;
   }
 }

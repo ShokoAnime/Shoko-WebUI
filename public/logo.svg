@@ -1,0 +1,29 @@
+<svg id="Blue_V2" data-name="Blue V2" xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #141319;
+        stroke: #000;
+        stroke-width: 1px;
+        fill-rule: evenodd;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke: #279ceb;
+        stroke-width: 20px;
+      }
+
+      .cls-3 {
+        font-size: 56px;
+        fill: #279ceb;
+        font-family: "Fira Code";
+        font-weight: 700;
+        font-variant: small-caps;
+      }
+    </style>
+  </defs>
+  <path class="cls-1" d="M120,0H392A120,120,0,0,1,512,120V392A120,120,0,0,1,392,512H120A120,120,0,0,1,0,392V120A120,120,0,0,1,120,0Z"/>
+  <rect class="cls-2" width="512" height="512" rx="120" ry="120"/>
+  <text id="S" class="cls-3" transform="translate(120 412) scale(8)">S</text>
+</svg>

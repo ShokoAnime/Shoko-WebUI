@@ -1,59 +1,48 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../core/store';
-import type { SelectedNodeType } from '../TreeView/TreeNode';
-import Button from '../Buttons/Button';
+import Button from '../Input/Button';
 import { setStatus } from '../../core/slices/modals/browseFolder';
 import TreeView from '../TreeView/TreeView';
 import ModalPanel from '../Panels/ModalPanel';
 
-class BrowseFolderModal extends React.Component<Props> {
-  handleClose = () => {
-    const { status } = this.props;
-    status(false);
-  };
-
-  handleSelect = () => {
-    const { onSelect, status, selectedNode } = this.props;
-    status(false);
-
-    if (typeof onSelect === 'function') {
-      onSelect(selectedNode.Path);
-    }
-  };
-
-  render() {
-    const { show } = this.props;
-    return (
-      <ModalPanel show={show} className="p-5 browse-folder-modal" onRequestClose={() => this.handleClose()}>
-        <div className="flex flex-col w-full">
-          <span className="flex font-semibold text-xl2 uppercase fixed-panel-header">Select Import Folder</span>
-          <div className="bg-color-accent-secondary my-2 h-1 w-10 flex-shrink-0" />
-          <TreeView />
-          <div className="flex justify-end mt-2">
-            <Button onClick={this.handleClose} className="bg-color-accent px-5 py-2 mr-2">Cancel</Button>
-            <Button onClick={this.handleSelect} className="bg-color-accent px-5 py-2">Select</Button>
-          </div>
-        </div>
-      </ModalPanel>
-    );
-  }
-}
-
-const mapState = (state: RootState) => ({
-  show: state.modals.browseFolder.status,
-  selectedNode: state.modals.browseFolder.selectedNode as SelectedNodeType,
-});
-
-const mapDispatch = {
-  status: (value: boolean) => (setStatus(value)),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector> & {
+type Props = {
   onSelect: (value: string) => void,
 };
 
-export default connector(BrowseFolderModal);
+function BrowseFolderModal(props: Props) {
+  const dispatch = useDispatch();
+
+  const status = useSelector((state: RootState) => state.modals.browseFolder.status);
+  const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
+
+  const handleClose = () => dispatch(setStatus(false));
+
+  const handleSelect = () => {
+    dispatch(setStatus(false));
+
+    if (typeof props.onSelect === 'function') {
+      props.onSelect(selectedNode.Path);
+    }
+  };
+
+  return (
+    <ModalPanel show={status} className="w-25" onRequestClose={() => handleClose()}>
+      <div className="flex flex-col w-full space-y-4">
+        <div className="px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow">
+          <p className="text-base font-semibold text-gray-300">Select Import Folder</p>
+        </div>
+        <div className="mx-4 px-3 py-2 bg-background-alt rounded border border-background-border text-sm">
+          <TreeView />
+        </div>
+        <div className="flex justify-end mx-4">
+          <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
+          <Button onClick={handleSelect} className="bg-primary px-6 py-2">Select</Button>
+        </div>
+      </div>
+    </ModalPanel>
+  );
+}
+
+export default BrowseFolderModal;

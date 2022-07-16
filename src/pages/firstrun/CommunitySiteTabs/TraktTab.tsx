@@ -1,12 +1,15 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Checkbox from '../../../components/Input/Checkbox';
-import Select from '../../../components/Input/Select';
-import Button from '../../../components/Buttons/Button';
+import TransitionDiv from '../../../components/TransitionDiv';
+import Button from '../../../components/Input/Button';
+import SelectSmall from '../../../components/Input/SelectSmall';
+
+import { setItem as setMiscItem } from '../../../core/slices/misc';
 
 const updateFrequencyType = [
   [1, 'Never'],
@@ -17,89 +20,72 @@ const updateFrequencyType = [
   [6, 'Once a Month'],
 ];
 
-class TraktTab extends React.Component<Props> {
-  handleInputChange = (event: any) => {
-    const { saveSettings } = this.props;
-    const { id } = event.target;
+function TraktTab() {
+  const dispatch = useDispatch();
+
+  const isFetchingTraktCode = useSelector((state: RootState) => state.fetching.trakt_code);
+  const traktSettings = useSelector((state: RootState) => state.localSettings.TraktTv);
+  const traktValues = useSelector((state: RootState) => state.misc.trakt);
+
+  const saveSettings = (newSettings: { [id: string]: any }) => dispatch(
+    { type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'TraktTv', newSettings } },
+  );
+
+  useEffect(() => {
+    dispatch(setMiscItem({ trakt: { usercode: '', url: '' } }));
+  }, []);
+
+  const handleInputChange = (event: any) => {
+    const propId = event.target.id.replace('Trakt_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    saveSettings({ context: 'TraktTv', newSettings: { [id]: value } });
+    if (value !== '') {
+      saveSettings({ [propId]: value });
+    }
   };
 
-  renderTraktCode() {
-    const { trakt } = this.props;
-    const { usercode, url } = trakt;
-    const { fetching, getTraktCode } = this.props;
-    if (usercode === '') {
+  const renderTraktCode = () => {
+    if (traktValues.usercode === '') {
       return (
-        <div className="flex w-3/5 justify-between items-center my-1">
+        <div className="flex justify-between items-center mt-1">
           Trakt Code
-          <Button onClick={getTraktCode} className="bg-color-accent-secondary px-2 py-1 text-sm">
-            {fetching ? 'Requesting...' : 'Get Trakt Code'}
+          <Button onClick={() => dispatch({ type: Events.SETTINGS_GET_TRAKT_CODE })} className="bg-highlight-1 px-2 py-1 text-xs">
+            {isFetchingTraktCode ? 'Requesting...' : 'Get Code'}
           </Button>
         </div>
       );
     }
     return (
-      <div className="flex justify-between my-2 items-center">
-        <span className="w-64">Trakt Code: <span className="font-semibold">{usercode}</span></span>
-        <span>
-          <span className="color-accent-secondary"><a href={url} rel="noopener noreferrer" target="_blank">{url}</a></span><br />
-          You have approximately 10 minutes to visit the URL provided and enter the code,
-          server is polling for access token, it will be acquired automatically.
-        </span>
+      <div className="flex justify-between mt-1 items-center">
+        <div className="flex">
+          Trakt Code:<span className="font-bold ml-1">{traktValues.usercode}</span>
+        </div>
+        <a href={traktValues.url} rel="noopener noreferrer" target="_blank" className="color-highlight-2 hover:underline">Click here to activate</a>
       </div>
     );
-  }
+  };
 
-  render() {
-    const {
-      Enabled, TokenExpirationDate, UpdateFrequency,
-    } = this.props;
-
-    const updateFrequencyOptions: Array<any> = [];
-
-    updateFrequencyType.forEach((item) => {
-      updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
-    });
-
-    return (
-      <React.Fragment>
-        <span className="font-bold">Trakt.TV Options</span>
-        <Checkbox label="Enabled" id="Enabled" isChecked={Enabled} onChange={this.handleInputChange} className="w-3/5" />
-        {
-          TokenExpirationDate === ''
-            ? this.renderTraktCode()
-            : (
-              <div className="flex justify-between my-1">
-                Token valid until:
-                <span className="text-right">{moment(TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
-              </div>
-            )
-        }
-        <div className="flex w-3/5 justify-between my-1">
-          Automatically Update Data
-          <Select id="UpdateFrequency" value={UpdateFrequency} onChange={this.handleInputChange}>
-            {updateFrequencyOptions}
-          </Select>
-        </div>
-      </React.Fragment>
-    );
-  }
+  return (
+    <TransitionDiv className="flex flex-col w-3/5">
+      <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={traktSettings.Enabled} onChange={handleInputChange} />
+      {traktSettings.Enabled && (
+        traktSettings.TokenExpirationDate === ''
+          ? renderTraktCode()
+          : (
+            <div className="flex justify-between mt-1">
+              Token valid until:
+              <span className="text-right">{moment(traktSettings.TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</span>
+            </div>
+          )
+      )}
+      {traktSettings.Enabled && traktSettings.TokenExpirationDate !== '' && (
+        <SelectSmall label="Automatically Update Data" id="UpdateFrequency" value={traktSettings.UpdateFrequency} onChange={handleInputChange} className="mt-1">
+          {updateFrequencyType.map(
+            item => (<option value={item[0]} key={item[0]}>{item[1]}</option>),
+          )}
+        </SelectSmall>
+      )}
+    </TransitionDiv>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  ...(state.localSettings.TraktTv),
-  fetching: state.fetching.trakt_code,
-  trakt: state.misc.trakt,
-});
-
-const mapDispatch = {
-  getTraktCode: () => ({ type: Events.SETTINGS_GET_TRAKT_CODE }),
-  saveSettings: (value: any) => ({ type: Events.SETTINGS_SAVE_SERVER, payload: value }),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(TraktTab);
+export default TraktTab;

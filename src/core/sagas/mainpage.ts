@@ -7,6 +7,7 @@ import { setFetched, setQueueStatus } from '../slices/mainpage';
 import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaImportFolder from './import-folder';
+import Events from '../events';
 
 // const alert = useAlert();
 
@@ -28,7 +29,23 @@ function* eventMainPageLoad() {
     yield call(SagaDashboard.getDashboardStats),
     yield call(SagaDashboard.getDashboardSeriesSummary),
     yield call(SagaImportFolder.getImportFolders),
-    yield call(SagaFile.getRecentFiles),
+    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
+    yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
+    yield call(SagaFile.getUnrecognizedFiles),
+    yield call(SagaDashboard.getDashboardContinueWatching),
+    yield call(SagaDashboard.getDashboardUpcomingAnime, { type: Events.DASHBOARD_UPCOMING_ANIME, payload: false }),
+    yield call(SagaDashboard.getDashboardNews),
+  ]);
+
+  // yield put({ type: Events.CHECK_UPDATES });
+}
+
+function* eventMainPageRefresh() {
+  yield all([
+    yield call(SagaDashboard.getDashboardStats),
+    yield call(SagaDashboard.getDashboardSeriesSummary),
+    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
+    yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
     yield call(SagaFile.getUnrecognizedFiles),
   ]);
 
@@ -55,5 +72,6 @@ function* eventQueueOperation(action) {
 export default {
   getQueueStatus,
   eventMainPageLoad,
+  eventMainPageRefresh,
   eventQueueOperation,
 };

@@ -1,40 +1,45 @@
 /* eslint-disable react/prop-types */
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Switch } from 'react-router';
 import { ConnectedRouter } from 'connected-react-router';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import type { History } from 'history';
 
 import { RootState } from '../store';
-import LoginPage from '../../pages/login/index';
-import ErrorPage from '../../pages/error/index';
+import LoginPage from '../../pages/login/LoginPage';
+import ErrorPage from '../../pages/error/ErrorPage';
 import NoMatchPage from '../../pages/nomatch/index';
-import MainPage from '../../pages/main/index';
-import FirstRunPage from '../../pages/firstrun/index';
+import MainPage from '../../pages/main/MainPage';
+import FirstRunPage from '../../pages/firstrun/FirstRunPage';
 import AuthenticatedRoute from './AuthenticatedRoute';
 
-const Router = ({
-  history,
-  theme,
-}) => (
-  <div id="app-container" className={`${theme} flex h-screen`}>
-    <ConnectedRouter history={history}>
-      <Switch>
-        <Route exact path="/" component={LoginPage} />
-        <Route exact path="/index.html" component={LoginPage} />
-        <Route exact path="/firstrun" component={FirstRunPage} />
-        <Route exact path="/error" component={ErrorPage} />
-        <AuthenticatedRoute exact path="/main" component={MainPage} />
-        <Route component={NoMatchPage} />
-      </Switch>
-    </ConnectedRouter>
-  </div>
-);
+type Props = {
+  history: History<any>;
+};
 
-const mapState = (state: RootState) => ({
-  theme: state.webuiSettings.v3.theme,
-});
+function Router(props: Props) {
+  const theme = useSelector((state: RootState) => state.webuiSettings.webui_v2.theme);
+  useEffect(() => {
+    document.body.className = 'theme-shoko-blue';
+  }, []);
 
-const connector = connect(mapState);
+  const { history } = props;
 
-export default connector(Router);
+  return (
+    <div id="app-container" className={`${theme} theme-shoko-blue flex h-screen`}>
+      <ConnectedRouter history={history}>
+        <Switch>
+          <Route exact path="/login" component={LoginPage} />
+          <Route exact path="/error" component={ErrorPage} />
+          <Route path="/firstrun" component={FirstRunPage} />
+          <AuthenticatedRoute exact path="/index.html" component={MainPage} />
+          <AuthenticatedRoute path="/" component={MainPage} />
+          <Route component={NoMatchPage} />
+        </Switch>
+      </ConnectedRouter>
+    </div>
+  );
+}
+
+export default Router;

@@ -3,7 +3,7 @@ export type DefaultUserType = {
   Password: string;
 };
 
-export type StatusType = {
+export type ServerStatusType = {
   StartupMessage: string;
   State: 1 | 2 | 3 | 4;
   Uptime: string;

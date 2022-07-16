@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-type layoutItemType = {
+type LayoutItemType = {
   i: string;
   x: number;
   y: number;
@@ -14,43 +14,47 @@ type layoutItemType = {
   moved: boolean;
 };
 
-export type layoutType = {
-  [breakpoint: string]: Array<layoutItemType>
+export type LayoutType = {
+  [breakpoint: string]: Array<LayoutItemType>
 };
 
-type updateChannelType = 'stable' | 'unstable';
+type UpdateChannelType = 'stable' | 'unstable';
 
 type State = {
-  v3: {
+  webui_v2: {
     actions: Array<string>,
     layout: {
-      [key: string]: layoutType;
+      [key: string]: LayoutType;
     },
     notifications: boolean;
     theme: string;
     toastPosition: 'top-right' | 'bottom-right';
-    updateChannel: updateChannelType;
+    updateChannel: UpdateChannelType;
   }
 };
 
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 2, h: 15, minW: 2, minH: 15, maxH: 15, moved: false, static: false,
     }, {
-      i: 'seriesBreakdown', x: 6, y: 0, w: 6, h: 6, minW: 5, minH: 6, maxH: 8, moved: false, static: false,
+      i: 'collectionTypeBreakdown', x: 2, y: 0, w: 2, h: 15, moved: false, static: false,
     }, {
-      i: 'commandQueue', x: 0, y: 6, w: 5, h: 10, minW: 5, minH: 5, moved: false, static: false,
+      i: 'queueProcessor', x: 4, y: 0, w: 8, h: 15, minW: 6, minH: 15, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 5, y: 6, w: 4, h: 10, moved: false, static: false,
+      i: 'recentlyImported', x: 0, y: 15, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 0, y: 16, w: 9, h: 11, moved: false, static: false,
+      i: 'shokoNews', x: 0, y: 34, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'actionItems', x: 9, y: 6, w: 3, h: 10, moved: false, static: false,
+      i: 'importFolders', x: 3, y: 34, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'filesBreakdown', x: 9, y: 16, w: 3, h: 11, moved: false, static: false,
+      i: 'importBreakdown', x: 6, y: 34, w: 6, h: 14, moved: false, static: false,
+    }, {
+      i: 'continueWatching', x: 0, y: 48, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
+    }, {
+      i: 'upcomingAnime', x: 0, y: 60, w: 12, h: 20, minW: 12, minH: 20, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   importFolders: {
     lg: [{
       i: 'importBreakdown', x: 0, y: 0, w: 8, h: 11, moved: false, static: false,
@@ -59,7 +63,7 @@ export const defaultLayout = {
     }, {
       i: 'seriesInImportFolder', x: 0, y: 11, w: 12, h: 11, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   actions: {
     lg: [{
       i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
@@ -78,34 +82,34 @@ export const defaultLayout = {
     }, {
       i: 'tvdb', x: 0, y: 9, w: 4, h: 5, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
   settings: {
     lg: [{
-      i: 'general', x: 0, y: 0, w: 4, h: 15, minW: 3, minH: 5, moved: false, static: false,
+      i: 'general', x: 0, y: 0, w: 4, h: 22, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'anidb-login', x: 0, y: 15, w: 4, h: 8, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb-login', x: 0, y: 22, w: 4, h: 11, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'relation', x: 0, y: 23, w: 4, h: 10, minW: 3, minH: 3, moved: false, static: false,
+      i: 'relation', x: 0, y: 33, w: 4, h: 15, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'anidb', x: 4, y: 0, w: 4, h: 21, minW: 3, minH: 5, moved: false, static: false,
+      i: 'anidb', x: 4, y: 0, w: 4, h: 28, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'import', x: 4, y: 21, w: 4, h: 7, minW: 3, minH: 3, moved: false, static: false,
+      i: 'import', x: 4, y: 28, w: 4, h: 11, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'plex', x: 4, y: 28, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
+      i: 'plex', x: 4, y: 39, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'tvdb', x: 8, y: 0, w: 4, h: 12, minW: 3, minH: 5, moved: false, static: false,
+      i: 'tvdb', x: 8, y: 0, w: 4, h: 17, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'moviedb', x: 8, y: 12, w: 4, h: 7, minW: 3, minH: 5, moved: false, static: false,
+      i: 'moviedb', x: 8, y: 17, w: 4, h: 10, minW: 3, minH: 5, moved: false, static: false,
     }, {
-      i: 'language', x: 8, y: 19, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
+      i: 'language', x: 8, y: 27, w: 4, h: 12, minW: 3, minH: 3, moved: false, static: false,
     }, {
-      i: 'trakt', x: 8, y: 28, w: 4, h: 5, minW: 3, minH: 3, moved: false, static: false,
+      i: 'trakt', x: 8, y: 39, w: 4, h: 9, minW: 3, minH: 3, moved: false, static: false,
     }],
-  },
+  } as LayoutType,
 };
 
 const initialState = {
-  v3: {
+  webui_v2: {
     actions: [
       'remove-missing-files-mylist',
       'update-series-stats',
@@ -126,19 +130,19 @@ const webuiSettingsSlice = createSlice({
   name: 'webuiSettings',
   initialState,
   reducers: {
-    saveWebUISettings(sliceState, action: PayloadAction<Partial<State>>) {
-      sliceState.v3 = Object.assign({}, sliceState.v3, action.payload);
+    saveWebUISettings(sliceState, action: PayloadAction<any>) {
+      sliceState.webui_v2 = Object.assign({}, sliceState.webui_v2, action.payload);
     },
     addAction(sliceState, action: PayloadAction<string>) {
-      sliceState.v3.actions.push(action.payload);
+      sliceState.webui_v2.actions.push(action.payload);
     },
     removeAction(sliceState, action: PayloadAction<string>) {
-      const tempSet = new Set(sliceState.v3.actions);
+      const tempSet = new Set(sliceState.webui_v2.actions);
       tempSet.delete(action.payload);
-      sliceState.v3.actions = Array.from(tempSet);
+      sliceState.webui_v2.actions = Array.from(tempSet);
     },
     saveLayout(sliceState, action) {
-      sliceState.v3.layout = Object.assign({}, sliceState.v3.layout, action.payload);
+      sliceState.webui_v2.layout = Object.assign({}, sliceState.webui_v2.layout, action.payload);
     },
   },
 });

@@ -1,7 +1,3 @@
-button.color-accent:hover {
-  color: $accent-color-hover;
-}
-
 .recent-files .panel-block {
   height: 15em;
   overflow-y: auto;
@@ -32,8 +28,8 @@ button.color-accent:hover {
   }
 
   .navbar-item {
-    &.has-dropdown:hover .navbar-link,
-    &.is-active .navbar-link {
+    &.is-active .navbar-link,
+    &.has-dropdown:hover .navbar-link {
       background-color: $secondary-toolbar-bg-color;
     }
 

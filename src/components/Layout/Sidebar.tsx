@@ -1,74 +1,94 @@
-import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { push } from 'connected-react-router';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Icon } from '@mdi/react';
 import {
-  faTachometerAlt, faFolderOpen, faListAlt, faSlidersH, faQuestionCircle, faFileAlt,
-} from '@fortawesome/free-solid-svg-icons';
-import { faDiscord, faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+  mdiServer,
+  mdiCogOutline,
+  mdiFormatListBulletedSquare,
+  mdiLayersTripleOutline,
+  mdiTabletDashboard, mdiTextBoxOutline,
+  mdiTools,
+  mdiFolder,
+  mdiMagnify,
+  mdiDiscord,
+  mdiHelpCircleOutline,
+  mdiGithub,
+  mdiLogout,
+} from '@mdi/js';
 
 import { RootState } from '../../core/store';
-import { setActiveTab } from '../../core/slices/mainpage';
+import Events from '../../core/events';
+import { setStatus } from '../../core/slices/modals/profile';
+import { default as ShokoIcon } from '../ShokoIcon';
 
-class Sidebar extends React.Component<Props> {
-  renderItem = (key: string, text: string, icon) => {
-    const { activeTab, changeTab } = this.props;
+function Sidebar() {
+  const dispatch = useDispatch();
 
+  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+  const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const username = useSelector((state: RootState) => state.apiSession.username);
+
+  useEffect(() => {
+    dispatch(setStatus(false));
+  }, []);
+  
+  const renderMenuItem = (key: string, text: string, icon: string) => {
+    const isHighlighted = pathname === `/${key}`; 
     return (
-      <div key={key} className={cx(['flex items-center sidebar-item mt-12', activeTab === key && 'color-accent'])} onClick={() => changeTab(key)}>
-        <span className="flex w-8"><FontAwesomeIcon icon={icon} className="text-xl" /></span>
-        <span className="ml-6 font-semibold uppercase text-lg">{text}</span>
+      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
+        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
+        <span className="text-lg">{text}</span>
       </div>
     );
   };
-
-  renderLink = (url: string, text: string, icon) => (
-    <a href={url} target="_blank" rel="noreferrer">
-      <div key={url} className="flex items-center sidebar-item mt-12">
-        <span className="flex w-8"><FontAwesomeIcon icon={icon} className="text-xl" /></span>
-        <span className="ml-6 font-semibold uppercase text-lg no-underline">{text}</span>
-      </div>
-    </a>
+  
+  const renderMenuLink = (url: string, icon: string) => (
+      <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} /></div>
   );
 
-  render() {
-    return (
-      <React.Fragment>
-        <div className="flex flex-col flex-grow p-10 h-screen fixed sidebar">
-          <div className="h-auto italic font-extrabold text-4xl text-center uppercase">
-            Shoko <span className="color-accent">Server</span>
-          </div>
-          <div className="flex flex-col flex-grow justify-between">
-            <div className="flex flex-col">
-              {this.renderItem('dashboard', 'Dashboard', faTachometerAlt)}
-              {this.renderItem('import-folders', 'Import Folders', faFolderOpen)}
-              {this.renderItem('actions', 'Actions', faListAlt)}
-              {this.renderItem('logs', 'Log', faFileAlt)}
-              {this.renderItem('settings', 'Settings', faSlidersH)}
-              {/* {this.renderItem('manager', 'Manage', faThLarge)} */}
-            </div>
-            <div className="flex flex-col">
-              {this.renderLink('https://docs.shokoanime.com', 'Support', faQuestionCircle)}
-              {this.renderLink('https://discord.gg/vpeHDsg', 'Discord', faDiscord)}
-              {this.renderLink('https://github.com/ShokoAnime', 'Github', faGithubSquare)}
-            </div>
-          </div>
+  return (
+    <div className="flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
+      <div className="flex flex-col p-10">
+        <ShokoIcon/>
+      </div>
+      <div className="flex cursor-pointer items-center justify-center bg-background-alt w-full py-4">
+        <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
+          {username.charAt(0)}
         </div>
-      </React.Fragment>
-    );
-  }
+        <p className="ml-4"><span className="text-sm opacity-75">Welcome back,</span> <br/> {username}</p>
+      </div>
+      <div className="flex items-center mt-11 w-full px-7">
+        <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} /></div>
+        <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+      </div>
+      <div className="flex flex-col justify-between mt-11 w-full">
+        {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
+        {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
+        {renderMenuItem('utilities', 'Utilities', mdiTools)}
+        {renderMenuItem('actions', 'Actions', mdiFormatListBulletedSquare)}
+        {renderMenuItem('import-folders', 'Import Folders', mdiFolder)}
+        {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
+        {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+        <div key="logout" className="flex items-center w-full px-7 cursor-pointer mt-11" onClick={() => dispatch({ type: Events.AUTH_LOGOUT, payload: { clearState: true } })}>
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiLogout} size={1} horizontal vertical rotate={180} /></div>
+          <span className="text-lg">Logout</span>
+        </div>
+      </div>
+      <div className="flex flex-col justify-between mt-11 w-full bg-background-alt">
+        <div className="flex items-center w-full px-7">
+          <div className="w-6 flex items-center mr-6 my-3"><Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} /></div>
+          <span className="text-lg">Search...</span>
+        </div>
+      </div>
+      <div className="flex justify-between w-full self-end px-6 mt-auto py-6">
+        {renderMenuLink('https://discord.gg/vpeHDsg', mdiDiscord)}
+        {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
+        {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
+      </div>
+    </div>
+  );
 }
 
-const mapState = (state: RootState) => ({
-  activeTab: state.mainpage.activeTab,
-});
-
-const mapDispatch = {
-  changeTab: (tab: string) => (setActiveTab(tab)),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector>;
-
-export default connector(Sidebar);
+export default Sidebar;

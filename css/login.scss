@@ -1,22 +1,6 @@
 .login-image {
-  background-image: url('/webui/left-img.jpg');
+  background-image: url('/api/v2/image/7/random'), url('/public/left-img.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-}
-
-.login-panel {
-  background-color: $secondary-panel-background-color;
-  width: 62rem;
-  height: 25rem;
-}
-
-.logo {
-  width: 32rem;
-  color: $secondary-panel-background-color;
-  background-color: rgba($sidebar-background-color, 0.6);
-}
-
-.help {
-  background-color: $sidebar-background-color;
 }

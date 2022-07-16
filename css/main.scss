@@ -1,16 +1,30 @@
-@import "common";
-@import "common-dark";
-@import "modals";
-@import "login";
-@import "dashboard";
-@import "error-page";
-@import "settings";
-@import "firstrun";
-@import "actions";
-@import "import-folders";
-@import "input";
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "react-grid-layout/css/styles";
-@import "react-resizable/css/styles";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.theme-shoko-blue {
+  --color-background: 23 28 40;
+  --color-background-alt: 27 31 46;
+  --color-background-nav: 20 25 37;
+  --color-background-border: 11 14 23;
+  --color-highlight-1: 39 156 235;
+  --color-highlight-2: 6 194 112;
+  --color-highlight-3: 255 82 82;
+  --color-highlight-4: 172 114 245;
+  --color-highlight-5: 241 196 15;
+  --color-primary: 59 130 246;
+  --color-secondary: 255 255 255;
+}
+/* stylelint-disable no-invalid-position-at-import-rule */
+@import 'react-grid-layout/css/styles';
+@import 'react-resizable/css/styles';
+@import 'common';
+@import 'common-dark';
+@import 'modals';
+@import 'login';
+@import 'dashboard';
+@import 'error-page';
+@import 'settings';
+@import 'actions';
+@import 'import-folders';
+@import 'input';
