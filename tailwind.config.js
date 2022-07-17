@@ -37,6 +37,8 @@ module.exports = {
         'highlight-3': withOpacityValue('--color-highlight-3'),
         'highlight-4': withOpacityValue('--color-highlight-4'),
         'highlight-5': withOpacityValue('--color-highlight-5'),
+        'font-main': withOpacityValue('--color-font-main'),
+        'font-alternative': withOpacityValue('--color-font-alternative'),
         transparent: 'transparent',
       },
       spacing: {
