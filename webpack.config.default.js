@@ -26,13 +26,13 @@ const config = {
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
     filename: isDebug ? '[name].js?[contenthash]' : '[name].[contenthash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
-    sourceMapFilename: 'sourcemaps/[name].[chunkhash].map.js',
+    sourceMapFilename: 'sourcemaps/[file].map[query]',
     sourcePrefix: '  ',
   },
   devServer: {
     hot: true,
   },
-  devtool: 'source-map',
+  devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
@@ -148,6 +148,7 @@ if (!isDebug) {
           output: {
             comments: false,
           },
+          sourceMap: true,
         },
         exclude: [/\.min\.js$/gi], // skip pre-minified libs
       }),
