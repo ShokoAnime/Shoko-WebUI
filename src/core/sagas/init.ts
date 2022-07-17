@@ -66,7 +66,7 @@ function* testAniDB(action: PayloadAction<SettingsAnidbLoginType>) {
     yield put(setAnidbStatus({ type: 'success', text: 'AniDB test successful!' }));
     yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'AniDb', newSettings: action.payload } });
     yield put(setFirstRunSaved('anidb-account'));
-    yield put(push('community-sites'));
+    yield put(push('metadata-sources'));
   }
 }
 

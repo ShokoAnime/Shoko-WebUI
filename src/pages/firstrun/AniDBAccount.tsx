@@ -30,18 +30,18 @@ function AniDBAccount() {
 
   return (
     <TransitionDiv className="flex flex-col justify-center px-96">
-      <div className="font-semibold text-lg">Adding Your AniDB Account</div>
-      <div className="font-open-sans font-semibold mt-10 text-justify">
+      <div className="font-semibold">Adding Your AniDB Account</div>
+      <div className="mt-9 text-justify">
         Shoko uses AniDB to compare your file hashes with its extensive database to quickly
         figure out and add series to your collection. AniDB also provides additional series
         and episode information that enhances your usage.
       </div>
-      <div className="font-open-sans font-semibold mt-6 text-justify">
-        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
+      <div className="mt-9 text-justify">
+        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Click Here</a> to create one.
       </div>
-      <div className="flex flex-col my-8">
+      <div className="flex flex-col my-9">
         <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-6" />
+        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-9" />
       </div>
       <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => dispatch({ type: Events.FIRSTRUN_TEST_ANIDB, payload: { Username, Password } })} isFetching={isFetching} status={status} />
     </TransitionDiv>
