@@ -1,4 +1,5 @@
 import { ImageType } from './common';
+import { EpisodeTypeEnum } from './episode';
 
 export type DashboardSeriesSummaryType = {
   Series?: number,
@@ -37,7 +38,7 @@ export type DashboardEpisodeDetailsType = {
   },
   Title: string,
   Number: number,
-  Type: string,
+  Type: EpisodeTypeEnum,
   AirDate: string,
   Duration: string,
   ResumePosition: string | null,
