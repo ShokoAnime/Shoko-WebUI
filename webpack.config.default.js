@@ -148,6 +148,7 @@ if (!isDebug) {
           output: {
             comments: false,
           },
+          sourceMap: true,
         },
         exclude: [/\.min\.js$/gi], // skip pre-minified libs
       }),
