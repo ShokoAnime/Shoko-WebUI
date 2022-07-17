@@ -45,6 +45,7 @@ type State = {
   unrecognizedFiles: Array<FileType>;
   unrecognizedMark: Array<string>;
   continueWatching: Array<DashboardEpisodeDetailsType>;
+  nextUp: Array<DashboardEpisodeDetailsType>;
   upcomingAnime: Array<DashboardEpisodeDetailsType>;
   news: Array<DashboardNewsType>;
 };
@@ -74,6 +75,7 @@ const mainpageSlice = createSlice({
     unrecognizedFiles: [],
     unrecognizedMark: [],
     continueWatching: [],
+    nextUp: [],
     upcomingAnime: [],
     news: [],
   } as State,
@@ -125,6 +127,9 @@ const mainpageSlice = createSlice({
     setContinueWatching(sliceState, action) {
       sliceState.continueWatching = action.payload;
     },
+    setNextUp(sliceState, action) {
+      sliceState.nextUp = action.payload;
+    },
     setUpcomingAnime(sliceState, action) {
       sliceState.upcomingAnime = action.payload;
     },
@@ -138,8 +143,8 @@ export const {
   setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
-  unsetFetched, setRecentEpisodes, setRecentSeries, markUnrecognizedFile, 
-  setContinueWatching, setUpcomingAnime, setNews,
+  unsetFetched, setRecentEpisodes, setRecentSeries, markUnrecognizedFile,
+  setContinueWatching, setUpcomingAnime, setNews, setNextUp,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
