@@ -33,6 +33,7 @@ function* eventMainPageLoad() {
     yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
+    yield call(SagaDashboard.getDashboardNextUp),
     yield call(SagaDashboard.getDashboardUpcomingAnime, { type: Events.DASHBOARD_UPCOMING_ANIME, payload: false }),
     yield call(SagaDashboard.getDashboardNews),
   ]);
