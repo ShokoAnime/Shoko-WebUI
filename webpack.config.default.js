@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 const TerserPlugin = require('terser-webpack-plugin');
 
 const path = require('path');
@@ -17,9 +16,7 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    'fontsource-roboto/latin.css',
-    'fontsource-exo-2/latin.css',
-    'fontsource-muli/latin.css',
+    '@fontsource/open-sans/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
@@ -27,7 +24,7 @@ const config = {
   output: {
     path: path.resolve(__dirname, './public/dist'),
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
-    filename: isDebug ? '[name].js?[hash]' : '[name].[hash].js',
+    filename: isDebug ? '[name].js?[contenthash]' : '[name].[contenthash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
     sourceMapFilename: 'sourcemaps/[name].[chunkhash].map.js',
     sourcePrefix: '  ',
@@ -56,7 +53,7 @@ const config = {
       debug: isDebug,
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(isDebug ? 'development' : 'production'),
       __DEV__: isDebug,
       'process.env.SENTRY_AUTH_TOKEN': JSON.stringify(process.env.SENTRY_AUTH_TOKEN),
     }),
@@ -72,7 +69,7 @@ const config = {
   module: {
     rules: [
       {
-        test: /\.(t|j)sx?$/,
+        test: /\.[tj]sx?$/,
         exclude: /node_modules/,
         include: [path.resolve(__dirname, './src')],
         use: [
@@ -96,7 +93,7 @@ const config = {
             loader: 'css-loader',
             options: { modules: true, importLoaders: 1 },
           },
-          { loader: 'postcss-loader' },
+          'postcss-loader',
         ],
       },
       {
@@ -104,7 +101,7 @@ const config = {
         include: [/node_modules/],
         use: [
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
-          { loader: 'css-loader' },
+          'css-loader',
         ],
       },
       {
@@ -113,19 +110,26 @@ const config = {
           isDebug ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
-            options: { modules: false, importLoaders: 1 },
+            options: {
+              modules: false,
+              importLoaders: 1,
+              url: {
+                //Fix for random login image
+                filter: url => !url.startsWith('/api/'),
+              },
+            },
           },
-          { loader: 'postcss-loader' },
-          { loader: 'sass-loader' },
+          'postcss-loader',
+          'sass-loader',
         ],
       },
       {
         test: /\.(woff|woff2)$/,
-        loader: 'url-loader?limit=100000&mimetype=application/font-woff',
+        type: 'asset/resource',
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
-        use: ['file-loader'],
+        type: 'asset/resource',
       },
     ],
   },
@@ -144,8 +148,8 @@ if (!isDebug) {
           output: {
             comments: false,
           },
-          exclude: [/\.min\.js$/gi], // skip pre-minified libs
         },
+        exclude: [/\.min\.js$/gi], // skip pre-minified libs
       }),
     ],
     splitChunks: {
@@ -175,10 +179,38 @@ if (!isDebug) {
 }
 
 if (isDebug && useHMR) {
+  /*
+  class WatchRunPlugin {
+    apply(compiler) {
+      compiler.hooks.watchRun.tap('WatchRun', (comp) => {
+        if (comp.modifiedFiles) {
+          const changedFiles = Array.from(comp.modifiedFiles, (file) => `\n  ${file}`).join('');
+          console.log('===============================');
+          console.log('FILES CHANGED:', changedFiles);
+          console.log('===============================');
+        }
+        if (comp.removedFiles) {
+          const removedFiles = Array.from(comp.removedFiles, (file) => `\n  ${file}`).join('');
+          console.log('===============================');
+          console.log('FILES REMOVED:', removedFiles);
+          console.log('===============================');
+        }
+        //console.log(comp)
+      });
+    }
+  }
+  config.plugins.push(new WatchRunPlugin);
+  */
+  config.watchOptions = {
+    ignored: /public/, //because sass-loader causes rebuild loop otherwise
+  };
   config.entry.unshift('webpack-hot-middleware/client');
-  config.plugins.push(new webpack.NamedModulesPlugin());
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  config.optimization = {
+    ...config.optimization,
+    emitOnErrors: false,
+    moduleIds: 'named',
+  };
 }
 
 module.exports = config;

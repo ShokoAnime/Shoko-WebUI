@@ -1,3 +1,5 @@
+import { ImageType } from './common';
+
 export type DashboardSeriesSummaryType = {
   Series?: number,
   OVA?: number,
@@ -23,4 +25,31 @@ export type DashboardStatsType = {
   SeriesWithMissingLinks?: number,
   EpisodesWithMultipleFiles?: number,
   FilesWithDuplicateLocations?: number,
+};
+
+export type DashboardEpisodeDetailsType = {
+  IDs: {
+    ID: number,
+    Series: number,
+    ShokoFile: number | null,
+    ShokoEpisode: number | null,
+    ShokoSeries: number | null,
+  },
+  Title: string,
+  Number: number,
+  Type: string,
+  AirDate: string,
+  Duration: string,
+  ResumePosition: string | null,
+  Watched: string | null,
+  SeriesTitle: string,
+  SeriesPoster: ImageType,
+};
+
+export type DashboardNewsType = {
+  link: string,
+  title: string,
+  content_text: string;
+  url: string;
+  date_published: string;
 };

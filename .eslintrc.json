@@ -1,0 +1,78 @@
+{
+  "extends": ["airbnb-typescript"],
+  "ignorePatterns": ["build/**"],
+  "env": {
+    "browser": true,
+    "es6": true
+  },
+  "plugins": ["import", "react", "react-hooks", "jsx-a11y"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    "@typescript-eslint/await-thenable": "warn",
+    "@typescript-eslint/no-floating-promises": [
+      "warn",
+      { "ignoreIIFE": true, "ignoreVoid": false }
+    ],
+    "@typescript-eslint/no-redeclare": "off",
+    "@typescript-eslint/no-use-before-define": [
+      "error",
+      { "functions": false }
+    ],
+    "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "implicit-arrow-linebreak": "off",
+    "import/no-cycle": "off",
+    "import/no-extraneous-dependencies": "off",
+    "jsx-a11y/anchor-has-content": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "jsx-a11y/click-events-have-key-events": "off",
+    "jsx-a11y/label-has-for": "off",
+    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-static-element-interactions": "off",
+    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "no-param-reassign": [
+      "error",
+      { "props": true, "ignorePropertyModificationsFor": ["sliceState"] }
+    ],
+    "prefer-object-spread": "off",
+    "prefer-promise-reject-errors": "off",
+    "react/forbid-prop-types": "off",
+    "react/jsx-filename-extension": "off",
+    "react/jsx-fragments": "off",
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/no-did-update-set-state": "off",
+    "react/prefer-stateless-function": "off",
+    "react/require-default-props": "off",
+    "react/state-in-constructor": "off",
+    "react/static-property-placement": "off"
+  },
+  "overrides": [
+    {
+      "files": [
+        "postcss.config.js",
+        "run.js",
+        "run.config.default.js",
+        "webpack.config.default.js"
+      ],
+      "parser": "espree",
+      "parserOptions": {
+        "ecmaVersion": 2018
+      },
+      "rules": {
+        "@typescript-eslint/await-thenable": "off",
+        "@typescript-eslint/dot-notation": "off",
+        "@typescript-eslint/naming-convention": "off",
+        "@typescript-eslint/no-floating-promises": "off",
+        "@typescript-eslint/no-implied-eval": "off",
+        "@typescript-eslint/no-throw-literal": "off",
+        "@typescript-eslint/return-await": "off",
+        "global-require": "off",
+        "import/no-dynamic-require": "off",
+        "no-console": "off"
+      }
+    }
+  ]
+}

@@ -3,7 +3,7 @@ import { Provider } from 'react-redux';
 import history from './history';
 import store from './store';
 import Router from './router';
-import ErrorBoundary from '../pages/error';
+import ErrorBoundary from '../pages/error/ErrorPage';
 
 const App = () => (
   <Provider store={store}>

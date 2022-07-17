@@ -1,12 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
-import type { DashboardSeriesSummaryType, DashboardStatsType } from '../types/api/dashboard';
-import type { RecentFileDetailsType, RecentFileType } from '../types/api/file';
+import type { DashboardSeriesSummaryType, DashboardStatsType, DashboardEpisodeDetailsType, DashboardNewsType } from '../types/api/dashboard';
+import type { RecentEpisodeDetailsType, RecentSeriesDetailsType, RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
+import type { SeriesType } from '../types/api/series';
 
 type State = {
-  activeTab: string;
   avdump: {
     [key: string]: {
       fetching: boolean;
@@ -25,23 +25,44 @@ type State = {
       details: RecentFileDetailsType;
     }
   };
-  recentFiles: Array<RecentFileType>;
+  recentSeriesDetails: {
+    [key: number]: {
+      fetched: boolean;
+      details: RecentSeriesDetailsType;
+    }
+  };
+  recentEpisodeDetails: {
+    [key: number]: {
+      fetched: boolean;
+      details: RecentEpisodeDetailsType;
+    }
+  };
+  recentFiles: Array<FileDetailedType>;
+  recentEpisodes: Array<DashboardEpisodeDetailsType>;
+  recentSeries: Array<SeriesType>;
   seriesSummary: DashboardSeriesSummaryType;
   stats: DashboardStatsType;
-  unrecognizedFiles: Array<Omit<RecentFileType, 'SeriesIDs'>>
+  unrecognizedFiles: Array<FileType>;
+  unrecognizedMark: Array<string>;
+  continueWatching: Array<DashboardEpisodeDetailsType>;
+  upcomingAnime: Array<DashboardEpisodeDetailsType>;
+  news: Array<DashboardNewsType>;
 };
 
 const mainpageSlice = createSlice({
   name: 'mainpage',
   initialState: {
-    activeTab: 'dashboard',
     avdump: {},
     fetched: {},
     importFolders: [],
     importFolderSeries: [],
     queueStatus: {} as QueueStatusType,
     recentFiles: [],
+    recentEpisodes: [],
+    recentSeries: [],
     recentFileDetails: {},
+    recentSeriesDetails: {},
+    recentEpisodeDetails: {},
     selectedImportFolderSeries: 1,
     seriesSummary: {
       Series: 0,
@@ -51,11 +72,12 @@ const mainpageSlice = createSlice({
     },
     stats: {},
     unrecognizedFiles: [],
+    unrecognizedMark: [],
+    continueWatching: [],
+    upcomingAnime: [],
+    news: [],
   } as State,
   reducers: {
-    setActiveTab(sliceState, action) {
-      sliceState.activeTab = action.payload;
-    },
     setAvdump(sliceState, action) {
       sliceState.avdump = Object.assign({}, sliceState.avdump, action.payload);
     },
@@ -76,6 +98,12 @@ const mainpageSlice = createSlice({
         {}, sliceState.recentFileDetails, action.payload,
       );
     },
+    setRecentSeries(sliceState, action) {
+      sliceState.recentSeries = action.payload;
+    },
+    setRecentEpisodes(sliceState, action) {
+      sliceState.recentEpisodes = action.payload;
+    },
     setRecentFiles(sliceState, action) {
       sliceState.recentFiles = action.payload;
     },
@@ -91,14 +119,27 @@ const mainpageSlice = createSlice({
     unsetFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: false });
     },
+    markUnrecognizedFile(sliceState, action) {
+      sliceState.unrecognizedMark = action.payload.state === true ? [...sliceState.unrecognizedMark, action.payload.id] : sliceState.unrecognizedMark.filter(id => id !== action.payload.id);
+    },
+    setContinueWatching(sliceState, action) {
+      sliceState.continueWatching = action.payload;
+    },
+    setUpcomingAnime(sliceState, action) {
+      sliceState.upcomingAnime = action.payload;
+    },
+    setNews(sliceState, action) {
+      sliceState.news = action.payload;
+    },
   },
 });
 
 export const {
-  setActiveTab, setAvdump, setFetched, setImportFolders,
+  setAvdump, setFetched, setImportFolders,
   setImportFolderSeries, setQueueStatus, setRecentFileDetails,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
-  unsetFetched,
+  unsetFetched, setRecentEpisodes, setRecentSeries, markUnrecognizedFile, 
+  setContinueWatching, setUpcomingAnime, setNews,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

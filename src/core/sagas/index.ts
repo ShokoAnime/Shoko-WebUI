@@ -2,7 +2,6 @@ import {
   all, call, put, takeEvery, throttle,
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
-import { createAction } from 'redux-actions';
 import { toast } from 'react-toastify';
 
 import ApiCommon from '../api/common';
@@ -10,6 +9,8 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 
 import SagaAuth from './auth';
+import SagaCollection from './collection';
+import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
@@ -19,14 +20,10 @@ import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
 import SagaWebUi from './webui';
 
-import {
-  JMM_VERSION,
-} from '../actions';
+import { version as jmmVersionAction } from '../slices/jmmVersion';
 import apiPollingDriver from './apiPollingDriver';
 
 import { startFetching, stopFetching } from '../slices/fetching';
-
-const dispatchAction = (type, payload) => put(createAction(type)(payload));
 
 function* serverVersion() {
   yield put(startFetching('serverVersion'));
@@ -44,7 +41,7 @@ function* serverVersion() {
     }
   });
 
-  yield dispatchAction(JMM_VERSION, version);
+  yield put(jmmVersionAction(version));
 }
 
 export default function* rootSaga() {
@@ -55,6 +52,10 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_CHANGE_PASSWORD, SagaAuth.changePassword),
     takeEvery(Events.AUTH_LOGIN, SagaAuth.login),
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
+    // COLLECTION PAGE
+    takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.getGroups),
+    // DASHBOARD
+    takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),
@@ -74,7 +75,7 @@ export default function* rootSaga() {
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     takeEvery(Events.MAINPAGE_RECENT_FILE_DETAILS, SagaFile.getRecentFileDetails),
     takeEvery(Events.MAINPAGE_RECENT_FILES, SagaFile.getRecentFiles),
-    throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageLoad),
+    throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageRefresh),
     // IMPORT FOLDER
     takeEvery(Events.IMPORT_FOLDER_ADD, SagaImportFolder.addImportFolder),
     takeEvery(Events.IMPORT_FOLDER_EDIT, SagaImportFolder.editImportFolder),

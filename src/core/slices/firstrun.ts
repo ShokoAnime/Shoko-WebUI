@@ -1,31 +1,29 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { DefaultUserType, StatusType } from '../types/api/init';
+import type { DefaultUserType, ServerStatusType } from '../types/api/init';
 
-type TestStatusType = {
+export type TestStatusType = {
   type: 'error' | 'success' | '';
   text: string;
 };
 
 type State = {
-  activeTab: string;
   anidbStatus: TestStatusType;
   databaseStatus: TestStatusType;
   userStatus: TestStatusType;
   saved: {
     [key: string]: boolean;
   };
-  status: StatusType;
+  serverStatus: ServerStatusType;
   user: DefaultUserType;
 };
 
 const initialState = {
-  activeTab: 'acknowledgement',
   anidbStatus: {},
   databaseStatus: {},
   userStatus: {},
   saved: {},
-  status: {
+  serverStatus: {
     State: 1,
   },
   user: {},
@@ -35,9 +33,6 @@ const firstrunSlice = createSlice({
   name: 'firstrun',
   initialState,
   reducers: {
-    setActiveTab(sliceState, action: PayloadAction<string>) {
-      sliceState.activeTab = action.payload;
-    },
     setAnidbStatus(sliceState, action: PayloadAction<TestStatusType>) {
       sliceState.anidbStatus = action.payload;
     },
@@ -50,18 +45,21 @@ const firstrunSlice = createSlice({
     setSaved(sliceState, action: PayloadAction<string>) {
       sliceState.saved = Object.assign({}, sliceState.saved, { [action.payload]: true });
     },
-    setStatus(sliceState, action: PayloadAction<any>) {
-      sliceState.status = action.payload;
+    setServerStatus(sliceState, action: PayloadAction<any>) {
+      sliceState.serverStatus = action.payload;
     },
     setUser(sliceState, action: PayloadAction<any>) {
       sliceState.user = Object.assign({}, sliceState.user, action.payload);
+    },
+    unsetSaved(sliceState, action: PayloadAction<string>) {
+      sliceState.saved = Object.assign({}, sliceState.saved, { [action.payload]: false });
     },
   },
 });
 
 export const {
-  setActiveTab, setAnidbStatus, setDatabaseStatus,
-  setUserStatus, setSaved, setStatus, setUser,
+  setAnidbStatus, setDatabaseStatus, setUserStatus,
+  setSaved, setServerStatus, setUser, unsetSaved,
 } = firstrunSlice.actions;
 
 export default firstrunSlice.reducer;

@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { handleAction } from 'redux-actions';
 import {
-  SET_AUTOUPDATE, JMM_VERSION,
+  SET_AUTOUPDATE,
 } from './actions';
 
 import apiSessionReducer from './slices/apiSession';
@@ -16,10 +16,10 @@ import logsReducer from './slices/logs';
 import modalsReducer from './slices/modals';
 import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
+import jmmVersionReducer from './slices/jmmVersion';
+import collectionReducer from './slices/collection';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
-
-const jmmVersion = handleAction(JMM_VERSION, (state, action) => (action.error ? state : action.payload), '');
 
 const reducers = {
   apiSession: apiSessionReducer,
@@ -34,7 +34,8 @@ const reducers = {
   serverSettings: serverSettingsReducer,
   webuiSettings: webuiSettingsReducer,
   autoUpdate,
-  jmmVersion,
+  jmmVersion: jmmVersionReducer,
+  collection: collectionReducer,
 };
 
 export type Reducers = typeof reducers;

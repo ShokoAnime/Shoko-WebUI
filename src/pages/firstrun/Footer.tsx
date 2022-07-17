@@ -1,83 +1,52 @@
 import React from 'react';
-import { connect, ConnectedProps } from 'react-redux';
-import { replace } from 'connected-react-router';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faQuestionCircle, faSpinner } from '@fortawesome/free-solid-svg-icons';
-import { faDiscord } from '@fortawesome/free-brands-svg-icons';
+import { useDispatch } from 'react-redux';
+import { goBack, push, replace } from 'connected-react-router';
+import cx from 'classnames';
 
-import { RootState } from '../../core/store';
-import { setActiveTab as setFirstRunTab } from '../../core/slices/firstrun';
-import Button from '../../components/Buttons/Button';
+import Button from '../../components/Input/Button';
 
-class Footer extends React.Component<Props> {
-  handleHelpButton = (value: string) => {
-    if (value === 'discord') window.open('https://discord.gg/vpeHDsg', '_blank');
-    else if (value === 'docs') window.open('https://docs.shokoanime.com', '_blank');
-  };
+import type { TestStatusType } from '../../core/slices/firstrun';
 
-  handleBack = () => {
-    const { prevTabKey, setActiveTab } = this.props;
-    setActiveTab(prevTabKey);
-  };
-
-  handleNext = () => {
-    const { nextTabKey, saveFunction: saveFunc, setActiveTab } = this.props;
-    if (saveFunc) saveFunc();
-    if (nextTabKey) setActiveTab(nextTabKey);
-  };
-
-  render() {
-    const {
-      prevDisabled, nextDisabled, finish, finishSetup,
-      isFetching,
-    } = this.props;
-
-    return (
-      <React.Fragment>
-        <div className="help flex px-10 py-4 rounded-br-lg justify-between">
-          <div className="flex">
-            <Button className="color-accent mr-6" onClick={() => this.handleHelpButton('discord')}>
-              <FontAwesomeIcon icon={faDiscord} className="text-3xl" />
-            </Button>
-            <Button className="color-accent" onClick={() => this.handleHelpButton('docs')}>
-              <FontAwesomeIcon icon={faQuestionCircle} className="text-3xl" />
-            </Button>
-          </div>
-          <div className="flex">
-            <Button onClick={() => this.handleBack()} className="bg-color-accent py-2 px-3 mr-4" disabled={prevDisabled}>Back</Button>
-            {finish ? (
-              <Button onClick={() => finishSetup()} className="bg-color-accent py-2 px-3" disabled={nextDisabled}>Finish</Button>
-            ) : (
-              <Button onClick={() => this.handleNext()} className="bg-color-accent py-2 px-3 flex items-center" disabled={nextDisabled || isFetching}>
-                {isFetching ? (<FontAwesomeIcon icon={faSpinner} spin className="mx-2" />) : 'Next'}
-              </Button>
-            )}
-          </div>
-        </div>
-      </React.Fragment>
-    );
-  }
-}
-
-const mapState = (state: RootState) => ({
-  status: state.firstrun.status,
-});
-
-const mapDispatch = {
-  setActiveTab: (value: string) => (setFirstRunTab(value)),
-  finishSetup: () => (replace({ pathname: '/main' })),
-};
-
-const connector = connect(mapState, mapDispatch);
-
-type Props = ConnectedProps<typeof connector> & {
-  prevTabKey: string,
-  nextTabKey?: string,
+type Props = {
+  nextPage?: string,
   prevDisabled?: boolean,
   nextDisabled?: boolean,
   isFetching?: boolean,
   finish?: boolean,
-  saveFunction?: () => void;
+  status?: TestStatusType,
+  saveFunction?: () => void,
 };
 
-export default connector(Footer);
+function Footer(props: Props) {
+  const dispatch = useDispatch();
+
+  const handleNext = () => {
+    const { nextPage, saveFunction } = props;
+    if (saveFunction) saveFunction();
+    if (nextPage) dispatch(push(nextPage));
+  };
+
+  const {
+    finish, status, prevDisabled, nextDisabled, isFetching,
+  } = props;
+
+  return (
+    <div className="flex flex-col text-lg">
+      <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-highlight-3' : 'text-highlight-2'])}>
+        {status?.text}
+      </div>
+      <div className="flex justify-between">
+        <Button onClick={() => dispatch(goBack())} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
+        {finish ? (
+          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
+        ) : (
+          <Button onClick={() => handleNext()} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
+            Next
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Footer;

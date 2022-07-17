@@ -4,6 +4,7 @@
 .vscode/
 
 # Compiled output
+build/**
 public/dist
 public/index.html
 public/version.json
@@ -18,7 +19,16 @@ run.config.js
 /coverage/
 .eslintcache
 flow-typed/npm/
-.yarn/
 
 # VS Code dev container config
 .devcontainer/
+
+#Yarn
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
+yarn-error.log
+.pnp.*

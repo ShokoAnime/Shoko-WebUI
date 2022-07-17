@@ -11,42 +11,40 @@ type Props = {
   children: Array<{ key: string, item: React.ReactNode }>;
 };
 
-class DnDList extends React.Component<Props> {
-  render() {
-    const { onDragEnd, children } = this.props;
-    return (
-      <DragDropContext onDragEnd={onDragEnd}>
-        <Droppable droppableId="droppable">
-          {(droppableProvided: DroppableProvided) => (
-            <div
-              ref={droppableProvided.innerRef}
-              {...droppableProvided.droppableProps}
-            >
-              {children.map((child, index) => (
-                <Draggable
-                  key={child.key}
-                  draggableId={child.key}
-                  index={index}
-                >
-                  {(
-                    draggableProvided: DraggableProvided,
-                    draggableSnapshot: DraggableStateSnapshot,
-                  ) => (
-                    <PortalAwareItem
-                      provided={draggableProvided}
-                      snapshot={draggableSnapshot}
-                    >
-                      {child.item}
-                    </PortalAwareItem>
-                  )}
-                </Draggable>
-              ))}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
-    );
-  }
+function DnDList(props: Props) {
+  const { onDragEnd, children } = props;
+  return (
+    <DragDropContext onDragEnd={onDragEnd}>
+      <Droppable droppableId="droppable">
+        {(droppableProvided: DroppableProvided) => (
+          <div
+            ref={droppableProvided.innerRef}
+            {...droppableProvided.droppableProps}
+          >
+            {children.map((child, index) => (
+              <Draggable
+                key={child.key}
+                draggableId={child.key}
+                index={index}
+              >
+                {(
+                  draggableProvided: DraggableProvided,
+                  draggableSnapshot: DraggableStateSnapshot,
+                ) => (
+                  <PortalAwareItem
+                    provided={draggableProvided}
+                    snapshot={draggableSnapshot}
+                  >
+                    {child.item}
+                  </PortalAwareItem>
+                )}
+              </Draggable>
+            ))}
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
 }
 
 export default DnDList;

@@ -1,5 +1,6 @@
 import { call, put } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
+import { get } from 'lodash';
 
 import ApiEpisode from '../api/v3/episode';
 import ApiFile from '../api/v3/file';
@@ -22,6 +23,18 @@ function* getRecentFileDetails(action) {
     return;
   }
   details.SeriesName = seriesJson.data.Name;
+  const imageId = get(seriesJson, 'data.Images.Posters.0.ID', null); 
+  if (imageId !== null) {
+    details.SeriesImageID = imageId;  
+    details.SeriesImageSource = seriesJson.data.Images.Fanarts[0].Source;  
+  }
+
+  const episodeJson = yield call(ApiEpisode.getEpisode, episodeId);
+  if (episodeJson.error) {
+    toast.error(seriesJson.message);
+    return;
+  }
+  details.EpisodeName = episodeJson.data.Name;
 
   const episodeAniDBJson = yield call(ApiEpisode.getEpisodeAniDB, episodeId);
   if (episodeAniDBJson.error) {
@@ -31,13 +44,6 @@ function* getRecentFileDetails(action) {
   details.EpisodeNumber = episodeAniDBJson.data.EpisodeNumber;
   details.EpisodeType = episodeAniDBJson.data.Type;
 
-  const episodeTvDBJson = yield call(ApiEpisode.getEpisodeTvDB, episodeId);
-  if (episodeTvDBJson.error) {
-    toast.error(seriesJson.message);
-    return;
-  }
-  details.EpisodeName = episodeTvDBJson.data[0]?.Title ?? 'Unknown'; // GET THIS FROM ANIDB INSTEAD OF TVDB
-
   const fileAniDBJson = yield call(ApiFile.getFileAniDB, fileId);
   if (fileAniDBJson.error) {
     toast.error(seriesJson.message);
@@ -46,12 +52,15 @@ function* getRecentFileDetails(action) {
   details.Source = fileAniDBJson.data.Source;
   details.AudioLanguages = fileAniDBJson.data.AudioLanguages;
   details.SubtitleLanguages = fileAniDBJson.data.SubLanguages;
+  details.ReleaseGroup = fileAniDBJson.data.ReleaseGroup.Name;
+  // eslint-disable-next-line prefer-destructuring
+  details.VideoCodec = fileAniDBJson.data.VideoCodec.split('/')[0];
 
   yield put(setRecentFileDetails({ [fileId]: { fetched: true, details } }));
 }
 
 function* getRecentFiles() {
-  const resultJson = yield call(ApiFile.getFileRecent);
+  const resultJson = yield call(ApiFile.getFileRecentLegacy, 20);
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
