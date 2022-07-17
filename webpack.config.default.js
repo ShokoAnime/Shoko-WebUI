@@ -32,7 +32,7 @@ const config = {
   devServer: {
     hot: true,
   },
-  devtool: 'source-map',
+  devtool: isDebug ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
