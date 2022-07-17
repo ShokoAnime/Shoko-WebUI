@@ -87,6 +87,7 @@ function* getDashboardNextUp() {
   }
   
   yield put(setNextUp(resultJson.data));
+  yield put(setFetched('nextUp'));
 }
 
 function* getDashboardUpcomingAnime(action: PayloadAction<boolean>) {
