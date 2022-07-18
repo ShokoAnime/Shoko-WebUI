@@ -200,6 +200,6 @@
     "build": "cross-env NODE_ENV=production node run build",
     "build:debug": "cross-env NODE_ENV=development node run build --debug",
     "build:version": "cross-env NODE_ENV=production node run version",
-    "start": "cross-env NODE_ENV=development node run",
+    "start": "cross-env NODE_ENV=development node run"
   }
 }
