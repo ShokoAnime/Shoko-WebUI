@@ -39,7 +39,7 @@ export type DashboardEpisodeDetailsType = {
   Title: string,
   Number: number,
   Type: EpisodeTypeEnum,
-  AirDate: string,
+  AirDate: string | null,
   Duration: string,
   ResumePosition: string | null,
   Watched: string | null,
