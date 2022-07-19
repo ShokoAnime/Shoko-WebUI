@@ -39,8 +39,8 @@ function MovieDBTab() {
   return (
     <TransitionDiv className="flex flex-col w-96">
 
-      <div className="font-open-sans font-bold">Download Options</div>
-      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} justify className="mt-1" />
+      <div className="font-semibold">Download Options</div>
+      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} justify className="mt-4" />
       {movieDBSettings.AutoFanart && (
         <TransitionDiv className="flex justify-between mt-1">
           Max Fanart

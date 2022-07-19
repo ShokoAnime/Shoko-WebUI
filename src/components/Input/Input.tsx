@@ -26,12 +26,12 @@ function Input(props: Props) {
 
   return (
     <React.Fragment>
-      <div className={`${className ?? ''} font-open-sans`}>
+      <div className={`${className ?? ''}`}>
         <label htmlFor={id}>
-          {label && <div className="mb-1.5 font-semibold text-base">{label}</div>}
+          {label && <div className="mb-3 font-semibold text-base">{label}</div>}
           <div className="relative">
           <input
-            className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-2 py-1.5 rounded transition duration-300 ease-in-out border border-background-border focus:border-highlight-1', center && 'text-center'])}
+            className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition duration-300 ease-in-out border border-background-border focus:border-primary', center && 'text-center'])}
             id={id}
             type={type}
             placeholder={placeholder ?? ''}

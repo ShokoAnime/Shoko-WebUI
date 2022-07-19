@@ -14,6 +14,7 @@ import {
   setRecentEpisodes,
   setRecentSeries,
   setContinueWatching,
+  setNextUp,
   setUpcomingAnime,
   setNews,
 } from '../slices/mainpage';
@@ -78,6 +79,17 @@ function* getDashboardContinueWatching() {
   yield put(setFetched('continueWatching'));
 }
 
+function* getDashboardNextUp() {
+  const resultJson = yield call(ApiDashboard.getDashboardNextUpEpisodes);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+  
+  yield put(setNextUp(resultJson.data));
+  yield put(setFetched('nextUp'));
+}
+
 function* getDashboardUpcomingAnime(action: PayloadAction<boolean>) {
   yield put(unsetFetched('upcomingAnime'));
   const resultJson = yield call(ApiDashboard.getDashboardAniDBCalendar, action.payload);
@@ -106,6 +118,7 @@ export default {
   getDashboardRecentlyAddedEpisodes,
   getDashboardRecentlyAddedSeries,
   getDashboardContinueWatching,
+  getDashboardNextUp,
   getDashboardUpcomingAnime,
   getDashboardNews,
 };
