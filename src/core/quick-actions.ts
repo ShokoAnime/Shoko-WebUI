@@ -11,6 +11,10 @@ const quickActions = {
     name: 'Download Missing AniDB Data',
     function: 'getDownloadMissingAniDBAnimeData',
   },
+  'update-anidb-calendar': {
+    name: 'Update AniDB Calendar',
+    function: 'getUpdateAnidbCalendar',
+  },
   'update-all-anidb-info': {
     name: 'Update All AniDB Info',
     function: 'getUpdateAllAniDBInfo',

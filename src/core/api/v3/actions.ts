@@ -82,6 +82,11 @@ function getSyncMyList() {
   return ApiRequest('SyncMyList');
 }
 
+// Update AniDB Calendar
+function getUpdateAnidbCalendar() {
+  return ApiRequest('UpdateAniDBCalendar');
+}
+
 // Update All AniDB Series Info
 function getUpdateAllAniDBInfo() {
   return ApiRequest('UpdateAllAniDBInfo');
@@ -112,6 +117,7 @@ export default {
   getDownloadMissingAniDBAnimeData,
   getRegenerateAllTvDBEpisodeMatchings,
   getSyncMyList,
+  getUpdateAnidbCalendar,
   getUpdateAllAniDBInfo,
   getUpdateAllMediaInfo,
   getUpdateSeriesStats,
