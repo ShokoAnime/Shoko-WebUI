@@ -68,7 +68,7 @@ export const defaultLayout = {
   } as LayoutType,
   actions: {
     lg: [{
-      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
+      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 12, moved: false, static: false,
     }, {
       i: 'shoko', x: 4, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {
