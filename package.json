@@ -24,6 +24,7 @@
     "@sentry/react": "^7.7.0",
     "@sentry/tracing": "^7.7.0",
     "@tailwindcss/line-clamp": "^0.4.0",
+    "@types/react-virtualized": "^9.21.21",
     "classnames": "^2.3.1",
     "connect-history-api-fallback": "^1.6.0",
     "connected-react-router": "^6.9.2",
@@ -49,6 +50,7 @@
     "react-router-dom": "^5.3.0",
     "react-toastify": "^8.1.0",
     "react-virtualized": "^9.22.3",
+    "react-window": "^1.8.7",
     "redux": "^4.1.2",
     "redux-actions": "^2.6.5",
     "redux-devtools-extension": "^2.13.9",
@@ -133,7 +135,8 @@
     "json-schema": "^0.4.0",
     "tar": "^6.1.7",
     "css-what": "^5.0.1",
-    "node-fetch": "^2.6.7"
+    "node-fetch": "^2.6.7",
+    "terser": "^5.14.2"
   },
   "stylelint": {
     "extends": "stylelint-config-standard",
