@@ -32,3 +32,4 @@ flow-typed/npm/
 !.yarn/versions
 yarn-error.log
 .pnp.*
+run.config.default.min.js
