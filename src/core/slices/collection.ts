@@ -1,18 +1,23 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { CollectionGroupType } from '../types/api/collection';
+import { forEach } from 'lodash';
 
 type State = {
   groups: Array<CollectionGroupType>;
+  fetchedPages: Array<number>;
 };
 
 const collectionSlice = createSlice({
   name: 'collection',
   initialState: {
     groups: [],
+    fetchedPages: [],
   } as State,
   reducers: {
     setGroups(sliceState, action) {
-      sliceState.groups = action.payload;
+      const { items, page } = action.payload;
+      forEach(items, (item) => { sliceState.groups.push(item); });
+      sliceState.fetchedPages.push(page);
     },
   },
 });

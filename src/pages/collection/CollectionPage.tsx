@@ -1,21 +1,26 @@
 import React, { useEffect } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
-import { AutoSizer } from 'react-virtualized';
+import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
+import { debounce, get, memoize } from 'lodash';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import Events from '../../core/events';
 
 import { RootState } from '../../core/store';
 import { CollectionGroupType } from '../../core/types/api/collection';
 
+
 function CollectionPage() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 344; //328 + 16
+  const pageSize = 50;
   const items: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
+  const fetchedPages: Array<number> = useSelector((state: RootState) => state.collection.fetchedPages);
   const dispatch = useDispatch();
   
   useEffect(() => {
-    dispatch({ type: Events.COLLECTION_PAGE_LOAD });
+    debounce(() => dispatch({ type: Events.COLLECTION_PAGE_LOAD }), 100);
   }, []);
   
   const renderDetails = (item: CollectionGroupType) => {
@@ -28,25 +33,48 @@ function CollectionPage() {
       </div>
     );
   };
+  
+  const renderPlaceholder = () => (<div className="mr-4 last:mr-0 shrink-0 h-72 w-56 font-open-sans items-center justify-center flex flex-col border border-black">
+    <Icon path={mdiLoading} spin size={1} />
+  </div>);
+  
+  const fetchPage = memoize((page) => { dispatch({ type: Events.COLLECTION_GET_GROUPS, payload: page }); return true; });
 
-  const Cell = columns => ({ columnIndex, rowIndex, style }) => (
-    <div style={style}>
+  const Cell = columns => ({ columnIndex, key, rowIndex, style }) => {
+    const index = rowIndex * columns + columnIndex;
+    const item = get(items, `${index}`, null);
+    if (item === null) {
+      const neededPage = Math.ceil((index + 1) / pageSize);
+      if (fetchedPages.indexOf(neededPage) === -1) {
+        fetchPage(neededPage);
+        return (
+          <div key={key} style={style}>
+            {renderPlaceholder()}
+          </div>
+        );
+      }
+      return null;
+    }
+    return (
+    <div key={key} style={style}>
       {renderDetails(items[rowIndex * columns + columnIndex])}
     </div>
-  );
+    );
+  };
+    
   
   return (
     <div className="p-9 pr-0 h-full min-w-full">
       <AutoSizer>
         {({ width, height }) => {
-          const columns = parseInt((width / itemWidth).toFixed(0));
-          const rows = items.length / columns;
+          const columns = Math.floor(width / itemWidth);
+          const maxPage = Math.ceil(items.length / pageSize) + 1;
+          const rows = (items.length / columns) + (fetchedPages.indexOf(maxPage) === -1 ? 1 : 0);
           return (
-            <Grid columnCount={columns} rowCount={rows} columnWidth={itemWidth} height={height} rowHeight={itemHeight} width={width}>{Cell(columns)}</Grid>
+            <Grid columnCount={columns} rowCount={rows} columnWidth={itemWidth} height={height} rowHeight={itemHeight} width={width} cellRenderer={Cell(columns)} />
           );
         }}
       </AutoSizer>
-      {/*{items.map(item => renderDetails(item))}*/}
     </div>
   );
 }
