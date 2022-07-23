@@ -12,11 +12,11 @@ import {
   mdiTools,
   mdiFolder,
   mdiMagnify,
-  mdiDiscord,
   mdiHelpCircleOutline,
   mdiGithub,
   mdiLogout,
 } from '@mdi/js';
+import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -83,7 +83,7 @@ function Sidebar() {
         </div>
       </div>
       <div className="flex justify-between w-full self-end px-6 mt-auto py-6">
-        {renderMenuLink('https://discord.gg/vpeHDsg', mdiDiscord)}
+        {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
         {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
         {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
       </div>

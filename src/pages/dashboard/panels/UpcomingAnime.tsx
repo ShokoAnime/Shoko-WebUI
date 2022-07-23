@@ -19,7 +19,7 @@ const UpcomingAnime = () => {
   };
 
   return (
-    <ShokoPanel title="Upcoming Anime" isFetching={!hasFetched} titleTabs={<DashboardTitleToggle mainTitle="My Collection" secondaryTitle="All" secondaryActive={showAll} setSecondaryActive={updatePanel} />}>
+    <ShokoPanel isFetching={!hasFetched} title={<DashboardTitleToggle title="Upcoming Anime" mainTitle="My Collection" secondaryTitle="All" secondaryActive={showAll} setSecondaryActive={updatePanel} />}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">
         {items.length === 0 && <div className="flex justify-center font-semibold mt-4">It Looks like Your Not Watching Anything Currently Airing.</div>}
         {items.map(item => <EpisodeDetails episode={item} showDate />)}
