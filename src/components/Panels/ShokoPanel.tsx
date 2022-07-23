@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Icon } from '@mdi/react';
 import { mdiLoading } from '@mdi/js';
 
 type Props = {
-  title: JSX.Element | string;
+  title: ReactNode;
   children: any;
   options?: any;
   className?: string;
