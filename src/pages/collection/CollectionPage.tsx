@@ -24,7 +24,7 @@ function CollectionPage() {
     debounce(() => dispatch({ type: Events.COLLECTION_PAGE_LOAD }), 100);
   }, []);
 
-  const renderTitle = (count) => (
+  const renderTitle = count => (
     <React.Fragment>
       Entire Collection
       <span className="px-2">|</span>
