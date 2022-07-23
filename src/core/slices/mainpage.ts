@@ -22,8 +22,8 @@ type State = {
   recentFiles: Array<FileDetailedType>;
   recentEpisodes: Array<DashboardEpisodeDetailsType>;
   recentSeries: Array<SeriesType>;
-  seriesSummary: DashboardSeriesSummaryType;
-  stats: DashboardStatsType;
+  seriesSummary: Partial<DashboardSeriesSummaryType>;
+  stats: Partial<DashboardStatsType>;
   unrecognizedFiles: Array<FileType>;
   unrecognizedMark: Array<string>;
   continueWatching: Array<DashboardEpisodeDetailsType>;

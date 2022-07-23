@@ -9,13 +9,13 @@ import {
 } from '../slices/mainpage';
 
 function* getRecentFiles() {
-  const resultJson = yield call(ApiFile.getFileRecentLegacy, 20);
+  const resultJson = yield call(ApiFile.getFileRecent, 20);
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
   }
 
-  yield put(setRecentFiles(resultJson.data));
+  yield put(setRecentFiles(resultJson.data.List));
   yield put(setFetched('recentFiles'));
 }
 
@@ -26,7 +26,7 @@ function* getUnrecognizedFiles() {
     return;
   }
 
-  yield put(setUnrecognizedFiles(resultJson.data));
+  yield put(setUnrecognizedFiles(resultJson.data.List));
   yield put(setFetched('unrecognizedFiles'));
 }
 

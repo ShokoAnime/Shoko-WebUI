@@ -1,3 +1,7 @@
+export type ListResultType<T> = {
+  Total: number;
+  List: T[];
+};
 
 export type ImageType = {
   Source: ImageSourceEnum;
@@ -17,7 +21,6 @@ export type ImageType = {
   Width: number;
   Height: number;
   Disabled: boolean;
-
 };
 
 export type ImagesType = {
@@ -28,25 +31,17 @@ export type ImagesType = {
 
 export const enum ImageSourceEnum {
   AniDB = 'AniDB',
-
   TvDB = 'TvDB',
-
   TMDB = 'TMDB',
-
   Shoko = 'Shoko',
 }
 
 export const enum ImageTypeEnum {
   Poster = 'Poster',
-
   Banner = 'Banner',
-
   Thumb = 'Thumb',
-
   Fanart = 'Fanart',
-
   Character = 'Character',
-
   Staff = 'Staff',
   Static = 'Static',
 }

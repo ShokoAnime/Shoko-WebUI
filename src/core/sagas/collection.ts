@@ -14,13 +14,13 @@ function* eventCollectionPageLoad() {
 
 function* getGroups(action) {
   const page = get(action, 'payload', 1);
-  const resultJson = yield call(ApiGroup.getGroup, page);
+  const resultJson = yield call(ApiGroup.getAllGroups, page - 1);
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
   }
   
-  yield put(setGroups({ items: resultJson.data, page }));
+  yield put(setGroups({ total: resultJson.data.Total, items: resultJson.data.List, page }));
 }
 
 export default {
