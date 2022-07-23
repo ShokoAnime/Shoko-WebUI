@@ -31,29 +31,3 @@ type FileIDsType = {
   TvDB: Array<number>;
   ID: number;
 };
-
-export type RecentFileDetailsType = {
-  SeriesImageID?: string;
-  SeriesImageSource?: string;
-  SeriesName: string;
-  EpisodeNumber: number;
-  EpisodeName: string;
-  EpisodeType: string;
-  Source: string;
-  AudioLanguages: Array<string>;
-  SubtitleLanguages: Array<string>;
-  ReleaseGroup: string;
-  VideoCodec: string;
-};
-
-export type RecentSeriesDetailsType = {
-  SeriesName: string,
-  SeriesImageID?: string;
-  SeriesImageSource?: string;
-};
-
-export type RecentEpisodeDetailsType = {
-  EpisodeNumber: number;
-  EpisodeName: string;
-  EpisodeType: string;
-};

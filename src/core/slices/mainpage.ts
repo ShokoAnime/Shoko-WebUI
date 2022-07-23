@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
 import type { DashboardSeriesSummaryType, DashboardStatsType, DashboardEpisodeDetailsType, DashboardNewsType } from '../types/api/dashboard';
-import type { RecentEpisodeDetailsType, RecentSeriesDetailsType, RecentFileDetailsType, FileDetailedType, FileType } from '../types/api/file';
+import type { FileDetailedType, FileType } from '../types/api/file';
 import type { ImportFolderType } from '../types/api/import-folder';
 import type { SeriesType } from '../types/api/series';
 
@@ -19,24 +19,6 @@ type State = {
   importFolders: Array<ImportFolderType>;
   importFolderSeries: Array<SeriesInfoType>;
   queueStatus: QueueStatusType;
-  recentFileDetails: {
-    [key: number]: {
-      fetched: boolean;
-      details: RecentFileDetailsType;
-    }
-  };
-  recentSeriesDetails: {
-    [key: number]: {
-      fetched: boolean;
-      details: RecentSeriesDetailsType;
-    }
-  };
-  recentEpisodeDetails: {
-    [key: number]: {
-      fetched: boolean;
-      details: RecentEpisodeDetailsType;
-    }
-  };
   recentFiles: Array<FileDetailedType>;
   recentEpisodes: Array<DashboardEpisodeDetailsType>;
   recentSeries: Array<SeriesType>;
@@ -61,9 +43,6 @@ const mainpageSlice = createSlice({
     recentFiles: [],
     recentEpisodes: [],
     recentSeries: [],
-    recentFileDetails: {},
-    recentSeriesDetails: {},
-    recentEpisodeDetails: {},
     selectedImportFolderSeries: 1,
     seriesSummary: {
       Series: 0,
@@ -94,11 +73,6 @@ const mainpageSlice = createSlice({
     },
     setQueueStatus(sliceState, action) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
-    },
-    setRecentFileDetails(sliceState, action) {
-      sliceState.recentFileDetails = Object.assign(
-        {}, sliceState.recentFileDetails, action.payload,
-      );
     },
     setRecentSeries(sliceState, action) {
       sliceState.recentSeries = action.payload;
@@ -141,7 +115,7 @@ const mainpageSlice = createSlice({
 
 export const {
   setAvdump, setFetched, setImportFolders,
-  setImportFolderSeries, setQueueStatus, setRecentFileDetails,
+  setImportFolderSeries, setQueueStatus,
   setRecentFiles, setSeriesSummary, setStats, setUnrecognizedFiles,
   unsetFetched, setRecentEpisodes, setRecentSeries, markUnrecognizedFile,
   setContinueWatching, setUpcomingAnime, setNews, setNextUp,
