@@ -36,11 +36,11 @@ function ImportSettings() {
 
   return (
     <FixedPanel title="Import" isFetching={isFetching}>
-      <Checkbox label="Import on start" id="RunOnStart" isChecked={RunOnStart} onChange={handleInputChange} />
-      <Checkbox label="Rename on import" id="RenameOnImport" isChecked={RenameOnImport} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Move on import" id="MoveOnImport" isChecked={MoveOnImport} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Move after rename" id="RenameThenMove" isChecked={RenameThenMove} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Set file as watched if episode is watched" id="UseExistingFileWatchedStatus" isChecked={UseExistingFileWatchedStatus} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Import on start" id="RunOnStart" isChecked={RunOnStart} onChange={handleInputChange} />
+      <Checkbox justify label="Rename on import" id="RenameOnImport" isChecked={RenameOnImport} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Move on import" id="MoveOnImport" isChecked={MoveOnImport} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Move after rename" id="RenameThenMove" isChecked={RenameThenMove} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Set file as watched if episode is watched" id="UseExistingFileWatchedStatus" isChecked={UseExistingFileWatchedStatus} onChange={handleInputChange} className="mt-1" />
     </FixedPanel>
   );
 }

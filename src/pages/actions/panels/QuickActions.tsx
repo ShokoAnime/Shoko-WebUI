@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faThumbtack } from '@fortawesome/free-solid-svg-icons';
+import { mdiPin } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -37,7 +37,7 @@ function QuickActions(props: Props) {
         <span className="flex">{action.name}</span>
         <div className="flex">
           <Button onClick={() => togglePinnedAction(key)} tooltip={pinned ? 'Unpin Action' : 'Pin Action'} className={cx(['px-2 mr-2', pinned ? 'bg-color-unselected' : 'bg-highlight-1'])}>
-            <FontAwesomeIcon icon={faThumbtack} className="text-xs" />
+            <Icon path={mdiPin} size={0.7} horizontal vertical rotate={180}/>
           </Button>
           <Button onClick={() => runAction(action.function, action.data)} className="bg-highlight-1 font-exo text-xs font-bold px-6 py-1">
             Run

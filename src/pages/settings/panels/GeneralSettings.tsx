@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faRedo, faDownload, faCircleNotch,
-} from '@fortawesome/free-solid-svg-icons';
+import { mdiRefresh, mdiLoading, mdiDownload } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { uiVersion } from '../../../core/util';
 import { RootState } from '../../../core/store';
@@ -13,6 +11,7 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 import Checkbox from '../../../components/Input/Checkbox';
 import SelectSmall from '../../../components/Input/SelectSmall';
 import Button from '../../../components/Input/Button';
+
 
 const UI_VERSION = uiVersion();
 
@@ -55,10 +54,6 @@ function GeneralSettings() {
         Shoko Version
         <div className="flex">
           {version}
-          { /* eslint-disable-next-line max-len */ }
-          {/* <Button onClick={() => ({})} className="color-highlight-1 text-xs ml-2" tooltip="Check for updates">
-            <FontAwesomeIcon icon={faRedo} />
-          </Button> // NEED API FOR SERVER VERSION CHECK */}
         </div>
       </div>
       <div className="flex justify-between mt-1">
@@ -67,21 +62,14 @@ function GeneralSettings() {
           {webuiUpdateAvailable && (
             <Button onClick={() => updateWebUI()} className="flex text-xs ml-2 color-highlight-1 items-end" tooltip="Download Latest Version">
               Update Available
-              <FontAwesomeIcon
-                icon={downloadingUpdates ? faCircleNotch : faDownload}
-                spin={downloadingUpdates}
-                className="ml-1"
-              />
+              <Icon className="ml-1" path={downloadingUpdates ? mdiLoading : mdiDownload} spin={downloadingUpdates} size={1} />
             </Button>
           )}
         </div>
         <div className="flex items-center overflow-x-hidden">
           {UI_VERSION}
           <Button onClick={() => checkWebUIUpdate()} className="flex color-highlight-1 text-xs ml-2" tooltip="Check for updates">
-            <FontAwesomeIcon
-              icon={checkingUpdates ? faCircleNotch : faRedo}
-              spin={checkingUpdates}
-            />
+            <Icon path={checkingUpdates ? mdiLoading : mdiRefresh} spin={checkingUpdates} size={1} />
           </Button>
         </div>
       </div>
@@ -91,7 +79,7 @@ function GeneralSettings() {
         Theme
         <span className="color-highlight-1 font-bold">Shoko Modern</span>
       </div>
-      <Checkbox label="Global Notifications" id="notifications" isChecked={webuiSettings.notifications} onChange={handleWebUISettingChange} className="mt-1" />
+      <Checkbox justify label="Global Notifications" id="notifications" isChecked={webuiSettings.notifications} onChange={handleWebUISettingChange} className="mt-1" />
       {webuiSettings.notifications && (
         <SelectSmall label="Notifications Position" id="toastPosition" value={webuiSettings.toastPosition} onChange={handleWebUISettingChange} className="mt-1">
           <option value="bottom-right">Bottom</option>
@@ -106,9 +94,9 @@ function GeneralSettings() {
       </SelectSmall>
 
       <div className="font-bold mt-3">Log Options</div>
-      <Checkbox label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={logRotatorSettings.Enabled} onChange={handleLogRotatorSettingChange} className="mt-1" />
-      {logRotatorSettings.Enabled && (<Checkbox label="Compress Logs" id="Zip" isChecked={logRotatorSettings.Zip} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
-      {logRotatorSettings.Enabled && (<Checkbox label="Delete Older Logs" id="Delete" isChecked={logRotatorSettings.Delete} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
+      <Checkbox justify label="Enable Log Rotation" id="LogRotation_Enabled" isChecked={logRotatorSettings.Enabled} onChange={handleLogRotatorSettingChange} className="mt-1" />
+      {logRotatorSettings.Enabled && (<Checkbox justify label="Compress Logs" id="Zip" isChecked={logRotatorSettings.Zip} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
+      {logRotatorSettings.Enabled && (<Checkbox justify label="Delete Older Logs" id="Delete" isChecked={logRotatorSettings.Delete} onChange={handleLogRotatorSettingChange} className="mt-1" />)}
       {logRotatorSettings.Enabled && logRotatorSettings.Delete && (
         <SelectSmall label="Delete Interval" id="Delete_Days" value={logRotatorSettings.Delete_Days} onChange={handleLogRotatorSettingChange} className="mt-1">
           <option value="0">Never</option>

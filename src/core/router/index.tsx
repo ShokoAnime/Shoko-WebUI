@@ -35,7 +35,6 @@ function Router(props: Props) {
           <Route path="/firstrun" component={FirstRunPage} />
           <AuthenticatedRoute exact path="/index.html" component={MainPage} />
           <AuthenticatedRoute path="/" component={MainPage} />
-          <Route component={NoMatchPage} />
         </Switch>
       </ConnectedRouter>
     </div>

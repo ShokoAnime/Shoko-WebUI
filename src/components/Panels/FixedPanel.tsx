@@ -1,6 +1,6 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 type Props = {
   title: string;
@@ -41,7 +41,7 @@ function FixedPanel(props: Props) {
       >
         {isFetching ? (
           <div className="flex justify-center items-center h-full">
-            <FontAwesomeIcon icon={faCircleNotch} spin className="text-6xl color-highlight-2" />
+            <Icon path={mdiLoading} spin size={1} />
           </div>
         ) : (
           <div className="flex flex-col mr-2">

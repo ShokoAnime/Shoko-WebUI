@@ -1,10 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faSquare, faEdit, faServer, faSearch, faPlus,
-} from '@fortawesome/free-solid-svg-icons';
+import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -50,14 +48,10 @@ function ImportFolders() {
           <div className="flex mr-1">{folder.Path}</div>
           <div className="flex color-highlight-1 items-start">
             <Button className="color-highlight-1 mr-3" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
-              <span className="fa-layers fa-fw">
-                <FontAwesomeIcon icon={faServer} />
-                <FontAwesomeIcon icon={faSquare} transform="shrink-5 down-2 right-6" className="fa-layer-icon-bg" />
-                <FontAwesomeIcon icon={faSearch} transform="shrink-6 down-2.75 right-6" />
-              </span>
+              <Icon path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
             <Button className="color-highlight-1" onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
-              <FontAwesomeIcon icon={faEdit} />
+              <Icon path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
           </div>
         </div>
@@ -72,9 +66,9 @@ function ImportFolders() {
 
   const renderOptions = () => (
     <div>
-      <Button className="color-highlight-1 mx-2" onClick={() => setImportFolderModalStatus(true)} tooltip="Add Folder">
-        <FontAwesomeIcon icon={faPlus} />
-      </Button>
+      <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
+        <Icon path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
+      </div>
     </div>
   );
 
