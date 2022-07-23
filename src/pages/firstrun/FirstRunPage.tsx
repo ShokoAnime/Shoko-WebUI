@@ -4,11 +4,12 @@ import { Route, Redirect } from 'react-router';
 import { replace } from 'connected-react-router';
 import { Icon } from '@mdi/react';
 import {
-  mdiLoading, mdiDiscord,
+  mdiLoading,
   mdiCheckboxIntermediateVariant,
   mdiCheckboxMarked,
   mdiCheckboxBlankOutline,
 } from '@mdi/js';
+import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
@@ -73,7 +74,7 @@ function FirstRunPage() {
         </div>
         <div className="flex flex-col w-full">
           <Button className="flex bg-primary items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
-            Get Help on <Icon path={mdiDiscord} size={0.75} className="mx-1" /> Discord
+            Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
           </Button>
           <Button className="bg-primary py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
             Documentation
