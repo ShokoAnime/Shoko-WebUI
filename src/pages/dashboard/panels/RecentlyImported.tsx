@@ -13,7 +13,7 @@ const RecentlyImported = () => {
   const series = useSelector((state: RootState) => state.mainpage.recentSeries);
 
   return (
-    <ShokoPanel title="Recently Imported" titleTabs={<DashboardTitleToggle mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />}>
+    <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{showSeries ? (
         series.map(item => <SeriesDetails series={item} />)
       ) : (

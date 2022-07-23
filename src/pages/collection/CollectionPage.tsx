@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, get, memoize } from 'lodash';
-import { mdiLoading } from '@mdi/js';
+import { mdiFormatListText, mdiCogOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Events from '../../core/events';
 
 import { RootState } from '../../core/store';
 import { CollectionGroupType } from '../../core/types/api/collection';
+import ShokoPanel from '../../components/Panels/ShokoPanel';
 
 
 function CollectionPage() {
@@ -22,6 +23,20 @@ function CollectionPage() {
   useEffect(() => {
     debounce(() => dispatch({ type: Events.COLLECTION_PAGE_LOAD }), 100);
   }, []);
+
+  const renderTitle = (count) => (
+    <React.Fragment>
+      Entire Collection
+      <span className="px-2">|</span>
+      <span className="text-highlight-2">{count} Items</span>
+    </React.Fragment>
+  );
+  const renderOptions = () => (
+    <div className="flex" title="Settings">
+      <span className="px-2 cursor-pointer" title="View"><Icon path={mdiFormatListText} size={1} horizontal vertical rotate={180}/></span>
+      <span className="px-2 cursor-pointer" title="Settings"><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
+    </div>
+  );
   
   const renderDetails = (item: CollectionGroupType) => {
     const posters = item.Images.Posters.filter(p => p.Source === 'AniDB');
@@ -65,16 +80,18 @@ function CollectionPage() {
   
   return (
     <div className="p-9 pr-0 h-full min-w-full">
-      <AutoSizer>
-        {({ width, height }) => {
-          const columns = Math.floor(width / itemWidth);
-          const maxPage = Math.ceil(items.length / pageSize) + 1;
-          const rows = (items.length / columns) + (fetchedPages.indexOf(maxPage) === -1 ? 1 : 0);
-          return (
-            <Grid columnCount={columns} rowCount={rows} columnWidth={itemWidth} height={height} rowHeight={itemHeight} width={width} cellRenderer={Cell(columns)} />
-          );
-        }}
-      </AutoSizer>
+      <ShokoPanel title={renderTitle(items.length)} options={renderOptions()}>
+        <AutoSizer>
+          {({ width, height }) => {
+            const columns = Math.floor(width / itemWidth);
+            const maxPage = Math.ceil(items.length / pageSize) + 1;
+            const rows = (items.length / columns) + (fetchedPages.indexOf(maxPage) === -1 ? 1 : 0);
+            return (
+              <Grid overscanRowCount={1} columnCount={columns} rowCount={rows} columnWidth={itemWidth} height={height} rowHeight={itemHeight} width={width} cellRenderer={Cell(columns)} />
+            );
+          }}
+        </AutoSizer>
+      </ShokoPanel>
     </div>
   );
 }
