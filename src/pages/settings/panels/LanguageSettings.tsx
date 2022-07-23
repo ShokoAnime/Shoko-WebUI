@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { remove } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { mdiDelete, mdiPlus } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import type { DropResult } from 'react-beautiful-dnd';
 
 import { RootState } from '../../../core/store';
@@ -56,23 +56,23 @@ function LanguageSettings() {
     <div className="flex justify-between items-center mt-1">
       {languageDescription[language]}
       <Button onClick={() => removeLanguage(language)} tooltip="Remove" className="color-danger">
-        <FontAwesomeIcon icon={faTrash} className="align-middle text-sm" />
+        <Icon path={mdiDelete} size={0.8} horizontal vertical rotate={180}/>
       </Button>
     </div>
   );
 
   const renderOptions = () => (
     <div className="flex">
-      <Button onClick={() => dispatch(setLanguagesModalStatus(true))} tooltip="Add Language" className="color-highlight-1">
-        <FontAwesomeIcon icon={faPlus} />
-      </Button>
+      <div onClick={() => dispatch(setLanguagesModalStatus(true))} title="Add Language" className="color-highlight-1 cursor-pointer">
+        <Icon path={mdiPlus} size={1} horizontal vertical rotate={180}/>
+      </div>
     </div>
   );
 
   return (
     <FixedPanel title="Language" options={renderOptions()} isFetching={isFetching}>
 
-      <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={handleInputChange} />
+      <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={LanguageUseSynonyms} onChange={handleInputChange} justify />
 
       <div className="font-bold mt-3">Priority (Drag to Reorder)</div>
       <DnDList onDragEnd={onDragEnd}>

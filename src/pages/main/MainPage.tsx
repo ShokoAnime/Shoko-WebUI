@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect, Switch } from 'react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
@@ -18,6 +18,7 @@ import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
 import CollectionPage from '../collection/CollectionPage';
+import NoMatchPage from '../nomatch';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -55,15 +56,18 @@ function MainPage() {
         </div>
         <div className="flex flex-col grow">
           <div className="overflow-y-auto grow">
-            <Route exact path="/">
-              <Redirect to="/dashboard" />
-            </Route>
-            <Route exact path="/dashboard" component={DashboardPage} />
-            <Route exact path="/import-folders" component={ImportFoldersPage} />
-            <Route exact path="/actions" component={ActionsPage} />
-            <Route exact path="/log" component={LogsPage} />
-            <Route exact path="/collection" component={CollectionPage} />
-            <Route exact path="/settings" component={SettingsPage} />
+            <Switch>
+              <Route exact path="/">
+                <Redirect to="/dashboard" />
+              </Route>
+              <Route exact path="/dashboard" component={DashboardPage} />
+              <Route exact path="/import-folders" component={ImportFoldersPage} />
+              <Route exact path="/actions" component={ActionsPage} />
+              <Route exact path="/log" component={LogsPage} />
+              <Route exact path="/collection" component={CollectionPage} />
+              <Route exact path="/settings" component={SettingsPage} />
+              <Route component={NoMatchPage} />
+            </Switch>
           </div>
         </div>
       </div>

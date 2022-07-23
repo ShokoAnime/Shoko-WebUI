@@ -95,24 +95,24 @@ function RelationSettings() {
     <FixedPanel title="Relation" isFetching={isFetchingSettings}>
 
       <div className="font-bold">Relation Options</div>
-      <Checkbox label="Auto Group Series" id="AutoGroupSeries" isChecked={AutoGroupSeries} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Determine Main Series Using Relation Weighing" id="AutoGroupSeriesUseScoreAlgorithm" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Auto Group Series" id="AutoGroupSeries" isChecked={AutoGroupSeries} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Determine Main Series Using Relation Weighing" id="AutoGroupSeriesUseScoreAlgorithm" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={handleInputChange} className="mt-1" />
 
       <div className="font-bold mt-3">Exclude following relations</div>
-      <Checkbox label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Prequel" id="prequel" isChecked={prequel} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Sequel" id="sequel" isChecked={sequel} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="OVA" id="ova" isChecked={ova} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Movie" id="movie" isChecked={movie} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Same Setting" id="sameSetting" isChecked={sameSetting} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Alternative Setting" id="altSetting" isChecked={altSetting} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Alternative Version" id="altVersion" isChecked={altVersion} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Parent Story" id="parentStory" isChecked={parentStory} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Side Story" id="sideStory" isChecked={sideStory} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Full Story" id="fullStory" isChecked={fullStory} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Summary" id="summary" isChecked={summary} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Character" id="character" isChecked={character} onChange={handleExclusionChange} className="mt-1" />
-      <Checkbox label="Other" id="other" isChecked={other} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Prequel" id="prequel" isChecked={prequel} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Sequel" id="sequel" isChecked={sequel} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="OVA" id="ova" isChecked={ova} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Movie" id="movie" isChecked={movie} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Same Setting" id="sameSetting" isChecked={sameSetting} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Alternative Setting" id="altSetting" isChecked={altSetting} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Alternative Version" id="altVersion" isChecked={altVersion} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Parent Story" id="parentStory" isChecked={parentStory} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Side Story" id="sideStory" isChecked={sideStory} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Full Story" id="fullStory" isChecked={fullStory} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Summary" id="summary" isChecked={summary} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Character" id="character" isChecked={character} onChange={handleExclusionChange} className="mt-1" />
+      <Checkbox justify label="Other" id="other" isChecked={other} onChange={handleExclusionChange} className="mt-1" />
 
     </FixedPanel>
   );

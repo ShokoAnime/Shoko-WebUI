@@ -9,7 +9,6 @@ import type { History } from 'history';
 import { RootState } from '../store';
 import LoginPage from '../../pages/login/LoginPage';
 import ErrorPage from '../../pages/error/ErrorPage';
-import NoMatchPage from '../../pages/nomatch/index';
 import MainPage from '../../pages/main/MainPage';
 import FirstRunPage from '../../pages/firstrun/FirstRunPage';
 import AuthenticatedRoute from './AuthenticatedRoute';
@@ -35,7 +34,6 @@ function Router(props: Props) {
           <Route path="/firstrun" component={FirstRunPage} />
           <AuthenticatedRoute exact path="/index.html" component={MainPage} />
           <AuthenticatedRoute path="/" component={MainPage} />
-          <Route component={NoMatchPage} />
         </Switch>
       </ConnectedRouter>
     </div>

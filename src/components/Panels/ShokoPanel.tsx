@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react';
+import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import { mdiLoading } from '@mdi/js';
 
@@ -11,7 +12,7 @@ type Props = {
 };
 
 const ShokoPanel = ({ className, title, options, children, isFetching }: Props) => (
-    <div className={`${className ?? ''} flex flex-col overflow-hidden h-full`}>
+    <div className={cx(['flex', 'flex-col', 'overflow-hidden', 'h-full'], className)}>
         <div className="flex justify-between items-center mr-2">
           <span className="flex font-semibold text-base">{title}</span>
             <div
