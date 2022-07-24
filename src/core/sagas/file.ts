@@ -57,7 +57,7 @@ function* getRecentFiles() {
     return;
   }
 
-  yield put(setRecentFiles(resultJson.data));
+  yield put(setRecentFiles(resultJson.data?.List ?? resultJson.data));
   yield put(setFetched('recentFiles'));
 }
 
@@ -68,7 +68,7 @@ function* getUnrecognizedFiles() {
     return;
   }
 
-  yield put(setUnrecognizedFiles(resultJson.data));
+  yield put(setUnrecognizedFiles(resultJson.data?.List ?? resultJson.data));
   yield put(setFetched('unrecognizedFiles'));
 }
 
