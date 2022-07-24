@@ -18,6 +18,7 @@ import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
 import CollectionPage from '../collection/CollectionPage';
+import UtilitiesPage from '../utilities/UtilitiesPage';
 import NoMatchPage from '../nomatch';
 
 function MainPage() {
@@ -62,6 +63,7 @@ function MainPage() {
               </Route>
               <Route exact path="/dashboard" component={DashboardPage} />
               <Route exact path="/import-folders" component={ImportFoldersPage} />
+              <Route exact path="/utilities" component={UtilitiesPage} />
               <Route exact path="/actions" component={ActionsPage} />
               <Route exact path="/log" component={LogsPage} />
               <Route exact path="/collection" component={CollectionPage} />
