@@ -5,7 +5,7 @@ import Link from '../../components/Link/Link';
 
 type Props = {
   error?: Error;
-  children: any;
+  children?: any;
 };
 
 type State = {
@@ -26,7 +26,7 @@ class ErrorBoundary extends React.Component<Props, State> {
         <p className="title">{error.toString()}</p>
         <p className="text">Trace:<pre>{componentStack}</pre></p>
         <p className="text">
-          <a href="/" onClick={(event) => { event.preventDefault(); history.goBack(); }}>Go back</a>, or head over to the&nbsp;
+          <a href="/" onClick={(event) => { event.preventDefault(); history.back(); }}>Go back</a>, or head over to the&nbsp;
           <Link to="/">home page</Link> to choose a new direction.
         </p>
       </div>

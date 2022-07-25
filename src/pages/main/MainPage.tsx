@@ -13,6 +13,7 @@ import ImportFoldersPage from '../import-folders/ImportFoldersPage';
 import ActionsPage from '../actions/ActionsPage';
 import SettingsPage from '../settings/SettingsPage';
 import LogsPage from '../logs/LogsPage';
+import NoMatchPage from '../../pages/nomatch';
 
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
@@ -56,13 +57,14 @@ function MainPage() {
         <div className="flex flex-col grow">
           <div className="overflow-y-auto grow">
             <Routes>
-              <Route path="/" element={() => <Navigate to="/dashboard" /> } />
-              <Route path="/dashboard" element={DashboardPage} />
-              <Route path="/import-folders" element={ImportFoldersPage} />
-              <Route path="/actions" element={ActionsPage} />
-              <Route path="/log" element={LogsPage} />
-              <Route path="/collection" element={CollectionPage} />
-              <Route path="/settings" element={SettingsPage} />
+              <Route index element={<Navigate to="/dashboard" />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/import-folders" element={<ImportFoldersPage />} />
+              <Route path="/actions" element={<ActionsPage />} />
+              <Route path="/log" element={<LogsPage />} />
+              <Route path="/collection" element={<CollectionPage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="*" element={<NoMatchPage />} />
             </Routes>
           </div>
         </div>
