@@ -39,8 +39,18 @@ function* runAvdump(action) {
   yield put(setAvdump({ [fileId]: { fetching: false, hash: resultJson.data.Ed2k } }));
 }
 
+function* runRescan(action) {
+  yield call(ApiFile.postFileRescan, action.payload);
+}
+
+function* runRehash(action) {
+  yield call(ApiFile.postFileRehash, action.payload);
+}
+
 export default {
   getRecentFiles,
   getUnrecognizedFiles,
   runAvdump,
+  runRescan,
+  runRehash,
 };

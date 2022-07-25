@@ -21,6 +21,7 @@ import SettingsPage from '../../pages/settings/SettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
 import CollectionPage from '../../pages/collection/CollectionPage';
+import UtilitiesPage from '../../pages/utilities/UtilitiesPage';
 
 // First run
 import Acknowledgement from '../../pages/firstrun/Acknowledgement';
@@ -66,6 +67,7 @@ function Router(props: Props) {
               <Route index element={<Navigate to="dashboard" />} />
               <Route path="dashboard" element={<DashboardPage />} />
               <Route path="import-folders" element={<ImportFoldersPage />} />
+              <Route path="utilities" element={<UtilitiesPage />} />
               <Route path="actions" element={<ActionsPage />} />
               <Route path="log" element={<LogsPage />} />
               <Route path="collection" element={<CollectionPage />} />

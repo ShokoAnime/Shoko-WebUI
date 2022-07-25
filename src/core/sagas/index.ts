@@ -69,7 +69,6 @@ export default function* rootSaga() {
     // QUICK ACTIONS
     takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE
-    takeEvery(Events.MAINPAGE_FILE_AVDUMP, SagaFile.runAvdump),
     takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
     takeEvery(Events.MAINPAGE_LOAD, SagaMainPage.eventMainPageLoad),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
@@ -97,5 +96,9 @@ export default function* rootSaga() {
     // WEBUI
     takeEvery(Events.WEBUI_CHECK_UPDATES, SagaWebUi.checkUpdates),
     takeEvery(Events.WEBUI_UPDATE, SagaWebUi.downloadUpdates),
+    // UTILITIES
+    takeEvery(Events.UTILITIES_RESCAN, SagaFile.runRescan),
+    takeEvery(Events.UTILITIES_REHASH, SagaFile.runRehash),
+    takeEvery(Events.UTILITIES_AVDUMP, SagaFile.runAvdump),
   ]);
 }
