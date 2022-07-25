@@ -49,30 +49,32 @@ function Router(props: Props) {
     <div id="app-container" className={`${theme} theme-shoko-blue flex h-screen`}>
       <ReduxRouter history={history}>
         <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/error" element={<ErrorPage />} />
-          <Route path="/firstrun" element={<FirstRunPage />}>
-            <Route index element={<Navigate to="acknowledgement" />} />
-            <Route path="acknowledgement" element={<Acknowledgement />} />
-            <Route path="db-setup" element={<DatabaseSetup />} />
-            <Route path="local-account" element={<LocalAccount />} />
-            <Route path="anidb-account" element={<AniDBAccount />} />
-            <Route path="community-sites" element={<MetadataSources />} />
-            <Route path="start-server" element={<StartServer />} />
-            <Route path="import-folders" element={<ImportFolders />} />
-            <Route path="data-collection" element={<DataCollection />} />
-          </Route>
-          <Route index element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}/>
-          <Route path="/" element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}>
-              <Route index element={<Navigate to="dashboard" />} />
-              <Route path="dashboard" element={<DashboardPage />} />
-              <Route path="import-folders" element={<ImportFoldersPage />} />
-              <Route path="utilities" element={<UtilitiesPage />} />
-              <Route path="actions" element={<ActionsPage />} />
-              <Route path="log" element={<LogsPage />} />
-              <Route path="collection" element={<CollectionPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-              <Route path="*" element={<NoMatchPage />} />
+          <Route index element={<Navigate to="/webui" replace />} />
+          <Route path="/webui">
+            <Route path="login" element={<LoginPage />} />
+            <Route path="error" element={<ErrorPage />} />
+            <Route path="firstrun" element={<FirstRunPage />}>
+              <Route index element={<Navigate to="acknowledgement" />} />
+              <Route path="acknowledgement" element={<Acknowledgement />} />
+              <Route path="db-setup" element={<DatabaseSetup />} />
+              <Route path="local-account" element={<LocalAccount />} />
+              <Route path="anidb-account" element={<AniDBAccount />} />
+              <Route path="community-sites" element={<MetadataSources />} />
+              <Route path="start-server" element={<StartServer />} />
+              <Route path="import-folders" element={<ImportFolders />} />
+              <Route path="data-collection" element={<DataCollection />} />
+            </Route>
+            <Route element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}>
+                <Route index element={<Navigate to="dashboard" />} />
+                <Route path="dashboard" element={<DashboardPage />} />
+                <Route path="import-folders" element={<ImportFoldersPage />} />
+                <Route path="utilities" element={<UtilitiesPage />} />
+                <Route path="actions" element={<ActionsPage />} />
+                <Route path="log" element={<LogsPage />} />
+                <Route path="collection" element={<CollectionPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+                <Route path="*" element={<NoMatchPage />} />
+            </Route>
           </Route>
         </Routes>
       </ReduxRouter>
