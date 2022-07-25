@@ -68,7 +68,7 @@ function LoginPage() {
     }
   };
 
-  const openFirstRunWizard = () => dispatch(push({ pathname: '/firstrun/acknowledgement' }));
+  const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
 
   return (
     <React.Fragment>

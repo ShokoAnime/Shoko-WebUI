@@ -54,12 +54,12 @@ function Router(props: Props) {
             <Route path="login" element={<LoginPage />} />
             <Route path="error" element={<ErrorPage />} />
             <Route path="firstrun" element={<FirstRunPage />}>
-              <Route index element={<Navigate to="acknowledgement" />} />
+              <Route index element={<Navigate to="acknowledgement" replace />} />
               <Route path="acknowledgement" element={<Acknowledgement />} />
               <Route path="db-setup" element={<DatabaseSetup />} />
               <Route path="local-account" element={<LocalAccount />} />
               <Route path="anidb-account" element={<AniDBAccount />} />
-              <Route path="community-sites" element={<MetadataSources />} />
+              <Route path="metadata-sources" element={<MetadataSources />} />
               <Route path="start-server" element={<StartServer />} />
               <Route path="import-folders" element={<ImportFolders />} />
               <Route path="data-collection" element={<DataCollection />} />
