@@ -47,7 +47,8 @@
     "react/prefer-stateless-function": "off",
     "react/require-default-props": "off",
     "react/state-in-constructor": "off",
-    "react/static-property-placement": "off"
+    "react/static-property-placement": "off",
+    "@typescript-eslint/space-before-blocks": "off"
   },
   "overrides": [
     {

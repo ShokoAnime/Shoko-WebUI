@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { mdiClose, mdiPencil } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -54,7 +54,7 @@ function ProfileModal() {
             <span className="flex font-semibold text-base uppercase">User Profile</span>
             <span className="flex">
               <Button onClick={() => handleClose()}>
-                <FontAwesomeIcon icon={faTimes} />
+                <Icon path={mdiClose} size={1}/>
               </Button>
             </span>
           </div>
@@ -64,13 +64,13 @@ function ProfileModal() {
               <div className="flex">
                 <Input className="w-24" label="Username" id="username" value={username} type="text" disabled={usernameDisabled} onChange={e => setUsername(e.target.value)} />
                 <Button onClick={() => setUsernameDisabled(false)} className="flex mt-1 color-highlight-1">
-                  <FontAwesomeIcon icon={faEdit} />
+                  <Icon path={mdiPencil} size={1}/>
                 </Button>
               </div>
               <div className="flex mt-1">
                 <Input className="w-24" label="Password" id="password" value={password} type="password" placeholder="Password" disabled={passwordDisabled} onChange={e => setPassword(e.target.value)} />
                 <Button onClick={() => setPasswordDisabled(false)} className="flex mt-1 color-highlight-1">
-                  <FontAwesomeIcon icon={faEdit} />
+                  <Icon path={mdiPencil} size={1}/>
                 </Button>
               </div>
               <div className="flex mt-1">

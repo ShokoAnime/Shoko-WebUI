@@ -19,6 +19,7 @@ const actions = {
       'sync-votes',
       'sync-mylist',
       'update-all-anidb-info',
+      'update-anidb-calendar',
     ],
   },
   trakt: {

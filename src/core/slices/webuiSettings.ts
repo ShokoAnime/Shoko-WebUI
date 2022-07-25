@@ -52,7 +52,9 @@ export const defaultLayout = {
     }, {
       i: 'continueWatching', x: 0, y: 48, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'upcomingAnime', x: 0, y: 60, w: 12, h: 20, minW: 12, minH: 20, moved: false, static: false,
+      i: 'nextUp', x: 0, y: 60, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
+    }, {
+      i: 'upcomingAnime', x: 0, y: 72, w: 12, h: 20, minW: 12, minH: 20, moved: false, static: false,
     }],
   } as LayoutType,
   importFolders: {
@@ -66,7 +68,7 @@ export const defaultLayout = {
   } as LayoutType,
   actions: {
     lg: [{
-      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
+      i: 'anidb', x: 0, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 12, moved: false, static: false,
     }, {
       i: 'shoko', x: 4, y: 0, w: 4, h: 9, minW: 3, minH: 5, maxH: 10, moved: false, static: false,
     }, {

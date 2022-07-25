@@ -1,20 +1,20 @@
 import React, { ReactNode } from 'react';
+import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import { mdiLoading } from '@mdi/js';
 
 type Props = {
-  title: string;
+  title: ReactNode;
   children: any;
   options?: any;
   className?: string;
-  isFetching?: boolean; 
-  titleTabs?: ReactNode;
+  isFetching?: boolean;
 };
 
-const ShokoPanel = ({ className, title, options, children, titleTabs, isFetching }: Props) => (
-    <div className={`${className ?? ''} flex flex-col overflow-hidden h-full`}>
+const ShokoPanel = ({ className, title, options, children, isFetching }: Props) => (
+    <div className={cx(['flex', 'flex-col', 'overflow-hidden', 'h-full'], className)}>
         <div className="flex justify-between items-center mr-2">
-          <span className="flex font-semibold text-base">{title}{titleTabs}</span>
+          <span className="flex font-semibold text-base">{title}</span>
             <div
                 className="flex"
                 onMouseDown={event => event.stopPropagation()}

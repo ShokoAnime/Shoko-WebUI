@@ -27,7 +27,7 @@ function UnrecognizedTab() {
   const runAvdump = (fileId: number) => dispatch(
     { type: Events.MAINPAGE_FILE_AVDUMP, payload: fileId },
   );
-  
+
   const markFile = (id: string) => {
     const state = itemsMarked.indexOf(id) === -1;
     dispatch(markUnrecognizedFile({ id, state }));
@@ -35,7 +35,7 @@ function UnrecognizedTab() {
 
   const renderItem = (item: FileType) => (
     <div key={item.ID} className="flex mt-3 first:mt-0 items-center">
-      <Checkbox id={`${item.ID}`} isChecked={itemsMarked.indexOf(`${item.ID}`) !== -1} onChange={() => {markFile(`${item.ID}`);}} isSquare={true} className="mr-4" />
+      <Checkbox id={`${item.ID}`} isChecked={itemsMarked.indexOf(`${item.ID}`) !== -1} onChange={() => {markFile(`${item.ID}`);}} className="mr-4" />
       {avdumpList[item.ID] && <UnrecognizedAvdumpedItem item={item} />}
       {avdumpList[item.ID] === undefined && (
       <div className="flex flex-col grow">
@@ -52,7 +52,7 @@ function UnrecognizedTab() {
         {avdumpList[item.ID] && (
           <div className="py-1 px-2 cursor-pointer color-highlight-2">
           <CopyToClipboard text={avdumpList[item.ID]?.hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
-            <Icon path={mdiClipboardTextMultipleOutline} size={1} horizontal vertical rotate={180} /> 
+            <Icon path={mdiClipboardTextMultipleOutline} size={1} horizontal vertical rotate={180} />
           </CopyToClipboard>
           </div>
         )}

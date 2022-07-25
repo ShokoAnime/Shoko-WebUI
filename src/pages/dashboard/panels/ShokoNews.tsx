@@ -18,7 +18,7 @@ function ShokoNews() {
       <p className="text-base font-semibold opacity-75">Posted on: {item.date_published}</p>
       <p className="text-base line-clamp-2">{item.content_text}</p>
       <div className="flex space-x-0.5 text-highlight-1 font-semibold">
-        <a href={item.link} target="_blank">Read More</a>
+        <a href={item.link} rel="noopener,noreferrer" target="_blank">Read More</a>
         <Icon path={mdiOpenInNew} size={1} />
       </div>
     </div>

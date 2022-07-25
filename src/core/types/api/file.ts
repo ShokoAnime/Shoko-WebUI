@@ -19,6 +19,33 @@ export type FileType = {
   Created: string;
 };
 
+export type FileAniDBType = {
+  ID: number;
+  Source: string;
+  ReleaseGroup: FileAniDBReleaseGroupType;
+  ReleaseDate: string | null;
+  Version: number;
+  IsDeprecated: boolean;
+  IsCensored: boolean;
+  OriginalFileName: string;
+  FileSize: bigint;
+  Duration: string;
+  Resolution: string;
+  Description: string;
+  AudioCodecs: string[];
+  AudioLanguages: string[];
+  SubLanguages: string[];
+  VideoCodec: string;
+  Chaptered: boolean;
+  Updated: string;
+};
+
+export type FileAniDBReleaseGroupType = {
+  ID: number;
+  Name: string;
+  ShortName: string;
+};
+
 export type FileDetailedType = FileType & {
   SeriesIDs: Array<{
     SeriesID: FileIDsType;
@@ -26,34 +53,8 @@ export type FileDetailedType = FileType & {
   }>;
 };
 
-type FileIDsType = {
+export type FileIDsType = {
   AniDB: number;
   TvDB: Array<number>;
   ID: number;
-};
-
-export type RecentFileDetailsType = {
-  SeriesImageID?: string;
-  SeriesImageSource?: string;
-  SeriesName: string;
-  EpisodeNumber: number;
-  EpisodeName: string;
-  EpisodeType: string;
-  Source: string;
-  AudioLanguages: Array<string>;
-  SubtitleLanguages: Array<string>;
-  ReleaseGroup: string;
-  VideoCodec: string;
-};
-
-export type RecentSeriesDetailsType = {
-  SeriesName: string,
-  SeriesImageID?: string;
-  SeriesImageSource?: string;
-};
-
-export type RecentEpisodeDetailsType = {
-  EpisodeNumber: number;
-  EpisodeName: string;
-  EpisodeType: string;
 };

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSave, faSpinner } from '@fortawesome/free-solid-svg-icons';
+import { mdiLoading, mdiContentSave } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
@@ -37,7 +37,7 @@ function AniDBLoginSettings() {
   const renderOptions = () => (
     <div className="flex">
       <Button onClick={() => testAndSave()} tooltip="Test and Save" className="color-highlight-1">
-        <FontAwesomeIcon icon={isTesting ? faSpinner : faSave} spin={isTesting} />
+        <Icon path={isTesting ? mdiLoading : mdiContentSave} spin={isTesting} size={1} />
       </Button>
     </div>
   );

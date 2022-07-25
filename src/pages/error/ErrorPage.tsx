@@ -1,6 +1,5 @@
 import * as Sentry from '@sentry/react';
 import React from 'react';
-import PropTypes from 'prop-types';
 import history from '../../core/history';
 import Link from '../../components/Link/Link';
 
@@ -18,10 +17,6 @@ type State = {
 };
 
 class ErrorBoundary extends React.Component<Props, State> {
-  static propTypes = {
-    children: PropTypes.node,
-  };
-
   fallback = ({ error, componentStack }) => (
     <div className="error-page flex h-screen">
       <div className="m-auto">

@@ -95,7 +95,8 @@ tasks.set('bundle', () => {
 tasks.set('release', () => {
   const zipFolder = require('zip-a-folder');
 
-  fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
+  if (fs.existsSync('./public/dist/sourcemaps'))
+    fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
   return zipFolder.zip('./public', process.env.NODE_ENV === 'development' ? './build/latest-unstable.zip' : './build/latest.zip')
     .then(() => { console.log('Release build created!'); });
 });
