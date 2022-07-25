@@ -13,7 +13,7 @@ function AuthenticatedRoute(props: Props) {
 
   return isAuthenticated
     ? props.children
-    : (<Navigate to="/login" replace />);
+    : (<Navigate to="/webui/login" replace />);
 }
 
 export default AuthenticatedRoute;

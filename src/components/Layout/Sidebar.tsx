@@ -35,7 +35,7 @@ function Sidebar() {
   }, []);
   
   const renderMenuItem = (key: string, text: string, icon: string) => {
-    const isHighlighted = pathname === `/${key}`; 
+    const isHighlighted = pathname === `/webui/${key}`; 
     return (
       <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
