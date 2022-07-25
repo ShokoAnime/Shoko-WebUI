@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
-import { debounce, get, memoize } from 'lodash';
+import { get, memoize } from 'lodash';
 import { mdiFormatListText, mdiCogOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -10,18 +10,24 @@ import Events from '../../core/events';
 import { RootState } from '../../core/store';
 import { CollectionGroupType } from '../../core/types/api/collection';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
+import { ImageType } from '../../core/types/api/common';
 
 
 function CollectionPage() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 344; //328 + 16
+  const itemHeightList = 224; //176 + 16
   const pageSize = 50;
   const items: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
   const fetchedPages: Array<number> = useSelector((state: RootState) => state.collection.fetchedPages);
+  const total: number = useSelector((state: RootState) => state.collection.total);
   const dispatch = useDispatch();
+  const [mode, setMode] = useState('grid');
+  
+  const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
   
   useEffect(() => {
-    debounce(() => dispatch({ type: Events.COLLECTION_PAGE_LOAD }), 100);
+    dispatch({ type: Events.COLLECTION_PAGE_LOAD });
   }, []);
 
   const renderTitle = count => (
@@ -33,7 +39,7 @@ function CollectionPage() {
   );
   const renderOptions = () => (
     <div className="flex" title="Settings">
-      <span className="px-2 cursor-pointer" title="View"><Icon path={mdiFormatListText} size={1} horizontal vertical rotate={180}/></span>
+      <span className="px-2 cursor-pointer" title="View" onClick={toggleMode}><Icon path={mdiFormatListText} size={1} horizontal vertical rotate={180}/></span>
       <span className="px-2 cursor-pointer" title="Settings"><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
     </div>
   );
@@ -49,6 +55,22 @@ function CollectionPage() {
     );
   };
   
+  const renderList = (item: CollectionGroupType) => {
+    const poster: ImageType = get(item, 'Images.Posters.0');
+    
+    return (
+      <div key={`group-${item.IDs.ID}`} className="mb-4 font-open-sans content-center flex">
+        <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${poster.Source}/Poster/${poster.ID}')` }} className="h-48 w-32 shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
+        <div className="flex flex-col pl-4 justify-between py-2">
+          <p className="text-base font-semibold" title={item.Name}>{item.Name}</p>
+          <div>icons</div>
+          <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
+          <div>tags</div>
+        </div>
+      </div>
+    );
+  };
+  
   const renderPlaceholder = () => (<div className="mr-4 last:mr-0 shrink-0 h-72 w-56 font-open-sans items-center justify-center flex flex-col border border-black">
     <Icon path={mdiLoading} spin size={1} />
   </div>);
@@ -59,7 +81,7 @@ function CollectionPage() {
     const index = rowIndex * columns + columnIndex;
     const item = get(items, `${index}`, null);
     if (item === null) {
-      const neededPage = Math.ceil((index + 1) / pageSize);
+      const neededPage = Math.floor(index / pageSize);
       if (fetchedPages.indexOf(neededPage) === -1) {
         fetchPage(neededPage);
         return (
@@ -72,7 +94,7 @@ function CollectionPage() {
     }
     return (
     <div key={key} style={style}>
-      {renderDetails(items[rowIndex * columns + columnIndex])}
+      {mode === 'grid' ? renderDetails(item) : renderList(item)}
     </div>
     );
   };
@@ -80,14 +102,13 @@ function CollectionPage() {
   
   return (
     <div className="p-9 pr-0 h-full min-w-full">
-      <ShokoPanel title={renderTitle(items.length)} options={renderOptions()}>
+      <ShokoPanel title={renderTitle(total)} options={renderOptions()}>
         <AutoSizer>
           {({ width, height }) => {
             const columns = Math.floor(width / itemWidth);
-            const maxPage = Math.ceil(items.length / pageSize) + 1;
-            const rows = (items.length / columns) + (fetchedPages.indexOf(maxPage) === -1 ? 1 : 0);
+            const rows = mode === 'grid' ? total / columns : total;
             return (
-              <Grid overscanRowCount={1} columnCount={columns} rowCount={rows} columnWidth={itemWidth} height={height} rowHeight={itemHeight} width={width} cellRenderer={Cell(columns)} />
+              <Grid overscanRowCount={1} columnCount={mode === 'grid' ? columns : 1} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(columns)} />
             );
           }}
         </AutoSizer>

@@ -8,13 +8,13 @@ import { setGroups } from '../slices/collection';
 
 function* eventCollectionPageLoad() {
   yield all([
-    yield call(getGroups, { payload: 1 }),
+    yield call(getGroups, { payload: 0 }),
   ]);
 }
 
 function* getGroups(action) {
-  const page = get(action, 'payload', 1);
-  const resultJson = yield call(ApiGroup.getAllGroups, page - 1);
+  const page = get(action, 'payload', 0);
+  const resultJson = yield call(ApiGroup.getAllGroups, page);
   if (resultJson.error) {
     toast.error(resultJson.message);
     return;
