@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {

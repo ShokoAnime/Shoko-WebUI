@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
-import { replace } from 'connected-react-router';
+import { Outlet } from 'react-router';
+import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
   mdiLoading,
@@ -14,14 +14,6 @@ import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Acknowledgement from './Acknowledgement';
-import DatabaseSetup from './DatabaseSetup';
-import LocalAccount from './LocalAccount';
-import AniDBAccount from './AniDBAccount';
-import MetadataSources from './MetadataSources';
-import StartServer from './StartServer';
-import ImportFolders from './ImportFolders';
-import DataCollection from './DataCollection';
 
 function FirstRunPage() {
   const dispatch = useDispatch();
@@ -82,17 +74,7 @@ function FirstRunPage() {
         </div>
       </div>
       <div className="flex grow">
-        <Route exact path="/firstrun">
-          <Redirect to="/firstrun/acknowledgement" />
-        </Route>
-        <Route exact path="/firstrun/acknowledgement" component={Acknowledgement} />
-        <Route exact path="/firstrun/db-setup" component={DatabaseSetup} />
-        <Route exact path="/firstrun/local-account" component={LocalAccount} />
-        <Route exact path="/firstrun/anidb-account" component={AniDBAccount} />
-        <Route exact path="/firstrun/metadata-sources" component={MetadataSources} />
-        <Route exact path="/firstrun/start-server" component={StartServer} />
-        <Route exact path="/firstrun/import-folders" component={ImportFolders} />
-        <Route exact path="/firstrun/data-collection" component={DataCollection} />
+        <Outlet />
       </div>
     </div>
   );

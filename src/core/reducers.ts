@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
+import { createRouterReducer } from '@lagunovsky/redux-react-router';
 import { handleAction } from 'redux-actions';
 import {
   SET_AUTOUPDATE,
@@ -40,4 +40,4 @@ const reducers = {
 
 export type Reducers = typeof reducers;
 
-export default (history => combineReducers({ router: connectRouter(history), ...reducers }));
+export default (history => combineReducers({ router: createRouterReducer(history), ...reducers }));

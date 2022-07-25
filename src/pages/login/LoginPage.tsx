@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
