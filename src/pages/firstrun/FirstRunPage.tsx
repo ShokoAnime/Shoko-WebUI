@@ -26,7 +26,7 @@ function FirstRunPage() {
 
   useEffect(() => {
     if (status.State !== 4) {
-      dispatch(replace('/login'));
+      dispatch(replace('login'));
       return;
     }
 
