@@ -1,6 +1,6 @@
 import { call, delay, put } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 
 import Events from '../events';
 import { startFetching, stopFetching } from '../slices/fetching';
