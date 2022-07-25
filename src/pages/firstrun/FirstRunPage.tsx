@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Routes, Navigate } from 'react-router';
+import { Outlet } from 'react-router';
 import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
@@ -14,14 +14,6 @@ import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Acknowledgement from './Acknowledgement';
-import DatabaseSetup from './DatabaseSetup';
-import LocalAccount from './LocalAccount';
-import AniDBAccount from './AniDBAccount';
-import MetadataSources from './MetadataSources';
-import StartServer from './StartServer';
-import ImportFolders from './ImportFolders';
-import DataCollection from './DataCollection';
 
 function FirstRunPage() {
   const dispatch = useDispatch();
@@ -82,17 +74,7 @@ function FirstRunPage() {
         </div>
       </div>
       <div className="flex grow">
-        <Routes>
-          <Route path="/firstrun" element={() => <Navigate to="/firstrun/acknowledgement" /> } />
-          <Route path="/firstrun/acknowledgement" element={Acknowledgement} />
-          <Route path="/firstrun/db-setup" element={DatabaseSetup} />
-          <Route path="/firstrun/local-account" element={LocalAccount} />
-          <Route path="/firstrun/anidb-account" element={AniDBAccount} />
-          <Route path="/firstrun/community-sites" element={MetadataSources} />
-          <Route path="/firstrun/start-server" element={StartServer} />
-          <Route path="/firstrun/import-folders" element={ImportFolders} />
-          <Route path="/firstrun/data-collection" element={DataCollection} />
-        </Routes>
+        <Outlet />
       </div>
     </div>
   );
