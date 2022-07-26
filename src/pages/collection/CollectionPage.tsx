@@ -2,7 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, memoize } from 'lodash';
-import { mdiFormatListText, mdiCogOutline, mdiLoading } from '@mdi/js';
+import {
+  mdiFormatListText,
+  mdiCogOutline,
+  mdiLoading,
+  mdiCalendarMonthOutline,
+  mdiLayersTripleOutline,
+  mdiEyeCheckOutline,
+  mdiAlertBoxOutline,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Events from '../../core/events';
@@ -63,7 +71,24 @@ function CollectionPage() {
         <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${poster.Source}/Poster/${poster.ID}')` }} className="h-48 w-32 shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
         <div className="flex flex-col pl-4 justify-between py-2">
           <p className="text-base font-semibold" title={item.Name}>{item.Name}</p>
-          <div>icons</div>
+          <div className="space-x-4 flex flex-nowrap">
+            <div className="space-x-2 flex">
+              <Icon path={mdiCalendarMonthOutline} size={1} />
+              <span>??</span>
+            </div>
+            <div className="space-x-2 flex">
+              <Icon path={mdiLayersTripleOutline} size={1} />
+              <span>{item.Sizes.Local.Episodes} ({item.Sizes.Local.Specials})</span>
+            </div>
+            <div className="space-x-2 flex">
+              <Icon path={mdiEyeCheckOutline} size={1} />
+              <span>{item.Sizes.Watched.Episodes} ({item.Sizes.Watched.Specials})</span>
+            </div>
+            <div className="space-x-2 flex">
+              <Icon className="color-highlight-5" path={mdiAlertBoxOutline} size={1} />
+              <span>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
+            </div>
+          </div>
           <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
           <div>tags</div>
         </div>
