@@ -56,7 +56,8 @@
         "postcss.config.js",
         "run.js",
         "run.config.default.js",
-        "webpack.config.default.js"
+        "webpack.config.default.js",
+        "babel.config.js"
       ],
       "parser": "espree",
       "parserOptions": {

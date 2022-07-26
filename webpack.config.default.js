@@ -5,6 +5,7 @@ const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const Version = require('./public/version.json');
 
@@ -18,6 +19,7 @@ const config = {
   entry: [
     '@fontsource/open-sans/latin.css',
     './css/main.scss',
+    isDebug && '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
   mode: isDebug ? 'development' : 'production',
@@ -49,6 +51,7 @@ const config = {
     optimizationBailout: isVerbose,
   },
   plugins: [
+    new ReactRefreshPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: isDebug,
     }),
