@@ -8,7 +8,7 @@ import { setGroups } from '../slices/collection';
 
 function* eventCollectionPageLoad() {
   yield all([
-    yield call(getGroups, { payload: 0 }),
+    yield call(getGroups, { payload: 1 }),
   ]);
 }
 

@@ -85,7 +85,7 @@ function CollectionPage() {
               <span>{item.Sizes.Watched.Episodes} ({item.Sizes.Watched.Specials})</span>
             </div>
             <div className="space-x-2 flex">
-              <Icon className="color-highlight-5" path={mdiAlertBoxOutline} size={1} />
+              <Icon className="text-highlight-5" path={mdiAlertBoxOutline} size={1} />
               <span>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
             </div>
           </div>
@@ -106,7 +106,7 @@ function CollectionPage() {
     const index = rowIndex * columns + columnIndex;
     const item = get(items, `${index}`, null);
     if (item === null) {
-      const neededPage = Math.floor(index / pageSize);
+      const neededPage = Math.ceil((index + 1) / pageSize);
       if (fetchedPages.indexOf(neededPage) === -1) {
         fetchPage(neededPage);
         return (
