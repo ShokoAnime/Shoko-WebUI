@@ -8,7 +8,7 @@ export function getRecreateAllGroups() {
   return ApiRequest('RecreateAllGroups', '', true);
 }
 
-export function getAllGroups(page: number = 0, pageSize: number = 50, topLevelOnly: boolean = false) {
+export function getAllGroups(page: number = 1, pageSize: number = 50, topLevelOnly: boolean = false) {
   const params = { page, pageSize, topLevelOnly };
   return ApiRequest('', buildQuery(params));
 }

@@ -13,7 +13,7 @@ function* eventCollectionPageLoad() {
 }
 
 function* getGroups(action) {
-  const page = get(action, 'payload', 0);
+  const page = get(action, 'payload', 1);
   const resultJson = yield call(ApiGroup.getAllGroups, page);
   if (resultJson.error) {
     toast.error(resultJson.message);
