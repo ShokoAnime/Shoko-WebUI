@@ -10,7 +10,7 @@ import Events from '../../core/events';
 function LogsPage() {
   const dispatch = useDispatch();
 
-  const lines = useSelector((state: RootState) => state.logs.lines);
+  const lines = useSelector((state: RootState) => state.tempState.logs.lines);
 
   useEffect(() => {
     dispatch({ type: Events.LOGPAGE_LOAD });
