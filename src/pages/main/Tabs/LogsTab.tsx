@@ -70,7 +70,7 @@ class LogsTab extends React.Component<Props> {
 }
 
 const mapState = (state: RootState) => ({
-  lines: state.logs.lines,
+  lines: state.tempState.logs.lines,
 });
 
 const mapDispatch = {
