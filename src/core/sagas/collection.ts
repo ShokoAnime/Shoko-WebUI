@@ -4,7 +4,7 @@ import { get } from 'lodash';
 
 import ApiGroup from '../api/v3/group';
 
-import { setGroups } from '../slices/collection';
+import { setGroups, setGroupSeries } from '../slices/collection';
 
 function* eventCollectionPageLoad() {
   yield all([
@@ -23,7 +23,24 @@ function* getGroups(action) {
   yield put(setGroups({ total: resultJson.data.Total, items: resultJson.data.List, page }));
 }
 
+function* getGroupSeries(action) {
+  const groupId = get(action, 'payload', null);
+  if (groupId === null) {
+    toast.error('Trying to fetch series for a null group.');
+    return;
+  }
+
+  const resultJson = yield call(ApiGroup.getGroupSeries, groupId);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+
+  yield put(setGroupSeries(resultJson.data));
+}
+
 export default {
   eventCollectionPageLoad,
   getGroups,
+  getGroupSeries,
 };

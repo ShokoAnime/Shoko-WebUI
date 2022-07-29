@@ -2,10 +2,13 @@ import { createSlice } from '@reduxjs/toolkit';
 import { CollectionGroupType } from '../types/api/collection';
 import { forEach } from 'lodash';
 
+import type { SeriesType } from '../types/api/series';
+
 type State = {
   total: number;
   groups: Array<CollectionGroupType>;
   fetchedPages: Array<number>;
+  groupSeries: Array<SeriesType>;
 };
 
 const collectionSlice = createSlice({
@@ -14,6 +17,7 @@ const collectionSlice = createSlice({
     total: 0,
     groups: [],
     fetchedPages: [],
+    groupSeries: [],
   } as State,
   reducers: {
     setGroups(sliceState, action) {
@@ -22,9 +26,12 @@ const collectionSlice = createSlice({
       sliceState.fetchedPages.push(page);
       sliceState.total = total;
     },
+    setGroupSeries(sliceState, action) {
+      sliceState.groupSeries = [...action.payload];
+    },
   },
 });
 
-export const { setGroups } = collectionSlice.actions;
+export const { setGroups, setGroupSeries } = collectionSlice.actions;
 
 export default collectionSlice.reducer;

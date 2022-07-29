@@ -13,7 +13,12 @@ export function getAllGroups(page: number = 1, pageSize: number = 50, topLevelOn
   return ApiRequest('', buildQuery(params));
 }
 
+export function getGroupSeries(groupId: number) {
+  return ApiRequest(`${groupId}/Series`);
+}
+
 export default {
   getRecreateAllGroups,
   getAllGroups,
+  getGroupSeries,
 };
