@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
 import { get, memoize } from 'lodash';
+import { Link } from 'react-router-dom';
 import {
   mdiFormatListText,
   mdiCogOutline,
@@ -10,6 +11,8 @@ import {
   mdiLayersTripleOutline,
   mdiEyeCheckOutline,
   mdiAlertBoxOutline,
+  mdiEyeArrowRightOutline,
+  mdiSquareEditOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -19,6 +22,17 @@ import { RootState } from '../../core/store';
 import { CollectionGroupType } from '../../core/types/api/collection';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
 import { ImageType } from '../../core/types/api/common';
+
+const HoverIcon = ({ icon, label, route }) => (
+  <Link to={route} replace>
+    <div className="flex flex-col justify-items-center items-center my-2">
+      <div className="bg-background-border rounded-full inline-block shrink p-4 text-highlight-1 mb-2">
+        <Icon path={icon} size={1} />
+      </div>
+      <span className="font-semibold">{label}</span>
+    </div>
+  </Link>
+);
 
 
 function CollectionPage() {
@@ -56,8 +70,13 @@ function CollectionPage() {
     const posters = item.Images.Posters.filter(p => p.Source === 'AniDB');
     
     return (
-      <div key={`group-${item.IDs.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 font-open-sans content-center flex flex-col">
-        <div style={{ background: `center / cover no-repeat url('/api/v3/Image/AniDB/Poster/${posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
+      <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 font-open-sans content-center flex flex-col">
+        <div style={{ background: `center / cover no-repeat url('/api/v3/Image/AniDB/Poster/${posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
+          <div className="hidden group-hover:flex bg-background-nav h-full flex-col justify-center items-center">
+            <HoverIcon icon={mdiEyeArrowRightOutline} label="View Series" route={`group/${item.IDs.ID}`} />
+            <HoverIcon icon={mdiSquareEditOutline} label="Edit Series" route="" />
+          </div>
+        </div>
         <p className="text-center text-base font-semibold" title={item.Name}>{item.Name}</p>
       </div>
     );

@@ -33,6 +33,8 @@ import StartServer from '../../pages/firstrun/StartServer';
 import ImportFolders from '../../pages/firstrun/ImportFolders';
 import DataCollection from '../../pages/firstrun/DataCollection';
 
+import Group from '../../pages/collection/Group';
+
 type Props = {
   history: BrowserHistory;
 };
@@ -71,7 +73,8 @@ function Router(props: Props) {
                 <Route path="utilities" element={<UtilitiesPage />} />
                 <Route path="actions" element={<ActionsPage />} />
                 <Route path="log" element={<LogsPage />} />
-                <Route path="collection" element={<CollectionPage />} />
+                <Route path="collection" element={<CollectionPage />}/>
+                <Route path="collection/group/:groupId" element={<Group />}/>
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="*" element={<NoMatchPage />} />
             </Route>

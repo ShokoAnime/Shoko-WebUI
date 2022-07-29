@@ -55,6 +55,7 @@ export default function* rootSaga() {
     // COLLECTION PAGE
     takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.eventCollectionPageLoad),
     takeEvery(Events.COLLECTION_GET_GROUPS, SagaCollection.getGroups),
+    takeEvery(Events.COLLECTION_GET_GROUP_SERIES, SagaCollection.getGroupSeries),
     // DASHBOARD
     takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
