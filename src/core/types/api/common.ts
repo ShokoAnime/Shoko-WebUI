@@ -46,21 +46,6 @@ export const enum ImageTypeEnum {
   Static = 'Static',
 }
 
-export type SizesType = {
-  Local: SizesEpisodeCountsType;
-  Watched: SizesEpisodeCountsType;
-  Total: SizesEpisodeCountsType;
-};
-
-export type SizesEpisodeCountsType = {
-  Episodes: number;
-  Specials: number;
-  Credits: number;
-  Trailers: number;
-  Parodies: number;
-  Others: number;
-};
-
 export type RatingType = {
   Value: number;
   MaxValue: number;
