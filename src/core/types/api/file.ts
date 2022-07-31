@@ -21,7 +21,7 @@ export type FileType = {
 
 export type FileAniDBType = {
   ID: number;
-  Source: string;
+  Source: FileSourceEnum;
   ReleaseGroup: FileAniDBReleaseGroupType;
   ReleaseDate: string | null;
   Version: number;
@@ -58,3 +58,16 @@ export type FileIDsType = {
   TvDB: Array<number>;
   ID: number;
 };
+
+export const enum FileSourceEnum {
+  Unknown = 'Unknown',
+  Other = 'Other',
+  TV = 'TV',
+  DVD = 'DVD',
+  BluRay = 'BluRay',
+  Web = 'Web',
+  VHS = 'VHS',
+  VCD = 'VCD',
+  LaserDisc = 'LaserDisc',
+  Camera = 'Camera',
+}

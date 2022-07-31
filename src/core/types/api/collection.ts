@@ -1,4 +1,5 @@
-import { ImagesType, SizesType } from './common';
+import { ImagesType } from './common';
+import { SeriesSizesType } from './series';
 
 export type CollectionGroupType = {
   IDs: {
@@ -13,5 +14,19 @@ export type CollectionGroupType = {
   Images: ImagesType;
   Name: string;
   Size: number;
-  Sizes:  SizesType;
+  Sizes:  GroupSizesType;
+};
+
+export type GroupSizesType = SeriesSizesType & {
+  SeriesTypes: GroupSizesSeriesTypesType;
+};
+
+export type GroupSizesSeriesTypesType = {
+  Unknown: number;
+  Other: number;
+  TV: number;
+  TVSpecial: number;
+  Web: number;
+  Movie: number;
+  OVA: number;
 };
