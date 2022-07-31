@@ -24,7 +24,7 @@ import ShokoPanel from '../../components/Panels/ShokoPanel';
 import { ImageType } from '../../core/types/api/common';
 
 const HoverIcon = ({ icon, label, route }) => (
-  <Link to={route} replace>
+  <Link to={route}>
     <div className="flex flex-col justify-items-center items-center my-2">
       <div className="bg-background-border rounded-full inline-block shrink p-4 text-highlight-1 mb-2">
         <Icon path={icon} size={1} />
