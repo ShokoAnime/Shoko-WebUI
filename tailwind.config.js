@@ -50,6 +50,9 @@ module.exports = {
       },
       width: {
         '400': '25rem',
+      },
+      opacity: {
+        '85': '.85',
       }
     },
   },

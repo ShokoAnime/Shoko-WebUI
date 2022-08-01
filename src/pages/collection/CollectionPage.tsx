@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, memoize } from 'lodash';
+import { get, memoize, forEach } from 'lodash';
 import { Link } from 'react-router-dom';
 import {
   mdiFormatListText,
@@ -12,16 +12,17 @@ import {
   mdiEyeCheckOutline,
   mdiAlertBoxOutline,
   mdiEyeArrowRightOutline,
-  mdiSquareEditOutline,
+  mdiSquareEditOutline, mdiDisc,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Events from '../../core/events';
+import ShokoPanel from '../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../core/store';
-import { CollectionGroupType } from '../../core/types/api/collection';
-import ShokoPanel from '../../components/Panels/ShokoPanel';
-import { ImageType } from '../../core/types/api/common';
+import type { CollectionGroupType } from '../../core/types/api/collection';
+import type { ImageType } from '../../core/types/api/common';
+import type { SeriesSizesFileSourcesType } from '../../core/types/api/series';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
@@ -71,7 +72,7 @@ function CollectionPage() {
     return (
       <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 font-open-sans content-center flex flex-col">
         <div style={{ background: `center / cover no-repeat url('/api/v3/Image/AniDB/Poster/${posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
-          <div className="hidden group-hover:flex bg-background-nav h-full flex-col justify-center items-center">
+          <div className="hidden group-hover:flex bg-background-nav/85 h-full flex-col justify-center items-center">
             <HoverIcon icon={mdiEyeArrowRightOutline} label="View Series" route={`group/${item.IDs.ID}`} />
             <HoverIcon icon={mdiSquareEditOutline} label="Edit Series" route="" />
           </div>
@@ -79,6 +80,14 @@ function CollectionPage() {
         <p className="text-center text-base font-semibold" title={item.Name}>{item.Name}</p>
       </div>
     );
+  };
+  
+  const renderFileSources = (sources: SeriesSizesFileSourcesType):string => {
+    const output: Array<string> = [];
+    forEach(sources, (source, type) => {
+      if (source !== 0) { output.push(type); }
+    });
+    return output.join(' / ');
   };
   
   const renderList = (item: CollectionGroupType) => {
@@ -105,6 +114,10 @@ function CollectionPage() {
             <div className="space-x-2 flex">
               <Icon className="text-highlight-5" path={mdiAlertBoxOutline} size={1} />
               <span>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
+            </div>
+            <div className="space-x-2 flex">
+              <Icon path={mdiDisc} size={1} />
+              <span>{renderFileSources(item.Sizes.FileSources)}</span>
             </div>
           </div>
           <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
@@ -139,7 +152,6 @@ function CollectionPage() {
     </div>
     );
   };
-    
   
   return (
     <div className="p-9 pr-0 h-full min-w-full">
