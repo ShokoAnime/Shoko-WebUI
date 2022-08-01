@@ -24,7 +24,7 @@ import ShokoPanel from '../../components/Panels/ShokoPanel';
 import { ImageType } from '../../core/types/api/common';
 
 const HoverIcon = ({ icon, label, route }) => (
-  <Link to={route} replace>
+  <Link to={route}>
     <div className="flex flex-col justify-items-center items-center my-2">
       <div className="bg-background-border rounded-full inline-block shrink p-4 text-highlight-1 mb-2">
         <Icon path={icon} size={1} />
@@ -40,8 +40,7 @@ function CollectionPage() {
   const itemHeight = 344; //328 + 16
   const itemHeightList = 224; //176 + 16
   const pageSize = 50;
-  const items: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
-  const fetchedPages: Array<number> = useSelector((state: RootState) => state.collection.fetchedPages);
+  const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
   const dispatch = useDispatch();
   const [mode, setMode] = useState('grid');
@@ -123,19 +122,17 @@ function CollectionPage() {
 
   const Cell = columns => ({ columnIndex, key, rowIndex, style }) => {
     const index = rowIndex * columns + columnIndex;
-    const item = get(items, `${index}`, null);
-    if (item === null) {
-      const neededPage = Math.ceil((index + 1) / pageSize);
-      if (fetchedPages.indexOf(neededPage) === -1) {
-        fetchPage(neededPage);
-        return (
-          <div key={key} style={style}>
-            {renderPlaceholder()}
-          </div>
-        );
-      }
-      return null;
+    const neededPage = Math.ceil((index + 1) / pageSize);
+    const groupList = fetchedPages[neededPage];
+    if (groupList == undefined) {
+      fetchPage(neededPage);
+      return (
+        <div key={key} style={style}>
+          {renderPlaceholder()}
+        </div>
+      );
     }
+    const item = groupList[index % pageSize];
     return (
     <div key={key} style={style}>
       {mode === 'grid' ? renderDetails(item) : renderList(item)}

@@ -7,7 +7,7 @@ import type { SeriesType } from '../types/api/series';
 type State = {
   total: number;
   groups: Array<CollectionGroupType>;
-  fetchedPages: Array<number>;
+  fetchedPages: Record<number, Array<CollectionGroupType>>;
   groupSeries: Array<SeriesType>;
 };
 
@@ -16,14 +16,14 @@ const collectionSlice = createSlice({
   initialState: {
     total: 0,
     groups: [],
-    fetchedPages: [],
+    fetchedPages: {},
     groupSeries: [],
   } as State,
   reducers: {
     setGroups(sliceState, action) {
       const { total, items, page } = action.payload;
       forEach(items, (item) => { sliceState.groups.push(item); });
-      sliceState.fetchedPages.push(page);
+      sliceState.fetchedPages[page] = items;
       sliceState.total = total;
     },
     setGroupSeries(sliceState, action) {
