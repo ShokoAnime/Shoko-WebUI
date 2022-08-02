@@ -25,7 +25,7 @@ function UnrecognizedTab() {
   const itemsMarked = useSelector((state: RootState) => state.mainpage.unrecognizedMark);
 
   const runAvdump = (fileId: number) => dispatch(
-    { type: Events.MAINPAGE_FILE_AVDUMP, payload: fileId },
+    { type: Events.UTILITIES_AVDUMP, payload: fileId },
   );
 
   const markFile = (id: string) => {

@@ -75,21 +75,21 @@ function TvDBSettings() {
     <FixedPanel title="TvDB" isFetching={isFetching}>
 
       <div className="font-bold">Download Options</div>
-      <Checkbox label="Fanart" id="TvDB_AutoFanart" isChecked={tvDBSettings.AutoFanart} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Fanart" id="TvDB_AutoFanart" isChecked={tvDBSettings.AutoFanart} onChange={handleInputChange} className="mt-1" />
       {tvDBSettings.AutoFanart && (
         <div className="flex justify-between mt-1">
           Max Fanart
           <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={e => setAutoFanartAmount(e.target.value)} className="w-10 text-center px-2" />
         </div>
       )}
-      <Checkbox label="Posters" id="TvDB_AutoPosters" isChecked={tvDBSettings.AutoPosters} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Posters" id="TvDB_AutoPosters" isChecked={tvDBSettings.AutoPosters} onChange={handleInputChange} className="mt-1" />
       {tvDBSettings.AutoPosters && (
         <div className="flex justify-between mt-1">
           Max Posters
           <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={e => setAutoPostersAmount(e.target.value)} className="w-10 text-center px-2" />
         </div>
       )}
-      <Checkbox label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={tvDBSettings.AutoWideBanners} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Wide Banners" id="TvDB_AutoWideBanners" isChecked={tvDBSettings.AutoWideBanners} onChange={handleInputChange} className="mt-1" />
       {tvDBSettings.AutoWideBanners && (
         <div className="flex justify-between mt-1">
           Max Wide Banners
@@ -98,7 +98,7 @@ function TvDBSettings() {
       )}
 
       <div className="font-bold mt-3">Preferences</div>
-      <Checkbox label="Auto Link" id="TvDB_AutoLink" isChecked={tvDBSettings.AutoLink} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Auto Link" id="TvDB_AutoLink" isChecked={tvDBSettings.AutoLink} onChange={handleInputChange} className="mt-1" />
       <SelectSmall label="Language" id="Language" value={tvDBSettings.Language} onChange={handleInputChange} className="mt-1">
         {tvdbLanguages.map(
           item => (<option value={item[0]} key={item[0]}>{item[1]}</option>),

@@ -10,7 +10,7 @@ import Events from '../../core/events';
 function LogsPage() {
   const dispatch = useDispatch();
 
-  const lines = useSelector((state: RootState) => state.logs.lines);
+  const lines = useSelector((state: RootState) => state.tempState.logs.lines);
 
   useEffect(() => {
     dispatch({ type: Events.LOGPAGE_LOAD });
@@ -31,14 +31,12 @@ function LogsPage() {
       rowIndex={index}
       parent={parent}
     >
-      {({ registerChild }) => (
-        <div ref={registerChild} key={key} style={style} className="text-sm bg-dark-gray">
-          <div className="content flex flex-row">
-            <div className="px-1 text-pink-500 whitespace-nowrap">{lines[index].timeStamp}</div>
-            <div className="px-1">{lines[index].message}</div>
-          </div>
+      <div key={key} style={style} className="text-sm bg-dark-gray">
+        <div className="content flex flex-row">
+          <div className="px-1 text-pink-500 whitespace-nowrap">{lines[index].timeStamp}</div>
+          <div className="px-1">{lines[index].message}</div>
         </div>
-      )}
+      </div>
     </CellMeasurer>
   );
 

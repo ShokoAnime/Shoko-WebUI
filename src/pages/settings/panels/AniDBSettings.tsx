@@ -59,9 +59,9 @@ function AniDBSettings() {
     <FixedPanel title="AniDB" isFetching={isFetching}>
 
       <div className="font-bold">Download Options</div>
-      <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} className="mt-1" />
       {DownloadRelatedAnime && (
         <div className="flex justify-between mt-1">
           Related Depth
@@ -70,11 +70,11 @@ function AniDBSettings() {
       )}
 
       <div className="font-bold mt-3">Mylist Options</div>
-      <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} className="mt-1" />
-      <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} className="mt-1" />
+      <Checkbox justify label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} className="mt-1" />
       <SelectSmall label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={handleInputChange} className="mt-1">
         <option value={0}>Unknown</option>
         <option value={1}>HDD</option>

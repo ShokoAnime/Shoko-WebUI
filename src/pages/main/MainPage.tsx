@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
+import { Outlet } from 'react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
@@ -8,16 +8,9 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Sidebar from '../../components/Layout/Sidebar';
 
-import DashboardPage from '../dashboard/DashboardPage';
-import ImportFoldersPage from '../import-folders/ImportFoldersPage';
-import ActionsPage from '../actions/ActionsPage';
-import SettingsPage from '../settings/SettingsPage';
-import LogsPage from '../logs/LogsPage';
-
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
-import CollectionPage from '../collection/CollectionPage';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -55,15 +48,7 @@ function MainPage() {
         </div>
         <div className="flex flex-col grow">
           <div className="overflow-y-auto grow">
-            <Route exact path="/">
-              <Redirect to="/dashboard" />
-            </Route>
-            <Route exact path="/dashboard" component={DashboardPage} />
-            <Route exact path="/import-folders" component={ImportFoldersPage} />
-            <Route exact path="/actions" component={ActionsPage} />
-            <Route exact path="/log" component={LogsPage} />
-            <Route exact path="/collection" component={CollectionPage} />
-            <Route exact path="/settings" component={SettingsPage} />
+            <Outlet />
           </div>
         </div>
       </div>

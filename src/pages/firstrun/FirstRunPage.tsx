@@ -1,26 +1,19 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Route, Redirect } from 'react-router';
-import { replace } from 'connected-react-router';
+import { Outlet } from 'react-router';
+import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
-  mdiLoading, mdiDiscord,
+  mdiLoading,
   mdiCheckboxIntermediateVariant,
   mdiCheckboxMarked,
   mdiCheckboxBlankOutline,
 } from '@mdi/js';
+import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
-import Acknowledgement from './Acknowledgement';
-import DatabaseSetup from './DatabaseSetup';
-import LocalAccount from './LocalAccount';
-import AniDBAccount from './AniDBAccount';
-import MetadataSources from './MetadataSources';
-import StartServer from './StartServer';
-import ImportFolders from './ImportFolders';
-import DataCollection from './DataCollection';
 
 function FirstRunPage() {
   const dispatch = useDispatch();
@@ -33,7 +26,7 @@ function FirstRunPage() {
 
   useEffect(() => {
     if (status.State !== 4) {
-      dispatch(replace('/login'));
+      dispatch(replace('login'));
       return;
     }
 
@@ -73,7 +66,7 @@ function FirstRunPage() {
         </div>
         <div className="flex flex-col w-full">
           <Button className="flex bg-primary items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
-            Get Help on <Icon path={mdiDiscord} size={0.75} className="mx-1" /> Discord
+            Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
           </Button>
           <Button className="bg-primary py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
             Documentation
@@ -81,17 +74,7 @@ function FirstRunPage() {
         </div>
       </div>
       <div className="flex grow">
-        <Route exact path="/firstrun">
-          <Redirect to="/firstrun/acknowledgement" />
-        </Route>
-        <Route exact path="/firstrun/acknowledgement" component={Acknowledgement} />
-        <Route exact path="/firstrun/db-setup" component={DatabaseSetup} />
-        <Route exact path="/firstrun/local-account" component={LocalAccount} />
-        <Route exact path="/firstrun/anidb-account" component={AniDBAccount} />
-        <Route exact path="/firstrun/metadata-sources" component={MetadataSources} />
-        <Route exact path="/firstrun/start-server" component={StartServer} />
-        <Route exact path="/firstrun/import-folders" component={ImportFolders} />
-        <Route exact path="/firstrun/data-collection" component={DataCollection} />
+        <Outlet />
       </div>
     </div>
   );

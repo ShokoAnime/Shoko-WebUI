@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
-import { mdiLoading, mdiDiscord, mdiCloseCircle } from '@mdi/js';
+import { mdiLoading, mdiCloseCircle } from '@mdi/js';
+import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -67,7 +68,7 @@ function LoginPage() {
     }
   };
 
-  const openFirstRunWizard = () => dispatch(push({ pathname: '/firstrun/acknowledgement' }));
+  const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
 
   return (
     <React.Fragment>
@@ -137,7 +138,7 @@ function LoginPage() {
           </div>
           <div className="flex flex-col w-full">
             <Button className="flex bg-primary items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
-              Get Help on <Icon path={mdiDiscord} size={0.75} className="mx-1" /> Discord
+              Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
             </Button>
             <Button className="bg-primary py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
               Documentation

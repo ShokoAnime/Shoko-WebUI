@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {
@@ -12,11 +12,11 @@ import {
   mdiTools,
   mdiFolder,
   mdiMagnify,
-  mdiDiscord,
   mdiHelpCircleOutline,
   mdiGithub,
   mdiLogout,
 } from '@mdi/js';
+import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
@@ -35,7 +35,7 @@ function Sidebar() {
   }, []);
   
   const renderMenuItem = (key: string, text: string, icon: string) => {
-    const isHighlighted = pathname === `/${key}`; 
+    const isHighlighted = pathname === `/webui/${key}`; 
     return (
       <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
@@ -83,7 +83,7 @@ function Sidebar() {
         </div>
       </div>
       <div className="flex justify-between w-full self-end px-6 mt-auto py-6">
-        {renderMenuLink('https://discord.gg/vpeHDsg', mdiDiscord)}
+        {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
         {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
         {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
       </div>

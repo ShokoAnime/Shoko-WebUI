@@ -1,5 +1,5 @@
 import { call, put } from 'redux-saga/effects';
-import { push, replace } from 'connected-react-router';
+import { push, replace } from '@lagunovsky/redux-react-router';
 import { toast } from 'react-toastify';
 
 import Events from '../events';
@@ -49,7 +49,7 @@ function* login(action) {
   }));
 
   if ((payload.redirect) ?? true) {
-    yield put(push({ pathname: '/dashboard' }));
+    yield put(push({ pathname: 'dashboard' }));
   }
   yield put(stopFetching('login'));
 }
@@ -64,7 +64,7 @@ function* logout(action) {
   if (payload && payload.clearState) {
     yield put({ type: Events.STORE_CLEAR_STATE });
   } else {
-    yield put(replace({ pathname: '/login' }));
+    yield put(replace({ pathname: 'login' }));
   }
 }
 

@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { forEach } from 'lodash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faRedoAlt } from '@fortawesome/free-solid-svg-icons';
+import { mdiRefresh } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
-import FixedPanel from '../../../components/Panels/FixedPanel';
 import Select from '../../../components/Input/Select';
-import Button from '../../../components/Input/Button';
-import { SeriesInfoType } from '../../../core/types/api';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
+
+import type { SeriesInfoType } from '../../../core/types/api';
 
 function SeriesInImportFolders() {
   const dispatch = useDispatch();
@@ -57,20 +57,20 @@ function SeriesInImportFolders() {
           folder => (<option value={folder.ID}>{folder.Path}</option>),
         )}
       </Select>
-      <Button onClick={() => getSeries(selectedFolder)} className="color-highlight-1">
-        <FontAwesomeIcon icon={faRedoAlt} />
-      </Button>
+      <div onClick={() => getSeries(selectedFolder)} className="color-highlight-1">
+        <Icon path={mdiRefresh} size={1} horizontal vertical rotate={180}/>
+      </div>
     </div>
   );
 
   return (
-    <FixedPanel title="Series In Import Folder" options={renderOptions()} isFetching={isFetching}>
+    <ShokoPanel title="Series In Import Folder" options={renderOptions()} isFetching={isFetching} className="overflow-y-auto">
       <table className="table-auto">
         <tbody>
           {seriesInFolder.map((series, index) => renderItem(series, index + 1))}
         </tbody>
       </table>
-    </FixedPanel>
+    </ShokoPanel>
   );
 }
 

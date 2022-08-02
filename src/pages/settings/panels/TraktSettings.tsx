@@ -67,7 +67,7 @@ function TraktSettings() {
 
   return (
     <FixedPanel title="Trakt" isFetching={isFetchingSettings}>
-      <Checkbox label="Enabled" id="Trakt_Enabled" isChecked={traktSettings.Enabled} onChange={handleInputChange} />
+      <Checkbox justify label="Enabled" id="Trakt_Enabled" isChecked={traktSettings.Enabled} onChange={handleInputChange} />
       {traktSettings.Enabled && (
         traktSettings.TokenExpirationDate === ''
           ? renderTraktCode()

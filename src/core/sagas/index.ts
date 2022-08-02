@@ -53,7 +53,9 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_LOGIN, SagaAuth.login),
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
     // COLLECTION PAGE
-    takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.getGroups),
+    takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.eventCollectionPageLoad),
+    takeEvery(Events.COLLECTION_GET_GROUPS, SagaCollection.getGroups),
+    takeEvery(Events.COLLECTION_GET_GROUP_SERIES, SagaCollection.getGroupSeries),
     // DASHBOARD
     takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
@@ -68,12 +70,10 @@ export default function* rootSaga() {
     // QUICK ACTIONS
     takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE
-    takeEvery(Events.MAINPAGE_FILE_AVDUMP, SagaFile.runAvdump),
     takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
     takeEvery(Events.MAINPAGE_LOAD, SagaMainPage.eventMainPageLoad),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
-    takeEvery(Events.MAINPAGE_RECENT_FILE_DETAILS, SagaFile.getRecentFileDetails),
     takeEvery(Events.MAINPAGE_RECENT_FILES, SagaFile.getRecentFiles),
     throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageRefresh),
     // IMPORT FOLDER
@@ -97,5 +97,9 @@ export default function* rootSaga() {
     // WEBUI
     takeEvery(Events.WEBUI_CHECK_UPDATES, SagaWebUi.checkUpdates),
     takeEvery(Events.WEBUI_UPDATE, SagaWebUi.downloadUpdates),
+    // UTILITIES
+    takeEvery(Events.UTILITIES_RESCAN, SagaFile.runRescan),
+    takeEvery(Events.UTILITIES_REHASH, SagaFile.runRehash),
+    takeEvery(Events.UTILITIES_AVDUMP, SagaFile.runAvdump),
   ]);
 }

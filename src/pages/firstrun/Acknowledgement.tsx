@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from 'connected-react-router';
+import { push } from '@lagunovsky/redux-react-router';
 
 import { RootState } from '../../core/store';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';

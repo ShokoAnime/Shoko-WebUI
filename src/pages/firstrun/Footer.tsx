@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { goBack, push, replace } from 'connected-react-router';
+import { back, push, replace } from '@lagunovsky/redux-react-router';
 import cx from 'classnames';
 
 import Button from '../../components/Input/Button';
@@ -36,7 +36,7 @@ function Footer(props: Props) {
         {status?.text}
       </div>
       <div className="flex justify-between">
-        <Button onClick={() => dispatch(goBack())} className="bg-primary py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
+        <Button onClick={() => dispatch(back())} className="bg-primary py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
           <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-primary py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (

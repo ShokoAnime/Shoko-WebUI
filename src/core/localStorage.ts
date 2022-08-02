@@ -1,12 +1,16 @@
 import { RootState } from './store';
+import { omit } from 'lodash';
 
 export const loadState = (): RootState => {
   try {
-    const serializedState = global.localStorage.getItem('state') ?? global.sessionStorage.getItem('state');
-    if (serializedState === null) {
-      return ({} as any);
+    const serializedStateString = global.localStorage.getItem('state') ?? global.sessionStorage.getItem('state');
+    const serializedState = JSON.parse(serializedStateString ?? '{}');
+    const tempStateString = global.sessionStorage.getItem('tempState');
+    if (tempStateString === null) {
+      return serializedState;
     }
-    return JSON.parse(serializedState);
+    const tempState = JSON.parse(tempStateString);
+    return { ...serializedState, tempState };
   } catch (err) {
     return ({} as any);
   }
@@ -14,12 +18,14 @@ export const loadState = (): RootState => {
 
 export const saveState = (state: RootState) => {
   try {
-    const serializedState = JSON.stringify(state);
+    const serializedState = JSON.stringify(omit(state, ['tempState']));
+    const tempState = JSON.stringify(state.tempState);
     if (state.apiSession.rememberUser) {
       global.localStorage.setItem('state', serializedState);
     } else {
       global.sessionStorage.setItem('state', serializedState);
     }
+    global.sessionStorage.setItem('tempState', tempState);
   } catch (err) { // Ignore write errors.
   }
 };

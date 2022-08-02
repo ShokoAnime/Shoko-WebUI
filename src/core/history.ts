@@ -1,7 +1,5 @@
 import { createBrowserHistory } from 'history';
 
-const browserHistory = createBrowserHistory({
-  basename: '/webui',
-});
+const browserHistory = createBrowserHistory();
 
 export default browserHistory;

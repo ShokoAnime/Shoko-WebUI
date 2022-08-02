@@ -1,15 +1,27 @@
-import { ImageType, ImagesType, RatingType, SizesType } from './common';
+import { ImageType, ImagesType, RatingType } from './common';
 
 export type SeriesType = {
   IDs: SeriesIDsType;
   Name: string;
   Size: number;
-  Sizes: SizesType;
+  Sizes: SeriesSizesType;
   Images: ImagesType;
   UserRating: RatingType;
   Links: Array<SeriesResourceType>;
   Created: string;
   Updated: string;
+};
+
+export type SeriesRelationType = {
+  IDs: SeriesRelationIDsType;
+  RelatedIDs: SeriesRelationIDsType;
+  Type: SeriesRelationTypeEnum;
+  Source: string;
+};
+
+export type SeriesRelationIDsType = {
+  Shoko: number | null;
+  AniDB: number | null;
 };
 
 export type SeriesSearchResult = SeriesType & {
@@ -52,6 +64,20 @@ export const enum SeriesTypeEnum {
   OVA = 'OVA',
 }
 
+export const enum SeriesRelationTypeEnum {
+  Other = 'Other',
+  SameSetting = 'SameSetting',
+  AlternativeSetting = 'AlternativeSetting',
+  AlternativeVersion = 'AlternativeVersion',
+  SharedCharacters = 'SharedCharacters',
+  Prequel = 'Prequel',
+  MainStory = 'MainStory',
+  FullStory = 'FullStory',
+  Sequel = 'Sequel',
+  SideStory = 'SideStory',
+  Summary = 'Summary',
+}
+
 export type SeriesAniDBRecommendedForYou = {
   Anime: SeriesAniDBType;
   SimilarTo: number;
@@ -89,4 +115,33 @@ export type SeriesResourceType = {
   name: string;
   url: string;
   image: ImageType | null;
+};
+
+export type SeriesSizesType = {
+  FileSources: SeriesSizesFileSourcesType;
+  Local: SeriesSizesEpisodeCountsType;
+  Watched: SeriesSizesEpisodeCountsType;
+  Total: SeriesSizesEpisodeCountsType;
+};
+
+export type SeriesSizesFileSourcesType = {
+  Unknown: number;
+  Other: number;
+  TV: number;
+  DVD: number;
+  BluRay: number;
+  Web: number;
+  VHS: number;
+  VCD: number;
+  LaserDisc: number;
+  Camera: number;
+};
+
+export type SeriesSizesEpisodeCountsType = {
+  Episodes: number;
+  Specials: number;
+  Credits: number;
+  Trailers: number;
+  Parodies: number;
+  Others: number;
 };

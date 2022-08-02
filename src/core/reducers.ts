@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import { connectRouter } from 'connected-react-router';
+import { createRouterReducer } from '@lagunovsky/redux-react-router';
 import { handleAction } from 'redux-actions';
 import {
   SET_AUTOUPDATE,
@@ -12,12 +12,12 @@ import firstrunReducer from './slices/firstrun';
 import localSettingsReducer from './slices/localSettings';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
-import logsReducer from './slices/logs';
 import modalsReducer from './slices/modals';
 import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
 import jmmVersionReducer from './slices/jmmVersion';
 import collectionReducer from './slices/collection';
+import tempStateReducer from './slices/tempState';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -29,15 +29,15 @@ const reducers = {
   localSettings: localSettingsReducer,
   mainpage: mainpageReducer,
   misc: miscReducer,
-  logs: logsReducer,
   modals: modalsReducer,
   serverSettings: serverSettingsReducer,
   webuiSettings: webuiSettingsReducer,
   autoUpdate,
   jmmVersion: jmmVersionReducer,
   collection: collectionReducer,
+  tempState: tempStateReducer,
 };
 
 export type Reducers = typeof reducers;
 
-export default (history => combineReducers({ router: connectRouter(history), ...reducers }));
+export default (history => combineReducers({ router: createRouterReducer(history), ...reducers }));
