@@ -1,17 +1,16 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
-import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
+
+import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtk/dashboardApi';
 
 const names = {
   Series: 'TV Series',
 };
 
 function CollectionTypeBreakdown() {
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.seriesSummary);
-  const seriesSummary = useSelector((state: RootState) => state.mainpage.seriesSummary);
+  const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
   const renderName = (item: string, count: number, countPercentage: number) => (
     <div key={`${item}-name`} className="flex mt-3 first:mt-0">
@@ -29,7 +28,7 @@ function CollectionTypeBreakdown() {
   let total = 0;
   const seriesSummaryArray: Array<any> = [];
 
-  forEach(seriesSummary, (item, key) => {
+  forEach(seriesSummary.data, (item, key) => {
     total += (item ?? 0);
     seriesSummaryArray.push([key, item]);
   });
@@ -50,7 +49,7 @@ function CollectionTypeBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Collection Type Breakdown" isFetching={!hasFetched}>
+    <ShokoPanel title="Collection Type Breakdown" isFetching={seriesSummary.isLoading}>
       {items}
     </ShokoPanel>
   );

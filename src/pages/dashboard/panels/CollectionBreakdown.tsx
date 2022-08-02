@@ -1,13 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 
-import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
+import { useGetDashboardStatsQuery } from '../../../core/rtk/dashboardApi';
+
 function CollectionBreakdown() {
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.stats);
-  const stats = useSelector((state: RootState) => state.mainpage.stats);
+  const stats = useGetDashboardStatsQuery();
 
   const renderItem = (key: string, title: string, value: string | number = 0) => (
     <div key={key} className="flex">
@@ -19,27 +18,27 @@ function CollectionBreakdown() {
   );
 
   const childrenFirst = [
-    renderItem('series', 'Series', stats.SeriesCount),
-    renderItem('series-completed', 'Series Completed', stats.FinishedSeries),
-    renderItem('episodes-watched', 'Episodes Watched', stats.WatchedEpisodes),
-    renderItem('hours-watched', 'Hours Watched', `${stats.WatchedHours || 0} H`),
+    renderItem('series', 'Series', stats.data?.SeriesCount),
+    renderItem('series-completed', 'Series Completed', stats.data?.FinishedSeries),
+    renderItem('episodes-watched', 'Episodes Watched', stats.data?.WatchedEpisodes),
+    renderItem('hours-watched', 'Hours Watched', `${stats.data?.WatchedHours || 0} H`),
   ];
   const childrenSecond = [
-    renderItem('collection-size', 'Collection Size', `${prettyBytes(stats.FileSize || 0, { binary: true })}`),
-    renderItem('files', 'Files', stats.FileCount),
-    renderItem('unrecognized-files', 'Unrecognized Files', stats.UnrecognizedFiles),
-    renderItem('multiple-files', 'Multiple Files', stats.EpisodesWithMultipleFiles),
-    renderItem('duplicate-files', 'Duplicate Files', stats.FilesWithDuplicateLocations),
+    renderItem('collection-size', 'Collection Size', `${prettyBytes(stats.data?.FileSize || 0, { binary: true })}`),
+    renderItem('files', 'Files', stats.data?.FileCount),
+    renderItem('unrecognized-files', 'Unrecognized Files', stats.data?.UnrecognizedFiles),
+    renderItem('multiple-files', 'Multiple Files', stats.data?.EpisodesWithMultipleFiles),
+    renderItem('duplicate-files', 'Duplicate Files', stats.data?.FilesWithDuplicateLocations),
   ];
 
   const childrenThird = [
-    renderItem('missing-links', 'Missing TvDB/TMDB Links', stats.SeriesWithMissingLinks),
-    renderItem('missing-episodes-collecting', 'Missing Episodes (Collecting)', stats.MissingEpisodesCollecting),
-    renderItem('missing-episodes', 'Missing Episodes (Total)', stats.MissingEpisodes),
+    renderItem('missing-links', 'Missing TvDB/TMDB Links', stats.data?.SeriesWithMissingLinks),
+    renderItem('missing-episodes-collecting', 'Missing Episodes (Collecting)', stats.data?.MissingEpisodesCollecting),
+    renderItem('missing-episodes', 'Missing Episodes (Total)', stats.data?.MissingEpisodes),
   ];
 
   return (
-    <ShokoPanel title="Collection Breakdown" isFetching={!hasFetched}>
+    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading}>
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>
