@@ -65,6 +65,8 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_START_SERVER, SagaInit.startServer),
     takeEvery(Events.FIRSTRUN_TEST_ANIDB, SagaInit.testAniDB),
     takeEvery(Events.FIRSTRUN_TEST_DATABASE, SagaInit.testDatabase),
+    // FILTERS
+    takeEvery(Events.FILTERS_GET, SagaCollection.getFilters),
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
     // QUICK ACTIONS

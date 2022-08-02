@@ -3,8 +3,10 @@ import { toast } from 'react-toastify';
 import { get } from 'lodash';
 
 import ApiGroup from '../api/v3/group';
+import ApiFilters from '../api/v3/filter';
 
 import { setGroups, setGroupSeries } from '../slices/collection';
+import { setFilters } from '../slices/modals/filters';
 
 function* eventCollectionPageLoad() {
   yield all([
@@ -39,8 +41,19 @@ function* getGroupSeries(action) {
   yield put(setGroupSeries(resultJson.data));
 }
 
+function* getFilters() {
+  const resultJson = yield call(ApiFilters.getFilters);
+  if (resultJson.error) {
+    toast.error(resultJson.message);
+    return;
+  }
+
+  yield put(setFilters(resultJson.data.List));
+}
+
 export default {
   eventCollectionPageLoad,
   getGroups,
   getGroupSeries,
+  getFilters,
 };
