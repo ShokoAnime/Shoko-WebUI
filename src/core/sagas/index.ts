@@ -10,7 +10,6 @@ import Events from '../events';
 
 import SagaAuth from './auth';
 import SagaCollection from './collection';
-import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
@@ -56,8 +55,6 @@ export default function* rootSaga() {
     takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.eventCollectionPageLoad),
     takeEvery(Events.COLLECTION_GET_GROUPS, SagaCollection.getGroups),
     takeEvery(Events.COLLECTION_GET_GROUP_SERIES, SagaCollection.getGroupSeries),
-    // DASHBOARD
-    takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),

@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import type { RootState } from '../store';
+import type { PaginationType } from '../types/api';
 import type { DashboardStatsType, DashboardSeriesSummaryType, DashboardEpisodeDetailsType } from '../types/api/dashboard';
 import type { SeriesType } from '../types/api/series';
 
@@ -32,13 +33,28 @@ export const dashboardApi = createApi({
     }),
 
     // Get a list of recently added episodes (with additional details).
-    getDashboardRecentlyAddedEpisodes: build.query<Array<DashboardEpisodeDetailsType>, { pageSize: number }>({
-      query: args => ({ url: 'RecentlyAddedEpisodes', params: args }),
+    getDashboardRecentlyAddedEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+      query: params => ({ url: 'RecentlyAddedEpisodes', params }),
     }),
 
     // Get a list of recently added series.
-    getDashboardRecentlyAddedSeries: build.query<Array<SeriesType>, { pageSize: number }>({
-      query: args => ({ url: 'RecentlyAddedSeries', params: args }),
+    getDashboardRecentlyAddedSeries: build.query<Array<SeriesType>, PaginationType>({
+      query: params => ({ url: 'RecentlyAddedSeries', params }),
+    }),
+
+    // Get a list of the episodes to continue watching in recently watched order
+    getDashboardContinueWatchingEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+      query: params => ({ url: 'ContinueWatchingEpisodes', params }),
+    }),
+
+    // Get the next episodes for series that currently don't have an active watch session for the user.
+    getDashboardNextUpEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+      query: params => ({ url: 'NextUpEpisodes', params }),
+    }),
+
+    // Get a list of the episodes to continue watching (soon-to-be) in recently watched order
+    getDashboardAniDBCalendar: build.query<Array<DashboardEpisodeDetailsType>, { showAll: boolean }>({
+      query: params => ({ url: 'AniDBCalendar', params }),
     }),
   }),
 });
@@ -48,4 +64,7 @@ export const {
   useGetDashboardSeriesSummaryQuery,
   useGetDashboardRecentlyAddedEpisodesQuery,
   useGetDashboardRecentlyAddedSeriesQuery,
+  useGetDashboardContinueWatchingEpisodesQuery,
+  useGetDashboardNextUpEpisodesQuery,
+  useGetDashboardAniDBCalendarQuery,
 } = dashboardApi;

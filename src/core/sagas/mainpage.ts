@@ -4,10 +4,8 @@ import { toast } from 'react-toastify';
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
-import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaImportFolder from './import-folder';
-import Events from '../events';
 
 // const alert = useAlert();
 
@@ -28,10 +26,6 @@ function* eventMainPageLoad() {
   yield all([
     yield call(SagaImportFolder.getImportFolders),
     yield call(SagaFile.getUnrecognizedFiles),
-    yield call(SagaDashboard.getDashboardContinueWatching),
-    yield call(SagaDashboard.getDashboardNextUp),
-    yield call(SagaDashboard.getDashboardUpcomingAnime, { type: Events.DASHBOARD_UPCOMING_ANIME, payload: false }),
-    yield call(SagaDashboard.getDashboardNews),
   ]);
 
   // yield put({ type: Events.CHECK_UPDATES });

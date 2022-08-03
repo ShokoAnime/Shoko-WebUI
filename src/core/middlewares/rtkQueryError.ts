@@ -7,10 +7,11 @@ const rtkQueryErrorLogger: Middleware =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   (api: MiddlewareAPI) => next => (action) => {
     if (isRejectedWithValue(action)) {
+      // TODO: This needs to be better implemented
       if (action.payload.status === 401) {
         toast.error('Unauthorized!');
       } else {
-        toast.error(action.payload.data.title);
+        toast.error(action.payload?.data?.title ?? action.payload.error);
       }
     }
 
