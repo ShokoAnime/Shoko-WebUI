@@ -5,7 +5,7 @@ import type { DashboardStatsType, DashboardSeriesSummaryType, DashboardEpisodeDe
 import type { SeriesType } from '../types/api/series';
 
 export const dashboardApi = createApi({
-  reducerPath: 'dashboardApi',
+  reducerPath: 'dashboard',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/Dashboard/',
     prepareHeaders: (headers, { getState }) => {
@@ -15,10 +15,12 @@ export const dashboardApi = createApi({
     },
   }),
   endpoints: build => ({
+
     // Get the counters of various collection stats
     getDashboardStats: build.query<DashboardStatsType, void>({
       query: () => ({ url: 'Stats' }),
     }),
+
     // Gets a breakdown of which types of anime the user has access to
     getDashboardSeriesSummary: build.query<DashboardSeriesSummaryType, void>({
       query: () => ({ url: 'SeriesSummary' }),
@@ -28,12 +30,14 @@ export const dashboardApi = createApi({
         return result;
       },
     }),
+
     // Get a list of recently added episodes (with additional details).
-    getDashboardRecentlyAddedEpisodes: build.query<Array<DashboardEpisodeDetailsType>, { pageSize: number, page: number }>({
+    getDashboardRecentlyAddedEpisodes: build.query<Array<DashboardEpisodeDetailsType>, { pageSize: number }>({
       query: args => ({ url: 'RecentlyAddedEpisodes', params: args }),
     }),
+
     // Get a list of recently added series.
-    getDashboardRecentlyAddedSeries: build.query<Array<SeriesType>, { pageSize: number, page: number }>({
+    getDashboardRecentlyAddedSeries: build.query<Array<SeriesType>, { pageSize: number }>({
       query: args => ({ url: 'RecentlyAddedSeries', params: args }),
     }),
   }),

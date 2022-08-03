@@ -19,7 +19,7 @@ import jmmVersionReducer from './slices/jmmVersion';
 import collectionReducer from './slices/collection';
 import tempStateReducer from './slices/tempState';
 
-import { dashboardApi } from './rtk/dashboardApi';
+import { dashboardApi } from './rtkQuery/dashboardApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 

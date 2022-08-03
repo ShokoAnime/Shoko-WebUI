@@ -3,7 +3,7 @@ import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-import { useGetDashboardStatsQuery } from '../../../core/rtk/dashboardApi';
+import { useGetDashboardStatsQuery } from '../../../core/rtkQuery/dashboardApi';
 
 function CollectionBreakdown() {
   const stats = useGetDashboardStatsQuery();

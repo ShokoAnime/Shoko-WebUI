@@ -3,6 +3,7 @@ import { throttle } from 'lodash';
 import { createRouterMiddleware } from '@lagunovsky/redux-react-router';
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import signalrMiddleware from './middlewares/signalr';
+import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
 import { saveState, loadState } from './localStorage';
 import createRootReducer from './reducers';
 import rootSaga from './sagas';
@@ -10,7 +11,7 @@ import history from './history';
 import Events from './events';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 
-import { dashboardApi } from './rtk/dashboardApi';
+import { dashboardApi } from './rtkQuery/dashboardApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -25,7 +26,14 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 const sagaMiddleware = createSagaMiddleware();
 const routeMiddleware = createRouterMiddleware(history);
-const middleware = [...getDefaultMiddleware(), routeMiddleware, sagaMiddleware, signalrMiddleware, dashboardApi.middleware];
+const middleware = [
+  ...getDefaultMiddleware(),
+  routeMiddleware,
+  sagaMiddleware,
+  signalrMiddleware,
+  rtkQueryErrorMiddleware,
+  dashboardApi.middleware,
+];
 
 const store = configureStore({
   reducer: rootReducer,

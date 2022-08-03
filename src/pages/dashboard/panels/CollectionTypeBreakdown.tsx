@@ -3,7 +3,7 @@ import { forEach } from 'lodash';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtk/dashboardApi';
+import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtkQuery/dashboardApi';
 
 const names = {
   Series: 'TV Series',

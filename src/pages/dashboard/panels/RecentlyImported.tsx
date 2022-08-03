@@ -8,12 +8,12 @@ import SeriesDetails from '../components/SeriesDetails';
 import {
   useGetDashboardRecentlyAddedEpisodesQuery,
   useGetDashboardRecentlyAddedSeriesQuery,
-} from '../../../core/rtk/dashboardApi';
+} from '../../../core/rtkQuery/dashboardApi';
 
 const RecentlyImported = () => {
   const [showSeries, setShowSeries] = useState(false);
-  const series = useGetDashboardRecentlyAddedSeriesQuery({ pageSize: 20, page: 1 });
-  const episodes = useGetDashboardRecentlyAddedEpisodesQuery({ pageSize: 30, page: 1 });
+  const series = useGetDashboardRecentlyAddedSeriesQuery({ pageSize: 20 });
+  const episodes = useGetDashboardRecentlyAddedEpisodesQuery({ pageSize: 30 });
 
   return (
     <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />}>
