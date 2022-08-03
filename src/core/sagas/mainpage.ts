@@ -26,11 +26,7 @@ function* getQueueStatus() {
 
 function* eventMainPageLoad() {
   yield all([
-    yield call(SagaDashboard.getDashboardStats),
-    yield call(SagaDashboard.getDashboardSeriesSummary),
     yield call(SagaImportFolder.getImportFolders),
-    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
-    yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
     yield call(SagaFile.getUnrecognizedFiles),
     yield call(SagaDashboard.getDashboardContinueWatching),
     yield call(SagaDashboard.getDashboardNextUp),
@@ -43,10 +39,6 @@ function* eventMainPageLoad() {
 
 function* eventMainPageRefresh() {
   yield all([
-    yield call(SagaDashboard.getDashboardStats),
-    yield call(SagaDashboard.getDashboardSeriesSummary),
-    yield call(SagaDashboard.getDashboardRecentlyAddedEpisodes),
-    yield call(SagaDashboard.getDashboardRecentlyAddedSeries),
     yield call(SagaFile.getUnrecognizedFiles),
   ]);
 
