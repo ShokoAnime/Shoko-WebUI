@@ -19,7 +19,6 @@ const config = {
   entry: [
     '@fontsource/open-sans/latin.css',
     './css/main.scss',
-    isDebug && '@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
   mode: isDebug ? 'development' : 'production',
@@ -209,6 +208,7 @@ if (isDebug && useHMR) {
     ignored: /public/, //because sass-loader causes rebuild loop otherwise
   };
   config.entry.unshift('webpack-hot-middleware/client');
+  config.entry.unshift('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
   config.optimization = {
     ...config.optimization,

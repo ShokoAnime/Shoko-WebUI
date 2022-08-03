@@ -53,3 +53,16 @@ export type RatingType = {
   Votes: number;
   Type: string | null;
 };
+
+export type FilterType = {
+  IDs: {
+    ParentFilter: number;
+    ID: number;
+  }
+  Locked: boolean;
+  ApplyAtSeriesLevel: boolean;
+  Directory: boolean;
+  HideInAPI: boolean;
+  Name: string;
+  Size: number;
+};
