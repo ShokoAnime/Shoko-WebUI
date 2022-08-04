@@ -42,3 +42,8 @@ export type PaginationType = {
   pageSize: number;
   page?: number;
 };
+
+export type ListResultType<T> = {
+  Total: number;
+  List: T;
+};
