@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import Events from '../../core/events';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { Icon } from '@mdi/react';
 import { mdiCogOutline, mdiFormatListText } from '@mdi/js';
 
+import { useGetGroupSeriesQuery } from '../../core/rtkQuery/collectionApi';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../core/store';
@@ -14,17 +14,13 @@ import { CollectionGroupType } from '../../core/types/api/collection';
 
 const Group = () => {
   const { groupId } = useParams();
-  const dispatch = useDispatch();
 
-  const items: Array<SeriesType> = useSelector((state: RootState) => state.collection.groupSeries);
   const groups: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
+  const series = useGetGroupSeriesQuery({ groupId });
+  const items: Array<SeriesType> = series?.data ?? [] as Array<SeriesType>;
 
   const [mode, setMode] = useState('grid');
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
-  
-  useEffect(() => {
-    dispatch({ type: Events.COLLECTION_GET_GROUP_SERIES, payload: groupId });
-  }, [groupId]);
   
   const group = useMemo(() => groups.filter((item:CollectionGroupType) => `${item.IDs.ID}` === groupId)[0], [groupId, groups]);
   

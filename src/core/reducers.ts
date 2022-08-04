@@ -21,6 +21,7 @@ import tempStateReducer from './slices/tempState';
 
 import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
+import { collectionApi } from './rtkQuery/collectionApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -41,6 +42,7 @@ const reducers = {
   tempState: tempStateReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
   [externalApi.reducerPath]: externalApi.reducer,
+  [collectionApi.reducerPath]: collectionApi.reducer,
 };
 
 export type Reducers = typeof reducers;

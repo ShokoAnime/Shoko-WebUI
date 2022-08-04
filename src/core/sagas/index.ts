@@ -51,10 +51,6 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_CHANGE_PASSWORD, SagaAuth.changePassword),
     takeEvery(Events.AUTH_LOGIN, SagaAuth.login),
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
-    // COLLECTION PAGE
-    takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.eventCollectionPageLoad),
-    takeEvery(Events.COLLECTION_GET_GROUPS, SagaCollection.getGroups),
-    takeEvery(Events.COLLECTION_GET_GROUP_SERIES, SagaCollection.getGroupSeries),
     // FIRSTRUN
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),
