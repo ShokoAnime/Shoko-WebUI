@@ -30,3 +30,16 @@ export type GroupSizesSeriesTypesType = {
   Movie: number;
   OVA: number;
 };
+
+export type CollectionFilterType = {
+  IDs: {
+    ParentFilter: number | null;
+    ID: number;
+  },
+  Locked: boolean;
+  ApplyAtSeriesLevel: boolean;
+  Directory: boolean;
+  Hidden: boolean;
+  Name: string;
+  Size: number;
+};

@@ -4,20 +4,24 @@ import ModalPanel from '../Panels/ModalPanel';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../core/store';
 import { setStatus } from '../../core/slices/modals/filters';
-import Events from '../../core/events';
+import { useLazyGetTopFiltersQuery } from '../../core/rtkQuery/collectionApi';
+
+import type { CollectionFilterType } from '../../core/types/api/collection';
 
 function FiltersModal() {
   const dispatch = useDispatch();
   const status = useSelector((state: RootState) => state.modals.filters.status);
-  const filters = useSelector((state: RootState) => state.modals.filters.filters);
+  const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
+  const filters: Array<CollectionFilterType> = filtersResult?.data?.List ?? [] as Array<CollectionFilterType>;
+  
+  useEffect(() => {
+    if (!status) { return; }
+    trigger({}).catch(() => {});
+  }, [status]);
 
   const handleClose = () => dispatch(setStatus(false));
   
-  useEffect(() => {
-    dispatch({ type: Events.FILTERS_GET });
-  }, []);
-  
-  const renderItem = item => (
+  const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold">
       <span>{item.Name}</span>
       <span className="text-highlight-2">{item.Size}</span>
