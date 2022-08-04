@@ -37,3 +37,8 @@ export type QueueStatusType = {
   GeneralQueueCount: number;
   ImageQueueCount: number;
 };
+
+export type PaginationType = {
+  pageSize: number;
+  page?: number;
+};

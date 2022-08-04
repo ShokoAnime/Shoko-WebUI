@@ -12,6 +12,7 @@ import Events from './events';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import { dashboardApi } from './rtkQuery/dashboardApi';
+import { externalApi } from './rtkQuery/externalApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -33,6 +34,7 @@ const middleware = [
   signalrMiddleware,
   rtkQueryErrorMiddleware,
   dashboardApi.middleware,
+  externalApi.middleware,
 ];
 
 const store = configureStore({

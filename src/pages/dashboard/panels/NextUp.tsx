@@ -1,17 +1,15 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import React from 'react';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import EpisodeDetails from '../components/EpisodeDetails';
 
+import { useGetDashboardNextUpEpisodesQuery } from '../../../core/rtkQuery/dashboardApi';
 
 const NextUp = () => {
-  const items = useSelector((state: RootState) => state.mainpage.nextUp);
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.nextUp);
+  const items = useGetDashboardNextUpEpisodesQuery({ pageSize: 20 });
 
   return (
-    <ShokoPanel title="Next Up" isFetching={!hasFetched}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.map(item => <EpisodeDetails episode={item} />)}</div>
+    <ShokoPanel title="Next Up" isFetching={items.isLoading}>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.data?.map(item => <EpisodeDetails episode={item} />)}</div>
     </ShokoPanel>
   );
 };

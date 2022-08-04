@@ -1,16 +1,14 @@
 import { RootState } from './store';
-import { omit } from 'lodash';
 
 export const loadState = (): RootState => {
   try {
-    const serializedStateString = global.localStorage.getItem('state') ?? global.sessionStorage.getItem('state');
-    const serializedState = JSON.parse(serializedStateString ?? '{}');
-    const tempStateString = global.sessionStorage.getItem('tempState');
-    if (tempStateString === null) {
+    const serializedState = JSON.parse(global.sessionStorage.getItem('state') ?? '{}');
+    const apiSessionString = global.localStorage.getItem('apiSession');
+    if (apiSessionString === null) {
       return serializedState;
     }
-    const tempState = JSON.parse(tempStateString);
-    return { ...serializedState, tempState };
+    const apiSession = JSON.parse(apiSessionString);
+    return { ...serializedState, apiSession };
   } catch (err) {
     return ({} as any);
   }
@@ -18,14 +16,11 @@ export const loadState = (): RootState => {
 
 export const saveState = (state: RootState) => {
   try {
-    const serializedState = JSON.stringify(omit(state, ['tempState']));
-    const tempState = JSON.stringify(state.tempState);
+    const serializedState = JSON.stringify(state);
     if (state.apiSession.rememberUser) {
-      global.localStorage.setItem('state', serializedState);
-    } else {
-      global.sessionStorage.setItem('state', serializedState);
+      global.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
-    global.sessionStorage.setItem('tempState', tempState);
+    global.sessionStorage.setItem('state', serializedState);
   } catch (err) { // Ignore write errors.
   }
 };

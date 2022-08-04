@@ -3,15 +3,13 @@ import { Icon } from '@mdi/react';
 import { mdiOpenInNew } from '@mdi/js';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../core/store';
 import { DashboardNewsType } from '../../../core/types/api/dashboard';
 
+import { useGetShokoNewsFeedQuery } from '../../../core/rtkQuery/externalApi';
 
 function ShokoNews() {
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.news);
-  const items = useSelector((state: RootState) => state.mainpage.news);
-  
+  const items = useGetShokoNewsFeedQuery();
+
   const renderRow = (item: DashboardNewsType) => (
     <div className="flex flex-col space-y-1 mt-1 first:mt-0" key={item.title}>
       <p className="text-base font-semibold">{item.title}</p>
@@ -25,9 +23,9 @@ function ShokoNews() {
   );
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={!hasFetched}>
+    <ShokoPanel title="Shoko News" isFetching={items.isLoading}>
       <div className="flex flex-col space-y-3">
-        {items.slice(0, 2).map(item => renderRow(item))}
+        {items.data?.slice(0, 2).map(item => renderRow(item))}
       </div>
     </ShokoPanel>
   );
