@@ -9,7 +9,6 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 
 import SagaAuth from './auth';
-import SagaCollection from './collection';
 import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
@@ -58,8 +57,6 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_START_SERVER, SagaInit.startServer),
     takeEvery(Events.FIRSTRUN_TEST_ANIDB, SagaInit.testAniDB),
     takeEvery(Events.FIRSTRUN_TEST_DATABASE, SagaInit.testDatabase),
-    // FILTERS
-    takeEvery(Events.FILTERS_GET, SagaCollection.getFilters),
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
     // QUICK ACTIONS

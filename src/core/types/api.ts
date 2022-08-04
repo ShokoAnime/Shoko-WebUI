@@ -39,7 +39,7 @@ export type QueueStatusType = {
 };
 
 export type PaginationType = {
-  pageSize: number;
+  pageSize?: number;
   page?: number;
 };
 

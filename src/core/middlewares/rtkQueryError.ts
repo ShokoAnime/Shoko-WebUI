@@ -11,7 +11,7 @@ const rtkQueryErrorLogger: Middleware =
       if (action.payload.status === 401) {
         toast.error('Unauthorized!');
       } else {
-        toast.error(action.payload?.data?.title ?? action.payload.error);
+        toast.error(action.payload?.data?.title ?? action.payload.error ?? `${action.payload.status} - ${action.error.message}`);
       }
     }
 
