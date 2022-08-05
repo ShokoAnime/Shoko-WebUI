@@ -38,7 +38,7 @@ function FirstRunPage() {
     <div key={key} className="flex items-center font-semibold mt-4 first:mt-0">
       <Icon
         path={pathname === `/firstrun/${key}` ? mdiCheckboxIntermediateVariant : (saved[key] ? mdiCheckboxMarked : mdiCheckboxBlankOutline)}
-        className="text-primary mr-7"
+        className="text-highlight-1 mr-7"
         size={1}
       />
       {text}
@@ -51,7 +51,7 @@ function FirstRunPage() {
         <div className="flex flex-col items-center">
           <img src="/logo.png" className="w-32" alt="logo" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {isFetchingVersion ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-primary" /> : version}
+            Version: {isFetchingVersion ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
           </div>
         </div>
         <div className="flex flex-col grow justify-center p-4 -mt-24">
@@ -65,10 +65,10 @@ function FirstRunPage() {
           {renderItem('Data Collection', 'data-collection')}
         </div>
         <div className="flex flex-col w-full">
-          <Button className="flex bg-primary items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+          <Button className="flex bg-highlight-1 items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
             Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
           </Button>
-          <Button className="bg-primary py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+          <Button className="bg-highlight-1 py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
             Documentation
           </Button>
         </div>

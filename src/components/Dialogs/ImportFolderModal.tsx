@@ -91,7 +91,7 @@ function ImportFolderModal() {
                   <Button onClick={handleDelete} className="bg-background-alt px-6 py-2 mr-2">Delete</Button>
                 )}
                 <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
-                <Button onClick={handleSave} className="bg-primary px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
+                <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
               </div>
             </div>
           </div>

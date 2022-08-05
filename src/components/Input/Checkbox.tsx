@@ -42,12 +42,12 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         </span>
       )}
       {isChecked && (
-        <TransitionDiv className="flex text-primary" enterFrom="opacity-50">
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
           <Icon path={mdiCheckboxMarked} size={1} />
         </TransitionDiv>
       )}
       {!isChecked && (
-        <TransitionDiv className="flex text-primary" enterFrom="opacity-50">
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
           <Icon path={mdiCheckboxBlankOutline} size={1} />
         </TransitionDiv>
       )}
