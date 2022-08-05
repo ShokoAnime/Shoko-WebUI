@@ -24,7 +24,7 @@ import { RootState } from '../../core/store';
 import type { CollectionGroupType } from '../../core/types/api/collection';
 import type { ImageType } from '../../core/types/api/common';
 import type { SeriesSizesFileSourcesType } from '../../core/types/api/series';
-import { setGroups } from '../../core/slices/collection';
+import { resetGroups, setGroups } from '../../core/slices/collection';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
@@ -38,7 +38,7 @@ const HoverIcon = ({ icon, label, route }) => (
 );
 
 
-function CollectionPage() {
+function GroupList() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 344; //328 + 16
   const itemHeightList = 224; //176 + 16
@@ -60,6 +60,7 @@ function CollectionPage() {
   }), 200);
   
   useEffect(() => {
+    dispatch(resetGroups());
     fetchPage(1);
   }, []);
   
@@ -183,4 +184,4 @@ function CollectionPage() {
   );
 }
 
-export default CollectionPage;
+export default GroupList;
