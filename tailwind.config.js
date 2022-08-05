@@ -26,8 +26,6 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: withOpacityValue('--color-primary'),
-        secondary: withOpacityValue('--color-secondary'),
         background: withOpacityValue('--color-background'),
         'background-nav': withOpacityValue('--color-background-nav'),
         'background-alt': withOpacityValue('--color-background-alt'),
@@ -38,7 +36,7 @@ module.exports = {
         'highlight-4': withOpacityValue('--color-highlight-4'),
         'highlight-5': withOpacityValue('--color-highlight-5'),
         'font-main': withOpacityValue('--color-font-main'),
-        'font-alternative': withOpacityValue('--color-font-alternative'),
+        'font-alt': withOpacityValue('--color-font-alt'),
         transparent: 'transparent',
       },
       spacing: {

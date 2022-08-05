@@ -37,7 +37,7 @@ function AniDBAccount() {
         and episode information that enhances your usage.
       </div>
       <div className="mt-9 text-justify">
-        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-primary hover:underline">Click Here</a> to create one.
+        An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
       </div>
       <div className="flex flex-col my-9">
         <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />

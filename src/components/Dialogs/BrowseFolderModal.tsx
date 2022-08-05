@@ -38,7 +38,7 @@ function BrowseFolderModal(props: Props) {
         </div>
         <div className="flex justify-end mx-4">
           <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
-          <Button onClick={handleSelect} className="bg-primary px-6 py-2">Select</Button>
+          <Button onClick={handleSelect} className="bg-highlight-1 px-6 py-2">Select</Button>
         </div>
       </div>
     </ModalPanel>
