@@ -8,7 +8,7 @@ import {
   mdiImageMultipleOutline,
   mdiPauseBoxOutline,
   mdiPlayBoxOutline,
-  mdiCloseBoxOutline
+  mdiCloseBoxOutline,
 } from '@mdi/js';
 
 import { RootState } from '../../../core/store';
