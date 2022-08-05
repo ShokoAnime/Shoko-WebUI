@@ -25,6 +25,9 @@ export const collectionApi = createApi({
     getTopFilters: build.query<ListResultType<Array<CollectionFilterType>>, PaginationType>({
       query: params => ({ url: 'Filter', params: { page: params.page ?? 1, pageSize: params.pageSize ?? 0 } }),
     }),
+    getFilters: build.query<ListResultType<Array<CollectionFilterType>>, string>({
+      query: filterId => ({ url: `Filter/${filterId}/Filter`, params: { page: 1, pageSize: 0 } }),
+    }),
   }),
 });
 
@@ -32,4 +35,5 @@ export const {
   useLazyGetGroupsQuery,
   useGetGroupSeriesQuery,
   useLazyGetTopFiltersQuery,
+  useLazyGetFiltersQuery,
 } = collectionApi;
