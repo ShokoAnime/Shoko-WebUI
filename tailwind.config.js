@@ -22,6 +22,7 @@ module.exports = {
     'bg-highlight-3',
     'bg-highlight-4',
     'bg-highlight-5',
+    'text-highlight-4',
   ],
   theme: {
     extend: {

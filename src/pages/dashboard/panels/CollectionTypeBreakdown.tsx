@@ -12,16 +12,16 @@ const names = {
 function CollectionTypeBreakdown() {
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
-  const renderName = (item: string, count: number, countPercentage: number) => (
+  const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
     <div key={`${item}-name`} className="flex mt-3 first:mt-0">
       <span className="grow">{names[item] ?? item} - {count}</span>
-      {countPercentage.toFixed(2)}%
+      <span className={`text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
     </div>
   );
 
   const renderBar = (item: string, countPercentage: number, counter: number) => (
-    <div key={`${item}-bar`} className="flex bg-white rounded-lg mt-2">
-      <div className={`rounded-lg h-4 bg-highlight-${counter}`} style={{ width: `${countPercentage}%` }} />
+    <div key={`${item}-bar`} className="flex bg-background-border rounded-md mt-2">
+      <div className={`rounded-md h-4 bg-highlight-${counter}`} style={{ width: `${countPercentage}%` }} />
     </div>
   );
 
@@ -44,7 +44,7 @@ function CollectionTypeBreakdown() {
     if (total) {
       countPercentage = (item[1] / total) * 100;
     }
-    items.push(renderName(item[0], item[1], countPercentage));
+    items.push(renderName(item[0], item[1], countPercentage, counter));
     items.push(renderBar(item[0], countPercentage, counter));
   });
 
