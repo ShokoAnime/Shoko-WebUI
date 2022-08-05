@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
+import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiChevronUp, mdiMagnify } from '@mdi/js';
 
@@ -37,7 +38,7 @@ function FiltersModal() {
   
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold">
-      <span>{item.Name}</span>
+      <Link to={`collection/filter/${item.IDs.ID}`} onClick={() => handleClose()}>{item.Name}</Link>
       <span className="text-highlight-2">{item.Size}</span>
     </div>
   );

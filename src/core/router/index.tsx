@@ -20,7 +20,6 @@ import ActionsPage from '../../pages/actions/ActionsPage';
 import SettingsPage from '../../pages/settings/SettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
-import CollectionPage from '../../pages/collection/CollectionPage';
 import UtilitiesPage from '../../pages/utilities/UtilitiesPage';
 
 // First run
@@ -33,7 +32,10 @@ import StartServer from '../../pages/firstrun/StartServer';
 import ImportFolders from '../../pages/firstrun/ImportFolders';
 import DataCollection from '../../pages/firstrun/DataCollection';
 
+// Collection
+import GroupList from '../../pages/collection/GroupList';
 import Group from '../../pages/collection/Group';
+import FilterGroupList from '../../pages/collection/FilterGroupList';
 
 type Props = {
   history: BrowserHistory;
@@ -73,8 +75,11 @@ function Router(props: Props) {
                 <Route path="utilities" element={<UtilitiesPage />} />
                 <Route path="actions" element={<ActionsPage />} />
                 <Route path="log" element={<LogsPage />} />
-                <Route path="collection" element={<CollectionPage />}/>
-                <Route path="collection/group/:groupId" element={<Group />}/>
+                <Route path="collection">
+                  <Route index element={<GroupList />}/>
+                  <Route path="group/:groupId" element={<Group />}/>
+                  <Route path="filter/:filterId" element={<FilterGroupList />}/>
+                </Route>
                 <Route path="settings" element={<SettingsPage />} />
                 <Route path="*" element={<NoMatchPage />} />
             </Route>

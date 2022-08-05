@@ -22,9 +22,14 @@ const collectionSlice = createSlice({
       sliceState.fetchedPages[page] = items;
       sliceState.total = total;
     },
+    resetGroups(sliceState) {
+      sliceState.groups = [];
+      sliceState.fetchedPages = {};
+      sliceState.total = 0;
+    },
   },
 });
 
-export const { setGroups } = collectionSlice.actions;
+export const { setGroups, resetGroups } = collectionSlice.actions;
 
 export default collectionSlice.reducer;

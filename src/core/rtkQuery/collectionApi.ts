@@ -28,6 +28,12 @@ export const collectionApi = createApi({
     getFilters: build.query<ListResultType<Array<CollectionFilterType>>, string>({
       query: filterId => ({ url: `Filter/${filterId}/Filter`, params: { page: 1, pageSize: 0 } }),
     }),
+    getFilterGroups: build.query<ListResultType<Array<CollectionGroupType>>, { filterId?: string } & PaginationType>({
+      query: ({ filterId, ...params }) => ({ url: `Filter/${filterId}/Group`, params }),
+    }),
+    getFilter: build.query<CollectionFilterType, { filterId?: string }>({
+      query: ({ filterId }) => ({ url: `Filter/${filterId}` }),
+    }),
   }),
 });
 
@@ -36,4 +42,6 @@ export const {
   useGetGroupSeriesQuery,
   useLazyGetTopFiltersQuery,
   useLazyGetFiltersQuery,
+  useLazyGetFilterGroupsQuery,
+  useGetFilterQuery,
 } = collectionApi;
