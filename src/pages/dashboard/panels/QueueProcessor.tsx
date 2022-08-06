@@ -53,7 +53,7 @@ function QueueProcessor() {
           )}
         </div>
       </div>
-      <div className="flex break-all queue-item mt-2">
+      <div className="flex break-all h-12 mt-2">
         {item?.description ?? 'Idle'}
       </div>
     </div>

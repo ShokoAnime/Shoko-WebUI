@@ -45,7 +45,7 @@ function PlexSettings() {
     return (
       <div className="flex grow justify-between items-center">
         Plex Login:
-        <Button onClick={() => handleLinkOpen()} className="color-highlight-2 hover:underline py-1 px-2 text-xs">Click here to login</Button>
+        <Button onClick={() => handleLinkOpen()} className="text-highlight-2 hover:underline py-1 px-2 text-xs">Click here to login</Button>
       </div>
     );
   };
@@ -59,7 +59,7 @@ function PlexSettings() {
             : (
               <div className="flex grow justify-between items-center">
                 Plex Authenticated!
-                <Button onClick={() => dispatch({ type: Events.SETTINGS_UNLINK_PLEX })} className="bg-color-danger py-1 px-2 text-xs">
+                <Button onClick={() => dispatch({ type: Events.SETTINGS_UNLINK_PLEX })} className="bg-highlight-3 py-1 px-2 text-xs">
                   {isFetchingUnlink ? 'Unlinking...' : 'Unlink'}
                 </Button>
               </div>

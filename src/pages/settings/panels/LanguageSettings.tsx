@@ -55,16 +55,16 @@ function LanguageSettings() {
   const renderItem = (language: string) => (
     <div className="flex justify-between items-center mt-1">
       {languageDescription[language]}
-      <Button onClick={() => removeLanguage(language)} tooltip="Remove" className="color-danger">
-        <Icon path={mdiDelete} size={0.8} horizontal vertical rotate={180}/>
+      <Button onClick={() => removeLanguage(language)} tooltip="Remove">
+        <Icon className="text-highlight-3" path={mdiDelete} size={0.8} horizontal vertical rotate={180}/>
       </Button>
     </div>
   );
 
   const renderOptions = () => (
     <div className="flex">
-      <div onClick={() => dispatch(setLanguagesModalStatus(true))} title="Add Language" className="color-highlight-1 cursor-pointer">
-        <Icon path={mdiPlus} size={1} horizontal vertical rotate={180}/>
+      <div onClick={() => dispatch(setLanguagesModalStatus(true))} title="Add Language" className="cursor-pointer">
+        <Icon className="text-highlight-1" path={mdiPlus} size={1} horizontal vertical rotate={180}/>
       </div>
     </div>
   );

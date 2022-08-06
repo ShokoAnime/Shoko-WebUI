@@ -60,7 +60,7 @@ function TraktSettings() {
         <div className="flex">
           Trakt Code:<span className="font-bold ml-1">{traktValues.usercode}</span>
         </div>
-        <a href={traktValues.url} rel="noopener noreferrer" target="_blank" className="color-highlight-2 hover:underline">Click here to activate</a>
+        <a href={traktValues.url} rel="noopener noreferrer" target="_blank" className="text-highlight-2 hover:underline">Click here to activate</a>
       </div>
     );
   };

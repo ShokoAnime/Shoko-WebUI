@@ -55,7 +55,7 @@ function Sidebar() {
         <ShokoIcon/>
       </div>
       <div className="flex cursor-pointer items-center justify-center bg-background-alt w-full py-4">
-        <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
+        <div className="flex cursor-pointer items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
           {username.charAt(0)}
         </div>
         <p className="ml-4"><span className="text-sm opacity-75">Welcome back,</span> <br/> {username}</p>
