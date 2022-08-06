@@ -18,7 +18,7 @@ export const logsApi = createApi({
   reducerPath: 'logs',
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
   endpoints: build => ({
-    getLogs: build.query<LogLineType[], string>({
+    getLogs: build.query<LogLineType[], void>({
       queryFn: () => ({ data: [] }),
       async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved, getState }) {
         const connectionLogHub = '/signalr/logging';

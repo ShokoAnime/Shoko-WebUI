@@ -7,7 +7,7 @@ import { useGetLogsQuery } from '../../core/rtkQuery/logsApi';
 import { LogLineType } from '../../core/types/api/common';
 
 function LogsPage() {
-  const linesQuery = useGetLogsQuery('logs');
+  const linesQuery = useGetLogsQuery();
   const lines: LogLineType[] = linesQuery?.data ?? [];
 
   const cache = new CellMeasurerCache({
