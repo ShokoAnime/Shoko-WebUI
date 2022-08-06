@@ -66,3 +66,8 @@ export type FilterType = {
   Name: string;
   Size: number;
 };
+
+export type LogLineType = {
+  timeStamp: string;
+  message: string;
+};
