@@ -42,16 +42,16 @@ function ImportFolders() {
       <div key={folder.ID} className="flex flex-col mt-3 first:mt-0">
         <div className="flex justify-between">
           <span className="font-semibold">{folder.Name}</span>
-          <span className="color-highlight-1">Online</span>
+          <span className="text-highlight-1">Online</span>
         </div>
         <div className="flex justify-between mt-1">
           <div className="flex mr-1">{folder.Path}</div>
-          <div className="flex color-highlight-1 items-start">
-            <Button className="color-highlight-1 mr-3" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
-              <Icon path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
+          <div className="flex text-highlight-1 items-start">
+            <Button className="mr-3" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
+              <Icon className="text-highlight-1" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
-            <Button className="color-highlight-1" onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
-              <Icon path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180}/>
+            <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
+              <Icon className="text-highlight-1" path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
           </div>
         </div>
@@ -66,8 +66,8 @@ function ImportFolders() {
 
   const renderOptions = () => (
     <div>
-      <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
-        <Icon path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
+      <div className="mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
+        <Icon className="text-highlight-1" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
       </div>
     </div>
   );

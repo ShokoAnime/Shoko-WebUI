@@ -36,8 +36,8 @@ function AniDBLoginSettings() {
 
   const renderOptions = () => (
     <div className="flex">
-      <Button onClick={() => testAndSave()} tooltip="Test and Save" className="color-highlight-1">
-        <Icon path={isTesting ? mdiLoading : mdiContentSave} spin={isTesting} size={1} />
+      <Button onClick={() => testAndSave()} tooltip="Test and Save">
+        <Icon className="text-highlight-1" path={isTesting ? mdiLoading : mdiContentSave} spin={isTesting} size={1} />
       </Button>
     </div>
   );

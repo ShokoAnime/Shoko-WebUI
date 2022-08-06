@@ -108,6 +108,7 @@
     "style-loader": "^3.3.1",
     "stylelint": "^14.9.1",
     "stylelint-config-standard": "^26.0.0",
+    "stylelint-config-tailwindcss": "^0.0.6",
     "tailwindcss": "^3.1.6",
     "terser-webpack-plugin": "^5.3.3",
     "ts-loader": "^9.3.1",
@@ -135,7 +136,10 @@
     "@types/react": "^18.0.15"
   },
   "stylelint": {
-    "extends": "stylelint-config-standard",
+    "extends": [
+      "stylelint-config-standard",
+      "stylelint-config-tailwindcss"
+    ],
     "customSyntax": "postcss-scss",
     "rules": {
       "string-quotes": "single",

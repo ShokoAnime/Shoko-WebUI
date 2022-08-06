@@ -7374,6 +7374,7 @@ __metadata:
     style-loader: ^3.3.1
     stylelint: ^14.9.1
     stylelint-config-standard: ^26.0.0
+    stylelint-config-tailwindcss: ^0.0.6
     tailwindcss: ^3.1.6
     terser-webpack-plugin: ^5.3.3
     ts-loader: ^9.3.1
@@ -11556,6 +11557,16 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     stylelint: ^14.9.0
   checksum: c1fe44df1755bcccc740b385a24acffa922d331d9f9ba39dafad81cc9643e6c1f870abd1ee73b2737d6903e06efb83b2a1ee26d786faef0123fc22e1f09c13fe
+  languageName: node
+  linkType: hard
+
+"stylelint-config-tailwindcss@npm:^0.0.6":
+  version: 0.0.6
+  resolution: "stylelint-config-tailwindcss@npm:0.0.6"
+  peerDependencies:
+    stylelint: ">=13.13.1"
+    tailwindcss: ">=2.2.16"
+  checksum: 66448818f6fe9b6f95c468ecd79f229afde2221e925219f24c55c370f06d18e780dde315597ff3fd370ab3afd6d59ef7a102dc4cca13d69257995f015491bb1a
   languageName: node
   linkType: hard
 

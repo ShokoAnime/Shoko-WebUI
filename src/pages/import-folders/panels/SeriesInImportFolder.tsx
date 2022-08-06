@@ -57,8 +57,8 @@ function SeriesInImportFolders() {
           folder => (<option value={folder.ID}>{folder.Path}</option>),
         )}
       </Select>
-      <div onClick={() => getSeries(selectedFolder)} className="color-highlight-1">
-        <Icon path={mdiRefresh} size={1} horizontal vertical rotate={180}/>
+      <div onClick={() => getSeries(selectedFolder)}>
+        <Icon className="text-highlight-1" path={mdiRefresh} size={1} horizontal vertical rotate={180}/>
       </div>
     </div>
   );

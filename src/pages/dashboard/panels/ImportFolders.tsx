@@ -55,21 +55,20 @@ function ImportFolders() {
           Series: {folder.Size ?? 0} / Size: {prettyBytes(folder.FileSize ?? 0, { binary: true })}
         </div>
         <div className="mt-1 -ml-[0.313rem] flex">
-          <Button className="color-highlight-1" onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
-            <Icon path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
+          <Button onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
+            <Icon className="text-highlight-1" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
-          <Button className="color-highlight-1" onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
-            <Icon path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180}/>
+          <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
+            <Icon className="text-highlight-1" path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
         </div>
       </div>
-
     );
   };
 
   const renderOptions = () => (
-    <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
-        <Icon path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
+    <div className="mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
+        <Icon className="text-highlight-1" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
     </div>
   );
 
