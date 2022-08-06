@@ -13,6 +13,8 @@ import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
+import { collectionApi } from './rtkQuery/collectionApi';
+import { logsApi } from './rtkQuery/logsApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -35,6 +37,8 @@ const middleware = [
   rtkQueryErrorMiddleware,
   dashboardApi.middleware,
   externalApi.middleware,
+  collectionApi.middleware,
+  logsApi.middleware,
 ];
 
 const store = configureStore({

@@ -17,11 +17,11 @@ import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
 import jmmVersionReducer from './slices/jmmVersion';
 import collectionReducer from './slices/collection';
-import tempStateReducer from './slices/tempState';
 
 import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
 import { collectionApi } from './rtkQuery/collectionApi';
+import { logsApi } from './rtkQuery/logsApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -39,10 +39,10 @@ const reducers = {
   autoUpdate,
   jmmVersion: jmmVersionReducer,
   collection: collectionReducer,
-  tempState: tempStateReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
   [externalApi.reducerPath]: externalApi.reducer,
   [collectionApi.reducerPath]: collectionApi.reducer,
+  [logsApi.reducerPath]: logsApi.reducer,
 };
 
 export type Reducers = typeof reducers;
