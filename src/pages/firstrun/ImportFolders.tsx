@@ -92,11 +92,11 @@ function ImportFolders() {
 
     return (
       <div className="flex items-center w-full mt-1 first:mt-0">
-        <Button onClick={() => handleEdit(folder)} className="text-highlight-1 mr-1">
-          <Icon path={mdiSquareEditOutline} size={1} />
+        <Button onClick={() => handleEdit(folder)} className="mr-1">
+          <Icon className="text-highlight-1" path={mdiSquareEditOutline} size={1} />
         </Button>
-        <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="mr-3 text-highlight-3">
-          <Icon path={mdiTrashCanOutline} size={1} />
+        <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="mr-3">
+          <Icon className="text-highlight-3" path={mdiTrashCanOutline} size={1} />
         </Button>
         <div className="flex grow">
           <div className="grow">
@@ -119,8 +119,8 @@ function ImportFolders() {
         <div className="flex mt-9 items-end">
           <Input label="Location" id="Path" value={Path} type="text" placeholder="Location" onChange={handleInputChange} className="grow" />
           {/* TODO: Move folder icon into the input field */}
-          <Button onClick={() => dispatch(setBrowseStatus(true))} className="text-highlight-1 ml-2 mb-1">
-            <Icon path={mdiFolderOpen} size={1} />
+          <Button onClick={() => dispatch(setBrowseStatus(true))} className="ml-2 mb-1">
+            <Icon className="text-highlight-1" path={mdiFolderOpen} size={1} />
           </Button>
         </div>
         <Select label="Drop Type" id="DropFolderType" value={DropFolderType} onChange={handleInputChange} className="mt-9">

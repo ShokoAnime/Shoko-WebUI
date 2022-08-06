@@ -39,16 +39,16 @@ function QueueProcessor() {
         </div>
         <div className="flex text-highlight-2">{count ?? 0}</div>
         <div className="flex items-center">
-          <Button className="text-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-            <Icon path={mdiCloseBoxOutline} size={1} />
+          <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
+            <Icon className="text-highlight-1" path={mdiCloseBoxOutline} size={1} />
           </Button>
           {item?.state === 18 ? (
-            <Button className="text-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-              <Icon path={mdiPlayBoxOutline} size={1} />
+            <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
+              <Icon className="text-highlight-1" path={mdiPlayBoxOutline} size={1} />
             </Button>
           ) : (
-            <Button className="text-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-              <Icon path={mdiPauseBoxOutline} size={1} />
+            <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
+              <Icon className="text-highlight-1" path={mdiPauseBoxOutline} size={1} />
             </Button>
           )}
         </div>
