@@ -36,11 +36,11 @@ function Footer(props: Props) {
         {status?.text}
       </div>
       <div className="flex justify-between">
-        <Button onClick={() => dispatch(back())} className="bg-primary py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
+        <Button onClick={() => dispatch(back())} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
-          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-primary py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
+          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (
-          <Button onClick={() => handleNext()} className="bg-primary py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
+          <Button onClick={() => handleNext()} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
             Next
           </Button>
         )}

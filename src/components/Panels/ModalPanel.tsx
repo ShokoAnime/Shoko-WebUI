@@ -1,5 +1,6 @@
 import React from 'react';
 import Modal from 'react-modal';
+import cx from 'classnames';
 
 type Props = {
   children: any;
@@ -7,6 +8,7 @@ type Props = {
   className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
+  sidebarSnap?: boolean;
 };
 
 function ModalPanel(props: Props) {
@@ -19,7 +21,7 @@ function ModalPanel(props: Props) {
   return (
     <Modal
       isOpen={show}
-      overlayClassName="modal-overlay fixed inset-0 flex items-center justify-end pointer-events-auto"
+      overlayClassName={cx('modal-overlay fixed inset-0 flex items-center pointer-events-auto', props.sidebarSnap ? 'justify-start ml-62.5' : 'justify-end')}
       className={`${className} bg-background-nav flex h-full min-w-[25rem]`}
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}

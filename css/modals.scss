@@ -1,7 +1,3 @@
-.modal-overlay { // React-Modal Overlay
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
 .languages-modal {
   width: 30rem;
 }
@@ -19,13 +15,8 @@
 }
 
 .profile-modal-image-alpha {
-  color: $background-color-2;
-  background-color: rgba($background-color-1, 0.6);
-}
-
-.error-message {
-  color: red;
-  text-align: center;
+  color: theme('colors.background');
+  background-color: theme('colors.background / 60');
 }
 
 .treeview {

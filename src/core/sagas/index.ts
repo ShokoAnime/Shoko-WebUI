@@ -9,8 +9,6 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 
 import SagaAuth from './auth';
-import SagaCollection from './collection';
-import SagaDashboard from './dashboard';
 import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
@@ -52,12 +50,6 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_CHANGE_PASSWORD, SagaAuth.changePassword),
     takeEvery(Events.AUTH_LOGIN, SagaAuth.login),
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
-    // COLLECTION PAGE
-    takeEvery(Events.COLLECTION_PAGE_LOAD, SagaCollection.eventCollectionPageLoad),
-    takeEvery(Events.COLLECTION_GET_GROUPS, SagaCollection.getGroups),
-    takeEvery(Events.COLLECTION_GET_GROUP_SERIES, SagaCollection.getGroupSeries),
-    // DASHBOARD
-    takeEvery(Events.DASHBOARD_UPCOMING_ANIME, SagaDashboard.getDashboardUpcomingAnime),
     // FIRSTRUN
     takeEvery(Events.FIRSTRUN_INIT_STATUS, SagaInit.getInitStatus),
     takeEvery(Events.FIRSTRUN_GET_USER, SagaInit.getDefaultUser),
@@ -74,7 +66,6 @@ export default function* rootSaga() {
     takeEvery(Events.MAINPAGE_LOAD, SagaMainPage.eventMainPageLoad),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
-    takeEvery(Events.MAINPAGE_RECENT_FILES, SagaFile.getRecentFiles),
     throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageRefresh),
     // IMPORT FOLDER
     takeEvery(Events.IMPORT_FOLDER_ADD, SagaImportFolder.addImportFolder),

@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
-  mdiPauseCircleOutline,
-  mdiCloseCircleOutline,
-  mdiPoundBox,
   mdiFormatListBulletedSquare,
-  mdiPanoramaVariantOutline,
-  mdiPlayCircleOutline,
+  mdiPoundBoxOutline,
+  mdiImageMultipleOutline,
+  mdiPauseBoxOutline,
+  mdiPlayBoxOutline,
+  mdiCloseBoxOutline,
 } from '@mdi/js';
 
 import { RootState } from '../../../core/store';
@@ -17,7 +17,7 @@ import Button from '../../../components/Input/Button';
 import type { QueueItemType } from '../../../core/types/api';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-const icons = { hasher: mdiPoundBox, general: mdiFormatListBulletedSquare, images: mdiPanoramaVariantOutline };
+const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
 
 function QueueProcessor() {
@@ -34,26 +34,26 @@ function QueueProcessor() {
     <div className="flex flex-col mt-8 first:mt-0" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-24">
-          <Icon className="mr-4" path={icons[key]} size={1} horizontal vertical rotate={180}/>
-          <span className="font-semibold">{names[key]}</span>
+          <Icon className="mr-4" path={icons[key]} size={1} />
+          <span>{names[key]}</span>
         </div>
         <div className="flex text-highlight-2">{count ?? 0}</div>
-        <div className="flex items-center fill-highlight-1">
-          <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180}/>
+        <div className="flex items-center">
+          <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
+            <Icon className="text-highlight-1" path={mdiCloseBoxOutline} size={1} />
           </Button>
           {item?.state === 18 ? (
-            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-              <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180}/>
+            <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
+              <Icon className="text-highlight-1" path={mdiPlayBoxOutline} size={1} />
             </Button>
           ) : (
-            <Button className="color-highlight-1 mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-              <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180}/>
+            <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
+              <Icon className="text-highlight-1" path={mdiPauseBoxOutline} size={1} />
             </Button>
           )}
         </div>
       </div>
-      <div className="flex break-all queue-item mt-2">
+      <div className="flex break-all h-12 mt-2">
         {item?.description ?? 'Idle'}
       </div>
     </div>
@@ -70,12 +70,12 @@ function QueueProcessor() {
     return (
       <React.Fragment>
         {paused ? (
-          <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Start')} title="Resume All">
-            <Icon path={mdiCloseCircleOutline} size={1} horizontal vertical rotate={180} />
+          <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Start')} title="Resume All">
+            <Icon path={mdiPlayBoxOutline} size={1} horizontal vertical rotate={180} />
           </div>
         ) : (
-          <div className="color-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Pause')} title="Pause All">
-            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
+          <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Pause')} title="Pause All">
+            <Icon path={mdiPauseBoxOutline} size={1} horizontal vertical rotate={180} />
           </div>
         )}
       </React.Fragment>

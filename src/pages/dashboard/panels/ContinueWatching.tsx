@@ -1,16 +1,15 @@
-import { useSelector } from 'react-redux';
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import React from 'react';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import EpisodeDetails from '../components/EpisodeDetails';
 
+import { useGetDashboardContinueWatchingEpisodesQuery } from '../../../core/rtkQuery/dashboardApi';
+
 const ContinueWatching = () => {
-  const items = useSelector((state: RootState) => state.mainpage.continueWatching);
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.continueWatching);
+  const items = useGetDashboardContinueWatchingEpisodesQuery({ pageSize: 20 });
 
   return (
-    <ShokoPanel title="Continue Watching" isFetching={!hasFetched}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.map(item => <EpisodeDetails episode={item} />)}</div>
+    <ShokoPanel title="Continue Watching" isFetching={items.isLoading}>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.data?.map(item => <EpisodeDetails episode={item} />)}</div>
     </ShokoPanel>
   );
 };

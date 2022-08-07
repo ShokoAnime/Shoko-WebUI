@@ -60,16 +60,16 @@ function GeneralSettings() {
         <div className="flex items-center">
           WebUI Version
           {webuiUpdateAvailable && (
-            <Button onClick={() => updateWebUI()} className="flex text-xs ml-2 color-highlight-1 items-end" tooltip="Download Latest Version">
+            <Button onClick={() => updateWebUI()} className="flex text-xs ml-2 items-end" tooltip="Download Latest Version">
               Update Available
-              <Icon className="ml-1" path={downloadingUpdates ? mdiLoading : mdiDownload} spin={downloadingUpdates} size={1} />
+              <Icon className="ml-1 text-highlight-1" path={downloadingUpdates ? mdiLoading : mdiDownload} spin={downloadingUpdates} size={1} />
             </Button>
           )}
         </div>
         <div className="flex items-center overflow-x-hidden">
           {UI_VERSION}
-          <Button onClick={() => checkWebUIUpdate()} className="flex color-highlight-1 text-xs ml-2" tooltip="Check for updates">
-            <Icon path={checkingUpdates ? mdiLoading : mdiRefresh} spin={checkingUpdates} size={1} />
+          <Button onClick={() => checkWebUIUpdate()} className="flex text-xs ml-2" tooltip="Check for updates">
+            <Icon className="text-highlight-1" path={checkingUpdates ? mdiLoading : mdiRefresh} spin={checkingUpdates} size={1} />
           </Button>
         </div>
       </div>
@@ -77,7 +77,7 @@ function GeneralSettings() {
       <div className="font-bold mt-3">Style Options</div>
       <div className="flex justify-between mt-1">
         Theme
-        <span className="color-highlight-1 font-bold">Shoko Modern</span>
+        <span className="text-highlight-1 font-bold">Shoko Modern</span>
       </div>
       <Checkbox justify label="Global Notifications" id="notifications" isChecked={webuiSettings.notifications} onChange={handleWebUISettingChange} className="mt-1" />
       {webuiSettings.notifications && (

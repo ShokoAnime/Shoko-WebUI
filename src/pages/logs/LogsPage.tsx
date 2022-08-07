@@ -1,20 +1,14 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
 import {
   List, AutoSizer, CellMeasurer, CellMeasurerCache,
 } from 'react-virtualized';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
+import { useGetLogsQuery } from '../../core/rtkQuery/logsApi';
+import { LogLineType } from '../../core/types/api/common';
 
 function LogsPage() {
-  const dispatch = useDispatch();
-
-  const lines = useSelector((state: RootState) => state.tempState.logs.lines);
-
-  useEffect(() => {
-    dispatch({ type: Events.LOGPAGE_LOAD });
-  }, []);
+  const linesQuery = useGetLogsQuery();
+  const lines: LogLineType[] = linesQuery?.data ?? [];
 
   const cache = new CellMeasurerCache({
     fixedWidth: true,

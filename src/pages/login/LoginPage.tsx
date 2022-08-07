@@ -83,7 +83,7 @@ function LoginPage() {
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <img src="logo.png" className="w-32" alt="logo" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-primary" /> : version}
+            Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
           </div>
           <div className="flex flex-col grow w-full justify-center p-1">
             {!initStatus?.State && (
@@ -93,7 +93,7 @@ function LoginPage() {
             )}
             {initStatus.State === 1 && (
               <div className="flex flex-col justify-center items-center">
-                <Icon path={mdiLoading} spin className="text-primary" size={4} />
+                <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="mt-2 text-lg">
                   <span className="font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
@@ -107,7 +107,7 @@ function LoginPage() {
                   <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-4" />
                 </div>
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
-                <Button className="bg-primary mt-4 py-2" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
+                <Button className="bg-highlight-1 mt-4 py-2" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
               </React.Fragment>
             )}
             {initStatus.State === 3 && (
@@ -132,15 +132,15 @@ function LoginPage() {
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => openFirstRunWizard()} className="bg-primary py-2 mt-4">Continue</Button>
+                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 py-2 mt-4">Continue</Button>
               </div>
             )}
           </div>
           <div className="flex flex-col w-full">
-            <Button className="flex bg-primary items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+            <Button className="flex bg-highlight-1 items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
               Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
             </Button>
-            <Button className="bg-primary py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+            <Button className="bg-highlight-1 py-2 mt-4" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
               Documentation
             </Button>
           </div>

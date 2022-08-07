@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, memoize, forEach } from 'lodash';
+import { get, memoize, forEach, debounce } from 'lodash';
 import { Link } from 'react-router-dom';
 import {
   mdiFormatListText,
@@ -16,13 +16,15 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import Events from '../../core/events';
+import { setStatus } from '../../core/slices/modals/filters';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
+import { useLazyGetGroupsQuery } from '../../core/rtkQuery/collectionApi';
 
 import { RootState } from '../../core/store';
 import type { CollectionGroupType } from '../../core/types/api/collection';
 import type { ImageType } from '../../core/types/api/common';
 import type { SeriesSizesFileSourcesType } from '../../core/types/api/series';
+import { resetGroups, setGroups } from '../../core/slices/collection';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
@@ -36,7 +38,7 @@ const HoverIcon = ({ icon, label, route }) => (
 );
 
 
-function CollectionPage() {
+function GroupList() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 344; //328 + 16
   const itemHeightList = 224; //176 + 16
@@ -45,12 +47,26 @@ function CollectionPage() {
   const total: number = useSelector((state: RootState) => state.collection.total);
   const dispatch = useDispatch();
   const [mode, setMode] = useState('grid');
+  const [trigger] = useLazyGetGroupsQuery();
   
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
+
+  const fetchPage = debounce(memoize((page) => {
+    trigger({ page, pageSize }).then((result) => {
+      if (!result.data) { return; }
+      dispatch(setGroups({ total: result.data.Total, items: result.data.List, page }));
+    }, (reason) => { console.error(reason); });
+    return true;
+  }), 200);
   
   useEffect(() => {
-    dispatch({ type: Events.COLLECTION_PAGE_LOAD });
+    dispatch(resetGroups());
+    fetchPage(1);
   }, []);
+  
+  const showFilters = () => {
+    dispatch(setStatus(true));
+  };
 
   const renderTitle = count => (
     <React.Fragment>
@@ -62,19 +78,19 @@ function CollectionPage() {
   const renderOptions = () => (
     <div className="flex" title="Settings">
       <span className="px-2 cursor-pointer" title="View" onClick={toggleMode}><Icon path={mdiFormatListText} size={1} horizontal vertical rotate={180}/></span>
-      <span className="px-2 cursor-pointer" title="Settings"><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
+      <span className="px-2 cursor-pointer" title="Settings" onClick={showFilters}><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
     </div>
   );
   
   const renderDetails = (item: CollectionGroupType) => {
-    const posters = item.Images.Posters.filter(p => p.Source === 'AniDB');
+    const posters = item.Images.Posters;
     
     return (
       <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 font-open-sans content-center flex flex-col">
-        <div style={{ background: `center / cover no-repeat url('/api/v3/Image/AniDB/Poster/${posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
+        <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
           <div className="hidden group-hover:flex bg-background-nav/85 h-full flex-col justify-center items-center">
-            <HoverIcon icon={mdiEyeArrowRightOutline} label="View Series" route={`group/${item.IDs.ID}`} />
-            <HoverIcon icon={mdiSquareEditOutline} label="Edit Series" route="" />
+            <HoverIcon icon={mdiEyeArrowRightOutline} label="View Group" route={`group/${item.IDs.ID}`} />
+            <HoverIcon icon={mdiSquareEditOutline} label="Edit Group" route="" />
           </div>
         </div>
         <p className="text-center text-base font-semibold" title={item.Name}>{item.Name}</p>
@@ -130,8 +146,6 @@ function CollectionPage() {
   const renderPlaceholder = () => (<div className="mr-4 last:mr-0 shrink-0 h-72 w-56 font-open-sans items-center justify-center flex flex-col border border-black">
     <Icon path={mdiLoading} spin size={1} />
   </div>);
-  
-  const fetchPage = memoize((page) => { dispatch({ type: Events.COLLECTION_GET_GROUPS, payload: page }); return true; });
 
   const Cell = columns => ({ columnIndex, key, rowIndex, style }) => {
     const index = rowIndex * columns + columnIndex;
@@ -170,4 +184,4 @@ function CollectionPage() {
   );
 }
 
-export default CollectionPage;
+export default GroupList;

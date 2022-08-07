@@ -9,14 +9,12 @@ import {
 
 import Events from '../events';
 import { setQueueStatus } from '../slices/mainpage';
-import { prependLines, appendLines } from '../slices/logs';
 
 let lastRetry = moment();
 let attempts = 0;
 const maxTimeout = 60000;
 
 let connectionEvents: HubConnection;
-let connectionLog: HubConnection;
 
 const onQueueStateChange = dispatch => (queue, state) => {
   const newState = Object.assign({}, { [queue]: state });
@@ -42,14 +40,6 @@ const onQueueRefreshState = dispatch => (state) => {
     fixedState[fixedKey] = item;
   });
   dispatch(setQueueStatus(fixedState));
-};
-
-const onLogsGetBacklog = dispatch => (state) => {
-  dispatch(prependLines(state));
-};
-
-const onLogsLog = dispatch => (state) => {
-  dispatch(appendLines(state));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
@@ -104,25 +94,8 @@ const signalRMiddleware = ({
     connectionEvents.onclose(() => debounce(() => { handleReconnect(connectionEvents); }, 5000));
 
     startSignalRConnection(connectionEvents);
-  } else if (action.type === Events.LOGPAGE_LOAD) {
-    if (connectionLog !== undefined) { return next(action); }
-    const connectionLogHub = '/signalr/logging';
-    const protocol = new JsonHubProtocol();
-    // eslint-disable-next-line no-bitwise
-    const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
-    const options = {
-      transport,
-      logMessageContent: true,
-      logger: LogLevel.Warning,
-      accessTokenFactory: () => getState().apiSession.apikey,
-    };
-    connectionLog = new HubConnectionBuilder().withUrl(connectionLogHub, options).withHubProtocol(protocol).build();
-    connectionLog.on('GetBacklog', onLogsGetBacklog(dispatch));
-    connectionLog.on('Log', onLogsLog(dispatch));
-    startSignalRConnection(connectionLog);
   } else if (action.type === Events.AUTH_LOGOUT) {
     await connectionEvents?.stop();
-    await connectionLog?.stop();
   }
 
   return next(action);

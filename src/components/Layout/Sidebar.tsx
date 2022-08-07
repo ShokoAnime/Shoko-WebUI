@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { Link } from 'react-router-dom';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {
@@ -35,12 +35,13 @@ function Sidebar() {
   }, []);
   
   const renderMenuItem = (key: string, text: string, icon: string) => {
-    const isHighlighted = pathname === `/webui/${key}`; 
+    const uri = `/webui/${key}`; 
+    const isHighlighted = pathname === uri; 
     return (
-      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(push(key))}>
+      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} to={uri}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
-      </div>
+      </Link>
     );
   };
   
@@ -54,7 +55,7 @@ function Sidebar() {
         <ShokoIcon/>
       </div>
       <div className="flex cursor-pointer items-center justify-center bg-background-alt w-full py-4">
-        <div className="flex cursor-pointer items-center justify-center user-icon w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
+        <div className="flex cursor-pointer items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
           {username.charAt(0)}
         </div>
         <p className="ml-4"><span className="text-sm opacity-75">Welcome back,</span> <br/> {username}</p>

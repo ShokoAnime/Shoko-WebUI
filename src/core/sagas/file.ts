@@ -4,20 +4,9 @@ import { toast } from 'react-toastify';
 import ApiFile from '../api/v3/file';
 
 import {
-  setAvdump, setFetched, setRecentFiles,
+  setAvdump, setFetched,
   setUnrecognizedFiles,
 } from '../slices/mainpage';
-
-function* getRecentFiles() {
-  const resultJson = yield call(ApiFile.getFileRecent, 20);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  yield put(setRecentFiles(resultJson.data.List));
-  yield put(setFetched('recentFiles'));
-}
 
 function* getUnrecognizedFiles() {
   const resultJson = yield call(ApiFile.getFileUnrecognized);
@@ -48,7 +37,6 @@ function* runRehash(action) {
 }
 
 export default {
-  getRecentFiles,
   getUnrecognizedFiles,
   runAvdump,
   runRescan,

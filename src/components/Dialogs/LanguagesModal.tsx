@@ -115,12 +115,12 @@ function LanguagesModal() {
         <span className="flex font-semibold text-base uppercase">
           Languages
         </span>
-        <div className="bg-color-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
+        <div className="bg-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
         <div className="flex flex-col grow overflow-y-auto my-2">
           {items}
         </div>
         <div className="flex justify-end mt-2">
-          <Button onClick={handleClose} className="bg-color-danger px-5 py-2 mr-2">Discard</Button>
+          <Button onClick={handleClose} className="bg-highlight-3 px-5 py-2 mr-2">Discard</Button>
           <Button onClick={handleSave} className="bg-highlight-1 px-5 py-2">Save</Button>
         </div>
       </div>
