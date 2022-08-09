@@ -97,6 +97,11 @@ function getUpdateSeriesStats() {
   return ApiRequest('UpdateSeriesStats');
 }
 
+// Queues a task to import only new files found in the import folder
+function getImportNewFiles() {
+  return ApiRequest('ImportNewFiles');
+}
+
 export default {
   getRunImport,
   getSyncHashes,
@@ -117,4 +122,5 @@ export default {
   getUpdateSeriesStats,
   getPlexSyncAll,
   getRecreateAllGroups,
+  getImportNewFiles,
 };
