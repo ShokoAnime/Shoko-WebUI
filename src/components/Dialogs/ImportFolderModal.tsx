@@ -12,6 +12,11 @@ import ModalPanel from '../Panels/ModalPanel';
 import BrowseFolderModal from './BrowseFolderModal';
 import { setStatus } from '../../core/slices/modals/importFolder';
 import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFolder';
+import {
+  useGetImportFoldersQuery,
+  useUpdateImportFolderMutation,
+} from '../../core/rtkQuery/importFolderlApi';
+import { ImportFolderType } from '../../core/types/api/import-folder';
 
 const defaultImportFolder = {
   WatchForNewFiles: false,
@@ -24,10 +29,13 @@ const defaultImportFolder = {
 function ImportFolderModal() {
   const dispatch = useDispatch();
 
-  const status = useSelector((state: RootState) => state.modals.importFolder.status);
-  const edit = useSelector((state: RootState) => state.modals.importFolder.edit);
-  const ID = useSelector((state: RootState) => state.modals.importFolder.ID);
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const { status, edit, ID } = useSelector((state: RootState) => state.modals.importFolder);
+  
+  //const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
+  
+  const [updateFolder, updateResult] = useUpdateImportFolderMutation();
 
   const [importFolder, setImportFolder] = useState(defaultImportFolder);
 
@@ -52,7 +60,8 @@ function ImportFolderModal() {
 
   const handleSave = () => {
     if (edit) {
-      dispatch({ type: Events.IMPORT_FOLDER_EDIT, payload: importFolder });
+      //dispatch({ type: Events.IMPORT_FOLDER_EDIT, payload: importFolder });
+      updateFolder(importFolder).catch(() => {});
     } else {
       dispatch({ type: Events.IMPORT_FOLDER_ADD, payload: importFolder });
     }
@@ -91,7 +100,7 @@ function ImportFolderModal() {
                   <Button onClick={handleDelete} className="bg-background-alt px-6 py-2 mr-2">Delete</Button>
                 )}
                 <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
-                <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === ''}>Save</Button>
+                <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === '' || updateResult.isLoading}>Save</Button>
               </div>
             </div>
           </div>
