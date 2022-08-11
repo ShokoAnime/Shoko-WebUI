@@ -17,7 +17,7 @@ import {
   useUpdateImportFolderMutation,
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
-} from '../../core/rtkQuery/importFolderlApi';
+} from '../../core/rtkQuery/importFolderApi';
 import { ImportFolderType } from '../../core/types/api/import-folder';
 
 const defaultImportFolder = {

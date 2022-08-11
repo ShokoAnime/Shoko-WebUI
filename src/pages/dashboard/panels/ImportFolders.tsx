@@ -15,7 +15,7 @@ import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { Icon } from '@mdi/react';
-import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderlApi';
+import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderApi';
 
 function ImportFolders() {
   const dispatch = useDispatch();

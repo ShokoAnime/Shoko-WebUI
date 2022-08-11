@@ -22,7 +22,7 @@ import {
   useCreateImportFolderMutation, 
   useDeleteImportFolderMutation,
   useUpdateImportFolderMutation,
-} from '../../core/rtkQuery/importFolderlApi';
+} from '../../core/rtkQuery/importFolderApi';
 
 
 const defaultState = {
