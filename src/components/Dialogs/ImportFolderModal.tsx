@@ -63,7 +63,7 @@ function ImportFolderModal() {
     //TODO: can this be better typed?
     const result: any = await deleteFolder({ folderId: ID });
     if (!result.error) {
-      toast.success('Import folder edited!');
+      toast.success('Import folder deleted!');
     }
   };
 
@@ -76,7 +76,7 @@ function ImportFolderModal() {
         toast.success('Import folder edited!');
       }
     } else {
-      result = await createFolder(importFolder).catch(() => {});
+      result = await createFolder(importFolder);
       if (!result.error) {
         toast.success('Import folder added!');
       }
