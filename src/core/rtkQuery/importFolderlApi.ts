@@ -4,6 +4,7 @@ import { ImportFolderType } from '../types/api/import-folder';
 
 export const importFolderlApi = createApi({
   reducerPath: 'importFolderApi',
+  tagTypes: ['ImportFolder'],
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/ImportFolder',
     prepareHeaders: (headers, { getState }) => {
@@ -16,6 +17,7 @@ export const importFolderlApi = createApi({
     // Get import folders
     getImportFolders: build.query<Array<ImportFolderType>, void>({
       query: () => ({ url: '' }),
+      providesTags: ['ImportFolder'],
     }),
     updateImportFolder: build.mutation<ImportFolderType, ImportFolderType>({
       query: folder => ({
@@ -23,6 +25,23 @@ export const importFolderlApi = createApi({
         method: 'PUT',
         body: folder,
       }),
+      invalidatesTags: ['ImportFolder'],
+    }),
+    createImportFolder: build.mutation<ImportFolderType, ImportFolderType>({
+      query: folder => ({
+        url: '',
+        method: 'POST',
+        body: folder,
+      }),
+      invalidatesTags: ['ImportFolder'],
+    }),
+    deleteImportFolder: build.mutation<boolean, { folderId: number; removeRecords?: boolean; updateMyList?: boolean; }>({
+      query: ({ folderId, ...params }) => ({
+        url: `/${folderId}`,
+        method: 'DELETE',
+        params,
+      }),
+      invalidatesTags: ['ImportFolder'],
     }),
   }),
 });
@@ -30,4 +49,6 @@ export const importFolderlApi = createApi({
 export const {
   useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
+  useCreateImportFolderMutation,
+  useDeleteImportFolderMutation,
 } = importFolderlApi;

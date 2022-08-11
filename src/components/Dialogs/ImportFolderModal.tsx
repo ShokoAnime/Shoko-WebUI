@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { find } from 'lodash';
+import { toast } from 'react-toastify';
 import { mdiFolderOpen } from '@mdi/js';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import Button from '../Input/Button';
 import Input from '../Input/Input';
 import Select from '../Input/Select';
@@ -15,6 +15,8 @@ import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFol
 import {
   useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
+  useCreateImportFolderMutation,
+  useDeleteImportFolderMutation,
 } from '../../core/rtkQuery/importFolderlApi';
 import { ImportFolderType } from '../../core/types/api/import-folder';
 
@@ -31,11 +33,12 @@ function ImportFolderModal() {
 
   const { status, edit, ID } = useSelector((state: RootState) => state.modals.importFolder);
   
-  //const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   
   const [updateFolder, updateResult] = useUpdateImportFolderMutation();
+  const [createFolder, createResult] = useCreateImportFolderMutation();
+  const [deleteFolder, deleteResult] = useDeleteImportFolderMutation();
 
   const [importFolder, setImportFolder] = useState(defaultImportFolder);
 
@@ -56,18 +59,32 @@ function ImportFolderModal() {
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
   const handleClose = () => dispatch(setStatus(false));
-  const handleDelete = () => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: ID });
+  const handleDelete = async () => {
+    //TODO: can this be better typed?
+    const result: any = await deleteFolder({ folderId: ID });
+    if (!result.error) {
+      toast.success('Import folder edited!');
+    }
+  };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    //TODO: can this be better typed?
+    let result;
     if (edit) {
-      //dispatch({ type: Events.IMPORT_FOLDER_EDIT, payload: importFolder });
-      updateFolder(importFolder).catch(() => {});
+      result = await updateFolder(importFolder);
+      if (!result.error) {
+        toast.success('Import folder edited!');
+      }
     } else {
-      dispatch({ type: Events.IMPORT_FOLDER_ADD, payload: importFolder });
+      result = await createFolder(importFolder).catch(() => {});
+      if (!result.error) {
+        toast.success('Import folder added!');
+      }
     }
   };
 
   const onFolderSelect = (Path: string) => setImportFolder({ ...importFolder, Path });
+  const isLoading = updateResult.isLoading || createResult.isLoading || deleteResult.isLoading;
 
   return (
     <React.Fragment>
@@ -100,7 +117,7 @@ function ImportFolderModal() {
                   <Button onClick={handleDelete} className="bg-background-alt px-6 py-2 mr-2">Delete</Button>
                 )}
                 <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
-                <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === '' || updateResult.isLoading}>Save</Button>
+                <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2" disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}>Save</Button>
               </div>
             </div>
           </div>
