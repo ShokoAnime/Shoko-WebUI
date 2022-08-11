@@ -5,7 +5,6 @@ import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
 import SagaFile from './file';
-import SagaImportFolder from './import-folder';
 
 // const alert = useAlert();
 
@@ -24,7 +23,6 @@ function* getQueueStatus() {
 
 function* eventMainPageLoad() {
   yield all([
-    yield call(SagaImportFolder.getImportFolders),
     yield call(SagaFile.getUnrecognizedFiles),
   ]);
 

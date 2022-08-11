@@ -15,12 +15,14 @@ import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { Icon } from '@mdi/react';
+import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderlApi';
 
 function ImportFolders() {
   const dispatch = useDispatch();
 
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.importFolders);
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const rescanFolder = (ID: number) => dispatch({ type: Events.IMPORT_FOLDER_RESCAN, payload: ID });
   const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));

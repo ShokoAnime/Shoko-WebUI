@@ -5,56 +5,8 @@ import ApiCommon from '../api/common';
 import ApiImportFolder from '../api/v3/import-folder';
 import ApiSeries from '../api/v3/series';
 
-import { setFetched, setImportFolders, setImportFolderSeries } from '../slices/mainpage';
+import { setImportFolderSeries } from '../slices/mainpage';
 import { startFetching, stopFetching } from '../slices/fetching';
-import { setStatus as setImportFolderModalStatus } from '../slices/modals/importFolder';
-
-function* addImportFolder(action) {
-  const resultJson = yield call(ApiImportFolder.postImportFolder, action.payload);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  toast.success('Import folder added!');
-  yield put(setImportFolderModalStatus(false));
-  yield call(getImportFolders);
-}
-
-function* editImportFolder(action) {
-  const resultJson = yield call(ApiImportFolder.putImportFolder, action.payload);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  toast.success('Import folder edited!');
-  yield put(setImportFolderModalStatus(false));
-  yield call(getImportFolders);
-}
-
-function* deleteImportFolder(action) {
-  const resultJson = yield call(ApiImportFolder.deleteImportFolder, action.payload);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  toast.success('Import folder deleted!');
-  yield put(setImportFolderModalStatus(false));
-  yield call(getImportFolders);
-}
-
-function* getImportFolders() {
-  const resultJson = yield call(ApiImportFolder.getImportFolder);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  yield put(setImportFolders(resultJson.data));
-  yield put(setFetched('importFolders'));
-}
 
 function* getImportFolderSeries(action) {
   yield put(startFetching('importFolderSeries'));
@@ -89,10 +41,6 @@ function* runImportFolderRescan(action) {
 }
 
 export default {
-  addImportFolder,
-  editImportFolder,
-  deleteImportFolder,
-  getImportFolders,
   getImportFolderSeries,
   runImportFolderRescan,
 };

@@ -22,6 +22,7 @@ import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
 import { collectionApi } from './rtkQuery/collectionApi';
 import { logsApi } from './rtkQuery/logsApi';
+import { importFolderlApi } from './rtkQuery/importFolderlApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -43,6 +44,7 @@ const reducers = {
   [externalApi.reducerPath]: externalApi.reducer,
   [collectionApi.reducerPath]: collectionApi.reducer,
   [logsApi.reducerPath]: logsApi.reducer,
+  [importFolderlApi.reducerPath]: importFolderlApi.reducer,
 };
 
 export type Reducers = typeof reducers;

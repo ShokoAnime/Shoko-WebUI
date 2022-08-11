@@ -1,8 +1,5 @@
-import { omit } from 'lodash';
-
 import Api from '../index';
 import type { ApiRequestMethodType } from '../index';
-import type { ImportFolderType } from '../../types/api/import-folder';
 
 function ApiRequest(action: string, method: ApiRequestMethodType = 'GET', params?: any, expectEmpty = true) {
   return Api.call({
@@ -15,22 +12,6 @@ function getImportFolder() {
   return ApiRequest('', undefined, undefined, false);
 }
 
-// Edit Import Folder. This replaces all values.
-function putImportFolder(params: ImportFolderType) {
-  return ApiRequest('', 'PUT', omit(params, ['FileSize', 'Size']));
-}
-
-// Add an Import Folder. Does not run import on the folder, so you must scan it yourself.
-function postImportFolder(params: ImportFolderType) {
-  return ApiRequest('', 'POST', omit(params, ['FileSize', 'Size', 'ID']), false);
-}
-
-// Delete an Import Folder. This removes records and send deleted commands to AniDB,
-// so don't use it frivolously
-function deleteImportFolder(id: number) {
-  return ApiRequest(id.toString(), 'DELETE');
-}
-
 // Scan a Specific Import Folder. This checks ALL files, not just new ones.
 // Good for cleaning up files in strange states and making drop folders retry moves
 function getImportFolderScan(id: string) {
@@ -39,8 +20,5 @@ function getImportFolderScan(id: string) {
 
 export default {
   getImportFolder,
-  putImportFolder,
-  postImportFolder,
-  deleteImportFolder,
   getImportFolderScan,
 };
