@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { RootState } from '../store';
 import { ImportFolderType } from '../types/api/import-folder';
 
-export const importFolderlApi = createApi({
+export const importFolderApi = createApi({
   reducerPath: 'importFolderApi',
   tagTypes: ['ImportFolder'],
   baseQuery: fetchBaseQuery({
@@ -51,4 +51,4 @@ export const {
   useUpdateImportFolderMutation,
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
-} = importFolderlApi;
+} = importFolderApi;
