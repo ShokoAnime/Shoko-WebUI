@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { omit } from 'lodash';
 import { toast } from 'react-toastify';
 import { Icon } from '@mdi/react';
@@ -8,7 +8,6 @@ import {
   mdiTrashCanOutline,
 } from '@mdi/js';
 
-import { RootState } from '../../core/store';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
@@ -19,8 +18,8 @@ import type { ImportFolderType } from '../../core/types/api/import-folder';
 import Select from '../../components/Input/Select';
 import TransitionDiv from '../../components/TransitionDiv';
 import {
-  useCreateImportFolderMutation, 
-  useDeleteImportFolderMutation,
+  useCreateImportFolderMutation,
+  useDeleteImportFolderMutation, useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
 } from '../../core/rtkQuery/importFolderApi';
 
@@ -38,7 +37,8 @@ const defaultState = {
 function ImportFolders() {
   const dispatch = useDispatch();
 
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const [newImportFolder, setNewImportFolder] = useState(defaultState);
   const [updateFolder] = useUpdateImportFolderMutation();

@@ -43,6 +43,9 @@ export const importFolderApi = createApi({
       }),
       invalidatesTags: ['ImportFolder'],
     }),
+    rescanImportFolder: build.query<void, number>({
+      query: folderId => ({ url: `/${folderId}/Scan` }),
+    }),
   }),
 });
 
@@ -51,4 +54,5 @@ export const {
   useUpdateImportFolderMutation,
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
+  useLazyRescanImportFolderQuery,
 } = importFolderApi;

@@ -67,8 +67,6 @@ export default function* rootSaga() {
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageRefresh),
-    // IMPORT FOLDER
-    takeEvery(Events.IMPORT_FOLDER_RESCAN, SagaImportFolder.runImportFolderRescan),
     // SERVER
     takeEvery(Events.SERVER_VERSION, serverVersion),
     // SETTINGS
