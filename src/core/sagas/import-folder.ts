@@ -2,7 +2,6 @@ import { call, put } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import ApiCommon from '../api/common';
-import ApiImportFolder from '../api/v3/import-folder';
 import ApiSeries from '../api/v3/series';
 
 import { setImportFolderSeries } from '../slices/mainpage';
@@ -27,20 +26,6 @@ function* getImportFolderSeries(action) {
   yield put(stopFetching('importFolderSeries'));
 }
 
-function* runImportFolderRescan(action) {
-  const {
-    payload,
-  } = action;
-  const resultJson = yield call(ApiImportFolder.getImportFolderScan, payload);
-
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-  } else {
-    toast.success('Request Sent!');
-  }
-}
-
 export default {
   getImportFolderSeries,
-  runImportFolderRescan,
 };

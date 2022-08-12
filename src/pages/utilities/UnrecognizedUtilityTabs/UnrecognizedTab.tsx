@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 import { countBy, find, forEach, pickBy } from 'lodash';
@@ -12,15 +12,15 @@ import {
   mdiEyeOffOutline, mdiCloseBoxOutline,
 } from '@mdi/js';
 
-import type { RootState } from '../../../core/store';
-
+import Events from '../../../core/events';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Button from '../../../components/Input/Button';
 import Checkbox from '../../../components/Input/Checkbox';
 import TransitionDiv from '../../../components/TransitionDiv';
+import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderApi';
 
 import type { FileType } from '../../../core/types/api/file';
-import Events from '../../../core/events';
+import { ImportFolderType } from '../../../core/types/api/import-folder';
 
 type Props = {
   files: Array<FileType>;
@@ -31,7 +31,8 @@ function UnrecognizedTab(props: Props) {
 
   const dispatch = useDispatch();
 
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
