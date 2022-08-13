@@ -5,6 +5,7 @@ import importFolderReducer from './modals/importFolder';
 import languagesReducer from './modals/languages';
 import profileReducer from './modals/profile';
 import filtersReducer from './modals/filters';
+import actionsReducer from './modals/actions';
 
 export default combineReducers({
   browseFolder: browseFolderReducer,
@@ -12,4 +13,5 @@ export default combineReducers({
   languages: languagesReducer,
   profile: profileReducer,
   filters: filtersReducer,
+  actions: actionsReducer,
 });
