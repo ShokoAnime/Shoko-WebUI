@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import type { SeriesInfoType, QueueStatusType } from '../types/api';
-import type { FileType } from '../types/api/file';
 
 type State = {
   avdump: {
@@ -15,7 +14,6 @@ type State = {
   };
   importFolderSeries: Array<SeriesInfoType>;
   queueStatus: QueueStatusType;
-  unrecognizedFiles: Array<FileType>;
   unrecognizedMark: Array<string>;
 };
 
@@ -27,7 +25,6 @@ const mainpageSlice = createSlice({
     importFolderSeries: [],
     queueStatus: {} as QueueStatusType,
     selectedImportFolderSeries: 1,
-    unrecognizedFiles: [],
     unrecognizedMark: [],
   } as State,
   reducers: {
@@ -43,9 +40,6 @@ const mainpageSlice = createSlice({
     setQueueStatus(sliceState, action) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
-    setUnrecognizedFiles(sliceState, action) {
-      sliceState.unrecognizedFiles = action.payload;
-    },
     markUnrecognizedFile(sliceState, action) {
       sliceState.unrecognizedMark = action.payload.state === true ? [...sliceState.unrecognizedMark, action.payload.id] : sliceState.unrecognizedMark.filter(id => id !== action.payload.id);
     },
@@ -55,7 +49,7 @@ const mainpageSlice = createSlice({
 export const {
   setAvdump, setFetched,
   setImportFolderSeries, setQueueStatus,
-  setUnrecognizedFiles, markUnrecognizedFile,
+  markUnrecognizedFile,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

@@ -16,12 +16,14 @@ import Checkbox from '../../../../components/Input/Checkbox';
 import { markUnrecognizedFile } from '../../../../core/slices/mainpage';
 import UnrecognizedAvdumpedItem from './UnrecognizedAvdumpedItem';
 
+import { useGetFileUnrecognizedQuery } from '../../../../core/rtkQuery/fileApi';
+
 function UnrecognizedTab() {
   const dispatch = useDispatch();
 
   const avdumpKeyExists = useSelector((state: RootState) => !!state.localSettings.AniDb.AVDumpKey);
   const avdumpList = useSelector((state: RootState) => state.mainpage.avdump);
-  const items = useSelector((state: RootState) => state.mainpage.unrecognizedFiles);
+  const items = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const itemsMarked = useSelector((state: RootState) => state.mainpage.unrecognizedMark);
 
   const runAvdump = (fileId: number) => dispatch(
@@ -60,7 +62,7 @@ function UnrecognizedTab() {
     </div>
   );
 
-  const sortedItems = orderBy(items, ['ID'], ['desc']);
+  const sortedItems = orderBy(items.data?.List, ['ID'], ['desc']);
   const files: Array<React.ReactNode> = [];
 
   forEach(sortedItems, (item) => {

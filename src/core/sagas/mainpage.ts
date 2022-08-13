@@ -4,10 +4,6 @@ import { toast } from 'react-toastify';
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
-import SagaFile from './file';
-
-// const alert = useAlert();
-
 function* getQueueStatus() {
   const resultJson = yield call(ApiCommon.getQueue);
   if (resultJson.error) {
@@ -20,22 +16,6 @@ function* getQueueStatus() {
 }
 
 // Events
-
-function* eventMainPageLoad() {
-  yield all([
-    yield call(SagaFile.getUnrecognizedFiles),
-  ]);
-
-  // yield put({ type: Events.CHECK_UPDATES });
-}
-
-function* eventMainPageRefresh() {
-  yield all([
-    yield call(SagaFile.getUnrecognizedFiles),
-  ]);
-
-  // yield put({ type: Events.CHECK_UPDATES });
-}
 
 function* eventQueueOperation(action) {
   const { payload } = action;
@@ -56,7 +36,5 @@ function* eventQueueOperation(action) {
 
 export default {
   getQueueStatus,
-  eventMainPageLoad,
-  eventMainPageRefresh,
   eventQueueOperation,
 };

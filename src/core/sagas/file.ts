@@ -1,23 +1,11 @@
 import { call, put } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
 
 import ApiFile from '../api/v3/file';
 
 import {
-  setAvdump, setFetched,
-  setUnrecognizedFiles,
+  setAvdump,
 } from '../slices/mainpage';
 
-function* getUnrecognizedFiles() {
-  const resultJson = yield call(ApiFile.getFileUnrecognized);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  yield put(setUnrecognizedFiles(resultJson.data.List));
-  yield put(setFetched('unrecognizedFiles'));
-}
 
 function* runAvdump(action) {
   const fileId = action.payload;
@@ -37,7 +25,6 @@ function* runRehash(action) {
 }
 
 export default {
-  getUnrecognizedFiles,
   runAvdump,
   runRescan,
   runRehash,
