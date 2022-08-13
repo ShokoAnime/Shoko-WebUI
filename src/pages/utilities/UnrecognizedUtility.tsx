@@ -6,7 +6,6 @@ import {
 import cx from 'classnames';
 
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
-import AVDumpTab from './UnrecognizedUtilityTabs/AVDumpTab.';
 
 import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
 
@@ -19,8 +18,6 @@ function UnrecognizedUtility() {
     switch (activeTab) {
       case 'unrecognized':
         return (<UnrecognizedTab />);
-      case 'avdump':
-        return (<AVDumpTab />);
       case 'manuallyLinked':
         return (<UnrecognizedTab />);
       case 'ignoredFiles':
@@ -41,8 +38,6 @@ function UnrecognizedUtility() {
         Unrecognized Files
         <Icon path={mdiChevronRight} size={1} className="ml-2" />
         {renderTabButton('unrecognized', 'Unrecognized')}
-        <div>|</div>
-        {renderTabButton('avdump', 'AVDump')}
         <div>|</div>
         {renderTabButton('manuallyLinked', 'Manually Linked')}
         <div>|</div>
