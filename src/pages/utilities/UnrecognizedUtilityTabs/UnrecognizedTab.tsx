@@ -24,6 +24,7 @@ import EpisodeLinkPanel from './Components/EpisodeLinkPanel';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 
 import {
+  useDeleteFileMutation,
   useGetFileUnrecognizedQuery,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
@@ -40,6 +41,7 @@ function UnrecognizedTab() {
   const [fileRescanTrigger] = usePostFileRescanMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
+  const [fileDeleteTrigger] = useDeleteFileMutation();
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
@@ -183,6 +185,14 @@ function UnrecognizedTab() {
     });
   };
 
+  const deleteFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileDeleteTrigger({ fileId: parseInt(fileId), removeFolder: true }).catch(() => {});
+      }
+    });
+  };
+
   const cancelSelection = () => {
     const tempMarkedItems = markedItems;
     forEach(tempMarkedItems, (_, key) => {
@@ -215,7 +225,7 @@ function UnrecognizedTab() {
             {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
             {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
             {renderButton(() => ignoreFiles(), mdiEyeOffOutline, 'Ignore')}
-            {renderButton(() => {}, mdiMinusCircleOutline, 'Delete')}
+            {renderButton(() => deleteFiles(), mdiMinusCircleOutline, 'Delete')}
             {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection')}
           </>
         )}

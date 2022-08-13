@@ -16,6 +16,15 @@ export const fileApi = createApi({
   }),
   endpoints: build => ({
 
+    // Delete a file.
+    deleteFile: build.mutation<void, { fileId: number, removeFolder: boolean }>({
+      query: ({ fileId, ...params }) => ({
+        url: `${fileId}`,
+        params,
+        method: 'DELETE',
+      }),
+    }),
+
     // Get ignored files.
     getFileIgnored: build.query<ListResultType<Array<FileType>>, PaginationType>({
       query: params => ({ url: 'Ignored', params }),
@@ -62,6 +71,7 @@ export const fileApi = createApi({
 });
 
 export const {
+  useDeleteFileMutation,
   useGetFileIgnoredQuery,
   useGetFileUnrecognizedQuery,
   usePutFileIgnoreMutation,
