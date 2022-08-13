@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import type { RootState } from '../store';
-import type { FileType } from '../types/api/file';
+import type { FileType, AVDumpResultType } from '../types/api/file';
 import type { ListResultType, PaginationType } from '../types/api';
 
 export const fileApi = createApi({
@@ -34,6 +34,30 @@ export const fileApi = createApi({
         method: 'PUT',
       }),
     }),
+
+    // Run a file through AVDump and return the result.
+    postFileAVDump: build.query<AVDumpResultType, number>({
+      query: fileId => ({
+        url: `${fileId}/AVDump`,
+        method: 'POST',
+      }),
+    }),
+
+    // Rescan a file on AniDB.
+    postFileRescan: build.query<void, number>({
+      query: fileId => ({
+        url: `${fileId}/Rescan`,
+        method: 'POST',
+      }),
+    }),
+
+    // Rehash a file.
+    postFileRehash: build.query<void, number>({
+      query: fileId => ({
+        url: `${fileId}/Rehash`,
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -41,4 +65,7 @@ export const {
   useGetFileIgnoredQuery,
   useGetFileUnrecognizedQuery,
   useLazyPutFileIgnoreQuery,
+  useLazyPostFileAVDumpQuery,
+  useLazyPostFileRescanQuery,
+  useLazyPostFileRehashQuery,
 } = fileApi;

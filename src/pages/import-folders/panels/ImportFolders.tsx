@@ -8,8 +8,6 @@ import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Input/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
-import { useGetImportFolderQuery } from '../../../core/rtkQuery/importFolderApi';
-
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import {
   useGetImportFoldersQuery,
@@ -81,7 +79,7 @@ function ImportFolders() {
     <FixedPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isFetching}>
       return {importFolders.length === 0
       ? (<div className="flex justify-center font-semibold mt-4" key="no-folders">No import folders added!</div>)
-      : importFolders.data!.map(importFolder => renderFolder(importFolder))}
+      : importFolders.map(importFolder => renderFolder(importFolder))}
     </FixedPanel>
   );
 }

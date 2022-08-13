@@ -29,21 +29,6 @@ function patchFileIgnore(id: string, ignore: boolean = true) {
   return ApiRequest(`${id}/Ignore`, 'PATCH', `?value=${ignore}`);
 }
 
-// Run a file through AVDump
-function postFileAvdump(id: string) {
-  return ApiRequest(`${id}/AVDump`, 'POST');
-}
-
-// Rescan the file.
-function postFileRescan(id: string) {
-  return ApiRequest(`${id}/Rescan`, 'POST');
-}
-
-// Rehash the file.
-function postFileRehash(id: string) {
-  return ApiRequest(`${id}/Rehash`, 'POST');
-}
-
 // Get Recently Added Files
 function getFileRecentLegacy(limit = 50) {
   return ApiRequest(`Recent/${limit}`, 'GET');
@@ -65,9 +50,6 @@ export default {
   getFileMediaInfo,
   patchFileWatched,
   patchFileIgnore,
-  postFileAvdump,
-  postFileRescan,
-  postFileRehash,
   getFileRecent,
   getFileDuplicates,
   getFileRecentLegacy,
