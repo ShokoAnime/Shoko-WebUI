@@ -26,14 +26,13 @@ function UnrecognizedTab() {
   const itemsMarked = useSelector((state: RootState) => state.mainpage.unrecognizedMark);
   const [avdumpTrigger, avdumpResult] = useLazyPostFileAVDumpQuery();
 
-  const runAvdump = (fileId: number) => {
-    avdumpTrigger(fileId).then(() => {
-      if (avdumpResult.data?.Ed2k) {
-        const tempAvdumpList = avdumpList;
-        tempAvdumpList[fileId] = avdumpResult.data.Ed2k;
-        setAvdumpList(tempAvdumpList);
-      }
-    }).catch(() => {});
+  const runAvdump = async (fileId: number) => {
+    await avdumpTrigger(fileId);
+    if (avdumpResult.data?.Ed2k) {
+      const tempAvdumpList = [...avdumpList];
+      tempAvdumpList[fileId] = avdumpResult.data.Ed2k;
+      setAvdumpList(tempAvdumpList);
+    }
   };
 
   const markFile = (id: string) => {
