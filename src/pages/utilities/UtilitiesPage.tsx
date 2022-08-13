@@ -1,11 +1,10 @@
 import React from 'react';
-
-import UnrecognizedUtility from './UnrecognizedUtility';
+import { Outlet } from 'react-router';
 
 function UtilitiesPage() {
   return (
     <div className="flex flex-col p-9 h-full">
-      <UnrecognizedUtility />
+      <Outlet />
     </div>
   );
 }
