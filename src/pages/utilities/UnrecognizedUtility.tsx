@@ -6,6 +6,7 @@ import {
 import cx from 'classnames';
 
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
+import AVDumpTab from './UnrecognizedUtilityTabs/AVDumpTab.';
 
 import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
 
@@ -17,15 +18,15 @@ function UnrecognizedUtility() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'unrecognized':
-        return (<UnrecognizedTab files={files} />);
+        return (<UnrecognizedTab />);
       case 'avdump':
-        return (<UnrecognizedTab files={files} />);
+        return (<AVDumpTab />);
       case 'manuallyLinked':
-        return (<UnrecognizedTab files={files} />);
+        return (<UnrecognizedTab />);
       case 'ignoredFiles':
-        return (<UnrecognizedTab files={files} />);
+        return (<UnrecognizedTab />);
       default:
-        return (<UnrecognizedTab files={files} />);
+        return (<UnrecognizedTab />);
     }
   };
 

@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 import cx from 'classnames';
-import { countBy, find, forEach } from 'lodash';
+import { countBy, find, forEach, pickBy } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronLeft, mdiChevronRight,
   mdiDatabaseSearchOutline, mdiDatabaseSyncOutline,
-  mdiDumpTruck, mdiMagnify, mdiRestart,
-  mdiLinkVariantPlus, mdiMinusCircleOutline,
-  mdiEyeOffOutline, mdiCloseCircleOutline,
+  mdiDumpTruck, mdiMagnify,
+  mdiLinkVariantPlus, mdiMinusBoxOutline,
+  mdiEyeOffOutline, mdiCloseBoxOutline,
 } from '@mdi/js';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
@@ -30,9 +30,8 @@ import {
 } from '../../../core/rtkQuery/fileApi';
 import FileListPanel from './Components/FileListPanel';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
-import Input from '../../../components/Input/Input';
 
-function UnrecognizedTab() {
+function AVDumpTab() {
   const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
@@ -112,7 +111,7 @@ function UnrecognizedTab() {
             {importFolder}
           </div>
 
-          <div className="flex flex-col w-48">
+          <div className="flex flex-col w-40">
             <div className="font-semibold mb-1">Import Date</div>
             {moment(selectedFileInfo.Created).format('MMMM DD YYYY, HH:mm')}
           </div>
@@ -134,7 +133,7 @@ function UnrecognizedTab() {
             {selectedFileInfo.Hashes.SHA1}
           </div>
 
-          <div className="flex flex-col w-48">
+          <div className="flex flex-col w-40">
             <div className="font-semibold mb-1">CRC32</div>
             {selectedFileInfo.Hashes.CRC32}
           </div>
@@ -156,9 +155,8 @@ function UnrecognizedTab() {
 
   const rescanFiles = (selected = false) => {
     if (selected) {
-      forEach(markedItems, (marked, fileId) => {
-        if (marked) fileRescanTrigger(parseInt(fileId)).catch(() => {});
-      });
+      const fileIds = Object.keys(pickBy(markedItems, item => item));
+      forEach(fileIds, fileId => fileRescanTrigger(parseInt(fileId)));
     } else {
       forEach(files.data?.List, file => fileRescanTrigger(file.ID));
     }
@@ -166,25 +164,16 @@ function UnrecognizedTab() {
 
   const rehashFiles = (selected = false) => {
     if (selected) {
-      forEach(markedItems, (marked, fileId) => {
-        if (marked) fileRehashTrigger(parseInt(fileId)).catch(() => {});
-      });
+      const fileIds = Object.keys(pickBy(markedItems, item => item));
+      forEach(fileIds, fileId => fileRehashTrigger(parseInt(fileId)));
     } else {
       forEach(files.data?.List, file => fileRehashTrigger(file.ID));
     }
   };
 
-  const cancelSelection = () => {
-    const tempMarkedItems = markedItems;
-    forEach(tempMarkedItems, (_, key) => {
-      tempMarkedItems[key] = false;
-    });
-    changeMarkedItems(tempMarkedItems);
-  };
-
   const renderOperations = (common = false) => {
     const renderButton = (onClick: (...args: any) => void, icon: string, name: string) => (
-      <Button onClick={onClick} className="flex items-center mr-3 font-normal">
+      <Button onClick={onClick} className="flex items-center ml-3 font-normal">
         <Icon path={icon} size={1} className="mr-1"/>
         {name}
       </Button>
@@ -194,7 +183,6 @@ function UnrecognizedTab() {
       <TransitionDiv className="flex grow">
         {common ? (
           <>
-            {renderButton(() => files.refetch(), mdiRestart, 'Refresh')}
             {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
             {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
             {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
@@ -206,8 +194,8 @@ function UnrecognizedTab() {
             {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
             {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
             {renderButton(() => {}, mdiEyeOffOutline, 'Ignore')}
-            {renderButton(() => {}, mdiMinusCircleOutline, 'Delete')}
-            {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection')}
+            {renderButton(() => {}, mdiMinusBoxOutline, 'Delete')}
+            {renderButton(() => {}, mdiCloseBoxOutline, 'Cancel Selection')}
           </>
         )}
       </TransitionDiv>
@@ -221,8 +209,9 @@ function UnrecognizedTab() {
 
       <div className="flex flex-col grow">
         <div className="flex">
-          <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
           <div className={cx(['box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2', manualLink && 'pointer-events-none opacity-75'])}>
+            <Icon path={mdiMagnify} size={1} />
+            <input type="text" placeholder="Search..." className="ml-2 bg-background-nav border-b border-font-main" />
             {renderOperations(markedItemsCount === 0)}
             <div className="ml-auto text-highlight-2 font-semibold">{markedItemsCount} Files Selected</div>
           </div>
@@ -248,7 +237,7 @@ function UnrecognizedTab() {
         )}
       </div>
 
-      <ShokoPanel title={fileInfoTitle()} className="!h-48 mt-4" options={renderPanelOptions()}>
+      <ShokoPanel title={fileInfoTitle()} className="!h-56 mt-4" options={renderPanelOptions()}>
         {markedItemsCount === 0 ? (
           <TransitionDiv className="flex items-center justify-center mt-2 font-semibold">
             No File(s) Selected
@@ -260,4 +249,4 @@ function UnrecognizedTab() {
   );
 }
 
-export default UnrecognizedTab;
+export default AVDumpTab;

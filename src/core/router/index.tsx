@@ -37,6 +37,10 @@ import GroupList from '../../pages/collection/GroupList';
 import Group from '../../pages/collection/Group';
 import FilterGroupList from '../../pages/collection/FilterGroupList';
 
+// Utilities
+import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
+import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
+
 type Props = {
   history: BrowserHistory;
 };
@@ -72,7 +76,11 @@ function Router(props: Props) {
                 <Route index element={<Navigate to="dashboard" />} />
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="import-folders" element={<ImportFoldersPage />} />
-                <Route path="utilities" element={<UtilitiesPage />} />
+                <Route path="utilities" element={<UtilitiesPage />}>
+                  <Route index element={<Navigate to="unrecognized" replace />} />
+                  <Route path="unrecognized" element={<UnrecognizedUtility />} />
+                  <Route path="multiple-files" element={<MultipleFilesUtility />} />
+                </Route>
                 <Route path="actions" element={<ActionsPage />} />
                 <Route path="log" element={<LogsPage />} />
                 <Route path="collection">
