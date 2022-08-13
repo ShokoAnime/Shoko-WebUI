@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {
-  mdiCheckboxBlankOutline, mdiCheckboxMarked,
+  mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline,
 } from '@mdi/js';
 
 import TransitionDiv from '../TransitionDiv';
@@ -43,12 +43,12 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
       )}
       {isChecked && (
         <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
-          <Icon path={mdiCheckboxMarked} size={1} />
+          <Icon path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {!isChecked && (
         <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
-          <Icon path={mdiCheckboxBlankOutline} size={1} />
+          <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {labelRight && (
