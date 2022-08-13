@@ -5,9 +5,8 @@ type State = {
 };
 
 const  actionsSlice = createSlice({
-  name: 'filters',
+  name: 'actions',
   initialState: {
-    filters: [],
     status: false,
   } as State,
   reducers: {

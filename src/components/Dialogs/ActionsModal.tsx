@@ -3,13 +3,22 @@ import cx from 'classnames';
 import React, { useMemo, useState } from 'react';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiChevronUp } from '@mdi/js';
-import { CollectionFilterType } from '../../core/types/api/collection';
+import { mdiChevronUp, mdiPlayCircleOutline } from '@mdi/js';
+import quickActions from '../../core/quick-actions';
+
 import { setStatus } from '../../core/slices/modals/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../core/store';
 
 const actions = {
+  import: {
+    title: 'Import',
+    data: [
+      'remove-missing-files-mylist',
+      'remove-missing-files',
+      'run-import',
+    ],
+  },
   anidb: {
     title: 'AniDB',
     data: [
@@ -63,26 +72,18 @@ const actions = {
       'plex-sync-all',
     ],
   },
-  import: {
-    title: 'Import',
-    data: [
-      'remove-missing-files-mylist',
-      'remove-missing-files',
-      'run-import',
-    ],
-  },
 };
 
 function ActionsModal() {
   const dispatch = useDispatch();
   const status = useSelector((state: RootState) => state.modals.actions.status);
-  const [activeTab, setActiveTab] = useState('Filters');
+  const [activeTab, setActiveTab] = useState('Import');
   const handleClose = () => dispatch(setStatus(false));
 
-  const renderItem = (item: CollectionFilterType) => (
+  const renderItem = (item: { name: string; function: string; data?:boolean; }) => (
     <div className="flex justify-between font-semibold">
-      <span>{item.Name}</span>
-      <span className="text-highlight-2">{item.Size}</span>
+      <span>{item.name}</span>
+      <span className="text-highlight-1"><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
     </div>
   );
 
@@ -93,11 +94,7 @@ function ActionsModal() {
         <span onClick={() => { setActiveTab(title); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
       <div className={cx('flex flex-col grow w-full p-4', { hidden: activeTab !== title })}>
-        <div className="box-border flex flex-col bg-background-alt border border-background-border items-center rounded-md px-3 py-2">
-          <div className="flex flex-col w-full p-4 space-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
-            {items.map(item => renderItem(item))}
-          </div>
-        </div>
+        {items.map(item => renderItem(quickActions[item]))}
       </div>
     </React.Fragment>
   );
@@ -109,7 +106,7 @@ function ActionsModal() {
       panels.push(renderTab(action.title, action.data));
     });
     return panels;
-  }, [actions]);
+  }, [actions, activeTab]);
   
   return (
     <ModalPanel
