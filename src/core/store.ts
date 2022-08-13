@@ -16,6 +16,8 @@ import { externalApi } from './rtkQuery/externalApi';
 import { collectionApi } from './rtkQuery/collectionApi';
 import { logsApi } from './rtkQuery/logsApi';
 import { importFolderApi } from './rtkQuery/importFolderApi';
+import { seriesApi } from './rtkQuery/seriesApi';
+import { fileApi } from './rtkQuery/fileApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -41,6 +43,8 @@ const middleware = [
   collectionApi.middleware,
   logsApi.middleware,
   importFolderApi.middleware,
+  seriesApi.middleware,
+  fileApi.middleware,
 ];
 
 const store = configureStore({

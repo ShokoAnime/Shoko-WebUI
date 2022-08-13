@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronRight,
 } from '@mdi/js';
 import cx from 'classnames';
 
-import type { RootState } from '../../core/store';
-
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
 
+import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
+
 function UnrecognizedUtility() {
-  const files = useSelector((state: RootState) => state.mainpage.unrecognizedFiles);
+  const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
 
   const [activeTab, setActiveTab] = useState('unrecognized');
 
@@ -31,7 +30,7 @@ function UnrecognizedUtility() {
   };
 
   const renderTabButton = (key: string, name: string) => (
-    <div onClick={() => setActiveTab(key)} className={cx(['mx-2 cursor-pointer', activeTab === key && 'text-primary'])}>{name}</div>
+    <div onClick={() => setActiveTab(key)} className={cx(['mx-2 cursor-pointer', activeTab === key && 'text-highlight-1'])}>{name}</div>
   );
 
   return (
@@ -48,7 +47,7 @@ function UnrecognizedUtility() {
         <div>|</div>
         {renderTabButton('ignoredFiles', 'Ignored Files')}
         <div className="ml-auto">
-          <span className="text-highlight-2">{files.length}</span> Files
+          <span className="text-highlight-2">{files.data?.Total}</span> Files
         </div>
       </div>
 

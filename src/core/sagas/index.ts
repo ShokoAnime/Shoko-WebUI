@@ -1,5 +1,5 @@
 import {
-  all, call, put, takeEvery, throttle,
+  all, call, put, takeEvery,
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
 import { toast } from 'react-toastify';
@@ -9,7 +9,6 @@ import ApiCommon from '../api/common';
 import Events from '../events';
 
 import SagaAuth from './auth';
-import SagaFile from './file';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
 import SagaInit from './init';
@@ -63,10 +62,8 @@ export default function* rootSaga() {
     takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE
     takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
-    takeEvery(Events.MAINPAGE_LOAD, SagaMainPage.eventMainPageLoad),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
-    throttle(1500, Events.MAINPAGE_REFRESH, SagaMainPage.eventMainPageRefresh),
     // SERVER
     takeEvery(Events.SERVER_VERSION, serverVersion),
     // SETTINGS
@@ -83,9 +80,5 @@ export default function* rootSaga() {
     // WEBUI
     takeEvery(Events.WEBUI_CHECK_UPDATES, SagaWebUi.checkUpdates),
     takeEvery(Events.WEBUI_UPDATE, SagaWebUi.downloadUpdates),
-    // UTILITIES
-    takeEvery(Events.UTILITIES_RESCAN, SagaFile.runRescan),
-    takeEvery(Events.UTILITIES_REHASH, SagaFile.runRehash),
-    takeEvery(Events.UTILITIES_AVDUMP, SagaFile.runAvdump),
   ]);
 }

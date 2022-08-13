@@ -27,7 +27,9 @@ export const dashboardApi = createApi({
       query: () => ({ url: 'SeriesSummary' }),
       transformResponse: (response: DashboardSeriesSummaryType) => {
         const result = response;
-        result.Other += result.Special + result.None;
+        result.Other += (result?.Special ?? 0) + (result?.None ?? 0);
+        delete result.Special;
+        delete result.None;
         return result;
       },
     }),

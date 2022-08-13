@@ -29,21 +29,6 @@ function patchFileIgnore(id: string, ignore: boolean = true) {
   return ApiRequest(`${id}/Ignore`, 'PATCH', `?value=${ignore}`);
 }
 
-// Run a file through AVDump
-function postFileAvdump(id: string) {
-  return ApiRequest(`${id}/AVDump`, 'POST');
-}
-
-// Rescan the file.
-function postFileRescan(id: string) {
-  return ApiRequest(`${id}/Rescan`, 'POST');
-}
-
-// Rehash the file.
-function postFileRehash(id: string) {
-  return ApiRequest(`${id}/Rehash`, 'POST');
-}
-
 // Get Recently Added Files
 function getFileRecentLegacy(limit = 50) {
   return ApiRequest(`Recent/${limit}`, 'GET');
@@ -54,19 +39,9 @@ function getFileRecent(pageSize = 50, page = 1) {
   return ApiRequest('Recent', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
-// Get files marked as ignored.
-function getFileIgnored(pageSize = 50, page = 1) {
-  return ApiRequest('Ignored', 'GET', `?pageSize=${pageSize}&page=${page}`);
-}
-
 // Get files with more than one location.
 function getFileDuplicates(pageSize = 50, page = 1) {
   return ApiRequest('Duplicates', 'GET', `?pageSize=${pageSize}&page=${page}`);
-}
-
-// Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
-function getFileUnrecognized(pageSize = 0, page = 1) {
-  return ApiRequest('Unrecognized', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
 export default {
@@ -75,12 +50,7 @@ export default {
   getFileMediaInfo,
   patchFileWatched,
   patchFileIgnore,
-  postFileAvdump,
-  postFileRescan,
-  postFileRehash,
   getFileRecent,
-  getFileIgnored,
   getFileDuplicates,
-  getFileUnrecognized,
   getFileRecentLegacy,
 };
