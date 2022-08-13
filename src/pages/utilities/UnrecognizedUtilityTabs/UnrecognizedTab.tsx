@@ -46,13 +46,12 @@ function UnrecognizedTab() {
   const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
 
   useEffect(() => {
-    while (files.isLoading);
     const newMarkedItems = {} as { [key: number]: boolean };
     forEach(files.data?.List, (file) => {
       newMarkedItems[file.ID] = false;
     });
     setMarkedItems(newMarkedItems);
-  }, []);
+  }, [files.isLoading]);
 
   const changeSelectedFile = (operation: string) => {
     if (operation === 'prev') {
