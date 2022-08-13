@@ -54,19 +54,9 @@ function getFileRecent(pageSize = 50, page = 1) {
   return ApiRequest('Recent', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
-// Get files marked as ignored.
-function getFileIgnored(pageSize = 50, page = 1) {
-  return ApiRequest('Ignored', 'GET', `?pageSize=${pageSize}&page=${page}`);
-}
-
 // Get files with more than one location.
 function getFileDuplicates(pageSize = 50, page = 1) {
   return ApiRequest('Duplicates', 'GET', `?pageSize=${pageSize}&page=${page}`);
-}
-
-// Get Unrecognized Files. Use pageSize and page (index 0) in the query to enable pagination.
-function getFileUnrecognized(pageSize = 0, page = 1) {
-  return ApiRequest('Unrecognized', 'GET', `?pageSize=${pageSize}&page=${page}`);
 }
 
 export default {
@@ -79,8 +69,6 @@ export default {
   postFileRescan,
   postFileRehash,
   getFileRecent,
-  getFileIgnored,
   getFileDuplicates,
-  getFileUnrecognized,
   getFileRecentLegacy,
 };
