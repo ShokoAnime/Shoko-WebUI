@@ -202,9 +202,9 @@ function UnrecognizedTab() {
   };
 
   const renderOperations = (common = false) => {
-    const renderButton = (onClick: (...args: any) => void, icon: string, name: string) => (
-      <Button onClick={onClick} className="flex items-center mr-3 font-normal text-font-main">
-        <Icon path={icon} size={1} className="mr-1"/>
+    const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
+      <Button onClick={onClick} className="flex items-center mr-4 font-normal text-font-main">
+        <Icon path={icon} size={1} className={cx(['mr-1', highlight && 'text-highlight-1'])} />
         {name}
       </Button>
     );
@@ -225,8 +225,8 @@ function UnrecognizedTab() {
             {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
             {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
             {renderButton(() => ignoreFiles(), mdiEyeOffOutline, 'Ignore')}
-            {renderButton(() => deleteFiles(), mdiMinusCircleOutline, 'Delete')}
-            {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection')}
+            {renderButton(() => deleteFiles(), mdiMinusCircleOutline, 'Delete', true)}
+            {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
           </>
         )}
       </TransitionDiv>
