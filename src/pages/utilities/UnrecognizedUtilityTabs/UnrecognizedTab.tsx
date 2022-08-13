@@ -25,8 +25,8 @@ import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 
 import {
   useGetFileUnrecognizedQuery,
-  useLazyPostFileRehashQuery,
-  useLazyPostFileRescanQuery,
+  usePostFileRehashMutation,
+  usePostFileRescanMutation,
 } from '../../../core/rtkQuery/fileApi';
 import FileListPanel from './Components/FileListPanel';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
@@ -36,8 +36,8 @@ function UnrecognizedTab() {
   const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-  const [fileRescanTrigger] = useLazyPostFileRescanQuery();
-  const [fileRehashTrigger] = useLazyPostFileRehashQuery();
+  const [fileRescanTrigger] = usePostFileRescanMutation();
+  const [fileRehashTrigger] = usePostFileRehashMutation();
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
