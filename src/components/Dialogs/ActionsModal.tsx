@@ -1,13 +1,16 @@
-import ModalPanel from '../Panels/ModalPanel';
-import cx from 'classnames';
 import React, { useMemo, useState } from 'react';
+import cx from 'classnames';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiChevronUp, mdiPlayCircleOutline } from '@mdi/js';
-import quickActions from '../../core/quick-actions';
-
-import { setStatus } from '../../core/slices/modals/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
+
+import ModalPanel from '../Panels/ModalPanel';
+import quickActions from '../../core/quick-actions';
+import { setStatus } from '../../core/slices/modals/actions';
+import { useRunActionMutation } from '../../core/rtkQuery/actionsApi';
+
 import { RootState } from '../../core/store';
 
 const actions = {
@@ -80,10 +83,20 @@ function ActionsModal() {
   const [activeTab, setActiveTab] = useState('Import');
   const handleClose = () => dispatch(setStatus(false));
 
+  const [runActionTrigger] = useRunActionMutation();
+  
+  const runAction = async (action) => {
+    //TODO: figure out better type for this
+    const result: any = await runActionTrigger(action);
+    if (!result.error) {
+      toast.success('Request Sent!');
+    }
+  };
+
   const renderItem = (item: { name: string; function: string; data?:boolean; }) => (
     <div className="flex justify-between font-semibold">
       <span>{item.name}</span>
-      <span className="text-highlight-1"><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
+      <span className="text-highlight-1" onClick={() => runAction(item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
     </div>
   );
 
@@ -93,7 +106,7 @@ function ActionsModal() {
         <p className="text-base font-semibold text-gray-300">{title}</p>
         <span onClick={() => { setActiveTab(title); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
-      <div className={cx('flex flex-col grow w-full p-4', { hidden: activeTab !== title })}>
+      <div className={cx('flex flex-col grow w-full p-4 space-y-1', { hidden: activeTab !== title })}>
         {items.map(item => renderItem(quickActions[item]))}
       </div>
     </React.Fragment>

@@ -16,7 +16,6 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 // Main page
 import DashboardPage from '../../pages/dashboard/DashboardPage';
 import ImportFoldersPage from '../../pages/import-folders/ImportFoldersPage';
-import ActionsPage from '../../pages/actions/ActionsPage';
 import SettingsPage from '../../pages/settings/SettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
@@ -81,7 +80,6 @@ function Router(props: Props) {
                   <Route path="unrecognized" element={<UnrecognizedUtility />} />
                   <Route path="multiple-files" element={<MultipleFilesUtility />} />
                 </Route>
-                <Route path="actions" element={<ActionsPage />} />
                 <Route path="log" element={<LogsPage />} />
                 <Route path="collection">
                   <Route index element={<GroupList />}/>

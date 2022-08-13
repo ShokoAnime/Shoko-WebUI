@@ -12,7 +12,6 @@ import SagaAuth from './auth';
 import SagaFolder from './folder';
 import SagaImportFolder from './import-folder';
 import SagaInit from './init';
-import SagaQuickAction from './quick-actions';
 import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
 import SagaWebUi from './webui';
@@ -58,8 +57,6 @@ export default function* rootSaga() {
     takeEvery(Events.FIRSTRUN_TEST_DATABASE, SagaInit.testDatabase),
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
-    // QUICK ACTIONS
-    takeEvery(Events.QUICK_ACTION_RUN, SagaQuickAction.runQuickAction),
     // MAINPAGE
     takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
