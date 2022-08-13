@@ -20,9 +20,10 @@ const onQueueStateChange = dispatch => (queue, state) => {
   const newState = Object.assign({}, { [queue]: state });
   dispatch(setQueueStatus(newState));
 };
-const onQueueCountChange = (dispatch, getState) => (queue, count) => {
-  const currentQueue = getState().mainpage.queueStatus[queue];
-  if (queue === 'GeneralQueueCount' && currentQueue > count) dispatch({ type: Events.MAINPAGE_REFRESH });
+const onQueueCountChange = dispatch => (queue, count) => {
+  // TODO: Add auto-reload back
+  // const currentQueue = getState().mainpage.queueStatus[queue];
+  // if (queue === 'GeneralQueueCount' && currentQueue > count) dispatch({ type: Events.MAINPAGE_REFRESH });
 
   const newState = Object.assign({}, { [queue]: count });
   dispatch(setQueueStatus(newState));
@@ -64,6 +65,7 @@ const signalRMiddleware = ({
   dispatch,
   getState,
 }) => next => async (action) => {
+  // TODO: Change this event to something else
   // register signalR after the user logged in
   if (action.type === Events.MAINPAGE_LOAD) {
     if (connectionEvents !== undefined) { return next(action); }
