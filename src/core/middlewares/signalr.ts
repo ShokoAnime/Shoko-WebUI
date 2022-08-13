@@ -89,7 +89,7 @@ const signalRMiddleware = ({
 
     // event handlers, you can use these to dispatch actions to update your Redux store
     connectionEvents.on('QueueStateChanged', onQueueStateChange(dispatch));
-    connectionEvents.on('QueueCountChanged', onQueueCountChange(dispatch, getState));
+    connectionEvents.on('QueueCountChanged', onQueueCountChange(dispatch));
     connectionEvents.on('CommandProcessingStatus', onQueueRefreshState(dispatch));
 
     // re-establish the connection if connection dropped
