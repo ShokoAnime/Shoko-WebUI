@@ -27,10 +27,10 @@ function UnrecognizedTab() {
   const [avdumpTrigger, avdumpResult] = useLazyPostFileAVDumpQuery();
 
   const runAvdump = async (fileId: number) => {
-    await avdumpTrigger(fileId);
-    if (avdumpResult.data?.Ed2k) {
+    const result = await avdumpTrigger(fileId);
+    if (result.data?.Ed2k) {
       const tempAvdumpList = [...avdumpList];
-      tempAvdumpList[fileId] = avdumpResult.data.Ed2k;
+      tempAvdumpList[fileId] = result.data.Ed2k;
       setAvdumpList(tempAvdumpList);
     }
   };
