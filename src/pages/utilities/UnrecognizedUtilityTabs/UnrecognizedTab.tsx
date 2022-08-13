@@ -27,6 +27,7 @@ import {
   useGetFileUnrecognizedQuery,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
+  usePutFileIgnoreMutation,
 } from '../../../core/rtkQuery/fileApi';
 import FileListPanel from './Components/FileListPanel';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
@@ -38,6 +39,7 @@ function UnrecognizedTab() {
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   const [fileRescanTrigger] = usePostFileRescanMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
+  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
@@ -173,6 +175,14 @@ function UnrecognizedTab() {
     }
   };
 
+  const ignoreFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileIgnoreTrigger({ fileId: parseInt(fileId), value: true }).catch(() => {});
+      }
+    });
+  };
+
   const cancelSelection = () => {
     const tempMarkedItems = markedItems;
     forEach(tempMarkedItems, (_, key) => {
@@ -204,7 +214,7 @@ function UnrecognizedTab() {
             {renderButton(() => rescanFiles(true), mdiDatabaseSearchOutline, 'Rescan')}
             {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
             {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
-            {renderButton(() => {}, mdiEyeOffOutline, 'Ignore')}
+            {renderButton(() => ignoreFiles(), mdiEyeOffOutline, 'Ignore')}
             {renderButton(() => {}, mdiMinusCircleOutline, 'Delete')}
             {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection')}
           </>
