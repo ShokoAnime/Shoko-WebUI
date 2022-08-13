@@ -5,10 +5,10 @@ export type DashboardSeriesSummaryType = {
   Series: number,
   OVA: number,
   Movie: number,
-  Special: number,
+  Special?: number,
   Web: number,
   Other: number,
-  None: number,
+  None?: number,
 };
 
 export type DashboardStatsType = {
