@@ -183,7 +183,7 @@ function UnrecognizedTab() {
 
   const renderOperations = (common = false) => {
     const renderButton = (onClick: (...args: any) => void, icon: string, name: string) => (
-      <Button onClick={onClick} className="flex items-center mr-3 font-normal">
+      <Button onClick={onClick} className="flex items-center mr-3 font-normal text-font-main">
         <Icon path={icon} size={1} className="mr-1"/>
         {name}
       </Button>
