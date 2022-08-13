@@ -21,6 +21,7 @@ import { siDiscord } from 'simple-icons/icons';
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
+import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { default as ShokoIcon } from '../ShokoIcon';
 
 function Sidebar() {
@@ -33,10 +34,21 @@ function Sidebar() {
   useEffect(() => {
     dispatch(setStatus(false));
   }, []);
+
+  const renderActionsItem = (key: string, text: string, icon: string) => {
+    const uri = `/webui/${key}`;
+    const isHighlighted = pathname === uri;
+    return (
+      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(setActionsStatus(true))}>
+        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
+        <span className="text-lg">{text}</span>
+      </div>
+    );
+  };
   
   const renderMenuItem = (key: string, text: string, icon: string) => {
     const uri = `/webui/${key}`; 
-    const isHighlighted = pathname === uri; 
+    const isHighlighted = pathname === uri;
     return (
       <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} to={uri}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
@@ -68,7 +80,7 @@ function Sidebar() {
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
         {renderMenuItem('utilities', 'Utilities', mdiTools)}
-        {renderMenuItem('actions', 'Actions', mdiFormatListBulletedSquare)}
+        {renderActionsItem('actions', 'Actions', mdiFormatListBulletedSquare)}
         {renderMenuItem('import-folders', 'Import Folders', mdiFolder)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
