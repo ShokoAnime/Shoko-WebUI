@@ -24,9 +24,11 @@ import EpisodeLinkPanel from './Components/EpisodeLinkPanel';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 
 import {
+  useDeleteFileMutation,
   useGetFileUnrecognizedQuery,
-  useLazyPostFileRehashQuery,
-  useLazyPostFileRescanQuery,
+  usePostFileRehashMutation,
+  usePostFileRescanMutation,
+  usePutFileIgnoreMutation,
 } from '../../../core/rtkQuery/fileApi';
 import FileListPanel from './Components/FileListPanel';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
@@ -36,8 +38,10 @@ function UnrecognizedTab() {
   const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-  const [fileRescanTrigger] = useLazyPostFileRescanQuery();
-  const [fileRehashTrigger] = useLazyPostFileRehashQuery();
+  const [fileRescanTrigger] = usePostFileRescanMutation();
+  const [fileRehashTrigger] = usePostFileRehashMutation();
+  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
+  const [fileDeleteTrigger] = useDeleteFileMutation();
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
@@ -46,13 +50,12 @@ function UnrecognizedTab() {
   const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
 
   useEffect(() => {
-    while (files.isLoading);
     const newMarkedItems = {} as { [key: number]: boolean };
     forEach(files.data?.List, (file) => {
       newMarkedItems[file.ID] = false;
     });
     setMarkedItems(newMarkedItems);
-  }, []);
+  }, [files.isLoading]);
 
   const changeSelectedFile = (operation: string) => {
     if (operation === 'prev') {
@@ -73,21 +76,19 @@ function UnrecognizedTab() {
   };
 
   const fileInfoTitle = () => {
-    if (markedItemsCount > 0) {
-      return (
-        <React.Fragment>
-          Selected File Info
-          <div className="flex ml-2">
-            - <span className="text-highlight-2 ml-2">{selectedFile}/{markedItemsCount}</span>
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return 'Selected File Info';
-    }
+    const isEmpty = markedItemsCount <= 0;
+    return (
+      <React.Fragment>
+        Selected File Info
+        <TransitionDiv className="flex ml-2" show={!isEmpty}>
+          - <span className="text-highlight-2 ml-2">{isEmpty ? '-/-' : `${selectedFile}/${markedItemsCount}`}</span>
+        </TransitionDiv>
+      </React.Fragment>
+    );
   };
 
   const renderFileInfo = () => {
+    if (markedItemsCount === 0) return;
     const selectedFiles = files.data?.List.filter(item => markedItems[item.ID])!;
     const selectedFileInfo = selectedFiles[selectedFile - 1];
 
@@ -95,7 +96,7 @@ function UnrecognizedTab() {
     const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
-      <TransitionDiv className="flex flex-col mt-2">
+      <>
         <div className="flex">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Filename</div>
@@ -139,7 +140,7 @@ function UnrecognizedTab() {
             {selectedFileInfo.Hashes.CRC32}
           </div>
         </div>
-      </TransitionDiv>
+      </>
     );
   };
 
@@ -174,6 +175,22 @@ function UnrecognizedTab() {
     }
   };
 
+  const ignoreFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileIgnoreTrigger({ fileId: parseInt(fileId), value: true }).catch(() => {});
+      }
+    });
+  };
+
+  const deleteFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileDeleteTrigger({ fileId: parseInt(fileId), removeFolder: true }).catch(() => {});
+      }
+    });
+  };
+
   const cancelSelection = () => {
     const tempMarkedItems = markedItems;
     forEach(tempMarkedItems, (_, key) => {
@@ -183,34 +200,31 @@ function UnrecognizedTab() {
   };
 
   const renderOperations = (common = false) => {
-    const renderButton = (onClick: (...args: any) => void, icon: string, name: string) => (
-      <Button onClick={onClick} className="flex items-center mr-3 font-normal">
-        <Icon path={icon} size={1} className="mr-1"/>
+    const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
+      <Button onClick={onClick} className="flex items-center mr-4 font-normal text-font-main">
+        <Icon path={icon} size={1} className={cx(['mr-1', highlight && 'text-highlight-1'])} />
         {name}
       </Button>
     );
 
     return (
-      <TransitionDiv className="flex grow">
-        {common ? (
-          <>
-            {renderButton(() => files.refetch(), mdiRestart, 'Refresh')}
-            {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
-            {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
-            {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
-          </>
-        ) : (
-          <>
-            {renderButton(() => setManualLink(!manualLink), mdiLinkVariantPlus, 'Manually Link')}
-            {renderButton(() => rescanFiles(true), mdiDatabaseSearchOutline, 'Rescan')}
-            {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
-            {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
-            {renderButton(() => {}, mdiEyeOffOutline, 'Ignore')}
-            {renderButton(() => {}, mdiMinusCircleOutline, 'Delete')}
-            {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection')}
-          </>
-        )}
-      </TransitionDiv>
+      <>
+        <TransitionDiv className="flex grow absolute" show={common}>
+          {renderButton(() => files.refetch(), mdiRestart, 'Refresh')}
+          {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
+          {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
+          {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
+        </TransitionDiv>
+        <TransitionDiv className="flex grow absolute" show={!common}>
+          {renderButton(() => setManualLink(!manualLink), mdiLinkVariantPlus, 'Manually Link')}
+          {renderButton(() => rescanFiles(true), mdiDatabaseSearchOutline, 'Rescan')}
+          {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
+          {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
+          {renderButton(() => ignoreFiles(), mdiEyeOffOutline, 'Ignore')}
+          {renderButton(() => deleteFiles(), mdiMinusCircleOutline, 'Delete', true)}
+          {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
+        </TransitionDiv>
+      </>
     );
   };
 
@@ -222,7 +236,7 @@ function UnrecognizedTab() {
       <div className="flex flex-col grow">
         <div className="flex">
           <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
-          <div className={cx(['box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2', manualLink && 'pointer-events-none opacity-75'])}>
+          <div className={cx(['box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2 relative', manualLink && 'pointer-events-none opacity-75'])}>
             {renderOperations(markedItemsCount === 0)}
             <div className="ml-auto text-highlight-2 font-semibold">{markedItemsCount} Files Selected</div>
           </div>
@@ -249,11 +263,14 @@ function UnrecognizedTab() {
       </div>
 
       <ShokoPanel title={fileInfoTitle()} className="!h-48 mt-4" options={renderPanelOptions()}>
-        {markedItemsCount === 0 ? (
-          <TransitionDiv className="flex items-center justify-center mt-2 font-semibold">
+        <div className="flex grow flex-col items-center relative">
+          <TransitionDiv className="mt-2 font-semibold absolute" show={markedItemsCount === 0}>
             No File(s) Selected
           </TransitionDiv>
-        ) : renderFileInfo()}
+          <TransitionDiv className="flex grow flex-col mt-2 w-full absolute" show={markedItemsCount !== 0}>
+            {renderFileInfo()}
+          </TransitionDiv>
+        </div>
       </ShokoPanel>
 
     </TransitionDiv>

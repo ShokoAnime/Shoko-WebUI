@@ -7,17 +7,19 @@ type Props = {
   enter?: string;
   enterFrom?: string;
   enterTo?: string;
+  show?: boolean;
 };
 
 function TransitionDiv(props: Props) {
   const {
     enter, enterFrom, enterTo, className, children,
+    show,
   } = props;
 
   return (
     <Transition
       appear
-      show
+      show={show ?? true}
       enter={enter ?? 'transition-opacity duration-300'}
       enterFrom={enterFrom ?? 'opacity-0'}
       enterTo={enterTo ?? 'opacity-100'}

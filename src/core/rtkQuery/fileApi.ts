@@ -16,6 +16,15 @@ export const fileApi = createApi({
   }),
   endpoints: build => ({
 
+    // Delete a file.
+    deleteFile: build.mutation<void, { fileId: number, removeFolder: boolean }>({
+      query: ({ fileId, ...params }) => ({
+        url: `${fileId}`,
+        params,
+        method: 'DELETE',
+      }),
+    }),
+
     // Get ignored files.
     getFileIgnored: build.query<ListResultType<Array<FileType>>, PaginationType>({
       query: params => ({ url: 'Ignored', params }),
@@ -27,9 +36,9 @@ export const fileApi = createApi({
     }),
 
     // Mark or unmark a file as ignored.
-    putFileIgnore: build.query<void, { fileID: number, value: boolean }>({
-      query: params => ({
-        url: `${params.fileID}/Ignore`,
+    putFileIgnore: build.mutation<void, { fileId: number, value: boolean }>({
+      query: ({ fileId, ...params }) => ({
+        url: `${fileId}/Ignore`,
         params,
         method: 'PUT',
       }),
@@ -44,7 +53,7 @@ export const fileApi = createApi({
     }),
 
     // Rescan a file on AniDB.
-    postFileRescan: build.query<void, number>({
+    postFileRescan: build.mutation<void, number>({
       query: fileId => ({
         url: `${fileId}/Rescan`,
         method: 'POST',
@@ -52,7 +61,7 @@ export const fileApi = createApi({
     }),
 
     // Rehash a file.
-    postFileRehash: build.query<void, number>({
+    postFileRehash: build.mutation<void, number>({
       query: fileId => ({
         url: `${fileId}/Rehash`,
         method: 'POST',
@@ -62,10 +71,11 @@ export const fileApi = createApi({
 });
 
 export const {
+  useDeleteFileMutation,
   useGetFileIgnoredQuery,
   useGetFileUnrecognizedQuery,
-  useLazyPutFileIgnoreQuery,
+  usePutFileIgnoreMutation,
   useLazyPostFileAVDumpQuery,
-  useLazyPostFileRescanQuery,
-  useLazyPostFileRehashQuery,
+  usePostFileRescanMutation,
+  usePostFileRehashMutation,
 } = fileApi;
