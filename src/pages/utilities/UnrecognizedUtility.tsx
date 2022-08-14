@@ -6,6 +6,7 @@ import {
 import cx from 'classnames';
 
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
+import IgnoredFilesTab from './UnrecognizedUtilityTabs/IgnoredFilesTab';
 
 import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
 
@@ -14,18 +15,12 @@ function UnrecognizedUtility() {
 
   const [activeTab, setActiveTab] = useState('unrecognized');
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'unrecognized':
-        return (<UnrecognizedTab />);
-      case 'manuallyLinked':
-        return (<UnrecognizedTab />);
-      case 'ignoredFiles':
-        return (<UnrecognizedTab />);
-      default:
-        return (<UnrecognizedTab />);
-    }
-  };
+  const renderTabContent = () => (
+    <>
+      <UnrecognizedTab show={activeTab === 'unrecognized'} />
+      <IgnoredFilesTab show={activeTab === 'ignoredFiles'} />
+    </>
+  );
 
   const renderTabButton = (key: string, name: string) => (
     <div onClick={() => setActiveTab(key)} className={cx(['mx-2 cursor-pointer', activeTab === key && 'text-highlight-1'])}>{name}</div>
@@ -49,7 +44,9 @@ function UnrecognizedUtility() {
 
       <div className="bg-background-border my-4 h-0.5 flex-shrink-0" />
 
-      {renderTabContent()}
+      <div className="flex h-full relative">
+        {renderTabContent()}
+      </div>
 
     </React.Fragment>
   );

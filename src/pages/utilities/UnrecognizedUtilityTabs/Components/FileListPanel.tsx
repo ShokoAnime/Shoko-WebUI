@@ -6,23 +6,24 @@ import moment from 'moment';
 import TransitionDiv from '../../../../components/TransitionDiv';
 import Checkbox from '../../../../components/Input/Checkbox';
 
-import { useGetFileUnrecognizedQuery } from '../../../../core/rtkQuery/fileApi';
 import { useGetImportFoldersQuery } from '../../../../core/rtkQuery/importFolderApi';
 import type { ImportFolderType } from '../../../../core/types/api/import-folder';
+import type { FileType } from '../../../../core/types/api/file';
+import type { ListResultType } from '../../../../core/types/api';
 
 type Props = {
+  files: ListResultType<FileType[]>;
   markedItems: { [key: number]: boolean };
   setMarkedItems: (items: { [key: number]: boolean }) => void;
 };
 
 function FileListPanel(props: Props) {
-  const { markedItems, setMarkedItems } = props;
+  const { files, markedItems, setMarkedItems } = props;
 
-  const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
-  const isSelectAllChecked = (countBy(markedItems).true ?? 0) === (files.data?.Total ?? 0);
+  const isSelectAllChecked = files.Total > 0 && (countBy(markedItems).true ?? 0) === (files.Total);
 
   const handleInputChange = (event: any) => {
     const { id, checked } = event.target;
@@ -30,7 +31,7 @@ function FileListPanel(props: Props) {
   };
 
   const renderRow = (Id: number, importFolder: string, filename: string, size: number, date: string) => (
-    <tr className="box-border bg-background-nav border border-background-border" key={Id}>
+    <tr className="box-border border-y border-background-border" key={Id}>
       <td className="w-20 py-3.5">
         <div className="flex items-center justify-center">
           <Checkbox id={Id.toString()} isChecked={markedItems[Id] ?? false} onChange={handleInputChange} />
@@ -44,7 +45,7 @@ function FileListPanel(props: Props) {
   );
 
   const rows: Array<React.ReactNode> = [];
-  forEach(files.data?.List, (file) => {
+  forEach(files.List, (file) => {
     const importFolderId = file.Locations[0].ImportFolderID;
     const importFolder = find(importFolders, { ID: importFolderId })?.Name ?? '';
     rows.push(renderRow(file.ID, importFolder, file.Locations[0].RelativePath, file.Size, file.Created));
@@ -52,7 +53,7 @@ function FileListPanel(props: Props) {
 
   const handleSelectAll = () => {
     const tempMarkedItems: { [id: number]: boolean } = {};
-    forEach(files.data?.List, file => tempMarkedItems[file.ID] = !isSelectAllChecked);
+    forEach(files.List, file => tempMarkedItems[file.ID] = !isSelectAllChecked);
     setMarkedItems(tempMarkedItems);
   };
 
@@ -74,10 +75,14 @@ function FileListPanel(props: Props) {
           </tr>
         </table>
       </div>
-      <div className="overflow-y-auto border-b border-background-border rounded-b-md">
-        <table className="table-fixed text-left w-full">
-          {rows}
-        </table>
+      <div className="overflow-y-auto border border-background-border rounded-b-md grow bg-background-nav w-full">
+        {files.Total > 0 ? (
+          <table className="table-fixed text-left w-full">
+            {rows}
+          </table>
+        ) : (
+          <div className="flex items-center justify-center h-full font-semibold">No Files</div>
+        )}
       </div>
     </TransitionDiv>
   );
