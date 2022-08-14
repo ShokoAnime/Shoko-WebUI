@@ -34,8 +34,16 @@ import FileListPanel from './Components/FileListPanel';
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import Input from '../../../components/Input/Input';
 
-function UnrecognizedTab() {
-  const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
+import type { ListResultType } from '../../../core/types/api';
+import type { FileType } from '../../../core/types/api/file';
+
+type Props = {
+  show: boolean;
+};
+
+function UnrecognizedTab({ show }: Props) {
+  const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
+  const files = filesQuery?.data ?? {} as ListResultType<FileType[]>;
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   const [fileRescanTrigger] = usePostFileRescanMutation();
@@ -51,11 +59,12 @@ function UnrecognizedTab() {
 
   useEffect(() => {
     const newMarkedItems = {} as { [key: number]: boolean };
-    forEach(files.data?.List, (file) => {
+    forEach(files.List, (file) => {
       newMarkedItems[file.ID] = false;
     });
     setMarkedItems(newMarkedItems);
-  }, [files.isLoading]);
+    setMarkedItemsCount(0);
+  }, [filesQuery.isFetching]);
 
   const changeSelectedFile = (operation: string) => {
     if (operation === 'prev') {
@@ -89,7 +98,7 @@ function UnrecognizedTab() {
 
   const renderFileInfo = () => {
     if (markedItemsCount === 0) return;
-    const selectedFiles = files.data?.List.filter(item => markedItems[item.ID])!;
+    const selectedFiles = files.List.filter(item => markedItems[item.ID])!;
     const selectedFileInfo = selectedFiles[selectedFile - 1];
 
     const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
@@ -161,7 +170,7 @@ function UnrecognizedTab() {
         if (marked) fileRescanTrigger(parseInt(fileId)).catch(() => {});
       });
     } else {
-      forEach(files.data?.List, file => fileRescanTrigger(file.ID));
+      forEach(files.List, file => fileRescanTrigger(file.ID));
     }
   };
 
@@ -171,7 +180,7 @@ function UnrecognizedTab() {
         if (marked) fileRehashTrigger(parseInt(fileId)).catch(() => {});
       });
     } else {
-      forEach(files.data?.List, file => fileRehashTrigger(file.ID));
+      forEach(files.List, file => fileRehashTrigger(file.ID));
     }
   };
 
@@ -210,7 +219,7 @@ function UnrecognizedTab() {
     return (
       <>
         <TransitionDiv className="flex grow absolute" show={common}>
-          {renderButton(() => files.refetch(), mdiRestart, 'Refresh')}
+          {renderButton(() => filesQuery.refetch(), mdiRestart, 'Refresh')}
           {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
           {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
           {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
@@ -231,7 +240,7 @@ function UnrecognizedTab() {
   const updateSelectedSeries = (series: SeriesAniDBSearchResult) => setSelectedSeries(series);
 
   return (
-    <TransitionDiv className="flex flex-col grow">
+    <TransitionDiv className="flex flex-col grow absolute h-full" show={show}>
 
       <div className="flex flex-col grow">
         <div className="flex">
@@ -252,13 +261,13 @@ function UnrecognizedTab() {
         </div>
         {manualLink ? (
           <TransitionDiv className="flex mt-5 overflow-y-auto grow gap-x-4">
-            <SelectedFilesPanel files={files.data?.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} />
+            <SelectedFilesPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} />
             {selectedSeries?.ID
               ? (<EpisodeLinkPanel selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
               : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
           </TransitionDiv>
         ) : (
-          <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} />
+          <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} />
         )}
       </div>
 
