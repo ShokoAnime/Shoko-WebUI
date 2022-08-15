@@ -16,7 +16,6 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 // Main page
 import DashboardPage from '../../pages/dashboard/DashboardPage';
 import ImportFoldersPage from '../../pages/import-folders/ImportFoldersPage';
-import ActionsPage from '../../pages/actions/ActionsPage';
 import SettingsPage from '../../pages/settings/SettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
@@ -36,6 +35,10 @@ import DataCollection from '../../pages/firstrun/DataCollection';
 import GroupList from '../../pages/collection/GroupList';
 import Group from '../../pages/collection/Group';
 import FilterGroupList from '../../pages/collection/FilterGroupList';
+
+// Utilities
+import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
+import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
 
 type Props = {
   history: BrowserHistory;
@@ -72,8 +75,11 @@ function Router(props: Props) {
                 <Route index element={<Navigate to="dashboard" />} />
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="import-folders" element={<ImportFoldersPage />} />
-                <Route path="utilities" element={<UtilitiesPage />} />
-                <Route path="actions" element={<ActionsPage />} />
+                <Route path="utilities" element={<UtilitiesPage />}>
+                  <Route index element={<Navigate to="unrecognized" replace />} />
+                  <Route path="unrecognized" element={<UnrecognizedUtility />} />
+                  <Route path="multiple-files" element={<MultipleFilesUtility />} />
+                </Route>
                 <Route path="log" element={<LogsPage />} />
                 <Route path="collection">
                   <Route index element={<GroupList />}/>

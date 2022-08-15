@@ -1,24 +1,27 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Input/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
 import type { ImportFolderType } from '../../../core/types/api/import-folder';
+import {
+  useGetImportFoldersQuery,
+  useLazyRescanImportFolderQuery,
+} from '../../../core/rtkQuery/importFolderApi';
 
 function ImportFolders() {
   const dispatch = useDispatch();
 
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.importFolders);
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const [rescanTrigger] = useLazyRescanImportFolderQuery();
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
-  const rescanFolder = (ID: number) => dispatch({ type: Events.IMPORT_FOLDER_RESCAN, payload: ID });
+  const rescanFolder = (ID: number) => rescanTrigger(ID);
   const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
   const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
 
@@ -73,7 +76,7 @@ function ImportFolders() {
   );
 
   return (
-    <FixedPanel title="Import Folders" options={renderOptions()} isFetching={!hasFetched}>
+    <FixedPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isFetching}>
       return {importFolders.length === 0
       ? (<div className="flex justify-center font-semibold mt-4" key="no-folders">No import folders added!</div>)
       : importFolders.map(importFolder => renderFolder(importFolder))}

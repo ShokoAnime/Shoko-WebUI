@@ -1,14 +1,13 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { omit } from 'lodash';
+import { toast } from 'react-toastify';
 import { Icon } from '@mdi/react';
 import {
   mdiFolderOpen, mdiSquareEditOutline,
   mdiTrashCanOutline,
 } from '@mdi/js';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
@@ -18,6 +17,12 @@ import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFol
 import type { ImportFolderType } from '../../core/types/api/import-folder';
 import Select from '../../components/Input/Select';
 import TransitionDiv from '../../components/TransitionDiv';
+import {
+  useCreateImportFolderMutation,
+  useDeleteImportFolderMutation, useGetImportFoldersQuery,
+  useUpdateImportFolderMutation,
+} from '../../core/rtkQuery/importFolderApi';
+
 
 const defaultState = {
   showAddNew: false,
@@ -32,9 +37,13 @@ const defaultState = {
 function ImportFolders() {
   const dispatch = useDispatch();
 
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const [newImportFolder, setNewImportFolder] = useState(defaultState);
+  const [updateFolder] = useUpdateImportFolderMutation();
+  const [createFolder] = useCreateImportFolderMutation();
+  const [deleteFolder] = useDeleteImportFolderMutation();
 
   const handleInputChange = (event: any) => {
     const name = event.target.id;
@@ -44,9 +53,13 @@ function ImportFolders() {
     setNewImportFolder({ ...newImportFolder, [name]: value });
   };
 
-  const handleAddFolder = () => {
-    dispatch({ type: Events.IMPORT_FOLDER_ADD, payload: omit(newImportFolder, ['showAddNew', 'showEdit']) });
+  const handleAddFolder = async () => {
     setNewImportFolder(defaultState);
+    //TODO: needs to be better typed
+    const result: any = await createFolder(omit(newImportFolder, ['showAddNew', 'showEdit']));
+    if (!result.error) {
+      toast.success('Import folder added!');
+    }
   };
 
   const handleEdit = (folder: ImportFolderType) => {
@@ -61,9 +74,21 @@ function ImportFolders() {
     });
   };
 
-  const handleEditFolder = () => {
-    dispatch({ type: Events.IMPORT_FOLDER_EDIT, payload: omit(newImportFolder, ['showAddNew', 'showEdit']) });
+  const handleEditFolder = async () => {
     setNewImportFolder(defaultState);
+    //TODO: needs to be better typed
+    const result:any = await updateFolder(omit(newImportFolder, ['showAddNew', 'showEdit']));
+    if (!result.error) {
+      toast.success('Import folder edited!');
+    }
+  };
+
+  const handleDeleteFolder = async (folderId) => {
+    //TODO: can this be better typed?
+    const result: any = await deleteFolder({ folderId });
+    if (!result.error) {
+      toast.success('Import folder deleted!');
+    }
   };
 
   const renderFolder = (folder: ImportFolderType) => {
@@ -95,7 +120,7 @@ function ImportFolders() {
         <Button onClick={() => handleEdit(folder)} className="mr-1">
           <Icon className="text-highlight-1" path={mdiSquareEditOutline} size={1} />
         </Button>
-        <Button onClick={() => dispatch({ type: Events.IMPORT_FOLDER_DELETE, payload: folder.ID })} className="mr-3">
+        <Button onClick={() => handleDeleteFolder(folder.ID)} className="mr-3">
           <Icon className="text-highlight-3" path={mdiTrashCanOutline} size={1} />
         </Button>
         <div className="flex grow">

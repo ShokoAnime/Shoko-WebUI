@@ -9,13 +9,17 @@ import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Select from '../../../components/Input/Select';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderApi';
 
 import type { SeriesInfoType } from '../../../core/types/api';
+
+import { ImportFolderType } from '../../../core/types/api/import-folder';
 
 function SeriesInImportFolders() {
   const dispatch = useDispatch();
 
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   const isFetching = useSelector((state: RootState) => state.fetching.importFolderSeries);
   const seriesInFolder = useSelector((state: RootState) => state.mainpage.importFolderSeries);
 

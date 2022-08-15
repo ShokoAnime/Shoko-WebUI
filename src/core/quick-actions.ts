@@ -1,89 +1,89 @@
 const quickActions = {
   'sync-votes': {
     name: 'Sync AniDB Votes',
-    function: 'getSyncVotes',
+    function: 'SyncVotes',
   },
   'sync-mylist': {
     name: 'Sync AniDB MyList',
-    function: 'getSyncMyList',
+    function: 'SyncMyList',
   },
   'download-missing-anidb-data': {
     name: 'Download Missing AniDB Data',
-    function: 'getDownloadMissingAniDBAnimeData',
+    function: 'DownloadMissingAniDBAnimeData',
   },
   'update-anidb-calendar': {
     name: 'Update AniDB Calendar',
-    function: 'getUpdateAnidbCalendar',
+    function: 'UpdateAnidbCalendar',
   },
   'update-all-anidb-info': {
     name: 'Update All AniDB Info',
-    function: 'getUpdateAllAniDBInfo',
+    function: 'UpdateAllAniDBInfo',
   },
   'sync-trakt': {
     name: 'Sync Trakt Collection',
-    function: 'getSyncTrakt',
+    function: 'SyncTrakt',
   },
   'update-all-trakt-info': {
     name: 'Update All Trakt Info',
-    function: 'getUpdateAllTraktInfo',
+    function: 'UpdateAllTraktInfo',
   },
   'update-all-tvdb-info': {
     name: 'Update All TvDB Info',
-    function: 'getUpdateAllTvDBInfo',
+    function: 'UpdateAllTvDBInfo',
   },
   'regen-tvdb-links': {
     name: 'Regenerate TvDB Links',
-    function: 'getRegenerateAllTvDBEpisodeMatchings',
+    function: 'RegenerateAllTvDBEpisodeMatchings',
   },
   'run-import': {
     name: 'Run Import',
-    function: 'getRunImport',
+    function: 'RunImport',
   },
   'avdump-mismatched-files': {
     name: 'AVDump Mismatched Files',
-    function: 'getAVDumpMismatchedFiles',
+    function: 'AVDumpMismatchedFiles',
   },
   'update-all-mediainfo': {
     name: 'Update All Mediainfo',
-    function: 'getUpdateAllMediaInfo',
+    function: 'UpdateAllMediaInfo',
   },
   'update-series-stats': {
     name: 'Update Series Stats',
-    function: 'getUpdateSeriesStats',
+    function: 'UpdateSeriesStats',
   },
   'sync-hashes': {
     name: 'Sync Hashes',
-    function: 'getSyncHashes',
+    function: 'SyncHashes',
   },
   'update-all-images': {
     name: 'Update All Images',
-    function: 'getUpdateAllImages',
+    function: 'UpdateAllImages',
   },
   'validate-all-images': {
     name: 'Validate All Images',
-    function: 'getValidateAllImages',
+    function: 'ValidateAllImages',
   },
   'update-all-moviedb-info': {
     name: 'Update All MovieDB Info',
-    function: 'getUpdateAllMovieDBInfo',
+    function: 'UpdateAllMovieDBInfo',
   },
   'plex-sync-all': {
     name: 'Sync Plex Watch Status',
-    function: 'getPlexSyncAll',
+    function: 'PlexSyncAll',
   },
   'remove-missing-files-mylist': {
     name: 'Remove Missing Files',
-    function: 'getRemoveMissingFiles',
+    function: 'RemoveMissingFiles',
     data: true,
   },
   'remove-missing-files': {
     name: 'Remove Missing Files (Keep in MyList)',
-    function: 'getRemoveMissingFiles',
+    function: 'RemoveMissingFiles',
     data: false,
   },
   'recreate-all-groups': {
     name: 'Recreate All Groups',
-    function: 'getRecreateAllGroups',
+    function: 'RecreateAllGroups',
     data: false,
   },
 };

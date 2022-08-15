@@ -1,5 +1,5 @@
 import {
-  take, cancel, fork, call, put, select, cancelled, delay,
+  take, cancel, fork, call, put, cancelled, delay,
 } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
@@ -26,15 +26,15 @@ function* pollServerStatus() {
 function* pollAutoRefresh() {
   try {
     yield put({ type: SET_AUTOUPDATE, payload: true });
-    while (true) {
-      const location = yield select(state => state.router.location.pathname);
-
-      if (location === '/main') {
-        yield put({ type: Events.MAINPAGE_REFRESH, payload: null });
-      }
-
-      yield delay(1500);
-    }
+    // while (true) {
+    //   const location = yield select(state => state.router.location.pathname);
+    //
+    //   if (location === '/main') {
+    //     yield put({ type: Events.MAINPAGE_REFRESH, payload: null });
+    //   }
+    //
+    //   yield delay(1500);
+    // }
   } finally {
     if (yield cancelled()) {
       yield put({ type: SET_AUTOUPDATE, payload: false });

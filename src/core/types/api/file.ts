@@ -71,3 +71,8 @@ export const enum FileSourceEnum {
   LaserDisc = 'LaserDisc',
   Camera = 'Camera',
 }
+
+export type AVDumpResultType = {
+  FullOutput: string;
+  Ed2k: string;
+};

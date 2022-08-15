@@ -1,13 +1,8 @@
-import { put, call, all } from 'redux-saga/effects';
+import { put, call } from 'redux-saga/effects';
 import { toast } from 'react-toastify';
 
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
-
-import SagaFile from './file';
-import SagaImportFolder from './import-folder';
-
-// const alert = useAlert();
 
 function* getQueueStatus() {
   const resultJson = yield call(ApiCommon.getQueue);
@@ -21,23 +16,6 @@ function* getQueueStatus() {
 }
 
 // Events
-
-function* eventMainPageLoad() {
-  yield all([
-    yield call(SagaImportFolder.getImportFolders),
-    yield call(SagaFile.getUnrecognizedFiles),
-  ]);
-
-  // yield put({ type: Events.CHECK_UPDATES });
-}
-
-function* eventMainPageRefresh() {
-  yield all([
-    yield call(SagaFile.getUnrecognizedFiles),
-  ]);
-
-  // yield put({ type: Events.CHECK_UPDATES });
-}
 
 function* eventQueueOperation(action) {
   const { payload } = action;
@@ -58,7 +36,5 @@ function* eventQueueOperation(action) {
 
 export default {
   getQueueStatus,
-  eventMainPageLoad,
-  eventMainPageRefresh,
   eventQueueOperation,
 };

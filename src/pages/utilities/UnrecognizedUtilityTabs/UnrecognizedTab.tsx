@@ -1,41 +1,70 @@
-import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
-import { countBy, find, forEach, pickBy } from 'lodash';
+import cx from 'classnames';
+import { countBy, find, forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronLeft, mdiChevronRight,
   mdiDatabaseSearchOutline, mdiDatabaseSyncOutline,
-  mdiDumpTruck, mdiMagnify,
-  mdiLinkVariantPlus, mdiMinusBoxOutline,
-  mdiEyeOffOutline, mdiCloseBoxOutline,
+  mdiDumpTruck, mdiMagnify, mdiRestart,
+  mdiLinkVariantPlus, mdiMinusCircleOutline,
+  mdiEyeOffOutline, mdiCloseCircleOutline,
 } from '@mdi/js';
-
-import type { RootState } from '../../../core/store';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Button from '../../../components/Input/Button';
-import Checkbox from '../../../components/Input/Checkbox';
 import TransitionDiv from '../../../components/TransitionDiv';
+import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderApi';
 
+import SeriesLinkPanel from './Components/SeriesLinkPanel';
+import SelectedFilesPanel from './Components/SelectedFilesPanel';
+import EpisodeLinkPanel from './Components/EpisodeLinkPanel';
+
+import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
+
+import {
+  useDeleteFileMutation,
+  useGetFileUnrecognizedQuery,
+  usePostFileRehashMutation,
+  usePostFileRescanMutation,
+  usePutFileIgnoreMutation,
+} from '../../../core/rtkQuery/fileApi';
+import FileListPanel from './Components/FileListPanel';
+import type { ImportFolderType } from '../../../core/types/api/import-folder';
+import Input from '../../../components/Input/Input';
+
+import type { ListResultType } from '../../../core/types/api';
 import type { FileType } from '../../../core/types/api/file';
-import Events from '../../../core/events';
 
 type Props = {
-  files: Array<FileType>;
+  show: boolean;
 };
 
-function UnrecognizedTab(props: Props) {
-  const { files } = props;
-
-  const dispatch = useDispatch();
-
-  const importFolders = useSelector((state: RootState) => state.mainpage.importFolders);
+function UnrecognizedTab({ show }: Props) {
+  const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
+  const files = filesQuery?.data ?? {} as ListResultType<FileType[]>;
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
+  const [fileRescanTrigger] = usePostFileRescanMutation();
+  const [fileRehashTrigger] = usePostFileRehashMutation();
+  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
+  const [fileDeleteTrigger] = useDeleteFileMutation();
 
   const [markedItems, setMarkedItems] = useState({} as { [key: number]: boolean });
   const [markedItemsCount, setMarkedItemsCount] = useState(0);
   const [selectedFile, setSelectedFile] = useState(1);
+  const [manualLink, setManualLink] = useState(false);
+  const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
+
+  useEffect(() => {
+    const newMarkedItems = {} as { [key: number]: boolean };
+    forEach(files.List, (file) => {
+      newMarkedItems[file.ID] = false;
+    });
+    setMarkedItems(newMarkedItems);
+    setMarkedItemsCount(0);
+  }, [filesQuery.isFetching]);
 
   const changeSelectedFile = (operation: string) => {
     if (operation === 'prev') {
@@ -49,58 +78,34 @@ function UnrecognizedTab(props: Props) {
     }
   };
 
-  const handleInputChange = (event: any) => {
-    const { id, checked } = event.target;
-    setMarkedItems({ ...markedItems, [id]: checked });
-    setMarkedItemsCount(countBy({ ...markedItems, [id]: checked }).true ?? 0);
-    if (!checked && selectedFile >= markedItemsCount) changeSelectedFile('prev');
+  const changeMarkedItems = (items: { [key: number]: boolean }) => {
+    setMarkedItems(items);
+    setMarkedItemsCount(countBy(items).true ?? 0);
+    if (selectedFile >= markedItemsCount) changeSelectedFile('prev');
   };
 
-  const renderRow = (Id: number, importFolder: string, filename: string, size: number, date: string) => (
-    <tr className="box-border bg-background-nav border border-background-border rounded-md" key={Id}>
-      <td className="py-3.5">
-        <div className="flex items-center justify-center">
-          <Checkbox id={Id.toString()} isChecked={markedItems[Id]} onChange={handleInputChange} />
-        </div>
-      </td>
-      <td className="py-3.5">{importFolder}</td>
-      <td className="py-3.5">{filename}</td>
-      <td className="py-3.5">{prettyBytes(size, { binary: true })}</td>
-      <td className="py-3.5">{moment(date).format('MMMM DD YYYY, HH:mm')}</td>
-    </tr>
-  );
-
-  const rows: Array<React.ReactNode> = [];
-  forEach(files, (file) => {
-    const importFolderId = file.Locations[0].ImportFolderID;
-    const importFolder = find(importFolders, { ID: importFolderId })?.Name ?? '';
-    rows.push(renderRow(file.ID, importFolder, file.Locations[0].RelativePath, file.Size, file.Created));
-  });
-
   const fileInfoTitle = () => {
-    if (markedItemsCount > 0) {
-      return (
-        <React.Fragment>
-          Selected File Info
-          <div className="flex ml-2">
-            - <span className="text-highlight-2 ml-2">{selectedFile}/{markedItemsCount}</span>
-          </div>
-        </React.Fragment>
-      );
-    } else {
-      return 'Selected File Info';
-    }
+    const isEmpty = markedItemsCount <= 0;
+    return (
+      <React.Fragment>
+        Selected File Info
+        <TransitionDiv className="flex ml-2" show={!isEmpty}>
+          - <span className="text-highlight-2 ml-2">{isEmpty ? '-/-' : `${selectedFile}/${markedItemsCount}`}</span>
+        </TransitionDiv>
+      </React.Fragment>
+    );
   };
 
   const renderFileInfo = () => {
-    const selectedFiles = files.filter(item => markedItems[item.ID]);
+    if (markedItemsCount === 0) return;
+    const selectedFiles = files.List.filter(item => markedItems[item.ID])!;
     const selectedFileInfo = selectedFiles[selectedFile - 1];
 
     const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
     const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
-      <div className="flex flex-col mt-2">
+      <>
         <div className="flex">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Filename</div>
@@ -117,7 +122,7 @@ function UnrecognizedTab(props: Props) {
             {importFolder}
           </div>
 
-          <div className="flex flex-col w-40">
+          <div className="flex flex-col w-48">
             <div className="font-semibold mb-1">Import Date</div>
             {moment(selectedFileInfo.Created).format('MMMM DD YYYY, HH:mm')}
           </div>
@@ -139,129 +144,142 @@ function UnrecognizedTab(props: Props) {
             {selectedFileInfo.Hashes.SHA1}
           </div>
 
-          <div className="flex flex-col w-40">
+          <div className="flex flex-col w-48">
             <div className="font-semibold mb-1">CRC32</div>
             {selectedFileInfo.Hashes.CRC32}
           </div>
         </div>
-      </div>
+      </>
     );
   };
 
   const renderPanelOptions = () => (
     <div className="flex">
       <Button onClick={() => changeSelectedFile('prev')}>
-        <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-primary" />
+        <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-highlight-1" />
       </Button>
       <Button onClick={() => changeSelectedFile('next')} className="ml-2">
-        <Icon path={mdiChevronRight} size={1} className="opacity-75 text-primary" />
+        <Icon path={mdiChevronRight} size={1} className="opacity-75 text-highlight-1" />
       </Button>
     </div>
   );
 
   const rescanFiles = (selected = false) => {
     if (selected) {
-      const fileIds = Object.keys(pickBy(markedItems, item => item));
-      forEach(fileIds, fileId => dispatch({ type: Events.UTILITIES_RESCAN, payload: fileId }));
+      forEach(markedItems, (marked, fileId) => {
+        if (marked) fileRescanTrigger(parseInt(fileId)).catch(() => {});
+      });
     } else {
-      forEach(files, file => dispatch({ type: Events.UTILITIES_RESCAN, payload: file.ID }));
+      forEach(files.List, file => fileRescanTrigger(file.ID));
     }
   };
 
   const rehashFiles = (selected = false) => {
     if (selected) {
-      const fileIds = Object.keys(pickBy(markedItems, item => item));
-      forEach(fileIds, fileId => dispatch({ type: Events.UTILITIES_REHASH, payload: fileId }));
+      forEach(markedItems, (marked, fileId) => {
+        if (marked) fileRehashTrigger(parseInt(fileId)).catch(() => {});
+      });
     } else {
-      forEach(files, file => dispatch({ type: Events.UTILITIES_REHASH, payload: file.ID }));
+      forEach(files.List, file => fileRehashTrigger(file.ID));
     }
   };
 
-  const renderCommonOperations = () => (
-    <TransitionDiv className="flex grow">
-      <Button onClick={() => rescanFiles()} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDatabaseSearchOutline} size={1} className="mr-1"/>
-        Rescan All
-      </Button>
-      <Button onClick={() => rehashFiles()} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDatabaseSyncOutline} size={1} className="mr-1"/>
-        Rehash All
-      </Button>
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDumpTruck} size={1} className="mr-1"/>
-        AVDump All
-      </Button>
-    </TransitionDiv>
-  );
+  const ignoreFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileIgnoreTrigger({ fileId: parseInt(fileId), value: true }).catch(() => {});
+      }
+    });
+  };
 
-  const renderOperations = () => (
-    <TransitionDiv className="flex grow">
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiLinkVariantPlus} size={1} className="mr-1"/>
-        Manually Link
+  const deleteFiles = () => {
+    forEach(markedItems, (marked, fileId) => {
+      if (marked) {
+        fileDeleteTrigger({ fileId: parseInt(fileId), removeFolder: true }).catch(() => {});
+      }
+    });
+  };
+
+  const cancelSelection = () => {
+    const tempMarkedItems = markedItems;
+    forEach(tempMarkedItems, (_, key) => {
+      tempMarkedItems[key] = false;
+    });
+    changeMarkedItems(tempMarkedItems);
+  };
+
+  const renderOperations = (common = false) => {
+    const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
+      <Button onClick={onClick} className="flex items-center mr-4 font-normal text-font-main">
+        <Icon path={icon} size={1} className={cx(['mr-1', highlight && 'text-highlight-1'])} />
+        {name}
       </Button>
-      <Button onClick={() => rescanFiles(true)} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDatabaseSearchOutline} size={1} className="mr-1"/>
-        Rescan
-      </Button>
-      <Button onClick={() => rehashFiles(true)} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDatabaseSyncOutline} size={1} className="mr-1"/>
-        Rehash
-      </Button>
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiDumpTruck} size={1} className="mr-1"/>
-        AVDump
-      </Button>
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiEyeOffOutline} size={1} className="mr-1"/>
-        Ignore
-      </Button>
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiMinusBoxOutline} size={1} className="mr-1"/>
-        Delete
-      </Button>
-      <Button onClick={() => {}} className="flex items-center ml-3 font-normal">
-        <Icon path={mdiCloseBoxOutline} size={1} className="mr-1"/>
-        Cancel Selection
-      </Button>
-    </TransitionDiv>
-  );
+    );
+
+    return (
+      <>
+        <TransitionDiv className="flex grow absolute" show={common}>
+          {renderButton(() => filesQuery.refetch(), mdiRestart, 'Refresh')}
+          {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
+          {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
+          {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
+        </TransitionDiv>
+        <TransitionDiv className="flex grow absolute" show={!common}>
+          {renderButton(() => setManualLink(!manualLink), mdiLinkVariantPlus, 'Manually Link')}
+          {renderButton(() => rescanFiles(true), mdiDatabaseSearchOutline, 'Rescan')}
+          {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
+          {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
+          {renderButton(() => ignoreFiles(), mdiEyeOffOutline, 'Ignore')}
+          {renderButton(() => deleteFiles(), mdiMinusCircleOutline, 'Delete', true)}
+          {renderButton(() => cancelSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
+        </TransitionDiv>
+      </>
+    );
+  };
+
+  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => setSelectedSeries(series);
 
   return (
-    <TransitionDiv className="flex flex-col grow">
+    <TransitionDiv className="flex flex-col grow absolute h-full" show={show}>
 
       <div className="flex flex-col grow">
-        <div className="box-border flex bg-background-nav border border-background-border items-center rounded-md px-3 py-2">
-          <Icon path={mdiMagnify} size={1} />
-          <input type="text" placeholder="Search..." className="ml-2 bg-background-nav border-b border-font-main" />
-          {markedItemsCount > 0 ? renderOperations() : renderCommonOperations()}
-          <div className="ml-auto text-highlight-2 font-semibold">{markedItemsCount} Files Selected</div>
+        <div className="flex">
+          <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
+          <div className={cx(['box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2 relative', manualLink && 'pointer-events-none opacity-75'])}>
+            {renderOperations(markedItemsCount === 0)}
+            <div className="ml-auto text-highlight-2 font-semibold">{markedItemsCount} Files Selected</div>
+          </div>
+          {manualLink && (
+            <TransitionDiv className="flex pl-2.5 items-center">
+              <Button onClick={() => {
+                setManualLink(false);
+                setSelectedSeries({} as SeriesAniDBSearchResult);
+              }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
+              <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
+            </TransitionDiv>
+          )}
         </div>
-        <div className="flex mt-4 overflow-y-auto grow basis-0 items-start">
-          <table className="table-fixed text-left w-full">
-            <thead className="sticky top-0">
-            <tr className="box-border bg-background-nav border border-background-border rounded-md">
-              {/*TODO: Select all checkbox*/}
-              <th className="w-20 py-3.5" />
-              <th className="w-52 py-3.5 font-semibold">Import Folder</th>
-              <th className="w-auto py-3.5 font-semibold">Filename</th>
-              <th className="w-32 py-3.5 font-semibold">Size</th>
-              <th className="w-56 py-3.5 font-semibold">Date</th>
-            </tr>
-            </thead>
-            <tbody>
-            {rows}
-            </tbody>
-          </table>
-        </div>
+        {manualLink ? (
+          <TransitionDiv className="flex mt-5 overflow-y-auto grow gap-x-4">
+            <SelectedFilesPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} />
+            {selectedSeries?.ID
+              ? (<EpisodeLinkPanel selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
+              : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
+          </TransitionDiv>
+        ) : (
+          <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} />
+        )}
       </div>
 
-      <ShokoPanel title={fileInfoTitle()} className="h-72 mt-4" options={renderPanelOptions()}>
-        {markedItemsCount === 0 ? (
-          <div className="flex items-center justify-center mt-2 font-semibold">
+      <ShokoPanel title={fileInfoTitle()} className="!h-48 mt-4" options={renderPanelOptions()}>
+        <div className="flex grow flex-col items-center relative">
+          <TransitionDiv className="mt-2 font-semibold absolute" show={markedItemsCount === 0}>
             No File(s) Selected
-          </div>
-        ) : renderFileInfo()}
+          </TransitionDiv>
+          <TransitionDiv className="flex grow flex-col mt-2 w-full absolute" show={markedItemsCount !== 0}>
+            {renderFileInfo()}
+          </TransitionDiv>
+        </div>
       </ShokoPanel>
 
     </TransitionDiv>
