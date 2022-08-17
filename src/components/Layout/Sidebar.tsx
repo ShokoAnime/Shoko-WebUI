@@ -22,6 +22,7 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
+import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { default as ShokoIcon } from '../ShokoIcon';
 
 function Sidebar() {
@@ -35,28 +36,28 @@ function Sidebar() {
     dispatch(setStatus(false));
   }, []);
 
-  const renderActionsItem = (key: string, text: string, icon: string) => {
+  const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void) => {
     const uri = `/webui/${key}`;
-    const isHighlighted = pathname === uri;
+    const isHighlighted = pathname.startsWith(uri);
     return (
-      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={() => dispatch(setActionsStatus(true))}>
+      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </div>
     );
   };
-  
+
   const renderMenuItem = (key: string, text: string, icon: string) => {
-    const uri = `/webui/${key}`; 
-    const isHighlighted = pathname === uri;
+    const uri = `/webui/${key}`;
+    const isHighlighted = pathname.startsWith(uri);
     return (
-      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} to={uri}>
+      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </Link>
     );
   };
-  
+
   const renderMenuLink = (url: string, icon: string) => (
       <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} /></div>
   );
@@ -79,8 +80,8 @@ function Sidebar() {
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
-        {renderMenuItem('utilities', 'Utilities', mdiTools)}
-        {renderActionsItem('actions', 'Actions', mdiFormatListBulletedSquare)}
+        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(true)))}
+        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(true)))}
         {renderMenuItem('import-folders', 'Import Folders', mdiFolder)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}

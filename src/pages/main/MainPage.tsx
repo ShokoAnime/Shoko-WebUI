@@ -13,6 +13,7 @@ import LanguagesModal from '../../components/Dialogs/LanguagesModal';
 import ProfileModal from '../../components/Dialogs/ProfileModal';
 import FiltersModal from '../../components/Dialogs/FiltersModal';
 import ActionsModal from '../../components/Dialogs/ActionsModal';
+import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -47,6 +48,7 @@ function MainPage() {
         <ProfileModal />
         <FiltersModal />
         <ActionsModal />
+        <UtilitiesModal />
         <div className="flex">
           <Sidebar />
         </div>
