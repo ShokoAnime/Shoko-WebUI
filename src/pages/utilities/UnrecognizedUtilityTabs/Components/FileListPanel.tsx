@@ -15,10 +15,11 @@ type Props = {
   files: ListResultType<FileType[]>;
   markedItems: { [key: number]: boolean };
   setMarkedItems: (items: { [key: number]: boolean }) => void;
+  emptyMessage: string;
 };
 
 function FileListPanel(props: Props) {
-  const { files, markedItems, setMarkedItems } = props;
+  const { files, markedItems, setMarkedItems, emptyMessage } = props;
 
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
@@ -81,7 +82,7 @@ function FileListPanel(props: Props) {
             {rows}
           </table>
         ) : (
-          <div className="flex items-center justify-center h-full font-semibold">No Files</div>
+          <div className="flex items-center justify-center h-full font-semibold">{emptyMessage}</div>
         )}
       </div>
     </TransitionDiv>
