@@ -38,9 +38,9 @@ function Sidebar() {
 
   const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void) => {
     const uri = `/webui/${key}`;
-    const isHighlighted = pathname === uri;
+    const isHighlighted = pathname.startsWith(uri);
     return (
-      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} onClick={onClick}>
+      <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </div>
@@ -49,9 +49,9 @@ function Sidebar() {
 
   const renderMenuItem = (key: string, text: string, icon: string) => {
     const uri = `/webui/${key}`;
-    const isHighlighted = pathname === uri;
+    const isHighlighted = pathname.startsWith(uri);
     return (
-      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'color-highlight-1'])} to={uri}>
+      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </Link>
