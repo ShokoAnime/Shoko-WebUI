@@ -2,6 +2,7 @@ import moment from 'moment';
 import React, { useMemo } from 'react';
 
 import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
+import { EpisodeTypeEnum } from '../../../core/types/api/episode';
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',
@@ -23,6 +24,7 @@ function EpisodeDetails(props: { episode: DashboardEpisodeDetailsType; showDate?
   }, [episode.Duration, episode.ResumePosition]);
   const airDate = useMemo(() => moment(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(CalendarConfig), [airDate]);
+  const title = useMemo(() => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`, [episode.Type, episode.Title, episode.Number]);
 
   return (
   <div key={`episode-${episode.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-open-sans justify-center flex flex-col">
@@ -36,7 +38,7 @@ function EpisodeDetails(props: { episode: DashboardEpisodeDetailsType; showDate?
         ) : null}
     </div>
     <p className="truncate text-center text-base font-semibold" title={episode.SeriesTitle}>{episode.SeriesTitle}</p>
-    <p className="truncate text-center text-sm" title={`${episode.Number} - ${episode.Title}`}>{episode.Number} - {episode.Title}</p>
+    <p className="truncate text-center text-sm" title={title}>{title}</p>
   </div>
   );
 }
