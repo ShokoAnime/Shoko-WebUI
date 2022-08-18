@@ -106,7 +106,7 @@ function IgnoredFilesTab({ show }: Props) {
           <div className="ml-auto text-highlight-2 font-semibold">{markedItemsCount} Files Selected</div>
         </div>
       </div>
-      <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} />
+      <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} emptyMessage="No ignored file(s)!" />
 
     </TransitionDiv>
   );
