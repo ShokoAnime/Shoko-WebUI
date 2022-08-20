@@ -1,4 +1,5 @@
 // Theme for Material Tailwind
+// The theme doesn't work if this file is .ts instead of .tsx
 
 const input = {
   styles: {
