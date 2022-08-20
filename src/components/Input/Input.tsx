@@ -17,20 +17,19 @@ type Props = {
   endIcon?: string;
   endIconClick?: (event: any) => void;
   startIcon?: string;
-  inline?: boolean;
 };
 
 function Input(props: Props) {
   const {
     id, label, center, type, placeholder, value, className, startIcon,
-    autoFocus, disabled, onChange, onKeyPress, endIcon, endIconClick, inline,
+    autoFocus, disabled, onChange, onKeyPress, endIcon, endIconClick,
   } = props;
 
   return (
     <React.Fragment>
-      <div className={className}>
-        <label htmlFor={id} className={cx({ 'flex flex-row justify-center': inline })}>
-          {label && <div className={cx('font-semibold text-base', { 'mb-3': !inline, 'flex items-center mr-3 whitespace-nowrap': inline })}>{label}</div>}
+      <div className={`${className ?? ''}`}>
+        <label htmlFor={id}>
+          {label && <div className="mb-3 font-semibold text-base">{label}</div>}
           <div className="relative">
             {startIcon && <div className="absolute top-1/2 transform -translate-y-1/2 left-3"><Icon path={startIcon} size={1}/></div>}
             <input
