@@ -1,3 +1,5 @@
+const withMT = require("@material-tailwind/react/utils/withMT");
+
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
     if (opacityValue === undefined) {
@@ -7,7 +9,7 @@ function withOpacityValue(variable) {
   };
 }
 
-module.exports = {
+module.exports = withMT({
   plugins: [
       require('@tailwindcss/line-clamp'),
   ],
@@ -58,4 +60,4 @@ module.exports = {
   variants: {
     margin: ['first'],
   },
-}
+});
