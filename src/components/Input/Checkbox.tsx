@@ -22,7 +22,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
 
 
   return (
-    <label htmlFor={id} className={cx({ 'justify-between': justify === true }, [`${className ?? ''} cursor-pointer flex items-center border transition duration-300 ease-in-out`, focused ? 'border-highlight-1' : 'border-transparent'])}>
+    <label htmlFor={id} className={cx([justify && 'justify-between', `${ className }`, 'cursor-pointer flex items-center transition duration-300 ease-in-out', focused && 'ring-2 ring-highlight-1'])}>
       <input
         id={id}
         type="checkbox"
