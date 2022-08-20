@@ -240,7 +240,7 @@ function UnrecognizedTab({ show }: Props) {
   const updateSelectedSeries = (series: SeriesAniDBSearchResult) => setSelectedSeries(series);
 
   return (
-    <TransitionDiv className="flex flex-col grow absolute h-full" show={show}>
+    <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
 
       <div className="flex flex-col grow">
         <div className="flex">
@@ -263,11 +263,11 @@ function UnrecognizedTab({ show }: Props) {
           <TransitionDiv className="flex mt-5 overflow-y-auto grow gap-x-4">
             <SelectedFilesPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} />
             {selectedSeries?.ID
-              ? (<EpisodeLinkPanel selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
+              ? (<EpisodeLinkPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
               : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
           </TransitionDiv>
         ) : (
-          <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} />
+          <FileListPanel markedItems={markedItems} setMarkedItems={changeMarkedItems} files={files} emptyMessage="No unrecognized files(s)!"/>
         )}
       </div>
 
