@@ -263,7 +263,7 @@ function UnrecognizedTab({ show }: Props) {
           <TransitionDiv className="flex mt-5 overflow-y-auto grow gap-x-4">
             <SelectedFilesPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} />
             {selectedSeries?.ID
-              ? (<EpisodeLinkPanel selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
+              ? (<EpisodeLinkPanel files={files.List.filter(item => markedItems[item.ID])!} selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
               : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
           </TransitionDiv>
         ) : (

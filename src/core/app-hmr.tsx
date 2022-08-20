@@ -5,10 +5,14 @@ import store from './store';
 import Router from './router';
 import ErrorBoundary from '../pages/error/ErrorPage';
 
+import { ThemeProvider } from '@material-tailwind/react';
+
 const App = () => (
   <Provider store={store}>
     <ErrorBoundary>
-      <Router history={history} />
+      <ThemeProvider>
+        <Router history={history} />
+      </ThemeProvider>
     </ErrorBoundary>
   </Provider>
 );

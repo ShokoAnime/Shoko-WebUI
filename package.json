@@ -12,6 +12,7 @@
     "@fontsource/open-sans": "^4.5.10",
     "@headlessui/react": "^1.6.6",
     "@lagunovsky/redux-react-router": "^4.0.0",
+    "@material-tailwind/react": "^1.2.3",
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^6.0.7",
