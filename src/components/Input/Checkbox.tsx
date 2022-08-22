@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import {
-  mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline,
+  mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull,
 } from '@mdi/js';
 
 import TransitionDiv from '../TransitionDiv';
@@ -11,13 +11,14 @@ type Props = {
   id: string;
   label?: string;
   isChecked: boolean;
+  intermediate?: boolean;
   className?: string;
   labelRight?: boolean;
   justify?: boolean;
   onChange: (event: any) => void;
 };
 
-function Checkbox({ id, label, isChecked, className, onChange, labelRight, justify }: Props) {
+function Checkbox({ id, label, isChecked, className, onChange, labelRight, justify, intermediate }: Props) {
   const [focused, setFocused] = useState(false);
 
 
@@ -41,14 +42,19 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
           {label}
         </span>
       )}
-      {isChecked && (
+      {!intermediate && isChecked && (
         <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
           <Icon path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
-      {!isChecked && (
+      {!intermediate && !isChecked && (
         <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
           <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
+        </TransitionDiv>
+      )}
+      {intermediate && (
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
+          <Icon path={mdiCircleHalfFull} size={1} />
         </TransitionDiv>
       )}
       {labelRight && (
