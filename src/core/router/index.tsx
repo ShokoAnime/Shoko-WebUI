@@ -39,7 +39,7 @@ import FilterGroupList from '../../pages/collection/FilterGroupList';
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
 import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
-import SeriesWithoutFilesUtility from '../../pages/utilities/UnrecognizedUtilityTabs/SeriesWithoutFilesUtility';
+import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
 
 type Props = {
   history: BrowserHistory;

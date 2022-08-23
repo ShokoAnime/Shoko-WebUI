@@ -10,19 +10,19 @@ import {
 } from '@mdi/js';
 import {
   createColumnHelper,
-  flexRender,
   getCoreRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Button from '../../../components/Input/Button';
-import TransitionDiv from '../../../components/TransitionDiv';
-import Input from '../../../components/Input/Input';
-import Checkbox from '../../../components/Input/Checkbox';
-import type { SeriesType } from '../../../core/types/api/series';
+import ShokoPanel from '../../components/Panels/ShokoPanel';
+import Button from '../../components/Input/Button';
+import TransitionDiv from '../../components/TransitionDiv';
+import Input from '../../components/Input/Input';
+import Checkbox from '../../components/Input/Checkbox';
+import type { SeriesType } from '../../core/types/api/series';
 
-import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '../../../core/rtkQuery/seriesApi';
+import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '../../core/rtkQuery/seriesApi';
+import UtilitiesTable from './UnrecognizedUtilityTabs/Components/UtilitiesTable';
 
 const columnHelper = createColumnHelper<SeriesType>();
 
@@ -118,35 +118,7 @@ function SeriesWithoutFilesUtility() {
         </div>
       </div>
       <div className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border">
-        <table className="table-fixed text-left border-separate border-spacing-0 w-full">
-          <thead className="sticky top-0">
-            {table.getHeaderGroups().map(headerGroup => (
-              <tr key={headerGroup.id} className="bg-background-nav drop-shadow-lg">
-                {headerGroup.headers.map(header => (
-                  <th key={header.id} className={`${columnWidth[header.id]} py-3.5 first:rounded-tl-lg last:rounded-tr-lg`}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
-                  </th>
-                ))}
-              </tr>
-            ))}
-          </thead>
-          <tbody>
-            {table.getRowModel().rows.map(row => (
-              <tr key={row.id} className="bg-background-nav group">
-                {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className="py-3.5 border-background-border border-t group-last:border-b group-last:first:rounded-bl-lg group-last:last:rounded-br-lg">
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <UtilitiesTable columnWidth={columnWidth} table={table} />
       </div>
     </ShokoPanel>
   );
