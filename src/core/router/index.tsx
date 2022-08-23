@@ -39,6 +39,7 @@ import FilterGroupList from '../../pages/collection/FilterGroupList';
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
 import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
+import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
 
 type Props = {
   history: BrowserHistory;
@@ -79,6 +80,7 @@ function Router(props: Props) {
                   <Route index element={<Navigate to="unrecognized" replace />} />
                   <Route path="unrecognized" element={<UnrecognizedUtility />} />
                   <Route path="multiple-files" element={<MultipleFilesUtility />} />
+                  <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
                 </Route>
                 <Route path="log" element={<LogsPage />} />
                 <Route path="collection">

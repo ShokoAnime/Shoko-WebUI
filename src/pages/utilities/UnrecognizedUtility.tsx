@@ -1,24 +1,71 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Icon } from '@mdi/react';
-import {
-  mdiChevronRight,
-} from '@mdi/js';
+import { mdiChevronRight } from '@mdi/js';
 import cx from 'classnames';
+import { find } from 'lodash';
+import prettyBytes from 'pretty-bytes';
+import moment from 'moment';
+import { createColumnHelper } from '@tanstack/react-table';
 
+import Checkbox from '../../components/Input/Checkbox';
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
 import IgnoredFilesTab from './UnrecognizedUtilityTabs/IgnoredFilesTab';
 
 import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
+import { useGetImportFoldersQuery } from '../../core/rtkQuery/importFolderApi';
+
+import type { FileType } from '../../core/types/api/file';
+import type { ImportFolderType } from '../../core/types/api/import-folder';
+
+const columnHelper = createColumnHelper<FileType>();
 
 function UnrecognizedUtility() {
-  const files = useGetFileUnrecognizedQuery({ pageSize: 0 });
+  const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
+  const files = filesQuery?.data ?? { Total: 0, List: [] };
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const [activeTab, setActiveTab] = useState('unrecognized');
 
+  const columns = useMemo(() => [
+    columnHelper.display({
+      id: 'checkbox',
+      header: ({ table }) => (
+        <div className="flex items-center justify-center">
+          <Checkbox id="checkbox-all" isChecked={table.getIsAllRowsSelected()}
+                    onChange={table.getToggleAllRowsSelectedHandler()} intermediate={table.getIsSomeRowsSelected()}/>
+        </div>
+      ),
+      cell: ({ row }) => (
+        <div className="flex items-center justify-center">
+          <Checkbox id={`checkbox-${row.id}`} isChecked={row.getIsSelected()}
+                    onChange={row.getToggleSelectedHandler()}/>
+        </div>
+      ),
+    }),
+    columnHelper.accessor(row => row.Locations[0].ImportFolderID, {
+      header: 'Import Folder',
+      id: 'importfolder',
+      cell: info => (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
+    }),
+    columnHelper.accessor(row => row.Locations[0].RelativePath, {
+      header: 'Filename',
+      id: 'filename',
+      cell: info => info.getValue(),
+    }),
+    columnHelper.accessor('Size', {
+      cell: info => prettyBytes(info.getValue(), { binary: true }),
+    }),
+    columnHelper.accessor('Created', {
+      cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+    }),
+  ], []);
+
+
   const renderTabContent = () => (
     <>
-      <UnrecognizedTab show={activeTab === 'unrecognized'} />
-      <IgnoredFilesTab show={activeTab === 'ignoredFiles'} />
+      <UnrecognizedTab columns={columns} show={activeTab === 'unrecognized'} />
+      <IgnoredFilesTab columns={columns} show={activeTab === 'ignoredFiles'} />
     </>
   );
 
@@ -38,7 +85,7 @@ function UnrecognizedUtility() {
         <div>|</div>
         {renderTabButton('ignoredFiles', 'Ignored Files')}
         <div className="ml-auto">
-          <span className="text-highlight-2">{files.data?.Total}</span> Files
+          <span className="text-highlight-2">{files.Total}</span> Files
         </div>
       </div>
 

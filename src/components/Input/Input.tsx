@@ -34,7 +34,7 @@ function Input(props: Props) {
           <div className="relative">
             {startIcon && <div className="absolute top-1/2 transform -translate-y-1/2 left-3"><Icon path={startIcon} size={1}/></div>}
             <input
-              className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition duration-300 ease-in-out border border-background-border focus:border-primary', center && 'text-center', startIcon && 'pl-11'])}
+              className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition duration-300 ease-in-out border border-background-border focus:ring-2 focus:ring-highlight-1', center && 'text-center', startIcon && 'pl-11'])}
               id={id}
               type={type}
               placeholder={placeholder ?? ''}

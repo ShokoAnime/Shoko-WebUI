@@ -2298,6 +2298,25 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-table@npm:^8.5.11":
+  version: 8.5.11
+  resolution: "@tanstack/react-table@npm:8.5.11"
+  dependencies:
+    "@tanstack/table-core": 8.5.11
+  peerDependencies:
+    react: ">=16"
+    react-dom: ">=16"
+  checksum: 7ab4bfb6c6f2ea3d7a17332297cf77cdd3ca231fde8cb61be94dec603e3e7316bd7661c08c4430b02fd4cb7e7b42f733d854e8a872bb094529dc5d32f9dd2acc
+  languageName: node
+  linkType: hard
+
+"@tanstack/table-core@npm:8.5.11":
+  version: 8.5.11
+  resolution: "@tanstack/table-core@npm:8.5.11"
+  checksum: f518ba072f0098e9cc2e609bb9da060e2c94c3aed09484effd9e2acb26a512e9566a00fabebb3fe5300763c715132464c4494307774d9a2e5ffc8ea3b7aa3f49
+  languageName: node
+  linkType: hard
+
 "@tootallnate/once@npm:1":
   version: 1.1.2
   resolution: "@tootallnate/once@npm:1.1.2"
@@ -7296,6 +7315,7 @@ __metadata:
     "@sentry/tracing": ^7.7.0
     "@sentry/webpack-plugin": ^1.18.9
     "@tailwindcss/line-clamp": ^0.4.0
+    "@tanstack/react-table": ^8.5.11
     "@types/assets-webpack-plugin": ^7.1.0
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.1
