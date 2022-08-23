@@ -39,6 +39,9 @@ const columns = [
         <Checkbox id={`checkbox-${row.id}`} isChecked={row.getIsSelected()} onChange={row.getToggleSelectedHandler()} />
       </div>
     ),
+    meta: {
+      className: 'w-20',
+    },
   }),
   columnHelper.accessor('IDs.AniDB', {
     header: 'AniDB ID',
@@ -49,22 +52,24 @@ const columns = [
         <Icon path={mdiOpenInNew} size={1} />
       </span>
     </div>,
+    meta: {
+      className: 'w-32',
+    },
   }),
   columnHelper.accessor('Name', {
     cell: info => info.getValue(),
+    meta: {
+      className: 'w-auto',
+    },
   }),
   columnHelper.accessor('Created', {
     header: 'Date Added',
     cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+    meta: {
+      className: 'w-64',
+    },
   }),
 ];
-
-const columnWidth = {
-  checkbox: 'w-20',
-  ID: 'w-32',
-  Name: 'w-auto',
-  Created: 'w-64',
-};
 
 function SeriesWithoutFilesUtility() {
   const seriesQuery = useGetSeriesWithoutFilesQuery({ pageSize: 0 });
@@ -118,7 +123,7 @@ function SeriesWithoutFilesUtility() {
         </div>
       </div>
       <div className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border">
-        <UtilitiesTable columnWidth={columnWidth} table={table} />
+        <UtilitiesTable table={table} />
       </div>
     </ShokoPanel>
   );

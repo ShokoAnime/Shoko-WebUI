@@ -42,22 +42,37 @@ function UnrecognizedUtility() {
                     onChange={row.getToggleSelectedHandler()}/>
         </div>
       ),
+      meta: {
+        className: 'w-20',
+      },
     }),
     columnHelper.accessor(row => row.Locations[0].ImportFolderID, {
       header: 'Import Folder',
       id: 'importfolder',
       cell: info => (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
+      meta: {
+        className: 'w-52',
+      },
     }),
     columnHelper.accessor(row => row.Locations[0].RelativePath, {
       header: 'Filename',
       id: 'filename',
       cell: info => info.getValue(),
+      meta: {
+        className: 'w-auto',
+      },
     }),
     columnHelper.accessor('Size', {
       cell: info => prettyBytes(info.getValue(), { binary: true }),
+      meta: {
+        className: 'w-32',
+      },
     }),
     columnHelper.accessor('Created', {
       cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+      meta: {
+        className: 'w-56',
+      },
     }),
   ], []);
 

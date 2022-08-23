@@ -20,14 +20,6 @@ import {
 
 import type { FileType } from '../../../core/types/api/file';
 
-const columnWidth = {
-  checkbox: 'w-20',
-  importfolder: 'w-52',
-  filename: 'w-auto',
-  Size: 'w-32',
-  Created: 'w-56',
-};
-
 type Props = {
   columns: ColumnDef<FileType, any>[];
   show: boolean;
@@ -83,7 +75,7 @@ function IgnoredFilesTab({ columns, show }: Props) {
       </div>
       <TransitionDiv className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border">
         {files.Total > 0 ? (
-          <UtilitiesTable columnWidth={columnWidth} table={table} />
+          <UtilitiesTable table={table} />
         ) : (
           <div className="flex items-center justify-center h-full font-semibold">No ignored files(s)!</div>
         )}
