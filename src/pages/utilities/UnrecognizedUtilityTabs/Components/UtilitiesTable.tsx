@@ -5,18 +5,17 @@ import type { FileType } from '../../../../core/types/api/file';
 import type { SeriesType } from '../../../../core/types/api/series';
 
 type Props = {
-  columnWidth: { [key: string]: string },
   table: Table<FileType> | Table<SeriesType>,
 };
 
-function UtilitiesTable({ columnWidth, table }: Props) {
+function UtilitiesTable({ table }: Props) {
   return (
     <table className="table-fixed text-left border-separate border-spacing-0 w-full">
       <thead className="sticky top-0">
       {table.getHeaderGroups().map(headerGroup => (
         <tr key={headerGroup.id} className="bg-background-nav drop-shadow-lg">
           {headerGroup.headers.map(header => (
-            <th key={header.id} className={`${columnWidth[header.id]} py-3.5 first:rounded-tl-lg last:rounded-tr-lg`}>
+            <th key={header.id} className={`${header.column.columnDef.meta?.className} py-3.5 first:rounded-tl-lg last:rounded-tr-lg`}>
               {header.isPlaceholder
                 ? null
                 : flexRender(
