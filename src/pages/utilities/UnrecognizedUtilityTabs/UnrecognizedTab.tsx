@@ -1,11 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import prettyBytes from 'pretty-bytes';
-import moment from 'moment';
+import React, { useEffect } from 'react';
 import cx from 'classnames';
-import { find, forEach } from 'lodash';
+import { forEach } from 'lodash';
+import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import {
-  mdiChevronLeft, mdiChevronRight,
   mdiDatabaseSearchOutline, mdiDatabaseSyncOutline,
   mdiDumpTruck, mdiMagnify, mdiRestart,
   mdiLinkVariantPlus, mdiMinusCircleOutline,
@@ -15,13 +13,13 @@ import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table
 
 import Button from '../../../components/Input/Button';
 import Input from '../../../components/Input/Input';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import TransitionDiv from '../../../components/TransitionDiv';
 
 import SeriesLinkPanel from './Components/SeriesLinkPanel';
 import SelectedFilesPanel from './Components/SelectedFilesPanel';
 import EpisodeLinkPanel from './Components/EpisodeLinkPanel';
 import UtilitiesTable from './Components/UtilitiesTable';
+import SelectedFileInfo from './Components/SelectedFileInfo';
 
 import {
   useDeleteFileMutation,
@@ -30,11 +28,12 @@ import {
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
 } from '../../../core/rtkQuery/fileApi';
-import { useGetImportFoldersQuery } from '../../../core/rtkQuery/importFolderApi';
+import { setSelectedSeries, setManualLink, setSelectedRows } from '../../../core/slices/utilities/unrecognized';
 
 import type { FileType } from '../../../core/types/api/file';
-import type { ImportFolderType } from '../../../core/types/api/import-folder';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
+import { RootState } from '../../../core/store';
+
 
 type Props = {
   columns: ColumnDef<FileType, any>[];
@@ -44,114 +43,22 @@ type Props = {
 function UnrecognizedTab({ columns, show }: Props) {
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
-  const importFolderQuery = useGetImportFoldersQuery();
-  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   const [fileRescanTrigger] = usePostFileRescanMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
   const [fileDeleteTrigger] = useDeleteFileMutation();
-
-  const [selectedFile, setSelectedFile] = useState(1);
-  const [manualLink, setManualLink] = useState(false);
-  const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
+  const { manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized);
+  const dispatch = useDispatch();
 
   const table = useReactTable({
     data: files.List,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel()]);
-
-  const changeSelectedFile = (operation: string) => {
-    if (operation === 'prev') {
-      if (selectedFile > 1) {
-        setSelectedFile(selectedFile - 1);
-      }
-    } else {
-      if (selectedFile < table.getSelectedRowModel().rows.length) {
-        setSelectedFile(selectedFile + 1);
-      }
-    }
-  };
-
-  const fileInfoTitle = () => {
-    const isEmpty = selectedRows.length <= 0;
-    return (
-      <React.Fragment>
-        Selected File Info
-        <TransitionDiv className="flex ml-2" show={!isEmpty}>
-          - <span className="text-highlight-2 ml-2">{isEmpty ? '-/-' : `${selectedFile}/${selectedRows.length}`}</span>
-        </TransitionDiv>
-      </React.Fragment>
-    );
-  };
-
-  const renderFileInfo = () => {
-    if (selectedRows.length === 0) return;
-    const selectedFileInfo = selectedRows[selectedFile - 1];
-
-    const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
-    const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
-
-    return (
-      <>
-        <div className="flex">
-          <div className="flex flex-col w-2/5">
-            <div className="font-semibold mb-1">Filename</div>
-            {selectedFileInfo.Locations[0].RelativePath}
-          </div>
-
-          <div className="flex flex-col w-1/5">
-            <div className="font-semibold mb-1">Size</div>
-            {prettyBytes(selectedFileInfo.Size, { binary: true })}
-          </div>
-
-          <div className="flex flex-col w-1/4">
-            <div className="font-semibold mb-1">Folder</div>
-            {importFolder}
-          </div>
-
-          <div className="flex flex-col w-48">
-            <div className="font-semibold mb-1">Import Date</div>
-            {moment(selectedFileInfo.Created).format('MMMM DD YYYY, HH:mm')}
-          </div>
-        </div>
-
-        <div className="flex mt-4">
-          <div className="flex flex-col w-2/5">
-            <div className="font-semibold mb-1">Hash</div>
-            {selectedFileInfo.Hashes.ED2K}
-          </div>
-
-          <div className="flex flex-col w-1/5">
-            <div className="font-semibold mb-1">MD5</div>
-            {selectedFileInfo.Hashes.MD5}
-          </div>
-
-          <div className="flex flex-col w-1/4">
-            <div className="font-semibold mb-1">SHA1</div>
-            {selectedFileInfo.Hashes.SHA1}
-          </div>
-
-          <div className="flex flex-col w-48">
-            <div className="font-semibold mb-1">CRC32</div>
-            {selectedFileInfo.Hashes.CRC32}
-          </div>
-        </div>
-      </>
-    );
-  };
-
-  const renderPanelOptions = () => (
-    <div className="flex">
-      <Button onClick={() => changeSelectedFile('prev')}>
-        <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-highlight-1" />
-      </Button>
-      <Button onClick={() => changeSelectedFile('next')} className="ml-2">
-        <Icon path={mdiChevronRight} size={1} className="opacity-75 text-highlight-1" />
-      </Button>
-    </div>
-  );
+  
+  useEffect(() => {
+    dispatch(setSelectedRows(table.getSelectedRowModel().rows.map(row => row.original)));
+  }, [table.getSelectedRowModel()]);
 
   const rescanFiles = (selected = false) => {
     if (selected) {
@@ -202,7 +109,7 @@ function UnrecognizedTab({ columns, show }: Props) {
           {renderButton(() => {}, mdiDumpTruck, 'AVDump All')}
         </TransitionDiv>
         <TransitionDiv className="flex grow absolute" show={!common}>
-          {renderButton(() => setManualLink(!manualLink), mdiLinkVariantPlus, 'Manually Link')}
+          {renderButton(() => dispatch(setManualLink(!manualLink)), mdiLinkVariantPlus, 'Manually Link')}
           {renderButton(() => rescanFiles(true), mdiDatabaseSearchOutline, 'Rescan')}
           {renderButton(() => rehashFiles(true), mdiDatabaseSyncOutline, 'Rehash')}
           {renderButton(() => {}, mdiDumpTruck, 'AVDump')}
@@ -214,7 +121,7 @@ function UnrecognizedTab({ columns, show }: Props) {
     );
   };
 
-  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => setSelectedSeries(series);
+  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => dispatch(setSelectedSeries(series));
 
   return (
     <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
@@ -226,44 +133,30 @@ function UnrecognizedTab({ columns, show }: Props) {
             {renderOperations(selectedRows.length === 0) }
             <div className="ml-auto text-highlight-2 font-semibold">{selectedRows.length} Files Selected</div>
           </div>
-          {manualLink && (
-            <TransitionDiv className="flex pl-2.5 items-center">
-              <Button onClick={() => {
-                setManualLink(false);
-                setSelectedSeries({} as SeriesAniDBSearchResult);
-              }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
-              <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
-            </TransitionDiv>
-          )}
+          <TransitionDiv className={cx('flex pl-2.5 items-center', { 'hidden': !manualLink })}>
+            <Button onClick={() => {
+              dispatch(setManualLink(false));
+              dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
+            }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
+            <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
+          </TransitionDiv>
         </div>
-        {manualLink ? (
-          <TransitionDiv className="flex mt-5 overflow-y-auto grow gap-x-4">
-            <SelectedFilesPanel files={selectedRows} selectedSeries={selectedSeries} />
-            {selectedSeries?.ID
-              ? (<EpisodeLinkPanel files={selectedRows} selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
-              : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
-          </TransitionDiv>
-        ) : (
-          <TransitionDiv className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border">
-            {files.Total > 0 ? (
-              <UtilitiesTable table={table} />
-            ) : (
-              <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
-            )}
-          </TransitionDiv>
-        )}
+        <TransitionDiv className={cx('flex mt-5 overflow-y-auto grow gap-x-4', { 'hidden': !manualLink })}>
+          <SelectedFilesPanel files={selectedRows} selectedSeries={selectedSeries} />
+          {selectedSeries?.ID
+            ? (<EpisodeLinkPanel files={selectedRows} selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
+            : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
+        </TransitionDiv>
+        <TransitionDiv className={cx('w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border', { 'hidden': manualLink })}>
+          {files.Total > 0 ? (
+            <UtilitiesTable table={table} />
+          ) : (
+            <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
+          )}
+        </TransitionDiv>
       </div>
 
-      <ShokoPanel title={fileInfoTitle()} className="!h-48 mt-4" options={renderPanelOptions()}>
-        <div className="flex grow flex-col items-center relative">
-          <TransitionDiv className="mt-2 font-semibold absolute" show={selectedRows.length === 0}>
-            No File(s) Selected
-          </TransitionDiv>
-          <TransitionDiv className="flex grow flex-col mt-2 w-full absolute" show={selectedRows.length !== 0}>
-            {renderFileInfo()}
-          </TransitionDiv>
-        </div>
-      </ShokoPanel>
+      <SelectedFileInfo />
 
     </TransitionDiv>
   );

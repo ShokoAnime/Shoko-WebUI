@@ -17,6 +17,7 @@ import serverSettingsReducer from './slices/serverSettings';
 import webuiSettingsReducer from './slices/webuiSettings';
 import jmmVersionReducer from './slices/jmmVersion';
 import collectionReducer from './slices/collection';
+import utilitiesReducer from './slices/utilities';
 
 import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
@@ -43,6 +44,7 @@ const reducers = {
   autoUpdate,
   jmmVersion: jmmVersionReducer,
   collection: collectionReducer,
+  utilities: utilitiesReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
   [externalApi.reducerPath]: externalApi.reducer,
   [collectionApi.reducerPath]: collectionApi.reducer,
