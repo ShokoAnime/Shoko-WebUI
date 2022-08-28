@@ -1,22 +1,17 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import cx from 'classnames';
 
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
-import type { FileType } from '../../../../core/types/api/file';
-import type { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
+import { RootState } from '../../../../core/store';
 
-type Props = {
-  files: Array<FileType>;
-  selectedSeries: SeriesAniDBSearchResult;
-};
-
-function SelectedFilesPanel(props: Props) {
-  const { files, selectedSeries } = props;
+function SelectedFilesPanel() {
+  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized );
 
   const manualLinkFileRows: Array<React.ReactNode> = [];
-  forEach(files, (file) => {
+  forEach(selectedRows, (file) => {
     manualLinkFileRows.push(
       <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4'])} key={file.ID}>
         {file.Locations[0].RelativePath}

@@ -121,8 +121,6 @@ function UnrecognizedTab({ columns, show }: Props) {
     );
   };
 
-  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => dispatch(setSelectedSeries(series));
-
   return (
     <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
 
@@ -142,10 +140,10 @@ function UnrecognizedTab({ columns, show }: Props) {
           </TransitionDiv>
         </div>
         <TransitionDiv className={cx('flex mt-5 overflow-y-auto grow gap-x-4', { 'hidden': !manualLink })}>
-          <SelectedFilesPanel files={selectedRows} selectedSeries={selectedSeries} />
+          <SelectedFilesPanel />
           {selectedSeries?.ID
-            ? (<EpisodeLinkPanel files={selectedRows} selectedSeries={selectedSeries} setSeries={updateSelectedSeries} />)
-            : (<SeriesLinkPanel setSeries={updateSelectedSeries}/>)}
+            ? (<EpisodeLinkPanel />)
+            : (<SeriesLinkPanel />)}
         </TransitionDiv>
         <TransitionDiv className={cx('w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border', { 'hidden': manualLink })}>
           {files.Total > 0 ? (

@@ -9,6 +9,7 @@ type Props = {
   value: string;
   onChange: (optionValue: string, label: string) => void;
   className?: string;
+  emptyValue?: string;
 };
 
 const SelectInput = ({ value, onClick, open }) => (
@@ -30,14 +31,14 @@ const SelectOption = ({ label, value, onClick }) => (
   </li>
 );
 
-const ComboBox = ({ options, value, onChange, className }: Props) => {
+const ComboBox = ({ options, value, onChange, className, emptyValue = '' }: Props) => {
   const [inputValue, setInputValue] = useState('');
   const [open, setOpen ] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const option = find(options, ['value', value]);
-    setInputValue(option?.label ?? '');
+    setInputValue(option?.label ?? emptyValue);
   }, [value]);
   
   const selectOption = (optionValue, label) => {
@@ -58,7 +59,7 @@ const ComboBox = ({ options, value, onChange, className }: Props) => {
   <div className={className}>
     <div className="relative">
       <SelectInput value={inputValue} open={open} onClick={toggleDropdown}/>
-      <div ref={listRef} onBlur={() => setOpen(false)} className={cx('absolute mt-1 w-full z-10 rounded-md bg-background-alt shadow-lg', { hidden: !open })}>
+      <div ref={listRef} onBlur={() => setOpen(false)} onFocus={e => e.persist()} className={cx('absolute mt-1 w-full z-10 rounded-md bg-background-alt shadow-lg', { hidden: !open })}>
         <ul tabIndex={-1} role="listbox" className="max-h-56 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
           {options.map(item => (<SelectOption {...item} onClick={selectOption} />))}
         </ul>
