@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import { useDispatch } from 'react-redux';
 import { debounce, forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiOpenInNew, mdiMagnify } from '@mdi/js';
@@ -6,20 +7,19 @@ import { mdiOpenInNew, mdiMagnify } from '@mdi/js';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import Input from '../../../../components/Input/Input';
 
+import { setSelectedSeries } from '../../../../core/slices/utilities/unrecognized';
 import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
 
 import type { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 
-type Props = {
-  setSeries: (series: SeriesAniDBSearchResult) => void;
-};
 
-function SeriesLinkPanel(props: Props) {
-  const { setSeries } = props;
 
+function SeriesLinkPanel() {
   const [searchText, setSearchText] = useState('');
 
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
+  const dispatch = useDispatch();
+  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => dispatch(setSelectedSeries(series));
 
   const debouncedSearch = useRef(
     debounce( (query: string) => {
@@ -40,7 +40,7 @@ function SeriesLinkPanel(props: Props) {
   }, [debouncedSearch]);
 
   const renderRow = (data: SeriesAniDBSearchResult) => (
-    <tr key={data.ID} onClick={() => setSeries(data)} className="cursor-pointer">
+    <tr key={data.ID} onClick={() => updateSelectedSeries(data)} className="cursor-pointer">
       <td className="pt-1.5">
         <div className="flex justify-between mr-6">
           {data.ID}

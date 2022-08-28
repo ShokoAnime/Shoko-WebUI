@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { RootState } from '../store';
 import type { SeriesAniDBSearchResult, SeriesType } from '../types/api/series';
 import type { ListResultType, PaginationType } from '../types/api';
+import { EpisodeType } from '../types/api/episode';
 
 export const seriesApi = createApi({
   reducerPath: 'series',
@@ -31,6 +32,22 @@ export const seriesApi = createApi({
       query: params => ({ url: `AniDB/Search/${params.query}`, params }),
       transformResponse: (response: any) => response.List,
     }),
+    
+    // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    getSeriesEpisodes: build.query<Array<EpisodeType>, { seriesId: number; }>({
+      query: ({ seriesId }) => ({ url: `${seriesId}/Episode` }),
+    }),
+    
+    // Queue a refresh of the AniDB Info for series with AniDB ID
+    refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
+      query: ({ anidbID }) => ({ url: `AniDB/${anidbID}/Refresh`, method: 'POST', body:  { immediate: true, force: true, createSeriesEntry: true } }),
+    }),
+    
+    // Get AniDB Info from the AniDB ID
+    getSeriesAniDB: build.query<SeriesAniDBSearchResult, { anidbID: number; }>({
+      query: params => ({ url: `AniDB/${params.anidbID}` }),
+      transformResponse: (response: any) => response.List,
+    }),
   }),
 });
 
@@ -38,4 +55,7 @@ export const {
   useDeleteSeriesMutation,
   useGetSeriesWithoutFilesQuery,
   useLazyGetSeriesAniDBSearchQuery,
+  useLazyGetSeriesEpisodesQuery,
+  useRefreshAnidbSeriesMutation,
+  useLazyGetSeriesAniDBQuery,
 } = seriesApi;
