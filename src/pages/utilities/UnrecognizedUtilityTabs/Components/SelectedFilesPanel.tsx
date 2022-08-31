@@ -21,7 +21,9 @@ function SelectedFilesPanel() {
 
   return (
     <ShokoPanel title="Selected Files" className="w-1/2">
-      {manualLinkFileRows}
+      <div className="grow basis-0 overflow-y-auto">
+        {manualLinkFileRows}
+      </div>
     </ShokoPanel>
   );
 }

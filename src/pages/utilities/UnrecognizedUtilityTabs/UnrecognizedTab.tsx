@@ -231,7 +231,7 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
           </div>
         </div>
         <div className="flex grow basis-0 overflow-y-hidden relative mt-4">
-          <TransitionDiv className="flex mt-1 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
+          <TransitionDiv className="flex mt-1 h-full basis-0 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
             <SelectedFilesPanel />
             {selectedSeries?.ID
               ? (<EpisodeLinkPanel />)
