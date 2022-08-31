@@ -56,7 +56,7 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 
-  const { manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized);
+  const { manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
   const dispatch = useDispatch();

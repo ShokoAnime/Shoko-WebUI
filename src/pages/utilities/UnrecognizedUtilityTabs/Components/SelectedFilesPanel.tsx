@@ -8,7 +8,7 @@ import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import { RootState } from '../../../../core/store';
 
 function SelectedFilesPanel() {
-  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized );
+  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized );
 
   const manualLinkFileRows: Array<React.ReactNode> = [];
   forEach(selectedRows, (file) => {

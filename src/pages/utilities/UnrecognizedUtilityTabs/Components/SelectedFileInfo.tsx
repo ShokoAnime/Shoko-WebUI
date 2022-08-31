@@ -23,7 +23,7 @@ type Props = {
 const SelectedFileInfo = ({ fullWidth }: Props) => {
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-  const { selectedFile, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized);
+  const { selectedFile, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
   const dispatch = useDispatch();
 
   const changeSelectedFile = (operation: string) => {
