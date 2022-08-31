@@ -7,7 +7,7 @@ import { mdiOpenInNew, mdiMagnify } from '@mdi/js';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import Input from '../../../../components/Input/Input';
 
-import { setSelectedSeries } from '../../../../core/slices/utilities/unrecognized';
+import { setSelectedSeries, setLinks } from '../../../../core/slices/utilities/unrecognized';
 import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
 
 import type { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
@@ -19,7 +19,10 @@ function SeriesLinkPanel() {
 
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
   const dispatch = useDispatch();
-  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => dispatch(setSelectedSeries(series));
+  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => {
+    dispatch(setSelectedSeries(series));
+    dispatch(setLinks([]));
+  };
 
   const debouncedSearch = useRef(
     debounce( (query: string) => {
