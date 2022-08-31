@@ -210,37 +210,41 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
             {renderOperations(selectedRows.length === 0) }
             <div className="ml-auto text-highlight-2 font-semibold">{selectedRows.length} Files Selected</div>
           </div>
-          <TransitionDiv className={cx('flex pl-2.5 items-center', { 'hidden': manualLink })}>
-            {/*TODO: Don't allow copy when one of the selected rows is not dumped*/}
-            <CopyToClipboard text={copyEd2kLinks()}>
-              <Button
-                onClick={() => {}}
-                className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2"
-                disabled={selectedRows.length === 0}
-              >Copy ED2K Links</Button>
-            </CopyToClipboard>
+          <div className="flex pl-2.5 items-center w-40 relative">
+            <TransitionDiv className="flex absolute" show={!manualLink}>
+              {/*TODO: Don't allow copy when one of the selected rows is not dumped*/}
+              <CopyToClipboard text={copyEd2kLinks()}>
+                <Button
+                  onClick={() => {}}
+                  className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2"
+                  disabled={selectedRows.length === 0}
+                >Copy ED2K Links</Button>
+              </CopyToClipboard>
+            </TransitionDiv>
+            <TransitionDiv className="flex" show={manualLink}>
+              <Button onClick={() => {
+                dispatch(setManualLink(false));
+                dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
+              }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
+              <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
+            </TransitionDiv>
+          </div>
+        </div>
+        <div className="flex grow basis-0 overflow-y-hidden relative mt-4">
+          <TransitionDiv className="flex mt-1 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
+            <SelectedFilesPanel />
+            {selectedSeries?.ID
+              ? (<EpisodeLinkPanel />)
+              : (<SeriesLinkPanel />)}
           </TransitionDiv>
-          <TransitionDiv className={cx('flex pl-2.5 items-center', { 'hidden': !manualLink })}>
-            <Button onClick={() => {
-              dispatch(setManualLink(false));
-              dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
-            }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
-            <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
+          <TransitionDiv className="w-full h-full basis-0 overflow-y-auto rounded-lg bg-background-nav border border-background-border absolute" show={!manualLink}>
+            {files.Total > 0 ? (
+              <UtilitiesTable table={table} />
+            ) : (
+              <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
+            )}
           </TransitionDiv>
         </div>
-        <TransitionDiv className={cx('flex mt-5 overflow-y-auto grow gap-x-4', { 'hidden': !manualLink })}>
-          <SelectedFilesPanel />
-          {selectedSeries?.ID
-            ? (<EpisodeLinkPanel />)
-            : (<SeriesLinkPanel />)}
-        </TransitionDiv>
-        <TransitionDiv className={cx('w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border', { 'hidden': manualLink })}>
-          {files.Total > 0 ? (
-            <UtilitiesTable table={table} />
-          ) : (
-            <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
-          )}
-        </TransitionDiv>
       </div>
 
       <div className={cx('flex mt-4 space-x-4 transition-[height]', manualLink ? 'h-48' : 'h-[19.6rem]')}>
