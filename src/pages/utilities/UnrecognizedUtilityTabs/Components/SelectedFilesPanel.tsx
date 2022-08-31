@@ -8,7 +8,7 @@ import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import { RootState } from '../../../../core/store';
 
 function SelectedFilesPanel() {
-  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized );
+  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized );
 
   const manualLinkFileRows: Array<React.ReactNode> = [];
   forEach(selectedRows, (file) => {
@@ -21,7 +21,9 @@ function SelectedFilesPanel() {
 
   return (
     <ShokoPanel title="Selected Files" className="w-1/2">
-      {manualLinkFileRows}
+      <div className="grow basis-0 overflow-y-auto">
+        {manualLinkFileRows}
+      </div>
     </ShokoPanel>
   );
 }

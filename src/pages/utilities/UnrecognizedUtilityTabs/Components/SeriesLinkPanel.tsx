@@ -65,7 +65,7 @@ function SeriesLinkPanel() {
 
   return (
     <ShokoPanel title="Series Link" className="w-1/2">
-      <div className="flex gap-x-2">
+      <div className="flex px-0.5">
         <Input
           id="link-search"
           type="text"
@@ -76,11 +76,10 @@ function SeriesLinkPanel() {
           startIcon={mdiMagnify}
         />
       </div>
-      <div className="flex mt-4 bg-background-alt border border-background-border rounded-md px-4 pb-4 overflow-y-auto grow basis-0 items-start">
+      <div className="flex mt-4 bg-background-alt border border-background-border rounded-md px-4 pb-4 overflow-y-auto grow basis-0">
         <table className="table-fixed text-left w-full">
           <thead className="sticky top-0 bg-background-alt">
           <tr className="box-border font-semibold">
-            {/*TODO: Fix scrollbar*/}
             <td className="w-28 py-3">AniDB ID</td>
             <td className="w-auto py-3">Series Name</td>
             <td className="w-16 py-3">EPs</td>

@@ -14,7 +14,7 @@ import { setSelectedSeries } from '../../../../core/slices/utilities/unrecognize
 
 
 function EpisodeLinkPanel() {
-  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized );
+  const { selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized );
   const [updateEpisodes, episodesQuery] = useLazyGetSeriesEpisodesQuery();
   const [refreshSeries, anidbRefreshQuery] = useRefreshAnidbSeriesMutation();
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
