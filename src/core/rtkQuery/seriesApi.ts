@@ -35,12 +35,12 @@ export const seriesApi = createApi({
     
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<Array<EpisodeType>, { seriesId: number; }>({
-      query: ({ seriesId }) => ({ url: `${seriesId}/Episode` }),
+      query: ({ seriesId }) => ({ url: `${seriesId}/Episode?includeMissing=true` }),
     }),
     
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
-      query: ({ anidbID }) => ({ url: `AniDB/${anidbID}/Refresh`, method: 'POST', body:  { immediate: true, force: true, createSeriesEntry: true } }),
+      query: ({ anidbID }) => ({ url: `AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
     }),
     
     // Get AniDB Info from the AniDB ID

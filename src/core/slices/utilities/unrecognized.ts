@@ -1,12 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { SeriesAniDBSearchResult } from '../../types/api/series';
 import { FileType } from '../../types/api/file';
+import { forEach } from 'lodash';
+
+type ManualLink = { 
+  FileID: number; 
+  EpisodeID: number; 
+};
 
 type State = {
   manualLink: boolean;
   selectedSeries: SeriesAniDBSearchResult;
   selectedFile: number;
   selectedRows: FileType[];
+  links: Array<ManualLink>;
 };
 
 const  unrecognizedSlice = createSlice({
@@ -30,9 +37,19 @@ const  unrecognizedSlice = createSlice({
     setSelectedRows(sliceState, action: PayloadAction<FileType[]>) {
       sliceState.selectedRows = action.payload;
     },
+    setLinks(sliceState, action: PayloadAction<Array<ManualLink>>) {
+      sliceState.links = action.payload;
+    },
+    setLinksEpisode(sliceState, action: PayloadAction<ManualLink>) {
+      forEach(sliceState.links, (link, idx) => {
+        if (link.FileID === action.payload.FileID) {
+          sliceState.links[idx].EpisodeID = action.payload.EpisodeID;
+        }
+      });
+    },
   },
 });
 
-export const { setManualLink, setSelectedSeries, setSelectedFile, setSelectedRows } = unrecognizedSlice.actions;
+export const { setManualLink, setSelectedSeries, setSelectedFile, setSelectedRows, setLinks, setLinksEpisode } = unrecognizedSlice.actions;
 
 export default unrecognizedSlice.reducer;
