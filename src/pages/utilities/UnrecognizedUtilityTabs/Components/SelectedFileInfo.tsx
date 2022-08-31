@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { Icon } from '@mdi/react';
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
+import cx from 'classnames';
 
 import TransitionDiv from '../../../../components/TransitionDiv';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
@@ -15,7 +16,11 @@ import { RootState } from '../../../../core/store';
 import { useGetImportFoldersQuery } from '../../../../core/rtkQuery/importFolderApi';
 import { ImportFolderType } from '../../../../core/types/api/import-folder';
 
-const SelectedFileInfo = () => {
+type Props = {
+  fullWidth: boolean;
+};
+
+const SelectedFileInfo = ({ fullWidth }: Props) => {
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
   const { selectedFile, selectedRows } = useSelector((state: RootState) => state.utilities.unrecongnized);
@@ -32,7 +37,7 @@ const SelectedFileInfo = () => {
       }
     }
   };
-  
+
   const fileInfoTitle = () => {
     const isEmpty = selectedRows.length <= 0;
     return (
@@ -64,8 +69,64 @@ const SelectedFileInfo = () => {
     const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
-      <>
-        <div className="flex">
+      <TransitionDiv className="flex grow w-full absolute" show={!fullWidth && selectedRows.length !== 0}>
+        <div className="flex flex-col w-2/3 break-all">
+          <div className="flex flex-col">
+            <div className="font-semibold mb-1">Filename</div>
+            {selectedFileInfo.Locations[0].RelativePath}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">Size</div>
+            {prettyBytes(selectedFileInfo.Size, { binary: true })}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">Folder</div>
+            {importFolder}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">Import Date</div>
+            {moment(selectedFileInfo.Created).format('MMMM DD YYYY, HH:mm')}
+          </div>
+        </div>
+
+        <div className="flex flex-col w-1/3 break-all">
+          <div className="flex flex-col">
+            <div className="font-semibold mb-1">Hash</div>
+            {selectedFileInfo.Hashes.ED2K}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">MD5</div>
+            {selectedFileInfo.Hashes.MD5}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">SHA1</div>
+            {selectedFileInfo.Hashes.SHA1}
+          </div>
+
+          <div className="flex flex-col mt-4">
+            <div className="font-semibold mb-1">CRC32</div>
+            {selectedFileInfo.Hashes.CRC32}
+          </div>
+        </div>
+      </TransitionDiv>
+    );
+  };
+
+  const renderFullWidthFileInfo = () => {
+    if (selectedRows.length === 0) return;
+    const selectedFileInfo = selectedRows[selectedFile - 1];
+
+    const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
+    const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
+
+    return (
+      <TransitionDiv className="flex flex-col grow w-full absolute" show={fullWidth && selectedRows.length !== 0}>
+        <div className="flex break-all">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Filename</div>
             {selectedFileInfo.Locations[0].RelativePath}
@@ -87,7 +148,7 @@ const SelectedFileInfo = () => {
           </div>
         </div>
 
-        <div className="flex mt-4">
+        <div className="flex break-all mt-4">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Hash</div>
             {selectedFileInfo.Hashes.ED2K}
@@ -108,19 +169,18 @@ const SelectedFileInfo = () => {
             {selectedFileInfo.Hashes.CRC32}
           </div>
         </div>
-      </>
+      </TransitionDiv>
     );
   };
-  
+
   return (
-    <ShokoPanel title={fileInfoTitle()} className="!h-48 mt-4" options={renderPanelOptions()}>
-      <div className="flex grow flex-col items-center relative">
-        <TransitionDiv className="mt-2 font-semibold absolute" show={selectedRows.length === 0}>
+    <ShokoPanel title={fileInfoTitle()} className={cx('transition-[width]', fullWidth ? 'w-full' : 'w-3/4')} options={renderPanelOptions()}>
+      <div className="flex grow relative overflow-y-auto">
+        <TransitionDiv className="flex justify-center font-semibold absolute w-full mt-4" show={selectedRows.length === 0}>
           No File(s) Selected
         </TransitionDiv>
-        <TransitionDiv className="flex grow flex-col mt-2 w-full absolute" show={selectedRows.length !== 0}>
-          {renderFileInfo()}
-        </TransitionDiv>
+        {renderFileInfo()}
+        {renderFullWidthFileInfo()}
       </div>
     </ShokoPanel>
   );
