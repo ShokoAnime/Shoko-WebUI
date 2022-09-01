@@ -35,7 +35,9 @@ function AniDBSeriesLinkPanel({ initialQuery }: Props) {
     };
   }, [debouncedSearch]);
 
-  if (searchText === '' && initialQuery !== '') debouncedSearch(initialQuery);
+  useEffect(() => {
+    if (searchText === '' && initialQuery !== '') debouncedSearch(initialQuery);
+  }, [searchText, initialQuery]);
 
   return (
     <ShokoPanel title="AniDB Series Link" className="w-1/4">
@@ -47,7 +49,7 @@ function AniDBSeriesLinkPanel({ initialQuery }: Props) {
               <Icon path={mdiLoading} size={3} spin className="text-highlight-1" />
             </div>) :
             (searchResults.data ?? []).map(result => (
-              <div className="flex justify-between mt-1 items-center">
+              <div key={result.ID} className="flex justify-between mt-1 items-center">
                 {result.Title}
                 <a href={`https://anidb.net/anime/${result.ID}/release/add`} target="_blank">
                   <Icon path={mdiOpenInNew} size={1} className="text-highlight-1 mr-2" />

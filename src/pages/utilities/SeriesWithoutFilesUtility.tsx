@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { forEach } from 'lodash';
 import cx from 'classnames';
 import moment from 'moment';
@@ -10,7 +10,7 @@ import {
 } from '@mdi/js';
 import {
   createColumnHelper,
-  getCoreRowModel,
+  getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -22,6 +22,8 @@ import Checkbox from '../../components/Input/Checkbox';
 import type { SeriesType } from '../../core/types/api/series';
 
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '../../core/rtkQuery/seriesApi';
+import { fuzzyFilter, fuzzySort } from '../../core/util';
+
 import UtilitiesTable from './UnrecognizedUtilityTabs/Components/UtilitiesTable';
 
 const columnHelper = createColumnHelper<SeriesType>();
@@ -61,6 +63,8 @@ const columns = [
     meta: {
       className: 'w-auto',
     },
+    filterFn: 'fuzzy',
+    sortingFn: fuzzySort,
   }),
   columnHelper.accessor('Created', {
     header: 'Date Added',
@@ -76,10 +80,20 @@ function SeriesWithoutFilesUtility() {
   const series = seriesQuery?.data ?? { Total: 0, List: [] };
   const [deleteSeriesTrigger] = useDeleteSeriesMutation();
 
+  const [columnFilters, setColumnFilters] = useState([{ id: 'Name', value: '' }] as Array<{ id: string; value: string }>);
+
   const table = useReactTable({
     data: series.List,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      columnFilters,
+    },
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   const deleteSeries = () => {
@@ -116,7 +130,7 @@ function SeriesWithoutFilesUtility() {
   return (
     <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
       <div className="flex">
-        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
+        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'Name', value: e.target.value }])} />
         <div className="box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2">
           {renderOperations(table.getSelectedRowModel().rows.length === 0)}
           <div className="ml-auto text-highlight-2 font-semibold">{table.getSelectedRowModel().rows.length} Series Selected</div>

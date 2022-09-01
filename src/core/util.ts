@@ -1,6 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { each, unset, isObject } from 'lodash';
 import Version from '../../public/version.json';
+import { FilterFn, SortingFn, sortingFns } from '@tanstack/react-table';
+import { compareItems, RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 
 export function uiVersion() {
   return Version.debug ? Version.git : Version.package;
@@ -38,5 +40,33 @@ export function omitDeepBy(value: any, iteratee: Function) {
 
   return value;
 }
+
+// tanstack table helpers
+
+declare module '@tanstack/table-core' {
+  interface FilterFns {
+    fuzzy: FilterFn<unknown>
+  }
+  interface FilterMeta {
+    itemRank: RankingInfo
+  }
+}
+
+export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  const itemRank = rankItem(row.getValue(columnId), value);
+  addMeta({ itemRank });
+  return itemRank.passed;
+};
+
+export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
+  let dir = 0;
+  if (rowA.columnFiltersMeta[columnId]) {
+    dir = compareItems(
+      rowA.columnFiltersMeta[columnId]?.itemRank!,
+      rowB.columnFiltersMeta[columnId]?.itemRank!,
+    );
+  }
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
+};
 
 export default {};
