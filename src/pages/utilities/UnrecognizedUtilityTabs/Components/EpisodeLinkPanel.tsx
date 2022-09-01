@@ -65,7 +65,7 @@ function EpisodeLinkPanel() {
   );
   
   const renderEpisodeLinks = () => {
-    const result: JSX.Element[] = [];
+    const result: React.ReactNode[] = [];
     forEach(groupedLinks, (episodeLinks) => {
       forEach(episodeLinks, (link, idx) => {
         result.push(
