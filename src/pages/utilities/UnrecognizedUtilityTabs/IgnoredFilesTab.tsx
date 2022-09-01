@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
@@ -29,15 +29,20 @@ import type { FileType } from '../../../core/types/api/file';
 type Props = {
   columns: ColumnDef<FileType, any>[];
   show: boolean;
+  setFilesCount: (count: number) => void;
 };
 
-function IgnoredFilesTab({ columns, show }: Props) {
+function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
 
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
+
+  useEffect(() => {
+    if (show) setFilesCount(files.Total);
+  }, [show, files.Total]);
 
   const table = useReactTable({
     data: files.List,

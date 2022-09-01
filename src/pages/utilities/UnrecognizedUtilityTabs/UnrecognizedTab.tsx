@@ -52,9 +52,10 @@ const columnHelper = createColumnHelper<FileType>();
 type Props = {
   columns: ColumnDef<FileType, any>[];
   show: boolean;
+  setFilesCount: (count: number) => void;
 };
 
-function UnrecognizedTab({ columns: tempColumns, show }: Props) {
+function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileRescanTrigger] = usePostFileRescanMutation();
@@ -69,6 +70,10 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
   const dispatch = useDispatch();
 
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
+
+  useEffect(() => {
+    if (show) setFilesCount(files.Total);
+  }, [show, files.Total]);
 
   const columns = [
     ...tempColumns,
