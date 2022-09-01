@@ -35,7 +35,9 @@ function AniDBSeriesLinkPanel({ initialQuery }: Props) {
     };
   }, [debouncedSearch]);
 
-  if (searchText === '' && initialQuery !== '') debouncedSearch(initialQuery);
+  useEffect(() => {
+    if (searchText === '' && initialQuery !== '') debouncedSearch(initialQuery);
+  }, [searchText, initialQuery]);
 
   return (
     <ShokoPanel title="AniDB Series Link" className="w-1/4">
