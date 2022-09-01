@@ -24,7 +24,14 @@ function run(task) {
   console.log(`Starting '${task}'...`);
   return Promise.resolve().then(() => tasks.get(task)()).then(() => {
     console.log(`Finished '${task}' after ${new Date().getTime() - start.getTime()}ms`);
-  }, err => console.error(err.stack));
+  }, (err) => {
+    if (Array.isArray(err)) {
+      err.forEach(error => console.error(error.stack));
+    } else if (err.hasOwnProperty(stack)) {
+      console.error(err.stack);
+    }
+    return Promise.reject(null); // Returning null here prevents duplicate output
+  });
 }
 
 function getEnvironment() {
@@ -81,6 +88,8 @@ tasks.set('bundle', () => {
     webpack(webpackConfig).run((err, stats) => {
       if (err) {
         reject(err);
+      } else if (stats.hasErrors()) {
+        reject(stats.toJson().errors);
       } else {
         console.log(stats.toString(webpackConfig.stats));
         resolve();
@@ -179,4 +188,4 @@ tasks.set('start', () => {
 });
 
 // Execute the specified task or default one. E.g.: node run build
-run(/^\w/.test(process.argv[2] || '') ? process.argv[2] : 'start' /* default */);
+run(/^\w/.test(process.argv[2] || '') ? process.argv[2] : 'start' /* default */).catch(() => process.exit(1));
