@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -11,8 +11,15 @@ import {
   mdiHelpCircleOutline, mdiLoading,
   mdiFileDocumentAlertOutline, mdiFileDocumentCheckOutline,
 } from '@mdi/js';
-import { ColumnDef, createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  createColumnHelper,
+  getCoreRowModel, getFilteredRowModel, getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
+
+import { fuzzyFilter } from '../../../core/util';
 
 import Button from '../../../components/Input/Button';
 import Input from '../../../components/Input/Input';
@@ -60,6 +67,8 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
   const dispatch = useDispatch();
+
+  const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
 
   const columns = [
     ...tempColumns,
@@ -111,6 +120,14 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
     data: files.List,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      columnFilters,
+    },
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
 
   useEffect(() => {
@@ -205,7 +222,7 @@ function UnrecognizedTab({ columns: tempColumns, show }: Props) {
 
       <div className="flex flex-col grow">
         <div className="flex">
-          <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
+          <Input disabled={manualLink} type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
           <div className={cx(['box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2 relative', manualLink && 'pointer-events-none opacity-75'])}>
             {renderOperations(selectedRows.length === 0) }
             <div className="ml-auto text-highlight-2 font-semibold">{selectedRows.length} Files Selected</div>

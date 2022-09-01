@@ -14,6 +14,8 @@ import IgnoredFilesTab from './UnrecognizedUtilityTabs/IgnoredFilesTab';
 import { useGetFileUnrecognizedQuery } from '../../core/rtkQuery/fileApi';
 import { useGetImportFoldersQuery } from '../../core/rtkQuery/importFolderApi';
 
+import { fuzzySort } from '../../core/util';
+
 import type { FileType } from '../../core/types/api/file';
 import type { ImportFolderType } from '../../core/types/api/import-folder';
 
@@ -61,6 +63,8 @@ function UnrecognizedUtility() {
       meta: {
         className: 'w-auto',
       },
+      filterFn: 'fuzzy',
+      sortingFn: fuzzySort,
     }),
     columnHelper.accessor('Size', {
       cell: info => prettyBytes(info.getValue(), { binary: true }),

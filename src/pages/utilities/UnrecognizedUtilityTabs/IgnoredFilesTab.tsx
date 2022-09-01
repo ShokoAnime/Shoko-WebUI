@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
@@ -6,7 +6,12 @@ import {
   mdiMagnify, mdiRestart,
   mdiPlusCircleOutline, mdiCloseCircleOutline,
 } from '@mdi/js';
-import { ColumnDef, getCoreRowModel, useReactTable } from '@tanstack/react-table';
+import {
+  ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel, getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
 
 import Button from '../../../components/Input/Button';
 import Input from '../../../components/Input/Input';
@@ -17,6 +22,7 @@ import {
   useGetFileIgnoredQuery,
   usePutFileIgnoreMutation,
 } from '../../../core/rtkQuery/fileApi';
+import { fuzzyFilter } from '../../../core/util';
 
 import type { FileType } from '../../../core/types/api/file';
 
@@ -31,10 +37,20 @@ function IgnoredFilesTab({ columns, show }: Props) {
 
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 
+  const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
+
   const table = useReactTable({
     data: files.List,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
+    state: {
+      columnFilters,
+    },
+    getFilteredRowModel: getFilteredRowModel(),
+    getSortedRowModel: getSortedRowModel(),
   });
   const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel()]);
 
@@ -67,7 +83,7 @@ function IgnoredFilesTab({ columns, show }: Props) {
     <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
 
       <div className="flex">
-        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value="" onChange={() => {}} />
+        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
         <div className="box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2">
           {renderOperations(selectedRows.length === 0)}
           <div className="ml-auto text-highlight-2 font-semibold">{selectedRows.length} Files Selected</div>

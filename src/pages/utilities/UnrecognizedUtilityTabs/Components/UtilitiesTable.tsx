@@ -1,5 +1,6 @@
 import React from 'react';
-import { flexRender, Table } from '@tanstack/react-table';
+import { flexRender, Row, Table } from '@tanstack/react-table';
+import { useVirtual } from 'react-virtual';
 
 import type { FileType } from '../../../../core/types/api/file';
 import type { SeriesType } from '../../../../core/types/api/series';
@@ -9,36 +10,67 @@ type Props = {
 };
 
 function UtilitiesTable({ table }: Props) {
+
+  const tableContainerRef = React.useRef<HTMLDivElement>(null);
+  const { rows } = table.getRowModel();
+  const rowVirtualizer = useVirtual({
+    parentRef: tableContainerRef,
+    size: rows.length,
+    overscan: 5,
+  });
+  const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
+
+  const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
+  const paddingBottom =
+    virtualRows.length > 0
+      ? totalSize - (virtualRows?.[virtualRows.length - 1]?.end || 0)
+      : 0;
+
   return (
-    <table className="table-fixed text-left border-separate border-spacing-0 w-full">
-      <thead className="sticky top-0">
-      {table.getHeaderGroups().map(headerGroup => (
-        <tr key={headerGroup.id} className="bg-background-nav drop-shadow-lg">
-          {headerGroup.headers.map(header => (
-            <th key={header.id} className={`${header.column.columnDef.meta?.className} py-3.5 first:rounded-tl-lg last:rounded-tr-lg`}>
-              {header.isPlaceholder
-                ? null
-                : flexRender(
-                  header.column.columnDef.header,
-                  header.getContext(),
-                )}
-            </th>
-          ))}
-        </tr>
-      ))}
-      </thead>
-      <tbody>
-      {table.getRowModel().rows.map(row => (
-        <tr key={row.id} className="bg-background-nav group">
-          {row.getVisibleCells().map(cell => (
-            <td key={cell.id} className="py-3.5 border-background-border border-t group-last:border-b group-last:first:rounded-bl-lg group-last:last:rounded-br-lg">
-              {flexRender(cell.column.columnDef.cell, cell.getContext())}
-            </td>
-          ))}
-        </tr>
-      ))}
-      </tbody>
-    </table>
+    <div className="w-full h-full grow basis-0 overflow-y-auto" ref={tableContainerRef}>
+      <table className="table-fixed text-left border-separate border-spacing-0 w-full">
+        <thead className="sticky top-0">
+        {table.getHeaderGroups().map(headerGroup => (
+          <tr key={headerGroup.id} className="bg-background-nav drop-shadow-lg">
+            {headerGroup.headers.map(header => (
+              <th key={header.id} className={`${header.column.columnDef.meta?.className} py-3.5 first:rounded-tl-lg last:rounded-tr-lg`}>
+                {header.isPlaceholder
+                  ? null
+                  : flexRender(
+                    header.column.columnDef.header,
+                    header.getContext(),
+                  )}
+              </th>
+            ))}
+          </tr>
+        ))}
+        </thead>
+        <tbody>
+        {paddingTop > 0 && (
+          <tr>
+            <td style={{ height: `${paddingTop}px` }} />
+          </tr>
+        )}
+        {virtualRows.map((virtualRow) => {
+          const row = rows[virtualRow.index] as Row<FileType | SeriesType>;
+          return (
+            <tr key={row.id} className="bg-background-nav group">
+              {row.getVisibleCells().map(cell => (
+                  <td key={cell.id} className="py-3.5 border-background-border border-t group-last:border-b group-last:first:rounded-bl-lg group-last:last:rounded-br-lg">
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+              ))}
+            </tr>
+          );
+        })}
+        {paddingBottom > 0 && (
+          <tr>
+            <td style={{ height: `${paddingBottom}px` }} />
+          </tr>
+        )}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
