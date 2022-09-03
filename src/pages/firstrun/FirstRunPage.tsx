@@ -4,10 +4,9 @@ import { Outlet } from 'react-router';
 import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
-  mdiLoading,
-  mdiCheckboxIntermediateVariant,
-  mdiCheckboxMarked,
-  mdiCheckboxBlankOutline,
+  mdiLoading, mdiCircleHalfFull,
+  mdiCheckboxBlankCircleOutline,
+  mdiCheckboxMarkedCircleOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
@@ -37,7 +36,7 @@ function FirstRunPage() {
   const renderItem = (text: string, key: string) => (
     <div key={key} className="flex items-center font-semibold mt-4 first:mt-0">
       <Icon
-        path={pathname === `/firstrun/${key}` ? mdiCheckboxIntermediateVariant : (saved[key] ? mdiCheckboxMarked : mdiCheckboxBlankOutline)}
+        path={pathname === `/webui/firstrun/${key}` ? mdiCircleHalfFull : (saved[key] ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline)}
         className="text-highlight-1 mr-7"
         size={1}
       />
