@@ -9,7 +9,7 @@ import { RootState } from '../../../../core/store';
 import Button from '../../../../components/Input/Button';
 
 import type { FileType } from '../../../../core/types/api/file';
-import { mdiFileFindOutline, mdiClipboardTextMultipleOutline } from '@mdi/js';
+import { mdiHelpCircleOutline, mdiClipboardTextMultipleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import Checkbox from '../../../../components/Input/Checkbox';
 import { markUnrecognizedFile } from '../../../../core/slices/mainpage';
@@ -53,7 +53,7 @@ function UnrecognizedTab() {
       <div className="flex my-2 justify-between">
         {avdumpList[item.ID] === undefined && (
           <Button onClick={() => runAvdump(item.ID)} className="py-1 px-2" loading={avdumpResult.isFetching}>
-            <Icon className="text-highlight-1" path={mdiFileFindOutline} size={1} horizontal vertical rotate={180}/>
+            <Icon className="text-highlight-1" path={mdiHelpCircleOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
         )}
         {avdumpList[item.ID] && (
