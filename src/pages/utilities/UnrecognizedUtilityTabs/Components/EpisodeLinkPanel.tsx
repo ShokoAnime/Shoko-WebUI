@@ -69,7 +69,7 @@ function EpisodeLinkPanel() {
     forEach(groupedLinks, (episodeLinks) => {
       forEach(episodeLinks, (link, idx) => {
         result.push(
-          <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4', idx !== 0 && 'opacity-10' ])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <div className={cx(['px-3 py-3.5', idx !== 0 && 'opacity-10'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
             <SelectList className="w-72" options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
           </div>,
         );

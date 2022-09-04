@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 import type { RootState } from '../store';
-import type { FileType, AVDumpResultType } from '../types/api/file';
+import type { FileType, FileLinkApiType, AVDumpResultType } from '../types/api/file';
 import type { ListResultType, PaginationType } from '../types/api';
 
 export const fileApi = createApi({
@@ -67,6 +67,15 @@ export const fileApi = createApi({
         method: 'POST',
       }),
     }),
+    
+    // Link multiple files to a single episode.
+    postFileLink: build.mutation<void, FileLinkApiType>({
+      query: params => ({
+        url: 'Link',
+        method: 'POST',
+        body: params,
+      }),
+    }),
   }),
 });
 
@@ -78,4 +87,5 @@ export const {
   useLazyPostFileAVDumpQuery,
   usePostFileRescanMutation,
   usePostFileRehashMutation,
+  usePostFileLinkMutation,
 } = fileApi;
