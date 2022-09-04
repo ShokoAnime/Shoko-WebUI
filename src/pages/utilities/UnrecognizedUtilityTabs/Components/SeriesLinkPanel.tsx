@@ -79,7 +79,7 @@ function SeriesLinkPanel() {
           startIcon={mdiMagnify}
         />
       </div>
-      <div className="flex mt-4 bg-background-alt border border-background-border rounded-md px-4 pb-4 overflow-y-auto grow basis-0">
+      <div className="flex mt-4 bg-background-alt border border-background-border rounded-md px-4 pb-4 overflow-y-auto grow basis-0 items-start">
         <table className="table-fixed text-left w-full">
           <thead className="sticky top-0 bg-background-alt">
           <tr className="box-border font-semibold">

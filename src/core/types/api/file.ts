@@ -76,3 +76,8 @@ export type AVDumpResultType = {
   FullOutput: string;
   Ed2k: string;
 };
+
+export type FileLinkApiType = {
+  fileIDs: Array<number>;
+  episodeID: number;
+};

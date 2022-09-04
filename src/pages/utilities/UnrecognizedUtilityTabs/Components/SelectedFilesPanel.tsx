@@ -18,7 +18,7 @@ function SelectedFilesPanel() {
       forEach(episodeLinks, (link, idx) => {
         const file = find(selectedRows, ['ID', link.FileID]);
         result.push(
-          <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'first:mt-14 mt-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
             {file?.Locations[0].RelativePath}
           </div>,
         );

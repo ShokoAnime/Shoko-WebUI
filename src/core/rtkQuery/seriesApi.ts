@@ -6,7 +6,7 @@ import type { ListResultType, PaginationType } from '../types/api';
 import { EpisodeType } from '../types/api/episode';
 
 export const seriesApi = createApi({
-  reducerPath: 'series',
+  reducerPath: 'seriesApi',
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/Series/',
     prepareHeaders: (headers, { getState }) => {

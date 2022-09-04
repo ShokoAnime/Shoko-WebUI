@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { forEach } from 'lodash';
+import { forEach, groupBy, toNumber } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 import { Icon } from '@mdi/react';
 import {
   mdiDatabaseSearchOutline, mdiDatabaseSyncOutline,
@@ -39,11 +40,17 @@ import {
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
   useLazyPostFileAVDumpQuery,
+  usePostFileLinkMutation,
 } from '../../../core/rtkQuery/fileApi';
-import { setSelectedSeries, setManualLink, setSelectedRows } from '../../../core/slices/utilities/unrecognized';
+import {
+  setSelectedSeries,
+  setManualLink,
+  setSelectedRows,
+  setLinks,
+} from '../../../core/slices/utilities/unrecognized';
 import { setItem as setAvdumpItem } from '../../../core/slices/utilities/avdump';
 
-import type { FileType } from '../../../core/types/api/file';
+import type { FileType, FileLinkApiType } from '../../../core/types/api/file';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 import type { RootState } from '../../../core/store';
 
@@ -63,8 +70,9 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
+  const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
 
-  const { manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
+  const { links, manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
   const dispatch = useDispatch();
@@ -188,9 +196,38 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   };
 
   const copyEd2kLinks = () => {
-    let links = '';
-    forEach(selectedRows, row => avdumpList[row.ID]?.hash && (links += `${avdumpList[row.ID]?.hash}\n`));
-    return links;
+    let ed2kLinks = '';
+    forEach(selectedRows, row => avdumpList[row.ID]?.hash && (ed2kLinks += `${avdumpList[row.ID]?.hash}\n`));
+    return ed2kLinks;
+  };
+
+  const groupedLinks = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
+  
+  const makeLinks = () => {
+    forEach(groupedLinks, async (fileIds, episodeID) => {
+      const payload: FileLinkApiType = {
+        episodeID: toNumber(episodeID),
+        fileIDs: [],
+      };
+      payload.episodeID = toNumber(episodeID);
+      forEach(fileIds, (link) => {
+        if (link.FileID === 0) {
+          return;
+        }
+        payload.fileIDs.push(link.FileID);
+      });
+      
+      if (payload.episodeID === 0 || payload.fileIDs.length === 0) { return; }
+      const result: any = await fileLinkEpisodesTrigger(payload);
+      //TODO figure out better type for this
+      if (!result.error) {
+        toast.success('Episode linked!');
+      }
+      
+      filesQuery.refetch();
+      dispatch(setManualLink(false));
+      dispatch(setLinks([]));
+    });
   };
 
   const renderOperations = (common = false) => {
@@ -248,12 +285,12 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
                 dispatch(setManualLink(false));
                 dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
               }} className="px-3 py-2 bg-background-alt rounded-md border !border-background-border">Cancel</Button>
-              <Button onClick={() => {}} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
+              <Button onClick={makeLinks} className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2">Save</Button>
             </TransitionDiv>
           </div>
         </div>
         <div className="flex grow basis-0 overflow-y-hidden relative mt-4">
-          <TransitionDiv className="flex mt-1 h-full basis-0 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
+          <TransitionDiv className="flex mt-1 h-full w-full basis-0 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
             <SelectedFilesPanel />
             {selectedSeries?.ID
               ? (<EpisodeLinkPanel />)
