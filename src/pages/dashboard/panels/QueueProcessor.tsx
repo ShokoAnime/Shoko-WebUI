@@ -6,9 +6,9 @@ import {
   mdiFormatListBulletedSquare,
   mdiPoundBoxOutline,
   mdiImageMultipleOutline,
-  mdiPauseBoxOutline,
-  mdiPlayBoxOutline,
-  mdiCloseBoxOutline,
+  mdiPauseCircleOutline,
+  mdiPlayCircleOutline,
+  mdiCloseCircleOutline,
 } from '@mdi/js';
 
 import { RootState } from '../../../core/store';
@@ -40,15 +40,15 @@ function QueueProcessor() {
         <div className="flex text-highlight-2">{count ?? 0}</div>
         <div className="flex items-center">
           <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Clear`)} tooltip="Clear">
-            <Icon className="text-highlight-1" path={mdiCloseBoxOutline} size={1} />
+            <Icon className="text-highlight-1" path={mdiCloseCircleOutline} size={1} />
           </Button>
           {item?.state === 18 ? (
             <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Start`)} tooltip="Resume">
-              <Icon className="text-highlight-1" path={mdiPlayBoxOutline} size={1} />
+              <Icon className="text-highlight-1" path={mdiPlayCircleOutline} size={1} />
             </Button>
           ) : (
             <Button className="mx-2" onClick={() => handleOperation!(`${names[key]}Pause`)} tooltip="Pause">
-              <Icon className="text-highlight-1" path={mdiPauseBoxOutline} size={1} />
+              <Icon className="text-highlight-1" path={mdiPauseCircleOutline} size={1} />
             </Button>
           )}
         </div>
@@ -71,11 +71,11 @@ function QueueProcessor() {
       <React.Fragment>
         {paused ? (
           <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Start')} title="Resume All">
-            <Icon path={mdiPlayBoxOutline} size={1} horizontal vertical rotate={180} />
+            <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
           </div>
         ) : (
           <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation!('Pause')} title="Pause All">
-            <Icon path={mdiPauseBoxOutline} size={1} horizontal vertical rotate={180} />
+            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
           </div>
         )}
       </React.Fragment>
