@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import Input from '../../../../components/Input/Input';
 import Button from '../../../../components/Input/Button';
 import ComboBox from '../../../../components/Input/ComboBox';
-import SelectList from '../../../../components/Input/SelectList';
+import SelectEpisodeList from '../../../../components/Input/SelectEpisodeList';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../../../core/store';
@@ -70,7 +70,7 @@ function EpisodeLinkPanel() {
       forEach(episodeLinks, (link, idx) => {
         result.push(
           <div className={cx(['px-3 py-3.5', idx !== 0 && 'opacity-10'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
-            <SelectList className="w-72" options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
+            <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
           </div>,
         );
       });
