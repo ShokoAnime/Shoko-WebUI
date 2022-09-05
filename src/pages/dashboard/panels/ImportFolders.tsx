@@ -7,6 +7,7 @@ import {
   mdiFolderPlusOutline,
 } from '@mdi/js';
 
+import toast from '../../../components/Toast';
 import Button from '../../../components/Input/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
 
@@ -21,8 +22,11 @@ function ImportFolders() {
   const [rescanTrigger] = useLazyRescanImportFolderQuery();
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-  
-  const rescanFolder = (ID: number) => rescanTrigger(ID);
+
+  const rescanFolder = (ID: number, name: string) => {
+    toast.success('Scan Import Folder Success', `Import Folder ${name} queued for scanning.`);
+    rescanTrigger(ID).catch(() => {});
+  };
   const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
   const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));
 
@@ -55,7 +59,7 @@ function ImportFolders() {
           Series: {folder.Size ?? 0} / Size: {prettyBytes(folder.FileSize ?? 0, { binary: true })}
         </div>
         <div className="mt-1 -ml-[0.313rem] flex">
-          <Button onClick={() => rescanFolder(folder.ID)} tooltip="Rescan Folder">
+          <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder">
             <Icon className="text-highlight-1" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
           </Button>
           <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">

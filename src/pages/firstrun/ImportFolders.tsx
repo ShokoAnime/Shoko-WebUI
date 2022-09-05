@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { omit } from 'lodash';
-import { toast } from 'react-toastify';
 import { Icon } from '@mdi/react';
 import {
   mdiFolderOpen, mdiSquareEditOutline,
   mdiTrashCanOutline,
 } from '@mdi/js';
 
+import toast from '../../components/Toast';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';

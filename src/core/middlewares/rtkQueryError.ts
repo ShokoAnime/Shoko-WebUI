@@ -1,5 +1,6 @@
 import { isRejectedWithValue } from '@reduxjs/toolkit';
-import { toast } from 'react-toastify';
+
+import toast from '../../components/Toast';
 
 import type { MiddlewareAPI, Middleware } from '@reduxjs/toolkit';
 

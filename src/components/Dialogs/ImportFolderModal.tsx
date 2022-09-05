@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { find } from 'lodash';
-import { toast } from 'react-toastify';
 import { mdiFolderOpen } from '@mdi/js';
 
+import toast from '../Toast';
 import { RootState } from '../../core/store';
 import Button from '../Input/Button';
 import Input from '../Input/Input';
@@ -32,10 +32,10 @@ function ImportFolderModal() {
   const dispatch = useDispatch();
 
   const { status, edit, ID } = useSelector((state: RootState) => state.modals.importFolder);
-  
+
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-  
+
   const [updateFolder, updateResult] = useUpdateImportFolderMutation();
   const [createFolder, createResult] = useCreateImportFolderMutation();
   const [deleteFolder, deleteResult] = useDeleteImportFolderMutation();

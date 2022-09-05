@@ -2,8 +2,8 @@ import {
   all, call, put, takeEvery,
 } from 'redux-saga/effects';
 import { forEach } from 'lodash';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiCommon from '../api/common';
 
 import Events from '../events';

@@ -4,8 +4,8 @@ import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiChevronUp, mdiPlayCircleOutline } from '@mdi/js';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ModalPanel from '../Panels/ModalPanel';
 import quickActions from '../../core/quick-actions';
 import { setStatus } from '../../core/slices/modals/actions';
@@ -84,19 +84,19 @@ function ActionsModal() {
   const handleClose = () => dispatch(setStatus(false));
 
   const [runActionTrigger] = useRunActionMutation();
-  
-  const runAction = async (action) => {
+
+  const runAction = async (name: string, action) => {
     //TODO: figure out better type for this
     const result: any = await runActionTrigger(action);
     if (!result.error) {
-      toast.success('Request Sent!');
+      toast.success(`Running action "${name}"`);
     }
   };
 
   const renderItem = (item: { name: string; function: string; data?:boolean; }) => (
     <div className="flex justify-between font-semibold">
       <span>{item.name}</span>
-      <span className="text-highlight-1" onClick={() => runAction(item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
+      <span className="text-highlight-1" onClick={() => runAction(item.name, item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
     </div>
   );
 
@@ -111,8 +111,8 @@ function ActionsModal() {
       </div>
     </React.Fragment>
   );
-  
-  
+
+
   const renderTabs = useMemo(() => {
     const panels: React.ReactNode[] = [];
     forEach(actions, (action) => {
@@ -120,7 +120,7 @@ function ActionsModal() {
     });
     return panels;
   }, [actions, activeTab]);
-  
+
   return (
     <ModalPanel
       sidebarSnap
