@@ -18,9 +18,9 @@ const RecentlyImported = () => {
   return (
     <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />}>
       <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{showSeries ? (
-        series.data?.map(item => <SeriesDetails series={item} />)
+        series.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
       ) : (
-        episodes.data?.map(item => <EpisodeDetails episode={item} />)
+        episodes.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
       )}</div>
     </ShokoPanel>
   );

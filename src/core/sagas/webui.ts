@@ -1,8 +1,8 @@
 import {
   call, put, select, delay,
 } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiWebUi from '../api/webui';
 
 import { RootState } from '../store';
@@ -32,13 +32,13 @@ function* downloadUpdates() {
   yield put(stopFetching('downloadUpdates'));
   if (resultJson.error) {
     const message = `Oops! Something went wrong! Submit an issue on GitHub so we can fix it. ${resultJson.message}`;
-    toast.error(message, {
+    toast.error(message, undefined, {
       autoClose: 10000,
     });
     return;
   }
 
-  toast.success('Update Successful! You will be logged out in 5 seconds. Please login again to use the WebUI.', {
+  toast.success('Update Successful! You will be logged out in 5 seconds. Please login again to use the WebUI.', undefined, {
     autoClose: 5000,
   });
   yield delay(5000);

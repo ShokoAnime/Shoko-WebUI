@@ -2,8 +2,8 @@ import { call, put, select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import jsonpatch from 'fast-json-patch';
 import { isEmpty, isEqual } from 'lodash';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import { RootState } from '../store';
 import Events from '../events';
 
@@ -78,7 +78,7 @@ function* getTraktCode() {
   if (resultJson.error) {
     toast.error(resultJson.message);
   } else {
-    toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', { autoClose: 10000 });
+    toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', undefined, { autoClose: 10000 });
     yield put(setMiscItem({ trakt: resultJson.data }));
   }
 }

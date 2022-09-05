@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach, groupBy, toNumber } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { Icon } from '@mdi/react';
 import {
   mdiDatabaseSearchOutline, mdiDatabaseSyncOutline,
@@ -20,6 +19,7 @@ import {
 } from '@tanstack/react-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
+import toast from '../../../components/Toast';
 import { fuzzyFilter } from '../../../core/util';
 
 import Button from '../../../components/Input/Button';
@@ -202,7 +202,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   };
 
   const groupedLinks = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
-  
+
   const makeLinks = () => {
     forEach(groupedLinks, async (fileIds, episodeID) => {
       const payload: FileLinkApiType = {
@@ -216,14 +216,14 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
         }
         payload.fileIDs.push(link.FileID);
       });
-      
+
       if (payload.episodeID === 0 || payload.fileIDs.length === 0) { return; }
       const result: any = await fileLinkEpisodesTrigger(payload);
       //TODO figure out better type for this
       if (!result.error) {
         toast.success('Episode linked!');
       }
-      
+
       filesQuery.refetch();
       dispatch(setManualLink(false));
       dispatch(setLinks([]));

@@ -9,7 +9,7 @@ const NextUp = () => {
 
   return (
     <ShokoPanel title="Next Up" isFetching={items.isLoading}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.data?.map(item => <EpisodeDetails episode={item} />)}</div>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)}</div>
     </ShokoPanel>
   );
 };

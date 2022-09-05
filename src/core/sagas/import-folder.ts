@@ -1,6 +1,6 @@
 import { call, put } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiCommon from '../api/common';
 import ApiSeries from '../api/v3/series';
 

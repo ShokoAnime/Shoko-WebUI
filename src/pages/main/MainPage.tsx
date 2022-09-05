@@ -39,7 +39,10 @@ function MainPage() {
           autoClose={4000}
           transition={Slide}
           bodyClassName="font-semibold font-open-sans"
-          className="mt-20"
+          className="mt-20 !w-96"
+          closeButton={false}
+          icon={false}
+          hideProgressBar={true}
         />
       )}
       <div className="flex grow h-full">

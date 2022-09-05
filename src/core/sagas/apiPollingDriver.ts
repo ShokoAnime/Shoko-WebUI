@@ -1,8 +1,8 @@
 import {
   take, cancel, fork, call, put, cancelled, delay,
 } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiInit from '../api/v3/init';
 import ApiPlex from '../api/v3/plex';
 import Events from '../events';
@@ -14,7 +14,7 @@ function* pollServerStatus() {
   while (true) {
     const resultJson = yield call(ApiInit.getStatus.bind(this));
     if (resultJson.error) {
-      toast.error(resultJson.message);
+      toast.error('API Request Failed', resultJson.message);
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
     } else {
       yield put(setServerStatus(resultJson.data));
@@ -46,7 +46,7 @@ function* pollPlexAuthentication() {
   while (true) {
     const resultJson = yield call(ApiPlex.getPlexPinAuthenticated.bind(this));
     if (resultJson.error) {
-      toast.error(resultJson.message);
+      toast.error('API Request Failed', resultJson.message);
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
     } else {
       yield put(setServerStatus(resultJson.data));

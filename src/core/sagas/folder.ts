@@ -1,8 +1,8 @@
 import { call, put, select } from 'redux-saga/effects';
 import { PayloadAction } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiFolder from '../api/v3/folder';
 
 import { RootState } from '../store';

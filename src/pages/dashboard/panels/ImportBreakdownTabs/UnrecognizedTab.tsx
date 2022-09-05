@@ -3,8 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { forEach, orderBy } from 'lodash';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { toast } from 'react-toastify';
 
+import toast from '../../../../components/Toast';
 import { RootState } from '../../../../core/store';
 import Button from '../../../../components/Input/Button';
 

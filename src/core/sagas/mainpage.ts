@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
-import { toast } from 'react-toastify';
 
+import toast from '../../components/Toast';
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
