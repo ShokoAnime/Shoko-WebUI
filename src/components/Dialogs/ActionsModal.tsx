@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiChevronUp, mdiPlayCircleOutline } from '@mdi/js';
+import { mdiChevronUp, mdiInformationOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { useDispatch, useSelector } from 'react-redux';
 
 import toast from '../../components/Toast';
@@ -77,6 +77,30 @@ const actions = {
   },
 };
 
+const RenderItem = (item: { name:string, function:string, data?:boolean, runAction:Function }) => {
+  const [showInfo, setShowInfo] = useState<boolean>(false);
+
+  return (
+    <>
+      <div className="flex justify-between font-semibold">
+        <span>{item.name}</span>
+        <div>
+          <span className="inline-block pr-2 text-highlight-1" onClick={() => setShowInfo(!showInfo)}><Icon className="cursor-pointer" path={mdiInformationOutline} size={1}></Icon></span>
+          <span className="inline-block text-highlight-1" onClick={() => item.runAction(item.name, item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
+        </div>
+      </div>
+      {showInfo &&
+        <div className="bg-background-alt border-b border-background-border shadow animate-[animate-in_.3s_ease-in-out]">
+          <div className="flex justify-start p-3">
+            <span className="flex-none pr-2"><Icon className="cursor-pointer text-highlight-1" path={mdiInformationOutline} size={1}></Icon></span>
+            <span>BAKA baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka</span>
+          </div>
+        </div>
+      }
+    </>
+  );
+};
+
 function ActionsModal() {
   const dispatch = useDispatch();
   const status = useSelector((state: RootState) => state.modals.actions.status);
@@ -93,13 +117,6 @@ function ActionsModal() {
     }
   };
 
-  const renderItem = (item: { name: string; function: string; data?:boolean; }) => (
-    <div className="flex justify-between font-semibold">
-      <span>{item.name}</span>
-      <span className="text-highlight-1" onClick={() => runAction(item.name, item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
-    </div>
-  );
-
   const renderTab = (title, items) => (
     <React.Fragment>
       <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between">
@@ -107,7 +124,7 @@ function ActionsModal() {
         <span onClick={() => { setActiveTab(title); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
       <div className={cx('flex flex-col grow w-full p-4 space-y-1', { hidden: activeTab !== title })}>
-        {items.map(item => renderItem(quickActions[item]))}
+        {items.map(item => <RenderItem {...quickActions[item]} runAction={runAction} />)}
       </div>
     </React.Fragment>
   );
