@@ -75,11 +75,13 @@ const quickActions = {
     name: 'Remove Missing Files',
     function: 'RemoveMissingFiles',
     data: true,
+    info: 'Removes entries in Shoko and MyList for files thats are no longer accessible',
   },
   'remove-missing-files': {
     name: 'Remove Missing Files (Keep in MyList)',
     function: 'RemoveMissingFiles',
     data: false,
+    info: 'Removes entries in Shoko (but keeps them in MyList) for files thats are no longer accessible',
   },
   'recreate-all-groups': {
     name: 'Recreate All Groups',

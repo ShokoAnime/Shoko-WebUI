@@ -77,7 +77,7 @@ const actions = {
   },
 };
 
-const RenderItem = (item: { name:string, function:string, data?:boolean, runAction:Function }) => {
+const RenderItem = (item: { name:string, onClick:Function, info?:string }) => {
   const [showInfo, setShowInfo] = useState<boolean>(false);
 
   return (
@@ -85,15 +85,15 @@ const RenderItem = (item: { name:string, function:string, data?:boolean, runActi
       <div className="flex justify-between font-semibold">
         <span>{item.name}</span>
         <div>
-          <span className="inline-block pr-2 text-highlight-1" onClick={() => setShowInfo(!showInfo)}><Icon className="cursor-pointer" path={mdiInformationOutline} size={1}></Icon></span>
-          <span className="inline-block text-highlight-1" onClick={() => item.runAction(item.name, item.function)}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
+          {item.info && <span className="inline-block pr-2 text-highlight-1" onClick={() => setShowInfo(!showInfo)}><Icon className="cursor-pointer" path={mdiInformationOutline} size={1}></Icon></span>}
+          <span className="inline-block text-highlight-1" onClick={() => item.onClick()}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
         </div>
       </div>
-      {showInfo &&
+      {item.info && showInfo &&
         <div className="bg-background-alt border-b border-background-border shadow animate-[animate-in_.3s_ease-in-out]">
           <div className="flex justify-start p-3">
             <span className="flex-none pr-2"><Icon className="cursor-pointer text-highlight-1" path={mdiInformationOutline} size={1}></Icon></span>
-            <span>BAKA baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka baka</span>
+            <span>{item.info}</span>
           </div>
         </div>
       }
@@ -124,7 +124,12 @@ function ActionsModal() {
         <span onClick={() => { setActiveTab(title); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
       <div className={cx('flex flex-col grow w-full p-4 space-y-1', { hidden: activeTab !== title })}>
-        {items.map(item => <RenderItem {...quickActions[item]} runAction={runAction} />)}
+        {items.map((item) => {
+          const quickAction = quickActions[item];
+          const onClick = () => runAction(quickAction.name, quickAction.function);
+
+          return (<RenderItem name={quickAction.name} info={quickAction.info} onClick={onClick} />);
+        })}
       </div>
     </React.Fragment>
   );
