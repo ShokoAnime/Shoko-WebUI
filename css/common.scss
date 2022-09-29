@@ -108,14 +108,3 @@ body {
   background-position: center;
   background-size: cover;
 }
-
-@keyframes animate-in {
-  from {
-    transform: scaleY(0);
-    opacity: 0;
-  }
-  to {
-    transform: scaleY(1);
-    opacity: 1;
-  }
-}

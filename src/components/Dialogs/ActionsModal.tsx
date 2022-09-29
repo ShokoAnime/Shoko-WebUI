@@ -12,6 +12,7 @@ import { setStatus } from '../../core/slices/modals/actions';
 import { useRunActionMutation } from '../../core/rtkQuery/actionsApi';
 
 import { RootState } from '../../core/store';
+import { Transition } from '@headlessui/react';
 
 const actions = {
   import: {
@@ -90,7 +91,7 @@ const RenderItem = (item: { name:string, onClick:Function, info?:string }) => {
         </div>
       </div>
       {item.info && showInfo &&
-        <div className="bg-background-alt border-b border-background-border shadow animate-[animate-in_.3s_ease-in-out]">
+        <div className="bg-background-alt border-b border-background-border shadow">
           <div className="flex justify-start p-3">
             <span className="flex-none pr-2"><Icon className="cursor-pointer text-highlight-1" path={mdiInformationOutline} size={1}></Icon></span>
             <span>{item.info}</span>
