@@ -14,6 +14,7 @@ import ProfileModal from '../../components/Dialogs/ProfileModal';
 import FiltersModal from '../../components/Dialogs/FiltersModal';
 import ActionsModal from '../../components/Dialogs/ActionsModal';
 import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
+import EditDashboardModal from '../../components/Dialogs/EditDashboardModal';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -52,6 +53,7 @@ function MainPage() {
         <FiltersModal />
         <ActionsModal />
         <UtilitiesModal />
+        <EditDashboardModal />
         <div className="flex">
           <Sidebar />
         </div>

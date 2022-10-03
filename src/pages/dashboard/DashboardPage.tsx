@@ -25,7 +25,7 @@ function DashboardPage() {
 
   const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.dashboard);
   const [currentLayout, setCurrentLayout] = useState(defaultLayout.dashboard);
-  const [isEditable, setIsEditable] = useState<boolean>(false);
+  const [isEditable, setIsEditable] = useState<boolean>(true);
 
   useEffect(() => {
     setCurrentLayout(layout);

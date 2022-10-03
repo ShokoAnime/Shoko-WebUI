@@ -7,6 +7,7 @@ import profileReducer from './modals/profile';
 import filtersReducer from './modals/filters';
 import actionsReducer from './modals/actions';
 import utilitiesReducer from './modals/utilities';
+import editDashboardReducer from './modals/editDashboard';
 
 export default combineReducers({
   browseFolder: browseFolderReducer,
@@ -16,4 +17,5 @@ export default combineReducers({
   filters: filtersReducer,
   actions: actionsReducer,
   utilities: utilitiesReducer,
+  editDashboard: editDashboardReducer,
 });

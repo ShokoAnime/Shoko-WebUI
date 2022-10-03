@@ -15,6 +15,7 @@ import {
   mdiHelpCircleOutline,
   mdiGithub,
   mdiLogout,
+  mdiCircleEditOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
@@ -23,6 +24,7 @@ import Events from '../../core/events';
 import { setStatus } from '../../core/slices/modals/profile';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
+import { setStatus as setEditDashboardStatus } from '../../core/slices/modals/editDashboard';
 import { default as ShokoIcon } from '../ShokoIcon';
 
 function Sidebar() {
@@ -47,13 +49,14 @@ function Sidebar() {
     );
   };
 
-  const renderMenuItem = (key: string, text: string, icon: string) => {
+  const renderMenuItem = (key: string, text: string, icon: string, additionalNav?: { icon: string, onClick: () => void }) => {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri);
     return (
       <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
+        {additionalNav && <div className="w-6 flex items-center ml-3 my-3" onClick={additionalNav.onClick}><Icon path={additionalNav.icon} size={1} horizontal vertical rotate={180}/></div>}
       </Link>
     );
   };
@@ -78,7 +81,7 @@ function Sidebar() {
         <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
       </div>
       <div className="flex flex-col justify-between mt-11 w-full">
-        {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
+        {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard, { icon: mdiCircleEditOutline, onClick: () => dispatch(setEditDashboardStatus(true)) })}
         {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
         {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(true)))}
         {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(true)))}
