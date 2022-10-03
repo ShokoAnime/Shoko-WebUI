@@ -24,8 +24,8 @@ function DashboardPage() {
   const dispatch = useDispatch();
 
   const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.dashboard);
-
   const [currentLayout, setCurrentLayout] = useState(defaultLayout.dashboard);
+  const [isEditable, setIsEditable] = useState<boolean>(false);
 
   useEffect(() => {
     setCurrentLayout(layout);
@@ -47,6 +47,9 @@ function DashboardPage() {
         lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
       }}
       rowHeight={0}
+      isDraggable={isEditable}
+      isResizable={isEditable}
+      isDroppable={isEditable}
       containerPadding={[36, 36]}
       margin={[26, 26]}
       className="w-full"
