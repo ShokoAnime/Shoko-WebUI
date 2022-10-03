@@ -19,6 +19,7 @@ function PortalAwareItem(props: Props) {
       ref={props.provided.innerRef}
       {...(props.provided.draggableProps)}
       {...(props.provided.dragHandleProps)}
+      className="group"
     >
       {props.children}
     </div>

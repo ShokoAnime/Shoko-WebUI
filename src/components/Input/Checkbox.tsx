@@ -38,7 +38,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center">
+        <span className="flex items-center mr-2">
           {label}
         </span>
       )}

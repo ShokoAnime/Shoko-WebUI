@@ -16,7 +16,7 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 // Main page
 import DashboardPage from '../../pages/dashboard/DashboardPage';
 import ImportFoldersPage from '../../pages/import-folders/ImportFoldersPage';
-import SettingsPage from '../../pages/settings/SettingsPage';
+import OldSettingsPage from '../../pages/settings/OldSettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
 import UtilitiesPage from '../../pages/utilities/UtilitiesPage';
@@ -40,6 +40,13 @@ import FilterGroupList from '../../pages/collection/FilterGroupList';
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
 import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
 import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
+
+// Settings
+import SettingsPage from '../../pages/settings/SettingsPage';
+import GeneralSettings from '../../pages/settings/tabs/GeneralSettings';
+import ImportSettings from '../../pages/settings/tabs/ImportSettings';
+import AniDBSettings from '../../pages/settings/tabs/AniDBSettings';
+import MetadataSitesSettings from '../../pages/settings/tabs/MetadataSitesSettings';
 
 type Props = {
   history: BrowserHistory;
@@ -88,7 +95,14 @@ function Router(props: Props) {
                   <Route path="group/:groupId" element={<Group />}/>
                   <Route path="filter/:filterId" element={<FilterGroupList />}/>
                 </Route>
-                <Route path="settings" element={<SettingsPage />} />
+                <Route path="oldsettings" element={<OldSettingsPage />} />
+                <Route path="settings" element={<SettingsPage />}>
+                  <Route index element={<Navigate to="general" replace />} />
+                  <Route path="general" element={<GeneralSettings />} />
+                  <Route path="import" element={<ImportSettings />} />
+                  <Route path="anidb" element={<AniDBSettings />} />
+                  <Route path="metadata-sites" element={<MetadataSitesSettings />} />
+                </Route>
                 <Route path="*" element={<NoMatchPage />} />
             </Route>
           </Route>

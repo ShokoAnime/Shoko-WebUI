@@ -1,93 +1,212 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Responsive, WidthProvider } from 'react-grid-layout';
-import { isEqual, isUndefined } from 'lodash';
-import { omitDeepBy } from '../../core/util';
+import { useSelector } from 'react-redux';
+import { Outlet } from 'react-router';
+import { Link, useOutletContext } from 'react-router-dom';
+import cx from 'classnames';
+import { isEqual } from 'lodash';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
-import { defaultLayout } from '../../core/slices/webuiSettings';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
 
-import AniDBSettings from './panels/AniDBSettings';
-import AniDBLoginSettings from './panels/AniDBLoginSettings';
-import GeneralSettings from './panels/GeneralSettings';
-import ImportSettings from './panels/ImportSettings';
-import LanguageSettings from './panels/LanguageSettings';
-import MovieDBSettings from './panels/MovieDBSettings';
-import PlexSettings from './panels/PlexSettings';
-import RelationSettings from './panels/RelationSettings';
-import TraktSettings from './panels/TraktSettings';
-import TvDBSettings from './panels/TvDBSettings';
+import Button from '../../components/Input/Button';
+import toast from '../../components/Toast';
 
-const ResponsiveGridLayout = WidthProvider(Responsive);
+import type { RootState } from '../../core/store';
+import type { SettingsType } from '../../core/types/api/settings';
+
+const items = [
+  { name: 'General', path: 'general' },
+  { name: 'Import', path: 'import' },
+  { name: 'AniDB', path: 'anidb' },
+  { name: 'Metadata Sites', path: 'metadata-sites' },
+  { name: 'Display', path: 'display' },
+  { name: 'User Management', path: 'user-management' },
+  // { name: 'Themes', path: 'themes' },
+];
+
+export const initialSettings = {
+  WebUI_Settings: {
+    actions: [
+      'remove-missing-files-mylist',
+      'update-series-stats',
+      'update-all-anidb-info',
+      'update-all-tvdb-info',
+      'plex-sync-all',
+      'run-import',
+    ],
+    notifications: true,
+    settingsRevision: 0,
+    theme: '',
+    toastPosition: 'bottom-right',
+    updateChannel: 'stable',
+  },
+  FirstRun: false,
+  Database: {
+    MySqliteDirectory: '',
+    DatabaseBackupDirectory: '',
+    Type: 'SQLite',
+    Username: '',
+    Password: '',
+    Schema: '',
+    Hostname: '',
+    SQLite_DatabaseFile: '',
+  },
+  AniDb: {
+    Username: '',
+    Password: '',
+    AVDumpKey: '',
+    ClientPort: 4556,
+    AVDumpClientPort: 4557,
+    DownloadCharacters: false,
+    DownloadCreators: false,
+    DownloadRelatedAnime: false,
+    MaxRelationDepth: 0,
+    MyList_AddFiles: false,
+    MyList_DeleteType: 0,
+    MyList_ReadUnwatched: false,
+    MyList_ReadWatched: false,
+    MyList_SetUnwatched: false,
+    MyList_SetWatched: false,
+    MyList_StorageState: 0,
+    Calendar_UpdateFrequency: 1,
+    Anime_UpdateFrequency: 1,
+    MyList_UpdateFrequency: 1,
+    MyListStats_UpdateFrequency: 1,
+    File_UpdateFrequency: 1,
+  },
+  TvDB: {
+    AutoLink: false,
+    AutoFanart: false,
+    AutoFanartAmount: 0,
+    AutoWideBanners: false,
+    AutoWideBannersAmount: 0,
+    AutoPosters: false,
+    AutoPostersAmount: 0,
+    UpdateFrequency: 1,
+    Language: 'en',
+  },
+  MovieDb: {
+    AutoFanart: false,
+    AutoFanartAmount: 0,
+    AutoPosters: false,
+    AutoPostersAmount: 0,
+  },
+  TraktTv: {
+    Enabled: false,
+    TokenExpirationDate: '',
+    UpdateFrequency: 1,
+    SyncFrequency: 1,
+  },
+  Plex: {
+    Server: '',
+    Libraries: [],
+    Token: '',
+  },
+  LogRotator: {
+    Enabled: false,
+    Zip: false,
+    Delete: false,
+    Delete_Days: '0',
+  },
+  GA_OptOutPlzDont: false,
+  AutoGroupSeries: false,
+  AutoGroupSeriesUseScoreAlgorithm: false,
+  AutoGroupSeriesRelationExclusions: '',
+  LanguagePreference: ['x-jat', 'en'],
+  LanguageUseSynonyms: false,
+  Import: {
+    MoveOnImport: false,
+    RenameOnImport: false,
+    RenameThenMove: false,
+    RunOnStart: false,
+    UseExistingFileWatchedStatus: false,
+    VideoExtensions: [],
+  },
+} as SettingsType;
+
+type ContextType = {
+  fetching: boolean
+  newSettings: SettingsType;
+  setNewSettings: (settings: SettingsType) => {};
+  updateSetting: (type: string, key: string, value: string) => {};
+};
 
 function SettingsPage() {
-  const dispatch = useDispatch();
+  const pathname = useSelector((state: RootState) => state.router.location.pathname);
 
-  const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.settings);
+  const settingsQuery = useGetSettingsQuery();
+  const settings = settingsQuery?.data ?? initialSettings;
+  const [patchSettings] = usePatchSettingsMutation();
 
-  const [currentLayout, setCurrentLayout] = useState(defaultLayout.settings);
-
-  const checkWebUIUpdate = () => dispatch({ type: Events.WEBUI_CHECK_UPDATES });
+  const [newSettings, setNewSettings] = useState(initialSettings);
 
   useEffect(() => {
-    setCurrentLayout(layout);
-    checkWebUIUpdate();
-  }, []);
+    setNewSettings(settings);
+  }, [settings]);
 
-  const handleOnLayoutChange = (newLayout: ReactGridLayout.Layouts) => {
-    if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
-      dispatch({
-        type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-        payload: { settings: newLayout },
+  useEffect(() => {
+    if (isEqual(settings, newSettings))
+      toast.dismiss('unsaved');
+    else if (!isEqual(newSettings, initialSettings)) {
+      toast.info('', 'You have unsaved changes!', {
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        toastId: 'unsaved',
       });
+    }
+  }, [newSettings]);
+
+  const updateSetting = (type: string, key: string, value: string) => {
+    const tempSettings = { ...(newSettings[type]), [key]: value };
+    setNewSettings({ ...newSettings, [type]: tempSettings });
+  };
+
+  const saveSettings = async () => {
+    await patchSettings({ oldSettings: settings, newSettings });
+    settingsQuery.refetch();
+  };
+
+  const renderItem = (name: string, path: string) => (
+    <Link to={path} className={cx('font-semibold mb-2', pathname === `/webui/settings/${path}` && 'text-highlight-1')} key={path}>{name}</Link>
+  );
+
+  const getBgClassNames = () => {
+    switch (pathname.split('/').pop()) {
+      case 'general': return 'bg-general-settings bg-[center_right_-18rem]';
+      case 'import': return 'bg-import-settings bg-right';
+      case 'anidb': return 'bg-anidb-settings bg-[center_right_-26rem]';
+      case 'metadata-sites': return 'bg-metadata-sites-settings bg-[center_right_-14rem]';
+      default: return '';
     }
   };
 
   return (
-    <ResponsiveGridLayout
-      layouts={currentLayout}
-      cols={{
-        lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
-      }}
-      rowHeight={0}
-      containerPadding={[30, 30]}
-      margin={[25, 25]}
-      className="w-full"
-      onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
-    >
-      <div key="general">
-        <GeneralSettings />
+    <div className="flex">
+      <div className="flex flex-col w-72 bg-background-nav h-screen border-x-2 border-background-border p-9">
+        {items.map(item => renderItem(item.name, item.path))}
       </div>
-      <div key="anidb">
-        <AniDBSettings />
+      <div className={`grow h-screen p-9 bg-cover overflow-y-auto ${getBgClassNames()}`}>
+        <div className="flex flex-col w-2/5">
+          <Outlet
+            context={{
+              fetching: settingsQuery.isLoading,
+              newSettings,
+              setNewSettings,
+              updateSetting,
+            }}
+          />
+        </div>
+        <div className="flex w-2/5 mt-10 justify-end">
+          <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
+          <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+        </div>
       </div>
-      <div key="relation">
-        <RelationSettings />
-      </div>
-      <div key="tvdb">
-        <TvDBSettings />
-      </div>
-      <div key="moviedb">
-        <MovieDBSettings />
-      </div>
-      <div key="anidb-login">
-        <AniDBLoginSettings />
-      </div>
-      <div key="plex">
-        <PlexSettings />
-      </div>
-      <div key="trakt">
-        <TraktSettings />
-      </div>
-      <div key="language">
-        <LanguageSettings />
-      </div>
-      <div key="import">
-        <ImportSettings />
-      </div>
-    </ResponsiveGridLayout>
+    </div>
   );
+}
+
+export function useSettingsContext() {
+  return useOutletContext<ContextType>();
 }
 
 export default SettingsPage;

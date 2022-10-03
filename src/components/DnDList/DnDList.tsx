@@ -20,6 +20,7 @@ function DnDList(props: Props) {
           <div
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
+            className="flex-grow"
           >
             {children.map((child, index) => (
               <Draggable

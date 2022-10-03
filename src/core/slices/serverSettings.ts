@@ -84,6 +84,7 @@ export const initialState = {
     RenameThenMove: false,
     RunOnStart: false,
     UseExistingFileWatchedStatus: false,
+    VideoExtensions: [],
   },
 } as SettingsServerType;
 
