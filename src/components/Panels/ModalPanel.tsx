@@ -22,7 +22,7 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName={cx('modal-overlay fixed inset-0 flex items-center pointer-events-auto', props.sidebarSnap ? 'justify-start ml-62.5' : 'justify-end')}
-      className={`${className} bg-background-nav flex h-full min-w-[25rem]`}
+      className={`${className} bg-background-nav flex h-full w-96`}
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}
       onAfterOpen={onAfterOpen}
