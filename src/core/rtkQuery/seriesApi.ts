@@ -29,7 +29,7 @@ export const seriesApi = createApi({
 
     // Search the title dump for the given query or directly using the anidb id.
     getSeriesAniDBSearch: build.query<Array<SeriesAniDBSearchResult>, { query: string } & PaginationType>({
-      query: params => ({ url: `AniDB/Search/${params.query}`, params }),
+      query: ({ query, ...params }) => ({ url: `AniDB/Search/${encodeURIComponent(query)}`, params }),
       transformResponse: (response: any) => response.List,
     }),
     
