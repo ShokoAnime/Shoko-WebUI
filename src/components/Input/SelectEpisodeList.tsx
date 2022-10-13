@@ -131,7 +131,9 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
                 </Button>
               </div>
               <div className="bg-background-border mx-3 my-4 h-0.5 flex-shrink-0" />
+              <div className="max-h-96 overflow-y-auto">
               {options.map(item => (<SelectOption key={`listbox-item-${item.value}`} {...item} />))}
+              </div>
             </Listbox.Options>,
             portalEl,
           )}
