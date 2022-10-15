@@ -8,7 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast from '../../components/Toast';
 import ModalPanel from '../Panels/ModalPanel';
 import quickActions from '../../core/quick-actions';
-import { setStatus } from '../../core/slices/modals/actions';
+import { setStatus} from '../../core/slices/modals/actions';
+import { setStatus as setUtilitiesModalStatus } from '../../core/slices/modals/utilities';
 import { useRunActionMutation } from '../../core/rtkQuery/actionsApi';
 
 import { RootState } from '../../core/store';
@@ -106,6 +107,7 @@ function ActionsModal() {
   const status = useSelector((state: RootState) => state.modals.actions.status);
   const [activeTab, setActiveTab] = useState('Import');
   const handleClose = () => dispatch(setStatus(false));
+  const closeOtherModals = () => dispatch(setUtilitiesModalStatus(false));
 
   const [runActionTrigger] = useRunActionMutation();
 
@@ -149,6 +151,7 @@ function ActionsModal() {
       show={status}
       className="pb-6"
       onRequestClose={() => handleClose()}
+      onAfterOpen={() => closeOtherModals()}
     >
       <div className="flex flex-col w-full border-l border-background-border drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
         <div className="flex flex-col items-center justify-start bg-color-nav">
