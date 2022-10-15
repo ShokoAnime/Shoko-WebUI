@@ -308,7 +308,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
 
       <div className={cx('flex mt-4 space-x-4 transition-[height]', manualLink ? 'h-48' : 'h-[19.6rem]')}>
         <SelectedFileInfo fullWidth={manualLink} />
-        {!manualLink && <AniDBSeriesLinkPanel initialQuery={selectedRows[0]?.Locations[0].RelativePath.split(/\/|\\/g).pop() ?? ''} />}
+        {!manualLink && <AniDBSeriesLinkPanel initialQuery={selectedRows[0]?.Locations?.[0].RelativePath.split(/\/|\\/g).pop() ?? ''} />}
       </div>
 
     </TransitionDiv>

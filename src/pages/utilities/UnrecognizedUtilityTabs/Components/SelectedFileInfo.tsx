@@ -65,15 +65,15 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
     if (selectedRows.length === 0) return;
     const selectedFileInfo = selectedRows[selectedFile - 1];
 
-    const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
-    const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
+    const importFolderId = selectedFileInfo.Locations?.[0].ImportFolderID ?? -1;
+    const importFolder = importFolderId === -1 ? '' : find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
       <TransitionDiv className="flex grow w-full absolute" show={!fullWidth && selectedRows.length !== 0}>
         <div className="flex flex-col w-2/3 break-all">
           <div className="flex flex-col">
             <div className="font-semibold mb-1">Filename</div>
-            {selectedFileInfo.Locations[0].RelativePath}
+            {selectedFileInfo.Locations?.[0].RelativePath ?? ''}
           </div>
 
           <div className="flex flex-col mt-4">
@@ -121,15 +121,15 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
     if (selectedRows.length === 0) return;
     const selectedFileInfo = selectedRows[selectedFile - 1];
 
-    const importFolderId = selectedFileInfo.Locations[0].ImportFolderID;
-    const importFolder = find(importFolders, { ID: importFolderId })?.Path ?? '';
+    const importFolderId = selectedFileInfo.Locations?.[0].ImportFolderID ?? -1;
+    const importFolder = importFolderId === -1 ? '' : find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
       <TransitionDiv className="flex flex-col grow w-full absolute" show={fullWidth && selectedRows.length !== 0}>
         <div className="flex break-all">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Filename</div>
-            {selectedFileInfo.Locations[0].RelativePath}
+            {selectedFileInfo.Locations?.[0].RelativePath ?? ''}
           </div>
 
           <div className="flex flex-col w-1/5">
