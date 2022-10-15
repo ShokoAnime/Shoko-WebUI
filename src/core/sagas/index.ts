@@ -10,7 +10,6 @@ import Events from '../events';
 
 import SagaAuth from './auth';
 import SagaFolder from './folder';
-import SagaImportFolder from './import-folder';
 import SagaInit from './init';
 import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
@@ -58,7 +57,6 @@ export default function* rootSaga() {
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
     // MAINPAGE
-    takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     // SERVER
