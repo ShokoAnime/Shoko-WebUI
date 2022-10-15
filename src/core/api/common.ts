@@ -69,10 +69,6 @@ function postLogRotate(params: {}) {
   return Api.call({ action: '/log/rotate', method: 'POST', params });
 }
 
-function getSerieInfobyfolder(data: string) {
-  return Api.call({ action: '/serie/infobyfolder', query: data });
-}
-
 function getTraktCode() {
   return Api.call({ action: '/trakt/code' });
 }
@@ -94,6 +90,5 @@ export default {
   getLogRotate,
   postLogRotate,
   getVersion,
-  getSerieInfobyfolder,
   getTraktCode,
 };

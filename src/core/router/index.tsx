@@ -15,7 +15,6 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 
 // Main page
 import DashboardPage from '../../pages/dashboard/DashboardPage';
-import ImportFoldersPage from '../../pages/import-folders/ImportFoldersPage';
 import OldSettingsPage from '../../pages/settings/OldSettingsPage';
 import LogsPage from '../../pages/logs/LogsPage';
 import NoMatchPage from '../../pages/nomatch';
@@ -82,7 +81,6 @@ function Router(props: Props) {
             <Route element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}>
                 <Route index element={<Navigate to="dashboard" />} />
                 <Route path="dashboard" element={<DashboardPage />} />
-                <Route path="import-folders" element={<ImportFoldersPage />} />
                 <Route path="utilities" element={<UtilitiesPage />}>
                   <Route index element={<Navigate to="unrecognized" replace />} />
                   <Route path="unrecognized" element={<UnrecognizedUtility />} />
