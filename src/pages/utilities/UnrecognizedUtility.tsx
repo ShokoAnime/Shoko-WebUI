@@ -47,15 +47,15 @@ function UnrecognizedUtility() {
         className: 'w-20',
       },
     }),
-    columnHelper.accessor(row => row.Locations[0].ImportFolderID, {
+    columnHelper.accessor(row => row.Locations?.[0].ImportFolderID ?? -1, {
       header: 'Import Folder',
       id: 'importfolder',
-      cell: info => (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
+      cell: info => info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
       meta: {
         className: 'w-52',
       },
     }),
-    columnHelper.accessor(row => row.Locations[0].RelativePath, {
+    columnHelper.accessor(row => row.Locations?.[0].RelativePath ?? '', {
       header: 'Filename',
       id: 'filename',
       cell: info => info.getValue(),

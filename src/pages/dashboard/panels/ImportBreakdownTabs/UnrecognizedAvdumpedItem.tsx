@@ -19,7 +19,7 @@ function UnrecognizedAvdumpedItem(props: Props) {
           <span className="mx-2">|</span>
           <span className={cx({ 'font-semibold': activeTab === 'ed2k', 'text-highlight-1': activeTab === 'ed2k' })} onClick={() => { setActiveTab('ed2k');}}>ED2KHash</span>
       </div>
-      {activeTab === 'date' && <span className="flex break-words">{item.Locations[0].RelativePath}</span>}
+      {activeTab === 'date' && <span className="flex break-words">{item.Locations?.[0].RelativePath ?? ''}</span>}
       {activeTab === 'ed2k' && <span className="flex break-words">{hash}</span>}
   </div>);
 }
