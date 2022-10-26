@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import toast from '../../components/Toast';
 import ModalPanel from '../Panels/ModalPanel';
 import quickActions from '../../core/quick-actions';
-import { setStatus} from '../../core/slices/modals/actions';
+import { setStatus } from '../../core/slices/modals/actions';
 import { setStatus as setUtilitiesModalStatus } from '../../core/slices/modals/utilities';
 import { useRunActionMutation } from '../../core/rtkQuery/actionsApi';
 
