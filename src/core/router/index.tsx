@@ -65,6 +65,7 @@ function Router(props: Props) {
         <Routes>
           <Route index element={<Navigate to="/webui" replace />} />
           <Route path="/webui">
+            <Route path="index.html" element={<Navigate to="/webui" replace />} />
             <Route path="login" element={<LoginPage />} />
             <Route path="error" element={<ErrorPage />} />
             <Route path="firstrun" element={<FirstRunPage />}>
