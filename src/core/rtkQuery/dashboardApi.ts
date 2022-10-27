@@ -15,9 +15,7 @@ export const dashboardApi = createApi({
       return headers;
     },
   }),
-  // refetchOnReconnect: true,
-  // refetchOnFocus: true,
-  refetchOnMountOrArgChange: true,
+  refetchOnMountOrArgChange: true, // Refresh stats on component mount/page refresh (I think it works correctly)
   endpoints: build => ({
 
     // Get the counters of various collection stats
