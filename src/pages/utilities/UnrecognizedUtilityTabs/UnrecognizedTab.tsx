@@ -79,6 +79,17 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
 
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
 
+  const allowEd2kCopy = useMemo(() => {
+    let notFound = false;
+    forEach(selectedRows, (row) => {
+      if (!avdumpList[row.ID]?.hash) {
+        notFound = true;
+        return false;
+      }
+    });
+    return !notFound;
+  }, [selectedRows]);
+
   useEffect(() => {
     if (show) setFilesCount(files.Total);
   }, [show, files.Total]);
@@ -276,7 +287,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
                 <Button
                   onClick={() => {}}
                   className="px-3 py-2 bg-highlight-1 rounded-md border !border-background-border ml-2"
-                  disabled={selectedRows.length === 0}
+                  disabled={selectedRows.length === 0 || !allowEd2kCopy}
                 >Copy ED2K Links</Button>
               </CopyToClipboard>
             </TransitionDiv>
