@@ -29,6 +29,7 @@ import { fileApi } from './rtkQuery/fileApi';
 import { actionsApi } from './rtkQuery/actionsApi';
 import { episodeApi } from './rtkQuery/episodeApi';
 import { settingsApi } from './rtkQuery/settingsApi';
+import { userApi } from './rtkQuery/userApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -57,6 +58,7 @@ const reducers = {
   [actionsApi.reducerPath]: actionsApi.reducer,
   [episodeApi.reducerPath]: episodeApi.reducer,
   [settingsApi.reducerPath]: settingsApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
 };
 
 export type Reducers = typeof reducers;

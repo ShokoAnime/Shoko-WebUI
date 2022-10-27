@@ -1,11 +1,11 @@
 import React from 'react';
+import cx from 'classnames';
 
 import { useSettingsContext } from '../SettingsPage';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Checkbox from '../../../components/Input/Checkbox';
 import InputSmall from '../../../components/Input/InputSmall';
-import cx from 'classnames';
 import SelectSmall from '../../../components/Input/SelectSmall';
 
 const tvdbLanguages = [

@@ -46,6 +46,7 @@ import GeneralSettings from '../../pages/settings/tabs/GeneralSettings';
 import ImportSettings from '../../pages/settings/tabs/ImportSettings';
 import AniDBSettings from '../../pages/settings/tabs/AniDBSettings';
 import MetadataSitesSettings from '../../pages/settings/tabs/MetadataSitesSettings';
+import UserManagementSettings from '../../pages/settings/tabs/UserManagementSettings';
 
 type Props = {
   history: BrowserHistory;
@@ -101,6 +102,7 @@ function Router(props: Props) {
                   <Route path="import" element={<ImportSettings />} />
                   <Route path="anidb" element={<AniDBSettings />} />
                   <Route path="metadata-sites" element={<MetadataSitesSettings />} />
+                  <Route path="user-management" element={<UserManagementSettings />} />
                 </Route>
                 <Route path="*" element={<NoMatchPage />} />
             </Route>
