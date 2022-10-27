@@ -69,10 +69,6 @@ function postLogRotate(params: {}) {
   return Api.call({ action: '/log/rotate', method: 'POST', params });
 }
 
-function getTraktCode() {
-  return Api.call({ action: '/trakt/code' });
-}
-
 export default {
   getLogDelta,
   getQueue,
@@ -90,5 +86,4 @@ export default {
   getLogRotate,
   postLogRotate,
   getVersion,
-  getTraktCode,
 };

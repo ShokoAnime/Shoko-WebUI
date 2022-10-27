@@ -8,7 +8,6 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 
-import GeneralSettings from './panels/GeneralSettings';
 import PlexSettings from './panels/PlexSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -20,11 +19,8 @@ function OldSettingsPage() {
 
   const [currentLayout, setCurrentLayout] = useState(defaultLayout.settings);
 
-  const checkWebUIUpdate = () => dispatch({ type: Events.WEBUI_CHECK_UPDATES });
-
   useEffect(() => {
     setCurrentLayout(layout);
-    checkWebUIUpdate();
   }, []);
 
   const handleOnLayoutChange = (newLayout: ReactGridLayout.Layouts) => {
@@ -48,9 +44,6 @@ function OldSettingsPage() {
       className="w-full"
       onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
     >
-      <div key="general">
-        <GeneralSettings />
-      </div>
       <div key="plex">
         <PlexSettings />
       </div>

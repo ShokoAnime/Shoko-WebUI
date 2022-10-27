@@ -15,6 +15,8 @@ import FiltersModal from '../../components/Dialogs/FiltersModal';
 import ActionsModal from '../../components/Dialogs/ActionsModal';
 import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
 
+import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+
 function MainPage() {
   const dispatch = useDispatch();
 
@@ -25,8 +27,9 @@ function MainPage() {
     (state: RootState) => state.webuiSettings.webui_v2.notifications,
   );
 
+  useGetSettingsQuery();
+
   useEffect(() => {
-    dispatch({ type: Events.SETTINGS_GET_SERVER });
     dispatch({ type: Events.MAINPAGE_LOAD });
     dispatch({ type: Events.MAINPAGE_QUEUE_STATUS });
   }, []);
