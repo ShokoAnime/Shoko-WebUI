@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
@@ -12,7 +12,7 @@ import {
   mdiTools,
   mdiMagnify,
   mdiHelpCircleOutline,
-  mdiGithub,
+  mdiGithub, mdiDownloadCircleOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
@@ -22,6 +22,13 @@ import { setStatus as setActionsStatus } from '../../core/slices/modals/actions'
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { default as ShokoIcon } from '../ShokoIcon';
 
+import { useGetWebuiLatestMutation, useGetWebuiUpdateMutation } from '../../core/rtkQuery/webuiApi';
+import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+import { initialSettings } from '../../pages/settings/SettingsPage';
+
+import Version from '../../../public/version.json';
+import toast from '../Toast';
+
 function Sidebar() {
   const dispatch = useDispatch();
 
@@ -29,8 +36,19 @@ function Sidebar() {
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
 
+  const settingsQuery = useGetSettingsQuery();
+  const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
+
+  const [checkWebuiUpdateTrigger] = useGetWebuiLatestMutation();
+  const [webuiUpdateTrigger] = useGetWebuiUpdateMutation();
+
+  const [webuiUpdateAvailable, setWebuiUpdateAvailable] = useState(false);
+
   useEffect(() => {
     dispatch(setStatus(false));
+    checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
+      setWebuiUpdateAvailable(!Version.debug && result.version !== Version.package);
+    }, reason => console.error(reason));
   }, []);
 
   const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void) => {
@@ -88,6 +106,28 @@ function Sidebar() {
         {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(true)))}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+        <div className="flex flex-col mt-10 px-7">
+          {/*<div className="flex items-center font-semibold cursor-pointer">*/}
+          {/*  <Icon path={mdiDownloadCircleOutline} size={1} className="text-highlight-2"/>*/}
+          {/*  <div className="flex flex-col ml-3">*/}
+          {/*    <span>Server</span>Update Available*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+          {webuiUpdateAvailable && (
+            <div className="flex items-center font-semibold cursor-pointer mt-5" onClick={() => webuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then(() => toast.success('Update Successful!', 'Please close this and open another tab to use the Web UI', { autoClose: 5000 }))}>
+              <Icon path={mdiDownloadCircleOutline} size={1} className="text-highlight-2"/>
+              <div className="flex flex-col ml-3">
+                <span>Web UI</span>Update Available
+              </div>
+            </div>
+          )}
+          {/*<div className="flex items-center font-semibold cursor-pointer mt-5">*/}
+          {/*  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>*/}
+          {/*  <div className="flex flex-col ml-3">*/}
+          {/*    <span>AniDB</span>Ban Detected!*/}
+          {/*  </div>*/}
+          {/*</div>*/}
+        </div>
       </div>
       <div className="flex justify-between w-full self-end px-6 mt-auto py-6">
         {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}

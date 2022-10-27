@@ -14,7 +14,7 @@ export const traktApi = createApi({
     },
   }),
   endpoints: build => ({
-    // Gety Trakt code and url.
+    // Get Trakt code and url.
     getTraktCode: build.query<TraktCodeType, void>({
       query: () => ({ url: 'code' }),
     }),
