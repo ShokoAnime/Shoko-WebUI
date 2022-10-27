@@ -241,7 +241,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
     return (
       <>
         <TransitionDiv className="flex grow absolute" show={common}>
-          {renderButton(() => filesQuery.refetch(), mdiRestart, 'Refresh')}
+          {renderButton(() => { filesQuery.refetch(); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
           {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
           {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
           {renderButton(() => avdumpFiles(), mdiDumpTruck, 'AVDump All')}
