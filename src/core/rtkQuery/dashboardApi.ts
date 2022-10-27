@@ -15,6 +15,9 @@ export const dashboardApi = createApi({
       return headers;
     },
   }),
+  // refetchOnReconnect: true,
+  // refetchOnFocus: true,
+  refetchOnMountOrArgChange: true,
   endpoints: build => ({
 
     // Get the counters of various collection stats

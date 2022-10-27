@@ -8,16 +8,8 @@ import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 
-import AniDBSettings from './panels/AniDBSettings';
-import AniDBLoginSettings from './panels/AniDBLoginSettings';
 import GeneralSettings from './panels/GeneralSettings';
-import ImportSettings from './panels/ImportSettings';
-import LanguageSettings from './panels/LanguageSettings';
-import MovieDBSettings from './panels/MovieDBSettings';
 import PlexSettings from './panels/PlexSettings';
-import RelationSettings from './panels/RelationSettings';
-import TraktSettings from './panels/TraktSettings';
-import TvDBSettings from './panels/TvDBSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -59,32 +51,8 @@ function OldSettingsPage() {
       <div key="general">
         <GeneralSettings />
       </div>
-      <div key="anidb">
-        <AniDBSettings />
-      </div>
-      <div key="relation">
-        <RelationSettings />
-      </div>
-      <div key="tvdb">
-        <TvDBSettings />
-      </div>
-      <div key="moviedb">
-        <MovieDBSettings />
-      </div>
-      <div key="anidb-login">
-        <AniDBLoginSettings />
-      </div>
       <div key="plex">
         <PlexSettings />
-      </div>
-      <div key="trakt">
-        <TraktSettings />
-      </div>
-      <div key="language">
-        <LanguageSettings />
-      </div>
-      <div key="import">
-        <ImportSettings />
       </div>
     </ResponsiveGridLayout>
   );
