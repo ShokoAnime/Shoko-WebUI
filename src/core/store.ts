@@ -20,6 +20,7 @@ import { seriesApi } from './rtkQuery/seriesApi';
 import { fileApi } from './rtkQuery/fileApi';
 import { settingsApi } from './rtkQuery/settingsApi';
 import { userApi } from './rtkQuery/userApi';
+import { traktApi } from './rtkQuery/traktApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -49,6 +50,7 @@ const middleware = [
   fileApi.middleware,
   settingsApi.middleware,
   userApi.middleware,
+  traktApi.middleware,
 ];
 
 const store = configureStore({

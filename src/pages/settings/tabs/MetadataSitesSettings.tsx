@@ -1,5 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
+import moment from 'moment/moment';
 
 import { useSettingsContext } from '../SettingsPage';
 
@@ -7,6 +8,10 @@ import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Checkbox from '../../../components/Input/Checkbox';
 import InputSmall from '../../../components/Input/InputSmall';
 import SelectSmall from '../../../components/Input/SelectSmall';
+import Button from '../../../components/Input/Button';
+
+import { useLazyGetTraktCodeQuery } from '../../../core/rtkQuery/traktApi';
+import toast from '../../../components/Toast';
 
 const tvdbLanguages = [
   ['en', 'English'],
@@ -39,8 +44,9 @@ function MetadataSitesSettings() {
     fetching, newSettings, updateSetting,
   } = useSettingsContext();
 
+  const { MovieDb, TvDB, TraktTv } = newSettings;
 
-  const { MovieDb, TvDB } = newSettings;
+  const [traktCodeTrigger, traktCodeResult] = useLazyGetTraktCodeQuery();
 
   return (
     <>
@@ -93,6 +99,56 @@ function MetadataSitesSettings() {
           Max Wide Banners
           <InputSmall id="max-tvdb-baners" value={TvDB.AutoWideBannersAmount} type="text" onChange={event => updateSetting('TvDB', 'AutoWideBannersAmount', event.target.value)} className="w-10 px-2 py-0.5" />
         </div>
+      </ShokoPanel>
+
+      <ShokoPanel title="Trakt Options" isFetching={fetching} className="mt-8">
+        <Checkbox justify label="Enabled" id="trakt-enabled" isChecked={TraktTv.Enabled} onChange={event => updateSetting('TraktTv', 'Enabled', event.target.checked)} />
+        {TraktTv.TokenExpirationDate === '' && traktCodeResult?.data?.usercode && (
+          <div className={cx('flex justify-between items-center mt-2', !TraktTv.Enabled && 'pointer-events-none opacity-50')}>
+            <div className="flex">
+              Trakt Code:<span className="font-bold ml-1">{traktCodeResult?.data?.usercode}</span>
+            </div>
+            <a href={traktCodeResult?.data?.url} rel="noopener noreferrer" target="_blank" className="text-highlight-2 hover:underline">Click here to activate</a>
+          </div>
+        )}
+        {TraktTv.TokenExpirationDate === '' && !traktCodeResult?.data?.usercode && (
+          <div className={cx('flex justify-between items-center mt-2', !TraktTv.Enabled && 'pointer-events-none opacity-50')}>
+            Trakt Code
+            <Button
+              onClick={() => traktCodeTrigger().then(() => toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', undefined, { autoClose: 10000 }), () => {})}
+              className="bg-highlight-1 px-2 py-1"
+            >
+              {traktCodeResult.isFetching ? 'Requesting...' : 'Get Code'}
+            </Button>
+          </div>
+        )}
+        {TraktTv.TokenExpirationDate !== '' && (
+          <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-50')}>
+            <div className="flex justify-between mt-2"><span>Token valid until</span>{moment(TraktTv.TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</div>
+            <div className="flex justify-between items-center mt-2">
+              <span>Automatically Update Data</span>
+              <SelectSmall id="update-trakt-data" value={TraktTv.UpdateFrequency} onChange={event => updateSetting('TraktTv', 'UpdateFrequency', event.target.value)}>
+                <option value={1}>Never</option>
+                <option value={2}>Every 6 Hours</option>
+                <option value={3}>Every 12 Hours</option>
+                <option value={4}>Every 24 Hours</option>
+                <option value={5}>Once a Week</option>
+                <option value={6}>Once a Month</option>
+              </SelectSmall>
+            </div>
+            <div className="flex justify-between items-center mt-2">
+              <span>Sync Frequency</span>
+              <SelectSmall id="sync-trakt-data" value={TraktTv.SyncFrequency} onChange={event => updateSetting('TraktTv', 'SyncFrequency', event.target.value)}>
+                <option value={1}>Never</option>
+                <option value={2}>Every 6 Hours</option>
+                <option value={3}>Every 12 Hours</option>
+                <option value={4}>Every 24 Hours</option>
+                <option value={5}>Once a Week</option>
+                <option value={6}>Once a Month</option>
+              </SelectSmall>
+            </div>
+          </div>
+        )}
       </ShokoPanel>
     </>
   );
