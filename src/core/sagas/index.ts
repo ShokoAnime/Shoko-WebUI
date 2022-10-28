@@ -10,11 +10,9 @@ import Events from '../events';
 
 import SagaAuth from './auth';
 import SagaFolder from './folder';
-import SagaImportFolder from './import-folder';
 import SagaInit from './init';
 import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
-import SagaWebUi from './webui';
 
 import { version as jmmVersionAction } from '../slices/jmmVersion';
 import apiPollingDriver from './apiPollingDriver';
@@ -58,24 +56,16 @@ export default function* rootSaga() {
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
     // MAINPAGE
-    takeEvery(Events.MAINPAGE_IMPORT_FOLDER_SERIES, SagaImportFolder.getImportFolderSeries),
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     // SERVER
     takeEvery(Events.SERVER_VERSION, serverVersion),
     // SETTINGS
-    takeEvery(Events.SETTINGS_ANIDB_TEST, SagaSettings.aniDBTest),
     takeEvery(Events.SETTINGS_CHECK_PLEX_AUTHENTICATED, SagaSettings.getPlexAuthenticated),
     takeEvery(Events.SETTINGS_GET_SERVER, SagaSettings.getSettings),
-    takeEvery(Events.SETTINGS_GET_TRAKT_CODE, SagaSettings.getTraktCode),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),
     takeEvery(Events.SETTINGS_SAVE_SERVER, SagaSettings.saveSettings),
-    takeEvery(Events.SETTINGS_SAVE_WEBUI, SagaSettings.saveWebUISettings),
     takeEvery(Events.SETTINGS_SAVE_WEBUI_LAYOUT, SagaSettings.saveLayout),
-    takeEvery(Events.SETTINGS_TOGGLE_PINNED_ACTION, SagaSettings.togglePinnedAction),
     takeEvery(Events.SETTINGS_UNLINK_PLEX, SagaSettings.unlinkPlex),
-    // WEBUI
-    takeEvery(Events.WEBUI_CHECK_UPDATES, SagaWebUi.checkUpdates),
-    takeEvery(Events.WEBUI_UPDATE, SagaWebUi.downloadUpdates),
   ]);
 }

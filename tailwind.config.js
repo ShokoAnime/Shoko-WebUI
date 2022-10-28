@@ -38,7 +38,14 @@ module.exports = {
         'highlight-5': withOpacityValue('--color-highlight-5'),
         'font-main': withOpacityValue('--color-font-main'),
         'font-alt': withOpacityValue('--color-font-alt'),
+        'image-overlay': withOpacityValue('--color-image-overlay'),
         transparent: 'transparent',
+      },
+      backgroundImage: {
+        'general-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/DemonSlayer.jpg)',
+        'import-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/OnePunchMan.jpg)',
+        'anidb-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/Bleach.jpg)',
+        'metadata-sites-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/DBZ.jpg)',
       },
       spacing: {
         '13': '3.25rem',

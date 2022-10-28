@@ -47,3 +47,13 @@ export type ListResultType<T> = {
   Total: number;
   List: T;
 };
+
+export type TraktCodeType = {
+  usercode: string;
+  url: string;
+};
+
+export type WebUIVersionType = {
+  name: string;
+  version: string;
+};

@@ -1,3 +1,4 @@
+
 export type SettingsDatabaseType = {
   MySqliteDirectory: string;
   DatabaseBackupDirectory: string;
@@ -103,6 +104,7 @@ export type SettingsImportType = {
   RenameThenMove: boolean;
   RunOnStart: boolean;
   UseExistingFileWatchedStatus: boolean;
+  VideoExtensions: Array<string>;
 };
 
 export type SettingsServerType = {
@@ -123,4 +125,17 @@ export type SettingsServerType = {
   LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
   Import: SettingsImportType;
+};
+
+type WebUISettingsType = {
+  actions: Array<string>,
+  notifications: boolean;
+  settingsRevision: number;
+  theme: string;
+  toastPosition: 'top-right' | 'bottom-right';
+  updateChannel: 'stable' | 'unstable';
+};
+
+export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {
+  WebUI_Settings: WebUISettingsType;
 };

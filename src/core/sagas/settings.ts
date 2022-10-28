@@ -7,7 +7,6 @@ import toast from '../../components/Toast';
 import { RootState } from '../store';
 import Events from '../events';
 
-import ApiCommon from '../api/common';
 import ApiPlex from '../api/v3/plex';
 import ApiSettings from '../api/v3/settings';
 
@@ -16,7 +15,7 @@ import { saveLocalSettings } from '../slices/localSettings';
 import { setItem as setMiscItem } from '../slices/misc';
 import { saveServerSettings } from '../slices/serverSettings';
 import {
-  addAction, removeAction, saveLayout as saveLayoutAction,
+  saveLayout as saveLayoutAction,
   saveWebUISettings as saveWebUISettingsAction,
 } from '../slices/webuiSettings';
 
@@ -71,18 +70,6 @@ function* getSettings() {
   yield put(saveLocalSettings(resultJson.data));
 }
 
-function* getTraktCode() {
-  yield put(startFetching('trakt_code'));
-  const resultJson = yield call(ApiCommon.getTraktCode);
-  yield put(stopFetching('trakt_code'));
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-  } else {
-    toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', undefined, { autoClose: 10000 });
-    yield put(setMiscItem({ trakt: resultJson.data }));
-  }
-}
-
 function* saveLayout(action) {
   const oldLayout = yield select((state: RootState) => state.webuiSettings.webui_v2.layout);
   const newLayout = Object.assign({}, oldLayout, action.payload);
@@ -118,28 +105,6 @@ function* saveSettings(action: PayloadAction<SaveSettingsType>) {
   yield call(getSettings);
 }
 
-function* saveWebUISettings(action) {
-  yield put(saveWebUISettingsAction(action.payload));
-  const webUISettings = Object.assign(
-    {},
-    yield select((state: RootState) => state.webuiSettings.webui_v2),
-    action.payload,
-  );
-  const newSettings = JSON.stringify(webUISettings);
-  yield put({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'WebUI_Settings', newSettings } });
-}
-
-function* togglePinnedAction(action) {
-  const { payload } = action;
-  const pinnedActions = yield select((state: RootState) => state.webuiSettings.webui_v2.actions);
-  if (pinnedActions.indexOf(payload) === -1) {
-    yield put(addAction(payload));
-  } else {
-    yield put(removeAction(payload));
-  }
-  yield call(uploadWebUISettings);
-}
-
 function* unlinkPlex() {
   yield put(startFetching('plex_unlink'));
   const resultJson = yield call(ApiPlex.getPlexTokenInvalidate);
@@ -161,10 +126,7 @@ export default {
   getPlexAuthenticated,
   getPlexLoginUrl,
   getSettings,
-  getTraktCode,
   saveLayout,
   saveSettings,
-  saveWebUISettings,
-  togglePinnedAction,
   unlinkPlex,
 };

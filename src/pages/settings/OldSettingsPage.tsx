@@ -7,20 +7,17 @@ import { omitDeepBy } from '../../core/util';
 import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import { defaultLayout } from '../../core/slices/webuiSettings';
-import ImportBreakdown from '../dashboard/panels/ImportBreakdown';
-import ImportFolders from './panels/ImportFolders';
-import SeriesInImportFolder from './panels/SeriesInImportFolder';
+
+import PlexSettings from './panels/PlexSettings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-function ImportFoldersPage() {
+function OldSettingsPage() {
   const dispatch = useDispatch();
 
-  const layout = useSelector(
-    (state: RootState) => state.webuiSettings.webui_v2.layout.importFolders,
-  );
+  const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.settings);
 
-  const [currentLayout, setCurrentLayout] = useState(defaultLayout.importFolders);
+  const [currentLayout, setCurrentLayout] = useState(defaultLayout.settings);
 
   useEffect(() => {
     setCurrentLayout(layout);
@@ -30,7 +27,7 @@ function ImportFoldersPage() {
     if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
       dispatch({
         type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-        payload: { importFolders: newLayout },
+        payload: { settings: newLayout },
       });
     }
   };
@@ -47,17 +44,11 @@ function ImportFoldersPage() {
       className="w-full"
       onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
     >
-      <div key="importBreakdown">
-        <ImportBreakdown />
-      </div>
-      <div key="importFolders">
-        <ImportFolders />
-      </div>
-      <div key="seriesInImportFolder">
-        <SeriesInImportFolder />
+      <div key="plex">
+        <PlexSettings />
       </div>
     </ResponsiveGridLayout>
   );
 }
 
-export default ImportFoldersPage;
+export default OldSettingsPage;

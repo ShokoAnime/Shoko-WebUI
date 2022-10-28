@@ -7,6 +7,7 @@ import { mdiChevronRight } from '@mdi/js';
 
 import ModalPanel from '../Panels/ModalPanel';
 import { setStatus } from '../../core/slices/modals/utilities';
+import { setStatus as setActionsModalStatus } from '../../core/slices/modals/actions';
 
 import { RootState } from '../../core/store';
 
@@ -15,6 +16,7 @@ function UtilitiesModal() {
   const status = useSelector((state: RootState) => state.modals.utilities.status);
 
   const handleClose = () => dispatch(setStatus(false));
+  const closeOtherModals = () => dispatch(setActionsModalStatus(false));
 
   const renderLink = (key: string, name: string) => {
     const uri = `/webui/utilities/${key}`;
@@ -33,6 +35,7 @@ function UtilitiesModal() {
       show={status}
       className="pb-6"
       onRequestClose={() => handleClose()}
+      onAfterOpen={() => closeOtherModals()}
     >
       <div className="flex flex-col w-full border-l border-background-border drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
         <div className="flex flex-col items-center justify-start bg-color-nav">
