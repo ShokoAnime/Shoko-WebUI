@@ -51,7 +51,7 @@ function AniDBSeriesLinkPanel({ initialQuery }: Props) {
             (searchResults.data ?? []).map(result => (
               <div key={result.ID} className="flex justify-between mt-1 items-center">
                 {result.Title}
-                <a href={`https://anidb.net/anime/${result.ID}/release/add`} target="_blank">
+                <a href={`https://anidb.net/anime/${result.ID}/release/add`} target="_blank" rel="noopener noreferrer">
                   <Icon path={mdiOpenInNew} size={1} className="text-highlight-1 mr-2" />
                 </a>
               </div>
