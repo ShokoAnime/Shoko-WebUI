@@ -59,6 +59,8 @@ export const initialSettings = {
     DownloadCharacters: false,
     DownloadCreators: false,
     DownloadRelatedAnime: false,
+    DownloadReviews: false,
+    DownloadReleaseGroups: false,
     MaxRelationDepth: 0,
     MyList_AddFiles: false,
     MyList_DeleteType: 0,
