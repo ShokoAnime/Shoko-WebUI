@@ -88,7 +88,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
       }
     });
     return !notFound;
-  }, [selectedRows]);
+  }, [selectedRows, avdumpList]);
 
   useEffect(() => {
     if (show) setFilesCount(files.Total);
