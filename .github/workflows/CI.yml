@@ -21,7 +21,7 @@ jobs:
       - name: Build
         run: yarn build
       - name: Upload artifacts
-        if: ${{ github.event_name == 'pull_request' }}
+        #if: ${{ github.event_name == 'pull_request' }}
         uses: actions/upload-artifact@v3
         with:
           name: shoko-webui-test
