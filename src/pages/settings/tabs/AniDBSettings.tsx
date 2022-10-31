@@ -32,7 +32,7 @@ function AniDBSettings() {
   const {
     Anime_UpdateFrequency, AVDumpClientPort, AVDumpKey,
     Calendar_UpdateFrequency, ClientPort, DownloadCharacters,
-    DownloadCreators, DownloadRelatedAnime, DownloadReviews,
+    DownloadCreators, DownloadRelatedAnime,
     DownloadReleaseGroups, File_UpdateFrequency,
     MaxRelationDepth, MyList_AddFiles, MyList_DeleteType,
     MyList_ReadWatched, MyList_ReadUnwatched, MyList_SetWatched,
@@ -119,7 +119,6 @@ function AniDBSettings() {
       >
         <Checkbox justify label="Character Images" id="character-images" isChecked={DownloadCharacters} onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked)} />
         <Checkbox justify label="Creator Images" id="creator-images" isChecked={DownloadCreators} onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)} className="mt-2" />
-        <Checkbox justify label="Reviews" id="reviews" isChecked={DownloadReviews} onChange={event => updateSetting('AniDb', 'DownloadReviews', event.target.checked)} className="mt-2" />
         <Checkbox justify label="Release Groups" id="release-groups" isChecked={DownloadReleaseGroups} onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)} className="mt-2" />
         <Checkbox justify label="Related Anime" id="related-anime" isChecked={DownloadRelatedAnime} onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)} className="mt-2" />
         <div className={cx('flex justify-between mt-2 items-center transition-opacity', !DownloadRelatedAnime && 'pointer-events-none opacity-50')}>
