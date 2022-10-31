@@ -1,29 +1,29 @@
 import React, { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+// import { useDispatch, useSelector } from 'react-redux';
 import { forEach, orderBy } from 'lodash';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 import toast from '../../../../components/Toast';
-import { RootState } from '../../../../core/store';
+// import { RootState } from '../../../../core/store';
 import Button from '../../../../components/Input/Button';
 
 import type { FileType } from '../../../../core/types/api/file';
 import { mdiHelpCircleOutline, mdiClipboardTextMultipleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import Checkbox from '../../../../components/Input/Checkbox';
-import { markUnrecognizedFile } from '../../../../core/slices/mainpage';
+// import Checkbox from '../../../../components/Input/Checkbox';
+// import { markUnrecognizedFile } from '../../../../core/slices/mainpage';
 import UnrecognizedAvdumpedItem from './UnrecognizedAvdumpedItem';
 
 import { useGetFileUnrecognizedQuery, useLazyPostFileAVDumpQuery } from '../../../../core/rtkQuery/fileApi';
 
 function UnrecognizedTab() {
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
 
   const [avdumpList, setAvdumpList] = useState([] as Array<string>);
 
-  const items = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const itemsMarked = useSelector((state: RootState) => state.mainpage.unrecognizedMark);
+  const items = useGetFileUnrecognizedQuery({ pageSize: 20 });
+  // const itemsMarked = useSelector((state: RootState) => state.mainpage.unrecognizedMark);
   const [avdumpTrigger, avdumpResult] = useLazyPostFileAVDumpQuery();
 
   const runAvdump = async (fileId: number) => {
@@ -35,14 +35,14 @@ function UnrecognizedTab() {
     }
   };
 
-  const markFile = (id: string) => {
-    const state = itemsMarked.indexOf(id) === -1;
-    dispatch(markUnrecognizedFile({ id, state }));
-  };
+  // const markFile = (id: string) => {
+  //   const state = itemsMarked.indexOf(id) === -1;
+  //   dispatch(markUnrecognizedFile({ id, state }));
+  // };
 
   const renderItem = (item: FileType) => (
     <div key={item.ID} className="flex mt-3 first:mt-0 items-center">
-      <Checkbox id={`${item.ID}`} isChecked={itemsMarked.indexOf(`${item.ID}`) !== -1} onChange={() => {markFile(`${item.ID}`);}} className="mr-4" />
+      {/*<Checkbox id={`${item.ID}`} isChecked={itemsMarked.indexOf(`${item.ID}`) !== -1} onChange={() => {markFile(`${item.ID}`);}} className="mr-4" />*/}
       {avdumpList[item.ID] && <UnrecognizedAvdumpedItem item={item} hash={avdumpList[item.ID]} />}
       {avdumpList[item.ID] === undefined && (
       <div className="flex flex-col grow">
