@@ -98,8 +98,8 @@ function UnrecognizedUtility() {
         <Icon path={mdiChevronRight} size={1} className="ml-2" />
         {renderTabButton('unrecognized', 'Unrecognized')}
         <div>|</div>
-        {renderTabButton('manuallyLinked', 'Manually Linked')}
-        <div>|</div>
+        {/*{renderTabButton('manuallyLinked', 'Manually Linked')}*/}
+        {/*<div>|</div>*/}
         {renderTabButton('ignoredFiles', 'Ignored Files')}
       </div>
     );

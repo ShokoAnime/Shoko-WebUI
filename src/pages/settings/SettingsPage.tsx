@@ -19,7 +19,7 @@ const items = [
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata Sites', path: 'metadata-sites' },
   // { name: 'Display', path: 'display' },
-  { name: 'User Management', path: 'user-management' },
+  // { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
 ];
 

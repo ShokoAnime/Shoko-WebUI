@@ -7,7 +7,7 @@ import {
   mdiServer,
   mdiCogOutline,
   mdiFormatListBulletedSquare,
-  mdiLayersTripleOutline,
+  // mdiLayersTripleOutline,
   mdiTabletDashboard, mdiTextBoxOutline,
   mdiTools,
   mdiMagnify,
@@ -104,7 +104,7 @@ function Sidebar() {
       </div>
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
-        {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
+        {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
         {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(!utilitiesModalOpen)), utilitiesModalOpen)}
         {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(!actionsModalOpen)), actionsModalOpen)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
