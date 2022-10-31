@@ -9,7 +9,7 @@ const names = {
   Series: 'TV Series',
 };
 
-function CollectionTypeBreakdown() {
+function SeriesBreakdown() {
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
   const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
@@ -49,10 +49,10 @@ function CollectionTypeBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Collection Type Breakdown" isFetching={seriesSummary.isLoading}>
+    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading}>
       {items}
     </ShokoPanel>
   );
 }
 
-export default CollectionTypeBreakdown;
+export default SeriesBreakdown;
