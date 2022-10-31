@@ -121,9 +121,9 @@ function ActionsModal() {
 
   const renderTab = (title, items) => (
     <React.Fragment>
-      <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between">
+      <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between cursor-pointer" onClick={() => { setActiveTab(title); }}>
         <p className="text-base font-semibold text-gray-300">{title}</p>
-        <span onClick={() => { setActiveTab(title); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
+        <span><Icon path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
       <div className={cx('flex flex-col grow w-full p-4 space-y-1', { hidden: activeTab !== title })}>
         {items.map((item) => {
