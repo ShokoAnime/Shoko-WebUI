@@ -1,7 +1,7 @@
 import React from 'react';
 import { toast, ToastContentProps, ToastOptions } from 'react-toastify';
 import { Icon } from '@mdi/react';
-import { mdiCheckCircle, mdiCloseCircleOutline, mdiInformationOutline } from '@mdi/js';
+import { mdiCheckCircle, mdiCloseCircle, mdiCloseCircleOutline, mdiInformationOutline } from '@mdi/js';
 
 type Props = Partial<ToastContentProps> & {
   header: string;
@@ -44,7 +44,7 @@ const success = (header: string, message?: string, options?: ToastOptions) => {
 };
 
 const error = (header: string, message?: string, options?: ToastOptions) => {
-  toast.error(<Toast header={header} message={message} icon={mdiCheckCircle} />, options);
+  toast.error(<Toast header={header} message={message} icon={mdiCloseCircle} />, options);
 };
 
 const info = (header: string, message?: string, options?: ToastOptions) => {

@@ -32,7 +32,8 @@ function AniDBSettings() {
   const {
     Anime_UpdateFrequency, AVDumpClientPort, AVDumpKey,
     Calendar_UpdateFrequency, ClientPort, DownloadCharacters,
-    DownloadCreators, DownloadRelatedAnime, File_UpdateFrequency,
+    DownloadCreators, DownloadRelatedAnime,
+    DownloadReleaseGroups, File_UpdateFrequency,
     MaxRelationDepth, MyList_AddFiles, MyList_DeleteType,
     MyList_ReadWatched, MyList_ReadUnwatched, MyList_SetWatched,
     MyList_SetUnwatched, MyList_StorageState, MyList_UpdateFrequency,
@@ -77,6 +78,11 @@ function AniDBSettings() {
     }
   };
 
+  const validateAndSaveRelationDepth = (depth: string) => {
+    if (parseInt(depth) < 0 || parseInt(depth) > 5) toast.error('Max Relation Depth may only be between 0 and 5');
+    else updateSetting('AniDb', 'MaxRelationDepth', depth);
+  };
+
   return (
     <>
       <ShokoPanel
@@ -113,10 +119,11 @@ function AniDBSettings() {
       >
         <Checkbox justify label="Character Images" id="character-images" isChecked={DownloadCharacters} onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked)} />
         <Checkbox justify label="Creator Images" id="creator-images" isChecked={DownloadCreators} onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)} className="mt-2" />
+        <Checkbox justify label="Release Groups" id="release-groups" isChecked={DownloadReleaseGroups} onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)} className="mt-2" />
         <Checkbox justify label="Related Anime" id="related-anime" isChecked={DownloadRelatedAnime} onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)} className="mt-2" />
         <div className={cx('flex justify-between mt-2 items-center transition-opacity', !DownloadRelatedAnime && 'pointer-events-none opacity-50')}>
           Related Depth
-          <InputSmall id="max-relation-depth" value={MaxRelationDepth} type="number" onChange={event => updateSetting('AniDb', 'MaxRelationDepth', event.target.value)} className="w-10 text-center px-2" />
+          <InputSmall id="max-relation-depth" value={MaxRelationDepth} type="number" onChange={event => validateAndSaveRelationDepth(event.target.value)} className="w-10 text-center px-2" />
         </div>
       </ShokoPanel>
 

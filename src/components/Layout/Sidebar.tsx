@@ -7,7 +7,7 @@ import {
   mdiServer,
   mdiCogOutline,
   mdiFormatListBulletedSquare,
-  mdiLayersTripleOutline,
+  // mdiLayersTripleOutline,
   mdiTabletDashboard, mdiTextBoxOutline,
   mdiTools,
   mdiMagnify,
@@ -36,6 +36,9 @@ function Sidebar() {
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
 
+  const utilitiesModalOpen = useSelector((state: RootState) => state.modals.utilities.status);
+  const actionsModalOpen = useSelector((state: RootState) => state.modals.actions.status);
+
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
@@ -51,9 +54,9 @@ function Sidebar() {
     }, reason => console.error(reason));
   }, []);
 
-  const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void) => {
+  const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void, modalOpen = false) => {
     const uri = `/webui/${key}`;
-    const isHighlighted = pathname.startsWith(uri);
+    const isHighlighted = pathname.startsWith(uri) || modalOpen;
     return (
       <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
@@ -101,9 +104,9 @@ function Sidebar() {
       </div>
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
-        {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
-        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(true)))}
-        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(true)))}
+        {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
+        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(!utilitiesModalOpen)), utilitiesModalOpen)}
+        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(!actionsModalOpen)), actionsModalOpen)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
         <div className="flex flex-col mt-10 px-7">

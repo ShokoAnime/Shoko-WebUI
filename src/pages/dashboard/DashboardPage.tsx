@@ -9,7 +9,7 @@ import Events from '../../core/events';
 import { defaultLayout } from '../../core/slices/webuiSettings';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
-import CollectionTypeBreakdown from './panels/CollectionTypeBreakdown';
+import SeriesBreakdown from './panels/SeriesBreakdown';
 import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
 import RecentlyImported from './panels/RecentlyImported';
@@ -56,7 +56,7 @@ function DashboardPage() {
         <CollectionBreakdown />
       </div>
       <div key="collectionTypeBreakdown">
-        <CollectionTypeBreakdown />
+        <SeriesBreakdown />
       </div>
       <div key="queueProcessor">
         <QueueProcessor />

@@ -19,7 +19,7 @@ const items = [
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata Sites', path: 'metadata-sites' },
   // { name: 'Display', path: 'display' },
-  { name: 'User Management', path: 'user-management' },
+  // { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
 ];
 
@@ -59,6 +59,7 @@ export const initialSettings = {
     DownloadCharacters: false,
     DownloadCreators: false,
     DownloadRelatedAnime: false,
+    DownloadReleaseGroups: false,
     MaxRelationDepth: 0,
     MyList_AddFiles: false,
     MyList_DeleteType: 0,

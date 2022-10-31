@@ -23,6 +23,7 @@ export const initialState = {
     AVDumpClientPort: 4557,
     DownloadCharacters: false,
     DownloadCreators: false,
+    DownloadReleaseGroups: false,
     DownloadRelatedAnime: false,
     MaxRelationDepth: 0,
     MyList_AddFiles: false,

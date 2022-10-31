@@ -40,10 +40,10 @@ function UtilitiesModal() {
       <div className="flex flex-col w-full border-l border-background-border drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
         <div className="flex flex-col items-center justify-start bg-color-nav">
           {renderLink('unrecognized', 'Unrecognized')}
-          {renderLink('multiple-files', 'Multiple Files')}
-          {renderLink('missing-episodes', 'Missing Episodes')}
+          {/*{renderLink('multiple-files', 'Multiple Files')}*/}
+          {/*{renderLink('missing-episodes', 'Missing Episodes')}*/}
           {renderLink('series-without-files', 'Series Without Files')}
-          {renderLink('file-renaming', 'File Renaming')}
+          {/*{renderLink('file-renaming', 'File Renaming')}*/}
         </div>
       </div>
     </ModalPanel>
