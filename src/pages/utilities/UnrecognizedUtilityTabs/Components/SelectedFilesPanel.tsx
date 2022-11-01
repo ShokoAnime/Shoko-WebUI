@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { find, forEach, groupBy } from 'lodash';
 import cx from 'classnames';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
@@ -18,7 +19,7 @@ function SelectedFilesPanel() {
       forEach(episodeLinks, (link, idx) => {
         const file = find(selectedRows, ['ID', link.FileID]);
         result.push(
-          <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'first:mt-14 mt-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <div className={cx(['px-2 py-2 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mb-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
             {file?.Locations?.[0].RelativePath ?? ''}
           </div>,
         );
@@ -27,20 +28,25 @@ function SelectedFilesPanel() {
     return result;
   };
 
-  const manualLinkFileRows: Array<React.ReactNode> = [];
-  forEach(selectedRows, (file) => {
-    manualLinkFileRows.push(
-      <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4'])} key={file.ID}>
-        {file.Locations?.[0].RelativePath ?? ''}
-      </div>,
-    );
-  });
-
+  const renderManualLinkFileRows = () => {
+    const manualLinkFileRows: Array<React.ReactNode> = [];
+    forEach(selectedRows, (file) => {
+      manualLinkFileRows.push(
+        <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4'])} key={file.ID}>
+          {file.Locations?.[0].RelativePath ?? ''}
+        </div>,
+      );
+    });
+    return manualLinkFileRows;
+  };
+  
   return (
     <ShokoPanel title="Selected Files" className="w-1/2">
-      <div className="grow basis-0 overflow-y-auto">
-        {selectedSeries?.ID ? renderFileLinks() : manualLinkFileRows}
-      </div>
+      <ScrollSyncPane>
+        <div className={cx(['grow basis-0 overflow-y-auto shoko-scrollbar'], selectedSeries?.ID && 'mt-14')}>
+          {selectedSeries?.ID ? renderFileLinks() : renderManualLinkFileRows()}
+        </div>
+      </ScrollSyncPane>
     </ShokoPanel>
   );
 }

@@ -7397,6 +7397,7 @@ __metadata:
     react-redux: ^8.0.2
     react-refresh: ^0.14.0
     react-router-dom: ^6.3.0
+    react-scroll-sync: ^0.11.0
     react-toastify: ^9.0.7
     react-virtual: ^2.10.4
     react-virtualized: ^9.22.3
@@ -9882,7 +9883,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.8.1":
+"prop-types@npm:^15.5.7, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -10195,6 +10196,18 @@ __metadata:
   peerDependencies:
     react: ">=16.8"
   checksum: 7be673f5e72104be01e6ab274516bdb932efd93305243170690f6560e3bd1035dd1df3d3c9ce1e0f452638a2529f43a1e77dcf0934fc8031c4783da657be13ca
+  languageName: node
+  linkType: hard
+
+"react-scroll-sync@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "react-scroll-sync@npm:0.11.0"
+  dependencies:
+    prop-types: ^15.5.7
+  peerDependencies:
+    react: 16.x || 17.x || 18.x
+    react-dom: 16.x || 17.x || 18.x
+  checksum: 8b505cc8c4e83aa3e11d9a7f60677694a10dcd0f9d5818767b3364dff5b461b32ee707bd7bac0ebefd1662c8c49f066ef9871703208f4bd6a23937d37e73809f
   languageName: node
   linkType: hard
 
