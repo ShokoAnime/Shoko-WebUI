@@ -18,6 +18,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { ScrollSync } from 'react-scroll-sync';
 
 import toast from '../../../components/Toast';
 import { fuzzyFilter } from '../../../core/util';
@@ -53,6 +54,7 @@ import { setItem as setAvdumpItem } from '../../../core/slices/utilities/avdump'
 import type { FileType, FileLinkApiType } from '../../../core/types/api/file';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 import type { RootState } from '../../../core/store';
+
 
 const columnHelper = createColumnHelper<FileType>();
 
@@ -300,21 +302,23 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
             </TransitionDiv>
           </div>
         </div>
-        <div className="flex grow basis-0 overflow-y-hidden relative mt-4">
-          <TransitionDiv className="flex mt-1 h-full w-full basis-0 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
-            <SelectedFilesPanel />
-            {selectedSeries?.ID
-              ? (<EpisodeLinkPanel />)
-              : (<SeriesLinkPanel />)}
-          </TransitionDiv>
-          <TransitionDiv className="w-full h-full basis-0 overflow-y-auto rounded-lg bg-background-nav border border-background-border absolute" show={!manualLink}>
-            {files.Total > 0 ? (
-              <UtilitiesTable table={table} />
-            ) : (
-              <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
-            )}
-          </TransitionDiv>
-        </div>
+        <ScrollSync>
+          <div className="flex grow basis-0 overflow-y-hidden relative mt-4">
+            <TransitionDiv className="flex mt-1 h-full w-full basis-0 overflow-y-auto grow gap-x-4 absolute" show={manualLink}>
+              <SelectedFilesPanel />
+              {selectedSeries?.ID
+                ? (<EpisodeLinkPanel />)
+                : (<SeriesLinkPanel />)}
+            </TransitionDiv>
+            <TransitionDiv className="w-full h-full basis-0 overflow-y-auto rounded-lg bg-background-nav border border-background-border absolute" show={!manualLink}>
+              {files.Total > 0 ? (
+                <UtilitiesTable table={table} />
+              ) : (
+                <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
+              )}
+            </TransitionDiv>
+          </div>
+        </ScrollSync>
       </div>
 
       <div className={cx('flex mt-4 space-x-4 transition-[height]', manualLink ? 'h-48' : 'h-[19.6rem]')}>

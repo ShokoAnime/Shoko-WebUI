@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach, groupBy } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
+import { ScrollSyncPane } from 'react-scroll-sync';
 
 import Input from '../../../../components/Input/Input';
 import Button from '../../../../components/Input/Button';
@@ -69,7 +70,7 @@ function EpisodeLinkPanel() {
     forEach(groupedLinks, (episodeLinks) => {
       forEach(episodeLinks, (link, idx) => {
         result.push(
-          <div className={cx(['px-3 py-3.5', idx !== 0 && 'opacity-10'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <div className={cx(['px-3 mb-3', idx !== 0 && 'opacity-10'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
             <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
           </div>,
         );
@@ -80,13 +81,17 @@ function EpisodeLinkPanel() {
 
   return (
     <ShokoPanel title={renderTitle()} className="w-1/2">
-      <div className="flex flex-row space-x-3 justify-end">
+      <div className="flex flex-row space-x-3 justify-end mb-3.5">
         <ComboBox className="w-72" options={episodeTypeOptions} value={epType} onChange={value => setEpType(`${value}`)} />
         <Input inline label="Range Start" type="text" id="range" value="" onChange={() => {}} className="w-40"/>
         <Button className="bg-background-alt py-2 px-2 mr-2" onClick={() => {}}>Range Fill</Button>
         <Button className={cx('bg-highlight-1 py-2 px-2 mr-2', { 'hidden': selectedSeries.ShokoID !== null })} loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>Fetch data</Button>
       </div>
-      {renderEpisodeLinks()}
+      <ScrollSyncPane>
+        <div className="overflow-y-auto grow basis-0 shoko-scrollbar">
+          {renderEpisodeLinks()}
+        </div>
+      </ScrollSyncPane>
     </ShokoPanel>
   );
 }

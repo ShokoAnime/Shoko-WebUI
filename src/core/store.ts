@@ -14,6 +14,7 @@ import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { dashboardApi } from './rtkQuery/dashboardApi';
 import { externalApi } from './rtkQuery/externalApi';
 import { collectionApi } from './rtkQuery/collectionApi';
+import { episodeApi } from './rtkQuery/episodeApi';
 import { logsApi } from './rtkQuery/logsApi';
 import { importFolderApi } from './rtkQuery/importFolderApi';
 import { seriesApi } from './rtkQuery/seriesApi';
@@ -53,6 +54,7 @@ const middleware = [
   userApi.middleware,
   traktApi.middleware,
   webuiApi.middleware,
+  episodeApi.middleware,
 ];
 
 const store = configureStore({
