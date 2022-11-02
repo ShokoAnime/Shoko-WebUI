@@ -24,7 +24,7 @@ const ShokoPanel = ({ className, title, options, children, isFetching }: Props) 
             </div>
         </div>
       <span className="bg-background-border my-4 h-0.5 flex-shrink-0" />
-      <div className="flex grow flex-col mr-2 font-open-sans">
+      <div className="flex grow flex-col mr-2 font-open-sans overflow-y-auto">
         {isFetching ? <div className="flex grow justify-center items-center"><Icon path={mdiLoading} spin size={1} /></div> : children}
       </div>
     </div>
