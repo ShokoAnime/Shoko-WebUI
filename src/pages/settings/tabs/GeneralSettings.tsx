@@ -106,7 +106,7 @@ function GeneralSettings() {
           <span>Web UI Channel</span>
           <SelectSmall id="update-channel" value={WebUI_Settings.updateChannel} onChange={event => updateSetting('WebUI_Settings', 'updateChannel', event.target.value)}>
             <option value="stable">Stable</option>
-            <option value="unstable">Unstable</option>
+            <option value="unstable">Dev</option>
           </SelectSmall>
         </div>
       </ShokoPanel>
