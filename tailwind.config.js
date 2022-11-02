@@ -25,6 +25,9 @@ module.exports = {
     'text-highlight-4',
   ],
   theme: {
+    transitionDuration: {
+      DEFAULT: '300ms',
+    },
     extend: {
       colors: {
         background: withOpacityValue('--color-background'),
