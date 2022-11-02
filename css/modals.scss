@@ -44,3 +44,35 @@
     }
   }
 }
+
+.modal-transition-left {
+  opacity: 0;
+  transition: all 300ms ease-in-out;
+  transform: translateX(-50px);
+}
+
+.modal-transition-left--after-open {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.modal-transition-left--before-close {
+  opacity: 0;
+  transform: translateX(-50px);
+}
+
+.modal-transition-right {
+  opacity: 0;
+  transition: all 300ms ease-in-out;
+  transform: translateX(100px);
+}
+
+.modal-transition-right--after-open {
+  opacity: 1;
+  transform: translateX(0px);
+}
+
+.modal-transition-right--before-close {
+  opacity: 0;
+  transform: translateX(100px);
+}

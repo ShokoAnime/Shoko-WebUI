@@ -21,11 +21,16 @@ function ModalPanel(props: Props) {
   return (
     <Modal
       isOpen={show}
-      overlayClassName={cx('modal-overlay fixed inset-0 flex items-center pointer-events-auto', props.sidebarSnap ? 'justify-start ml-62.5' : 'justify-end')}
+      overlayClassName={{
+        base: cx('fixed inset-0 flex items-center pointer-events-auto', props.sidebarSnap ? 'justify-start ml-62.5 modal-transition-left' : 'justify-end modal-transition-right'),
+        afterOpen: cx(props.sidebarSnap ? 'modal-transition-left--after-open' : 'modal-transition-right--after-open'),
+        beforeClose: cx(props.sidebarSnap ? 'modal-transition-left--before-close' : 'modal-transition-right--before-close'),
+      }}
       className={`${className} bg-background-nav flex h-full w-96`}
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}
       onAfterOpen={onAfterOpen}
+      closeTimeoutMS={300}
     >
       {children}
     </Modal>
