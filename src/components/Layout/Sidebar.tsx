@@ -52,6 +52,23 @@ function Sidebar() {
     }, reason => console.error(reason));
   }, []);
 
+  const closeAllModals = () => {
+    dispatch(setUtilitiesStatus(false));
+    dispatch(setActionsStatus(false));
+  };
+
+  const toggleModal = (modal: string) => {
+    closeAllModals();
+    switch (modal) {
+      case 'utilities':
+        dispatch(setUtilitiesStatus(!utilitiesModalOpen));
+        return;
+      case 'actions':
+        dispatch(setActionsStatus(!actionsModalOpen));
+        return;
+    }
+  };
+
   const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void, modalOpen = false) => {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri) || modalOpen;
@@ -67,7 +84,7 @@ function Sidebar() {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri);
     return (
-      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri}>
+      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeAllModals()}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </Link>
@@ -103,8 +120,8 @@ function Sidebar() {
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
-        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(!utilitiesModalOpen)), utilitiesModalOpen)}
-        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(!actionsModalOpen)), actionsModalOpen)}
+        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
+        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
         <div className="flex flex-col mt-10 px-7">
