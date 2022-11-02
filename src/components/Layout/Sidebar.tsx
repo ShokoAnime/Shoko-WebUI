@@ -17,7 +17,6 @@ import {
 import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
-import { setStatus } from '../../core/slices/modals/profile';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { default as ShokoIcon } from '../ShokoIcon';
@@ -48,7 +47,6 @@ function Sidebar() {
   const [webuiUpdateAvailable, setWebuiUpdateAvailable] = useState(false);
 
   useEffect(() => {
-    dispatch(setStatus(false));
     checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
       setWebuiUpdateAvailable(!Version.debug && result.version !== Version.package);
     }, reason => console.error(reason));
@@ -86,7 +84,7 @@ function Sidebar() {
         <ShokoIcon/>
       </div>
       <div className="flex items-center w-full p-4">
-        <div className="flex cursor-pointer items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
+        <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full">
           {username.charAt(0)}
         </div>
         <div className="flex flex-col ml-3">
