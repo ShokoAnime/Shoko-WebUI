@@ -23,7 +23,7 @@ function FiltersModal() {
   const [activeTab, setActiveTab] = useState('Filters');
   const [activeFilter, setActiveFilter] = useState('0');
   const [search, setSearch] = useState('');
-  
+
   useEffect(() => {
     if (!status) { return; }
     if (activeFilter === '0') {
@@ -35,7 +35,7 @@ function FiltersModal() {
 
   const handleClose = () => dispatch(setStatus(false));
   const filteredList = useMemo(() =>  subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1) ), [subFilters, search]);
-  
+
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold">
       <Link to={`collection/filter/${item.IDs.ID}`} onClick={() => handleClose()}>{item.Name}</Link>
@@ -62,22 +62,22 @@ function FiltersModal() {
       </div>
     </React.Fragment>
   );
-  
+
   return (
     <ModalPanel
       sidebarSnap
       show={status}
-      className="pb-6"
+      className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
       onRequestClose={() => handleClose()}
     >
-      <div className="flex flex-col w-full border-l border-background-border drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
+      <div className="flex flex-col w-full border-l border-background-border">
         <div className="flex flex-col items-center justify-start bg-color-nav">
           {renderTab('Filters', '0')}
           <div className={cx('flex flex-col w-full p-4 space-y-1', { hidden: activeTab !== 'Filters' })}>
           {filters.filter(item => !item.Directory).map(item => renderItem(item))}
           </div>
           {filters.filter(item => item.Directory).map(item => renderTab(item.Name, item.IDs.ID))}
-          
+
         </div>
       </div>
     </ModalPanel>

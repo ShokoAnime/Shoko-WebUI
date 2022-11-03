@@ -53,7 +53,7 @@ function ImportFolderModal() {
 
   const handleInputChange = (event: any) => {
     const name = event.target.id;
-    const value = name === 'WatchForNewFiles' ? event.target.value === 1 : event.target.value;
+    const value = name === 'WatchForNewFiles' ? event.target.value === '1' : event.target.value;
     setImportFolder(({ ...importFolder, [name]: value }));
   };
 
@@ -90,7 +90,7 @@ function ImportFolderModal() {
     <React.Fragment>
       <ModalPanel
         show={status}
-        className="pb-6"
+        className="pb-6 drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]"
         onRequestClose={() => handleClose()}
         onAfterOpen={() => getFolderDetails()}
       >

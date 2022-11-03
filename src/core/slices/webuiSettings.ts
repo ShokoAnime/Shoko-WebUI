@@ -36,25 +36,25 @@ type State = {
 export const defaultLayout = {
   dashboard: {
     lg: [{
-      i: 'collectionBreakdown', x: 0, y: 0, w: 2, h: 15, minW: 2, minH: 15, maxH: 15, moved: false, static: false,
+      i: 'collectionBreakdown', x: 0, y: 0, w: 2, h: 16, minW: 2, moved: false, static: false,
     }, {
-      i: 'collectionTypeBreakdown', x: 2, y: 0, w: 2, h: 15, moved: false, static: false,
+      i: 'collectionTypeBreakdown', x: 2, y: 0, w: 2, h: 16, moved: false, static: false,
     }, {
-      i: 'queueProcessor', x: 4, y: 0, w: 8, h: 15, minW: 6, minH: 15, moved: false, static: false,
+      i: 'queueProcessor', x: 4, y: 0, w: 8, h: 16, minW: 6, moved: false, static: false,
     }, {
-      i: 'recentlyImported', x: 0, y: 15, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
+      i: 'recentlyImported', x: 0, y: 16, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'shokoNews', x: 0, y: 34, w: 3, h: 14, moved: false, static: false,
+      i: 'shokoNews', x: 0, y: 35, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'importFolders', x: 3, y: 34, w: 3, h: 14, moved: false, static: false,
+      i: 'importFolders', x: 3, y: 35, w: 3, h: 14, moved: false, static: false,
     }, {
-      i: 'importBreakdown', x: 6, y: 34, w: 6, h: 14, moved: false, static: false,
+      i: 'importBreakdown', x: 6, y: 35, w: 6, h: 14, moved: false, static: false,
     }, {
-      i: 'continueWatching', x: 0, y: 48, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
+      i: 'continueWatching', x: 0, y: 49, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'nextUp', x: 0, y: 60, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
+      i: 'nextUp', x: 0, y: 61, w: 12, h: 19, minW: 12, minH: 19, moved: false, static: false,
     }, {
-      i: 'upcomingAnime', x: 0, y: 72, w: 12, h: 20, minW: 12, minH: 20, moved: false, static: false,
+      i: 'upcomingAnime', x: 0, y: 73, w: 12, h: 20, minW: 12, minH: 20, moved: false, static: false,
     }],
   } as LayoutType,
   importFolders: {

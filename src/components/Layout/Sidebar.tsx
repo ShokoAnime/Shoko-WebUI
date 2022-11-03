@@ -13,11 +13,11 @@ import {
   mdiMagnify,
   mdiHelpCircleOutline,
   mdiGithub, mdiDownloadCircleOutline,
+  mdiInformationOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
-import { setStatus } from '../../core/slices/modals/profile';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { default as ShokoIcon } from '../ShokoIcon';
@@ -35,6 +35,7 @@ function Sidebar() {
   const pathname = useSelector((state: RootState) => state.router.location.pathname);
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
+  const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
 
   const utilitiesModalOpen = useSelector((state: RootState) => state.modals.utilities.status);
   const actionsModalOpen = useSelector((state: RootState) => state.modals.actions.status);
@@ -48,11 +49,27 @@ function Sidebar() {
   const [webuiUpdateAvailable, setWebuiUpdateAvailable] = useState(false);
 
   useEffect(() => {
-    dispatch(setStatus(false));
     checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
       setWebuiUpdateAvailable(!Version.debug && result.version !== Version.package);
     }, reason => console.error(reason));
   }, []);
+
+  const closeAllModals = () => {
+    dispatch(setUtilitiesStatus(false));
+    dispatch(setActionsStatus(false));
+  };
+
+  const toggleModal = (modal: string) => {
+    closeAllModals();
+    switch (modal) {
+      case 'utilities':
+        dispatch(setUtilitiesStatus(!utilitiesModalOpen));
+        return;
+      case 'actions':
+        dispatch(setActionsStatus(!actionsModalOpen));
+        return;
+    }
+  };
 
   const renderNonLinkMenuItem = (key: string, text: string, icon: string, onClick: () => void, modalOpen = false) => {
     const uri = `/webui/${key}`;
@@ -69,7 +86,7 @@ function Sidebar() {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri);
     return (
-      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri}>
+      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeAllModals()}>
         <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </Link>
@@ -86,7 +103,7 @@ function Sidebar() {
         <ShokoIcon/>
       </div>
       <div className="flex items-center w-full p-4">
-        <div className="flex cursor-pointer items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full" onClick={() => dispatch(setStatus(true))}>
+        <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full">
           {username.charAt(0)}
         </div>
         <div className="flex flex-col ml-3">
@@ -105,8 +122,8 @@ function Sidebar() {
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
-        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => dispatch(setUtilitiesStatus(!utilitiesModalOpen)), utilitiesModalOpen)}
-        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => dispatch(setActionsStatus(!actionsModalOpen)), actionsModalOpen)}
+        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
+        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
         {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
         {renderMenuItem('settings', 'Settings', mdiCogOutline)}
         <div className="flex flex-col mt-10 px-7">
@@ -124,12 +141,23 @@ function Sidebar() {
               </div>
             </div>
           )}
-          {/*<div className="flex items-center font-semibold cursor-pointer mt-5">*/}
-          {/*  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>*/}
-          {/*  <div className="flex flex-col ml-3">*/}
-          {/*    <span>AniDB</span>Ban Detected!*/}
-          {/*  </div>*/}
-          {/*</div>*/}
+          {/*TODO: This maybe works, maybe doesn't. Cannot test properly.*/}
+          {(banStatus.udp.updateType === 1 && banStatus.udp.value) && (
+            <div className="flex items-center font-semibold cursor-pointer mt-5">
+              <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
+              <div className="flex flex-col ml-3">
+                <span>AniDB</span>UDP Ban Detected!
+              </div>
+            </div>
+          )}
+          {(banStatus.http.updateType === 2 && banStatus.http.value) && (
+            <div className="flex items-center font-semibold cursor-pointer mt-5">
+              <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
+              <div className="flex flex-col ml-3">
+                <span>AniDB</span>HTTP Ban Detected!
+              </div>
+            </div>
+          )}
         </div>
       </div>
       <div className="flex justify-between w-full self-end px-6 mt-auto py-6">

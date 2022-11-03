@@ -26,7 +26,7 @@ function Select(props:Props) {
           </div>
         )}
         <div className="w-auto relative">
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-background-alt border border-background-border focus:border-highlight-1 transition duration-300 ease-in-out">
+          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-background-alt border border-background-border focus:border-highlight-1 transition ease-in-out">
             {children}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 pr-2 py-2">

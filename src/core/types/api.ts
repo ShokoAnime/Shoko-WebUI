@@ -15,29 +15,6 @@ export type GlobalAlertType = {
   text: string;
 };
 
-export type SeriesInfoType = {
-  name: string;
-  id: number;
-  filesize: number,
-  size: number,
-  paths: Array<string>,
-  type: string,
-};
-
-export type QueueItemType = {
-  state: number;
-  description: string;
-};
-
-export type QueueStatusType = {
-  HasherQueueState: QueueItemType;
-  GeneralQueueState: QueueItemType;
-  ImageQueueState: QueueItemType;
-  HasherQueueCount: number;
-  GeneralQueueCount: number;
-  ImageQueueCount: number;
-};
-
 export type PaginationType = {
   pageSize?: number;
   page?: number;

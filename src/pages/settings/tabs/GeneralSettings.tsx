@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { findKey, pickBy, transform } from 'lodash';
@@ -49,45 +49,26 @@ function GeneralSettings() {
 
   const version = useSelector((state: RootState) => state.jmmVersion);
 
-  const [exclusions, setExclusions] = useState({
-    fullStory: false,
-    summary: false,
-    parentStory: false,
-    sideStory: false,
-    prequel: false,
-    sequel: false,
-    altSetting: false,
-    altVersion: false,
-    sameSetting: false,
-    character: false,
-    other: false,
-    dissimilarTitles: false,
-    ova: false,
-    movie: false,
-  });
-
   useEffect(() => {
     dispatch(({ type: Events.SERVER_VERSION }));
   }, []);
 
-  useEffect(() => {
-    const newExclusions = transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
+  const exclusions = useMemo(() => {
+    return transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
       const key = findKey(mapping, value => value === item);
       // eslint-disable-next-line no-param-reassign
       if (key) result[key] = true;
     }, exclusions);
-    setExclusions(newExclusions);
-  }, [AutoGroupSeriesRelationExclusions]);
+  },
+  [AutoGroupSeriesRelationExclusions]);
 
   const handleExclusionChange = (event: any) => {
     const { id, checked: value } = event.target;
 
     const tempExclusions = { ...exclusions, [id]: value };
-    const newExclusions = Object.keys(pickBy(tempExclusions));
+    const newExclusions = Object.keys(pickBy(tempExclusions)).map(exclusion => mapping[exclusion]);
 
     setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: newExclusions.join('|') });
-
-    setExclusions(tempExclusions);
   };
 
   const {

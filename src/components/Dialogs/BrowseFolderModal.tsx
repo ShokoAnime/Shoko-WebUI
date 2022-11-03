@@ -28,7 +28,7 @@ function BrowseFolderModal(props: Props) {
   };
 
   return (
-    <ModalPanel show={status} className="w-25" onRequestClose={() => handleClose()}>
+    <ModalPanel show={status} className="w-25 drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]" onRequestClose={() => handleClose()}>
       <div className="flex flex-col w-full space-y-4">
         <div className="px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow">
           <p className="text-base font-semibold text-gray-300">Select Import Folder</p>
