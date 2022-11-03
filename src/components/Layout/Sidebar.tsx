@@ -141,7 +141,7 @@ function Sidebar() {
               </div>
             </div>
           )}
-          // TODO: This maybe works, maybe doesn't. Cannot test properly.
+          {/*TODO: This maybe works, maybe doesn't. Cannot test properly.*/}
           {(banStatus.udp.updateType === 1 && banStatus.udp.value) && (
             <div className="flex items-center font-semibold cursor-pointer mt-5">
               <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
