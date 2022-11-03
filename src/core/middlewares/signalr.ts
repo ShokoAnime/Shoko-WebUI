@@ -8,7 +8,8 @@ import {
 } from 'lodash';
 
 import Events from '../events';
-import { setQueueStatus } from '../slices/mainpage';
+import { setQueueStatus, setUdpBanStatus, setHttpBanStatus } from '../slices/mainpage';
+import { AniDBBanItemType } from '../types/signalr';
 
 let lastRetry = moment();
 let attempts = 0;
@@ -16,18 +17,18 @@ const maxTimeout = 60000;
 
 let connectionEvents: HubConnection;
 
+// Queue Events
+
 const onQueueStateChange = dispatch => (queue, state) => {
   const newState = Object.assign({}, { [queue]: state });
   dispatch(setQueueStatus(newState));
 };
-const onQueueCountChange = dispatch => (queue, count) => {
-  // TODO: Add auto-reload back
-  // const currentQueue = getState().mainpage.queueStatus[queue];
-  // if (queue === 'GeneralQueueCount' && currentQueue > count) dispatch({ type: Events.MAINPAGE_REFRESH });
 
+const onQueueCountChange = dispatch => (queue, count) => {
   const newState = Object.assign({}, { [queue]: count });
   dispatch(setQueueStatus(newState));
 };
+
 const onQueueRefreshState = dispatch => (state) => {
   const fixedState = {};
   forEach(state, (item, key) => {
@@ -41,6 +42,21 @@ const onQueueRefreshState = dispatch => (state) => {
     fixedState[fixedKey] = item;
   });
   dispatch(setQueueStatus(fixedState));
+};
+
+// AniDB Events
+
+const onAniDBConnected = dispatch => (state: Array<AniDBBanItemType>) => {
+  dispatch(setUdpBanStatus(state[0]));
+  dispatch(setHttpBanStatus(state[1]));
+};
+
+const onAniDBUDPStateUpdate = dispatch => (state: AniDBBanItemType) => {
+  dispatch(setUdpBanStatus(state));
+};
+
+const onAniDBHttpStateUpdate = dispatch => (state: AniDBBanItemType) => {
+  dispatch(setHttpBanStatus(state));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
@@ -69,7 +85,7 @@ const signalRMiddleware = ({
   // register signalR after the user logged in
   if (action.type === Events.MAINPAGE_LOAD) {
     if (connectionEvents !== undefined) { return next(action); }
-    const connectionHub = '/signalr/events';
+    const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue';
 
     const protocol = new JsonHubProtocol();
 
@@ -88,9 +104,13 @@ const signalRMiddleware = ({
     connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
 
     // event handlers, you can use these to dispatch actions to update your Redux store
-    connectionEvents.on('QueueStateChanged', onQueueStateChange(dispatch));
-    connectionEvents.on('QueueCountChanged', onQueueCountChange(dispatch));
-    connectionEvents.on('CommandProcessingStatus', onQueueRefreshState(dispatch));
+    connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
+    connectionEvents.on('Queue:QueueCountChanged', onQueueCountChange(dispatch));
+    connectionEvents.on('Queue:OnConnected', onQueueRefreshState(dispatch));
+
+    connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
+    connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
+    connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
 
     // re-establish the connection if connection dropped
     connectionEvents.onclose(() => debounce(() => { handleReconnect(connectionEvents); }, 5000));

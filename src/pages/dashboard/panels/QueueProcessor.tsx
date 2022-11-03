@@ -14,7 +14,7 @@ import {
 import { RootState } from '../../../core/store';
 import Events from '../../../core/events';
 import Button from '../../../components/Input/Button';
-import type { QueueItemType } from '../../../core/types/api';
+import type { QueueItemType } from '../../../core/types/signalr';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };

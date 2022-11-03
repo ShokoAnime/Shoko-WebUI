@@ -1,45 +1,52 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { SeriesInfoType, QueueStatusType } from '../types/api';
+import type { QueueStatusType, AniDBBanType, AniDBBanItemType } from '../types/signalr';
 
 type State = {
   fetched: {
     [key: string]: boolean,
   };
-  importFolderSeries: Array<SeriesInfoType>;
   queueStatus: QueueStatusType;
-  unrecognizedMark: Array<string>;
+  banStatus: AniDBBanType;
 };
 
 const mainpageSlice = createSlice({
   name: 'mainpage',
   initialState: {
     fetched: {},
-    importFolderSeries: [],
     queueStatus: {} as QueueStatusType,
-    selectedImportFolderSeries: 1,
-    unrecognizedMark: [],
+    banStatus: {
+      http: {
+        updateType: 2,
+        value: false,
+      },
+      udp: {
+        updateType: 1,
+        value: false,
+      },
+    },
   } as State,
   reducers: {
     setFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
     },
-    setImportFolderSeries(sliceState, action) {
-      sliceState.importFolderSeries = action.payload;
-    },
     setQueueStatus(sliceState, action) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
-    markUnrecognizedFile(sliceState, action) {
-      sliceState.unrecognizedMark = action.payload.state === true ? [...sliceState.unrecognizedMark, action.payload.id] : sliceState.unrecognizedMark.filter(id => id !== action.payload.id);
+    setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
+      sliceState.banStatus.udp = action.payload;
+    },
+    setHttpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
+      sliceState.banStatus.http = action.payload;
     },
   },
 });
 
 export const {
   setFetched,
-  setImportFolderSeries, setQueueStatus,
-  markUnrecognizedFile,
+  setQueueStatus,
+  setUdpBanStatus,
+  setHttpBanStatus,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
