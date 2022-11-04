@@ -1,0 +1,69 @@
+name: Release-Dev-Auto
+on:
+  push:
+    branches: master
+
+jobs:
+  release-dev-auto:
+    runs-on: ubuntu-latest
+    environment: production
+    name: Build & release dev version
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint --quiet
+
+      - name: Get new version
+        uses: zwaldowski/semver-release-action@v3
+        id: semver
+        with:
+          bump: prerelease
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          dry_run: true
+          preid: 'dev'
+
+      - name: Update version in package.json
+        run: npm version ${{ steps.semver.outputs.version_tag }} --no-git-tag-version
+
+      - name: Build
+        run: yarn build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Create changelog
+        run: git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"## What's Changed%n%B" >> changelog.txt
+
+      - name: Commit package.json
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: master
+          commit_message: Bump version in package.json to ${{ steps.semver.outputs.version_tag }}
+          file_pattern: package.json
+          skip_fetch: true
+
+      - name: Rename build zip
+        run: mv ./build/latest.zip ./build/Shoko-WebUI-${{ steps.semver.outputs.version_tag }}.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./build/Shoko-WebUI-${{ steps.semver.outputs.version_tag }}.zip
+          tag_name: ${{ steps.semver.outputs.version_tag }}
+          prerelease: true
+          fail_on_unmatched_files: true
+          body_path: ./changelog.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
