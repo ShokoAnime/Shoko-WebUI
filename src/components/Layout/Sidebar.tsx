@@ -16,6 +16,7 @@ import {
   mdiInformationOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
+import semver from 'semver';
 
 import { RootState } from '../../core/store';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
@@ -50,7 +51,7 @@ function Sidebar() {
 
   useEffect(() => {
     checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
-      setWebuiUpdateAvailable(!Version.debug && result.version !== Version.package);
+      setWebuiUpdateAvailable(!Version.debug && semver.gt(result.version, Version.package));
     }, reason => console.error(reason));
   }, []);
 
