@@ -1,0 +1,95 @@
+name: Release-Manual
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git reference for what to push
+        default: master
+        required: true
+      version:
+        description: Version to release
+        required: true
+      prerelease:
+        description: Prerelease
+        default: false
+        required: false
+        type: boolean
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    environment: production
+    name: Build & release
+
+    steps:
+      - name: Check version format for prerelease
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match1
+        with:
+          text: ${{ github.event.inputs.version }}
+          regex: '^\d+\.\d+\.\d+-dev\.\d+$'
+        if: ${{ github.event.inputs.prerelease == 'true' }}
+
+      - name: Check version format for stable release
+        uses: actions-ecosystem/action-regex-match@v2
+        id: regex-match2
+        with:
+          text: ${{ github.event.inputs.version }}
+          regex: '^\d+\.\d+\.\d+$'
+        if: ${{ github.event.inputs.prerelease == 'false' }}
+
+      - name: Fail if version format is incorrect
+        run: |
+          echo -e "::error::Incorrect version format\nPrerelease version format example: 2.0.0-dev.0\nStable version format example: 2.0.0"
+          exit 1
+        if: ${{ steps.regex-match1.outputs.match == '' && steps.regex-match2.outputs.match == '' }}
+
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.inputs.ref }}
+          fetch-depth: 0
+
+      - name: Setup Node.js v16
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Lint
+        run: yarn lint --quiet
+
+      - name: Update version in package.json
+        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+
+      - name: Build
+        run: yarn build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+      - name: Create changelog
+        run: git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"## What's Changed%n%B" >> changelog.txt
+
+      - name: Commit package.json
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          branch: master
+          commit_message: Bump version in package.json to ${{ github.event.inputs.version }}
+          file_pattern: package.json
+          skip_fetch: true
+
+      - name: Rename build zip
+        run: mv ./build/latest.zip ./build/Shoko-WebUI-${{ github.event.inputs.version }}.zip
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./build/Shoko-WebUI-${{ github.event.inputs.version }}.zip
+          tag_name: ${{ github.event.inputs.version }}
+          prerelease: ${{ github.event.inputs.prerelease }}
+          fail_on_unmatched_files: true
+          body_path: ./changelog.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

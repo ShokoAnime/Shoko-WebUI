@@ -1,28 +1,27 @@
 name: Test
 on:
-  push:
   pull_request:
     types: [opened, synchronize]
 
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
+    name: Lint check and build test PR
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
       - name: Setup Node.js v16
         uses: actions/setup-node@v3
         with:
           node-version: 16
+
       - name: Install dependencies
         run: yarn install
+
       - name: Lint
         run: yarn lint --quiet
+
       - name: Build
         run: yarn build
-      - name: Upload artifacts
-        if: ${{ github.event_name == 'push' }}
-        uses: actions/upload-artifact@v3
-        with:
-          name: shoko-webui-test
-          path: build/latest.zip
