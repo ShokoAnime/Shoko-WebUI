@@ -12,7 +12,13 @@ import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../../../core/store';
 import { useLazyGetSeriesEpisodesQuery, useRefreshAnidbSeriesMutation, useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
-import { setLinks, setSelectedSeries, setLinksEpisode } from '../../../../core/slices/utilities/unrecognized';
+import {
+  setLinks,
+  setSelectedSeries,
+  setLinksEpisode,
+  setManualLink,
+} from '../../../../core/slices/utilities/unrecognized';
+import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 
 
 
@@ -34,6 +40,13 @@ function EpisodeLinkPanel() {
     const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
     dispatch(setLinks(newLinks));
   }, [episodes, links]);
+  
+  useEffect(() => {
+    if (selectedRows.length > 0) { return; }
+    dispatch(setManualLink(false));
+    dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
+    dispatch(setLinks([]));
+  }, [selectedRows]);
   
   const [ epType, setEpType ] = useState('1');
   const episodeTypeOptions = [
