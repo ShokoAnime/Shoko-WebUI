@@ -15,6 +15,7 @@ export const seriesApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Episodes'],
   endpoints: build => ({
 
     // Delete a Series
@@ -36,11 +37,13 @@ export const seriesApi = createApi({
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<Array<EpisodeType>, { seriesId: number; }>({
       query: ({ seriesId }) => ({ url: `${seriesId}/Episode?includeMissing=true` }),
+      providesTags: ['Episodes'],
     }),
     
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
       query: ({ anidbID }) => ({ url: `AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
+      invalidatesTags: ['Episodes'],
     }),
     
     // Get AniDB Info from the AniDB ID

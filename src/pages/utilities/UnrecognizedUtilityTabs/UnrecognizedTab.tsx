@@ -240,6 +240,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
       filesQuery.refetch();
       dispatch(setManualLink(false));
       dispatch(setLinks([]));
+      dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
     });
   };
 
