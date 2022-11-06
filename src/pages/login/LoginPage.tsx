@@ -71,7 +71,11 @@ function LoginPage() {
         position={toastPosition}
         autoClose={4000}
         transition={Slide}
-        bodyClassName="font-bold font-open-sans"
+        bodyClassName="font-semibold font-open-sans"
+        className="mt-20 !w-96"
+        closeButton={false}
+        icon={false}
+        hideProgressBar={true}
       />
       <div className="flex h-screen w-screen">
         <div className="flex grow login-image" />
