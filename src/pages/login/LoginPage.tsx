@@ -48,7 +48,8 @@ function LoginPage() {
     }
   }, [initStatus]);
 
-  const handleSignIn = () => {
+  const handleSignIn = (event: React.FormEvent) => {
+    event.preventDefault();
     if (!username) return;
 
     dispatch({
@@ -60,12 +61,6 @@ function LoginPage() {
         rememberUser,
       },
     });
-  };
-
-  const handleKeyPress = (event: any) => {
-    if (event.key === 'Enter') {
-      handleSignIn();
-    }
   };
 
   const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
@@ -102,12 +97,14 @@ function LoginPage() {
             )}
             {initStatus.State === 2 && (
               <React.Fragment>
-                <div className="flex flex-col -mt-32">
-                  <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} onKeyPress={handleKeyPress} />
-                  <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} onKeyPress={handleKeyPress} className="mt-4" />
-                </div>
-                <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
-                <Button className="bg-highlight-1 mt-4 py-2" onClick={handleSignIn} loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
+                <form className="-mt-32" onSubmit={handleSignIn}>
+                  <div className="flex flex-col">
+                    <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
+                    <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-4" />
+                  </div>
+                  <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
+                  <Button className="bg-highlight-1 mt-4 py-2 w-full" type="submit" loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
+                </form>
               </React.Fragment>
             )}
             {initStatus.State === 3 && (

@@ -9,7 +9,7 @@ type Props = {
   placeholder?: string;
   value: string | number;
   onChange: (event: any) => void;
-  onKeyPress?: (event: any) => void;
+  onKeyUp?: (event: any) => void;
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
@@ -23,7 +23,7 @@ type Props = {
 function Input(props: Props) {
   const {
     id, label, center, type, placeholder, value, className, startIcon,
-    autoFocus, disabled, onChange, onKeyPress, endIcon, endIconClick, inline,
+    autoFocus, disabled, onChange, onKeyUp, endIcon, endIconClick, inline,
   } = props;
 
   return (
@@ -40,7 +40,7 @@ function Input(props: Props) {
               placeholder={placeholder ?? ''}
               value={value}
               onChange={onChange}
-              onKeyPress={onKeyPress}
+              onKeyUp={onKeyUp}
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={autoFocus}
               disabled={disabled}
