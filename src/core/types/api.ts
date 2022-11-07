@@ -2,12 +2,13 @@ export type ApiLoginType = {
   user: string;
   pass: string;
   device: string;
+  rememberUser: boolean;
 };
 
 export type ApiSessionState = {
   apikey: string;
   username: string;
-  userid: number;
+  rememberUser: boolean;
 };
 
 export type GlobalAlertType = {

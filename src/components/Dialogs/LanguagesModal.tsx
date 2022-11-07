@@ -9,6 +9,8 @@ import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
 
+import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
   en: 'English (en)',
@@ -65,9 +67,9 @@ function LanguagesModal() {
   const dispatch = useDispatch();
 
   const status = useSelector((state: RootState) => state.modals.languages.status);
-  const LanguagePreference = useSelector(
-    (state: RootState) => state.localSettings.LanguagePreference,
-  );
+
+  const settingsQuery = useGetSettingsQuery();
+  const LanguagePreference = settingsQuery.data?.LanguagePreference ?? ['x-jat', 'en'];
 
   const [languages, setLanguages] = useState([] as Array<string>);
 

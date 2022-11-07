@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
+import { useOutletContext } from 'react-router-dom';
 import { replace } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import {
@@ -12,26 +13,53 @@ import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
+
+import { useGetInitVersionQuery, useLazyGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { initialSettings } from '../settings/SettingsPage';
+import type { SettingsType } from '../../core/types/api/settings';
+
+type ContextType = {
+  fetching: boolean
+  newSettings: SettingsType;
+  setNewSettings: (settings: SettingsType) => {};
+  updateSetting: (type: string, key: string, value: string) => {};
+  saveSettings: () => Promise<void>;
+};
 
 function FirstRunPage() {
   const dispatch = useDispatch();
 
-  const isFetchingVersion = useSelector((state: RootState) => state.fetching.serverVersion);
-  const version = useSelector((state: RootState) => state.jmmVersion);
   const pathname = useSelector((state: RootState) => state.router.location.pathname);
-  const status = useSelector((state: RootState) => state.firstrun.serverStatus);
   const saved = useSelector((state: RootState) => state.firstrun.saved);
 
-  useEffect(() => {
-    if (status.State !== 4) {
-      dispatch(replace('login'));
-      return;
-    }
+  const version = useGetInitVersionQuery();
+  const settingsQuery = useGetSettingsQuery();
+  const settings = settingsQuery?.data ?? initialSettings;
+  const [patchSettings] = usePatchSettingsMutation();
+  const [statusTrigger] = useLazyGetInitStatusQuery();
 
-    dispatch({ type: Events.SERVER_VERSION });
-    dispatch({ type: Events.SETTINGS_GET_SERVER });
+  const [newSettings, setNewSettings] = useState(initialSettings);
+
+  useEffect(() => {
+    setNewSettings(settings);
+  }, [settings]);
+
+  useEffect(() => {
+    statusTrigger().unwrap().then((data) => {
+      if (data.State !== 4) dispatch(replace('login'));
+    }, error => console.error(error));
   }, []);
+
+  const updateSetting = (type: string, key: string, value: string) => {
+    const tempSettings = { ...(newSettings[type]), [key]: value };
+    setNewSettings({ ...newSettings, [type]: tempSettings });
+  };
+
+  const saveSettings = async () => {
+    await patchSettings({ oldSettings: settings, newSettings, skipValidation: true });
+    settingsQuery.refetch();
+  };
 
   const renderItem = (text: string, key: string) => (
     <div key={key} className="flex items-center font-semibold mt-4 first:mt-0">
@@ -50,7 +78,7 @@ function FirstRunPage() {
         <div className="flex flex-col items-center">
           <img src="/logo.png" className="w-32" alt="logo" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {isFetchingVersion ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
+            Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
           </div>
         </div>
         <div className="flex flex-col grow justify-center p-4 -mt-24">
@@ -72,11 +100,23 @@ function FirstRunPage() {
           </Button>
         </div>
       </div>
-      <div className="flex grow">
-        <Outlet />
+      <div className="flex grow justify-center">
+        <Outlet
+          context={{
+            fetching: settingsQuery.isLoading,
+            newSettings,
+            setNewSettings,
+            updateSetting,
+            saveSettings,
+          }}
+        />
       </div>
     </div>
   );
+}
+
+export function useFirstRunSettingsContext() {
+  return useOutletContext<ContextType>();
 }
 
 export default FirstRunPage;

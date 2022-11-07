@@ -1,76 +1,70 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import cx from 'classnames';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
 import Checkbox from '../../../components/Input/Checkbox';
 import InputSmall from '../../../components/Input/InputSmall';
 import SelectSmall from '../../../components/Input/SelectSmall';
 import TransitionDiv from '../../../components/TransitionDiv';
 
-const updateFrequencyType = [
-  [1, 'Never'],
-  [2, 'Every 6 Hours'],
-  [3, 'Every 12 Hours'],
-  [4, 'Every 24 Hours'],
-  [5, 'Once a Week'],
-  [6, 'Once a Month'],
-];
+import { useFirstRunSettingsContext } from '../FirstRunPage';
 
-function AniDBTab() {
-  const dispatch = useDispatch();
+import { TestStatusType } from '../../../core/slices/firstrun';
 
-  const aniDBSettings = useSelector((state: RootState) => state.localSettings.AniDb);
+type Props = {
+  setStatus: (status: TestStatusType) => void;
+};
 
-  const [MaxRelationDepth, setMaxRelationDepth] = useState(3);
+function AniDBTab({ setStatus }: Props) {
+  const { newSettings, updateSetting } = useFirstRunSettingsContext();
 
-  const saveSettings = (newSettings: { [id: string]: any }) => dispatch(
-    { type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'AniDb', newSettings } },
-  );
-
-  useEffect(() => {
-    setMaxRelationDepth(aniDBSettings.MaxRelationDepth);
-  }, []);
-
-  useEffect(() => {
-    saveSettings({ MaxRelationDepth });
-  }, [MaxRelationDepth]);
+  const {
+    Anime_UpdateFrequency, Calendar_UpdateFrequency, DownloadCharacters,
+    DownloadCreators, DownloadRelatedAnime,
+    DownloadReleaseGroups, File_UpdateFrequency,
+    MaxRelationDepth, MyList_AddFiles, MyList_DeleteType,
+    MyList_ReadWatched, MyList_ReadUnwatched, MyList_SetWatched,
+    MyList_SetUnwatched, MyList_StorageState, MyList_UpdateFrequency,
+    MyListStats_UpdateFrequency,
+  } = newSettings.AniDb;
 
   const handleInputChange = (event: any) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (value !== '') {
-      saveSettings({ [id]: value });
+    updateSetting('AniDb', id, value);
+  };
+
+  const validateAndSaveRelationDepth = (depth: string) => {
+    if (parseInt(depth) < 0 || parseInt(depth) > 5) setStatus({ type: 'error', text: 'Max Relation Depth may only be between 0 and 5' });
+    else {
+      updateSetting('AniDb', 'MaxRelationDepth', depth);
+      setStatus({ type: 'success', text: '' });
     }
   };
 
-  const updateFrequencyOptions: Array<React.ReactNode> = [];
-
-  updateFrequencyType.forEach((item) => {
-    updateFrequencyOptions.push(<option value={item[0]} key={item[0]}>{item[1]}</option>);
-  });
-
-  const {
-    DownloadCharacters, DownloadCreators, DownloadRelatedAnime, MyList_AddFiles,
-    MyList_ReadWatched, MyList_ReadUnwatched, MyList_SetWatched, MyList_SetUnwatched,
-    MyList_StorageState, MyList_DeleteType, Calendar_UpdateFrequency, Anime_UpdateFrequency,
-    MyList_UpdateFrequency, MyListStats_UpdateFrequency, File_UpdateFrequency,
-  } = aniDBSettings;
+  const renderUpdateFrequencyValues = () => (
+    <>
+      <option value={1}>Never</option>
+      <option value={2}>Every 6 Hours</option>
+      <option value={3}>Every 12 Hours</option>
+      <option value={4}>Every 24 Hours</option>
+      <option value={5}>Once a Week</option>
+      <option value={6}>Once a Month</option>
+    </>
+  );
 
   return (
-    <TransitionDiv className="flex flex-col w-80">
+    <TransitionDiv className="flex flex-col w-96">
 
       <div className="font-semibold">Download Options</div>
       <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} justify className="mt-4" />
       <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} justify className="mt-1" />
+      <Checkbox label="Release Groups" id="DownloadReleaseGroups" isChecked={DownloadReleaseGroups} onChange={handleInputChange} justify className="mt-1" />
       <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} justify className="mt-1" />
-      {DownloadRelatedAnime && (
-        <TransitionDiv className="flex justify-between mt-1">
-          Related Depth
-          <InputSmall id="MaxRelationDepth" value={MaxRelationDepth} type="number" onChange={e => setMaxRelationDepth(e.target.value)} className="w-10 text-center px-2" />
-        </TransitionDiv>
-      )}
+      <div className={cx('flex justify-between mt-1 items-center transition-opacity', !DownloadRelatedAnime && 'pointer-events-none opacity-50')}>
+        Related Depth
+        <InputSmall id="max-relation-depth" value={MaxRelationDepth} type="number" onChange={event => validateAndSaveRelationDepth(event.target.value)} className="w-10 text-center px-2" />
+      </div>
 
       <div className="font-semibold mt-5">Mylist Options</div>
       <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} justify className="mt-4" />
@@ -96,19 +90,19 @@ function AniDBTab() {
 
       <div className="font-semibold mt-5">Update Options</div>
       <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={handleInputChange} className="mt-4">
-        {updateFrequencyOptions}
+        {renderUpdateFrequencyValues()}
       </SelectSmall>
       <SelectSmall label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={handleInputChange} className="mt-1">
-        {updateFrequencyOptions}
+        {renderUpdateFrequencyValues()}
       </SelectSmall>
       <SelectSmall label="Sync Mylist" id="MyList_UpdateFrequency" value={MyList_UpdateFrequency} onChange={handleInputChange} className="mt-1">
-        {updateFrequencyOptions}
+        {renderUpdateFrequencyValues()}
       </SelectSmall>
       <SelectSmall label="Get Mylist Stats" id="MyListStats_UpdateFrequency" value={MyListStats_UpdateFrequency} onChange={handleInputChange} className="mt-1">
-        {updateFrequencyOptions}
+        {renderUpdateFrequencyValues()}
       </SelectSmall>
       <SelectSmall label="Files With Missing Info" id="File_UpdateFrequency" value={File_UpdateFrequency} onChange={handleInputChange} className="mt-1">
-        {updateFrequencyOptions}
+        {renderUpdateFrequencyValues()}
       </SelectSmall>
 
     </TransitionDiv>

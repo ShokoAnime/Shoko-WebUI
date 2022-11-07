@@ -8,59 +8,51 @@ import { mdiLoading, mdiCloseCircle } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 
+import { useGetInitVersionQuery, useLazyGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { usePostAuthMutation } from '../../core/rtkQuery/authApi';
+
 function LoginPage() {
   const dispatch = useDispatch();
 
-  const initStatus = useSelector((state: RootState) => state.firstrun.serverStatus);
-  const isFetching = useSelector((state: RootState) => state.fetching.serverVersion);
-  const isFetchingLogin = useSelector((state: RootState) => state.fetching.login);
-  const rememberOldUser = useSelector((state: RootState) => state.apiSession.rememberUser);
+  const apiSession = useSelector((state: RootState) => state.apiSession);
   const toastPosition = useSelector(
     (state: RootState) => state.webuiSettings.webui_v2.toastPosition,
   );
-  const version = useSelector((state: RootState) => state.jmmVersion);
+  const version = useGetInitVersionQuery();
+  const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
+  const [statusTrigger, statusResult] = useLazyGetInitStatusQuery();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
 
   useEffect(() => {
-    dispatch({ type: Events.START_API_POLLING, payload: { type: 'server-status' } });
-    dispatch({ type: Events.SERVER_VERSION });
-
-    if (rememberOldUser) {
-      dispatch(push({ pathname: '/' }));
-    }
-
-    return function cleanup() {
-      dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
-    };
+    statusTrigger().updateSubscriptionOptions({ pollingInterval: 200 });
   }, []);
 
   useEffect(() => {
-    if (initStatus.State !== 1) {
-      dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
+    if (statusResult.data?.State !== 1) {
+      statusTrigger().updateSubscriptionOptions({ pollingInterval: 0 });
     }
-  }, [initStatus]);
+    if (statusResult.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
+      dispatch(push({ pathname: '/' }));
+    }
+  }, [statusResult.data]);
 
-  const handleSignIn = (event: React.FormEvent) => {
+  const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!username) return;
 
-    dispatch({
-      type: Events.AUTH_LOGIN,
-      payload: {
-        user: username,
-        pass: password,
-        device: 'webui',
-        rememberUser,
-      },
-    });
+    login({
+      user: username,
+      pass: password,
+      device: 'web-ui',
+      rememberUser: rememberUser,
+    }).unwrap().then(() => dispatch(push('/')), error => console.error(error));
   };
 
   const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
@@ -82,24 +74,24 @@ function LoginPage() {
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <img src="logo.png" className="w-32" alt="logo" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version}
+            Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
           </div>
           <div className="flex flex-col grow w-full justify-center p-1">
-            {!initStatus?.State && (
+            {!statusResult.data?.State && (
               <div className="flex justify-center items-center">
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={5} />
               </div>
             )}
-            {initStatus.State === 1 && (
+            {statusResult.data?.State === 1 && (
               <div className="flex flex-col justify-center items-center">
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="mt-2 text-lg">
-                  <span className="font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
+                  <span className="font-semibold">Status: </span>{statusResult.data?.StartupMessage ?? 'Unknown'}
                 </div>
               </div>
             )}
-            {initStatus.State === 2 && (
+            {statusResult.data?.State === 2 && (
               <React.Fragment>
                 <form className="-mt-32" onSubmit={handleSignIn}>
                   <div className="flex flex-col">
@@ -107,19 +99,19 @@ function LoginPage() {
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-4" />
                   </div>
                   <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
-                  <Button className="bg-highlight-1 mt-4 py-2 w-full" type="submit" loading={isFetchingLogin} disabled={isFetching || username === ''}>Login</Button>
+                  <Button className="bg-highlight-1 mt-4 py-2 w-full" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
                 </form>
               </React.Fragment>
             )}
-            {initStatus.State === 3 && (
+            {statusResult.data?.State === 3 && (
               <div className="flex flex-col justify-center items-center overflow-y-auto pb-2">
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{initStatus.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{statusResult.data?.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
-            {initStatus.State === 4 && (
+            {statusResult.data?.State === 4 && (
               <div className="flex flex-col -mt-32">
                 <div className="flex flex-col">
                   <div className="font-semibold">First Time? We&apos;ve All Been There</div>

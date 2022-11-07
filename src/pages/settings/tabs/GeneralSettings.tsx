@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useEffect, useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo } from 'react';
 import cx from 'classnames';
 import { findKey, pickBy, transform } from 'lodash';
 
-import Events from '../../../core/events';
 import { uiVersion } from '../../../core/util';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
@@ -13,7 +11,7 @@ import Checkbox from '../../../components/Input/Checkbox';
 
 import { useSettingsContext } from '../SettingsPage';
 
-import type { RootState } from '../../../core/store';
+import { useGetInitVersionQuery } from '../../../core/rtkQuery/initApi';
 
 const UI_VERSION = uiVersion();
 
@@ -45,13 +43,7 @@ function GeneralSettings() {
     LogRotator, WebUI_Settings,
   } = newSettings;
 
-  const dispatch = useDispatch();
-
-  const version = useSelector((state: RootState) => state.jmmVersion);
-
-  useEffect(() => {
-    dispatch(({ type: Events.SERVER_VERSION }));
-  }, []);
+  const version = useGetInitVersionQuery();
 
   const exclusions = useMemo(() => {
     return transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
@@ -80,7 +72,7 @@ function GeneralSettings() {
   return (
     <>
       <ShokoPanel title="Version Information" isFetching={fetching}>
-        <div className="flex justify-between"><span>Server Version</span>{version}</div>
+        <div className="flex justify-between"><span>Server Version</span>{version.data?.find(obj => obj.Name === 'Server')?.Version}</div>
         <div className="flex justify-between mt-2"><span>Server Channel</span>Daily</div>
         <div className="flex justify-between mt-2"><span>Web UI Version</span>{UI_VERSION}</div>
         <div className="flex justify-between mt-2 items-center">

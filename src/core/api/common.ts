@@ -1,18 +1,5 @@
 import Api from './index';
 
-function* getLogDelta(data: { delta: number;position: number; }): {} {
-  const query = data ? `${data.delta}/${data.position || 0}` : '';
-  const json = yield Api.call({ action: '/log/get/', query });
-  if (json.error && json.code === 404) {
-    return { data: [] };
-  }
-  return json;
-}
-
-function getVersion() {
-  return Api.call({ action: '/version' });
-}
-
 function getQueue() {
   return Api.call({ action: '/queue/get' });
 }
@@ -61,16 +48,7 @@ function getQueueStart() {
   return Api.call({ action: '/queue/start', expectEmpty: true });
 }
 
-function getLogRotate() {
-  return Api.call({ action: '/log/rotate' });
-}
-
-function postLogRotate(params: {}) {
-  return Api.call({ action: '/log/rotate', method: 'POST', params });
-}
-
 export default {
-  getLogDelta,
   getQueue,
   getQueueHasherPause,
   getQueueHasherStart,
@@ -83,7 +61,4 @@ export default {
   getQueueImagesClear,
   getQueuePause,
   getQueueStart,
-  getLogRotate,
-  postLogRotate,
-  getVersion,
 };

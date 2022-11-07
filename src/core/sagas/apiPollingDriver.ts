@@ -3,25 +3,10 @@ import {
 } from 'redux-saga/effects';
 
 import toast from '../../components/Toast';
-import ApiInit from '../api/v3/init';
 import ApiPlex from '../api/v3/plex';
 import Events from '../events';
 import { SET_AUTOUPDATE, Action } from '../actions';
-import { setServerStatus } from '../slices/firstrun';
 import { setItem as setMiscItem } from '../slices/misc';
-
-function* pollServerStatus() {
-  while (true) {
-    const resultJson = yield call(ApiInit.getStatus.bind(this));
-    if (resultJson.error) {
-      toast.error('API Request Failed', resultJson.message);
-      yield put({ type: Events.STOP_API_POLLING, payload: { type: 'server-status' } });
-    } else {
-      yield put(setServerStatus(resultJson.data));
-    }
-    yield delay(1000);
-  }
-}
 
 function* pollAutoRefresh() {
   try {
@@ -49,7 +34,6 @@ function* pollPlexAuthentication() {
       toast.error('API Request Failed', resultJson.message);
       yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
     } else {
-      yield put(setServerStatus(resultJson.data));
       if (resultJson.data) {
         yield put(setMiscItem({ plex: { authenticated: true } }));
         yield put({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
@@ -60,7 +44,6 @@ function* pollPlexAuthentication() {
 }
 
 const typeMap = {
-  'server-status': pollServerStatus,
   'auto-refresh': pollAutoRefresh,
   'plex-auth': pollPlexAuthentication,
 };

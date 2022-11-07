@@ -1,35 +1,48 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { push } from '@lagunovsky/redux-react-router';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import Input from '../../components/Input/Input';
 import Footer from './Footer';
 import TransitionDiv from '../../components/TransitionDiv';
-import { unsetSaved as unsetFirstRunSaved, setAnidbStatus } from '../../core/slices/firstrun';
+
+import { setSaved as setFirstRunSaved, TestStatusType, unsetSaved as unsetFirstRunSaved } from '../../core/slices/firstrun';
+import { useFirstRunSettingsContext } from './FirstRunPage';
+import { usePostAniDBTestLoginMutation } from '../../core/rtkQuery/settingsApi';
 
 function AniDBAccount() {
+  const {
+    newSettings, saveSettings, updateSetting,
+  } = useFirstRunSettingsContext();
+
   const dispatch = useDispatch();
 
-  const aniDBSettings = useSelector((state: RootState) => state.localSettings.AniDb);
-  const isFetching = useSelector((state: RootState) => state.fetching.firstrunAnidb);
-  const status = useSelector((state: RootState) => state.firstrun.anidbStatus);
+  const [testAniDbLogin, testAniDbLoginResult] = usePostAniDBTestLoginMutation();
+  const [anidbStatus, setAnidbStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
-  const [Username, setUsername] = useState('');
-  const [Password, setPassword] = useState('');
+  const { Username, Password } = newSettings.AniDb;
 
-  useEffect(() => {
-    setUsername(aniDBSettings.Username);
-    setPassword(aniDBSettings.Password);
-  }, []);
-
-  useEffect(() => {
-    dispatch(setAnidbStatus({ type: 'success', text: '' }));
+  const handleInputChange = (event: any) => {
+    const { id, value } = event.target;
+    updateSetting('AniDb', id, value);
+    setAnidbStatus({ type: 'success', text: '' });
     dispatch(unsetFirstRunSaved('anidb-account'));
-  }, [Username, Password]);
+  };
+
+  const handleTest = async () => {
+    await saveSettings();
+    testAniDbLogin({ Username, Password }).unwrap().then(() => {
+      setAnidbStatus({ type: 'success', text: 'AniDB test successful!' });
+      dispatch(setFirstRunSaved('anidb-account'));
+      dispatch(push('metadata-sources'));
+    }, (error) => {
+      console.error(error);
+      setAnidbStatus({ type: 'error', text: error.data });
+    });
+  };
 
   return (
-    <TransitionDiv className="flex flex-col justify-center px-96">
+    <TransitionDiv className="flex flex-col justify-center max-w-[40rem] px-8">
       <div className="font-semibold">Adding Your AniDB Account</div>
       <div className="mt-9 text-justify">
         Shoko uses AniDB to compare your file hashes with its extensive database to quickly
@@ -40,10 +53,10 @@ function AniDBAccount() {
         An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
       </div>
       <div className="flex flex-col my-9">
-        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-9" />
+        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
+        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-9" />
       </div>
-      <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => dispatch({ type: Events.FIRSTRUN_TEST_ANIDB, payload: { Username, Password } })} isFetching={isFetching} status={status} />
+      <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => handleTest()} isFetching={testAniDbLoginResult.isLoading} status={anidbStatus} />
     </TransitionDiv>
   );
 }
