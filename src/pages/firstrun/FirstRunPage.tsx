@@ -14,7 +14,7 @@ import Button from '../../components/Input/Button';
 
 import { RootState } from '../../core/store';
 
-import { useGetInitVersionQuery, useLazyGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '../../core/types/api/settings';
@@ -37,19 +37,17 @@ function FirstRunPage() {
   const settingsQuery = useGetSettingsQuery();
   const settings = settingsQuery?.data ?? initialSettings;
   const [patchSettings] = usePatchSettingsMutation();
-  const [statusTrigger] = useLazyGetInitStatusQuery();
+  const status = useGetInitStatusQuery();
+
+  useEffect(() => {
+    if (!status.isUninitialized && status.data?.State !== 4) dispatch(replace('login'));
+  }, [status.data]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
 
   useEffect(() => {
     setNewSettings(settings);
   }, [settings]);
-
-  useEffect(() => {
-    statusTrigger().unwrap().then((data) => {
-      if (data.State !== 4) dispatch(replace('login'));
-    }, error => console.error(error));
-  }, []);
 
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings = { ...(newSettings[type]), [key]: value };

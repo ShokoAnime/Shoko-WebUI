@@ -12,7 +12,7 @@ import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 
-import { useGetInitVersionQuery, useLazyGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/authApi';
 
 function LoginPage() {
@@ -22,26 +22,24 @@ function LoginPage() {
   const toastPosition = useSelector(
     (state: RootState) => state.webuiSettings.webui_v2.toastPosition,
   );
-  const version = useGetInitVersionQuery();
-  const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
-  const [statusTrigger, statusResult] = useLazyGetInitStatusQuery();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
+  const [pollingInterval, setPollingInterval] = useState(2000);
+
+  const version = useGetInitVersionQuery();
+  const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
+  const status = useGetInitStatusQuery(undefined, { pollingInterval });
 
   useEffect(() => {
-    statusTrigger().updateSubscriptionOptions({ pollingInterval: 200 });
-  }, []);
-
-  useEffect(() => {
-    if (statusResult.data?.State !== 1) {
-      statusTrigger().updateSubscriptionOptions({ pollingInterval: 0 });
+    if (status.data?.State !== 1) {
+      setPollingInterval(0);
     }
-    if (statusResult.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
+    if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
       dispatch(push({ pathname: '/' }));
     }
-  }, [statusResult.data]);
+  }, [status.data]);
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -77,21 +75,21 @@ function LoginPage() {
             Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
           </div>
           <div className="flex flex-col grow w-full justify-center p-1">
-            {!statusResult.data?.State && (
+            {!status.data?.State && (
               <div className="flex justify-center items-center">
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={5} />
               </div>
             )}
-            {statusResult.data?.State === 1 && (
+            {status.data?.State === 1 && (
               <div className="flex flex-col justify-center items-center">
                 <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="mt-2 text-lg">
-                  <span className="font-semibold">Status: </span>{statusResult.data?.StartupMessage ?? 'Unknown'}
+                  <span className="font-semibold">Status: </span>{status.data?.StartupMessage ?? 'Unknown'}
                 </div>
               </div>
             )}
-            {statusResult.data?.State === 2 && (
+            {status.data?.State === 2 && (
               <React.Fragment>
                 <form className="-mt-32" onSubmit={handleSignIn}>
                   <div className="flex flex-col">
@@ -103,15 +101,15 @@ function LoginPage() {
                 </form>
               </React.Fragment>
             )}
-            {statusResult.data?.State === 3 && (
+            {status.data?.State === 3 && (
               <div className="flex flex-col justify-center items-center overflow-y-auto pb-2">
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{statusResult.data?.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
-            {statusResult.data?.State === 4 && (
+            {status.data?.State === 4 && (
               <div className="flex flex-col -mt-32">
                 <div className="flex flex-col">
                   <div className="font-semibold">First Time? We&apos;ve All Been There</div>

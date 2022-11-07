@@ -1,25 +1,21 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { push } from '@lagunovsky/redux-react-router';
 
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
 import TransitionDiv from '../../components/TransitionDiv';
-import { useLazyGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
 
 function Acknowledgement() {
   const dispatch = useDispatch();
 
-  const [statusTrigger, statusResult] = useLazyGetInitStatusQuery();
+  const status = useGetInitStatusQuery();
 
   const handleNext = () => {
     dispatch(setFirstRunSaved('acknowledgement'));
     dispatch((push('db-setup')));
   };
-
-  useEffect(() => {
-    statusTrigger().then(() => {}, () => {});
-  }, []);
 
   return (
     <TransitionDiv className="flex flex-col text-justify justify-center max-w-[40rem] px-8">
@@ -43,7 +39,7 @@ function Acknowledgement() {
         <span className="text-highlight-1 cursor-pointer" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}> Discord</span>
       </div>
       <div className="flex justify-center mt-9">
-        <Button onClick={() => handleNext()} className="bg-highlight-1 font-semibold w-96 py-2" disabled={statusResult.data?.State !== 4}>Continue</Button>
+        <Button onClick={() => handleNext()} className="bg-highlight-1 font-semibold w-96 py-2" disabled={status.data?.State !== 4}>Continue</Button>
       </div>
     </TransitionDiv>
   );

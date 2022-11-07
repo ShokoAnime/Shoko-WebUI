@@ -51,5 +51,5 @@ export const {
   useGetInitDefaultUserQuery,
   usePostInitDefaultUserMutation,
   useGetInitStartServerMutation,
-  useLazyGetInitStatusQuery,
+  useGetInitStatusQuery,
 } = initApi;
