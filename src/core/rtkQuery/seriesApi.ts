@@ -7,7 +7,7 @@ import { EpisodeType } from '../types/api/episode';
 
 export const seriesApi = createApi({
   reducerPath: 'seriesApi',
-  tagTypes: ['EmptySeries'],
+  tagTypes: ['EmptySeries', 'Episodes'],
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/Series/',
     prepareHeaders: (headers, { getState }) => {
@@ -16,7 +16,6 @@ export const seriesApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Episodes'],
   endpoints: build => ({
 
     // Delete a Series
