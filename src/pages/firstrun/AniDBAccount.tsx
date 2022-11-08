@@ -29,10 +29,10 @@ function AniDBAccount() {
     dispatch(unsetFirstRunSaved('anidb-account'));
   };
 
-  const handleTest = async () => {
-    await saveSettings();
-    testAniDbLogin({ Username, Password }).unwrap().then(() => {
+  const handleTest = () => {
+    testAniDbLogin({ Username, Password }).unwrap().then(async () => {
       setAnidbStatus({ type: 'success', text: 'AniDB test successful!' });
+      await saveSettings();
       dispatch(setFirstRunSaved('anidb-account'));
       dispatch(push('metadata-sources'));
     }, (error) => {
