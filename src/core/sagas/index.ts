@@ -4,7 +4,6 @@ import Events from '../events';
 
 import SagaAuth from './auth';
 import SagaFolder from './folder';
-import SagaMainPage from './mainpage';
 import SagaSettings from './settings';
 
 import apiPollingDriver from './apiPollingDriver';
@@ -18,8 +17,6 @@ export default function* rootSaga() {
     takeEvery(Events.AUTH_LOGOUT, SagaAuth.logout),
     // FOLDER
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
-    // MAINPAGE
-    takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
     // SETTINGS
     takeEvery(Events.SETTINGS_CHECK_PLEX_AUTHENTICATED, SagaSettings.getPlexAuthenticated),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),

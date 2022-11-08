@@ -29,6 +29,7 @@ import { traktApi } from './rtkQuery/traktApi';
 import { webuiApi } from './rtkQuery/webuiApi';
 import { initApi } from './rtkQuery/initApi';
 import { authApi } from './rtkQuery/authApi';
+import { queueApi } from './rtkQuery/queueApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -57,6 +58,7 @@ const reducers = {
   [webuiApi.reducerPath]: webuiApi.reducer,
   [initApi.reducerPath]: initApi.reducer,
   [authApi.reducerPath]: authApi.reducer,
+  [queueApi.reducerPath]: queueApi.reducer,
 };
 
 export type Reducers = typeof reducers;

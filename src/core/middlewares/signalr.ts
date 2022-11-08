@@ -8,7 +8,7 @@ import {
 } from 'lodash';
 
 import Events from '../events';
-import {setQueueStatus, setUdpBanStatus, setHttpBanStatus, setFetched} from '../slices/mainpage';
+import { setQueueStatus, setUdpBanStatus, setHttpBanStatus, setFetched } from '../slices/mainpage';
 
 import { dashboardApi } from '../rtkQuery/dashboardApi';
 import { fileApi } from '../rtkQuery/fileApi';
