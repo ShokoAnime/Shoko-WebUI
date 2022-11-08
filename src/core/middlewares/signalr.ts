@@ -8,8 +8,14 @@ import {
 } from 'lodash';
 
 import Events from '../events';
-import { setQueueStatus, setUdpBanStatus, setHttpBanStatus } from '../slices/mainpage';
-import { AniDBBanItemType } from '../types/signalr';
+import {setQueueStatus, setUdpBanStatus, setHttpBanStatus, setFetched} from '../slices/mainpage';
+
+import { dashboardApi } from '../rtkQuery/dashboardApi';
+import { fileApi } from '../rtkQuery/fileApi';
+import { importFolderApi } from '../rtkQuery/importFolderApi';
+import { seriesApi } from '../rtkQuery/seriesApi';
+
+import type { AniDBBanItemType } from '../types/signalr';
 
 let lastRetry = moment();
 let attempts = 0;
@@ -29,7 +35,7 @@ const onQueueCountChange = dispatch => (queue, count) => {
   dispatch(setQueueStatus(newState));
 };
 
-const onQueueRefreshState = dispatch => (state) => {
+const onQueueConnected = dispatch => (state) => {
   const fixedState = {};
   forEach(state, (item, key) => {
     const letter = key.substr(0, 1);
@@ -42,6 +48,7 @@ const onQueueRefreshState = dispatch => (state) => {
     fixedState[fixedKey] = item;
   });
   dispatch(setQueueStatus(fixedState));
+  dispatch(setFetched('queueStatus'));
 };
 
 // AniDB Events
@@ -57,6 +64,36 @@ const onAniDBUDPStateUpdate = dispatch => (state: AniDBBanItemType) => {
 
 const onAniDBHttpStateUpdate = dispatch => (state: AniDBBanItemType) => {
   dispatch(setHttpBanStatus(state));
+};
+
+// Shoko Events
+
+const onFileDeleted = dispatch => () => {
+  dispatch(dashboardApi.util.invalidateTags(['FileDelete']));
+  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
+  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+};
+
+const onFileHashed = dispatch => () => {
+  dispatch(dashboardApi.util.invalidateTags(['FileHash']));
+  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
+  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+};
+
+const onFileMatched = dispatch => () => {
+  dispatch(dashboardApi.util.invalidateTags(['FileMatch']));
+  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
+  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+};
+
+const onSeriesUpdated = dispatch => () => {
+  dispatch(dashboardApi.util.invalidateTags(['Series']));
+  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+  dispatch(seriesApi.util.invalidateTags(['EmptySeries']));
+};
+
+const onEpisodeUpdated = dispatch => () => {
+  dispatch(dashboardApi.util.invalidateTags(['Episode']));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
@@ -81,7 +118,6 @@ const signalRMiddleware = ({
   dispatch,
   getState,
 }) => next => async (action) => {
-  // TODO: Change this event to something else
   // register signalR after the user logged in
   if (action.type === Events.MAINPAGE_LOAD) {
     if (connectionEvents !== undefined) { return next(action); }
@@ -106,11 +142,18 @@ const signalRMiddleware = ({
     // event handlers, you can use these to dispatch actions to update your Redux store
     connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
     connectionEvents.on('Queue:QueueCountChanged', onQueueCountChange(dispatch));
-    connectionEvents.on('Queue:OnConnected', onQueueRefreshState(dispatch));
+    connectionEvents.on('Queue:OnConnected', onQueueConnected(dispatch));
 
     connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
     connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
     connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
+
+    // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
+    connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));
+    connectionEvents.on('ShokoEvent:FileHashed', onFileHashed(dispatch));
+    connectionEvents.on('ShokoEvent:FileMatched', onFileMatched(dispatch));
+    connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated(dispatch));
+    connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated(dispatch));
 
     // re-establish the connection if connection dropped
     connectionEvents.onclose(() => debounce(() => { handleReconnect(connectionEvents); }, 5000));

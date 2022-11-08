@@ -4,17 +4,6 @@ import toast from '../../components/Toast';
 import ApiCommon from '../api/common';
 import { setFetched, setQueueStatus } from '../slices/mainpage';
 
-function* getQueueStatus() {
-  const resultJson = yield call(ApiCommon.getQueue);
-  if (resultJson.error) {
-    toast.error(resultJson.message);
-    return;
-  }
-
-  yield put(setQueueStatus(resultJson.data));
-  yield put(setFetched('queueStatus'));
-}
-
 // Events
 
 function* eventQueueOperation(action) {
@@ -35,6 +24,5 @@ function* eventQueueOperation(action) {
 }
 
 export default {
-  getQueueStatus,
   eventQueueOperation,
 };

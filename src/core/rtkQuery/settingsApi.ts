@@ -8,6 +8,7 @@ import { initialSettings } from '../../pages/settings/SettingsPage';
 
 export const settingsApi = createApi({
   reducerPath: 'settingsApi',
+  tagTypes: ['Settings'],
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/Settings',
     prepareHeaders: (headers, { getState }) => {
@@ -16,7 +17,6 @@ export const settingsApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ['Settings'],
   endpoints: build => ({
     // Get all settings
     getSettings: build.query<SettingsType, void>({

@@ -25,7 +25,6 @@ function MainPage() {
 
   useEffect(() => {
     dispatch({ type: Events.MAINPAGE_LOAD });
-    dispatch({ type: Events.MAINPAGE_QUEUE_STATUS });
   }, []);
 
   return (

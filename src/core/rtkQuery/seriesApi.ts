@@ -7,6 +7,7 @@ import { EpisodeType } from '../types/api/episode';
 
 export const seriesApi = createApi({
   reducerPath: 'seriesApi',
+  tagTypes: ['EmptySeries'],
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/Series/',
     prepareHeaders: (headers, { getState }) => {
@@ -26,6 +27,7 @@ export const seriesApi = createApi({
     // Get a paginated list of Shoko.Server.API.v3.Models.Shoko.Series without local files, available to the current Shoko.Server.API.v3.Models.Shoko.User.
     getSeriesWithoutFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
       query: params => ({ url: 'WithoutFiles', params }),
+      providesTags: ['EmptySeries'],
     }),
 
     // Search the title dump for the given query or directly using the anidb id.
@@ -33,19 +35,19 @@ export const seriesApi = createApi({
       query: ({ query, ...params }) => ({ url: `AniDB/Search/${encodeURIComponent(query)}`, params }),
       transformResponse: (response: any) => response.List,
     }),
-    
+
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<Array<EpisodeType>, { seriesId: number; }>({
       query: ({ seriesId }) => ({ url: `${seriesId}/Episode?includeMissing=true` }),
       providesTags: ['Episodes'],
     }),
-    
+
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
       query: ({ anidbID }) => ({ url: `AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
       invalidatesTags: ['Episodes'],
     }),
-    
+
     // Get AniDB Info from the AniDB ID
     getSeriesAniDB: build.query<SeriesAniDBSearchResult, { anidbID: number; }>({
       query: params => ({ url: `AniDB/${params.anidbID}` }),

@@ -20,7 +20,6 @@ export default function* rootSaga() {
     takeEvery(Events.FOLDER_BROWSE, SagaFolder.folderBrowse),
     // MAINPAGE
     takeEvery(Events.MAINPAGE_QUEUE_OPERATION, SagaMainPage.eventQueueOperation),
-    takeEvery(Events.MAINPAGE_QUEUE_STATUS, SagaMainPage.getQueueStatus),
     // SETTINGS
     takeEvery(Events.SETTINGS_CHECK_PLEX_AUTHENTICATED, SagaSettings.getPlexAuthenticated),
     takeEvery(Events.SETTINGS_PLEX_LOGIN_URL, SagaSettings.getPlexLoginUrl),
