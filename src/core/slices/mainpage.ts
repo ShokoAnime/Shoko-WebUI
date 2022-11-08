@@ -8,6 +8,7 @@ type State = {
   };
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
+  layoutEditMode: boolean;
 };
 
 const mainpageSlice = createSlice({
@@ -24,7 +25,8 @@ const mainpageSlice = createSlice({
         updateType: 1,
         value: false,
       },
-    },
+    } as AniDBBanType,
+    layoutEditMode: false,
   } as State,
   reducers: {
     setFetched(sliceState, action) {
@@ -39,6 +41,9 @@ const mainpageSlice = createSlice({
     setHttpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
       sliceState.banStatus.http = action.payload;
     },
+    setLayoutEditMode(sliceState, action) {
+      sliceState.layoutEditMode = action.payload;
+    },
   },
 });
 
@@ -47,6 +52,7 @@ export const {
   setQueueStatus,
   setUdpBanStatus,
   setHttpBanStatus,
+  setLayoutEditMode,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

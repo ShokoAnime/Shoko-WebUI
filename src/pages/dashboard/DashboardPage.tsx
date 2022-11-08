@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import ReactGridLayout, { Responsive, WidthProvider } from 'react-grid-layout';
-import { isEqual, isUndefined } from 'lodash';
-import { omitDeepBy } from '../../core/util';
+import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
-import { defaultLayout } from '../../core/slices/webuiSettings';
+import toast from '../../components/Toast';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
@@ -17,28 +14,75 @@ import ImportFolders from './panels/ImportFolders';
 import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
+import Button from '../../components/Input/Button';
+
+import { setLayoutEditMode } from '../../core/slices/mainpage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 function DashboardPage() {
   const dispatch = useDispatch();
 
-  const layout = useSelector((state: RootState) => state.webuiSettings.webui_v2.layout.dashboard);
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [currentLayout, setCurrentLayout] = useState(defaultLayout.dashboard);
+  const settingsQuery = useGetSettingsQuery();
+  const settings = settingsQuery.data ?? initialSettings;
+  const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
+  const [patchSettings] = usePatchSettingsMutation();
+
+  const [currentLayout, setCurrentLayout] = useState(initialSettings.WebUI_Settings.layout.dashboard);
 
   useEffect(() => {
-    setCurrentLayout(layout);
-  }, []);
+    if (settingsQuery.isSuccess) setCurrentLayout(layout.dashboard);
+  }, [settingsQuery.data]);
 
-  const handleOnLayoutChange = (newLayout: ReactGridLayout.Layouts) => {
-    if (!isEqual(currentLayout, omitDeepBy(newLayout, isUndefined))) {
-      dispatch({
-        type: Events.SETTINGS_SAVE_WEBUI_LAYOUT,
-        payload: { dashboard: newLayout },
-      });
-    }
+  const cancelLayoutChange = () => {
+    setCurrentLayout(layout.dashboard);
+    dispatch(setLayoutEditMode(false));
+    toast.dismiss('layoutEditMode');
   };
+
+  const saveLayout = () => {
+    const newSettings = JSON.parse(JSON.stringify(settings)); // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
+    newSettings.WebUI_Settings.layout.dashboard = currentLayout;
+    patchSettings({ oldSettings: settings, newSettings }).unwrap().then(() => {
+      dispatch(setLayoutEditMode(false));
+      toast.dismiss('layoutEditMode');
+      toast.success('Layout Saved!');
+    }, (error) => {
+      toast.error('', error.data);
+    });
+  };
+
+  useEffect(() => {
+    if (layoutEditMode) {
+      const renderToast = () => (
+        <div className="flex flex-col">
+          Edit Mode Enabled
+          <div className="flex items-center justify-end mt-3">
+            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 mr-3">Cancel</Button>
+            <Button onClick={() => saveLayout()} className="bg-highlight-1 px-3 py-1.5">Save</Button>
+          </div>
+        </div>
+      );
+
+      if (!toast.isActive('layoutEditMode')) {
+        toast.info('', renderToast(), {
+          autoClose: false,
+          draggable: false,
+          closeOnClick: false,
+          toastId: 'layoutEditMode',
+          className: 'w-56 ml-auto',
+        });
+      } else {
+        toast.infoUpdate('layoutEditMode', '', renderToast());
+      }
+    } else {
+      toast.dismiss('layoutEditMode');
+    }
+  }, [layoutEditMode, currentLayout]);
 
   return (
     <ResponsiveGridLayout
@@ -50,7 +94,9 @@ function DashboardPage() {
       containerPadding={[36, 36]}
       margin={[26, 26]}
       className="w-full"
-      onLayoutChange={(_layout, layouts) => handleOnLayoutChange(layouts)}
+      onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
+      isDraggable={layoutEditMode}
+      isResizable={layoutEditMode}
     >
       <div key="collectionBreakdown">
         <CollectionBreakdown />

@@ -9,10 +9,11 @@ type Props = {
   options?: any;
   className?: string;
   isFetching?: boolean;
+  disableClick?: boolean;
 };
 
-const ShokoPanel = ({ className, title, options, children, isFetching }: Props) => (
-    <div className={cx(['flex', 'flex-col', 'overflow-hidden', 'h-full'], className)}>
+const ShokoPanel = ({ className, title, options, children, isFetching, disableClick }: Props) => (
+    <div className={cx(['flex', 'flex-col', 'overflow-hidden', 'h-full'], disableClick && 'pointer-events-none', className)}>
         <div className="flex justify-between items-center mr-2">
           <span className="flex font-semibold text-base">{title}</span>
             <div

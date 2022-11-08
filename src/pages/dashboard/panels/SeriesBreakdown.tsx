@@ -1,6 +1,8 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
+import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtkQuery/dashboardApi';
@@ -10,6 +12,8 @@ const names = {
 };
 
 function SeriesBreakdown() {
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
   const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
@@ -49,7 +53,7 @@ function SeriesBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading}>
+    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading} disableClick={layoutEditMode}>
       {items}
     </ShokoPanel>
   );

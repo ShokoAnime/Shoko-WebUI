@@ -1,12 +1,16 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { Link } from 'react-router-dom';
 
+import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 import { useGetDashboardStatsQuery } from '../../../core/rtkQuery/dashboardApi';
 
 function CollectionBreakdown() {
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
   const stats = useGetDashboardStatsQuery();
 
   const renderItem = (key: string, title: string, value: string | number = 0, link?: string) => (
@@ -43,7 +47,7 @@ function CollectionBreakdown() {
   ];
 
   return (
-    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading}>
+    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading} disableClick={layoutEditMode}>
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>

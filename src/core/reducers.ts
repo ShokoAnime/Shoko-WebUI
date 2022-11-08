@@ -11,7 +11,6 @@ import firstrunReducer from './slices/firstrun';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
 import modalsReducer from './slices/modals';
-import webuiSettingsReducer from './slices/webuiSettings';
 import collectionReducer from './slices/collection';
 import utilitiesReducer from './slices/utilities';
 
@@ -40,7 +39,6 @@ const reducers = {
   mainpage: mainpageReducer,
   misc: miscReducer,
   modals: modalsReducer,
-  webuiSettings: webuiSettingsReducer,
   autoUpdate,
   collection: collectionReducer,
   utilities: utilitiesReducer,

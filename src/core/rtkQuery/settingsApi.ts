@@ -4,6 +4,7 @@ import type { RootState } from '../store';
 import type { SettingsServerType, SettingsType } from '../types/api/settings';
 import jsonpatch from 'fast-json-patch';
 import { SettingsAnidbLoginType } from '../types/api/settings';
+import { initialSettings } from '../../pages/settings/SettingsPage';
 
 export const settingsApi = createApi({
   reducerPath: 'settingsApi',
@@ -15,6 +16,7 @@ export const settingsApi = createApi({
       return headers;
     },
   }),
+  tagTypes: ['Settings'],
   endpoints: build => ({
     // Get all settings
     getSettings: build.query<SettingsType, void>({
@@ -22,9 +24,10 @@ export const settingsApi = createApi({
       transformResponse: (response: SettingsServerType) => {
         let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings);
         const settingsRevision = webuiSettings.settingsRevision ?? 0;
-        if (settingsRevision !== 1) webuiSettings = { settingsRevision: 1 }; // TO-DO: Move the settings revision number somewhere else
+        if (settingsRevision !== 2) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: 2 }; // TO-DO: Move the settings revision number somewhere else
         return { ...response, WebUI_Settings: webuiSettings };
       },
+      providesTags: ['Settings'],
     }),
 
     // JsonPatch the settings
@@ -40,6 +43,7 @@ export const settingsApi = createApi({
           params,
         };
       },
+      invalidatesTags: ['Settings'],
     }),
 
     // Tests a Login with the given Credentials. This does not save the credentials.

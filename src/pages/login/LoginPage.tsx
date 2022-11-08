@@ -19,9 +19,6 @@ function LoginPage() {
   const dispatch = useDispatch();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
-  const toastPosition = useSelector(
-    (state: RootState) => state.webuiSettings.webui_v2.toastPosition,
-  );
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -58,7 +55,7 @@ function LoginPage() {
   return (
     <React.Fragment>
       <ToastContainer
-        position={toastPosition}
+        position={'bottom-right'}
         autoClose={4000}
         transition={Slide}
         bodyClassName="font-semibold font-open-sans"

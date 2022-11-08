@@ -25,6 +25,7 @@ function QueueProcessor() {
 
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const items = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const handleOperation = (value: string) => dispatch(
     { type: Events.MAINPAGE_QUEUE_OPERATION, payload: value },
@@ -91,7 +92,7 @@ function QueueProcessor() {
   }
 
   return (
-    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched}>
+    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched} disableClick={layoutEditMode}>
       <div className="flex flex-col justify-between h-full">
         {commands}
       </div>

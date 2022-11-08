@@ -1,4 +1,3 @@
-
 export type SettingsDatabaseType = {
   MySqliteDirectory: string;
   DatabaseBackupDirectory: string;
@@ -128,13 +127,33 @@ export type SettingsServerType = {
   Import: SettingsImportType;
 };
 
+type LayoutItemType = {
+  i: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  minW?: number;
+  maxW?: number;
+  minH?: number;
+  maxH?: number;
+  static?: boolean;
+  moved?: boolean;
+};
+
+export type LayoutType = {
+  [breakpoint: string]: Array<LayoutItemType>
+};
+
 type WebUISettingsType = {
-  actions: Array<string>,
   notifications: boolean;
   settingsRevision: number;
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
   updateChannel: 'stable' | 'unstable';
+  layout: {
+    [key: string]: LayoutType;
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {

@@ -1,10 +1,9 @@
 import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import { RootState } from '../../core/store';
 import Events from '../../core/events';
 import Sidebar from '../../components/Layout/Sidebar';
 
@@ -16,18 +15,13 @@ import ActionsModal from '../../components/Dialogs/ActionsModal';
 import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
 
 import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+import { initialSettings } from '../settings/SettingsPage';
 
 function MainPage() {
   const dispatch = useDispatch();
 
-  const toastPosition = useSelector(
-    (state: RootState) => state.webuiSettings.webui_v2.toastPosition,
-  );
-  const notifications = useSelector(
-    (state: RootState) => state.webuiSettings.webui_v2.notifications,
-  );
-
-  useGetSettingsQuery();
+  const settingsQuery = useGetSettingsQuery();
+  const { toastPosition, notifications } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   useEffect(() => {
     dispatch({ type: Events.MAINPAGE_LOAD });

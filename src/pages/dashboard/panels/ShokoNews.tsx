@@ -1,13 +1,17 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import { mdiOpenInNew } from '@mdi/js';
 
+import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { DashboardNewsType } from '../../../core/types/api/dashboard';
 
 import { useGetShokoNewsFeedQuery } from '../../../core/rtkQuery/externalApi';
 
 function ShokoNews() {
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
   const items = useGetShokoNewsFeedQuery();
 
   const renderRow = (item: DashboardNewsType) => (
@@ -23,7 +27,7 @@ function ShokoNews() {
   );
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={items.isLoading}>
+    <ShokoPanel title="Shoko News" isFetching={items.isLoading} disableClick={layoutEditMode}>
       <div className="flex flex-col space-y-3">
         {items.data?.slice(0, 2).map(item => renderRow(item))}
       </div>
