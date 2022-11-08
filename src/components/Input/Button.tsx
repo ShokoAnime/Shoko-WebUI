@@ -21,7 +21,7 @@ function Button(props: Props) {
   } = props;
 
   return (
-    <button type={type ?? 'button'} title={tooltip} className={cx([`${className ?? ''} text-font-alt text-sm font-semibold rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] focus:shadow-none focus:outline-none button transition ease-in-out`, loading && 'cursor-default', disabled && 'opacity-50 cursor-default'])} onClick={onClick} disabled={disabled}>
+    <button type={type ?? 'button'} title={tooltip} className={cx([`${className ?? ''} text-font-alt text-sm rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] focus:shadow-none focus:outline-none button transition ease-in-out`, loading && 'cursor-default', disabled && 'opacity-50 cursor-default'])} onClick={onClick} disabled={disabled}>
       {
         loading
           ? (
