@@ -1,22 +1,12 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { splitApi } from './splitApi';
 
-import type { RootState } from '../store';
 import type { TraktCodeType } from '../types/api';
 
-export const traktApi = createApi({
-  reducerPath: 'traktApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/trakt/',
-    prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
-      headers.set('apikey', apikey);
-      return headers;
-    },
-  }),
+const traktApi = splitApi.injectEndpoints({
   endpoints: build => ({
     // Get Trakt code and url.
     getTraktCode: build.query<TraktCodeType, void>({
-      query: () => ({ url: 'code' }),
+      query: () => ({ url: 'trakt/code' }),
     }),
   }),
 });

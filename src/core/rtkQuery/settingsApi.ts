@@ -1,26 +1,15 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { splitV3Api } from './splitV3Api';
 
-import type { RootState } from '../store';
 import type { SettingsServerType, SettingsType } from '../types/api/settings';
 import jsonpatch from 'fast-json-patch';
 import { SettingsAnidbLoginType } from '../types/api/settings';
 import { initialSettings } from '../../pages/settings/SettingsPage';
 
-export const settingsApi = createApi({
-  reducerPath: 'settingsApi',
-  tagTypes: ['Settings'],
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v3/Settings',
-    prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
-      headers.set('apikey', apikey);
-      return headers;
-    },
-  }),
+const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     // Get all settings
     getSettings: build.query<SettingsType, void>({
-      query: () => ({ url: '' }),
+      query: () => ({ url: 'Settings' }),
       transformResponse: (response: SettingsServerType) => {
         let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings);
         const settingsRevision = webuiSettings.settingsRevision ?? 0;
@@ -37,7 +26,7 @@ export const settingsApi = createApi({
         const changed: SettingsServerType = { ...newSettings, WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings) };
         const postData = jsonpatch.compare(original, changed);
         return {
-          url: '',
+          url: 'Settings',
           method: 'PATCH',
           body: postData,
           params,
@@ -49,7 +38,7 @@ export const settingsApi = createApi({
     // Tests a Login with the given Credentials. This does not save the credentials.
     postAniDBTestLogin: build.mutation<string, SettingsAnidbLoginType>({
       query: params => ({
-        url: '/AniDB/TestLogin',
+        url: 'Settings/AniDB/TestLogin',
         method: 'POST',
         body: params,
         responseHandler: 'text',

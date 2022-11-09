@@ -1,27 +1,17 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { splitApi } from './splitApi';
 
-import type { RootState } from '../store';
 import type { WebUIVersionType } from '../types/api';
 
-export const webuiApi = createApi({
-  reducerPath: 'webuiApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/webui/',
-    prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
-      headers.set('apikey', apikey);
-      return headers;
-    },
-  }),
+const webuiApi = splitApi.injectEndpoints({
   endpoints: build => ({
     // Check for newest webui version
     getWebuiLatest: build.mutation<WebUIVersionType, string>({
-      query: channel => ({ url: `latest/${channel}` }),
+      query: channel => ({ url: `webui/latest/${channel}` }),
     }),
 
     // Update webui
     getWebuiUpdate: build.mutation<void, string>({
-      query: channel => ({ url: `update/${channel}` }),
+      query: channel => ({ url: `webui/update/${channel}` }),
     }),
   }),
 });

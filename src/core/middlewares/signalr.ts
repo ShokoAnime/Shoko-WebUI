@@ -9,11 +9,7 @@ import {
 
 import Events from '../events';
 import { setQueueStatus, setUdpBanStatus, setHttpBanStatus, setFetched } from '../slices/mainpage';
-
-import { dashboardApi } from '../rtkQuery/dashboardApi';
-import { fileApi } from '../rtkQuery/fileApi';
-import { importFolderApi } from '../rtkQuery/importFolderApi';
-import { seriesApi } from '../rtkQuery/seriesApi';
+import { splitV3Api } from '../rtkQuery/splitV3Api';
 
 import type { AniDBBanItemType } from '../types/signalr';
 
@@ -69,31 +65,23 @@ const onAniDBHttpStateUpdate = dispatch => (state: AniDBBanItemType) => {
 // Shoko Events
 
 const onFileDeleted = dispatch => () => {
-  dispatch(dashboardApi.util.invalidateTags(['FileDelete']));
-  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
-  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+  dispatch(splitV3Api.util.invalidateTags(['FileDeleted']));
 };
 
 const onFileHashed = dispatch => () => {
-  dispatch(dashboardApi.util.invalidateTags(['FileHash']));
-  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
-  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+  dispatch(splitV3Api.util.invalidateTags(['FileHashed']));
 };
 
 const onFileMatched = dispatch => () => {
-  dispatch(dashboardApi.util.invalidateTags(['FileMatch']));
-  dispatch(fileApi.util.invalidateTags(['FileUnrecognized']));
-  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
+  dispatch(splitV3Api.util.invalidateTags(['FileMatched']));
 };
 
 const onSeriesUpdated = dispatch => () => {
-  dispatch(dashboardApi.util.invalidateTags(['Series']));
-  dispatch(importFolderApi.util.invalidateTags(['ImportFolder']));
-  dispatch(seriesApi.util.invalidateTags(['EmptySeries']));
+  dispatch(splitV3Api.util.invalidateTags(['SeriesUpdated']));
 };
 
 const onEpisodeUpdated = dispatch => () => {
-  dispatch(dashboardApi.util.invalidateTags(['Episode']));
+  dispatch(splitV3Api.util.invalidateTags(['EpisodeUpdated']));
 };
 
 const startSignalRConnection = connection => connection.start().then(() => {
