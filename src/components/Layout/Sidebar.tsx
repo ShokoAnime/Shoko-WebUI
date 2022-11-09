@@ -13,13 +13,15 @@ import {
   mdiMagnify,
   mdiHelpCircleOutline,
   mdiGithub, mdiDownloadCircleOutline,
-  mdiInformationOutline,
+  mdiInformationOutline, mdiCircleEditOutline,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
+import semver from 'semver';
 
 import { RootState } from '../../core/store';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
+import { setLayoutEditMode } from '../../core/slices/mainpage';
 import { default as ShokoIcon } from '../ShokoIcon';
 
 import { useGetWebuiLatestMutation, useGetWebuiUpdateMutation } from '../../core/rtkQuery/webuiApi';
@@ -36,6 +38,7 @@ function Sidebar() {
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const utilitiesModalOpen = useSelector((state: RootState) => state.modals.utilities.status);
   const actionsModalOpen = useSelector((state: RootState) => state.modals.actions.status);
@@ -50,7 +53,7 @@ function Sidebar() {
 
   useEffect(() => {
     checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
-      setWebuiUpdateAvailable(!Version.debug && result.version !== Version.package);
+      setWebuiUpdateAvailable(!Version.debug && semver.gt(result.version, Version.package));
     }, reason => console.error(reason));
   }, []);
 
@@ -76,7 +79,7 @@ function Sidebar() {
     const isHighlighted = pathname.startsWith(uri) || modalOpen;
     return (
       <div key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
-        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
+        <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
         <span className="text-lg">{text}</span>
       </div>
     );
@@ -86,10 +89,17 @@ function Sidebar() {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri);
     return (
-      <Link key={key} className={cx(['cursor-pointer flex items-center w-full px-7', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeAllModals()}>
-        <div className="w-6 flex items-center mr-6 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
-        <span className="text-lg">{text}</span>
-      </Link>
+      <div className="flex items-center w-full px-7 justify-between">
+        <Link key={key} className={cx(['cursor-pointer flex items-center w-full', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeAllModals()}>
+          <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
+          <span className="text-lg">{text}</span>
+        </Link>
+        {(key === 'dashboard') && (
+          <div onClick={() => dispatch(setLayoutEditMode(true))} className={cx('cursor-pointer transition-opacity', layoutEditMode && 'text-highlight-1', pathname !== '/webui/dashboard' && 'opacity-50 pointer-events-none')}>
+            <Icon path={mdiCircleEditOutline} size={1} />
+          </div>
+        )}
+      </div>
     );
   };
 
@@ -122,10 +132,12 @@ function Sidebar() {
       <div className="flex flex-col justify-between mt-11 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
-        {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
-        {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
-        {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
-        {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+        <div className={cx('transition-opacity', layoutEditMode && 'opacity-50 pointer-events-none')}>
+          {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
+          {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
+          {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
+          {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+        </div>
         <div className="flex flex-col mt-10 px-7">
           {/*<div className="flex items-center font-semibold cursor-pointer">*/}
           {/*  <Icon path={mdiDownloadCircleOutline} size={1} className="text-highlight-2"/>*/}

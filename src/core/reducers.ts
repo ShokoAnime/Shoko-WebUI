@@ -6,16 +6,11 @@ import {
 } from './actions';
 
 import apiSessionReducer from './slices/apiSession';
-import globalAlertReducer from './slices/globalAlert';
 import fetchingReducer from './slices/fetching';
 import firstrunReducer from './slices/firstrun';
-import localSettingsReducer from './slices/localSettings';
 import mainpageReducer from './slices/mainpage';
 import miscReducer from './slices/misc';
 import modalsReducer from './slices/modals';
-import serverSettingsReducer from './slices/serverSettings';
-import webuiSettingsReducer from './slices/webuiSettings';
-import jmmVersionReducer from './slices/jmmVersion';
 import collectionReducer from './slices/collection';
 import utilitiesReducer from './slices/utilities';
 
@@ -32,22 +27,20 @@ import { settingsApi } from './rtkQuery/settingsApi';
 import { userApi } from './rtkQuery/userApi';
 import { traktApi } from './rtkQuery/traktApi';
 import { webuiApi } from './rtkQuery/webuiApi';
+import { initApi } from './rtkQuery/initApi';
+import { authApi } from './rtkQuery/authApi';
+import { queueApi } from './rtkQuery/queueApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
 const reducers = {
   apiSession: apiSessionReducer,
-  globalAlert: globalAlertReducer,
   fetching: fetchingReducer,
   firstrun: firstrunReducer,
-  localSettings: localSettingsReducer,
   mainpage: mainpageReducer,
   misc: miscReducer,
   modals: modalsReducer,
-  serverSettings: serverSettingsReducer,
-  webuiSettings: webuiSettingsReducer,
   autoUpdate,
-  jmmVersion: jmmVersionReducer,
   collection: collectionReducer,
   utilities: utilitiesReducer,
   [dashboardApi.reducerPath]: dashboardApi.reducer,
@@ -63,6 +56,9 @@ const reducers = {
   [userApi.reducerPath]: userApi.reducer,
   [traktApi.reducerPath]: traktApi.reducer,
   [webuiApi.reducerPath]: webuiApi.reducer,
+  [initApi.reducerPath]: initApi.reducer,
+  [authApi.reducerPath]: authApi.reducer,
+  [queueApi.reducerPath]: queueApi.reducer,
 };
 
 export type Reducers = typeof reducers;

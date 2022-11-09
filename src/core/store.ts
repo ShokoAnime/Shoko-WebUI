@@ -23,6 +23,9 @@ import { settingsApi } from './rtkQuery/settingsApi';
 import { userApi } from './rtkQuery/userApi';
 import { traktApi } from './rtkQuery/traktApi';
 import { webuiApi } from './rtkQuery/webuiApi';
+import { initApi } from './rtkQuery/initApi';
+import { authApi } from './rtkQuery/authApi';
+import { queueApi } from './rtkQuery/queueApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -55,6 +58,9 @@ const middleware = [
   traktApi.middleware,
   webuiApi.middleware,
   episodeApi.middleware,
+  initApi.middleware,
+  authApi.middleware,
+  queueApi.middleware,
 ];
 
 const store = configureStore({

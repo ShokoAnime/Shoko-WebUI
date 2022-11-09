@@ -5,7 +5,7 @@ import { mdiCheckCircle, mdiCloseCircle, mdiCloseCircleOutline, mdiInformationOu
 
 type Props = Partial<ToastContentProps> & {
   header: string;
-  message?: string;
+  message?: React.ReactNode;
   icon: string;
 };
 
@@ -39,23 +39,29 @@ function Toast(props: Props) {
   );
 }
 
-const success = (header: string, message?: string, options?: ToastOptions) => {
+const success = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
   toast.success(<Toast header={header} message={message} icon={mdiCheckCircle} />, options);
 };
 
-const error = (header: string, message?: string, options?: ToastOptions) => {
+const error = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
   toast.error(<Toast header={header} message={message} icon={mdiCloseCircle} />, options);
 };
 
-const info = (header: string, message?: string, options?: ToastOptions) => {
+const info = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
   toast.info(<Toast header={header} message={message} icon={mdiInformationOutline} />, options);
 };
 
 const dismiss = (id: string) => toast.dismiss(id);
+
+const infoUpdate = (id: string, header: string, message?: React.ReactNode) => toast.update(id, { render: <Toast header={header} message={message} icon={mdiInformationOutline} /> });
+
+const isActive = (id: string) => toast.isActive(id);
 
 export default {
   success,
   error,
   info,
   dismiss,
+  infoUpdate,
+  isActive,
 };

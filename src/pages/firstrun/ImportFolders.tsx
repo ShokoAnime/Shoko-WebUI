@@ -178,7 +178,7 @@ function ImportFolders() {
 
   return (
     <React.Fragment>
-      <TransitionDiv className="flex flex-col justify-center overflow-y-auto px-96">
+      <TransitionDiv className="flex flex-col justify-center overflow-y-auto max-w-[40rem] px-8`">
         <div className="font-semibold">Import Folders</div>
         <div className="mt-9 text-justify">
           Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can

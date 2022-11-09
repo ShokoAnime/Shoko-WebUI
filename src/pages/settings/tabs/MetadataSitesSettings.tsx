@@ -13,7 +13,7 @@ import Button from '../../../components/Input/Button';
 import { useLazyGetTraktCodeQuery } from '../../../core/rtkQuery/traktApi';
 import toast from '../../../components/Toast';
 
-const tvdbLanguages = [
+export const tvdbLanguages = [
   ['en', 'English'],
   ['sv', 'Swedish'],
   ['no', 'Norwegian'],

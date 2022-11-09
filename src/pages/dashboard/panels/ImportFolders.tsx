@@ -1,5 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import {
   mdiDatabaseEditOutline,
@@ -7,6 +7,7 @@ import {
   mdiFolderPlusOutline,
 } from '@mdi/js';
 
+import { RootState } from '../../../core/store';
 import toast from '../../../components/Toast';
 import Button from '../../../components/Input/Button';
 import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
@@ -18,6 +19,8 @@ import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '../../
 
 function ImportFolders() {
   const dispatch = useDispatch();
+
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const [rescanTrigger] = useLazyRescanImportFolderQuery();
   const importFolderQuery = useGetImportFoldersQuery();
@@ -80,7 +83,7 @@ function ImportFolders() {
   );
 
   return (
-    <ShokoPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isFetching}>
+    <ShokoPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isFetching} disableClick={layoutEditMode}>
       {importFolders.length === 0
         ? (<div className="flex justify-center font-bold mt-4" key="no-folders">No import folders added!</div>)
         : importFolders.map(importFolder => renderFolder(importFolder))}

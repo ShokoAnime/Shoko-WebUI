@@ -1,64 +1,68 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { push } from '@lagunovsky/redux-react-router';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
-import { unsetSaved as unsetFirstRunSaved, setDatabaseStatus } from '../../core/slices/firstrun';
+import { TestStatusType, unsetSaved as unsetFirstRunSaved, setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Input/Select';
 import TransitionDiv from '../../components/TransitionDiv';
 
+import { useFirstRunSettingsContext } from './FirstRunPage';
+import { useGetInitDatabaseTestMutation } from '../../core/rtkQuery/initApi';
+
 function DatabaseSetup() {
+  const {
+    newSettings, saveSettings, updateSetting,
+  } = useFirstRunSettingsContext();
+
   const dispatch = useDispatch();
 
-  const dbSettings = useSelector((state: RootState) => state.localSettings.Database);
-  const isFetching = useSelector((state: RootState) => state.fetching.firstrunDatabase);
-  const status = useSelector((state: RootState) => state.firstrun.databaseStatus);
-
-  const [newDbSettings, setNewDbSettings] = useState({
-    MySqliteDirectory: '',
-    DatabaseBackupDirectory: '',
-    Type: 'SQLite',
-    Username: '',
-    Password: '',
-    Schema: '',
-    Hostname: '',
-    SQLite_DatabaseFile: '',
-  });
-
-  useEffect(() => {
-    setNewDbSettings(dbSettings);
-  }, []);
+  const [testDatabase, testDatabaseResult] = useGetInitDatabaseTestMutation();
+  const [databaseStatus, setDatabaseStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
-    setNewDbSettings({ ...newDbSettings, [id]: value });
-    dispatch(setDatabaseStatus({ type: 'success', text: '' }));
+    updateSetting('Database', id, value);
+    setDatabaseStatus({ type: 'success', text: '' });
     dispatch(unsetFirstRunSaved('db-setup'));
   };
 
-  const handleTest = () => {
-    dispatch(({ type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'Database', newSettings: newDbSettings, skipValidation: true } }));
-    dispatch({ type: Events.FIRSTRUN_TEST_DATABASE });
+  const handleTest = async () => {
+    await saveSettings();
+
+    testDatabase().unwrap().then(() => {
+      setDatabaseStatus({ type: 'success', text: 'Database test successful!' });
+      dispatch(setFirstRunSaved('db-setup'));
+      dispatch(push('local-account'));
+    }, (error) => {
+      console.error(error);
+      setDatabaseStatus({ type: 'error', text: error.data });
+    });
   };
 
+  const {
+    SQLite_DatabaseFile,
+    Hostname, Schema, Type,
+    Username, Password,
+  } = newSettings.Database;
+
   const renderSqliteOptions = () => (
-    <Input id="SQLite_DatabaseFile" value={newDbSettings.SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={handleInputChange} className="mt-6" />
+    <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={handleInputChange} className="mt-6" />
   );
 
   const renderLegacyDBOptions = () => (
     <div className="flex flex-col">
-      <Input id="Hostname" value={newDbSettings.Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={handleInputChange} className="mt-6" />
-      <Input id="Schema" value={newDbSettings.Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={handleInputChange} className="mt-6" />
-      <Input id="Username" value={newDbSettings.Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} className="mt-6" />
-      <Input id="Password" value={newDbSettings.Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-6" />
+      <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={handleInputChange} className="mt-6" />
+      <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={handleInputChange} className="mt-6" />
+      <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} className="mt-6" />
+      <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-6" />
     </div>
   );
 
   const renderDBOptions = () => {
-    switch (newDbSettings.Type) {
+    switch (Type) {
       case 'SQLite':
         return renderSqliteOptions();
       case 'MySQL': case 'SQLServer':
@@ -70,7 +74,7 @@ function DatabaseSetup() {
 
   return (
     // TODO: Change the UI to the new one. Keeping the old for now.
-    <TransitionDiv className="flex flex-col overflow-y-auto justify-center px-96">
+    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[40rem] px-8">
       <div className="font-semibold">Setting Up Your Database</div>
       <div className="mt-9 text-justify">
         Shoko uses SQLite for your database and will automatically create the database for you.
@@ -78,7 +82,7 @@ function DatabaseSetup() {
         so by changing the directory below.
       </div>
       <div className="flex flex-col my-9 overflow-y-auto flex-shrink">
-        <Select label="Database Type" id="Type" value={newDbSettings.Type} onChange={handleInputChange} className="w-32">
+        <Select label="Database Type" id="Type" value={Type} onChange={handleInputChange} className="w-32">
           <option value="SQLite">SQLite</option>
           <option value="MySQL">MySQL</option>
           <option value="SQLServer">SQLServer</option>
@@ -87,11 +91,11 @@ function DatabaseSetup() {
       </div>
       <Footer
         nextDisabled={
-          (newDbSettings.Type !== 'SQLite' && (newDbSettings.Hostname === '' || newDbSettings.Schema === '' || newDbSettings.Username === '')) || newDbSettings.SQLite_DatabaseFile === ''
+          (Type !== 'SQLite' && (Hostname === '' || Schema === '' || Username === '')) || SQLite_DatabaseFile === ''
         }
         saveFunction={() => handleTest()}
-        isFetching={isFetching}
-        status={status}
+        isFetching={testDatabaseResult.isLoading}
+        status={databaseStatus}
       />
     </TransitionDiv>
   );

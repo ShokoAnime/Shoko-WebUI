@@ -6,7 +6,7 @@ import TransitionDiv from '../../components/TransitionDiv';
 function DataCollection() {
 
   return (
-    <TransitionDiv className="flex flex-col justify-center px-96">
+    <TransitionDiv className="flex flex-col justify-center max-w-[40rem] px-8">
       <div className="font-semibold">Data Collection</div>
       <div className="mt-9 text-justify">
         Shoko is open-source and is worked on by volunteers in our free time so in order to

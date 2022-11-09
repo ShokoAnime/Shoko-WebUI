@@ -9,7 +9,7 @@ type Props = {
   placeholder?: string;
   value: string | number;
   onChange: (event: any) => void;
-  onKeyPress?: (event: any) => void;
+  onKeyUp?: (event: any) => void;
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
@@ -23,7 +23,7 @@ type Props = {
 function Input(props: Props) {
   const {
     id, label, center, type, placeholder, value, className, startIcon,
-    autoFocus, disabled, onChange, onKeyPress, endIcon, endIconClick, inline,
+    autoFocus, disabled, onChange, onKeyUp, endIcon, endIconClick, inline,
   } = props;
 
   return (
@@ -34,13 +34,13 @@ function Input(props: Props) {
           <div className="relative">
             {startIcon && <div className="absolute top-1/2 transform -translate-y-1/2 left-3"><Icon path={startIcon} size={1}/></div>}
             <input
-              className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-background-border focus:ring-2 focus:ring-highlight-1', center && 'text-center', startIcon && 'pl-11'])}
+              className={cx(['appearance-none bg-background-alt w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-background-border focus:ring-2 focus:ring-highlight-1 focus:ring-inset', center && 'text-center', startIcon && 'pl-11'])}
               id={id}
               type={type}
               placeholder={placeholder ?? ''}
               value={value}
               onChange={onChange}
-              onKeyPress={onKeyPress}
+              onKeyUp={onKeyUp}
               // eslint-disable-next-line jsx-a11y/no-autofocus
               autoFocus={autoFocus}
               disabled={disabled}

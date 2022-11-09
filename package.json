@@ -1,6 +1,6 @@
 {
   "name": "jmmserver-webui",
-  "version": "2.0.0-dev1",
+  "version": "2.0.0-dev.1",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -54,6 +54,7 @@
     "redux-saga": "^1.1.3",
     "redux-thunk": "^2.4.1",
     "reselect": "^4.1.6",
+    "semver": "^7.3.8",
     "simple-icons": "^7.5.0"
   },
   "devDependencies": {

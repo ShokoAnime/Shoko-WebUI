@@ -1,59 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import React from 'react';
+import cx from 'classnames';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
 import Checkbox from '../../../components/Input/Checkbox';
 import InputSmall from '../../../components/Input/InputSmall';
 import TransitionDiv from '../../../components/TransitionDiv';
+import { useFirstRunSettingsContext } from '../FirstRunPage';
 
 function MovieDBTab() {
-  const dispatch = useDispatch();
+  const { newSettings, updateSetting } = useFirstRunSettingsContext();
 
-  const movieDBSettings = useSelector((state: RootState) => state.localSettings.MovieDb);
-
-  const [AutoFanartAmount, setAutoFanartAmount] = useState(10);
-  const [AutoPostersAmount, setAutoPostersAmount] = useState(10);
-
-  const saveSettings = (newSettings: { [id: string]: any }) => dispatch(
-    { type: Events.SETTINGS_SAVE_SERVER, payload: { context: 'MovieDb', newSettings } },
-  );
-
-  useEffect(() => {
-    setAutoFanartAmount(movieDBSettings.AutoFanartAmount);
-    setAutoPostersAmount(movieDBSettings.AutoPostersAmount);
-  }, []);
-
-  useEffect(() => {
-    saveSettings({ AutoFanartAmount, AutoPostersAmount });
-  }, [AutoFanartAmount, AutoPostersAmount]);
+  const { AutoFanart, AutoFanartAmount, AutoPosters, AutoPostersAmount } = newSettings.MovieDb;
 
   const handleInputChange = (event: any) => {
     const propId = event.target.id.replace('MovieDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    if (value !== '') {
-      saveSettings({ [propId]: value });
-    }
+    updateSetting('MovieDb', propId, value);
   };
 
   return (
     <TransitionDiv className="flex flex-col w-96">
 
       <div className="font-semibold">Download Options</div>
-      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={movieDBSettings.AutoFanart} onChange={handleInputChange} justify className="mt-4" />
-      {movieDBSettings.AutoFanart && (
-        <TransitionDiv className="flex justify-between mt-1">
-          Max Fanart
-          <InputSmall id="AutoFanartAmount" value={AutoFanartAmount} type="number" onChange={e => setAutoFanartAmount(e.target.value)} className="w-10 text-center px-2" />
-        </TransitionDiv>
-      )}
-      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={movieDBSettings.AutoPosters} onChange={handleInputChange} justify className="mt-1" />
-      {movieDBSettings.AutoPosters && (
-        <TransitionDiv className="flex justify-between mt-1">
-          Max Posters
-          <InputSmall id="AutoPostersAmount" value={AutoPostersAmount} type="number" onChange={e => setAutoPostersAmount(e.target.value)} className="w-10 text-center px-2" />
-        </TransitionDiv>
-      )}
+      <Checkbox label="Fanart" id="MovieDB_AutoFanart" isChecked={AutoFanart} onChange={handleInputChange} justify className="mt-4" />
+      <div className={cx('flex justify-between mt-2 transition-opacity', !AutoFanart && 'pointer-events-none opacity-50')}>
+        Max Fanart
+        <InputSmall id="MovieDB_AutoFanartAmount" value={AutoFanartAmount} type="text" onChange={handleInputChange} className="w-10 px-2 py-0.5" />
+      </div>
+      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={handleInputChange} justify className="mt-1" />
+      <div className={cx('flex justify-between mt-2 transition-opacity', !AutoPosters && 'pointer-events-none opacity-50')}>
+        Max Posters
+        <InputSmall id="MovieDB_AutoPostersAmount" value={AutoPostersAmount} type="text" onChange={handleInputChange} className="w-10 px-2 py-0.5" />
+      </div>
 
     </TransitionDiv>
   );
