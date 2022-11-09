@@ -1,20 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
-import { RootState } from '../store';
+import { splitV3Api } from './splitV3Api';
 
-export const actionsApi = createApi({
-  reducerPath: 'actionsApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v3/Action',
-    prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
-      headers.set('apikey', apikey);
-      return headers;
-    },
-  }),
+const actionsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     // Run action
     runAction: build.mutation<void, string>({
-      query: action => ({ url: `/${action}` }),
+      query: action => ({ url: `Action/${action}` }),
     }),
   }),
 });

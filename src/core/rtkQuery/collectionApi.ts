@@ -1,20 +1,10 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { RootState } from '../store';
+import { splitV3Api } from './splitV3Api';
 
 import { CollectionFilterType, CollectionGroupType } from '../types/api/collection';
 import { ListResultType, PaginationType } from '../types/api';
 import { SeriesType } from '../types/api/series';
 
-export const collectionApi = createApi({
-  reducerPath: 'collectionApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/v3/',
-    prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
-      headers.set('apikey', apikey);
-      return headers;
-    },
-  }),
+const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroups: build.query<ListResultType<Array<CollectionGroupType>>, PaginationType>({
       query: params => ({ url: 'Group', params }),

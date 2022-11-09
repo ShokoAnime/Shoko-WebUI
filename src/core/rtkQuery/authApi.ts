@@ -1,17 +1,13 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { splitApi } from './splitApi';
 
 import type { ApiLoginType, ApiSessionState } from '../types/api';
 
-export const authApi = createApi({
-  reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: '/api/auth',
-  }),
+export const authApi = splitApi.injectEndpoints({
   endpoints: build => ({
     // Get an authentication token for the user.
     postAuth: build.mutation<ApiSessionState, ApiLoginType>({
       query: ({ rememberUser, ...body }) => ({
-        url: '',
+        url: 'auth',
         body,
         method: 'POST',
       }),
