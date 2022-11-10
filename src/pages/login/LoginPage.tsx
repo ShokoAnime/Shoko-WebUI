@@ -11,6 +11,7 @@ import { RootState } from '../../core/store';
 import Button from '../../components/Input/Button';
 import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
+import ShokoIcon from '../../components/ShokoIcon';
 
 import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/authApi';
@@ -67,7 +68,7 @@ function LoginPage() {
       <div className="flex h-screen w-screen">
         <div className="flex grow login-image" />
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
-          <img src="logo.png" className="w-32" alt="logo" />
+          <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
           </div>
