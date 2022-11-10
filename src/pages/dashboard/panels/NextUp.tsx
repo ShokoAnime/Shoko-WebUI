@@ -14,7 +14,12 @@ const NextUp = () => {
 
   return (
     <ShokoPanel title="Next Up" isFetching={items.isLoading} editMode={layoutEditMode}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90">{items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)}</div>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar pb-5">
+        {(items.data?.length ?? 0) > 0
+          ? items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
+          : <div className="flex justify-center font-semibold mt-4 w-full">No next up episodes!</div>
+        }
+      </div>
     </ShokoPanel>
   );
 };
