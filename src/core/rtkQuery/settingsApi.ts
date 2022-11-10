@@ -1,9 +1,12 @@
+import jsonpatch from 'fast-json-patch';
+import semver from 'semver';
+
 import { splitV3Api } from './splitV3Api';
 
 import type { SettingsServerType, SettingsType } from '../types/api/settings';
-import jsonpatch from 'fast-json-patch';
 import { SettingsAnidbLoginType } from '../types/api/settings';
 import { initialSettings } from '../../pages/settings/SettingsPage';
+import { uiVersion } from '../util';
 
 const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -16,6 +19,7 @@ const settingsApi = splitV3Api.injectEndpoints({
         const newSettingsRevision = 3;
         if (settingsRevision !== newSettingsRevision) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: newSettingsRevision }; // TO-DO: Move the settings revision number somewhere else
         else webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
+        if (semver.prerelease(uiVersion()) !== null) webuiSettings.updateChannel = 'unstable';
         return { ...response, WebUI_Settings: webuiSettings };
       },
       providesTags: ['Settings'],
