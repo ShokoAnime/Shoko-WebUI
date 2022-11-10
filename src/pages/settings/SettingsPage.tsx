@@ -52,6 +52,8 @@ export const initialSettings = {
           i: 'nextUp', x: 0, y: 61, w: 12, h: 19, minW: 2, minH: 19, moved: false, static: false,
         }, {
           i: 'upcomingAnime', x: 0, y: 73, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false,
+        }, {
+          i: 'recommendedAnime', x: 0, y: 93, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false,
         }],
       },
     },

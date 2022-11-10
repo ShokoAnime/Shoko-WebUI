@@ -16,6 +16,7 @@ import ImportFolders from './panels/ImportFolders';
 import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
+import RecommendedAnime from './panels/RecommendedAnime';
 import Button from '../../components/Input/Button';
 
 import { setLayoutEditMode } from '../../core/slices/mainpage';
@@ -136,6 +137,9 @@ function DashboardPage() {
       </div>
       <div key="upcomingAnime">
         <UpcomingAnime />
+      </div>
+      <div key="recommendedAnime">
+        <RecommendedAnime />
       </div>
     </ResponsiveGridLayout>
   );
