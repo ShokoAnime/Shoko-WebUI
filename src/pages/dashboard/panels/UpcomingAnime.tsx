@@ -18,18 +18,20 @@ const UpcomingAnime = () => {
 
   return (
     <ShokoPanel isFetching={items.isFetching} title={<DashboardTitleToggle title="Upcoming Anime" mainTitle="My Collection" secondaryTitle="All" secondaryActive={showAll} setSecondaryActive={setShowAll} />} editMode={layoutEditMode}>
-      <TransitionDiv show={!showAll} className="flex flex-nowrap overflow-x-auto shoko-scrollbar pb-5 absolute w-full">
-        {(localItems.data?.length ?? 0) > 0
-          ? localItems.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
-          : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
-        }
-      </TransitionDiv>
-      <TransitionDiv show={showAll} className="flex flex-nowrap overflow-x-auto shoko-scrollbar pb-5 absolute w-full">
-        {(items.data?.length ?? 0) > 0
-          ? items.data?.map(item =><EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
-          : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
-        }
-      </TransitionDiv>
+      <div className="flex relative shoko-scrollbar">
+        <TransitionDiv show={!showAll} className="flex absolute">
+          {(localItems.data?.length ?? 0) > 0
+            ? localItems.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
+            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
+          }
+        </TransitionDiv>
+        <TransitionDiv show={showAll} className="flex absolute">
+          {(items.data?.length ?? 0) > 0
+            ? items.data?.map(item =><EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
+            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
+          }
+        </TransitionDiv>
+      </div>
     </ShokoPanel>
   );
 };
