@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
+import { Icon } from '@mdi/react';
+import { mdiMenuDown } from '@mdi/js';
 
 import { RootState } from '../../core/store';
 import toast from '../../components/Toast';
@@ -84,6 +86,12 @@ function DashboardPage() {
     }
   }, [layoutEditMode, currentLayout]);
 
+  const renderResizeHandle = () => (
+    <div className="react-resizable-handle right-0 bottom-0 cursor-nwse-resize">
+      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45}/>
+    </div>
+  );
+
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
@@ -97,6 +105,7 @@ function DashboardPage() {
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}
       isResizable={layoutEditMode}
+      resizeHandle={renderResizeHandle()}
     >
       <div key="collectionBreakdown">
         <CollectionBreakdown />

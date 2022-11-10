@@ -110,6 +110,5 @@ body {
 }
 
 .react-grid-item > .react-resizable-handle::after {
-  border-bottom: 2px solid theme('colors.highlight-1') !important;
-  border-right: 2px solid theme('colors.highlight-1') !important;
+  border: 0;
 }
