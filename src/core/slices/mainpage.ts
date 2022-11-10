@@ -15,7 +15,23 @@ const mainpageSlice = createSlice({
   name: 'mainpage',
   initialState: {
     fetched: {},
-    queueStatus: {} as QueueStatusType,
+    queueStatus: {
+      HasherQueueState: {
+        state: 17,
+        description: '',
+      },
+      GeneralQueueState: {
+        state: 17,
+        description: '',
+      },
+      ImageQueueState: {
+        state: 17,
+        description: '',
+      },
+      HasherQueueCount: 0,
+      GeneralQueueCount: 0,
+      ImageQueueCount: 0,
+    },
     banStatus: {
       http: {
         updateType: 2,

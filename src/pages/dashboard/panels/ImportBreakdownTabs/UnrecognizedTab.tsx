@@ -77,7 +77,7 @@ function UnrecognizedTab() {
   });
 
   if (files.length === 0) {
-    files.push(<div className="flex justify-center font-semibold mt-4">No Unrecognized Files, Good Job!</div>);
+    files.push(<div className="flex justify-center font-semibold mt-4" key="no-files">No Unrecognized Files, Good Job!</div>);
   }
 
   return (<React.Fragment>{files}</React.Fragment>);
