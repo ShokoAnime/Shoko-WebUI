@@ -21,11 +21,11 @@ const RecommendedAnime = () => {
   );
 
   return (
-    <ShokoPanel title="Continue Watching" isFetching={items.isLoading} editMode={layoutEditMode}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar">
+    <ShokoPanel title="Recommeded Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
+      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar pb-5">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
-          : <div className="flex justify-center font-semibold mt-4 w-full">No episodes in-progress to continue watching!</div>
+          : <div className="flex justify-center font-semibold mt-4 w-full">No recommended anime!</div>
         }
       </div>
     </ShokoPanel>
