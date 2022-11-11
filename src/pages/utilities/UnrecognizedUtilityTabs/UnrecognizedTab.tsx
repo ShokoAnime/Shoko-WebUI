@@ -160,6 +160,10 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
     dispatch(setSelectedRows(table.getSelectedRowModel().rows.map(row => row.original)));
   }, [table.getSelectedRowModel()]);
 
+  useEffect(() => {
+    table.resetRowSelection();
+  }, [files.List]);
+
   const rescanFiles = (selected = false) => {
     if (selected) {
       forEach(selectedRows, (row) => {
