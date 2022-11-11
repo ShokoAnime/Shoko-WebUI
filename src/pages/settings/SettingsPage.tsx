@@ -37,7 +37,7 @@ export const initialSettings = {
         }, {
           i: 'collectionTypeBreakdown', x: 3, y: 0, w: 2, h: 16, minW: 2, minH: 2, moved: false, static: false,
         }, {
-          i: 'queueProcessor', x: 5, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false,
+          i: 'queueProcessor', x: 5, y: 0, w: 7, h: 16, minW: 2, minH: 2, moved: false, static: false,
         }, {
           i: 'recentlyImported', x: 0, y: 16, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false,
         }, {
