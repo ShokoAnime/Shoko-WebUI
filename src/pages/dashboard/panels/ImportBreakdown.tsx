@@ -13,7 +13,7 @@ function ImportBreakdown() {
   const items = useGetFileUnrecognizedQuery({ pageSize: 0 });
 
   return (
-    <ShokoPanel title="Unrecognized" isFetching={items.isLoading} disableClick={layoutEditMode}>
+    <ShokoPanel title="Unrecognized" isFetching={items.isLoading} editMode={layoutEditMode}>
       <UnrecognizedTab />
     </ShokoPanel>
   );

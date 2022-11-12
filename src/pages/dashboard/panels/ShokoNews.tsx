@@ -27,7 +27,7 @@ function ShokoNews() {
   );
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={items.isLoading} disableClick={layoutEditMode}>
+    <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col space-y-3">
         {items.data?.slice(0, 2).map(item => renderRow(item))}
       </div>

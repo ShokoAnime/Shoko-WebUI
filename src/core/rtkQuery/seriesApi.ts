@@ -1,6 +1,6 @@
 import { splitV3Api } from './splitV3Api';
 
-import type { SeriesAniDBSearchResult, SeriesType } from '../types/api/series';
+import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from '../types/api/series';
 import type { ListResultType, PaginationType } from '../types/api';
 import { EpisodeType } from '../types/api/episode';
 
@@ -41,6 +41,12 @@ const seriesApi = splitV3Api.injectEndpoints({
       query: params => ({ url: `Series/AniDB/${params.anidbID}` }),
       transformResponse: (response: any) => response.List,
     }),
+
+    // Gets anidb recommendation for the user
+    getAniDBRecommendedAnime: build.query<Array<SeriesRecommendedType>, PaginationType>({
+      query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
+      transformResponse: (response: any) => response.List,
+    }),
   }),
 });
 
@@ -51,4 +57,5 @@ export const {
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
   useLazyGetSeriesAniDBQuery,
+  useGetAniDBRecommendedAnimeQuery,
 } = seriesApi;

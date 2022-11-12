@@ -9,11 +9,11 @@ type Props = {
   options?: any;
   className?: string;
   isFetching?: boolean;
-  disableClick?: boolean;
+  editMode?: boolean;
 };
 
-const ShokoPanel = ({ className, title, options, children, isFetching, disableClick }: Props) => (
-    <div className={cx(['flex', 'flex-col', 'overflow-hidden', 'h-full'], disableClick && 'pointer-events-none', className)}>
+const ShokoPanel = ({ className, title, options, children, isFetching, editMode }: Props) => (
+    <div className={cx('flex flex-col overflow-hidden h-full transition-colors border border-dashed', editMode ? 'pointer-events-none border-highlight-1' : 'border-transparent', className)}>
         <div className="flex justify-between items-center mr-2">
           <span className="flex font-semibold text-base">{title}</span>
             <div
@@ -25,7 +25,7 @@ const ShokoPanel = ({ className, title, options, children, isFetching, disableCl
             </div>
         </div>
       <span className="bg-background-border my-4 h-0.5 flex-shrink-0" />
-      <div className="flex grow flex-col mr-2 font-open-sans overflow-y-auto">
+      <div className="flex grow flex-col mr-2 font-open-sans overflow-y-auto shoko-scrollbar">
         {isFetching ? <div className="flex grow justify-center items-center"><Icon path={mdiLoading} spin size={1} /></div> : children}
       </div>
     </div>

@@ -53,7 +53,7 @@ function SeriesBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading} disableClick={layoutEditMode}>
+    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
       {items}
     </ShokoPanel>
   );

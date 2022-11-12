@@ -47,7 +47,7 @@ function CollectionBreakdown() {
   ];
 
   return (
-    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading} disableClick={layoutEditMode}>
+    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>

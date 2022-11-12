@@ -6,6 +6,7 @@ import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import DashboardTitleToggle from '../components/DashboardTitleToggle';
 import EpisodeDetails from '../components/EpisodeDetails';
 import SeriesDetails from '../components/SeriesDetails';
+import TransitionDiv from '../../../components/TransitionDiv';
 
 import {
   useGetDashboardRecentlyAddedEpisodesQuery,
@@ -20,12 +21,21 @@ const RecentlyImported = () => {
   const episodes = useGetDashboardRecentlyAddedEpisodesQuery({ pageSize: 30 });
 
   return (
-    <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />} disableClick={layoutEditMode}>
-      <div className="flex flex-nowrap overflow-x-auto shoko-scrollbar h-90 pb-5">{showSeries ? (
-        series.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
-      ) : (
-        episodes.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
-      )}</div>
+    <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />} editMode={layoutEditMode}>
+      <div className="flex relative shoko-scrollbar">
+        <TransitionDiv show={!showSeries} className="flex absolute">
+          {(episodes.data?.length ?? 0) > 0
+            ? episodes.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
+            : <div className="flex justify-center font-semibold mt-4 w-full">No recently imported episodes!</div>
+          }
+        </TransitionDiv>
+        <TransitionDiv show={showSeries} className="flex absolute">
+          {(series.data?.length ?? 0) > 0
+            ? series.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
+            : <div className="flex justify-center font-semibold mt-4 w-full">No recently imported series!</div>
+          }
+        </TransitionDiv>
+      </div>
     </ShokoPanel>
   );
 };

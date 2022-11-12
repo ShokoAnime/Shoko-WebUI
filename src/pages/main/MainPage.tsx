@@ -52,7 +52,7 @@ function MainPage() {
           <Sidebar />
         </div>
         <div className="flex flex-col grow">
-          <div className="overflow-y-auto grow">
+          <div className="overflow-y-auto grow shoko-scrollbar">
             <Outlet />
           </div>
         </div>
