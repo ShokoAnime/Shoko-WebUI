@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { forEach, groupBy } from 'lodash';
+import { forEach, groupBy, orderBy } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
@@ -55,7 +55,7 @@ function EpisodeLinkPanel() {
   ];
   
   const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, label: item.Name })), [episodes]);
-  const groupedLinks = useMemo(() => groupBy(links, 'FileID'), [links]);
+  const groupedLinks = useMemo(() => groupBy(orderBy(links, ['FileID', 'asc']), 'FileID'), [links]);
   
   const refreshAniDB = async () => {
     const result:any = await refreshSeries({ anidbID: selectedSeries.ID });
