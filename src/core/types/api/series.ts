@@ -147,3 +147,8 @@ export type SeriesSizesEpisodeCountsType = {
   Parodies: number;
   Others: number;
 };
+
+export type SeriesRecommendedType = {
+  Anime: SeriesAniDBType,
+  SimilarTo: number,
+};

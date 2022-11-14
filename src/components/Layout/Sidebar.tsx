@@ -95,7 +95,7 @@ function Sidebar() {
           <span className="text-lg">{text}</span>
         </Link>
         {(key === 'dashboard') && (
-          <div onClick={() => dispatch(setLayoutEditMode(true))} className={cx('cursor-pointer transition-opacity', layoutEditMode && 'text-highlight-1', pathname !== '/webui/dashboard' && 'opacity-50 pointer-events-none')}>
+          <div onClick={() => dispatch(setLayoutEditMode(true))} className={cx('cursor-pointer transition-opacity', (pathname !== '/webui/dashboard' || layoutEditMode) && 'opacity-0 pointer-events-none')}>
             <Icon path={mdiCircleEditOutline} size={1} />
           </div>
         )}

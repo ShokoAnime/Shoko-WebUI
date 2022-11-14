@@ -93,7 +93,7 @@ function QueueProcessor() {
   }
 
   return (
-    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched} disableClick={layoutEditMode}>
+    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched} editMode={layoutEditMode}>
       <div className="flex flex-col justify-between h-full">
         {commands}
       </div>

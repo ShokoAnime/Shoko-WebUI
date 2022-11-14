@@ -11,6 +11,7 @@ import {
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
+import ShokoIcon from '../../components/ShokoIcon';
 
 import { RootState } from '../../core/store';
 
@@ -74,7 +75,7 @@ function FirstRunPage() {
     <div className="flex h-screen w-screen">
       <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-r-2 border-background-border">
         <div className="flex flex-col items-center">
-          <img src="/logo.png" className="w-32" alt="logo" />
+          <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
           </div>
