@@ -32,7 +32,7 @@ function EpisodeDetails(props: { episode: DashboardEpisodeDetailsType; showDate?
       <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
       <p className="truncate text-center text-sm mb-2">{relativeTime}</p>
     </>) : null}
-    <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-2">
+    <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2">
         {percentage ? (
           <div className="absolute bottom-0 left-0 h-1 bg-highlight-1" style={{ width: percentage }}></div>
         ) : null}

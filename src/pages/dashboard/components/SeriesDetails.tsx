@@ -8,7 +8,7 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
 
   return (
     <div key={`series-${series.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-open-sans justify-center flex flex-col">
-      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${seriesImageSource}/Poster/${seriesImageID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-2" />
+      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${seriesImageSource}/Poster/${seriesImageID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2" />
         <p className="truncate text-center text-base font-semibold" title={series.Name}>{series.Name}</p>
         <p className="truncate text-center text-sm" title={`${series.Size} Files`}>{series.Size} Files</p>
     </div>
