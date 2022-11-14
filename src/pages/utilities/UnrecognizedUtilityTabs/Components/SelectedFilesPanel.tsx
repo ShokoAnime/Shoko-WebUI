@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { find, forEach, groupBy } from 'lodash';
+import { find, forEach, orderBy } from 'lodash';
 import cx from 'classnames';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
@@ -11,21 +11,20 @@ import { RootState } from '../../../../core/store';
 function SelectedFilesPanel() {
   const { selectedSeries, selectedRows, links } = useSelector((state: RootState) => state.utilities.unrecognized );
 
-  const groupedLinks = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
+  const fileLinks = useMemo(() => orderBy(links, ['FileID', 'asc']), [links]);
 
   const renderFileLinks = () => {
     const result: React.ReactNode[] = [];
-    forEach(groupedLinks, (episodeLinks) => {
-      forEach(episodeLinks, (link, idx) => {
-        const file = find(selectedRows, ['ID', link.FileID]);
-        const path = file?.Locations?.[0].RelativePath ?? '';
-        result.push(
-          <div title={path} className={cx(['px-2 py-1 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
-            {path}
-          </div>,
-        );
-      });
+    forEach(fileLinks, (link, idx) => {
+      const file = find(selectedRows, ['ID', link.FileID]);
+      const path = file?.Locations?.[0].RelativePath ?? '';
+      result.push(
+        <div title={path} className={cx(['px-2 py-1 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          {path}
+        </div>,
+      );
     });
+    
     return result;
   };
 
