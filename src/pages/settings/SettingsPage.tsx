@@ -141,6 +141,7 @@ export const initialSettings = {
     UseExistingFileWatchedStatus: false,
     VideoExtensions: [],
   },
+  TraceLog: false,
 } as SettingsType;
 
 type ContextType = {

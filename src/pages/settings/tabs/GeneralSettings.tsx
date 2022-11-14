@@ -40,7 +40,7 @@ function GeneralSettings() {
   const {
     AutoGroupSeries, AutoGroupSeriesRelationExclusions,
     AutoGroupSeriesUseScoreAlgorithm,
-    LogRotator, WebUI_Settings,
+    LogRotator, WebUI_Settings, TraceLog,
   } = newSettings;
 
   const version = useGetInitVersionQuery();
@@ -117,6 +117,7 @@ function GeneralSettings() {
               <option value="90">Quarterly</option>
             </SelectSmall>
           </div>
+          <Checkbox justify label="Trace Logs" id="trace-logs" isChecked={TraceLog} onChange={event => setNewSettings({ ...newSettings, TraceLog: event.target.checked })} className="mt-2" />
         </div>
       </ShokoPanel>
 
