@@ -4,6 +4,7 @@ import type { DashboardNewsType } from '../types/api/dashboard';
 export const externalApi = createApi({
   reducerPath: 'external',
   baseQuery: fetchBaseQuery(),
+  refetchOnMountOrArgChange: true,
   endpoints: build => ({
     // Get blog posts from shokoanime.com
     getShokoNewsFeed: build.query<Array<DashboardNewsType>, void>({
