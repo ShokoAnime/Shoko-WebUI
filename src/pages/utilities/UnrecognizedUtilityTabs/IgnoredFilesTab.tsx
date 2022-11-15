@@ -59,6 +59,10 @@ function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
   });
   const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel()]);
 
+  useEffect(() => {
+    table.resetRowSelection();
+  }, [files.List]);
+
   const restoreFiles = () => {
     forEach(selectedRows, (row) => {
       fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});

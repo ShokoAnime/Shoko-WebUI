@@ -125,6 +125,7 @@ export type SettingsServerType = {
   LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
   Import: SettingsImportType;
+  TraceLog: boolean;
 };
 
 type LayoutItemType = {

@@ -21,13 +21,13 @@ const UpcomingAnime = () => {
       <div className="flex relative shoko-scrollbar">
         <TransitionDiv show={!showAll} className="flex absolute">
           {(localItems.data?.length ?? 0) > 0
-            ? localItems.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
+            ? localItems.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoFile !== null} />)
             : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
           }
         </TransitionDiv>
         <TransitionDiv show={showAll} className="flex absolute">
           {(items.data?.length ?? 0) > 0
-            ? items.data?.map(item =><EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
+            ? items.data?.map(item =><EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoFile !== null} />)
             : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
           }
         </TransitionDiv>

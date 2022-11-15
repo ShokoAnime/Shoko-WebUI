@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { forEach } from 'lodash';
 import cx from 'classnames';
 import moment from 'moment';
@@ -95,6 +95,10 @@ function SeriesWithoutFilesUtility() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+
+  useEffect(() => {
+    table.resetRowSelection();
+  }, [series.List]);
 
   const deleteSeries = () => {
     forEach(table.getSelectedRowModel().rows, (row) => {

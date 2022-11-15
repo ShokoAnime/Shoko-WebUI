@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 
 import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
 import { EpisodeTypeEnum } from '../../../core/types/api/episode';
+import { Icon } from '@mdi/react';
+import { mdiLayersTripleOutline } from '@mdi/js';
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',
@@ -13,8 +15,14 @@ const CalendarConfig: moment.CalendarSpec = {
   sameElse: 'dddd',
 };
 
-function EpisodeDetails(props: { episode: DashboardEpisodeDetailsType; showDate?: boolean }): JSX.Element {
-  const { episode, showDate = false } = props;
+type Props = {
+  episode: DashboardEpisodeDetailsType;
+  showDate?: boolean;
+  isInCollection?: boolean;
+};
+
+function EpisodeDetails(props: Props): JSX.Element {
+  const { episode, showDate, isInCollection } = props;
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null)
       return null;
@@ -32,10 +40,13 @@ function EpisodeDetails(props: { episode: DashboardEpisodeDetailsType; showDate?
       <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
       <p className="truncate text-center text-sm mb-2">{relativeTime}</p>
     </>) : null}
-    <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-2">
-        {percentage ? (
-          <div className="absolute bottom-0 left-0 h-1 bg-highlight-1" style={{ width: percentage }}></div>
-        ) : null}
+    <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}')` }} className="relative h-80 rounded overflow-hidden drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2">
+      {percentage && (<div className="absolute bottom-0 left-0 h-1 bg-highlight-1" style={{ width: percentage }}></div>)}
+      {isInCollection && (
+        <div className="absolute bg-highlight-1/85 top-3 right-3 rounded p-1">
+          <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is already in collection!" />
+        </div>
+      )}
     </div>
     <p className="truncate text-center text-base font-semibold" title={episode.SeriesTitle}>{episode.SeriesTitle}</p>
     <p className="truncate text-center text-sm" title={title}>{title}</p>

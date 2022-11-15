@@ -80,6 +80,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   const dispatch = useDispatch();
 
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
+  const [dumpInProgress, setDumpInProgress] = useState(false);
 
   const allowEd2kCopy = useMemo(() => {
     let notFound = false;
@@ -96,6 +97,14 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
     if (show) setFilesCount(files.Total);
   }, [show, files.Total]);
 
+  const runAvdump = async (fileId: number) => {
+    setDumpInProgress(true);
+    dispatch(setAvdumpItem({ id: fileId, hash: '', fetching: true }));
+    const result = await fileAvdumpTrigger(fileId);
+    dispatch(setAvdumpItem({ id: fileId, hash: result.data?.Ed2k ?? 'x', fetching: false }));
+    setDumpInProgress(false);
+  };
+
   const columns = [
     ...tempColumns,
     columnHelper.display({
@@ -104,10 +113,16 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
       cell: (info) => {
         const fileId = info.row.original.ID;
 
+        const handleClick = async (state: string) => {
+          if (dumpInProgress || state === 'dumping') return;
+          await runAvdump(fileId);
+        };
+
         let icon = {
           path: mdiHelpCircleOutline,
-          color: '',
+          color: 'text-font-main',
           title: 'Not Dumped!',
+          state: 'idle',
         };
 
         if (avdumpList[fileId]?.fetching) {
@@ -115,24 +130,35 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
             path: mdiLoading,
             color: 'text-highlight-1',
             title: 'Dumping!',
+            state: 'dumping',
           };
         } else if (avdumpList[fileId]?.hash === 'x') {
           icon = {
             path: mdiFileDocumentAlertOutline,
             color: 'text-highlight-3',
             title: 'Dump Failed!',
+            state: 'failed',
           };
         } else if (avdumpList[fileId]?.hash) {
           icon = {
             path: mdiFileDocumentCheckOutline,
             color: 'text-highlight-2',
             title: 'Dumped Successfully!',
+            state: 'success',
           };
         }
 
         return (
           <div className="flex justify-center">
-            <Icon path={icon.path} spin={icon.path === mdiLoading} size={1} className={`${icon.color} mr-2`} title={icon.title} />
+            {icon.state === 'success' ? (
+              <CopyToClipboard text={avdumpList[fileId].hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
+                <Icon path={icon.path} spin={icon.path === mdiLoading} size={1} className={`${icon.color} mr-2 cursor-pointer`} title={icon.title} />
+              </CopyToClipboard>
+            ) : (
+              <Button onClick={() => handleClick(icon.state)} className={cx((icon.state === 'dumping' || dumpInProgress) && 'cursor-default')}>
+                <Icon path={icon.path} spin={icon.path === mdiLoading} size={1} className={`${icon.color} mr-2`} title={icon.title} />
+              </Button>
+            )}
           </div>
         );
       },
@@ -197,12 +223,6 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   };
 
   const avdumpFiles = async (selected = false) => {
-    const runAvdump = async (fileId: number) => {
-      dispatch(setAvdumpItem({ id: fileId, hash: '', fetching: true }));
-      const result = await fileAvdumpTrigger(fileId);
-      dispatch(setAvdumpItem({ id: fileId, hash: result.data?.Ed2k ?? 'x', fetching: false }));
-    };
-
     if (selected) {
       for (let i = 0; i < selectedRows.length; i ++) {
         await runAvdump(selectedRows[i].ID);

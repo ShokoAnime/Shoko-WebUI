@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forEach, orderBy } from 'lodash';
 import moment from 'moment';
@@ -24,10 +24,14 @@ function UnrecognizedTab() {
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
+  const [dumpInProgress, setDumpInProgress] = useState(false);
+
   const avdumpFile = async (fileId: number) => {
+    setDumpInProgress(true);
     dispatch(setAvdumpItem({ id: fileId, hash: '', fetching: true }));
     const result = await avdumpTrigger(fileId);
     dispatch(setAvdumpItem({ id: fileId, hash: result.data?.Ed2k ?? 'x', fetching: false }));
+    setDumpInProgress(false);
   };
 
   const renderItem = (item: FileType) => (
@@ -41,7 +45,7 @@ function UnrecognizedTab() {
       )}
       <div className="flex my-2 justify-between">
         {(avdumpList[item.ID] === undefined || avdumpList[item.ID].fetching) && (
-          <Button onClick={() => avdumpFile(item.ID)} className="py-1 px-2" loading={avdumpList[item.ID]?.fetching ?? false}>
+          <Button onClick={() => avdumpFile(item.ID)} className="py-1 px-2" loading={avdumpList[item.ID]?.fetching ?? false} disabled={dumpInProgress}>
             <Icon className="text-highlight-1" path={mdiHelpCircleOutline} size={1} />
           </Button>
         )}
