@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { push } from '@lagunovsky/redux-react-router';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
@@ -13,7 +14,7 @@ import {
   mdiMagnify,
   mdiHelpCircleOutline,
   mdiGithub, mdiDownloadCircleOutline,
-  mdiInformationOutline, mdiCircleEditOutline,
+  mdiInformationOutline, mdiCircleEditOutline, mdiLoading,
 } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 import semver from 'semver';
@@ -30,6 +31,7 @@ import { initialSettings } from '../../pages/settings/SettingsPage';
 
 import Version from '../../../public/version.json';
 import toast from '../Toast';
+import Button from '../Input/Button';
 
 function Sidebar() {
   const dispatch = useDispatch();
@@ -47,15 +49,17 @@ function Sidebar() {
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   const [checkWebuiUpdateTrigger] = useGetWebuiLatestMutation();
-  const [webuiUpdateTrigger] = useGetWebuiUpdateMutation();
+  const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
 
   const [webuiUpdateAvailable, setWebuiUpdateAvailable] = useState(false);
 
   useEffect(() => {
-    checkWebuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then((result) => {
-      setWebuiUpdateAvailable(!Version.debug && semver.gt(result.version, Version.package));
-    }, reason => console.error(reason));
-  }, []);
+    if (!Version.debug && settingsQuery.isSuccess) {
+      checkWebuiUpdateTrigger(webuiSettings.updateChannel).unwrap().then((result) => {
+        setWebuiUpdateAvailable(semver.gt(result.version, Version.package));
+      }, reason => console.error(reason));
+    }
+  }, [webuiSettings.updateChannel]);
 
   const closeAllModals = () => {
     dispatch(setUtilitiesStatus(false));
@@ -108,9 +112,29 @@ function Sidebar() {
   );
 
   const handleWebUiUpdate = () => {
-    webuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then(() => {
-      toast.success('Update Successful!', 'Page will reload in 5 seconds!', { autoClose: 5000 });
-      setTimeout(() => window.location.reload(), 6000);
+    const renderToast = () => (
+      <div className="flex flex-col">
+        WebUI Update Successful!
+        <div className="flex items-center justify-end mt-3">
+          <Button onClick={() => {
+            toast.dismiss('webui-update');
+            dispatch(push('/webui/dashboard'));
+            window.location.reload();
+          }} className="bg-highlight-1 py-1.5 w-full">
+            Click here to reload
+          </Button>
+        </div>
+      </div>
+    );
+
+    webuiUpdateTrigger(webuiSettings.updateChannel).unwrap().then(() => {
+      toast.success('', renderToast(), {
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        toastId: 'webui-update',
+        className: 'w-72 ml-auto',
+      });
     }, error => console.error(error));
   };
 
@@ -154,7 +178,7 @@ function Sidebar() {
           {/*</div>*/}
           {webuiUpdateAvailable && (
             <div className="flex items-center font-semibold cursor-pointer mt-5" onClick={() => handleWebUiUpdate()}>
-              <Icon path={mdiDownloadCircleOutline} size={1} className="text-highlight-2"/>
+              <Icon path={webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline} size={1} className={webuiUpdateResult.isLoading ? 'text-highlight-1' : 'text-highlight-2'} spin={webuiUpdateResult.isLoading} />
               <div className="flex flex-col ml-3">
                 <span>Web UI</span>Update Available
               </div>
