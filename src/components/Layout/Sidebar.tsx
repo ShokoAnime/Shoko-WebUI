@@ -107,6 +107,13 @@ function Sidebar() {
       <div key={icon} className="cursor-pointer w-6 flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={1} horizontal vertical rotate={180} /></div>
   );
 
+  const handleWebUiUpdate = () => {
+    webuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then(() => {
+      toast.success('Update Successful!', 'Page will reload in 5 seconds!', { autoClose: 5000 });
+      setTimeout(() => window.location.reload(), 6000);
+    }, error => console.error(error));
+  };
+
   return (
     <div className="flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
       <div className="flex flex-col p-10">
@@ -146,7 +153,7 @@ function Sidebar() {
           {/*  </div>*/}
           {/*</div>*/}
           {webuiUpdateAvailable && (
-            <div className="flex items-center font-semibold cursor-pointer mt-5" onClick={() => webuiUpdateTrigger(webuiSettings.updateChannel ?? 'stable').unwrap().then(() => toast.success('Update Successful!', 'Please close this and open another tab to use the Web UI', { autoClose: 5000 }))}>
+            <div className="flex items-center font-semibold cursor-pointer mt-5" onClick={() => handleWebUiUpdate()}>
               <Icon path={mdiDownloadCircleOutline} size={1} className="text-highlight-2"/>
               <div className="flex flex-col ml-3">
                 <span>Web UI</span>Update Available
