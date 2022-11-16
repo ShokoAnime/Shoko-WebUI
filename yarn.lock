@@ -2272,14 +2272,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reduxjs/toolkit@npm:1.8.6":
-  version: 1.8.6
-  resolution: "@reduxjs/toolkit@npm:1.8.6"
+"@reduxjs/toolkit@npm:1.9.0":
+  version: 1.9.0
+  resolution: "@reduxjs/toolkit@npm:1.9.0"
   dependencies:
-    immer: ^9.0.7
-    redux: ^4.1.2
-    redux-thunk: ^2.4.1
-    reselect: ^4.1.5
+    immer: ^9.0.16
+    redux: ^4.2.0
+    redux-thunk: ^2.4.2
+    reselect: ^4.1.7
   peerDependencies:
     react: ^16.9.0 || ^17.0.0 || ^18
     react-redux: ^7.2.1 || ^8.0.2
@@ -2288,7 +2288,7 @@ __metadata:
       optional: true
     react-redux:
       optional: true
-  checksum: f2a5f20f638a981eacd6becb040b923a825013064ece9b1555a658cab1e9f6c46a14d8c50aa095cda49ff0b89518b855ae88c774d95bcc9692e9297d3bc3b2d6
+  checksum: 34452bc5d41ae401f6673ae418afface339a3cf5990dfac2f784295cebcecabf83aade228671fc03d4c450b752334822d9504164862039be3945527bc94981bc
   languageName: node
   linkType: hard
 
@@ -2409,31 +2409,31 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tanstack/match-sorter-utils@npm:^8.1.1":
-  version: 8.1.1
-  resolution: "@tanstack/match-sorter-utils@npm:8.1.1"
+"@tanstack/match-sorter-utils@npm:^8.5.14":
+  version: 8.5.14
+  resolution: "@tanstack/match-sorter-utils@npm:8.5.14"
   dependencies:
     remove-accents: 0.4.2
-  checksum: bf1458b7ca08cf79750ebd46fddef9c9b845ef55b5b69c0f7f69d48d6cbd73dbfd98763509f655298033b93cfc92b21d54f9f13a4d631cc68ca9191913967205
+  checksum: 9db789bc70db6e04c2759c32d497bd3cfdf6fe2ed5afff52046a8c739d00e8df40c74b21ffaeaf70c7e2ede02578ee748c950117190fe4e7a7bd72ce1134d8d9
   languageName: node
   linkType: hard
 
-"@tanstack/react-table@npm:^8.5.11":
-  version: 8.5.11
-  resolution: "@tanstack/react-table@npm:8.5.11"
+"@tanstack/react-table@npm:^8.5.30":
+  version: 8.5.30
+  resolution: "@tanstack/react-table@npm:8.5.30"
   dependencies:
-    "@tanstack/table-core": 8.5.11
+    "@tanstack/table-core": 8.5.30
   peerDependencies:
     react: ">=16"
     react-dom: ">=16"
-  checksum: 7ab4bfb6c6f2ea3d7a17332297cf77cdd3ca231fde8cb61be94dec603e3e7316bd7661c08c4430b02fd4cb7e7b42f733d854e8a872bb094529dc5d32f9dd2acc
+  checksum: 0e61cd98bf68a8c5004dc80bf9ff097205ce5e48e48f72600cce0788db6987c4e770e0a97795a884c17f36647f8faf6cea5817399b1e74158c3c4ecf8c80c79a
   languageName: node
   linkType: hard
 
-"@tanstack/table-core@npm:8.5.11":
-  version: 8.5.11
-  resolution: "@tanstack/table-core@npm:8.5.11"
-  checksum: f518ba072f0098e9cc2e609bb9da060e2c94c3aed09484effd9e2acb26a512e9566a00fabebb3fe5300763c715132464c4494307774d9a2e5ffc8ea3b7aa3f49
+"@tanstack/table-core@npm:8.5.30":
+  version: 8.5.30
+  resolution: "@tanstack/table-core@npm:8.5.30"
+  checksum: 05d5612ec417a665cb67c35eb94cada149884fc3377ec6b3850eff3081517a913a57b5725f9c609b9eada6de8b980d63bbb30a8d62111730d62aea80e184b997
   languageName: node
   linkType: hard
 
@@ -6809,7 +6809,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:^9.0.7":
+"immer@npm:^9.0.16":
   version: 9.0.16
   resolution: "immer@npm:9.0.16"
   checksum: e9a5ca65c929b329da7a3b7beccf7984271cda7bdd47b2cab619eac3277dcd56598c211b55cc340786b6eff0c06652ac018808d9fd744443f06882364dece6bc
@@ -7348,14 +7348,14 @@ __metadata:
     "@mdi/react": ^1.6.1
     "@microsoft/signalr": ^7.0.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
-    "@reduxjs/toolkit": 1.8.6
+    "@reduxjs/toolkit": 1.9.0
     "@sentry/browser": ^7.19.0
     "@sentry/react": ^7.19.0
     "@sentry/tracing": ^7.19.0
     "@sentry/webpack-plugin": ^1.20.0
     "@tailwindcss/line-clamp": ^0.4.2
-    "@tanstack/match-sorter-utils": ^8.1.1
-    "@tanstack/react-table": ^8.5.11
+    "@tanstack/match-sorter-utils": ^8.5.14
+    "@tanstack/react-table": ^8.5.30
     "@types/assets-webpack-plugin": ^7.1.0
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.1
@@ -7400,7 +7400,7 @@ __metadata:
     isomorphic-fetch: ^3.0.0
     json-loader: ^0.5.7
     lodash: ^4.17.21
-    mini-css-extract-plugin: ^2.6.1
+    mini-css-extract-plugin: ^2.7.0
     moment: ^2.29.4
     node-sass: ^8.0.0
     postcss: ^8.4.19
@@ -7438,8 +7438,8 @@ __metadata:
     stylelint-config-tailwindcss: ^0.0.7
     tailwindcss: ^3.2.4
     terser-webpack-plugin: ^5.3.6
-    ts-loader: ^9.3.1
-    typescript: ^4.7.4
+    ts-loader: ^9.4.1
+    typescript: 4.8.4
     webpack: ^5.75.0
     webpack-bundle-analyzer: ^4.7.0
     webpack-cli: ^4.10.0
@@ -8125,14 +8125,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "mini-css-extract-plugin@npm:2.6.1"
+"mini-css-extract-plugin@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "mini-css-extract-plugin@npm:2.7.0"
   dependencies:
     schema-utils: ^4.0.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: df60840404878c4832b4104799fd29c5a89b06b1e377956c8d4a5729efe0ef301a52e5087d6f383871df5e69a8445922a0ae635c11abf412d7645a7096d0e973
+  checksum: e6b111d4289132bd496286eec42801c74c83af7eac71af630a5babae48ca65377f47d8b39e1f0653b449e68e67b57dbd0d36917242f08fc3e7770e70c0cb56cd
   languageName: node
   linkType: hard
 
@@ -10437,7 +10437,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-thunk@npm:^2.4.1":
+"redux-thunk@npm:^2.4.2":
   version: 2.4.2
   resolution: "redux-thunk@npm:2.4.2"
   peerDependencies:
@@ -10455,7 +10455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux@npm:^4.1.2, redux@npm:^4.2.0":
+"redux@npm:^4.2.0":
   version: 4.2.0
   resolution: "redux@npm:4.2.0"
   dependencies:
@@ -10622,7 +10622,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"reselect@npm:^4.1.5":
+"reselect@npm:^4.1.7":
   version: 4.1.7
   resolution: "reselect@npm:4.1.7"
   checksum: 738d8e2b8f0dca154ad29de6a209c9fbca2d70ae6788fd85df87f2c74b95a65bbf2d16d43a9e2faff39de34d17a29d706ba08a6b2ee5660c09589edbd19af7e1
@@ -12072,9 +12072,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.3.1":
-  version: 9.3.1
-  resolution: "ts-loader@npm:9.3.1"
+"ts-loader@npm:^9.4.1":
+  version: 9.4.1
+  resolution: "ts-loader@npm:9.4.1"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.0.0
@@ -12083,7 +12083,7 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     typescript: "*"
     webpack: ^5.0.0
-  checksum: 462a8ac315017cf4961dafd2be29d5abe7c3af63c4515e325269f79b9d0212b35c59184d7fd01fc378749c88454752e1599301d2190eb6844ea5fe332de5f695
+  checksum: b8947f6d396621cc3f6ba8d4c14fa09eba03c4b7eeabbc429481e923a973c244fb80feb44e900f03fc1010755a6bf14fc561c574fb79e324f39b5b6ef1dcca6c
   languageName: node
   linkType: hard
 
@@ -12186,7 +12186,17 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.2, typescript@npm:^4.7.4":
+"typescript@npm:4.8.4":
+  version: 4.8.4
+  resolution: "typescript@npm:4.8.4"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 3e4f061658e0c8f36c820802fa809e0fd812b85687a9a2f5430bc3d0368e37d1c9605c3ce9b39df9a05af2ece67b1d844f9f6ea8ff42819f13bcb80f85629af0
+  languageName: node
+  linkType: hard
+
+"typescript@npm:^4.6.2":
   version: 4.7.4
   resolution: "typescript@npm:4.7.4"
   bin:
@@ -12196,7 +12206,17 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
+"typescript@patch:typescript@4.8.4#~builtin<compat/typescript>":
+  version: 4.8.4
+  resolution: "typescript@patch:typescript@npm%3A4.8.4#~builtin<compat/typescript>::version=4.8.4&hash=0102e9"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 301459fc3eb3b1a38fe91bf96d98eb55da88a9cb17b4ef80b4d105d620f4d547ba776cc27b44cc2ef58b66eda23fe0a74142feb5e79a6fb99f54fc018a696afa
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.7.4
   resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=65a307"
   bin:
