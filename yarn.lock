@@ -7400,7 +7400,7 @@ __metadata:
     isomorphic-fetch: ^3.0.0
     json-loader: ^0.5.7
     lodash: ^4.17.21
-    mini-css-extract-plugin: ^2.6.1
+    mini-css-extract-plugin: ^2.7.0
     moment: ^2.29.4
     node-sass: ^8.0.0
     postcss: ^8.4.19
@@ -7438,8 +7438,8 @@ __metadata:
     stylelint-config-tailwindcss: ^0.0.7
     tailwindcss: ^3.2.4
     terser-webpack-plugin: ^5.3.6
-    ts-loader: ^9.3.1
-    typescript: ^4.7.4
+    ts-loader: ^9.4.1
+    typescript: ^4.9.3
     webpack: ^5.75.0
     webpack-bundle-analyzer: ^4.7.0
     webpack-cli: ^4.10.0
@@ -8125,14 +8125,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"mini-css-extract-plugin@npm:^2.6.1":
-  version: 2.6.1
-  resolution: "mini-css-extract-plugin@npm:2.6.1"
+"mini-css-extract-plugin@npm:^2.7.0":
+  version: 2.7.0
+  resolution: "mini-css-extract-plugin@npm:2.7.0"
   dependencies:
     schema-utils: ^4.0.0
   peerDependencies:
     webpack: ^5.0.0
-  checksum: df60840404878c4832b4104799fd29c5a89b06b1e377956c8d4a5729efe0ef301a52e5087d6f383871df5e69a8445922a0ae635c11abf412d7645a7096d0e973
+  checksum: e6b111d4289132bd496286eec42801c74c83af7eac71af630a5babae48ca65377f47d8b39e1f0653b449e68e67b57dbd0d36917242f08fc3e7770e70c0cb56cd
   languageName: node
   linkType: hard
 
@@ -12072,9 +12072,9 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"ts-loader@npm:^9.3.1":
-  version: 9.3.1
-  resolution: "ts-loader@npm:9.3.1"
+"ts-loader@npm:^9.4.1":
+  version: 9.4.1
+  resolution: "ts-loader@npm:9.4.1"
   dependencies:
     chalk: ^4.1.0
     enhanced-resolve: ^5.0.0
@@ -12083,7 +12083,7 @@ resolve@^2.0.0-next.3:
   peerDependencies:
     typescript: "*"
     webpack: ^5.0.0
-  checksum: 462a8ac315017cf4961dafd2be29d5abe7c3af63c4515e325269f79b9d0212b35c59184d7fd01fc378749c88454752e1599301d2190eb6844ea5fe332de5f695
+  checksum: b8947f6d396621cc3f6ba8d4c14fa09eba03c4b7eeabbc429481e923a973c244fb80feb44e900f03fc1010755a6bf14fc561c574fb79e324f39b5b6ef1dcca6c
   languageName: node
   linkType: hard
 
@@ -12186,7 +12186,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.6.2, typescript@npm:^4.7.4":
+"typescript@npm:^4.6.2":
   version: 4.7.4
   resolution: "typescript@npm:4.7.4"
   bin:
@@ -12196,13 +12196,33 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>, typescript@patch:typescript@^4.7.4#~builtin<compat/typescript>":
+"typescript@npm:^4.9.3":
+  version: 4.9.3
+  resolution: "typescript@npm:4.9.3"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 17b8f816050b412403e38d48eef0e893deb6be522d6dc7caf105e54a72e34daf6835c447735fd2b28b66784e72bfbf87f627abb4818a8e43d1fa8106396128dc
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.6.2#~builtin<compat/typescript>":
   version: 4.7.4
   resolution: "typescript@patch:typescript@npm%3A4.7.4#~builtin<compat/typescript>::version=4.7.4&hash=65a307"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 9096d8f6c16cb80ef3bf96fcbbd055bf1c4a43bd14f3b7be45a9fbe7ada46ec977f604d5feed3263b4f2aa7d4c7477ce5f9cd87de0d6feedec69a983f3a4f93e
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.9.3#~builtin<compat/typescript>":
+  version: 4.9.3
+  resolution: "typescript@patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=d73830"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 67ca21a387c0572f1c04936e638dde7782c5aa520c3754aadc7cc9b7c915da9ebc3e27c601bfff4ccb7d7264e82dce6d277ada82ec09dc75024349e0ef64926d
   languageName: node
   linkType: hard
 

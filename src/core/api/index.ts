@@ -24,17 +24,6 @@ const defaultOptions = {
   expectEmpty: false,
 };
 
-export function buildQuery(params: object) {
-  const output: string[] = [];
-  for (const key in params) {
-    if ([params[key]] !== undefined) {
-      output.push(`${key}=${params[key]}`);
-    }
-  }
-  
-  return output.length === 0 ? '' : `?${output.join('&')}`;
-}
-
 function* apiCall(userOptions: ApiCallOptions) {
   const options = Object.assign({}, defaultOptions, userOptions);
   let fetchOptions;
