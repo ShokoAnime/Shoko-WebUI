@@ -23,6 +23,50 @@ const items = [
   // { name: 'Themes', path: 'themes' },
 ];
 
+const initialLayout = {
+  dashboard: {
+    lg: [
+      { i: 'collectionBreakdown', x: 0, y: 0, w: 3, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionTypeBreakdown', x: 3, y: 0, w: 2, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'queueProcessor', x: 5, y: 0, w: 7, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'shokoNews', x: 0, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importFolders', x: 3, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importBreakdown', x: 6, y: 35, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'continueWatching', x: 0, y: 49, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'nextUp', x: 0, y: 61, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'upcomingAnime', x: 0, y: 73, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recommendedAnime', x: 0, y: 94, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
+    ],
+    md: [
+      { i: 'collectionBreakdown', x: 0, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionTypeBreakdown', x: 5, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'queueProcessor', x: 0, y: 16, w: 10, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recentlyImported', x: 0, y: 32, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'shokoNews', x: 0, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importFolders', x: 5, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importBreakdown', x: 0, y: 65, w: 10, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'continueWatching', x: 0, y: 79, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'nextUp', x: 0, y: 98, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'upcomingAnime', x: 0, y: 117, w: 10, h: 21, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recommendedAnime', x: 0, y: 138, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
+    ],
+    sm: [
+      { i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionTypeBreakdown', x: 0, y: 16, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'queueProcessor', x: 0, y: 32, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recentlyImported', x: 0, y: 48, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'shokoNews', x: 0, y: 67, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importFolders', x: 0, y: 81, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importBreakdown', x: 0, y: 95, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'continueWatching', x: 0, y: 109, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'nextUp', x: 0, y: 128, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'upcomingAnime', x: 0, y: 147, w: 6, h: 21, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recommendedAnime', x: 0, y: 168, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
+    ],
+  },
+};
+
 export const initialSettings = {
   WebUI_Settings: {
     notifications: true,
@@ -30,33 +74,7 @@ export const initialSettings = {
     theme: '',
     toastPosition: 'bottom-right',
     updateChannel: 'stable',
-    layout: {
-      dashboard: {
-        lg: [{
-          i: 'collectionBreakdown', x: 0, y: 0, w: 3, h: 16, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'collectionTypeBreakdown', x: 3, y: 0, w: 2, h: 16, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'queueProcessor', x: 5, y: 0, w: 7, h: 16, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'recentlyImported', x: 0, y: 16, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'shokoNews', x: 0, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'importFolders', x: 3, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'importBreakdown', x: 6, y: 35, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'continueWatching', x: 0, y: 49, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'nextUp', x: 0, y: 61, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'upcomingAnime', x: 0, y: 73, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false,
-        }, {
-          i: 'recommendedAnime', x: 0, y: 94, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false,
-        }],
-      },
-    },
+    layout: initialLayout,
   },
   FirstRun: false,
   Database: {

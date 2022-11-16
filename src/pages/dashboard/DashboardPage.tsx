@@ -96,8 +96,11 @@ function DashboardPage() {
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
+      breakpoints={{
+        lg: 1024, md: 768, sm: 640,
+      }} // These match tailwind breakpoints (for consistency)
       cols={{
-        lg: 12, md: 10, sm: 6, xs: 4, xxs: 2,
+        lg: 12, md: 10, sm: 6,
       }}
       rowHeight={0}
       containerPadding={[36, 36]}
