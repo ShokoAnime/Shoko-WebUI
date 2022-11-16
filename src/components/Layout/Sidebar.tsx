@@ -32,9 +32,18 @@ import { initialSettings } from '../../pages/settings/SettingsPage';
 import Version from '../../../public/version.json';
 import toast from '../Toast';
 import Button from '../Input/Button';
+import { useMediaQuery } from 'react-responsive';
+import TransitionDiv from '../TransitionDiv';
 
-function Sidebar() {
+type Props = {
+  showSmSidebar: boolean;
+  setShowSmSidebar: (show: boolean) => void;
+};
+
+function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
   const dispatch = useDispatch();
+
+  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   const pathname = useSelector((state: RootState) => state.router.location.pathname);
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
@@ -61,13 +70,14 @@ function Sidebar() {
     }
   }, [webuiSettings.updateChannel]);
 
-  const closeAllModals = () => {
+  const closeModalsAndSidebar = () => {
     dispatch(setUtilitiesStatus(false));
     dispatch(setActionsStatus(false));
+    setShowSmSidebar(false);
   };
 
   const toggleModal = (modal: string) => {
-    closeAllModals();
+    closeModalsAndSidebar();
     switch (modal) {
       case 'utilities':
         dispatch(setUtilitiesStatus(!utilitiesModalOpen));
@@ -94,11 +104,11 @@ function Sidebar() {
     const isHighlighted = pathname.startsWith(uri);
     return (
       <div className="flex items-center w-full px-7 justify-between">
-        <Link key={key} className={cx(['cursor-pointer flex items-center w-full', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeAllModals()}>
+        <Link key={key} className={cx(['cursor-pointer flex items-center w-full', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeModalsAndSidebar()}>
           <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={1} horizontal vertical rotate={180}/></div>
           <span className="text-lg">{text}</span>
         </Link>
-        {(key === 'dashboard') && (
+        {(!isSm && key === 'dashboard') && (
           <div onClick={() => dispatch(setLayoutEditMode(true))} className={cx('cursor-pointer transition-opacity', (pathname !== '/webui/dashboard' || layoutEditMode) && 'opacity-0 pointer-events-none')}>
             <Icon path={mdiCircleEditOutline} size={1} />
           </div>
@@ -139,11 +149,17 @@ function Sidebar() {
   };
 
   return (
-    <div className="flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]">
-      <div className="flex flex-col p-10">
+    <TransitionDiv
+      className={cx('flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)] absolute z-10 top-0 md:static')}
+      show={!(isSm && !showSmSidebar)}
+      enter="transition-transform"
+      enterFrom="-translate-x-62.5"
+      enterTo="translate-x-0"
+    >
+      {!isSm && (<div className="flex flex-col px-10 mt-10">
         <ShokoIcon/>
-      </div>
-      <div className="flex items-center w-full p-4">
+      </div>)}
+      <div className="flex items-center w-full mt-24 md:mt-10 p-4">
         <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-15 h-15 text-xl rounded-full">
           {username.charAt(0)}
         </div>
@@ -152,15 +168,19 @@ function Sidebar() {
           <div className="flex">{username}</div>
         </div>
       </div>
-      <div className="flex mt-10 w-full bg-background-alt px-7 py-4 items-center border-y border-background-border">
-        <Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} />
-        <span className="font-semibold">Search...</span>
-      </div>
-      <div className="flex items-center mt-11 w-full px-7">
-        <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} /></div>
-        <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
-      </div>
-      <div className="flex flex-col justify-between mt-11 w-full">
+      {!isSm && (
+        <>
+          <div className="flex mt-10 w-full bg-background-alt px-7 py-4 items-center border-y border-background-border">
+            <Icon path={mdiMagnify} size={1} horizontal vertical rotate={180} />
+            <span className="font-semibold">Search...</span>
+          </div>
+          <div className="flex items-center mt-11 mb-6 w-full px-7">
+            <div className="w-6 flex items-center mr-6"><Icon path={mdiServer} size={1} horizontal vertical rotate={180} /></div>
+            <span className="text-highlight-2 text-lg">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+          </div>
+        </>
+      )}
+      <div className="flex flex-col justify-between mt-5 w-full">
         {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
         {/*{renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}*/}
         <div className={cx('transition-opacity', layoutEditMode && 'opacity-50 pointer-events-none')}>
@@ -208,7 +228,7 @@ function Sidebar() {
         {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
         {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
       </div>
-    </div>
+    </TransitionDiv>
   );
 }
 
