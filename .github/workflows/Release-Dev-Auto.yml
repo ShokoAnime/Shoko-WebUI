@@ -63,7 +63,7 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: ./build/Shoko-WebUI-${{ steps.semver.outputs.version_tag }}.zip
-          tag_name: ${{ steps.semver.outputs.version_tag }}
+          tag_name: v${{ steps.semver.outputs.version_tag }}
           prerelease: true
           fail_on_unmatched_files: true
           body_path: ./changelog.txt
