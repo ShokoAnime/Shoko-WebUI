@@ -83,12 +83,12 @@ jobs:
 #          skip_fetch: true
 
       - name: Rename build zip
-        run: mv ./build/latest.zip ./build/Shoko-WebUI-${{ github.event.inputs.version }}.zip
+        run: mv ./build/latest.zip ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./build/Shoko-WebUI-${{ github.event.inputs.version }}.zip
+          files: ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
           tag_name: v${{ github.event.inputs.version }}
           prerelease: ${{ github.event.inputs.prerelease }}
           fail_on_unmatched_files: true

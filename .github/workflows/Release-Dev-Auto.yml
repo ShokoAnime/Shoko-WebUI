@@ -57,12 +57,12 @@ jobs:
 #          skip_fetch: true
 
       - name: Rename build zip
-        run: mv ./build/latest.zip ./build/Shoko-WebUI-${{ steps.semver.outputs.version_tag }}.zip
+        run: mv ./build/latest.zip ./build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: ./build/Shoko-WebUI-${{ steps.semver.outputs.version_tag }}.zip
+          files: ./build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip
           tag_name: v${{ steps.semver.outputs.version_tag }}
           prerelease: true
           fail_on_unmatched_files: true
