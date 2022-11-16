@@ -210,5 +210,6 @@
     "build:debug": "cross-env NODE_ENV=development node run build --debug",
     "build:version": "cross-env NODE_ENV=production node run version",
     "start": "cross-env NODE_ENV=development node run"
-  }
+  },
+  "packageManager": "yarn@3.3.0"
 }
