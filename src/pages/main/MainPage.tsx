@@ -59,7 +59,7 @@ function MainPage() {
           <div className="flex">
             <Sidebar showSmSidebar={showSmSidebar} setShowSmSidebar={setShowSmSidebar} />
           </div>
-          <div className="overflow-y-auto grow shoko-scrollbar">
+          <div className="overflow-y-auto grow shoko-scrollbar" onClick={() => setShowSmSidebar(false)}>
             <Outlet />
           </div>
         </div>

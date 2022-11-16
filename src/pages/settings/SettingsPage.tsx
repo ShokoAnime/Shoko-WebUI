@@ -2,13 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Link, useOutletContext } from 'react-router-dom';
+import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
-import { isEqual } from 'lodash';
+import { find, isEqual } from 'lodash';
+import { Icon } from '@mdi/react';
+import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 
 import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
 
 import Button from '../../components/Input/Button';
 import toast from '../../components/Toast';
+import TransitionDiv from '../../components/TransitionDiv';
 
 import type { RootState } from '../../core/store';
 import type { SettingsType } from '../../core/types/api/settings';
@@ -177,6 +181,9 @@ function SettingsPage() {
   const [patchSettings] = usePatchSettingsMutation();
 
   const [newSettings, setNewSettings] = useState(initialSettings);
+  const [showNav, setShowNav] = useState(false);
+
+  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
     setNewSettings(settings);
@@ -206,7 +213,7 @@ function SettingsPage() {
   };
 
   const renderItem = (name: string, path: string) => (
-    <Link to={path} className={cx('font-semibold mb-2', pathname === `/webui/settings/${path}` && 'text-highlight-1')} key={path}>{name}</Link>
+    <Link to={path} className={cx('font-semibold mb-2', pathname === `/webui/settings/${path}` && 'text-highlight-1')} key={path} onClick={() => setShowNav(false)}>{name}</Link>
   );
 
   const getBgClassNames = () => {
@@ -220,12 +227,28 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex">
-      <div className="flex flex-col w-72 bg-background-nav h-screen border-x-2 border-background-border p-9">
+    <div className="flex h-full">
+      <TransitionDiv
+        className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
+        show={!(isSm && !showNav)}
+        enter="transition-transform"
+        enterFrom="-translate-x-64"
+        enterTo="translate-x-0"
+      >
         {items.map(item => renderItem(item.name, item.path))}
-      </div>
-      <div className={`grow h-screen p-9 bg-cover overflow-y-auto ${getBgClassNames()}`}>
-        <div className="flex flex-col w-2/5">
+      </TransitionDiv>
+      <div className={`grow h-full p-9 bg-cover overflow-y-auto ${getBgClassNames()}`} onClick={() => setShowNav(false)}>
+        {isSm && (
+          <div className="flex justify-center mb-8 font-semibold">
+            Settings
+            <Icon path={mdiChevronRight} size={1} className="mx-1" />
+            <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>
+              {find(items, item => item.path === pathname.split('/').pop())?.name}
+              <Icon path={mdiChevronDown} size={1} />
+            </div>
+          </div>
+        )}
+        <div className="flex flex-col max-w-full md:max-w-[34rem]">
           <Outlet
             context={{
               fetching: settingsQuery.isLoading,
@@ -235,7 +258,7 @@ function SettingsPage() {
             }}
           />
         </div>
-        <div className="flex w-2/5 mt-10 justify-end">
+        <div className="flex max-w-[34rem] mt-10 justify-end">
           <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
           <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
         </div>

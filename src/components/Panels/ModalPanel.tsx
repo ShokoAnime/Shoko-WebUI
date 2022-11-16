@@ -25,7 +25,7 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName={{
-        base: cx('fixed inset-0 flex items-center pointer-events-auto', (!isSm && props.sidebarSnap) && 'justify-start ml-62.5 modal-transition-left', (!isSm && !props.sidebarSnap) && 'justify-end modal-transition-right', isSm && 'justify-start mt-15'),
+        base: cx('fixed inset-0 flex items-center pointer-events-auto', (!isSm && props.sidebarSnap) && 'justify-start ml-62.5 modal-transition-left', (!isSm && !props.sidebarSnap) && 'justify-end modal-transition-right', isSm && 'justify-start mt-15 z-20'),
         afterOpen: cx(props.sidebarSnap ? 'modal-transition-left--after-open' : 'modal-transition-right--after-open'),
         beforeClose: cx(props.sidebarSnap ? 'modal-transition-left--before-close' : 'modal-transition-right--before-close'),
       }}
