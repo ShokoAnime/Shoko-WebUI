@@ -15,7 +15,7 @@
     "@mdi/js": "^7.0.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^7.0.0",
-    "@reduxjs/toolkit": "1.8.6",
+    "@reduxjs/toolkit": "1.9.0",
     "@sentry/browser": "^7.19.0",
     "@sentry/react": "^7.19.0",
     "@sentry/tracing": "^7.19.0",
