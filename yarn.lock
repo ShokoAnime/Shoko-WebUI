@@ -2008,16 +2008,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/signalr@npm:^6.0.7":
-  version: 6.0.7
-  resolution: "@microsoft/signalr@npm:6.0.7"
+"@microsoft/signalr@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@microsoft/signalr@npm:7.0.0"
   dependencies:
     abort-controller: ^3.0.0
-    eventsource: ^1.0.7
-    fetch-cookie: ^0.11.0
+    eventsource: ^2.0.2
+    fetch-cookie: ^2.0.3
     node-fetch: ^2.6.7
     ws: ^7.4.5
-  checksum: 81b83906396aea6a490d7671769e20718fd9e047e9358b698f7a71fc94b10347e295b82263789d9e36e3e7596952187cea9225debd77c1bbb2a8ea4614ff3591
+  checksum: 15e678d8f914e774107d8463900ec9a233af4dce057bb2feda7920f22353608d4f88b68394570767012860258c49ed644c71e3fcafe487f418f8218ae956d3ad
   languageName: node
   linkType: hard
 
@@ -5888,12 +5888,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventsource@npm:^1.0.7":
-  version: 1.1.0
-  resolution: "eventsource@npm:1.1.0"
-  dependencies:
-    original: ^1.0.0
-  checksum: 78338b7e75ec471cb793efb3319e0c4d2bf00fb638a2e3f888ad6d98cd1e3d4492a29f554c0921c7b2ac5130c3a732a1a0056739f6e2f548d714aec685e5da7e
+"eventsource@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "eventsource@npm:2.0.2"
+  checksum: c0072d972753e10c705d9b2285b559184bf29d011bc208973dde9c8b6b8b7b6fdad4ef0846cecb249f7b1585e860fdf324cbd2ac854a76bc53649e797496e99a
   languageName: node
   linkType: hard
 
@@ -5991,12 +5989,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fetch-cookie@npm:^0.11.0":
-  version: 0.11.0
-  resolution: "fetch-cookie@npm:0.11.0"
+"fetch-cookie@npm:^2.0.3":
+  version: 2.1.0
+  resolution: "fetch-cookie@npm:2.1.0"
   dependencies:
-    tough-cookie: ^2.3.3 || ^3.0.1 || ^4.0.0
-  checksum: 0d2082cb7de34c1e566a7c22ab844c6e9e6a8f8c9c1bc7a62382931b4bb99f0ff6c00324ec00874728c57cfd0c655c6fde62badcae019f2e5bb220c5726fdd17
+    set-cookie-parser: ^2.4.8
+    tough-cookie: ^4.0.0
+  checksum: d9d6b1e1ef75c0c72258edbf6fe4f7f39e36b17d0f52c37cc2f9fffe97a36134f43fefcaaff5ab78055e481e2929e626e158e381b91b1f11c8f85caf10b271aa
   languageName: node
   linkType: hard
 
@@ -7357,7 +7356,7 @@ __metadata:
     "@lagunovsky/redux-react-router": ^4.0.0
     "@mdi/js": ^7.0.96
     "@mdi/react": ^1.6.1
-    "@microsoft/signalr": ^6.0.7
+    "@microsoft/signalr": ^7.0.0
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.7
     "@reduxjs/toolkit": ^1.8.3
     "@sentry/browser": ^7.19.0
@@ -8727,15 +8726,6 @@ __metadata:
     type-check: ^0.4.0
     word-wrap: ^1.2.3
   checksum: dbc6fa065604b24ea57d734261914e697bd73b69eff7f18e967e8912aa2a40a19a9f599a507fa805be6c13c24c4eae8c71306c239d517d42d4c041c942f508a0
-  languageName: node
-  linkType: hard
-
-"original@npm:^1.0.0":
-  version: 1.0.2
-  resolution: "original@npm:1.0.2"
-  dependencies:
-    url-parse: ^1.4.3
-  checksum: 8dca9311dab50c8953366127cb86b7c07bf547d6aa6dc6873a75964b7563825351440557e5724d9c652c5e99043b8295624f106af077f84bccf19592e421beb9
   languageName: node
   linkType: hard
 
@@ -11083,6 +11073,13 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
+"set-cookie-parser@npm:^2.4.8":
+  version: 2.5.1
+  resolution: "set-cookie-parser@npm:2.5.1"
+  checksum: b99c37f976e68ae6eb7c758bf2bbce1e60bb54e3eccedaa25f2da45b77b9cab58d90674cf9edd7aead6fbeac6308f2eb48713320a47ca120d0e838d0194513b6
+  languageName: node
+  linkType: hard
+
 "setprototypeof@npm:1.1.0":
   version: 1.1.0
   resolution: "setprototypeof@npm:1.1.0"
@@ -12068,14 +12065,15 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^2.3.3 || ^3.0.1 || ^4.0.0":
-  version: 4.0.0
-  resolution: "tough-cookie@npm:4.0.0"
+"tough-cookie@npm:^4.0.0":
+  version: 4.1.2
+  resolution: "tough-cookie@npm:4.1.2"
   dependencies:
     psl: ^1.1.33
     punycode: ^2.1.1
-    universalify: ^0.1.2
-  checksum: 0891b37eb7d17faa3479d47f0dce2e3007f2583094ad272f2670d120fbcc3df3b0b0a631ba96ecad49f9e2297d93ff8995ce0d3292d08dd7eabe162f5b224d69
+    universalify: ^0.2.0
+    url-parse: ^1.5.3
+  checksum: a7359e9a3e875121a84d6ba40cc184dec5784af84f67f3a56d1d2ae39b87c0e004e6ba7c7331f9622a7d2c88609032473488b28fe9f59a1fec115674589de39a
   languageName: node
   linkType: hard
 
@@ -12373,10 +12371,17 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"universalify@npm:^0.1.0, universalify@npm:^0.1.2":
+"universalify@npm:^0.1.0":
   version: 0.1.2
   resolution: "universalify@npm:0.1.2"
   checksum: 40cdc60f6e61070fe658ca36016a8f4ec216b29bf04a55dce14e3710cc84c7448538ef4dad3728d0bfe29975ccd7bfb5f414c45e7b78883567fb31b246f02dff
+  languageName: node
+  linkType: hard
+
+"universalify@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "universalify@npm:0.2.0"
+  checksum: e86134cb12919d177c2353196a4cc09981524ee87abf621f7bc8d249dbbbebaec5e7d1314b96061497981350df786e4c5128dbf442eba104d6e765bc260678b5
   languageName: node
   linkType: hard
 
