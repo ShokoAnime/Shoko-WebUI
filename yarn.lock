@@ -2590,15 +2590,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.17.13":
-  version: 4.17.13
-  resolution: "@types/express@npm:4.17.13"
+"@types/express@npm:^4.17.14":
+  version: 4.17.14
+  resolution: "@types/express@npm:4.17.14"
   dependencies:
     "@types/body-parser": "*"
     "@types/express-serve-static-core": ^4.17.18
     "@types/qs": "*"
     "@types/serve-static": "*"
-  checksum: 12a2a0e6c4b993fc0854bec665906788aea0d8ee4392389d7a98a5de1eefdd33c9e1e40a91f3afd274011119c506f7b4126acb97fae62ae20b654974d44cba12
+  checksum: 15c1af46d02de834e4a225eccaa9d85c0370fdbb3ed4e1bc2d323d24872309961542b993ae236335aeb3e278630224a6ea002078d39e651d78a3b0356b1eaa79
   languageName: node
   linkType: hard
 
@@ -2649,10 +2649,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/lodash@npm:^4.14.182":
-  version: 4.14.182
-  resolution: "@types/lodash@npm:4.14.182"
-  checksum: 7dd137aa9dbabd632408bd37009d984655164fa1ecc3f2b6eb94afe35bf0a5852cbab6183148d883e9c73a958b7fec9a9bcf7c8e45d41195add6a18c34958209
+"@types/lodash@npm:^4.14.189":
+  version: 4.14.189
+  resolution: "@types/lodash@npm:4.14.189"
+  checksum: 096d1e0954794fb76bd6a0ea443067f02004b53e3c59ac6e3fed88817a1468fc2e6614abdf44341f5e0fdff5f9a3c94a934cc9ff7126e07efbcd94355a21fe45
   languageName: node
   linkType: hard
 
@@ -2735,21 +2735,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-copy-to-clipboard@npm:^5.0.3":
-  version: 5.0.3
-  resolution: "@types/react-copy-to-clipboard@npm:5.0.3"
+"@types/react-copy-to-clipboard@npm:^5.0.4":
+  version: 5.0.4
+  resolution: "@types/react-copy-to-clipboard@npm:5.0.4"
   dependencies:
     "@types/react": "*"
-  checksum: db592fb26cecaa46672e6dd2a6b667c7fe8ecc4eb6ad326fd6027a8fe2ecde6163963f91427e95029e7aac8b740f63b882b0692610cd9dc1f6ffcda338e3d1d7
+  checksum: c0fe51b79a393d4c1fa5f8a288793c03f791e0d979abaa6ae587de53b8e3bc1f05e3379e7539077a21c9d66c12c3fad3ab6684f836f2ba7a55b9589de8500738
   languageName: node
   linkType: hard
 
-"@types/react-dom@npm:^18.0.6":
-  version: 18.0.6
-  resolution: "@types/react-dom@npm:18.0.6"
+"@types/react-dom@npm:^18.0.9":
+  version: 18.0.9
+  resolution: "@types/react-dom@npm:18.0.9"
   dependencies:
     "@types/react": "*"
-  checksum: db571047af1a567631758700b9f7d143e566df939cfe5fbf7535347cc0c726a1cdbb5e3f8566d076e54cf708b6c1166689de194a9ba09ee35efc9e1d45911685
+  checksum: e744e3feba25fc43733289d4df4d9c0e59fcca7f34e8c89d75f81a339accb2bd70236d69382d47d2c0ad06a1529b2e56aa6171fe175854d60e07156ddceedfcb
   languageName: node
   linkType: hard
 
@@ -2795,13 +2795,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react-router@npm:^5.1.18":
-  version: 5.1.18
-  resolution: "@types/react-router@npm:5.1.18"
+"@types/react-router@npm:^5.1.19":
+  version: 5.1.19
+  resolution: "@types/react-router@npm:5.1.19"
   dependencies:
     "@types/history": ^4.7.11
     "@types/react": "*"
-  checksum: f08b37ee822f9f9ff904ffd0778fe2bb7c717ed3ee311610382ee024d02a35169bd3301ecde863cac21aae8fdee919501e8ea22bad0260c02c10cfbdba5c71be
+  checksum: 3536c3dec7af1f12fed2bea246eb143bd893ee66d4e58c1d3fe734cbd67d8a0aedac0bba9255c58fc69dbd32ae17ad280d6866916aee32653a705178e4a544dc
   languageName: node
   linkType: hard
 
@@ -7377,17 +7377,17 @@ __metadata:
     "@types/assets-webpack-plugin": ^7.1.0
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.1
-    "@types/express": ^4.17.13
-    "@types/lodash": ^4.14.182
+    "@types/express": ^4.17.14
+    "@types/lodash": ^4.14.189
     "@types/prop-types": ^15.7.5
-    "@types/react": ^18.0.15
+    "@types/react": ^18.0.25
     "@types/react-beautiful-dnd": ^13.1.2
-    "@types/react-copy-to-clipboard": ^5.0.3
-    "@types/react-dom": ^18.0.6
+    "@types/react-copy-to-clipboard": ^5.0.4
+    "@types/react-dom": ^18.0.9
     "@types/react-grid-layout": ^1.3.2
     "@types/react-modal": ^3.13.1
     "@types/react-redux": ^7.1.24
-    "@types/react-router": ^5.1.18
+    "@types/react-router": ^5.1.19
     "@types/react-virtualized": ^9.21.21
     "@types/redux-actions": ^2.6.2
     "@types/webpack": ^5.28.0
