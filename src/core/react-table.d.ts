@@ -4,4 +4,4 @@ declare module '@tanstack/react-table' {
   interface ColumnMeta {
     className?: string
   }
-};
+}
