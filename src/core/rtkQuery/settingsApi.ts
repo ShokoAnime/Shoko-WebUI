@@ -16,7 +16,7 @@ const settingsApi = splitV3Api.injectEndpoints({
       transformResponse: (response: SettingsServerType) => {
         let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings);
         const settingsRevision = webuiSettings.settingsRevision ?? 0;
-        const newSettingsRevision = 3;
+        const newSettingsRevision = 4;
         if (settingsRevision !== newSettingsRevision) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: newSettingsRevision }; // TO-DO: Move the settings revision number somewhere else
         else webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
         if (semver.prerelease(uiVersion()) !== null) webuiSettings.updateChannel = 'unstable';
