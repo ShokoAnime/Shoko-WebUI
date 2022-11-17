@@ -150,7 +150,7 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
 
   return (
     <TransitionDiv
-      className={cx('flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)] absolute z-40 top-0 md:static')}
+      className={cx('flex flex-col grow items-center h-screen bg-background-nav overflow-y-auto w-62.5 box-border font-semibold drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)] absolute z-[90] top-0 md:static')}
       show={!(isSm && !showSmSidebar)}
       enter="transition-transform"
       enterFrom="-translate-x-62.5"
