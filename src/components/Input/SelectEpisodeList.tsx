@@ -5,7 +5,6 @@ import { mdiChevronUp, mdiChevronDown, mdiPlusCircleOutline } from '@mdi/js';
 import { Listbox } from '@headlessui/react';
 import Input from './Input';
 import Button from './Button';
-import { useGetEpisodeAnidbQuery } from '../../core/rtkQuery/episodeApi';
 import ReactDOM from 'react-dom';
 
 function getOffsetTop(rect, vertical) {
@@ -50,13 +49,11 @@ type Props = {
 };
 
 const SelectOption = (option) => {
-  const anidbQuery = useGetEpisodeAnidbQuery(option.value);
-  const anidbData = anidbQuery?.data ?? { EpisodeNumber: '??', AirDate: '??' };
   return (
   <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-white cursor-default hover:bg-highlight-1 hover:text-white select-none relative py-2 pl-3 pr-9">
     <div className="flex items-center justify-between">
-      <span className="ml-3 block font-normal truncate">{anidbData.EpisodeNumber} - {option.label}</span>
-      <span>{anidbData.AirDate}</span>
+      <span className="ml-3 block font-normal truncate">{option.label}</span>
+      <span>{option.AirDate}</span>
     </div>
   </Listbox.Option>
   );

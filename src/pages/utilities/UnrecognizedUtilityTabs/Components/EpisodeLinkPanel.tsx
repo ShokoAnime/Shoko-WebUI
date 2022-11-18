@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { forEach, groupBy, orderBy } from 'lodash';
+import { filter, findIndex, forEach, groupBy, isInteger, orderBy, toInteger } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
@@ -19,6 +19,7 @@ import {
   setManualLink,
 } from '../../../../core/slices/utilities/unrecognized';
 import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
+import toast from '../../../../components/Toast';
 
 
 
@@ -48,13 +49,14 @@ function EpisodeLinkPanel() {
     dispatch(setLinks([]));
   }, [selectedRows]);
   
-  const [ epType, setEpType ] = useState('1');
+  const [ epType, setEpType ] = useState('Normal');
   const episodeTypeOptions = [
-    { value: '0', label: 'Special' },
-    { value: '1', label: 'Episode' },
+    { value: 'Special', label: 'Special' },
+    { value: 'Normal', label: 'Episode' },
   ];
+  const [ rangeStart, setRangeStart ] = useState('');
   
-  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, label: item.Name })), [episodes]);
+  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item?.AniDB?.EpisodeNumber ?? '??'} - ${item.Name}`, type: item?.AniDB?.Type ?? '', number: item?.AniDB?.EpisodeNumber ?? '' })), [episodes]);
   const groupedLinks = useMemo(() => groupBy(orderBy(links, ['FileID', 'asc']), 'FileID'), [links]);
   
   const refreshAniDB = async () => {
@@ -69,6 +71,28 @@ function EpisodeLinkPanel() {
     if (series?.data) {
       setSelectedSeries(series.data[0]);
     }
+  };
+  
+  const rangeFill = () => {
+    if (toInteger(rangeStart) <= 0) {
+      toast.error('Value is not a positive integer.');
+      return;
+    }
+    
+    const items = filter(episodeOptions, ['type', epType]);
+    const idx = findIndex(items, ['number', toInteger(rangeStart)]);
+    if (idx === -1) {
+      toast.error('Unable to find starting episode.');
+      return;
+    }
+    const filtered = items.slice(idx);
+    forEach(groupedLinks, (episodeLinks) => {
+      forEach(episodeLinks, (link) => {
+        const ep = filtered.shift();
+        if (!ep) { return; }
+        dispatch(setLinksEpisode({ ...link, EpisodeID: ep.value }));
+      });
+    });
   };
   
   const renderTitle = () => (
@@ -96,8 +120,8 @@ function EpisodeLinkPanel() {
     <ShokoPanel title={renderTitle()} className="w-1/2">
       <div className="flex flex-row space-x-3 justify-end mb-3.5">
         <ComboBox className="w-72" options={episodeTypeOptions} value={epType} onChange={value => setEpType(`${value}`)} />
-        <Input inline label="Range Start" type="text" id="range" value="" onChange={() => {}} className="w-40"/>
-        <Button className="bg-background-alt py-2 px-2 mr-2" onClick={() => {}}>Range Fill</Button>
+        <Input inline label="Range Start" type="text" id="range" value={rangeStart} onChange={(event) => { setRangeStart(event.target.value); }} className="w-40"/>
+        <Button className="bg-background-alt py-2 px-2 mr-2" onClick={rangeFill}>Range Fill</Button>
         <Button className={cx('bg-highlight-1 py-2 px-2 mr-2', { 'hidden': selectedSeries.ShokoID !== null })} loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>Fetch data</Button>
       </div>
       <ScrollSyncPane>

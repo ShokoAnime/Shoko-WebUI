@@ -7,6 +7,7 @@ export type EpisodeType = {
   ResumePosition: string | null;
   Watched: string | null;
   Size: number;
+  AniDB?: EpisodeAniDBType;
 };
 
 export type EpisodeIDsType = {
