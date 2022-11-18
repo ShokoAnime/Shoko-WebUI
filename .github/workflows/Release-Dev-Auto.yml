@@ -45,8 +45,10 @@ jobs:
 
       - name: Create changelog
         run: |
-          echo -e "## What's Changed\n" >> changelog.txt
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
+          echo 'CHANGELOG<<CHANGELOG_END' >> $GITHUB_ENV
+          cat changelog.txt >> $GITHUB_ENV
+          echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
 
 #      - name: Commit package.json
 #        uses: stefanzweifel/git-auto-commit-action@v4
@@ -69,3 +71,16 @@ jobs:
           body_path: ./changelog.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify discord
+        uses: sarisia/actions-status-discord@v1
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+          nodetail: true
+          title: New Dev Release!
+          description: |
+            **Version**: `${{ steps.semver.outputs.version_tag }}`
+            Update from the WebUI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
+            
+            **Changelog**:
+            ${{ env.CHANGELOG }}
