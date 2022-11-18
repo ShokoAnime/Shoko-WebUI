@@ -117,8 +117,8 @@ function ActionsModal() {
     }
   };
 
-  const renderTab = (title, items) => (
-    <React.Fragment>
+  const renderTab = (title, items: string[]) => (
+    <React.Fragment key={title}>
       <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between cursor-pointer" onClick={() => { setActiveTab(title); }}>
         <p className="text-base font-semibold text-gray-300">{title}</p>
         <span><Icon path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
@@ -128,7 +128,7 @@ function ActionsModal() {
           const quickAction = quickActions[item];
           const onClick = () => runAction(quickAction.name, quickAction.function);
 
-          return (<RenderItem name={quickAction.name} info={quickAction.info} onClick={onClick} />);
+          return (<RenderItem key={item} name={quickAction.name} info={quickAction.info} onClick={onClick} />);
         })}
       </div>
     </React.Fragment>

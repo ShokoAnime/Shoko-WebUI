@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { filter, findIndex, forEach, groupBy, isInteger, orderBy, toInteger } from 'lodash';
+import { filter, findIndex, forEach, groupBy, orderBy, toInteger } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
