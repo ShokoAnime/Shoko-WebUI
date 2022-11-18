@@ -19,7 +19,7 @@ function SelectedFilesPanel() {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0].RelativePath ?? '';
       result.push(
-        <div title={path} className={cx(['px-2 py-1 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+        <div title={path} className={cx(['px-2 py-1.5 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
           {path}
         </div>,
       );

@@ -5,8 +5,9 @@ import { mdiChevronUp, mdiChevronDown, mdiPlusCircleOutline } from '@mdi/js';
 import { Listbox } from '@headlessui/react';
 import Input from './Input';
 import Button from './Button';
-import { useGetEpisodeAnidbQuery } from '../../core/rtkQuery/episodeApi';
 import ReactDOM from 'react-dom';
+
+import type { EpisodeTypeEnum } from '../../core/types/api/episode';
 
 function getOffsetTop(rect, vertical) {
   let offset = 0;
@@ -38,7 +39,10 @@ function getOffsetLeft(rect, horizontal) {
 
 type Option = {
   label: string;
-  value: number; 
+  value: number;
+  type: EpisodeTypeEnum;
+  number: number;
+  AirDate: string;
 };
 
 type Props = {
@@ -49,14 +53,15 @@ type Props = {
   emptyValue?: string;
 };
 
-const SelectOption = (option) => {
-  const anidbQuery = useGetEpisodeAnidbQuery(option.value);
-  const anidbData = anidbQuery?.data ?? { EpisodeNumber: '??', AirDate: '??' };
+const SelectOption = (option: Option & { divider: boolean }) => {
   return (
-  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-white cursor-default hover:bg-highlight-1 hover:text-white select-none relative py-2 pl-3 pr-9">
+  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-white select-none relative py-2 pl-3 pr-9">
     <div className="flex items-center justify-between">
-      <span className="ml-3 block font-normal truncate">{anidbData.EpisodeNumber} - {option.label}</span>
-      <span>{anidbData.AirDate}</span>
+      <span className="ml-3 block font-normal truncate grow"><span className="text-highlight-2">
+        {option.number}</span> - {option.label}
+      </span>
+      {option.type !== 'Normal' && <span className="mx-2 px-2 py-1 rounded-lg text-font-main bg-background-alt text-sm border-highlight-2 border">{option.type}</span>}
+      <span>{option.AirDate}</span>
     </div>
   </Listbox.Option>
   );
@@ -108,6 +113,16 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     setSelected(selectedOption);
     onChange(selectedOption?.value ?? 0, selectedOption?.label ?? emptyValue);
   };
+  
+  const renderSelected = () => {
+    if (!selected.label) return emptyValue;
+    return (
+      <React.Fragment>
+        <span className="text-highlight-2">{selected.number}</span> - {selected.label}
+        {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border">{selected.type}</span>}
+      </React.Fragment> 
+    );
+  };
 
   return (
     <div className={className} ref={handleDisplayRef}>
@@ -115,7 +130,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
         <div className="relative">
           <Listbox.Button className="relative w-full bg-background-alt border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1">
             <span className="flex items-center">
-              <span className="ml-3 block truncate">{selected?.label ?? emptyValue}</span>
+              <span className="ml-3 block truncate h-7">{renderSelected()}</span>
             </span>
             <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
               <Icon className="cursor-pointer" path={open ? mdiChevronUp : mdiChevronDown} size={1} />
@@ -132,7 +147,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
               </div>
               <div className="bg-background-border mx-3 my-4 h-0.5 flex-shrink-0" />
               <div className="max-h-96 overflow-y-auto">
-              {options.map(item => (<SelectOption key={`listbox-item-${item.value}`} {...item} />))}
+              {options.map((item, idx) => (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />))}
               </div>
             </Listbox.Options>,
             portalEl,
