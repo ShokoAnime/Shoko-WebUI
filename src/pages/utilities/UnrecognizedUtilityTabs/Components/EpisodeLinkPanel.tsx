@@ -20,6 +20,7 @@ import {
 } from '../../../../core/slices/utilities/unrecognized';
 import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 import toast from '../../../../components/Toast';
+import type { EpisodeTypeEnum } from '../../../../core/types/api/episode';
 
 
 
@@ -56,7 +57,7 @@ function EpisodeLinkPanel() {
   ];
   const [ rangeStart, setRangeStart ] = useState('');
   
-  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item?.AniDB?.EpisodeNumber ?? '??'} - ${item.Name}`, type: item?.AniDB?.Type ?? '', number: item?.AniDB?.EpisodeNumber ?? '' })), [episodes]);
+  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
   const groupedLinks = useMemo(() => groupBy(orderBy(links, ['FileID', 'asc']), 'FileID'), [links]);
   
   const refreshAniDB = async () => {
