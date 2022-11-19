@@ -74,11 +74,13 @@ function ImportFolderModal() {
       result = await updateFolder(importFolder);
       if (!result.error) {
         toast.success('Import folder edited!');
+        dispatch(setStatus(false));
       }
     } else {
       result = await createFolder(importFolder);
       if (!result.error) {
         toast.success('Import folder added!');
+        dispatch(setStatus(false));
       }
     }
   };
