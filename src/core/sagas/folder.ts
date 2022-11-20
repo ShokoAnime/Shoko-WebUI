@@ -28,7 +28,7 @@ function* folderBrowse(action: PayloadAction<{ id: number; path: string }>) {
 
   const nodes: Array<FolderType> = [];
   forEach(resultJson.data, (node: FolderType) => {
-    if (node.CanAccess && node.DriveType !== 'Ram') {
+    if (node.IsAccessible && node.Type !== 'Ram') {
       genId += 1;
       nodes.push(Object.assign({}, node, { nodeId: genId }));
     }
