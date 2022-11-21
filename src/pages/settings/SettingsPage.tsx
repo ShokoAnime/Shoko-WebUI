@@ -209,7 +209,7 @@ function SettingsPage() {
 
   const saveSettings = async () => {
     await patchSettings({ oldSettings: settings, newSettings });
-    settingsQuery.refetch();
+    settingsQuery.refetch().catch(() => {});
   };
 
   const renderItem = (name: string, path: string) => (

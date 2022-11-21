@@ -261,7 +261,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
         toast.success('Episode linked!');
       }
 
-      filesQuery.refetch();
+      filesQuery.refetch().catch(() => {});
       dispatch(setManualLink(false));
       dispatch(setLinks([]));
       dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
@@ -279,7 +279,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
     return (
       <>
         <TransitionDiv className="flex grow absolute" show={common}>
-          {renderButton(() => { filesQuery.refetch(); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
+          {renderButton(() => { filesQuery.refetch().catch(() => {}); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
           {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
           {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
           {renderButton(() => avdumpFiles(), mdiDumpTruck, 'AVDump All')}
