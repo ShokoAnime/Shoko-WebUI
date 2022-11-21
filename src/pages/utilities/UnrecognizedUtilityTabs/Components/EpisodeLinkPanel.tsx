@@ -17,6 +17,7 @@ import {
   setSelectedSeries,
   setLinksEpisode,
   setManualLink,
+  addLinkEpisode,
 } from '../../../../core/slices/utilities/unrecognized';
 import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 import toast from '../../../../components/Toast';
@@ -108,8 +109,8 @@ function EpisodeLinkPanel() {
     forEach(groupedLinks, (episodeLinks) => {
       forEach(episodeLinks, (link, idx) => {
         result.push(
-          <div className={cx(['px-3 mb-3', idx !== 0 && 'opacity-10'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
-            <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
+          <div className="px-3 mb-3" key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+            <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onAddLink={() => dispatch(addLinkEpisode(link))} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
           </div>,
         );
       });

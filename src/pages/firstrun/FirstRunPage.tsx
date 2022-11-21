@@ -57,7 +57,7 @@ function FirstRunPage() {
 
   const saveSettings = async () => {
     await patchSettings({ oldSettings: settings, newSettings, skipValidation: true });
-    settingsQuery.refetch();
+    settingsQuery.refetch().catch(() => {});
   };
 
   const renderItem = (text: string, key: string) => (

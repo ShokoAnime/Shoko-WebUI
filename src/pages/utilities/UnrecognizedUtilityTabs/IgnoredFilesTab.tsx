@@ -79,7 +79,7 @@ function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
 
     return (
       <>
-        {renderButton(() => { filesQuery.refetch(); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
+        {renderButton(() => { filesQuery.refetch().catch(() => {}); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
         <TransitionDiv className="flex grow" show={!common}>
           {renderButton(() => restoreFiles(), mdiPlusCircleOutline, 'Restore', true)}
           {renderButton(() => table.resetRowSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
