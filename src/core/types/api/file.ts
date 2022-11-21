@@ -10,12 +10,12 @@ export type FileType = {
   Locations: Array<{
     ImportFolderID: number;
     RelativePath: string;
-    Accessible: boolean;
+    IsAccessible: boolean;
   }>;
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;
-  RoundedStandardResolution: string;
+  Resolution: string;
   Created: string;
 };
 

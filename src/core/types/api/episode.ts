@@ -51,13 +51,13 @@ export type EpisodeTvDBType = {
   ID: number;
   Season: number;
   Number: number;
-  AbsoluteNumber: number;
+  AbsoluteNumber: number | null;
   Title: string;
   Description: string;
   AirDate: string | null;
-  AirsAfterSeason: number;
-  AirsBeforeSeason:  number;
-  AirsBeforeEpisode: number;
-  Rating: RatingType;
+  AirsAfterSeason: number | null;
+  AirsBeforeSeason:  number | null;
+  AirsBeforeEpisode: number | null;
+  Rating: RatingType | null;
   Thumbnail: ImageType;
 };
