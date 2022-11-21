@@ -47,9 +47,12 @@ const  unrecognizedSlice = createSlice({
         }
       });
     },
+    addLinkEpisode(sliceState, action: PayloadAction<ManualLink>) {
+      sliceState.links.push({ FileID: action.payload.FileID, EpisodeID: 0 });
+    },
   },
 });
 
-export const { setManualLink, setSelectedSeries, setSelectedFile, setSelectedRows, setLinks, setLinksEpisode } = unrecognizedSlice.actions;
+export const { setManualLink, setSelectedSeries, setSelectedFile, setSelectedRows, setLinks, setLinksEpisode, addLinkEpisode } = unrecognizedSlice.actions;
 
 export default unrecognizedSlice.reducer;
