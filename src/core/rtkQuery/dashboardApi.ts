@@ -11,7 +11,7 @@ const dashboardApi = splitV3Api.injectEndpoints({
     // Get the counters of various collection stats
     getDashboardStats: build.query<DashboardStatsType, void>({
       query: () => ({ url: 'Dashboard/Stats' }),
-      providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileHashed', 'FileMatched', 'SeriesUpdated'],
+      providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'SeriesUpdated'],
     }),
 
     // Gets a breakdown of which types of anime the user has access to

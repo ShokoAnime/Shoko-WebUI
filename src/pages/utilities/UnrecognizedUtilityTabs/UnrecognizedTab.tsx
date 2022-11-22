@@ -191,44 +191,65 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   }, [files.List]);
 
   const rescanFiles = (selected = false) => {
-    if (selected) {
-      forEach(selectedRows, (row) => {
-        fileRescanTrigger(row.ID).catch(() => {});
+    let failedFiles = 0;
+    const fileList = selected ? selectedRows : files.List;
+
+    forEach(fileList, (file) => {
+      fileRescanTrigger(file.ID).unwrap().catch((error) => {
+        failedFiles += 1;
+        console.error(error);
       });
-    } else {
-      forEach(files.List, file => fileRescanTrigger(file.ID));
-    }
+    });
+
+    if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
+    if (failedFiles !== fileList.length) toast.success(`Rescanning ${fileList.length} files!`);
   };
 
   const rehashFiles = (selected = false) => {
-    if (selected) {
-      forEach(selectedRows, (row) => {
-        fileRehashTrigger(row.ID).catch(() => {});
+    let failedFiles = 0;
+    const fileList = selected ? selectedRows : files.List;
+
+    forEach(fileList, (file) => {
+      fileRehashTrigger(file.ID).unwrap().catch((error) => {
+        failedFiles += 1;
+        console.error(error);
       });
-    } else {
-      forEach(files.List, file => fileRehashTrigger(file.ID));
-    }
+    });
+
+    if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
+    if (failedFiles !== fileList.length) toast.success(`Rehashing ${fileList.length} files!`);
   };
 
   const ignoreFiles = () => {
+    let failedFiles = 0;
     forEach(selectedRows, (row) => {
-      fileIgnoreTrigger({ fileId: row.ID, value: true }).catch(() => {});
+      fileIgnoreTrigger({ fileId: row.ID, value: true }).unwrap().catch((error) => {
+        failedFiles += 1;
+        console.error(error);
+      });
     });
+
+    if (failedFiles) toast.error(`Error ignoring ${failedFiles} files!`);
+    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
   };
 
   const deleteFiles = () => {
+    let failedFiles = 0;
     forEach(selectedRows, (row) => {
-      fileDeleteTrigger({ fileId: row.ID, removeFolder: true }).catch(() => {});
+      fileDeleteTrigger({ fileId: row.ID, removeFolder: true }).catch((error) => {
+        failedFiles += 1;
+        console.error(error);
+      });
     });
+
+    if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
+    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
   };
 
   const avdumpFiles = async (selected = false) => {
-    if (selected) {
-      for (let i = 0; i < selectedRows.length; i ++) {
-        await runAvdump(selectedRows[i].ID);
-      }
-    } else {
-      forEach(files.List, file => runAvdump(file.ID));
+    const fileList = selected ? selectedRows : files.List;
+    for (let i = 0; i < fileList.length; i ++) {
+      await runAvdump(fileList[i].ID);
     }
   };
 
@@ -339,7 +360,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
               {files.Total > 0 ? (
                 <UtilitiesTable table={table} />
               ) : (
-                <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
+                <div className="flex items-center justify-center h-full font-semibold">No unrecognized file(s)!</div>
               )}
             </TransitionDiv>
           </div>
@@ -348,7 +369,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
 
       <div className={cx('flex mt-4 space-x-4 transition-[height]', manualLink ? 'h-48' : 'h-[19.6rem]')}>
         <SelectedFileInfo fullWidth={manualLink} />
-        {!manualLink && <AniDBSeriesLinkPanel initialQuery={selectedRows[0]?.Locations?.[0].RelativePath.split(/\/|\\/g).pop() ?? ''} />}
+        {!manualLink && <AniDBSeriesLinkPanel initialQuery={selectedRows[0]?.Locations?.[0].RelativePath.split(/[\/\\]/g).pop() ?? ''} />}
       </div>
 
     </TransitionDiv>
