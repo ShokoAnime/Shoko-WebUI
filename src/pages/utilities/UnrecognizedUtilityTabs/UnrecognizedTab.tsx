@@ -360,7 +360,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
               {files.Total > 0 ? (
                 <UtilitiesTable table={table} />
               ) : (
-                <div className="flex items-center justify-center h-full font-semibold">No unrecognized files(s)!</div>
+                <div className="flex items-center justify-center h-full font-semibold">No unrecognized file(s)!</div>
               )}
             </TransitionDiv>
           </div>
