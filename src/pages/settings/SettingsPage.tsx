@@ -233,7 +233,7 @@ function SettingsPage() {
       <TransitionDiv
         className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
         show={!(isSm && !showNav)}
-        enter="transition-transform"
+        enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
