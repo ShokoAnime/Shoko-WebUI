@@ -7,11 +7,14 @@ import { ScrollSyncPane } from 'react-scroll-sync';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../../../core/store';
+import { ManualLink } from '../../../../core/slices/utilities/unrecognized';
 
 function SelectedFilesPanel() {
   const { selectedSeries, selectedRows, links } = useSelector((state: RootState) => state.utilities.unrecognized );
-
-  const fileLinks = useMemo(() => orderBy(links, ['FileID', 'asc']), [links]);
+  const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => { 
+    const file = find(selectedRows, ['FileID', item.FileID]);
+    return file?.Locations?.[0].RelativePath ?? item.FileID;
+  }), [links]);
 
   const renderFileLinks = () => {
     const result: React.ReactNode[] = [];
