@@ -5,6 +5,7 @@ import { Link, useOutletContext } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
 import { find, isEqual } from 'lodash';
+import semver from 'semver';
 import { Icon } from '@mdi/react';
 import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 
@@ -13,6 +14,7 @@ import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQue
 import Button from '../../components/Input/Button';
 import toast from '../../components/Toast';
 import TransitionDiv from '../../components/TransitionDiv';
+import { uiVersion } from '../../core/util';
 
 import type { RootState } from '../../core/store';
 import type { SettingsType } from '../../core/types/api/settings';
@@ -77,7 +79,7 @@ export const initialSettings = {
     settingsRevision: 0,
     theme: '',
     toastPosition: 'bottom-right',
-    updateChannel: 'stable',
+    updateChannel: semver.prerelease(uiVersion()) ? 'unstable' : 'stable',
     layout: initialLayout,
   },
   FirstRun: false,
