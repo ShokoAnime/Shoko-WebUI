@@ -17,7 +17,11 @@ const UpcomingAnime = () => {
   const items = useGetDashboardAniDBCalendarQuery({ showAll: true });
 
   return (
-    <ShokoPanel isFetching={items.isFetching} title={<DashboardTitleToggle title="Upcoming Anime" mainTitle="My Collection" secondaryTitle="All" secondaryActive={showAll} setSecondaryActive={setShowAll} />} editMode={layoutEditMode}>
+    <ShokoPanel
+      title={<DashboardTitleToggle title="Upcoming Anime" mainTitle="My Collection" secondaryTitle="All" secondaryActive={showAll} setSecondaryActive={setShowAll} />}
+      editMode={layoutEditMode}
+      isFetching={showAll ? items.isLoading : localItems.isLoading}
+    >
       <div className="flex relative shoko-scrollbar">
         <TransitionDiv show={!showAll} className="flex absolute">
           {(localItems.data?.length ?? 0) > 0

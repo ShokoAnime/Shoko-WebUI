@@ -21,7 +21,11 @@ const RecentlyImported = () => {
   const episodes = useGetDashboardRecentlyAddedEpisodesQuery({ pageSize: 30 });
 
   return (
-    <ShokoPanel title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />} editMode={layoutEditMode}>
+    <ShokoPanel
+      title={<DashboardTitleToggle title="Recently Imported" mainTitle="Episodes" secondaryTitle="Series" secondaryActive={showSeries} setSecondaryActive={setShowSeries} />}
+      editMode={layoutEditMode}
+      isFetching={showSeries ? series.isLoading : episodes.isLoading}
+    >
       <div className="flex relative shoko-scrollbar">
         <TransitionDiv show={!showSeries} className="flex absolute">
           {(episodes.data?.length ?? 0) > 0
