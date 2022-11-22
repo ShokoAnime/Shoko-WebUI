@@ -5,7 +5,7 @@ import { remove } from 'lodash';
 import cx from 'classnames';
 import { DropResult } from 'react-beautiful-dnd';
 import { Icon } from '@mdi/react';
-import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 
 import Button from '../../../components/Input/Button';
 import Checkbox from '../../../components/Input/Checkbox';
@@ -88,7 +88,7 @@ function AniDBSettings() {
       <ShokoPanel
         title="Login Options"
         isFetching={fetching}
-        options={<div className="cursor-pointer text-highlight-1 font-semibold" onClick={() => testLogin()}>Test</div>}
+        options={testAniDbLoginResult.isLoading ? <Icon path={mdiLoading} size={1} spin className="text-highlight-1" /> : <div className="cursor-pointer text-highlight-1 font-semibold" onClick={() => testLogin()}>Test</div>}
       >
         <div className="flex justify-between">
           Username
