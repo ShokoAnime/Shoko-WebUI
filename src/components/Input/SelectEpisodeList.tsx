@@ -74,6 +74,7 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
   const [portalEl, setPortalEl] = useState(null as any);
   const [displayNode, setDisplayNode] = React.useState(null as any);
   const displayRef = useRef(null);
+  const buttonRef = useRef(null);
   
   useEffect(() => {
     const modalRoot = document.getElementById('modal-root');
@@ -119,6 +120,10 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
   
   const handleAddLink = () => {
     onAddLink();
+    if (buttonRef.current !== null) {
+      const button = buttonRef.current as HTMLButtonElement;
+      button.click();
+    }
   };
 
   const selectOption = (selectedOption) => {
@@ -141,7 +146,7 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
       <Listbox value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative">
-            <Listbox.Button className="relative w-full bg-background-alt border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1">
+            <Listbox.Button ref={buttonRef} className="relative w-full bg-background-alt border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1">
               <span className="flex items-center">
                 <span className="ml-3 block truncate h-7">{renderSelected()}</span>
               </span>
