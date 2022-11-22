@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { filter, findIndex, forEach, groupBy, orderBy, toInteger } from 'lodash';
+import { filter, find, findIndex, forEach, groupBy, orderBy, toInteger } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
@@ -17,7 +17,8 @@ import {
   setSelectedSeries,
   setLinksEpisode,
   setManualLink,
-  addLinkEpisode,
+  addLinkEpisode, 
+  ManualLink,
 } from '../../../../core/slices/utilities/unrecognized';
 import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 import toast from '../../../../components/Toast';
@@ -59,7 +60,10 @@ function EpisodeLinkPanel() {
   const [ rangeStart, setRangeStart ] = useState('');
   
   const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
-  const groupedLinks = useMemo(() => groupBy(orderBy(links, ['FileID', 'asc']), 'FileID'), [links]);
+  const groupedLinks = useMemo(() => groupBy(orderBy<ManualLink>(links, (item) => {
+    const file = find(selectedRows, ['FileID', item.FileID]);
+    return file?.Locations?.[0].RelativePath ?? item.FileID;
+  }), 'FileID'), [links]);
   
   const refreshAniDB = async () => {
     const result:any = await refreshSeries({ anidbID: selectedSeries.ID });
