@@ -61,7 +61,7 @@ function EpisodeLinkPanel() {
   
   const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
   const groupedLinks = useMemo(() => groupBy(orderBy<ManualLink>(links, (item) => {
-    const file = find(selectedRows, ['FileID', item.FileID]);
+    const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
   }), 'FileID'), [links]);
   

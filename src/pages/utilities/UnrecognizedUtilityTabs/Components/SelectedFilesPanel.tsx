@@ -12,7 +12,7 @@ import { ManualLink } from '../../../../core/slices/utilities/unrecognized';
 function SelectedFilesPanel() {
   const { selectedSeries, selectedRows, links } = useSelector((state: RootState) => state.utilities.unrecognized );
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => { 
-    const file = find(selectedRows, ['FileID', item.FileID]);
+    const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
   }), [links]);
 
