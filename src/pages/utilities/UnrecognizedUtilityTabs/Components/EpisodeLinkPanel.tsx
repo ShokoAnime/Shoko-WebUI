@@ -100,7 +100,7 @@ function EpisodeLinkPanel() {
   const renderTitle = () => (
     <div className="flex gap-x-1 items-center">
       <span>AniDB</span>|
-      <span className="text-highlight-2">{selectedSeries.ID} - {selectedSeries.Title}</span>
+      <span className="text-highlight-2 line-clamp-1">{selectedSeries.ID} - {selectedSeries.Title}</span>
     </div>
   );
   

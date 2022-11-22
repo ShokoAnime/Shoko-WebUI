@@ -3,7 +3,7 @@ import { SeriesAniDBSearchResult } from '../../types/api/series';
 import { FileType } from '../../types/api/file';
 import { forEach } from 'lodash';
 
-type ManualLink = { 
+export type ManualLink = { 
   FileID: number; 
   EpisodeID: number; 
 };
