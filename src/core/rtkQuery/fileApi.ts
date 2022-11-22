@@ -18,12 +18,13 @@ const fileApi = splitV3Api.injectEndpoints({
     // Get ignored files.
     getFileIgnored: build.query<ListResultType<Array<FileType>>, PaginationType>({
       query: params => ({ url: 'File/Ignored', params }),
+      providesTags: ['FileIgnored'],
     }),
 
     // Get unrecognized files. Shoko.Server.API.v3.Models.Shoko.File.FileDetailed is not relevant here, as there will be no links. Use pageSize and page (index 0) in the query to enable pagination.
     getFileUnrecognized: build.query<ListResultType<Array<FileType>>, PaginationType>({
       query: params => ({ url: 'File/Unrecognized', params }),
-      providesTags: ['FileDeleted', 'FileHashed', 'FileMatched'],
+      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
     }),
 
     // Mark or unmark a file as ignored.
@@ -33,6 +34,7 @@ const fileApi = splitV3Api.injectEndpoints({
         params,
         method: 'PUT',
       }),
+      invalidatesTags: ['FileIgnored'],
     }),
 
     // Run a file through AVDump and return the result.
