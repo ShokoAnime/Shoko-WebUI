@@ -224,6 +224,7 @@ function SettingsPage() {
       case 'import': return 'bg-import-settings bg-right';
       case 'anidb': return 'bg-anidb-settings bg-[center_right_-26rem]';
       case 'metadata-sites': return 'bg-metadata-sites-settings bg-[center_right_-14rem]';
+      case 'user-management': return 'bg-management-settings bg-[center_right_-26rem]';
       default: return '';
     }
   };
