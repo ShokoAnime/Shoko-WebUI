@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { push } from '@lagunovsky/redux-react-router';
-import cx from 'classnames';
 import { cloneDeep, find, isEqual } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiCircleEditOutline, mdiLoading, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Checkbox from '../../../components/Input/Checkbox';
@@ -167,9 +166,7 @@ function UserManagementSettings() {
       <ShokoPanel
         title="Password"
         className="mt-8"
-        options={changePasswordResult.isLoading
-          ? <Icon path={mdiLoading} size={1} spin className="text-highlight-1" />
-          : <div className={cx('cursor-pointer text-highlight-1 font-semibold', newPassword || 'pointer-events-none opacity-50')} onClick={() => handlePasswordChange()}>Change</div>}
+        options={<Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} className="!text-highlight-1 font-semibold !text-base">Change</Button>}
       >
         <div className="flex justify-between">
           New Password
