@@ -173,7 +173,7 @@ function UserManagementSettings() {
       >
         <div className="flex justify-between">
           New Password
-          <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" />
+          <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" autoComplete="new-password" />
         </div>
         <Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className="mt-2" />
       </ShokoPanel>

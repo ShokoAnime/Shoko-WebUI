@@ -10,12 +10,14 @@ type Props = {
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
+  autoComplete?: string;
 };
 
 function InputSmall(props: Props) {
   const {
     id, type, placeholder, value, className,
     autoFocus, disabled, onChange, onKeyPress,
+    autoComplete,
   } = props;
 
   return (
@@ -30,6 +32,7 @@ function InputSmall(props: Props) {
       // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
       disabled={disabled}
+      autoComplete={autoComplete ?? 'on'}
     />
   );
 }
