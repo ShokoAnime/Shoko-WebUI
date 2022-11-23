@@ -1,8 +1,8 @@
-import { splitV3Api } from './splitV3Api';
+import { splitV3Api } from '../splitV3Api';
 
-import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from '../types/api/series';
-import type { ListResultType, PaginationType } from '../types/api';
-import { EpisodeType } from '../types/api/episode';
+import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from '../../types/api/series';
+import type { ListResultType, PaginationType } from '../../types/api';
+import { EpisodeType } from '../../types/api/episode';
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

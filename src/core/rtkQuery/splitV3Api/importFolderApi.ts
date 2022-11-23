@@ -1,6 +1,6 @@
-import { splitV3Api } from './splitV3Api';
+import { splitV3Api } from '../splitV3Api';
 
-import { ImportFolderType } from '../types/api/import-folder';
+import { ImportFolderType } from '../../types/api/import-folder';
 
 const importFolderApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

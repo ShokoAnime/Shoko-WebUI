@@ -7,7 +7,7 @@ import DashboardTitleToggle from '../components/DashboardTitleToggle';
 import EpisodeDetails from '../components/EpisodeDetails';
 import TransitionDiv from '../../../components/TransitionDiv';
 
-import { useGetDashboardAniDBCalendarQuery } from '../../../core/rtkQuery/dashboardApi';
+import { useGetDashboardAniDBCalendarQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
 
 const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

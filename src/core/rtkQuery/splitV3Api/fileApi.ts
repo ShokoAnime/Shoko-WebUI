@@ -1,7 +1,7 @@
-import { splitV3Api } from './splitV3Api';
+import { splitV3Api } from '../splitV3Api';
 
-import type { FileType, FileLinkApiType, AVDumpResultType } from '../types/api/file';
-import type { ListResultType, PaginationType } from '../types/api';
+import type { FileType, FileLinkApiType, AVDumpResultType } from '../../types/api/file';
+import type { ListResultType, PaginationType } from '../../types/api';
 
 const fileApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

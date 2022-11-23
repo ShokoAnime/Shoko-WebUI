@@ -18,7 +18,7 @@ import { Icon } from '@mdi/react';
 
 import { setStatus } from '../../core/slices/modals/filters';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
-import { useLazyGetGroupsQuery } from '../../core/rtkQuery/collectionApi';
+import { useLazyGetGroupsQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
 
 import { RootState } from '../../core/store';
 import type { CollectionGroupType } from '../../core/types/api/collection';
@@ -48,7 +48,7 @@ function GroupList() {
   const dispatch = useDispatch();
   const [mode, setMode] = useState('grid');
   const [trigger] = useLazyGetGroupsQuery();
-  
+
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
 
   const fetchPage = debounce(memoize((page) => {
@@ -58,12 +58,12 @@ function GroupList() {
     }, (reason) => { console.error(reason); });
     return true;
   }), 200);
-  
+
   useEffect(() => {
     dispatch(resetGroups());
     fetchPage(1);
   }, []);
-  
+
   const showFilters = () => {
     dispatch(setStatus(true));
   };
@@ -81,10 +81,10 @@ function GroupList() {
       <span className="px-2 cursor-pointer" title="Settings" onClick={showFilters}><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
     </div>
   );
-  
+
   const renderDetails = (item: CollectionGroupType) => {
     const posters = item.Images.Posters;
-    
+
     return (
       <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-[13.875rem] font-open-sans content-center flex flex-col">
         <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}')` }} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
@@ -97,7 +97,7 @@ function GroupList() {
       </div>
     );
   };
-  
+
   const renderFileSources = (sources: SeriesSizesFileSourcesType):string => {
     const output: Array<string> = [];
     forEach(sources, (source, type) => {
@@ -105,10 +105,10 @@ function GroupList() {
     });
     return output.join(' / ');
   };
-  
+
   const renderList = (item: CollectionGroupType) => {
     const poster: ImageType = get(item, 'Images.Posters.0');
-    
+
     return (
       <div key={`group-${item.IDs.ID}`} className="mb-4 font-open-sans content-center flex">
         <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${poster.Source}/Poster/${poster.ID}')` }} className="h-48 w-32 shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
@@ -142,7 +142,7 @@ function GroupList() {
       </div>
     );
   };
-  
+
   const renderPlaceholder = () => (<div className="mr-4 last:mr-0 shrink-0 h-72 w-56 font-open-sans items-center justify-center flex flex-col border border-black">
     <Icon path={mdiLoading} spin size={1} />
   </div>);
@@ -166,7 +166,7 @@ function GroupList() {
     </div>
     );
   };
-  
+
   return (
     <div className="p-9 pr-0 h-full min-w-full">
       <ShokoPanel title={renderTitle(total)} options={renderOptions()}>

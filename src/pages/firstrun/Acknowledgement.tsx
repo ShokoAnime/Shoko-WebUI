@@ -5,7 +5,7 @@ import { push } from '@lagunovsky/redux-react-router';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
 import TransitionDiv from '../../components/TransitionDiv';
-import { useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
+import { useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
 
 function Acknowledgement() {
   const dispatch = useDispatch();

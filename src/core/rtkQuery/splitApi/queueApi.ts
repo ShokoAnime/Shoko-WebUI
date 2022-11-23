@@ -1,4 +1,4 @@
-import { splitApi } from './splitApi';
+import { splitApi } from '../splitApi';
 
 const queueApi = splitApi.injectEndpoints({
   endpoints: build => ({

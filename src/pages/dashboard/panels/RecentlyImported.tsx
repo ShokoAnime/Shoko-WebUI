@@ -11,7 +11,7 @@ import TransitionDiv from '../../../components/TransitionDiv';
 import {
   useGetDashboardRecentlyAddedEpisodesQuery,
   useGetDashboardRecentlyAddedSeriesQuery,
-} from '../../../core/rtkQuery/dashboardApi';
+} from '../../../core/rtkQuery/splitV3Api/dashboardApi';
 
 const RecentlyImported = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

@@ -15,6 +15,7 @@ import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
+import { plexApi } from './rtkQuery/plexApi';
 
 const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
@@ -40,6 +41,7 @@ const store = configureStore({
     splitApi.middleware,
     externalApi.middleware,
     logsApi.middleware,
+    plexApi.middleware,
     signalrMiddleware,
   ),
   preloadedState: loadState(),

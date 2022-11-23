@@ -1,8 +1,8 @@
-import { splitV3Api } from './splitV3Api';
+import { splitV3Api } from '../splitV3Api';
 
-import { CollectionFilterType, CollectionGroupType } from '../types/api/collection';
-import { ListResultType, PaginationType } from '../types/api';
-import { SeriesType } from '../types/api/series';
+import { CollectionFilterType, CollectionGroupType } from '../../types/api/collection';
+import { ListResultType, PaginationType } from '../../types/api';
+import { SeriesType } from '../../types/api/series';
 
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

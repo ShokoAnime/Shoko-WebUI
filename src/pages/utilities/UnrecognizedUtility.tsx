@@ -11,7 +11,7 @@ import Checkbox from '../../components/Input/Checkbox';
 import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
 import IgnoredFilesTab from './UnrecognizedUtilityTabs/IgnoredFilesTab';
 
-import { useGetImportFoldersQuery } from '../../core/rtkQuery/importFolderApi';
+import { useGetImportFoldersQuery } from '../../core/rtkQuery/splitV3Api/importFolderApi';
 
 import { fuzzySort } from '../../core/util';
 

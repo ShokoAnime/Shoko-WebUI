@@ -9,7 +9,7 @@ import semver from 'semver';
 import { Icon } from '@mdi/react';
 import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
 import Button from '../../components/Input/Button';
 import toast from '../../components/Toast';
@@ -25,7 +25,7 @@ const items = [
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata Sites', path: 'metadata-sites' },
   // { name: 'Display', path: 'display' },
-  // { name: 'User Management', path: 'user-management' },
+  { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
 ];
 
@@ -224,6 +224,7 @@ function SettingsPage() {
       case 'import': return 'bg-import-settings bg-right';
       case 'anidb': return 'bg-anidb-settings bg-[center_right_-26rem]';
       case 'metadata-sites': return 'bg-metadata-sites-settings bg-[center_right_-14rem]';
+      case 'user-management': return 'bg-management-settings bg-[center_right_-26rem]';
       default: return '';
     }
   };
@@ -233,7 +234,7 @@ function SettingsPage() {
       <TransitionDiv
         className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
         show={!(isSm && !showNav)}
-        enter="transition-transform"
+        enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
@@ -260,10 +261,12 @@ function SettingsPage() {
             }}
           />
         </div>
-        <div className="flex max-w-[34rem] mt-10 justify-end">
-          <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
-          <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
-        </div>
+        {pathname.split('/').pop() !== 'user-management' && (
+          <div className="flex max-w-[34rem] mt-10 justify-end">
+            <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
+            <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -45,10 +45,11 @@ module.exports = {
         transparent: 'transparent',
       },
       backgroundImage: {
-        'general-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/DemonSlayer.jpg)',
-        'import-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/OnePunchMan.jpg)',
-        'anidb-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/Bleach.jpg)',
-        'metadata-sites-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/public/settings-bgs/DBZ.jpg)',
+        'general-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/DemonSlayer.jpg)',
+        'import-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/OnePunchMan.jpg)',
+        'anidb-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/Bleach.jpg)',
+        'metadata-sites-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/DBZ.jpg)',
+        'management-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/OnePiece.jpg)',
       },
       spacing: {
         '13': '3.25rem',

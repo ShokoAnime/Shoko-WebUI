@@ -42,7 +42,7 @@ import {
   usePutFileIgnoreMutation,
   useLazyPostFileAVDumpQuery,
   usePostFileLinkMutation,
-} from '../../../core/rtkQuery/fileApi';
+} from '../../../core/rtkQuery/splitV3Api/fileApi';
 import {
   setSelectedSeries,
   setManualLink,

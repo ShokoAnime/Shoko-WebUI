@@ -13,8 +13,8 @@ import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 import ShokoIcon from '../../components/ShokoIcon';
 
-import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
-import { usePostAuthMutation } from '../../core/rtkQuery/authApi';
+import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 
 function LoginPage() {
   const dispatch = useDispatch();

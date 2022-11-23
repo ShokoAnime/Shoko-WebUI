@@ -6,7 +6,7 @@ import { mdiEyeArrowRightOutline } from '@mdi/js';
 import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-import { useGetAniDBRecommendedAnimeQuery } from '../../../core/rtkQuery/seriesApi';
+import { useGetAniDBRecommendedAnimeQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import type { SeriesAniDBType } from '../../../core/types/api/series';
 
 const RecommendedAnime = () => {

@@ -46,7 +46,7 @@ import AniDBSettings from '../../pages/settings/tabs/AniDBSettings';
 import MetadataSitesSettings from '../../pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '../../pages/settings/tabs/UserManagementSettings';
 
-import { useGetSettingsQuery } from '../rtkQuery/settingsApi';
+import { useGetSettingsQuery } from '../rtkQuery/splitV3Api/settingsApi';
 
 type Props = {
   history: BrowserHistory;

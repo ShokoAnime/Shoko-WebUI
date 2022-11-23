@@ -9,7 +9,7 @@ import toast from '../../components/Toast';
 import ModalPanel from '../Panels/ModalPanel';
 import quickActions from '../../core/quick-actions';
 import { setStatus } from '../../core/slices/modals/actions';
-import { useRunActionMutation } from '../../core/rtkQuery/actionsApi';
+import { useRunActionMutation } from '../../core/rtkQuery/splitV3Api/actionsApi';
 
 import { RootState } from '../../core/store';
 

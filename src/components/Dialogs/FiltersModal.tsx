@@ -8,7 +8,7 @@ import { mdiChevronUp, mdiMagnify } from '@mdi/js';
 import ModalPanel from '../Panels/ModalPanel';
 import { RootState } from '../../core/store';
 import { setStatus } from '../../core/slices/modals/filters';
-import { useLazyGetTopFiltersQuery, useLazyGetFiltersQuery } from '../../core/rtkQuery/collectionApi';
+import { useLazyGetTopFiltersQuery, useLazyGetFiltersQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
 
 import type { CollectionFilterType } from '../../core/types/api/collection';
 

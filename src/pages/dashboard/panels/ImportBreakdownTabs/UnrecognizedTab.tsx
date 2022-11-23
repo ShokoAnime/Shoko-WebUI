@@ -14,7 +14,7 @@ import { setItem as setAvdumpItem } from '../../../../core/slices/utilities/avdu
 import toast from '../../../../components/Toast';
 import type { FileType } from '../../../../core/types/api/file';
 
-import { useGetFileUnrecognizedQuery, useLazyPostFileAVDumpQuery } from '../../../../core/rtkQuery/fileApi';
+import { useGetFileUnrecognizedQuery, useLazyPostFileAVDumpQuery } from '../../../../core/rtkQuery/splitV3Api/fileApi';
 
 function UnrecognizedTab() {
   const dispatch = useDispatch();

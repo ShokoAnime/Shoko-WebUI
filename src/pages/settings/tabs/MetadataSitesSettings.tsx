@@ -10,7 +10,7 @@ import InputSmall from '../../../components/Input/InputSmall';
 import SelectSmall from '../../../components/Input/SelectSmall';
 import Button from '../../../components/Input/Button';
 
-import { useLazyGetTraktCodeQuery } from '../../../core/rtkQuery/traktApi';
+import { useLazyGetTraktCodeQuery } from '../../../core/rtkQuery/splitApi/traktApi';
 import toast from '../../../components/Toast';
 
 export const tvdbLanguages = [

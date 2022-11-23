@@ -8,7 +8,7 @@ import TransitionDiv from '../../components/TransitionDiv';
 
 import { setSaved as setFirstRunSaved, TestStatusType, unsetSaved as unsetFirstRunSaved } from '../../core/slices/firstrun';
 import { useFirstRunSettingsContext } from './FirstRunPage';
-import { usePostAniDBTestLoginMutation } from '../../core/rtkQuery/settingsApi';
+import { usePostAniDBTestLoginMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
 function AniDBAccount() {
   const {

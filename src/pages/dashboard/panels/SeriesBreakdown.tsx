@@ -5,7 +5,7 @@ import { forEach } from 'lodash';
 import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtkQuery/dashboardApi';
+import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
 
 const names = {
   Series: 'TV Series',

@@ -5,7 +5,7 @@ import { remove } from 'lodash';
 import cx from 'classnames';
 import { DropResult } from 'react-beautiful-dnd';
 import { Icon } from '@mdi/react';
-import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 
 import Button from '../../../components/Input/Button';
 import Checkbox from '../../../components/Input/Checkbox';
@@ -18,7 +18,7 @@ import toast from '../../../components/Toast';
 
 import { setStatus as setLanguagesModalStatus } from '../../../core/slices/modals/languages';
 import { useSettingsContext } from '../SettingsPage';
-import { usePostAniDBTestLoginMutation } from '../../../core/rtkQuery/settingsApi';
+import { usePostAniDBTestLoginMutation } from '../../../core/rtkQuery/splitV3Api/settingsApi';
 
 function AniDBSettings() {
   const {
@@ -88,7 +88,7 @@ function AniDBSettings() {
       <ShokoPanel
         title="Login Options"
         isFetching={fetching}
-        options={testAniDbLoginResult.isLoading ? <Icon path={mdiLoading} size={1} spin className="text-highlight-1" /> : <div className="cursor-pointer text-highlight-1 font-semibold" onClick={() => testLogin()}>Test</div>}
+        options={<Button onClick={() => testLogin()} loading={testAniDbLoginResult.isLoading} className="!text-highlight-1 font-semibold !text-base">Test</Button>}
       >
         <div className="flex justify-between">
           Username

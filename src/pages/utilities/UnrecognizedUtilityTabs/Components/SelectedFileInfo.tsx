@@ -13,7 +13,7 @@ import Button from '../../../../components/Input/Button';
 import { setSelectedFile } from '../../../../core/slices/utilities/unrecognized';
 
 import { RootState } from '../../../../core/store';
-import { useGetImportFoldersQuery } from '../../../../core/rtkQuery/importFolderApi';
+import { useGetImportFoldersQuery } from '../../../../core/rtkQuery/splitV3Api/importFolderApi';
 import { ImportFolderType } from '../../../../core/types/api/import-folder';
 
 type Props = {
