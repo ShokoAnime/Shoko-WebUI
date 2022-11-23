@@ -17,6 +17,8 @@ const formatTimestamps = (lines: LogLineType[]): LogLineType[] => lines.map<LogL
 export const logsApi = createApi({
   reducerPath: 'logs',
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+  refetchOnMountOrArgChange: true,
+  keepUnusedDataFor: 1,
   endpoints: build => ({
     getLogs: build.query<LogLineType[], void>({
       queryFn: () => ({ data: [] }),
@@ -35,7 +37,7 @@ export const logsApi = createApi({
         
         const connectionLog = new HubConnectionBuilder().withUrl(connectionLogHub, options).withHubProtocol(protocol).build();
         connectionLog.on('GetBacklog', (lines: LogLineType[]) =>  updateCachedData(draft => concat(draft, formatTimestamps(lines)) ));
-        connectionLog.on('Log', (lines: LogLineType[]) =>  updateCachedData(draft => concat(draft, formatTimestamps(lines)) ));
+        connectionLog.on('Log', (line: LogLineType) =>  updateCachedData( draft => concat(draft, [{ ...line, timeStamp: formatStamp(line.timeStamp) }])));
         await connectionLog.start();
         
         await cacheEntryRemoved;

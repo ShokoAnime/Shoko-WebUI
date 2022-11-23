@@ -2056,16 +2056,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@microsoft/signalr@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@microsoft/signalr@npm:7.0.0"
+"@microsoft/signalr@npm:^6.0.11":
+  version: 6.0.11
+  resolution: "@microsoft/signalr@npm:6.0.11"
   dependencies:
     abort-controller: ^3.0.0
-    eventsource: ^2.0.2
-    fetch-cookie: ^2.0.3
+    eventsource: ^1.0.7
+    fetch-cookie: ^0.11.0
     node-fetch: ^2.6.7
     ws: ^7.4.5
-  checksum: 15e678d8f914e774107d8463900ec9a233af4dce057bb2feda7920f22353608d4f88b68394570767012860258c49ed644c71e3fcafe487f418f8218ae956d3ad
+  checksum: fa095a1671f8795a70831198f1557e7d150e44849267a8edc044791f2481b3c31cb40024e971cc382015071889c0cd14fda36e7df8aef85a86f0a5b3a9a111b1
   languageName: node
   linkType: hard
 
@@ -5957,10 +5957,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eventsource@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "eventsource@npm:2.0.2"
-  checksum: c0072d972753e10c705d9b2285b559184bf29d011bc208973dde9c8b6b8b7b6fdad4ef0846cecb249f7b1585e860fdf324cbd2ac854a76bc53649e797496e99a
+"eventsource@npm:^1.0.7":
+  version: 1.1.2
+  resolution: "eventsource@npm:1.1.2"
+  checksum: fe8f2ac3c70b1b63ee3cef5c0a28680cb00b5747bfda1d9835695fab3ed602be41c5c799b1fc997b34b02633573fead25b12b036bdf5212f23a6aa9f59212e9b
   languageName: node
   linkType: hard
 
@@ -6048,13 +6048,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fetch-cookie@npm:^2.0.3":
-  version: 2.1.0
-  resolution: "fetch-cookie@npm:2.1.0"
+"fetch-cookie@npm:^0.11.0":
+  version: 0.11.0
+  resolution: "fetch-cookie@npm:0.11.0"
   dependencies:
-    set-cookie-parser: ^2.4.8
-    tough-cookie: ^4.0.0
-  checksum: d9d6b1e1ef75c0c72258edbf6fe4f7f39e36b17d0f52c37cc2f9fffe97a36134f43fefcaaff5ab78055e481e2929e626e158e381b91b1f11c8f85caf10b271aa
+    tough-cookie: ^2.3.3 || ^3.0.1 || ^4.0.0
+  checksum: 0d2082cb7de34c1e566a7c22ab844c6e9e6a8f8c9c1bc7a62382931b4bb99f0ff6c00324ec00874728c57cfd0c655c6fde62badcae019f2e5bb220c5726fdd17
   languageName: node
   linkType: hard
 
@@ -7346,7 +7345,7 @@ __metadata:
     "@lagunovsky/redux-react-router": ^4.3.0
     "@mdi/js": ^7.0.96
     "@mdi/react": ^1.6.1
-    "@microsoft/signalr": ^7.0.0
+    "@microsoft/signalr": ^6.0.11
     "@pmmmwh/react-refresh-webpack-plugin": ^0.5.9
     "@reduxjs/toolkit": 1.9.0
     "@sentry/browser": ^7.19.0
@@ -11022,13 +11021,6 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"set-cookie-parser@npm:^2.4.8":
-  version: 2.5.1
-  resolution: "set-cookie-parser@npm:2.5.1"
-  checksum: b99c37f976e68ae6eb7c758bf2bbce1e60bb54e3eccedaa25f2da45b77b9cab58d90674cf9edd7aead6fbeac6308f2eb48713320a47ca120d0e838d0194513b6
-  languageName: node
-  linkType: hard
-
 "setprototypeof@npm:1.1.0":
   version: 1.1.0
   resolution: "setprototypeof@npm:1.1.0"
@@ -12039,7 +12031,7 @@ resolve@^2.0.0-next.3:
   languageName: node
   linkType: hard
 
-"tough-cookie@npm:^4.0.0":
+"tough-cookie@npm:^2.3.3 || ^3.0.1 || ^4.0.0":
   version: 4.1.2
   resolution: "tough-cookie@npm:4.1.2"
   dependencies:
