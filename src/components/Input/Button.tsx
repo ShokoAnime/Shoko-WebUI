@@ -7,6 +7,7 @@ type Props = {
   className?: string;
   children: any;
   loading?: boolean;
+  loadingSize?: number;
   disabled?: boolean;
   tooltip?: string;
   onClick?: (...args: any) => void;
@@ -17,7 +18,7 @@ function Button(props: Props) {
   const {
     className, children, loading,
     disabled, tooltip, onClick,
-    type,
+    type, loadingSize,
   } = props;
 
   return (
@@ -26,7 +27,7 @@ function Button(props: Props) {
         loading
           ? (
             <div className="flex justify-center">
-              <Icon path={mdiLoading} spin size={1} />
+              <Icon path={mdiLoading} spin size={loadingSize ?? 1} />
             </div>
           )
           : children

@@ -18,6 +18,7 @@ import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
+import { plexApi } from './rtkQuery/plexApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
@@ -35,6 +36,7 @@ const reducers = {
   [logsApi.reducerPath]: logsApi.reducer,
   [splitApi.reducerPath]: splitApi.reducer,
   [splitV3Api.reducerPath]: splitV3Api.reducer,
+  [plexApi.reducerPath]: plexApi.reducer,
 };
 
 export type Reducers = typeof reducers;

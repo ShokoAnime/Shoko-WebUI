@@ -25,7 +25,7 @@ const items = [
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata Sites', path: 'metadata-sites' },
   // { name: 'Display', path: 'display' },
-  // { name: 'User Management', path: 'user-management' },
+  { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
 ];
 
@@ -260,10 +260,12 @@ function SettingsPage() {
             }}
           />
         </div>
-        <div className="flex max-w-[34rem] mt-10 justify-end">
-          <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
-          <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
-        </div>
+        {pathname.split('/').pop() !== 'user-management' && (
+          <div className="flex max-w-[34rem] mt-10 justify-end">
+            <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
+            <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+          </div>
+        )}
       </div>
     </div>
   );
