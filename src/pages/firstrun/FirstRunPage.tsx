@@ -15,8 +15,8 @@ import ShokoIcon from '../../components/ShokoIcon';
 
 import { RootState } from '../../core/store';
 
-import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '../../core/types/api/settings';
 

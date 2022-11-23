@@ -21,7 +21,7 @@ import UtilitiesTable from './Components/UtilitiesTable';
 import {
   useGetFileIgnoredQuery,
   usePutFileIgnoreMutation,
-} from '../../../core/rtkQuery/fileApi';
+} from '../../../core/rtkQuery/splitV3Api/fileApi';
 import { fuzzyFilter } from '../../../core/util';
 
 import type { FileType } from '../../../core/types/api/file';

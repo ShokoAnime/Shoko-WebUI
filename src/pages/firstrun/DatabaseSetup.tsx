@@ -10,7 +10,7 @@ import Select from '../../components/Input/Select';
 import TransitionDiv from '../../components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
-import { useGetInitDatabaseTestMutation } from '../../core/rtkQuery/initApi';
+import { useGetInitDatabaseTestMutation } from '../../core/rtkQuery/splitV3Api/initApi';
 
 function DatabaseSetup() {
   const {

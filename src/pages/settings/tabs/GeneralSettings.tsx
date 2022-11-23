@@ -11,7 +11,7 @@ import Checkbox from '../../../components/Input/Checkbox';
 
 import { useSettingsContext } from '../SettingsPage';
 
-import { useGetInitVersionQuery } from '../../../core/rtkQuery/initApi';
+import { useGetInitVersionQuery } from '../../../core/rtkQuery/splitV3Api/initApi';
 
 const UI_VERSION = uiVersion();
 

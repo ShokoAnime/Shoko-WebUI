@@ -21,7 +21,7 @@ import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 import type { SeriesType } from '../../core/types/api/series';
 
-import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '../../core/rtkQuery/seriesApi';
+import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '../../core/rtkQuery/splitV3Api/seriesApi';
 import { fuzzyFilter, fuzzySort } from '../../core/util';
 
 import UtilitiesTable from './UnrecognizedUtilityTabs/Components/UtilitiesTable';

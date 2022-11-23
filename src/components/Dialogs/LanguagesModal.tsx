@@ -9,7 +9,7 @@ import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
 
-import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',

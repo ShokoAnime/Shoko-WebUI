@@ -11,13 +11,13 @@ import SelectEpisodeList from '../../../../components/Input/SelectEpisodeList';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 
 import { RootState } from '../../../../core/store';
-import { useLazyGetSeriesEpisodesQuery, useRefreshAnidbSeriesMutation, useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
+import { useLazyGetSeriesEpisodesQuery, useRefreshAnidbSeriesMutation, useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/splitV3Api/seriesApi';
 import {
   setLinks,
   setSelectedSeries,
   setLinksEpisode,
   setManualLink,
-  addLinkEpisode, 
+  addLinkEpisode,
   ManualLink,
 } from '../../../../core/slices/utilities/unrecognized';
 import { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
@@ -33,38 +33,38 @@ function EpisodeLinkPanel() {
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
   const episodes = episodesQuery?.data || [];
   const dispatch = useDispatch();
-  
+
   useEffect(() => {
     if (selectedSeries.ShokoID === null) { return; }
     updateEpisodes({ seriesId: selectedSeries.ShokoID }).catch(() => {});
   }, [selectedSeries.ShokoID]);
-  
+
   useEffect(() => {
     if (links.length > 0 || episodes.length === 0) { return; }
     const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
     dispatch(setLinks(newLinks));
   }, [episodes, links]);
-  
+
   useEffect(() => {
     if (selectedRows.length > 0) { return; }
     dispatch(setManualLink(false));
     dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
     dispatch(setLinks([]));
   }, [selectedRows]);
-  
+
   const [ epType, setEpType ] = useState('Normal');
   const episodeTypeOptions = [
     { value: 'Special', label: 'Special' },
     { value: 'Normal', label: 'Episode' },
   ];
   const [ rangeStart, setRangeStart ] = useState('');
-  
+
   const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
   const groupedLinks = useMemo(() => groupBy(orderBy<ManualLink>(links, (item) => {
     const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
   }), 'FileID'), [links]);
-  
+
   const refreshAniDB = async () => {
     const result:any = await refreshSeries({ anidbID: selectedSeries.ID });
     if (result.error) {
@@ -78,13 +78,13 @@ function EpisodeLinkPanel() {
       setSelectedSeries(series.data[0]);
     }
   };
-  
+
   const rangeFill = () => {
     if (toInteger(rangeStart) <= 0) {
       toast.error('Value is not a positive integer.');
       return;
     }
-    
+
     const items = filter(episodeOptions, ['type', epType]);
     const idx = findIndex(items, ['number', toInteger(rangeStart)]);
     if (idx === -1) {
@@ -100,14 +100,14 @@ function EpisodeLinkPanel() {
       });
     });
   };
-  
+
   const renderTitle = () => (
     <div className="flex gap-x-1 items-center">
       <span>AniDB</span>|
       <span className="text-highlight-2 line-clamp-1">{selectedSeries.ID} - {selectedSeries.Title}</span>
     </div>
   );
-  
+
   const renderEpisodeLinks = () => {
     const result: React.ReactNode[] = [];
     forEach(groupedLinks, (episodeLinks) => {

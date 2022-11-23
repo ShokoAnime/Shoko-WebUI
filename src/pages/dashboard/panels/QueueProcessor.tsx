@@ -16,7 +16,7 @@ import Button from '../../../components/Input/Button';
 import type { QueueItemType } from '../../../core/types/signalr';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
-import { useGetQueueOperationMutation } from '../../../core/rtkQuery/queueApi';
+import { useGetQueueOperationMutation } from '../../../core/rtkQuery/splitApi/queueApi';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };

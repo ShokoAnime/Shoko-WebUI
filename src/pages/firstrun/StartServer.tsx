@@ -7,8 +7,8 @@ import Footer from './Footer';
 import Button from '../../components/Input/Button';
 import TransitionDiv from '../../components/TransitionDiv';
 
-import { useGetInitStartServerMutation, useGetInitStatusQuery } from '../../core/rtkQuery/initApi';
-import { usePostAuthMutation } from '../../core/rtkQuery/authApi';
+import { useGetInitStartServerMutation, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 
 function StartServer() {
   const dispatch = useDispatch();

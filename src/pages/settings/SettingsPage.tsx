@@ -9,7 +9,7 @@ import semver from 'semver';
 import { Icon } from '@mdi/react';
 import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
 import Button from '../../components/Input/Button';
 import toast from '../../components/Toast';

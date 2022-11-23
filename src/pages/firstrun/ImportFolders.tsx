@@ -21,7 +21,7 @@ import {
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation, useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
-} from '../../core/rtkQuery/importFolderApi';
+} from '../../core/rtkQuery/splitV3Api/importFolderApi';
 
 
 const defaultState = {

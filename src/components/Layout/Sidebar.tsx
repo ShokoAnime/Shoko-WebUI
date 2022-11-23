@@ -25,8 +25,8 @@ import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilit
 import { setLayoutEditMode } from '../../core/slices/mainpage';
 import { default as ShokoIcon } from '../ShokoIcon';
 
-import { useGetWebuiLatestMutation, useGetWebuiUpdateMutation } from '../../core/rtkQuery/webuiApi';
-import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+import { useGetWebuiLatestMutation, useGetWebuiUpdateMutation } from '../../core/rtkQuery/splitApi/webuiApi';
+import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../../pages/settings/SettingsPage';
 
 import Version from '../../../public/version.json';

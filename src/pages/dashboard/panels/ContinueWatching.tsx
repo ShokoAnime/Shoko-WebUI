@@ -5,7 +5,7 @@ import { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import EpisodeDetails from '../components/EpisodeDetails';
 
-import { useGetDashboardContinueWatchingEpisodesQuery } from '../../../core/rtkQuery/dashboardApi';
+import { useGetDashboardContinueWatchingEpisodesQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
 
 const ContinueWatching = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

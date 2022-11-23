@@ -6,7 +6,7 @@ import { mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import Input from '../../../../components/Input/Input';
 
-import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
+import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/splitV3Api/seriesApi';
 
 type Props = {
   initialQuery: string;

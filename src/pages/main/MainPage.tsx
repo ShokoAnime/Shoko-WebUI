@@ -16,7 +16,7 @@ import ActionsModal from '../../components/Dialogs/ActionsModal';
 import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
 import Header from '../../components/Layout/Header';
 
-import { useGetSettingsQuery } from '../../core/rtkQuery/settingsApi';
+import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 function MainPage() {

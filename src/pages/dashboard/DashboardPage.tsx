@@ -20,7 +20,7 @@ import RecommendedAnime from './panels/RecommendedAnime';
 import Button from '../../components/Input/Button';
 
 import { setLayoutEditMode } from '../../core/slices/mainpage';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

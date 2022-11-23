@@ -18,7 +18,7 @@ import toast from '../../../components/Toast';
 
 import { setStatus as setLanguagesModalStatus } from '../../../core/slices/modals/languages';
 import { useSettingsContext } from '../SettingsPage';
-import { usePostAniDBTestLoginMutation } from '../../../core/rtkQuery/settingsApi';
+import { usePostAniDBTestLoginMutation } from '../../../core/rtkQuery/splitV3Api/settingsApi';
 
 function AniDBSettings() {
   const {

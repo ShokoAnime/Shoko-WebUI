@@ -8,7 +8,7 @@ import ShokoPanel from '../../../../components/Panels/ShokoPanel';
 import Input from '../../../../components/Input/Input';
 
 import { setSelectedSeries, setLinks } from '../../../../core/slices/utilities/unrecognized';
-import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/seriesApi';
+import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/splitV3Api/seriesApi';
 
 import type { SeriesAniDBSearchResult } from '../../../../core/types/api/series';
 

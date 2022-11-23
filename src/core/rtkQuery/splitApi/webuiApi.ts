@@ -1,6 +1,6 @@
-import { splitApi } from './splitApi';
+import { splitApi } from '../splitApi';
 
-import type { WebUIVersionType } from '../types/api';
+import type { WebUIVersionType } from '../../types/api';
 
 const webuiApi = splitApi.injectEndpoints({
   endpoints: build => ({

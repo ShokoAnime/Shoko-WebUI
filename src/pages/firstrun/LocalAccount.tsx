@@ -7,7 +7,7 @@ import Input from '../../components/Input/Input';
 import TransitionDiv from '../../components/TransitionDiv';
 import { TestStatusType, setSaved as setFirstRunSaved, setUser as setUserState } from '../../core/slices/firstrun';
 
-import { useGetInitDefaultUserQuery, usePostInitDefaultUserMutation } from '../../core/rtkQuery/initApi';
+import { useGetInitDefaultUserQuery, usePostInitDefaultUserMutation } from '../../core/rtkQuery/splitV3Api/initApi';
 
 function LocalAccount() {
   const dispatch = useDispatch();

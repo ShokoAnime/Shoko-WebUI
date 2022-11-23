@@ -1,6 +1,6 @@
-import { splitV3Api } from './splitV3Api';
+import { splitV3Api } from '../splitV3Api';
 
-import type { EpisodeAniDBType } from '../types/api/episode';
+import type { EpisodeAniDBType } from '../../types/api/episode';
 
 const episodeApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
