@@ -92,15 +92,14 @@ function UserManagementSettings() {
 
   const handlePasswordChange = () => {
     changePassword({ Password: newPassword, RevokeAPIKeys: logoutOthers, userId: selectedUser.ID, admin: selectedUser.IsAdmin }).unwrap().then(() => {
-      toast.success('Password changed successfully!');
       setNewPassword('');
       if (logoutOthers) {
-        toast.info('', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
+        toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
         setTimeout(() => {
           dispatch(unsetDetails());
           dispatch(push('/webui/login'));
         }, 6000);
-      }
+      } else toast.success('Password changed successfully!');
     }, error => console.error(error));
   };
 
