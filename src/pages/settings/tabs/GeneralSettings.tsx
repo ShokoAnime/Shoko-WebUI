@@ -12,6 +12,7 @@ import Checkbox from '../../../components/Input/Checkbox';
 import { useSettingsContext } from '../SettingsPage';
 
 import { useGetInitVersionQuery } from '../../../core/rtkQuery/splitV3Api/initApi';
+import { ReleaseChannel } from '../../../core/types/api/init';
 
 const UI_VERSION = uiVersion();
 
@@ -72,8 +73,12 @@ function GeneralSettings() {
   return (
     <>
       <ShokoPanel title="Version Information" isFetching={fetching}>
-        <div className="flex justify-between"><span>Server Version</span>{version.data?.find(obj => obj.Name === 'Server')?.Version}</div>
-        <div className="flex justify-between mt-2"><span>Server Channel</span>Daily</div>
+        <div className="flex justify-between"><span>Server Version</span>{version.data?.Server?.Channel !== ReleaseChannel.Stable ? (
+          `${version.data?.Server?.Version} (${version.data?.Server?.Commit?.slice(0, 7)})`
+        ) : (
+          version.data?.Server?.Version
+        )}</div>
+        <div className="flex justify-between mt-2"><span>Server Channel</span>{version.data?.Server.Channel}</div>
         <div className="flex justify-between mt-2"><span>Web UI Version</span>{UI_VERSION}</div>
         <div className="flex justify-between mt-2 items-center">
           <span>Web UI Channel</span>
