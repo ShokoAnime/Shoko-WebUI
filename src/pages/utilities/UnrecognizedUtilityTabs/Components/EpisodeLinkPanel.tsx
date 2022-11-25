@@ -60,10 +60,10 @@ function EpisodeLinkPanel() {
   const [ rangeStart, setRangeStart ] = useState('');
 
   const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
-  const groupedLinks = useMemo(() => groupBy(orderBy<ManualLink>(links, (item) => {
+  const groupedLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
     const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
-  }), 'FileID'), [links]);
+  }), [links, selectedRows]);
 
   const refreshAniDB = async () => {
     const result:any = await refreshSeries({ anidbID: selectedSeries.ID });
@@ -92,12 +92,10 @@ function EpisodeLinkPanel() {
       return;
     }
     const filtered = items.slice(idx);
-    forEach(groupedLinks, (episodeLinks) => {
-      forEach(episodeLinks, (link) => {
-        const ep = filtered.shift();
-        if (!ep) { return; }
-        dispatch(setLinksEpisode({ ...link, EpisodeID: ep.value }));
-      });
+    forEach(groupedLinks, (link) => {
+      const ep = filtered.shift();
+      if (!ep) { return; }
+      dispatch(setLinksEpisode({ ...link, EpisodeID: ep.value }));
     });
   };
 
@@ -110,14 +108,12 @@ function EpisodeLinkPanel() {
 
   const renderEpisodeLinks = () => {
     const result: React.ReactNode[] = [];
-    forEach(groupedLinks, (episodeLinks) => {
-      forEach(episodeLinks, (link, idx) => {
-        result.push(
-          <div className="px-3 mb-3" data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
-            <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onAddLink={() => dispatch(addLinkEpisode(link))} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
-          </div>,
-        );
-      });
+    forEach(groupedLinks, (link, idx) => {
+      result.push(
+        <div className="px-3 mb-3" data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onAddLink={() => dispatch(addLinkEpisode(link))} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
+        </div>,
+      );
     });
     return result;
   };
