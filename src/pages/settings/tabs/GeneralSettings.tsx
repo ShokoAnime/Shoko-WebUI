@@ -72,12 +72,12 @@ function GeneralSettings() {
   return (
     <>
       <ShokoPanel title="Version Information" isFetching={fetching}>
-        <div className="flex justify-between"><span>Server Version</span>{version.data?.Server.Channel !== 'Stable' ? (
+        <div className="flex justify-between"><span>Server Version</span>{version.data?.Server.ReleaseChannel !== 'Stable' ? (
           `${version.data?.Server.Version} (${version.data?.Server.Commit?.slice(0, 7)})`
         ) : (
           version.data?.Server.Version
         )}</div>
-        <div className="flex justify-between mt-2"><span>Server Channel</span>{version.data?.Server.Channel}</div>
+        <div className="flex justify-between mt-2"><span>Server Channel</span>{version.data?.Server.ReleaseChannel}</div>
         <div className="flex justify-between mt-2"><span>Web UI Version</span>{UI_VERSION}</div>
         <div className="flex justify-between mt-2 items-center">
           <span>Web UI Channel</span>

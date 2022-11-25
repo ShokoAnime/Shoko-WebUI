@@ -14,10 +14,15 @@ export type ServerStatusType = {
   };
 };
 
+export type LegacyVersionType = Array<{
+  Name: string;
+  Version: string;
+}>;
+
 export type VersionType = {
   Server: {
     Version: string;
-    Channel: 'Stable' | 'Dev' | 'Debug';
+    ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
     Commit?: string;
     Tag?: string;
   };
@@ -32,7 +37,7 @@ export type VersionType = {
   };
   WebUI?: {
     Version: string;
-    Channel: 'Stable' | 'Dev' | 'Debug';
+    ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
     Commit: string;
   };
 };

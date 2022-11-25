@@ -1,6 +1,6 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { UserType, VersionType } from '../../types/api/init';
+import type { LegacyVersionType, UserType, VersionType } from '../../types/api/init';
 import type { ServerStatusType } from '../../types/api/init';
 
 export const initApi = splitV3Api.injectEndpoints({
@@ -8,6 +8,17 @@ export const initApi = splitV3Api.injectEndpoints({
     // Return current version of ShokoServer and several modules
     getInitVersion: build.query<VersionType, void>({
       query: () => ({ url: 'Init/Version' }),
+      transformResponse: (response: VersionType & LegacyVersionType) => {
+        if (response.Server) return response as VersionType;
+        const serverVersion = response.find(obj => obj.Name === 'Server');
+        return {
+          Server: {
+            Version: serverVersion?.Version,
+            ReleaseChannel: 'Dev',
+            Commit: 'NA',
+          },
+        } as VersionType;
+      },
     }),
 
     // Test Database Connection with Current Settings

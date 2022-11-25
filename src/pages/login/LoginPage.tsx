@@ -72,8 +72,8 @@ function LoginPage() {
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
               <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
-            version.data.Server.Channel !== 'Stable' ?
-              `${version.data.Server.Channel} ${version.data.Server.Version} (${version.data.Server.Commit?.slice(0, 7)})` :
+            version.data.Server.ReleaseChannel !== 'Stable' ?
+              `${version.data.Server.ReleaseChannel} ${version.data.Server.Version} (${version.data.Server.Commit?.slice(0, 7)})` :
               version.data.Server.Version
             }
           </div>
