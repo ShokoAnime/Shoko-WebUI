@@ -77,7 +77,12 @@ function FirstRunPage() {
         <div className="flex flex-col items-center">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
+            Version: {version.isFetching || !version.data ?
+              <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
+            version.data.Server.ReleaseChannel !== 'Stable' ?
+              `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
+              version.data.Server.Version
+            }
           </div>
         </div>
         <div className="flex flex-col grow justify-center p-4 -mt-24">

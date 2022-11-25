@@ -70,7 +70,12 @@ function LoginPage() {
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
-            Version: {version.isFetching ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> : version.data?.find(obj => obj.Name === 'Server')?.Version}
+            Version: {version.isFetching || !version.data ?
+              <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
+            version.data.Server.ReleaseChannel !== 'Stable' ?
+              `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
+              version.data.Server.Version
+            }
           </div>
           <div className="flex flex-col grow w-full justify-center p-1">
             {!status.data?.State && (
