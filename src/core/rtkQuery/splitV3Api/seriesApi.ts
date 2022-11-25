@@ -22,6 +22,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     getSeriesAniDBSearch: build.query<Array<SeriesAniDBSearchResult>, { query: string } & PaginationType>({
       query: ({ query, ...params }) => ({ url: `Series/AniDB/Search/${encodeURIComponent(query)}`, params }),
       transformResponse: (response: any) => response.List,
+      providesTags: ['SeriesSearch'],
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
@@ -33,7 +34,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
       query: ({ anidbID }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
-      invalidatesTags: ['SeriesEpisodes'],
+      invalidatesTags: ['SeriesEpisodes', 'SeriesSearch'],
     }),
 
     // Get AniDB Info from the AniDB ID

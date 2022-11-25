@@ -75,7 +75,7 @@ function EpisodeLinkPanel() {
       return;
     }
     if (series?.data) {
-      setSelectedSeries(series.data[0]);
+      dispatch(setSelectedSeries(series.data[0]));
     }
   };
 
