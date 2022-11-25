@@ -17,7 +17,7 @@ export type ServerStatusType = {
 export type VersionType = {
   Server: {
     Version: string;
-    Channel: ReleaseChannel;
+    Channel: 'Stable' | 'Dev' | 'Debug';
     Commit?: string;
     Tag?: string;
   };
@@ -32,13 +32,7 @@ export type VersionType = {
   };
   WebUI?: {
     Version: string;
-    Channel: ReleaseChannel;
+    Channel: 'Stable' | 'Dev' | 'Debug';
     Commit: string;
   };
 };
-
-export const enum ReleaseChannel {
-  Stable = 'Stable',
-  Dev = 'Dev',
-  Debug = 'Debug',
-}

@@ -19,7 +19,6 @@ import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQue
 import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '../../core/types/api/settings';
-import { ReleaseChannel } from '../../core/types/api/init';
 
 type ContextType = {
   fetching: boolean
@@ -80,7 +79,7 @@ function FirstRunPage() {
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
               <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
-            version.data.Server.Channel !== ReleaseChannel.Stable ?
+            version.data.Server.Channel !== 'Stable' ?
               `${version.data.Server.Channel} ${version.data.Server.Version} (${version.data.Server.Commit?.slice(0, 7)})` :
               version.data.Server.Version
             }

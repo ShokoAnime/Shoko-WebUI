@@ -15,7 +15,6 @@ import ShokoIcon from '../../components/ShokoIcon';
 
 import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
-import { ReleaseChannel } from '../../core/types/api/init';
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -73,7 +72,7 @@ function LoginPage() {
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
               <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
-            version.data.Server.Channel !== ReleaseChannel.Stable ?
+            version.data.Server.Channel !== 'Stable' ?
               `${version.data.Server.Channel} ${version.data.Server.Version} (${version.data.Server.Commit?.slice(0, 7)})` :
               version.data.Server.Version
             }
