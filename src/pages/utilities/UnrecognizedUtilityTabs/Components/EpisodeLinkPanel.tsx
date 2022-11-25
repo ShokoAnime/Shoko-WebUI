@@ -113,7 +113,7 @@ function EpisodeLinkPanel() {
     forEach(groupedLinks, (episodeLinks) => {
       forEach(episodeLinks, (link, idx) => {
         result.push(
-          <div className="px-3 mb-3" key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+          <div className="px-3 mb-3" data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
             <SelectEpisodeList options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onAddLink={() => dispatch(addLinkEpisode(link))} onChange={value => dispatch(setLinksEpisode({ ...link, EpisodeID: value }))} />
           </div>,
         );
