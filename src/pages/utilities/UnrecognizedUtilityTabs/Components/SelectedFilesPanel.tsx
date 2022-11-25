@@ -23,7 +23,7 @@ function SelectedFilesPanel() {
       const path = file?.Locations?.[0].RelativePath ?? '';
       const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
       result.push(
-        <div title={path} className={cx(['px-2 py-1.5 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3', isSameFile && 'opacity-25'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`}>
+        <div title={path} className={cx(['px-2 py-1.5 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3', isSameFile && 'opacity-25'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID}>
           {path}
         </div>,
       );
