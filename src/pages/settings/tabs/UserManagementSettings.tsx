@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { push } from '@lagunovsky/redux-react-router';
-import { cloneDeep, find, isEqual } from 'lodash';
+import { cloneDeep, find, isEqual, remove } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Checkbox from '../../../components/Input/Checkbox';
@@ -11,6 +11,7 @@ import InputSmall from '../../../components/Input/InputSmall';
 import toast from '../../../components/Toast';
 import { unsetDetails } from '../../../core/slices/apiSession';
 import Button from '../../../components/Input/Button';
+import Input from '../../../components/Input/Input';
 import type { UserType } from '../../../core/types/api/user';
 
 import { useGetUsersQuery, usePostChangePasswordMutation, usePutUserMutation } from '../../../core/rtkQuery/splitV3Api/userApi';
@@ -19,12 +20,13 @@ import {
   useInvalidatePlexTokenMutation,
   useLazyGetPlexLoginUrlQuery,
 } from '../../../core/rtkQuery/plexApi';
+import { useGetAniDBTagsQuery } from '../../../core/rtkQuery/splitV3Api/tagsApi';
 
 const initialUser = {
   ID: 0,
   Username: '',
   IsAdmin: true,
-  TagBlacklist: [],
+  RestrictedTags: [],
   CommunitySites: {
     AniDB: true,
     Trakt: false,
@@ -44,11 +46,13 @@ function UserManagementSettings() {
   const [newPassword, setNewPassword] = useState('');
   const [logoutOthers, setLogoutOthers] = useState(false);
   const [plexPollingInterval, setPlexPollingInterval] = useState(0);
+  const [tagSearch, setTagSearch] = useState('');
 
   const [getPlexLoginUrl, getPlexLoginUrlResult] = useLazyGetPlexLoginUrlQuery();
   const isPlexAuthenticatedQuery = useGetPlexAuthenticatedQuery(undefined, { pollingInterval: plexPollingInterval });
   const isPlexAuthenticated = isPlexAuthenticatedQuery?.data ?? false;
   const [invalidatePlexToken, invalidatePlexTokenResult] = useInvalidatePlexTokenMutation();
+  const tags = useGetAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
 
   useEffect(() => {
     if (users.length > 0) setSelectedUser(users[0]);
@@ -127,6 +131,20 @@ function UserManagementSettings() {
     }
   }, [isPlexAuthenticated]);
 
+  const handleTagChange = (tagId: number, selected: boolean) => {
+    const tempUser = cloneDeep(selectedUser);
+    if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
+      tempUser.RestrictedTags.push(tagId);
+      tempUser.RestrictedTags = tempUser.RestrictedTags.sort((tagA, tagB) => {
+        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name!;
+        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name!;
+        return tagAName.localeCompare(tagBName);
+      });
+    }
+    if (!selected) remove(tempUser.RestrictedTags, tag => tag === tagId);
+    setSelectedUser(tempUser);
+  };
+
   return (
     <>
       <ShokoPanel title="Current Users" isFetching={usersQuery.isLoading}>
@@ -174,9 +192,34 @@ function UserManagementSettings() {
         {/*<Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className="mt-2" />*/}
       </ShokoPanel>
 
-      {/*<ShokoPanel title="Tag Restrictions" isFetching={usersQuery.isFetching} className="mt-8">*/}
-      {/*  test*/}
-      {/*</ShokoPanel>*/}
+      <ShokoPanel title="Tag Restrictions" isFetching={usersQuery.isFetching && tags.isFetching} className="mt-8">
+        <div className="flex flex-col bg-background-alt border border-background-border rounded-md mt-2 px-3 py-2">
+          <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
+          <div className="flex flex-col overflow-y-auto h-64 mt-2">
+            {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
+              <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
+                {tag.Name}
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="font-semibold mt-3">Selected Tags</div>
+        <div className="flex flex-col bg-background-alt border border-background-border rounded-md mt-2 px-3 py-2 min-h-[8rem]">
+          {selectedUser.RestrictedTags?.length
+            ? selectedUser.RestrictedTags?.map(tag => (
+              <div className="flex justify-between first:mt-0 mt-2" key={`selectedTag-${tag}`}>
+                {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
+                <Button onClick={() => handleTagChange(tag, false)}>
+                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+                </Button>
+              </div>
+            ))
+            : (
+              <div className="flex grow justify-center items-center font-semibold">No restricted tags!</div>
+            )
+          }
+        </div>
+      </ShokoPanel>
 
       <div className="flex max-w-[34rem] mt-10 justify-end">
         <Button onClick={() => handleCancel()} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>

@@ -2,7 +2,7 @@ type BaseUserType = {
   ID: number;
   Username: string;
   IsAdmin: boolean;
-  TagBlacklist: Array<string>;
+  RestrictedTags: Array<number>;
 };
 
 export type CommunitySitesType = {
