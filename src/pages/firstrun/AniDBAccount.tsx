@@ -29,7 +29,8 @@ function AniDBAccount() {
     dispatch(unsetFirstRunSaved('anidb-account'));
   };
 
-  const handleTest = () => {
+  const handleTest = (event?: React.FormEvent) => {
+    if (event) event.preventDefault();
     testAniDbLogin({ Username, Password }).unwrap().then(async () => {
       setAnidbStatus({ type: 'success', text: 'AniDB test successful!' });
       await saveSettings();
@@ -52,10 +53,11 @@ function AniDBAccount() {
       <div className="mt-9 text-justify">
         An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
       </div>
-      <div className="flex flex-col my-9">
+      <form className="flex flex-col my-9" onSubmit={handleTest}>
         <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
         <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-9" />
-      </div>
+        <input type="submit" hidden />
+      </form>
       <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => handleTest()} isFetching={testAniDbLoginResult.isLoading} status={anidbStatus} />
     </TransitionDiv>
   );

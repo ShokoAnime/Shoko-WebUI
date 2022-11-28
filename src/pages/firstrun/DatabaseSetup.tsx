@@ -29,7 +29,8 @@ function DatabaseSetup() {
     dispatch(unsetFirstRunSaved('db-setup'));
   };
 
-  const handleTest = async () => {
+  const handleTest = async (event?: React.FormEvent) => {
+    if (event) event.preventDefault();
     await saveSettings();
 
     testDatabase().unwrap().then(() => {
@@ -81,14 +82,15 @@ function DatabaseSetup() {
         If you&apos;d like to select a different location for your database file, you can do
         so by changing the directory below.
       </div>
-      <div className="flex flex-col my-9 overflow-y-auto flex-shrink">
+      <form className="flex flex-col my-9 overflow-y-auto flex-shrink" onSubmit={handleTest}>
         <Select label="Database Type" id="Type" value={Type} onChange={handleInputChange} className="w-32">
           <option value="SQLite">SQLite</option>
           <option value="MySQL">MySQL</option>
           <option value="SQLServer">SQLServer</option>
         </Select>
         {renderDBOptions()}
-      </div>
+        <input type="submit" hidden />
+      </form>
       <Footer
         nextDisabled={
           (Type !== 'SQLite' && (Hostname === '' || Schema === '' || Username === '')) || SQLite_DatabaseFile === ''

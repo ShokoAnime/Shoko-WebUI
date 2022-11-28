@@ -41,8 +41,8 @@ function FirstRunPage() {
   const status = useGetInitStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && status.data?.State !== 4) dispatch(replace('login'));
-  }, [status.data]);
+    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) dispatch(replace('login'));
+  }, [status.isLoading]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
 
