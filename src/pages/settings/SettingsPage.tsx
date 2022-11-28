@@ -210,8 +210,10 @@ function SettingsPage() {
   };
 
   const saveSettings = async () => {
-    await patchSettings({ oldSettings: settings, newSettings });
-    settingsQuery.refetch().catch(() => {});
+    try {
+      await patchSettings({ oldSettings: settings, newSettings }).unwrap();
+      await settingsQuery.refetch(); 
+    } catch (error) {}
   };
 
   const renderItem = (name: string, path: string) => (
