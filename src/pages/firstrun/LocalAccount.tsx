@@ -21,7 +21,8 @@ function LocalAccount() {
     setUser(defaultUser.data ?? { Username: 'Default', Password: '' });
   }, [defaultUser.data]);
 
-  const handleSave = () => {
+  const handleSave = (event?: React.FormEvent) => {
+    if (event) event.preventDefault();
     createUser(user).unwrap().then(() => {
       setUserStatus({ type: 'success', text: 'Account creation successful!' });
       dispatch(setUserState(user));
@@ -41,13 +42,14 @@ function LocalAccount() {
         allow you to login to Shoko and will link your account with any community site accounts
         provided later on.
       </div>
-      <div className="flex flex-col my-9">
+      <form className="flex flex-col my-9" onSubmit={handleSave}>
         <Input id="Username" value={user.Username} label="Username" type="text" placeholder="Username" onChange={e => setUser({ ...user, Username: e.target.value })} />
         <Input id="Password" value={user.Password} label="Password" type="password" placeholder="Password" onChange={e => setUser({ ...user, Password: e.target.value })} className="mt-9" />
         {/* TODO: Add functionality for setting avatar */}
         {/* <Input id="Avatar" value={user.Avatar} label="Avatar" type="text" placeholder="Avatar" onChange={e => dispatch(setUser({ Password: e.target.value }))} className="mt-6" /> */}
         {/* TODO: Display uploaded avatar */}
-      </div>
+        <input type="submit" hidden />
+      </form>
       <Footer
         nextDisabled={user.Username === ''}
         saveFunction={() => handleSave()}

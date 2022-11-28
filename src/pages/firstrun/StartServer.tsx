@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { push } from '@lagunovsky/redux-react-router';
 
 import { RootState } from '../../core/store';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
@@ -21,15 +22,18 @@ function StartServer() {
 
   const user = useSelector((state: RootState) => state.firstrun.user);
 
-  const handleNext = async () => {
+  const handleNext = () => {
     setPollingInterval(0);
     dispatch(setFirstRunSaved('start-server'));
-    await login({
+    login({
       user: user.Username,
       pass: user.Password,
       device: 'web-ui',
       rememberUser: false,
-    });
+    }).unwrap().then(
+      () => dispatch(push('import-folders')),
+      error => console.error(error),
+    );
   };
 
   const handleStart = () => {
@@ -60,7 +64,7 @@ function StartServer() {
           )}
         </div>
       </div>
-      <Footer nextPage="import-folders" prevDisabled={status.data?.State !== 4} nextDisabled={status.data?.State !== 2} saveFunction={handleNext} />
+      <Footer prevDisabled={status.data?.State !== 4} nextDisabled={status.data?.State !== 2} saveFunction={handleNext} />
     </TransitionDiv>
   );
 }
