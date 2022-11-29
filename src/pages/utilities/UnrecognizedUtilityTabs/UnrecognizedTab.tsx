@@ -276,13 +276,16 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
       });
 
       if (payload.episodeID === 0 || payload.fileIDs.length === 0) { return; }
-      const result: any = await fileLinkEpisodesTrigger(payload);
-      //TODO figure out better type for this
-      if (!result.error) {
+      try {
+        await fileLinkEpisodesTrigger(payload).unwrap();
         toast.success('Episode linked!');
+      } catch (error) {
+        toast.success('Episode linking failed!');
+        return;
       }
-
-      filesQuery.refetch().catch(() => {});
+      
+      
+      await filesQuery.refetch();
       dispatch(setManualLink(false));
       dispatch(setLinks([]));
       dispatch(setSelectedSeries({} as SeriesAniDBSearchResult));
@@ -300,7 +303,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
     return (
       <>
         <TransitionDiv className="flex grow absolute" show={common}>
-          {renderButton(() => { filesQuery.refetch().catch(() => {}); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
+          {renderButton(async () => { table.resetRowSelection(); await filesQuery.refetch(); }, mdiRestart, 'Refresh')}
           {renderButton(() => rescanFiles(), mdiDatabaseSearchOutline, 'Rescan All')}
           {renderButton(() => rehashFiles(), mdiDatabaseSyncOutline, 'Rehash All')}
           {renderButton(() => avdumpFiles(), mdiDumpTruck, 'AVDump All')}

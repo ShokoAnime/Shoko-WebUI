@@ -116,7 +116,10 @@ function SeriesWithoutFilesUtility() {
 
     return (
       <>
-        {renderButton(() => { seriesQuery.refetch().catch(() => {}); table.resetRowSelection(); }, mdiRestart, 'Refresh')}
+        {renderButton(async () => {
+          table.resetRowSelection();
+          await seriesQuery.refetch();
+        }, mdiRestart, 'Refresh')}
         <TransitionDiv className="flex grow" show={!common}>
           {renderButton(() => deleteSeries(), mdiMinusCircleOutline, 'Delete', true)}
           {renderButton(() => table.resetRowSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}

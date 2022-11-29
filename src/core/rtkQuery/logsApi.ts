@@ -20,7 +20,7 @@ export const logsApi = createApi({
   refetchOnMountOrArgChange: true,
   keepUnusedDataFor: 1,
   endpoints: build => ({
-    getLogs: build.query<LogLineType[], void>({
+    getLogs: build.query<LogLineType[], number>({
       queryFn: () => ({ data: [] }),
       async onCacheEntryAdded(arg, { updateCachedData, cacheEntryRemoved, getState }) {
         const connectionLogHub = '/signalr/logging';

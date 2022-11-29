@@ -11,7 +11,8 @@ import { LogLineType } from '../../core/types/api/common';
 
 
 function LogsPage() {
-  const linesQuery = useGetLogsQuery();
+  const [id] = useState(new Date().getTime());
+  const linesQuery = useGetLogsQuery(id);
   const lines: LogLineType[] = linesQuery?.data ?? [];
   const listRef = useRef<List>(null);
   const [isScrollToBottom, setScrollToBottom] = useState(true);
