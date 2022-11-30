@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 
 import { Icon } from '@mdi/react';
 import { mdiCogOutline, mdiFormatListText } from '@mdi/js';
+import { Link } from 'react-router-dom';
 
 import { useGetGroupSeriesQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
@@ -33,7 +34,7 @@ const Group = () => {
 
   const renderTitle = count => (
     <React.Fragment>
-      <span className="text-highlight-1">Entire Collection</span>
+      <Link className="text-highlight-1" to="/webui/collection">Entire Collection</Link>
       <span className="px-2">&gt;</span>
       {group?.Name}
       <span className="px-2">|</span>
