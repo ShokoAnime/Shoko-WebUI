@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
-import { get, memoize, forEach, debounce } from 'lodash';
+import { get, memoize, forEach, debounce, reduce, find } from 'lodash';
 import { Link } from 'react-router-dom';
 import {
   mdiFormatListText,
@@ -20,11 +20,14 @@ import { setStatus } from '../../core/slices/modals/filters';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
 import { useLazyGetGroupsQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
 
-import { RootState } from '../../core/store';
-import type { CollectionGroupType } from '../../core/types/api/collection';
-import type { ImageType } from '../../core/types/api/common';
 import type { SeriesSizesFileSourcesType } from '../../core/types/api/series';
 import { resetGroups, setGroups } from '../../core/slices/collection';
+import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
+
+import type { RootState } from '../../core/store';
+import type { CollectionGroupType } from '../../core/types/api/collection';
+import type { ImageType } from '../../core/types/api/common';
+import type { WebuiGroupExtra } from '../../core/types/api/webui';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
@@ -48,6 +51,7 @@ function GroupList() {
   const dispatch = useDispatch();
   const [mode, setMode] = useState('grid');
   const [trigger] = useLazyGetGroupsQuery();
+  const [fetchMainGroups, mainGroups] = useLazyGetGroupViewQuery();
 
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
 
@@ -55,6 +59,13 @@ function GroupList() {
     trigger({ page, pageSize }).then((result) => {
       if (!result.data) { return; }
       dispatch(setGroups({ total: result.data.Total, items: result.data.List, page }));
+      
+      //TODO: figure out how to only fetch it in list mode
+      const ids = reduce(result.data.List, (out, value) => { 
+        out.push(value.IDs.ID); 
+        return out;
+      }, [] as Array<number>);
+      fetchMainGroups({ GroupIDs: ids, TagFilter: 0 }).then(() => {}, (reason) => { console.error(reason); });
     }, (reason) => { console.error(reason); });
     return true;
   }), 200);
@@ -106,7 +117,7 @@ function GroupList() {
     return output.join(' / ');
   };
 
-  const renderList = (item: CollectionGroupType) => {
+  const renderList = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) => {
     const poster: ImageType = get(item, 'Images.Posters.0');
 
     return (
@@ -117,7 +128,7 @@ function GroupList() {
           <div className="space-x-4 flex flex-nowrap">
             <div className="space-x-2 flex">
               <Icon path={mdiCalendarMonthOutline} size={1} />
-              <span>??</span>
+              <span>{mainSeries?.AirDate} - {mainSeries?.EndDate}</span>
             </div>
             <div className="space-x-2 flex">
               <Icon path={mdiLayersTripleOutline} size={1} />
@@ -137,7 +148,7 @@ function GroupList() {
             </div>
           </div>
           <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
-          <div>tags</div>
+          <div className="flex items-start flex-wrap h-8 overflow-hidden">{mainSeries?.Tags.map(tag => <span key={`${mainSeries.ID}-${tag.Name}`} className="m-1 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border whitespace-nowrap">{tag.Name}</span>) ?? ''}</div>
         </div>
       </div>
     );
@@ -162,7 +173,7 @@ function GroupList() {
     const item = groupList[index % pageSize];
     return (
     <div key={key} style={style}>
-      {mode === 'grid' ? renderDetails(item) : renderList(item)}
+      {mode === 'grid' ? renderDetails(item) : renderList(item, find(mainGroups?.data, ['ID', item?.IDs.ID]))}
     </div>
     );
   };
@@ -172,10 +183,10 @@ function GroupList() {
       <ShokoPanel title={renderTitle(total)} options={renderOptions()}>
         <AutoSizer>
           {({ width, height }) => {
-            const columns = Math.floor(width / itemWidth);
+            const columns = mode === 'grid' ? Math.floor(width / itemWidth) : 1;
             const rows = mode === 'grid' ? total / columns : total;
             return (
-              <Grid overscanRowCount={1} columnCount={mode === 'grid' ? columns : 1} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(columns)} />
+              <Grid overscanRowCount={1} columnCount={columns} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(columns)} />
             );
           }}
         </AutoSizer>
