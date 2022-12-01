@@ -1,4 +1,11 @@
+import { omit } from 'lodash';
+
 import { RootState } from './store';
+import { externalApi } from './rtkQuery/externalApi';
+import { logsApi } from './rtkQuery/logsApi';
+import { plexApi } from './rtkQuery/plexApi';
+import { splitApi } from './rtkQuery/splitApi';
+import { splitV3Api } from './rtkQuery/splitV3Api';
 
 export const loadState = (): RootState => {
   try {
@@ -16,7 +23,13 @@ export const loadState = (): RootState => {
 
 export const saveState = (state: RootState) => {
   try {
-    const serializedState = JSON.stringify(state);
+    const serializedState = JSON.stringify(omit(state, [
+      externalApi.reducerPath,
+      logsApi.reducerPath,
+      plexApi.reducerPath,
+      splitApi.reducerPath,
+      splitV3Api.reducerPath,
+    ]));
     if (state.apiSession.rememberUser) {
       global.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
