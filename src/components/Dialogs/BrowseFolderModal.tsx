@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '../../core/store';
 import Button from '../Input/Button';
-import { setStatus } from '../../core/slices/modals/browseFolder';
+import { setSelectedNode, setStatus } from '../../core/slices/modals/browseFolder';
 import TreeView from '../TreeView/TreeView';
 import ModalPanel from '../Panels/ModalPanel';
 
@@ -20,11 +20,11 @@ function BrowseFolderModal(props: Props) {
   const handleClose = () => dispatch(setStatus(false));
 
   const handleSelect = () => {
-    dispatch(setStatus(false));
-
     if (typeof props.onSelect === 'function') {
       props.onSelect(selectedNode.Path);
     }
+    dispatch(setStatus(false));
+    dispatch(setSelectedNode({ id: 0, Path: '' }));
   };
 
   return (

@@ -1,3 +1,14 @@
+export type DriveType = {
+  DriveType: string;
+  Path: string;
+  CanAccess: boolean;
+  Sizes: {
+    Files: number;
+    Folders: number;
+  };
+  nodeId: number; //generated clientside
+};
+
 export type FolderType = {
   Type?: 'Fixed' | 'Ram' | 'Network';
   Path: string;
@@ -6,5 +17,5 @@ export type FolderType = {
     Files: number;
     Folders: number;
   };
-  nodeId: number;
+  nodeId: number; //generated clientside
 };

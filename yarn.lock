@@ -1579,7 +1579,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.6.3, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
+"@babel/runtime@npm:^7.10.2, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.7.2, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.13.17
   resolution: "@babel/runtime@npm:7.13.17"
   dependencies:
@@ -2213,62 +2213,6 @@ __metadata:
   version: 1.2.0
   resolution: "@reach/observe-rect@npm:1.2.0"
   checksum: 7dd903eeaad0e22c6d973bd26265d91eadba56ab5134701ceb3e85214db75339fae94aa7e8b88a65e8daa64bc7cf1b915d4ffcdfd324466b561dc6adc3c6e070
-  languageName: node
-  linkType: hard
-
-"@redux-saga/core@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@redux-saga/core@npm:1.2.1"
-  dependencies:
-    "@babel/runtime": ^7.6.3
-    "@redux-saga/deferred": ^1.2.1
-    "@redux-saga/delay-p": ^1.2.1
-    "@redux-saga/is": ^1.1.3
-    "@redux-saga/symbols": ^1.1.3
-    "@redux-saga/types": ^1.2.1
-    redux: ^4.0.4
-    typescript-tuple: ^2.2.1
-  checksum: f44fbfe3753d4109d1b1383f5d2e3cf68a588f2ab7d98c14d93808e015e1c45a56ef428a1756ae20c3ae4228293c86f4da659b7ece37c2d7808a046d0e8d262b
-  languageName: node
-  linkType: hard
-
-"@redux-saga/deferred@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@redux-saga/deferred@npm:1.2.1"
-  checksum: 2caca8d2fe559c74889562dbd7fabc6f139cc24871a41122e2ac8e4c98fb1c44a081d0fc762f13c12d6320fd759ee2b799d57141025fef93ae553c09338c3fff
-  languageName: node
-  linkType: hard
-
-"@redux-saga/delay-p@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@redux-saga/delay-p@npm:1.2.1"
-  dependencies:
-    "@redux-saga/symbols": ^1.1.3
-  checksum: 060533ce8ba6b919caa5d47961eb5d8c1d171519fccd5d44208c26a0b94f3f315c8ea440f1b23af70ed53ebd0445b64567d6a0ac9663a6f703dd8088746ce2b5
-  languageName: node
-  linkType: hard
-
-"@redux-saga/is@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@redux-saga/is@npm:1.1.3"
-  dependencies:
-    "@redux-saga/symbols": ^1.1.3
-    "@redux-saga/types": ^1.2.1
-  checksum: 8e24194d365e9a8896fa232a92c09a02a8f881f7a3a0d8004311568762ae3865d40391e4719b789114124f71904160a8942bb285e3fd1611599267bf2ae7d5fc
-  languageName: node
-  linkType: hard
-
-"@redux-saga/symbols@npm:^1.1.3":
-  version: 1.1.3
-  resolution: "@redux-saga/symbols@npm:1.1.3"
-  checksum: 65a8ea23c1ab7b122823f1a4d957f881d48fa50f90898c26db65cac6524f22e2f337b768dadfa87324925b41e3279ff1ebce1c4141e53dc19e74855167b49b74
-  languageName: node
-  linkType: hard
-
-"@redux-saga/types@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "@redux-saga/types@npm:1.2.1"
-  checksum: 754f183bd1bdd589a29d2b976f666e9ee9e6d28e88268538c11f679d019334999676d5425af14d2a99d5c91c0c87a01e7ac1c4d81a656d93dd529df315bbd0c7
   languageName: node
   linkType: hard
 
@@ -7426,7 +7370,6 @@ __metadata:
     redux: ^4.2.0
     redux-actions: ^2.6.5
     redux-devtools-extension: ^2.13.9
-    redux-saga: ^1.2.1
     sass-loader: ^13.2.0
     semver: ^7.3.8
     simple-icons: ^7.19.0
@@ -10427,15 +10370,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"redux-saga@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "redux-saga@npm:1.2.1"
-  dependencies:
-    "@redux-saga/core": ^1.2.1
-  checksum: 4253848b7fbc8864537af41ac291322c037424a4229c94ab659423ffe9312a253bba08139a0c5fcf2d6912dab947b5a175745957630e2737f4b29e97e030f8f3
-  languageName: node
-  linkType: hard
-
 "redux-thunk@npm:^2.4.2":
   version: 2.4.2
   resolution: "redux-thunk@npm:2.4.2"
@@ -12150,31 +12084,6 @@ resolve@^2.0.0-next.3:
   version: 0.8.1
   resolution: "type-fest@npm:0.8.1"
   checksum: d61c4b2eba24009033ae4500d7d818a94fd6d1b481a8111612ee141400d5f1db46f199c014766b9fa9b31a6a7374d96fc748c6d688a78a3ce5a33123839becb7
-  languageName: node
-  linkType: hard
-
-"typescript-compare@npm:^0.0.2":
-  version: 0.0.2
-  resolution: "typescript-compare@npm:0.0.2"
-  dependencies:
-    typescript-logic: ^0.0.0
-  checksum: d6c43213e7689f8519438b6deceb9877cdc83b4f64677bbc07e6d88d8b63bee713035731678facfd3f81b019b93131a876a230194b4f8d31737bfc5af71594d2
-  languageName: node
-  linkType: hard
-
-"typescript-logic@npm:^0.0.0":
-  version: 0.0.0
-  resolution: "typescript-logic@npm:0.0.0"
-  checksum: 84506bd58b7e15455b3233ded7f43f2ff8667500dca94f8e96e61aa16fa5a78bd9c45455f27c49f0e4aee7322c3e5a4b270e68bf8ba29fdf1571256fe2607152
-  languageName: node
-  linkType: hard
-
-"typescript-tuple@npm:^2.2.1":
-  version: 2.2.1
-  resolution: "typescript-tuple@npm:2.2.1"
-  dependencies:
-    typescript-compare: ^0.0.2
-  checksum: 7f9620d6b5c895b2b2a61817b27c6fb32c23fd3f47fef6aef202f387b7d82f2d49a2bab96f9a25b512b8718a70d38a2898a0dfdca623136f7aa9a5b17331da71
   languageName: node
   linkType: hard
 
