@@ -12,7 +12,6 @@ import {
   mdiFileDocumentAlertOutline, mdiFileDocumentCheckOutline,
 } from '@mdi/js';
 import {
-  ColumnDef,
   createColumnHelper,
   getCoreRowModel, getFilteredRowModel, getSortedRowModel,
   useReactTable,
@@ -50,21 +49,17 @@ import {
   setLinks,
 } from '../../../core/slices/utilities/unrecognized';
 import { setItem as setAvdumpItem } from '../../../core/slices/utilities/avdump';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 import type { FileType, FileLinkApiType } from '../../../core/types/api/file';
 import type { SeriesAniDBSearchResult } from '../../../core/types/api/series';
 import type { RootState } from '../../../core/store';
 
-
 const columnHelper = createColumnHelper<FileType>();
 
-type Props = {
-  columns: ColumnDef<FileType, any>[];
-  show: boolean;
-  setFilesCount: (count: number) => void;
-};
+function UnrecognizedTab() {
+  const { columns: tempColumns, setFilesCount } = useUnrecognizedUtilityContext();
 
-function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileRescanTrigger] = usePostFileRescanMutation();
@@ -94,8 +89,8 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   }, [selectedRows, avdumpList]);
 
   useEffect(() => {
-    if (show) setFilesCount(files.Total);
-  }, [show, files.Total]);
+    setFilesCount(files.Total);
+  }, [files.Total]);
 
   const runAvdump = async (fileId: number) => {
     setDumpInProgress(true);
@@ -322,7 +317,7 @@ function UnrecognizedTab({ columns: tempColumns, show, setFilesCount }: Props) {
   };
 
   return (
-    <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
+    <TransitionDiv className="flex flex-col grow h-full w-full">
 
       <div className="flex flex-col grow">
         <div className="flex">

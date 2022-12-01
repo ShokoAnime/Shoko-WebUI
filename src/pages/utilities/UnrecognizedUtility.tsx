@@ -1,31 +1,40 @@
 import React, { useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet } from 'react-router';
+import { useOutletContext } from 'react-router-dom';
+import { push } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
 import cx from 'classnames';
 import { find } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
-import { createColumnHelper } from '@tanstack/react-table';
-
-import Checkbox from '../../components/Input/Checkbox';
-import UnrecognizedTab from './UnrecognizedUtilityTabs/UnrecognizedTab';
-import IgnoredFilesTab from './UnrecognizedUtilityTabs/IgnoredFilesTab';
+import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 
 import { useGetImportFoldersQuery } from '../../core/rtkQuery/splitV3Api/importFolderApi';
 
 import { fuzzySort } from '../../core/util';
 
+import ShokoPanel from '../../components/Panels/ShokoPanel';
+import Checkbox from '../../components/Input/Checkbox';
+import type { RootState } from '../../core/store';
 import type { FileType } from '../../core/types/api/file';
 import type { ImportFolderType } from '../../core/types/api/import-folder';
-import ShokoPanel from '../../components/Panels/ShokoPanel';
+
+type ContextType = {
+  columns: ColumnDef<FileType, any>[];
+  setFilesCount: (fileCount: number) => void;
+};
 
 const columnHelper = createColumnHelper<FileType>();
 
 function UnrecognizedUtility() {
+  const dispatch = useDispatch();
+  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
-  const [activeTab, setActiveTab] = useState('unrecognized');
   const [filesCount, setFilesCount] = useState(0);
 
   const columns = useMemo(() => [
@@ -79,28 +88,20 @@ function UnrecognizedUtility() {
     }),
   ], []);
 
-
-  const renderTabContent = () => (
-    <>
-      <UnrecognizedTab columns={columns} show={activeTab === 'unrecognized'} setFilesCount={setFilesCount} />
-      <IgnoredFilesTab columns={columns} show={activeTab === 'ignoredFiles'} setFilesCount={setFilesCount} />
-    </>
-  );
-
   const renderTitle = () => {
     const renderTabButton = (key: string, name: string) => (
-      <div onClick={() => setActiveTab(key)} className={cx(['mx-2 cursor-pointer', activeTab === key && 'text-highlight-1'])}>{name}</div>
+      <div onClick={() => dispatch(push(key))} className={cx(['mx-2 cursor-pointer', pathname === `/webui/utilities/unrecognized/${key}` && 'text-highlight-1'])}>{name}</div>
     );
 
     return (
       <div className="flex items-center font-semibold">
         Unrecognized Files
         <Icon path={mdiChevronRight} size={1} className="ml-2" />
-        {renderTabButton('unrecognized', 'Unrecognized')}
+        {renderTabButton('files', 'Unrecognized')}
         <div>|</div>
         {/*{renderTabButton('manuallyLinked', 'Manually Linked')}*/}
         {/*<div>|</div>*/}
-        {renderTabButton('ignoredFiles', 'Ignored Files')}
+        {renderTabButton('ignored-files', 'Ignored Files')}
       </div>
     );
   };
@@ -113,11 +114,18 @@ function UnrecognizedUtility() {
 
   return (
     <ShokoPanel title={renderTitle()} options={renderOptions()}>
-      <div className="relative grow">
-        {renderTabContent()}
-      </div>
+      <Outlet
+        context={{
+          columns,
+          setFilesCount,
+        }}
+      />
     </ShokoPanel>
   );
+}
+
+export function useUnrecognizedUtilityContext() {
+  return useOutletContext<ContextType>();
 }
 
 export default UnrecognizedUtility;

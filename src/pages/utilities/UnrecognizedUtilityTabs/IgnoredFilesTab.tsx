@@ -7,7 +7,6 @@ import {
   mdiPlusCircleOutline, mdiCloseCircleOutline,
 } from '@mdi/js';
 import {
-  ColumnDef,
   getCoreRowModel,
   getFilteredRowModel, getSortedRowModel,
   useReactTable,
@@ -24,15 +23,11 @@ import {
 } from '../../../core/rtkQuery/splitV3Api/fileApi';
 import { fuzzyFilter } from '../../../core/util';
 
-import type { FileType } from '../../../core/types/api/file';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
-type Props = {
-  columns: ColumnDef<FileType, any>[];
-  show: boolean;
-  setFilesCount: (count: number) => void;
-};
+function IgnoredFilesTab() {
+  const { columns, setFilesCount } = useUnrecognizedUtilityContext();
 
-function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
 
@@ -41,8 +36,8 @@ function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
 
   useEffect(() => {
-    if (show) setFilesCount(files.Total);
-  }, [show, files.Total]);
+    setFilesCount(files.Total);
+  }, [files.Total]);
 
   const table = useReactTable({
     data: files.List,
@@ -89,7 +84,7 @@ function IgnoredFilesTab({ columns, show, setFilesCount }: Props) {
   };
 
   return (
-    <TransitionDiv className="flex flex-col grow absolute h-full w-full" show={show}>
+    <TransitionDiv className="flex flex-col grow h-full w-full">
 
       <div className="flex">
         <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />

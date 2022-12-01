@@ -35,6 +35,8 @@ import FilterGroupList from '../../pages/collection/FilterGroupList';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
+import UnrecognizedTab from '../../pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
+import IgnoredFilesTab from '../../pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
 import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
 
@@ -89,7 +91,11 @@ function Router(props: Props) {
                 <Route path="dashboard" element={<DashboardPage />} />
                 <Route path="utilities" element={<UtilitiesPage />}>
                   <Route index element={<Navigate to="unrecognized" replace />} />
-                  <Route path="unrecognized" element={<UnrecognizedUtility />} />
+                  <Route path="unrecognized" element={<UnrecognizedUtility />}>
+                    <Route index element={<Navigate to="files" />} />
+                    <Route path="files" element={<UnrecognizedTab />} />
+                    <Route path="ignored-files" element={<IgnoredFilesTab />} />
+                  </Route>
                   <Route path="multiple-files" element={<MultipleFilesUtility />} />
                   <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
                 </Route>
