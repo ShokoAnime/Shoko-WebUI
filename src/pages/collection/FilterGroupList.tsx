@@ -55,6 +55,9 @@ function FilterGroupList() {
   useEffect(() => {
     dispatch(resetGroups());
     fetchPage(1);
+    return () => {
+      dispatch(setStatus(false)); //Close filters
+    };
   }, [filterId]);
 
   const showFilters = () => {

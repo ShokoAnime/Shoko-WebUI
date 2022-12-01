@@ -50,6 +50,9 @@ function GroupList() {
   useEffect(() => {
     dispatch(resetGroups());
     fetchPage(1);
+    return () => {
+      dispatch(setStatus(false)); //Close filters
+    };
   }, []);
 
   const showFilters = () => {
