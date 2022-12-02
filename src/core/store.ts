@@ -19,7 +19,9 @@ const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
     // eslint-disable-next-line no-param-reassign
-    state = {} as any;
+    global.localStorage.clear();
+    global.sessionStorage.clear();
+    return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
 };
@@ -30,8 +32,9 @@ const routeMiddleware = createRouterMiddleware(history);
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(
+  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(
     routeMiddleware,
+  ).concat(
     rtkQueryErrorMiddleware,
     splitV3Api.middleware,
     splitApi.middleware,
