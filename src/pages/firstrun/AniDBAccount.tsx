@@ -54,8 +54,8 @@ function AniDBAccount() {
         An AniDB account is required to use Shoko. <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline">Click Here</a> to create one.
       </div>
       <form className="flex flex-col my-9" onSubmit={handleTest}>
-        <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
-        <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-9" />
+        <Input id="Username" value={Username ?? ''} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
+        <Input id="Password" value={Password ?? ''} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-9" />
         <input type="submit" hidden />
       </form>
       <Footer nextDisabled={Username === '' || Password === ''} saveFunction={() => handleTest()} isFetching={testAniDbLoginResult.isLoading} status={anidbStatus} />

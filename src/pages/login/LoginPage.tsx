@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { push, replace } from '@lagunovsky/redux-react-router';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
@@ -24,18 +24,18 @@ function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
-  const [pollingInterval, setPollingInterval] = useState(2000);
+  const [pollingInterval, setPollingInterval] = useState(500);
 
   const version = useGetInitVersionQuery();
   const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
 
   useEffect(() => {
-    if (status.data?.State !== 1) {
-      setPollingInterval(0);
-    }
+    if (!status.data) setPollingInterval(500);
+    else if (status.data?.State !== 1) setPollingInterval(0);
+
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
-      dispatch(push({ pathname: '/' }));
+      dispatch(replace({ pathname: '/' }));
     }
   }, [status.data]);
 

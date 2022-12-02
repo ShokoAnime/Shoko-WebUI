@@ -37,8 +37,8 @@ function StartServer() {
   };
 
   const handleStart = () => {
-    startServer().then(() => {}, () => {});
-    setPollingInterval(2000);
+    startServer().catch(() => {});
+    setPollingInterval(500);
   };
 
   useEffect(() => {
@@ -59,7 +59,7 @@ function StartServer() {
           {status.data?.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
         </div>
         <div className="flex justify-center items-center mt-24">
-          {(status.isUninitialized || status.data?.State === 4) && (
+          {pollingInterval === 0 && (status.isUninitialized || status.data?.State === 4) && (
             <Button onClick={() => handleStart()} className="bg-highlight-2 py-2 w-64">Start Server</Button>
           )}
         </div>
