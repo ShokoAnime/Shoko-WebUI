@@ -21,7 +21,7 @@ import type { RootState } from '../../core/store';
 function GroupList() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 374; //358 + 16
-  const itemHeightList = 224; //176 + 16
+  const itemHeightList = 240; //176 + 16 + 16
   const pageSize = 50;
   const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
@@ -82,6 +82,7 @@ function GroupList() {
     return (
     <div key={key} style={style}>
       {mode === 'grid' ? GridViewGroupItem(item) : ListViewGroupItem(item, find(mainGroups?.data, ['ID', item?.IDs.ID]))}
+      {mode === 'list' && <div className="bg-background-border my-4 h-0.5 w-full" />}
     </div>
     );
   };
