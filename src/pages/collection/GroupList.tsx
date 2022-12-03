@@ -42,7 +42,7 @@ function GroupList() {
         out.push(value.IDs.ID); 
         return out;
       }, [] as Array<number>);
-      fetchMainGroups({ GroupIDs: ids, TagFilter: 0 }).then(() => {}, (reason) => { console.error(reason); });
+      fetchMainGroups({ GroupIDs: ids, TagFilter: 128, TagLimit: 20, OrderByName: true }).then(() => {}, (reason) => { console.error(reason); });
     }, (reason) => { console.error(reason); });
     return true;
   }), 200);
