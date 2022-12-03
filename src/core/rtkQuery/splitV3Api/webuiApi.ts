@@ -4,6 +4,8 @@ import { WebuiGroupExtra } from '../../types/api/webui';
 export type GroupViewApiRequest = {
   GroupIDs: number[];
   TagFilter: number;
+  TagLimit: number;
+  OrderByName: boolean;
 };
 
 const webuiApi = splitV3Api.injectEndpoints({

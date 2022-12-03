@@ -32,6 +32,7 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
     out.push(`${value} ${key}`);
     return out;
   }, [] as Array<string>);
+  const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes - item.Sizes.Local.Specials;
   
   return (
     <div key={`group-${item.IDs.ID}`} className="font-open-sans content-center flex">
@@ -57,7 +58,7 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
             <Icon path={mdiEyeCheckOutline} size={1} />
             <span>{item.Sizes.Watched.Episodes} ({item.Sizes.Watched.Specials})</span>
           </div>
-          <div className="space-x-2 flex">
+          <div className={cx('space-x-2 flex', missingEpisodesCount === 0 && 'hidden')}>
             <Icon className="text-highlight-5" path={mdiAlertBoxOutline} size={1} />
             <span>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
           </div>
@@ -68,6 +69,10 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
         </div>
         <div className="text-base line-clamp-3"><AnidbDescription text={item.Description}/></div>
         <div className="flex items-start flex-wrap h-8 overflow-hidden">{mainSeries?.Tags.map(tag => <span key={`${mainSeries.ID}-${tag.Name}`} className="mr-2 mb-1 px-2 py-1 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border whitespace-nowrap">{tag.Name}</span>) ?? ''}</div>
+        <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
+        <div className="flex items-start flex-wrap h-8 overflow-hidden">
+          {mainSeries?.Tags.map(tag => <span key={`${mainSeries.ID}-${tag.Name}`} className={cx('m-1 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border whitespace-nowrap', tag.Source === 'AniDB' ? 'border-highlight-1' : 'border-highlight-2' )}>{tag.Name}</span>) ?? ''}
+        </div>
       </div>
     </div>
   );

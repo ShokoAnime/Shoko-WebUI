@@ -1,9 +1,10 @@
 import { RatingType } from './common';
 
 export type WebuiGroupExtraTag = {
+  ID: number;
   Name: string;
-  Description: string | null;
   Weight: number;
+  Source: 'AniDB' | 'User';
 };
 
 export type WebuiGroupExtra = {
