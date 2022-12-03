@@ -68,8 +68,6 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
           </div>
         </div>
         <div className="text-base line-clamp-3"><AnidbDescription text={item.Description}/></div>
-        <div className="flex items-start flex-wrap h-8 overflow-hidden">{mainSeries?.Tags.map(tag => <span key={`${mainSeries.ID}-${tag.Name}`} className="mr-2 mb-1 px-2 py-1 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border whitespace-nowrap">{tag.Name}</span>) ?? ''}</div>
-        <div className="text-base font-semibold line-clamp-3">{item.Description}</div>
         <div className="flex items-start flex-wrap h-8 overflow-hidden">
           {mainSeries?.Tags.map(tag => <span key={`${mainSeries.ID}-${tag.Name}`} className={cx('m-1 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border whitespace-nowrap', tag.Source === 'AniDB' ? 'border-highlight-1' : 'border-highlight-2' )}>{tag.Name}</span>) ?? ''}
         </div>
