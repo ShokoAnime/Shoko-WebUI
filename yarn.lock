@@ -2209,13 +2209,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@reach/observe-rect@npm:^1.1.0":
-  version: 1.2.0
-  resolution: "@reach/observe-rect@npm:1.2.0"
-  checksum: 7dd903eeaad0e22c6d973bd26265d91eadba56ab5134701ceb3e85214db75339fae94aa7e8b88a65e8daa64bc7cf1b915d4ffcdfd324466b561dc6adc3c6e070
-  languageName: node
-  linkType: hard
-
 "@redux-saga/core@npm:^1.2.1":
   version: 1.2.1
   resolution: "@redux-saga/core@npm:1.2.1"
@@ -2430,10 +2423,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@tanstack/react-virtual@npm:^3.0.0-alpha.0":
+  version: 3.0.0-beta.23
+  resolution: "@tanstack/react-virtual@npm:3.0.0-beta.23"
+  dependencies:
+    "@tanstack/virtual-core": 3.0.0-beta.23
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+  checksum: 07adb782da90f6bab08326d12cf711cebe7af1a54e675ab803e20826332a7e9da803b0a00a40ac8acf745b3cb6ecb6c4bf49055b98c26e0042b781dbb9b43ac0
+  languageName: node
+  linkType: hard
+
 "@tanstack/table-core@npm:8.5.30":
   version: 8.5.30
   resolution: "@tanstack/table-core@npm:8.5.30"
   checksum: 05d5612ec417a665cb67c35eb94cada149884fc3377ec6b3850eff3081517a913a57b5725f9c609b9eada6de8b980d63bbb30a8d62111730d62aea80e184b997
+  languageName: node
+  linkType: hard
+
+"@tanstack/virtual-core@npm:3.0.0-beta.23":
+  version: 3.0.0-beta.23
+  resolution: "@tanstack/virtual-core@npm:3.0.0-beta.23"
+  checksum: 94d1bdad239a8bfe7c013df16b97bb6525ec93f8ea5d672142a34e1a88b94d7aacecfe87966106a874a78453a4dbad0f07b9a00af28b3ee800fec5d2eb8b4a27
   languageName: node
   linkType: hard
 
@@ -7355,6 +7366,7 @@ __metadata:
     "@tailwindcss/line-clamp": ^0.4.2
     "@tanstack/match-sorter-utils": ^8.5.14
     "@tanstack/react-table": ^8.5.30
+    "@tanstack/react-virtual": ^3.0.0-alpha.0
     "@types/assets-webpack-plugin": ^7.1.0
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.1
@@ -7421,7 +7433,6 @@ __metadata:
     react-router-dom: ^6.4.3
     react-scroll-sync: ^0.11.0
     react-toastify: ^9.1.1
-    react-virtual: ^2.10.4
     react-virtualized: ^9.22.3
     redux: ^4.2.0
     redux-actions: ^2.6.5
@@ -10254,17 +10265,6 @@ __metadata:
     react: ">=16"
     react-dom: ">=16"
   checksum: 2039255539961a9b4d77b2656f120b20abe46cb0c699a7f3c0af23b4ef669d9c4d24dae6b8f4954b5efd83edf6d6e23614a29e94e9ee0d2647741fba9ba2db85
-  languageName: node
-  linkType: hard
-
-"react-virtual@npm:^2.10.4":
-  version: 2.10.4
-  resolution: "react-virtual@npm:2.10.4"
-  dependencies:
-    "@reach/observe-rect": ^1.1.0
-  peerDependencies:
-    react: ^16.6.3 || ^17.0.0
-  checksum: 1bebc741b01057829a7d7f29256114caecf0597d41b187cb41e75af77f24a87c780bc1a81ec11205b78ee2e9c801fc5e36b20a9e1ab7ddc70a18dd95417795f8
   languageName: node
   linkType: hard
 
