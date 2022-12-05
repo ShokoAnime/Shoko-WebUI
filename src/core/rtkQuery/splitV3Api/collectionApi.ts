@@ -9,6 +9,9 @@ const collectionApi = splitV3Api.injectEndpoints({
     getGroups: build.query<ListResultType<Array<CollectionGroupType>>, PaginationType>({
       query: params => ({ url: 'Group', params }),
     }),
+    getGroupLetters: build.query<{ [index: string]: number }, { includeEmpty: boolean; topLevelOnly: boolean; }>({
+      query: ({ includeEmpty = false, topLevelOnly = true }) => ({ url: 'Group/Letters', params: { includeEmpty, topLevelOnly } }),
+    }),
     getGroupSeries: build.query<Array<SeriesType>, { groupId?: string }>({
       query: ({ groupId }) => ({ url: `Group/${groupId}/Series` }),
     }),
@@ -34,4 +37,5 @@ export const {
   useLazyGetFiltersQuery,
   useLazyGetFilterGroupsQuery,
   useGetFilterQuery,
+  useGetGroupLettersQuery,
 } = collectionApi;
