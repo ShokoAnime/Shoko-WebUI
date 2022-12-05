@@ -1,3 +1,11 @@
+import { SeriesIDsType } from './series';
+import { EpisodeIDsType } from './episode';
+
+type XRefsType = Array<{
+  SeriesID: SeriesIDsType;
+  EpisodeIDs: EpisodeIDsType;
+}>;
+
 export type FileType = {
   ID: number;
   Size: number;
@@ -17,6 +25,8 @@ export type FileType = {
   Watched: string | null;
   Resolution: string;
   Created: string;
+  Updated: string;
+  SeriesIDs?: XRefsType;
 };
 
 export type FileAniDBType = {

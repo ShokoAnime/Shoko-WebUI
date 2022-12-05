@@ -69,6 +69,17 @@ const fileApi = splitV3Api.injectEndpoints({
         body: params,
       }),
     }),
+
+    // Unlink all the episodes if no body is given, or only the spesified episodes from the file.
+    deleteFileLink: build.mutation<void, number>({
+      query: fileId => ({
+        url: `File/${fileId}/Link`,
+        method: 'DELETE',
+        headers: {
+          'content-type': 'application/json',
+        },
+      }),
+    }),
   }),
 });
 
@@ -81,4 +92,5 @@ export const {
   usePostFileRescanMutation,
   usePostFileRehashMutation,
   usePostFileLinkMutation,
+  useDeleteFileLinkMutation,
 } = fileApi;

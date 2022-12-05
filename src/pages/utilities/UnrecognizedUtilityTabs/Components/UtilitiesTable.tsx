@@ -1,6 +1,6 @@
 import React from 'react';
 import { flexRender, Row, Table } from '@tanstack/react-table';
-import { useVirtual } from 'react-virtual';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 import type { FileType } from '../../../../core/types/api/file';
 import type { SeriesType } from '../../../../core/types/api/series';
@@ -10,15 +10,17 @@ type Props = {
 };
 
 function UtilitiesTable({ table }: Props) {
-
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const { rows } = table.getRowModel();
-  const rowVirtualizer = useVirtual({
-    parentRef: tableContainerRef,
-    size: rows.length,
-    overscan: 5,
+
+  const rowVirtualizer = useVirtualizer({
+    count: rows.length,
+    getScrollElement: () => tableContainerRef.current,
+    estimateSize: () => 60,
+    overscan: 10,
   });
-  const { virtualItems: virtualRows, totalSize } = rowVirtualizer;
+  const totalSize = rowVirtualizer.getTotalSize();
+  const virtualRows = rowVirtualizer.getVirtualItems();
 
   const paddingTop = virtualRows.length > 0 ? virtualRows?.[0]?.start || 0 : 0;
   const paddingBottom =
@@ -28,8 +30,8 @@ function UtilitiesTable({ table }: Props) {
 
   return (
     <div className="w-full h-full grow basis-0 overflow-y-auto" ref={tableContainerRef}>
-      <table className="table-fixed text-left border-separate border-spacing-0 w-full">
-        <thead className="sticky top-0">
+      <table className="table-fixed text-left border-separate border-spacing-0 w-full" style={{ height: totalSize }}>
+        <thead className="sticky top-0 z-[1]">
         {table.getHeaderGroups().map(headerGroup => (
           <tr key={headerGroup.id} className="bg-background-nav drop-shadow-lg">
             {headerGroup.headers.map(header => (
