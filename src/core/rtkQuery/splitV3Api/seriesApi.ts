@@ -3,6 +3,7 @@ import { splitV3Api } from '../splitV3Api';
 import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from '../../types/api/series';
 import type { ListResultType, PaginationType } from '../../types/api';
 import { EpisodeType } from '../../types/api/episode';
+import { FileType } from '../../types/api/file';
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -28,7 +29,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<Array<EpisodeType>, { seriesId: number; }>({
       query: ({ seriesId }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB` }),
-      providesTags: ['SeriesEpisodes'],
+      providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
@@ -48,6 +49,22 @@ const seriesApi = splitV3Api.injectEndpoints({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
       transformResponse: (response: any) => response.List,
     }),
+
+    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<Array<SeriesType>>, PaginationType>({
+      query: params => ({
+        url: 'Series/WithManuallyLinkedFiles',
+        params,
+      }),
+      providesTags: ['FileMatched', 'UtilitiesRefresh'],
+    }),
+
+    getSeriesFiles: build.query<Array<FileType>, { seriesId: number, isManuallyLinked: boolean, includeXRefs: boolean }>({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/File`,
+        params,
+      }),
+      providesTags: ['FileMatched', 'UtilitiesRefresh'],
+    }),
   }),
 });
 
@@ -55,8 +72,11 @@ export const {
   useDeleteSeriesMutation,
   useGetSeriesWithoutFilesQuery,
   useLazyGetSeriesAniDBSearchQuery,
+  useGetSeriesEpisodesQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
   useLazyGetSeriesAniDBQuery,
   useGetAniDBRecommendedAnimeQuery,
+  useGetSeriesWithManuallyLinkedFilesQuery,
+  useGetSeriesFilesQuery,
 } = seriesApi;

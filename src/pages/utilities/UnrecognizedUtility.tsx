@@ -99,8 +99,8 @@ function UnrecognizedUtility() {
         <Icon path={mdiChevronRight} size={1} className="ml-2" />
         {renderTabButton('files', 'Unrecognized')}
         <div>|</div>
-        {/*{renderTabButton('manuallyLinked', 'Manually Linked')}*/}
-        {/*<div>|</div>*/}
+        {renderTabButton('manually-linked-files', 'Manually Linked')}
+        <div>|</div>
         {renderTabButton('ignored-files', 'Ignored Files')}
       </div>
     );
@@ -108,7 +108,7 @@ function UnrecognizedUtility() {
 
   const renderOptions = () => (
     <div className="font-semibold">
-      <span className="text-highlight-2">{filesCount}</span> Files
+      <span className="text-highlight-2">{filesCount}</span> {pathname === '/webui/utilities/unrecognized/manually-linked-files' ? 'Series' : 'Files'}
     </div>
   );
 
