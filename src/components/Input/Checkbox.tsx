@@ -43,17 +43,17 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         </span>
       )}
       {!intermediate && isChecked && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {!intermediate && !isChecked && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {intermediate && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50">
+        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCircleHalfFull} size={1} />
         </TransitionDiv>
       )}

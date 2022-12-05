@@ -10,6 +10,7 @@ function withOpacityValue(variable) {
 module.exports = {
   plugins: [
       require('@tailwindcss/line-clamp'),
+      require('@headlessui/tailwindcss')({ prefix: 'ui' }),
   ],
   content: [
     './src/**/*.tsx',
