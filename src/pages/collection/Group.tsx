@@ -1,9 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useParams } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import { Icon } from '@mdi/react';
-import { mdiCogOutline, mdiFormatListText } from '@mdi/js';
 import { Link } from 'react-router-dom';
 
 import { useGetGroupSeriesQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
@@ -19,9 +17,6 @@ const Group = () => {
   const groups: Array<CollectionGroupType> = useSelector((state: RootState) => state.collection.groups);
   const series = useGetGroupSeriesQuery({ groupId });
   const items: Array<SeriesType> = series?.data ?? [] as Array<SeriesType>;
-
-  const [mode, setMode] = useState('grid');
-  const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
 
   const group = useMemo(() => groups.filter((item:CollectionGroupType) => `${item.IDs.ID}` === groupId)[0], [groupId, groups]);
 
@@ -42,17 +37,10 @@ const Group = () => {
     </React.Fragment>
   );
 
-  const renderOptions = () => (
-    <div className="flex" title="Settings">
-      <span className="px-2 cursor-pointer" title="View" onClick={toggleMode}><Icon path={mdiFormatListText} size={1} horizontal vertical rotate={180}/></span>
-      <span className="px-2 cursor-pointer" title="Settings"><Icon path={mdiCogOutline} size={1} horizontal vertical rotate={180}/></span>
-    </div>
-  );
-
   return (
     <div className="p-9 pr-0 h-full min-w-full">
-      <ShokoPanel title={renderTitle(items.length)} options={renderOptions()}>
-      <div className="flex space-x-2">
+      <ShokoPanel title={renderTitle(items.length)}>
+      <div className="flex flex-wrap space-x-2">
         {items.map(item => renderDetails(item))}
       </div>
       </ShokoPanel>
@@ -60,4 +48,4 @@ const Group = () => {
   );
 };
 
-export default Group;
+export default React.memo(Group);

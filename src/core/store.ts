@@ -1,4 +1,3 @@
-import createSagaMiddleware from 'redux-saga';
 import { throttle } from 'lodash';
 import { createRouterMiddleware } from '@lagunovsky/redux-react-router';
 import { configureStore } from '@reduxjs/toolkit';
@@ -6,7 +5,6 @@ import signalrMiddleware from './middlewares/signalr';
 import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
 import { saveState, loadState } from './localStorage';
 import createRootReducer from './reducers';
-import rootSaga from './sagas';
 import history from './history';
 import Events from './events';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
@@ -21,21 +19,22 @@ const combinedReducer = createRootReducer(history);
 const rootReducer = (state, action) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
     // eslint-disable-next-line no-param-reassign
-    state = {} as any;
+    global.localStorage.clear();
+    global.sessionStorage.clear();
+    return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
 };
 
 export type RootState = ReturnType<typeof rootReducer>;
 
-const sagaMiddleware = createSagaMiddleware();
 const routeMiddleware = createRouterMiddleware(history);
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(
+  middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(
     routeMiddleware,
-    sagaMiddleware,
+  ).concat(
     rtkQueryErrorMiddleware,
     splitV3Api.middleware,
     splitApi.middleware,
@@ -53,7 +52,5 @@ setupListeners(store.dispatch);
 store.subscribe(throttle(() => {
   saveState(store.getState());
 }, 1000));
-
-sagaMiddleware.run(rootSaga);
 
 export default store;

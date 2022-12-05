@@ -23,7 +23,7 @@ import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiAp
 function FilterGroupList() {
   const itemWidth = 240; //224 + 16
   const itemHeight = 374; //328 + 16
-  const itemHeightList = 224; //176 + 16
+  const itemHeightList = 240; //176 + 16
   const pageSize = 50;
   const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
@@ -47,7 +47,7 @@ function FilterGroupList() {
         out.push(value.IDs.ID); 
         return out;
       }, [] as Array<number>);
-      fetchMainGroups({ GroupIDs: ids, TagFilter: 0 }).then(() => {}, (reason) => { console.error(reason); });
+      fetchMainGroups({ GroupIDs: ids, TagFilter: 0, TagLimit: 10, OrderByName: true }).then(() => {}, (reason) => { console.error(reason); });
     }, (reason) => { console.error(reason); });
     return true;
   }), 200);
@@ -55,6 +55,9 @@ function FilterGroupList() {
   useEffect(() => {
     dispatch(resetGroups());
     fetchPage(1);
+    return () => {
+      dispatch(setStatus(false)); //Close filters
+    };
   }, [filterId]);
 
   const showFilters = () => {
@@ -86,6 +89,7 @@ function FilterGroupList() {
     return (
     <div key={key} style={style}>
       {mode === 'grid' ? GridViewGroupItem(item) : ListViewGroupItem(item, find(mainGroups?.data, ['ID', item?.IDs.ID]))}
+      {mode === 'list' && <div className="bg-background-border my-4 h-0.5 w-full" />}
     </div>
     );
   };
