@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from '@lagunovsky/redux-react-router';
 import { Link } from 'react-router-dom';
@@ -25,7 +25,7 @@ import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilit
 import { setLayoutEditMode } from '../../core/slices/mainpage';
 import { default as ShokoIcon } from '../ShokoIcon';
 
-import { useGetWebuiLatestMutation, useGetWebuiUpdateMutation } from '../../core/rtkQuery/splitApi/webuiApi';
+import { useGetWebuiUpdateMutation, useGetWebuiUpdateCheckQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
 import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../../pages/settings/SettingsPage';
 
@@ -57,18 +57,8 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
-  const [checkWebuiUpdateTrigger] = useGetWebuiLatestMutation();
+  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery(webuiSettings.updateChannel, { skip: Version.debug || !settingsQuery.isSuccess });
   const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
-
-  const [webuiUpdateAvailable, setWebuiUpdateAvailable] = useState(false);
-
-  useEffect(() => {
-    if (!Version.debug && settingsQuery.isSuccess) {
-      checkWebuiUpdateTrigger(webuiSettings.updateChannel).unwrap().then((result) => {
-        setWebuiUpdateAvailable(semver.gt(result.version, Version.package));
-      }, reason => console.error(reason));
-    }
-  }, [webuiSettings.updateChannel, settingsQuery.isSuccess]);
 
   const closeModalsAndSidebar = () => {
     dispatch(setUtilitiesStatus(false));
@@ -129,7 +119,7 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
           <Button onClick={() => {
             toast.dismiss('webui-update');
             dispatch(push('/webui/dashboard'));
-            window.location.reload();
+            setTimeout(() => window.location.reload(), 100);
           }} className="bg-highlight-1 py-1.5 w-full">
             Click here to reload
           </Button>
@@ -196,11 +186,17 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
           {/*    <span>Server</span>Update Available*/}
           {/*  </div>*/}
           {/*</div>*/}
-          {webuiUpdateAvailable && (
+          {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
             <div className="flex items-center font-semibold cursor-pointer mt-5" onClick={() => handleWebUiUpdate()}>
-              <Icon path={webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline} size={1} className={webuiUpdateResult.isLoading ? 'text-highlight-1' : 'text-highlight-2'} spin={webuiUpdateResult.isLoading} />
+              <Icon
+                path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline}
+                size={1}
+                className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? 'text-highlight-1' : 'text-highlight-2'}
+                spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
+              />
               <div className="flex flex-col ml-3">
-                <span>Web UI</span>Update Available
+                <span>Web UI</span>
+                {webuiUpdateResult.isLoading ? 'Updating...' : (checkWebuiUpdate.isFetching ? 'Checking for update' : 'Update Available')}
               </div>
             </div>
           )}

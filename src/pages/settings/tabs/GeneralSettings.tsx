@@ -1,17 +1,22 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { findKey, pickBy, transform } from 'lodash';
+import { Icon } from '@mdi/react';
+import { mdiRestart } from '@mdi/js';
 
 import { uiVersion } from '../../../core/util';
 
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import SelectSmall from '../../../components/Input/SelectSmall';
 import Checkbox from '../../../components/Input/Checkbox';
+import Button from '../../../components/Input/Button';
 
 import { useSettingsContext } from '../SettingsPage';
 
 import { useGetInitVersionQuery } from '../../../core/rtkQuery/splitV3Api/initApi';
+import { splitV3Api } from '../../../core/rtkQuery/splitV3Api';
 
 const UI_VERSION = uiVersion();
 
@@ -33,6 +38,8 @@ const mapping = {
 };
 
 function GeneralSettings() {
+  const dispatch = useDispatch();
+
   const {
     fetching, newSettings, setNewSettings, updateSetting,
   } = useSettingsContext();
@@ -71,7 +78,15 @@ function GeneralSettings() {
 
   return (
     <>
-      <ShokoPanel title="Version Information" isFetching={fetching}>
+      <ShokoPanel
+        title="Version Information"
+        isFetching={fetching}
+        options={
+          <Button onClick={() => dispatch(splitV3Api.util.invalidateTags(['WebUIUpdateCheck']))} tooltip="Check for WebUI Update">
+            <Icon path={mdiRestart} size={1} className="text-highlight-1" />
+          </Button>
+        }
+      >
         <div className="flex justify-between"><span>Server Version</span>{version.data?.Server.ReleaseChannel !== 'Stable' ? (
           `${version.data?.Server.Version} (${version.data?.Server.Commit?.slice(0, 7)})`
         ) : (
@@ -82,8 +97,8 @@ function GeneralSettings() {
         <div className="flex justify-between mt-2 items-center">
           <span>Web UI Channel</span>
           <SelectSmall id="update-channel" value={WebUI_Settings.updateChannel} onChange={event => updateSetting('WebUI_Settings', 'updateChannel', event.target.value)}>
-            <option value="stable">Stable</option>
-            <option value="unstable">Dev</option>
+            <option value="Stable">Stable</option>
+            <option value="Dev">Dev</option>
           </SelectSmall>
         </div>
       </ShokoPanel>

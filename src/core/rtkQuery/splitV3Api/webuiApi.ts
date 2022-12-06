@@ -1,5 +1,6 @@
 import { splitV3Api } from '../splitV3Api';
-import { WebuiGroupExtra } from '../../types/api/webui';
+import type { WebuiGroupExtra } from '../../types/api/webui';
+import type { ComponentVersionType } from '../../types/api/init';
 
 export type GroupViewApiRequest = {
   GroupIDs: number[];
@@ -25,7 +26,22 @@ const webuiApi = splitV3Api.injectEndpoints({
         return currentArg !== previousArg;
       },
     }),
+
+    // Update an existing version of the web ui to the latest for the selected channel.
+    getWebuiUpdateCheck: build.query<ComponentVersionType, 'Stable' | 'Dev'>({
+      query: channel => ({ url: 'WebUI/LatestVersion', params: { channel } }),
+      providesTags: ['WebUIUpdateCheck'],
+    }),
+
+    // Check for latest version for the selected channel and return a Shoko.Server.API.v3.Models.Common.ComponentVersion containing the version information.
+    getWebuiUpdate: build.mutation<void, 'Stable' | 'Dev'>({
+      query: channel => ({ url: 'WebUI/Update', params: { channel } }),
+    }),
   }),
 });
 
-export const { useLazyGetGroupViewQuery } = webuiApi;
+export const {
+  useLazyGetGroupViewQuery,
+  useGetWebuiUpdateCheckQuery,
+  useGetWebuiUpdateMutation,
+} = webuiApi;
