@@ -68,7 +68,7 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
         setWebuiUpdateAvailable(semver.gt(result.version, Version.package));
       }, reason => console.error(reason));
     }
-  }, [webuiSettings.updateChannel]);
+  }, [webuiSettings.updateChannel, settingsQuery.isSuccess]);
 
   const closeModalsAndSidebar = () => {
     dispatch(setUtilitiesStatus(false));
