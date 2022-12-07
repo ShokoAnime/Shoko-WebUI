@@ -146,12 +146,12 @@ export type LayoutType = {
   [breakpoint: string]: Array<LayoutItemType>
 };
 
-type WebUISettingsType = {
+export type WebUISettingsType = {
   notifications: boolean;
   settingsRevision: number;
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
-  updateChannel: 'stable' | 'unstable';
+  updateChannel: 'Stable' | 'Dev';
   layout: {
     [key: string]: LayoutType;
   };

@@ -19,13 +19,15 @@ export type LegacyVersionType = Array<{
   Version: string;
 }>;
 
+export type ComponentVersionType = {
+  Version: string;
+  ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
+  Commit?: string;
+  Tag?: string;
+};
+
 export type VersionType = {
-  Server: {
-    Version: string;
-    ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
-    Commit?: string;
-    Tag?: string;
-  };
+  Server: ComponentVersionType
   Commons?: {
     Version: string;
   };
@@ -35,9 +37,5 @@ export type VersionType = {
   MediaInfo?: {
     Version: string | null;
   };
-  WebUI?: {
-    Version: string;
-    ReleaseChannel: 'Stable' | 'Dev' | 'Debug';
-    Commit: string;
-  };
+  WebUI?: ComponentVersionType,
 };
