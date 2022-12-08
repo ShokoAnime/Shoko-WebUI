@@ -5,6 +5,7 @@ import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
 import { EpisodeTypeEnum } from '../../../core/types/api/episode';
 import { Icon } from '@mdi/react';
 import { mdiLayersTripleOutline } from '@mdi/js';
+import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',
@@ -40,14 +41,14 @@ function EpisodeDetails(props: Props): JSX.Element {
       <p className="truncate text-center text-base font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
       <p className="truncate text-center text-sm mb-2">{relativeTime}</p>
     </>) : null}
-    <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}')` }} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2">
+    <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}`} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2">
       {percentage && (<div className="absolute bottom-0 left-0 h-1 bg-highlight-1" style={{ width: percentage }}></div>)}
       {isInCollection && (
         <div className="absolute bg-highlight-1/85 top-3 right-3 rounded p-1">
           <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is already in collection!" />
         </div>
       )}
-    </div>
+    </BackgroundImagePlaceholderDiv>
     <p className="truncate text-center text-base font-semibold" title={episode.SeriesTitle}>{episode.SeriesTitle}</p>
     <p className="truncate text-center text-sm" title={title}>{title}</p>
   </div>

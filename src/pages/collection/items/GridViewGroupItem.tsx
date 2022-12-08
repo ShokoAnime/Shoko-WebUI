@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 import { mdiEyeArrowRightOutline, mdiSquareEditOutline } from '@mdi/js';
 
 import type { CollectionGroupType } from '../../../core/types/api/collection';
+import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
@@ -27,7 +28,7 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
 
   return (
     <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-[13.875rem] font-open-sans content-center flex flex-col">
-      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}')` }} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2 relative">
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2 relative" hidePlaceholderOnHover={true}>
         <div className="absolute right-0 top-0 group-hover:hidden">
           <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>
           <CountIcon className="bg-highlight-5">{item.Size}</CountIcon>
@@ -36,7 +37,7 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
           <HoverIcon icon={mdiEyeArrowRightOutline} label="View Group" route={`/webui/collection/group/${item.IDs.ID}`} />
           <HoverIcon icon={mdiSquareEditOutline} label="Edit Group" route="" />
         </div>
-      </div>
+      </BackgroundImagePlaceholderDiv>
       <p className="text-center text-base font-semibold text-ellipsis line-clamp-1" title={item.Name}>{item.Name}</p>
     </div>
   );

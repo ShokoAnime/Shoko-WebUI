@@ -10,6 +10,7 @@ import ShokoPanel from '../../components/Panels/ShokoPanel';
 import { RootState } from '../../core/store';
 import type { SeriesType } from '../../core/types/api/series';
 import { CollectionGroupType } from '../../core/types/api/collection';
+import BackgroundImagePlaceholderDiv from '../../components/BackgroundImagePlaceholderDiv';
 
 const Group = () => {
   const { groupId } = useParams();
@@ -22,7 +23,7 @@ const Group = () => {
 
   const renderDetails = (item: SeriesType) => (
     <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 font-open-sans content-center flex flex-col">
-      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/${item.Images.Posters[0].Source}/Poster/${item.Images.Posters[0].ID}')` }} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${item.Images.Posters[0].Source}/Poster/${item.Images.Posters[0].ID}`} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       <p className="text-center text-base font-semibold" title={item.Name}>{item.Name}</p>
     </div>
   );
