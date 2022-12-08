@@ -79,7 +79,7 @@ export const initialSettings = {
     settingsRevision: 0,
     theme: '',
     toastPosition: 'bottom-right',
-    updateChannel: semver.prerelease(uiVersion()) ? 'unstable' : 'stable',
+    updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
   },
   FirstRun: false,

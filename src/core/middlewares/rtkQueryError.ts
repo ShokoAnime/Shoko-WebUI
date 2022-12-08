@@ -17,7 +17,7 @@ const rtkQueryErrorLogger: Middleware =
           dispatch({ type: Events.STORE_CLEAR_STATE });
         toast.error('Unauthorized!', '', { toastId: 'unauthorized' });
       } else if (action.payload.originalStatus !== 503) {
-        toast.error(action.payload?.data?.title ?? action.payload.error ?? `${action.payload.status} - ${action.error.message}`);
+        toast.error(action.payload?.data?.title ?? action.payload.error ?? `${action.payload.status} - ${action.error.message}`, `Debug Info: ${action.meta.arg.endpointName}`);
       }
     }
 

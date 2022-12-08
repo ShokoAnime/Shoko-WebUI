@@ -2,9 +2,10 @@ import jsonpatch from 'fast-json-patch';
 
 import { splitV3Api } from '../splitV3Api';
 
-import type { SettingsServerType, SettingsType } from '../../types/api/settings';
+import type { SettingsServerType, SettingsType, WebUISettingsType } from '../../types/api/settings';
 import { SettingsAnidbLoginType } from '../../types/api/settings';
 import { initialSettings } from '../../../pages/settings/SettingsPage';
+import { webuiSettingsPatches } from '../../patches';
 
 const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -12,11 +13,19 @@ const settingsApi = splitV3Api.injectEndpoints({
     getSettings: build.query<SettingsType, void>({
       query: () => ({ url: 'Settings' }),
       transformResponse: (response: SettingsServerType) => {
-        let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings);
+        let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings) as WebUISettingsType;
         const settingsRevision = webuiSettings.settingsRevision ?? 0;
-        const newSettingsRevision = 4;
-        if (settingsRevision !== newSettingsRevision) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: newSettingsRevision }; // TO-DO: Move the settings revision number somewhere else
-        else webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
+        if (settingsRevision < 4) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: Number(Object.keys(webuiSettingsPatches).pop()) };
+        else {
+          Object
+            .keys(webuiSettingsPatches)
+            .map(Number)
+            .filter(key => key > settingsRevision)
+            .forEach((key) => {
+              webuiSettings = webuiSettingsPatches[key](webuiSettings);
+            });
+          webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
+        }
         return { ...response, WebUI_Settings: webuiSettings };
       },
       providesTags: ['Settings'],
