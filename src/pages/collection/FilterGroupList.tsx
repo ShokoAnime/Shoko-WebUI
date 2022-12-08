@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
 import { memoize, debounce, reduce, find } from 'lodash';
@@ -12,18 +12,23 @@ import GridOptions from './items/GridOptions';
 
 import { setStatus } from '../../core/slices/modals/filters';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
-import { useLazyGetFilterGroupsQuery, useGetFilterQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
+import {
+  useLazyGetFilterGroupsQuery,
+  useGetFilterQuery,
+  useGetFilterGroupLettersQuery,
+} from '../../core/rtkQuery/splitV3Api/collectionApi';
 
 import { RootState } from '../../core/store';
 import type { CollectionFilterType } from '../../core/types/api/collection';
 import { resetGroups, setGroups } from '../../core/slices/collection';
 import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
 
+import Jumpbar from './Jumpbar';
 
 function FilterGroupList() {
   const itemWidth = 240; //224 + 16
-  const itemHeight = 374; //328 + 16
-  const itemHeightList = 240; //176 + 16
+  const itemHeight = 374; //358 + 16
+  const itemHeightList = 240; //176 + 16 + 16
   const pageSize = 50;
   const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
@@ -34,6 +39,9 @@ function FilterGroupList() {
   const filterData = useGetFilterQuery({ filterId });
   const filter = filterData?.data ?? { Name: '??' } as CollectionFilterType;
   const [fetchMainGroups, mainGroups] = useLazyGetGroupViewQuery();
+  const letters = useGetFilterGroupLettersQuery({ includeEmpty: false, topLevelOnly: true, filterId });
+  const gridRef = useRef<Grid>(null);
+  const [columns, setColumns] = useState(0);
 
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
 
@@ -47,7 +55,7 @@ function FilterGroupList() {
         out.push(value.IDs.ID); 
         return out;
       }, [] as Array<number>);
-      fetchMainGroups({ GroupIDs: ids, TagFilter: 0, TagLimit: 10, OrderByName: true }).then(() => {}, (reason) => { console.error(reason); });
+      fetchMainGroups({ GroupIDs: ids, TagFilter: 128, TagLimit: 20, OrderByName: true }).then(() => {}, (reason) => { console.error(reason); });
     }, (reason) => { console.error(reason); });
     return true;
   }), 200);
@@ -74,10 +82,13 @@ function FilterGroupList() {
     </React.Fragment>
   );
 
-  const Cell = columns => ({ columnIndex, key, rowIndex, style }) => {
-    const index = rowIndex * columns + columnIndex;
+  const Cell = cols => ({ columnIndex, key, rowIndex, style }) => {
+    const index = rowIndex * cols + columnIndex;
     const neededPage = Math.ceil((index + 1) / pageSize);
     const groupList = fetchedPages[neededPage];
+    if (cols !== columns) {
+      setColumns(cols);
+    }
     if (groupList == undefined) {
       fetchPage(neededPage);
       return (
@@ -95,18 +106,19 @@ function FilterGroupList() {
   };
 
   return (
-    <div className="p-9 pr-0 h-full min-w-full">
-      <ShokoPanel title={renderTitle(total)} options={<GridOptions showFilters={showFilters} toggleMode={toggleMode} />}>
+    <div className="p-9 pr-0 h-full min-w-full flex">
+      <ShokoPanel className="grow" title={renderTitle(total)} options={<GridOptions showFilters={showFilters} toggleMode={toggleMode} />}>
         <AutoSizer>
           {({ width, height }) => {
-            const columns = mode === 'grid' ? Math.floor(width / itemWidth) : 1;
-            const rows = mode === 'grid' ? Math.ceil(total / columns) : total;
+            const gridColumns = mode === 'grid' ? Math.floor(width / itemWidth) : 1;
+            const rows = mode === 'grid' ? Math.ceil(total / gridColumns) : total;
             return (
-              <Grid overscanRowCount={1} columnCount={columns} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(columns)} />
+              <Grid ref={gridRef} className="grow" overscanRowCount={1} columnCount={gridColumns} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(gridColumns)} />
             );
           }}
         </AutoSizer>
       </ShokoPanel>
+      <Jumpbar items={letters?.data} columns={columns} gridRef={gridRef} />
     </div>
   );
 }
