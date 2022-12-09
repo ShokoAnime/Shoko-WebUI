@@ -38,4 +38,4 @@ function BackgroundImagePlaceholderDiv(props: Props) {
   );
 }
 
-export default BackgroundImagePlaceholderDiv;
+export default React.memo(BackgroundImagePlaceholderDiv);
