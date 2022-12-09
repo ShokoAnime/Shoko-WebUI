@@ -8,6 +8,7 @@ import ShokoPanel from '../../../components/Panels/ShokoPanel';
 
 import { useGetAniDBRecommendedAnimeQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import type { SeriesAniDBType } from '../../../core/types/api/series';
+import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -16,9 +17,9 @@ const RecommendedAnime = () => {
 
   const renderItem = (series: SeriesAniDBType, matches: number) => (
     <div key={`series-${series.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-open-sans justify-center flex flex-col">
-      <div style={{ background: `center / cover no-repeat url('/api/v3/Image/AniDB/Poster/${series.Poster.ID}')` }} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2">
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/AniDB/Poster/${series.Poster.ID}`} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2 group">
         <div
-          className="flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-background-nav/85 transition-opacity opacity-0 hover:opacity-100"
+          className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-background-nav/85 transition-opacity opacity-0 group-hover:opacity-100"
           onClick={() => window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
         >
           <div className="p-5 bg-background-border rounded-full mb-1">
@@ -26,7 +27,7 @@ const RecommendedAnime = () => {
           </div>
           View Series on AniDB
         </div>
-      </div>
+      </BackgroundImagePlaceholderDiv>
       <p className="truncate text-center text-base font-semibold" title={series.Title}>{series.Title}</p>
       <p className="truncate text-center text-sm" title={`${matches} Matches`}>{matches} Matches</p>
     </div>
