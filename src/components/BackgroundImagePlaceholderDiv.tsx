@@ -28,7 +28,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
         {!imageLoaded && (
           <div className={cx('w-full h-full flex flex-col justify-center items-center bg-background-nav p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
             <Icon path={mdiInformationOutline} size={1.5} className="text-highlight-2" />
-            <div className="my-4">Failed to Load</div>
+            <div className="my-4 font-semibold">Failed to Load</div>
             Please refresh your browser to correct
           </div>
         )}
