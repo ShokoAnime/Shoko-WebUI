@@ -29,7 +29,7 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
 
   return (
     <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-[13.875rem] font-open-sans content-center flex flex-col">
-      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2 mb-3 relative" hidePlaceholderOnHover={true}>
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-3 relative" hidePlaceholderOnHover={true}>
         <div className="absolute right-0 top-0 group-hover:hidden">
           <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>
           <CountIcon show={groupCount >= 2} className="bg-highlight-5">{item.Size}</CountIcon>
