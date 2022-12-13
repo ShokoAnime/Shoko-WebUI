@@ -30,13 +30,13 @@ const RecentlyImported = () => {
         <TransitionDiv show={!showSeries} className="flex absolute">
           {(episodes.data?.length ?? 0) > 0
             ? episodes.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
-            : <div className="flex justify-center font-semibold mt-4 w-full">No recently imported episodes!</div>
+            : <div className="flex justify-center font-semibold mt-4 w-full">No Recently Imported Episodes!</div>
           }
         </TransitionDiv>
         <TransitionDiv show={showSeries} className="flex absolute">
           {(series.data?.length ?? 0) > 0
             ? series.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
-            : <div className="flex justify-center font-semibold mt-4 w-full">No recently imported series!</div>
+            : <div className="flex justify-center font-semibold mt-4 w-full">No Recently Imported Series!</div>
           }
         </TransitionDiv>
       </div>
