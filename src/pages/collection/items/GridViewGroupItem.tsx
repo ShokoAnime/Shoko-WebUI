@@ -25,20 +25,21 @@ const CountIcon = ({ className, children, show = true }) => (
 const GridViewGroupItem = (item: CollectionGroupType) => {
   const posters = item.Images.Posters;
   const unwatchedCount = item.Sizes.Local.Episodes + item.Sizes.Local.Specials - item.Sizes.Watched.Episodes - item.Sizes.Watched.Specials;
+  const groupCount = item.Sizes.SeriesTypes.Movie + item.Sizes.SeriesTypes.OVA + item.Sizes.SeriesTypes.Other + item.Sizes.SeriesTypes.TV + item.Sizes.SeriesTypes.TVSpecial + item.Sizes.SeriesTypes.Unknown + item.Sizes.SeriesTypes.Web;
 
   return (
     <div key={`group-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-[13.875rem] font-open-sans content-center flex flex-col">
-      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2 relative" hidePlaceholderOnHover={true}>
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-3 relative" hidePlaceholderOnHover={true}>
         <div className="absolute right-0 top-0 group-hover:hidden">
           <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>
-          <CountIcon className="bg-highlight-5">{item.Size}</CountIcon>
+          <CountIcon show={groupCount >= 2} className="bg-highlight-5">{item.Size}</CountIcon>
         </div>
         <div className="hidden group-hover:flex bg-background-nav/85 h-full flex-col justify-center items-center">
           <HoverIcon icon={mdiEyeArrowRightOutline} label="View Group" route={`/webui/collection/group/${item.IDs.ID}`} />
           <HoverIcon icon={mdiSquareEditOutline} label="Edit Group" route="" />
         </div>
       </BackgroundImagePlaceholderDiv>
-      <p className="text-center text-base font-semibold text-ellipsis line-clamp-1" title={item.Name}>{item.Name}</p>
+      <p className="text-center text-sm font-semibold text-ellipsis line-clamp-1" title={item.Name}>{item.Name}</p>
     </div>
   );
 };
