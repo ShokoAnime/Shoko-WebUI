@@ -32,7 +32,7 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
       <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-3 relative" hidePlaceholderOnHover={true}>
         <div className="absolute right-0 top-0 group-hover:hidden">
           <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>
-          <CountIcon show={groupCount >= 2} className="bg-highlight-5">{item.Size}</CountIcon>
+          <CountIcon show={groupCount > 1} className="bg-highlight-5">{item.Size}</CountIcon>
         </div>
         <div className="hidden group-hover:flex bg-background-nav/85 h-full flex-col justify-center items-center">
           <HoverIcon icon={mdiEyeArrowRightOutline} label="View Group" route={`/webui/collection/group/${item.IDs.ID}`} />
