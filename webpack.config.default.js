@@ -33,7 +33,7 @@ const config = {
   devServer: {
     hot: true,
   },
-  devtool: isDebug ? 'source-map' : false,
+  devtool: isDebug || process.env.SENTRY_AUTH_TOKEN ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
