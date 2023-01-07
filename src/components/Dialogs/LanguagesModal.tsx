@@ -3,13 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { forEach, remove } from 'lodash';
 
 import { RootState } from '../../core/store';
-import Events from '../../core/events';
 import { setStatus as setLanguageModalStatus } from '../../core/slices/modals/languages';
 import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
+import { initialSettings } from '../../pages/settings/SettingsPage';
 
-import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -69,18 +69,18 @@ function LanguagesModal() {
   const status = useSelector((state: RootState) => state.modals.languages.status);
 
   const settingsQuery = useGetSettingsQuery();
-  const LanguagePreference = settingsQuery.data?.LanguagePreference ?? ['x-jat', 'en'];
+  const settings = settingsQuery.data ?? initialSettings;
+  const LanguagePreference = settings.LanguagePreference ?? ['x-jat', 'en'];
+  const [patchSettings] = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as Array<string>);
 
   const handleClose = () => dispatch(setLanguageModalStatus(false));
 
-  const handleSave = () => {
-    dispatch({
-      type: Events.SETTINGS_SAVE_SERVER,
-      payload: { newSettings: { LanguagePreference: languages } },
-    });
-    handleClose();
+  const handleSave = async () => {
+    patchSettings({ oldSettings: settings, newSettings: { ...settings, LanguagePreference: languages }  }).unwrap()
+      .then(() => handleClose())
+      .catch(error => console.error(error));
   };
 
   useEffect(() => {
