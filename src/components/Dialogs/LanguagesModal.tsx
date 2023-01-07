@@ -77,7 +77,7 @@ function LanguagesModal() {
 
   const handleClose = () => dispatch(setLanguageModalStatus(false));
 
-  const handleSave = async () => {
+  const handleSave = () => {
     patchSettings({ oldSettings: settings, newSettings: { ...settings, LanguagePreference: languages }  }).unwrap()
       .then(() => handleClose())
       .catch(error => console.error(error));
