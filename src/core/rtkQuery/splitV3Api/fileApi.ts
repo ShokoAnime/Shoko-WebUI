@@ -70,7 +70,7 @@ const fileApi = splitV3Api.injectEndpoints({
       }),
     }),
 
-    // Unlink all the episodes if no body is given, or only the spesified episodes from the file.
+    // Unlink all the episodes if no body is given, or only the specified episodes from the file.
     deleteFileLink: build.mutation<void, number>({
       query: fileId => ({
         url: `File/${fileId}/Link`,

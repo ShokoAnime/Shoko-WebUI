@@ -97,7 +97,7 @@ function MetadataSitesSettings() {
         <Checkbox justify label="Download Wide Banners" id="download-tvdb-banners" isChecked={TvDB.AutoWideBanners} onChange={event => updateSetting('TvDB', 'AutoWideBanners', event.target.checked)} className="mt-2" />
         <div className={cx('flex justify-between mt-2 transition-opacity', !TvDB.AutoWideBanners && 'pointer-events-none opacity-50')}>
           Max Wide Banners
-          <InputSmall id="max-tvdb-baners" value={TvDB.AutoWideBannersAmount} type="text" onChange={event => updateSetting('TvDB', 'AutoWideBannersAmount', event.target.value)} className="w-10 px-2 py-0.5" />
+          <InputSmall id="max-tvdb-banners" value={TvDB.AutoWideBannersAmount} type="text" onChange={event => updateSetting('TvDB', 'AutoWideBannersAmount', event.target.value)} className="w-10 px-2 py-0.5" />
         </div>
       </ShokoPanel>
 

@@ -34,7 +34,7 @@ const RecommendedAnime = () => {
   );
 
   return (
-    <ShokoPanel title="Recommeded Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Recommended Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
       <div className="flex shoko-scrollbar">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
