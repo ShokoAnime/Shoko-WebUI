@@ -52,7 +52,7 @@ const quickActions = {
   'avdump-mismatched-files': {
     name: 'AVDump Mismatched Files',
     function: 'AVDumpMismatchedFiles',
-    info: 'Used by the \'Unrecognised\' utility to find files in your library that don\'t match to a file in AniDB.',
+    info: 'Used by the \'Unrecognized\' utility to find files in your library that don\'t match to a file in AniDB.',
   },
   'update-all-mediainfo': {
     name: 'Update All Mediainfo',

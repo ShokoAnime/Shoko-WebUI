@@ -74,7 +74,7 @@ function AniDBSettings() {
     if (testAniDbLoginResult.isError) {
       toast.error('Incorrect Username/Password!');
     } else {
-      toast.success('AniDB Login Succesful!');
+      toast.success('AniDB Login Successful!');
     }
   };
 
