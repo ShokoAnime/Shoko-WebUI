@@ -134,7 +134,7 @@ function ManuallyLinkedTab() {
           <div className="flex h-full justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
-        ) : (
+        ) : series.Total > 0 ? (
           <React.Fragment>
             <div className="flex px-8 py-3.5 bg-background-nav drop-shadow-lg font-bold sticky top-0 z-[1]">
               Series Name
@@ -173,6 +173,8 @@ function ManuallyLinkedTab() {
               </div>
             </div>
           </React.Fragment>
+        ) : (
+          <div className="flex items-center justify-center h-full font-semibold">No manually linked file(s)!</div> 
         )}
       </div>
     </TransitionDiv>
