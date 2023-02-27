@@ -4,6 +4,8 @@ import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from 
 import type { ListResultType, PaginationType } from '../../types/api';
 import { EpisodeType } from '../../types/api/episode';
 import { FileType } from '../../types/api/file';
+import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../types/api/series';
+import { TagType } from '../../types/api/tags';
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -65,6 +67,32 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
       providesTags: ['FileMatched', 'UtilitiesRefresh'],
     }),
+    
+    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] } >({ 
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}`,
+        params,
+      }),
+    }),
+
+    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean } >({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/Tags`,
+        params,
+      }),
+    }),
+    
+    getAniDBRelated: build.query<Array<SeriesAniDBRelatedType>, { seriesId: string }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Related`,
+      }),
+    }),
+
+    getAniDBSimilar: build.query<Array<SeriesAniDBSimilarType>, { seriesId: string }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Similar`,
+      }),
+    }),
   }),
 });
 
@@ -79,4 +107,8 @@ export const {
   useGetAniDBRecommendedAnimeQuery,
   useGetSeriesWithManuallyLinkedFilesQuery,
   useGetSeriesFilesQuery,
+  useGetSeriesQuery,
+  useGetSeriesTagsQuery,
+  useGetAniDBRelatedQuery,
+  useGetAniDBSimilarQuery,
 } = seriesApi;

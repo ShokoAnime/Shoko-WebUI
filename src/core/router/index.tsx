@@ -32,6 +32,8 @@ import DataCollection from '../../pages/firstrun/DataCollection';
 import GroupList from '../../pages/collection/GroupList';
 import Group from '../../pages/collection/Group';
 import FilterGroupList from '../../pages/collection/FilterGroupList';
+import Series from '../../pages/collection/Series';
+import SeriesOverview from '../../pages/collection/series/SeriesOverview';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
@@ -106,6 +108,10 @@ function Router(props: Props) {
                   <Route index element={<GroupList />}/>
                   <Route path="group/:groupId" element={<Group />}/>
                   <Route path="filter/:filterId" element={<FilterGroupList />}/>
+                  <Route path="series/:seriesId" element={<Series />}>
+                    <Route index element={<Navigate to="overview" replace />}/>
+                    <Route path="overview" element={<SeriesOverview />}/>
+                  </Route>
                 </Route>
                 <Route path="settings" element={<SettingsPage />}>
                   <Route index element={<Navigate to="general" replace />} />
