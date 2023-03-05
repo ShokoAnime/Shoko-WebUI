@@ -31,7 +31,7 @@ function EpisodeLinkPanel() {
   const [updateEpisodes, episodesQuery] = useLazyGetSeriesEpisodesQuery();
   const [refreshSeries, anidbRefreshQuery] = useRefreshAnidbSeriesMutation();
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
-  const episodes = episodesQuery?.data || [];
+  const episodes = episodesQuery?.data?.List || [];
   const dispatch = useDispatch();
 
   useEffect(() => {
