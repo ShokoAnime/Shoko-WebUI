@@ -4,7 +4,7 @@ import { useParams } from 'react-router';
 import { useGetSeriesQuery, useGetSeriesEpisodesQuery, useGetAniDBRelatedQuery, useGetAniDBSimilarQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../../core/types/api/series';
 import { EpisodeType } from '../../../core/types/api/episode';
-import { get, toNumber } from 'lodash';
+import { get, toNumber, round } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { ImageType } from '../../../core/types/api/common';
 
@@ -15,7 +15,7 @@ const SeriesOverview = () => {
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
   const episodesData = useGetSeriesEpisodesQuery({ seriesId: toNumber(seriesId) });
-  const episodes: EpisodeType[] = episodesData?.data ?? [] as EpisodeType[];
+  const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
   const relatedData = useGetAniDBRelatedQuery({ seriesId });
   const related: SeriesAniDBRelatedType[] = relatedData?.data ?? [] as SeriesAniDBRelatedType[];
   const similarData = useGetAniDBSimilarQuery({ seriesId });
@@ -83,7 +83,7 @@ const SeriesOverview = () => {
                 <div className="items-center flex flex-col">
                   <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
                   <span>{item.Title}</span>
-                  <span className="text-highlight-2">{item.UserApproval.Votes} votes</span>
+                  <span className="text-highlight-2">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>
               );
             })}
