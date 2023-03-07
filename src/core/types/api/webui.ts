@@ -1,4 +1,5 @@
-import { RatingType } from './common';
+import { ImageType, RatingType } from './common';
+import { CollectionFilterType } from './collection';
 
 export type WebuiGroupExtraTag = {
   ID: number;
@@ -14,4 +15,18 @@ export type WebuiGroupExtra = {
   AirDate: string | null;
   EndDate: string | null;
   Tags: Array<WebuiGroupExtraTag>;
+};
+
+export type WebuiSeriesRolePerson = {
+  Name:	string;
+  AlternateName: string | null;
+  Description: string | null;
+  Image: ImageType;
+};
+
+export type WebuiSeriesDetailsType = {
+  FirstAirSeason: CollectionFilterType;
+  Studios: WebuiSeriesRolePerson[];
+  Producers: WebuiSeriesRolePerson[];
+  SourceMaterial: string | null;
 };

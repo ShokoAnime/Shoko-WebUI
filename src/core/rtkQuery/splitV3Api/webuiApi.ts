@@ -1,5 +1,5 @@
 import { splitV3Api } from '../splitV3Api';
-import type { WebuiGroupExtra } from '../../types/api/webui';
+import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '../../types/api/webui';
 import type { ComponentVersionType } from '../../types/api/init';
 
 export type GroupViewApiRequest = {
@@ -7,6 +7,10 @@ export type GroupViewApiRequest = {
   TagFilter: number;
   TagLimit: number;
   OrderByName: boolean;
+};
+
+export type SeriesOverviewApiRequest = {
+  SeriesID: string;
 };
 
 const webuiApi = splitV3Api.injectEndpoints({
@@ -27,6 +31,10 @@ const webuiApi = splitV3Api.injectEndpoints({
       },
     }),
 
+    getSeriesOverview: build.query<WebuiSeriesDetailsType, SeriesOverviewApiRequest>({
+      query: ({ SeriesID }) => ({ url: `WebUI/Series/${SeriesID}` }),
+    }),
+
     // Update an existing version of the web ui to the latest for the selected channel.
     getWebuiUpdateCheck: build.query<ComponentVersionType, 'Stable' | 'Dev'>({
       query: channel => ({ url: 'WebUI/LatestVersion', params: { channel } }),
@@ -44,4 +52,5 @@ export const {
   useLazyGetGroupViewQuery,
   useGetWebuiUpdateCheckQuery,
   useGetWebuiUpdateMutation,
+  useGetSeriesOverviewQuery,
 } = webuiApi;

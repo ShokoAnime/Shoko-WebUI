@@ -2,11 +2,15 @@ import React from 'react';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
 import { useGetSeriesQuery, useGetSeriesEpisodesQuery, useGetAniDBRelatedQuery, useGetAniDBSimilarQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesOverviewQuery } from '../../../core/rtkQuery/splitV3Api/webuiApi';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../../core/types/api/series';
 import { EpisodeType } from '../../../core/types/api/episode';
-import { get, toNumber, round } from 'lodash';
+import { get, toNumber, round, map } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { ImageType } from '../../../core/types/api/common';
+import { WebuiSeriesDetailsType } from '../../../core/types/api/webui';
+import { Link } from 'react-router-dom';
+
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
@@ -14,6 +18,8 @@ const SeriesOverview = () => {
   
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
+  const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId });
+  const overview = seriesOverviewData?.data || {} as WebuiSeriesDetailsType;
   const episodesData = useGetSeriesEpisodesQuery({ seriesId: toNumber(seriesId) });
   const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
   const relatedData = useGetAniDBRelatedQuery({ seriesId });
@@ -27,7 +33,7 @@ const SeriesOverview = () => {
       <div className="flex space-x-9">
         <ShokoPanel title="Additional information" className="grow min-w-fit">
           <div className="font-semibold">Source</div>
-          <div>--</div>
+          <div>{overview.SourceMaterial}</div>
           <div className="font-semibold mt-2">Episodes</div>
           <div>{series.Sizes.Total.Episodes} episodes</div>
           <div>{series.Sizes.Total.Specials} episodes</div>
@@ -36,13 +42,13 @@ const SeriesOverview = () => {
           <div className="font-semibold mt-2">Status</div>
           <div>--</div>
           <div className="font-semibold mt-2">Season</div>
-          <div>--</div>
+          <div>{overview?.FirstAirSeason && <Link className="text-highlight-1" to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}>{overview.FirstAirSeason.Name}</Link>}</div>
           <div className="font-semibold mt-2">Studio</div>
-          <div>--</div>
+          <div className="flex flex-col">{map(overview.Studios, item => <span>{item.Name}</span>)}</div>
           <div className="font-semibold mt-2">Producers</div>
-          <div>--</div>
+          <div className="flex flex-col">{map(overview.Producers, item => <span>{item.Name}</span>)}</div>
           <div className="font-semibold mt-2">Links</div>
-          <div>--</div>
+          <div className="flex flex-col">{map(series.Links, item => <span>{item.name}</span>)}</div>
         </ShokoPanel>
         <ShokoPanel title="Episodes on Deck" className="grow-0 flex">
           <div className="flex space-x-3 shoko-scrollbar">
