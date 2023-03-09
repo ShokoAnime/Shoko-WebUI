@@ -173,6 +173,7 @@ if (!isDebug) {
       project: 'shoko-webui',
       release: isDebug ? 'dev' : Version.package,
       include: './public/dist',
+      urlPrefix: '~/webui/',
       ignore: [],
     }));
   }
