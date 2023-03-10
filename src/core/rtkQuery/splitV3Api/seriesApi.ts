@@ -93,6 +93,10 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}/AniDB/Similar`,
       }),
     }),
+    //Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
+      query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB` }),
+    }),
   }),
 });
 
@@ -111,4 +115,5 @@ export const {
   useGetSeriesTagsQuery,
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,
+  useNextUpEpisodeQuery,
 } = seriesApi;

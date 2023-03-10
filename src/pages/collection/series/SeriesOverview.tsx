@@ -1,7 +1,8 @@
 import React from 'react';
+import moment from 'moment';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
-import { useGetSeriesQuery, useGetSeriesEpisodesQuery, useGetAniDBRelatedQuery, useGetAniDBSimilarQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesQuery, useGetAniDBRelatedQuery, useGetAniDBSimilarQuery, useNextUpEpisodeQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSeriesOverviewQuery } from '../../../core/rtkQuery/splitV3Api/webuiApi';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../../core/types/api/series';
 import { EpisodeType } from '../../../core/types/api/episode';
@@ -10,6 +11,8 @@ import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePl
 import { ImageType } from '../../../core/types/api/common';
 import { WebuiSeriesDetailsType } from '../../../core/types/api/webui';
 import { Link } from 'react-router-dom';
+import { Icon } from '@mdi/react';
+import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiFilmstrip, mdiStarHalfFull } from '@mdi/js';
 
 
 const SeriesOverview = () => {
@@ -20,18 +23,29 @@ const SeriesOverview = () => {
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
   const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId });
   const overview = seriesOverviewData?.data || {} as WebuiSeriesDetailsType;
-  const episodesData = useGetSeriesEpisodesQuery({ seriesId: toNumber(seriesId) });
-  const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
+  const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
+  const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;
   const relatedData = useGetAniDBRelatedQuery({ seriesId });
   const related: SeriesAniDBRelatedType[] = relatedData?.data ?? [] as SeriesAniDBRelatedType[];
   const similarData = useGetAniDBSimilarQuery({ seriesId });
   const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
   
+  const getNextUpThumbnailUrl = (episode: EpisodeType) => {
+    const thumbnail = get<EpisodeType, string, ImageType | null>(episode, 'TvDB.0.Thumbnail', null);
+    if (thumbnail === null) { return null; }
+    return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
+  };
+  
+  const getDuration = (duration) => {
+    const minutes = moment.duration(duration).asMinutes();
+    const intMinutes = Math.round(toNumber(minutes));
+    return `${intMinutes} minutes`;
+  };
   
   return (
     <React.Fragment>
       <div className="flex space-x-9">
-        <ShokoPanel title="Additional information" className="grow min-w-fit">
+        <ShokoPanel title="Additional information" className="grow-0 min-w-fit">
           <div className="font-semibold">Source</div>
           <div>{overview.SourceMaterial}</div>
           <div className="font-semibold mt-2">Episodes</div>
@@ -50,19 +64,40 @@ const SeriesOverview = () => {
           <div className="font-semibold mt-2">Links</div>
           <div className="flex flex-col">{map(series.Links, item => <span>{item.name}</span>)}</div>
         </ShokoPanel>
-        <ShokoPanel title="Episodes on Deck" className="grow-0 flex">
-          <div className="flex space-x-3 shoko-scrollbar">
-            {episodes.map((item) => {
-              const thumbnail :ImageType = get(item, 'TvDB.0.Thumbnail', {} as ImageType);
-              return (
-                <div className="items-center flex flex-col">
-                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/TvDB/Thumb/${thumbnail?.ID}`} className="h-[13.375rem] w-[21.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-                  E{item.AniDB?.EpisodeNumber} - {item.Name}
+        <div className="flex flex-col space-y-9 grow">
+          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[18rem]">
+            <div className="flex space-x-8">
+              <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="h-[13rem] w-[22.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
+              <div className="flex flex-col space-y-4">
+                <div className="mt-2 text-xl font-semibold text-font-main max-w-[93.75rem]">{nextUpEpisode.Name}</div>
+                <div className="mt-5 space-x-4 flex flex-nowrap">
+                  <div className="space-x-2 flex">
+                    <Icon path={mdiFilmstrip} size={1} />
+                    <span>Episode {nextUpEpisode.AniDB?.EpisodeNumber}</span>
+                  </div>
+                  <div className="space-x-2 flex">
+                    <Icon path={mdiCalendarMonthOutline} size={1} />
+                    <span>Episode {nextUpEpisode.AniDB?.AirDate}</span>
+                  </div>
+                  <div className="space-x-2 flex">
+                    <Icon path={mdiClockTimeFourOutline} size={1} />
+                    <span>{getDuration(nextUpEpisode.Duration)}</span>
+                  </div>
+                  <div className="space-x-2 flex">
+                    <Icon path={mdiStarHalfFull} size={1} />
+                    <span>{toNumber(nextUpEpisode.AniDB?.Rating.Value).toFixed(2)} ({nextUpEpisode.AniDB?.Rating.Votes} Votes)</span>
+                  </div>
                 </div>
-              );
-            })}  
-          </div>
-        </ShokoPanel>
+                <div className="line-clamp-3 text-font-main">
+                  {nextUpEpisode.AniDB?.Description}
+                </div>
+              </div>
+            </div>
+          </ShokoPanel>
+          <ShokoPanel title="Metadata Sites" className="flex grow-0">
+            Metadata sites
+          </ShokoPanel>
+        </div>
       </div>
       <div className="flex mt-9">
         <ShokoPanel title="Related Anime" className="grow-0 flex">
