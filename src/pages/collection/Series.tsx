@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
 import { useGetSeriesQuery, useGetSeriesTagsQuery } from '../../core/rtkQuery/splitV3Api/seriesApi';
 import { SeriesDetailsType } from '../../core/types/api/series';
@@ -21,6 +21,7 @@ import { TagType } from '../../core/types/api/tags';
 import cx from 'classnames';
 import AnidbDescription from './items/AnidbDescription';
 import { Link } from 'react-router-dom';
+import { get, isArray, random } from 'lodash';
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center font-semibold">
@@ -49,17 +50,26 @@ const SeriesTag = ({ text, type }) => (
 
 const Series = () => {
   const { seriesId } = useParams();
+  const [ fanartUri, setFanartUri ] = useState(''); 
   if (!seriesId) { return null; }
   
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
   const tagsData = useGetSeriesTagsQuery({ seriesId, excludeDescriptions: true });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
+  
+  useEffect(() => {
+    const fanarts = get(series, 'Images.Fanarts', []);
+    if (!isArray(fanarts) || fanarts.length === 0)  { return; }
+    const randomIdx = fanarts.length > 1 ? random(0, fanarts.length) : 0;
+    const randomImage = fanarts[randomIdx];
+    setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
+  }, [series]);
 
   if (!seriesData.isSuccess) { return null; }
   
   return (
-    <div className="p-9 h-full min-w-full">
+    <div className="p-9 h-full min-w-full relative">
       <div className="flex w-auto space-x-16">
         <div className="grow">
           <div className="flex justify-between">
@@ -99,7 +109,7 @@ const Series = () => {
           <div className="mt-5 space-x-4 flex flex-nowrap">
             {tags.slice(0, 10).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source}/>)}
           </div>
-          <div className="mt-8 line-clamp-3 max-w-[93.75rem] text-font-main">
+          <div className="mt-8 line-clamp-3 max-w-[93.75rem] text-font-main min-h-[5rem]">
             <AnidbDescription text={series?.AniDB?.Description} />
           </div>
           <div className="mt-5 space-x-8 flex flex-nowrap">
@@ -115,8 +125,9 @@ const Series = () => {
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[18.5rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       </div>
       <div className="mt-[4.5rem] flex flex-col">
-        <Outlet />  
+        <Outlet />
       </div>
+      <div className="h-full w-full top-0 left-0 fixed opacity-5 -z-10" style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }} />
     </div>
   );
 };

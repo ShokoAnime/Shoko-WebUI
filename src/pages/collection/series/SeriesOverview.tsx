@@ -77,7 +77,7 @@ const SeriesOverview = () => {
                   </div>
                   <div className="space-x-2 flex">
                     <Icon path={mdiCalendarMonthOutline} size={1} />
-                    <span>Episode {nextUpEpisode.AniDB?.AirDate}</span>
+                    <span>{nextUpEpisode.AniDB?.AirDate}</span>
                   </div>
                   <div className="space-x-2 flex">
                     <Icon path={mdiClockTimeFourOutline} size={1} />
