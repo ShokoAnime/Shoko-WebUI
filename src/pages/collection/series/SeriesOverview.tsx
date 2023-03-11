@@ -12,8 +12,9 @@ import { ImageType } from '../../../core/types/api/common';
 import { WebuiSeriesDetailsType } from '../../../core/types/api/webui';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
-import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiFilmstrip, mdiStarHalfFull } from '@mdi/js';
+import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiFilmstrip, mdiPlusCircleOutline, mdiStarHalfFull } from '@mdi/js';
 
+const links = ['tmdb', 'tvdb', 'mal', 'anilist', 'trakt'];
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
@@ -41,6 +42,18 @@ const SeriesOverview = () => {
     const intMinutes = Math.round(toNumber(minutes));
     return `${intMinutes} minutes`;
   };
+  
+  const renderMetadataLink = site => (
+    <div key={site} className="flex justify-between">
+      <div className="flex space-x-5">
+        <div className={`metadata-link-icon ${site}`}/>
+        <span>Series Not Linked</span>
+      </div>
+      <div>
+        <Icon className="text-highlight-1" path={mdiPlusCircleOutline} size={1} />
+      </div>
+    </div>
+  );
   
   return (
     <React.Fragment>
@@ -95,7 +108,9 @@ const SeriesOverview = () => {
             </div>
           </ShokoPanel>
           <ShokoPanel title="Metadata Sites" className="flex grow-0">
-            Metadata sites
+            <div className="columns-2 gap-8 space-y-5">
+              {links.map(site => renderMetadataLink(site))}
+            </div>
           </ShokoPanel>
         </div>
       </div>
