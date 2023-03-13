@@ -36,7 +36,7 @@ function EpisodeLinkPanel() {
 
   useEffect(() => {
     if (selectedSeries.ShokoID === null) { return; }
-    updateEpisodes({ seriesId: selectedSeries.ShokoID }).catch(() => {});
+    updateEpisodes({ seriesId: selectedSeries.ShokoID, pageSize: 0 }).catch(() => {});
   }, [selectedSeries.ShokoID]);
 
   useEffect(() => {
