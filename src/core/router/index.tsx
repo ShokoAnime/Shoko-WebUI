@@ -34,6 +34,7 @@ import Group from '../../pages/collection/Group';
 import FilterGroupList from '../../pages/collection/FilterGroupList';
 import Series from '../../pages/collection/Series';
 import SeriesOverview from '../../pages/collection/series/SeriesOverview';
+import SeriesEpisodes from '../../pages/collection/series/SeriesEpisodes';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
@@ -111,6 +112,7 @@ function Router(props: Props) {
                   <Route path="series/:seriesId" element={<Series />}>
                     <Route index element={<Navigate to="overview" replace />}/>
                     <Route path="overview" element={<SeriesOverview />}/>
+                    <Route path="episodes" element={<SeriesEpisodes />}/>
                   </Route>
                 </Route>
                 <Route path="settings" element={<SettingsPage />}>

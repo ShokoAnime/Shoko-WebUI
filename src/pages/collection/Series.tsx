@@ -20,7 +20,7 @@ import {
 import { TagType } from '../../core/types/api/tags';
 import cx from 'classnames';
 import AnidbDescription from './items/AnidbDescription';
-import { Link } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { get, isArray, random } from 'lodash';
 
 const IconNotification = ({ text }) => (
@@ -32,13 +32,17 @@ const IconNotification = ({ text }) => (
   </div>
 );
 
-const SeriesTab = ({ icon, text, active = false }) => (
-  <div className="flex items-center font-semibold cursor-pointer">
-    <Icon path={icon} size={1} className={cx(active && 'text-highlight-1')}/>
-    <div className={cx('flex flex-col ml-3', active && 'text-highlight-1')}>
-      {text}
+const SeriesTab = ({ to, icon, text, active = false }) => (
+  <NavLink to={to}   className={({ isActive, isPending }) =>
+    isPending ? 'pending' : isActive ? 'text-highlight-1' : ''
+  }>
+    <div className="flex items-center font-semibold cursor-pointer">
+      <Icon path={icon} size={1} className={cx(active && 'text-highlight-1')}/>
+      <div className={cx('flex flex-col ml-3', active && 'text-highlight-1')}>
+        {text}
+      </div>
     </div>
-  </div>
+  </NavLink>
 );
 
 const SeriesTag = ({ text, type }) => (
@@ -50,7 +54,8 @@ const SeriesTag = ({ text, type }) => (
 
 const Series = () => {
   const { seriesId } = useParams();
-  const [ fanartUri, setFanartUri ] = useState(''); 
+  const [ fanartUri, setFanartUri ] = useState('');
+  
   if (!seriesId) { return null; }
   
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
@@ -113,13 +118,13 @@ const Series = () => {
             <AnidbDescription text={series?.AniDB?.Description} />
           </div>
           <div className="mt-5 space-x-8 flex flex-nowrap">
-            <SeriesTab active icon={mdiInformationOutline} text="Overview" />
-            <SeriesTab icon={mdiFilmstrip} text="Episodes" />
-            <SeriesTab icon={mdiAccountGroupOutline} text="Credits" />
-            <SeriesTab icon={mdiImageMultipleOutline} text="Images" />
-            <SeriesTab icon={mdiTagTextOutline} text="Tags" />
-            <SeriesTab icon={mdiHarddisk} text="Files" />
-            <SeriesTab icon={mdiSquareEditOutline} text="Edit" />
+            <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
+            <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
+            <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
+            <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
+            <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
+            <SeriesTab to="files" icon={mdiHarddisk} text="Files" />
+            <SeriesTab to="edit" icon={mdiSquareEditOutline} text="Edit" />
           </div>
         </div>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[18.5rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
