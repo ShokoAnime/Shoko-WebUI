@@ -4,14 +4,17 @@ import { EpisodeType } from '../../../core/types/api/episode';
 import { get, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
-import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiEyeCheckOutline, mdiEyeOutline, mdiFilmstrip, mdiStarHalfFull } from '@mdi/js';
+import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiEyeCheckOutline, mdiEyeOutline, mdiFilmstrip, mdiMagnify, mdiStarHalfFull } from '@mdi/js';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import React from 'react';
+import React, { useState } from 'react';
 import { ImageType } from '../../../core/types/api/common';
 import moment from 'moment/moment';
+import Input from '../../../components/Input/Input';
+import Select from '../../../components/Input/Select';
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
+  const [search, setSearch] = useState('');
 
   const episodesData = useGetSeriesEpisodesQuery({ seriesId: toNumber(seriesId) });
   const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
@@ -65,6 +68,8 @@ const SeriesEpisodes = () => {
     </React.Fragment>
   );
   
+  const handleInputChange = () => {};
+  
   return (
     <React.Fragment>
       <div className="flex space-x-9">
@@ -97,8 +102,32 @@ const SeriesEpisodes = () => {
             {episodes.length > 0 ? episodes.map(item => renderEpisode(item)) : 'No episodes'}
           </div>
         </ShokoPanel>
-        <div className="grow-0 w-[23rem]">
-          Filter panel
+        <div className="grow-0 shrink-0 w-[23rem] flex flex-col align-top">
+          <div>
+            <ShokoPanel title="Episode Search" fullHeight={false} className="mb-4">
+              <Input id="search" startIcon={mdiMagnify} type="text" placeholder="Search..." className="w-full bg-background-alt" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
+            </ShokoPanel>
+            <ShokoPanel title="Filter">
+              <div className="space-y-3">
+                <Select id="episodeType" label="Type" value={0} onChange={handleInputChange}>
+                  <option value={0}>Episodes</option>
+                  <option value={1}>Specials</option>
+                </Select>
+                <Select id="season" label="Season" value={0} onChange={handleInputChange}>
+                  <option value={0}>Season 01</option>
+                </Select>
+                <Select id="status" label="Episode Status" value={0} onChange={handleInputChange}>
+                  <option value={0}>Available</option>
+                  <option value={1}>Missing</option>
+                </Select>
+                <Select id="watched" label="Watched State" value={0} onChange={handleInputChange}>
+                  <option value={0}>All</option>
+                  <option value={1}>Watched</option>
+                  <option value={2}>Unwatched</option>
+                </Select>
+              </div>
+            </ShokoPanel>
+          </div>
         </div>
       </div>
     </React.Fragment>
