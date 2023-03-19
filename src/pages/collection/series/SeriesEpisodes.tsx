@@ -19,8 +19,6 @@ const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [search, setSearch] = useState('');
   
-
-
   const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
   const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
   const episodesTotal: number = episodesData?.data?.Total ?? 0;

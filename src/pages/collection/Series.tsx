@@ -114,7 +114,7 @@ const Series = () => {
           <div className="mt-5 space-x-4 flex flex-nowrap">
             {tags.slice(0, 10).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source}/>)}
           </div>
-          <div className="mt-8 line-clamp-3 max-w-[93.75rem] text-font-main min-h-[5rem]">
+          <div className="mt-8 line-clamp-3 max-w-[93.75rem] text-font-main min-h-[5rem] bg-gradient-to-t from-transparent to-white bg-clip-text text-fill-transparent">
             <AnidbDescription text={series?.AniDB?.Description} />
           </div>
           <div className="mt-5 space-x-8 flex flex-nowrap">
