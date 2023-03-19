@@ -1,24 +1,38 @@
 import { useParams } from 'react-router';
-import { useGetSeriesEpisodesQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
+import { useLazyGetSeriesEpisodesInfiniteQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import { EpisodeType } from '../../../core/types/api/episode';
 import { get, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
 import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiEyeCheckOutline, mdiEyeOutline, mdiFilmstrip, mdiMagnify, mdiStarHalfFull } from '@mdi/js';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ImageType } from '../../../core/types/api/common';
 import moment from 'moment/moment';
 import Input from '../../../components/Input/Input';
 import Select from '../../../components/Input/Select';
+import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
+
+const pageSize = 20;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [search, setSearch] = useState('');
+  
 
-  const episodesData = useGetSeriesEpisodesQuery({ seriesId: toNumber(seriesId) });
+
+  const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
   const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
   const episodesTotal: number = episodesData?.data?.Total ?? 0;
+  
+  const loadMoreRows = ({ startIndex }) => {
+    return fetchEpisodes({ seriesId: toNumber(seriesId), page: Math.round(startIndex / pageSize) + 1, pageSize });
+  };
+
+  useEffect(() => {
+    loadMoreRows({ startIndex: 0 }).catch(() => {});
+  }, []);
+  const isRowLoaded = ({ index }) => !!episodes[index];
 
   const getThumbnailUrl = (episode: EpisodeType) => {
     const thumbnail = get<EpisodeType, string, ImageType | null>(episode, 'TvDB.0.Thumbnail', null);
@@ -68,12 +82,14 @@ const SeriesEpisodes = () => {
     </React.Fragment>
   );
   
+  const rowRenderer = ({ index, key, style }) => (<div key={key} style={style}>{episodes[index] && renderEpisode(episodes[index])}</div>); 
+  
   const handleInputChange = () => {};
   
   return (
     <React.Fragment>
       <div className="flex space-x-9">
-        <ShokoPanel title="Episodes" className="flex  flex-col grow">
+        <ShokoPanel title="Episodes" className="flex flex-col grow">
           <div className="my-4 p-3 flex justify-between bg-background-nav border-background-border">
             <div className="flex space-x-3">
               <div className="space-x-2 flex">
@@ -98,9 +114,15 @@ const SeriesEpisodes = () => {
               Episodes
             </div>
           </div>
-          <div className="flex flex-col space-y-6">
-            {episodes.length > 0 ? episodes.map(item => renderEpisode(item)) : 'No episodes'}
-          </div>
+          <InfiniteLoader loadMoreRows={loadMoreRows} isRowLoaded={isRowLoaded} rowCount={episodesTotal} minimumBatchSize={20} threshold={3}>
+            {({ onRowsRendered, registerChild }) => (
+              <AutoSizer disableHeight>
+                {({ width }) => (
+                  <List height={600} onRowsRendered={onRowsRendered} ref={registerChild} rowCount={episodesTotal} rowHeight={151} rowRenderer={rowRenderer} width={width}/>  
+                )}
+              </AutoSizer>
+            )}
+          </InfiniteLoader>
         </ShokoPanel>
         <div className="grow-0 shrink-0 w-[23rem] flex flex-col align-top">
           <div>

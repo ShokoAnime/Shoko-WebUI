@@ -130,18 +130,23 @@ input:autofill {
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+
   &.tmdb {
     background-image: url('/images/community/24-TMDB.png');
   }
+
   &.tvdb {
     background-image: url('/images/community/24-TvDB.png');
   }
+
   &.mal {
     background-image: url('/images/community/24-MAL.png');
   }
+
   &.anilist {
     background-image: url('/images/community/24-Anilist.png');
   }
+
   &.trakt {
     background-image: url('/images/community/24-Trakt.png');
   }

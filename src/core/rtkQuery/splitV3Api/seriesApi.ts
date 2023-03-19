@@ -34,6 +34,23 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
+    // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
+      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+      // Only have one cache entry because the arg always maps to one string
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      // Always merge incoming data to the cache entry
+      merge: (currentCache, newItems) => {
+        currentCache.List.push(...newItems.List);
+      },
+      // Refetch when the page arg changes
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+    }),
+
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
       query: ({ anidbID }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
@@ -116,4 +133,5 @@ export const {
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,
   useNextUpEpisodeQuery,
+  useLazyGetSeriesEpisodesInfiniteQuery,
 } = seriesApi;
