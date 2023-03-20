@@ -8,6 +8,7 @@ export type EpisodeType = {
   Watched: string | null;
   Size: number;
   AniDB?: EpisodeAniDBType;
+  TvDB?:EpisodeTvDBType[];
 };
 
 export type EpisodeIDsType = {

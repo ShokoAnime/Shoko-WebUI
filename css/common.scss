@@ -131,6 +131,10 @@ input:autofill {
   background-position: center;
   background-size: cover;
 
+  &.anidb {
+    background-image: url('/images/community/24-AniDB.png');
+  }
+
   &.tmdb {
     background-image: url('/images/community/24-TMDB.png');
   }

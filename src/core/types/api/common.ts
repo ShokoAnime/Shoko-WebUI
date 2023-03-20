@@ -71,3 +71,5 @@ export type LogLineType = {
   timeStamp: string;
   message: string;
 };
+
+export type DataSourceType = 'AniDB' | 'TvDB' | 'TMDB' | 'Trakt' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';
