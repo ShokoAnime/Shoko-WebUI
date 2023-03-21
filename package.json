@@ -17,9 +17,9 @@
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^6.0.11",
     "@reduxjs/toolkit": "1.9.1",
-    "@sentry/browser": "^7.41.0",
-    "@sentry/react": "^7.41.0",
-    "@sentry/tracing": "^7.41.0",
+    "@sentry/browser": "^7.44.1",
+    "@sentry/react": "^7.44.1",
+    "@sentry/tracing": "^7.44.1",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tanstack/match-sorter-utils": "^8.5.14",
     "@tanstack/react-table": "^8.5.30",
@@ -46,6 +46,7 @@
     "react-modal": "^3.16.1",
     "react-redux": "^8.0.5",
     "react-responsive": "^9.0.2",
+    "react-router": "^6.9.0",
     "react-router-dom": "^6.6.1",
     "react-scroll-sync": "^0.11.0",
     "react-toastify": "^9.1.1",
@@ -141,7 +142,8 @@
     "@types/react": "^18.0.15",
     "minimatch": ">=3.0.5",
     "json5": "^2.2.2",
-    "http-cache-semantics": "^4.1.1"
+    "http-cache-semantics": "^4.1.1",
+    "caniuse-lite": "^1.0"
   },
   "stylelint": {
     "extends": [
