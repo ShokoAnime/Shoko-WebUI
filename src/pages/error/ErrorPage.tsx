@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component<Props, State> {
   render() {
     const { children } = this.props;
     return (
-      <Sentry.ErrorBoundary fallback={this.fallback}>{children}</Sentry.ErrorBoundary>
+      <Sentry.ErrorBoundary fallback={this.fallback} showDialog>{children}</Sentry.ErrorBoundary>
     );
   }
 }
