@@ -4,7 +4,7 @@ import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from 
 import type { ListResultType, PaginationType } from '../../types/api';
 import { EpisodeType } from '../../types/api/episode';
 import { FileType } from '../../types/api/file';
-import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../types/api/series';
+import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '../../types/api/series';
 import { TagType } from '../../types/api/tags';
 
 const seriesApi = splitV3Api.injectEndpoints({
@@ -114,6 +114,13 @@ const seriesApi = splitV3Api.injectEndpoints({
     nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
       query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB` }),
     }),
+
+    getSeriesCast: build.query<SeriesCast[], { seriesId: string } >({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/Cast`,
+        params,
+      }),
+    }),
   }),
 });
 
@@ -134,4 +141,5 @@ export const {
   useGetAniDBSimilarQuery,
   useNextUpEpisodeQuery,
   useLazyGetSeriesEpisodesInfiniteQuery,
+  useGetSeriesCastQuery,
 } = seriesApi;

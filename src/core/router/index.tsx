@@ -36,6 +36,7 @@ import Series from '../../pages/collection/Series';
 import SeriesOverview from '../../pages/collection/series/SeriesOverview';
 import SeriesEpisodes from '../../pages/collection/series/SeriesEpisodes';
 import SeriesEpisodeDetails from '../../pages/collection/series/SeriesEpisodeDetails';
+import SeriesCredits from '../../pages/collection/series/SeriesCredits';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
@@ -115,6 +116,7 @@ function Router(props: Props) {
                     <Route path="overview" element={<SeriesOverview />}/>
                     <Route path="episodes" element={<SeriesEpisodes />}/>
                     <Route path="episodes/:episodeId" element={<SeriesEpisodeDetails />}/>
+                    <Route path="credits" element={<SeriesCredits />}/>
                   </Route>
                 </Route>
                 <Route path="settings" element={<SettingsPage />}>

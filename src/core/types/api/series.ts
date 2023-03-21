@@ -184,3 +184,18 @@ export type SeriesAniDBSimilarType = {
   UserApproval: RatingType;
   Relation: SeriesRelationTypeEnum;
 };
+
+export type SeriesRolePerson = {
+  Name:	string;
+  AlternateName: string | null;
+  Description: string | null;
+  Image: ImageType;
+};
+
+export type SeriesCast = {
+  Language: string;
+  Staff: SeriesRolePerson;
+  Character: SeriesRolePerson;
+  RoleName: string;
+  RoleDetails: string;
+};
