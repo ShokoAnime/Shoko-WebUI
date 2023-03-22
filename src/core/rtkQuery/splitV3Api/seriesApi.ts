@@ -6,6 +6,13 @@ import { EpisodeType } from '../../types/api/episode';
 import { FileType } from '../../types/api/file';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '../../types/api/series';
 import { TagType } from '../../types/api/tags';
+import { ImageType } from '../../types/api/common';
+
+type SeriesImagesQueryResultType = {
+  Posters: ImageType[];
+  Banners: ImageType[];
+  Fanarts: ImageType[];
+};
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -121,6 +128,12 @@ const seriesApi = splitV3Api.injectEndpoints({
         params,
       }),
     }),
+
+    getSeriesImages: build.query<SeriesImagesQueryResultType, { seriesId: string } >({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/Images`,
+      }),
+    }),
   }),
 });
 
@@ -142,4 +155,5 @@ export const {
   useNextUpEpisodeQuery,
   useLazyGetSeriesEpisodesInfiniteQuery,
   useGetSeriesCastQuery,
+  useGetSeriesImagesQuery,
 } = seriesApi;
