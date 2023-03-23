@@ -46,14 +46,20 @@ const SeriesImages = () => {
   const splitPath = split(selectedImage?.RelativeFilepath, '/');
   const filename = splitPath.pop();
   const filepath = splitPath.join('/');
+  
+  const sizeMap = {
+    'Posters': 'h-[21.375rem] w-[15.2678rem]',
+    'Fanarts': 'h-[19.2375rem] w-[34.2rem]',
+    'Banners': 'h-[19.2375rem] w-[104.157rem]',
+  };
 
   return (
     <div className="flex space-x-9">
       <ShokoPanel className="grow" title={<Heading type={type} setType={setType} />}>
-        <div className="flex flex-wrap space-x-4">
+        <div className="flex flex-wrap">
           {map(get(images, type, []), (item: ImageType) => (
             <div onClick={() => { setSelectedImage(item); }} key={item?.ID}>
-              <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('h-[13.6875rem] w-[7.1875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border my-2', item === selectedImage ? 'border-highlight-2 border-2 opacity-30' : 'border-black' )} />
+              <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border my-2 mr-4', item === selectedImage ? 'border-highlight-2 border-2 opacity-30' : 'border-black', sizeMap[type] )} />
             </div>
           ))}
         </div>

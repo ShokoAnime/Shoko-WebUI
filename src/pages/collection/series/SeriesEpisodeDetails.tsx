@@ -12,7 +12,7 @@ import {
   mdiEyeCheckOutline,
   mdiEyeOutline,
   mdiFileDocumentMultipleOutline,
-  mdiFilmstrip,
+  mdiFilmstrip, mdiOpenInNew,
   mdiRestart,
   mdiStarHalfFull,
   mdiWeb,
@@ -124,7 +124,7 @@ const SeriesEpisodeDetails = () => {
   if (!episodeId) { return null; }
   
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [selectedFile, setSelectedFile] = useState(0);
+  const [selectedFileIdx, setSelectedFileIdx] = useState(0);
   
   const episodeData = useGetEpisodeQuery({ episodeId, includeDataFrom: ['AniDB', 'TvDB'] });
   const episode = episodeData.data;
@@ -138,6 +138,10 @@ const SeriesEpisodeDetails = () => {
   }, [episode]);
   
   if (!episode) { return null; }
+  
+  const selectedFile = get(episodeFiles, selectedFileIdx, false);
+  const ReleaseGroupID = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.ID`, 0);
+  const ReleaseGroupName = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.Name`, null);
   
   return (
     <div className="flex flex-col">
@@ -183,22 +187,29 @@ const SeriesEpisodeDetails = () => {
             <Icon path={mdiFileDocumentMultipleOutline} size={1} />
             <span>Unmark File as Variation</span>
           </div>
-          <div className="space-x-2 flex">
-            <div className="metadata-link-icon anidb"/>
-            <span>AniDB</span>
-          </div>
-          <div className="space-x-2 flex">
-            <Icon path={mdiWeb} size={1} />
-            <span>{get(episodeFiles, `${selectedFile}.AniDB.ReleaseGroup.Name`, '')}</span>
-          </div>
+          {selectedFile && <a href={`https://anidb.net/file/${selectedFile.ID}`} target="_blank" rel="noopener noreferrer">
+            <div className="space-x-2 flex text-highlight-1">
+              <div className="metadata-link-icon anidb"/>
+              <span>{selectedFile.ID}</span>
+              <span>AniDB</span>
+              <Icon path={mdiOpenInNew} size={1} className="cursor-pointer" />
+            </div>
+          </a>}
+          {ReleaseGroupID > 0 && <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
+            <div className="space-x-2 flex text-highlight-1">
+              <Icon className="text-font-main" path={mdiWeb} size={1} />
+              <span>{ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}</span>
+              <Icon path={mdiOpenInNew} size={1} />
+            </div>
+          </a>}
         </div>
         {episodeFiles && episodeFiles.length > 1 && <div className="flex space-x-2">
-            File <span className="ml-2 text-highlight-2">{selectedFile + 1} / {episodeFiles.length}</span>
+            File <span className="ml-2 text-highlight-2">{selectedFileIdx + 1} / {episodeFiles.length}</span>
           <div className="flex">
-              <Button onClick={() => setSelectedFile(selectedFile <= 0 ? 0 : selectedFile - 1)}>
+              <Button onClick={() => setSelectedFileIdx(selectedFileIdx <= 0 ? 0 : selectedFileIdx - 1)}>
                   <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-highlight-1" />
               </Button>
-              <Button onClick={() => setSelectedFile(selectedFile + 1 >= episodeFiles.length ? episodeFiles.length - 1 : selectedFile + 1)} className="ml-2">
+              <Button onClick={() => setSelectedFileIdx(selectedFileIdx + 1 >= episodeFiles.length ? episodeFiles.length - 1 : selectedFileIdx + 1)} className="ml-2">
                   <Icon path={mdiChevronRight} size={1} className="opacity-75 text-highlight-1" />
               </Button>
           </div>
@@ -206,7 +217,7 @@ const SeriesEpisodeDetails = () => {
       </div>
       {episodeFiles && 
         <div className="mt-4">
-          <EpisodeFileInfo file={episodeFiles[selectedFile]} selectedFile={selectedFile} />
+          <EpisodeFileInfo file={episodeFiles[selectedFileIdx]} selectedFile={selectedFileIdx} />
         </div>
       }
     </div>
