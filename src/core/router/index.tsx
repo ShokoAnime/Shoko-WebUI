@@ -38,6 +38,7 @@ import SeriesEpisodes from '../../pages/collection/series/SeriesEpisodes';
 import SeriesEpisodeDetails from '../../pages/collection/series/SeriesEpisodeDetails';
 import SeriesCredits from '../../pages/collection/series/SeriesCredits';
 import SeriesImages from '../../pages/collection/series/SeriesImages';
+import SeriesFiles from '../../pages/collection/series/SeriesFiles';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
@@ -119,6 +120,7 @@ function Router(props: Props) {
                     <Route path="episodes/:episodeId" element={<SeriesEpisodeDetails />}/>
                     <Route path="credits" element={<SeriesCredits />}/>
                     <Route path="images" element={<SeriesImages />}/>
+                    <Route path="files" element={<SeriesFiles />}/>
                   </Route>
                 </Route>
                 <Route path="settings" element={<SettingsPage />}>

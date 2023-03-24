@@ -1,6 +1,7 @@
 import { splitV3Api } from '../splitV3Api';
 import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '../../types/api/webui';
 import type { ComponentVersionType } from '../../types/api/init';
+import { WebuiSeriesFileSummaryType } from '../../types/api/webui';
 
 export type GroupViewApiRequest = {
   GroupIDs: number[];
@@ -45,6 +46,11 @@ const webuiApi = splitV3Api.injectEndpoints({
     getWebuiUpdate: build.mutation<void, 'Stable' | 'Dev'>({
       query: channel => ({ url: 'WebUI/Update', params: { channel } }),
     }),
+
+    // Check for latest version for the selected channel and return a Shoko.Server.API.v3.Models.Common.ComponentVersion containing the version information.
+    getSeriesFileSummery: build.query<WebuiSeriesFileSummaryType, SeriesOverviewApiRequest>({
+      query: ({ SeriesID }) => ({ url: `WebUI/Series/${SeriesID}/FileSummary` }),
+    }),
   }),
 });
 
@@ -53,4 +59,5 @@ export const {
   useGetWebuiUpdateCheckQuery,
   useGetWebuiUpdateMutation,
   useGetSeriesOverviewQuery,
+  useGetSeriesFileSummeryQuery,
 } = webuiApi;
