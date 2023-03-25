@@ -1,5 +1,9 @@
 import { ImageType, ImagesType, RatingType } from './common';
 
+export type SeriesDetailsType = SeriesType & { 
+  AniDB?: SeriesAniDBType; 
+};
+
 export type SeriesType = {
   IDs: SeriesIDsType;
   Name: string;
@@ -151,4 +155,47 @@ export type SeriesSizesEpisodeCountsType = {
 export type SeriesRecommendedType = {
   Anime: SeriesAniDBType,
   SimilarTo: number,
+};
+
+export type SeriesAniDBRelatedType = {
+  ID: number;
+  ShokoID: number | null;
+  Type: SeriesTypeEnum;
+  Title: string;
+  Titles: SeriesTitleType[];
+  Restricted: boolean;
+  Poster: ImageType;
+  EpisodeCount: number | null;
+  Rating: RatingType;
+  UserApproval: RatingType;
+  Relation: SeriesRelationTypeEnum;
+};
+
+export type SeriesAniDBSimilarType = {
+  ID: number;
+  ShokoID: number | null;
+  Type: SeriesTypeEnum;
+  Title: string;
+  Titles: SeriesTitleType[];
+  Restricted: boolean;
+  Poster: ImageType;
+  EpisodeCount: number | null;
+  Rating: RatingType;
+  UserApproval: RatingType;
+  Relation: SeriesRelationTypeEnum;
+};
+
+export type SeriesRolePerson = {
+  Name:	string;
+  AlternateName: string | null;
+  Description: string | null;
+  Image: ImageType;
+};
+
+export type SeriesCast = {
+  Language: string;
+  Staff: SeriesRolePerson;
+  Character: SeriesRolePerson;
+  RoleName: string;
+  RoleDetails: string;
 };
