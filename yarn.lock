@@ -2068,7 +2068,6 @@ __metadata:
 "@sentry-internal/tracing@npm:7.45.0":
   version: 7.45.0
   resolution: "@sentry-internal/tracing@npm:7.45.0"
-
   dependencies:
     "@sentry/core": 7.45.0
     "@sentry/types": 7.45.0
@@ -9530,7 +9529,6 @@ __metadata:
   checksum: 4d593491ab8db5611feda70002c62902baebb84d5c1c5e5b6172496f31f91130deee132bf4240dea634a88cb86c76d6da348f15b9cd5e5197be455efd88edf72
   languageName: node
   linkType: hard
-
 
 "react-router@npm:6.9.0":
   version: 6.9.0
