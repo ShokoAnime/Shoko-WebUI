@@ -33,11 +33,11 @@ export type WebuiSeriesDetailsType = {
 };
 
 export type WebuiSeriesFileSummaryType = {
-  Ranges: WebuiSeriesFileSummaryRangeType[];
+  Groups: WebuiSeriesFileSummaryGroupType[];
   MissingEpisodes: WebuiSeriesFileSummaryMissingEpisodeType[];
 };
 
-export type WebuiSeriesFileSummaryRangeType = {
+export type WebuiSeriesFileSummaryGroupType = {
   GroupName: string;
   Version: number;
   Source: string;
@@ -47,56 +47,30 @@ export type WebuiSeriesFileSummaryRangeType = {
   Height: number;
   VideoCodecs: string;
   AudioCodecs: string;
-  AudioLanguage: string;
+  AudioLanguages: string[];
+  AudioCount: number;
   SubtitleCodecs: string;
-  SubtitleLanguage: string;
+  SubtitleLanguages: string[];
+  SubtitleCount: number;
   Location: string;
-  RangeByType: {
-    Unknown: {
-      Range: string;
-      FileSize: number;
-    },
-    Other: {
-      Range: string;
-      FileSize: number;
-    },
-    Normal: {
-      Range: string;
-      FileSize: number;
-    },
-    Special: {
-      Range: string;
-      FileSize: number;
-    },
-    Trailer: {
-      Range: string;
-      FileSize: number;
-    },
-    ThemeSong: {
-      Range: string;
-      FileSize: number;
-    },
-    OpeningSong: {
-      Range: string;
-      FileSize: number;
-    },
-    EndingSong: {
-      Range: string;
-      FileSize: number;
-    },
-    Parody: {
-      Range: string;
-      FileSize: number;
-    },
-    Interview: {
-      Range: string;
-      FileSize: number;
-    },
-    Extra: {
-      Range: string;
-      FileSize: number;
-    }
+  RangeByType: { 
+    Other: WebuiSeriesFileSummaryRangeByType;
+    Normal: WebuiSeriesFileSummaryRangeByType;
+    Special: WebuiSeriesFileSummaryRangeByType;
+    Trailer: WebuiSeriesFileSummaryRangeByType;
+    ThemeSong: WebuiSeriesFileSummaryRangeByType;
+    OpeningSong: WebuiSeriesFileSummaryRangeByType;
+    EndingSong: WebuiSeriesFileSummaryRangeByType;
+    Parody: WebuiSeriesFileSummaryRangeByType;
+    Interview: WebuiSeriesFileSummaryRangeByType;
+    Extra: WebuiSeriesFileSummaryRangeByType;
   }
+};
+
+export type WebuiSeriesFileSummaryRangeByType = {
+  Count: number;
+  Range: string;
+  FileSize: number;
 };
 
 export type WebuiSeriesFileSummaryMissingEpisodeType = {

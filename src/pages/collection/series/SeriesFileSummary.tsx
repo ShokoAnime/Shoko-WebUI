@@ -27,21 +27,29 @@ const Header = ({ ranges }) => (
   </div>
 );
 
+type SizeTotals = {
+  [key: string] : {
+    size: number;
+    count: number;
+  }
+};
+
 const renderSizes = (ranges) => {
-  const sizes = {};
+  const sizes: SizeTotals = {};
   forEach(ranges, (item, key) => {
     let idx;
     if (key === 'Normal') { idx = 'Episodes'; } else if (key === 'Specials') { idx = 'Specials'; } else { idx = 'Other'; }
-    if (!sizes[idx]) { sizes[idx] = 0; }
-    sizes[idx] += item.FileSize;
+    if (!sizes[idx]) { sizes[idx] = { size: 0, count: 0 }; }
+    sizes[idx].size += item.FileSize;
+    sizes[idx].count += item.Count;
   });
   
   return map(sizes, (size, name) => (
-    `${name} (${prettyBytes(size, { binary: true })})`
+    `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
   )).join(' | ');
 };
 
-const SeriesFiles = () => {
+const SeriesFileSummary = () => {
   const { seriesId } = useParams();
   if (!seriesId) {
     return null;
@@ -52,7 +60,7 @@ const SeriesFiles = () => {
   
   return (
     <div className="flex flex-col space-y-8">
-      {map(fileSummary?.Ranges, (range, idx) => (
+      {map(fileSummary?.Groups, (range, idx) => (
         <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType}/>}>
           <div className="flex">
             <div className="grow flex flex-col space-y-4">
@@ -72,8 +80,8 @@ const SeriesFiles = () => {
             </div>
             <div className="grow-[2] flex flex-col space-y-4">
               <span>{renderSizes(range.RangeByType)}</span>
-              <span>{range.AudioCodecs} | {range.AudioLanguage}</span>
-              <span>{range.SubtitleCodecs} | {range.SubtitleLanguage}</span>
+              <span>{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
+              <span>{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
             </div>
           </div>
         </ShokoPanel>
@@ -91,4 +99,4 @@ const SeriesFiles = () => {
   );
 };
 
-export default SeriesFiles;
+export default SeriesFileSummary;
