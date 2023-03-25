@@ -201,7 +201,7 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
             </div>
           )}
           {/*TODO: This maybe works, maybe doesn't. Cannot test properly.*/}
-          {(banStatus.udp.updateType === 1 && banStatus.udp.value) && (
+          {(banStatus?.udp?.updateType === 1 && banStatus?.udp?.value) && (
             <div className="flex items-center font-semibold cursor-pointer mt-5">
               <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
               <div className="flex flex-col ml-3">
@@ -209,7 +209,7 @@ function Sidebar({ showSmSidebar, setShowSmSidebar }: Props) {
               </div>
             </div>
           )}
-          {(banStatus.http.updateType === 2 && banStatus.http.value) && (
+          {(banStatus?.http?.updateType === 2 && banStatus?.http?.value) && (
             <div className="flex items-center font-semibold cursor-pointer mt-5">
               <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
               <div className="flex flex-col ml-3">
