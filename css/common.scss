@@ -123,3 +123,35 @@ input:autofill {
 .react-grid-item > .react-resizable-handle::after {
   border: 0;
 }
+
+.metadata-link-icon {
+  width: 24px;
+  height: 24px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  &.anidb {
+    background-image: url('/images/community/24-AniDB.png');
+  }
+
+  &.tmdb {
+    background-image: url('/images/community/24-TMDB.png');
+  }
+
+  &.tvdb {
+    background-image: url('/images/community/24-TvDB.png');
+  }
+
+  &.mal {
+    background-image: url('/images/community/24-MAL.png');
+  }
+
+  &.anilist {
+    background-image: url('/images/community/24-Anilist.png');
+  }
+
+  &.trakt {
+    background-image: url('/images/community/24-Trakt.png');
+  }
+}

@@ -32,6 +32,13 @@ import DataCollection from '../../pages/firstrun/DataCollection';
 import GroupList from '../../pages/collection/GroupList';
 import Group from '../../pages/collection/Group';
 import FilterGroupList from '../../pages/collection/FilterGroupList';
+import Series from '../../pages/collection/Series';
+import SeriesOverview from '../../pages/collection/series/SeriesOverview';
+import SeriesEpisodes from '../../pages/collection/series/SeriesEpisodes';
+import SeriesEpisodeDetails from '../../pages/collection/series/SeriesEpisodeDetails';
+import SeriesCredits from '../../pages/collection/series/SeriesCredits';
+import SeriesImages from '../../pages/collection/series/SeriesImages';
+import SeriesFileSummary from '../../pages/collection/series/SeriesFileSummary';
 
 // Utilities
 import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
@@ -106,6 +113,15 @@ function Router(props: Props) {
                   <Route index element={<GroupList />}/>
                   <Route path="group/:groupId" element={<Group />}/>
                   <Route path="filter/:filterId" element={<FilterGroupList />}/>
+                  <Route path="series/:seriesId" element={<Series />}>
+                    <Route index element={<Navigate to="overview" replace />}/>
+                    <Route path="overview" element={<SeriesOverview />}/>
+                    <Route path="episodes" element={<SeriesEpisodes />}/>
+                    <Route path="episodes/:episodeId" element={<SeriesEpisodeDetails />}/>
+                    <Route path="credits" element={<SeriesCredits />}/>
+                    <Route path="images" element={<SeriesImages />}/>
+                    <Route path="files" element={<SeriesFileSummary />}/>
+                  </Route>
                 </Route>
                 <Route path="settings" element={<SettingsPage />}>
                   <Route index element={<Navigate to="general" replace />} />

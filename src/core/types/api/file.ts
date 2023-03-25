@@ -27,6 +27,8 @@ export type FileType = {
   Created: string;
   Updated: string;
   SeriesIDs?: XRefsType;
+  AniDB?: FileAniDBType;
+  MediaInfo?: FileMediaInfoType;
 };
 
 export type FileAniDBType = {
@@ -90,4 +92,107 @@ export type AVDumpResultType = {
 export type FileLinkApiType = {
   fileIDs: Array<number>;
   episodeID: number;
+};
+
+export type FileMediaInfoType = {
+  Title: string;
+  Duration: string;
+  BitRate: number;
+  FrameRate: number;
+  Encoded: string;
+  IsStreamable: boolean;
+  FileExtension: string;
+  MediaContainer: string;
+  MediaContainerVersion: number;
+  Video: FileMediaInfoVideoType[];
+  Audio: FileMediaInfoAudioType[];
+  Subtitles: FileMediaInfoSubtitlesType[];
+  Chapters: FileMediaInfoChapterType[];
+};
+
+export type FileMediaInfoVideoType = {
+  Width: number;
+  Height: number;
+  Resolution: string;
+  PixelAspectRatio: number;
+  FrameRate: number;
+  FrameRateMode: string;
+  FrameCount: number;
+  ScanType: string;
+  ColorSpace: string;
+  ChromaSubsampling: string;
+  BitRate: number;
+  BitDepth: number;
+  ID: number;
+  UID: string;
+  Order: number;
+  IsDefault: boolean;
+  IsForced: boolean;
+  Language: string;
+  LanguageCode: string;
+  Codec: {
+    Simplified: string;
+    Raw: string;
+  }
+  Format: {
+    Name: string;
+    Profile: string;
+    Level: string;
+    CABAC: boolean;
+    BVOP: boolean;
+    QPel: boolean;
+    ReferenceFrames: number;
+  }
+};
+
+export type FileMediaInfoAudioType = {
+  Channels: number;
+  ChannelLayout: string;
+  SamplesPerFrame: number;
+  SamplingRate: number;
+  CompressionMode: string;
+  BitRate: number;
+  BitRateMode: string | null,
+  BitDepth: number;
+  ID: number;
+  UID: string;
+  Title: string;
+  Order: number;
+  IsDefault: boolean;
+  IsForced: boolean;
+  Language: string;
+  LanguageCode: string;
+  Codec: {
+    Simplified: string;
+    Raw: string;
+  },
+  Format: {
+    Name: string;
+    AdditionalFeatures: string;
+  }
+};
+
+export type FileMediaInfoSubtitlesType = {
+  SubTitle: string | null;
+  IsExternal: boolean;
+  ID: number;
+  UID: string;
+  Title: string;
+  Order: number;
+  IsDefault: boolean;
+  IsForced: boolean;
+  Language: string;
+  LanguageCode: string;
+  Codec: {
+    Simplified: string;
+    Raw: string;
+  },
+  Format: {
+    Name: string;
+  }
+};
+
+export type FileMediaInfoChapterType = {
+  Title: string;
+  Timestamp: string;
 };

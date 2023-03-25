@@ -6,7 +6,7 @@ import { mdiInformationOutline } from '@mdi/js';
 type Props = {
   children?: any;
   className?: string;
-  imageSrc: string;
+  imageSrc: string | null;
   hidePlaceholderOnHover?: boolean;
 };
 
@@ -19,8 +19,10 @@ function BackgroundImagePlaceholderDiv(props: Props) {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const backgroundImage = new Image();
-  backgroundImage.onload = () => setImageLoaded(true);
-  backgroundImage.src = imageSrc;
+  if (imageSrc !== undefined && imageSrc !== null) {
+    backgroundImage.onload = () => setImageLoaded(true);
+    backgroundImage.src = imageSrc;
+  }
 
   return (
     <div className={`${className} overflow-hidden`}>

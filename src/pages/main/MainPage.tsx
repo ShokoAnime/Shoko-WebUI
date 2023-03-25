@@ -47,7 +47,7 @@ function MainPage() {
           hideProgressBar={true}
         />
       )}
-      <div className="flex flex-col grow">
+      <div className="flex flex-col grow w-screen">
         <ImportFolderModal />
         <LanguagesModal />
         <ProfileModal />

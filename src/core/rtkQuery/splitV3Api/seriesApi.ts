@@ -4,6 +4,15 @@ import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from 
 import type { ListResultType, PaginationType } from '../../types/api';
 import { EpisodeType } from '../../types/api/episode';
 import { FileType } from '../../types/api/file';
+import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '../../types/api/series';
+import { TagType } from '../../types/api/tags';
+import { ImageType } from '../../types/api/common';
+
+type SeriesImagesQueryResultType = {
+  Posters: ImageType[];
+  Banners: ImageType[];
+  Fanarts: ImageType[];
+};
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -30,6 +39,23 @@ const seriesApi = splitV3Api.injectEndpoints({
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
       query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
+    }),
+
+    // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
+      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+      // Only have one cache entry because the arg always maps to one string
+      serializeQueryArgs: ({ endpointName }) => {
+        return endpointName;
+      },
+      // Always merge incoming data to the cache entry
+      merge: (currentCache, newItems) => {
+        currentCache.List.push(...newItems.List);
+      },
+      // Refetch when the page arg changes
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
@@ -65,6 +91,49 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
       providesTags: ['FileMatched', 'UtilitiesRefresh'],
     }),
+    
+    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] } >({ 
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}`,
+        params,
+      }),
+    }),
+
+    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean } >({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/Tags`,
+        params,
+      }),
+    }),
+    
+    getAniDBRelated: build.query<Array<SeriesAniDBRelatedType>, { seriesId: string }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Related`,
+      }),
+    }),
+
+    getAniDBSimilar: build.query<Array<SeriesAniDBSimilarType>, { seriesId: string }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Similar`,
+      }),
+    }),
+    //Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
+      query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB` }),
+    }),
+
+    getSeriesCast: build.query<SeriesCast[], { seriesId: string } >({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/Cast`,
+        params,
+      }),
+    }),
+
+    getSeriesImages: build.query<SeriesImagesQueryResultType, { seriesId: string } >({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/Images`,
+      }),
+    }),
   }),
 });
 
@@ -79,4 +148,12 @@ export const {
   useGetAniDBRecommendedAnimeQuery,
   useGetSeriesWithManuallyLinkedFilesQuery,
   useGetSeriesFilesQuery,
+  useGetSeriesQuery,
+  useGetSeriesTagsQuery,
+  useGetAniDBRelatedQuery,
+  useGetAniDBSimilarQuery,
+  useNextUpEpisodeQuery,
+  useLazyGetSeriesEpisodesInfiniteQuery,
+  useGetSeriesCastQuery,
+  useGetSeriesImagesQuery,
 } = seriesApi;
