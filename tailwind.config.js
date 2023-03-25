@@ -11,7 +11,7 @@ module.exports = {
   plugins: [
       require('@tailwindcss/line-clamp'),
       require('@headlessui/tailwindcss')({ prefix: 'ui' }),
-      require('tailwindcss-text-fill-stroke')(),
+      require('tailwindcss-text-fill-stroke'),
   ],
   content: [
     './src/**/*.tsx',

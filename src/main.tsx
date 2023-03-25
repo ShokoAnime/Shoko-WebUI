@@ -21,7 +21,7 @@ Sentry.init({
   environment: 'production',
   release: uiVersion(),
   integrations: [new Integrations.BrowserTracing()],
-  tracesSampleRate: 0.1,
+  tracesSampleRate: 1.0,
 });
 
 const container = document && document.getElementById('app-root');
