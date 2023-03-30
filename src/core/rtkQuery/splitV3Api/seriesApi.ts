@@ -37,13 +37,13 @@ const seriesApi = splitV3Api.injectEndpoints({
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
-      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
-      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
       // Only have one cache entry because the arg always maps to one string
       serializeQueryArgs: ({ endpointName }) => {
         return endpointName;
