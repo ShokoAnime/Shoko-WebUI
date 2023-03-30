@@ -133,7 +133,7 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
   const renderPortal = (open) => {
     if (displayNode === null || portalEl === null || open !== true) { return null; }
     const rect = displayNode.getBoundingClientRect();
-    const top = rect.top + getOffsetTop(rect, 'bottom');
+    const top = rect.top + getOffsetTop(rect, 'bottom') + window.scrollY;
     const left = rect.left + getOffsetLeft(rect, 0);
     portalEl.style.top = `${top}px`;
     portalEl.style.left = `${left}px`;
