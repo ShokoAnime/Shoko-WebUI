@@ -96,17 +96,6 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
   }, []);
 
   useEffect(() => {
-    if (displayNode === null || portalEl === null) { return; }
-    const rect = displayNode.getBoundingClientRect();
-    const top = rect.top + getOffsetTop(rect, 'bottom');
-    const left = rect.left + getOffsetLeft(rect, 0);
-    portalEl.style.top = `${top}px`;
-    portalEl.style.left = `${left}px`;
-    portalEl.style.position = 'absolute';
-    portalEl.style.width = `${displayNode.offsetWidth}px`;
-  }, [displayNode, portalEl]);
-
-  useEffect(() => {
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
   
@@ -140,6 +129,34 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
       </React.Fragment> 
     );
   };
+  
+  const renderPortal = (open) => {
+    if (displayNode === null || portalEl === null || open !== true) { return null; }
+    const rect = displayNode.getBoundingClientRect();
+    const top = rect.top + getOffsetTop(rect, 'bottom');
+    const left = rect.left + getOffsetLeft(rect, 0);
+    portalEl.style.top = `${top}px`;
+    portalEl.style.left = `${left}px`;
+    portalEl.style.position = 'absolute';
+    portalEl.style.width = `${displayNode.offsetWidth}px`;
+
+    return ReactDOM.createPortal(
+      <Listbox.Options static className="absolute mt-1 w-full z-10 rounded-md bg-background-alt shadow-lg">
+            <div className="flex flex-row px-3 pt-3 justify-between">
+                <Input inline label="Number" type="text" id="epFilter" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} className="w-30"/>
+                <Button className="flex items-center mr-4 font-normal text-font-main" onClick={handleAddLink}>
+                    <Icon path={mdiPlusCircleOutline} size={1} className="mr-1" />
+                    Add New Row
+                </Button>
+            </div>
+            <div className="bg-background-border mx-3 my-4 h-0.5 flex-shrink-0" />
+            <div className="max-h-96 overflow-y-auto">
+              {options.map((item, idx) => ((epFilter > 0 && item.number === epFilter || epFilter === 0) && <SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />))}
+            </div>
+        </Listbox.Options>,
+      portalEl,
+    );
+  };
 
   return (
     <div className={className} ref={handleDisplayRef}>
@@ -154,22 +171,7 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
                 <Icon className="cursor-pointer" path={open ? mdiChevronUp : mdiChevronDown} size={1} />
               </span>
             </Listbox.Button>
-            {portalEl !== null && ReactDOM.createPortal(
-              open && <Listbox.Options static className="absolute mt-1 w-full z-10 rounded-md bg-background-alt shadow-lg">
-                <div className="flex flex-row px-3 pt-3 justify-between">
-                  <Input inline label="Number" type="text" id="epFilter" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} className="w-30"/>
-                  <Button className="flex items-center mr-4 font-normal text-font-main" onClick={handleAddLink}>
-                    <Icon path={mdiPlusCircleOutline} size={1} className="mr-1" />
-                    Add New Row
-                  </Button>
-                </div>
-                <div className="bg-background-border mx-3 my-4 h-0.5 flex-shrink-0" />
-                <div className="max-h-96 overflow-y-auto">
-                {options.map((item, idx) => ((epFilter > 0 && item.number === epFilter || epFilter === 0) && <SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />))}
-                </div>
-              </Listbox.Options>,
-              portalEl,
-            )}
+            {renderPortal(open)}
           </div>
         )}
       </Listbox>
