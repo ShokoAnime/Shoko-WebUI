@@ -1,4 +1,4 @@
-import { omit } from 'lodash';
+import { get, omit } from 'lodash';
 
 import { RootState } from './store';
 import { externalApi } from './rtkQuery/externalApi';
@@ -7,14 +7,19 @@ import { plexApi } from './rtkQuery/plexApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
 
+import Version from '../../public/version.json';
+
 export const loadState = (): RootState => {
   try {
     const serializedState = JSON.parse(global.sessionStorage.getItem('state') ?? '{}');
     const apiSessionString = global.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
-      return serializedState;
+      return {} as any;
     }
     const apiSession = JSON.parse(apiSessionString);
+    if (get(apiSession, 'version', '') !== Version.package) { 
+      return {} as any;
+    }
     return { ...serializedState, apiSession };
   } catch (err) {
     return ({} as any);
