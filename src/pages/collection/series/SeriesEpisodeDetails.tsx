@@ -119,17 +119,76 @@ const EpisodeFileInfo = ({ file, selectedFile }) => {
   );
 };
 
+const EpisodeFiles = ({ episodeId }) => {
+  const [selectedFileIdx, setSelectedFileIdx] = useState(0);
+
+  const episodeFilesData = useGetEpisodeFilesQuery({ episodeId, includeDataFrom: ['AniDB'], includeMediaInfo: true });
+  const episodeFiles = episodeFilesData?.data || [];
+  
+  if (!episodeFiles.length || episodeFiles.length < 1) {
+    return <div className="flex grow justify-center items-center font-semibold">No files found!</div>;
+  }
+
+  const selectedFile = get(episodeFiles, selectedFileIdx, false);
+  const ReleaseGroupID = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.ID`, 0);
+  const ReleaseGroupName = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.Name`, null);
+  
+  return (
+    <React.Fragment>
+      <div className="flex mt-8 px-2 py-3 justify-between bg-background-nav border-background-border">
+        <div className="flex space-x-3">
+          <div className="space-x-2 flex">
+            <Icon path={mdiRestart} size={1} />
+            <span>Force Update File Info</span>
+          </div>
+          <div className="space-x-2 flex">
+            <Icon path={mdiFileDocumentMultipleOutline} size={1} />
+            <span>Unmark File as Variation</span>
+          </div>
+          {selectedFile && <a href={`https://anidb.net/file/${selectedFile.ID}`} target="_blank" rel="noopener noreferrer">
+              <div className="space-x-2 flex text-highlight-1">
+                  <div className="metadata-link-icon anidb"/>
+                  <span>{selectedFile.ID}</span>
+                  <span>AniDB</span>
+                  <Icon path={mdiOpenInNew} size={1} className="cursor-pointer" />
+              </div>
+          </a>}
+          {ReleaseGroupID > 0 && <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
+              <div className="space-x-2 flex text-highlight-1">
+                  <Icon className="text-font-main" path={mdiWeb} size={1} />
+                  <span>{ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}</span>
+                  <Icon path={mdiOpenInNew} size={1} />
+              </div>
+          </a>}
+        </div>
+        {episodeFiles && episodeFiles.length > 1 && <div className="flex space-x-2">
+            File <span className="ml-2 text-highlight-2">{selectedFileIdx + 1} / {episodeFiles.length}</span>
+            <div className="flex">
+                <Button onClick={() => setSelectedFileIdx(selectedFileIdx <= 0 ? 0 : selectedFileIdx - 1)}>
+                    <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-highlight-1" />
+                </Button>
+                <Button onClick={() => setSelectedFileIdx(selectedFileIdx + 1 >= episodeFiles.length ? episodeFiles.length - 1 : selectedFileIdx + 1)} className="ml-2">
+                    <Icon path={mdiChevronRight} size={1} className="opacity-75 text-highlight-1" />
+                </Button>
+            </div>
+        </div>}
+      </div>
+      <div className="mt-4">
+          <EpisodeFileInfo file={episodeFiles[selectedFileIdx]} selectedFile={selectedFileIdx} />
+      </div>
+    </React.Fragment>
+  );
+};
+
 const SeriesEpisodeDetails = () => {
   const { episodeId } = useParams();
   if (!episodeId) { return null; }
   
   const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
-  const [selectedFileIdx, setSelectedFileIdx] = useState(0);
   
   const episodeData = useGetEpisodeQuery({ episodeId, includeDataFrom: ['AniDB', 'TvDB'] });
   const episode = episodeData.data;
-  const episodeFilesData = useGetEpisodeFilesQuery({ episodeId, includeDataFrom: ['AniDB'], includeMediaInfo: true });
-  const episodeFiles = episodeFilesData.data;
+  
   
   useEffect(() => {
     if (!episode || !episode.TvDB) { return; }
@@ -138,10 +197,6 @@ const SeriesEpisodeDetails = () => {
   }, [episode]);
   
   if (!episode) { return null; }
-  
-  const selectedFile = get(episodeFiles, selectedFileIdx, false);
-  const ReleaseGroupID = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.ID`, 0);
-  const ReleaseGroupName = get(episodeFiles, `${selectedFileIdx}.AniDB.ReleaseGroup.Name`, null);
   
   return (
     <div className="flex flex-col">
@@ -177,49 +232,7 @@ const SeriesEpisodeDetails = () => {
           </div>
         </div>
       </ShokoPanel>
-      <div className="flex mt-8 px-2 py-3 justify-between bg-background-nav border-background-border">
-        <div className="flex space-x-3">
-          <div className="space-x-2 flex">
-            <Icon path={mdiRestart} size={1} />
-            <span>Force Update File Info</span>
-          </div>
-          <div className="space-x-2 flex">
-            <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-            <span>Unmark File as Variation</span>
-          </div>
-          {selectedFile && <a href={`https://anidb.net/file/${selectedFile.ID}`} target="_blank" rel="noopener noreferrer">
-            <div className="space-x-2 flex text-highlight-1">
-              <div className="metadata-link-icon anidb"/>
-              <span>{selectedFile.ID}</span>
-              <span>AniDB</span>
-              <Icon path={mdiOpenInNew} size={1} className="cursor-pointer" />
-            </div>
-          </a>}
-          {ReleaseGroupID > 0 && <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
-            <div className="space-x-2 flex text-highlight-1">
-              <Icon className="text-font-main" path={mdiWeb} size={1} />
-              <span>{ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}</span>
-              <Icon path={mdiOpenInNew} size={1} />
-            </div>
-          </a>}
-        </div>
-        {episodeFiles && episodeFiles.length > 1 && <div className="flex space-x-2">
-            File <span className="ml-2 text-highlight-2">{selectedFileIdx + 1} / {episodeFiles.length}</span>
-          <div className="flex">
-              <Button onClick={() => setSelectedFileIdx(selectedFileIdx <= 0 ? 0 : selectedFileIdx - 1)}>
-                  <Icon path={mdiChevronLeft} size={1} className="opacity-75 text-highlight-1" />
-              </Button>
-              <Button onClick={() => setSelectedFileIdx(selectedFileIdx + 1 >= episodeFiles.length ? episodeFiles.length - 1 : selectedFileIdx + 1)} className="ml-2">
-                  <Icon path={mdiChevronRight} size={1} className="opacity-75 text-highlight-1" />
-              </Button>
-          </div>
-        </div>}
-      </div>
-      {episodeFiles && 
-        <div className="mt-4">
-          <EpisodeFileInfo file={episodeFiles[selectedFileIdx]} selectedFile={selectedFileIdx} />
-        </div>
-      }
+      <EpisodeFiles episodeId={episodeId} />
     </div>
   );
 };
