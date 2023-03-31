@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push, replace } from '@lagunovsky/redux-react-router';
+import * as Sentry from '@sentry/browser';
+import { get } from 'lodash';
 import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
@@ -15,6 +17,7 @@ import ShokoIcon from '../../components/ShokoIcon';
 
 import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
+
 
 function LoginPage() {
   const dispatch = useDispatch();
@@ -38,6 +41,12 @@ function LoginPage() {
       dispatch(replace({ pathname: '/' }));
     }
   }, [status.data]);
+  
+  useEffect(() => {
+    if (!get(version, 'data.Server', false)) { return; }
+    const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable' ? version?.data?.Server.Commit : version.data.Server.Version;
+    Sentry.setTag('server_version', versionHash);
+  }, [version]);
 
   const handleSignIn = async (event: React.FormEvent) => {
     event.preventDefault();
