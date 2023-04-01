@@ -48,7 +48,7 @@ const seriesApi = splitV3Api.injectEndpoints({
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
-      query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+      query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
@@ -158,7 +158,6 @@ export const {
   useGetSeriesEpisodesQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
-  useLazyGetSeriesAniDBQuery,
   useGetAniDBRecommendedAnimeQuery,
   useGetSeriesWithManuallyLinkedFilesQuery,
   useGetSeriesFilesQuery,

@@ -36,7 +36,7 @@ function EpisodeLinkPanel() {
 
   useEffect(() => {
     if (selectedSeries.ShokoID === null) { return; }
-    updateEpisodes({ seriesID: selectedSeries.ShokoID, pageSize: 0 }).catch(() => {});
+    updateEpisodes({ seriesID: selectedSeries.ShokoID, pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB', 'TvDB'] }).catch(() => {});
   }, [selectedSeries.ShokoID]);
 
   useEffect(() => {
