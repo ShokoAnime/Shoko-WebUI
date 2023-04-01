@@ -13,24 +13,36 @@ import Select from '../../../components/Input/Select';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { NavLink } from 'react-router-dom';
 import { EpisodeDetails } from '../items/EpisodeDetails';
+import Button from '../../../components/Input/Button';
 
 const pageSize = 20;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [search, setSearch] = useState('');
+  const [episodeFilterType, setEpisodeFilterType] = useState('0');
+  const [episodeFilterStatus, setEpisodeFilterStatus] = useState('false');
+  const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   
   const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
   const episodes: EpisodeType[] = episodesData?.data?.List ?? [] as EpisodeType[];
   const episodesTotal: number = episodesData?.data?.Total ?? 0;
-  
+
   const loadMoreRows = ({ startIndex }) => {
-    return fetchEpisodes({ seriesId: toNumber(seriesId), page: Math.round(startIndex / pageSize) + 1, pageSize });
+    return fetchEpisodes({ 
+      seriesID: toNumber(seriesId),
+      includeMissing: episodeFilterStatus,
+      //type: episodeFilterType,
+      includeWatched: episodeFilterWatched, 
+      includeDataFrom: ['AniDB', 'TvDB'],
+      page: Math.round(startIndex / pageSize) + 1, 
+      pageSize,
+    });
   };
 
   useEffect(() => {
     loadMoreRows({ startIndex: 0 }).catch(() => {});
-  }, []);
+  }, [episodeFilterType, episodeFilterStatus, episodeFilterWatched]);
   const isRowLoaded = ({ index }) => !!episodes[index];
 
   const getThumbnailUrl = (episode: EpisodeType) => {
@@ -55,9 +67,7 @@ const SeriesEpisodes = () => {
     <div key={key} style={style}>
       {episodes[index] && renderEpisode(episodes[index])}
     </div>
-  ); 
-  
-  const handleInputChange = () => {};
+  );
   
   return (
     <React.Fragment>
@@ -104,22 +114,25 @@ const SeriesEpisodes = () => {
             </ShokoPanel>
             <ShokoPanel title="Filter">
               <div className="space-y-3">
-                <Select id="episodeType" label="Type" value={0} onChange={handleInputChange}>
-                  <option value={0}>Episodes</option>
-                  <option value={1}>Specials</option>
+                <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterType(event.currentTarget.value); }}>
+                  <option value="0">Episodes</option>
+                  <option value="1">Specials</option>
                 </Select>
-                <Select id="season" label="Season" value={0} onChange={handleInputChange}>
+                <Select className="hidden" id="season" label="Season" value={0} onChange={() => {}}>
                   <option value={0}>Season 01</option>
                 </Select>
-                <Select id="status" label="Episode Status" value={0} onChange={handleInputChange}>
-                  <option value={0}>Available</option>
-                  <option value={1}>Missing</option>
+                <Select id="status" label="Episode Status" value={episodeFilterStatus} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterStatus(event.currentTarget.value); }}>
+                  <option value="false">Available</option>
+                  <option value="only">Missing</option>
                 </Select>
-                <Select id="watched" label="Watched State" value={0} onChange={handleInputChange}>
-                  <option value={0}>All</option>
-                  <option value={1}>Watched</option>
-                  <option value={2}>Unwatched</option>
+                <Select id="watched" label="Watched State" value={episodeFilterWatched} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterWatched(event.currentTarget.value); }}>
+                  <option value="true">All</option>
+                  <option value="only">Watched</option>
+                  <option value="false">Unwatched</option>
                 </Select>
+                <div>
+                  <Button>Filter</Button>
+                </div>
               </div>
             </ShokoPanel>
           </div>

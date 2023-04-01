@@ -30,7 +30,7 @@ function ManuallyLinkedFilesRow(props: Props) {
   const files = filesQuery.data ?? [];
 
   // We can either get the data for *all* the episodes in the series or call the api 1000 times. Choose your poison, I choose the former. Blame @revam
-  const episodesQuery = useGetSeriesEpisodesQuery({ seriesId }, { refetchOnMountOrArgChange: false });
+  const episodesQuery = useGetSeriesEpisodesQuery({ seriesID: seriesId }, { refetchOnMountOrArgChange: false });
   const episodes = episodesQuery?.data?.List ?? [];
 
   const columns = useMemo(() => [
