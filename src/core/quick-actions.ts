@@ -82,6 +82,11 @@ const quickActions = {
     function: 'getRecreateAllGroups',
     data: false,
   },
+  'import-new-files': {
+    name: 'Import new files',
+    function: 'getImportNewFiles',
+    data: false,
+  },
 };
 
 export default quickActions;

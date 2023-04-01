@@ -73,6 +73,7 @@ const actions = {
       'remove-missing-files-mylist',
       'remove-missing-files',
       'run-import',
+      'import-new-files',
     ],
   },
 };
