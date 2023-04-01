@@ -6,7 +6,7 @@ import { useGetEpisodeFilesQuery, useGetEpisodeQuery } from '../../../core/rtkQu
 import { get, map, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
-import { mdiChevronLeft, mdiChevronRight, mdiFileDocumentMultipleOutline, mdiOpenInNew, mdiRestart, mdiWeb, } from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight, mdiFileDocumentMultipleOutline, mdiOpenInNew, mdiRestart, mdiWeb } from '@mdi/js';
 import { EpisodeTvDBType } from '../../../core/types/api/episode';
 import { ImageType } from '../../../core/types/api/common';
 import Button from '../../../components/Input/Button';
