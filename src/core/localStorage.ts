@@ -9,15 +9,18 @@ import { splitV3Api } from './rtkQuery/splitV3Api';
 
 import Version from '../../public/version.json';
 
+const checkVersion = (version) => {
+  return version === Version.package;
+};
 export const loadState = (): RootState => {
   try {
     const serializedState = JSON.parse(global.sessionStorage.getItem('state') ?? '{}');
     const apiSessionString = global.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
-      return {} as any;
+      return checkVersion(get(serializedState, 'apiSession.version', '')) ? serializedState : {} as any;
     }
     const apiSession = JSON.parse(apiSessionString);
-    if (get(apiSession, 'version', '') !== Version.package) { 
+    if (!checkVersion(get(apiSession, 'version', ''))) { 
       return {} as any;
     }
     return { ...serializedState, apiSession };
