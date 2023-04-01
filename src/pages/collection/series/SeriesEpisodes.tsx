@@ -4,15 +4,15 @@ import { EpisodeType } from '../../../core/types/api/episode';
 import { get, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
-import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiEyeCheckOutline, mdiEyeOutline, mdiFilmstrip, mdiMagnify, mdiStarHalfFull } from '@mdi/js';
+import { mdiEyeCheckOutline, mdiEyeOutline, mdiMagnify } from '@mdi/js';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import React, { useEffect, useState } from 'react';
 import { ImageType } from '../../../core/types/api/common';
-import moment from 'moment/moment';
 import Input from '../../../components/Input/Input';
 import Select from '../../../components/Input/Select';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { NavLink } from 'react-router-dom';
+import { EpisodeDetails } from '../items/EpisodeDetails';
 
 const pageSize = 20;
 
@@ -39,44 +39,12 @@ const SeriesEpisodes = () => {
     return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
   };
 
-  const getDuration = (duration) => {
-    const minutes = moment.duration(duration).asMinutes();
-    const intMinutes = Math.round(toNumber(minutes));
-    return `${intMinutes} minutes`;
-  };
-  
   const renderEpisode = episode => (
     <React.Fragment>
       <NavLink to={`${episode.IDs.ID}`}>
         <div className="flex space-x-8">
           <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="h-[8.4375rem] min-w-[15rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-          <div className="flex flex-col space-y-4 grow">
-            <div className="mt-2 flex justify-between">
-              <span className="text-xl font-semibold text-font-main">{episode.Name}</span>
-              <Icon className="text-highlight-1" path={episode.Watched === null ? mdiEyeOutline : mdiEyeCheckOutline} size={1} />
-            </div>
-            <div className="mt-5 space-x-4 flex flex-nowrap">
-              <div className="space-x-2 flex">
-                <Icon path={mdiFilmstrip} size={1} />
-                <span>Episode {episode.AniDB?.EpisodeNumber}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span>{episode.AniDB?.AirDate}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiClockTimeFourOutline} size={1} />
-                <span>{getDuration(episode.Duration)}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiStarHalfFull} size={1} />
-                <span>{toNumber(episode.AniDB?.Rating.Value).toFixed(2)} ({episode.AniDB?.Rating.Votes} Votes)</span>
-              </div>
-            </div>
-            <div className="line-clamp-3 text-font-main">
-              {episode.AniDB?.Description}
-            </div>
-          </div>
+          <EpisodeDetails episode={episode}/>
         </div>
         <div className="border-background-border border-b-2"/>
       </NavLink>
