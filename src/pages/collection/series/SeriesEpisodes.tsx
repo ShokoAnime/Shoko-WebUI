@@ -20,7 +20,7 @@ const pageSize = 20;
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [search, setSearch] = useState('');
-  const [episodeFilterType, setEpisodeFilterType] = useState('0');
+  const [episodeFilterType, setEpisodeFilterType] = useState('2');
   const [episodeFilterStatus, setEpisodeFilterStatus] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   
@@ -32,7 +32,7 @@ const SeriesEpisodes = () => {
     return fetchEpisodes({ 
       seriesID: toNumber(seriesId),
       includeMissing: episodeFilterStatus,
-      //type: episodeFilterType,
+      type: episodeFilterType,
       includeWatched: episodeFilterWatched, 
       includeDataFrom: ['AniDB', 'TvDB'],
       page: Math.round(startIndex / pageSize) + 1, 
@@ -115,8 +115,8 @@ const SeriesEpisodes = () => {
             <ShokoPanel title="Filter">
               <div className="space-y-3">
                 <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterType(event.currentTarget.value); }}>
-                  <option value="0">Episodes</option>
-                  <option value="1">Specials</option>
+                  <option value="2">Episodes</option>
+                  <option value="3">Specials</option>
                 </Select>
                 <Select className="hidden" id="season" label="Season" value={0} onChange={() => {}}>
                   <option value={0}>Season 01</option>
