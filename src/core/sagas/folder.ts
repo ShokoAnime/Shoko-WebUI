@@ -26,7 +26,7 @@ function* folderBrowse(action) {
 
   const nodes: Array<any> = [];
   forEach(resultJson.data, (node: FolderType) => {
-    if (node.CanAccess && node.DriveType !== 'Ram') {
+    if (node.IsAccessible && node.DriveType !== 'Ram') {
       genId += 1;
       nodes.push(Object.assign({}, node, { nodeId: genId }));
     }
