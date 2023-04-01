@@ -13,8 +13,16 @@ Sentry.init({
   dsn: 'https://f607489ccc764d73aeaed81ab2c97c04@o330862.ingest.sentry.io/1851857',
   environment: 'production',
   release: uiVersion(),
-  integrations: [new Integrations.BrowserTracing()],
+  integrations: [
+    new Integrations.BrowserTracing(),
+    new Sentry.Replay({
+      maskAllText: true,
+      blockAllMedia: false,
+    }),
+  ],
   tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
 });
 
 const container = document && document.getElementById('app-root');
