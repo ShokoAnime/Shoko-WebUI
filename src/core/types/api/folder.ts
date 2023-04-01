@@ -1,7 +1,7 @@
 export type FolderType = {
   DriveType: 'Fixed' | 'Ram' | 'Network';
   Path: string;
-  CanAccess: boolean;
+  IsAccessible: boolean;
   Sizes: {
     Files: number;
     Folders: number;
