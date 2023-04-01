@@ -3,24 +3,14 @@ import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { useGetEpisodeFilesQuery, useGetEpisodeQuery } from '../../../core/rtkQuery/splitV3Api/episodeApi';
-import { get, toNumber, map } from 'lodash';
+import { get, map, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
-import {
-  mdiCalendarMonthOutline, mdiChevronLeft, mdiChevronRight,
-  mdiClockTimeFourOutline,
-  mdiEyeCheckOutline,
-  mdiEyeOutline,
-  mdiFileDocumentMultipleOutline,
-  mdiFilmstrip, mdiOpenInNew,
-  mdiRestart,
-  mdiStarHalfFull,
-  mdiWeb,
-} from '@mdi/js';
+import { mdiChevronLeft, mdiChevronRight, mdiFileDocumentMultipleOutline, mdiOpenInNew, mdiRestart, mdiWeb } from '@mdi/js';
 import { EpisodeTvDBType } from '../../../core/types/api/episode';
 import { ImageType } from '../../../core/types/api/common';
-import moment from 'moment';
 import Button from '../../../components/Input/Button';
+import { EpisodeDetails } from '../items/EpisodeDetails';
 
 const Heading = episode => (
   <React.Fragment>
@@ -34,12 +24,6 @@ const getThumbnailUrl = (episode: EpisodeTvDBType[]) => {
   const thumbnail = get<EpisodeTvDBType[], string, ImageType | null>(episode, '0.Thumbnail', null);
   if (thumbnail === null) { return null; }
   return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
-};
-
-const getDuration = (duration) => {
-  const minutes = moment.duration(duration).asMinutes();
-  const intMinutes = Math.round(toNumber(minutes));
-  return `${intMinutes} minutes`;
 };
 
 const EpisodeFileInfo = ({ file, selectedFile }) => {
@@ -202,37 +186,12 @@ const SeriesEpisodeDetails = () => {
     <div className="flex flex-col">
       <ShokoPanel title={Heading(episode)} className="flex flex-col grow">
         <div className="flex space-x-8">
-          <BackgroundImagePlaceholderDiv imageSrc={thumbnailUrl} className="h-[15.8125rem] min-w-[28.125rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-          <div className="flex flex-col space-y-4 grow">
-            <div className="mt-2 flex justify-between">
-              <span className="text-xl font-semibold text-font-main">{episode.Name}</span>
-              <Icon className="text-highlight-1" path={episode.Watched === null ? mdiEyeOutline : mdiEyeCheckOutline} size={1} />
-            </div>
-            <div className="mt-5 space-x-4 flex flex-nowrap">
-              <div className="space-x-2 flex">
-                <Icon path={mdiFilmstrip} size={1} />
-                <span>Episode {episode.AniDB?.EpisodeNumber}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span>{episode.AniDB?.AirDate}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiClockTimeFourOutline} size={1} />
-                <span>{getDuration(episode.Duration)}</span>
-              </div>
-              <div className="space-x-2 flex">
-                <Icon path={mdiStarHalfFull} size={1} />
-                <span>{toNumber(episode.AniDB?.Rating.Value).toFixed(2)} ({episode.AniDB?.Rating.Votes} Votes)</span>
-              </div>
-            </div>
-            <div className="line-clamp-3 text-font-main">
-              {episode.AniDB?.Description}
-            </div>
-          </div>
+          <BackgroundImagePlaceholderDiv imageSrc={thumbnailUrl}
+                                         className="h-[15.8125rem] min-w-[28.125rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2"/>
+          <EpisodeDetails episode={episode}/>
         </div>
       </ShokoPanel>
-      <EpisodeFiles episodeId={episodeId} />
+      <EpisodeFiles episodeId={episodeId}/>
     </div>
   );
 };

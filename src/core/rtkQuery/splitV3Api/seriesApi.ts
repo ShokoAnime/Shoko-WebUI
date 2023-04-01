@@ -6,13 +6,24 @@ import { EpisodeType } from '../../types/api/episode';
 import { FileType } from '../../types/api/file';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '../../types/api/series';
 import { TagType } from '../../types/api/tags';
-import { ImageType } from '../../types/api/common';
+import { DataSourceType, ImageType } from '../../types/api/common';
+import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
+import { omit } from 'lodash';
 
 type SeriesImagesQueryResultType = {
   Posters: ImageType[];
   Banners: ImageType[];
   Fanarts: ImageType[];
 };
+
+export type SeriesEpisodesQueryType = {
+  seriesID: number;
+  includeMissing?: string;
+  includeHidden?: string;
+  includeDataFrom?:  DataSourceType[];
+  includeWatched?: string;
+  type?: string;
+} & PaginationType;
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -36,18 +47,21 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
-      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+    getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
+      query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, { seriesId: number; } & PaginationType>({
-      query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}/Episode?includeMissing=true&includeDataFrom=AniDB&includeDataFrom=TvDB`, params }),
+    getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
+      query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
-      },
+      serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) => 
+        defaultSerializeQueryArgs({
+          endpointName,
+          queryArgs: omit(queryArgs, ['page']),
+          endpointDefinition,
+        }),
       // Always merge incoming data to the cache entry
       merge: (currentCache, newItems) => {
         currentCache.List.push(...newItems.List);
@@ -144,7 +158,6 @@ export const {
   useGetSeriesEpisodesQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
-  useLazyGetSeriesAniDBQuery,
   useGetAniDBRecommendedAnimeQuery,
   useGetSeriesWithManuallyLinkedFilesQuery,
   useGetSeriesFilesQuery,

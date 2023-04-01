@@ -11,17 +11,18 @@ import { uiVersion } from './core/util';
 
 Sentry.init({
   dsn: 'https://f607489ccc764d73aeaed81ab2c97c04@o330862.ingest.sentry.io/1851857',
-  beforeSend(event) {
-    // Check if it is an exception, and if so, show the report dialog
-    if (event.exception) {
-      Sentry.showReportDialog({ eventId: event.event_id });
-    }
-    return event;
-  },
   environment: 'production',
   release: uiVersion(),
-  integrations: [new Integrations.BrowserTracing()],
+  integrations: [
+    new Integrations.BrowserTracing(),
+    new Sentry.Replay({
+      maskAllText: true,
+      blockAllMedia: false,
+    }),
+  ],
   tracesSampleRate: 1.0,
+  replaysSessionSampleRate: 0.1,
+  replaysOnErrorSampleRate: 1.0,
 });
 
 const container = document && document.getElementById('app-root');
