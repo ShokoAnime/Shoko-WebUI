@@ -13,7 +13,6 @@ import Select from '../../../components/Input/Select';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { NavLink } from 'react-router-dom';
 import { EpisodeDetails } from '../items/EpisodeDetails';
-import Button from '../../../components/Input/Button';
 
 const pageSize = 20;
 
