@@ -100,7 +100,7 @@ const Series = () => {
             </div>
             <div className="space-x-2 flex">
               <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-              <span>{series?.Sizes.Local.Episodes} / {series?.Sizes.Total.Specials}</span>
+              <span>{series?.Sizes.Local.Episodes} / {series?.Sizes.Total.Episodes}</span>
               <span className="px-2">|</span>
               <span>{series?.Sizes.Local.Specials} / {series?.Sizes.Total.Specials}</span>
             </div>
