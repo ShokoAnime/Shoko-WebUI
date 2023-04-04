@@ -23,6 +23,7 @@ export type SeriesEpisodesQueryType = {
   includeDataFrom?:  DataSourceType[];
   includeWatched?: string;
   type?: string;
+  search?:string;
 } & PaginationType;
 
 const seriesApi = splitV3Api.injectEndpoints({

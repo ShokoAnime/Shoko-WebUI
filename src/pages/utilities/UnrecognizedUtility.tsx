@@ -6,7 +6,7 @@ import { push } from '@lagunovsky/redux-react-router';
 import { Icon } from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
 import cx from 'classnames';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
@@ -56,7 +56,7 @@ function UnrecognizedUtility() {
         className: 'w-20',
       },
     }),
-    columnHelper.accessor(row => row.Locations?.[0].ImportFolderID ?? -1, {
+    columnHelper.accessor(row => get(row, 'Locations.0.ImportFolderID', -1), {
       header: 'Import Folder',
       id: 'importfolder',
       cell: info => info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
@@ -64,7 +64,7 @@ function UnrecognizedUtility() {
         className: 'w-52',
       },
     }),
-    columnHelper.accessor(row => row.Locations?.[0].RelativePath ?? '', {
+    columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', ''), {
       header: 'Filename',
       id: 'filename',
       cell: info => info.getValue(),

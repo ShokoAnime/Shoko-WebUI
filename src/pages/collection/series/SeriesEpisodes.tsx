@@ -1,7 +1,7 @@
 import { useParams } from 'react-router';
 import { useLazyGetSeriesEpisodesInfiniteQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import { EpisodeType } from '../../../core/types/api/episode';
-import { get, toNumber } from 'lodash';
+import { debounce, get, toNumber } from 'lodash';
 import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiMagnify } from '@mdi/js';
@@ -13,7 +13,6 @@ import Select from '../../../components/Input/Select';
 import { AutoSizer, InfiniteLoader, List } from 'react-virtualized';
 import { NavLink } from 'react-router-dom';
 import { EpisodeDetails } from '../items/EpisodeDetails';
-import Button from '../../../components/Input/Button';
 
 const pageSize = 20;
 
@@ -35,14 +34,17 @@ const SeriesEpisodes = () => {
       type: episodeFilterType,
       includeWatched: episodeFilterWatched, 
       includeDataFrom: ['AniDB', 'TvDB'],
-      page: Math.round(startIndex / pageSize) + 1, 
+      page: Math.round(startIndex / pageSize) + 1,
+      search,
       pageSize,
     });
   };
 
+  const debouncedLoadMore = debounce(loadMoreRows, 200);
+
   useEffect(() => {
-    loadMoreRows({ startIndex: 0 }).catch(() => {});
-  }, [episodeFilterType, episodeFilterStatus, episodeFilterWatched]);
+    debouncedLoadMore({ startIndex: 0 })?.catch(() => {});
+  }, [episodeFilterType, episodeFilterStatus, episodeFilterWatched, search]);
   const isRowLoaded = ({ index }) => !!episodes[index];
 
   const getThumbnailUrl = (episode: EpisodeType) => {
@@ -68,6 +70,8 @@ const SeriesEpisodes = () => {
       {episodes[index] && renderEpisode(episodes[index])}
     </div>
   );
+  
+  
   
   return (
     <React.Fragment>
@@ -117,6 +121,7 @@ const SeriesEpisodes = () => {
                 <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterType(event.currentTarget.value); }}>
                   <option value="2">Episodes</option>
                   <option value="3">Specials</option>
+                  <option value="0,1,4,5,6,7,8,9,10">Other</option>
                 </Select>
                 <Select className="hidden" id="season" label="Season" value={0} onChange={() => {}}>
                   <option value={0}>Season 01</option>
@@ -130,9 +135,6 @@ const SeriesEpisodes = () => {
                   <option value="only">Watched</option>
                   <option value="false">Unwatched</option>
                 </Select>
-                <div>
-                  <Button>Filter</Button>
-                </div>
               </div>
             </ShokoPanel>
           </div>
