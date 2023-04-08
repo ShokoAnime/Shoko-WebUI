@@ -16,7 +16,9 @@ import Checkbox from '../../components/Input/Checkbox';
 import ShokoIcon from '../../components/ShokoIcon';
 
 import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
+import { ImageTypeEnum } from '../../core/types/api/common';
 
 
 function LoginPage() {
@@ -28,10 +30,24 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
+  const [loginImage, setLoginImage] = useState('');
+  const [loginSeriesTitle, setLoginSeriesTitle] = useState('');
 
   const version = useGetInitVersionQuery();
   const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
+  const imageMetadata = useGetRandomMetadataQuery({ imageType: ImageTypeEnum.Fanart });
+  
+  useEffect(() => {
+    const data = imageMetadata.data;
+    if (!data) { 
+      setLoginImage('/images/SpyXFamily.jpg');
+      return; 
+    }
+    const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
+    setLoginImage(uri);
+    setLoginSeriesTitle(data.Series.Name);
+  }, [imageMetadata.data]);
 
   useEffect(() => {
     if (!status.data) setPollingInterval(500);
@@ -75,7 +91,8 @@ function LoginPage() {
         hideProgressBar={true}
       />
       <div className="flex h-screen w-screen">
-        <div className="flex grow login-image" />
+        <div className="flex grow login-image" style={loginImage !== '' ? { backgroundImage: `url('${loginImage}')` } : {}}/>
+        <div className="absolute top-1.5 right-[32rem] text-white bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
