@@ -103,10 +103,13 @@ body {
 }
 
 .login-image {
-  background-image: url('/api/v3/Image/Random/Fanart'), url('/images/SpyXFamily.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+}
+
+.login-image-default {
+  background-image: url('/images/SpyXFamily.jpg');
 }
 
 /* Chromium Autofill Fix */
