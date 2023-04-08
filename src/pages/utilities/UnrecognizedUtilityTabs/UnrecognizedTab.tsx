@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
-import { forEach, groupBy, toNumber } from 'lodash';
+import { forEach, get, groupBy, toNumber } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import {
@@ -315,6 +315,14 @@ function UnrecognizedTab() {
       </>
     );
   };
+  
+  const renderSeriesLinkPanel = () => {
+    if (manualLink) { return null; }
+    const path = get(selectedRows, '0.Locations.0.RelativePath', '') as string;
+    return (
+      <AniDBSeriesLinkPanel initialQuery={path !== '' ? path.split(/[\/\\]/g).pop() ?? '' : ''} />
+    );
+  };
 
   return (
     <TransitionDiv className="flex flex-col grow h-full w-full">
@@ -367,7 +375,7 @@ function UnrecognizedTab() {
 
       <div className={cx('flex mt-4 space-x-4 transition-[height]', manualLink ? 'h-48' : 'h-[19.6rem]')}>
         <SelectedFileInfo fullWidth={manualLink} />
-        {!manualLink && <AniDBSeriesLinkPanel initialQuery={selectedRows[0]?.Locations?.[0].RelativePath.split(/[\/\\]/g).pop() ?? ''} />}
+        {renderSeriesLinkPanel()}
       </div>
 
     </TransitionDiv>
