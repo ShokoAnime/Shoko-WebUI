@@ -19,6 +19,7 @@ import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQue
 import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 import { ImageTypeEnum } from '../../core/types/api/common';
+import cx from 'classnames';
 
 
 function LoginPage() {
@@ -41,7 +42,7 @@ function LoginPage() {
   useEffect(() => {
     const data = imageMetadata.data;
     if (!data) { 
-      setLoginImage('/images/SpyXFamily.jpg');
+      setLoginImage('default');
       return; 
     }
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
@@ -91,7 +92,7 @@ function LoginPage() {
         hideProgressBar={true}
       />
       <div className="flex h-screen w-screen">
-        <div className="flex grow login-image" style={loginImage !== '' ? { backgroundImage: `url('${loginImage}')` } : {}}/>
+        <div className={cx('flex grow login-image', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}/>
         <div className="absolute top-1.5 right-[32rem] text-white bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
         <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
           <ShokoIcon className="w-32" />
