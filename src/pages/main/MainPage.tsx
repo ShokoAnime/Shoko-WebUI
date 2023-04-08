@@ -15,6 +15,7 @@ import FiltersModal from '../../components/Dialogs/FiltersModal';
 import ActionsModal from '../../components/Dialogs/ActionsModal';
 import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
 import Header from '../../components/Layout/Header';
+import TopNav from '../../components/Layout/TopNav';
 
 import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
@@ -54,6 +55,7 @@ function MainPage() {
         <FiltersModal />
         <ActionsModal />
         <UtilitiesModal />
+        <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
         <div className="flex grow overflow-y-auto">
           <div className="flex">

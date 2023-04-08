@@ -2149,6 +2149,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@fontsource/sora@npm:^4.5.12":
+  version: 4.5.12
+  resolution: "@fontsource/sora@npm:4.5.12"
+  checksum: f4aff41594aefeb63992ee642dddf72dfb9916dcfa3cbdce94cb0202d058b0d3d466ca41de7aea9ea40ad1430ec437fc978a9a6d4d70ea3cc9fdbf5af6613d13
+  languageName: node
+  linkType: hard
+
 "@gar/promisify@npm:^1.0.1":
   version: 1.1.2
   resolution: "@gar/promisify@npm:1.1.2"
@@ -7825,6 +7832,7 @@ __metadata:
     "@babel/register": ^7.18.9
     "@babel/runtime": ^7.20.7
     "@fontsource/open-sans": ^4.5.13
+    "@fontsource/sora": ^4.5.12
     "@headlessui/react": ^1.7.7
     "@headlessui/tailwindcss": ^0.1.2
     "@lagunovsky/redux-react-router": ^4.3.0

@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 .theme-shoko-blue {
-  --color-background: 23 28 40;
-  --color-background-alt: 27 31 46;
-  --color-background-nav: 20 25 37;
+  --color-background: 40 46 56; //Primary background
+  --color-background-alt: 44 51 62; //Secondary background
+  --color-background-nav: 53 61 74; //Tertiary background
   --color-background-border: 11 14 23;
   --color-highlight-1: 59 130 246;
   --color-highlight-2: 6 194 112;
