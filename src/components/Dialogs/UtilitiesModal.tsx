@@ -29,12 +29,11 @@ function UtilitiesModal() {
 
   return (
     <ModalPanel
-      sidebarSnap
       show={status}
       className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
       onRequestClose={() => handleClose()}
     >
-      <div className="flex flex-col w-full border-l border-background-border">
+      <div className="flex flex-col w-full border-l border-background-border p-6">
         <div className="flex flex-col items-center justify-start bg-color-nav">
           {renderLink('unrecognized', 'Unrecognized')}
           {/*{renderLink('multiple-files', 'Multiple Files')}*/}

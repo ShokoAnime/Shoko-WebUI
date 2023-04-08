@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronDown,
-  mdiCircleEditOutline,
   mdiCogOutline,
   mdiFormatListBulletedSquare, mdiGithub, mdiHelpCircleOutline,
   mdiLayersTripleOutline,
@@ -19,7 +18,6 @@ import { RootState } from '../../core/store';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import { setLayoutEditMode } from '../../core/slices/mainpage';
-import { useMediaQuery } from 'react-responsive';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { siDiscord } from 'simple-icons/icons';
@@ -34,8 +32,6 @@ function TopNav() {
 
   const utilitiesModalOpen = useSelector((state: RootState) => state.modals.utilities.status);
   const actionsModalOpen = useSelector((state: RootState) => state.modals.actions.status);
-
-  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   const closeModalsAndSidebar = () => {
     dispatch(setUtilitiesStatus(false));
@@ -74,11 +70,6 @@ function TopNav() {
           <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={0.83} horizontal vertical rotate={180}/></div>
           <span className="text-lg">{text}</span>
         </Link>
-        {(!isSm && key === 'dashboard') && (
-          <div onClick={() => dispatch(setLayoutEditMode(true))} className={cx('cursor-pointer transition-opacity', (pathname !== '/webui/dashboard' || layoutEditMode) && 'opacity-0 pointer-events-none')}>
-            <Icon path={mdiCircleEditOutline} size={1} />
-          </div>
-        )}
       </div>
     );
   };
@@ -111,7 +102,7 @@ function TopNav() {
           </div>
         </div>
       </div>
-      <div className="flex bg-background-nav justify-between">
+      <div className="flex bg-background-nav justify-between p-4">
         <div className="flex">
           {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
           {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
@@ -122,7 +113,8 @@ function TopNav() {
             {renderMenuItem('settings', 'Settings', mdiCogOutline)}
           </div>
         </div>
-        <div className="flex">
+        <div className="flex space-x-5">
+          {renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
           {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
           {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
           {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}

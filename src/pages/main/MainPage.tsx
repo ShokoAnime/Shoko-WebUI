@@ -6,7 +6,6 @@ import { ToastContainer, Slide } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import Events from '../../core/events';
-import Sidebar from '../../components/Layout/Sidebar';
 
 import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
 import LanguagesModal from '../../components/Dialogs/LanguagesModal';
@@ -48,7 +47,7 @@ function MainPage() {
           hideProgressBar={true}
         />
       )}
-      <div className="flex flex-col grow w-screen">
+      <div className="flex flex-col grow max-w-[120rem] mx-auto">
         <ImportFolderModal />
         <LanguagesModal />
         <ProfileModal />
@@ -57,13 +56,8 @@ function MainPage() {
         <UtilitiesModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="flex grow overflow-y-auto">
-          <div className="flex">
-            <Sidebar showSmSidebar={showSmSidebar} setShowSmSidebar={setShowSmSidebar} />
-          </div>
-          <div className="overflow-y-auto grow shoko-scrollbar" onClick={() => setShowSmSidebar(false)}>
-            <Outlet />
-          </div>
+        <div className="overflow-y-auto grow shoko-scrollbar" onClick={() => setShowSmSidebar(false)}>
+          <Outlet />
         </div>
       </div>
     </React.Fragment>
