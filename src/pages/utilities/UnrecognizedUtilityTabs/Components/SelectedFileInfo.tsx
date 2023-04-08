@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { Icon } from '@mdi/react';
@@ -73,7 +73,7 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
         <div className="flex flex-col w-2/3 break-all">
           <div className="flex flex-col">
             <div className="font-semibold mb-1">Filename</div>
-            {selectedFileInfo.Locations?.[0].RelativePath ?? ''}
+            {get(selectedFileInfo, 'Locations.0.RelativePath', '')}
           </div>
 
           <div className="flex flex-col mt-4">
