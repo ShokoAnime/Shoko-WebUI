@@ -7,6 +7,10 @@ const quickActions = {
     name: 'Sync AniDB MyList',
     function: 'getSyncMyList',
   },
+  'add-all-manually-linked-files-to-mylist': {
+    name: 'Add All Manual Links To MyList',
+    function: 'getAddAllManualLinksToMyList',
+  },
   'download-missing-anidb-data': {
     name: 'Download Missing AniDB Data',
     function: 'getDownloadMissingAniDBAnimeData',
@@ -47,9 +51,15 @@ const quickActions = {
     name: 'Update Series Stats',
     function: 'getUpdateSeriesStats',
   },
-  'sync-hashes': {
-    name: 'Sync Hashes',
-    function: 'getSyncHashes',
+  'update-missing-anidb-file-release-groups': {
+    name: 'Update Missing AniDB Release Groups',
+    function: 'getUpdateMissingAniDBFileInfo',
+    data: false,
+  },
+  'update-missing-anidb-file-info': {
+    name: 'Update Missing AniDB File Info',
+    function: 'getUpdateMissingAniDBFileInfo',
+    data: true,
   },
   'update-all-images': {
     name: 'Update All Images',
