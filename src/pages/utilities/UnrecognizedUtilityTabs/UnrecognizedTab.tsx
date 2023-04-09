@@ -47,6 +47,7 @@ import {
   setManualLink,
   setSelectedRows,
   setLinks,
+  setSelectedFile,
 } from '../../../core/slices/utilities/unrecognized';
 import { setItem as setAvdumpItem } from '../../../core/slices/utilities/avdump';
 import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
@@ -69,7 +70,7 @@ function UnrecognizedTab() {
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
 
-  const { links, manualLink, selectedSeries, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
+  const { links, manualLink, selectedSeries, selectedRows, selectedFile } = useSelector((state: RootState) => state.utilities.unrecognized);
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
   const dispatch = useDispatch();
@@ -178,7 +179,12 @@ function UnrecognizedTab() {
   });
 
   useEffect(() => {
-    dispatch(setSelectedRows(table.getSelectedRowModel().rows.map(row => row.original)));
+    const newSelection = table.getSelectedRowModel().rows.map(row => row.original);
+    if (selectedFile > 1 && get(newSelection, selectedFile - 1, null) === null) {
+      //Reset active file, since it is probably invalid after selection changed
+      dispatch(setSelectedFile(1));
+    }
+    dispatch(setSelectedRows(newSelection));
   }, [table.getSelectedRowModel()]);
 
   useEffect(() => {
@@ -318,7 +324,7 @@ function UnrecognizedTab() {
   
   const renderSeriesLinkPanel = () => {
     if (manualLink) { return null; }
-    const path = get(selectedRows, '0.Locations.0.RelativePath', '') as string;
+    const path = get(selectedRows, '[0]Locations[0].RelativePath', '') as string;
     return (
       <AniDBSeriesLinkPanel initialQuery={path !== '' ? path.split(/[\/\\]/g).pop() ?? '' : ''} />
     );
