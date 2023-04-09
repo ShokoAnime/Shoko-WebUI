@@ -80,7 +80,7 @@ function TopNav() {
 
   return (
     <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100]">
-      <div className="flex justify-between p-6 items-center">
+      <div className="flex justify-between p-6 items-center max-w-[120rem] w-full mx-auto">
         <div className="flex space-x-2">
           <ShokoIcon className="w-6" />
           <span className="text-lg font-semibold">Shoko</span>
@@ -102,22 +102,24 @@ function TopNav() {
           </div>
         </div>
       </div>
-      <div className="flex bg-background-nav justify-between p-4">
-        <div className="flex">
-          {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
-          {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
-          <div className={cx('transition-opacity flex', layoutEditMode && 'opacity-50 pointer-events-none')}>
-            {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
-            {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
-            {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
-            {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+      <div className="bg-background-nav">
+        <div className="flex justify-between p-4 max-w-[120rem] w-full mx-auto">
+          <div className="flex">
+            {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
+            {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
+            <div className={cx('transition-opacity flex', layoutEditMode && 'opacity-50 pointer-events-none')}>
+              {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
+              {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
+              {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
+              {renderMenuItem('settings', 'Settings', mdiCogOutline)}
+            </div>
           </div>
-        </div>
-        <div className="flex space-x-5">
-          {renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
-          {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
-          {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
-          {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
+          <div className="flex space-x-5">
+            {renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
+            {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
+            {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
+            {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
+          </div>
         </div>
       </div>
     </div>

@@ -47,7 +47,7 @@ function MainPage() {
           hideProgressBar={true}
         />
       )}
-      <div className="flex flex-col grow max-w-[120rem] mx-auto">
+      <div className="flex flex-col grow">
         <ImportFolderModal />
         <LanguagesModal />
         <ProfileModal />
@@ -56,7 +56,7 @@ function MainPage() {
         <UtilitiesModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="overflow-y-auto grow shoko-scrollbar" onClick={() => setShowSmSidebar(false)}>
+        <div className="grow shoko-scrollbar max-w-[120rem] w-full mx-auto" onClick={() => setShowSmSidebar(false)}>
           <Outlet />
         </div>
       </div>
