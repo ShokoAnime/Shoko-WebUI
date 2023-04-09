@@ -12,11 +12,6 @@ function getRunImport() {
   return ApiRequest('RunImport');
 }
 
-// This was for web cache hash syncing, and will be for perceptual hashing maybe eventually.
-function getSyncHashes() {
-  return ApiRequest('SyncHashes');
-}
-
 // Sync the votes from Shoko to AniDB.
 function getSyncVotes() {
   return ApiRequest('SyncVotes');
@@ -102,9 +97,19 @@ function getImportNewFiles() {
   return ApiRequest('ImportNewFiles');
 }
 
+// Forcibly schedules commands to add the files to MyList for all manual linked files.
+function getAddAllManualLinksToMyList() {
+  return ApiRequest('AddAllManualLinksToMyList');
+}
+
+// Update AniDB Files with missing file info, including with missing release groups and/or with
+// out-of-date internal data versions.
+function getUpdateMissingAniDBFileInfo(outOfDate: boolean) {
+  return ApiRequest(`UpdateMissingAniDBFileInfo?missingInfo=true&outOfDate=${outOfDate}`);
+}
+
 export default {
   getRunImport,
-  getSyncHashes,
   getSyncVotes,
   getSyncTrakt,
   getRemoveMissingFiles,
@@ -123,4 +128,6 @@ export default {
   getPlexSyncAll,
   getRecreateAllGroups,
   getImportNewFiles,
+  getAddAllManualLinksToMyList,
+  getUpdateMissingAniDBFileInfo,
 };
