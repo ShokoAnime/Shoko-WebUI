@@ -79,18 +79,18 @@ function TopNav() {
   );
 
   return (
-    <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100]">
+    <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100] text-sm font-semibold">
       <div className="flex justify-between px-8 py-4 items-center max-w-[120rem] w-full mx-auto">
         <div className="flex space-x-2">
           <ShokoIcon className="w-6" />
-          <span className="text-lg font-semibold">Shoko</span>
+          <span className="text-xl font-semibold">Shoko</span>
         </div>
         <div className="flex space-x-8">
           <div className="flex items-center">
             <Icon path={mdiServer} size={1} />
             <span className="ml-2 text-highlight-2">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
           </div>
-          <div className="flex items-center text-sm font-semibold">
+          <div className="flex items-center">
             <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-8 h-8 text-xl rounded-full mr-3">
               {username.charAt(0)}
             </div>
