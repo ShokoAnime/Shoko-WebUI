@@ -158,7 +158,7 @@ function TopNav() {
             </div>
           </div>
           <div className="flex grow space-x-8 mr-8 justify-end">
-            {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching || true) && !webuiUpdateResult.isSuccess && (
+            {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
               <div className="flex items-center font-semibold cursor-pointer" onClick={() => handleWebUiUpdate()}>
                 <Icon
                   path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline}
