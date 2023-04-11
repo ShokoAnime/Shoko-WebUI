@@ -7,11 +7,25 @@ import Events from '../../../core/events';
 import quickActions from '../../../core/quick-actions';
 import FixedPanel from '../../../components/Panels/FixedPanel';
 import Button from '../../../components/Buttons/Button';
+import { removeAction } from '../../../core/slices/webuiSettings';
 
 class ActionItems extends React.Component<Props> {
   renderRow = (key: string) => {
-    const { runAction } = this.props;
+    const { runAction, deleteAction } = this.props;
     const action = quickActions[key];
+
+    if (!action) {
+      return (
+        <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
+          <span className="flex line-through">{key}</span>
+          <div className="flex">
+            <Button onClick={() => deleteAction(key)} className="bg-color-danger font-exo text-xs font-bold px-6 py-1">
+              Remove
+            </Button>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
@@ -50,6 +64,7 @@ const mapDispatch = {
   runAction: (key: string, data: any) => (
     { type: Events.QUICK_ACTION_RUN, payload: { key, data } }
   ),
+  deleteAction: (key: string) => removeAction(key),
 };
 
 const connector = connect(mapState, mapDispatch);
