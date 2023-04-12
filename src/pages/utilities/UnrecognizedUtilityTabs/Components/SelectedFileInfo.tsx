@@ -65,7 +65,7 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
     if (selectedRows.length === 0) return;
     const selectedFileInfo = selectedRows[selectedFile - 1];
 
-    const importFolderId = selectedFileInfo.Locations?.[0].ImportFolderID ?? -1;
+    const importFolderId = get(selectedFileInfo, 'Locations.0.ImportFolderID', -1);
     const importFolder = importFolderId === -1 ? '' : find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
@@ -121,7 +121,7 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
     if (selectedRows.length === 0) return;
     const selectedFileInfo = selectedRows[selectedFile - 1];
 
-    const importFolderId = selectedFileInfo.Locations?.[0].ImportFolderID ?? -1;
+    const importFolderId = get(selectedFileInfo, 'Locations.0.ImportFolderID', -1);
     const importFolder = importFolderId === -1 ? '' : find(importFolders, { ID: importFolderId })?.Path ?? '';
 
     return (
