@@ -33,7 +33,7 @@ function QueueProcessor() {
   };
 
   const renderItem = (key: string, item: QueueItemType, count: number) => (
-    <div className="flex flex-col mt-8 first:mt-0" key={key}>
+    <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-24">
           <Icon className="mr-4" path={icons[key]} size={1} />
