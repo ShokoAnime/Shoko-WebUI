@@ -129,7 +129,7 @@ const SelectedFileInfo = ({ fullWidth }: Props) => {
         <div className="flex break-all">
           <div className="flex flex-col w-2/5">
             <div className="font-semibold mb-1">Filename</div>
-            {selectedFileInfo.Locations?.[0].RelativePath ?? ''}
+            {get(selectedFileInfo, 'Locations.0.RelativePath', '')}
           </div>
 
           <div className="flex flex-col w-1/5">
