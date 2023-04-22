@@ -101,14 +101,18 @@ const Series = () => {
             <div className="space-x-2 flex">
               <Icon path={mdiFileDocumentMultipleOutline} size={1} />
               <span>{series?.Sizes.Local.Episodes} / {series?.Sizes.Total.Episodes}</span>
-              <span className="px-2">|</span>
-              <span>{series?.Sizes.Local.Specials} / {series?.Sizes.Total.Specials}</span>
+              {series?.Sizes.Total.Specials ?? 0 > 0 ? (<>
+                <span className="px-2">|</span>
+                <span>{series?.Sizes.Local.Specials} / {series?.Sizes.Total.Specials}</span>
+              </>) : null}
             </div>
             <div className="space-x-2 flex">
               <Icon path={mdiEyeOutline} size={1} />
               <span>{series?.Sizes.Watched.Episodes} / {series?.Sizes.Total.Episodes}</span>
-              <span className="px-2">|</span>
-              <span>{series?.Sizes.Watched.Specials} / {series?.Sizes.Total.Specials}</span>
+              {series?.Sizes.Total.Specials ?? 0 > 0 ? (<>
+                <span className="px-2">|</span>
+                <span>{series?.Sizes.Watched.Specials} / {series?.Sizes.Total.Specials}</span>
+              </>) : null}
             </div>
           </div>
           <div className="mt-5 space-x-4 flex flex-nowrap">
