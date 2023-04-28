@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { find, forEach, orderBy } from 'lodash';
+import { find, forEach, get, orderBy } from 'lodash';
 import cx from 'classnames';
 import { ScrollSyncPane } from 'react-scroll-sync';
 
@@ -13,14 +13,14 @@ function SelectedFilesPanel() {
   const { selectedSeries, selectedRows, links } = useSelector((state: RootState) => state.utilities.unrecognized );
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => { 
     const file = find(selectedRows, ['ID', item.FileID]);
-    return file?.Locations?.[0].RelativePath ?? item.FileID;
+    return get(file, 'Locations.0.RelativePath', item.FileID);
   }), [links]);
 
   const renderFileLinks = () => {
     const result: React.ReactNode[] = [];
     forEach(fileLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
-      const path = file?.Locations?.[0].RelativePath ?? '';
+      const path = get(file, 'Locations.0.RelativePath', '');
       const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div title={path} className={cx(['px-2 py-1.5 w-full bg-background-nav border border-background-border rounded-md line-clamp-1 leading-loose', selectedSeries?.ID && 'mb-3', isSameFile && 'opacity-25'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID}>
@@ -37,7 +37,7 @@ function SelectedFilesPanel() {
     forEach(selectedRows, (file) => {
       manualLinkFileRows.push(
         <div className={cx(['px-3 py-3.5 w-full bg-background-nav border border-background-border rounded-md', selectedSeries?.ID && 'mt-4'])} key={file.ID}>
-          {file.Locations?.[0].RelativePath ?? ''}
+          {get(file, 'Locations.0.RelativePath', '')}
         </div>,
       );
     });
