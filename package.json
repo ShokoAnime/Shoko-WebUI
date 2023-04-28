@@ -88,7 +88,6 @@
     "browserslist": "latest",
     "cross-env": "^7.0.3",
     "css-loader": "^6.7.3",
-    "cssnano": "^5.1.15",
     "eslint": "^8.36.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
@@ -100,11 +99,11 @@
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^2.7.2",
     "node-sass": "^8.0.0",
-    "postcss": "^8.4.21",
+    "postcss": "^8.4.23",
     "postcss-import": "^15.1.0",
     "postcss-load-config": "^4.0.1",
-    "postcss-loader": "^7.0.2",
-    "postcss-preset-env": "^8.0.1",
+    "postcss-loader": "^7.2.4",
+    "postcss-preset-env": "^8.3.2",
     "postcss-scss": "^4.0.6",
     "react-refresh": "^0.14.0",
     "sass-loader": "^13.2.0",
@@ -142,7 +141,8 @@
     "minimatch": ">=3.0.5",
     "json5": "^2.2.2",
     "http-cache-semantics": "^4.1.1",
-    "caniuse-lite": "^1.0"
+    "caniuse-lite": "^1.0",
+    "yaml": "^2.2.2"
   },
   "stylelint": {
     "extends": [
