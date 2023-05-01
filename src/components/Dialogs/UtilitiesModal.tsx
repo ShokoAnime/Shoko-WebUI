@@ -20,7 +20,7 @@ function UtilitiesModal() {
     const uri = `/webui/utilities/${key}`;
 
     return (
-      <Link key={key} to={uri} className={cx(['flex justify-between w-full py-2 px-4 bg-background-alt border-b-2 border-background-border font-semibold'])} onClick={handleClose}>
+      <Link key={key} to={uri} className={cx(['flex justify-between w-full py-2 px-4 bg-background-alt border border-background-border font-semibold'])} onClick={handleClose}>
         {name}
         <Icon path={mdiChevronRight} size={1}/>
       </Link>
@@ -30,11 +30,12 @@ function UtilitiesModal() {
   return (
     <ModalPanel
       show={status}
-      className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
+      className="drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
       onRequestClose={() => handleClose()}
     >
-      <div className="flex flex-col w-full border-l border-background-border p-6">
-        <div className="flex flex-col items-center justify-start bg-color-nav">
+      <div className="flex flex-col w-full border-l border-background-border p-8 space-y-8">
+        <div className="text-xl font-semibold">Utilities</div>
+        <div className="flex flex-col items-center justify-start bg-color-nav space-y-1">
           {renderLink('unrecognized', 'Unrecognized')}
           {/*{renderLink('multiple-files', 'Multiple Files')}*/}
           {/*{renderLink('missing-episodes', 'Missing Episodes')}*/}

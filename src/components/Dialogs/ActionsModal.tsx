@@ -84,7 +84,7 @@ const RenderItem = (item: { name:string, onClick:Function, info?:string }) => {
     <>
       <div className="flex justify-between font-semibold">
         <span>{item.name}</span>
-        <div>
+        <div className="flex flex-nowrap items-center">
           {item.info && <span className="inline-block pr-2 text-highlight-1" onClick={() => setShowInfo(!showInfo)}><Icon className="cursor-pointer" path={mdiInformationOutline} size={1}></Icon></span>}
           <span className="inline-block text-highlight-1" onClick={() => item.onClick()}><Icon className="cursor-pointer" path={mdiPlayCircleOutline} size={1} /></span>
         </div>
@@ -119,7 +119,7 @@ function ActionsModal() {
 
   const renderTab = (title, items: string[]) => (
     <React.Fragment key={title}>
-      <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between cursor-pointer" onClick={() => { setActiveTab(title); }}>
+      <div className="grow px-4 py-2 bg-background-alt self-stretch border border-background-border shadow flex justify-between cursor-pointer" onClick={() => { setActiveTab(title); }}>
         <p className="text-base font-semibold text-gray-300">{title}</p>
         <span><Icon path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
       </div>
@@ -146,11 +146,12 @@ function ActionsModal() {
   return (
     <ModalPanel
       show={status}
-      className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
+      className="drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
       onRequestClose={() => handleClose()}
     >
-      <div className="flex flex-col w-full border-l border-background-border">
-        <div className="flex flex-col items-center justify-start bg-color-nav">
+      <div className="flex flex-col w-full border-l border-background-border p-8 space-y-8">
+        <div className="text-xl font-semibold">Actions</div>
+        <div className="flex flex-col items-center justify-start bg-color-nav space-y-1">
           {renderTabs}
         </div>
       </div>
