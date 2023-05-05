@@ -3,9 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronDown,
-  mdiCogOutline, mdiDownloadCircleOutline,
-  mdiFormatListBulletedSquare, mdiGithub, mdiHelpCircleOutline, mdiInformationOutline,
-  mdiLayersTripleOutline, mdiLoading,
+  mdiCogOutline,
+  mdiDownloadCircleOutline,
+  mdiFormatListBulletedSquare,
+  mdiGithub,
+  mdiHelpCircleOutline,
+  mdiInformationOutline,
+  mdiLayersTripleOutline,
+  mdiLoading,
   mdiServer,
   mdiTabletDashboard,
   mdiTextBoxOutline,
@@ -96,9 +101,9 @@ function TopNav() {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri) || modalOpen;
     return (
-      <div key={key} className={cx(['cursor-pointer flex items-center ml-8 first:ml-0', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
-        <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={0.83} horizontal vertical rotate={180}/></div>
-        <span>{text}</span>
+      <div key={key} className={cx(['cursor-pointer flex items-center', isHighlighted && 'text-highlight-1'])} onClick={onClick}>
+        <Icon path={icon} size={1} className="mr-2.5" />
+        {text}
       </div>
     );
   };
@@ -107,30 +112,32 @@ function TopNav() {
     const uri = `/webui/${key}`;
     const isHighlighted = pathname.startsWith(uri);
     return (
-      <div className="flex items-center justify-between ml-8 first:ml-0">
-        <Link key={key} className={cx(['cursor-pointer flex items-center w-full', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeModalsAndSidebar()}>
-          <div className="w-6 flex items-center mr-3 my-3"><Icon path={icon} size={0.83} horizontal vertical rotate={180}/></div>
-          <span>{text}</span>
+      <div className="flex items-center justify-between">
+        <Link key={key} className={cx(['flex items-center', isHighlighted && 'text-highlight-1'])} to={uri} onClick={() => closeModalsAndSidebar()}>
+          <Icon path={icon} size={1} className="mr-2.5" />
+          {text}
         </Link>
       </div>
     );
   };
 
   const renderMenuLink = (url: string, icon: string) => (
-    <div key={icon} className="cursor-pointer flex items-center" onClick={() => window.open(url, '_blank')}><Icon path={icon} size={0.83} horizontal vertical rotate={180} /></div>
+    <a href={url} key={icon} target="_blank" rel="noreferrer noopener">
+      <Icon path={icon} size={1} />
+    </a>
   );
 
   return (
     <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100] text-sm font-semibold">
-      <div className="flex justify-between px-8 py-4 items-center max-w-[120rem] w-full mx-auto">
+      <div className="flex justify-between px-8 py-6 items-center max-w-[120rem] w-full mx-auto">
         <div className="flex items-center space-x-2">
-          <ShokoIcon className="w-8" />
-          <span className="text-xl font-semibold">Shoko</span>
+          <ShokoIcon className="w-6" />
+          <span className="text-xl font-semibold mt-1">Shoko</span>
         </div>
-        <div className="flex space-x-8">
+        <div className="flex items-center space-x-8">
           <div className="flex items-center">
             <Icon path={mdiServer} size={1} />
-            <span className="ml-2 text-highlight-2">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+            <span className="ml-2  text-highlight-2">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
           </div>
           <div className="flex items-center">
             <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-8 h-8 text-xl rounded-full mr-3">
@@ -139,25 +146,24 @@ function TopNav() {
             <span>{username}</span>
             <Icon className="ml-2" path={mdiChevronDown} size={1} />
           </div>
-          <div className="flex items-center">
+          <Link className={cx(['cursor-pointer', pathname.startsWith('/webui/settings') && 'text-highlight-1'])} to="/webui/settings" onClick={() => closeModalsAndSidebar()}>
             <Icon path={mdiCogOutline} size={1} />
-          </div>
+          </Link>
         </div>
       </div>
       <div className="bg-background-nav">
         <div className="flex justify-between px-8 py-4 max-w-[120rem] w-full mx-auto">
           <div className="flex">
             {renderMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
-            <div className={cx('transition-opacity flex ml-8', layoutEditMode && 'opacity-50 pointer-events-none')}>
+            <div className={cx('transition-opacity flex ml-8 space-x-8', layoutEditMode && 'opacity-50 pointer-events-none')}>
               {renderMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
               {renderNonLinkMenuItem('utilities', 'Utilities', mdiTools, () => toggleModal('utilities'), utilitiesModalOpen)}
               {renderNonLinkMenuItem('actions', 'Actions', mdiFormatListBulletedSquare, () => toggleModal('actions'), actionsModalOpen)}
               {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
-              {renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
-              {renderMenuItem('settings', 'Settings', mdiCogOutline)}
             </div>
           </div>
-          <div className="flex grow space-x-8 mr-8 justify-end">
+          <div className="flex space-x-8 mr-8 justify-end">
+            {pathname === '/webui/dashboard' && renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
             {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
               <div className="flex items-center font-semibold cursor-pointer" onClick={() => handleWebUiUpdate()}>
                 <Icon
@@ -166,7 +172,7 @@ function TopNav() {
                   className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? 'text-highlight-1' : 'text-highlight-2'}
                   spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                 />
-                <div className="flex ml-3">
+                <div className="flex ml-2.5">
                   Web UI {webuiUpdateResult.isLoading ? 'Updating...' : (checkWebuiUpdate.isFetching ? 'Checking for update' : 'Update Available')}
                 </div>
               </div>
@@ -174,21 +180,21 @@ function TopNav() {
             {/*TODO: This maybe works, maybe doesn't. Cannot test properly.*/}
             {(banStatus?.udp?.updateType === 1 && banStatus?.udp?.value) && (
               <div className="flex items-center font-semibold cursor-pointer">
-                <Icon path={mdiInformationOutline} size={1} className="text-highlight-4 mr-3"/>
+                <Icon path={mdiInformationOutline} size={1} className="text-highlight-4 mr-2.5"/>
                 AniDB UDP Ban Detected!
               </div>
             )}
             {(banStatus?.http?.updateType === 2 && banStatus?.http?.value) && (
               <div className="flex items-center font-semibold cursor-pointer">
-                <Icon path={mdiInformationOutline} size={1} className="text-highlight-4 mr-3"/>
+                <Icon path={mdiInformationOutline} size={1} className="text-highlight-4 mr-2.5"/>
                 AniDB HTTP Ban Detected!
               </div>
             )}
-          </div>
-          <div className="flex space-x-5">
-            {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
-            {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
-            {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
+            <div className="flex space-x-5">
+              {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
+              {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
+              {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}
+            </div>
           </div>
         </div>
       </div>
