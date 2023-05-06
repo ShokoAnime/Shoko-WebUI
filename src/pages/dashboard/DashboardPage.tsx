@@ -96,15 +96,10 @@ function DashboardPage() {
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
-      breakpoints={{
-        lg: 1024, md: 768, sm: 640,
-      }} // These match tailwind breakpoints (for consistency)
-      cols={{
-        lg: 12, md: 10, sm: 6,
-      }}
+      breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
+      cols={{ lg: 12, md: 10, sm: 6 }}
       rowHeight={0}
-      containerPadding={[36, 36]}
-      margin={[26, 26]}
+      margin={[32, 32]}
       className="w-full"
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}

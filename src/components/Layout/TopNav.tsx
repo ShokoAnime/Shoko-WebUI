@@ -162,7 +162,7 @@ function TopNav() {
               {renderMenuItem('log', 'Log', mdiTextBoxOutline)}
             </div>
           </div>
-          <div className="flex space-x-8 mr-8 justify-end">
+          <div className="flex gap-8 justify-end">
             {pathname === '/webui/dashboard' && renderNonLinkMenuItem('dashboard-settings', 'Dashboard Settings', mdiTabletDashboard, () => dispatch(setLayoutEditMode(true)), layoutEditMode)}
             {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
               <div className="flex items-center font-semibold cursor-pointer" onClick={() => handleWebUiUpdate()}>
@@ -190,7 +190,7 @@ function TopNav() {
                 AniDB HTTP Ban Detected!
               </div>
             )}
-            <div className="flex space-x-5">
+            <div className="flex gap-5">
               {renderMenuLink('https://discord.gg/vpeHDsg', siDiscord.path)}
               {renderMenuLink('https://docs.shokoanime.com', mdiHelpCircleOutline)}
               {renderMenuLink('https://github.com/ShokoAnime', mdiGithub)}

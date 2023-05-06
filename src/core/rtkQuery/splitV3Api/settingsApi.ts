@@ -26,7 +26,9 @@ const settingsApi = splitV3Api.injectEndpoints({
             });
           webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
         }
-        return { ...response, WebUI_Settings: webuiSettings };
+        //return { ...response, WebUI_Settings: webuiSettings };
+        //For Dev Only
+        return { ...response, WebUI_Settings: initialSettings.WebUI_Settings };
       },
       providesTags: ['Settings'],
     }),

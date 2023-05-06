@@ -32,17 +32,17 @@ const items = [
 const initialLayout = {
   dashboard: {
     lg: [
-      { i: 'queueProcessor', x: 0, y: 0, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importBreakdown', x: 6, y: 0, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionBreakdown', x: 0, y: 37, w: 3, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionTypeBreakdown', x: 3, y: 37, w: 3, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importFolders', x: 6, y: 37, w: 3, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'shokoNews', x: 9, y: 37, w: 3, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'continueWatching', x: 0, y: 53, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'nextUp', x: 0, y: 67, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'upcomingAnime', x: 0, y: 81, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recommendedAnime', x: 0, y: 103, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'queueProcessor', x: 0, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importBreakdown', x: 6, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionBreakdown', x: 0, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionTypeBreakdown', x: 3, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importFolders', x: 6, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'shokoNews', x: 9, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'continueWatching', x: 0, y: 53, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'nextUp', x: 0, y: 67, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'upcomingAnime', x: 0, y: 81, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recommendedAnime', x: 0, y: 103, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
     ],
     md: [
       { i: 'collectionBreakdown', x: 0, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
@@ -232,7 +232,7 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex h-full">
+    <div className={`flex h-full p-8 grow bg-cover overflow-y-auto ${getBgClassNames()}`} onClick={() => setShowNav(false)}>
       <TransitionDiv
         className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
         show={!(isSm && !showNav)}
@@ -242,7 +242,7 @@ function SettingsPage() {
       >
         {items.map(item => renderItem(item.name, item.path))}
       </TransitionDiv>
-      <div className={`grow h-full p-9 bg-cover overflow-y-auto ${getBgClassNames()}`} onClick={() => setShowNav(false)}>
+      <div className='grow h-full px-8 bg-cover overflow-y-auto'>
         {isSm && (
           <div className="flex justify-center mb-8 font-semibold">
             Settings
