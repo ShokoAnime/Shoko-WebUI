@@ -10,8 +10,8 @@ import {
   mdiCalendarMonthOutline,
   mdiDisc,
   mdiEyeCheckOutline,
-  mdiLayersTripleOutline,
   mdiGroup,
+  mdiLayersTripleOutline,
   mdiTelevisionAmbientLight,
 } from '@mdi/js';
 import React from 'react';
@@ -38,7 +38,7 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
   const groupCount = item.Sizes.SeriesTypes.Movie + item.Sizes.SeriesTypes.OVA + item.Sizes.SeriesTypes.Other + item.Sizes.SeriesTypes.TV + item.Sizes.SeriesTypes.TVSpecial + item.Sizes.SeriesTypes.Unknown + item.Sizes.SeriesTypes.Web;
 
   return (
-    <div key={`group-${item.IDs.ID}`} className="font-main content-center flex">
+    <div key={`group-${item.IDs.ID}`} className="content-center flex">
       <Link to={`/webui/collection/group/${item.IDs.ID}`}>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="h-48 w-32 shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       </Link>

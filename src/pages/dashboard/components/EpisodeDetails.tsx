@@ -36,7 +36,7 @@ function EpisodeDetails(props: Props): JSX.Element {
   const title = useMemo(() => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`, [episode.Type, episode.Title, episode.Number]);
 
   return (
-  <div key={`episode-${episode.IDs.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 font-main justify-center flex flex-col">
+  <div key={`episode-${episode.IDs.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 justify-center flex flex-col">
     {showDate ? (<>
       <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
       <p className="truncate text-center text-sm mb-2 opacity-75">{relativeTime}</p>

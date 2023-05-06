@@ -25,7 +25,7 @@ const ShokoPanel = ({ className, title, options, children, isFetching, editMode,
               {options}
           </div>
       </div>
-      <div className="flex grow flex-col font-main overflow-y-auto shoko-scrollbar">
+      <div className="flex grow flex-col overflow-y-auto shoko-scrollbar">
         {isFetching ? <div className="flex grow justify-center items-center"><Icon path={mdiLoading} spin size={1} /></div> : children}
       </div>
     </div>

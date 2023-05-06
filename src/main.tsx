@@ -5,7 +5,7 @@ import 'regenerator-runtime/runtime';
 import 'isomorphic-fetch';
 import 'es6-promise/auto';
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './core/app';
 import { uiVersion } from './core/util';
 
@@ -28,5 +28,6 @@ Sentry.init({
 const container = document && document.getElementById('app-root');
 
 if (container !== null) {
-  ReactDOM.render(<App />, container);
+  const root = createRoot(container);
+  root.render(<App />);
 }

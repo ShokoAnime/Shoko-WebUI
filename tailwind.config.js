@@ -1,3 +1,5 @@
+const defaultTheme = require('tailwindcss/defaultTheme')
+
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
     if (opacityValue === undefined) {
@@ -31,6 +33,9 @@ module.exports = {
       DEFAULT: '300ms',
     },
     extend: {
+      fontFamily: {
+        'sans': ['Sora', ...defaultTheme.fontFamily.sans],
+      },
       colors: {
         background: withOpacityValue('--color-background'),
         'background-nav': withOpacityValue('--color-background-nav'),
