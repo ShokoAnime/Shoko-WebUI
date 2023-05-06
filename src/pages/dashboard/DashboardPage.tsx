@@ -111,26 +111,26 @@ function DashboardPage() {
       isResizable={layoutEditMode}
       resizeHandle={renderResizeHandle()}
     >
+      <div key="queueProcessor">
+        <QueueProcessor />
+      </div>
+      <div key="importBreakdown">
+        <ImportBreakdown />
+      </div>
+      <div key="recentlyImported">
+        <RecentlyImported />
+      </div>
       <div key="collectionBreakdown">
         <CollectionBreakdown />
       </div>
       <div key="collectionTypeBreakdown">
         <SeriesBreakdown />
       </div>
-      <div key="queueProcessor">
-        <QueueProcessor />
-      </div>
-      <div key="recentlyImported">
-        <RecentlyImported />
-      </div>
-      <div key="shokoNews">
-        <ShokoNews />
-      </div>
       <div key="importFolders">
         <ImportFolders />
       </div>
-      <div key="importBreakdown">
-        <ImportBreakdown />
+      <div key="shokoNews">
+        <ShokoNews />
       </div>
       <div key="continueWatching">
         <ContinueWatching />

@@ -50,11 +50,11 @@ function ImportFolders() {
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
 
     return (
-      <div key={folder.ID} className="flex flex-col mt-3 first:mt-0">
-        <div className="flex justify-between items-center">
+      <div key={folder.ID} className="flex flex-col mt-6 first:mt-0">
+        <div className="flex justify-between items-center mb-3">
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex">
-            <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-3">
+            <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-2">
               <Icon className="text-highlight-1" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180}/>
             </Button>
             <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
@@ -62,22 +62,24 @@ function ImportFolders() {
             </Button>
           </div>
         </div>
-        <div className="mt-2">
-          Location: {folder.Path}
+        <div className = "flex mb-1">
+          <div className = 'flex-grow'>Location</div>
+          <div>{folder.Path}</div>
         </div>
-        <div>
-          Type: {flags}
+        <div className = "flex mb-1">
+          <div className = 'flex-grow'>Type</div>
+          <div>{flags}</div>
         </div>
-        <div>
-          Size: {prettyBytes(folder.FileSize ?? 0, { binary: true })} ({(folder.Size ?? 2043).toLocaleString('en-US')} Series)
+        <div className = "flex">
+          <div className = "grow">Size</div>
+          <div>{prettyBytes(folder.FileSize ?? 0, { binary: true })} ({(folder.Size ?? 2043).toLocaleString('en-US')} Series)</div>
         </div>
-
       </div>
     );
   };
 
   const renderOptions = () => (
-    <div className="mx-2 cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
+    <div className="cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
         <Icon className="text-highlight-1" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180}/>
     </div>
   );

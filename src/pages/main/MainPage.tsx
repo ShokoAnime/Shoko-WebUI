@@ -40,7 +40,7 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          bodyClassName="font-semibold font-open-sans"
+          bodyClassName="font-semibold font-main"
           className="mt-20 !w-96"
           closeButton={false}
           icon={false}

@@ -85,7 +85,7 @@ function LoginPage() {
         position={'bottom-right'}
         autoClose={4000}
         transition={Slide}
-        bodyClassName="font-semibold font-open-sans"
+        bodyClassName="font-semibold font-main"
         className="mt-20 !w-96"
         closeButton={false}
         icon={false}
@@ -136,7 +136,7 @@ function LoginPage() {
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-main font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
             {status.data?.State === 4 && (

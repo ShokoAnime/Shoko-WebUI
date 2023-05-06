@@ -50,7 +50,7 @@ body {
   border: 2px solid theme('colors.background');
 }
 
-.theme-shoko-blue .shoko-scrollbar {
+.theme-shoko-gray .shoko-scrollbar {
   scrollbar-color: theme('colors.highlight-1') theme('colors.background-border');
   scrollbar-width: thin;
 }
@@ -97,9 +97,9 @@ body {
   background: theme('colors.highlight-1') !important;
 }
 
-.font-open-sans {
+.font-main {
   /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-  font-family: 'Open Sans';
+  font-family: 'Sora';
 }
 
 .login-image {

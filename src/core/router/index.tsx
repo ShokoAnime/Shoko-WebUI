@@ -69,13 +69,13 @@ function Router(props: Props) {
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   useEffect(() => {
-    document.body.className = 'theme-shoko-blue';
+    document.body.className = 'theme-shoko-gray';
   }, []);
 
   const { history } = props;
 
   return (
-    <div id="app-container" className={`${theme} theme-shoko-blue flex h-screen`}>
+    <div id="app-container" className={`${theme} theme-shoko-gray flex h-screen`}>
       <ReduxRouter history={history}>
         <Routes>
           <Route index element={<Navigate to="/webui" replace />} />

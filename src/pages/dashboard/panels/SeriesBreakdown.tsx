@@ -17,7 +17,7 @@ function SeriesBreakdown() {
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
   const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
-    <div key={`${item}-name`} className="flex mt-3 first:mt-0">
+    <div key={`${item}-name`} className="flex mt-5 first:mt-0">
       <span className="grow">{names[item] ?? item} - {count}</span>
       <span className={`text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
     </div>
@@ -53,7 +53,7 @@ function SeriesBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Media Type" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
       {items}
     </ShokoPanel>
   );
