@@ -21,6 +21,7 @@ input[type='number'] {
 body {
   background-color: theme('colors.background');
   color: theme('colors.font-main');
+  font-weight: 300;
 }
 
 ::-webkit-scrollbar {
