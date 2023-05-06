@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { push, replace } from '@lagunovsky/redux-react-router';
 import * as Sentry from '@sentry/browser';
 import { get } from 'lodash';
-import { ToastContainer, Slide } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
-import { mdiLoading, mdiCloseCircle } from '@mdi/js';
+import { mdiCloseCircle, mdiLoading } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
 import { RootState } from '../../core/store';
@@ -15,7 +15,7 @@ import Input from '../../components/Input/Input';
 import Checkbox from '../../components/Input/Checkbox';
 import ShokoIcon from '../../components/ShokoIcon';
 
-import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '../../core/rtkQuery/splitV3Api/initApi';
 import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 import { ImageTypeEnum } from '../../core/types/api/common';
@@ -85,7 +85,7 @@ function LoginPage() {
         position={'bottom-right'}
         autoClose={4000}
         transition={Slide}
-        bodyClassName="font-semibold font-main"
+        bodyClassName="font-semibold"
         className="mt-20 !w-96"
         closeButton={false}
         icon={false}
@@ -136,7 +136,7 @@ function LoginPage() {
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-main font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
             {status.data?.State === 4 && (

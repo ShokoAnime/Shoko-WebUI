@@ -35,7 +35,7 @@ const Group = () => {
   const group = useMemo(() => groups.filter((item:CollectionGroupType) => `${item.IDs.ID}` === groupId)[0], [groupId, groups]);
 
   const renderDetails = (item: SeriesType) => (
-    <div key={`series-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 font-main content-center flex flex-col">
+    <div key={`series-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 content-center flex flex-col">
       <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${item.Images.Posters[0].Source}/Poster/${item.Images.Posters[0].ID}`} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2">
         <div className="hidden group-hover:flex bg-background-nav/85 h-full flex-col justify-center items-center">
           <HoverIcon icon={mdiEyeArrowRightOutline} label="View Series" route={`/webui/collection/series/${item.IDs.ID}`} />

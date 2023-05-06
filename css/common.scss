@@ -19,17 +19,6 @@ input[type='number'] {
 }
 
 body {
-  font-family:
-    Sora,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Helvetica Neue',
-    'Icons16',
-    sans-serif;
   background-color: theme('colors.background');
   color: theme('colors.font-main');
 }
@@ -95,11 +84,6 @@ body {
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--info {
   background: theme('colors.highlight-1') !important;
-}
-
-.font-main {
-  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-  font-family: 'Sora';
 }
 
 .login-image {

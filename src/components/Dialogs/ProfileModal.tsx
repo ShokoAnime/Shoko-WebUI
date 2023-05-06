@@ -78,7 +78,7 @@ function ProfileModal() {
               </div>
             </div>
             <div className="flex justify-end mb-2">
-              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-main font-semibold text-sm">Save</Button>
+              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-highlight-1 font-semibold text-sm">Save</Button>
             </div>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { useMediaQuery } from 'react-responsive';
-import { ToastContainer, Slide } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import Events from '../../core/events';
@@ -40,7 +40,7 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          bodyClassName="font-semibold font-main"
+          bodyClassName="font-semibold"
           className="mt-20 !w-96"
           closeButton={false}
           icon={false}
