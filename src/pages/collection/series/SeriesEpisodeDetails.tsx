@@ -129,10 +129,10 @@ const EpisodeFiles = ({ episodeId }) => {
             <Icon path={mdiFileDocumentMultipleOutline} size={1} />
             <span>Unmark File as Variation</span>
           </div>
-          {selectedFile && <a href={`https://anidb.net/file/${selectedFile.ID}`} target="_blank" rel="noopener noreferrer">
+          {selectedFile && selectedFile.AniDB && <a href={`https://anidb.net/file/${selectedFile.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
               <div className="space-x-2 flex text-highlight-1">
                   <div className="metadata-link-icon anidb"/>
-                  <span>{selectedFile.ID}</span>
+                  <span>{selectedFile.AniDB.ID}</span>
                   <span>AniDB</span>
                   <Icon path={mdiOpenInNew} size={1} className="cursor-pointer" />
               </div>
