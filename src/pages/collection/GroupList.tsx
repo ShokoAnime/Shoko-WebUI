@@ -9,9 +9,7 @@ import GridViewGroupItem from './items/GridViewGroupItem';
 import GridOptions from './items/GridOptions';
 
 import { setStatus } from '../../core/slices/modals/filters';
-import {
-  useLazyGetGroupsQuery,
-} from '../../core/rtkQuery/splitV3Api/collectionApi';
+import { useLazyGetGroupsQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
 
 import { resetGroups, setGroups } from '../../core/slices/collection';
 import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
@@ -101,8 +99,8 @@ function GroupList() {
         <div>{renderTitle(total)}</div>
         <GridOptions showFilters={toggleFilters} toggleMode={toggleMode} showServerFilters={showServerFilters} />
       </div>
-      <div className="flex space-x-8">
-        <div className="grow rounded bg-background-alt p-8 border-background-border border">
+      <div className="flex">
+        <div className="grow rounded bg-background-alt px-6 py-8 border-background-border border">
           <WindowScroller>
             {({ height, isScrolling, onChildScroll, scrollTop }) => 
               <AutoSizer disableHeight>
@@ -134,7 +132,7 @@ function GroupList() {
             }
           </WindowScroller>
         </div>
-        <div className={cx('w-[25.9375rem] flex items-start', !showFilterSidebar && 'hidden')}>
+        <div className={cx('flex items-start overflow-hidden transition-all', showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0')}>
           <div className="rounded bg-background-alt p-8 flex grow border-background-border border justify-center items-center">Filter sidebar</div>  
         </div>
       </div>

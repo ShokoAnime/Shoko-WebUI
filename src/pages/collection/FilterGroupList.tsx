@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { AutoSizer, Grid } from 'react-virtualized';
 import { useDispatch, useSelector } from 'react-redux';
-import { memoize, debounce, reduce, find } from 'lodash';
+import { debounce, find, memoize, reduce } from 'lodash';
 import { Link } from 'react-router-dom';
 import { useParams } from 'react-router';
 
@@ -13,9 +13,9 @@ import GridOptions from './items/GridOptions';
 import { setStatus } from '../../core/slices/modals/filters';
 import ShokoPanel from '../../components/Panels/ShokoPanel';
 import {
-  useLazyGetFilterGroupsQuery,
-  useGetFilterQuery,
   useGetFilterGroupLettersQuery,
+  useGetFilterQuery,
+  useLazyGetFilterGroupsQuery,
 } from '../../core/rtkQuery/splitV3Api/collectionApi';
 
 import { RootState } from '../../core/store';
@@ -107,7 +107,7 @@ function FilterGroupList() {
 
   return (
     <div className="p-9 pr-0 h-full min-w-full flex">
-      <ShokoPanel className="grow" title={renderTitle(total)} options={<GridOptions showFilters={showFilters} toggleMode={toggleMode} />}>
+      <ShokoPanel className="grow" title={renderTitle(total)} options={<GridOptions showFilters={showFilters} toggleMode={toggleMode} showServerFilters={() => {}} />}>
         <AutoSizer>
           {({ width, height }) => {
             const gridColumns = mode === 'grid' ? Math.floor(width / itemWidth) : 1;
