@@ -11,9 +11,10 @@ type Props = {
   isFetching?: boolean;
   editMode?: boolean;
   fullHeight?: boolean;
+  disableOverflow?: boolean;
 };
 
-const ShokoPanel = ({ className, title, options, children, isFetching, editMode, fullHeight = true }: Props) => (
+const ShokoPanel = ({ className, title, options, children, isFetching, editMode, fullHeight = true, disableOverflow = false }: Props) => (
     <div className={cx('flex flex-col overflow-hidden transition-colors border bg-background-alt rounded p-8', fullHeight && 'h-full', editMode ? 'pointer-events-none border-highlight-1' : 'border-background-border', className)}>
       <div className="flex justify-between items-center mb-8">
         <span className="flex font-semibold text-xl">{title}</span>
@@ -25,7 +26,7 @@ const ShokoPanel = ({ className, title, options, children, isFetching, editMode,
               {options}
           </div>
       </div>
-      <div className="flex grow flex-col overflow-y-auto shoko-scrollbar">
+      <div className={cx('flex grow flex-col shoko-scrollbar', disableOverflow === false && 'overflow-y-auto')}>
         {isFetching ? <div className="flex grow justify-center items-center"><Icon path={mdiLoading} spin size={1} /></div> : children}
       </div>
     </div>
