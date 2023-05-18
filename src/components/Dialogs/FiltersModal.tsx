@@ -65,7 +65,6 @@ function FiltersModal() {
 
   return (
     <ModalPanel
-      sidebarSnap
       show={status}
       className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
       onRequestClose={() => handleClose()}

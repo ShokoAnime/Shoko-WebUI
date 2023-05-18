@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AutoSizer, Grid, WindowScroller } from 'react-virtualized';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, find, memoize, reduce } from 'lodash';
 
@@ -16,11 +15,10 @@ import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiAp
 
 import type { RootState } from '../../core/store';
 import cx from 'classnames';
+import GroupGrid from './items/GroupGrid';
 
 function GroupList() {
-  const itemWidth = 225; //209 + 16
-  const itemHeight = 349; //333 + 16
-  const itemHeightList = 240; //176 + 16 + 16
+
   const pageSize = 50;
   const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
@@ -29,7 +27,6 @@ function GroupList() {
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [trigger] = useLazyGetGroupsQuery();
   const [fetchMainGroups, mainGroups] = useLazyGetGroupViewQuery();
-  const gridRef = useRef<Grid>(null);
   const [columns, setColumns] = useState(0);
 
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
@@ -101,36 +98,7 @@ function GroupList() {
       </div>
       <div className="flex">
         <div className="grow rounded bg-background-alt px-6 py-8 border-background-border border">
-          <WindowScroller>
-            {({ height, isScrolling, onChildScroll, scrollTop }) => 
-              <AutoSizer disableHeight>
-                {({ width }) => {
-                  //Adding one extra gap to account for the fact that first item does not have it
-                  const gridColumns = mode === 'grid' ? Math.floor((width + 16) / itemWidth) : 1;
-                  const rows = mode === 'grid' ? Math.ceil(total / gridColumns) : total;
-                  if (gridColumns <= 0) { return null; }
-                  return (
-                    <Grid
-                      ref={gridRef}
-                      className="grow"
-                      overscanRowCount={1}
-                      columnCount={gridColumns}
-                      rowCount={rows}
-                      columnWidth={mode === 'grid' ? itemWidth : width - 32}
-                      autoHeight
-                      height={height}
-                      rowHeight={mode === 'grid' ? itemHeight : itemHeightList}
-                      width={width}
-                      cellRenderer={Cell(gridColumns)}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                    />
-                  );
-                }}
-              </AutoSizer>
-            }
-          </WindowScroller>
+          <GroupGrid mode={mode} cellRenderer={Cell} total={total} />
         </div>
         <div className={cx('flex items-start overflow-hidden transition-all', showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0')}>
           <div className="rounded bg-background-alt p-8 flex grow border-background-border border justify-center items-center">Filter sidebar</div>  

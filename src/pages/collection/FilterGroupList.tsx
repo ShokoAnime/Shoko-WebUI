@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { AutoSizer, Grid } from 'react-virtualized';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { debounce, find, memoize, reduce } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -11,9 +10,7 @@ import GridViewGroupItem from './items/GridViewGroupItem';
 import GridOptions from './items/GridOptions';
 
 import { setStatus } from '../../core/slices/modals/filters';
-import ShokoPanel from '../../components/Panels/ShokoPanel';
 import {
-  useGetFilterGroupLettersQuery,
   useGetFilterQuery,
   useLazyGetFilterGroupsQuery,
 } from '../../core/rtkQuery/splitV3Api/collectionApi';
@@ -23,27 +20,26 @@ import type { CollectionFilterType } from '../../core/types/api/collection';
 import { resetGroups, setGroups } from '../../core/slices/collection';
 import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
 
-import Jumpbar from './Jumpbar';
+import GroupGrid from './items/GroupGrid';
+import cx from 'classnames';
 
 function FilterGroupList() {
-  const itemWidth = 240; //224 + 16
-  const itemHeight = 374; //358 + 16
-  const itemHeightList = 240; //176 + 16 + 16
   const pageSize = 50;
   const fetchedPages = useSelector((state: RootState) => state.collection.fetchedPages);
   const total: number = useSelector((state: RootState) => state.collection.total);
   const dispatch = useDispatch();
   const { filterId } = useParams();
   const [mode, setMode] = useState('grid');
+  const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [trigger] = useLazyGetFilterGroupsQuery();
   const filterData = useGetFilterQuery({ filterId });
   const filter = filterData?.data ?? { Name: '??' } as CollectionFilterType;
   const [fetchMainGroups, mainGroups] = useLazyGetGroupViewQuery();
-  const letters = useGetFilterGroupLettersQuery({ includeEmpty: false, topLevelOnly: true, filterId });
-  const gridRef = useRef<Grid>(null);
   const [columns, setColumns] = useState(0);
 
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
+
+  const toggleFilters = () => { setShowFilterSidebar(!showFilterSidebar); };
 
   const fetchPage = debounce(memoize((page) => {
     trigger({ page, pageSize, filterId }).then((result) => {
@@ -68,18 +64,18 @@ function FilterGroupList() {
     };
   }, [filterId]);
 
-  const showFilters = () => {
+  const showServerFilters = () => {
     dispatch(setStatus(true));
   };
 
   const renderTitle = count => (
-    <React.Fragment>
+    <div className="font-semibold text-xl">
       <Link to="/webui/collection" className="text-highlight-1">Entire Collection</Link>
       <span className="px-2">&gt;</span>
       {filter.Name}
       <span className="px-2">|</span>
       <span className="text-highlight-2">{count} Items</span>
-    </React.Fragment>
+    </div>
   );
 
   const Cell = cols => ({ columnIndex, key, rowIndex, style }) => {
@@ -106,19 +102,19 @@ function FilterGroupList() {
   };
 
   return (
-    <div className="p-9 pr-0 h-full min-w-full flex">
-      <ShokoPanel className="grow" title={renderTitle(total)} options={<GridOptions showFilters={showFilters} toggleMode={toggleMode} showServerFilters={() => {}} />}>
-        <AutoSizer>
-          {({ width, height }) => {
-            const gridColumns = mode === 'grid' ? Math.floor(width / itemWidth) : 1;
-            const rows = mode === 'grid' ? Math.ceil(total / gridColumns) : total;
-            return (
-              <Grid ref={gridRef} className="grow" overscanRowCount={1} columnCount={gridColumns} rowCount={rows} columnWidth={mode === 'grid' ? itemWidth : width - 32} height={height} rowHeight={mode === 'grid' ? itemHeight : itemHeightList} width={width} cellRenderer={Cell(gridColumns)} />
-            );
-          }}
-        </AutoSizer>
-      </ShokoPanel>
-      <Jumpbar items={letters?.data} columns={columns} gridRef={gridRef} />
+    <div className="p-8 h-full min-w-full flex flex-col space-y-8">
+      <div className="rounded bg-background-alt p-8 flex justify-between items-center border-background-border border">
+        <div>{renderTitle(total)}</div>
+        <GridOptions showFilters={toggleFilters} toggleMode={toggleMode} showServerFilters={showServerFilters} />
+      </div>
+      <div className="flex">
+        <div className="grow rounded bg-background-alt px-6 py-8 border-background-border border">
+          <GroupGrid mode={mode} cellRenderer={Cell} total={total} />
+        </div>
+        <div className={cx('flex items-start overflow-hidden transition-all', showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0')}>
+          <div className="rounded bg-background-alt p-8 flex grow border-background-border border justify-center items-center">Filter sidebar</div>
+        </div>
+      </div>
     </div>
   );
 }
