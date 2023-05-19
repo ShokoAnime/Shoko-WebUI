@@ -33,7 +33,6 @@
     "fast-json-patch": "^3.1.1",
     "format-thousands": "^2.0.0",
     "fuse.js": "^6.6.2",
-    "history": "^5.3.0",
     "http-proxy-middleware": "^2.0.6",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
