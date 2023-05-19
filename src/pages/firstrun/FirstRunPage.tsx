@@ -1,21 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
-import { useOutletContext } from 'react-router-dom';
-import { replace } from '@lagunovsky/redux-react-router';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { Icon } from '@mdi/react';
-import {
-  mdiLoading, mdiCircleHalfFull,
-  mdiCheckboxBlankCircleOutline,
-  mdiCheckboxMarkedCircleOutline,
-} from '@mdi/js';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading, } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 import Button from '../../components/Input/Button';
 import ShokoIcon from '../../components/ShokoIcon';
 
 import { RootState } from '../../core/store';
 
-import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '../../core/rtkQuery/splitV3Api/initApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '../../core/types/api/settings';
@@ -29,9 +24,9 @@ type ContextType = {
 };
 
 function FirstRunPage() {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+  const { pathname } = useLocation();
   const saved = useSelector((state: RootState) => state.firstrun.saved);
 
   const version = useGetInitVersionQuery();
@@ -41,7 +36,8 @@ function FirstRunPage() {
   const status = useGetInitStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) dispatch(replace('login'));
+    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4)
+      navigate('login'); //replace
   }, [status.isLoading]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);

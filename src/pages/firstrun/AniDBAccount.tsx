@@ -1,12 +1,16 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Input from '../../components/Input/Input';
 import Footer from './Footer';
 import TransitionDiv from '../../components/TransitionDiv';
 
-import { setSaved as setFirstRunSaved, TestStatusType, unsetSaved as unsetFirstRunSaved } from '../../core/slices/firstrun';
+import {
+  setSaved as setFirstRunSaved,
+  TestStatusType,
+  unsetSaved as unsetFirstRunSaved
+} from '../../core/slices/firstrun';
 import { useFirstRunSettingsContext } from './FirstRunPage';
 import { usePostAniDBTestLoginMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
 
@@ -16,6 +20,7 @@ function AniDBAccount() {
   } = useFirstRunSettingsContext();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [testAniDbLogin, testAniDbLoginResult] = usePostAniDBTestLoginMutation();
   const [anidbStatus, setAnidbStatus] = useState<TestStatusType>({ type: 'success', text: '' });
@@ -35,7 +40,7 @@ function AniDBAccount() {
       setAnidbStatus({ type: 'success', text: 'AniDB test successful!' });
       await saveSettings();
       dispatch(setFirstRunSaved('anidb-account'));
-      dispatch(push('metadata-sources'));
+      navigate('metadata-sources');
     }, (error) => {
       console.error(error);
       setAnidbStatus({ type: 'error', text: error.data });

@@ -1,9 +1,13 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
-import { TestStatusType, unsetSaved as unsetFirstRunSaved, setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
+import {
+  setSaved as setFirstRunSaved,
+  TestStatusType,
+  unsetSaved as unsetFirstRunSaved
+} from '../../core/slices/firstrun';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import Select from '../../components/Input/Select';
@@ -18,6 +22,7 @@ function DatabaseSetup() {
   } = useFirstRunSettingsContext();
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [testDatabase, testDatabaseResult] = useGetInitDatabaseTestMutation();
   const [databaseStatus, setDatabaseStatus] = useState<TestStatusType>({ type: 'success', text: '' });
@@ -36,7 +41,7 @@ function DatabaseSetup() {
     testDatabase().unwrap().then(() => {
       setDatabaseStatus({ type: 'success', text: 'Database test successful!' });
       dispatch(setFirstRunSaved('db-setup'));
-      dispatch(push('local-account'));
+      navigate('local-account');
     }, (error) => {
       console.error(error);
       setDatabaseStatus({ type: 'error', text: error.data });

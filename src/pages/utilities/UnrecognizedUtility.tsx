@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
-import { useOutletContext } from 'react-router-dom';
-import { push } from '@lagunovsky/redux-react-router';
+import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
 import cx from 'classnames';
@@ -14,7 +12,6 @@ import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 import { useGetImportFoldersQuery } from '../../core/rtkQuery/splitV3Api/importFolderApi';
 
 import { fuzzySort } from '../../core/util';
-import type { RootState } from '../../core/store';
 import type { FileType } from '../../core/types/api/file';
 import type { ImportFolderType } from '../../core/types/api/import-folder';
 
@@ -25,12 +22,12 @@ type ContextType = {
 const columnHelper = createColumnHelper<FileType>();
 
 const TabButton = ({ id, name }: { id: string; name: string }) => {
-  const dispatch = useDispatch();
-  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
 
   return (
     <div
-      onClick={() => dispatch(push(id))}
+      onClick={() => navigate(id)}
       className={cx(['mx-2 cursor-pointer', pathname === `/webui/utilities/unrecognized/${id}` && 'text-highlight-1'])}
     >
       {name}

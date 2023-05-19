@@ -13,7 +13,6 @@
     "@fontsource/sora": "^4.5.12",
     "@headlessui/react": "^1.7.7",
     "@headlessui/tailwindcss": "^0.1.2",
-    "@lagunovsky/redux-react-router": "^4.3.0",
     "@mdi/js": "^7.1.96",
     "@mdi/react": "^1.6.1",
     "@microsoft/signalr": "^6.0.11",

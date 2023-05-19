@@ -1,6 +1,6 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
 import Button from '../../components/Input/Button';
@@ -12,9 +12,11 @@ function Acknowledgement() {
 
   const status = useGetInitStatusQuery();
 
+  const navigate = useNavigate();
+
   const handleNext = () => {
     dispatch(setFirstRunSaved('acknowledgement'));
-    dispatch((push('db-setup')));
+    navigate('db-setup');
   };
 
   return (

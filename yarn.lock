@@ -2288,20 +2288,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@lagunovsky/redux-react-router@npm:^4.3.0":
-  version: 4.3.0
-  resolution: "@lagunovsky/redux-react-router@npm:4.3.0"
-  peerDependencies:
-    history: ^5
-    react: ^16.8 || ^17 || ^18
-    react-dom: ^16.8 || ^17 || ^18
-    react-redux: ^6 || ^7 || ^8
-    react-router: ^6
-    redux: ^4
-  checksum: 491f660146d254608c221bda3be7b7ef6e8e07591afea3655cb788e10d23c1709f1ca6b46b469ed3a2ed081d43485d6cb860cf844b5e5f195a84ffb9f882f3c8
-  languageName: node
-  linkType: hard
-
 "@mdi/js@npm:^7.1.96":
   version: 7.1.96
   resolution: "@mdi/js@npm:7.1.96"
@@ -7849,7 +7835,6 @@ __metadata:
     "@fontsource/sora": ^4.5.12
     "@headlessui/react": ^1.7.7
     "@headlessui/tailwindcss": ^0.1.2
-    "@lagunovsky/redux-react-router": ^4.3.0
     "@mdi/js": ^7.1.96
     "@mdi/react": ^1.6.1
     "@microsoft/signalr": ^6.0.11

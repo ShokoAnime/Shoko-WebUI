@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
 import TransitionDiv from '../../components/TransitionDiv';
-import { TestStatusType, setSaved as setFirstRunSaved, setUser as setUserState } from '../../core/slices/firstrun';
+import { setSaved as setFirstRunSaved, setUser as setUserState, TestStatusType } from '../../core/slices/firstrun';
 
 import { useGetInitDefaultUserQuery, usePostInitDefaultUserMutation } from '../../core/rtkQuery/splitV3Api/initApi';
 
 function LocalAccount() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [createUser, createUserResult] = usePostInitDefaultUserMutation();
   const defaultUser = useGetInitDefaultUserQuery();
@@ -27,7 +28,7 @@ function LocalAccount() {
       setUserStatus({ type: 'success', text: 'Account creation successful!' });
       dispatch(setUserState(user));
       dispatch(setFirstRunSaved('local-account'));
-      dispatch(push('anidb-account'));
+      navigate('anidb-account');
     }, (error) => {
       console.error(error);
       setUserStatus({ type: 'error', text: error.data });

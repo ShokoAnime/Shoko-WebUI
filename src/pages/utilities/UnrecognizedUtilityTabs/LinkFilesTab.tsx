@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push, replace } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '../../../core/store';
 import TransitionDiv from '../../../components/TransitionDiv';
@@ -56,9 +56,10 @@ const Menu = ({ link }: { link: ManualLink }) => {
 
 function LinkFilesTab() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const { links, selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
-  if (selectedRows.length === 0) dispatch(replace('files'));
+  if (selectedRows.length === 0) navigate('files', { replace: true }); //replace
 
   const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
   const [searchText, setSearchText] = useState('');
@@ -277,7 +278,7 @@ function LinkFilesTab() {
               {/*TODO: add range fill functionality*/}
               <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Range Fill</Button>
               {/*<Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button>*/}
-              <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); dispatch(push('files')); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
+              <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('files'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
               <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3">Save</Button>
             </div>
           </div>

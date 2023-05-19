@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
-import { Link, useOutletContext } from 'react-router-dom';
+import { Link, useLocation, useOutletContext } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
 import { find, isEqual } from 'lodash';
@@ -15,8 +14,6 @@ import Button from '../../components/Input/Button';
 import toast from '../../components/Toast';
 import TransitionDiv from '../../components/TransitionDiv';
 import { uiVersion } from '../../core/util';
-
-import type { RootState } from '../../core/store';
 import type { SettingsType } from '../../core/types/api/settings';
 
 const items = [
@@ -176,7 +173,7 @@ type ContextType = {
 };
 
 function SettingsPage() {
-  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+  const { pathname } = useLocation();
 
   const settingsQuery = useGetSettingsQuery();
   const settings = settingsQuery?.data ?? initialSettings;

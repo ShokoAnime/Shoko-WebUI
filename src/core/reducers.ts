@@ -1,9 +1,6 @@
-import { combineReducers } from 'redux';
-import { createRouterReducer } from '@lagunovsky/redux-react-router';
+import { combineReducers } from '@reduxjs/toolkit';
 import { handleAction } from 'redux-actions';
-import {
-  SET_AUTOUPDATE,
-} from './actions';
+import { SET_AUTOUPDATE, } from './actions';
 
 import apiSessionReducer from './slices/apiSession';
 import fetchingReducer from './slices/fetching';
@@ -22,7 +19,7 @@ import { plexApi } from './rtkQuery/plexApi';
 
 const autoUpdate = handleAction(SET_AUTOUPDATE, (state, action) => action.payload, false);
 
-const reducers = {
+const reducers = combineReducers({
   apiSession: apiSessionReducer,
   fetching: fetchingReducer,
   firstrun: firstrunReducer,
@@ -37,8 +34,6 @@ const reducers = {
   [splitApi.reducerPath]: splitApi.reducer,
   [splitV3Api.reducerPath]: splitV3Api.reducer,
   [plexApi.reducerPath]: plexApi.reducer,
-};
+});
 
-export type Reducers = typeof reducers;
-
-export default (history => combineReducers({ router: createRouterReducer(history), ...reducers }));
+export default reducers;

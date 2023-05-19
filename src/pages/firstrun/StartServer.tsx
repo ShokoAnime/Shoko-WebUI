@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
 import { RootState } from '../../core/store';
 import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
@@ -13,6 +13,7 @@ import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 
 function StartServer() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [pollingInterval, setPollingInterval] = useState(0);
 
@@ -31,7 +32,7 @@ function StartServer() {
       device: 'web-ui',
       rememberUser: false,
     }).unwrap().then(
-      () => dispatch(push('import-folders')),
+      () => navigate('import-folders'),
       error => console.error(error),
     );
   };

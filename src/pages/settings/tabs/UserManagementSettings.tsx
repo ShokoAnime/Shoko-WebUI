@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 import { cloneDeep, find, isEqual, remove } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
@@ -14,7 +14,11 @@ import Button from '../../../components/Input/Button';
 import Input from '../../../components/Input/Input';
 import type { UserType } from '../../../core/types/api/user';
 
-import { useGetUsersQuery, usePostChangePasswordMutation, usePutUserMutation } from '../../../core/rtkQuery/splitV3Api/userApi';
+import {
+  useGetUsersQuery,
+  usePostChangePasswordMutation,
+  usePutUserMutation
+} from '../../../core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
   useInvalidatePlexTokenMutation,
@@ -36,6 +40,7 @@ const initialUser = {
 
 function UserManagementSettings() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const usersQuery = useGetUsersQuery();
   const users = usersQuery.data ?? [];
@@ -101,7 +106,7 @@ function UserManagementSettings() {
         toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
         setTimeout(() => {
           dispatch(unsetDetails());
-          dispatch(push('/webui/login'));
+          navigate('/webui/login');
         }, 6000);
       } else toast.success('Password changed successfully!');
     }, error => console.error(error));

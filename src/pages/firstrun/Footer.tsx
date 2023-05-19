@@ -1,6 +1,5 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { back, push, replace } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 
 import Button from '../../components/Input/Button';
@@ -18,12 +17,12 @@ type Props = {
 };
 
 function Footer(props: Props) {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleNext = () => {
     const { nextPage, saveFunction } = props;
     if (saveFunction) saveFunction();
-    if (nextPage) dispatch(push(nextPage));
+    if (nextPage) navigate(nextPage);
   };
 
   const {
@@ -36,9 +35,9 @@ function Footer(props: Props) {
         {status?.text}
       </div>
       <div className="flex justify-between">
-        <Button onClick={() => dispatch(back())} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
+        <Button onClick={() => navigate(-1)} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
-          <Button onClick={() => dispatch(replace({ pathname: '/' }))} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
+          <Button onClick={() => navigate('/', { replace: true })} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (
           <Button onClick={() => handleNext()} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
             Next

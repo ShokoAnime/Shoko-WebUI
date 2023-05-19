@@ -28,6 +28,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import { useNavigate } from 'react-router-dom';
 
 import toast from '../../../components/Toast';
 import { fuzzyFilter } from '../../../core/util';
@@ -52,7 +53,6 @@ import type { FileType } from '../../../core/types/api/file';
 import type { RootState } from '../../../core/store';
 import ShokoPanel from '../../../components/Panels/ShokoPanel';
 import Input from '../../../components/Input/Input';
-import { push } from '@lagunovsky/redux-react-router';
 import ItemCount from './Components/ItemCount';
 import MenuButton from './Components/MenuButton';
 import AvDumpSeriesSelectModal from './Components/AvDumpSeriesSelectModal';
@@ -60,7 +60,6 @@ import AvDumpSeriesSelectModal from './Components/AvDumpSeriesSelectModal';
 const columnHelper = createColumnHelper<FileType>();
 
 const Menu = ({ table }: { table: Table<FileType>}) => {
-  const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
   const { selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
 
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
@@ -158,6 +157,8 @@ const Menu = ({ table }: { table: Table<FileType>}) => {
 };
 
 function UnrecognizedTab() {
+  const navigate = useNavigate();
+
   const { columns: tempColumns } = useUnrecognizedUtilityContext();
 
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
@@ -281,7 +282,7 @@ function UnrecognizedTab() {
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
             <Menu table={table} />
             <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
-              <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={() => dispatch(push('files-link'))}>
+              <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={() => navigate('files-link')}>
                 <Icon path={mdiOpenInNew} size={0.8333} />
                 Manual Link
               </Button>

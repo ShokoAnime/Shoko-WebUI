@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { push, replace } from '@lagunovsky/redux-react-router';
+import { useSelector } from 'react-redux';
+import cx from 'classnames';
+import { useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 import { get } from 'lodash';
 import { Slide, ToastContainer } from 'react-toastify';
@@ -19,11 +20,9 @@ import { useGetInitStatusQuery, useGetInitVersionQuery } from '../../core/rtkQue
 import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
 import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
 import { ImageTypeEnum } from '../../core/types/api/common';
-import cx from 'classnames';
-
 
 function LoginPage() {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
 
@@ -41,9 +40,9 @@ function LoginPage() {
   
   useEffect(() => {
     const data = imageMetadata.data;
-    if (!data) { 
+    if (!data) {
       setLoginImage('default');
-      return; 
+      return;
     }
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
     setLoginImage(uri);
@@ -55,7 +54,7 @@ function LoginPage() {
     else if (status.data?.State !== 1) setPollingInterval(0);
 
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
-      dispatch(replace({ pathname: '/' }));
+      navigate('/', { replace: true });
     }
   }, [status.data]);
   
@@ -74,10 +73,8 @@ function LoginPage() {
       pass: password,
       device: 'web-ui',
       rememberUser: rememberUser,
-    }).unwrap().then(() => dispatch(push('/')), error => console.error(error));
+    }).unwrap().then(() => navigate('/'), error => console.error(error));
   };
-
-  const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
 
   return (
     <React.Fragment>
@@ -153,7 +150,7 @@ function LoginPage() {
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 py-2 mt-4">Continue</Button>
+                <Button onClick={() => navigate('/firstrun')} className="bg-highlight-1 py-2 mt-4">Continue</Button>
               </div>
             )}
           </div>

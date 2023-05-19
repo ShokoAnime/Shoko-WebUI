@@ -21,7 +21,7 @@ import ShokoIcon from '../ShokoIcon';
 
 import { RootState } from '../../core/store';
 import cx from 'classnames';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { setLayoutEditMode } from '../../core/slices/mainpage';
 import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
 import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
@@ -33,14 +33,15 @@ import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi'
 import { initialSettings } from '../../pages/settings/SettingsPage';
 import Button from '../Input/Button';
 import toast from '../Toast';
-import { push } from '@lagunovsky/redux-react-router';
 
 function TopNav() {
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
   
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
-  const pathname = useSelector((state: RootState) => state.router.location.pathname);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -77,7 +78,7 @@ function TopNav() {
         <div className="flex items-center justify-end mt-3">
           <Button onClick={() => {
             toast.dismiss('webui-update');
-            dispatch(push('/webui/dashboard'));
+            navigate('/webui/dashboard');
             setTimeout(() => window.location.reload(), 100);
           }} className="bg-highlight-1 py-1.5 w-full">
             Click here to reload

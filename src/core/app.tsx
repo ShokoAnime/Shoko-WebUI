@@ -1,14 +1,14 @@
 import React from 'react';
 import { Provider } from 'react-redux';
-import history from './history';
-import store from './store';
-import Router from './router';
+
 import ErrorBoundary from '../pages/error/ErrorPage';
+import Router from './router';
+import store from './store';
 
 const App = () => (
   <Provider store={store}>
     <ErrorBoundary>
-      <Router history={history} />
+      <Router />
     </ErrorBoundary>
   </Provider>
 );
