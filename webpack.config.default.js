@@ -18,7 +18,6 @@ const config = {
   context: __dirname,
   entry: [
     '@fontsource/sora/latin.css',
-    '@fontsource/open-sans/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
