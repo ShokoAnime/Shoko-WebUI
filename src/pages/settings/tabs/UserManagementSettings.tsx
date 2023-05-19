@@ -17,7 +17,7 @@ import type { UserType } from '../../../core/types/api/user';
 import {
   useGetUsersQuery,
   usePostChangePasswordMutation,
-  usePutUserMutation
+  usePutUserMutation,
 } from '../../../core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,

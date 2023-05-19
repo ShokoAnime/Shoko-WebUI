@@ -3,7 +3,7 @@ import { forEach } from 'lodash';
 import cx from 'classnames';
 import moment from 'moment';
 import { Icon } from '@mdi/react';
-import { mdiCloseCircleOutline, mdiMagnify, mdiMinusCircleOutline, mdiOpenInNew, mdiRestart, } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiMagnify, mdiMinusCircleOutline, mdiOpenInNew, mdiRestart } from '@mdi/js';
 import {
   createColumnHelper,
   getCoreRowModel,

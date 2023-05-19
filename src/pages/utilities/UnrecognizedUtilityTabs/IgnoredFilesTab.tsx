@@ -15,7 +15,7 @@ import { FileType } from '../../../core/types/api/file';
 import ItemCount from './Components/ItemCount';
 import MenuButton from './Components/MenuButton';
 
-const Menu = ({ table }: { table: Table<FileType>}) => {
+const Menu = ({ table }: { table: Table<FileType> }) => {
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();

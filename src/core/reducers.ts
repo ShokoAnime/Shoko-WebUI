@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { handleAction } from 'redux-actions';
-import { SET_AUTOUPDATE, } from './actions';
+import { SET_AUTOUPDATE } from './actions';
 
 import apiSessionReducer from './slices/apiSession';
 import fetchingReducer from './slices/fetching';

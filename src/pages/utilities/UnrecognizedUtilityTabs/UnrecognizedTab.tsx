@@ -59,7 +59,7 @@ import AvDumpSeriesSelectModal from './Components/AvDumpSeriesSelectModal';
 
 const columnHelper = createColumnHelper<FileType>();
 
-const Menu = ({ table }: { table: Table<FileType>}) => {
+const Menu = ({ table }: { table: Table<FileType> }) => {
   const { selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
 
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });

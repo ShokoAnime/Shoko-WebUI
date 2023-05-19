@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   setSaved as setFirstRunSaved,
   TestStatusType,
-  unsetSaved as unsetFirstRunSaved
+  unsetSaved as unsetFirstRunSaved,
 } from '../../core/slices/firstrun';
 import Footer from './Footer';
 import Input from '../../components/Input/Input';
