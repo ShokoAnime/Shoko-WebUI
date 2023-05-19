@@ -5,28 +5,33 @@ import Fuse from 'fuse.js';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { Icon } from '@mdi/react';
 import {
-  mdiChevronDown, mdiCloseCircleOutline,
+  mdiChevronDown,
+  mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
-  mdiLoading, mdiRestart,
-  mdiMagnify, mdiMinusCircleOutline,
+  mdiLoading,
+  mdiMagnify,
+  mdiMinusCircleOutline,
+  mdiRestart,
 } from '@mdi/js';
 import { Disclosure } from '@headlessui/react';
 
 import TransitionDiv from '../../../components/TransitionDiv';
 import Button from '../../../components/Input/Button';
-import Input from '../../../components/Input/Input';
 import { useGetSeriesWithManuallyLinkedFilesQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
 import { SeriesType } from '../../../core/types/api/series';
 import { ListResultType } from '../../../core/types/api';
 import ManuallyLinkedFilesRow from './Components/ManuallyLinkedFilesRow';
-import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 import { splitV3Api } from '../../../core/rtkQuery/splitV3Api';
 import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '../../../core/rtkQuery/splitV3Api/fileApi';
 import toast from '../../../components/Toast';
+import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import Input from '../../../components/Input/Input';
+import { Title } from '../UnrecognizedUtility';
 
 function ManuallyLinkedTab() {
-  const { setFilesCount } = useUnrecognizedUtilityContext();
   const dispatch = useDispatch();
+
+  const [filesCount, setFilesCount] = useState(0);
 
   const seriesQuery = useGetSeriesWithManuallyLinkedFilesQuery({ pageSize: 0 });
   const series: ListResultType<Array<SeriesType>> = seriesQuery.data ?? { Total: 0, List: [] };
@@ -120,25 +125,37 @@ function ManuallyLinkedTab() {
     );
   };
 
+  const renderOptions = () => (
+    <div className="font-semibold text-xl">
+      <span className="text-highlight-2">{filesCount}</span> Files
+    </div>
+  );
+
   return (
     <TransitionDiv className="flex flex-col grow h-full w-full">
-      <div className="flex">
-        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
-        <div className="box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2">
-          {renderOperations(selectedFiles.size === 0)}
-          <div className="ml-auto text-highlight-2 font-semibold">{selectedFiles.size} Files Selected</div>
-        </div>
+
+      <div>
+        <ShokoPanel title={<Title />} options={renderOptions()}>
+          <div className="flex items-center gap-x-3">
+            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} inputClassName="px-4 py-3" />
+            <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+              {renderOperations(selectedFiles.size === 0) }
+              <span className="text-highlight-2 ml-auto">{selectedFiles.size}&nbsp;</span>Files Selected
+            </div>
+          </div>
+        </ShokoPanel>
       </div>
-      <div className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border" ref={parentRef}>
+
+      <div className="grow w-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8" ref={parentRef}>
         {seriesQuery.isFetching ? (
           <div className="flex h-full justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
         ) : series.Total > 0 ? (
           <React.Fragment>
-            <div className="flex px-8 py-3.5 bg-background-nav drop-shadow-lg font-bold sticky top-0 z-[1]">
-              Series Name
-            </div>
+            {/*<div className="flex px-8 py-3.5 bg-background-nav drop-shadow-lg font-bold sticky top-0 z-[1]">*/}
+            {/*  Series Name*/}
+            {/*</div>*/}
             <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
               <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                 {virtualItems.map((virtualRow) => {

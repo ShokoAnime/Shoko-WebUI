@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { SeriesAniDBSearchResult } from '../../types/api/series';
 import { FileType } from '../../types/api/file';
 import { forEach } from 'lodash';
 
@@ -9,8 +8,6 @@ export type ManualLink = {
 };
 
 type State = {
-  manualLink: boolean;
-  selectedSeries: SeriesAniDBSearchResult;
   selectedFile: number;
   selectedRows: FileType[];
   links: Array<ManualLink>;
@@ -19,18 +16,11 @@ type State = {
 const  unrecognizedSlice = createSlice({
   name: 'unrecognized',
   initialState: {
-    manualLink: false,
-    selectedSeries: {},
     selectedFile: 1,
     selectedRows: [] as FileType[],
+    links: [] as ManualLink[],
   } as State,
   reducers: {
-    setManualLink(sliceState, action: PayloadAction<boolean>) {
-      sliceState.manualLink = action.payload;
-    },
-    setSelectedSeries(sliceState, action: PayloadAction<SeriesAniDBSearchResult>) {
-      sliceState.selectedSeries = action.payload;
-    },
     setSelectedFile(sliceState, action: PayloadAction<number>) {
       sliceState.selectedFile = action.payload;
     },
@@ -50,9 +40,13 @@ const  unrecognizedSlice = createSlice({
     addLinkEpisode(sliceState, action: PayloadAction<ManualLink>) {
       sliceState.links.push({ FileID: action.payload.FileID, EpisodeID: 0 });
     },
+    removeLinkEpisode(sliceState, action: PayloadAction<ManualLink>) {
+      const itemIndex = sliceState.links.reverse().findIndex(link => link.FileID === action.payload.FileID);
+      sliceState.links.splice(itemIndex, 1);
+    },
   },
 });
 
-export const { setManualLink, setSelectedSeries, setSelectedFile, setSelectedRows, setLinks, setLinksEpisode, addLinkEpisode } = unrecognizedSlice.actions;
+export const { setSelectedFile, setSelectedRows, setLinks, setLinksEpisode, addLinkEpisode, removeLinkEpisode } = unrecognizedSlice.actions;
 
 export default unrecognizedSlice.reducer;

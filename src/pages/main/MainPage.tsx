@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { useMediaQuery } from 'react-responsive';
@@ -33,6 +33,8 @@ function MainPage() {
     dispatch({ type: Events.MAINPAGE_LOAD });
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   return (
     <React.Fragment>
       {notifications && (
@@ -56,8 +58,10 @@ function MainPage() {
         <UtilitiesModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="grow shoko-scrollbar max-w-[120rem] w-full mx-auto" onClick={() => setShowSmSidebar(false)}>
-          <Outlet />
+        <div className="grow shoko-scrollbar overflow-y-auto" id="scrollContainer" ref={scrollRef}>
+          <div className="max-w-[120rem] w-full h-full mx-auto" onClick={() => setShowSmSidebar(false)}>
+            <Outlet context={{ scrollRef }} />
+          </div>
         </div>
       </div>
     </React.Fragment>

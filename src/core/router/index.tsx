@@ -47,6 +47,7 @@ import ManuallyLinkedTab from '../../pages/utilities/UnrecognizedUtilityTabs/Man
 import IgnoredFilesTab from '../../pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
 import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
+import LinkFilesTab from '../../pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
 
 // Settings
 import SettingsPage, { initialSettings } from '../../pages/settings/SettingsPage';
@@ -102,6 +103,7 @@ function Router(props: Props) {
                   <Route path="unrecognized" element={<UnrecognizedUtility />}>
                     <Route index element={<Navigate to="files" />} />
                     <Route path="files" element={<UnrecognizedTab />} />
+                    <Route path="files-link" element={<LinkFilesTab />} />
                     <Route path="manually-linked-files" element={<ManuallyLinkedTab />} />
                     <Route path="ignored-files" element={<IgnoredFilesTab />} />
                   </Route>

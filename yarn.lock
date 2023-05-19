@@ -2841,6 +2841,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/format-thousands@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "@types/format-thousands@npm:2.0.0"
+  checksum: c16ee6f40386fc705a4af4a5706fd7f99f52b8c2bd802d40ab511d0b0b20077dfc8231f9bc63a6c0e81f07a56feccedbd100f9d177d79e0ae847979d633fe079
+  languageName: node
+  linkType: hard
+
 "@types/history@npm:^4.7.11":
   version: 4.7.11
   resolution: "@types/history@npm:4.7.11"
@@ -6495,6 +6502,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"format-thousands@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "format-thousands@npm:2.0.0"
+  checksum: 9a214789e6e2a8c982f0e61573e65289b58c0626568a2555645e6eb3e699ddf84420098f4f97ea9bcc97deaa6f2eb1bfb53035e1d8f5fb82ba2eb1de91c191d7
+  languageName: node
+  linkType: hard
+
 "fraction.js@npm:^4.2.0":
   version: 4.2.0
   resolution: "fraction.js@npm:4.2.0"
@@ -7853,6 +7867,7 @@ __metadata:
     "@types/classnames": ^2.3.1
     "@types/ejs": ^3.1.1
     "@types/express": ^4.17.14
+    "@types/format-thousands": ^2.0.0
     "@types/lodash": ^4.14.189
     "@types/prop-types": ^15.7.5
     "@types/react": ^18.0.15
@@ -7888,6 +7903,7 @@ __metadata:
     eslint-plugin-react: ^7.32.2
     eslint-plugin-react-hooks: ^4.6.0
     fast-json-patch: ^3.1.1
+    format-thousands: ^2.0.0
     fuse.js: ^6.6.2
     history: ^5.3.0
     http-proxy-middleware: ^2.0.6
