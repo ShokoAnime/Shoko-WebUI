@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.20.7",
-    "@fontsource/open-sans": "^4.5.13",
     "@fontsource/sora": "^4.5.12",
     "@headlessui/react": "^1.7.7",
     "@headlessui/tailwindcss": "^0.1.2",

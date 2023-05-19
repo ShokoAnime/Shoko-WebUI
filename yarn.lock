@@ -2133,13 +2133,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fontsource/open-sans@npm:^4.5.13":
-  version: 4.5.13
-  resolution: "@fontsource/open-sans@npm:4.5.13"
-  checksum: f3bebdc1b274c48281e382ff76058fc2e5d45b946f5dcde36151423735b96e381c5152c875433a48667396ccce1c4e179cc33d55f26ec2ce9646fca89478653c
-  languageName: node
-  linkType: hard
-
 "@fontsource/sora@npm:^4.5.12":
   version: 4.5.12
   resolution: "@fontsource/sora@npm:4.5.12"
@@ -7813,7 +7806,6 @@ __metadata:
     "@babel/preset-react": ^7.18.6
     "@babel/register": ^7.18.9
     "@babel/runtime": ^7.20.7
-    "@fontsource/open-sans": ^4.5.13
     "@fontsource/sora": ^4.5.12
     "@headlessui/react": ^1.7.7
     "@headlessui/tailwindcss": ^0.1.2
