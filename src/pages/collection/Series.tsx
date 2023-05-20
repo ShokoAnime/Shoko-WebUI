@@ -74,9 +74,9 @@ const Series = () => {
   if (!seriesData.isSuccess) { return null; }
   
   return (
-    <div className="p-9 h-full min-w-full relative">
-      <div className="flex w-auto space-x-16">
-        <div className="grow">
+    <div className="p-8 h-full min-w-full relative">
+      <div className="flex w-auto space-x-16 rounded bg-background-alt/25 p-8 border-background-border border">
+        <div className="grow flex flex-col justify-between">
           <div className="flex justify-between">
             <div>
               <Link className="text-highlight-1" to="/webui/collection">Entire Collection</Link>
@@ -117,7 +117,7 @@ const Series = () => {
           <div className="mt-8 line-clamp-3 max-w-[93.75rem] text-font-main min-h-[5rem] bg-gradient-to-t from-transparent to-white bg-clip-text text-fill-transparent">
             <AnidbDescription text={series?.AniDB?.Description} />
           </div>
-          <div className="mt-5 space-x-8 flex flex-nowrap">
+          <div className="mt-auto space-x-8 flex flex-nowrap">
             <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
             <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
             <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
@@ -129,7 +129,7 @@ const Series = () => {
         </div>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[18.5rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       </div>
-      <div className="mt-[4.5rem] flex flex-col">
+      <div className="mt-8 flex flex-col">
         <Outlet />
       </div>
       <div className="h-full w-full top-0 left-0 fixed opacity-5 -z-10" style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }} />

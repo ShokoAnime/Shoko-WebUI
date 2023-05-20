@@ -12,10 +12,11 @@ type Props = {
   editMode?: boolean;
   fullHeight?: boolean;
   disableOverflow?: boolean;
+  transparent?: boolean;
 };
 
-const ShokoPanel = ({ className, title, options, children, isFetching, editMode, fullHeight = true, disableOverflow = false }: Props) => (
-    <div className={cx('flex flex-col overflow-hidden transition-colors border bg-background-alt rounded p-8', fullHeight && 'h-full', editMode ? 'pointer-events-none border-highlight-1' : 'border-background-border', className)}>
+const ShokoPanel = ({ className, title, options, children, isFetching, editMode, fullHeight = true, disableOverflow = false, transparent = false }: Props) => (
+    <div className={cx('flex flex-col overflow-hidden transition-colors border rounded p-8', fullHeight && 'h-full', editMode ? 'pointer-events-none border-highlight-1' : 'border-background-border', transparent ? ' bg-background-alt/25' : ' bg-background-alt', className)}>
       <div className="flex justify-between items-center mb-8">
         <span className="flex font-semibold text-xl">{title}</span>
           <div

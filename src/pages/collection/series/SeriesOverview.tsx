@@ -86,7 +86,7 @@ const SeriesOverview = () => {
   return (
     <React.Fragment>
       <div className="flex space-x-9">
-        <ShokoPanel title="Additional information" className="grow-0 min-w-fit">
+        <ShokoPanel title="Additional information" className="grow-0 min-w-fit" transparent>
           <div className="font-semibold">Source</div>
           <div>{overview.SourceMaterial}</div>
           <div className="font-semibold mt-2">Episodes</div>
@@ -106,10 +106,10 @@ const SeriesOverview = () => {
           <div className="flex flex-col">{map(series.Links, item => <span>{item.name}</span>)}</div>
         </ShokoPanel>
         <div className="flex flex-col space-y-9 grow">
-          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[18rem]">
+          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[18rem]" transparent>
             {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No episode data available!</div>}
           </ShokoPanel>
-          <ShokoPanel title="Metadata Sites" className="flex grow-0">
+          <ShokoPanel title="Metadata Sites" className="flex grow-0" transparent>
             <div className="columns-2 gap-8 space-y-5">
               {links.map(site => renderMetadataLink(site))}
             </div>
@@ -117,7 +117,7 @@ const SeriesOverview = () => {
         </div>
       </div>
       <div className="flex mt-9">
-        <ShokoPanel title="Related Anime" className="grow-0 flex">
+        <ShokoPanel title="Related Anime" className="grow-0 flex" transparent>
           <div className="flex space-x-3 shoko-scrollbar">
             {related.map((item) => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
@@ -133,7 +133,7 @@ const SeriesOverview = () => {
         </ShokoPanel>
       </div>
       <div className="flex mt-9">
-        <ShokoPanel title="Similar Anime" className="grow-0 flex">
+        <ShokoPanel title="Similar Anime" className="grow-0 flex" transparent>
           <div className="flex space-x-3 shoko-scrollbar">
             {similar.map((item) => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
