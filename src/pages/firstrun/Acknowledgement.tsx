@@ -16,7 +16,7 @@ function Acknowledgement() {
 
   const handleNext = () => {
     dispatch(setFirstRunSaved('acknowledgement'));
-    navigate('../db-setup');
+    navigate('../local-account');
   };
 
   return (

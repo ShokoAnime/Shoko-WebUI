@@ -72,7 +72,7 @@ function FirstRunPage() {
   };
 
   return (
-    <div className="flex w-full h-full p-8 gap-x-8">
+    <div className="flex w-full h-full p-8 gap-x-8 max-w-[120rem] mx-auto">
 
       <div className="flex flex-col items-center p-8 bg-background-alt border border-background-border w-[31.25rem]">
         <div className="flex flex-col items-center gap-y-4">
@@ -89,7 +89,6 @@ function FirstRunPage() {
 
         <div className="flex flex-col grow justify-center p-4 gap-y-4 -mt-24">
           <MenuItem text="Acknowledgement" id="acknowledgement" />
-          <MenuItem text="Database Setup" id="db-setup" />
           <MenuItem text="Local Account" id="local-account" />
           <MenuItem text="AniDB Account" id="anidb-account" />
           <MenuItem text="Metadata Sources" id="metadata-sources" />

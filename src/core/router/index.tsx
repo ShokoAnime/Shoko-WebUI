@@ -20,7 +20,6 @@ import UtilitiesPage from '@/pages/utilities/UtilitiesPage';
 // First run
 import Acknowledgement from '@/pages/firstrun/Acknowledgement';
 import AniDBAccount from '@/pages/firstrun/AniDBAccount';
-import DatabaseSetup from '@/pages/firstrun/DatabaseSetup';
 import DataCollection from '@/pages/firstrun/DataCollection';
 import ImportFolders from '@/pages/firstrun/ImportFolders';
 import LocalAccount from '@/pages/firstrun/LocalAccount';
@@ -68,7 +67,6 @@ const router = createBrowserRouter(
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
           <Route path="acknowledgement" element={<Acknowledgement />} />
-          <Route path="db-setup" element={<DatabaseSetup />} />
           <Route path="local-account" element={<LocalAccount />} />
           <Route path="anidb-account" element={<AniDBAccount />} />
           <Route path="metadata-sources" element={<MetadataSources />} />
