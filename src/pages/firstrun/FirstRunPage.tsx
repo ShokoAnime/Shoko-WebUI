@@ -5,15 +5,15 @@ import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
-import Button from '../../components/Input/Button';
-import ShokoIcon from '../../components/ShokoIcon';
+import Button from '@/components/Input/Button';
+import ShokoIcon from '@/components/ShokoIcon';
 
-import { RootState } from '../../core/store';
+import { RootState } from '@/core/store';
 
-import { useGetInitStatusQuery, useGetInitVersionQuery } from '../../core/rtkQuery/splitV3Api/initApi';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
-import type { SettingsType } from '../../core/types/api/settings';
+import type { SettingsType } from '@/core/types/api/settings';
 
 type ContextType = {
   fetching: boolean

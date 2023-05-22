@@ -2,14 +2,14 @@
 import React from 'react';
 import cx from 'classnames';
 
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
+import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from '../FirstRunPage';
 
-import { TestStatusType } from '../../../core/slices/firstrun';
+import { TestStatusType } from '@/core/slices/firstrun';
 
 type Props = {
   setStatus: (status: TestStatusType) => void;

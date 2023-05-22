@@ -1,11 +1,11 @@
 import { useParams } from 'react-router';
 import React, { useState } from 'react';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { get, map, split } from 'lodash';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import cx from 'classnames';
-import { useGetSeriesImagesQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
-import { ImageType } from '../../../core/types/api/common';
+import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { ImageType } from '@/core/types/api/common';
 
 const Heading = React.memo(({ type, setType }:{ type: string; setType: Function; }) => (
   <React.Fragment>

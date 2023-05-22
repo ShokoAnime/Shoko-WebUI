@@ -3,11 +3,11 @@ import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import { mdiOpenInNew } from '@mdi/js';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import { DashboardNewsType } from '../../../core/types/api/dashboard';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { DashboardNewsType } from '@/core/types/api/dashboard';
 
-import { useGetShokoNewsFeedQuery } from '../../../core/rtkQuery/externalApi';
+import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
 
 function ShokoNews() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

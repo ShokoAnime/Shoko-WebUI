@@ -6,7 +6,7 @@ import { mdiBackburger, mdiMenu, mdiServer } from '@mdi/js';
 import ShokoIcon from '../ShokoIcon';
 import Button from '../Input/Button';
 
-import { RootState } from '../../core/store';
+import { RootState } from '@/core/store';
 
 type Props = {
   showSidebar: boolean;

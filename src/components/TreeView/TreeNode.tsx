@@ -5,9 +5,9 @@ import { mdiCheckboxMarked, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { setSelectedNode } from '../../core/slices/modals/browseFolder';
-import { RootState } from '../../core/store';
-import { useLazyGetFolderQuery } from '../../core/rtkQuery/splitV3Api/folderApi';
+import { setSelectedNode } from '@/core/slices/modals/browseFolder';
+import { RootState } from '@/core/store';
+import { useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
 import toast from '../Toast';
 
 type Props = {

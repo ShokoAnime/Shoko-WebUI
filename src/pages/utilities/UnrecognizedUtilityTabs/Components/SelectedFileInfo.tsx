@@ -7,14 +7,14 @@ import { Icon } from '@mdi/react';
 import { mdiChevronLeft, mdiChevronRight } from '@mdi/js';
 import cx from 'classnames';
 
-import TransitionDiv from '../../../../components/TransitionDiv';
-import ShokoPanel from '../../../../components/Panels/ShokoPanel';
-import Button from '../../../../components/Input/Button';
-import { setSelectedFile } from '../../../../core/slices/utilities/unrecognized';
+import TransitionDiv from '@/components/TransitionDiv';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Button from '@/components/Input/Button';
+import { setSelectedFile } from '@/core/slices/utilities/unrecognized';
 
-import { RootState } from '../../../../core/store';
-import { useGetImportFoldersQuery } from '../../../../core/rtkQuery/splitV3Api/importFolderApi';
-import { ImportFolderType } from '../../../../core/types/api/import-folder';
+import { RootState } from '@/core/store';
+import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { ImportFolderType } from '@/core/types/api/import-folder';
 
 type Props = {
   fullWidth: boolean;

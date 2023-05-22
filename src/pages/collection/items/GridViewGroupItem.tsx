@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiEyeArrowRightOutline, mdiSquareEditOutline } from '@mdi/js';
 
-import type { CollectionGroupType } from '../../../core/types/api/collection';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import type { CollectionGroupType } from '@/core/types/api/collection';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>

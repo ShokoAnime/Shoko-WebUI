@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
 import Version from '../../../public/version.json';
 
-import { authApi } from '../rtkQuery/splitApi/authApi';
+import { authApi } from '@/core/rtkQuery/splitApi/authApi';
 
-import type { ApiSessionState } from '../types/api';
+import type { ApiSessionState } from '@/core/types/api';
 
 const apiSessionSlice = createSlice({
   name: 'apiSession',

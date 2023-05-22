@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
+  mdiCloseCircleOutline,
   mdiFormatListBulletedSquare,
-  mdiPoundBoxOutline,
   mdiImageMultipleOutline,
   mdiPauseCircleOutline,
   mdiPlayCircleOutline,
-  mdiCloseCircleOutline,
+  mdiPoundBoxOutline,
 } from '@mdi/js';
 
-import { RootState } from '../../../core/store';
-import Button from '../../../components/Input/Button';
-import type { QueueItemType } from '../../../core/types/signalr';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import type { QueueItemType } from '@/core/types/signalr';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetQueueOperationMutation } from '../../../core/rtkQuery/splitApi/queueApi';
+import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitApi/queueApi';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };

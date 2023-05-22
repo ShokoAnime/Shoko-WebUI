@@ -1,7 +1,7 @@
 import React from 'react';
 
 import Footer from './Footer';
-import TransitionDiv from '../../components/TransitionDiv';
+import TransitionDiv from '@/components/TransitionDiv';
 
 function DataCollection() {
 

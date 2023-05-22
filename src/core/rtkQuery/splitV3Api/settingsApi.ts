@@ -2,10 +2,10 @@ import jsonpatch from 'fast-json-patch';
 
 import { splitV3Api } from '../splitV3Api';
 
-import type { SettingsServerType, SettingsType, WebUISettingsType } from '../../types/api/settings';
-import { SettingsAnidbLoginType } from '../../types/api/settings';
-import { initialSettings } from '../../../pages/settings/SettingsPage';
-import { webuiSettingsPatches } from '../../patches';
+import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
+import { SettingsAnidbLoginType } from '@/core/types/api/settings';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+import { webuiSettingsPatches } from '@/core/patches';
 
 const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

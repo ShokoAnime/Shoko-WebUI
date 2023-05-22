@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { useGetEpisodeFilesQuery, useGetEpisodeQuery } from '../../../core/rtkQuery/splitV3Api/episodeApi';
+import { useGetEpisodeFilesQuery, useGetEpisodeQuery } from '@/core/rtkQuery/splitV3Api/episodeApi';
 import { get, map, toNumber } from 'lodash';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
-import { mdiChevronLeft, mdiChevronRight, mdiFileDocumentMultipleOutline, mdiOpenInNew, mdiRestart, mdiWeb } from '@mdi/js';
-import { EpisodeTvDBType } from '../../../core/types/api/episode';
-import { ImageType } from '../../../core/types/api/common';
-import Button from '../../../components/Input/Button';
+import {
+  mdiChevronLeft,
+  mdiChevronRight,
+  mdiFileDocumentMultipleOutline,
+  mdiOpenInNew,
+  mdiRestart,
+  mdiWeb,
+} from '@mdi/js';
+import { EpisodeTvDBType } from '@/core/types/api/episode';
+import { ImageType } from '@/core/types/api/common';
+import Button from '@/components/Input/Button';
 import { EpisodeDetails } from '../items/EpisodeDetails';
 
 const Heading = episode => (

@@ -5,13 +5,13 @@ import { Icon } from '@mdi/react';
 import { mdiChevronUp, mdiInformationOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { useDispatch, useSelector } from 'react-redux';
 
-import toast from '../../components/Toast';
-import ModalPanel from '../Panels/ModalPanel';
-import quickActions from '../../core/quick-actions';
-import { setStatus } from '../../core/slices/modals/actions';
-import { useRunActionMutation } from '../../core/rtkQuery/splitV3Api/actionsApi';
+import toast from '@/components/Toast';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import quickActions from '@/core/quick-actions';
+import { setStatus } from '@/core/slices/modals/actions';
+import { useRunActionMutation } from '@/core/rtkQuery/splitV3Api/actionsApi';
 
-import { RootState } from '../../core/store';
+import { RootState } from '@/core/store';
 
 const actions = {
   import: {

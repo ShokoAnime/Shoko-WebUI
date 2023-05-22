@@ -6,17 +6,17 @@ import { findKey, pickBy, transform } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiRestart } from '@mdi/js';
 
-import { uiVersion } from '../../../core/util';
+import { uiVersion } from '@/core/util';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import Checkbox from '../../../components/Input/Checkbox';
-import Button from '../../../components/Input/Button';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import SelectSmall from '@/components/Input/SelectSmall';
+import Checkbox from '@/components/Input/Checkbox';
+import Button from '@/components/Input/Button';
 
 import { useSettingsContext } from '../SettingsPage';
 
-import { useGetInitVersionQuery } from '../../../core/rtkQuery/splitV3Api/initApi';
-import { splitV3Api } from '../../../core/rtkQuery/splitV3Api';
+import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 const UI_VERSION = uiVersion();
 

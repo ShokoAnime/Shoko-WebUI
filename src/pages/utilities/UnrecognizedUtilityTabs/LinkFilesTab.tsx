@@ -2,11 +2,11 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { RootState } from '../../../core/store';
-import TransitionDiv from '../../../components/TransitionDiv';
+import { RootState } from '@/core/store';
+import TransitionDiv from '@/components/TransitionDiv';
 import { Title } from '../UnrecognizedUtility';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Button from '../../../components/Input/Button';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Button from '@/components/Input/Button';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import {
@@ -26,20 +26,20 @@ import {
   removeLinkEpisode,
   setLinks,
   setLinksEpisode,
-} from '../../../core/slices/utilities/unrecognized';
+} from '@/core/slices/utilities/unrecognized';
 import {
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
-} from '../../../core/rtkQuery/splitV3Api/seriesApi';
-import { SeriesAniDBSearchResult } from '../../../core/types/api/series';
-import Input from '../../../components/Input/Input';
-import { formatThousand } from '../../../core/util';
-import { EpisodeTypeEnum } from '../../../core/types/api/episode';
-import toast from '../../../components/Toast';
-import SelectEpisodeList from '../../../components/Input/SelectEpisodeList';
-import { FileLinkApiType } from '../../../core/types/api/file';
-import { useGetFileUnrecognizedQuery, usePostFileLinkMutation } from '../../../core/rtkQuery/splitV3Api/fileApi';
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { SeriesAniDBSearchResult } from '@/core/types/api/series';
+import Input from '@/components/Input/Input';
+import { formatThousand } from '@/core/util';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import toast from '@/components/Toast';
+import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
+import { FileLinkApiType } from '@/core/types/api/file';
+import { useGetFileUnrecognizedQuery, usePostFileLinkMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import ItemCount from './Components/ItemCount';
 import MenuButton from './Components/MenuButton';
 

@@ -4,14 +4,14 @@ import moment from 'moment/moment';
 
 import { useSettingsContext } from '../SettingsPage';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import Button from '../../../components/Input/Button';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
+import Button from '@/components/Input/Button';
 
-import { useLazyGetTraktCodeQuery } from '../../../core/rtkQuery/splitApi/traktApi';
-import toast from '../../../components/Toast';
+import { useLazyGetTraktCodeQuery } from '@/core/rtkQuery/splitApi/traktApi';
+import toast from '@/components/Toast';
 
 export const tvdbLanguages = [
   ['en', 'English'],

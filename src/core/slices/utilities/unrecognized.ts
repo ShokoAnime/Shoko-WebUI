@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { FileType } from '../../types/api/file';
+import { FileType } from '@/core/types/api/file';
 import { forEach } from 'lodash';
 
 export type ManualLink = { 

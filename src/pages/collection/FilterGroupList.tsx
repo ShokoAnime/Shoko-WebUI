@@ -9,16 +9,13 @@ import GroupPlaceholder from './items/GroupPlaceholder';
 import GridViewGroupItem from './items/GridViewGroupItem';
 import GridOptions from './items/GridOptions';
 
-import { setStatus } from '../../core/slices/modals/filters';
-import {
-  useGetFilterQuery,
-  useLazyGetFilterGroupsQuery,
-} from '../../core/rtkQuery/splitV3Api/collectionApi';
+import { setStatus } from '@/core/slices/modals/filters';
+import { useGetFilterQuery, useLazyGetFilterGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
-import { RootState } from '../../core/store';
-import type { CollectionFilterType } from '../../core/types/api/collection';
-import { resetGroups, setGroups } from '../../core/slices/collection';
-import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
+import { RootState } from '@/core/store';
+import type { CollectionFilterType } from '@/core/types/api/collection';
+import { resetGroups, setGroups } from '@/core/slices/collection';
+import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
 import GroupGrid from './items/GroupGrid';
 import cx from 'classnames';

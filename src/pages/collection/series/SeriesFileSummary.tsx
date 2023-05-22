@@ -1,7 +1,7 @@
 import React from 'react';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
-import { useGetSeriesFileSummeryQuery } from '../../../core/rtkQuery/splitV3Api/webuiApi';
+import { useGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { find, forEach, get, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { Icon } from '@mdi/react';

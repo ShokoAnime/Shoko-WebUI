@@ -1,7 +1,7 @@
 import { splitV3Api } from '../splitV3Api';
-import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '../../types/api/webui';
-import type { ComponentVersionType } from '../../types/api/init';
-import { WebuiSeriesFileSummaryType } from '../../types/api/webui';
+import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '@/core/types/api/webui';
+import { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
+import type { ComponentVersionType } from '@/core/types/api/init';
 
 export type GroupViewApiRequest = {
   GroupIDs: number[];

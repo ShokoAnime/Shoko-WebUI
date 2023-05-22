@@ -7,14 +7,14 @@ import {
   setSaved as setFirstRunSaved,
   TestStatusType,
   unsetSaved as unsetFirstRunSaved,
-} from '../../core/slices/firstrun';
+} from '@/core/slices/firstrun';
 import Footer from './Footer';
-import Input from '../../components/Input/Input';
-import Select from '../../components/Input/Select';
-import TransitionDiv from '../../components/TransitionDiv';
+import Input from '@/components/Input/Input';
+import Select from '@/components/Input/Select';
+import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
-import { useGetInitDatabaseTestMutation } from '../../core/rtkQuery/splitV3Api/initApi';
+import { useGetInitDatabaseTestMutation } from '@/core/rtkQuery/splitV3Api/initApi';
 
 function DatabaseSetup() {
   const {

@@ -3,8 +3,8 @@ import { flexRender, Row, Table } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 
-import type { FileType } from '../../../../core/types/api/file';
-import type { SeriesType } from '../../../../core/types/api/series';
+import type { FileType } from '@/core/types/api/file';
+import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   table: Table<FileType> | Table<SeriesType>,

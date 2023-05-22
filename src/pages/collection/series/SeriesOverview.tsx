@@ -1,18 +1,29 @@
 import React from 'react';
 import moment from 'moment';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
-import { useGetSeriesQuery, useGetAniDBRelatedQuery, useGetAniDBSimilarQuery, useNextUpEpisodeQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
-import { useGetSeriesOverviewQuery } from '../../../core/rtkQuery/splitV3Api/webuiApi';
-import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '../../../core/types/api/series';
-import { EpisodeType } from '../../../core/types/api/episode';
-import { get, toNumber, round, map } from 'lodash';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
-import { ImageType } from '../../../core/types/api/common';
-import { WebuiSeriesDetailsType } from '../../../core/types/api/webui';
+import {
+  useGetAniDBRelatedQuery,
+  useGetAniDBSimilarQuery,
+  useGetSeriesQuery,
+  useNextUpEpisodeQuery,
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '@/core/types/api/series';
+import { EpisodeType } from '@/core/types/api/episode';
+import { get, map, round, toNumber } from 'lodash';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import { ImageType } from '@/core/types/api/common';
+import { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
-import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiFilmstrip, mdiPlusCircleOutline, mdiStarHalfFull } from '@mdi/js';
+import {
+  mdiCalendarMonthOutline,
+  mdiClockTimeFourOutline,
+  mdiFilmstrip,
+  mdiPlusCircleOutline,
+  mdiStarHalfFull,
+} from '@mdi/js';
 
 const links = ['tmdb', 'tvdb', 'mal', 'anilist', 'trakt'];
 

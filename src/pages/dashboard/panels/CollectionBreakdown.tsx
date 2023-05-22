@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { Link } from 'react-router-dom';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetDashboardStatsQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
+import { useGetDashboardStatsQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 function CollectionBreakdown() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

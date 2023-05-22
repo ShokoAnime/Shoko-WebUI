@@ -3,10 +3,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiClose, mdiPencil } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import { RootState } from '../../core/store';
-import Events from '../../core/events';
+import { RootState } from '@/core/store';
+import Events from '@/core/events';
 import Button from '../Input/Button';
-import { setStatus as setProfileModalStatus } from '../../core/slices/modals/profile';
+import { setStatus as setProfileModalStatus } from '@/core/slices/modals/profile';
 import ModalPanel from '../Panels/ModalPanel';
 import Input from '../Input/Input';
 

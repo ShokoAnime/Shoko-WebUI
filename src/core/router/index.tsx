@@ -4,57 +4,57 @@ import { createBrowserRouter, createRoutesFromElements, RouterProvider } from 'r
 import { Navigate, Route } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import { RootState } from '../store';
+import { RootState } from '@/core/store';
 
 import AuthenticatedRoute from './AuthenticatedRoute';
-import FirstRunPage from '../../pages/firstrun/FirstRunPage';
-import LoginPage from '../../pages/login/LoginPage';
-import MainPage from '../../pages/main/MainPage';
-import NoMatchPage from '../../pages/nomatch';
+import FirstRunPage from '@/pages/firstrun/FirstRunPage';
+import LoginPage from '@/pages/login/LoginPage';
+import MainPage from '@/pages/main/MainPage';
+import NoMatchPage from '@/pages/nomatch';
 
 // Main page
-import DashboardPage from '../../pages/dashboard/DashboardPage';
-import LogsPage from '../../pages/logs/LogsPage';
-import UtilitiesPage from '../../pages/utilities/UtilitiesPage';
+import DashboardPage from '@/pages/dashboard/DashboardPage';
+import LogsPage from '@/pages/logs/LogsPage';
+import UtilitiesPage from '@/pages/utilities/UtilitiesPage';
 
 // First run
-import Acknowledgement from '../../pages/firstrun/Acknowledgement';
-import AniDBAccount from '../../pages/firstrun/AniDBAccount';
-import DatabaseSetup from '../../pages/firstrun/DatabaseSetup';
-import DataCollection from '../../pages/firstrun/DataCollection';
-import ImportFolders from '../../pages/firstrun/ImportFolders';
-import LocalAccount from '../../pages/firstrun/LocalAccount';
-import MetadataSources from '../../pages/firstrun/MetadataSources';
-import StartServer from '../../pages/firstrun/StartServer';
+import Acknowledgement from '@/pages/firstrun/Acknowledgement';
+import AniDBAccount from '@/pages/firstrun/AniDBAccount';
+import DatabaseSetup from '@/pages/firstrun/DatabaseSetup';
+import DataCollection from '@/pages/firstrun/DataCollection';
+import ImportFolders from '@/pages/firstrun/ImportFolders';
+import LocalAccount from '@/pages/firstrun/LocalAccount';
+import MetadataSources from '@/pages/firstrun/MetadataSources';
+import StartServer from '@/pages/firstrun/StartServer';
 
 // Collection
-import GroupList from '../../pages/collection/GroupList';
-import Group from '../../pages/collection/Group';
-import FilterGroupList from '../../pages/collection/FilterGroupList';
-import Series from '../../pages/collection/Series';
-import SeriesCredits from '../../pages/collection/series/SeriesCredits';
-import SeriesEpisodes from '../../pages/collection/series/SeriesEpisodes';
-import SeriesEpisodeDetails from '../../pages/collection/series/SeriesEpisodeDetails';
-import SeriesFileSummary from '../../pages/collection/series/SeriesFileSummary';
-import SeriesImages from '../../pages/collection/series/SeriesImages';
-import SeriesOverview from '../../pages/collection/series/SeriesOverview';
+import GroupList from '@/pages/collection/GroupList';
+import Group from '@/pages/collection/Group';
+import FilterGroupList from '@/pages/collection/FilterGroupList';
+import Series from '@/pages/collection/Series';
+import SeriesCredits from '@/pages/collection/series/SeriesCredits';
+import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
+import SeriesEpisodeDetails from '@/pages/collection/series/SeriesEpisodeDetails';
+import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
+import SeriesImages from '@/pages/collection/series/SeriesImages';
+import SeriesOverview from '@/pages/collection/series/SeriesOverview';
 
 // Utilities
-import IgnoredFilesTab from '../../pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
-import LinkFilesTab from '../../pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
-import ManuallyLinkedTab from '../../pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
-import MultipleFilesUtility from '../../pages/utilities/MultipleFilesUtility';
-import SeriesWithoutFilesUtility from '../../pages/utilities/SeriesWithoutFilesUtility';
-import UnrecognizedTab from '../../pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
-import UnrecognizedUtility from '../../pages/utilities/UnrecognizedUtility';
+import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
+import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
+import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
+import MultipleFilesUtility from '@/pages/utilities/MultipleFilesUtility';
+import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
+import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
+import UnrecognizedUtility from '@/pages/utilities/UnrecognizedUtility';
 
 // Settings
-import AniDBSettings from '../../pages/settings/tabs/AniDBSettings';
-import GeneralSettings from '../../pages/settings/tabs/GeneralSettings';
-import ImportSettings from '../../pages/settings/tabs/ImportSettings';
-import MetadataSitesSettings from '../../pages/settings/tabs/MetadataSitesSettings';
-import SettingsPage, { initialSettings } from '../../pages/settings/SettingsPage';
-import UserManagementSettings from '../../pages/settings/tabs/UserManagementSettings';
+import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
+import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
+import ImportSettings from '@/pages/settings/tabs/ImportSettings';
+import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
+import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
+import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 
 import { useGetSettingsQuery } from '../rtkQuery/splitV3Api/settingsApi';
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
@@ -6,11 +6,11 @@ import { Icon } from '@mdi/react';
 import { mdiChevronUp, mdiMagnify } from '@mdi/js';
 
 import ModalPanel from '../Panels/ModalPanel';
-import { RootState } from '../../core/store';
-import { setStatus } from '../../core/slices/modals/filters';
-import { useLazyGetTopFiltersQuery, useLazyGetFiltersQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
+import { RootState } from '@/core/store';
+import { setStatus } from '@/core/slices/modals/filters';
+import { useLazyGetFiltersQuery, useLazyGetTopFiltersQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
-import type { CollectionFilterType } from '../../core/types/api/collection';
+import type { CollectionFilterType } from '@/core/types/api/collection';
 
 function FiltersModal() {
   const dispatch = useDispatch();

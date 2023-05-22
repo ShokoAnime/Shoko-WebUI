@@ -8,13 +8,13 @@ import semver from 'semver';
 import { Icon } from '@mdi/react';
 import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
-import Button from '../../components/Input/Button';
-import toast from '../../components/Toast';
-import TransitionDiv from '../../components/TransitionDiv';
-import { uiVersion } from '../../core/util';
-import type { SettingsType } from '../../core/types/api/settings';
+import Button from '@/components/Input/Button';
+import toast from '@/components/Toast';
+import TransitionDiv from '@/components/TransitionDiv';
+import { uiVersion } from '@/core/util';
+import type { SettingsType } from '@/core/types/api/settings';
 
 const items = [
   { name: 'General', path: 'general' },

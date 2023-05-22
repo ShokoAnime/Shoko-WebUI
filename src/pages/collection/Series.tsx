@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
-import { useGetSeriesQuery, useGetSeriesTagsQuery } from '../../core/rtkQuery/splitV3Api/seriesApi';
-import { SeriesDetailsType } from '../../core/types/api/series';
-import BackgroundImagePlaceholderDiv from '../../components/BackgroundImagePlaceholderDiv';
+import { useGetSeriesQuery, useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { SeriesDetailsType } from '@/core/types/api/series';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { Icon } from '@mdi/react';
 import {
-  mdiFileDocumentMultipleOutline,
+  mdiAccountGroupOutline,
   mdiCalendarMonthOutline,
   mdiEyeOutline,
-  mdiInformationOutline,
-  mdiTelevision,
-  mdiTagTextOutline,
+  mdiFileDocumentMultipleOutline,
   mdiFilmstrip,
-  mdiAccountGroupOutline,
-  mdiImageMultipleOutline,
   mdiHarddisk,
+  mdiImageMultipleOutline,
+  mdiInformationOutline,
   mdiSquareEditOutline,
+  mdiTagTextOutline,
+  mdiTelevision,
 } from '@mdi/js';
-import { TagType } from '../../core/types/api/tags';
+import { TagType } from '@/core/types/api/tags';
 import cx from 'classnames';
 import AnidbDescription from './items/AnidbDescription';
 import { Link, NavLink } from 'react-router-dom';

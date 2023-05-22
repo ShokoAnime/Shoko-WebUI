@@ -4,8 +4,8 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import { Icon } from '@mdi/react';
 import { mdiMenuDown } from '@mdi/js';
 
-import { RootState } from '../../core/store';
-import toast from '../../components/Toast';
+import { RootState } from '@/core/store';
+import toast from '@/components/Toast';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
@@ -17,10 +17,10 @@ import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
 import RecommendedAnime from './panels/RecommendedAnime';
-import Button from '../../components/Input/Button';
+import Button from '@/components/Input/Button';
 
-import { setLayoutEditMode } from '../../core/slices/mainpage';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);

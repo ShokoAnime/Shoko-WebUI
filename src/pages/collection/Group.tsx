@@ -4,13 +4,13 @@ import { useSelector } from 'react-redux';
 
 import { Link } from 'react-router-dom';
 
-import { useGetGroupSeriesQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
-import ShokoPanel from '../../components/Panels/ShokoPanel';
+import { useGetGroupSeriesQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { RootState } from '../../core/store';
-import type { SeriesType } from '../../core/types/api/series';
-import { CollectionGroupType } from '../../core/types/api/collection';
-import BackgroundImagePlaceholderDiv from '../../components/BackgroundImagePlaceholderDiv';
+import { RootState } from '@/core/store';
+import type { SeriesType } from '@/core/types/api/series';
+import { CollectionGroupType } from '@/core/types/api/collection';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 

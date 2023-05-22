@@ -2,9 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 
-import Button from '../../components/Input/Button';
+import Button from '@/components/Input/Button';
 
-import type { TestStatusType } from '../../core/slices/firstrun';
+import type { TestStatusType } from '@/core/slices/firstrun';
 
 type Props = {
   nextPage?: string,

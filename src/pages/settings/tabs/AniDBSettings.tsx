@@ -7,18 +7,18 @@ import { DropResult } from 'react-beautiful-dnd';
 import { Icon } from '@mdi/react';
 import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 
-import Button from '../../../components/Input/Button';
-import Checkbox from '../../../components/Input/Checkbox';
-import DnDList from '../../../components/DnDList/DnDList';
-import InputSmall from '../../../components/Input/InputSmall';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import { languageDescription } from '../../../components/Dialogs/LanguagesModal';
-import toast from '../../../components/Toast';
+import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
+import DnDList from '@/components/DnDList/DnDList';
+import InputSmall from '@/components/Input/InputSmall';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import SelectSmall from '@/components/Input/SelectSmall';
+import { languageDescription } from '@/components/Dialogs/LanguagesModal';
+import toast from '@/components/Toast';
 
-import { setStatus as setLanguagesModalStatus } from '../../../core/slices/modals/languages';
+import { setStatus as setLanguagesModalStatus } from '@/core/slices/modals/languages';
 import { useSettingsContext } from '../SettingsPage';
-import { usePostAniDBTestLoginMutation } from '../../../core/rtkQuery/splitV3Api/settingsApi';
+import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 function AniDBSettings() {
   const {

@@ -30,11 +30,11 @@ import {
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useNavigate } from 'react-router-dom';
 
-import toast from '../../../components/Toast';
-import { fuzzyFilter } from '../../../core/util';
+import toast from '@/components/Toast';
+import { fuzzyFilter } from '@/core/util';
 
-import Button from '../../../components/Input/Button';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Button from '@/components/Input/Button';
+import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from './Components/UtilitiesTable';
 
 import {
@@ -44,15 +44,15 @@ import {
   usePostFileRehashMutation,
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
-} from '../../../core/rtkQuery/splitV3Api/fileApi';
-import { setSelectedRows } from '../../../core/slices/utilities/unrecognized';
-import { setItem as setAvdumpItem } from '../../../core/slices/utilities/avdump';
+} from '@/core/rtkQuery/splitV3Api/fileApi';
+import { setSelectedRows } from '@/core/slices/utilities/unrecognized';
+import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
 import { Title, useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
-import type { FileType } from '../../../core/types/api/file';
-import type { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Input from '../../../components/Input/Input';
+import type { FileType } from '@/core/types/api/file';
+import type { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Input from '@/components/Input/Input';
 import ItemCount from './Components/ItemCount';
 import MenuButton from './Components/MenuButton';
 import AvDumpSeriesSelectModal from './Components/AvDumpSeriesSelectModal';

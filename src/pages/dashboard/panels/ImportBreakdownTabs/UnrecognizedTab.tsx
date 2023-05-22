@@ -4,16 +4,16 @@ import { forEach, orderBy } from 'lodash';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Icon } from '@mdi/react';
-import { mdiFileDocumentCheckOutline, mdiContentCopy, mdiTruck } from '@mdi/js';
+import { mdiContentCopy, mdiFileDocumentCheckOutline, mdiTruck } from '@mdi/js';
 
-import { RootState } from '../../../../core/store';
-import Button from '../../../../components/Input/Button';
+import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
 
-import { setItem as setAvdumpItem } from '../../../../core/slices/utilities/avdump';
-import toast from '../../../../components/Toast';
-import type { FileType } from '../../../../core/types/api/file';
+import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
+import toast from '@/components/Toast';
+import type { FileType } from '@/core/types/api/file';
 
-import { useGetFileUnrecognizedQuery, useLazyPostFileAVDumpQuery } from '../../../../core/rtkQuery/splitV3Api/fileApi';
+import { useGetFileUnrecognizedQuery, useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
 
 function UnrecognizedTab() {
   const dispatch = useDispatch();

@@ -5,18 +5,18 @@ import { useMediaQuery } from 'react-responsive';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import Events from '../../core/events';
+import Events from '@/core/events';
 
-import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
-import LanguagesModal from '../../components/Dialogs/LanguagesModal';
-import ProfileModal from '../../components/Dialogs/ProfileModal';
-import FiltersModal from '../../components/Dialogs/FiltersModal';
-import ActionsModal from '../../components/Dialogs/ActionsModal';
-import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
-import Header from '../../components/Layout/Header';
-import TopNav from '../../components/Layout/TopNav';
+import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
+import LanguagesModal from '@/components/Dialogs/LanguagesModal';
+import ProfileModal from '@/components/Dialogs/ProfileModal';
+import FiltersModal from '@/components/Dialogs/FiltersModal';
+import ActionsModal from '@/components/Dialogs/ActionsModal';
+import UtilitiesModal from '@/components/Dialogs/UtilitiesModal';
+import Header from '@/components/Layout/Header';
+import TopNav from '@/components/Layout/TopNav';
 
-import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 function MainPage() {

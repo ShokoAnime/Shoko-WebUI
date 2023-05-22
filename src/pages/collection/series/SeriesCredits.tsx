@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { useGetSeriesCastQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesCastQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { filter, get, map } from 'lodash';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
-import { ImageType } from '../../../core/types/api/common';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import { ImageType } from '@/core/types/api/common';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import cx from 'classnames';
-import { SeriesCast } from '../../../core/types/api/series';
+import { SeriesCast } from '@/core/types/api/series';
 
 const getThumbnailUrl = (item: SeriesCast, mode: string) => {
   const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);

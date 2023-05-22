@@ -8,11 +8,11 @@ import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
 
-import { useGetImportFoldersQuery } from '../../core/rtkQuery/splitV3Api/importFolderApi';
+import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 
-import { fuzzySort } from '../../core/util';
-import type { FileType } from '../../core/types/api/file';
-import type { ImportFolderType } from '../../core/types/api/import-folder';
+import { fuzzySort } from '@/core/util';
+import type { FileType } from '@/core/types/api/file';
+import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 type ContextType = {
   columns: ColumnDef<FileType, any>[];

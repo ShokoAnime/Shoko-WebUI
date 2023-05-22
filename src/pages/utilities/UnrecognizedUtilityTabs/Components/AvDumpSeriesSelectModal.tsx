@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ModalPanel from '../../../../components/Panels/ModalPanel';
-import Button from '../../../../components/Input/Button';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import Button from '@/components/Input/Button';
 import { Icon } from '@mdi/react';
 import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
-import { useLazyGetSeriesAniDBSearchQuery } from '../../../../core/rtkQuery/splitV3Api/seriesApi';
+import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { debounce } from 'lodash';
-import Input from '../../../../components/Input/Input';
+import Input from '@/components/Input/Input';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 type Props = {

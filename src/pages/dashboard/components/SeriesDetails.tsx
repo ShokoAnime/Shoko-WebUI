@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { SeriesType } from '../../../core/types/api/series';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import { SeriesType } from '@/core/types/api/series';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 function SeriesDetails(props: { series: SeriesType }): JSX.Element {
   const { series } = props;

@@ -1,21 +1,17 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
-import {
-  mdiDatabaseEditOutline,
-  mdiDatabaseSearchOutline,
-  mdiFolderPlusOutline,
-} from '@mdi/js';
+import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
 
-import { RootState } from '../../../core/store';
-import toast from '../../../components/Toast';
-import Button from '../../../components/Input/Button';
-import { setEdit, setStatus } from '../../../core/slices/modals/importFolder';
+import { RootState } from '@/core/store';
+import toast from '@/components/Toast';
+import Button from '@/components/Input/Button';
+import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
 
-import type { ImportFolderType } from '../../../core/types/api/import-folder';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import type { ImportFolderType } from '@/core/types/api/import-folder';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { Icon } from '@mdi/react';
-import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '../../../core/rtkQuery/splitV3Api/importFolderApi';
+import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 
 function ImportFolders() {
   const dispatch = useDispatch();

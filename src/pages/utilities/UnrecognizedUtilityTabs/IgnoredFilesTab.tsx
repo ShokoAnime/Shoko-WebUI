@@ -2,16 +2,16 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { forEach } from 'lodash';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiMagnify, mdiRestart } from '@mdi/js';
 import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, Table, useReactTable } from '@tanstack/react-table';
-import Input from '../../../components/Input/Input';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Input from '@/components/Input/Input';
+import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from './Components/UtilitiesTable';
 
-import { useGetFileIgnoredQuery, usePutFileIgnoreMutation } from '../../../core/rtkQuery/splitV3Api/fileApi';
-import { fuzzyFilter } from '../../../core/util';
+import { useGetFileIgnoredQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { fuzzyFilter } from '@/core/util';
 
 import { Title, useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import { FileType } from '../../../core/types/api/file';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { FileType } from '@/core/types/api/file';
 import ItemCount from './Components/ItemCount';
 import MenuButton from './Components/MenuButton';
 

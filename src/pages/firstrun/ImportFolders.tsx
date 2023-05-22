@@ -2,26 +2,24 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { omit } from 'lodash';
 import { Icon } from '@mdi/react';
-import {
-  mdiFolderOpen, mdiSquareEditOutline,
-  mdiTrashCanOutline,
-} from '@mdi/js';
+import { mdiFolderOpen, mdiSquareEditOutline, mdiTrashCanOutline } from '@mdi/js';
 
-import toast from '../../components/Toast';
-import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
-import Button from '../../components/Input/Button';
-import Input from '../../components/Input/Input';
+import toast from '@/components/Toast';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
 import Footer from './Footer';
-import BrowseFolderModal from '../../components/Dialogs/BrowseFolderModal';
-import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFolder';
-import type { ImportFolderType } from '../../core/types/api/import-folder';
-import Select from '../../components/Input/Select';
-import TransitionDiv from '../../components/TransitionDiv';
+import BrowseFolderModal from '@/components/Dialogs/BrowseFolderModal';
+import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
+import type { ImportFolderType } from '@/core/types/api/import-folder';
+import Select from '@/components/Input/Select';
+import TransitionDiv from '@/components/TransitionDiv';
 import {
   useCreateImportFolderMutation,
-  useDeleteImportFolderMutation, useGetImportFoldersQuery,
+  useDeleteImportFolderMutation,
+  useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
-} from '../../core/rtkQuery/splitV3Api/importFolderApi';
+} from '@/core/rtkQuery/splitV3Api/importFolderApi';
 
 
 const defaultState = {

@@ -1,13 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
-import {
-  List, AutoSizer, CellMeasurer, CellMeasurerCache,
-} from 'react-virtualized';
+import { AutoSizer, CellMeasurer, CellMeasurerCache, List } from 'react-virtualized';
 import cx from 'classnames';
 
-import Checkbox from '../../components/Input/Checkbox';
-import { useGetLogsQuery } from '../../core/rtkQuery/logsApi';
+import Checkbox from '@/components/Input/Checkbox';
+import { useGetLogsQuery } from '@/core/rtkQuery/logsApi';
 
-import { LogLineType } from '../../core/types/api/common';
+import { LogLineType } from '@/core/types/api/common';
 
 
 function LogsPage() {

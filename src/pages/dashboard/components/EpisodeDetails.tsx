@@ -1,11 +1,11 @@
 import moment from 'moment';
 import React, { useMemo } from 'react';
 
-import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
-import { EpisodeTypeEnum } from '../../../core/types/api/episode';
+import { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { Icon } from '@mdi/react';
 import { mdiLayersTripleOutline } from '@mdi/js';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',

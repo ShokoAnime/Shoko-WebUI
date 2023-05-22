@@ -3,12 +3,12 @@ import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetAniDBRecommendedAnimeQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
-import type { SeriesAniDBType } from '../../../core/types/api/series';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import { useGetAniDBRecommendedAnimeQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import type { SeriesAniDBType } from '@/core/types/api/series';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

@@ -6,9 +6,9 @@ import { Icon } from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
 
 import ModalPanel from '../Panels/ModalPanel';
-import { setStatus } from '../../core/slices/modals/utilities';
+import { setStatus } from '@/core/slices/modals/utilities';
 
-import { RootState } from '../../core/store';
+import { RootState } from '@/core/store';
 
 function UtilitiesModal() {
   const dispatch = useDispatch();

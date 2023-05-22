@@ -7,13 +7,13 @@ import GroupPlaceholder from './items/GroupPlaceholder';
 import GridViewGroupItem from './items/GridViewGroupItem';
 import GridOptions from './items/GridOptions';
 
-import { setStatus } from '../../core/slices/modals/filters';
-import { useLazyGetGroupsQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
+import { setStatus } from '@/core/slices/modals/filters';
+import { useLazyGetGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
-import { resetGroups, setGroups } from '../../core/slices/collection';
-import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
+import { resetGroups, setGroups } from '@/core/slices/collection';
+import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
-import type { RootState } from '../../core/store';
+import type { RootState } from '@/core/store';
 import cx from 'classnames';
 import GroupGrid from './items/GroupGrid';
 

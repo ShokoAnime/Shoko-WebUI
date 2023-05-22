@@ -2,7 +2,7 @@ import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 
 import Events from '../events';
-import toast from '../../components/Toast';
+import toast from '@/components/Toast';
 
 const rtkQueryErrorLogger: Middleware =
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

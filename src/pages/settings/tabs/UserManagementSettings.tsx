@@ -5,26 +5,26 @@ import { cloneDeep, find, isEqual, remove } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import toast from '../../../components/Toast';
-import { unsetDetails } from '../../../core/slices/apiSession';
-import Button from '../../../components/Input/Button';
-import Input from '../../../components/Input/Input';
-import type { UserType } from '../../../core/types/api/user';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import toast from '@/components/Toast';
+import { unsetDetails } from '@/core/slices/apiSession';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import type { UserType } from '@/core/types/api/user';
 
 import {
   useGetUsersQuery,
   usePostChangePasswordMutation,
   usePutUserMutation,
-} from '../../../core/rtkQuery/splitV3Api/userApi';
+} from '@/core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
   useInvalidatePlexTokenMutation,
   useLazyGetPlexLoginUrlQuery,
-} from '../../../core/rtkQuery/plexApi';
-import { useGetAniDBTagsQuery } from '../../../core/rtkQuery/splitV3Api/tagsApi';
+} from '@/core/rtkQuery/plexApi';
+import { useGetAniDBTagsQuery } from '@/core/rtkQuery/splitV3Api/tagsApi';
 
 const initialUser = {
   ID: 0,

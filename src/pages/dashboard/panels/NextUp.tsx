@@ -1,11 +1,11 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import EpisodeDetails from '../components/EpisodeDetails';
 
-import { useGetDashboardNextUpEpisodesQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
+import { useGetDashboardNextUpEpisodesQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 const NextUp = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

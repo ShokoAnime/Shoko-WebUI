@@ -1,12 +1,12 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { SeriesAniDBSearchResult, SeriesType, SeriesRecommendedType } from '../../types/api/series';
-import type { ListResultType, PaginationType } from '../../types/api';
-import { EpisodeType } from '../../types/api/episode';
-import { FileType } from '../../types/api/file';
-import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '../../types/api/series';
-import { TagType } from '../../types/api/tags';
-import { DataSourceType, ImageType } from '../../types/api/common';
+import type { SeriesAniDBSearchResult, SeriesRecommendedType, SeriesType } from '@/core/types/api/series';
+import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '@/core/types/api/series';
+import type { ListResultType, PaginationType } from '@/core/types/api';
+import { EpisodeType } from '@/core/types/api/episode';
+import { FileType } from '@/core/types/api/file';
+import { TagType } from '@/core/types/api/tags';
+import { DataSourceType, ImageType } from '@/core/types/api/common';
 import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
 import { omit } from 'lodash';
 

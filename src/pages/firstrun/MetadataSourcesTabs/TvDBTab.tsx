@@ -1,12 +1,12 @@
 import React from 'react';
 import cx from 'classnames';
 
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
+import TransitionDiv from '@/components/TransitionDiv';
 import { useFirstRunSettingsContext } from '../FirstRunPage';
-import { tvdbLanguages } from '../../settings/tabs/MetadataSitesSettings';
+import { tvdbLanguages } from '@/pages/settings/tabs/MetadataSitesSettings';
 
 function TvDBTab() {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();

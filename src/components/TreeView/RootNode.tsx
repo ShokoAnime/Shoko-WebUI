@@ -5,10 +5,10 @@ import { mdiCheckboxMarked, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { setSelectedNode } from '../../core/slices/modals/browseFolder';
-import { RootState } from '../../core/store';
+import { setSelectedNode } from '@/core/slices/modals/browseFolder';
+import { RootState } from '@/core/store';
 import TreeNode from './TreeNode';
-import { useGetFolderDrivesQuery } from '../../core/rtkQuery/splitV3Api/folderApi';
+import { useGetFolderDrivesQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
 
 function RootNode(props) {
   const dispatch = useDispatch();

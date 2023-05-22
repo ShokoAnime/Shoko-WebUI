@@ -10,11 +10,11 @@ import {
 import { Icon } from '@mdi/react';
 import { mdiLoading } from '@mdi/js';
 
-import Checkbox from '../../../../components/Input/Checkbox';
-import { fuzzyFilter, fuzzySort } from '../../../../core/util';
+import Checkbox from '@/components/Input/Checkbox';
+import { fuzzyFilter, fuzzySort } from '@/core/util';
 
-import type { FileType } from '../../../../core/types/api/file';
-import { useGetSeriesEpisodesQuery, useGetSeriesFilesQuery } from '../../../../core/rtkQuery/splitV3Api/seriesApi';
+import type { FileType } from '@/core/types/api/file';
+import { useGetSeriesEpisodesQuery, useGetSeriesFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 type Props = {
   seriesId: number;

@@ -1,7 +1,6 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { LegacyVersionType, UserType, VersionType } from '../../types/api/init';
-import type { ServerStatusType } from '../../types/api/init';
+import type { LegacyVersionType, ServerStatusType, UserType, VersionType } from '@/core/types/api/init';
 
 export const initApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

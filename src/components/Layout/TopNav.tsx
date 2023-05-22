@@ -16,23 +16,24 @@ import {
   mdiTextBoxOutline,
   mdiTools,
 } from '@mdi/js';
-
-import ShokoIcon from '../ShokoIcon';
-
-import { RootState } from '../../core/store';
 import cx from 'classnames';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { setLayoutEditMode } from '../../core/slices/mainpage';
-import { setStatus as setUtilitiesStatus } from '../../core/slices/modals/utilities';
-import { setStatus as setActionsStatus } from '../../core/slices/modals/actions';
 import { siDiscord } from 'simple-icons/icons';
 import semver from 'semver';
+
+import ShokoIcon from '../ShokoIcon';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { setStatus as setUtilitiesStatus } from '@/core/slices/modals/utilities';
+import { setStatus as setActionsStatus } from '@/core/slices/modals/actions';
+
 import Version from '../../../public/version.json';
-import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '../../core/rtkQuery/splitV3Api/webuiApi';
-import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
-import { initialSettings } from '../../pages/settings/SettingsPage';
+import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 import Button from '../Input/Button';
 import toast from '../Toast';
+
+import { RootState } from '@/core/store';
 
 function TopNav() {
   const dispatch = useDispatch();

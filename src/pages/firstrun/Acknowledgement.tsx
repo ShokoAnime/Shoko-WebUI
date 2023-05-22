@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
-import Button from '../../components/Input/Button';
-import TransitionDiv from '../../components/TransitionDiv';
-import { useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import Button from '@/components/Input/Button';
+import TransitionDiv from '@/components/TransitionDiv';
+import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 
 function Acknowledgement() {
   const dispatch = useDispatch();

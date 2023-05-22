@@ -2,9 +2,9 @@ import React from 'react';
 
 import { useSettingsContext } from '../SettingsPage';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
 
 function ImportSettings() {
   const {

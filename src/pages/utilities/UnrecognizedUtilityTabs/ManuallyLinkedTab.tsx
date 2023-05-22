@@ -15,17 +15,17 @@ import {
 } from '@mdi/js';
 import { Disclosure } from '@headlessui/react';
 
-import TransitionDiv from '../../../components/TransitionDiv';
-import Button from '../../../components/Input/Button';
-import { useGetSeriesWithManuallyLinkedFilesQuery } from '../../../core/rtkQuery/splitV3Api/seriesApi';
-import { SeriesType } from '../../../core/types/api/series';
-import { ListResultType } from '../../../core/types/api';
+import TransitionDiv from '@/components/TransitionDiv';
+import Button from '@/components/Input/Button';
+import { useGetSeriesWithManuallyLinkedFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { SeriesType } from '@/core/types/api/series';
+import { ListResultType } from '@/core/types/api';
 import ManuallyLinkedFilesRow from './Components/ManuallyLinkedFilesRow';
-import { splitV3Api } from '../../../core/rtkQuery/splitV3Api';
-import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '../../../core/rtkQuery/splitV3Api/fileApi';
-import toast from '../../../components/Toast';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Input from '../../../components/Input/Input';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import toast from '@/components/Toast';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import Input from '@/components/Input/Input';
 import { Title } from '../UnrecognizedUtility';
 
 function ManuallyLinkedTab() {

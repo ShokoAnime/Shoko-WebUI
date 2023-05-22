@@ -10,16 +10,16 @@ import { Icon } from '@mdi/react';
 import { mdiCloseCircle, mdiLoading } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
-import { RootState } from '../../core/store';
-import Button from '../../components/Input/Button';
-import Input from '../../components/Input/Input';
-import Checkbox from '../../components/Input/Checkbox';
-import ShokoIcon from '../../components/ShokoIcon';
+import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import Checkbox from '@/components/Input/Checkbox';
+import ShokoIcon from '@/components/ShokoIcon';
 
-import { useGetInitStatusQuery, useGetInitVersionQuery } from '../../core/rtkQuery/splitV3Api/initApi';
-import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
-import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
-import { ImageTypeEnum } from '../../core/types/api/common';
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
+import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
+import { ImageTypeEnum } from '@/core/types/api/common';
 
 function LoginPage() {
   const navigate = useNavigate();

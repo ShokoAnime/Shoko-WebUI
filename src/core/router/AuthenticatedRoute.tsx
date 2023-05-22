@@ -1,9 +1,9 @@
 import React from 'react';
-import { Navigate  } from 'react-router';
+import { Navigate } from 'react-router';
 import { useSelector } from 'react-redux';
 
-import type { RootState } from '../store';
-import { useGetInitStatusQuery } from '../rtkQuery/splitV3Api/initApi';
+import type { RootState } from '@/core/store';
+import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 
 type Props = {
   children: JSX.Element;

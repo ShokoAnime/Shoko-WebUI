@@ -4,21 +4,21 @@ import { find } from 'lodash';
 import { mdiFolderOpen } from '@mdi/js';
 
 import toast from '../Toast';
-import { RootState } from '../../core/store';
+import { RootState } from '@/core/store';
 import Button from '../Input/Button';
 import Input from '../Input/Input';
 import Select from '../Input/Select';
 import ModalPanel from '../Panels/ModalPanel';
 import BrowseFolderModal from './BrowseFolderModal';
-import { setStatus } from '../../core/slices/modals/importFolder';
-import { setStatus as setBrowseStatus } from '../../core/slices/modals/browseFolder';
+import { setStatus } from '@/core/slices/modals/importFolder';
+import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import {
-  useGetImportFoldersQuery,
-  useUpdateImportFolderMutation,
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
-} from '../../core/rtkQuery/splitV3Api/importFolderApi';
-import { ImportFolderType } from '../../core/types/api/import-folder';
+  useGetImportFoldersQuery,
+  useUpdateImportFolderMutation,
+} from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { ImportFolderType } from '@/core/types/api/import-folder';
 
 const defaultImportFolder = {
   WatchForNewFiles: false,

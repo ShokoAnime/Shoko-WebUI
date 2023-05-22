@@ -6,7 +6,7 @@ import { Listbox } from '@headlessui/react';
 import ReactDOM from 'react-dom';
 import cx from 'classnames';
 
-import { EpisodeTypeEnum } from '../../core/types/api/episode';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import Input from './Input';
 
 function getOffsetTop(rect, vertical) {

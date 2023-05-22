@@ -1,9 +1,9 @@
 import React from 'react';
 import cx from 'classnames';
 
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import TransitionDiv from '@/components/TransitionDiv';
 import { useFirstRunSettingsContext } from '../FirstRunPage';
 
 function MovieDBTab() {

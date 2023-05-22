@@ -1,6 +1,6 @@
-import { CollectionGroupType } from '../../../core/types/api/collection';
-import { WebuiGroupExtra } from '../../../core/types/api/webui';
-import { ImageType } from '../../../core/types/api/common';
+import { CollectionGroupType } from '@/core/types/api/collection';
+import { WebuiGroupExtra } from '@/core/types/api/webui';
+import { ImageType } from '@/core/types/api/common';
 import cx from 'classnames';
 import { forEach, get, reduce } from 'lodash';
 import { Link } from 'react-router-dom';
@@ -15,9 +15,9 @@ import {
   mdiTelevisionAmbientLight,
 } from '@mdi/js';
 import React from 'react';
-import { SeriesSizesFileSourcesType } from '../../../core/types/api/series';
+import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
 import AnidbDescription from './AnidbDescription';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: Array<string> = [];

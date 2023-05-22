@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forEach, remove } from 'lodash';
 
-import { RootState } from '../../core/store';
-import { setStatus as setLanguageModalStatus } from '../../core/slices/modals/languages';
+import { RootState } from '@/core/store';
+import { setStatus as setLanguageModalStatus } from '@/core/slices/modals/languages';
 import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
-import { initialSettings } from '../../pages/settings/SettingsPage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
