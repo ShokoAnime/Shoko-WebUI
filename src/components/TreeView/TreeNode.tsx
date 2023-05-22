@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { forEach } from 'lodash';
-import { mdiCheckboxMarked, mdiChevronUp, mdiLoading } from '@mdi/js';
+import { mdiCheckboxMarkedCircleOutline, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { setSelectedNode } from '@/core/slices/modals/browseFolder';
 import { RootState } from '@/core/store';
-import { useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
+import { useGetFolderDrivesQuery, useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
 import toast from '../Toast';
+
+import type { DriveType, FolderType } from '@/core/types/api/folder';
 
 type Props = {
   level: number,
@@ -18,7 +20,8 @@ type Props = {
 
 function TreeNode(props: Props) {
   const dispatch = useDispatch();
-  
+
+  const drives = useGetFolderDrivesQuery(undefined, { skip: props.nodeId !== 0 });
   const [fetchFolders, folders] = useLazyGetFolderQuery();
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
 
@@ -30,7 +33,8 @@ function TreeNode(props: Props) {
 
   const toggleExpanded =  (event: React.MouseEvent) => {
     if (!loaded) {
-      fetchFolders(Path).catch((reason) => { toast.error(`${reason} - Fetching folder ${Path} failed.`); });
+      if (nodeId !== 0)
+        fetchFolders(Path).catch((reason) => { toast.error(`${reason} - Fetching folder ${Path} failed.`); });
       setExpanded(true);
       setLoaded(true);
     } else {
@@ -45,49 +49,54 @@ function TreeNode(props: Props) {
   };
 
   const children: Array<React.ReactNode> = [];
+  const data = nodeId === 0 ? drives.data! : folders.data!;
   if (expanded) {
-    forEach(folders.data, (node) => {
+    forEach(data, (node: DriveType | FolderType) => {
       children.push(<TreeNode
         key={node.nodeId}
         nodeId={node.nodeId}
         Path={node.Path}
-        level={props.level + 1}
+        level={level + 1}
       />);
     });
   }
-  
-  const chopPath = (path) => {
-    const splitPath = path.split('\\');
+
+  const getChoppedPath = () => {
+    const isUnix = Path.indexOf('/') !== -1;
+
+    if (isUnix && level === 2) return Path;
+
+    const splitPath = Path.split(/[\/\\]/g);
     let part = splitPath.pop();
-    if (part === '') { 
+    if (part === '') {
       part = splitPath.pop();
     }
     return part;
   };
 
- 
+  useEffect(() => {
+    if (nodeId === 0) setExpanded(true);
+  }, [nodeId]);
+
   return (
     <li
-      className={cx(
-        'list-group-item',
-        level === 1 ? 'root' : null, isSelected ? 'selected' : null,
-      )}
-      onClick={toggleSelected}
+      className={cx(['cursor-pointer', nodeId !== 0 && 'ml-3 mt-3'])}
       onDoubleClick={toggleExpanded}
     >
-      <div className="flex justify-between">
-        <div className="flex space-x-1">
+      <div className="flex justify-between" onClick={nodeId === 0 ? toggleExpanded : toggleSelected}>
+        <div className="flex gap-x-1">
           <div className="inline-block" onClick={toggleExpanded}>
             <Icon
-              path={folders.isFetching ? mdiLoading : mdiChevronUp}
-              spin={folders.isFetching}
+              path={(nodeId === 0 && drives.isFetching) || folders.isFetching ? mdiLoading : mdiChevronUp}
+              spin={(nodeId === 0 && drives.isFetching) || folders.isFetching}
               size={1}
-              rotate={expanded ? 180 : 0}
+              rotate={expanded ? 0 : 180}
+              className="transition-transform"
             />
           </div>
-          <span className="select-none">{chopPath(Path)}</span>
+          <span className="select-none">{getChoppedPath()}</span>
         </div>
-        <Icon className={cx('inline-block justify-self-end mr-3 text-highlight-1', { 'hidden': !isSelected })} path={mdiCheckboxMarked} size={1} />
+        <Icon className={cx('inline-block justify-self-end mr-3 text-highlight-1', { 'hidden': !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
       </div>
       <ul>{children}</ul>
     </li>

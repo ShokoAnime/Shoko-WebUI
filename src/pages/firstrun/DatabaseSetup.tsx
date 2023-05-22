@@ -10,7 +10,6 @@ import {
 } from '@/core/slices/firstrun';
 import Footer from './Footer';
 import Input from '@/components/Input/Input';
-import Select from '@/components/Input/Select';
 import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
@@ -41,7 +40,7 @@ function DatabaseSetup() {
     testDatabase().unwrap().then(() => {
       setDatabaseStatus({ type: 'success', text: 'Database test successful!' });
       dispatch(setFirstRunSaved('db-setup'));
-      navigate('local-account');
+      navigate('../local-account');
     }, (error) => {
       console.error(error);
       setDatabaseStatus({ type: 'error', text: error.data });
@@ -54,53 +53,65 @@ function DatabaseSetup() {
     Username, Password,
   } = newSettings.Database;
 
-  const renderSqliteOptions = () => (
-    <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={handleInputChange} className="mt-6" />
-  );
+  // const renderSqliteOptions = () => (
+  //   <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={handleInputChange} className="mt-6" />
+  // );
+  //
+  // const renderLegacyDBOptions = () => (
+  //   <div className="flex flex-col">
+  //     <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={handleInputChange} className="mt-6" />
+  //     <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={handleInputChange} className="mt-6" />
+  //     <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} className="mt-6" />
+  //     <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-6" />
+  //   </div>
+  // );
 
-  const renderLegacyDBOptions = () => (
-    <div className="flex flex-col">
-      <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={handleInputChange} className="mt-6" />
-      <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={handleInputChange} className="mt-6" />
-      <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={handleInputChange} className="mt-6" />
-      <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-6" />
-    </div>
-  );
-
-  const renderDBOptions = () => {
-    switch (Type) {
-      case 'SQLite':
-        return renderSqliteOptions();
-      case 'MySQL': case 'SQLServer':
-        return renderLegacyDBOptions();
-      default:
-        return renderSqliteOptions();
-    }
-  };
+  // const renderDBOptions = () => {
+  //   switch (Type) {
+  //     case 'SQLite':
+  //       return renderSqliteOptions();
+  //     case 'MySQL': case 'SQLServer':
+  //       return renderLegacyDBOptions();
+  //     default:
+  //       return renderSqliteOptions();
+  //   }
+  // };
 
   return (
-    // TODO: Change the UI to the new one. Keeping the old for now.
-    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[40rem] px-8">
-      <div className="font-semibold">Setting Up Your Database</div>
-      <div className="mt-9 text-justify">
-        Shoko uses SQLite for your database and will automatically create the database for you.
-        If you&apos;d like to select a different location for your database file, you can do
-        so by changing the directory below.
+    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[38rem] gap-y-8">
+      <div className="font-semibold text-xl">Database Setup</div>
+      <div className="text-justify">
+        Shoko utilizes SQLite as its database system and automatically generates the database upon installation.
+        However, if you wish to choose a different location to store your database file, you can do so by modifying the
+        directory as illustrated below.
       </div>
-      <form className="flex flex-col my-9 overflow-y-auto flex-shrink" onSubmit={handleTest}>
-        <Select label="Database Type" id="Type" value={Type} onChange={handleInputChange} className="w-32">
-          <option value="SQLite">SQLite</option>
-          <option value="MySQL">MySQL</option>
-          <option value="SQLServer">SQLServer</option>
-        </Select>
-        {renderDBOptions()}
+      <div className="text-justify">
+        By default, Shoko automatically populates the database location. However, you can change it by clicking on the
+        folder icon located below.
+      </div>
+      <div className="text-justify">
+        If you already have a pre-existing database, you can choose the first option below to bypass this step. In
+        contrast, if you are using a legacy database, you can opt for the second option to input the necessary
+        additional information.
+      </div>
+      <form onSubmit={handleTest}>
+        <Input id="SQLite_DatabaseFile" value={SQLite_DatabaseFile} label="Database File" type="text" placeholder="Database File" onChange={handleInputChange} />
         <input type="submit" hidden />
       </form>
+      {/*<form className="flex flex-col my-9 overflow-y-auto flex-shrink" onSubmit={handleTest}>*/}
+      {/*  <Select label="Database Type" id="Type" value={Type} onChange={handleInputChange} className="w-32">*/}
+      {/*    <option value="SQLite">SQLite</option>*/}
+      {/*    <option value="MySQL">MySQL</option>*/}
+      {/*    <option value="SQLServer">SQLServer</option>*/}
+      {/*  </Select>*/}
+      {/*  {renderDBOptions()}*/}
+      {/*  <input type="submit" hidden />*/}
+      {/*</form>*/}
       <Footer
         nextDisabled={
           (Type !== 'SQLite' && (Hostname === '' || Schema === '' || Username === '')) || SQLite_DatabaseFile === ''
         }
-        saveFunction={() => handleTest()}
+        saveFunction={handleTest}
         isFetching={testDatabaseResult.isLoading}
         status={databaseStatus}
       />

@@ -1,14 +1,12 @@
 import React from 'react';
-import RootNode from './RootNode';
 
-let id = 0;
-export const getNextId = () => ++id;
+import TreeNode from '@/components/TreeView/TreeNode';
 
 function TreeView() {
   return (
-    <div className="treeview w-full shoko-scrollbar">
-      <ul className="list-group">
-        <RootNode Path="Shoko Server" />
+    <div className="h-[27.75rem] w-full overflow-y-auto overflow-x-hidden">
+      <ul>
+        <TreeNode Path="Shoko Server" nodeId={0} level={1} />
       </ul>
     </div>
   );

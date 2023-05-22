@@ -19,32 +19,6 @@
   background-color: theme('colors.background / 60');
 }
 
-.treeview {
-  min-height: 27.75rem;
-  max-height: 27.75rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .list-group-item {
-    cursor: pointer;
-    margin-left: 0.75rem;
-
-    &.root {
-      cursor: pointer;
-      margin-left: 0;
-    }
-
-    &.selected > span {
-      color: #49a2df;
-    }
-
-    .caret {
-      position: relative;
-      top: 1px;
-    }
-  }
-}
-
 .modal-transition-left {
   transition: transform 300ms ease-in-out;
   transform: translateX(-30rem);

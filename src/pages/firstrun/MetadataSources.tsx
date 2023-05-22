@@ -20,7 +20,7 @@ function MetadataSources() {
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const renderTabButton = (title: string, key: string) => (
-    <button onClick={() => setActiveTab(key)} className={cx(['mr-3 font-semibold', activeTab === key && 'text-highlight-1'])}>
+    <button onClick={() => setActiveTab(key)} className={cx(['font-semibold', activeTab === key && 'text-highlight-1'])}>
       {title}
     </button>
   );
@@ -44,23 +44,25 @@ function MetadataSources() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[40rem] px-8 py-36">
-      <div className="font-semibold">Metadata Sources</div>
-      <div className="mt-9 text-justify">
-        Shoko supports multiple community sites that can be used to download additional
-        metadata for the series in your collection. We highly recommend going through each
-        sites settings and configuring them to your liking.
+    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[38rem] gap-y-8">
+      <div className="font-semibold text-xl">Metadata Sites</div>
+      <div className="text-justify">
+        Shoko offers support for various community sites that provide additional metadata for the series in your
+        collection. We highly recommend that you review the settings for each site and configure them to meet your
+        preferences.
       </div>
-      <div className="flex mt-9 border-b-2 border-background-border pb-3">
+      <div className="flex border-b-2 border-background-border pb-3 gap-x-2 text-xl">
         {renderTabButton('AniDB', 'anidb')}
+        |
         {renderTabButton('TMBD', 'moviedb')}
+        |
         {renderTabButton('TVDB', 'tvdb')}
         {/* TODO: Add plex and trakt settings. Currently they only work after the setup is completed. */}
       </div>
-      <div className="flex flex-col mt-2 mb-3 p-2.5 h-full overflow-y-auto flex-shrink">
+      <div className="flex flex-col pr-8 overflow-y-auto flex-shrink h-80">
         {renderTabContent()}
       </div>
-      <Footer nextPage="start-server" saveFunction={() => handleSave()} status={status} />
+      <Footer nextPage="start-server" saveFunction={handleSave} status={status} />
     </TransitionDiv>
   );
 }

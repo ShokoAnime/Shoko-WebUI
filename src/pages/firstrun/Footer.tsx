@@ -22,7 +22,7 @@ function Footer(props: Props) {
   const handleNext = () => {
     const { nextPage, saveFunction } = props;
     if (saveFunction) saveFunction();
-    if (nextPage) navigate(nextPage);
+    if (nextPage) navigate(`../${nextPage}`);
   };
 
   const {
@@ -34,7 +34,7 @@ function Footer(props: Props) {
       <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-highlight-3' : 'text-highlight-2'])}>
         {status?.text}
       </div>
-      <div className="flex justify-between">
+      <div className="flex justify-between font-semibold">
         <Button onClick={() => navigate(-1)} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
           <Button onClick={() => navigate('/', { replace: true })} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>

@@ -13,7 +13,7 @@ const rtkQueryErrorLogger: Middleware =
         if (window.location.pathname !== '/webui/login')
           dispatch({ type: Events.STORE_CLEAR_STATE });
         toast.error('Unauthorized!', '', { toastId: 'unauthorized' });
-      } else if (action.payload.originalStatus !== 503) {
+      } else if (action.payload.originalStatus !== 503 && action.meta.arg.endpointName !== 'getRandomMetadata') {
         toast.error(action.payload?.data?.title ?? action.payload.error ?? `${action.payload.status} - ${action.error.message}`, `Debug Info: ${action.meta.arg.endpointName}`);
       }
     }

@@ -24,22 +24,22 @@ function BrowseFolderModal(props: Props) {
       props.onSelect(selectedNode.Path);
     }
     dispatch(setStatus(false));
-    dispatch(setSelectedNode({ id: 0, Path: '' }));
+    dispatch(setSelectedNode({ id: -1, Path: '' }));
   };
 
   return (
-    <ModalPanel show={status} className="w-25 drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]" onRequestClose={() => handleClose()}>
-      <div className="flex flex-col w-full space-y-4">
-        <div className="px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow">
-          <p className="text-base font-semibold text-gray-300">Select Import Folder</p>
-        </div>
-        <div className="mx-4 px-3 py-2 bg-background-alt rounded border border-background-border text-sm">
-          <TreeView />
-        </div>
-        <div className="flex justify-end mx-4">
-          <Button onClick={handleClose} className="bg-background-alt px-6 py-2 mr-2">Cancel</Button>
-          <Button onClick={handleSelect} className="bg-highlight-1 px-6 py-2">Select</Button>
-        </div>
+    <ModalPanel
+      show={status}
+      className="p-8 flex-col drop-shadow-lg gap-y-8 !top-0"
+      onRequestClose={() => handleClose()}
+    >
+      <div className="font-semibold text-xl">Select Import Folder</div>
+      <div className="p-4 bg-background-border">
+        <TreeView />
+      </div>
+      <div className="flex justify-end gap-x-3 font-semibold">
+        <Button onClick={handleClose} className="bg-background-nav px-6 py-2 text-font-main">Cancel</Button>
+        <Button onClick={handleSelect} className="bg-highlight-1 px-6 py-2">Select</Button>
       </div>
     </ModalPanel>
   );

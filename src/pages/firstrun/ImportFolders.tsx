@@ -1,85 +1,28 @@
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { omit } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiFolderOpen, mdiSquareEditOutline, mdiTrashCanOutline } from '@mdi/js';
+import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 
 import toast from '@/components/Toast';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
 import Footer from './Footer';
-import BrowseFolderModal from '@/components/Dialogs/BrowseFolderModal';
-import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
-import Select from '@/components/Input/Select';
 import TransitionDiv from '@/components/TransitionDiv';
+import { useDeleteImportFolderMutation, useGetImportFoldersQuery, } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import {
-  useCreateImportFolderMutation,
-  useDeleteImportFolderMutation,
-  useGetImportFoldersQuery,
-  useUpdateImportFolderMutation,
-} from '@/core/rtkQuery/splitV3Api/importFolderApi';
+  setEdit as setImportFolderModalEdit,
+  setStatus as setImportFolderModalStatus,
+} from '@/core/slices/modals/importFolder';
+import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 
+const Folder = (props: ImportFolderType) => {
+  const {
+    DropFolderType, ID, Name, Path, WatchForNewFiles,
+  } = props;
 
-const defaultState = {
-  showAddNew: false,
-  showEdit: false,
-  WatchForNewFiles: false,
-  DropFolderType: 0 as 0 | 1 | 2 | 3,
-  Path: '',
-  Name: '',
-  ID: 0,
-};
-
-function ImportFolders() {
   const dispatch = useDispatch();
-
-  const importFolderQuery = useGetImportFoldersQuery();
-  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-
-  const [newImportFolder, setNewImportFolder] = useState(defaultState);
-  const [updateFolder] = useUpdateImportFolderMutation();
-  const [createFolder] = useCreateImportFolderMutation();
   const [deleteFolder] = useDeleteImportFolderMutation();
-
-  const handleInputChange = (event: any) => {
-    const name = event.target.id;
-    let value = event.target.value;
-    if (value === 'True') value = true;
-    if (value === 'False') value = false;
-    setNewImportFolder({ ...newImportFolder, [name]: value });
-  };
-
-  const handleAddFolder = async () => {
-    setNewImportFolder(defaultState);
-    //TODO: needs to be better typed
-    const result: any = await createFolder(omit(newImportFolder, ['showAddNew', 'showEdit']));
-    if (!result.error) {
-      toast.success('Import folder added!');
-    }
-  };
-
-  const handleEdit = (folder: ImportFolderType) => {
-    setNewImportFolder({
-      showAddNew: true,
-      showEdit: true,
-      Name: folder.Name,
-      WatchForNewFiles: folder.WatchForNewFiles ?? false,
-      DropFolderType: folder.DropFolderType ?? 0,
-      Path: folder.Path,
-      ID: folder.ID,
-    });
-  };
-
-  const handleEditFolder = async () => {
-    setNewImportFolder(defaultState);
-    //TODO: needs to be better typed
-    const result:any = await updateFolder(omit(newImportFolder, ['showAddNew', 'showEdit']));
-    if (!result.error) {
-      toast.success('Import folder edited!');
-    }
-  };
 
   const handleDeleteFolder = async (folderId) => {
     //TODO: can this be better typed?
@@ -89,117 +32,88 @@ function ImportFolders() {
     }
   };
 
-  const renderFolder = (folder: ImportFolderType) => {
-    const {
-      DropFolderType, WatchForNewFiles,
-      Name, Path,
-    } = folder;
-
-    let flags = '';
-
-    switch (folder.DropFolderType) {
+  const flags = useMemo(() => {
+    let tempFlags = '';
+    switch (DropFolderType) {
       case 1:
-        flags = 'Drop Source';
+        tempFlags = 'Source';
         break;
       case 2:
-        flags = 'Drop Destination';
+        tempFlags = 'Destination';
         break;
       case 3:
-        flags = 'Both Drop Source and Destination';
+        tempFlags = 'Source, Destination';
         break;
       default:
     }
     if (WatchForNewFiles) {
-      flags += DropFolderType ? ', Watch For New Files' : 'Watch For New Files';
+      tempFlags += DropFolderType ? ', Watch' : 'Watch';
     }
-
-    return (
-      <div className="flex items-center w-full mt-1 first:mt-0">
-        <Button onClick={() => handleEdit(folder)} className="mr-1">
-          <Icon className="text-highlight-1" path={mdiSquareEditOutline} size={1} />
-        </Button>
-        <Button onClick={() => handleDeleteFolder(folder.ID)} className="mr-3">
-          <Icon className="text-highlight-3" path={mdiTrashCanOutline} size={1} />
-        </Button>
-        <div className="flex grow">
-          <div className="grow">
-            <span className="font-semibold mr-1">{Name}</span>
-            <span className="opacity-75 text-xs">({flags})</span>
-          </div>
-          <div>{Path}</div>
-        </div>
-      </div>
-    );
-  };
-
-  const renderForm = () => {
-    const {
-      Name, WatchForNewFiles, DropFolderType, Path, showEdit,
-    } = newImportFolder;
-    return (
-      <TransitionDiv className="flex flex-col mt-6 w-3/5">
-        <Input label="Name" id="Name" value={Name} type="text" placeholder="Name" onChange={handleInputChange} />
-        <div className="flex mt-9 items-end">
-          <Input label="Location" id="Path" value={Path} type="text" placeholder="Location" onChange={handleInputChange} className="grow" />
-          {/* TODO: Move folder icon into the input field */}
-          <Button onClick={() => dispatch(setBrowseStatus(true))} className="ml-2 mb-1">
-            <Icon className="text-highlight-1" path={mdiFolderOpen} size={1} />
-          </Button>
-        </div>
-        <Select label="Drop Type" id="DropFolderType" value={DropFolderType} onChange={handleInputChange} className="mt-9">
-          <option value={0}>None</option>
-          <option value={1}>Source</option>
-          <option value={2}>Destination</option>
-          <option value={3}>Both</option>
-        </Select>
-        <Select label="Watch For New Files" id="WatchForNewFiles" value={WatchForNewFiles ? 'True' : 'False'} onChange={handleInputChange} className="mt-9">
-          <option value="False">No</option>
-          <option value="True">Yes</option>
-        </Select>
-        <span className="flex mt-9">
-          {showEdit ? (
-            <Button onClick={() => handleEditFolder()} className="bg-highlight-1 py-2 px-3">
-              Edit Import Folder
-            </Button>
-          ) : (
-            <Button onClick={() => handleAddFolder()} className="bg-highlight-1 py-2 px-3" disabled={Name === '' || Path === ''}>
-              Add Import Folder
-            </Button>
-          )}
-          <Button onClick={() => setNewImportFolder(defaultState)} className="bg-highlight-1 py-2 px-3 rounded text-sm ml-2">
-            Cancel
-          </Button>
-        </span>
-      </TransitionDiv>
-    );
-  };
+    return tempFlags;
+  }, [DropFolderType, WatchForNewFiles]);
 
   return (
-    <React.Fragment>
-      <TransitionDiv className="flex flex-col justify-center overflow-y-auto max-w-[40rem] px-8`">
-        <div className="font-semibold">Import Folders</div>
-        <div className="mt-9 text-justify">
-          Shoko requires at least <span className="font-bold">one</span> import folder in order to work properly, however you can
-          have as many import folders as you&apos;d like. Please note you can only have <span className="font-bold">one</span> folder
-          designated as your drop destination.
+    <div className="flex flex-col">
+      <div className="flex justify-between font-semibold">
+        {Name}
+        <div className="flex gap-x-3">
+          <Button onClick={() => dispatch(setImportFolderModalEdit(ID))}>
+            <Icon path={mdiPencilCircleOutline} size={1} className="text-highlight-1" />
+          </Button>
+          <Button onClick={() => handleDeleteFolder(ID)}>
+            <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+          </Button>
         </div>
-        <div className="flex flex-col my-9 overflow-y-auto">
-          <div className="font-semibold border-b border-background-border pb-3">Current Import Folders</div>
-          {!newImportFolder.showAddNew ? (
-            <React.Fragment>
-              <div className="flex flex-col my-6">{importFolders.map(folder => renderFolder(folder))}</div>
-              <div className="flex">
-                <Button onClick={() => setNewImportFolder({ ...newImportFolder, showAddNew: !newImportFolder.showAddNew })} className="bg-highlight-1 py-2 px-3">Add Import Folder</Button>
-              </div>
-            </React.Fragment>
-          ) : renderForm()}
+      </div>
+      <div className="flex justify-between mt-3.5">
+        Location
+        <span>{Path}</span>
+      </div>
+      <div className="flex justify-between mt-1">
+        Type
+        <span>{flags}</span>
+      </div>
+    </div>
+  );
+};
+
+function ImportFolders() {
+  const dispatch = useDispatch();
+
+  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
+
+  return (
+    <>
+      <TransitionDiv className="flex flex-col justify-center overflow-y-auto max-w-[38rem] gap-y-8">
+        <div className="font-semibold text-xl">Import Folders</div>
+        <div className="text-justify">
+          For Shoko to function correctly, at least one import folder is required. However, you can add as many import
+          folders as you desire. It's important to note that you can only select one folder to be the designated drop
+          destination.
         </div>
+        <div className="flex font-semibold">
+          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} className="bg-highlight-1 py-2 px-8">
+            Add Import Folder
+          </Button>
+        </div>
+        {importFolders.length > 0 ? (
+          <>
+            <div className="font-semibold">
+              Current Import Folders
+            </div>
+            <div className="flex flex-col gap-y-8 max-h-[20rem] overflow-y-auto">
+              {importFolders.map(folder => <Folder {...folder} key={folder.ID} />)}
+            </div>
+          </>
+        ) : (
+          <div className="font-semibold">No Import Folders Added</div>
+        )}
         <Footer nextPage="data-collection" saveFunction={() => dispatch(setFirstRunSaved('import-folders'))} />
       </TransitionDiv>
-      <BrowseFolderModal
-        onSelect={(folder: string) => setNewImportFolder({ ...newImportFolder, Path: folder })}
-      />
-    </React.Fragment>
+
+      <ImportFolderModal />
+    </>
   );
 }
 

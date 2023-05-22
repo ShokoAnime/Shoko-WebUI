@@ -28,7 +28,7 @@ function LocalAccount() {
       setUserStatus({ type: 'success', text: 'Account creation successful!' });
       dispatch(setUserState(user));
       dispatch(setFirstRunSaved('local-account'));
-      navigate('anidb-account');
+      navigate('../anidb-account');
     }, (error) => {
       console.error(error);
       setUserStatus({ type: 'error', text: error.data });
@@ -36,14 +36,13 @@ function LocalAccount() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col justify-center max-w-[40rem] px-8">
-      <div className="font-semibold">Create Your Account</div>
-      <div className="mt-9 text-justify">
-        In order to use Shoko you&apos;ll need to create an account. This local account will
-        allow you to login to Shoko and will link your account with any community site accounts
-        provided later on.
+    <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
+      <div className="font-semibold text-xl">Creating Your Account</div>
+      <div className="text-justify">
+        To use Shoko, you will need to create an account. This account will allow Shoko to manage links to all supported
+        metadata sites, enabling the synchronization of watch states and collection statuses.
       </div>
-      <form className="flex flex-col my-9" onSubmit={handleSave}>
+      <form className="flex flex-col" onSubmit={handleSave}>
         <Input id="Username" value={user.Username} label="Username" type="text" placeholder="Username" onChange={e => setUser({ ...user, Username: e.target.value })} />
         <Input id="Password" value={user.Password} label="Password" type="password" placeholder="Password" onChange={e => setUser({ ...user, Password: e.target.value })} className="mt-9" />
         {/* TODO: Add functionality for setting avatar */}
@@ -53,7 +52,7 @@ function LocalAccount() {
       </form>
       <Footer
         nextDisabled={user.Username === ''}
-        saveFunction={() => handleSave()}
+        saveFunction={handleSave}
         isFetching={createUserResult.isLoading}
         status={userStatus}
       />

@@ -91,7 +91,7 @@ function LoginPage() {
       <div className="flex h-screen w-screen">
         <div className={cx('flex grow login-image', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}/>
         <div className="absolute top-1.5 right-[32rem] text-white bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
-        <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
+        <div className="flex flex-col flex-none p-12 items-center justify-between w-[31.25rem] bg-background-nav border-l-2 border-background-border">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
@@ -137,20 +137,20 @@ function LoginPage() {
               </div>
             )}
             {status.data?.State === 4 && (
-              <div className="flex flex-col -mt-32">
-                <div className="flex flex-col">
+              <div className="flex flex-col -mt-32 gap-y-4">
+                <div className="flex flex-col gap-y-4">
                   <div className="font-semibold">First Time? We&apos;ve All Been There</div>
-                  <div className="mt-4 text-justify">
+                  <div className="text-justify">
                     Before Shoko can get started indexing your anime collection, you&apos;ll
                     need to go through our <span className="text-highlight-2">First Time Wizard </span>
                     and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
                     takes a couple of minutes.
                   </div>
-                  <div className="mt-4">
+                  <div>
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => navigate('/firstrun')} className="bg-highlight-1 py-2 mt-4">Continue</Button>
+                <Button onClick={() => navigate('/webui/firstrun')} className="bg-highlight-1 py-2">Continue</Button>
               </div>
             )}
           </div>
