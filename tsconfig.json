@@ -10,7 +10,13 @@
         "checkJs": false,
         "moduleResolution": "node",
         "allowSyntheticDefaultImports": true,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "baseUrl": "./src",
+        "paths": {
+            "@/*": [
+                "*"
+            ]
+        }
     },
     "include": [
         "./src/",

@@ -35,6 +35,9 @@ const config = {
   },
   devtool: isDebug || process.env.SENTRY_AUTH_TOKEN ? 'source-map' : false,
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   stats: {

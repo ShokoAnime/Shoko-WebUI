@@ -10,6 +10,13 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "webpack.config.default.js"
+      }
+    }
+  },
   "rules": {
     "@typescript-eslint/await-thenable": "warn",
     "@typescript-eslint/no-floating-promises": [
