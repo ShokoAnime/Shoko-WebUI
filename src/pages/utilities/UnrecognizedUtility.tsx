@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { Outlet } from 'react-router';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { NavLink, useOutletContext } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiChevronRight } from '@mdi/js';
-import cx from 'classnames';
 import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
@@ -21,24 +20,16 @@ type ContextType = {
 
 const columnHelper = createColumnHelper<FileType>();
 
-const TabButton = ({ id, name }: { id: string; name: string }) => {
-  const navigate = useNavigate();
-  const { pathname } = useLocation();
-
-  return (
-    <div
-      onClick={() => navigate(id)}
-      className={cx(['mx-2 cursor-pointer', pathname === `/webui/utilities/unrecognized/${id}` && 'text-highlight-1'])}
-    >
-      {name}
-    </div>
-  );
-};
+const TabButton = ({ id, name }: { id: string; name: string }) => (
+  <NavLink to={`../${id}`} className={({ isActive }) => isActive ? 'text-highlight-1' : ''}>
+    {name}
+  </NavLink>
+);
 
 export const Title = () => (
-  <div className="flex items-center font-semibold">
+  <div className="flex items-center font-semibold space-x-2">
     Unrecognized Files
-    <Icon path={mdiChevronRight} size={1} className="ml-2" />
+    <Icon path={mdiChevronRight} size={1} />
     <TabButton id="files" name="Unrecognized" />
     <div>|</div>
     <TabButton id="manually-linked-files" name="Manually Linked" />
