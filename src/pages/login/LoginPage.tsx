@@ -91,7 +91,7 @@ function LoginPage() {
       <div className="flex h-screen w-screen">
         <div className={cx('flex grow login-image', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}/>
         <div className="absolute top-1.5 right-[32rem] text-white bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
-        <div className="flex flex-col flex-none p-12 items-center justify-between w-[31.25rem] bg-background-nav border-l-2 border-background-border">
+        <div className="flex flex-col flex-none p-12 items-center justify-between w-[31.25rem] bg-background-alt border-l border-background-border">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
@@ -124,7 +124,7 @@ function LoginPage() {
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-4" />
                   </div>
                   <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
-                  <Button className="bg-highlight-1 mt-4 py-2 w-full" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                  <Button className="bg-highlight-1 mt-4 py-2 w-full font-semibold" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
                 </form>
               </React.Fragment>
             )}
@@ -154,7 +154,7 @@ function LoginPage() {
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full font-semibold">
             <Button className="flex bg-highlight-1 items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
               Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
             </Button>
