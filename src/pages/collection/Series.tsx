@@ -20,7 +20,7 @@ import {
 import { TagType } from '@/core/types/api/tags';
 import cx from 'classnames';
 import AnidbDescription from './items/AnidbDescription';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useOutletContext } from 'react-router-dom';
 import { get, isArray, random } from 'lodash';
 
 const IconNotification = ({ text }) => (
@@ -55,6 +55,8 @@ const SeriesTag = ({ text, type }) => (
 const Series = () => {
   const { seriesId } = useParams();
   const [ fanartUri, setFanartUri ] = useState('');
+
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
   
   if (!seriesId) { return null; }
   
@@ -130,7 +132,7 @@ const Series = () => {
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[18.5rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       </div>
       <div className="mt-8 flex flex-col">
-        <Outlet />
+        <Outlet context={{ scrollRef }} />
       </div>
       <div className="h-full w-full top-0 left-0 fixed opacity-5 -z-10" style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }} />
     </div>

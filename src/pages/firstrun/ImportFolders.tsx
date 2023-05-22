@@ -9,7 +9,7 @@ import Button from '@/components/Input/Button';
 import Footer from './Footer';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useDeleteImportFolderMutation, useGetImportFoldersQuery, } from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { useDeleteImportFolderMutation, useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import {
   setEdit as setImportFolderModalEdit,
   setStatus as setImportFolderModalStatus,
