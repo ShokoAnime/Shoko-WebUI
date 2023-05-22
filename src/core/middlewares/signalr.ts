@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
-import { HttpTransportType, HubConnection, HubConnectionBuilder, JsonHubProtocol, LogLevel, } from '@microsoft/signalr';
+import { HttpTransportType, HubConnection, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import moment from 'moment';
-import { debounce, defer, delay, forEach, round, } from 'lodash';
+import { debounce, defer, delay, forEach, round } from 'lodash';
 
 import Events from '../events';
 import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '../slices/mainpage';

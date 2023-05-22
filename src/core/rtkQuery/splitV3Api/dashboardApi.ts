@@ -4,7 +4,7 @@ import type { PaginationType } from '@/core/types/api';
 import type {
   DashboardEpisodeDetailsType,
   DashboardSeriesSummaryType,
-  DashboardStatsType
+  DashboardStatsType,
 } from '@/core/types/api/dashboard';
 import type { SeriesType } from '@/core/types/api/series';
 

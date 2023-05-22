@@ -3,7 +3,7 @@ import moment from 'moment';
 import { createApi } from '@reduxjs/toolkit/query/react';
 import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
 import { LogLineType } from '@/core/types/api/common';
-import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel, } from '@microsoft/signalr';
+import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import { RootState } from '../store';
 
 const formatStamp = date => moment(date).format('YYYY-MM-DD HH:mm:ss');
