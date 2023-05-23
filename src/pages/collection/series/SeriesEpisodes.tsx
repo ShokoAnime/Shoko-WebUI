@@ -1,20 +1,23 @@
 import { useParams } from 'react-router';
 import { useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { EpisodeType } from '@/core/types/api/episode';
-import { debounce, get, toNumber } from 'lodash';
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import { debounce, toNumber } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiMagnify } from '@mdi/js';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import React, { useEffect, useState } from 'react';
-import { ImageType } from '@/core/types/api/common';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
-import { AutoSizer, InfiniteLoader, List, WindowScroller } from 'react-virtualized';
-import { NavLink, useOutletContext } from 'react-router-dom';
-import { EpisodeDetails } from '../items/EpisodeDetails';
+import { AutoSizer, CellMeasurer, CellMeasurerCache, InfiniteLoader, List, WindowScroller } from 'react-virtualized';
+import { useOutletContext } from 'react-router-dom';
+import { SeriesEpisode } from '@/pages/collection/items/SeriesEpisode';
 
 const pageSize = 20;
+
+const cache = new CellMeasurerCache({
+  defaultHeight: 307,
+  fixedWidth: true,
+});
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
@@ -28,6 +31,7 @@ const SeriesEpisodes = () => {
   const episodesTotal: number = episodesData?.data?.Total ?? 0;
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  let listRef;
 
   const loadMoreRows = ({ startIndex }) => {
     return fetchEpisodes({ 
@@ -48,31 +52,28 @@ const SeriesEpisodes = () => {
     debouncedLoadMore({ startIndex: 0 })?.catch(() => {});
   }, [episodeFilterType, episodeFilterStatus, episodeFilterWatched, search]);
   const isRowLoaded = ({ index }) => !!episodes[index];
-
-  const getThumbnailUrl = (episode: EpisodeType) => {
-    const thumbnail = get<EpisodeType, string, ImageType | null>(episode, 'TvDB.0.Thumbnail', null);
-    if (thumbnail === null) { return null; }
-    return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
+  
+  const resetRow = index => () => { 
+    cache.clear(index, 0);
+    listRef?.recomputeRowHeights(index);
   };
-
-  const renderEpisode = episode => (
-    <React.Fragment>
-      <NavLink to={`${episode.IDs.ID}`}>
-        <div className="flex space-x-8 rounded bg-background-alt/25 p-8 border-background-border border">
-          <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="h-[8.4375rem] min-w-[15rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-          <EpisodeDetails episode={episode}/>
+  
+  const rowRenderer = ({ index, key, style, parent }) => {
+    if (!episodes[index]) { return null; }
+    return (
+      <CellMeasurer
+        cache={cache}
+        columnIndex={0}
+        key={key}
+        parent={parent}
+        rowIndex={index}
+      >
+        <div key={key} style={style}>
+            <SeriesEpisode episode={episodes[index]} resetHeight={resetRow(index)} />
         </div>
-      </NavLink>
-    </React.Fragment>
-  );
-  
-  const rowRenderer = ({ index, key, style }) => (
-    <div key={key} style={style}>
-      {episodes[index] && renderEpisode(episodes[index])}
-    </div>
-  );
-  
-  
+      </CellMeasurer>
+    );
+  };
   
   return (
     <React.Fragment>
@@ -132,9 +133,10 @@ const SeriesEpisodes = () => {
                         autoHeight
                         height={height}
                         onRowsRendered={onRowsRendered}
-                        ref={registerChild}
+                        ref={(ref) => { listRef = ref; registerChild(ref); }}
                         rowCount={episodesTotal}
-                        rowHeight={231}
+                        deferredMeasurementCache={cache}
+                        rowHeight={cache.rowHeight}
                         rowRenderer={rowRenderer}
                         width={width}
                         scrollTop={scrollTop}
