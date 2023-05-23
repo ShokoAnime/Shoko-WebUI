@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
@@ -35,7 +35,7 @@ import { fuzzyFilter } from '@/core/util';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-import UtilitiesTable from '@/components/Utilities/Unrecognized/UtilitiesTable';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
 import {
   useDeleteFileMutation,
@@ -45,9 +45,8 @@ import {
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
 } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { setSelectedRows } from '@/core/slices/utilities/unrecognized';
 import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
-import { Title, useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 import type { FileType } from '@/core/types/api/file';
 import type { RootState } from '@/core/store';
@@ -56,12 +55,11 @@ import Input from '@/components/Input/Input';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
+import Title from '@/components/Utilities/Unrecognized/Title';
 
 const columnHelper = createColumnHelper<FileType>();
 
 const Menu = ({ table }: { table: Table<FileType> }) => {
-  const { selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
-
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileDeleteTrigger] = useDeleteFileMutation();
@@ -70,6 +68,8 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
   const [fileRescanTrigger] = usePostFileRescanMutation();
 
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
+
+  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
 
   const deleteFiles = () => {
     let failedFiles = 0;
@@ -149,7 +149,7 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
           <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
           <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
         </TransitionDiv>
-        <span className="text-highlight-2 ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+        <span className="text-highlight-2 font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
       </div>
       <AvDumpSeriesSelectModal show={seriesSelectModal} onClose={() => setSeriesSelectModal(false)} links={ed2kLinks()} />
     </>
@@ -165,7 +165,6 @@ function UnrecognizedTab() {
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 
-  const { selectedRows } = useSelector((state: RootState) => state.utilities.unrecognized);
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
   const dispatch = useDispatch();
@@ -179,12 +178,6 @@ function UnrecognizedTab() {
     const result = await fileAvdumpTrigger(fileId);
     dispatch(setAvdumpItem({ id: fileId, hash: result.data?.Ed2k ?? 'x', fetching: false }));
     setDumpInProgress(false);
-  };
-
-  const avdumpFiles = async () => {
-    for (let i = 0; i < selectedRows.length; i ++) {
-      await runAvdump(selectedRows[i].ID);
-    }
   };
 
   const columns = [
@@ -265,13 +258,19 @@ function UnrecognizedTab() {
   });
 
   useEffect(() => {
-    dispatch(setSelectedRows(table.getSelectedRowModel().rows.map(row => row.original)));
-  }, [table.getSelectedRowModel().rows.length]);
-
-  useEffect(() => {
     table.resetRowSelection();
-    dispatch(setSelectedRows([]));
   }, [filesQuery.requestId]);
+
+  const selectedRows = useMemo(
+    () => table.getSelectedRowModel().rows.map(row => row.original),
+    [table.getSelectedRowModel().rows.length],
+  );
+
+  const avdumpFiles = async () => {
+    for (let i = 0; i < selectedRows.length; i ++) {
+      await runAvdump(selectedRows[i].ID);
+    }
+  };
 
   return (
     <div className="flex flex-col grow w-full h-full">
@@ -282,7 +281,10 @@ function UnrecognizedTab() {
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
             <Menu table={table} />
             <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
-              <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={() => navigate('files-link')}>
+              <Button
+                className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold"
+                onClick={() => navigate('link', { state: { selectedRows } })}
+              >
                 <Icon path={mdiOpenInNew} size={0.8333} />
                 Manual Link
               </Button>

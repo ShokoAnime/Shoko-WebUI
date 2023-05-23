@@ -125,7 +125,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     if (!selected || !selected.label) return emptyValue;
     return (
       <React.Fragment>
-        <span className="text-highlight-2">{selected.number}</span> - {selected.label}
+        <span className="text-highlight-2 font-semibold">{selected.number}</span> - {selected.label}
         {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border">{selected.type}</span>}
       </React.Fragment> 
     );

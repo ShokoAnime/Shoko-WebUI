@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { Outlet } from 'react-router';
-import { NavLink, useOutletContext } from 'react-router-dom';
-import { Icon } from '@mdi/react';
-import { mdiChevronRight } from '@mdi/js';
+import { useOutletContext } from 'react-router-dom';
 import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
@@ -19,24 +17,6 @@ type ContextType = {
 };
 
 const columnHelper = createColumnHelper<FileType>();
-
-const TabButton = ({ id, name }: { id: string; name: string }) => (
-  <NavLink to={`../${id}`} className={({ isActive }) => isActive ? 'text-highlight-1' : ''}>
-    {name}
-  </NavLink>
-);
-
-export const Title = () => (
-  <div className="flex items-center font-semibold space-x-2">
-    Unrecognized Files
-    <Icon path={mdiChevronRight} size={1} />
-    <TabButton id="files" name="Unrecognized" />
-    <div>|</div>
-    <TabButton id="manually-linked-files" name="Manually Linked" />
-    <div>|</div>
-    <TabButton id="ignored-files" name="Ignored Files" />
-  </div>
-);
 
 function UnrecognizedUtility() {
   const importFolderQuery = useGetImportFoldersQuery();

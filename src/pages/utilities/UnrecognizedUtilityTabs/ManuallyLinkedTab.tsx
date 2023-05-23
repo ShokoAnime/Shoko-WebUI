@@ -26,7 +26,7 @@ import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtk
 import toast from '@/components/Toast';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
-import { Title } from '../UnrecognizedUtility';
+import Title from '@/components/Utilities/Unrecognized/Title';
 
 function ManuallyLinkedTab() {
   const dispatch = useDispatch();

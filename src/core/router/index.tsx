@@ -82,7 +82,7 @@ const router = createBrowserRouter(
             <Route path="unrecognized" element={<UnrecognizedUtility />}>
               <Route index element={<Navigate to="files" />} />
               <Route path="files" element={<UnrecognizedTab />} />
-              <Route path="files-link" element={<LinkFilesTab />} />
+              <Route path="files/link" element={<LinkFilesTab />} />
               <Route path="manually-linked-files" element={<ManuallyLinkedTab />} />
               <Route path="ignored-files" element={<IgnoredFilesTab />} />
             </Route>

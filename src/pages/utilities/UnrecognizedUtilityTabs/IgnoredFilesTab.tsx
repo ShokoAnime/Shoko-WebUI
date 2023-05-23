@@ -4,16 +4,17 @@ import { mdiCloseCircleOutline, mdiEyeOutline, mdiMagnify, mdiRestart } from '@m
 import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, Table, useReactTable } from '@tanstack/react-table';
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
-import UtilitiesTable from '@/components/Utilities/Unrecognized/UtilitiesTable';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
 import { useGetFileIgnoredQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { fuzzyFilter } from '@/core/util';
 
-import { Title, useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { FileType } from '@/core/types/api/file';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import Title from '@/components/Utilities/Unrecognized/Title';
 
 const Menu = ({ table }: { table: Table<FileType> }) => {
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });

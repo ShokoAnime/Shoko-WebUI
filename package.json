@@ -32,6 +32,7 @@
     "format-thousands": "^2.0.0",
     "fuse.js": "^6.6.2",
     "http-proxy-middleware": "^2.0.6",
+    "immer": "^10.0.2",
     "isomorphic-fetch": "^3.0.0",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
@@ -52,7 +53,8 @@
     "redux-actions": "^2.6.5",
     "redux-devtools-extension": "^2.13.9",
     "semver": "^7.3.8",
-    "simple-icons": "^7.21.0"
+    "simple-icons": "^7.21.0",
+    "use-immer": "^0.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",

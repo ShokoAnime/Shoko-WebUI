@@ -7202,6 +7202,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"immer@npm:^10.0.2":
+  version: 10.0.2
+  resolution: "immer@npm:10.0.2"
+  checksum: 525a3b14210d02ae420c3b9f6ca14f7e9bcf625611d1356e773e7739f14c7c8de50dac442e6c7de3a6e24a782f7b792b6b8666bc0b3f00269d21a95f8f68ca84
+  languageName: node
+  linkType: hard
+
 "immer@npm:^9.0.16":
   version: 9.0.16
   resolution: "immer@npm:9.0.16"
@@ -7920,6 +7927,7 @@ __metadata:
     format-thousands: ^2.0.0
     fuse.js: ^6.6.2
     http-proxy-middleware: ^2.0.6
+    immer: ^10.0.2
     isomorphic-fetch: ^3.0.0
     json-loader: ^0.5.7
     lodash: ^4.17.21
@@ -7962,6 +7970,7 @@ __metadata:
     terser-webpack-plugin: ^5.3.6
     ts-loader: ^9.4.2
     typescript: 4.9.4
+    use-immer: ^0.9.0
     webpack: ^5.76.0
     webpack-bundle-analyzer: ^4.7.0
     webpack-cli: ^4.10.0
@@ -13056,6 +13065,16 @@ __metadata:
     querystringify: ^2.1.1
     requires-port: ^1.0.0
   checksum: fbdba6b1d83336aca2216bbdc38ba658d9cfb8fc7f665eb8b17852de638ff7d1a162c198a8e4ed66001ddbf6c9888d41e4798912c62b4fd777a31657989f7bdf
+  languageName: node
+  linkType: hard
+
+"use-immer@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "use-immer@npm:0.9.0"
+  peerDependencies:
+    immer: ">=2.0.0"
+    react: ^16.8.0 || ^17.0.1 || ^18.0.0
+  checksum: 3f02e31d38f354125e6cffaaed0a08d9bf122b9df261aa7b38a25246813b3bd8b22bf97b192099d4e84adcfbbb07e69e14ba29520e0ac8d93f3991ef3a3652b4
   languageName: node
   linkType: hard
 
