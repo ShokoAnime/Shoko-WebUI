@@ -20,7 +20,7 @@ import Button from '@/components/Input/Button';
 import { useGetSeriesWithManuallyLinkedFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { SeriesType } from '@/core/types/api/series';
 import { ListResultType } from '@/core/types/api';
-import ManuallyLinkedFilesRow from './Components/ManuallyLinkedFilesRow';
+import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import toast from '@/components/Toast';

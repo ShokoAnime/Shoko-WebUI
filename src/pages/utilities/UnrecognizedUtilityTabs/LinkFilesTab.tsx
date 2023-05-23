@@ -40,8 +40,8 @@ import toast from '@/components/Toast';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import { FileLinkApiType } from '@/core/types/api/file';
 import { useGetFileUnrecognizedQuery, usePostFileLinkMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
-import ItemCount from './Components/ItemCount';
-import MenuButton from './Components/MenuButton';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 
 const Menu = ({ link }: { link: ManualLink }) => {
   const dispatch = useDispatch();

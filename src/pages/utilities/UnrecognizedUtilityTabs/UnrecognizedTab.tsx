@@ -35,7 +35,7 @@ import { fuzzyFilter } from '@/core/util';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-import UtilitiesTable from './Components/UtilitiesTable';
+import UtilitiesTable from '@/components/Utilities/Unrecognized/UtilitiesTable';
 
 import {
   useDeleteFileMutation,
@@ -53,9 +53,9 @@ import type { FileType } from '@/core/types/api/file';
 import type { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
-import ItemCount from './Components/ItemCount';
-import MenuButton from './Components/MenuButton';
-import AvDumpSeriesSelectModal from './Components/AvDumpSeriesSelectModal';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 
 const columnHelper = createColumnHelper<FileType>();
 

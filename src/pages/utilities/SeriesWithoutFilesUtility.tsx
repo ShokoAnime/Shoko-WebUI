@@ -22,7 +22,7 @@ import type { SeriesType } from '@/core/types/api/series';
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
-import UtilitiesTable from './UnrecognizedUtilityTabs/Components/UtilitiesTable';
+import UtilitiesTable from '@/components/Utilities/Unrecognized/UtilitiesTable';
 
 const columnHelper = createColumnHelper<SeriesType>();
 
