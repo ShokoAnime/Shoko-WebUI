@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { find } from 'lodash';
 import {
   createColumnHelper,
@@ -7,19 +7,19 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
-import { Icon } from '@mdi/react';
-import { mdiLoading } from '@mdi/js';
 
 import Checkbox from '@/components/Input/Checkbox';
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
 import { EpisodeType } from '@/core/types/api/episode';
+import { Icon } from '@mdi/react';
+import { mdiOpenInNew } from '@mdi/js';
 
 type Props = {
   seriesId: number;
-  modifySelectedFiles: (fileIds: Array<number>, remove: boolean) => void;
-  selectedFiles: Set<number>;
+  updateSelectedFiles: (fileIds: number[], select?: boolean) => void;
+  selectedFiles: { [key: number]: boolean };
   files: FileType[];
   episodes: EpisodeType[];
 };
@@ -27,7 +27,19 @@ type Props = {
 const columnHelper = createColumnHelper<FileType>();
 
 function ManuallyLinkedFilesRow(props: Props) {
-  const { seriesId, modifySelectedFiles, selectedFiles, episodes, files } = props;
+  const { seriesId, updateSelectedFiles, selectedFiles, episodes, files } = props;
+
+  const getEpTypePrefix = useCallback(
+    (epType: string) => {
+      switch (epType) {
+        case 'Normal': return 'EP';
+        case 'Special': return 'SP';
+        case 'ThemeSong': return 'C';
+        default: return '';
+      }
+    },
+    [],
+  );
 
   const columns = useMemo(() => [
     columnHelper.display({
@@ -43,7 +55,7 @@ function ManuallyLinkedFilesRow(props: Props) {
                 result.push(row.original.ID);
                 return result;
               }, selectedIds);
-              modifySelectedFiles(selectedIds, table.getIsAllRowsSelected());
+              updateSelectedFiles(selectedIds, !table.getIsAllRowsSelected());
               table.toggleAllRowsSelected();
             }}
             intermediate={table.getIsSomeRowsSelected()}
@@ -56,7 +68,7 @@ function ManuallyLinkedFilesRow(props: Props) {
             id={`checkbox-${seriesId}-${row.id}`}
             isChecked={row.getIsSelected()}
             onChange={() => {
-              modifySelectedFiles([row.original.ID], row.getIsSelected());
+              updateSelectedFiles([row.original.ID], !row.getIsSelected());
               row.toggleSelected();
             }}
           />
@@ -66,44 +78,34 @@ function ManuallyLinkedFilesRow(props: Props) {
         className: 'w-20',
       },
     }),
+    columnHelper.display({
+      id: 'entry',
+      header: 'Entry',
+      cell: ({ row }) => {
+        const episode = find(episodes, item => item.IDs.ID === row.original.SeriesIDs![0].EpisodeIDs[0].ID)!;
+        return (
+          <div className="flex">
+            {`${getEpTypePrefix(episode?.AniDB?.Type ?? '')} ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}&nbsp;
+            (<span className="text-highlight-1 font-semibold">{episode?.IDs?.AniDB}</span>)
+            <a href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`} rel="noopener noreferrer" target="_blank" className="text-highlight-1 ml-2">
+              <Icon path={mdiOpenInNew} size={1} />
+            </a>
+          </div>
+        );
+      },
+      meta: {
+        className: 'w-auto',
+      },
+    }),
     columnHelper.accessor(row => row.Locations?.[0].RelativePath.split(/[\/\\]/g).pop(), {
       header: 'File',
       id: 'file',
       cell: info => info.getValue(),
       meta: {
-        className: 'w-auto',
+        className: 'w-128',
       },
       filterFn: 'fuzzy',
       sortingFn: fuzzySort,
-    }),
-    columnHelper.display({
-      id: 'type',
-      header: 'Type',
-      cell: ({ row }) => {
-        const episode = find(episodes, item => item.IDs.ID === row.original.SeriesIDs![0].EpisodeIDs[0].ID);
-        return episode ? episode.AniDB?.Type ?? 'Normal' : <Icon path={mdiLoading} size={1} className="text-highlight-1" spin />;
-      },
-      meta: {
-        className: 'w-36',
-      },
-    }),
-    columnHelper.display({
-      id: 'episode',
-      header: 'Episode',
-      cell: ({ row }) => {
-        const episode = find(episodes, item => item.IDs.ID === row.original.SeriesIDs![0].EpisodeIDs[0].ID);
-        return episode ? `${episode.AniDB?.EpisodeNumber ?? 'x'} - ${episode.Name}` : <Icon path={mdiLoading} size={1} className="text-highlight-1" spin />;
-      },
-      meta: {
-        className: 'w-96',
-      },
-    }),
-    columnHelper.display({
-      id: 'blank',
-      cell: '',
-      meta: {
-        className: 'w-8',
-      },
     }),
   ], [episodes]);
 
@@ -118,16 +120,19 @@ function ManuallyLinkedFilesRow(props: Props) {
   });
 
   useEffect(() => {
-    table.getRowModel().flatRows.forEach(row => row.toggleSelected(selectedFiles.has(row.original.ID)));
+    table.getRowModel().flatRows.forEach((row) => {
+      if (selectedFiles[row.original.ID])
+        row.toggleSelected(selectedFiles[row.original.ID]);
+    });
   }, [selectedFiles, table.getRowModel()]);
 
   return (
     <table className="table-fixed text-left border-separate border-spacing-0 w-full">
       <thead>
       {table.getHeaderGroups().map(headerGroup => (
-        <tr key={headerGroup.id} className="bg-background-alt">
+        <tr key={headerGroup.id}>
           {headerGroup.headers.map(header => (
-            <th key={header.id} className={`${header.column.columnDef.meta?.className} py-3.5`}>
+            <th key={header.id} className={`${header.column.columnDef.meta?.className} pt-4 pb-1.5`}>
               {flexRender(header.column.columnDef.header, header.getContext())}
             </th>
           ))}
@@ -136,10 +141,10 @@ function ManuallyLinkedFilesRow(props: Props) {
       </thead>
       <tbody>
       {table.getRowModel().rows.map(row => (
-        <tr key={row.id} className="bg-background-alt">
+        <tr key={row.id}>
           {row.getVisibleCells().map(cell => (
-            <td key={cell.id} className="py-3.5">
-              <span className="line-clamp-1">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+            <td key={cell.id} className="py-1.5">
+              <span className="line-clamp-1 break-all">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
             </td>
           ))}
         </tr>
