@@ -33,7 +33,6 @@ import FilterGroupList from '@/pages/collection/FilterGroupList';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
-import SeriesEpisodeDetails from '@/pages/collection/series/SeriesEpisodeDetails';
 import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
 import SeriesImages from '@/pages/collection/series/SeriesImages';
 import SeriesOverview from '@/pages/collection/series/SeriesOverview';
@@ -98,7 +97,6 @@ const router = createBrowserRouter(
               <Route index element={<Navigate to="overview" replace />}/>
               <Route path="overview" element={<SeriesOverview />}/>
               <Route path="episodes" element={<SeriesEpisodes />}/>
-              <Route path="episodes/:episodeId" element={<SeriesEpisodeDetails />}/>
               <Route path="credits" element={<SeriesCredits />}/>
               <Route path="images" element={<SeriesImages />}/>
               <Route path="files" element={<SeriesFileSummary />}/>

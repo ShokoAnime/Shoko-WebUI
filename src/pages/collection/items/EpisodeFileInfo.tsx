@@ -2,7 +2,7 @@ import { get, map, toNumber } from 'lodash';
 import React from 'react';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-export const EpisodeFileInfo = ({ file, selectedFile }) => {
+export const EpisodeFileInfo = ({ file }) => {
   const VideoInfo: string[] = [];
   const VideoSource = get(file, 'AniDB.Source');
   if (VideoSource) {
@@ -44,7 +44,6 @@ export const EpisodeFileInfo = ({ file, selectedFile }) => {
     <React.Fragment>
       <ShokoPanel title="File Details">
         <div className="flex flex-col space-y-1">
-          <div className="font-semibold">File {selectedFile + 1}</div>
           <div className="flex">
             <div className=" min-w-[9.375rem] font-semibold">File Name</div>
             {get(file, 'Locations.0.RelativePath', '')}
