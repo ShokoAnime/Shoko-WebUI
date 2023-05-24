@@ -62,6 +62,7 @@ const router = createBrowserRouter(
       <Route index element={<Navigate to="/webui" replace />} />
       <Route path="index.html" element={<Navigate to="/webui" replace />} />
       <Route path="webui">
+        <Route path="index.html" element={<Navigate to="/webui" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
