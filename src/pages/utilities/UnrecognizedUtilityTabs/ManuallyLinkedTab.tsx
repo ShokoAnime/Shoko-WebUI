@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import Fuse from 'fuse.js';
-import { useVirtualizer } from '@tanstack/react-virtual';
+import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual';
 import { Icon } from '@mdi/react';
 import {
   mdiChevronDown,
@@ -11,22 +11,76 @@ import {
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
+  mdiOpenInNew,
   mdiRestart,
 } from '@mdi/js';
-import { Disclosure } from '@headlessui/react';
+import moment from 'moment/moment';
+import AnimateHeight from 'react-animate-height';
 
 import TransitionDiv from '@/components/TransitionDiv';
 import Button from '@/components/Input/Button';
-import { useGetSeriesWithManuallyLinkedFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import {
+  useGetSeriesWithManuallyLinkedFilesQuery,
+  useLazyGetSeriesEpisodesQuery,
+  useLazyGetSeriesFilesQuery,
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { SeriesType } from '@/core/types/api/series';
 import { ListResultType } from '@/core/types/api';
-import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import toast from '@/components/Toast';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
 import Title from '@/components/Utilities/Unrecognized/Title';
+import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
+
+const SeriesRow = ({ row, virtualRow }: { row: SeriesType, virtualRow: VirtualItem }) => {
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const [getFiles, filesResult] = useLazyGetSeriesFilesQuery();
+  const [getEpisodes, episodesResult] = useLazyGetSeriesEpisodesQuery();
+
+  const handleExpand = async () => {
+    if (open) {
+      setOpen(false);
+      return;
+    }
+
+    setLoading(true);
+    await getFiles({ seriesId: row.IDs.ID, isManuallyLinked: true, includeXRefs: true }, true);
+    await getEpisodes({ pageSize: 0, seriesID: row.IDs.ID, includeMissing: 'true', includeDataFrom: ['AniDB'] }, true);
+    setLoading(false);
+    setOpen(true);
+  };
+
+  return (
+    <div className="relative">
+      <div
+        className={cx(virtualRow.index % 2 === 0 ? 'bg-background-alt' : 'bg-background', 'cursor-pointer flex w-full px-8 py-4 text-left')}
+        onClick={handleExpand}
+      >
+        <div className="grow">{row.Name}</div>
+        <a href={`https://anidb.net/anime/${row.IDs.AniDB}`} rel="noopener,noreferrer" target="_blank" className="text-highlight-1 font-semibold w-24 flex gap-x-2" onClick={e => e.stopPropagation()}>
+          {row.IDs.AniDB}
+          <Icon path={mdiOpenInNew} size={1} />
+        </a>
+        <div className="w-32">{row.Sizes.FileSources.Unknown} files</div>
+        <div className="w-64">{moment(row.Created).format('MMMM DD YYYY, HH:mm')}</div>
+        <Icon path={loading ? mdiLoading : mdiChevronDown} spin={loading} size={1} rotate={open ? 180 : 0} className="transition-transform" />
+      </div>
+      <AnimateHeight height={open ? 'auto' : 0}>
+        <ManuallyLinkedFilesRow
+          seriesId={row.IDs.ID}
+          modifySelectedFiles={() => {}}
+          selectedFiles={new Set()}
+          files={filesResult?.data ?? []}
+          episodes={episodesResult?.data?.List ?? []}
+        />
+      </AnimateHeight>
+    </div>
+  );
+};
 
 function ManuallyLinkedTab() {
   const dispatch = useDispatch();
@@ -152,44 +206,32 @@ function ManuallyLinkedTab() {
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
         ) : series.Total > 0 ? (
-          <React.Fragment>
-            {/*<div className="flex px-8 py-3.5 bg-background-nav drop-shadow-lg font-bold sticky top-0 z-[1]">*/}
-            {/*  Series Name*/}
-            {/*</div>*/}
+          <>
+            <div className="flex px-6 py-4 bg-background font-semibold sticky top-0 z-[1] rounded-md border border-background-border">
+              <div className="grow">Series</div>
+              <div className="w-24">AniDB ID</div>
+              <div className="w-32">Link Count</div>
+              <div className="w-64">Date Linked</div>
+              <div className="w-8" />
+            </div>
             <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
               <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                 {virtualItems.map((virtualRow) => {
                   const row = filteredSeries[virtualRow.index];
                   return (
                     <div
-                      className="border-background-border border-t"
+                      className="border-background-border border rounded-md mt-2"
                       key={virtualRow.key}
                       data-index={virtualRow.index}
                       ref={rowVirtualizer.measureElement}
                     >
-                      <Disclosure>
-                        {({ open }) => (
-                          <>
-                            <Disclosure.Button className="flex w-full justify-between px-8 py-4">
-                              <span>
-                                {row.Name} (AniDB:<a href={`https://anidb.net/anime/${row.IDs.AniDB}`} rel="noopener,noreferrer" target="_blank" className="text-highlight-1 font-semibold ml-1" onClick={e => e.stopPropagation()}>{row.IDs.AniDB}</a>)
-                              </span>
-                                <Icon path={mdiChevronDown} size={1} className="transition-transform ui-open:-rotate-180" />
-                            </Disclosure.Button>
-                            <TransitionDiv show={open}>
-                              <Disclosure.Panel>
-                                <ManuallyLinkedFilesRow seriesId={row.IDs.ID} modifySelectedFiles={modifySelectedFiles} selectedFiles={selectedFiles} />
-                              </Disclosure.Panel>
-                            </TransitionDiv>
-                          </>
-                        )}
-                      </Disclosure>
+                      <SeriesRow row={row} virtualRow={virtualRow} />
                     </div>
                   );
                 })}
               </div>
             </div>
-          </React.Fragment>
+          </>
         ) : (
           <div className="flex items-center justify-center h-full font-semibold">No manually linked file(s)!</div> 
         )}

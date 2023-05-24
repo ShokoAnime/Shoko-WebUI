@@ -258,6 +258,7 @@ function LinkFilesTab() {
       await filesQuery.refetch();
       setLinks([]);
       setSelectedSeries({} as SeriesAniDBSearchResult);
+      navigate('../');
     });
   };
 

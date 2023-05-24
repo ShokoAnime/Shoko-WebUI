@@ -14,24 +14,20 @@ import Checkbox from '@/components/Input/Checkbox';
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
-import { useGetSeriesEpisodesQuery, useGetSeriesFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
   seriesId: number;
   modifySelectedFiles: (fileIds: Array<number>, remove: boolean) => void;
   selectedFiles: Set<number>;
+  files: FileType[];
+  episodes: EpisodeType[];
 };
 
 const columnHelper = createColumnHelper<FileType>();
 
 function ManuallyLinkedFilesRow(props: Props) {
-  const { seriesId, modifySelectedFiles, selectedFiles } = props;
-  const filesQuery = useGetSeriesFilesQuery({ seriesId, isManuallyLinked: true, includeXRefs: true }, { refetchOnMountOrArgChange: false });
-  const files = filesQuery.data ?? [];
-
-  // We can either get the data for *all* the episodes in the series or call the api 1000 times. Choose your poison, I choose the former. Blame @revam
-  const episodesQuery = useGetSeriesEpisodesQuery({ pageSize: 0, seriesID: seriesId, includeMissing: 'true', includeDataFrom: ['AniDB'] }, { refetchOnMountOrArgChange: false });
-  const episodes = episodesQuery?.data?.List ?? [];
+  const { seriesId, modifySelectedFiles, selectedFiles, episodes, files } = props;
 
   const columns = useMemo(() => [
     columnHelper.display({
@@ -125,11 +121,7 @@ function ManuallyLinkedFilesRow(props: Props) {
     table.getRowModel().flatRows.forEach(row => row.toggleSelected(selectedFiles.has(row.original.ID)));
   }, [selectedFiles, table.getRowModel()]);
 
-  return filesQuery.isLoading ? (
-      <div className="flex justify-center py-4">
-        <Icon path={mdiLoading} size={1} className="text-highlight-1" spin />
-      </div>
-  ) : (
+  return (
     <table className="table-fixed text-left border-separate border-spacing-0 w-full">
       <thead>
       {table.getHeaderGroups().map(headerGroup => (
@@ -154,7 +146,6 @@ function ManuallyLinkedFilesRow(props: Props) {
       ))}
       </tbody>
     </table>
-    // </div>
   );
 }
 

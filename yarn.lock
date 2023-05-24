@@ -7942,6 +7942,7 @@ __metadata:
     postcss-scss: ^4.0.6
     pretty-bytes: ^6.0.0
     react: ^18.2.0
+    react-animate-height: ^3.1.1
     react-beautiful-dnd: ^13.1.1
     react-copy-to-clipboard: ^5.1.0
     react-dom: ^18.2.0
@@ -10585,6 +10586,16 @@ __metadata:
     iconv-lite: 0.4.24
     unpipe: 1.0.0
   checksum: d5e9179d2f1f0a652cd107c080f25d165c724f546124d620c8df7fb80322df42bff547a8b310e55e1f7952556d013716a21b30162192eb0b3332d7efcba75883
+  languageName: node
+  linkType: hard
+
+"react-animate-height@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "react-animate-height@npm:3.1.1"
+  peerDependencies:
+    react: ">=16.8.0"
+    react-dom: ">=16.8.0"
+  checksum: 0f22eb1d9c2d2fd650a462da3db5aabcbde5f62a828053f953e17f7e65118c04acfb035408ce89ee48dc8289fcee8503c7a64e353e5e9568ea7659ab950497ec
   languageName: node
   linkType: hard
 
