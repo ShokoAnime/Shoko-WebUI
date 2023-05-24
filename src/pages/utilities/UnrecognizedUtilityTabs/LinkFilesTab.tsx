@@ -121,8 +121,7 @@ function LinkFilesTab() {
   const addLink = useCallback((FileID: number, EpisodeID = 0) => setLinks((linkState) => {
     if (EpisodeID === 0) {
       linkState.push({ FileID, EpisodeID: 0 });
-    }
-    else {
+    } else {
       const itemIndex = linkState.findIndex(link => link.FileID === FileID);
       // We are using immer but eslint is stupid
       // eslint-disable-next-line no-param-reassign
