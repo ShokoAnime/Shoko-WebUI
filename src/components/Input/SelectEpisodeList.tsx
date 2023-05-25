@@ -65,10 +65,10 @@ const getPrefix = (type: EpisodeTypeEnum) => {
 };
 
 const SelectOption = (option: Option & { divider: boolean }) => (
-  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-white select-none relative px-2 py-0.5 group">
+  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-font-alt select-none relative px-2 py-0.5 group">
     <div className="flex items-center justify-between">
       <span className="flex font-normal truncate grow">
-        <div className="text-highlight-2 w-10 group-hover:text-white">{getPrefix(option.type) + option.number}</div>
+        <div className="text-highlight-2 w-10 group-hover:text-font-main">{getPrefix(option.type) + option.number}</div>
         |
         <div className="ml-2">{option.label}</div>
       </span>

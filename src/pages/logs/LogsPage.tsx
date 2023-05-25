@@ -39,7 +39,7 @@ function LogsPage() {
       rowIndex={index}
       parent={parent}
     >
-      <div key={key} style={style} className="text-sm bg-dark-gray">
+      <div key={key} style={style} className="text-sm">
         <div className="content flex flex-row">
           <div className="px-1 text-pink-500 whitespace-nowrap">{lines[index].timeStamp}</div>
           <div className="px-1">{lines[index].message}</div>
@@ -50,7 +50,7 @@ function LogsPage() {
 
   return (
     <React.Fragment>
-      <div key="logs" className="bg-gray-700 text-white font-mono flex flex-col min-h-full">
+      <div key="logs" className="font-mono flex flex-col min-h-full">
         <div className="flex flex-row text-sm text-font-main bg-background-alt items-center">
           <Checkbox id="scroll" isChecked={isScrollToBottom} onChange={handleScrollToBottom} />
           <span className="pl-1">Scroll to bottom</span>

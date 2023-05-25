@@ -19,7 +19,7 @@ const HoverIcon = ({ icon, label, route }) => (
 );
 
 const CountIcon = ({ className, children, show = true }) => (
-  show ? <div className={cx('m-3 px-3 py-1 bg-highlight-2 rounded font-semibold text-white text-center min-w-[1.75rem] bg-opacity-85 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]', className)}>{children}</div> : null
+  show ? <div className={cx('m-3 px-3 py-1 bg-highlight-2 rounded font-semibold text-font-main text-center min-w-[1.75rem] bg-opacity-85 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]', className)}>{children}</div> : null
 );
 
 const GridViewGroupItem = (item: CollectionGroupType) => {
