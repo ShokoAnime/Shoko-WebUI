@@ -119,13 +119,14 @@ const router = createBrowserRouter(
 
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
+  const webuiPreviewTheme = useSelector((state: RootState) => state.misc.webuiPreviewTheme) as string;
 
   const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   useEffect(() => {
-    document.body.className = `${theme} theme-shoko-gray`;
-  }, [theme]);
+    document.body.className = `${webuiPreviewTheme ?? theme} theme-shoko-gray`;
+  }, [theme, webuiPreviewTheme]);
 
   return (
     <div id="app-container" className="flex h-screen">

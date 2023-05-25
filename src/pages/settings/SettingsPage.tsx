@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router';
 import { NavLink, useLocation, useOutletContext } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
 import { isEqual } from 'lodash';
@@ -13,6 +14,7 @@ import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/s
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { uiVersion } from '@/core/util';
+import { setItem as setMiscItem } from '@/core/slices/misc';
 import type { SettingsType } from '@/core/types/api/settings';
 
 const items = [
@@ -172,6 +174,8 @@ type ContextType = {
 };
 
 function SettingsPage() {
+  const dispatch = useDispatch();
+
   const { pathname } = useLocation();
 
   const settingsQuery = useGetSettingsQuery();
@@ -184,6 +188,7 @@ function SettingsPage() {
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
+    dispatch(setMiscItem({ webuiPreviewTheme: null }));
     setNewSettings(settings);
   }, [settings]);
 
@@ -195,12 +200,15 @@ function SettingsPage() {
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings = { ...(newSettings[type]), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
+
+    if (type === 'WebUI_Settings' && key === 'theme')
+      dispatch(setMiscItem({ webuiPreviewTheme: value }));
   };
 
   const saveSettings = async () => {
     try {
       await patchSettings({ oldSettings: settings, newSettings }).unwrap();
-      await settingsQuery.refetch(); 
+      await settingsQuery.refetch();
     } catch (error) {}
   };
 

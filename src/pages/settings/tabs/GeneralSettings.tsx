@@ -53,7 +53,7 @@ function GeneralSettings() {
   const currentTheme = useMemo(() => {
     if (!themes.data) return;
     return themes.data.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme);
-  }, [themes.requestId, WebUI_Settings.theme]);
+  }, [themes.requestId, themes.isSuccess, WebUI_Settings.theme]);
 
   const exclusions = useMemo(() => {
     return transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
