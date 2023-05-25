@@ -73,7 +73,7 @@ export const initialSettings = {
   WebUI_Settings: {
     notifications: true,
     settingsRevision: 0,
-    theme: '',
+    theme: 'theme-shoko-gray',
     toastPosition: 'bottom-right',
     updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,

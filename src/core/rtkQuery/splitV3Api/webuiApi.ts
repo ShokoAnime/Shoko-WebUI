@@ -1,6 +1,6 @@
 import { splitV3Api } from '../splitV3Api';
 import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '@/core/types/api/webui';
-import { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
+import { WebuiSeriesFileSummaryType, WebuiTheme } from '@/core/types/api/webui';
 import type { ComponentVersionType } from '@/core/types/api/init';
 
 export type GroupViewApiRequest = {
@@ -51,6 +51,11 @@ const webuiApi = splitV3Api.injectEndpoints({
     getSeriesFileSummery: build.query<WebuiSeriesFileSummaryType, SeriesOverviewApiRequest>({
       query: ({ SeriesID }) => ({ url: `WebUI/Series/${SeriesID}/FileSummary` }),
     }),
+
+    // Retrieves the list of available themes.
+    getWebuiThemes: build.query<WebuiTheme[], void>({
+      query: () => ({ url: 'WebUI/Theme', params: { forceRefresh: true } }),
+    }),
   }),
 });
 
@@ -60,4 +65,5 @@ export const {
   useGetWebuiUpdateMutation,
   useGetSeriesOverviewQuery,
   useGetSeriesFileSummeryQuery,
+  useGetWebuiThemesQuery,
 } = webuiApi;

@@ -15,7 +15,7 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import Checkbox from '@/components/Input/Checkbox';
 import Button from '@/components/Input/Button';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-
+import { useGetWebuiThemesQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
 const UI_VERSION = uiVersion();
 
@@ -48,6 +48,12 @@ function GeneralSettings() {
   } = newSettings;
 
   const version = useGetInitVersionQuery();
+  const themes = useGetWebuiThemesQuery();
+
+  const currentTheme = useMemo(() => {
+    if (!themes.data) return;
+    return themes.data.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme);
+  }, [themes.requestId, WebUI_Settings.theme]);
 
   const exclusions = useMemo(() => {
     return transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
@@ -99,6 +105,30 @@ function GeneralSettings() {
               <option value="Stable">Stable</option>
               <option value="Dev">Dev</option>
             </SelectSmall>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-y-4">
+        <div className="font-semibold">Theme Options</div>
+        <div className="flex flex-col gap-y-1">
+          <div className="flex justify-between items-center">
+            Theme
+            <SelectSmall id="theme" value={WebUI_Settings.theme} onChange={event => updateSetting('WebUI_Settings', 'theme', event.target.value)}>
+              {themes.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
+            </SelectSmall>
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Description</span>
+            {currentTheme?.Description ?? '-'}
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Version</span>
+            {currentTheme?.Version ?? '-'}
+          </div>
+          <div className="flex justify-between items-center">
+            <span>Author</span>
+            {currentTheme?.Author ?? '-'}
           </div>
         </div>
       </div>
