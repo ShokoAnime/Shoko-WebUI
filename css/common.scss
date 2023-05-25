@@ -92,7 +92,7 @@ input:-webkit-autofill:focus {
 
 /* Firefox Autofill Fix */
 input:autofill {
-  background: theme('colors.background-alt');
+  background: theme('colors.background-border');
 }
 
 .react-grid-item > .react-resizable-handle::after {
