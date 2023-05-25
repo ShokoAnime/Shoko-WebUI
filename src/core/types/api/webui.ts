@@ -92,9 +92,9 @@ export type WebuiSeriesFileSummaryMissingEpisodeType = {
 export type WebuiTheme = {
   ID: string;
   Name: string;
-  Description: string;
+  Description: string | null;
   Author: string;
   Version: string;
   Tags: string[];
-  URL: string;
+  URL: string | null;
 };
