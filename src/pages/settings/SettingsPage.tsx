@@ -213,7 +213,7 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex h-full p-8 grow justify-center bg-cover bg-no-repeat overflow-y-auto gap-x-8 bg-settings" onClick={() => setShowNav(false)}>
+    <div className="flex h-full p-8 grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
       <TransitionDiv
         className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-0 gap-y-4 font-semibold bg-opacity-50"
         show={!(isSm && !showNav)}
@@ -265,6 +265,7 @@ function SettingsPage() {
         <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
         Whoa! You Have Unsaved Changes!
       </div>
+      <div className="h-full w-full -mt-8 left-0 fixed -z-10 !bg-center !bg-cover !bg-no-repeat" style={{ background: 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/api/v3/Image/Random/Fanart)' }} />
     </div>
   );
 }
