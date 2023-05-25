@@ -82,11 +82,9 @@ function LoginPage() {
         position={'bottom-right'}
         autoClose={4000}
         transition={Slide}
-        bodyClassName="font-semibold"
-        className="mt-20 !w-96"
+        className="mt-20 !w-[29.5rem]"
         closeButton={false}
         icon={false}
-        hideProgressBar={true}
       />
       <div className="flex h-screen w-screen">
         <div className={cx('flex grow login-image', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}/>

@@ -42,11 +42,9 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          bodyClassName="font-semibold"
-          className="mt-20 !w-96"
+          className="mt-20 !w-[29.5rem]"
           closeButton={false}
           icon={false}
-          hideProgressBar={true}
         />
       )}
       <div className="flex flex-col grow">
