@@ -213,9 +213,9 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex h-full p-8 grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
+    <div className="flex min-h-full h-fit p-8 grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-0 gap-y-4 font-semibold bg-opacity-50"
+        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-8 gap-y-4 font-semibold bg-opacity-50 h-full"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
@@ -261,7 +261,7 @@ function SettingsPage() {
           </>
         )}
       </div>
-      <div className={cx('flex w-96 bg-background-alt border border-background-border rounded-md p-8 gap-x-2 font-semibold items-center h-14 bg-opacity-50 sticky top-0 transition-opacity', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
+      <div className={cx('flex w-96 bg-background-alt border border-background-border rounded-md p-8 gap-x-2 font-semibold items-center h-14 bg-opacity-50 sticky top-8 transition-opacity', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
         <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
         Whoa! You Have Unsaved Changes!
       </div>
