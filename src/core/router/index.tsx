@@ -124,11 +124,11 @@ const Router = () => {
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   useEffect(() => {
-    document.body.className = 'theme-shoko-gray';
-  }, []);
+    document.body.className = `${theme} theme-shoko-gray`;
+  }, [theme]);
 
   return (
-    <div id="app-container" className={`${theme} theme-shoko-gray flex h-screen`}>
+    <div id="app-container" className="flex h-screen">
       <RouterProvider router={router} />
     </div>
   );
