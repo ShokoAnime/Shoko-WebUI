@@ -122,8 +122,9 @@ export type SettingsServerType = {
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string;
-  LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
+  LanguagePreference: Array<string>;
+  EpisodeLanguagePreference: Array<string>;
   Import: SettingsImportType;
   TraceLog: boolean;
 };

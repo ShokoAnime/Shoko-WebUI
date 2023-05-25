@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router';
-import { Link, useLocation, useOutletContext } from 'react-router-dom';
+import { NavLink, useLocation, useOutletContext } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
-import { find, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import semver from 'semver';
 import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
+import { mdiInformationOutline, mdiLoading } from '@mdi/js';
 
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import { uiVersion } from '@/core/util';
 import type { SettingsType } from '@/core/types/api/settings';
@@ -152,8 +151,9 @@ export const initialSettings = {
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
   AutoGroupSeriesRelationExclusions: '',
-  LanguagePreference: ['x-jat', 'en'],
   LanguageUseSynonyms: false,
+  LanguagePreference: ['x-jat', 'en'],
+  EpisodeLanguagePreference: ['en'],
   Import: {
     MoveOnImport: false,
     RenameOnImport: false,
@@ -166,7 +166,6 @@ export const initialSettings = {
 } as SettingsType;
 
 type ContextType = {
-  fetching: boolean
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => {};
   updateSetting: (type: string, key: string, value: string) => {};
@@ -188,17 +187,9 @@ function SettingsPage() {
     setNewSettings(settings);
   }, [settings]);
 
-  useEffect(() => {
-    if (isEqual(settings, newSettings))
-      toast.dismiss('unsaved');
-    else if (!isEqual(newSettings, initialSettings)) {
-      toast.info('', 'You have unsaved changes!', {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'unsaved',
-      });
-    }
+  const unsavedChanges = useMemo(() => {
+    if (isEqual(settings, newSettings)) return false;
+    else return !isEqual(newSettings, initialSettings);
   }, [newSettings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
@@ -213,59 +204,58 @@ function SettingsPage() {
     } catch (error) {}
   };
 
-  const renderItem = (name: string, path: string) => (
-    <Link to={path} className={cx('font-semibold mb-2', pathname === `/webui/settings/${path}` && 'text-highlight-1')} key={path} onClick={() => setShowNav(false)}>{name}</Link>
-  );
-
-  const getBgClassNames = () => {
-    switch (pathname.split('/').pop()) {
-      case 'general': return 'bg-general-settings bg-[center_right_-18rem]';
-      case 'import': return 'bg-import-settings bg-right';
-      case 'anidb': return 'bg-anidb-settings bg-[center_right_-26rem]';
-      case 'metadata-sites': return 'bg-metadata-sites-settings bg-[center_right_-14rem]';
-      case 'user-management': return 'bg-management-settings bg-[center_right_-26rem]';
-      default: return '';
-    }
-  };
-
   return (
-    <div className={`flex h-full p-8 grow bg-cover overflow-y-auto ${getBgClassNames()}`} onClick={() => setShowNav(false)}>
+    <div className="flex h-full p-8 grow justify-center bg-cover bg-no-repeat overflow-y-auto gap-x-8 bg-settings" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
+        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-0 gap-y-4 font-semibold bg-opacity-50"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-        {items.map(item => renderItem(item.name, item.path))}
+        <div className="text-xl opacity-100 mb-4">Settings</div>
+        {items.map(item => (
+          <NavLink to={item.path} className={({ isActive }) => isActive ? 'text-highlight-1' : ''} key={item.path}>
+            {item.name}
+          </NavLink>
+        ))}
       </TransitionDiv>
-      <div className='grow h-full px-8 bg-cover overflow-y-auto'>
-        {isSm && (
-          <div className="flex justify-center mb-8 font-semibold">
-            Settings
-            <Icon path={mdiChevronRight} size={1} className="mx-1" />
-            <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>
-              {find(items, item => item.path === pathname.split('/').pop())?.name}
-              <Icon path={mdiChevronDown} size={1} />
-            </div>
+      {/*{isSm && (*/}
+      {/*  <div className="flex justify-center mb-8 font-semibold">*/}
+      {/*    Settings*/}
+      {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" />*/}
+      {/*    <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>*/}
+      {/*      {find(items, item => item.path === pathname.split('/').pop())?.name}*/}
+      {/*      <Icon path={mdiChevronDown} size={1} />*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
+      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full h-fit">
+        {settingsQuery.isLoading ? (
+          <div className="flex grow items-center justify-center text-highlight-1">
+            <Icon path={mdiLoading} spin size={5} />
           </div>
+        ) : (
+          <>
+            <Outlet
+              context={{
+                newSettings,
+                setNewSettings,
+                updateSetting,
+              }}
+            />
+            {pathname.split('/').pop() !== 'user-management' && (
+              <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
+                <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border text-font-main">Cancel</Button>
+                <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+              </div>
+            )}
+          </>
         )}
-        <div className="flex flex-col max-w-full md:max-w-[34rem]">
-          <Outlet
-            context={{
-              fetching: settingsQuery.isLoading,
-              newSettings,
-              setNewSettings,
-              updateSetting,
-            }}
-          />
-        </div>
-        {pathname.split('/').pop() !== 'user-management' && (
-          <div className="flex max-w-[34rem] mt-10 justify-end">
-            <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
-            <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
-          </div>
-        )}
+      </div>
+      <div className={cx('flex w-96 bg-background-alt border border-background-border rounded-md p-8 gap-x-2 font-semibold items-center h-14 bg-opacity-50 sticky top-0 transition-opacity', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
+        <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
+        Whoa! You Have Unsaved Changes!
       </div>
     </div>
   );

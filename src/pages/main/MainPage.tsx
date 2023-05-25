@@ -8,7 +8,6 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import Events from '@/core/events';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
-import LanguagesModal from '@/components/Dialogs/LanguagesModal';
 import ProfileModal from '@/components/Dialogs/ProfileModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
@@ -49,7 +48,6 @@ function MainPage() {
       )}
       <div className="flex flex-col grow">
         <ImportFolderModal />
-        <LanguagesModal />
         <ProfileModal />
         <FiltersModal />
         <ActionsModal />

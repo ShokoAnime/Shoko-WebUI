@@ -62,11 +62,7 @@ module.exports = {
         transparent: 'transparent',
       },
       backgroundImage: {
-        'general-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/DemonSlayer.jpg)',
-        'import-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/OnePunchMan.jpg)',
-        'anidb-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/Bleach.jpg)',
-        'metadata-sites-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/DBZ.jpg)',
-        'management-settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/images/OnePiece.jpg)',
+        'settings': 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/api/v3/Image/Random/Fanart)',
       },
       spacing: {
         '13': '3.25rem',
