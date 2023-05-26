@@ -215,7 +215,7 @@ function SettingsPage() {
   return (
     <div className="flex min-h-full h-fit p-8 grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-8 gap-y-4 font-semibold bg-opacity-50 h-full"
+        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-8 gap-y-4 font-semibold bg-opacity-50 h-screen"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
