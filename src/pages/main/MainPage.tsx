@@ -10,8 +10,6 @@ import Events from '@/core/events';
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import ProfileModal from '@/components/Dialogs/ProfileModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
-import ActionsModal from '@/components/Dialogs/ActionsModal';
-import UtilitiesModal from '@/components/Dialogs/UtilitiesModal';
 import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 
@@ -50,8 +48,6 @@ function MainPage() {
         <ImportFolderModal />
         <ProfileModal />
         <FiltersModal />
-        <ActionsModal />
-        <UtilitiesModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
         <div className="grow shoko-scrollbar overflow-y-auto" id="scrollContainer" ref={scrollRef}>

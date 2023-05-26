@@ -64,8 +64,8 @@ function DashboardPage() {
       const renderToast = () => (
         <div className="flex flex-col">
           Edit Mode Enabled
-          <div className="flex items-center justify-end mt-3">
-            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 mr-3">Cancel</Button>
+          <div className="flex items-center justify-end mt-3 gap-x-3 font-semibold">
+            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 text-font-main">Cancel</Button>
             <Button onClick={() => saveLayout()} className="bg-highlight-1 px-3 py-1.5">Save</Button>
           </div>
         </div>
@@ -77,7 +77,7 @@ function DashboardPage() {
           draggable: false,
           closeOnClick: false,
           toastId: 'layoutEditMode',
-          className: 'w-56 ml-auto',
+          className: 'w-64 ml-auto',
         });
       } else {
         toast.infoUpdate('layoutEditMode', '', renderToast());

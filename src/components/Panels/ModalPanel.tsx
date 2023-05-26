@@ -23,7 +23,7 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName="fixed inset-0 bg-black/50 z-[80]"
-      className={`${className} absolute bg-background inset-0 top-20 m-auto w-[32rem] max-h-fit flex rounded-md`}
+      className={`${className} absolute bg-background inset-0 top-20 m-auto w-[32rem] max-h-fit flex rounded-md border border-background-alt`}
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}
       onAfterOpen={onAfterOpen}
