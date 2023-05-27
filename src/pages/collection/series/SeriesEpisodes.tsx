@@ -82,7 +82,7 @@ const SeriesEpisodes = () => {
           <div>
             <ShokoPanel title="Search & Filter" transparent>
               <div className="space-y-8">
-                <Input id="search" label="Episode search" startIcon={mdiMagnify} type="text" placeholder="Search..." className="w-full bg-background-alt" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
+                <Input id="search" label="Episode search" startIcon={mdiMagnify} type="text" placeholder="Search..." className="w-full bg-transparent" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
                 <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterType(event.currentTarget.value); }}>
                   <option value="2">Episodes</option>
                   <option value="3">Specials</option>
