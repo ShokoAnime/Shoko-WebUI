@@ -81,8 +81,7 @@ function GeneralSettings() {
 
   return (
     <>
-      General
-
+      <div className='font-semibold text-xl'>General</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>

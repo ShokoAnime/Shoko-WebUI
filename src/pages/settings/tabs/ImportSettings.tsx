@@ -17,8 +17,7 @@ function ImportSettings() {
 
   return (
     <>
-      Import
-
+      <div className='font-semibold text-xl'>Import</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="font-semibold">Import Options</div>
         <div className="flex flex-col gap-y-1">

@@ -80,8 +80,7 @@ function AniDBSettings() {
 
   return (
     <>
-      AniDB
-
+      <div className='font-semibold text-xl'>AniDB</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Login Options</div>

@@ -46,8 +46,7 @@ function MetadataSitesSettings() {
 
   return (
     <>
-      Metadata Sites
-
+      <div className='font-semibold text-xl'>Metadata Sites</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="font-semibold">MovieDB Options</div>
         <div className="flex flex-col gap-y-1">

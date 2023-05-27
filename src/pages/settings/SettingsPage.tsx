@@ -213,20 +213,24 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-full h-fit p-8 grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
+    <div className="flex p-8 grow justify-center gap-x-8 min-h-full" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 absolute z-10 md:sticky top-8 gap-y-4 font-semibold bg-opacity-50 h-screen"
+        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 z-10 gap-y-4 font-semibold bg-opacity-50 relative top-0"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-        <div className="text-xl opacity-100 mb-4">Settings</div>
-        {items.map(item => (
-          <NavLink to={item.path} className={({ isActive }) => isActive ? 'text-highlight-1' : ''} key={item.path}>
-            {item.name}
-          </NavLink>
-        ))}
+       <div className='sticky top-8'>
+         <div className="text-xl opacity-100 mb-8">Settings</div>
+         <div className='flex flex-col gap-y-4'>
+           {items.map(item => (
+             <NavLink to={item.path} className={({ isActive }) => isActive ? 'text-highlight-1' : ''} key={item.path}>
+               {item.name}
+             </NavLink>
+           ))}
+         </div>
+       </div>
       </TransitionDiv>
       {/*{isSm && (*/}
       {/*  <div className="flex justify-center mb-8 font-semibold">*/}
@@ -238,7 +242,7 @@ function SettingsPage() {
       {/*    </div>*/}
       {/*  </div>*/}
       {/*)}*/}
-      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full h-fit">
+      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full">
         {settingsQuery.isLoading ? (
           <div className="flex grow items-center justify-center text-highlight-1">
             <Icon path={mdiLoading} spin size={5} />
