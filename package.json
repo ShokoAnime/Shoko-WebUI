@@ -182,12 +182,7 @@
         }
       ],
       "declaration-block-trailing-semicolon": null,
-      "no-descending-specificity": null,
-      "import/extensions": [
-        {
-          "ts": "never"
-        }
-      ]
+      "no-descending-specificity": null
     }
   },
   "ava": {
