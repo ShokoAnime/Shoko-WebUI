@@ -221,7 +221,7 @@ function SettingsPage() {
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-       <div className='sticky top-8'>
+       <div className='sticky top-[4.25rem]'>
          <div className="text-xl opacity-100 mb-8">Settings</div>
          <div className='flex flex-col gap-y-4'>
            {items.map(item => (
@@ -242,7 +242,7 @@ function SettingsPage() {
       {/*    </div>*/}
       {/*  </div>*/}
       {/*)}*/}
-      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full">
+      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
         {settingsQuery.isLoading ? (
           <div className="flex grow items-center justify-center text-highlight-1">
             <Icon path={mdiLoading} spin size={5} />
