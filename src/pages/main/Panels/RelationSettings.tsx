@@ -61,7 +61,7 @@ class RelationSettings extends React.Component<Props, State> {
 
   componentDidMount = () => {
     const { AutoGroupSeriesRelationExclusions: exclusions } = this.props;
-    const newState = transform(exclusions.split('|'), (result, item) => {
+    const newState = transform(exclusions instanceof Array ? exclusions.slice() : exclusions.split('|'), (result, item) => {
       const key = findKey(mapping, value => value === item);
       // eslint-disable-next-line no-param-reassign
       if (key) result[key] = true;
@@ -76,7 +76,7 @@ class RelationSettings extends React.Component<Props, State> {
   };
 
   handleExclusionChange = (event: any) => {
-    const { saveSettings } = this.props;
+    const { saveSettings, AutoGroupSeriesRelationExclusions: currentExclusions } = this.props;
     const { id, checked: value } = event.target;
 
     this.setState((prevState) => {
@@ -85,7 +85,7 @@ class RelationSettings extends React.Component<Props, State> {
       forEach(newState, (item, key) => {
         if (item) exclusions.push(mapping[key]);
       });
-      saveSettings({ newSettings: { AutoGroupSeriesRelationExclusions: exclusions.join('|') } });
+      saveSettings({ newSettings: { AutoGroupSeriesRelationExclusions: currentExclusions instanceof Array ? exclusions : exclusions.join('|') } });
       return newState;
     });
   };
