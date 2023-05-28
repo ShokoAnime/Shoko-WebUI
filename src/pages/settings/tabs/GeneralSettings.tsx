@@ -56,7 +56,7 @@ function GeneralSettings() {
   }, [themes.requestId, themes.isSuccess, WebUI_Settings.theme]);
 
   const exclusions = useMemo(() => {
-    return transform(AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
+    return transform(AutoGroupSeriesRelationExclusions instanceof Array ? AutoGroupSeriesRelationExclusions.slice() : AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
       const key = findKey(mapping, value => value === item);
       // eslint-disable-next-line no-param-reassign
       if (key) result[key] = true;
@@ -70,7 +70,7 @@ function GeneralSettings() {
     const tempExclusions = { ...exclusions, [id]: value };
     const newExclusions = Object.keys(pickBy(tempExclusions)).map(exclusion => mapping[exclusion]);
 
-    setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: newExclusions.join('|') });
+    setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: AutoGroupSeriesRelationExclusions instanceof Array ? newExclusions : newExclusions.join('|') });
   };
 
   const {
