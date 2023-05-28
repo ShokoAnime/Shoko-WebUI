@@ -154,7 +154,7 @@ export const initialSettings = {
   GA_OptOutPlzDont: false,
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
-  AutoGroupSeriesRelationExclusions: '',
+  AutoGroupSeriesRelationExclusions: [''],
   LanguagePreference: ['x-jat', 'en'],
   LanguageUseSynonyms: false,
   Import: {
