@@ -119,7 +119,7 @@ export type SettingsServerType = {
   GA_OptOutPlzDont: boolean;
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
-  AutoGroupSeriesRelationExclusions: string;
+  AutoGroupSeriesRelationExclusions: string | string[];
   LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
   Import: SettingsImportType;
