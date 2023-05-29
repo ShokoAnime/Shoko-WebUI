@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { findKey, pickBy, transform } from 'lodash';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import { mdiRefresh } from '@mdi/js';
@@ -19,21 +18,63 @@ import { useGetWebuiThemesQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
 const UI_VERSION = uiVersion();
 
-const mapping = {
-  fullStory: 'full story',
-  summary: 'summary',
-  parentStory: 'parent story',
-  sideStory: 'side story',
-  prequel: 'prequel',
-  sequel: 'sequel',
-  altSetting: 'alternative setting',
-  altVersion: 'alternative version',
-  sameSetting: 'same setting',
-  character: 'character',
-  other: 'other',
-  dissimilarTitles: 'AllowDissimilarTitleExclusion',
-  ova: 'ova',
-  movie: 'movie',
+const exclusionMapping = {
+  dissimilarTitles: {
+    id: 'AllowDissimilarTitleExclusion',
+    name: 'Dissimilar Titles',
+  },
+  prequel: {
+    id: 'prequel',
+    name: 'Prequel',
+  },
+  sequel: {
+    id: 'sequel',
+    name: 'Sequel',
+  },
+  ova: {
+    id: 'ova',
+    name: 'OVA',
+  },
+  movie: {
+    id: 'movie',
+    name: 'Movie',
+  },
+  sameSetting: {
+    id: 'same setting',
+    name: 'Same Setting',
+  },
+  altSetting: {
+    id: 'alternative setting',
+    name: 'Alternative Setting',
+  },
+  altVersion: {
+    id: 'alternative version',
+    name: 'Alternative Version',
+  },
+  parentStory: {
+    id: 'parent story',
+    name: 'Parent Story',
+  },
+  sideStory: {
+    id: 'side story',
+    name: 'Side Story',
+  },
+  fullStory: {
+    id: 'full story',
+    name: 'Full Story',
+  },
+  summary: {
+    id: 'summary',
+    name: 'Summary',
+  },
+  character: {
+    id: 'character',
+    name: 'Character',
+  },
+  other: {
+    id: 'other',
+    name: 'Other',
+  },
 };
 
 function GeneralSettings() {
@@ -55,29 +96,17 @@ function GeneralSettings() {
     return themes.data.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme);
   }, [themes.requestId, themes.isSuccess, WebUI_Settings.theme]);
 
-  const exclusions = useMemo(() => {
-    return transform(AutoGroupSeriesRelationExclusions instanceof Array ? AutoGroupSeriesRelationExclusions.slice() : AutoGroupSeriesRelationExclusions.split('|'), (result, item) => {
-      const key = findKey(mapping, value => value === item);
-      // eslint-disable-next-line no-param-reassign
-      if (key) result[key] = true;
-    }, exclusions);
-  },
-  [AutoGroupSeriesRelationExclusions]);
-
   const handleExclusionChange = (event: any) => {
-    const { id, checked: value } = event.target;
+    const { id, checked } = event.target;
 
-    const tempExclusions = { ...exclusions, [id]: value };
-    const newExclusions = Object.keys(pickBy(tempExclusions)).map(exclusion => mapping[exclusion]);
-
-    setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: AutoGroupSeriesRelationExclusions instanceof Array ? newExclusions : newExclusions.join('|') });
+    if (checked) {
+      const tempExclusions = [...AutoGroupSeriesRelationExclusions, exclusionMapping[id].id];
+      setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
+    } else {
+      const tempExclusions = AutoGroupSeriesRelationExclusions.filter(exclusion => exclusion !== exclusionMapping[id].id);
+      setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
+    }
   };
-
-  const {
-    fullStory, summary, parentStory, sideStory, prequel,
-    sequel, altSetting, altVersion, sameSetting, character,
-    other, dissimilarTitles, ova, movie,
-  } = exclusions;
 
   return (
     <>
@@ -174,20 +203,9 @@ function GeneralSettings() {
           <Checkbox justify label="Determine Main Series Using Relation Weighing" id="auto-group-using-score" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={event => setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })} />
           Exclude following relations
           <div className="flex flex-col bg-background-border border border-background-border rounded-md px-3 py-2 gap-y-1.5">
-            <Checkbox justify label="Dissimilar Titles" id="dissimilarTitles" isChecked={dissimilarTitles} onChange={handleExclusionChange} />
-            <Checkbox justify label="Prequel" id="prequel" isChecked={prequel} onChange={handleExclusionChange} />
-            <Checkbox justify label="Sequel" id="sequel" isChecked={sequel} onChange={handleExclusionChange} />
-            <Checkbox justify label="OVA" id="ova" isChecked={ova} onChange={handleExclusionChange} />
-            <Checkbox justify label="Movie" id="movie" isChecked={movie} onChange={handleExclusionChange} />
-            <Checkbox justify label="Same Setting" id="sameSetting" isChecked={sameSetting} onChange={handleExclusionChange} />
-            <Checkbox justify label="Alternative Setting" id="altSetting" isChecked={altSetting} onChange={handleExclusionChange} />
-            <Checkbox justify label="Alternative Version" id="altVersion" isChecked={altVersion} onChange={handleExclusionChange} />
-            <Checkbox justify label="Parent Story" id="parentStory" isChecked={parentStory} onChange={handleExclusionChange} />
-            <Checkbox justify label="Side Story" id="sideStory" isChecked={sideStory} onChange={handleExclusionChange} />
-            <Checkbox justify label="Full Story" id="fullStory" isChecked={fullStory} onChange={handleExclusionChange} />
-            <Checkbox justify label="Summary" id="summary" isChecked={summary} onChange={handleExclusionChange} />
-            <Checkbox justify label="Character" id="character" isChecked={character} onChange={handleExclusionChange} />
-            <Checkbox justify label="Other" id="other" isChecked={other} onChange={handleExclusionChange} />
+            {Object.keys(exclusionMapping).map(item => (
+              <Checkbox justify label={exclusionMapping[item].name} id={item} isChecked={AutoGroupSeriesRelationExclusions.includes(exclusionMapping[item].id)} onChange={handleExclusionChange} key={item} />
+            ))}
           </div>
         </div>
       </div>
