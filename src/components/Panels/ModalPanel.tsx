@@ -27,7 +27,7 @@ function ModalPanel(props: Props) {
       shouldCloseOnOverlayClick
       onRequestClose={onRequestClose}
       onAfterOpen={onAfterOpen}
-      closeTimeoutMS={300}
+      closeTimeoutMS={150}
     >
       {children}
     </Modal>
