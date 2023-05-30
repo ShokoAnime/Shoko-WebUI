@@ -36,6 +36,7 @@ import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
 import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
 import SeriesImages from '@/pages/collection/series/SeriesImages';
 import SeriesOverview from '@/pages/collection/series/SeriesOverview';
+import SeriesTags from '@/pages/collection/series/SeriesTags';
 
 // Utilities
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
@@ -101,6 +102,7 @@ const router = createBrowserRouter(
               <Route path="credits" element={<SeriesCredits />}/>
               <Route path="images" element={<SeriesImages />}/>
               <Route path="files" element={<SeriesFileSummary />}/>
+              <Route path="tags" element={<SeriesTags />}/>
             </Route>
           </Route>
           <Route path="settings" element={<SettingsPage />}>
