@@ -26,7 +26,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
 
   return (
     <div className={`${className} overflow-hidden`}>
-      <div className="absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] group" style={{ background: imageLoaded ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}>
+      <div className="absolute w-full h-full flex flex-col top-0 left-0 text-center group z-[-1]" style={{ background: imageLoaded ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}>
         {!imageLoaded && (
           <div className={cx('w-full h-full flex flex-col justify-center items-center bg-background-nav p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
             <Icon path={mdiInformationOutline} size={1.5} className="text-highlight-2" />

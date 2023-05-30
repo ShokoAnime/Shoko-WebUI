@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { EpisodeDetails } from '@/pages/collection/items/EpisodeDetails';
 import { get } from 'lodash';
@@ -6,12 +6,13 @@ import { get } from 'lodash';
 import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiChevronUp } from '@mdi/js';
+import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import { EpisodeFiles } from '@/pages/collection/items/EpisodeFiles';
+import { useLazyGetEpisodeFilesQuery } from '@/core/rtkQuery/splitV3Api/episodeApi';
+import AnimateHeight from 'react-animate-height';
 
 type Props = {
   episode: EpisodeType;
-  resetHeight: () => void;
 };
 
 const getThumbnailUrl = (episode: EpisodeType) => {
@@ -19,27 +20,42 @@ const getThumbnailUrl = (episode: EpisodeType) => {
   if (thumbnail === null) { return null; }
   return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
 };
-export const SeriesEpisode = ({ episode, resetHeight }: Props) => {
+
+export const SeriesEpisode = ({ episode }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const episodeId = get(episode, 'IDs.ID', '0');
-  
-  useEffect(() => {
-    resetHeight();
-  }, [isOpen]);
-  
+  const episodeId = get(episode, 'IDs.ID', 0).toString();
+
+  const [getEpisodeFiles, episodeFilesResult] = useLazyGetEpisodeFilesQuery();
+
+  const handleExpand = async () => {
+    if (isOpen) {
+      setIsOpen(false);
+      return;
+    }
+
+    await getEpisodeFiles({ episodeId, includeDataFrom: ['AniDB'], includeMediaInfo: true }, true);
+    setIsOpen(true);
+  };
+
   return (
     <React.Fragment>
-      <div className="flex flex-col rounded bg-background-alt/25 border-background-border border mb-4">
-        <div className="flex space-x-8 p-8">
-          <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="h-[8.4375rem] min-w-[15rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2"/>
-          <EpisodeDetails episode={episode}/>
-        </div>
-        <div className="flex justify-center py-4 space-x-4 border-background-border border-t cursor-pointer" onClick={() => { setIsOpen(!isOpen); }}>
-          File Info 
-          <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1} />
-        </div>
-        <EpisodeFiles show={isOpen} episodeId={`${episodeId}`} resetHeight={resetHeight} />
+      <div className="flex gap-x-8 p-8 items-center z-10">
+        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative"/>
+        <EpisodeDetails episode={episode} />
       </div>
+      <div className="flex justify-center py-4 gap-x-4 border-background-border border-t-2 cursor-pointer font-semibold" onClick={handleExpand}>
+        File Info
+        <Icon
+          path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}
+          size={1}
+          rotate={isOpen ? 180 : 0}
+          className="transition-transform"
+          spin={episodeFilesResult.isFetching}
+        />
+      </div>
+      <AnimateHeight height={isOpen ? 'auto' : 0}>
+        <EpisodeFiles episodeFiles={episodeFilesResult.data ?? []} />
+      </AnimateHeight>
     </React.Fragment>
   );
 };

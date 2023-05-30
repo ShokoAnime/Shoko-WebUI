@@ -1,6 +1,6 @@
 import { get, map, toNumber } from 'lodash';
 import React from 'react';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
+import prettyBytes from 'pretty-bytes';
 
 export const EpisodeFileInfo = ({ file }) => {
   const VideoInfo: string[] = [];
@@ -41,55 +41,61 @@ export const EpisodeFileInfo = ({ file }) => {
   }
 
   return (
-    <React.Fragment>
-      <ShokoPanel title="File Details">
-        <div className="flex flex-col space-y-1">
+    <div className="flex flex-col gap-y-8">
+
+      <div className="flex flex-col gap-y-4">
+        <div className="opacity-65 font-semibold text-xl">File Details</div>
+        <div className="flex flex-col gap-y-1">
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">File Name</div>
+            <div className="min-w-[9.375rem] font-semibold">File Name</div>
+            {/*TODO: Only show filename*/}
             {get(file, 'Locations.0.RelativePath', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Location</div>
+            <div className="min-w-[9.375rem] font-semibold">Location</div>
+            {/*TODO: Show path not relative path*/}
             {get(file, 'Locations.0.RelativePath', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Size</div>
-            {(toNumber(get(file, 'Size', '')) / 1024 / 1024).toFixed(2)} MB
+            <div className="min-w-[9.375rem] font-semibold">Size</div>
+            {prettyBytes(toNumber(get(file, 'Size', '0')), { binary: true })}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Group</div>
+            <div className="min-w-[9.375rem] font-semibold">Group</div>
             {get(file, 'AniDB.ReleaseGroup.Name', '')} | v{get(file, 'AniDB.Version', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Video</div>
+            <div className="min-w-[9.375rem] font-semibold">Video</div>
             {VideoInfo.join(' | ')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Audio</div>
+            <div className="min-w-[9.375rem] font-semibold">Audio</div>
             {AudioInfo.join(' | ')}
           </div>
         </div>
-      </ShokoPanel>
-      <ShokoPanel title="File Hashes" className="mt-4">
-        <div className="flex flex-col space-y-1">
+      </div>
+
+      <div className="flex flex-col gap-y-4">
+        <div className="opacity-65 font-semibold text-xl">File Hashes</div>
+        <div className="flex flex-col gap-y-1">
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">Hash</div>
+            <div className="min-w-[9.375rem] font-semibold">Hash</div>
             {get(file, 'Hashes.ED2K', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">CRC</div>
+            <div className="min-w-[9.375rem] font-semibold">CRC</div>
             {get(file, 'Hashes.CRC32', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">SHA1</div>
+            <div className="min-w-[9.375rem] font-semibold">SHA1</div>
             {get(file, 'Hashes.SHA1', '')}
           </div>
           <div className="flex">
-            <div className=" min-w-[9.375rem] font-semibold">MD5</div>
+            <div className="min-w-[9.375rem] font-semibold">MD5</div>
             {get(file, 'Hashes.MD5', '')}
           </div>
         </div>
-      </ShokoPanel>
-    </React.Fragment>
+      </div>
+    </div>
   );
 };

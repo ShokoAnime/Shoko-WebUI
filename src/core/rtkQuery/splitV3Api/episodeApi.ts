@@ -42,5 +42,5 @@ export const {
   useGetEpisodeAnidbQuery,
   useGetEpisodeQuery,
   useGetEpisodeTvdbQuery,
-  useGetEpisodeFilesQuery,
+  useLazyGetEpisodeFilesQuery,
 } = episodeApi;
