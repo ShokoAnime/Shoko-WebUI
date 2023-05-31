@@ -159,7 +159,7 @@ const SeriesFileSummary = () => {
             </div>
           </ShokoPanel>
         ))}
-        {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && <ShokoPanel title="Missing Files">
+        {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && <ShokoPanel disableOverflow title="Missing Files">
           {map(fileSummary?.MissingEpisodes, episode => (
             <div className="grid grid-cols-3 mb-4">
               <div className="mr-12">{episode.Type} {episode.EpisodeNumber}</div>
