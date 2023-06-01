@@ -44,9 +44,9 @@ const SeriesEpisodes = () => {
   const hasNextPage = useMemo(() => episodes.length < episodesTotal, [episodes.length, episodesTotal]);
 
   const rowVirtualizer = useVirtualizer({
-    count: hasNextPage ? episodes.length + 1 : episodes.length,
+    count: episodesTotal,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 332,
+    estimateSize: () => 332, // 332px is the minimum height of a loaded row
     overscan: 5,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -123,7 +123,7 @@ const SeriesEpisodes = () => {
                     ref={rowVirtualizer.measureElement}
                   >
                     {isLoaderRow
-                      ? <div className="flex items-center justify-center p-8"><Icon path={mdiLoading} spin size={3} /></div>
+                      ? <div className="flex items-center justify-center p-8 h-[332px] text-highlight-1"><Icon path={mdiLoading} spin size={3} /></div> // 332px is the minimum height of a loaded row
                       : <SeriesEpisode episode={episodes[virtualRow.index]} />
                     }
                   </div>
