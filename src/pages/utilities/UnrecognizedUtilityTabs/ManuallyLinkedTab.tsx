@@ -193,7 +193,7 @@ function ManuallyLinkedTab() {
         </ShokoPanel>
       </div>
 
-      <div className="flex flex-col grow w-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8" ref={parentRef}>
+      <div className="flex flex-col grow w-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8">
         {seriesQuery.isFetching ? (
           <div className="flex h-full justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
