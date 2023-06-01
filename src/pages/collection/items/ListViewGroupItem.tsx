@@ -37,9 +37,21 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes - item.Sizes.Local.Specials;
   const groupCount = item.Sizes.SeriesTypes.Movie + item.Sizes.SeriesTypes.OVA + item.Sizes.SeriesTypes.Other + item.Sizes.SeriesTypes.TV + item.Sizes.SeriesTypes.TVSpecial + item.Sizes.SeriesTypes.Unknown + item.Sizes.SeriesTypes.Web;
 
+  const viewRouteLink = () => {
+    let link = '/webui/collection/';
+
+    if (item.Size === 1) {
+      link += `series/${item.IDs.MainSeries}`;
+    } else {
+      link += `group/${item.IDs.ID}`;
+    }
+
+    return link;
+  };
+
   return (
     <div key={`group-${item.IDs.ID}`} className="content-center flex">
-      <Link to={`/webui/collection/group/${item.IDs.ID}`}>
+      <Link to={viewRouteLink()}>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="h-48 w-32 shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
       </Link>
       <div className="flex flex-col pl-4 justify-between py-2">

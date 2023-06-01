@@ -7,6 +7,7 @@ export type CollectionGroupType = {
     ParentGroup: number | null,
     TopLevelGroup: number,
     ID: number,
+    MainSeries: number,
   }
   SortName: string | null;
   Description: string | null;
