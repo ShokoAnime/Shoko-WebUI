@@ -13,7 +13,7 @@ import Select from '@/components/Input/Select';
 import { SeriesEpisode } from '@/pages/collection/items/SeriesEpisode';
 import type { EpisodeType } from '@/core/types/api/episode';
 
-const pageSize = 20;
+const pageSize = 26;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
