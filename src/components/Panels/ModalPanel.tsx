@@ -23,13 +23,15 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName="fixed inset-0 bg-black/50 z-[80]"
-      className={`${className} absolute bg-background inset-0 top-20 m-auto w-[32rem] max-h-fit flex rounded-md border border-background-alt`}
-      shouldCloseOnOverlayClick
-      onRequestClose={onRequestClose}
+      className="flex h-full justify-center items-center"
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}
     >
-      {children}
+      <div className="flex justify-center items-center w-full h-full" onClick={onRequestClose}>
+        <div className={`${className} bg-background w-[32rem] max-h-fit flex rounded-md border border-background-alt`} onClick={e => e.stopPropagation()}>
+          {children}
+        </div>
+      </div>
     </Modal>
   );
 }
