@@ -1,6 +1,6 @@
-import { map } from "lodash";
-import React, { RefObject } from "react";
-import { Grid } from "react-virtualized";
+import { map } from 'lodash';
+import React, { RefObject } from 'react';
+import { Grid } from 'react-virtualized';
 
 export interface JumpBarProps {
   items: any;
@@ -20,7 +20,7 @@ const Jumpbar = ({
   }
   let index = 0;
   return (
-    <div className='shrink-0 px-6 pb-9 shrink-0 flex flex-col drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]'>
+    <div className='shrink-0 px-6 pb-9 flex flex-col drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]'>
       {map(items, (count, key) => {
         const rowIndex = Math.ceil(index / columns);
         const item = (
