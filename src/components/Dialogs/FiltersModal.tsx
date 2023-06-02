@@ -55,10 +55,10 @@ function FiltersModal() {
   
   const renderSidePanel = (title, filterId) => (
     <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })}>
-      <div className="box-border flex flex-col bg-background-alt border border-background-border items-center rounded-md px-3 py-2">
-        <div className="flex w-full  border-background-border border-b pb-2 mb-2">
+      <div className="box-border flex flex-col bg-background-border border border-background-border items-center rounded-md px-3 py-2">
+        <div className="flex w-full border-background-alt border-b pb-2 mb-2">
           <Icon path={mdiMagnify} size={1} />
-          <input type="text" placeholder="Search..." className="ml-2 bg-background-alt" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
+          <input type="text" placeholder="Search..." className="ml-2 bg-background-border" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
         </div>
         <div className="flex flex-col w-full p-4 space-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
           {filteredList.filter(item => !item.Directory).map(item => renderItem(item))}
