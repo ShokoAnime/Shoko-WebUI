@@ -19,7 +19,7 @@ import { resetGroups, setGroups } from '../../core/slices/collection';
 import { useLazyGetGroupViewQuery } from '../../core/rtkQuery/splitV3Api/webuiApi';
 
 import type { RootState } from '../../core/store';
-import Jumpbar from './Jumpbar';
+import Jumpbar, { HighLightTargetType } from './Jumpbar';
 
 function GroupList() {
   const itemWidth = 240; //224 + 16
@@ -35,10 +35,10 @@ function GroupList() {
   const letters = useGetGroupLettersQuery({ includeEmpty: false, topLevelOnly: true });
   const gridRef = useRef<Grid>(null);
   const [columns, setColumns] = useState(0);
-  const [highlightLetter, setHighlightLetter] = useState('');
-
+  const [highlightLetter, setHighlightLetter] = useState<HighLightTargetType>({ index: -1, count: 0 });
   const toggleMode = () => { setMode(mode === 'list' ? 'grid' : 'list'); };
 
+  // console.log(letters);
   const fetchPage = debounce(memoize((page) => {
     trigger({ page, pageSize }).then((result) => {
       if (!result.data) { return; }
@@ -89,9 +89,14 @@ function GroupList() {
     }
     const item = groupList[index % pageSize];
     if (!item) { return null; }
-    const shouldHighlight = highlightLetter.toLowerCase() === item.Name[0].toLowerCase();
+    const highlightStart = highlightLetter.index;
+    const highlightEnd = highlightStart + highlightLetter.count;
+    const highlight = highlightStart <= index && index <= highlightEnd ? 'animate-pulse' : '';
+
+    // console.log({ index, highlightStart, highlightEnd, highlight });
+
     return (
-      <div key={key} style={style} className={`${shouldHighlight ? 'animate-pulse' : ''}`}>
+      <div key={key} style={style} className={`${highlight}`}>
         {mode === 'grid' ? GridViewGroupItem(item) : ListViewGroupItem(item, find(mainGroups?.data, ['ID', item?.IDs.ID]))}
         {mode === 'list' && <div className="bg-background-border my-4 h-0.5 w-full" />}
       </div>
@@ -111,7 +116,7 @@ function GroupList() {
           }}
         </AutoSizer>
       </ShokoPanel>
-      <Jumpbar items={letters?.data} columns={columns} gridRef={gridRef} onJump={key => setHighlightLetter(key)}/>
+      <Jumpbar items={letters?.data} columns={columns} gridRef={gridRef} onJump={newTarget => setHighlightLetter(newTarget)} />
     </div>
   );
 }

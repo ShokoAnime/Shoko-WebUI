@@ -2,11 +2,17 @@ import { map } from 'lodash';
 import React, { RefObject } from 'react';
 import { Grid } from 'react-virtualized';
 
+
+export interface HighLightTargetType {
+  index: number,
+  count: number
+}
+
 export interface JumpBarProps {
   items: any;
   columns: any;
   gridRef: RefObject<Grid>;
-  onJump?: ((key: string) => void) | undefined;
+  onJump?: ((target: HighLightTargetType) => void) | undefined;
 }
 
 const Jumpbar = ({ items, columns, gridRef, onJump = undefined }: JumpBarProps) => {
@@ -19,9 +25,10 @@ const Jumpbar = ({ items, columns, gridRef, onJump = undefined }: JumpBarProps) 
       className="shrink-0 px-6 pb-9 flex flex-col drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]">
       {map(items, (count, key) => {
         const rowIndex = Math.ceil(index / columns);
+        const target = { index: index, count: count - 1 };
         const item = <div className="cursor-pointer my-1" onClick={() => {
           gridRef?.current?.scrollToCell({ columnIndex: 0, rowIndex });
-          if (onJump) onJump(key);
+          if (onJump) onJump(target);
         }} key={key}>{key}</div>;
         index += count;
         return item;
