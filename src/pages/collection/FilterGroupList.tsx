@@ -105,9 +105,7 @@ function FilterGroupList() {
         <GridOptions showFilters={toggleFilters} toggleMode={toggleMode} showServerFilters={showServerFilters} />
       </div>
       <div className="flex">
-        <div className="grow rounded bg-background-alt px-6 py-8 border-background-border border">
-          <GroupGrid mode={mode} cellRenderer={Cell} total={total} />
-        </div>
+        <GroupGrid mode={mode} cellRenderer={Cell} total={total} />
         <div className={cx('flex items-start overflow-hidden transition-all', showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0')}>
           <div className="rounded bg-background-alt p-8 flex grow border-background-border border justify-center items-center">Filter sidebar</div>
         </div>
