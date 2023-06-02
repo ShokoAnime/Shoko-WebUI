@@ -21,7 +21,7 @@ const getThumbnailUrl = (episode: EpisodeType) => {
   return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
 };
 
-export const SeriesEpisode = ({ episode }: Props) => {
+const SeriesEpisode = ({ episode }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const episodeId = get(episode, 'IDs.ID', 0).toString();
 
@@ -59,3 +59,5 @@ export const SeriesEpisode = ({ episode }: Props) => {
     </React.Fragment>
   );
 };
+
+export default React.memo(SeriesEpisode);
