@@ -195,7 +195,7 @@ function LinkFilesTab() {
       const path = file?.Locations?.[0].RelativePath ?? '';
       const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
       result.push(
-        <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md leading-loose col-start-1 cursor-pointer transition-colors line-clamp-1', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
+        <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
           {path}
           {isSameFile && (<Icon path={mdiLink} size={1} className="text-highlight-2 ml-auto" />)}
         </div>,
