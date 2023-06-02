@@ -65,7 +65,7 @@ const SeriesRow = (
         className="flex cursor-pointer px-8"
         onClick={handleExpand}
       >
-        <div className="grow">{row.Name}</div>
+        <div className="grow line-clamp-1">{row.Name}</div>
         <a href={`https://anidb.net/anime/${row.IDs.AniDB}`} rel="noopener noreferrer" target="_blank" className="text-highlight-1 font-semibold w-24 flex gap-x-2" onClick={e => e.stopPropagation()}>
           {row.IDs.AniDB}
           <Icon path={mdiOpenInNew} size={1} />
