@@ -92,7 +92,7 @@ const Series = () => {
             <div className="flex gap-x-3">
               {isSeriesOngoing && <IconNotification text="Series is Ongoing" />}
               {/*TODO: Check whether new files are added*/}
-              <IconNotification text="New Files Added Recently" />
+              {/*<IconNotification text="New Files Added Recently" />*/}
             </div>
           </div>
           <div className="flex flex-col gap-y-4 max-w-[56.25rem]">
