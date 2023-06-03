@@ -1,7 +1,3 @@
-.languages-modal {
-  width: 30rem;
-}
-
 .profile-modal {
   width: 42rem;
 }
@@ -17,32 +13,6 @@
 .profile-modal-image-alpha {
   color: theme('colors.background');
   background-color: theme('colors.background / 60');
-}
-
-.treeview {
-  min-height: 27.75rem;
-  max-height: 27.75rem;
-  overflow-y: auto;
-  overflow-x: hidden;
-
-  .list-group-item {
-    cursor: pointer;
-    margin-left: 0.75rem;
-
-    &.root {
-      cursor: pointer;
-      margin-left: 0;
-    }
-
-    &.selected > span {
-      color: #49a2df;
-    }
-
-    .caret {
-      position: relative;
-      top: 1px;
-    }
-  }
 }
 
 .modal-transition-left {

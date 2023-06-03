@@ -1,16 +1,16 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
-import { mdiChevronUp, mdiMagnify } from '@mdi/js';
+import { mdiMagnify } from '@mdi/js';
 
 import ModalPanel from '../Panels/ModalPanel';
-import { RootState } from '../../core/store';
-import { setStatus } from '../../core/slices/modals/filters';
-import { useLazyGetTopFiltersQuery, useLazyGetFiltersQuery } from '../../core/rtkQuery/splitV3Api/collectionApi';
+import { RootState } from '@/core/store';
+import { setStatus } from '@/core/slices/modals/filters';
+import { useLazyGetFiltersQuery, useLazyGetTopFiltersQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
-import type { CollectionFilterType } from '../../core/types/api/collection';
+import type { CollectionFilterType } from '@/core/types/api/collection';
 
 function FiltersModal() {
   const dispatch = useDispatch();
@@ -42,43 +42,48 @@ function FiltersModal() {
       <span className="text-highlight-2">{item.Size}</span>
     </div>
   );
-
-  const renderTab = (title, filterId) => (
-    <React.Fragment>
-      <div className="grow px-4 py-2 bg-background-alt self-stretch border-b border-background-border shadow flex justify-between">
-        <p className="text-base font-semibold text-gray-300">{title}</p>
-        <span onClick={() => { setActiveTab(title); setActiveFilter(filterId); setSearch(''); }}><Icon className="cursor-pointer" path={mdiChevronUp} size={1} rotate={activeTab === title ? 0 : 180} /></span>
+  
+  const renderTabSide = (title, filterId) => (
+    <div
+      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-highlight-1')}
+      key={filterId}
+      onClick={() => { setActiveTab(title); setActiveFilter(filterId); setSearch(''); }}
+    >
+      {title}
+    </div>
+  );
+  
+  const renderSidePanel = (title, filterId) => (
+    <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })}>
+      <div className="flex w-full bg-background-border p-2 mb-2 rounded-md">
+        <Icon path={mdiMagnify} size={1} />
+        <input type="text" placeholder="Search..." className="bg-background-border ml-2" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
       </div>
-      <div className={cx('flex flex-col grow w-full p-4', { hidden: activeTab !== title || filterId === '0' })}>
-        <div className="box-border flex flex-col bg-background-alt border border-background-border items-center rounded-md px-3 py-2">
-          <div className="flex w-full  border-background-border border-b pb-2 mb-2">
-            <Icon path={mdiMagnify} size={1} />
-            <input type="text" placeholder="Search..." className="ml-2 bg-background-alt" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
-          </div>
-          <div className="flex flex-col w-full p-4 space-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
-            {filteredList.filter(item => !item.Directory).map(item => renderItem(item))}
-          </div>
+      <div className="box-border flex flex-col bg-background-border border border-background-border items-center rounded-md p-4">
+        <div className="flex flex-col w-full pr-4 gap-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
+          {filteredList.filter(item => !item.Directory).map(item => renderItem(item))}
         </div>
       </div>
-    </React.Fragment>
+    </div>
   );
 
   return (
     <ModalPanel
-      sidebarSnap
       show={status}
-      className="pb-6 drop-shadow-[4px_0_4px_rgba(0,0,0,0.25)]"
+      className="p-8 flex-col drop-shadow-lg gap-y-8"
       onRequestClose={() => handleClose()}
     >
-      <div className="flex flex-col w-full border-l border-background-border">
-        <div className="flex flex-col items-center justify-start bg-color-nav">
-          {renderTab('Filters', '0')}
-          <div className={cx('flex flex-col w-full p-4 space-y-1', { hidden: activeTab !== 'Filters' })}>
-          {filters.filter(item => !item.Directory).map(item => renderItem(item))}
-          </div>
-          {filters.filter(item => item.Directory).map(item => renderTab(item.Name, item.IDs.ID))}
-
+      <div className="font-semibold text-xl">Filters</div>
+      <div className="flex">
+        <div className="flex flex-col min-w-[8rem] border-r-2 border-background-border gap-y-4">
+          {renderTabSide('Filters', '0')}
+          {filters.filter(item => item.Directory).map(item => renderTabSide(item.Name, item.IDs.ID))}
         </div>
+        <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== 'Filters' })}>
+          {filters.filter(item => !item.Directory).map(item => renderItem(item))}
+        </div>
+        {filters.filter(item => item.Directory).map(item => renderSidePanel(item.Name, item.IDs.ID))}
+        
       </div>
     </ModalPanel>
   );

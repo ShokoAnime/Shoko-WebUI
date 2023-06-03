@@ -1,43 +1,41 @@
-import { Icon } from '@mdi/react';
-import { mdiCalendarMonthOutline, mdiClockTimeFourOutline, mdiEyeCheckOutline, mdiEyeOutline, mdiFilmstrip, mdiStarHalfFull } from '@mdi/js';
 import { toNumber } from 'lodash';
 import React from 'react';
 import moment from 'moment/moment';
+import { Icon } from '@mdi/react';
+import { mdiCalendarMonthOutline, mdiClockOutline, mdiStarHalfFull } from '@mdi/js';
+
+import { EpisodeType } from '@/core/types/api/episode';
 
 const getDuration = (duration) => {
-  const minutes = moment.duration(duration)
-    .asMinutes();
+  const minutes = moment.duration(duration).asMinutes();
   const intMinutes = Math.round(toNumber(minutes));
   return `${intMinutes} minutes`;
 };
 
-export function EpisodeDetails(props: { episode: any }) {
-  return <div className="flex flex-col space-y-4 grow">
-    <div className="mt-2 flex justify-between">
-      <span className="text-xl font-semibold text-font-main">{props.episode.Name}</span>
-      <Icon className="text-highlight-1" path={props.episode.Watched === null ? mdiEyeOutline : mdiEyeCheckOutline} size={1}/>
+export function EpisodeDetails({ episode }: { episode: EpisodeType }) {
+  return (
+    <div className="flex flex-col gap-y-4 grow">
+      <div className="flex justify-between font-semibold">
+        <div className="opacity-65">Episode {episode.AniDB?.EpisodeNumber}</div>
+        <div><span className="text-highlight-2">{episode.Size}</span> {episode.Size > 1 ? 'Files' : 'File'}</div>
+      </div>
+
+      <div className="-mt-4 text-xl font-semibold">
+        {episode.Name}
+      </div>
+
+      <div className="flex gap-x-2 font-semibold text-sm items-center">
+        <Icon path={mdiCalendarMonthOutline} size={1} />
+        {moment(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
+        <Icon path={mdiClockOutline} size={1} />
+        {getDuration(episode.Duration)}
+        <Icon path={mdiStarHalfFull} size={1} />
+        {toNumber(episode.AniDB?.Rating.Value).toFixed(2)} ({episode.AniDB?.Rating.Votes} Votes)
+      </div>
+
+      <div className="flex line-clamp-3">
+        {episode.AniDB?.Description}
+      </div>
     </div>
-    <div className="mt-5 space-x-4 flex flex-nowrap">
-      <div className="space-x-2 flex">
-        <Icon path={mdiFilmstrip} size={1}/>
-        <span>Episode {props.episode.AniDB?.EpisodeNumber}</span>
-      </div>
-      <div className="space-x-2 flex">
-        <Icon path={mdiCalendarMonthOutline} size={1}/>
-        <span>{props.episode.AniDB?.AirDate}</span>
-      </div>
-      <div className="space-x-2 flex">
-        <Icon path={mdiClockTimeFourOutline} size={1}/>
-        <span>{getDuration(props.episode.Duration)}</span>
-      </div>
-      <div className="space-x-2 flex">
-        <Icon path={mdiStarHalfFull} size={1}/>
-        <span>{toNumber(props.episode.AniDB?.Rating.Value)
-          .toFixed(2)} ({props.episode.AniDB?.Rating.Votes} Votes)</span>
-      </div>
-    </div>
-    <div className="line-clamp-3 text-font-main">
-      {props.episode.AniDB?.Description}
-    </div>
-  </div>;
+  );
 }

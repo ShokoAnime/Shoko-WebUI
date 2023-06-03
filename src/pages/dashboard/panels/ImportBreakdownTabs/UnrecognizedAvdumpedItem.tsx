@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import moment from 'moment';
 import cx from 'classnames';
-import type { FileType } from '../../../../core/types/api/file';
+import type { FileType } from '@/core/types/api/file';
 
 type Props = {
   item: FileType;

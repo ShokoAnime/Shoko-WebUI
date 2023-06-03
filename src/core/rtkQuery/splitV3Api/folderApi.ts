@@ -1,5 +1,5 @@
 import { splitV3Api } from '../splitV3Api';
-import { DriveType, FolderType } from '../../types/api/folder';
+import { DriveType, FolderType } from '@/core/types/api/folder';
 
 let id = 0;
 export const getNextId = () => ++id;

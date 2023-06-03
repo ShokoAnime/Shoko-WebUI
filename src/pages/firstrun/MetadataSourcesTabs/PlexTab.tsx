@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from '../../../core/store';
-import Events from '../../../core/events';
-import Button from '../../../components/Input/Button';
-import TransitionDiv from '../../../components/TransitionDiv';
+import { RootState } from '@/core/store';
+import Events from '@/core/events';
+import Button from '@/components/Input/Button';
+import TransitionDiv from '@/components/TransitionDiv';
 
-import { setItem as setMiscItem } from '../../../core/slices/misc';
+import { setItem as setMiscItem } from '@/core/slices/misc';
 
 function PlexTab() {
   const dispatch = useDispatch();

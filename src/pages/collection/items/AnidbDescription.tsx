@@ -36,7 +36,7 @@ const AnidbDescription = ({ text }) => {
   }
   
   return (
-    <React.Fragment>{lines}</React.Fragment>  
+    <div>{lines}</div>
   );
 };
 

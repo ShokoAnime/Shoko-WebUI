@@ -1,6 +1,6 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { ApiUserType, CommunitySitesType, UserType } from '../../types/api/user';
+import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api/user';
 import { identity, map, pickBy } from 'lodash';
 
 const simplifyCommunitySites = (sites: Array<string>) => {

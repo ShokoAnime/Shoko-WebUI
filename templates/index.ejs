@@ -6,10 +6,14 @@
       <title>Shoko WEB UI</title>
       <link rel="shortcut icon" href="favicon.ico" />
       <% if (typeof css !== 'undefined') { %>
-      <link rel="stylesheet" type="text/css" href="<%= css %>" />
+        <link rel="stylesheet" type="text/css" href="<%= css %>" />
+        <link rel="stylesheet" type="text/css" href="/api/v3/WebUI/Theme.css" />
       <% } %>
   </head>
   <body>
+    <% if (typeof css === 'undefined') { %>
+        <link rel="stylesheet" type="text/css" href="/api/v3/WebUI/Theme.css" /> <!-- This is inside body because it needs to be loaded after the style tags in dev server -->
+    <% } %>
     <div id="modal-root"></div>
     <div id="app-root"></div>
     <script src="<%= bundle %>"></script>

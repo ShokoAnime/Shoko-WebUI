@@ -1,7 +1,7 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { ListResultType, PaginationType } from '../../types/api';
-import type { TagType } from '../../types/api/tags';
+import type { ListResultType, PaginationType } from '@/core/types/api';
+import type { TagType } from '@/core/types/api/tags';
 
 const tagsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

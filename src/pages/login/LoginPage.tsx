@@ -1,29 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { push, replace } from '@lagunovsky/redux-react-router';
+import { useSelector } from 'react-redux';
+import cx from 'classnames';
+import { useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/browser';
 import { get } from 'lodash';
-import { ToastContainer, Slide } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
-import { mdiLoading, mdiCloseCircle } from '@mdi/js';
+import { mdiCloseCircle, mdiLoading } from '@mdi/js';
 import { siDiscord } from 'simple-icons/icons';
 
-import { RootState } from '../../core/store';
-import Button from '../../components/Input/Button';
-import Input from '../../components/Input/Input';
-import Checkbox from '../../components/Input/Checkbox';
-import ShokoIcon from '../../components/ShokoIcon';
+import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import Checkbox from '@/components/Input/Checkbox';
+import ShokoIcon from '@/components/ShokoIcon';
 
-import { useGetInitVersionQuery, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
-import { useGetRandomMetadataQuery } from '../../core/rtkQuery/splitV3Api/imageApi';
-import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
-import { ImageTypeEnum } from '../../core/types/api/common';
-import cx from 'classnames';
-
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
+import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
+import { ImageTypeEnum } from '@/core/types/api/common';
 
 function LoginPage() {
-  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
 
@@ -43,7 +42,7 @@ function LoginPage() {
     const data = imageMetadata.data;
     if (!data || !data?.Type) { 
       setLoginImage('default');
-      return; 
+      return;
     }
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
     setLoginImage(uri);
@@ -55,7 +54,7 @@ function LoginPage() {
     else if (status.data?.State !== 1) setPollingInterval(0);
 
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
-      dispatch(replace({ pathname: '/' }));
+      navigate('/', { replace: true });
     }
   }, [status.data]);
   
@@ -74,10 +73,8 @@ function LoginPage() {
       pass: password,
       device: 'web-ui',
       rememberUser: rememberUser,
-    }).unwrap().then(() => dispatch(push('/')), error => console.error(error));
+    }).unwrap().then(() => navigate('/'), error => console.error(error));
   };
-
-  const openFirstRunWizard = () => dispatch(push({ pathname: 'firstrun' }));
 
   return (
     <React.Fragment>
@@ -85,16 +82,14 @@ function LoginPage() {
         position={'bottom-right'}
         autoClose={4000}
         transition={Slide}
-        bodyClassName="font-semibold font-open-sans"
-        className="mt-20 !w-96"
+        className="mt-20 !w-[29.5rem]"
         closeButton={false}
         icon={false}
-        hideProgressBar={true}
       />
       <div className="flex h-screen w-screen">
         <div className={cx('flex grow login-image', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}/>
-        <div className="absolute top-1.5 right-[32rem] text-white bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
-        <div className="flex flex-col flex-none p-12 items-center justify-between w-125 bg-background-nav border-l-2 border-background-border">
+        <div className="absolute top-1.5 right-[32rem] text-font-main bg-background-nav px-2 py-1 font-semibold text-2xl">{loginSeriesTitle}</div>
+        <div className="flex flex-col flex-none p-12 items-center justify-between w-[31.25rem] bg-background-alt border-l border-background-border">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold mt-4">
             Version: {version.isFetching || !version.data ?
@@ -127,7 +122,7 @@ function LoginPage() {
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} className="mt-4" />
                   </div>
                   <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold mt-4" labelRight />
-                  <Button className="bg-highlight-1 mt-4 py-2 w-full" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                  <Button className="bg-highlight-1 mt-4 py-2 w-full font-semibold" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
                 </form>
               </React.Fragment>
             )}
@@ -136,28 +131,28 @@ function LoginPage() {
                 <Icon path={mdiCloseCircle} className="text-highlight-3" size={4} />
                 <div className="mt-4 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="mt-2 text-lg break-all overflow-y-auto font-open-sans font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
+                <div className="mt-2 text-lg break-all overflow-y-auto font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
               </div>
             )}
             {status.data?.State === 4 && (
-              <div className="flex flex-col -mt-32">
-                <div className="flex flex-col">
+              <div className="flex flex-col -mt-32 gap-y-4">
+                <div className="flex flex-col gap-y-4">
                   <div className="font-semibold">First Time? We&apos;ve All Been There</div>
-                  <div className="mt-4 text-justify">
+                  <div className="text-justify">
                     Before Shoko can get started indexing your anime collection, you&apos;ll
-                    need to go through our <span className="text-highlight-2">First Time Wizard </span>
+                    need to go through our <span className="text-highlight-2">First Run Wizard </span>
                     and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
                     takes a couple of minutes.
                   </div>
-                  <div className="mt-4">
+                  <div>
                     Click <span className="text-highlight-2">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => openFirstRunWizard()} className="bg-highlight-1 py-2 mt-4">Continue</Button>
+                <Button onClick={() => navigate('/webui/firstrun')} className="bg-highlight-1 py-2 font-semibold">Continue</Button>
               </div>
             )}
           </div>
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full font-semibold">
             <Button className="flex bg-highlight-1 items-center justify-center py-2" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
               Get Help on <Icon path={siDiscord.path} size={0.75} className="mx-1" /> Discord
             </Button>

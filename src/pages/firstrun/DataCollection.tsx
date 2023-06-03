@@ -1,30 +1,31 @@
 import React from 'react';
 
 import Footer from './Footer';
-import TransitionDiv from '../../components/TransitionDiv';
+import TransitionDiv from '@/components/TransitionDiv';
 
 function DataCollection() {
 
   return (
-    <TransitionDiv className="flex flex-col justify-center max-w-[40rem] px-8">
-      <div className="font-semibold">Data Collection</div>
-      <div className="mt-9 text-justify">
-        Shoko is open-source and is worked on by volunteers in our free time so in order to
-        more effectively improve Shoko, we&apos;ve implemented two different services for data
-        collection. We understand the hesitations a lot of people have with data collection
-        services so we&apos;re listing what services we use and what data we collect.
-        <br />
-        <br />
-        We also want to make something very clear, all data collected is non-identifiable.
-        We don’t care about what specific titles you have in your collection or what you
-        watch. We only care about making Shoko better which is what this data will allow us
-        to do.
+    <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
+      <div className="font-semibold text-xl">Data Collection</div>
+      <div className="text-justify">
+        Shoko is an open-source project that is developed by volunteers during their free time. In order to improve
+        Shoko more effectively, we have implemented&nbsp;
+        <a href="https://sentry.io/" target="_blank" rel="noopener noreferrer" className="text-highlight-1 hover:underline font-bold">Sentry.io</a>
+        ,which is a third-party service that helps track errors
+        and monitor performance.
       </div>
-      <div className="mt-9 mb-8">
-        <div className="font-bold">Sentry</div>
-        <ul>
-          <li>- Error information and context</li>
-        </ul>
+      <div className="text-justify">
+        We understand that data privacy is a significant concern for many people. Therefore, we want to be transparent
+        about the data we collect to allay any fears. The information we gather pertains to how Shoko is used, such as
+        error messages and performance metrics. This data allows us to swiftly identify and resolve issues and
+        prioritize improvements to make the software more stable and user-friendly.
+      </div>
+      <div className="text-justify">
+        We want to assure our users that we take data privacy seriously and only collect non-identifiable information to
+        improve Shoko, meaning that we don't collect any personal information that could be used to identify you.
+        We&apos;re not interested in knowing the specific titles in your collection or the content you watch. Our sole
+        objective is to improve Shoko, and the data we collect will help us achieve this goal.
       </div>
       <Footer nextPage="" finish />
     </TransitionDiv>

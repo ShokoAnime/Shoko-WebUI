@@ -1,7 +1,5 @@
 import React from 'react';
 import Modal from 'react-modal';
-import cx from 'classnames';
-import { useMediaQuery } from 'react-responsive';
 
 type Props = {
   children: any;
@@ -19,23 +17,21 @@ function ModalPanel(props: Props) {
 
   Modal.setAppElement('#app-root');
 
-  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
+  // const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   return (
     <Modal
       isOpen={show}
-      overlayClassName={{
-        base: cx('fixed inset-0 flex items-center pointer-events-auto z-[80]', (!isSm && props.sidebarSnap) && 'justify-start ml-62.5 modal-transition-left', (!isSm && !props.sidebarSnap) && 'justify-end modal-transition-right', isSm && 'justify-start mt-15'),
-        afterOpen: cx(props.sidebarSnap ? 'modal-transition-left--after-open' : 'modal-transition-right--after-open'),
-        beforeClose: cx(props.sidebarSnap ? 'modal-transition-left--before-close' : 'modal-transition-right--before-close'),
-      }}
-      className={cx(`${className} bg-background-nav flex h-full`, isSm ? 'w-full' : 'w-96')}
-      shouldCloseOnOverlayClick
-      onRequestClose={onRequestClose}
+      overlayClassName="fixed inset-0 bg-black/50 z-[80]"
+      className="flex h-full justify-center items-center"
       onAfterOpen={onAfterOpen}
-      closeTimeoutMS={300}
+      closeTimeoutMS={150}
     >
-      {children}
+      <div className="flex justify-center items-center w-full h-full" onClick={onRequestClose}>
+        <div className={`${className} bg-background w-[40rem] max-h-fit flex rounded-md border border-background-alt`} onClick={e => e.stopPropagation()}>
+          {children}
+        </div>
+      </div>
     </Modal>
   );
 }

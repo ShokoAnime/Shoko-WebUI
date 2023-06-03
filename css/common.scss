@@ -19,19 +19,9 @@ input[type='number'] {
 }
 
 body {
-  font-family:
-    'Open Sans',
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Helvetica Neue',
-    'Icons16',
-    sans-serif;
   background-color: theme('colors.background');
   color: theme('colors.font-main');
+  font-weight: 300;
 }
 
 ::-webkit-scrollbar {
@@ -50,9 +40,10 @@ body {
   border: 2px solid theme('colors.background');
 }
 
-.theme-shoko-blue .shoko-scrollbar {
+.theme-shoko-gray .shoko-scrollbar {
   scrollbar-color: theme('colors.highlight-1') theme('colors.background-border');
   scrollbar-width: thin;
+  scrollbar-gutter: stable;
 }
 
 #app-root {
@@ -62,24 +53,11 @@ body {
 
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__toast {
-  background: theme('colors.background-nav') !important;
-  border: 2px solid theme('colors.background-border') !important;
+  background: theme('colors.background') !important;
+  border: 1px solid theme('colors.background-border') !important;
   border-radius: 5px !important;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.Toastify__toast--success {
-  color: theme('colors.highlight-2') !important;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.Toastify__toast--error {
-  color: theme('colors.highlight-3') !important;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
-.Toastify__toast--info {
-  color: theme('colors.highlight-1') !important;
+  color: theme('colors.font-main') !important;
+  font-family: Sora, sans, serif, mono !important;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
@@ -95,11 +73,6 @@ body {
 /* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--info {
   background: theme('colors.highlight-1') !important;
-}
-
-.font-open-sans {
-  /* stylelint-disable-next-line font-family-no-missing-generic-family-keyword */
-  font-family: 'Open Sans';
 }
 
 .login-image {
@@ -120,7 +93,7 @@ input:-webkit-autofill:focus {
 
 /* Firefox Autofill Fix */
 input:autofill {
-  background: theme('colors.background-alt');
+  background: theme('colors.background-border');
 }
 
 .react-grid-item > .react-resizable-handle::after {
@@ -138,23 +111,41 @@ input:autofill {
     background-image: url('/images/community/24-AniDB.png');
   }
 
-  &.tmdb {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TMDB {
     background-image: url('/images/community/24-TMDB.png');
   }
 
-  &.tvdb {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TvDB {
     background-image: url('/images/community/24-TvDB.png');
   }
 
-  &.mal {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.MAL {
     background-image: url('/images/community/24-MAL.png');
   }
 
-  &.anilist {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.AniList {
     background-image: url('/images/community/24-Anilist.png');
   }
 
-  &.trakt {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TraktTv {
     background-image: url('/images/community/24-Trakt.png');
   }
+}
+/* stylelint-disable-next-line selector-class-pattern */
+.ReactModal__Overlay {
+  opacity: 0;
+  transition: opacity 150ms ease-in-out;
+}
+/* stylelint-disable-next-line selector-class-pattern */
+.ReactModal__Overlay--after-open {
+  opacity: 1;
+}
+/* stylelint-disable-next-line selector-class-pattern */
+.ReactModal__Overlay--before-close {
+  opacity: 0;
 }

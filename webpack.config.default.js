@@ -17,7 +17,7 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    '@fontsource/open-sans/latin.css',
+    '@fontsource/sora/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
@@ -35,6 +35,9 @@ const config = {
   },
   devtool: isDebug || process.env.SENTRY_AUTH_TOKEN ? 'source-map' : false,
   resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
   stats: {

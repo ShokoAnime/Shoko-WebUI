@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import DashboardTitleToggle from '../components/DashboardTitleToggle';
 import EpisodeDetails from '../components/EpisodeDetails';
 import SeriesDetails from '../components/SeriesDetails';
-import TransitionDiv from '../../../components/TransitionDiv';
+import TransitionDiv from '@/components/TransitionDiv';
 
 import {
   useGetDashboardRecentlyAddedEpisodesQuery,
   useGetDashboardRecentlyAddedSeriesQuery,
-} from '../../../core/rtkQuery/splitV3Api/dashboardApi';
+} from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 const RecentlyImported = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

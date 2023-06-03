@@ -1,5 +1,5 @@
 import { splitV3Api } from '../splitV3Api';
-import { ImageTypeEnum } from '../../types/api/common';
+import { ImageTypeEnum } from '@/core/types/api/common';
 
 type RandomMetadataResultType = {
   Source: string;

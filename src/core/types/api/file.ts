@@ -26,6 +26,7 @@ export type FileType = {
   Resolution: string;
   Created: string;
   Updated: string;
+  IsVariation: boolean;
   SeriesIDs?: XRefsType;
   AniDB?: FileAniDBType;
   MediaInfo?: FileMediaInfoType;

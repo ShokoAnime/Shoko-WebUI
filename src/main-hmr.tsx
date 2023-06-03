@@ -4,7 +4,7 @@ import 'es6-promise/auto';
 import * as Sentry from '@sentry/react';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from './core/app-hmr';
 import { uiVersion } from './core/util';
 
@@ -19,5 +19,6 @@ document.title = `Shoko Server Web UI ${uiVersion()}`;
 const container = document && document.getElementById('app-root');
 
 if (container !== null) {
-  ReactDOM.render(<App />, container);
+  const root = createRoot(container);
+  root.render(<App />);
 }

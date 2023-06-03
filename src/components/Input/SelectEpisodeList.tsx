@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { find, toInteger } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiChevronUp, mdiChevronDown, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
 import { Listbox } from '@headlessui/react';
-import Input from './Input';
-import Button from './Button';
 import ReactDOM from 'react-dom';
+import cx from 'classnames';
 
-import type { EpisodeTypeEnum } from '../../core/types/api/episode';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import Input from './Input';
 
 function getOffsetTop(rect, vertical) {
   let offset = 0;
@@ -49,26 +49,35 @@ type Props = {
   options: Array<Option>;
   value: number;
   onChange: (optionValue: number, label: string) => void;
-  onAddLink: () => void;
   className?: string;
   emptyValue?: string;
+  rowIdx: number;
 };
 
-const SelectOption = (option: Option & { divider: boolean }) => {
-  return (
-  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-white select-none relative py-2 pl-3 pr-9">
+const getPrefix = (type: EpisodeTypeEnum) => {
+  switch (type) {
+    case EpisodeTypeEnum.Normal: return '';
+    case EpisodeTypeEnum.Special: return 'S';
+    case EpisodeTypeEnum.ThemeSong: return 'C';
+    case EpisodeTypeEnum.Trailer: return 'T';
+    default: return '';
+  }
+};
+
+const SelectOption = (option: Option & { divider: boolean }) => (
+  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-font-alt select-none relative px-2 py-0.5 group">
     <div className="flex items-center justify-between">
-      <span className="ml-3 block font-normal truncate grow"><span className="text-highlight-2">
-        {option.number}</span> - {option.label}
+      <span className="flex font-normal truncate grow">
+        <div className="text-highlight-2 w-10 group-hover:text-font-main">{getPrefix(option.type) + option.number}</div>
+        |
+        <div className="ml-2">{option.label}</div>
       </span>
-      {option.type !== 'Normal' && <span className="mx-2 px-2 py-1 rounded-lg text-font-main bg-background-alt text-sm border-highlight-2 border">{option.type}</span>}
       <span>{option.AirDate}</span>
     </div>
   </Listbox.Option>
-  );
-};
+);
 
-const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emptyValue = '' }: Props) => {
+const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
   const [epFilter, setEpFilter ] = useState(0);
   const [selected, setSelected] = useState(options[0]);
   const [portalEl, setPortalEl] = useState(null as any);
@@ -106,14 +115,6 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
   const handleEpFilter = (event) => {
     setEpFilter(toInteger(event.target.value));
   };
-  
-  const handleAddLink = () => {
-    onAddLink();
-    if (buttonRef.current !== null) {
-      const button = buttonRef.current as HTMLButtonElement;
-      button.click();
-    }
-  };
 
   const selectOption = (selectedOption) => {
     setSelected(selectedOption);
@@ -124,7 +125,7 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
     if (!selected || !selected.label) return emptyValue;
     return (
       <React.Fragment>
-        <span className="text-highlight-2">{selected.number}</span> - {selected.label}
+        <span className="text-highlight-2 font-semibold">{selected.number}</span> - {selected.label}
         {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border">{selected.type}</span>}
       </React.Fragment> 
     );
@@ -141,29 +142,29 @@ const SelectEpisodeList = ({ options, value, onChange, onAddLink, className, emp
     portalEl.style.width = `${displayNode.offsetWidth}px`;
 
     return ReactDOM.createPortal(
-      <Listbox.Options static className="absolute mt-1 w-full z-10 rounded-md bg-background-alt shadow-lg">
-            <div className="flex flex-row px-3 pt-3 justify-between">
-                <Input inline label="Number" type="text" id="epFilter" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} className="w-30"/>
-                <Button className="flex items-center mr-4 font-normal text-font-main" onClick={handleAddLink}>
-                    <Icon path={mdiPlusCircleOutline} size={1} className="mr-1" />
-                    Add New Row
-                </Button>
-            </div>
-            <div className="bg-background-border mx-3 my-4 h-0.5 flex-shrink-0" />
-            <div className="max-h-96 overflow-y-auto">
-              {options.map((item, idx) => ((epFilter > 0 && item.number === epFilter || epFilter === 0) && <SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />))}
-            </div>
-        </Listbox.Options>,
+      <Listbox.Options static className="absolute mt-1 w-full z-10 bg-background-alt">
+        <div className="flex gap-x-2">
+          <Input className="grow" id="epFilter" type="text" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} inputClassName="py-4 px-3" startIcon={mdiMagnify} placeholder="Input Episode Name or Number..." />
+        </div>
+        <div className="rounded-md bg-background-border mt-1 overflow-y-auto max-h-96 p-4">
+          {options.map((item, idx) => (
+            <>
+              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-background-alt h-0.5 my-3" />)}
+              {(epFilter > 0 && item.number === epFilter || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
+            </>
+          ))}
+        </div>
+      </Listbox.Options>,
       portalEl,
     );
   };
 
   return (
-    <div className={className} ref={handleDisplayRef}>
+    <div className={`${className} h-full`} ref={handleDisplayRef}>
       <Listbox value={selected} onChange={selectOption}>
         {({ open }) => (
-          <div className="relative">
-            <Listbox.Button ref={buttonRef} className="relative w-full bg-background-alt border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1">
+          <div className="relative h-full">
+            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1', rowIdx % 2 === 0 ? 'bg-background-alt' : 'bg-background')}>
               <span className="flex items-center">
                 <span className="ml-3 block truncate h-7">{renderSelected()}</span>
               </span>

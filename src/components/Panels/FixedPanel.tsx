@@ -35,7 +35,7 @@ function FixedPanel(props: Props) {
         }}
       />
       <div
-        className="overflow-y-auto flex flex-col h-full font-open-sans"
+        className="overflow-y-auto flex flex-col h-full"
         onMouseDown={event => event.stopPropagation()}
         onTouchStart={event => event.stopPropagation()}
       >

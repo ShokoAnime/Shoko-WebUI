@@ -2,10 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetDashboardSeriesSummaryQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
+import { useGetDashboardSeriesSummaryQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 const names = {
   Series: 'TV Series',
@@ -17,7 +17,7 @@ function SeriesBreakdown() {
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
   const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
-    <div key={`${item}-name`} className="flex mt-3 first:mt-0">
+    <div key={`${item}-name`} className="flex mt-5 first:mt-0">
       <span className="grow">{names[item] ?? item} - {count}</span>
       <span className={`text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
     </div>
@@ -53,7 +53,7 @@ function SeriesBreakdown() {
   });
 
   return (
-    <ShokoPanel title="Series Breakdown" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Media Type" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
       {items}
     </ShokoPanel>
   );

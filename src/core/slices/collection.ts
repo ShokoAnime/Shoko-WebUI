@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { CollectionGroupType } from '../types/api/collection';
+import { CollectionGroupType } from '@/core/types/api/collection';
 import { forEach } from 'lodash';
 
 type State = {

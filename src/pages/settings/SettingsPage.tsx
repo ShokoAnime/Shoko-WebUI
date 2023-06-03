@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet } from 'react-router';
-import { Link, useOutletContext } from 'react-router-dom';
+import { NavLink, useLocation, useOutletContext } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import cx from 'classnames';
-import { find, isEqual } from 'lodash';
+import { isEqual } from 'lodash';
 import semver from 'semver';
 import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiChevronRight } from '@mdi/js';
+import { mdiInformationOutline, mdiLoading } from '@mdi/js';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
-import Button from '../../components/Input/Button';
-import toast from '../../components/Toast';
-import TransitionDiv from '../../components/TransitionDiv';
-import { uiVersion } from '../../core/util';
-
-import type { RootState } from '../../core/store';
-import type { SettingsType } from '../../core/types/api/settings';
+import Button from '@/components/Input/Button';
+import TransitionDiv from '@/components/TransitionDiv';
+import { uiVersion } from '@/core/util';
+import { setItem as setMiscItem } from '@/core/slices/misc';
+import type { SettingsType } from '@/core/types/api/settings';
 
 const items = [
   { name: 'General', path: 'general' },
@@ -32,17 +30,17 @@ const items = [
 const initialLayout = {
   dashboard: {
     lg: [
-      { i: 'collectionBreakdown', x: 0, y: 0, w: 3, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionTypeBreakdown', x: 3, y: 0, w: 2, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'queueProcessor', x: 5, y: 0, w: 7, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'shokoNews', x: 0, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importFolders', x: 3, y: 35, w: 3, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importBreakdown', x: 6, y: 35, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'continueWatching', x: 0, y: 49, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'nextUp', x: 0, y: 61, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'upcomingAnime', x: 0, y: 73, w: 12, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recommendedAnime', x: 0, y: 94, w: 12, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'queueProcessor', x: 0, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importBreakdown', x: 6, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionBreakdown', x: 0, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'collectionTypeBreakdown', x: 3, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'importFolders', x: 6, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'shokoNews', x: 9, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'continueWatching', x: 0, y: 53, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'nextUp', x: 0, y: 67, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'upcomingAnime', x: 0, y: 81, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false },
+      { i: 'recommendedAnime', x: 0, y: 103, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
     ],
     md: [
       { i: 'collectionBreakdown', x: 0, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
@@ -77,7 +75,7 @@ export const initialSettings = {
   WebUI_Settings: {
     notifications: true,
     settingsRevision: 0,
-    theme: '',
+    theme: 'theme-shoko-gray',
     toastPosition: 'bottom-right',
     updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
@@ -154,9 +152,10 @@ export const initialSettings = {
   GA_OptOutPlzDont: false,
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
-  AutoGroupSeriesRelationExclusions: [''],
-  LanguagePreference: ['x-jat', 'en'],
+  AutoGroupSeriesRelationExclusions: [],
   LanguageUseSynonyms: false,
+  LanguagePreference: ['x-jat', 'en'],
+  EpisodeLanguagePreference: ['en'],
   Import: {
     MoveOnImport: false,
     RenameOnImport: false,
@@ -169,14 +168,15 @@ export const initialSettings = {
 } as SettingsType;
 
 type ContextType = {
-  fetching: boolean
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => {};
   updateSetting: (type: string, key: string, value: string) => {};
 };
 
 function SettingsPage() {
-  const pathname = useSelector((state: RootState) => state.router.location.pathname);
+  const dispatch = useDispatch();
+
+  const { pathname } = useLocation();
 
   const settingsQuery = useGetSettingsQuery();
   const settings = settingsQuery?.data ?? initialSettings;
@@ -188,88 +188,88 @@ function SettingsPage() {
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
+    dispatch(setMiscItem({ webuiPreviewTheme: null }));
     setNewSettings(settings);
   }, [settings]);
 
-  useEffect(() => {
-    if (isEqual(settings, newSettings))
-      toast.dismiss('unsaved');
-    else if (!isEqual(newSettings, initialSettings)) {
-      toast.info('', 'You have unsaved changes!', {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'unsaved',
-      });
-    }
+  const unsavedChanges = useMemo(() => {
+    if (isEqual(settings, newSettings)) return false;
+    else return !isEqual(newSettings, initialSettings);
   }, [newSettings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings = { ...(newSettings[type]), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
+
+    if (type === 'WebUI_Settings' && key === 'theme')
+      dispatch(setMiscItem({ webuiPreviewTheme: value }));
   };
 
   const saveSettings = async () => {
     try {
       await patchSettings({ oldSettings: settings, newSettings }).unwrap();
-      await settingsQuery.refetch(); 
+      await settingsQuery.refetch();
     } catch (error) {}
   };
 
-  const renderItem = (name: string, path: string) => (
-    <Link to={path} className={cx('font-semibold mb-2', pathname === `/webui/settings/${path}` && 'text-highlight-1')} key={path} onClick={() => setShowNav(false)}>{name}</Link>
-  );
-
-  const getBgClassNames = () => {
-    switch (pathname.split('/').pop()) {
-      case 'general': return 'bg-general-settings bg-[center_right_-18rem]';
-      case 'import': return 'bg-import-settings bg-right';
-      case 'anidb': return 'bg-anidb-settings bg-[center_right_-26rem]';
-      case 'metadata-sites': return 'bg-metadata-sites-settings bg-[center_right_-14rem]';
-      case 'user-management': return 'bg-management-settings bg-[center_right_-26rem]';
-      default: return '';
-    }
-  };
-
   return (
-    <div className="flex h-full">
+    <div className="flex grow justify-center gap-x-8 min-h-full" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-64 bg-background-nav h-full border-x-2 border-background-border p-9 absolute z-10 md:static"
+        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 z-10 gap-y-4 font-semibold bg-opacity-50 relative top-0"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-        {items.map(item => renderItem(item.name, item.path))}
+       <div className='sticky top-[4.25rem]'>
+         <div className="text-xl opacity-100 mb-8">Settings</div>
+         <div className='flex flex-col gap-y-4'>
+           {items.map(item => (
+             <NavLink to={item.path} className={({ isActive }) => isActive ? 'text-highlight-1' : ''} key={item.path}>
+               {item.name}
+             </NavLink>
+           ))}
+         </div>
+       </div>
       </TransitionDiv>
-      <div className={`grow h-full p-9 bg-cover overflow-y-auto ${getBgClassNames()}`} onClick={() => setShowNav(false)}>
-        {isSm && (
-          <div className="flex justify-center mb-8 font-semibold">
-            Settings
-            <Icon path={mdiChevronRight} size={1} className="mx-1" />
-            <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>
-              {find(items, item => item.path === pathname.split('/').pop())?.name}
-              <Icon path={mdiChevronDown} size={1} />
-            </div>
+      {/*{isSm && (*/}
+      {/*  <div className="flex justify-center mb-8 font-semibold">*/}
+      {/*    Settings*/}
+      {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" />*/}
+      {/*    <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>*/}
+      {/*      {find(items, item => item.path === pathname.split('/').pop())?.name}*/}
+      {/*      <Icon path={mdiChevronDown} size={1} />*/}
+      {/*    </div>*/}
+      {/*  </div>*/}
+      {/*)}*/}
+      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
+        {settingsQuery.isLoading ? (
+          <div className="flex grow items-center justify-center text-highlight-1">
+            <Icon path={mdiLoading} spin size={5} />
           </div>
-        )}
-        <div className="flex flex-col max-w-full md:max-w-[34rem]">
-          <Outlet
-            context={{
-              fetching: settingsQuery.isLoading,
-              newSettings,
-              setNewSettings,
-              updateSetting,
-            }}
-          />
-        </div>
-        {pathname.split('/').pop() !== 'user-management' && (
-          <div className="flex max-w-[34rem] mt-10 justify-end">
-            <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
-            <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
-          </div>
+        ) : (
+          <>
+            <Outlet
+              context={{
+                newSettings,
+                setNewSettings,
+                updateSetting,
+              }}
+            />
+            {pathname.split('/').pop() !== 'user-management' && (
+              <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
+                <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border text-font-main">Cancel</Button>
+                <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+              </div>
+            )}
+          </>
         )}
       </div>
+      <div className={cx('flex w-96 bg-background-alt border border-background-border rounded-md p-8 gap-x-2 font-semibold items-center bg-opacity-50 sticky top-0 transition-opacity h-full', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
+        <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
+        Whoa! You Have Unsaved Changes!
+      </div>
+      <div className="h-full w-full -mt-8 left-0 fixed -z-10 !bg-center !bg-cover !bg-no-repeat" style={{ background: 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/api/v3/Image/Random/Fanart)' }} />
     </div>
   );
 }

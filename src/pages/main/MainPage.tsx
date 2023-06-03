@@ -1,22 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { useMediaQuery } from 'react-responsive';
-import { ToastContainer, Slide } from 'react-toastify';
+import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
-import Events from '../../core/events';
-import Sidebar from '../../components/Layout/Sidebar';
+import Events from '@/core/events';
 
-import ImportFolderModal from '../../components/Dialogs/ImportFolderModal';
-import LanguagesModal from '../../components/Dialogs/LanguagesModal';
-import ProfileModal from '../../components/Dialogs/ProfileModal';
-import FiltersModal from '../../components/Dialogs/FiltersModal';
-import ActionsModal from '../../components/Dialogs/ActionsModal';
-import UtilitiesModal from '../../components/Dialogs/UtilitiesModal';
-import Header from '../../components/Layout/Header';
+import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
+import ProfileModal from '@/components/Dialogs/ProfileModal';
+import FiltersModal from '@/components/Dialogs/FiltersModal';
+import Header from '@/components/Layout/Header';
+import TopNav from '@/components/Layout/TopNav';
 
-import { useGetSettingsQuery } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 function MainPage() {
@@ -33,6 +30,8 @@ function MainPage() {
     dispatch({ type: Events.MAINPAGE_LOAD });
   }, []);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
   return (
     <React.Fragment>
       {notifications && (
@@ -40,27 +39,20 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          bodyClassName="font-semibold font-open-sans"
-          className="mt-20 !w-96"
+          className="mt-20 !w-[29.5rem]"
           closeButton={false}
           icon={false}
-          hideProgressBar={true}
         />
       )}
-      <div className="flex flex-col grow w-screen">
+      <div className="flex flex-col grow overflow-x-clip">
         <ImportFolderModal />
-        <LanguagesModal />
         <ProfileModal />
         <FiltersModal />
-        <ActionsModal />
-        <UtilitiesModal />
+        <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="flex grow overflow-y-auto">
-          <div className="flex">
-            <Sidebar showSmSidebar={showSmSidebar} setShowSmSidebar={setShowSmSidebar} />
-          </div>
-          <div className="overflow-y-auto grow shoko-scrollbar" onClick={() => setShowSmSidebar(false)}>
-            <Outlet />
+        <div className="grow shoko-scrollbar overflow-y-auto py-8" id="scrollContainer" ref={scrollRef}>
+          <div className="max-w-[120rem] w-full mx-auto px-8 min-h-full flex flex-col" onClick={() => setShowSmSidebar(false)}>
+            <Outlet context={{ scrollRef }} />
           </div>
         </div>
       </div>

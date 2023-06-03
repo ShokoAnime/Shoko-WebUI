@@ -19,14 +19,14 @@ function Select(props:Props) {
 
   return (
     <div className={`${className ?? ''}`}>
-      <label className="font-open-sans" htmlFor={id}>
+      <label htmlFor={id}>
         {label && (
           <div className="mb-3 font-semibold">
             {label}
           </div>
         )}
         <div className="w-auto relative">
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-background-alt border border-background-border focus:ring-2 focus:ring-highlight-1 focus:ring-inset transition ease-in-out">
+          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-background-border border border-background-border focus:ring-2 focus:ring-highlight-1 focus:ring-inset transition ease-in-out">
             {children}
           </select>
           <div className="pointer-events-none absolute inset-y-0 right-0 pr-2 py-2">

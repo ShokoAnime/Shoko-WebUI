@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { UserType } from '../types/api/init';
+import type { UserType } from '@/core/types/api/init';
 
 export type TestStatusType = {
   type: 'error' | 'success' | '';

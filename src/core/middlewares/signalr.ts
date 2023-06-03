@@ -1,17 +1,13 @@
 /* eslint-disable max-len */
-import {
-  JsonHubProtocol, HttpTransportType, HubConnectionBuilder, LogLevel, HubConnection,
-} from '@microsoft/signalr';
+import { HttpTransportType, HubConnection, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import moment from 'moment';
-import {
-  debounce, delay, defer, round, forEach,
-} from 'lodash';
+import { debounce, defer, delay, forEach, round } from 'lodash';
 
 import Events from '../events';
-import { setQueueStatus, setUdpBanStatus, setHttpBanStatus, setFetched } from '../slices/mainpage';
+import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '../slices/mainpage';
 import { splitV3Api } from '../rtkQuery/splitV3Api';
 
-import type { AniDBBanItemType } from '../types/signalr';
+import type { AniDBBanItemType } from '@/core/types/signalr';
 
 let lastRetry = moment();
 let attempts = 0;

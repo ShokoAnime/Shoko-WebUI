@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import type { FilterType } from '../../types/api/common';
+import type { FilterType } from '@/core/types/api/common';
 
 type State = {
   filters: Array<FilterType>;

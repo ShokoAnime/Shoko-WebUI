@@ -4,8 +4,8 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import { Icon } from '@mdi/react';
 import { mdiMenuDown } from '@mdi/js';
 
-import { RootState } from '../../core/store';
-import toast from '../../components/Toast';
+import { RootState } from '@/core/store';
+import toast from '@/components/Toast';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
@@ -17,10 +17,10 @@ import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
 import RecommendedAnime from './panels/RecommendedAnime';
-import Button from '../../components/Input/Button';
+import Button from '@/components/Input/Button';
 
-import { setLayoutEditMode } from '../../core/slices/mainpage';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -64,8 +64,8 @@ function DashboardPage() {
       const renderToast = () => (
         <div className="flex flex-col">
           Edit Mode Enabled
-          <div className="flex items-center justify-end mt-3">
-            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 mr-3">Cancel</Button>
+          <div className="flex items-center justify-end mt-3 gap-x-3 font-semibold">
+            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 text-font-main">Cancel</Button>
             <Button onClick={() => saveLayout()} className="bg-highlight-1 px-3 py-1.5">Save</Button>
           </div>
         </div>
@@ -77,7 +77,7 @@ function DashboardPage() {
           draggable: false,
           closeOnClick: false,
           toastId: 'layoutEditMode',
-          className: 'w-56 ml-auto',
+          className: 'w-64 ml-auto',
         });
       } else {
         toast.infoUpdate('layoutEditMode', '', renderToast());
@@ -96,41 +96,37 @@ function DashboardPage() {
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
-      breakpoints={{
-        lg: 1024, md: 768, sm: 640,
-      }} // These match tailwind breakpoints (for consistency)
-      cols={{
-        lg: 12, md: 10, sm: 6,
-      }}
+      breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
+      cols={{ lg: 12, md: 10, sm: 6 }}
       rowHeight={0}
-      containerPadding={[36, 36]}
-      margin={[26, 26]}
+      margin={[32, 32]}
       className="w-full"
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}
       isResizable={layoutEditMode}
       resizeHandle={renderResizeHandle()}
+      containerPadding={[0, 0]}
     >
+      <div key="queueProcessor">
+        <QueueProcessor />
+      </div>
+      <div key="importBreakdown">
+        <ImportBreakdown />
+      </div>
+      <div key="recentlyImported">
+        <RecentlyImported />
+      </div>
       <div key="collectionBreakdown">
         <CollectionBreakdown />
       </div>
       <div key="collectionTypeBreakdown">
         <SeriesBreakdown />
       </div>
-      <div key="queueProcessor">
-        <QueueProcessor />
-      </div>
-      <div key="recentlyImported">
-        <RecentlyImported />
-      </div>
-      <div key="shokoNews">
-        <ShokoNews />
-      </div>
       <div key="importFolders">
         <ImportFolders />
       </div>
-      <div key="importBreakdown">
-        <ImportBreakdown />
+      <div key="shokoNews">
+        <ShokoNews />
       </div>
       <div key="continueWatching">
         <ContinueWatching />

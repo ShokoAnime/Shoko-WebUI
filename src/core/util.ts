@@ -1,8 +1,9 @@
 /* eslint-disable no-param-reassign */
-import { each, unset, isObject } from 'lodash';
+import { each, isObject, unset } from 'lodash';
 import Version from '../../public/version.json';
 import { FilterFn, SortingFn, sortingFns } from '@tanstack/react-table';
 import { compareItems, RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import formatThousands from 'format-thousands';
 
 export function uiVersion() {
   return Version.debug ? Version.git : Version.package;
@@ -68,5 +69,7 @@ export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   }
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
+
+export const formatThousand = (n: number) => formatThousands(n, ',');
 
 export default {};

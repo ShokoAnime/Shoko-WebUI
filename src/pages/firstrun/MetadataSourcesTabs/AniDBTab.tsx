@@ -2,14 +2,14 @@
 import React from 'react';
 import cx from 'classnames';
 
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import SelectSmall from '../../../components/Input/SelectSmall';
-import TransitionDiv from '../../../components/TransitionDiv';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
+import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from '../FirstRunPage';
 
-import { TestStatusType } from '../../../core/slices/firstrun';
+import { TestStatusType } from '@/core/slices/firstrun';
 
 type Props = {
   setStatus: (status: TestStatusType) => void;
@@ -54,32 +54,32 @@ function AniDBTab({ setStatus }: Props) {
   );
 
   return (
-    <TransitionDiv className="flex flex-col w-96">
+    <TransitionDiv className="flex flex-col gap-y-2">
 
       <div className="font-semibold">Download Options</div>
       <Checkbox label="Character Images" id="DownloadCharacters" isChecked={DownloadCharacters} onChange={handleInputChange} justify className="mt-4" />
-      <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} justify className="mt-1" />
-      <Checkbox label="Release Groups" id="DownloadReleaseGroups" isChecked={DownloadReleaseGroups} onChange={handleInputChange} justify className="mt-1" />
-      <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} justify className="mt-1" />
-      <div className={cx('flex justify-between mt-1 items-center transition-opacity', !DownloadRelatedAnime && 'pointer-events-none opacity-50')}>
+      <Checkbox label="Creator Images" id="DownloadCreators" isChecked={DownloadCreators} onChange={handleInputChange} justify />
+      <Checkbox label="Release Groups" id="DownloadReleaseGroups" isChecked={DownloadReleaseGroups} onChange={handleInputChange} justify />
+      <Checkbox label="Related Anime" id="DownloadRelatedAnime" isChecked={DownloadRelatedAnime} onChange={handleInputChange} justify />
+      <div className={cx('flex justify-between items-center transition-opacity', !DownloadRelatedAnime && 'pointer-events-none opacity-50')}>
         Related Depth
         <InputSmall id="max-relation-depth" value={MaxRelationDepth} type="number" onChange={event => validateAndSaveRelationDepth(event.target.value)} className="w-10 text-center px-2" />
       </div>
 
-      <div className="font-semibold mt-5">Mylist Options</div>
+      <div className="font-semibold mt-6">Mylist Options</div>
       <Checkbox label="Add Files" id="MyList_AddFiles" isChecked={MyList_AddFiles} onChange={handleInputChange} justify className="mt-4" />
-      <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} justify className="mt-1" />
-      <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} justify className="mt-1" />
-      <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} justify className="mt-1" />
-      <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} justify className="mt-1" />
-      <SelectSmall label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={handleInputChange} className="mt-1">
+      <Checkbox label="Read Watched" id="MyList_ReadWatched" isChecked={MyList_ReadWatched} onChange={handleInputChange} justify />
+      <Checkbox label="Read Unwatched" id="MyList_ReadUnwatched" isChecked={MyList_ReadUnwatched} onChange={handleInputChange} justify />
+      <Checkbox label="Set Watched" id="MyList_SetWatched" isChecked={MyList_SetWatched} onChange={handleInputChange} justify />
+      <Checkbox label="Set Unwatched" id="MyList_SetUnwatched" isChecked={MyList_SetUnwatched} onChange={handleInputChange} justify />
+      <SelectSmall label="Storage State" id="MyList_StorageState" value={MyList_StorageState} onChange={handleInputChange}>
         <option value={0}>Unknown</option>
         <option value={1}>HDD</option>
         <option value={2}>Disk</option>
         <option value={3}>Deleted</option>
         <option value={4}>Remote</option>
       </SelectSmall>
-      <SelectSmall label="Delete Action" id="MyList_DeleteType" value={MyList_DeleteType} onChange={handleInputChange} className="mt-1">
+      <SelectSmall label="Delete Action" id="MyList_DeleteType" value={MyList_DeleteType} onChange={handleInputChange}>
         <option value={0}>Delete File (AniDB)</option>
         <option value={1}>Delete File (Local)</option>
         <option value={2}>Mark Deleted</option>
@@ -88,20 +88,20 @@ function AniDBTab({ setStatus }: Props) {
         <option value={5}>DVD/BD</option>
       </SelectSmall>
 
-      <div className="font-semibold mt-5">Update Options</div>
+      <div className="font-semibold mt-6">Update Options</div>
       <SelectSmall label="Calendar" id="Calendar_UpdateFrequency" value={Calendar_UpdateFrequency} onChange={handleInputChange} className="mt-4">
         {renderUpdateFrequencyValues()}
       </SelectSmall>
-      <SelectSmall label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={handleInputChange} className="mt-1">
+      <SelectSmall label="Anime Information" id="Anime_UpdateFrequency" value={Anime_UpdateFrequency} onChange={handleInputChange}>
         {renderUpdateFrequencyValues()}
       </SelectSmall>
-      <SelectSmall label="Sync Mylist" id="MyList_UpdateFrequency" value={MyList_UpdateFrequency} onChange={handleInputChange} className="mt-1">
+      <SelectSmall label="Sync Mylist" id="MyList_UpdateFrequency" value={MyList_UpdateFrequency} onChange={handleInputChange}>
         {renderUpdateFrequencyValues()}
       </SelectSmall>
-      <SelectSmall label="Get Mylist Stats" id="MyListStats_UpdateFrequency" value={MyListStats_UpdateFrequency} onChange={handleInputChange} className="mt-1">
+      <SelectSmall label="Get Mylist Stats" id="MyListStats_UpdateFrequency" value={MyListStats_UpdateFrequency} onChange={handleInputChange}>
         {renderUpdateFrequencyValues()}
       </SelectSmall>
-      <SelectSmall label="Files With Missing Info" id="File_UpdateFrequency" value={File_UpdateFrequency} onChange={handleInputChange} className="mt-1">
+      <SelectSmall label="Files With Missing Info" id="File_UpdateFrequency" value={File_UpdateFrequency} onChange={handleInputChange}>
         {renderUpdateFrequencyValues()}
       </SelectSmall>
 

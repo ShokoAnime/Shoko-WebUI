@@ -3,10 +3,10 @@ import { useSelector } from 'react-redux';
 import prettyBytes from 'pretty-bytes';
 import { Link } from 'react-router-dom';
 
-import { RootState } from '../../../core/store';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetDashboardStatsQuery } from '../../../core/rtkQuery/splitV3Api/dashboardApi';
+import { useGetDashboardStatsQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 function CollectionBreakdown() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -35,9 +35,9 @@ function CollectionBreakdown() {
   const childrenSecond = [
     renderItem('collection-size', 'Collection Size', `${prettyBytes(stats.data?.FileSize || 0, { binary: true })}`),
     renderItem('files', 'Files', stats.data?.FileCount),
-    renderItem('unrecognized-files', 'Unrecognized Files', stats.data?.UnrecognizedFiles, '/webui/utilities/unrecognized'),
-    renderItem('multiple-files', 'Multiple Files', stats.data?.EpisodesWithMultipleFiles),
-    renderItem('duplicate-files', 'Duplicate Files', stats.data?.FilesWithDuplicateLocations),
+    renderItem('unrecognized-files', 'Files With Unknown Hashes', stats.data?.UnrecognizedFiles, '/webui/utilities/unrecognized'),
+    renderItem('multiple-files', 'Files That Contain Duplicate Episodes', stats.data?.EpisodesWithMultipleFiles),
+    renderItem('duplicate-files', 'Files With Duplicate Hashes', stats.data?.FilesWithDuplicateLocations),
   ];
 
   const childrenThird = [
@@ -47,7 +47,7 @@ function CollectionBreakdown() {
   ];
 
   return (
-    <ShokoPanel title="Collection Breakdown" isFetching={stats.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Collection Statistics" isFetching={stats.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>

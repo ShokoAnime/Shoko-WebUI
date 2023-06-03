@@ -1,26 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 import { cloneDeep, find, isEqual, remove } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
-import Checkbox from '../../../components/Input/Checkbox';
-import InputSmall from '../../../components/Input/InputSmall';
-import toast from '../../../components/Toast';
-import { unsetDetails } from '../../../core/slices/apiSession';
-import Button from '../../../components/Input/Button';
-import Input from '../../../components/Input/Input';
-import type { UserType } from '../../../core/types/api/user';
+import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import toast from '@/components/Toast';
+import { unsetDetails } from '@/core/slices/apiSession';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import type { UserType } from '@/core/types/api/user';
 
-import { useGetUsersQuery, usePostChangePasswordMutation, usePutUserMutation } from '../../../core/rtkQuery/splitV3Api/userApi';
+import {
+  useGetUsersQuery,
+  usePostChangePasswordMutation,
+  usePutUserMutation,
+} from '@/core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
   useInvalidatePlexTokenMutation,
   useLazyGetPlexLoginUrlQuery,
-} from '../../../core/rtkQuery/plexApi';
-import { useGetAniDBTagsQuery } from '../../../core/rtkQuery/splitV3Api/tagsApi';
+} from '@/core/rtkQuery/plexApi';
+import { useGetAniDBTagsQuery } from '@/core/rtkQuery/splitV3Api/tagsApi';
 
 const initialUser = {
   ID: 0,
@@ -36,6 +39,7 @@ const initialUser = {
 
 function UserManagementSettings() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const usersQuery = useGetUsersQuery();
   const users = usersQuery.data ?? [];
@@ -101,7 +105,7 @@ function UserManagementSettings() {
         toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
         setTimeout(() => {
           dispatch(unsetDetails());
-          dispatch(push('/webui/login'));
+          navigate('/webui/login');
         }, 6000);
       } else toast.success('Password changed successfully!');
     }, error => console.error(error));
@@ -147,79 +151,91 @@ function UserManagementSettings() {
 
   return (
     <>
-      <ShokoPanel title="Current Users" isFetching={usersQuery.isLoading}>
-        {users.map(user => (
-          <div className="flex justify-between mt-3 first:mt-0" key={`user-${user.ID}`}>
-            <div>{user.Username}</div>
-            <div className="flex cursor-pointer">
-              <div onClick={() => setSelectedUser(user)}>
-                <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1 mr-2" />
+      <div className='font-semibold text-xl'>User Management</div>
+
+      <div className='flex flex-col'>
+        <div className="font-semibold mb-4">Current Users</div>
+        <div className="flex flex-col gap-y-3">
+          {users.map(user => (
+            <div className="flex justify-between" key={`user-${user.ID}`}>
+              <div>{user.Username}</div>
+              <div className="flex gap-x-2">
+                <div onClick={() => setSelectedUser(user)}>
+                  <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1"/>
+                </div>
+                <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3"/>
               </div>
-              <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
             </div>
+          ))}
+        </div>
+      </div>
+
+      <div className='flex flex-col'>
+        <div className="font-semibold mb-4">User Options</div>
+        <div className="flex flex-col gap-y-3">
+          <div className="flex justify-between h-8">
+            <div className='mx-0 my-auto'>Display Name</div>
+            <InputSmall id="Username" value={selectedUser.Username} type="text" onChange={handleInputChange} className="w-32 px-2" />
           </div>
-        ))}
-      </ShokoPanel>
-
-      <ShokoPanel title="Options" isFetching={usersQuery.isLoading} className="mt-8">
-        <div className="flex justify-between">
-          Display Name
-          <InputSmall id="Username" value={selectedUser.Username} type="text" onChange={handleInputChange} className="w-32 px-2 py-0.5" />
+          <div className="flex justify-between h-8">
+            <div className='mx-0 my-auto'>Plex User Link</div>
+            {isPlexAuthenticated ? (
+              <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-s w-16 font-semibold h-8">Unlink</Button>
+            ) : getPlexLoginUrlResult?.data ? (
+              <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Login</Button>
+            ) : (
+              <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Authenticate</Button>
+            )}
+          </div>
+          <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className='h-8'/>
+          <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className='h-8'/>
         </div>
-        <div className="flex justify-between mt-2">
-          Plex User Link
-          {isPlexAuthenticated ? (
-            <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 py-1 text-xs w-16">Unlink</Button>
-          ) : getPlexLoginUrlResult?.data ? (
-            <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 py-1 text-xs w-24">Login</Button>
-          ) : (
-            <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} className="bg-highlight-1 py-1 text-xs w-24">Authenticate</Button>
-          )}
-        </div>
-        <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className="mt-2" />
-        <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className="mt-2" />
-      </ShokoPanel>
+      </div>
 
-      <ShokoPanel
-        title="Password"
-        className="mt-8"
-        options={<Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} className="!text-highlight-1 font-semibold !text-base">Change</Button>}
-      >
-        <div className="flex justify-between">
-          New Password
-          <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" autoComplete="new-password" />
+      <div className='flex flex-col'>
+        <div className='flex justify-between h-8 mb-4'>
+          <div className="font-semibold mx-0 my-auto">Password</div>
+          <Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} className="!text-highlight-1 font-semibold !text-base">Change</Button>
         </div>
-        <Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className="mt-2" />
-      </ShokoPanel>
-
-      <ShokoPanel title="Tag Restrictions" isFetching={usersQuery.isFetching && tags.isFetching} className="mt-8">
-        <div className="flex flex-col bg-background-alt border border-background-border rounded-md mt-2 px-3 py-2">
-          <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
-          <div className="flex flex-col overflow-y-auto h-64 mt-2">
-            {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
-              <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
-                {tag.Name}
-              </div>
-            ))}
+        <div className="flex flex-col gap-y-3">
+          <div className="flex justify-between h-8">
+            <div className='mx-0 my-auto'>New Password</div>
+            <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" autoComplete="new-password" />
+          </div>
+          <div className="h-8">
+            <Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className='justify-between'/>
           </div>
         </div>
-        <div className="font-semibold mt-3">Selected Tags</div>
-        <div className="flex flex-col bg-background-alt border border-background-border rounded-md mt-2 px-3 py-2 min-h-[8rem]">
+      </div>
+
+      <div className='flex flex-col'>
+        <div className="font-semibold mb-4">Tag Restrictions</div>
+        <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)}/>
+        <div className="bg-background-border overflow-y-scroll h-64 mt-2 rounded-md p-4 capitalize">
+          {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
+            <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
+              {tag.Name}
+            </div>
+          ))}
+        </div>
+        <div className="font-semibold my-4">Selected Tags</div>
+        <div className="flex flex-col bg-background-border rounded-md p-4 min-h-[8rem] ">
           {selectedUser.RestrictedTags?.length
             ? selectedUser.RestrictedTags?.map(tag => (
-              <div className="flex justify-between first:mt-0 mt-2" key={`selectedTag-${tag}`}>
+              <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>
                 {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
                 <Button onClick={() => handleTagChange(tag, false)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3"/>
                 </Button>
               </div>
             ))
-            : (
-              <div className="flex grow justify-center items-center font-semibold">No restricted tags!</div>
+            :
+            (
+              <div className="flex grow justify-center items-center font-semibold">No Restricted Tags!</div>
             )
           }
         </div>
-      </ShokoPanel>
+      </div>
 
       <div className="flex max-w-[34rem] mt-10 justify-end">
         <Button onClick={() => handleCancel()} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>

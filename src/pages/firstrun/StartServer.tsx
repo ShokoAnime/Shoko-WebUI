@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { push } from '@lagunovsky/redux-react-router';
+import { useNavigate } from 'react-router-dom';
 
-import { RootState } from '../../core/store';
-import { setSaved as setFirstRunSaved } from '../../core/slices/firstrun';
+import { RootState } from '@/core/store';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import Footer from './Footer';
-import Button from '../../components/Input/Button';
-import TransitionDiv from '../../components/TransitionDiv';
+import Button from '@/components/Input/Button';
+import TransitionDiv from '@/components/TransitionDiv';
 
-import { useGetInitStartServerMutation, useGetInitStatusQuery } from '../../core/rtkQuery/splitV3Api/initApi';
-import { usePostAuthMutation } from '../../core/rtkQuery/splitApi/authApi';
+import { useGetInitStartServerMutation, useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
 
 function StartServer() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [pollingInterval, setPollingInterval] = useState(0);
 
@@ -31,7 +32,7 @@ function StartServer() {
       device: 'web-ui',
       rememberUser: false,
     }).unwrap().then(
-      () => dispatch(push('import-folders')),
+      () => navigate('../import-folders'),
       error => console.error(error),
     );
   };
@@ -46,21 +47,20 @@ function StartServer() {
   }, [status.data]);
 
   return (
-    <TransitionDiv className="flex flex-col justify-center max-w-[40rem] px-8">
-      <div className="font-semibold">Start Server</div>
-      <div className="mt-9 text-justify">
-        On this page you can try and start the server, startup progress will be reported below.
-        After the startup and database creation process is complete you will be able to setup
-        import folders.
+    <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
+      <div className="font-semibold text-xl">Start Server</div>
+      <div className="text-justify">
+        On this page you can try and start the server, startup progress will be reported below. After the startup and
+        database creation process is complete you will be able to setup import folders.
       </div>
-      <div className="flex flex-col my-9">
-        <div className="flex">
-          <span className="font-semibold mr-2">Status:</span>
+      <div className="flex flex-col">
+        <div className="flex gap-x-2">
+          <span className="font-semibold">Status:</span>
           {status.data?.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
         </div>
         <div className="flex justify-center items-center mt-24">
           {pollingInterval === 0 && (status.isUninitialized || status.data?.State === 4) && (
-            <Button onClick={() => handleStart()} className="bg-highlight-2 py-2 w-64">Start Server</Button>
+            <Button onClick={() => handleStart()} className="bg-highlight-2 py-2 w-64 font-semibold">Start Server</Button>
           )}
         </div>
       </div>

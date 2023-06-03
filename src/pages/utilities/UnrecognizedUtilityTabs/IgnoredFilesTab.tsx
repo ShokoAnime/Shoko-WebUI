@@ -1,43 +1,56 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import cx from 'classnames';
 import { forEach } from 'lodash';
-import { Icon } from '@mdi/react';
-import {
-  mdiMagnify, mdiRestart,
-  mdiPlusCircleOutline, mdiCloseCircleOutline,
-} from '@mdi/js';
-import {
-  getCoreRowModel,
-  getFilteredRowModel, getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { mdiCloseCircleOutline, mdiEyeOutline, mdiMagnify, mdiRestart } from '@mdi/js';
+import { getCoreRowModel, getFilteredRowModel, getSortedRowModel, Table, useReactTable } from '@tanstack/react-table';
+import Input from '@/components/Input/Input';
+import TransitionDiv from '@/components/TransitionDiv';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
-import Button from '../../../components/Input/Button';
-import Input from '../../../components/Input/Input';
-import TransitionDiv from '../../../components/TransitionDiv';
-import UtilitiesTable from './Components/UtilitiesTable';
-
-import {
-  useGetFileIgnoredQuery,
-  usePutFileIgnoreMutation,
-} from '../../../core/rtkQuery/splitV3Api/fileApi';
-import { fuzzyFilter } from '../../../core/util';
+import { useGetFileIgnoredQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { fuzzyFilter } from '@/core/util';
 
 import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { FileType } from '@/core/types/api/file';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import Title from '@/components/Utilities/Unrecognized/Title';
+
+const Menu = ({ table }: { table: Table<FileType> }) => {
+  const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
+  const files = filesQuery?.data ?? { Total: 0, List: [] };
+  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
+
+  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
+
+  const restoreFiles = (selected = false) => {
+    const fileList = selected ? selectedRows : files.List;
+    forEach(fileList, (row) => {
+      fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});
+    });
+  };
+
+  return (
+    <>
+      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton onClick={async () => { table.resetRowSelection(); await filesQuery.refetch(); }} icon={mdiRestart} name="Refresh" />
+        <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore All" />
+      </TransitionDiv>
+      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length !== 0}>
+        <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore All" highlight />
+        <MenuButton onClick={table.resetRowSelection} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+      </TransitionDiv>
+    </>
+  );
+};
 
 function IgnoredFilesTab() {
-  const { columns, setFilesCount } = useUnrecognizedUtilityContext();
+  const { columns } = useUnrecognizedUtilityContext();
 
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
   const files = filesQuery?.data ?? { Total: 0, List: [] };
 
-  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
-
   const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
-
-  useEffect(() => {
-    setFilesCount(files.Total);
-  }, [files.Total]);
 
   const table = useReactTable({
     data: files.List,
@@ -52,56 +65,37 @@ function IgnoredFilesTab() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel()]);
+  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
 
   useEffect(() => {
     table.resetRowSelection();
   }, [files.List]);
 
-  const restoreFiles = () => {
-    forEach(selectedRows, (row) => {
-      fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});
-    });
-  };
-
-  const renderOperations = (common = false) => {
-    const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
-      <Button onClick={onClick} className="flex items-center mr-4 font-normal text-font-main">
-        <Icon path={icon} size={1} className={cx(['mr-1', highlight && 'text-highlight-1'])} />
-        {name}
-      </Button>
-    );
-
-    return (
-      <>
-        {renderButton(async () => { table.resetRowSelection(); await filesQuery.refetch(); }, mdiRestart, 'Refresh')}
-        <TransitionDiv className="flex grow" show={!common}>
-          {renderButton(() => restoreFiles(), mdiPlusCircleOutline, 'Restore', true)}
-          {renderButton(() => table.resetRowSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
-        </TransitionDiv>
-      </>
-    );
-  };
-
   return (
-    <TransitionDiv className="flex flex-col grow h-full w-full">
+    <div className="flex flex-col grow gap-y-8">
 
-      <div className="flex">
-        <Input type="text" placeholder="Search..." className="bg-background-nav mr-2" startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
-        <div className="box-border flex grow bg-background-nav border border-background-border items-center rounded-md px-3 py-2">
-          {renderOperations(selectedRows.length === 0)}
-          <div className="ml-auto text-highlight-2 font-semibold">{selectedRows.length} Files Selected</div>
-        </div>
+      <div>
+        <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
+          <div className="flex items-center gap-x-3">
+            {/*TODO: Fix search bar height*/}
+            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
+            <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+              <Menu table={table} />
+              <span className="text-highlight-2 ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+            </div>
+          </div>
+        </ShokoPanel>
       </div>
-      <TransitionDiv className="w-full grow basis-0 mt-4 overflow-y-auto rounded-lg bg-background-nav border border-background-border">
+
+        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {files.Total > 0 ? (
           <UtilitiesTable table={table} />
         ) : (
-          <div className="flex items-center justify-center h-full font-semibold">No ignored file(s)!</div>
+          <div className="flex items-center justify-center grow font-semibold">No ignored file(s)!</div>
         )}
       </TransitionDiv>
 
-    </TransitionDiv>
+    </div>
   );
 }
 

@@ -1,11 +1,11 @@
 import moment from 'moment';
 import React, { useMemo } from 'react';
 
-import { DashboardEpisodeDetailsType } from '../../../core/types/api/dashboard';
-import { EpisodeTypeEnum } from '../../../core/types/api/episode';
+import { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { Icon } from '@mdi/react';
 import { mdiLayersTripleOutline } from '@mdi/js';
-import BackgroundImagePlaceholderDiv from '../../../components/BackgroundImagePlaceholderDiv';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',
@@ -36,7 +36,7 @@ function EpisodeDetails(props: Props): JSX.Element {
   const title = useMemo(() => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`, [episode.Type, episode.Title, episode.Number]);
 
   return (
-  <div key={`episode-${episode.IDs.ID}`} className="mr-5 last:mr-0 shrink-0 w-56 font-open-sans justify-center flex flex-col">
+  <div key={`episode-${episode.IDs.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 justify-center flex flex-col">
     {showDate ? (<>
       <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
       <p className="truncate text-center text-sm mb-2 opacity-75">{relativeTime}</p>

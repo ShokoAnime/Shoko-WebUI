@@ -1,15 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { forEach, remove } from 'lodash';
-
-import { RootState } from '../../core/store';
-import { setStatus as setLanguageModalStatus } from '../../core/slices/modals/languages';
+import React, { useCallback, useEffect, useState } from 'react';
+import { remove } from 'lodash';
 import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
-import { initialSettings } from '../../pages/settings/SettingsPage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
-import { useGetSettingsQuery, usePatchSettingsMutation } from '../../core/rtkQuery/splitV3Api/settingsApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -63,29 +59,28 @@ export const languageDescription = {
   vi: 'Vietnamese (vi)',
 };
 
-function LanguagesModal() {
-  const dispatch = useDispatch();
+type Props = {
+  type: 'Series' | 'Episode' | null;
+  onClose: () => void;
+};
 
-  const status = useSelector((state: RootState) => state.modals.languages.status);
-
+function LanguagesModal({ type, onClose }: Props) {
   const settingsQuery = useGetSettingsQuery();
   const settings = settingsQuery.data ?? initialSettings;
-  const LanguagePreference = settings.LanguagePreference ?? ['x-jat', 'en'];
+  const LanguagePreference = type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en'];
   const [patchSettings] = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as Array<string>);
 
-  const handleClose = () => dispatch(setLanguageModalStatus(false));
-
-  const handleSave = () => {
-    patchSettings({ oldSettings: settings, newSettings: { ...settings, LanguagePreference: languages }  }).unwrap()
-      .then(() => handleClose())
+  const handleSave = useCallback(() => {
+    patchSettings({ oldSettings: settings, newSettings: { ...settings, [ type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference' ]: languages }  }).unwrap()
+      .then(() => onClose())
       .catch(error => console.error(error));
-  };
+  }, [type]);
 
   useEffect(() => {
-    if (status) setLanguages(LanguagePreference);
-  }, [status]);
+    if (type !== null) setLanguages(LanguagePreference);
+  }, [type]);
 
   const handleInputChange = (event: any) => {
     const { id, checked: value } = event.target;
@@ -98,33 +93,21 @@ function LanguagesModal() {
     setLanguages(newLanguages);
   };
 
-  const items: Array<React.ReactNode> = [];
-
-  forEach(languageDescription, (language, key) => {
-    items.push(<Checkbox
-      label={language}
-      id={key}
-      key={key}
-      isChecked={languages.includes(key)}
-      onChange={handleInputChange}
-      className="mr-2"
-    />);
-  });
-
   return (
-    <ModalPanel show={status} className="languages-modal px-6 pt-3 pb-5 drop-shadow-[-4px_0_4px_rgba(0,0,0,0.25)]" onRequestClose={() => handleClose()}>
-      <div className="flex flex-col w-full">
-        <span className="flex font-semibold text-base uppercase">
-          Languages
-        </span>
-        <div className="bg-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
-        <div className="flex flex-col grow overflow-y-auto my-2">
-          {items}
-        </div>
-        <div className="flex justify-end mt-2">
-          <Button onClick={handleClose} className="bg-highlight-3 px-5 py-2 mr-2">Discard</Button>
-          <Button onClick={handleSave} className="bg-highlight-1 px-5 py-2">Save</Button>
-        </div>
+    <ModalPanel
+      show={type !== null}
+      onRequestClose={onClose}
+      className="p-8 flex-col drop-shadow-lg gap-y-4 h-2/3"
+    >
+      <div className="font-semibold text-xl">{type} Languages</div>
+      <div className="flex flex-col overflow-y-auto bg-background-border rounded-md border border-background-border px-3 py-2 gap-y-1.5">
+        {Object.keys(languageDescription).map(key => (
+          <Checkbox id={key} key={key} isChecked={languages.includes(key)} onChange={handleInputChange} label={languageDescription[key]} justify />
+        ))}
+      </div>
+      <div className="flex justify-end gap-x-3 font-semibold">
+        <Button onClick={onClose} className="bg-background-nav px-5 py-2 text-font-main">Discard</Button>
+        <Button onClick={handleSave} className="bg-highlight-1 px-5 py-2" disabled={languages.length === 0}>Save</Button>
       </div>
     </ModalPanel>
   );

@@ -3,20 +3,20 @@ import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
+  mdiCloseCircleOutline,
   mdiFormatListBulletedSquare,
-  mdiPoundBoxOutline,
   mdiImageMultipleOutline,
   mdiPauseCircleOutline,
   mdiPlayCircleOutline,
-  mdiCloseCircleOutline,
+  mdiPoundBoxOutline,
 } from '@mdi/js';
 
-import { RootState } from '../../../core/store';
-import Button from '../../../components/Input/Button';
-import type { QueueItemType } from '../../../core/types/signalr';
-import ShokoPanel from '../../../components/Panels/ShokoPanel';
+import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import type { QueueItemType } from '@/core/types/signalr';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetQueueOperationMutation } from '../../../core/rtkQuery/splitApi/queueApi';
+import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitApi/queueApi';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
@@ -33,7 +33,7 @@ function QueueProcessor() {
   };
 
   const renderItem = (key: string, item: QueueItemType, count: number) => (
-    <div className="flex flex-col mt-8 first:mt-0" key={key}>
+    <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-24">
           <Icon className="mr-4" path={icons[key]} size={1} />

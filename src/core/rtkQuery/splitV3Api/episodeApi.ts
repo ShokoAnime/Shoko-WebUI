@@ -1,8 +1,8 @@
 import { splitV3Api } from '../splitV3Api';
 
-import type { EpisodeType, EpisodeAniDBType, EpisodeTvDBType } from '../../types/api/episode';
-import { FileType } from '../../types/api/file';
-import { DataSourceType } from '../../types/api/common';
+import type { EpisodeAniDBType, EpisodeTvDBType, EpisodeType } from '@/core/types/api/episode';
+import { FileType } from '@/core/types/api/file';
+import { DataSourceType } from '@/core/types/api/common';
 
 type EpisodeFilesQuery = {
   episodeId: string;
@@ -42,5 +42,5 @@ export const {
   useGetEpisodeAnidbQuery,
   useGetEpisodeQuery,
   useGetEpisodeTvdbQuery,
-  useGetEpisodeFilesQuery,
+  useLazyGetEpisodeFilesQuery,
 } = episodeApi;
