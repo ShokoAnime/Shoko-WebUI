@@ -20,7 +20,8 @@ export const loadState = (): RootState => {
       return checkVersion(get(serializedState, 'apiSession.version', '')) ? serializedState : {} as any;
     }
     const apiSession = JSON.parse(apiSessionString);
-    if (!checkVersion(get(apiSession, 'version', ''))) { 
+    if (!checkVersion(get(apiSession, 'version', ''))) {
+      global.localStorage.clear();
       return {} as any;
     }
     return { ...serializedState, apiSession };
