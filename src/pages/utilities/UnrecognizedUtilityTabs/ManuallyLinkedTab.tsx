@@ -173,7 +173,7 @@ function ManuallyLinkedTab() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col grow h-full w-full">
+    <TransitionDiv className="flex flex-col grow gap-y-8">
 
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series /> }>
@@ -193,13 +193,13 @@ function ManuallyLinkedTab() {
         </ShokoPanel>
       </div>
 
-      <div className="flex flex-col grow w-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8">
+      <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {seriesQuery.isFetching ? (
-          <div className="flex h-full justify-center items-center">
+          <div className="flex grow justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
         ) : series.Total > 0 ? (
-          <>
+          <div className="flex flex-col w-full">
             <div className="flex px-6 py-4 bg-background font-semibold sticky top-0 z-[1] rounded-md border border-background-border">
               <div className="grow">Series</div>
               <div className="w-24">AniDB ID</div>
@@ -208,7 +208,9 @@ function ManuallyLinkedTab() {
               <div className="w-10" />
             </div>
             <div ref={parentRef} className="grow overflow-y-auto">
-              <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
+              {/*TODO: Figure this out so that scroll height works properly*/}
+              {/*<div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>*/}
+              <div className="w-full relative">
                 <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                   {virtualItems.map((virtualRow) => {
                     const row = filteredSeries[virtualRow.index];
@@ -226,9 +228,9 @@ function ManuallyLinkedTab() {
                 </div>
               </div>
             </div>
-          </>
+          </div>
         ) : (
-          <div className="flex items-center justify-center h-full font-semibold">No manually linked file(s)!</div> 
+          <div className="flex items-center justify-center grow font-semibold">No manually linked file(s)!</div>
         )}
       </div>
     </TransitionDiv>

@@ -273,7 +273,7 @@ function UnrecognizedTab() {
   };
 
   return (
-    <div className="flex flex-col grow w-full h-full">
+    <div className="flex flex-col grow gap-y-8">
 
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
@@ -297,11 +297,11 @@ function UnrecognizedTab() {
         </ShokoPanel>
       </div>
 
-      <TransitionDiv className="grow w-full h-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {files.Total > 0 ? (
           <UtilitiesTable table={table} />
         ) : (
-          <div className="flex items-center justify-center h-full font-semibold">No unrecognized file(s)!</div>
+          <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>
         )}
       </TransitionDiv>
 

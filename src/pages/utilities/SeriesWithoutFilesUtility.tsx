@@ -16,7 +16,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import Input from '@/components/Input/Input';
-import Checkbox from '@/components/Input/Checkbox';
 import type { SeriesType } from '@/core/types/api/series';
 
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
@@ -27,24 +26,6 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 const columnHelper = createColumnHelper<SeriesType>();
 
 const columns = [
-  columnHelper.display({
-    id: 'checkbox',
-    header: ({ table }) => (
-      <div className="flex items-center justify-center mr-6">
-        <Checkbox id="checkbox-all" isChecked={table.getIsAllRowsSelected()}
-                  onChange={table.getToggleAllRowsSelectedHandler()} intermediate={table.getIsSomeRowsSelected()}/>
-      </div>
-    ),
-    cell: ({ row }) => (
-      <div className="flex items-center justify-center">
-        <Checkbox id={`checkbox-${row.id}`} isChecked={row.getIsSelected()}
-                  onChange={row.getToggleSelectedHandler()}/>
-      </div>
-    ),
-    meta: {
-      className: 'w-20',
-    },
-  }),
   columnHelper.accessor('IDs.AniDB', {
     header: 'AniDB ID',
     id: 'ID',
@@ -130,28 +111,33 @@ function SeriesWithoutFilesUtility() {
 
   const renderPanelOptions = () => (
     <div className="flex font-semibold">
-      <span className="text-highlight-2">{series.Total} Empty</span>&nbsp;Series
+      <span className="text-highlight-2">{series.Total}</span>&nbsp;Empty Series
     </div>
   );
 
   return (
-    <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
-      <div className="flex items-center gap-x-3">
-        {/*TODO: Fix search bar height*/}
-        <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
-        <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative gap-x-4">
-          {renderOperations(table.getSelectedRowModel().rows.length === 0)}
-          <div className="ml-auto text-highlight-2 font-semibold">{table.getSelectedRowModel().rows.length} Series Selected</div>
-        </div>
+    <div className="flex flex-col grow gap-y-8">
+
+      <div>
+        <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
+          <div className="flex items-center gap-x-3">
+            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
+            <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative gap-x-4">
+              {renderOperations(table.getSelectedRowModel().rows.length === 0)}
+              <div className="ml-auto text-highlight-2 font-semibold">{table.getSelectedRowModel().rows.length} Series Selected</div>
+            </div>
+          </div>
+        </ShokoPanel>
       </div>
-      <div className="grow w-full h-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8">
+
+      <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {series.Total > 0 ? (
           <UtilitiesTable table={table} />
         ) : (
-          <div className="flex items-center justify-center h-full font-semibold">No series without files!</div>
+          <div className="flex items-center justify-center grow font-semibold">No series without files!</div>
         )}
       </div>
-    </ShokoPanel>
+    </div>
   );
 }
 

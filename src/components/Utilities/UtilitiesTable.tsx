@@ -49,7 +49,7 @@ function UtilitiesTable({ table }: Props) {
   };
 
   return (
-    <div className="w-full h-full grow basis-0 overflow-y-auto relative" ref={tableContainerRef}>
+    <div className="w-full grow overflow-y-auto relative" ref={tableContainerRef}>
       <table className="table-fixed text-left border-separate border-spacing-y-2 w-full absolute -top-2" style={{ height: totalSize }}>
         <thead className="sticky top-0 z-[1]">
         {table.getHeaderGroups().map(headerGroup => (

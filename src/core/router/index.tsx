@@ -15,7 +15,6 @@ import NoMatchPage from '@/pages/nomatch';
 // Main page
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import LogsPage from '@/pages/logs/LogsPage';
-import UtilitiesPage from '@/pages/utilities/UtilitiesPage';
 
 // First run
 import Acknowledgement from '@/pages/firstrun/Acknowledgement';
@@ -78,7 +77,7 @@ const router = createBrowserRouter(
         <Route element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}>
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
-          <Route path="utilities" element={<UtilitiesPage />}>
+          <Route path="utilities">
             <Route index element={<Navigate to="unrecognized" replace />} />
             <Route path="unrecognized" element={<UnrecognizedUtility />}>
               <Route index element={<Navigate to="files" />} />

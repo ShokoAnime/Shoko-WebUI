@@ -50,8 +50,8 @@ function MainPage() {
         <FiltersModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="grow shoko-scrollbar overflow-y-auto p-8" id="scrollContainer" ref={scrollRef}>
-          <div className="max-w-[120rem] w-full mx-auto" onClick={() => setShowSmSidebar(false)}>
+        <div className="grow shoko-scrollbar overflow-y-auto py-8" id="scrollContainer" ref={scrollRef}>
+          <div className="max-w-[120rem] w-full mx-auto px-8 min-h-full flex flex-col" onClick={() => setShowSmSidebar(false)}>
             <Outlet context={{ scrollRef }} />
           </div>
         </div>
