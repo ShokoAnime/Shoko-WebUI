@@ -90,12 +90,12 @@ const SeriesEpisodes = () => {
             <span className="text-highlight-2 pr-2">{episodesTotal}</span>
             Entries Listed
           </div>
-          <div className="flex space-x-3">
-            <div className="space-x-2 flex">
+          <div className="flex gap-x-3">
+            <div className="gap-x-2 flex">
               <Icon path={mdiEyeCheckOutline} size={1} />
               <span>Mark Filtered As Watched</span>
             </div>
-            <div className="space-x-2 flex">
+            <div className="gap-x-2 flex">
               <Icon path={mdiEyeOutline} size={1} />
               <span>Mark Filtered Unwatched</span>
             </div>

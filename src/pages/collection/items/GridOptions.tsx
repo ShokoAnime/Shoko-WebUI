@@ -9,7 +9,7 @@ const OptionButton = ({ icon, onClick }) => (
 );
 
 const GridOptions = ({ toggleMode, showFilters, showServerFilters }) => (
-  <div className="flex space-x-2" title="Settings">
+  <div className="flex gap-x-2" title="Settings">
     <OptionButton onClick={showFilters} icon={mdiFilterOutline} />
     <OptionButton onClick={toggleMode} icon={mdiFormatListText} />
     <OptionButton onClick={showServerFilters} icon={mdiCogOutline} />

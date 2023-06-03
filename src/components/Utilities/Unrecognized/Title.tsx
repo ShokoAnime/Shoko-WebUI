@@ -10,7 +10,7 @@ const TabButton = ({ id, name }: { id: string; name: string }) => (
 );
 
 const Title = () => (
-  <div className="flex items-center font-semibold space-x-2">
+  <div className="flex items-center font-semibold gap-x-2">
     Unrecognized Files
     <Icon path={mdiChevronRight} size={1} />
     <TabButton id="files" name="Unrecognized" />

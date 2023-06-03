@@ -18,7 +18,7 @@ const HeaderFragment = ({ title, range }) => {
 };
 
 const Header = ({ ranges }) => (
-  <div className="flex space-x-2">
+  <div className="flex gap-x-2">
     <HeaderFragment title="Episodes" range={ranges?.Normal?.Range} />
     <HeaderFragment title="Specials" range={ranges?.Specials?.Range} />
     {map(omit(ranges, ['Normal', 'Special']), (item, key) => (

@@ -60,7 +60,7 @@ function FiltersModal() {
         <input type="text" placeholder="Search..." className="bg-background-border ml-2" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
       </div>
       <div className="box-border flex flex-col bg-background-border border border-background-border items-center rounded-md p-4">
-        <div className="flex flex-col w-full pr-4 space-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
+        <div className="flex flex-col w-full pr-4 gap-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
           {filteredList.filter(item => !item.Directory).map(item => renderItem(item))}
         </div>
       </div>

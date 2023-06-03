@@ -31,7 +31,7 @@ const getThumbnailUrl = (thumbnail: ImageType) => {
 };
 
 const InfoLine = ({ title, value }) => (
-  <div className="flex flex-col space-y-1">
+  <div className="flex flex-col gap-y-1">
     <span className="font-semibold text-font-main">{title}</span>
     {value}
   </div>
@@ -77,7 +77,7 @@ const SeriesImages = () => {
         </ShokoPanel>
       </div>
 
-      <div className="flex flex-col grow space-y-8">
+      <div className="flex flex-col grow gap-y-8">
         <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border">
           <Heading type={type} setType={setType} />
           <div className="font-semibold text-xl"><span className="text-highlight-2">{get(images, type, []).length}</span> {type} Listed</div>
