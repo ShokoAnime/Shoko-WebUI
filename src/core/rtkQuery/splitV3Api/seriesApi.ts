@@ -134,7 +134,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
     //Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
-      query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB` }),
+      query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB&includeMissing=false` }),
     }),
 
     getSeriesCast: build.query<SeriesCast[], { seriesId: string } >({
