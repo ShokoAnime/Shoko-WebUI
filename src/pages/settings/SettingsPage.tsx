@@ -213,7 +213,7 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex p-8 grow justify-center gap-x-8 min-h-full" onClick={() => setShowNav(false)}>
+    <div className="flex grow justify-center gap-x-8 min-h-full" onClick={() => setShowNav(false)}>
       <TransitionDiv
         className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 z-10 gap-y-4 font-semibold bg-opacity-50 relative top-0"
         show={!(isSm && !showNav)}

@@ -56,9 +56,9 @@ const Group = () => {
   );
 
   return (
-    <div className="p-9 pr-0 h-full min-w-full">
+    <div className="h-full min-w-full">
       <ShokoPanel title={renderTitle(items.length)}>
-      <div className="flex flex-wrap space-x-2">
+      <div className="flex flex-wrap gap-x-2">
         {items.map(item => renderDetails(item))}
       </div>
       </ShokoPanel>

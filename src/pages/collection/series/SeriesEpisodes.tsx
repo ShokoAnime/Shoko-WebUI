@@ -65,32 +65,23 @@ const SeriesEpisodes = () => {
 
   return (
     <div className="flex gap-x-8">
-      <div className="grow-0 shrink-0 w-[25rem] flex flex-col align-top">
-        <div>
-          <ShokoPanel title="Search & Filter" transparent>
-            <div className="gap-y-8">
-              <Input id="search" label="Episode search" startIcon={mdiMagnify} type="text" placeholder="Search..." className="w-full bg-transparent" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
-              <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterType(event.currentTarget.value); }}>
-                <option value="2">Episodes</option>
-                <option value="3">Specials</option>
-                <option value="0,1,4,5,6,7,8,9,10">Other</option>
-              </Select>
-              <Select className="hidden" id="season" label="Season" value={0} onChange={() => {}}>
-                <option value={0}>Season 01</option>
-              </Select>
-              <Select id="status" label="Episode Status" value={episodeFilterStatus} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterStatus(event.currentTarget.value); }}>
-                <option value="false">Available</option>
-                <option value="only">Missing</option>
-              </Select>
-              <Select id="watched" label="Watched State" value={episodeFilterWatched} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => { setEpisodeFilterWatched(event.currentTarget.value); }}>
-                <option value="true">All</option>
-                <option value="only">Watched</option>
-                <option value="false">Unwatched</option>
-              </Select>
-            </div>
-          </ShokoPanel>
-        </div>
-      </div>
+      <ShokoPanel title="Search & Filter" className="w-[25rem] sticky top-0" transparent contentClassName="gap-y-8">
+        <Input id="search" label="Episode search" startIcon={mdiMagnify} type="text" placeholder="Search..." value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
+        <Select id="episodeType" label="Type" value={episodeFilterType} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterType(event.currentTarget.value)}>
+          <option value="2">Episodes</option>
+          <option value="3">Specials</option>
+          <option value="0,1,4,5,6,7,8,9,10">Other</option>
+        </Select>
+        <Select id="status" label="Episode Status" value={episodeFilterStatus} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterStatus(event.currentTarget.value)}>
+          <option value="false">Available</option>
+          <option value="only">Missing</option>
+        </Select>
+        <Select id="watched" label="Watched State" value={episodeFilterWatched} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterWatched(event.currentTarget.value)}>
+          <option value="true">All</option>
+          <option value="only">Watched</option>
+          <option value="false">Unwatched</option>
+        </Select>
+      </ShokoPanel>
       <div className="flex flex-col grow gap-y-4">
         <div className="rounded-md bg-background-alt/65 px-8 py-4 flex justify-between items-center border-background-border border">
           <div className="font-semibold text-xl">

@@ -105,6 +105,7 @@ function DashboardPage() {
       isDraggable={layoutEditMode}
       isResizable={layoutEditMode}
       resizeHandle={renderResizeHandle()}
+      containerPadding={[0, 0]}
     >
       <div key="queueProcessor">
         <QueueProcessor />

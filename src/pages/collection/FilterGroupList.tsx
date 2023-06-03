@@ -99,7 +99,7 @@ function FilterGroupList() {
   };
 
   return (
-    <div className="p-8 h-full min-w-full flex flex-col space-y-8">
+    <div className="h-full min-w-full flex flex-col gap-y-8">
       <div className="rounded bg-background-alt p-8 flex justify-between items-center border-background-border border">
         <div>{renderTitle(total)}</div>
         <GridOptions showFilters={toggleFilters} toggleMode={toggleMode} showServerFilters={showServerFilters} />

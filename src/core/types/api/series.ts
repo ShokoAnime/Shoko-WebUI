@@ -11,7 +11,7 @@ export type SeriesType = {
   Sizes: SeriesSizesType;
   Images: ImagesType;
   UserRating: RatingType;
-  Links: Array<SeriesResourceType>;
+  Links: SeriesLinkType[];
   Created: string;
   Updated: string;
 };
@@ -117,10 +117,10 @@ export type SeriesTitleType = {
   Type: string;
 };
 
-export type SeriesResourceType = {
-  name: string;
-  url: string;
-  image: ImageType | null;
+export type SeriesLinkType = {
+  Type: string;
+  Name: string;
+  URL: string;
 };
 
 export type SeriesSizesType = {

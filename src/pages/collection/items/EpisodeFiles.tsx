@@ -61,7 +61,7 @@ export const EpisodeFiles = ({ episodeFiles }: Props) => {
                 </div>
               </a>}
 
-              {!selectedFile.IsVariation && <span className="text-highlight-2 ml-auto font-semibold">Variation</span>}
+              {selectedFile.IsVariation && <span className="text-highlight-2 ml-auto font-semibold">Variation</span>}
             </div>
 
             <EpisodeFileInfo file={selectedFile} />

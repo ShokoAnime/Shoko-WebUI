@@ -8,9 +8,7 @@ import { Icon } from '@mdi/react';
 import {
   mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
-  mdiDisc,
   mdiEyeCheckOutline,
-  mdiLayersTripleOutline,
   mdiTagTextOutline,
   mdiTelevisionAmbientLight,
   mdiTelevision,

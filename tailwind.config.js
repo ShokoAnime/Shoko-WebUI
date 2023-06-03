@@ -51,6 +51,7 @@ module.exports = {
         'background-nav': withOpacityValue('--color-background-nav'),
         'background-alt': withOpacityValue('--color-background-alt'),
         'background-border': withOpacityValue('--color-background-border'),
+        'border-alt': withOpacityValue('--color-border-alt'),
         'highlight-1': withOpacityValue('--color-highlight-1'),
         'highlight-2': withOpacityValue('--color-highlight-2'),
         'highlight-3': withOpacityValue('--color-highlight-3'),

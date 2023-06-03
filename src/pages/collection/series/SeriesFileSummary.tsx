@@ -92,66 +92,59 @@ const SeriesFileSummary = () => {
     };
   }, [fileSummary]);
   
-  
-  
   return (
-    <div className="flex space-x-8">
-      <div className="grow-0 shrink-0 w-[22.375rem] flex flex-col align-top space-y-8">
-        <div>
-          <ShokoPanel title="Files Overview" transparent>
-            <div className="space-y-8">
-              <div className="flex flex-col">
-                <span className="font-semibold">Episode Count</span>
-                <span>{summary.TotalEpisodeCount}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold">Episode Source</span>
-                <span>{summary.TotalEpisodeSource}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold">Special Count</span>
-                <span>{summary.SpecialEpisodeCount}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold">Special Source</span>
-                <span>{summary.SpecialEpisodeSource}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold">Total File Size</span>
-                <span>{prettyBytes(summary.TotalEpisodeSize, { binary: true })}</span>
-              </div>
-              <div className="flex flex-col">
-                <span className="font-semibold">Groups</span>
-                <span>{summary.Groups}</span>
-              </div>
-            </div>
-          </ShokoPanel>
+    <div className="flex gap-x-8">
+      <ShokoPanel title="Files Overview" className="w-[22.375rem] sticky top-0 shrink-0" transparent contentClassName="gap-y-8">
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Episode Count</span>
+          {summary.TotalEpisodeCount}
         </div>
-      </div>
-      <div className="flex flex-col space-y-8 grow">
-        <div className="rounded bg-background-alt/25 px-8 py-4 flex justify-between items-center border-background-border border font-semibold text-xl">
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Episode Source</span>
+          {summary.TotalEpisodeSource}
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Special Count</span>
+          {summary.SpecialEpisodeCount}
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Special Source</span>
+          {summary.SpecialEpisodeSource || '-'}
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Total File Size</span>
+          {prettyBytes(summary.TotalEpisodeSize, { binary: true })}
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">Groups</span>
+          {summary.Groups}
+        </div>
+      </ShokoPanel>
+
+      <div className="flex flex-col gap-y-8 grow">
+        <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border font-semibold text-xl">
           Files Breakdown
           <div><span className="text-highlight-2">{fileSummary?.Groups.length || 0}</span> Source Entries</div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
-          <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType}/>}>
+          <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType}/>} transparent>
             <div className="flex">
-              <div className="grow flex flex-col space-y-4">
-                <span className="font-semibold">Group</span>
-                <span className="font-semibold">Video</span>
-                <span className="font-semibold">Location</span>
+              <div className="grow flex flex-col gap-y-4 font-semibold">
+                <span>Group</span>
+                <span>Video</span>
+                <span>Location</span>
               </div>
-              <div className="grow-[2] flex flex-col space-y-4">
+              <div className="grow-[2] flex flex-col gap-y-4">
                 <span>{range.GroupName} | v{range.Version}</span>
                 <span>{range.Source} | {range.BitDepth}-bit | {range.Resolution} | {range.Width}x{range.Height} | {range.VideoCodecs} </span>
                 <span>{range.Location}</span>
               </div>
-              <div className="grow flex flex-col space-y-4">
-                <span className="font-semibold">Total</span>
-                <span className="font-semibold">Audio</span>
-                <span className="font-semibold">Subs</span>
+              <div className="grow flex flex-col gap-y-4 font-semibold">
+                <span>Total</span>
+                <span>Audio</span>
+                <span>Subs</span>
               </div>
-              <div className="grow-[2] flex flex-col space-y-4">
+              <div className="grow-[2] flex flex-col gap-y-4">
                 <span>{renderSizes(range.RangeByType)}</span>
                 <span>{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
                 <span>{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>

@@ -44,14 +44,14 @@ function MainPage() {
           icon={false}
         />
       )}
-      <div className="flex flex-col grow">
+      <div className="flex flex-col grow overflow-x-clip">
         <ImportFolderModal />
         <ProfileModal />
         <FiltersModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="grow shoko-scrollbar overflow-y-auto" id="scrollContainer" ref={scrollRef}>
-          <div className="max-w-[120rem] w-full h-full mx-auto" onClick={() => setShowSmSidebar(false)}>
+        <div className="grow shoko-scrollbar overflow-y-auto p-8" id="scrollContainer" ref={scrollRef}>
+          <div className="max-w-[120rem] w-full mx-auto" onClick={() => setShowSmSidebar(false)}>
             <Outlet context={{ scrollRef }} />
           </div>
         </div>

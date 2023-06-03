@@ -111,23 +111,28 @@ input:autofill {
     background-image: url('/images/community/24-AniDB.png');
   }
 
-  &.tmdb {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TMDB {
     background-image: url('/images/community/24-TMDB.png');
   }
 
-  &.tvdb {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TvDB {
     background-image: url('/images/community/24-TvDB.png');
   }
 
-  &.mal {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.MAL {
     background-image: url('/images/community/24-MAL.png');
   }
 
-  &.anilist {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.AniList {
     background-image: url('/images/community/24-Anilist.png');
   }
 
-  &.trakt {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.TraktTv {
     background-image: url('/images/community/24-Trakt.png');
   }
 }
