@@ -83,7 +83,7 @@ const SeriesEpisodes = () => {
         </Select>
       </ShokoPanel>
       <div className="flex flex-col grow gap-y-4">
-        <div className="rounded-md bg-background-alt/65 px-8 py-4 flex justify-between items-center border-background-border border">
+        <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border">
           <div className="font-semibold text-xl">
             Episodes
             <span className="px-2">|</span>
@@ -108,7 +108,7 @@ const SeriesEpisodes = () => {
                 const isLoaderRow = virtualRow.index > episodes.length - 1;
                 return (
                   <div
-                    className="flex flex-col border border-background-border rounded-md bg-background-alt/65"
+                    className="flex flex-col border border-background-border rounded-md bg-background-alt/50"
                     key={virtualRow.key}
                     data-index={virtualRow.index}
                     ref={rowVirtualizer.measureElement}

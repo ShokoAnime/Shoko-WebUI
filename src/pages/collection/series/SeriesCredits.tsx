@@ -63,7 +63,7 @@ const SeriesCredits = () => {
                 <CharacterImage imageSrc={getThumbnailUrl(item, 'Staff')} className="h-[11.4375rem] w-[9rem] rounded-md relative" />
               </div>
               <div className="text-xl">{item.Character?.Name}</div>
-              <div className="opacity-60 -mt-2">{item.Staff?.Name}</div>
+              <div className="opacity-65 -mt-2">{item.Staff?.Name}</div>
               <div>{item.RoleDetails}</div>
             </div>
           ))}

@@ -33,7 +33,7 @@ function Toast(props: Props) {
         <div className="font-semibold">{header}</div>
         <div className="text-font-main">{message}</div>
       </div>
-      {toastProps?.autoClose && <span onClick={closeToast}><Icon path={mdiCloseCircleOutline} size={1} className="text-font-main opacity-60" /></span>}
+      {toastProps?.autoClose && <span onClick={closeToast}><Icon path={mdiCloseCircleOutline} size={1} className="text-font-main opacity-65" /></span>}
     </div>
   );
 }

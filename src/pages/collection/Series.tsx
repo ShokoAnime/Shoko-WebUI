@@ -96,8 +96,8 @@ const Series = () => {
             </div>
           </div>
           <div className="flex flex-col gap-y-4 max-w-[56.25rem]">
-            <div className="text-4xl font-semibold text-font-main">{series.Name}</div>
-            <div className="text-xl font-semibold text-font-main/65">{series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}</div>
+            <div className="text-4xl font-semibold">{series.Name}</div>
+            <div className="text-xl font-semibold opacity-65">{series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}</div>
             <div className="gap-x-4 flex flex-nowrap text-sm">
               <div className="gap-x-2 flex items-center">
                 <Icon path={mdiTelevision} size={1} />
