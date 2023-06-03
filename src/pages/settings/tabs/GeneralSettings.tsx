@@ -143,6 +143,7 @@ function GeneralSettings() {
           <div className="flex justify-between items-center">
             Theme
             <SelectSmall id="theme" value={WebUI_Settings.theme} onChange={event => updateSetting('WebUI_Settings', 'theme', event.target.value)}>
+              <option value="theme-shoko-gray" key="shoko-gray">Shoko Gray (Default)</option>
               {themes.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
             </SelectSmall>
           </div>
