@@ -1,5 +1,4 @@
 import React from 'react';
-import moment from 'moment';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
 import {
@@ -18,12 +17,9 @@ import { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import {
-  mdiCalendarMonthOutline,
-  mdiClockTimeFourOutline,
-  mdiFilmstrip,
   mdiPlusCircleOutline,
-  mdiStarHalfFull,
 } from '@mdi/js';
+import { EpisodeDetails } from '@/pages/collection/items/EpisodeDetails';
 
 const links = ['tmdb', 'tvdb', 'mal', 'anilist', 'trakt'];
 
@@ -32,38 +28,11 @@ const getNextUpThumbnailUrl = (episode: EpisodeType) => {
   if (thumbnail === null) { return null; }
   return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
 };
-const getDuration = (duration) => {
-  const minutes = moment.duration(duration).asMinutes();
-  const intMinutes = Math.round(toNumber(minutes));
-  return `${intMinutes} minutes`;
-};
+
 const NextUpEpisode = ({ nextUpEpisode }) => (
   <div className="flex space-x-8">
-    <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="h-[13rem] w-[22.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-    <div className="flex flex-col space-y-4">
-      <div className="mt-2 text-xl font-semibold text-font-main max-w-[93.75rem]">{nextUpEpisode.Name}</div>
-      <div className="mt-5 space-x-4 flex flex-nowrap">
-        <div className="space-x-2 flex">
-          <Icon path={mdiFilmstrip} size={1} />
-          <span>Episode {nextUpEpisode.AniDB?.EpisodeNumber}</span>
-        </div>
-        <div className="space-x-2 flex">
-          <Icon path={mdiCalendarMonthOutline} size={1} />
-          <span>{nextUpEpisode.AniDB?.AirDate}</span>
-        </div>
-        <div className="space-x-2 flex">
-          <Icon path={mdiClockTimeFourOutline} size={1} />
-          <span>{getDuration(nextUpEpisode.Duration)}</span>
-        </div>
-        <div className="space-x-2 flex">
-          <Icon path={mdiStarHalfFull} size={1} />
-          <span>{toNumber(nextUpEpisode.AniDB?.Rating.Value).toFixed(2)} ({nextUpEpisode.AniDB?.Rating.Votes} Votes)</span>
-        </div>
-      </div>
-      <div className="line-clamp-3 text-font-main">
-        {nextUpEpisode.AniDB?.Description}
-      </div>
-    </div>
+    <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative"/>
+    <EpisodeDetails episode={nextUpEpisode} />
   </div>
 );
 
@@ -117,7 +86,7 @@ const SeriesOverview = () => {
           <div className="flex flex-col">{map(series.Links, item => <span>{item.name}</span>)}</div>
         </ShokoPanel>
         <div className="flex flex-col space-y-9 grow">
-          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[18rem]" transparent>
+          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[22rem]" transparent>
             {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No episode data available!</div>}
           </ShokoPanel>
           <ShokoPanel title="Metadata Sites" className="flex grow-0" transparent>
@@ -128,15 +97,16 @@ const SeriesOverview = () => {
         </div>
       </div>
       <div className="flex mt-9">
-        <ShokoPanel title="Related Anime" className="grow-0 flex" transparent>
-          <div className="flex space-x-3 shoko-scrollbar">
+        <ShokoPanel title="Related Anime" className="w-full" transparent>
+          <div className="flex gap-x-4 shoko-scrollbar">
             {related.map((item) => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
+              const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
               return (
-                <div key={`image-${thumbnail?.ID}`} className="items-center flex flex-col">
+                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[14.0625rem] content-center flex flex-col">
                   <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-                  <span>{item.Title}</span>
-                  <span className="text-highlight-2">{item.Relation}</span>
+                  <span className='text-center text-sm font-semibold text-ellipsis line-clamp-1 mb-2'>{item.Title}</span>
+                  <span className="text-center text-sm font-semibold text-highlight-2">{itemRelation}</span>
                 </div>
               );
             })}
@@ -144,15 +114,15 @@ const SeriesOverview = () => {
         </ShokoPanel>
       </div>
       <div className="flex mt-9">
-        <ShokoPanel title="Similar Anime" className="grow-0 flex" transparent>
-          <div className="flex space-x-3 shoko-scrollbar">
+        <ShokoPanel title="Similar Anime" className="w-full" transparent>
+          <div className="flex gap-x-4 shoko-scrollbar">
             {similar.map((item) => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
               return (
-                <div  key={`image-${thumbnail?.ID}`} className="items-center flex flex-col">
+                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[14.0625rem] content-center flex flex-col">
                   <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black my-2" />
-                  <span>{item.Title}</span>
-                  <span className="text-highlight-2">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                  <span className='text-center text-sm font-semibold text-ellipsis line-clamp-1 mb-2'>{item.Title}</span>
+                  <span className="text-center text-sm font-semibold text-highlight-2">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>
               );
             })}

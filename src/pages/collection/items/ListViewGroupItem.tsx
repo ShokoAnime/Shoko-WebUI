@@ -10,8 +10,11 @@ import {
   mdiCalendarMonthOutline,
   mdiDisc,
   mdiEyeCheckOutline,
-  mdiLayersTripleOutline, mdiTagTextOutline,
+  mdiLayersTripleOutline,
+  mdiTagTextOutline,
   mdiTelevisionAmbientLight,
+  mdiTelevision,
+  mdiFileDocumentMultipleOutline,
 } from '@mdi/js';
 import React from 'react';
 import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
@@ -27,7 +30,7 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
 };
 
 const SeriesTag = ({ text, type }) => (
-  <div className={cx('text-xs font-semibold flex space-x-2 items-center border-2 border-[rgba(63,71,98,1)] rounded-[10px] p-2 whitespace-nowrap', type === 'User' ? 'text-highlight-2' : 'text-highlight-1')}>
+  <div className={cx('text-xs font-semibold flex space-x-2 items-center border-2 border-[rgba(63,71,98,1)] rounded-[10px] p-2 whitespace-nowrap capitalize', type === 'User' ? 'text-highlight-2' : 'text-highlight-1')}>
     <Icon path={mdiTagTextOutline} size="1rem" />
     <span className="text-font-main">{text}</span>
   </div>
@@ -59,35 +62,35 @@ const ListViewGroupItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExt
           <p className="text-base font-semibold" title={item.Name}>{item.Name}</p>
           <div className="flex flex-col space-y-3">
             <div className="space-x-4 flex flex-nowrap">
-              <div className="space-x-2 flex">
-                <Icon path={mdiDisc} size={1} />
-                <span>{renderFileSources(item.Sizes.FileSources)}</span>
+              <div className="space-x-2 flex align-middle items-center">
+                <Icon path={mdiTelevision} size={1} />
+                <span className='text-sm font-semibold'>{renderFileSources(item.Sizes.FileSources)}</span>
               </div>
-              <div className="space-x-2 flex">
+              <div className="space-x-2 flex align-middle items-center">
                 <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span>{mainSeries?.AirDate} - {mainSeries?.EndDate === null ? 'Ongoing' : mainSeries?.EndDate}</span>
+                <span className='text-sm font-semibold'>{mainSeries?.AirDate} - {mainSeries?.EndDate === null ? 'Ongoing' : mainSeries?.EndDate}</span>
               </div>
-              <div className={cx('space-x-2 flex', mainSeries?.EndDate !== null && 'hidden')}>
+              <div className={cx('space-x-2 flex align-middle items-center', mainSeries?.EndDate !== null && 'hidden')}>
                 <Icon path={mdiTelevisionAmbientLight} size={1} />
-                <span>Ongoing Series</span>
+                <span className='text-sm font-semibold'>Ongoing Series</span>
               </div>
             </div>
             <div className="space-x-4 flex flex-nowrap">
-              <div className="space-x-2 flex">
-                <Icon path={mdiLayersTripleOutline} size={1} />
-                <span>Episodes {item.Sizes.Local.Episodes} / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Local.Specials} / {item.Sizes.Total.Specials}</span>
+              <div className="space-x-2 flex align-middle items-center">
+                <Icon path={mdiFileDocumentMultipleOutline} size={1} />
+                <span className='text-sm font-semibold'>Episodes {item.Sizes.Local.Episodes} / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Local.Specials} / {item.Sizes.Total.Specials}</span>
               </div>
-              <div className="space-x-2 flex">
+              <div className="space-x-2 flex align-middle items-center">
                 <Icon path={mdiEyeCheckOutline} size={1} />
-                <span>Episodes {item.Sizes.Watched.Episodes}  / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Watched.Specials} / {item.Sizes.Total.Specials} </span>
+                <span className='text-sm font-semibold'>Episodes {item.Sizes.Watched.Episodes}  / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Watched.Specials} / {item.Sizes.Total.Specials} </span>
               </div>
-              <div className={cx('space-x-2 flex', missingEpisodesCount === 0 && 'hidden')}>
+              <div className={cx('space-x-2 flex align-middle items-center', missingEpisodesCount === 0 && 'hidden')}>
                 <Icon className="text-highlight-4" path={mdiAlertCircleOutline} size={1} />
-                <span>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
+                <span className='text-sm font-semibold'>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
               </div>
             </div>
           </div>
-          <div className="text-base line-clamp-3"><AnidbDescription text={item.Description} /></div>
+          <div className="text-sm line-clamp-4"><AnidbDescription text={item.Description} /></div>
         </div>
       </div>
       <div className="flex items-start flex-wrap h-9 space-x-2 overflow-hidden">
