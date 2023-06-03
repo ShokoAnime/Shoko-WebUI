@@ -18,6 +18,7 @@ const actions = {
     data: [
       'remove-missing-files-mylist',
       'remove-missing-files',
+      'import-new-files',
       'run-import',
     ],
   },
@@ -27,6 +28,7 @@ const actions = {
       'download-missing-anidb-data',
       'sync-votes',
       'sync-mylist',
+      'add-all-manually-linked-files-to-mylist',
       'update-all-anidb-info',
       'update-anidb-calendar',
     ],
@@ -56,7 +58,8 @@ const actions = {
     data: [
       'avdump-mismatched-files',
       'recreate-all-groups',
-      'sync-hashes',
+      'update-missing-anidb-file-release-groups',
+      'update-missing-anidb-file-info',
       'update-all-mediainfo',
       'update-series-stats',
     ],

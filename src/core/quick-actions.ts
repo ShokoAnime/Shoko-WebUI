@@ -9,6 +9,11 @@ const quickActions = {
     functionName: 'SyncMyList',
     info: 'Syncs all of the states in Shoko\'s library to AniDB. BEWARE THIS IS ONE WAY AND CAN ERASE ANIDB DATA IRREVERSIBLY',
   },
+  'add-all-manually-linked-files-to-mylist': {
+    name: 'Add All Manual Links To MyList',
+    functionName: 'AddAllManualLinksToMyList',
+    info: 'Forcibly schedules commands to add the files to MyList for all manual linked files.',
+  },
   'download-missing-anidb-data': {
     name: 'Download Missing AniDB Data',
     functionName: 'DownloadMissingAniDBAnimeData',
@@ -49,6 +54,11 @@ const quickActions = {
     functionName: 'RunImport',
     info: 'Checks for new files in your Shoko folders, hashes them, and scans sites (AniDB, TvDB, etc) for metadata and images',
   },
+  'import-new-files': {
+    name: 'Import New Files',
+    functionName: 'ImportNewFiles',
+    info: 'Queues a task to import only new files found in the import folder.',
+  },
   'avdump-mismatched-files': {
     name: 'AVDump Mismatched Files',
     functionName: 'AVDumpMismatchedFiles',
@@ -64,10 +74,15 @@ const quickActions = {
     functionName: 'UpdateSeriesStats',
     info: 'Recalculates series stats and group filters*',
   },
-  'sync-hashes': {
-    name: 'Sync Hashes',
-    functionName: 'SyncHashes',
-    info: 'This was for web cache hash syncing, and will be for perceptual hashing maybe eventually',
+  'update-missing-anidb-file-release-groups': {
+    name: 'Update Missing AniDB Release Groups',
+    functionName: 'UpdateMissingAniDBFileInfo?missingInfo=true&outOfDate=false',
+    info: 'Update AniDB Files with missing release groups.',
+  },
+  'update-missing-anidb-file-info': {
+    name: 'Update Missing AniDB File Info',
+    functionName: 'UpdateMissingAniDBFileInfo?missingInfo=true&outOfDate=true',
+    info: 'Update AniDB Files with missing file info, including with missing release groups and with out-of-date internal data versions.',
   },
   'update-all-images': {
     name: 'Update All Images',

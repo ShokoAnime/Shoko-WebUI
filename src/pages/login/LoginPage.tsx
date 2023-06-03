@@ -40,13 +40,13 @@ function LoginPage() {
   
   useEffect(() => {
     const data = imageMetadata.data;
-    if (!data) {
+    if (!data || !data?.Type) { 
       setLoginImage('default');
       return;
     }
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
     setLoginImage(uri);
-    setLoginSeriesTitle(data.Series.Name);
+    setLoginSeriesTitle(data?.Series?.Name ?? '');
   }, [imageMetadata.data]);
 
   useEffect(() => {
