@@ -50,7 +50,7 @@ function LogsPage() {
 
   return (
     <React.Fragment>
-      <div key="logs" className="font-mono flex flex-col min-h-full">
+      <div key="logs" className="font-mono flex flex-col grow">
         <div className="flex flex-row text-sm text-font-main bg-background-alt items-center">
           <Checkbox id="scroll" isChecked={isScrollToBottom} onChange={handleScrollToBottom} />
           <span className="pl-1">Scroll to bottom</span>
