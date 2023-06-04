@@ -22,7 +22,7 @@ const CountIcon = ({ className, children, show = true }) => (
   show ? <div className={cx('m-3 px-3 py-1 bg-highlight-2 rounded font-semibold text-font-main text-center min-w-[1.75rem] bg-opacity-85 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]', className)}>{children}</div> : null
 );
 
-const GridViewGroupItem = (item: CollectionGroupType) => {
+const GridViewItem = (item: CollectionGroupType) => {
   const posters = item.Images.Posters;
   const unwatchedCount = item.Sizes.Local.Episodes + item.Sizes.Local.Specials - item.Sizes.Watched.Episodes - item.Sizes.Watched.Specials;
   const groupCount = item.Sizes.SeriesTypes.Movie + item.Sizes.SeriesTypes.OVA + item.Sizes.SeriesTypes.Other + item.Sizes.SeriesTypes.TV + item.Sizes.SeriesTypes.TVSpecial + item.Sizes.SeriesTypes.Unknown + item.Sizes.SeriesTypes.Web;
@@ -40,7 +40,7 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
   };
 
   return (
-    <div key={`group-${item.IDs.ID}`} className="group mx-2 shrink-0 w-[13.0625rem] content-center flex flex-col">
+    <div key={`group-${item.IDs.ID}`} className="group shrink-0 w-[13.0625rem] content-center flex flex-col">
       <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-black mb-3 relative" hidePlaceholderOnHover={true}>
         <div className="absolute right-0 top-0 group-hover:hidden">
           <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>
@@ -56,4 +56,4 @@ const GridViewGroupItem = (item: CollectionGroupType) => {
   );
 };
 
-export default GridViewGroupItem;
+export default GridViewItem;

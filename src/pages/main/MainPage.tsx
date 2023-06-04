@@ -9,7 +9,6 @@ import Events from '@/core/events';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import ProfileModal from '@/components/Dialogs/ProfileModal';
-import FiltersModal from '@/components/Dialogs/FiltersModal';
 import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 
@@ -47,7 +46,6 @@ function MainPage() {
       <div className="flex flex-col grow overflow-x-clip">
         <ImportFolderModal />
         <ProfileModal />
-        <FiltersModal />
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
         <div className="grow shoko-scrollbar overflow-y-auto py-8 scroll-gutter" ref={scrollRef}>

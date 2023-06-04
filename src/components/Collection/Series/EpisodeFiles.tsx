@@ -3,7 +3,7 @@ import { get, map } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiEyeOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 
-import { EpisodeFileInfo } from '@/pages/collection/items/EpisodeFileInfo';
+import { EpisodeFileInfo } from './EpisodeFileInfo';
 import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import toast from '@/components/Toast';
 import type { FileType } from '@/core/types/api/file';

@@ -10,7 +10,7 @@ import { useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Ap
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
-import SeriesEpisode from '@/pages/collection/items/SeriesEpisode';
+import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 
 const pageSize = 26;
 

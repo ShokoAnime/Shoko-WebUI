@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { EpisodeDetails } from '@/pages/collection/items/EpisodeDetails';
 import { get } from 'lodash';
+import { Icon } from '@mdi/react';
+import { mdiChevronDown, mdiLoading } from '@mdi/js';
+import AnimateHeight from 'react-animate-height';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
-import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiLoading } from '@mdi/js';
-import { EpisodeFiles } from '@/pages/collection/items/EpisodeFiles';
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import { EpisodeDetails } from './EpisodeDetails';
+import { EpisodeFiles } from './EpisodeFiles';
 import { useLazyGetEpisodeFilesQuery } from '@/core/rtkQuery/splitV3Api/episodeApi';
-import AnimateHeight from 'react-animate-height';
 
 type Props = {
   episode: EpisodeType;
