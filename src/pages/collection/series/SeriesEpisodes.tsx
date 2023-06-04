@@ -46,8 +46,9 @@ const SeriesEpisodes = () => {
       clearTimeout(timeoutRef.current);
     }
     // Set a new timeout to fetch the current page in view.
-    timeoutRef.current = setTimeout(() => {
-      timeoutRef.current = null;
+    const localRef = timeoutRef.current = setTimeout(() => {
+      if (timeoutRef.current === localRef)
+        timeoutRef.current = null;
       // Do an async fetch for the page and tell the other parts of the code
       // that we're fetching the page by adding a temporarily empty list — so we
       // won't try to re-fetch the same page over and over again.
