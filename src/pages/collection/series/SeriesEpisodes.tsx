@@ -45,7 +45,6 @@ const SeriesEpisodes = () => {
       clearTimeout(timeoutRef.current);
     }
     setFetchingPage(true);
-    console.log('test');
     // Set a new timeout to fetch the current page in view.
     const localRef = timeoutRef.current = setTimeout(() => {
       if (timeoutRef.current === localRef)
