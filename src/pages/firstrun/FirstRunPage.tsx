@@ -4,7 +4,7 @@ import { Outlet } from 'react-router';
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
-import { siDiscord } from 'simple-icons/icons';
+import { siDiscord } from 'simple-icons';
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 

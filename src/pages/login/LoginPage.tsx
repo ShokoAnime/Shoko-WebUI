@@ -8,7 +8,7 @@ import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Icon } from '@mdi/react';
 import { mdiCloseCircle, mdiLoading } from '@mdi/js';
-import { siDiscord } from 'simple-icons/icons';
+import { siDiscord } from 'simple-icons';
 
 import { RootState } from '@/core/store';
 import Button from '@/components/Input/Button';
