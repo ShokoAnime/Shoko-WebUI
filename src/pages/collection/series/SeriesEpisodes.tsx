@@ -44,6 +44,7 @@ const SeriesEpisodes = () => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
+    setFetchingPage(true);
     // Set a new timeout to fetch the current page in view.
     const localRef = timeoutRef.current = setTimeout(() => {
       if (timeoutRef.current === localRef)
@@ -57,7 +58,7 @@ const SeriesEpisodes = () => {
         page,
         search,
         pageSize,
-      }).then(() => setFetchingPage(false)).catch(error => console.error(error));
+      }).then().catch(error => console.error(error)).finally(() => () => setFetchingPage(false));
     }, debounceValue);
   }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
 
@@ -126,7 +127,6 @@ const SeriesEpisodes = () => {
                 const episodeList = episodePages[neededPage];
                 const item = episodeList !== undefined ? episodeList[relativeIndex] : undefined;
                 if (episodeList === undefined && !fetchingPage) {
-                  setFetchingPage(true);
                   fetchPage(neededPage);
                 }
                 return (
