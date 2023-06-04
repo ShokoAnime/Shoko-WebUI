@@ -18,7 +18,7 @@ import {
   mdiTools,
 } from '@mdi/js';
 import cx from 'classnames';
-import { siDiscord } from 'simple-icons/icons';
+import { siDiscord } from 'simple-icons';
 import semver from 'semver';
 import AnimateHeight from 'react-animate-height';
 
