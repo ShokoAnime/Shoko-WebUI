@@ -1,5 +1,5 @@
 module.exports = {
   title: 'Shoko Server WEB UI',
   url: 'http://localhost:3000',
-  apiProxyIP: false, // Set to proxy ip
+  apiProxyUrl: false, // Set to proxy ip - ex: localhost:8111
 };
