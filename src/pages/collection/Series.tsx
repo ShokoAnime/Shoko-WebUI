@@ -113,7 +113,7 @@ const Series = () => {
               </div>
               <div className="gap-x-2 flex items-center">
                 <Icon path={mdiEyeOutline} size={1} />
-                {`${series?.Sizes.Watched.Episodes} / ${series?.Sizes.Watched.Episodes} | ${series?.Sizes.Watched.Specials} / ${series?.Sizes.Watched.Specials}`}
+                {`${series?.Sizes.Watched.Episodes} / ${series?.Sizes.Total.Episodes} | ${series?.Sizes.Watched.Specials} / ${series?.Sizes.Total.Specials}`}
               </div>
             </div>
             <div className="gap-x-4 flex flex-nowrap">
