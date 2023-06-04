@@ -21,6 +21,7 @@ const SeriesEpisodes = () => {
   const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
+  const [fetchingPage, setFetchingPage] = useState(false);
   const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
   const episodePages = episodesData.data?.pages ?? {};
   const episodeTotal = episodesData.data?.total ?? 0;
@@ -39,7 +40,6 @@ const SeriesEpisodes = () => {
   // Fetch a page, but only if we stop scrolling for a bit, and only fetch the
   // same page once until the filters changed again.
   const fetchPage = useCallback((page: number) => {
-    if (episodesData.isFetching) return;
     // Clear the timeout to fetch the last page in view if any.
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -57,7 +57,7 @@ const SeriesEpisodes = () => {
         page,
         search,
         pageSize,
-      }).then().catch(error => console.error(error));
+      }).then(() => setFetchingPage(false)).catch(error => console.error(error));
     }, debounceValue);
   }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
 
@@ -125,7 +125,8 @@ const SeriesEpisodes = () => {
                 const relativeIndex = index % pageSize;
                 const episodeList = episodePages[neededPage];
                 const item = episodeList !== undefined ? episodeList[relativeIndex] : undefined;
-                if (episodeList === undefined) {
+                if (episodeList === undefined && !fetchingPage) {
+                  setFetchingPage(true);
                   fetchPage(neededPage);
                 }
                 return (
