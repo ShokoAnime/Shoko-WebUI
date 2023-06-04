@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
-import { toNumber } from 'lodash';
+import { debounce, toNumber } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -13,7 +13,6 @@ import Select from '@/components/Input/Select';
 import SeriesEpisode from '@/pages/collection/items/SeriesEpisode';
 
 const pageSize = 26;
-const debounceValue = 200; // milliseconds
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
@@ -26,7 +25,6 @@ const SeriesEpisodes = () => {
   const episodePages = episodesData.data?.pages ?? {};
   const episodeTotal = episodesData.data?.total ?? 0;
 
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const rowVirtualizer = useVirtualizer({
@@ -37,43 +35,28 @@ const SeriesEpisodes = () => {
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
 
-  // Fetch a page, but only if we stop scrolling for a bit, and only fetch the
-  // same page once until the filters changed again.
-  const fetchPage = useCallback((page: number) => {
-    // Clear the timeout to fetch the last page in view if any.
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
-    setFetchingPage(true);
-    // Set a new timeout to fetch the current page in view.
-    const localRef = timeoutRef.current = setTimeout(() => {
-      if (timeoutRef.current === localRef)
-        timeoutRef.current = null;
-      fetchEpisodes({
-        seriesID: toNumber(seriesId),
-        includeMissing: episodeFilterAvailability,
-        type: episodeFilterType,
-        includeWatched: episodeFilterWatched,
-        includeDataFrom: ['AniDB', 'TvDB'],
-        page,
-        search,
-        pageSize,
-      }).then().catch(error => console.error(error)).finally(() => setFetchingPage(false));
-    }, debounceValue);
-  }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
+  const fetchPage = useMemo(() => debounce((page: number) => {
+    fetchEpisodes({
+      seriesID: toNumber(seriesId),
+      includeMissing: episodeFilterAvailability,
+      type: episodeFilterType,
+      includeWatched: episodeFilterWatched,
+      includeDataFrom: ['AniDB', 'TvDB'],
+      page,
+      search,
+      pageSize,
+    }).then().catch(error => console.error(error)).finally(() => setFetchingPage(false));
+  }, 200), [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
 
   useEffect(() => {
-    // Clear the timeout if we we're scrolling while changing the filter.
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
+    // Cancel fetch if query params change
+    fetchPage.cancel();
+    setFetchingPage(false);
 
-    // Schedule a fetch of the first page, this will only fetch the first page
-    // when the totalEpisodes count is zero and/or we're already on the first
-    // page, otherwise will the code below ensure that only the current page(s)
-    // in view will be fetched.
+    // Fetch first page if query params change as new data is required
     fetchPage(1);
+
+    return () => fetchPage.cancel();
   }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
 
   return (
@@ -127,6 +110,7 @@ const SeriesEpisodes = () => {
                 const episodeList = episodePages[neededPage];
                 const item = episodeList !== undefined ? episodeList[relativeIndex] : undefined;
                 if (episodeList === undefined && !fetchingPage) {
+                  setFetchingPage(true);
                   fetchPage(neededPage);
                 }
                 return (
