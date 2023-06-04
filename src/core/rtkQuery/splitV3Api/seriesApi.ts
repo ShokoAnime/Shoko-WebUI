@@ -7,8 +7,6 @@ import { EpisodeType } from '@/core/types/api/episode';
 import { FileType } from '@/core/types/api/file';
 import { TagType } from '@/core/types/api/tags';
 import { DataSourceType, ImageType } from '@/core/types/api/common';
-import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
-import { omit } from 'lodash';
 
 type SeriesImagesQueryResultType = {
   Posters: ImageType[];
@@ -51,26 +49,6 @@ const seriesApi = splitV3Api.injectEndpoints({
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
-    }),
-
-    // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodesInfinite: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
-      query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
-      // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) => 
-        defaultSerializeQueryArgs({
-          endpointName,
-          queryArgs: omit(queryArgs, ['page']),
-          endpointDefinition,
-        }),
-      // Always merge incoming data to the cache entry
-      merge: (currentCache, newItems) => {
-        currentCache.List.push(...newItems.List);
-      },
-      // Refetch when the page arg changes
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
@@ -166,7 +144,6 @@ export const {
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,
   useNextUpEpisodeQuery,
-  useLazyGetSeriesEpisodesInfiniteQuery,
   useGetSeriesCastQuery,
   useGetSeriesImagesQuery,
 } = seriesApi;
