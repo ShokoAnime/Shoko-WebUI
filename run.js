@@ -145,9 +145,9 @@ tasks.set('start', () => {
     });
 
     const middleware = [];
-    if (config.apiProxyIP) {
+    if (config.apiProxyUrl) {
       const proxyMiddleware = createProxyMiddleware(['/api', '/plex', '/signalr'], {
-        target: `http://${config.apiProxyIP}:8111`,
+        target: `${config.apiProxyUrl}`,
         ws: true,
         logLevel: 'error',
         changeOrigin: true, // for vhosted sites, changes host header to match to target's host
