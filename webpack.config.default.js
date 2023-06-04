@@ -170,7 +170,7 @@ if (!isDebug) {
     },
   };
   if (process.env.SENTRY_AUTH_TOKEN) {
-    config.plugins.push(new sentryWebpackPlugin({
+    config.plugins.push(sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'shoko-anime',
       project: 'shoko-webui',
