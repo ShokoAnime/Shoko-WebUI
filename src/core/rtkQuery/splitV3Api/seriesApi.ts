@@ -4,7 +4,7 @@ import { omit } from 'lodash';
 
 import type { SeriesAniDBSearchResult, SeriesRecommendedType, SeriesType } from '@/core/types/api/series';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '@/core/types/api/series';
-import type { ListResultType, PaginationType } from '@/core/types/api';
+import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
 import { EpisodeType } from '@/core/types/api/episode';
 import { FileType } from '@/core/types/api/file';
 import { TagType } from '@/core/types/api/tags';
@@ -25,11 +25,6 @@ export type SeriesEpisodesQueryType = {
   type?: string;
   search?:string;
 } & PaginationType;
-
-type SeriesEpisodesInfiniteResultType = {
-  pages: Record<number, EpisodeType[]>;
-  total: number;
-};
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -59,7 +54,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodesInfinite: build.query<SeriesEpisodesInfiniteResultType, SeriesEpisodesQueryType>({
+    getSeriesEpisodesInfinite: build.query<InfiniteResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       transformResponse: (response: ListResultType<EpisodeType[]>, _, args) => {
         return {
