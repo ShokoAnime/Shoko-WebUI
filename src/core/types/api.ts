@@ -35,3 +35,8 @@ export type WebUIVersionType = {
   name: string;
   version: string;
 };
+
+export type InfiniteResultType<T> = {
+  pages: Record<number, T>;
+  total: number;
+};
