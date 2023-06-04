@@ -6,12 +6,11 @@ import { Icon } from '@mdi/react';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { useVirtualizer } from '@tanstack/react-virtual';
 
-import { useLazyGetSeriesEpisodesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import SeriesEpisode from '@/pages/collection/items/SeriesEpisode';
-import type { EpisodeType } from '@/core/types/api/episode';
 
 const pageSize = 26;
 const debounceValue = 200; // milliseconds
@@ -22,14 +21,15 @@ const SeriesEpisodes = () => {
   const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
-  const [fetchedPages, setFetchedPages] = useState<Record<number, EpisodeType[]> & { totalEpisodes: number }>({ totalEpisodes: 0 });
-  const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesQuery();
+  const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
+  const episodePages = episodesData.data?.pages ?? {};
+  const episodeTotal = episodesData.data?.total ?? 0;
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const rowVirtualizer = useVirtualizer({
-    count: fetchedPages.totalEpisodes,
+    count: episodeTotal,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => 332, // 332px is the minimum height of a loaded row
     overscan: 5,
@@ -39,39 +39,27 @@ const SeriesEpisodes = () => {
   // Fetch a page, but only if we stop scrolling for a bit, and only fetch the
   // same page once until the filters changed again.
   const fetchPage = useCallback((page: number) => {
-    // Return now if we're already fetching the page.
-    if (fetchedPages[page] !== undefined) return;
+    if (episodesData.isFetching) return;
     // Clear the timeout to fetch the last page in view if any.
-    if (timeoutRef.current) { 
+    if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
     // Set a new timeout to fetch the current page in view.
     const localRef = timeoutRef.current = setTimeout(() => {
       if (timeoutRef.current === localRef)
         timeoutRef.current = null;
-      // Do an async fetch for the page and tell the other parts of the code
-      // that we're fetching the page by adding a temporarily empty list — so we
-      // won't try to re-fetch the same page over and over again.
-      setFetchedPages((record) => {
-        fetchEpisodes({ 
-          seriesID: toNumber(seriesId),
-          includeMissing: episodeFilterAvailability,
-          type: episodeFilterType,
-          includeWatched: episodeFilterWatched,
-          includeDataFrom: ['AniDB', 'TvDB'],
-          page,
-          search,
-          pageSize,
-        }).then((result) => {
-          if (!result.isSuccess || !result.data) return;
-          const data = result.data;
-          setFetchedPages(record1 => ({ ...record1, [page]: data.List, totalEpisodes: data.Total }));
-        }, reason => console.error(reason));
-
-        return { ...record, [page]: [] };
-      });
+      fetchEpisodes({
+        seriesID: toNumber(seriesId),
+        includeMissing: episodeFilterAvailability,
+        type: episodeFilterType,
+        includeWatched: episodeFilterWatched,
+        includeDataFrom: ['AniDB', 'TvDB'],
+        page,
+        search,
+        pageSize,
+      }).then().catch(error => console.error(error));
     }, debounceValue);
-  }, [fetchedPages, search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
+  }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
 
   useEffect(() => {
     // Clear the timeout if we we're scrolling while changing the filter.
@@ -79,10 +67,6 @@ const SeriesEpisodes = () => {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-
-    // Clear all cached pages, but keep the count so the UI doesn't flip out
-    // until the first new page is fetched.
-    setFetchedPages({ totalEpisodes: fetchedPages.totalEpisodes });
 
     // Schedule a fetch of the first page, this will only fetch the first page
     // when the totalEpisodes count is zero and/or we're already on the first
@@ -118,7 +102,7 @@ const SeriesEpisodes = () => {
           <div className="font-semibold text-xl">
             Episodes
             <span className="px-2">|</span>
-            <span className="text-highlight-2 pr-2">{episodesData.isUninitialized || episodesData.isLoading ? '-' : fetchedPages.totalEpisodes }</span>
+            <span className="text-highlight-2 pr-2">{episodesData.isUninitialized || episodesData.isLoading ? '-' : episodeTotal }</span>
             Entries Listed
           </div>
           <div className="flex gap-x-3">
@@ -132,14 +116,14 @@ const SeriesEpisodes = () => {
             </div>
           </div>
         </div>
-        {fetchedPages.totalEpisodes !== 0 && (<div className="grow">
+        {episodeTotal !== 0 && (<div className="grow">
           <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
             <div className="w-full absolute top-0 left-0 flex flex-col gap-y-4" style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}>
               {virtualItems.map((virtualItem) => {
                 const index = virtualItem.index;
                 const neededPage = Math.ceil((index + 1) / pageSize);
                 const relativeIndex = index % pageSize;
-                const episodeList = fetchedPages[neededPage];
+                const episodeList = episodePages[neededPage];
                 const item = episodeList !== undefined ? episodeList[relativeIndex] : undefined;
                 if (episodeList === undefined) {
                   fetchPage(neededPage);
