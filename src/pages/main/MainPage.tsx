@@ -49,7 +49,7 @@ function MainPage() {
         <TopNav />
         {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
         <div className="grow shoko-scrollbar overflow-y-auto py-8 scroll-gutter" ref={scrollRef}>
-          <div className="max-w-[120rem] w-full mx-auto px-8 min-h-full max-h-full flex flex-col scroll-no-gutter" onClick={() => setShowSmSidebar(false)}>
+          <div className="max-w-[120rem] w-full mx-auto px-8 min-h-full flex flex-col scroll-no-gutter" onClick={() => setShowSmSidebar(false)}>
             <Outlet context={{ scrollRef }} />
           </div>
         </div>

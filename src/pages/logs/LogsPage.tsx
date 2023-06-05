@@ -30,7 +30,7 @@ const LogsPage = () => {
   }, [logLines.length, isScrollToBottom]);
 
   return (
-    <div className="flex flex-col gap-y-8 grow overflow-y-auto">
+    <div className="flex flex-col gap-y-8 grow">
       <div className="flex justify-between bg-background-alt border border-background-border rounded-md px-8 py-4 items-center">
         <div className="text-xl font-semibold">Logs</div>
         <div className="flex gap-x-4 items-center">
@@ -48,15 +48,15 @@ const LogsPage = () => {
         </div>
       </div>
 
-      <div className="flex bg-background-alt border border-background-border rounded-md p-8 grow overflow-y-auto">
-        <div className="bg-background-border rounded-md p-4 grow overflow-y-auto" ref={parentRef}>
+      <div className="flex bg-background-alt border border-background-border rounded-md p-8 grow">
+        <div className="bg-background-border rounded-md grow overflow-y-auto relative" ref={parentRef}>
           {(logsQuery.isLoading || logLines.length === 0) ? (
             <div className="flex grow justify-center items-center h-full">
               <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
             </div>
           ) : (
-            <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
-              <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
+            <div className="absolute w-full top-0" style={{ height: rowVirtualizer.getTotalSize() }}>
+              <div className="absolute top-4 left-4" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                 {virtualItems.map((virtualRow) => {
                   const row = logLines[virtualRow.index];
                   return (
@@ -66,12 +66,13 @@ const LogsPage = () => {
                       data-index={virtualRow.key}
                       ref={rowVirtualizer.measureElement}
                     >
-                      <div className="shrink-0 w-[11.5rem]">{row.timeStamp}</div>
+                      <div className="shrink-0 w-[11.5rem] opacity-50">{row.timeStamp}</div>
                       <div className="shrink-0 w-[2.8rem]">{row.level}</div>
                       <div>{row.message}</div>
                     </div>
                   );
                 })}
+                <div className="w-full py-2" /> {/* For bottom padding */}
               </div>
             </div>
           )}

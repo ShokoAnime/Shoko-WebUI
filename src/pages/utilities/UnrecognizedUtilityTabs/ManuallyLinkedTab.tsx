@@ -207,9 +207,8 @@ function ManuallyLinkedTab() {
               <div className="w-64">Date Linked</div>
               <div className="w-10" />
             </div>
-            <div ref={parentRef} className="grow overflow-y-auto">
-              {/*TODO: Figure this out so that scroll height works properly*/}
-              <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
+            <div ref={parentRef} className="grow overflow-y-auto relative">
+              <div className="w-full absolute top-0" style={{ height: rowVirtualizer.getTotalSize() }}>
                 <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                   {virtualItems.map((virtualRow) => {
                     const row = filteredSeries[virtualRow.index];
