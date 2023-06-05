@@ -26,9 +26,8 @@ import MetadataSources from '@/pages/firstrun/MetadataSources';
 import StartServer from '@/pages/firstrun/StartServer';
 
 // Collection
-import GroupList from '@/pages/collection/GroupList';
+import Collection from '@/pages/collection/Collection';
 import Group from '@/pages/collection/Group';
-import FilterGroupList from '@/pages/collection/FilterGroupList';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
@@ -91,9 +90,9 @@ const router = createBrowserRouter(
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
-            <Route index element={<GroupList />}/>
+            <Route index element={<Collection />}/>
+            <Route path="filter/:filterId" element={<Collection />}/>
             <Route path="group/:groupId" element={<Group />}/>
-            <Route path="filter/:filterId" element={<FilterGroupList />}/>
             <Route path="series/:seriesId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />}/>
               <Route path="overview" element={<SeriesOverview />}/>

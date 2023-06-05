@@ -1,20 +1,20 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 
 import ModalPanel from '../Panels/ModalPanel';
-import { RootState } from '@/core/store';
-import { setStatus } from '@/core/slices/modals/filters';
 import { useLazyGetFiltersQuery, useLazyGetTopFiltersQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
 
-function FiltersModal() {
-  const dispatch = useDispatch();
-  const status = useSelector((state: RootState) => state.modals.filters.status);
+type Props = {
+  show: boolean;
+  onClose: () => void;
+};
+
+function FiltersModal({ show, onClose }: Props) {
   const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
   const [triggerSubFilter, subFiltersResult] = useLazyGetFiltersQuery({});
   const filters: Array<CollectionFilterType> = filtersResult?.data?.List ?? [] as Array<CollectionFilterType>;
@@ -25,20 +25,19 @@ function FiltersModal() {
   const [search, setSearch] = useState('');
 
   useEffect(() => {
-    if (!status) { return; }
+    if (!show) return;
     if (activeFilter === '0') {
       trigger({}).catch(() => {});
     } else {
       triggerSubFilter(activeFilter).catch(() => {});
     }
-  }, [status, activeFilter]);
+  }, [show, activeFilter]);
 
-  const handleClose = () => dispatch(setStatus(false));
   const filteredList = useMemo(() =>  subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1) ), [subFilters, search]);
 
   const renderItem = (item: CollectionFilterType) => (
-    <div className="flex justify-between font-semibold">
-      <Link to={`collection/filter/${item.IDs.ID}`} onClick={() => handleClose()}>{item.Name}</Link>
+    <div className="flex justify-between font-semibold" key={item.IDs.ID}>
+      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
       <span className="text-highlight-2">{item.Size}</span>
     </div>
   );
@@ -54,7 +53,7 @@ function FiltersModal() {
   );
   
   const renderSidePanel = (title, filterId) => (
-    <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })}>
+    <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })} key={filterId}>
       <div className="flex w-full bg-background-border p-2 mb-2 rounded-md">
         <Icon path={mdiMagnify} size={1} />
         <input type="text" placeholder="Search..." className="bg-background-border ml-2" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
@@ -69,9 +68,9 @@ function FiltersModal() {
 
   return (
     <ModalPanel
-      show={status}
+      show={show}
       className="p-8 flex-col drop-shadow-lg gap-y-8"
-      onRequestClose={() => handleClose()}
+      onRequestClose={onClose}
     >
       <div className="font-semibold text-xl">Filters</div>
       <div className="flex">

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 import { mdiRefresh } from '@mdi/js';
@@ -13,8 +12,7 @@ import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import SelectSmall from '@/components/Input/SelectSmall';
 import Checkbox from '@/components/Input/Checkbox';
 import Button from '@/components/Input/Button';
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { useGetWebuiThemesQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useGetWebuiThemesQuery, useLazyGetWebuiUpdateCheckQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
 const UI_VERSION = uiVersion();
 
@@ -78,8 +76,6 @@ const exclusionMapping = {
 };
 
 function GeneralSettings() {
-  const dispatch = useDispatch();
-
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
   const {
@@ -88,6 +84,7 @@ function GeneralSettings() {
     LogRotator, WebUI_Settings, TraceLog,
   } = newSettings;
 
+  const [webuiUpdateCheck, webuiUpdateCheckResult] = useLazyGetWebuiUpdateCheckQuery();
   const version = useGetInitVersionQuery();
   const themes = useGetWebuiThemesQuery();
 
@@ -114,8 +111,11 @@ function GeneralSettings() {
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
-          <Button onClick={() => dispatch(splitV3Api.util.invalidateTags(['WebUIUpdateCheck']))} tooltip="Check for WebUI Update">
-            <Icon path={mdiRefresh} size={1} className="text-highlight-1" />
+          <Button
+            onClick={() => webuiUpdateCheck({ channel: newSettings.WebUI_Settings.updateChannel, force: true })}
+            tooltip="Check for WebUI Update"
+          >
+            <Icon path={mdiRefresh} size={1} className="text-highlight-1" spin={webuiUpdateCheckResult.isFetching} />
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
