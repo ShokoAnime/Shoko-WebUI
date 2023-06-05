@@ -1,7 +1,13 @@
 import React, { useState } from 'react';
 import { get } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiLoading } from '@mdi/js';
+import {
+  mdiChevronDown,
+  mdiEyeCheckOutline,
+  mdiEyeOffOutline,
+  mdiLoading,
+  mdiPencilCircleOutline,
+} from '@mdi/js';
 import AnimateHeight from 'react-animate-height';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -9,7 +15,11 @@ import type { EpisodeType } from '@/core/types/api/episode';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { EpisodeDetails } from './EpisodeDetails';
 import { EpisodeFiles } from './EpisodeFiles';
-import { useLazyGetEpisodeFilesQuery } from '@/core/rtkQuery/splitV3Api/episodeApi';
+import {
+  useLazyGetEpisodeFilesQuery, usePostEpisodeHiddenMutation,
+  usePostEpisodeWatchedMutation,
+} from '@/core/rtkQuery/splitV3Api/episodeApi';
+import Button from '@/components/Input/Button';
 
 type Props = {
   episode: EpisodeType;
@@ -21,11 +31,19 @@ const getThumbnailUrl = (episode: EpisodeType) => {
   return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
 };
 
+const StateIcon = ({ icon }: { icon: string }) => (
+  <div className="px-3 py-2 bg-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-highlight-2">
+    <Icon path={icon} size={1} />
+  </div>
+);
+
 const SeriesEpisode = ({ episode }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const episodeId = get(episode, 'IDs.ID', 0).toString();
 
   const [getEpisodeFiles, episodeFilesResult] = useLazyGetEpisodeFilesQuery();
+  const [markWatched] = usePostEpisodeWatchedMutation();
+  const [markHidden] = usePostEpisodeHiddenMutation();
 
   const handleExpand = async () => {
     if (isOpen) {
@@ -40,7 +58,27 @@ const SeriesEpisode = ({ episode }: Props) => {
   return (
     <React.Fragment>
       <div className="flex gap-x-8 p-8 items-center z-10">
-        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative"/>
+        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative group" hidePlaceholderOnHover zoomOnHover>
+          <div className="absolute right-3 top-3 z-10 group-hover:opacity-0 group-hover:pointer-events-none transition-opacity">
+            {episode.Watched && (<StateIcon icon={mdiEyeCheckOutline} />)}
+            {episode.IsHidden && (<StateIcon icon={mdiEyeOffOutline} />)}
+          </div>
+          <div className="pointer-events-none opacity-0 flex bg-background/50 h-full justify-between p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+            <div>
+              <Button className="text-font-main">
+                <Icon path={mdiPencilCircleOutline} size="2rem" />
+              </Button>
+            </div>
+            <div className="flex flex-col gap-y-8">
+              <Button className={episode.Watched ? 'text-highlight-2' : 'text-font-main'} onClick={() => markWatched({ episodeId, watched: episode.Watched === null })}>
+                <Icon path={mdiEyeCheckOutline} size="2rem" />
+              </Button>
+              <Button className={episode.IsHidden ? 'text-highlight-2' : 'text-font-main'} onClick={() => markHidden({ episodeId, hidden: !episode.IsHidden })}>
+                <Icon path={mdiEyeOffOutline} size="2rem" />
+              </Button>
+            </div>
+          </div>
+        </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
       <div className="flex justify-center py-4 gap-x-4 border-background-border border-t-2 cursor-pointer font-semibold" onClick={handleExpand}>

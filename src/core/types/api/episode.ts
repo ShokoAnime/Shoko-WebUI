@@ -9,6 +9,7 @@ export type EpisodeType = {
   Size: number;
   AniDB?: EpisodeAniDBType;
   TvDB?:EpisodeTvDBType[];
+  IsHidden: boolean;
 };
 
 export type EpisodeIDsType = {

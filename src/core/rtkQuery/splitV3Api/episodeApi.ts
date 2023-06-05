@@ -35,6 +35,26 @@ const episodeApi = splitV3Api.injectEndpoints({
     getEpisodeFiles: build.query<FileType[], EpisodeFilesQuery>({
       query: ({ episodeId, ...params }) => ({ url: `Episode/${episodeId}/File`, params }),
     }),
+    // Set the watched status on an episode
+    postEpisodeWatched: build.mutation<void, { episodeId: string, watched: boolean }>({
+      query: ({ episodeId, watched }) => ({
+        url: `Episode/${episodeId}/Watched/${watched}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesEpisodes'],
+    }),
+    // Set or unset the episode hidden status by the given episodeID.
+    postEpisodeHidden: build.mutation<void, { episodeId: string, hidden: boolean }>({
+      query: ({ episodeId, hidden }) => ({
+        url: `Episode/${episodeId}/SetHidden`,
+        method: 'POST',
+        params: {
+          value: hidden,
+          updateStats: true,
+        },
+      }),
+      invalidatesTags: ['SeriesEpisodes'],
+    }),
   }),
 });
 
@@ -43,4 +63,6 @@ export const {
   useGetEpisodeQuery,
   useGetEpisodeTvdbQuery,
   useLazyGetEpisodeFilesQuery,
+  usePostEpisodeWatchedMutation,
+  usePostEpisodeHiddenMutation,
 } = episodeApi;

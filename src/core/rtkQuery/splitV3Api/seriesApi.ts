@@ -82,6 +82,7 @@ const seriesApi = splitV3Api.injectEndpoints({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
       },
+      providesTags: ['SeriesEpisodes'],
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
