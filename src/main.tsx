@@ -1,9 +1,5 @@
 import { Integrations } from '@sentry/tracing';
 import * as Sentry from '@sentry/react';
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import 'isomorphic-fetch';
-import 'es6-promise/auto';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './core/app';
