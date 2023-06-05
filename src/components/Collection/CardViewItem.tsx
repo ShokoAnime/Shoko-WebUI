@@ -13,6 +13,7 @@ import {
   mdiTelevisionAmbientLight,
   mdiTelevision,
   mdiFileDocumentMultipleOutline,
+  mdiPencilCircleOutline,
 } from '@mdi/js';
 import React from 'react';
 import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
@@ -60,7 +61,13 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
     <div key={`group-${item.IDs.ID}`} className="content-center flex flex-col p-8 gap-y-4 rounded-md bg-background-alt w-[56.6875rem] h-full grow border-background-border border shrink-0">
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
-          <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="h-[12.5625rem] w-[8.625rem] shrink-0 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]" />
+          <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
+            <div className="pointer-events-none opacity-0 flex bg-background/50 h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+              <Link to="#">
+                <Icon path={mdiPencilCircleOutline} size="2rem" className="text-font-main" />
+              </Link>
+            </div>
+          </BackgroundImagePlaceholderDiv>
         </Link>
         <div className="flex flex-col gap-y-4">
 
