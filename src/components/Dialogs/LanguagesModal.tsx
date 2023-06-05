@@ -10,7 +10,7 @@ import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/s
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
   en: 'English (en)',
-  ja: 'Kanji',
+  ja: 'Japanese (ja)',
   ar: 'Arabic (ar)',
   bd: 'Bangladeshi (bd)',
   bg: 'Bulgarian (bd)',
