@@ -22,6 +22,7 @@ import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/r
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import toast from '@/components/Toast';
 
 const columnHelper = createColumnHelper<SeriesType>();
 
@@ -82,9 +83,17 @@ function SeriesWithoutFilesUtility() {
   }, [series.List]);
 
   const deleteSeries = () => {
+    let failedSeries = 0;
     forEach(table.getSelectedRowModel().rows, (row) => {
-      deleteSeriesTrigger({ seriesId: row.original.IDs.ID, deleteFiles: false }).catch(() => {});
+      deleteSeriesTrigger({ seriesId: row.original.IDs.ID, deleteFiles: false }).catch((error) => {
+        failedSeries += 1;
+        console.error(error);
+      });
     });
+
+    const selectedRowsLength = table.getSelectedRowModel().rows.length;
+    if (failedSeries) toast.error(`Error deleting ${failedSeries} series!`);
+    if (failedSeries !== selectedRowsLength) toast.success(`${selectedRowsLength} series deleted!`);
   };
 
   const renderOperations = (common = false) => {

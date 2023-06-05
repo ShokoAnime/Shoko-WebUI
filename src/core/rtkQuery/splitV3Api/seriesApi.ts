@@ -32,6 +32,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Delete a Series
     deleteSeries: build.mutation<void, { seriesId: number, deleteFiles: boolean }>({
       query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}`, method: 'DELETE', params }),
+      invalidatesTags: ['SeriesUpdated'],
     }),
 
     // Get a paginated list of Shoko.Server.API.v3.Models.Shoko.Series without local files, available to the current Shoko.Server.API.v3.Models.Shoko.User.
