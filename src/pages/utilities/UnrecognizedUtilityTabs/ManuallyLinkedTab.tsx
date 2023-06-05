@@ -173,7 +173,7 @@ function ManuallyLinkedTab() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col grow gap-y-8">
+    <TransitionDiv className="flex flex-col grow gap-y-8 overflow-y-auto">
 
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series /> }>
@@ -199,7 +199,7 @@ function ManuallyLinkedTab() {
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
         ) : series.Total > 0 ? (
-          <div className="flex flex-col w-full">
+          <div className="flex flex-col w-full overflow-y-auto">
             <div className="flex px-6 py-4 bg-background font-semibold sticky top-0 z-[1] rounded-md border border-background-border">
               <div className="grow">Series</div>
               <div className="w-24">AniDB ID</div>
@@ -209,8 +209,7 @@ function ManuallyLinkedTab() {
             </div>
             <div ref={parentRef} className="grow overflow-y-auto">
               {/*TODO: Figure this out so that scroll height works properly*/}
-              {/*<div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>*/}
-              <div className="w-full relative">
+              <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
                 <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
                   {virtualItems.map((virtualRow) => {
                     const row = filteredSeries[virtualRow.index];
