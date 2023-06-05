@@ -110,16 +110,27 @@ const CollectionView = (props: Props) => {
           // same eg. as above, this will 16
           const toIndex = fromIndex + itemsPerRow;
 
+          const neededPage1 = Math.ceil((fromIndex + 1) / pageSize);
+          const neededPage2 = Math.ceil(toIndex / pageSize);
+
+          const groupList1 = groupPages[neededPage1];
+          const groupList2 = groupPages[neededPage2];
+
+          if (groupList1 === undefined && !fetchingPage) {
+            setFetchingPage(true);
+            fetchPage(neededPage1);
+          }
+
+          if (groupList2 === undefined && !fetchingPage) {
+            setFetchingPage(true);
+            fetchPage(neededPage2);
+          }
+
           // Here, i will be the actual index of the group in group list
           for (let i = fromIndex; i < toIndex; i++) {
             const neededPage = Math.ceil((i + 1) / pageSize);
             const relativeIndex = i % pageSize;
             const groupList = groupPages[neededPage];
-
-            if (groupList === undefined && !fetchingPage) {
-              setFetchingPage(true);
-              fetchPage(neededPage);
-            }
 
             const item = groupList !== undefined ? groupList[relativeIndex] : undefined;
 
