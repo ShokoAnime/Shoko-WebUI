@@ -76,7 +76,7 @@ function LanguagesModal({ type, onClose }: Props) {
     patchSettings({ oldSettings: settings, newSettings: { ...settings, [ type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference' ]: languages }  }).unwrap()
       .then(() => onClose())
       .catch(error => console.error(error));
-  }, [type]);
+  }, [type, settingsQuery.requestId, languages]);
 
   useEffect(() => {
     if (type !== null) setLanguages(LanguagePreference);
