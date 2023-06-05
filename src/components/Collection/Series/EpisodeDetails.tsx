@@ -17,7 +17,9 @@ export function EpisodeDetails({ episode }: { episode: EpisodeType }) {
     <div className="flex flex-col gap-y-4 grow">
       <div className="flex justify-between font-semibold">
         <div className="opacity-65">Episode {episode.AniDB?.EpisodeNumber}</div>
-        <div><span className="text-highlight-2">{episode.Size}</span> {episode.Size > 1 ? 'Files' : 'File'}</div>
+        { episode.Size > 1 && (
+          <div><span className="text-highlight-2">{episode.Size}</span> Files</div>
+        )}
       </div>
 
       <div className="-mt-4 text-xl font-semibold">

@@ -21,7 +21,7 @@ import { useGetSeriesQuery, useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV
 import { SeriesDetailsType } from '@/core/types/api/series';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { TagType } from '@/core/types/api/tags';
-import AnidbDescription from './items/AnidbDescription';
+import AnidbDescription from '@/components/Collection/AnidbDescription';
 import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { CollectionGroupType } from '@/core/types/api/collection';
 
