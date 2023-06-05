@@ -67,7 +67,7 @@ function TopNav() {
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
-  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery(webuiSettings.updateChannel, { skip: Version.debug || !settingsQuery.isSuccess });
+  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, { skip: Version.debug || !settingsQuery.isSuccess });
   const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
