@@ -245,7 +245,7 @@ function AniDBSettings() {
         </div>
       </div>
 
-      {showLanguagesModal && <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} /> }
+      <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
     </>
   );
 }
