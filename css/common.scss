@@ -43,7 +43,14 @@ body {
 .theme-shoko-gray .shoko-scrollbar {
   scrollbar-color: theme('colors.highlight-1') theme('colors.background-border');
   scrollbar-width: thin;
+}
+
+.scroll-gutter {
   scrollbar-gutter: stable;
+}
+
+.scroll-no-gutter {
+  scrollbar-gutter: auto;
 }
 
 #app-root {
