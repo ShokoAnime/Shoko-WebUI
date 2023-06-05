@@ -16,6 +16,7 @@ export const languageDescription = {
   bg: 'Bulgarian (bd)',
   ca: 'Canadian-French (ca)',
   zh: 'Chinese',
+  'x-zht': 'Pinyin (x-zht)',
   'zh-hans': 'Chinese (zh-hans)',
   'zh-hant': 'Chinese (zh-hant)',
   cs: 'Czech (cs)',
