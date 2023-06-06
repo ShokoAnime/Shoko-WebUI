@@ -9,6 +9,7 @@ import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/s
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
+  'x-zht': 'Pinyin (x-zht)',
   en: 'English (en)',
   ja: 'Japanese (ja)',
   ar: 'Arabic (ar)',
@@ -16,7 +17,6 @@ export const languageDescription = {
   bg: 'Bulgarian (bd)',
   ca: 'Canadian-French (ca)',
   zh: 'Chinese',
-  'x-zht': 'Pinyin (x-zht)',
   'zh-hans': 'Chinese (zh-hans)',
   'zh-hant': 'Chinese (zh-hant)',
   cs: 'Czech (cs)',
