@@ -68,7 +68,6 @@
     "@typescript-eslint/eslint-plugin": "^5.59.8",
     "@typescript-eslint/parser": "^5.59.8",
     "@vitejs/plugin-react": "^4.0.0",
-    "browser-sync": "^2.29.3",
     "browserslist": "latest",
     "cross-env": "^7.0.3",
     "eslint": "^8.42.0",
