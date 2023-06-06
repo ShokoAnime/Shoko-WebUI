@@ -1353,15 +1353,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/tracing@npm:^7.54.0":
-  version: 7.54.0
-  resolution: "@sentry/tracing@npm:7.54.0"
-  dependencies:
-    "@sentry-internal/tracing": 7.54.0
-  checksum: 8e35d3e6216139dc93638df85a65bb135993f04388f3d366a49e52c85d3fb12c7941993f94e3556ec2e03f01a3e6e3be0885e2eb775d9e9df6378a2673484f6e
-  languageName: node
-  linkType: hard
-
 "@sentry/types@npm:7.53.1":
   version: 7.53.1
   resolution: "@sentry/types@npm:7.53.1"
@@ -4853,7 +4844,6 @@ fsevents@~2.3.2:
     "@reduxjs/toolkit": 1.9.5
     "@sentry/browser": ^7.54.0
     "@sentry/react": ^7.54.0
-    "@sentry/tracing": ^7.54.0
     "@sentry/vite-plugin": ^2.2.0
     "@tanstack/match-sorter-utils": ^8.8.4
     "@tanstack/react-table": ^8.9.1

@@ -18,7 +18,6 @@
     "@reduxjs/toolkit": "1.9.5",
     "@sentry/browser": "^7.54.0",
     "@sentry/react": "^7.54.0",
-    "@sentry/tracing": "^7.54.0",
     "@tanstack/match-sorter-utils": "^8.8.4",
     "@tanstack/react-table": "^8.9.1",
     "@tanstack/react-virtual": "^3.0.0-beta.54",
