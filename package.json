@@ -111,43 +111,6 @@
     "caniuse-lite": "^1.0",
     "yaml": "^2.2.2"
   },
-  "stylelint": {
-    "extends": [
-      "stylelint-config-standard",
-      "stylelint-config-tailwindcss"
-    ],
-    "customSyntax": "postcss",
-    "rules": {
-      "string-quotes": "single",
-      "color-hex-case": "lower",
-      "color-function-notation": "legacy",
-      "alpha-value-notation": "number",
-      "font-family-name-quotes": "always-where-recommended",
-      "selector-pseudo-class-no-unknown": [
-        true,
-        {
-          "ignorePseudoClasses": [
-            "global"
-          ]
-        }
-      ],
-      "indentation": 2,
-      "at-rule-no-unknown": [
-        true,
-        {
-          "ignoreAtRules": [
-            "tailwind",
-            "apply",
-            "variants",
-            "responsive",
-            "screen"
-          ]
-        }
-      ],
-      "declaration-block-trailing-semicolon": null,
-      "no-descending-specificity": null
-    }
-  },
   "ava": {
     "files": [
       "test/**/*.test.js",
