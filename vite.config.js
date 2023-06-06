@@ -42,6 +42,7 @@ export default defineConfig(async () => {
     },
     build: {
       sourcemap: true,
+      chunkSizeWarningLimit: 2000
     },
     plugins: [react(), sentryPlugin],
     base: "/webui/"
