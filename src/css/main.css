@@ -1,7 +1,7 @@
 @import url('tailwindcss/base.css');
 @import url('tailwindcss/components.css');
 @import url('tailwindcss/utilities.css');
-@import url('./theme-gray.css');
+@import url('./theme-shoko-gray.css');
 @import url('react-grid-layout/css/styles.css');
 @import url('react-resizable/css/styles.css');
 @import url('@fontsource/sora/latin.css');
