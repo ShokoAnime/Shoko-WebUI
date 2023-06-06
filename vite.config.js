@@ -1,11 +1,15 @@
-import { defineConfig } from 'vite';
 import path from 'path';
+import { writeFile } from 'fs/promises';
+import childProcess from 'child_process';
+import pkg from './package.json';
+
+import { defineConfig } from 'vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(async () => {
   const isDebug = process.env.NODE_ENV !== 'production';
-  const version = setupEnv();
+  const version = await setupEnv(isDebug);
 
   let proxy = {};
   try {
@@ -40,17 +44,19 @@ export default defineConfig(async () => {
       sourcemap: true,
     },
     plugins: [react(), sentryPlugin],
+    base: "/webui/"
   };
 });
 
-function setupEnv() {
-  const childProcess = require('child_process');
-  const pkg = require('./package.json');
+async function setupEnv(isDebug) {
   const gitHash = childProcess.execSync("git log --pretty=format:'%h' -n 1").toString().replace(/["']/g, '');
   const appVersion = JSON.stringify(pkg.version);
 
   process.env.VITE_GITHASH = gitHash;
   process.env.VITE_APPVERSION = appVersion;
+
+  const output = JSON.stringify({ git: gitHash, package: appVersion, debug: isDebug }, null, '  ');
+  await writeFile('./public/version.json', output, 'utf8');
 
   return appVersion;
 }

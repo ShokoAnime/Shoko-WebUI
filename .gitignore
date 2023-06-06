@@ -6,6 +6,7 @@
 # Compiled output
 build/**
 dist
+public/version.json
 
 # Node.js and NPM
 node_modules/

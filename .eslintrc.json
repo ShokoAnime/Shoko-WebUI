@@ -1,6 +1,9 @@
 {
   "extends": ["airbnb-typescript"],
-  "ignorePatterns": ["build/**"],
+  "ignorePatterns": [
+    "build/**",
+    "vite.config.js"
+  ],
   "env": {
     "browser": true,
     "es6": true
