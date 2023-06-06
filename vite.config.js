@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import path from 'path';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig(async () => {
   const isDebug = process.env.NODE_ENV !== 'production';
@@ -38,7 +39,7 @@ export default defineConfig(async () => {
     build: {
       sourcemap: true,
     },
-    plugins: [sentryPlugin],
+    plugins: [react(), sentryPlugin],
   };
 });
 
