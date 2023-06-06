@@ -1,11 +1,13 @@
+const proxyUrl = 'http://localhost:8111';
+
 module.exports = {
-  '^/(api|plex)/.*': 'http://localhost:8111', // Set to proxy url
+  '^/(api|plex)/.*': proxyUrl, // Set to proxy url
   '/webui/api/v3/WebUI/Theme.css': {
-    target: 'http://localhost:8111',
+    target: proxyUrl,
     rewrite: path => path.replace('/webui', ''),
   },
   '/signalr': {
-    target: 'http://localhost:8111',
+    target: proxyUrl,
     ws: true,
   },
 };
