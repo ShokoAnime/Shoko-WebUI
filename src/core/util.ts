@@ -1,12 +1,17 @@
 /* eslint-disable no-param-reassign */
 import { each, isObject, unset } from 'lodash';
-import Version from '../../public/version.json';
 import { FilterFn, SortingFn, sortingFns } from '@tanstack/react-table';
 import { compareItems, RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 import formatThousands from 'format-thousands';
 
+const { DEV, VITE_GITHASH, VITE_APPVERSION } = import.meta.env;
+
 export function uiVersion() {
-  return Version.debug ? Version.git : Version.package;
+  return DEV ? VITE_GITHASH : VITE_APPVERSION;
+}
+
+export function isDebug() {
+  return DEV;
 }
 
 export function mergeDeep(...objects) {

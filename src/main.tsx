@@ -3,12 +3,13 @@ import * as Sentry from '@sentry/react';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './core/app';
-import { uiVersion } from './core/util';
+import { uiVersion, isDebug } from './core/util';
+import './css/main.css';
 
 Sentry.init({
   dsn: 'https://f607489ccc764d73aeaed81ab2c97c04@o330862.ingest.sentry.io/1851857',
-  environment: 'production',
-  release: uiVersion(),
+  environment: isDebug() ? 'staging' : 'production',
+  release: isDebug() ? 'dev' : uiVersion(),
   integrations: [
     new Integrations.BrowserTracing(),
     new Sentry.Replay({

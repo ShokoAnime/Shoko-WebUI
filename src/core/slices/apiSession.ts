@@ -1,9 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import Version from '../../../public/version.json';
 
 import { authApi } from '@/core/rtkQuery/splitApi/authApi';
 
 import type { ApiSessionState } from '@/core/types/api';
+
+const { VITE_APPVERSION } = import.meta.env;
 
 const apiSessionSlice = createSlice({
   name: 'apiSession',
@@ -11,7 +12,7 @@ const apiSessionSlice = createSlice({
     apikey: '',
     username: '',
     rememberUser: false,
-    version: Version.package,
+    version: VITE_APPVERSION,
   } as ApiSessionState,
   reducers: {
     unsetDetails(sliceState) {

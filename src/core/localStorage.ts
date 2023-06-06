@@ -7,10 +7,10 @@ import { plexApi } from './rtkQuery/plexApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
 
-import Version from '../../public/version.json';
+const { VITE_APPVERSION } = import.meta.env;
 
 const checkVersion = (version) => {
-  return version === Version.package;
+  return version === VITE_APPVERSION;
 };
 export const loadState = (): RootState => {
   try {

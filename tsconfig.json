@@ -19,9 +19,7 @@
         }
     },
     "include": [
-        "./src/",
-        "./run.js",
-        "./webpack.config.default.js"
+        "./src/"
     ],
     "exclude": [
         "./node_modules"
