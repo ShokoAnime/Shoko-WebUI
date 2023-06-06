@@ -16,7 +16,7 @@ module.exports = {
   ],
   content: [
     './src/**/*.tsx',
-    '.index.html',
+    './index.html',
   ],
   //Any class that is generated dynamically goes here
   safelist: [
