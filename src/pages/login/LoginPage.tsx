@@ -134,14 +134,13 @@ function LoginPage() {
               </div>
             )}
             {status.data?.State === 4 && (
-              <div className="flex flex-col gap-y-4">
-                <div className="flex flex-col gap-y-4">
-                  <div className="font-semibold">First Time? We&apos;ve All Been There</div>
-                  <div className="text-justify">
-                    Before Shoko can get started indexing your anime collection, you&apos;ll
-                    need to go through our <span className="text-highlight-2 font-semibold">First Run Wizard </span>
-                    and set everything up. Don&apos;t worry, it&apos;s pretty easy and only
-                    takes a couple of minutes.
+              <div className="flex flex-col gap-y-12 py-8">
+                <div className="flex flex-col gap-y-4 px-4">
+                  <div>Welcome and thanks for installing Shoko!</div>
+                  <div className="text-justify leading-6">
+                    Before Shoko can start managing your anime collection for you, you&apos;ll need to go through our&nbsp;
+                    <span className="text-highlight-2 font-bold">First Run Wizard </span>to set everything up.
+                    Don&apos;t worry, its extremely easy, straightforward and should only take you a couple minutes.
                   </div>
                   <div>
                     Click <span className="text-highlight-2 font-semibold">Continue</span> below to proceed.
