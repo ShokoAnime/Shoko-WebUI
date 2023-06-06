@@ -14,14 +14,14 @@ const checkVersion = (version) => {
 };
 export const loadState = (): RootState => {
   try {
-    const serializedState = JSON.parse(global.sessionStorage.getItem('state') ?? '{}');
-    const apiSessionString = global.localStorage.getItem('apiSession');
+    const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
+    const apiSessionString = globalThis.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
       return checkVersion(get(serializedState, 'apiSession.version', '')) ? serializedState : {} as any;
     }
     const apiSession = JSON.parse(apiSessionString);
     if (!checkVersion(get(apiSession, 'version', ''))) {
-      global.localStorage.clear();
+      globalThis.localStorage.clear();
       return {} as any;
     }
     return { ...serializedState, apiSession };
@@ -40,9 +40,9 @@ export const saveState = (state: RootState) => {
       splitV3Api.reducerPath,
     ]));
     if (state.apiSession.rememberUser) {
-      global.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
+      globalThis.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
-    global.sessionStorage.setItem('state', serializedState);
+    globalThis.sessionStorage.setItem('state', serializedState);
   } catch (err) { // Ignore write errors.
   }
 };
