@@ -5,14 +5,14 @@ textarea,
   outline: none;
 }
 
-// For Chrome, Safari, Edge
+/* For Chrome, Safari, Edge */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
   appearance: none;
   margin: 0;
 }
 
-// For Firefox
+/* For Firefox */
 input[type='number'] {
   /* stylelint-disable-next-line property-no-vendor-prefix */
   -moz-appearance: textfield;

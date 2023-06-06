@@ -5,15 +5,13 @@
 
 # Compiled output
 build/**
-public/dist
-public/index.html
+dist
 public/version.json
 
 # Node.js and NPM
 node_modules/
 npm-debug.log
-webpack.config.js
-run.config.js
+proxy.config.js
 /flowgen.js
 /.nyc_output/
 /coverage/

@@ -25,7 +25,6 @@ import AnimateHeight from 'react-animate-height';
 import ShokoIcon from '../ShokoIcon';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 
-import Version from '../../../public/version.json';
 import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
@@ -34,6 +33,8 @@ import toast from '../Toast';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 
 import { RootState } from '@/core/store';
+
+const { DEV, VITE_APPVERSION } = import.meta.env;
 
 const MenuItem = ({ id, text, icon, onClick, isHighlighted }: { id: string, text: string, icon: string, onClick: () => void, isHighlighted: boolean }) => (
   <NavLink
@@ -58,7 +59,7 @@ function TopNav() {
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  
+
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const username = useSelector((state: RootState) => state.apiSession.username);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
@@ -67,7 +68,7 @@ function TopNav() {
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
-  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, { skip: Version.debug || !settingsQuery.isSuccess });
+  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, { skip: DEV || !settingsQuery.isSuccess });
   const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
@@ -166,7 +167,7 @@ function TopNav() {
                   isHighlighted={layoutEditMode}
                 />
               )}
-              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, Version.package)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
+              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
                 <div className="flex items-center font-semibold cursor-pointer gap-x-2.5" onClick={() => handleWebUiUpdate()}>
                   <Icon
                     path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline}

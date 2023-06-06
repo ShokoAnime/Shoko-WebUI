@@ -82,8 +82,9 @@ jobs:
 #          file_pattern: package.json
 #          skip_fetch: true
 
-      - name: Rename build zip
-        run: mv ./build/latest.zip ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
+      - name: Create build.zip
+          run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./*
+          working-directory: ./dist
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

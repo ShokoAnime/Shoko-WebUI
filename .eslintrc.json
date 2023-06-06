@@ -1,6 +1,9 @@
 {
   "extends": ["airbnb-typescript"],
-  "ignorePatterns": ["build/**"],
+  "ignorePatterns": [
+    "build/**",
+    "vite.config.js"
+  ],
   "env": {
     "browser": true,
     "es6": true
@@ -12,9 +15,7 @@
   },
   "settings": {
     "import/resolver": {
-      "webpack": {
-        "config": "webpack.config.default.js"
-      }
+      "typescript": {}
     }
   },
   "rules": {
@@ -61,9 +62,7 @@
     {
       "files": [
         "postcss.config.js",
-        "run.js",
-        "run.config.default.js",
-        "webpack.config.default.js",
+        "proxy.config.default.js",
         "babel.config.js"
       ],
       "parser": "espree",
