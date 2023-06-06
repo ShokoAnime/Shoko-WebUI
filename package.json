@@ -91,49 +91,6 @@
     "typescript": "4.9.5",
     "vite": "^4.3.9"
   },
-  "resolutions": {
-    "url-parse": "^1.5.8",
-    "follow-redirects": "^1.14.8",
-    "nth-check": "^2.0.1",
-    "ws": "^7.4.6",
-    "path-parse": "^1.0.7",
-    "ansi-regex": "^5.0.1",
-    "xmlhttprequest-ssl": "1.6.2",
-    "json-schema": "^0.4.0",
-    "tar": "^6.1.7",
-    "css-what": "^5.0.1",
-    "node-fetch": "^2.6.7",
-    "terser": "^5.14.2",
-    "@types/react": "^18.0.15",
-    "minimatch": ">=3.0.5",
-    "json5": "^2.2.2",
-    "http-cache-semantics": "^4.1.1",
-    "caniuse-lite": "^1.0",
-    "yaml": "^2.2.2"
-  },
-  "ava": {
-    "files": [
-      "test/**/*.test.js",
-      "!test/ava-jsdom.js"
-    ],
-    "sources": [
-      "src/**/*.{js,jsx}"
-    ],
-    "concurrency": 5,
-    "failFast": true,
-    "failWithoutAssertions": false,
-    "tap": true,
-    "powerAssert": false,
-    "require": [
-      "./test/ava-jsdom.js",
-      "@babel/register",
-      "css-modules-require-hook/preset"
-    ]
-  },
-  "nyc": {
-    "sourceMap": false,
-    "instrument": false
-  },
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src",
     "stylelint": "stylelint \"src/css/*.css\"",
