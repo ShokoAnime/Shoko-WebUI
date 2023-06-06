@@ -70,6 +70,7 @@ export type FilterType = {
 export type LogLineType = {
   timeStamp: string;
   message: string;
+  level: string;
 };
 
 export type DataSourceType = 'AniDB' | 'TvDB' | 'TMDB' | 'Trakt' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';
