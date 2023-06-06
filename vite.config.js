@@ -18,7 +18,7 @@ export default defineConfig(async () => {
       org: 'shoko-anime',
       project: 'shoko-webui',
       release: isDebug ? 'dev' : version,
-      include: './public/dist',
+      include: './dist',
       urlPrefix: '~/webui/dist/',
       ignore: [],
     });
@@ -26,6 +26,8 @@ export default defineConfig(async () => {
 
   return {
     server: {
+      open: "/webui/",
+      port: 3000,
       proxy,
     },
     resolve: {
