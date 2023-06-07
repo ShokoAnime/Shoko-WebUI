@@ -16,8 +16,8 @@ import { plexApi } from './rtkQuery/plexApi';
 const rootReducer = (state, action) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
     // eslint-disable-next-line no-param-reassign
-    global.localStorage.clear();
-    global.sessionStorage.clear();
+    globalThis.localStorage.clear();
+    globalThis.sessionStorage.clear();
     return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
