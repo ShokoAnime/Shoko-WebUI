@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cx from 'classnames';
 import { useNavigate } from 'react-router-dom';
@@ -76,6 +76,18 @@ function LoginPage() {
     }).unwrap().then(() => navigate('/'), error => console.error(error));
   };
 
+  const parsedVersion = useMemo(() => {
+    if (version.isFetching || !version.data) {
+      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />);
+    }
+
+    if (version.data.Server.ReleaseChannel !== 'Stable') {
+      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`;
+    }
+
+    return version.data.Server.Version;
+  }, [version.isFetching, version.requestId]);
+
   return (
     <React.Fragment>
       <ToastContainer
@@ -93,11 +105,7 @@ function LoginPage() {
           <div className="flex flex-col gap-y-4 items-center">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
-              Version: {version.isFetching || !version.data
-              ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />
-              : version.data.Server.ReleaseChannel !== 'Stable'
-                ? `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`
-                : version.data.Server.Version}
+              Version: {parsedVersion}
             </div>
           </div>
 

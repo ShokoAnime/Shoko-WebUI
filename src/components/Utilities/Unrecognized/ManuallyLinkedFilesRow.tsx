@@ -97,7 +97,7 @@ function ManuallyLinkedFilesRow(props: Props) {
         className: 'w-auto',
       },
     }),
-    columnHelper.accessor(row => row.Locations?.[0].RelativePath.split(/[\/\\]/g).pop(), {
+    columnHelper.accessor(row => row.Locations?.[0].RelativePath.split(/[/\\]/g).pop(), {
       header: 'File',
       id: 'file',
       cell: info => info.getValue(),

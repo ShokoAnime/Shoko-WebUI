@@ -36,7 +36,7 @@ function UtilitiesTable({ table }: Props) {
       const fromIndex = Math.min(lrIndex, row.index);
       const toIndex = Math.max(lrIndex, row.index);
       const rowSelection: any = {};
-      for (let i = fromIndex; i <= toIndex; i++) {
+      for (let i = fromIndex; i <= toIndex; i += 1) {
         rowSelection[i] = lastRowSelected.current?.getIsSelected() ?? true;
       }
       table.setRowSelection(rowSelection);
@@ -76,7 +76,7 @@ function UtilitiesTable({ table }: Props) {
             const row = rows[virtualRow.index] as Row<FileType | SeriesType>;
             return (
             // Cannot use even: or odd: for background as it doesn't work properly with virtualizer
-              <tr key={row.id} className={cx(parseInt(row.id) % 2 === 0 ? 'bg-background-alt' : 'bg-background', 'cursor-pointer')} onClick={e => handleRowSelect(e, row)}>
+              <tr key={row.id} className={cx(parseInt(row.id, 10) % 2 === 0 ? 'bg-background-alt' : 'bg-background', 'cursor-pointer')} onClick={e => handleRowSelect(e, row)}>
                 {row.getVisibleCells().map(cell => (
                   <td key={cell.id} className={cx('py-4 first:rounded-l-md last:rounded-r-md border-y first:border-l last:border-r first:pl-6 pr-6 transition-colors', row.getIsSelected() ? 'border-highlight-1' : 'border-background-border')}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

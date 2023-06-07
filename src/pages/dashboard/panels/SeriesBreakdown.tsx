@@ -44,7 +44,7 @@ function SeriesBreakdown() {
 
   forEach(seriesSummaryArray, (item) => {
     let countPercentage = 0;
-    counter++;
+    counter += 1;
     if (total) {
       countPercentage = (item[1] / total) * 100;
     }

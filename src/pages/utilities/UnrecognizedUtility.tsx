@@ -34,7 +34,7 @@ function UnrecognizedUtility() {
     columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', ''), {
       header: 'Filename',
       id: 'filename',
-      cell: info => <div className="break-all">{info.getValue().split(/[\/\\]/g).pop()}</div>,
+      cell: info => <div className="break-all">{info.getValue().split(/[/\\]/g).pop()}</div>,
       meta: {
         className: 'w-auto',
       },

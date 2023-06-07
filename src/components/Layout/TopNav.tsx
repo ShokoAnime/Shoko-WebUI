@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@mdi/react';
@@ -119,6 +119,12 @@ function TopNav() {
     </NavLink>
   ), []);
 
+  const webuiUpdateStatus = useMemo(() => {
+    if (webuiUpdateResult.isLoading) return 'Updating...';
+    if (checkWebuiUpdate.isFetching) return 'Checking for update';
+    return 'Update Available';
+  }, [webuiUpdateResult.isLoading, checkWebuiUpdate.isFetching]);
+
   return (
     <>
       <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100] text-sm font-semibold">
@@ -177,7 +183,7 @@ function TopNav() {
                     spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                   />
                   <div className="flex">
-                    Web UI {webuiUpdateResult.isLoading ? 'Updating...' : (checkWebuiUpdate.isFetching ? 'Checking for update' : 'Update Available')}
+                    Web UI {webuiUpdateStatus}
                   </div>
                 </div>
               )}

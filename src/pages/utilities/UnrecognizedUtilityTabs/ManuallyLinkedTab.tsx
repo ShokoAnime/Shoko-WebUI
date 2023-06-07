@@ -150,8 +150,10 @@ function ManuallyLinkedTab() {
 
   const [selectedFiles, setSelectedFiles] = useImmer<{ [key: number]: boolean }>({});
   const updateSelectedFiles = useCallback((fileIds: number[], select = true) => setSelectedFiles((selectedFilesState) => {
-    // eslint-disable-next-line no-param-reassign
-    fileIds.forEach(fileId => selectedFilesState[fileId] = select);
+    fileIds.forEach((fileId) => {
+      // eslint-disable-next-line no-param-reassign
+      selectedFilesState[fileId] = select;
+    });
   }), []);
 
   const unlinkFiles = () => {

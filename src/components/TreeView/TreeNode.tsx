@@ -64,7 +64,7 @@ function TreeNode(props: Props) {
 
     if (isUnix && level === 2) return Path;
 
-    const splitPath = Path.split(/[\/\\]/g);
+    const splitPath = Path.split(/[/\\]/g);
     let part = splitPath.pop();
     if (part === '') {
       part = splitPath.pop();

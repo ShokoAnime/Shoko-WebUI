@@ -6,13 +6,13 @@ import { mdiEyeOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import toast from '@/components/Toast';
 import type { FileType } from '@/core/types/api/file';
-import { EpisodeFileInfo } from './EpisodeFileInfo';
+import EpisodeFileInfo from './EpisodeFileInfo';
 
 type Props = {
   episodeFiles: FileType[];
 };
 
-export const EpisodeFiles = ({ episodeFiles }: Props) => {
+const EpisodeFiles = ({ episodeFiles }: Props) => {
   const [fileRescanTrigger] = usePostFileRescanMutation();
 
   const rescanFile = async (id) => {
@@ -76,3 +76,5 @@ export const EpisodeFiles = ({ episodeFiles }: Props) => {
     </div>
   );
 };
+
+export default EpisodeFiles;

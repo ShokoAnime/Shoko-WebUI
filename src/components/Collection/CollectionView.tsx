@@ -128,7 +128,7 @@ const CollectionView = (props: Props) => {
           }
 
           // Here, i will be the actual index of the group in group list
-          for (let i = fromIndex; i < toIndex; i++) {
+          for (let i = fromIndex; i < toIndex; i += 1) {
             const neededPage = Math.ceil((i + 1) / pageSize);
             const relativeIndex = i % pageSize;
             const groupList = groupPages[neededPage];

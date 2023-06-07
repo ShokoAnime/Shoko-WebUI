@@ -18,8 +18,8 @@ import {
   usePostEpisodeWatchedMutation,
 } from '@/core/rtkQuery/splitV3Api/episodeApi';
 import Button from '@/components/Input/Button';
-import { EpisodeDetails } from './EpisodeDetails';
-import { EpisodeFiles } from './EpisodeFiles';
+import EpisodeDetails from './EpisodeDetails';
+import EpisodeFiles from './EpisodeFiles';
 
 type Props = {
   episode: EpisodeType;

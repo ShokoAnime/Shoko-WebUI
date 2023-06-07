@@ -28,7 +28,7 @@ function EpisodeDetails(props: Props): JSX.Element {
     if (episode.ResumePosition == null) return null;
     const duration = moment.duration(episode.Duration);
     const resumePosition = moment.duration(episode.ResumePosition);
-    return `${(resumePosition.asMilliseconds() / duration.asMilliseconds() * 100).toFixed(2)}%`;
+    return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
   }, [episode.Duration, episode.ResumePosition]);
   const airDate = useMemo(() => moment(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(CalendarConfig), [airDate]);

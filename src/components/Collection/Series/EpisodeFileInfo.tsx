@@ -2,7 +2,7 @@ import { get, map, toNumber } from 'lodash';
 import React from 'react';
 import prettyBytes from 'pretty-bytes';
 
-export const EpisodeFileInfo = ({ file }) => {
+const EpisodeFileInfo = ({ file }) => {
   const VideoInfo: string[] = [];
   const VideoSource = get(file, 'AniDB.Source');
   if (VideoSource) {
@@ -99,3 +99,5 @@ export const EpisodeFileInfo = ({ file }) => {
     </div>
   );
 };
+
+export default EpisodeFileInfo;

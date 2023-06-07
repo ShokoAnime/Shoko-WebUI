@@ -34,7 +34,7 @@ function AniDBTab({ setStatus }: Props) {
   };
 
   const validateAndSaveRelationDepth = (depth: string) => {
-    if (parseInt(depth) < 0 || parseInt(depth) > 5) setStatus({ type: 'error', text: 'Max Relation Depth may only be between 0 and 5' });
+    if (parseInt(depth, 10) < 0 || parseInt(depth, 10) > 5) setStatus({ type: 'error', text: 'Max Relation Depth may only be between 0 and 5' });
     else {
       updateSetting('AniDb', 'MaxRelationDepth', depth);
       setStatus({ type: 'success', text: '' });

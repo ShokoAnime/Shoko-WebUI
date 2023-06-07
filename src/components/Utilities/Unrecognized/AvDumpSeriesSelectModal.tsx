@@ -37,7 +37,9 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
 
   const ed2kLinks = useMemo(() => {
     let tempEd2kLinks = '';
-    links.forEach(link => tempEd2kLinks += `${link}\n`);
+    links.forEach((link) => {
+      tempEd2kLinks += `${link}\n`;
+    });
     return tempEd2kLinks;
   }, [links]);
 

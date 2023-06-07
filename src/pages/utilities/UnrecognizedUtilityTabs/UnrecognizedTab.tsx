@@ -267,7 +267,7 @@ function UnrecognizedTab() {
   );
 
   const avdumpFiles = async () => {
-    for (let i = 0; i < selectedRows.length; i++) {
+    for (let i = 0; i < selectedRows.length; i += 1) {
       await runAvdump(selectedRows[i].ID);
     }
   };

@@ -89,7 +89,7 @@ function ImportFolders() {
         <div className="font-semibold text-xl">Import Folders</div>
         <div className="text-justify">
           For Shoko to function correctly, at least one import folder is required. However, you can add as many import
-          folders as you desire. It's important to note that you can only select one folder to be the designated drop
+          folders as you desire. It&apos;s important to note that you can only select one folder to be the designated drop
           destination.
         </div>
         <div className="flex font-semibold">

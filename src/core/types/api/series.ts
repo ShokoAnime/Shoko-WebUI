@@ -186,7 +186,7 @@ export type SeriesAniDBSimilarType = {
 };
 
 export type SeriesRolePerson = {
-  Name:	string;
+  Name: string;
   AlternateName: string | null;
   Description: string | null;
   Image: ImageType;

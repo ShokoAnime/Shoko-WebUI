@@ -24,7 +24,7 @@ import { EpisodeType } from '@/core/types/api/episode';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { ImageType } from '@/core/types/api/common';
 import { WebuiSeriesDetailsType } from '@/core/types/api/webui';
-import { EpisodeDetails } from '@/components/Collection/Series/EpisodeDetails';
+import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
 import Button from '@/components/Input/Button';
 
 const links = ['TMDB', 'TvDB', 'MAL', 'AniList', 'TraktTv'];
