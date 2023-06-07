@@ -23,7 +23,7 @@ function PlexTab() {
     return function cleanup() {
       dispatch({ type: Events.STOP_API_POLLING, payload: { type: 'plex-auth' } });
     };
-  }, []);
+  }, [dispatch]);
 
   const handleLinkOpen = () => {
     window.open(plexUrl, '_blank');

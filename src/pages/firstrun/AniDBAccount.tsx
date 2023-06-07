@@ -3,7 +3,6 @@ import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 import Input from '@/components/Input/Input';
-import Footer from './Footer';
 import TransitionDiv from '@/components/TransitionDiv';
 
 import {
@@ -11,8 +10,9 @@ import {
   TestStatusType,
   unsetSaved as unsetFirstRunSaved,
 } from '@/core/slices/firstrun';
-import { useFirstRunSettingsContext } from './FirstRunPage';
 import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useFirstRunSettingsContext } from './FirstRunPage';
+import Footer from './Footer';
 
 function AniDBAccount() {
   const {

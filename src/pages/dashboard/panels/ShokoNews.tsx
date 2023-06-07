@@ -28,7 +28,7 @@ function ShokoNews() {
   return (
     <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col gap-y-3">
-        {items.data?.slice(0, 4).map((item, index) => <NewsRow item={item} key={index} />)}
+        {items.data?.slice(0, 4).map(item => <NewsRow item={item} key={item.link} />)}
       </div>
     </ShokoPanel>
   );

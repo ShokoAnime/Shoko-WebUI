@@ -34,15 +34,15 @@ const isCharacter = item => item.RoleName === 'Seiyuu';
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
+
   const [mode, setMode] = useState('Character');
   const [search, setSearch] = useState('');
 
-  const castData = useGetSeriesCastQuery({ seriesId });
+  const castData = useGetSeriesCastQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const cast = castData.data;
-  
+
+  if (!seriesId) return null;
+
   return (
     <div className="flex gap-x-8">
       <ShokoPanel title="Search & Filter" className="w-[22.375rem] sticky top-0 shrink-0 h-fit" transparent contentClassName="gap-y-8" fullHeight={false}>
@@ -56,7 +56,7 @@ const SeriesCredits = () => {
         </div>
 
         <div className="grid grid-cols-4 gap-4">
-          {map(filter(cast, value => mode === 'Character' ? isCharacter(value) : !isCharacter(value)), (item, idx) => (
+          {map(filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))), (item, idx) => (
             <div key={`${mode}-${idx}`} className="rounded-md bg-background-alt/50 p-8 gap-y-4 flex flex-col justify-center items-center border-background-border border font-semibold">
               <div className="flex gap-x-2 z-10">
                 {mode === 'Character' && <CharacterImage imageSrc={getThumbnailUrl(item, 'Character')} className="h-[11.4375rem] w-[9rem] rounded-md relative" />}

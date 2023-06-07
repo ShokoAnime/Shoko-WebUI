@@ -21,26 +21,25 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
 
   const debouncedSearch = useRef(
-    debounce( (query: string) => {
+    debounce((query: string) => {
       searchTrigger({ query, pageSize: 20 }).catch(() => {});
     }, 200),
   ).current;
 
   const handleSearch = (query: string) => {
     setSearchText(query);
-    if (query !== '')
-      debouncedSearch(query);
+    if (query !== '') debouncedSearch(query);
   };
 
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
+  useEffect(() => () => {
+    debouncedSearch.cancel();
   }, [debouncedSearch]);
 
   const ed2kLinks = useMemo(() => {
     let tempEd2kLinks = '';
-    links.forEach(link => tempEd2kLinks += `${link}\n`);
+    links.forEach((link) => {
+      tempEd2kLinks += `${link}\n`;
+    });
     return tempEd2kLinks;
   }, [links]);
 
@@ -64,19 +63,20 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
       </div>
       <Input id="search" value={searchText} type="text" placeholder="Search..." onChange={e => handleSearch(e.target.value)} startIcon={mdiMagnify} />
       <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-background-border gap-y-1">
-        {searchResults.isLoading ?
-          (<div className="flex h-full justify-center items-center">
-            <Icon path={mdiLoading} size={3} spin className="text-highlight-1" />
-          </div>) :
-          (searchResults.data ?? []).map(result => (
+        {searchResults.isLoading
+          ? (
+            <div className="flex h-full justify-center items-center">
+              <Icon path={mdiLoading} size={3} spin className="text-highlight-1" />
+            </div>
+          )
+          : (searchResults.data ?? []).map(result => (
             <a href={`https://anidb.net/anime/${result.ID}/release/add`} key={result.ID} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center">
               <div className="line-clamp-1">{result.Title}</div>
               <div className="text-highlight-1">
                 <Icon path={mdiOpenInNew} size={0.833} />
               </div>
             </a>
-          ))
-        }
+          ))}
       </div>
     </ModalPanel>
   );

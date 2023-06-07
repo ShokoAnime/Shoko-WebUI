@@ -3,11 +3,12 @@ import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 
 import { setSaved as setFirstRunSaved, TestStatusType } from '@/core/slices/firstrun';
+import TransitionDiv from '@/components/TransitionDiv';
+import Button from '@/components/Input/Button';
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
 import TvDBTab from './MetadataSourcesTabs/TvDBTab';
 import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';
-import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
 
@@ -20,9 +21,9 @@ function MetadataSources() {
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const renderTabButton = (title: string, key: string) => (
-    <button onClick={() => setActiveTab(key)} className={cx(['font-semibold', activeTab === key && 'text-highlight-1'])}>
+    <Button onClick={() => setActiveTab(key)} className={cx(['font-semibold', activeTab === key && 'text-highlight-1'])}>
       {title}
-    </button>
+    </Button>
   );
 
   const renderTabContent = () => {

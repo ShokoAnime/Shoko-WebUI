@@ -41,27 +41,24 @@ type ManualLink = {
   EpisodeID: number;
 };
 
-const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void  }) => {
+const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void }) => {
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
 
   const [searchText, setSearchText] = useState('');
 
   const debouncedSearch = useRef(
-    debounce( (query: string) => {
+    debounce((query: string) => {
       searchTrigger({ query, pageSize: 20 }).catch(() => {});
     }, 200),
   ).current;
 
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
+  useEffect(() => () => {
+    debouncedSearch.cancel();
   }, [debouncedSearch]);
 
   const handleSearch = (query: string) => {
     setSearchText(query);
-    if (query !== '')
-      debouncedSearch(query);
+    if (query !== '') debouncedSearch(query);
   };
 
   const renderRow = useCallback((data: SeriesAniDBSearchResult) => (
@@ -81,7 +78,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
       <div className="ml-auto">{data.Type}&nbsp;&nbsp;|&nbsp;&nbsp;</div>
       <div className="w-10">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
     </div>
-  ), []);
+  ), [updateSelectedSeries]);
 
   const searchRows: Array<React.ReactNode> = [];
   forEach(searchResults.data, (result) => {
@@ -127,12 +124,12 @@ function LinkFilesTab() {
       // eslint-disable-next-line no-param-reassign
       linkState[itemIndex].EpisodeID = EpisodeID;
     }
-  }), []);
+  }), [setLinks]);
 
   const removeLink = useCallback((FileID: number) => setLinks((linkState) => {
     const itemIndex = linkState.reverse().findIndex(link => link.FileID === FileID);
     linkState.splice(itemIndex, 1);
-  }), []);
+  }), [setLinks]);
 
   const updateSelectedLink = (idx: number) => {
     if (selectedLink === idx) setSelectedLink(-1);
@@ -148,25 +145,29 @@ function LinkFilesTab() {
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const episodes = episodesQuery?.data?.List || [];
+  const episodes = useMemo(() => episodesQuery?.data?.List || [], [episodesQuery]);
 
   useEffect(() => {
     if (!selectedSeries.ShokoID) { return; }
     updateEpisodes({ seriesID: selectedSeries.ShokoID, pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB', 'TvDB'] }).catch(() => {});
-  }, [selectedSeries.ShokoID]);
+  }, [selectedSeries.ShokoID, updateEpisodes]);
 
   useEffect(() => {
     if (links.length > 0) return;
     const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
     setLinks(newLinks);
-  }, [episodes, links]);
+  }, [episodes, links, selectedRows, setLinks]);
 
   const updateSelectedSeries = (series: SeriesAniDBSearchResult) => {
     setSelectedSeries(series);
     setLinks([]);
   };
 
-  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
+  const episodeOptions = useMemo(() => (
+    episodes.map(item => (
+      { value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 }
+    ))
+  ), [episodes]);
   const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
 
   const refreshAniDB = async () => {
@@ -186,7 +187,7 @@ function LinkFilesTab() {
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
     const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
-  }), [links]);
+  }), [links, selectedRows]);
 
   const renderFileLinks = () => {
     const result: React.ReactNode[] = [];
@@ -203,7 +204,7 @@ function LinkFilesTab() {
       if (episodes.length > 0) {
         result.push(
           <div data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}-select`}>
-            <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => addLink(link.FileID, value) } />
+            <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => addLink(link.FileID, value)} />
           </div>,
         );
       } else if (idx === 0) {
@@ -229,7 +230,7 @@ function LinkFilesTab() {
       );
     });
     return manualLinkFileRows;
-  }, []);
+  }, [selectedRows]);
 
   const makeLinks = () => {
     forEach(groupedLinksMap, async (fileIds, episodeID) => {
@@ -296,7 +297,7 @@ function LinkFilesTab() {
               </div>
               <div className="flex gap-x-3 font-semibold">
                 <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={!selectedSeries.ShokoID}>Range Fill</Button>
-                {/*<Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button>*/}
+                {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
                 <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
                 <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={!selectedSeries.ShokoID}>Save</Button>
               </div>

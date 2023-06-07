@@ -1,4 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 import { find, toInteger } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
@@ -76,18 +78,18 @@ const SelectOption = (option: Option & { divider: boolean }) => (
     </div>
   </Listbox.Option>
 );
-
+/* eslint-disable-next-line object-curly-newline */
 const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
-  const [epFilter, setEpFilter ] = useState(0);
+  const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
   const [portalEl, setPortalEl] = useState(null as any);
   const [displayNode, setDisplayNode] = React.useState(null as any);
   const displayRef = useRef(null);
   const buttonRef = useRef(null);
-  
+
   useEffect(() => {
     const modalRoot = document.getElementById('modal-root');
-    if (modalRoot === null) { return; }
+    if (modalRoot === null) { return undefined; }
     const el = document.createElement('div');
     modalRoot.appendChild(el);
     setPortalEl(el);
@@ -107,11 +109,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
   useEffect(() => {
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
-  
-  useMemo(() => {
-    
-  }, [options, epFilter]);
-  
+
   const handleEpFilter = (event) => {
     setEpFilter(toInteger(event.target.value));
   };
@@ -120,17 +118,17 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     setSelected(selectedOption);
     onChange(selectedOption?.value ?? 0, selectedOption?.label ?? emptyValue);
   };
-  
+
   const renderSelected = () => {
     if (!selected || !selected.label) return emptyValue;
     return (
       <React.Fragment>
         <span className="text-highlight-2 font-semibold">{selected.number}</span> - {selected.label}
         {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border">{selected.type}</span>}
-      </React.Fragment> 
+      </React.Fragment>
     );
   };
-  
+
   const renderPortal = (open) => {
     if (displayNode === null || portalEl === null || open !== true) { return null; }
     const rect = displayNode.getBoundingClientRect();
@@ -150,7 +148,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
           {options.map((item, idx) => (
             <>
               {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-background-alt h-0.5 my-3" />)}
-              {(epFilter > 0 && item.number === epFilter || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
+              {(epFilter > 0 && (item.number === epFilter || epFilter === 0)) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
             </>
           ))}
         </div>
@@ -179,6 +177,5 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     </div>
   );
 };
-
 
 export default React.memo(SelectEpisodeList);

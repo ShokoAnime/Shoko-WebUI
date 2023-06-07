@@ -5,8 +5,8 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useFirstRunSettingsContext } from '../FirstRunPage';
 import { tvdbLanguages } from '@/pages/settings/tabs/MetadataSitesSettings';
+import { useFirstRunSettingsContext } from '../FirstRunPage';
 
 function TvDBTab() {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();

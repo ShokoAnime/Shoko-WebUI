@@ -19,7 +19,7 @@ export type WebuiGroupExtra = {
 };
 
 export type WebuiSeriesRolePerson = {
-  Name:	string;
+  Name: string;
   AlternateName: string | null;
   Description: string | null;
   Image: ImageType;
@@ -53,7 +53,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleLanguages: string[];
   SubtitleCount: number;
   Location: string;
-  RangeByType: { 
+  RangeByType: {
     Other: WebuiSeriesFileSummaryRangeByType;
     Normal: WebuiSeriesFileSummaryRangeByType;
     Special: WebuiSeriesFileSummaryRangeByType;

@@ -30,12 +30,14 @@ const columns = [
   columnHelper.accessor('IDs.AniDB', {
     header: 'AniDB ID',
     id: 'ID',
-    cell: info => <div className="flex justify-between">
-      {info.getValue()}
-      <span onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')} className="cursor-pointer mr-6 text-highlight-1">
-        <Icon path={mdiOpenInNew} size={1} />
-      </span>
-    </div>,
+    cell: info => (
+      <div className="flex justify-between">
+        {info.getValue()}
+        <span onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')} className="cursor-pointer mr-6 text-highlight-1">
+          <Icon path={mdiOpenInNew} size={1} />
+        </span>
+      </div>
+    ),
     meta: {
       className: 'w-32',
     },
@@ -80,7 +82,7 @@ function SeriesWithoutFilesUtility() {
 
   useEffect(() => {
     table.resetRowSelection();
-  }, [series.List]);
+  }, [series.List, table]);
 
   const deleteSeries = () => {
     let failedSeries = 0;

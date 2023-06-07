@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import cx from 'classnames';
 import { useNavigate } from 'react-router-dom';
@@ -37,17 +37,17 @@ function LoginPage() {
   const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
   const imageMetadata = useGetRandomMetadataQuery({ imageType: ImageTypeEnum.Fanart });
-  
+
   useEffect(() => {
-    const data = imageMetadata.data;
-    if (!data || !data?.Type) { 
+    const { data } = imageMetadata;
+    if (!data || !data?.Type) {
       setLoginImage('default');
       return;
     }
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
     setLoginImage(uri);
     setLoginSeriesTitle(data?.Series?.Name ?? '');
-  }, [imageMetadata.data]);
+  }, [imageMetadata]);
 
   useEffect(() => {
     if (!status.data) setPollingInterval(500);
@@ -56,8 +56,8 @@ function LoginPage() {
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
       navigate('/', { replace: true });
     }
-  }, [status.data]);
-  
+  }, [status, apiSession, navigate]);
+
   useEffect(() => {
     if (!get(version, 'data.Server', false)) { return; }
     const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable' ? version?.data?.Server.Commit : version.data.Server.Version;
@@ -72,33 +72,40 @@ function LoginPage() {
       user: username,
       pass: password,
       device: 'web-ui',
-      rememberUser: rememberUser,
+      rememberUser,
     }).unwrap().then(() => navigate('/'), error => console.error(error));
   };
+
+  const parsedVersion = useMemo(() => {
+    if (version.isFetching || !version.data) {
+      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />);
+    }
+
+    if (version.data.Server.ReleaseChannel !== 'Stable') {
+      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`;
+    }
+
+    return version.data.Server.Version;
+  }, [version]);
 
   return (
     <React.Fragment>
       <ToastContainer
-        position={'bottom-right'}
+        position="bottom-right"
         autoClose={4000}
         transition={Slide}
         className="mt-20 !w-[29.5rem]"
         closeButton={false}
         icon={false}
       />
-      <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}>
+      <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}>
         <div className="absolute top-0 right-0 bg-background-alt/90 px-8 py-4 font-semibold border border-background-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
 
         <div className="flex flex-col items-center p-8 w-[31.25rem] bg-background-alt/90 border border-background-border rounded-md gap-y-8">
           <div className="flex flex-col gap-y-4 items-center">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
-              Version: {version.isFetching || !version.data ?
-                <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
-              version.data.Server.ReleaseChannel !== 'Stable' ?
-                `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
-                version.data.Server.Version
-              }
+              Version: {parsedVersion}
             </div>
           </div>
 
@@ -122,7 +129,7 @@ function LoginPage() {
                 <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
                 <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold" labelRight />
-                <Button className="bg-highlight-1 py-2 w-full font-semibold" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                <Button className="bg-highlight-1 py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
               </form>
             )}
             {status.data?.State === 3 && (

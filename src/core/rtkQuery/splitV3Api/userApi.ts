@@ -1,7 +1,6 @@
-import { splitV3Api } from '../splitV3Api';
-
 import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api/user';
 import { identity, map, pickBy } from 'lodash';
+import { splitV3Api } from '../splitV3Api';
 
 const simplifyCommunitySites = (sites: Array<string>) => {
   const result: CommunitySitesType = {
@@ -23,7 +22,7 @@ const userApi = splitV3Api.injectEndpoints({
       transformResponse: (response: Array<ApiUserType>) => {
         const users: Array<UserType> = [];
         response.forEach((user) => {
-          let { CommunitySites, ...tempUser } = user;
+          const { CommunitySites, ...tempUser } = user;
           users.push({ ...tempUser, CommunitySites: simplifyCommunitySites(CommunitySites) });
         });
         return users;
@@ -33,13 +32,11 @@ const userApi = splitV3Api.injectEndpoints({
 
     // Edit User. This replaces all values, except Plex and Password.
     putUser: build.mutation<void, UserType>({
-      query: ({ CommunitySites, ...user }) => {
-        return {
-          url: 'User',
-          method: 'PUT',
-          body: { ...user, CommunitySites: map(pickBy(CommunitySites, identity), (_, key) => key) },
-        };
-      },
+      query: ({ CommunitySites, ...user }) => ({
+        url: 'User',
+        method: 'PUT',
+        body: { ...user, CommunitySites: map(pickBy(CommunitySites, identity), (_, key) => key) },
+      }),
       invalidatesTags: ['Users'],
     }),
 

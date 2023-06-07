@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
 import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
@@ -12,8 +12,8 @@ import { RootState } from '@/core/store';
 
 import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '@/core/types/api/settings';
+import { initialSettings } from '../settings/SettingsPage';
 
 type ContextType = {
   fetching: boolean
@@ -27,10 +27,16 @@ const MenuItem = ({ text, id }: { text: string, id: string }) => {
   const { pathname } = useLocation();
   const saved = useSelector((state: RootState) => state.firstrun.saved);
 
+  const path = useMemo(() => {
+    if (pathname === `/webui/firstrun/${id}`) return mdiCircleHalfFull;
+    if (saved[id]) return mdiCheckboxMarkedCircleOutline;
+    return mdiCheckboxBlankCircleOutline;
+  }, [pathname, saved, id]);
+
   return (
     <div key={id} className="flex items-center font-semibold gap-x-7">
       <Icon
-        path={pathname === `/webui/firstrun/${id}` ? mdiCircleHalfFull : (saved[id] ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline)}
+        path={path}
         className="text-highlight-1"
         size={1}
       />
@@ -49,9 +55,8 @@ function FirstRunPage() {
   const status = useGetInitStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4)
-      navigate('../login', { replace: true });
-  }, [status.isLoading]);
+    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) navigate('../login', { replace: true });
+  }, [navigate, status]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
 
@@ -68,8 +73,22 @@ function FirstRunPage() {
     try {
       await patchSettings({ oldSettings: settings, newSettings, skipValidation: true }).unwrap();
       await settingsQuery.refetch();
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
+
+  const parsedVersion = useMemo(() => {
+    if (version.isFetching || !version.data) {
+      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />);
+    }
+
+    if (version.data.Server.ReleaseChannel !== 'Stable') {
+      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`;
+    }
+
+    return version.data.Server.Version;
+  }, [version]);
 
   return (
     <div className="flex w-full h-full p-8 gap-x-8 max-w-[120rem] mx-auto">
@@ -78,12 +97,7 @@ function FirstRunPage() {
         <div className="flex flex-col items-center gap-y-4">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold gap-x-2">
-            Version: {version.isFetching || !version.data ?
-              <Icon path={mdiLoading} spin size={1} className="text-highlight-1" /> :
-            version.data.Server.ReleaseChannel !== 'Stable' ?
-              `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
-              version.data.Server.Version
-            }
+            Version: {parsedVersion}
           </div>
         </div>
 

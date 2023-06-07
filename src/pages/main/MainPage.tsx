@@ -27,7 +27,7 @@ function MainPage() {
 
   useEffect(() => {
     dispatch({ type: Events.MAINPAGE_LOAD });
-  }, []);
+  }, [dispatch]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 

@@ -88,7 +88,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   const [runActionTrigger] = useRunActionMutation();
 
   const runAction = async (name: string, action) => {
-    //TODO: figure out better type for this
+    // TODO: figure out better type for this
     const result: any = await runActionTrigger(action);
     if (!result.error) {
       toast.success(`Running action "${name}"`);
@@ -97,7 +97,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const action = useMemo(() => quickActions[actionKey], []);
+  const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { name, functionName, info } = action;
 
   return (
@@ -115,7 +115,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
       </div>
       <AnimateHeight height={showInfo ? 'auto' : 0}>
         <div className="flex bg-background-border rounded-md px-4 py-2 gap-x-2 mt-3">
-          {/*Icon size reduces if not put in a div*/}
+          {/* Icon size reduces if not put in a div */}
           <div className="mt-0.5">
             <Icon path={mdiInformationOutline} size={0.8333} />
           </div>

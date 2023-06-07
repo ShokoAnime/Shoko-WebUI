@@ -150,9 +150,11 @@ function ManuallyLinkedTab() {
 
   const [selectedFiles, setSelectedFiles] = useImmer<{ [key: number]: boolean }>({});
   const updateSelectedFiles = useCallback((fileIds: number[], select = true) => setSelectedFiles((selectedFilesState) => {
-    // eslint-disable-next-line no-param-reassign
-    fileIds.forEach(fileId => selectedFilesState[fileId] = select);
-  }), []);
+    fileIds.forEach((fileId) => {
+      // eslint-disable-next-line no-param-reassign
+      selectedFilesState[fileId] = select;
+    });
+  }), [setSelectedFiles]);
 
   const unlinkFiles = () => {
     const fileIds = Object.keys(selectedFiles).map(parseInt);
@@ -176,7 +178,7 @@ function ManuallyLinkedTab() {
     <TransitionDiv className="flex flex-col grow gap-y-8 overflow-y-auto">
 
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series /> }>
+        <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series />}>
           <div className="flex items-center gap-x-3">
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} inputClassName="px-4 py-3" />
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
@@ -194,11 +196,12 @@ function ManuallyLinkedTab() {
       </div>
 
       <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
-        {seriesQuery.isFetching ? (
+        {seriesQuery.isFetching && (
           <div className="flex grow justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
-        ) : series.Total > 0 ? (
+        )}
+        {!seriesQuery.isFetching && series.Total > 0 && (
           <div className="flex flex-col w-full overflow-y-auto">
             <div className="flex px-6 py-4 bg-background font-semibold sticky top-0 z-[1] rounded-md border border-background-border">
               <div className="grow">Series</div>
@@ -227,7 +230,8 @@ function ManuallyLinkedTab() {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+        {!seriesQuery.isFetching && series.Total === 0 && (
           <div className="flex items-center justify-center grow font-semibold">No manually linked file(s)!</div>
         )}
       </div>

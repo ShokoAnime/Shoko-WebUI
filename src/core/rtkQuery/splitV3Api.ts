@@ -7,7 +7,7 @@ export const splitV3Api = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: '/api/v3/',
     prepareHeaders: (headers, { getState }) => {
-      const apikey = (getState() as RootState).apiSession.apikey;
+      const { apikey } = (getState() as RootState).apiSession;
       headers.set('apikey', apikey);
       return headers;
     },

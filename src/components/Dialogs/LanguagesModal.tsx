@@ -1,11 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { remove } from 'lodash';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
-import { initialSettings } from '@/pages/settings/SettingsPage';
-
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -67,21 +66,21 @@ type Props = {
 
 function LanguagesModal({ type, onClose }: Props) {
   const settingsQuery = useGetSettingsQuery();
-  const settings = settingsQuery.data ?? initialSettings;
-  const LanguagePreference = type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en'];
+  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
+  const LanguagePreference = useMemo(() => (type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en']), [type, settings]);
   const [patchSettings] = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as Array<string>);
 
   const handleSave = useCallback(() => {
-    patchSettings({ oldSettings: settings, newSettings: { ...settings, [ type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference' ]: languages }  }).unwrap()
+    patchSettings({ oldSettings: settings, newSettings: { ...settings, [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages } }).unwrap()
       .then(() => onClose())
       .catch(error => console.error(error));
-  }, [type, settingsQuery.requestId, languages]);
+  }, [type, settings, languages, patchSettings, onClose]);
 
   useEffect(() => {
     if (type !== null) setLanguages(LanguagePreference);
-  }, [type]);
+  }, [type, LanguagePreference]);
 
   const handleInputChange = (event: any) => {
     const { id, checked: value } = event.target;

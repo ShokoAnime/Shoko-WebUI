@@ -6,7 +6,6 @@ import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import toast from '@/components/Toast';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import Button from '@/components/Input/Button';
-import Footer from './Footer';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useDeleteImportFolderMutation, useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
@@ -15,6 +14,7 @@ import {
   setStatus as setImportFolderModalStatus,
 } from '@/core/slices/modals/importFolder';
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
+import Footer from './Footer';
 
 const Folder = (props: ImportFolderType) => {
   const {
@@ -25,7 +25,7 @@ const Folder = (props: ImportFolderType) => {
   const [deleteFolder] = useDeleteImportFolderMutation();
 
   const handleDeleteFolder = async (folderId) => {
-    //TODO: can this be better typed?
+    // TODO: can this be better typed?
     const result: any = await deleteFolder({ folderId });
     if (!result.error) {
       toast.success('Import folder deleted!');
@@ -89,7 +89,7 @@ function ImportFolders() {
         <div className="font-semibold text-xl">Import Folders</div>
         <div className="text-justify">
           For Shoko to function correctly, at least one import folder is required. However, you can add as many import
-          folders as you desire. It's important to note that you can only select one folder to be the designated drop
+          folders as you desire. It&apos;s important to note that you can only select one folder to be the designated drop
           destination.
         </div>
         <div className="flex font-semibold">

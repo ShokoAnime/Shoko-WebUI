@@ -1,11 +1,10 @@
 import jsonpatch from 'fast-json-patch';
 
-import { splitV3Api } from '../splitV3Api';
-
 import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
 import { SettingsAnidbLoginType } from '@/core/types/api/settings';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 import { webuiSettingsPatches } from '@/core/patches';
+import { splitV3Api } from '../splitV3Api';
 
 const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -27,7 +26,7 @@ const settingsApi = splitV3Api.injectEndpoints({
           webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
         }
         return { ...response, WebUI_Settings: webuiSettings };
-        //For Dev Only
+        // For Dev Only
         // return { ...response, WebUI_Settings: initialSettings.WebUI_Settings };
       },
       providesTags: ['Settings'],

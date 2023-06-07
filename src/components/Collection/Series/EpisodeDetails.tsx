@@ -12,7 +12,7 @@ const getDuration = (duration) => {
   return `${intMinutes} minutes`;
 };
 
-export function EpisodeDetails({ episode }: { episode: EpisodeType }) {
+function EpisodeDetails({ episode }: { episode: EpisodeType }) {
   return (
     <div className="flex flex-col gap-y-4 grow">
       <div className="flex justify-between font-semibold">
@@ -41,3 +41,5 @@ export function EpisodeDetails({ episode }: { episode: EpisodeType }) {
     </div>
   );
 }
+
+export default EpisodeDetails;

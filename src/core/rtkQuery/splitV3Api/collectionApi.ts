@@ -1,24 +1,21 @@
 import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
 import { omit } from 'lodash';
 
-import { splitV3Api } from '../splitV3Api';
-
 import { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
 import { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
 import { SeriesType } from '@/core/types/api/series';
+import { splitV3Api } from '../splitV3Api';
 
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroups: build.query<InfiniteResultType<CollectionGroupType[]>, PaginationType & { filterId: string }>({
       query: ({ filterId, ...params }) => ({ url: `Filter/${filterId}/Group`, params }),
-      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => {
-        return {
-          pages: {
-            [args.page ?? 1]: response.List,
-          },
-          total: response.Total,
-        };
-      },
+      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
+        pages: {
+          [args.page ?? 1]: response.List,
+        },
+        total: response.Total,
+      }),
       // Only have one cache entry because the arg always maps to one string
       serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
         defaultSerializeQueryArgs({

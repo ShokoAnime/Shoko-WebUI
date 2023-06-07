@@ -27,7 +27,7 @@ const LogsPage = () => {
   useEffect(() => {
     if (!isScrollToBottom || logLines.length === 0) return;
     rowVirtualizer.scrollToIndex(logLines.length - 1, { align: 'start' }); // 'start' scrolls to end and 'end' scrolls to start. ¯\_(ツ)_/¯
-  }, [logLines.length, isScrollToBottom]);
+  }, [logLines.length, isScrollToBottom, rowVirtualizer]);
 
   return (
     <div className="flex flex-col gap-y-8 grow">
@@ -41,7 +41,7 @@ const LogsPage = () => {
           <Button className="bg-background-nav border border-background-border px-5 py-2 text-font-main" disabled>
             <Icon path={mdiCogOutline} size={1} />
           </Button>
-          {/*TODO: To be moved into settings modal*/}
+          {/* TODO: To be moved into settings modal */}
           <Button className={cx('bg-background-nav border border-background-border px-5 py-2', isScrollToBottom ? 'text-highlight-1' : 'text-font-main')} onClick={() => setScrollToBottom(prev => !prev)}>
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>

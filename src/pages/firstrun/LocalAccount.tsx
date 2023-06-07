@@ -2,12 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import Footer from './Footer';
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
 import { setSaved as setFirstRunSaved, setUser as setUserState, TestStatusType } from '@/core/slices/firstrun';
 
 import { useGetInitDefaultUserQuery, usePostInitDefaultUserMutation } from '@/core/rtkQuery/splitV3Api/initApi';
+import Footer from './Footer';
 
 function LocalAccount() {
   const dispatch = useDispatch();

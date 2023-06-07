@@ -2,10 +2,7 @@ import React from 'react';
 import { mdiAccount } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-const charRegex = new RegExp(
-  '(http:\\/\\/anidb.net\\/c(?:h|r)[0-9]+) \\[([^\\]]+)]',
-  'g',
-);
+const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
 
 const AnidbLink = ({ url, character, text }) => (
   <span className="text-highlight-1" title={url}>
@@ -15,12 +12,11 @@ const AnidbLink = ({ url, character, text }) => (
 );
 
 const AnidbDescription = ({ text }) => {
-
   const lines = [] as Array<JSX.Element>;
   let prevPos = 0;
   let pos = 0;
   let link = charRegex.exec(text);
-  
+
   while (link !== null) {
     pos = link.index;
     lines.push(text.substring(prevPos, pos));
@@ -34,7 +30,7 @@ const AnidbDescription = ({ text }) => {
   if (prevPos < text.length) {
     lines.push(text.substring(prevPos));
   }
-  
+
   return (
     <div>{lines}</div>
   );

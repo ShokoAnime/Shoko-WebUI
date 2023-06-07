@@ -11,9 +11,9 @@ function SideMenu(props: Props) {
   const { items } = props;
 
   return (
-        <div className="grid grid-cols-1 gap-4">
-            {items.map(item => <MenuItem {...item} />)}
-        </div>
+    <div className="grid grid-cols-1 gap-4">
+      {items.map(item => <MenuItem {...item} />)}
+    </div>
   );
 }
 

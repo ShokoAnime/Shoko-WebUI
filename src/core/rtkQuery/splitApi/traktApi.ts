@@ -1,6 +1,5 @@
-import { splitApi } from '../splitApi';
-
 import type { TraktCodeType } from '@/core/types/api';
+import { splitApi } from '../splitApi';
 
 const traktApi = splitApi.injectEndpoints({
   endpoints: build => ({

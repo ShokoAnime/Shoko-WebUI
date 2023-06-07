@@ -46,7 +46,6 @@ import {
   usePutFileIgnoreMutation,
 } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
-import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 import type { FileType } from '@/core/types/api/file';
 import type { RootState } from '@/core/store';
@@ -56,6 +55,7 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 import Title from '@/components/Utilities/Unrecognized/Title';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 const columnHelper = createColumnHelper<FileType>();
 
@@ -69,7 +69,8 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
 
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
+  const tableSelectedRows = table.getSelectedRowModel();
+  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   const deleteFiles = () => {
     let failedFiles = 0;
@@ -162,7 +163,7 @@ function UnrecognizedTab() {
   const { columns: tempColumns } = useUnrecognizedUtilityContext();
 
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const files = filesQuery?.data ?? { Total: 0, List: [] };
+  const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
@@ -256,18 +257,22 @@ function UnrecognizedTab() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+  const tableSelectedRows = table.getSelectedRowModel();
 
   useEffect(() => {
     table.resetRowSelection();
-  }, [filesQuery.requestId]);
+  }, [files, table]);
 
   const selectedRows = useMemo(
-    () => table.getSelectedRowModel().rows.map(row => row.original),
-    [table.getSelectedRowModel().rows.length],
+    () => tableSelectedRows.rows.map(row => row.original),
+    [tableSelectedRows],
   );
 
   const avdumpFiles = async () => {
-    for (let i = 0; i < selectedRows.length; i ++) {
+    for (let i = 0; i < selectedRows.length; i += 1) {
+      // Files cannot be dumped in parallel on the server, yet
+      // Use Promise.all when avdump3 is implemented and parallel dumping is possible
+      // eslint-disable-next-line no-await-in-loop
       await runAvdump(selectedRows[i].ID);
     }
   };

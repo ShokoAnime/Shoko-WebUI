@@ -27,10 +27,8 @@ const CollectionView = (props: Props) => {
 
   const [itemWidth, itemHeight, itemGap] = useMemo(() => {
     // Gaps are intentionally left with + notation to remove the need for calculations if dimensions are being changed
-    if (mode === 'grid')
-      return [209 + 16, 337 + 16, 16]; // + 16 is to account for gap/margin
-    else
-      return [907 + 32, 328 + 32, 32]; // + 32 is to account for gap/margin
+    if (mode === 'grid') return [209 + 16, 337 + 16, 16]; // + 16 is to account for gap/margin
+    return [907 + 32, 328 + 32, 32]; // + 32 is to account for gap/margin
   }, [mode]);
 
   const [fetchingPage, setFetchingPage] = useState(false);
@@ -44,7 +42,7 @@ const CollectionView = (props: Props) => {
 
   useEffect(() => {
     setGroupTotal(groupTotal);
-  }, [groupTotal]);
+  }, [groupTotal, setGroupTotal]);
 
   const fetchPage = useMemo(() => debounce((page: number) => {
     fetchGroups({ page, pageSize, filterId: filterId ?? '0' }).then((result) => {
@@ -58,7 +56,7 @@ const CollectionView = (props: Props) => {
         OrderByName: true,
       }).then().catch(error => console.error(error));
     }).catch(error => console.error(error)).finally(() => setFetchingPage(false));
-  }, 200), [filterId]);
+  }, 200), [filterId, fetchGroups, fetchGroupExtras]);
 
   useEffect(() => {
     fetchPage.cancel();
@@ -67,7 +65,7 @@ const CollectionView = (props: Props) => {
     fetchPage(1);
 
     return () => fetchPage.cancel();
-  }, [filterId]);
+  }, [filterId, fetchPage]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
@@ -83,23 +81,26 @@ const CollectionView = (props: Props) => {
     overscan: 2,
   });
 
-  if (groupTotal === 0) return (
-    <div className="flex grow items-center font-semibold justify-center">
-      {fetchingPage ? (
-        <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
-      ) : 'No series/groups available!'}
-    </div>
-  );
+  if (groupTotal === 0) {
+    return (
+      <div className="flex grow items-center font-semibold justify-center">
+        {fetchingPage ? (
+          <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
+        ) : 'No series/groups available!'}
+      </div>
+    );
+  }
 
   return (
     <div className={cx(
       'flex grow rounded-md',
       mode === 'grid' && 'px-6 py-8 bg-background-alt border-background-border border',
-    )}>
+    )}
+    >
       <div className="w-full relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
         {/* Each row is considered a virtual item here instead of each group */}
         {virtualizer.getVirtualItems().map((virtualRow) => {
-          const index = virtualRow.index;
+          const { index } = virtualRow;
 
           const items: React.ReactNode[] = [];
           // index of the first group in the current row
@@ -127,7 +128,7 @@ const CollectionView = (props: Props) => {
           }
 
           // Here, i will be the actual index of the group in group list
-          for (let i = fromIndex; i < toIndex; i++) {
+          for (let i = fromIndex; i < toIndex; i += 1) {
             const neededPage = Math.ceil((i + 1) / pageSize);
             const relativeIndex = i % pageSize;
             const groupList = groupPages[neededPage];

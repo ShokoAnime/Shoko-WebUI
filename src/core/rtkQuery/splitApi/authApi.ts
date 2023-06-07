@@ -1,12 +1,11 @@
-import { splitApi } from '../splitApi';
-
 import type { ApiLoginType, ApiSessionState } from '@/core/types/api';
+import { splitApi } from '../splitApi';
 
 export const authApi = splitApi.injectEndpoints({
   endpoints: build => ({
     // Get an authentication token for the user.
     postAuth: build.mutation<ApiSessionState, ApiLoginType>({
-      query: ({ rememberUser, ...body }) => ({
+      query: ({ rememberUser: _, ...body }) => ({
         url: 'auth',
         body,
         method: 'POST',

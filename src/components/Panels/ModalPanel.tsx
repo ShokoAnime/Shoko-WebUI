@@ -7,7 +7,6 @@ type Props = {
   className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
-  sidebarSnap?: boolean;
 };
 
 function ModalPanel(props: Props) {

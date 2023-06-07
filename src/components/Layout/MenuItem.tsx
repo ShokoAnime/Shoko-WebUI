@@ -2,12 +2,7 @@ import React from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
 
-import { mdiCogOutline } from '@mdi/js';
-import { mdiTabletDashboard } from '@mdi/js';
-import { mdiLayersTripleOutline } from '@mdi/js';
-import { mdiTools } from '@mdi/js';
-import { mdiFormatListBulletedSquare } from '@mdi/js';
-import { mdiTextBoxOutline } from '@mdi/js';
+import { mdiCogOutline, mdiTabletDashboard, mdiLayersTripleOutline, mdiTools, mdiFormatListBulletedSquare, mdiTextBoxOutline } from '@mdi/js';
 
 const iconMap = {
   dashboard: mdiTabletDashboard,
@@ -40,12 +35,12 @@ function MenuItem(props: MenuItemProps) {
   } = props;
 
   return (
-        <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
-          <div className="w-5 flex justify-center content-center">
-            <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180}/>
-          </div>
-          <div className="pl-4 font-semibold">{label}</div>
-        </div>
+    <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
+      <div className="w-5 flex justify-center content-center">
+        <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180} />
+      </div>
+      <div className="pl-4 font-semibold">{label}</div>
+    </div>
   );
 }
 

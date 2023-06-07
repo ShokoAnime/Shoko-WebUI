@@ -1,7 +1,6 @@
 import { concat } from 'lodash';
 import moment from 'moment';
-import { createApi } from '@reduxjs/toolkit/query/react';
-import { fetchBaseQuery } from '@reduxjs/toolkit/dist/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { LogLineType } from '@/core/types/api/common';
 import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import { RootState } from '../store';
@@ -22,19 +21,19 @@ export const logsApi = createApi({
         const protocol = new JsonHubProtocol();
         // eslint-disable-next-line no-bitwise
         const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
-        const apikey = (getState() as RootState).apiSession.apikey;
+        const { apikey } = (getState() as RootState).apiSession;
         const options = {
           transport,
           logMessageContent: true,
           logger: LogLevel.Warning,
           accessTokenFactory: () => apikey,
         };
-        
+
         const connectionLog = new HubConnectionBuilder().withUrl(connectionLogHub, options).withHubProtocol(protocol).build();
-        connectionLog.on('GetBacklog', (lines: LogLineType[]) =>  updateCachedData(draft => concat(draft, formatTimestamps(lines)) ));
-        connectionLog.on('Log', (line: LogLineType) =>  updateCachedData( draft => concat(draft, [{ ...line, timeStamp: formatStamp(line.timeStamp) }])));
+        connectionLog.on('GetBacklog', (lines: LogLineType[]) => updateCachedData(draft => concat(draft, formatTimestamps(lines))));
+        connectionLog.on('Log', (line: LogLineType) => updateCachedData(draft => concat(draft, [{ ...line, timeStamp: formatStamp(line.timeStamp) }])));
         await connectionLog.start();
-        
+
         await cacheEntryRemoved;
         await connectionLog?.stop();
       },

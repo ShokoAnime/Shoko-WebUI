@@ -1,11 +1,11 @@
 import { throttle } from 'lodash';
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query/react';
 import signalrMiddleware from './middlewares/signalr';
 import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
 import { loadState, saveState } from './localStorage';
 import combinedReducer from './reducers';
 import Events from './events';
-import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';
@@ -15,7 +15,6 @@ import { plexApi } from './rtkQuery/plexApi';
 
 const rootReducer = (state, action) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
-    // eslint-disable-next-line no-param-reassign
     globalThis.localStorage.clear();
     globalThis.sessionStorage.clear();
     return combinedReducer(undefined, action);

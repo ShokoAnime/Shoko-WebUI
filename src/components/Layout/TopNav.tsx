@@ -1,9 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@mdi/react';
-import {
-  mdiChevronDown,
+import { mdiChevronDown,
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFormatListBulletedSquare,
@@ -15,24 +14,23 @@ import {
   mdiServer,
   mdiTabletDashboard,
   mdiTextBoxOutline,
-  mdiTools,
-} from '@mdi/js';
+  mdiTools } from '@mdi/js';
 import cx from 'classnames';
 import { siDiscord } from 'simple-icons';
 import semver from 'semver';
 import AnimateHeight from 'react-animate-height';
 
-import ShokoIcon from '../ShokoIcon';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 
 import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
+import ActionsModal from '@/components/Dialogs/ActionsModal';
+import { RootState } from '@/core/store';
 import Button from '../Input/Button';
 import toast from '../Toast';
-import ActionsModal from '@/components/Dialogs/ActionsModal';
 
-import { RootState } from '@/core/store';
+import ShokoIcon from '../ShokoIcon';
 
 const { DEV, VITE_APPVERSION } = import.meta.env;
 
@@ -84,11 +82,14 @@ function TopNav() {
       <div className="flex flex-col gap-y-3">
         WebUI Update Successful!
         <div className="flex items-center justify-end">
-          <Button onClick={() => {
-            toast.dismiss('webui-update');
-            navigate('/webui/dashboard');
-            setTimeout(() => window.location.reload(), 100);
-          }} className="bg-highlight-1 py-1.5 w-full">
+          <Button
+            onClick={() => {
+              toast.dismiss('webui-update');
+              navigate('/webui/dashboard');
+              setTimeout(() => window.location.reload(), 100);
+            }}
+            className="bg-highlight-1 py-1.5 w-full"
+          >
             Click here to reload
           </Button>
         </div>
@@ -118,6 +119,12 @@ function TopNav() {
     </NavLink>
   ), []);
 
+  const webuiUpdateStatus = useMemo(() => {
+    if (webuiUpdateResult.isLoading) return 'Updating...';
+    if (checkWebuiUpdate.isFetching) return 'Checking for update';
+    return 'Update Available';
+  }, [webuiUpdateResult.isLoading, checkWebuiUpdate.isFetching]);
+
   return (
     <>
       <div className="flex flex-col bg-background-alt drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100] text-sm font-semibold">
@@ -138,7 +145,7 @@ function TopNav() {
               <span>{username}</span>
               <Icon path={mdiChevronDown} size={0.6666} />
             </div>
-            <NavLink to="settings" className={({ isActive }) => isActive ? 'text-highlight-1' : ''} onClick={() => closeModalsAndSubmenus()}>
+            <NavLink to="settings" className={({ isActive }) => (isActive ? 'text-highlight-1' : '')} onClick={() => closeModalsAndSubmenus()}>
               <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>
           </div>
@@ -176,20 +183,20 @@ function TopNav() {
                     spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                   />
                   <div className="flex">
-                    Web UI {webuiUpdateResult.isLoading ? 'Updating...' : (checkWebuiUpdate.isFetching ? 'Checking for update' : 'Update Available')}
+                    Web UI {webuiUpdateStatus}
                   </div>
                 </div>
               )}
-              {/*TODO: This maybe works, maybe doesn't. Cannot test properly.*/}
+              {/* TODO: This maybe works, maybe doesn't. Cannot test properly. */}
               {(banStatus?.udp?.updateType === 1 && banStatus?.udp?.value) && (
                 <div className="flex items-center font-semibold cursor-pointer gap-x-2.5">
-                  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
+                  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4" />
                   AniDB UDP Ban Detected!
                 </div>
               )}
               {(banStatus?.http?.updateType === 2 && banStatus?.http?.value) && (
                 <div className="flex items-center font-semibold cursor-pointer gap-x-2.5">
-                  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4"/>
+                  <Icon path={mdiInformationOutline} size={1} className="text-highlight-4" />
                   AniDB HTTP Ban Detected!
                 </div>
               )}

@@ -13,10 +13,10 @@ import { TagType } from '@/core/types/api/tags';
 function SeriesTag(props: { item: TagType }) {
   const { item } = props;
   const [isOpen, setIsOpen] = useState(false);
-  
+
   return (
     <div className="rounded-md bg-background-alt/50 p-8 flex flex-col border-background-border border gap-y-4 max-w-[29.875rem] cursor-pointer" onClick={() => { setIsOpen(!isOpen); }}>
-      <div className="text-xl font-semibold flex justify-between capitalize">{item.Name} <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1}/></div>
+      <div className="text-xl font-semibold flex justify-between capitalize">{item.Name} <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1} /></div>
       <div className={cx('leading-5', { 'line-clamp-2': !isOpen })}>{item.Description}</div>
     </div>
   );
@@ -24,15 +24,14 @@ function SeriesTag(props: { item: TagType }) {
 
 const SeriesTags = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
-  
+
   const [search, setSearch] = useState('');
-  
-  const tagsData = useGetSeriesTagsQuery({ seriesId });
+
+  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const tags = tagsData.data;
-  
+
+  if (!seriesId) return null;
+
   return (
     <div className="flex gap-x-8">
       <ShokoPanel title="Search & Filter" className="w-[25rem] sticky top-0 shrink-0 h-fit" transparent contentClassName="gap-y-8" fullHeight={false}>

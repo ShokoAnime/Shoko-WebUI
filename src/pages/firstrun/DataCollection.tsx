@@ -1,10 +1,9 @@
 import React from 'react';
 
-import Footer from './Footer';
 import TransitionDiv from '@/components/TransitionDiv';
+import Footer from './Footer';
 
 function DataCollection() {
-
   return (
     <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
       <div className="font-semibold text-xl">Data Collection</div>
@@ -23,7 +22,7 @@ function DataCollection() {
       </div>
       <div className="text-justify">
         We want to assure our users that we take data privacy seriously and only collect non-identifiable information to
-        improve Shoko, meaning that we don't collect any personal information that could be used to identify you.
+        improve Shoko, meaning that we don&apos;t collect any personal information that could be used to identify you.
         We&apos;re not interested in knowing the specific titles in your collection or the content you watch. Our sole
         objective is to improve Shoko, and the data we collect will help us achieve this goal.
       </div>

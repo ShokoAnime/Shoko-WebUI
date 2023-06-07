@@ -3,11 +3,10 @@ import { HttpTransportType, HubConnection, HubConnectionBuilder, JsonHubProtocol
 import moment from 'moment';
 import { debounce, defer, delay, forEach, round } from 'lodash';
 
+import type { AniDBBanItemType } from '@/core/types/signalr';
 import Events from '../events';
 import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '../slices/mainpage';
 import { splitV3Api } from '../rtkQuery/splitV3Api';
-
-import type { AniDBBanItemType } from '@/core/types/signalr';
 
 let lastRetry = moment();
 let attempts = 0;

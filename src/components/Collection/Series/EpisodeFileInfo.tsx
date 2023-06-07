@@ -2,7 +2,7 @@ import { get, map, toNumber } from 'lodash';
 import React from 'react';
 import prettyBytes from 'pretty-bytes';
 
-export const EpisodeFileInfo = ({ file }) => {
+const EpisodeFileInfo = ({ file }) => {
   const VideoInfo: string[] = [];
   const VideoSource = get(file, 'AniDB.Source');
   if (VideoSource) {
@@ -48,12 +48,12 @@ export const EpisodeFileInfo = ({ file }) => {
         <div className="flex flex-col gap-y-1">
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">File Name</div>
-            {/*TODO: Only show filename*/}
+            {/* TODO: Only show filename */}
             {get(file, 'Locations.0.RelativePath', '')}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Location</div>
-            {/*TODO: Show path not relative path*/}
+            {/* TODO: Show path not relative path */}
             {get(file, 'Locations.0.RelativePath', '')}
           </div>
           <div className="flex">
@@ -99,3 +99,5 @@ export const EpisodeFileInfo = ({ file }) => {
     </div>
   );
 };
+
+export default EpisodeFileInfo;

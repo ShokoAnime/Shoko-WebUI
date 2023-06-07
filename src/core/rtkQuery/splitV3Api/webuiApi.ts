@@ -1,7 +1,7 @@
-import { splitV3Api } from '../splitV3Api';
 import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '@/core/types/api/webui';
 import { WebuiSeriesFileSummaryType, WebuiTheme } from '@/core/types/api/webui';
 import type { ComponentVersionType } from '@/core/types/api/init';
+import { splitV3Api } from '../splitV3Api';
 
 export type GroupViewApiRequest = {
   GroupIDs: number[];
@@ -19,9 +19,7 @@ const webuiApi = splitV3Api.injectEndpoints({
     getGroupView: build.query<WebuiGroupExtra[], GroupViewApiRequest>({
       query: params => ({ url: 'WebUI/GroupView', body: params, method: 'POST' }),
       // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
-      },
+      serializeQueryArgs: ({ endpointName }) => endpointName,
       // Always merge incoming data to the cache entry
       merge: (currentCache, newItems) => {
         currentCache.push(...newItems);

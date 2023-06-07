@@ -4,7 +4,7 @@ import { mdiChevronRight } from '@mdi/js';
 import { NavLink } from 'react-router-dom';
 
 const TabButton = ({ id, name }: { id: string; name: string }) => (
-  <NavLink to={`../${id}`} className={({ isActive }) => isActive ? 'text-highlight-1' : ''}>
+  <NavLink to={`../${id}`} className={({ isActive }) => (isActive ? 'text-highlight-1' : '')}>
     {name}
   </NavLink>
 );

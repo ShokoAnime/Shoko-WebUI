@@ -6,7 +6,6 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from '@/core/store';
 
-import AuthenticatedRoute from './AuthenticatedRoute';
 import FirstRunPage from '@/pages/firstrun/FirstRunPage';
 import LoginPage from '@/pages/login/LoginPage';
 import MainPage from '@/pages/main/MainPage';
@@ -52,6 +51,7 @@ import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
+import AuthenticatedRoute from './AuthenticatedRoute';
 
 import { useGetSettingsQuery } from '../rtkQuery/splitV3Api/settingsApi';
 
@@ -90,17 +90,17 @@ const router = createBrowserRouter(
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
-            <Route index element={<Collection />}/>
-            <Route path="filter/:filterId" element={<Collection />}/>
-            <Route path="group/:groupId" element={<Group />}/>
+            <Route index element={<Collection />} />
+            <Route path="filter/:filterId" element={<Collection />} />
+            <Route path="group/:groupId" element={<Group />} />
             <Route path="series/:seriesId" element={<Series />}>
-              <Route index element={<Navigate to="overview" replace />}/>
-              <Route path="overview" element={<SeriesOverview />}/>
-              <Route path="episodes" element={<SeriesEpisodes />}/>
-              <Route path="credits" element={<SeriesCredits />}/>
-              <Route path="images" element={<SeriesImages />}/>
-              <Route path="files" element={<SeriesFileSummary />}/>
-              <Route path="tags" element={<SeriesTags />}/>
+              <Route index element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<SeriesOverview />} />
+              <Route path="episodes" element={<SeriesEpisodes />} />
+              <Route path="credits" element={<SeriesCredits />} />
+              <Route path="images" element={<SeriesImages />} />
+              <Route path="files" element={<SeriesFileSummary />} />
+              <Route path="tags" element={<SeriesTags />} />
             </Route>
           </Route>
           <Route path="settings" element={<SettingsPage />}>

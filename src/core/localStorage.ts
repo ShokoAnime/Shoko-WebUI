@@ -9,9 +9,7 @@ import { splitV3Api } from './rtkQuery/splitV3Api';
 
 const { VITE_APPVERSION } = import.meta.env;
 
-const checkVersion = (version) => {
-  return version === VITE_APPVERSION;
-};
+const checkVersion = version => version === VITE_APPVERSION;
 export const loadState = (): RootState => {
   try {
     const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');

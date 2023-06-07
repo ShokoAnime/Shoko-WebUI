@@ -13,15 +13,17 @@ function UnrecognizedAvdumpedItem(props: Props) {
 
   const [activeTab, setActiveTab] = useState('date');
 
-  return (<div className="flex flex-col grow">
+  return (
+    <div className="flex flex-col grow">
       <div>
-          <span className={cx({ 'font-semibold': activeTab === 'date', 'text-highlight-1': activeTab === 'date' }, 'cursor-pointer')} onClick={() => { setActiveTab('date');}}>{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
-          <span className="mx-2">|</span>
-          <span className={cx({ 'font-semibold': activeTab === 'ed2k', 'text-highlight-1': activeTab === 'ed2k' }, 'cursor-pointer')} onClick={() => { setActiveTab('ed2k');}}>ED2KHash</span>
+        <span className={cx({ 'font-semibold': activeTab === 'date', 'text-highlight-1': activeTab === 'date' }, 'cursor-pointer')} onClick={() => { setActiveTab('date'); }}>{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
+        <span className="mx-2">|</span>
+        <span className={cx({ 'font-semibold': activeTab === 'ed2k', 'text-highlight-1': activeTab === 'ed2k' }, 'cursor-pointer')} onClick={() => { setActiveTab('ed2k'); }}>ED2KHash</span>
       </div>
       {activeTab === 'date' && <span className="flex break-words">{item.Locations?.[0].RelativePath ?? ''}</span>}
       {activeTab === 'ed2k' && <span className="flex break-words">{hash}</span>}
-  </div>);
+    </div>
+  );
 }
 
 export default UnrecognizedAvdumpedItem;

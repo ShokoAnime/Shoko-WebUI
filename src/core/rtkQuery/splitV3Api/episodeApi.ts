@@ -1,8 +1,7 @@
-import { splitV3Api } from '../splitV3Api';
-
 import type { EpisodeAniDBType, EpisodeTvDBType, EpisodeType } from '@/core/types/api/episode';
 import { FileType } from '@/core/types/api/file';
 import { DataSourceType } from '@/core/types/api/common';
+import { splitV3Api } from '../splitV3Api';
 
 type EpisodeFilesQuery = {
   episodeId: string;

@@ -1,7 +1,7 @@
 import { ImageType, ImagesType, RatingType } from './common';
 
-export type SeriesDetailsType = SeriesType & { 
-  AniDB?: SeriesAniDBType; 
+export type SeriesDetailsType = SeriesType & {
+  AniDB?: SeriesAniDBType;
 };
 
 export type SeriesType = {
@@ -186,7 +186,7 @@ export type SeriesAniDBSimilarType = {
 };
 
 export type SeriesRolePerson = {
-  Name:	string;
+  Name: string;
   AlternateName: string | null;
   Description: string | null;
   Image: ImageType;

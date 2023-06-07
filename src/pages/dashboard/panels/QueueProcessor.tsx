@@ -69,18 +69,14 @@ function QueueProcessor() {
       paused = item?.state === 18;
     });
 
-    return (
-      <React.Fragment>
-        {paused ? (
-          <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('start')} title="Resume All">
-            <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
-          </div>
-        ) : (
-          <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('pause')} title="Pause All">
-            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
-          </div>
-        )}
-      </React.Fragment>
+    return paused ? (
+      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('start')} title="Resume All">
+        <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
+      </div>
+    ) : (
+      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('pause')} title="Pause All">
+        <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
+      </div>
     );
   };
 

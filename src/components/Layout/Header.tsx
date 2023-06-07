@@ -3,10 +3,9 @@ import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import { mdiBackburger, mdiMenu, mdiServer } from '@mdi/js';
 
+import { RootState } from '@/core/store';
 import ShokoIcon from '../ShokoIcon';
 import Button from '../Input/Button';
-
-import { RootState } from '@/core/store';
 
 type Props = {
   showSidebar: boolean;

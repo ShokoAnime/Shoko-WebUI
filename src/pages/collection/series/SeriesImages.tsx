@@ -39,25 +39,24 @@ const InfoLine = ({ title, value }) => (
 
 const SeriesImages = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
-  
+
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
 
-  const imagesData = useGetSeriesImagesQuery({ seriesId });
+  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const images = imagesData.data;
-  
+
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
   const filepath = splitPath.join('/');
-  
+
   const sizeMap = {
-    'Posters': 'h-[20.0625rem] w-[13.75rem]',
-    'Fanarts': 'h-[16rem] w-[28.29rem]',
-    'Banners': 'h-[8rem] w-[43.25rem]',
+    Posters: 'h-[20.0625rem] w-[13.75rem]',
+    Fanarts: 'h-[16rem] w-[28.29rem]',
+    Banners: 'h-[8rem] w-[43.25rem]',
   };
+
+  if (!seriesId) return null;
 
   return (
     <div className="flex gap-x-8">
@@ -70,7 +69,7 @@ const SeriesImages = () => {
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
           <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
-          <InfoLine title="Size" value="-"/>
+          <InfoLine title="Size" value="-" />
           <Button className="px-4 py-3 bg-highlight-1 text-font-alt rounded-md border border-background-border" disabled>
             Set As Series Poster
           </Button>
@@ -85,7 +84,7 @@ const SeriesImages = () => {
         <div className="flex flex-wrap gap-4 rounded-md bg-background-alt/50 p-8 border-background-border border">
           {map(get(images, type, []), (item: ImageType) => (
             <div onClick={() => { setSelectedImage(item); }} key={item?.ID}>
-              <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-highlight-2 border-2 opacity-50' : 'border-background-border', sizeMap[type] )} />
+              <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-highlight-2 border-2 opacity-50' : 'border-background-border', sizeMap[type])} />
             </div>
           ))}
         </div>

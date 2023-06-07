@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { useSettingsContext } from '../SettingsPage';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
+import { useSettingsContext } from '../SettingsPage';
 
 function ImportSettings() {
   const { newSettings, updateSetting } = useSettingsContext();
-
 
   const {
     MoveOnImport, RenameOnImport,
@@ -17,7 +16,7 @@ function ImportSettings() {
 
   return (
     <>
-      <div className='font-semibold text-xl'>Import</div>
+      <div className="font-semibold text-xl">Import</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="font-semibold">Import Options</div>
         <div className="flex flex-col gap-y-1">

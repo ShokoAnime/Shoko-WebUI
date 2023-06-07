@@ -6,7 +6,7 @@ export type DriveType = {
     Files: number;
     Folders: number;
   };
-  nodeId: number; //generated clientside
+  nodeId: number; // generated clientside
 };
 
 export type FolderType = {
@@ -17,5 +17,5 @@ export type FolderType = {
     Files: number;
     Folders: number;
   };
-  nodeId: number; //generated clientside
+  nodeId: number; // generated clientside
 };

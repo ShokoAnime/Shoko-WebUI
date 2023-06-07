@@ -1,6 +1,5 @@
-import { splitV3Api } from '../splitV3Api';
-
 import type { LegacyVersionType, ServerStatusType, UserType, VersionType } from '@/core/types/api/init';
+import { splitV3Api } from '../splitV3Api';
 
 export const initApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -21,7 +20,7 @@ export const initApi = splitV3Api.injectEndpoints({
     }),
 
     // Test Database Connection with Current Settings
-    getInitDatabaseTest: build.mutation<void, void>( {
+    getInitDatabaseTest: build.mutation<void, void>({
       query: () => ({ url: 'Init/Database/Test' }),
     }),
 

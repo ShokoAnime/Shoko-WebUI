@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { Icon } from '@mdi/react';
@@ -6,6 +6,9 @@ import { mdiMenuDown } from '@mdi/js';
 
 import { RootState } from '@/core/store';
 import toast from '@/components/Toast';
+import Button from '@/components/Input/Button';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
@@ -17,10 +20,7 @@ import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
 import RecommendedAnime from './panels/RecommendedAnime';
-import Button from '@/components/Input/Button';
 
-import { setLayoutEditMode } from '@/core/slices/mainpage';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -31,23 +31,24 @@ function DashboardPage() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const settingsQuery = useGetSettingsQuery();
-  const settings = settingsQuery.data ?? initialSettings;
-  const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
+  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
   const [currentLayout, setCurrentLayout] = useState(initialSettings.WebUI_Settings.layout.dashboard);
 
   useEffect(() => {
+    const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
     if (settingsQuery.isSuccess) setCurrentLayout(layout.dashboard);
-  }, [settingsQuery.data]);
+  }, [settings, settingsQuery.isSuccess]);
 
-  const cancelLayoutChange = () => {
+  const cancelLayoutChange = useCallback(() => {
+    const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
     setCurrentLayout(layout.dashboard);
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
-  };
+  }, [settings, dispatch]);
 
-  const saveLayout = () => {
+  const saveLayout = useCallback(() => {
     const newSettings = JSON.parse(JSON.stringify(settings)); // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
     newSettings.WebUI_Settings.layout.dashboard = currentLayout;
     patchSettings({ oldSettings: settings, newSettings }).unwrap().then(() => {
@@ -57,7 +58,7 @@ function DashboardPage() {
     }, (error) => {
       toast.error('', error.data);
     });
-  };
+  }, [currentLayout, dispatch, patchSettings, settings]);
 
   useEffect(() => {
     if (layoutEditMode) {
@@ -85,11 +86,11 @@ function DashboardPage() {
     } else {
       toast.dismiss('layoutEditMode');
     }
-  }, [layoutEditMode, currentLayout]);
+  }, [layoutEditMode, currentLayout, cancelLayoutChange, saveLayout]);
 
   const renderResizeHandle = () => (
     <div className="react-resizable-handle right-0 bottom-0 cursor-nwse-resize">
-      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45}/>
+      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45} />
     </div>
   );
 

@@ -15,7 +15,6 @@ import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
 import { plexApi } from './rtkQuery/plexApi';
 
-
 const reducers = combineReducers({
   apiSession: apiSessionReducer,
   fetching: fetchingReducer,
