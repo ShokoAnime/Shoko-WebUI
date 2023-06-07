@@ -83,8 +83,8 @@ jobs:
 #          skip_fetch: true
 
       - name: Create build.zip
-          run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./*
-          working-directory: ./dist
+        run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/index*.js.map"
+        working-directory: ./dist
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
