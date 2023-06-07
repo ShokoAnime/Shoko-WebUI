@@ -59,7 +59,7 @@ jobs:
 #          skip_fetch: true
 
       - name: Create build.zip
-        run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./*
+        run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/index*.js.map"
         working-directory: ./dist
 
       - name: Create Release
