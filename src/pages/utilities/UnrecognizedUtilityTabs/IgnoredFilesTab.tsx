@@ -9,12 +9,12 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useGetFileIgnoredQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { fuzzyFilter } from '@/core/util';
 
-import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { FileType } from '@/core/types/api/file';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
+import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 const Menu = ({ table }: { table: Table<FileType> }) => {
   const filesQuery = useGetFileIgnoredQuery({ pageSize: 0 });
@@ -77,7 +77,7 @@ function IgnoredFilesTab() {
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
           <div className="flex items-center gap-x-3">
-            {/*TODO: Fix search bar height*/}
+            {/* TODO: Fix search bar height */}
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} />
             <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
               <Menu table={table} />
@@ -87,7 +87,7 @@ function IgnoredFilesTab() {
         </ShokoPanel>
       </div>
 
-        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {files.Total > 0 ? (
           <UtilitiesTable table={table} />
         ) : (

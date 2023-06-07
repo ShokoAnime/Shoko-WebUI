@@ -15,12 +15,11 @@ const AnidbLink = ({ url, character, text }) => (
 );
 
 const AnidbDescription = ({ text }) => {
-
   const lines = [] as Array<JSX.Element>;
   let prevPos = 0;
   let pos = 0;
   let link = charRegex.exec(text);
-  
+
   while (link !== null) {
     pos = link.index;
     lines.push(text.substring(prevPos, pos));
@@ -34,7 +33,7 @@ const AnidbDescription = ({ text }) => {
   if (prevPos < text.length) {
     lines.push(text.substring(prevPos));
   }
-  
+
   return (
     <div>{lines}</div>
   );

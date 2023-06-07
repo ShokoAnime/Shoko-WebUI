@@ -100,11 +100,12 @@ const SeriesEpisodes = () => {
             </div>
           </div>
         </div>
-        {episodeTotal !== 0 && (<div className="grow">
+        {episodeTotal !== 0 && (
+        <div className="grow">
           <div className="w-full relative" style={{ height: rowVirtualizer.getTotalSize() }}>
             <div className="w-full absolute top-0 left-0 flex flex-col gap-y-4" style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}>
               {virtualItems.map((virtualItem) => {
-                const index = virtualItem.index;
+                const { index } = virtualItem;
                 const neededPage = Math.ceil((index + 1) / pageSize);
                 const relativeIndex = index % pageSize;
                 const episodeList = episodePages[neededPage];
@@ -130,11 +131,11 @@ const SeriesEpisodes = () => {
               })}
             </div>
           </div>
-        </div>)}
+        </div>
+        )}
       </div>
     </div>
   );
 };
-
 
 export default SeriesEpisodes;

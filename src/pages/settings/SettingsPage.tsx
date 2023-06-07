@@ -30,43 +30,109 @@ const items = [
 const initialLayout = {
   dashboard: {
     lg: [
-      { i: 'queueProcessor', x: 0, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importBreakdown', x: 6, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recentlyImported', x: 0, y: 16, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionBreakdown', x: 0, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionTypeBreakdown', x: 3, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importFolders', x: 6, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'shokoNews', x: 9, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'continueWatching', x: 0, y: 53, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'nextUp', x: 0, y: 67, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'upcomingAnime', x: 0, y: 81, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recommendedAnime', x: 0, y: 103, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false },
+      {
+        i: 'queueProcessor', x: 0, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importBreakdown', x: 6, y: 0, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recentlyImported', x: 0, y: 16, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'collectionBreakdown', x: 0, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'collectionTypeBreakdown', x: 3, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importFolders', x: 6, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'shokoNews', x: 9, y: 37, w: 3, h: 15, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'continueWatching', x: 0, y: 53, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'nextUp', x: 0, y: 67, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'upcomingAnime', x: 0, y: 81, w: 12, h: 20, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recommendedAnime', x: 0, y: 103, w: 12, h: 18, minW: 2, minH: 2, moved: false, static: false,
+      },
     ],
     md: [
-      { i: 'collectionBreakdown', x: 0, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionTypeBreakdown', x: 5, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'queueProcessor', x: 0, y: 16, w: 10, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recentlyImported', x: 0, y: 32, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'shokoNews', x: 0, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importFolders', x: 5, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importBreakdown', x: 0, y: 65, w: 10, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'continueWatching', x: 0, y: 79, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'nextUp', x: 0, y: 98, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'upcomingAnime', x: 0, y: 117, w: 10, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recommendedAnime', x: 0, y: 138, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      {
+        i: 'collectionBreakdown', x: 0, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'collectionTypeBreakdown', x: 5, y: 0, w: 5, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'queueProcessor', x: 0, y: 16, w: 10, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recentlyImported', x: 0, y: 32, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'shokoNews', x: 0, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importFolders', x: 5, y: 51, w: 5, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importBreakdown', x: 0, y: 65, w: 10, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'continueWatching', x: 0, y: 79, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'nextUp', x: 0, y: 98, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'upcomingAnime', x: 0, y: 117, w: 10, h: 21, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recommendedAnime', x: 0, y: 138, w: 10, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
     ],
     sm: [
-      { i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'collectionTypeBreakdown', x: 0, y: 16, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'queueProcessor', x: 0, y: 32, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recentlyImported', x: 0, y: 48, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'shokoNews', x: 0, y: 67, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importFolders', x: 0, y: 81, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'importBreakdown', x: 0, y: 95, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'continueWatching', x: 0, y: 109, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'nextUp', x: 0, y: 128, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'upcomingAnime', x: 0, y: 147, w: 6, h: 21, minW: 2, minH: 2, moved: false, static: false },
-      { i: 'recommendedAnime', x: 0, y: 168, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false },
+      {
+        i: 'collectionBreakdown', x: 0, y: 0, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'collectionTypeBreakdown', x: 0, y: 16, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'queueProcessor', x: 0, y: 32, w: 6, h: 16, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recentlyImported', x: 0, y: 48, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'shokoNews', x: 0, y: 67, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importFolders', x: 0, y: 81, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'importBreakdown', x: 0, y: 95, w: 6, h: 14, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'continueWatching', x: 0, y: 109, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'nextUp', x: 0, y: 128, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'upcomingAnime', x: 0, y: 147, w: 6, h: 21, minW: 2, minH: 2, moved: false, static: false,
+      },
+      {
+        i: 'recommendedAnime', x: 0, y: 168, w: 6, h: 19, minW: 2, minH: 2, moved: false, static: false,
+      },
     ],
   },
 };
@@ -194,22 +260,23 @@ function SettingsPage() {
 
   const unsavedChanges = useMemo(() => {
     if (isEqual(settings, newSettings)) return false;
-    else return !isEqual(newSettings, initialSettings);
+    return !isEqual(newSettings, initialSettings);
   }, [newSettings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings = { ...(newSettings[type]), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
 
-    if (type === 'WebUI_Settings' && key === 'theme')
+    if (type === 'WebUI_Settings' && key === 'theme') {
       dispatch(setMiscItem({ webuiPreviewTheme: value }));
+    }
   };
 
   const saveSettings = async () => {
     try {
       await patchSettings({ oldSettings: settings, newSettings }).unwrap();
       await settingsQuery.refetch();
-    } catch (error) {}
+    } catch (error) { /* empty */ }
   };
 
   return (
@@ -221,27 +288,27 @@ function SettingsPage() {
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-       <div className='sticky top-[4.25rem]'>
-         <div className="text-xl opacity-100 mb-8">Settings</div>
-         <div className='flex flex-col gap-y-4'>
-           {items.map(item => (
-             <NavLink to={item.path} className={({ isActive }) => isActive ? 'text-highlight-1' : ''} key={item.path}>
-               {item.name}
-             </NavLink>
-           ))}
-         </div>
-       </div>
+        <div className="sticky top-[4.25rem]">
+          <div className="text-xl opacity-100 mb-8">Settings</div>
+          <div className="flex flex-col gap-y-4">
+            {items.map(item => (
+              <NavLink to={item.path} className={({ isActive }) => (isActive ? 'text-highlight-1' : '')} key={item.path}>
+                {item.name}
+              </NavLink>
+            ))}
+          </div>
+        </div>
       </TransitionDiv>
-      {/*{isSm && (*/}
-      {/*  <div className="flex justify-center mb-8 font-semibold">*/}
-      {/*    Settings*/}
-      {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" />*/}
-      {/*    <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}>*/}
-      {/*      {find(items, item => item.path === pathname.split('/').pop())?.name}*/}
-      {/*      <Icon path={mdiChevronDown} size={1} />*/}
-      {/*    </div>*/}
-      {/*  </div>*/}
-      {/*)}*/}
+      {/* {isSm && ( */}
+      {/*  <div className="flex justify-center mb-8 font-semibold"> */}
+      {/*    Settings */}
+      {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" /> */}
+      {/*    <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
+      {/*      {find(items, item => item.path === pathname.split('/').pop())?.name} */}
+      {/*      <Icon path={mdiChevronDown} size={1} /> */}
+      {/*    </div> */}
+      {/*  </div> */}
+      {/* )} */}
       <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
         {settingsQuery.isLoading ? (
           <div className="flex grow items-center justify-center text-highlight-1">

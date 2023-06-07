@@ -38,8 +38,7 @@ const RecommendedAnime = () => {
       <div className="flex shoko-scrollbar">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
-          : <div className="flex justify-center font-semibold mt-4 w-full">No recommended anime!</div>
-        }
+          : <div className="flex justify-center font-semibold mt-4 w-full">No recommended anime!</div>}
       </div>
     </ShokoPanel>
   );

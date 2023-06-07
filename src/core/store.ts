@@ -1,11 +1,11 @@
 import { throttle } from 'lodash';
 import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query/react';
 import signalrMiddleware from './middlewares/signalr';
 import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
 import { loadState, saveState } from './localStorage';
 import combinedReducer from './reducers';
 import Events from './events';
-import { setupListeners } from '@reduxjs/toolkit/query/react';
 
 import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';

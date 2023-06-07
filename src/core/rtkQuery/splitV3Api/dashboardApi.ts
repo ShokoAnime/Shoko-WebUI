@@ -1,5 +1,3 @@
-import { splitV3Api } from '../splitV3Api';
-
 import type { PaginationType } from '@/core/types/api';
 import type {
   DashboardEpisodeDetailsType,
@@ -7,6 +5,7 @@ import type {
   DashboardStatsType,
 } from '@/core/types/api/dashboard';
 import type { SeriesType } from '@/core/types/api/series';
+import { splitV3Api } from '../splitV3Api';
 
 const dashboardApi = splitV3Api.injectEndpoints({
   // refetchOnMountOrArgChange: true, // Refresh stats on component mount/page refresh (I think it works correctly)

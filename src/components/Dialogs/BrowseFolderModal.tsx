@@ -2,8 +2,8 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { RootState } from '@/core/store';
-import Button from '../Input/Button';
 import { setSelectedNode, setStatus } from '@/core/slices/modals/browseFolder';
+import Button from '../Input/Button';
 import TreeView from '../TreeView/TreeView';
 import ModalPanel from '../Panels/ModalPanel';
 

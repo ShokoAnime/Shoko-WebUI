@@ -13,7 +13,7 @@ const HeaderFragment = ({ title, range }) => {
     <React.Fragment>
       <span>{title}</span>
       <span className="text-highlight-2">{range}</span>
-    </React.Fragment>  
+    </React.Fragment>
   );
 };
 
@@ -43,7 +43,7 @@ const renderSizes = (ranges) => {
     sizes[idx].size += item.FileSize;
     sizes[idx].count += item.Count;
   });
-  
+
   return map(sizes, (size, name) => (
     `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
   )).join(' | ');
@@ -57,13 +57,13 @@ const SeriesFileSummary = () => {
 
   const fileSummaryData = useGetSeriesFileSummeryQuery({ SeriesID: seriesId });
   const fileSummary = fileSummaryData.data;
-  
+
   const summary = useMemo(() => {
     let TotalEpisodeCount = 0;
     let TotalEpisodeSize = 0;
-    let TotalEpisodeSourceMap = {};
+    const TotalEpisodeSourceMap = {};
     let SpecialEpisodeCount = 0;
-    let SpecialEpisodeSourceMap = {};
+    const SpecialEpisodeSourceMap = {};
     const GroupsMap: string[] = [];
     forEach(fileSummary?.Groups, (group) => {
       if (GroupsMap.indexOf(group.GroupName) === -1) { GroupsMap.push(group.GroupName); }
@@ -81,17 +81,17 @@ const SeriesFileSummary = () => {
     const TotalEpisodeSource = map(TotalEpisodeSourceMap, (count, type) => `${type} (${count})`).join(', ');
     const SpecialEpisodeSource = map(SpecialEpisodeSourceMap, (count, type) => `${type} (${count})`).join(', ');
     const Groups = GroupsMap.join(', ');
-    
+
     return {
-      TotalEpisodeCount, 
-      TotalEpisodeSize, 
+      TotalEpisodeCount,
+      TotalEpisodeSize,
       TotalEpisodeSource,
       SpecialEpisodeCount,
       SpecialEpisodeSource,
       Groups,
     };
   }, [fileSummary]);
-  
+
   return (
     <div className="flex gap-x-8">
       <ShokoPanel title="Files Overview" className="w-[22.375rem] sticky top-0 shrink-0" transparent contentClassName="gap-y-8">
@@ -127,7 +127,7 @@ const SeriesFileSummary = () => {
           <div><span className="text-highlight-2">{fileSummary?.Groups.length || 0}</span> Source Entries</div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
-          <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType}/>} transparent>
+          <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType} />} transparent>
             <div className="flex">
               <div className="grow flex flex-col gap-y-4 font-semibold">
                 <span>Group</span>
@@ -152,7 +152,8 @@ const SeriesFileSummary = () => {
             </div>
           </ShokoPanel>
         ))}
-        {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && <ShokoPanel disableOverflow title="Missing Files">
+        {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
+        <ShokoPanel disableOverflow title="Missing Files">
           {map(fileSummary?.MissingEpisodes, episode => (
             <div className="grid grid-cols-3 mb-4">
               <div className="mr-12">{episode.Type} {episode.EpisodeNumber}</div>
@@ -160,7 +161,8 @@ const SeriesFileSummary = () => {
               <div>{episode.AirDate}</div>
             </div>
           ))}
-        </ShokoPanel>}
+        </ShokoPanel>
+        )}
       </div>
     </div>
   );

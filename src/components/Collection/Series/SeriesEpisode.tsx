@@ -13,13 +13,13 @@ import AnimateHeight from 'react-animate-height';
 import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { EpisodeDetails } from './EpisodeDetails';
-import { EpisodeFiles } from './EpisodeFiles';
 import {
   useLazyGetEpisodeFilesQuery, usePostEpisodeHiddenMutation,
   usePostEpisodeWatchedMutation,
 } from '@/core/rtkQuery/splitV3Api/episodeApi';
 import Button from '@/components/Input/Button';
+import { EpisodeDetails } from './EpisodeDetails';
+import { EpisodeFiles } from './EpisodeFiles';
 
 type Props = {
   episode: EpisodeType;
@@ -32,10 +32,12 @@ const getThumbnailUrl = (episode: EpisodeType) => {
 };
 
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
-  show ?
-    <div className="px-3 py-2 bg-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-highlight-2">
-      <Icon path={icon} size={1} />
-    </div> : null
+  show
+    ? (
+      <div className="px-3 py-2 bg-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-highlight-2">
+        <Icon path={icon} size={1} />
+      </div>
+    ) : null
 );
 
 const StateButton = ({ icon, active, onClick }: { icon: string, active: boolean, onClick: () => void }) => (

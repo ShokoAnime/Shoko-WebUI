@@ -3,11 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import TransitionDiv from '@/components/TransitionDiv';
+import { useGetDashboardAniDBCalendarQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 import DashboardTitleToggle from '../components/DashboardTitleToggle';
 import EpisodeDetails from '../components/EpisodeDetails';
-import TransitionDiv from '@/components/TransitionDiv';
-
-import { useGetDashboardAniDBCalendarQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
 const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -26,14 +25,12 @@ const UpcomingAnime = () => {
         <TransitionDiv show={!showAll} className="flex absolute">
           {(localItems.data?.length ?? 0) > 0
             ? localItems.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoFile !== null} />)
-            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
-          }
+            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>}
         </TransitionDiv>
         <TransitionDiv show={showAll} className="flex absolute">
           {(items.data?.length ?? 0) > 0
-            ? items.data?.map(item =><EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoFile !== null} />)
-            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>
-          }
+            ? items.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoFile !== null} />)
+            : <div className="flex justify-center font-semibold mt-4 w-full">No upcoming anime!</div>}
         </TransitionDiv>
       </div>
     </ShokoPanel>

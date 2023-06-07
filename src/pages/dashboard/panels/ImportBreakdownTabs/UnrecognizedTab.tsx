@@ -35,18 +35,18 @@ function UnrecognizedTab() {
 
   const renderItem = (item: FileType) => (
     <div key={item.ID} className="flex mt-3 first:mt-0 items-center">
-      {/*{avdumpList[item.ID] && <UnrecognizedAvdumpedItem item={item} hash={avdumpList[item.ID].hash} />}*/}
-      {avdumpList[item.ID] === undefined &&  (
+      {/* {avdumpList[item.ID] && <UnrecognizedAvdumpedItem item={item} hash={avdumpList[item.ID].hash} />} */}
+      {avdumpList[item.ID] === undefined && (
       <div className="flex flex-col grow">
         <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
-        <span className= "break-all max-w-[95%]">{item.Locations[0].RelativePath}</span>
+        <span className="break-all max-w-[95%]">{item.Locations[0].RelativePath}</span>
       </div>
       )}
       {avdumpList[item.ID] && (
-          <div className="flex flex-col grow">
-            <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
-            <span className="break-all max-w-[95%]">{item.Locations[0].RelativePath}</span>
-          </div>
+      <div className="flex flex-col grow">
+        <span className="font-semibold">{moment(item.Created).format('yyyy-MM-DD')} / {moment(item.Created).format('hh:mm A')}</span>
+        <span className="break-all max-w-[95%]">{item.Locations[0].RelativePath}</span>
+      </div>
       )}
       <div className="flex my-2 justify-between">
         {(avdumpList[item.ID] === undefined || avdumpList[item.ID].fetching) && (
@@ -57,9 +57,9 @@ function UnrecognizedTab() {
         {(avdumpList[item.ID] && !avdumpList[item.ID].fetching) && (
           <div className="flex py-1 px-2 gap-2">
             <CopyToClipboard text={avdumpList[item.ID].hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
-              <Icon className='text-highlight-1 cursor-pointer' path={mdiContentCopy} size={1} />
+              <Icon className="text-highlight-1 cursor-pointer" path={mdiContentCopy} size={1} />
             </CopyToClipboard>
-            <Icon className='text-highlight-2' path={mdiFileDocumentCheckOutline} size={1} />
+            <Icon className="text-highlight-2" path={mdiFileDocumentCheckOutline} size={1} />
           </div>
         )}
       </div>

@@ -27,10 +27,8 @@ const CollectionView = (props: Props) => {
 
   const [itemWidth, itemHeight, itemGap] = useMemo(() => {
     // Gaps are intentionally left with + notation to remove the need for calculations if dimensions are being changed
-    if (mode === 'grid')
-      return [209 + 16, 337 + 16, 16]; // + 16 is to account for gap/margin
-    else
-      return [907 + 32, 328 + 32, 32]; // + 32 is to account for gap/margin
+    if (mode === 'grid') return [209 + 16, 337 + 16, 16]; // + 16 is to account for gap/margin
+    return [907 + 32, 328 + 32, 32]; // + 32 is to account for gap/margin
   }, [mode]);
 
   const [fetchingPage, setFetchingPage] = useState(false);
@@ -83,23 +81,26 @@ const CollectionView = (props: Props) => {
     overscan: 2,
   });
 
-  if (groupTotal === 0) return (
-    <div className="flex grow items-center font-semibold justify-center">
-      {fetchingPage ? (
-        <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
-      ) : 'No series/groups available!'}
-    </div>
-  );
+  if (groupTotal === 0) {
+    return (
+      <div className="flex grow items-center font-semibold justify-center">
+        {fetchingPage ? (
+          <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
+        ) : 'No series/groups available!'}
+      </div>
+    );
+  }
 
   return (
     <div className={cx(
       'flex grow rounded-md',
       mode === 'grid' && 'px-6 py-8 bg-background-alt border-background-border border',
-    )}>
+    )}
+    >
       <div className="w-full relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
         {/* Each row is considered a virtual item here instead of each group */}
         {virtualizer.getVirtualItems().map((virtualRow) => {
-          const index = virtualRow.index;
+          const { index } = virtualRow;
 
           const items: React.ReactNode[] = [];
           // index of the first group in the current row

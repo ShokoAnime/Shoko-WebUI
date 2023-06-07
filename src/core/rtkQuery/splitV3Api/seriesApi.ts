@@ -1,4 +1,3 @@
-import { splitV3Api } from '../splitV3Api';
 import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
 import { omit } from 'lodash';
 
@@ -9,6 +8,7 @@ import { EpisodeType } from '@/core/types/api/episode';
 import { FileType } from '@/core/types/api/file';
 import { TagType } from '@/core/types/api/tags';
 import { DataSourceType, ImageType } from '@/core/types/api/common';
+import { splitV3Api } from '../splitV3Api';
 
 type SeriesImagesQueryResultType = {
   Posters: ImageType[];
@@ -20,7 +20,7 @@ export type SeriesEpisodesQueryType = {
   seriesID: number;
   includeMissing?: string;
   includeHidden?: string;
-  includeDataFrom?:  DataSourceType[];
+  includeDataFrom?: DataSourceType[];
   includeWatched?: string;
   type?: string;
   search?:string;
@@ -57,14 +57,12 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodesInfinite: build.query<InfiniteResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
-      transformResponse: (response: ListResultType<EpisodeType[]>, _, args) => {
-        return {
-          pages: {
-            [args.page ?? 1]: response.List,
-          },
-          total: response.Total,
-        };
-      },
+      transformResponse: (response: ListResultType<EpisodeType[]>, _, args) => ({
+        pages: {
+          [args.page ?? 1]: response.List,
+        },
+        total: response.Total,
+      }),
       // Only have one cache entry because the arg always maps to one string
       serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
         defaultSerializeQueryArgs({
@@ -118,8 +116,8 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
       providesTags: ['FileMatched', 'UtilitiesRefresh'],
     }),
-    
-    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] } >({ 
+
+    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] } >({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}`,
         params,
@@ -132,7 +130,7 @@ const seriesApi = splitV3Api.injectEndpoints({
         params,
       }),
     }),
-    
+
     getAniDBRelated: build.query<Array<SeriesAniDBRelatedType>, { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/AniDB/Related`,
@@ -144,7 +142,7 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}/AniDB/Similar`,
       }),
     }),
-    //Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
+    // Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
       query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB&includeMissing=false` }),
     }),

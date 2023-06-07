@@ -22,9 +22,7 @@ const apiSessionSlice = createSlice({
   extraReducers: (builder) => {
     builder.addMatcher(
       authApi.endpoints.postAuth.matchFulfilled,
-      (sliceState, action) => {
-        return Object.assign({}, sliceState, action.payload);
-      },
+      (sliceState, action) => Object.assign({}, sliceState, action.payload),
     );
   },
 });

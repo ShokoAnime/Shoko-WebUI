@@ -6,6 +6,9 @@ import { mdiMenuDown } from '@mdi/js';
 
 import { RootState } from '@/core/store';
 import toast from '@/components/Toast';
+import Button from '@/components/Input/Button';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import CollectionBreakdown from './panels/CollectionBreakdown';
 import ImportBreakdown from './panels/ImportBreakdown';
 import SeriesBreakdown from './panels/SeriesBreakdown';
@@ -17,10 +20,7 @@ import ContinueWatching from './panels/ContinueWatching';
 import NextUp from './panels/NextUp';
 import UpcomingAnime from './panels/UpcomingAnime';
 import RecommendedAnime from './panels/RecommendedAnime';
-import Button from '@/components/Input/Button';
 
-import { setLayoutEditMode } from '@/core/slices/mainpage';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { initialSettings } from '../settings/SettingsPage';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
@@ -89,7 +89,7 @@ function DashboardPage() {
 
   const renderResizeHandle = () => (
     <div className="react-resizable-handle right-0 bottom-0 cursor-nwse-resize">
-      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45}/>
+      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45} />
     </div>
   );
 

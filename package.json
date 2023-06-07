@@ -64,6 +64,7 @@
     "@vitejs/plugin-react": "^4.0.0",
     "cross-env": "^7.0.3",
     "eslint": "^8.42.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-formatter-pretty": "^5.0.0",
@@ -87,6 +88,7 @@
   },
   "scripts": {
     "eslint": "eslint --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src",
+    "eslint-fix": "eslint --fix --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src",
     "stylelint": "stylelint \"src/css/*.css\"",
     "lint": "yarn run eslint && yarn run stylelint",
     "build": "cross-env NODE_ENV=production vite build",

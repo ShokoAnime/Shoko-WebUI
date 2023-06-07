@@ -27,7 +27,7 @@ import { CollectionGroupType } from '@/core/types/api/collection';
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center font-semibold gap-x-2">
-    <Icon path={mdiInformationOutline} size={1} className="text-highlight-2"/>
+    <Icon path={mdiInformationOutline} size={1} className="text-highlight-2" />
     <div className="flex flex-col">
       {text}
     </div>
@@ -50,12 +50,12 @@ const SeriesTag = ({ text, type }) => (
 
 const Series = () => {
   const { seriesId } = useParams();
-  const [ fanartUri, setFanartUri ] = useState('');
+  const [fanartUri, setFanartUri] = useState('');
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
-  
+
   if (!seriesId) { return null; }
-  
+
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
   const tagsData = useGetSeriesTagsQuery({ seriesId, excludeDescriptions: true });
@@ -65,7 +65,7 @@ const Series = () => {
 
   useEffect(() => {
     const fanarts = get(series, 'Images.Fanarts', []);
-    if (!isArray(fanarts) || fanarts.length === 0)  { return; }
+    if (!isArray(fanarts) || fanarts.length === 0) { return; }
     const randomIdx = fanarts.length > 1 ? random(0, fanarts.length) : 0;
     const randomImage = fanarts[randomIdx];
     setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
@@ -91,8 +91,8 @@ const Series = () => {
             </div>
             <div className="flex gap-x-3">
               {isSeriesOngoing && <IconNotification text="Series is Ongoing" />}
-              {/*TODO: Check whether new files are added*/}
-              {/*<IconNotification text="New Files Added Recently" />*/}
+              {/* TODO: Check whether new files are added */}
+              {/* <IconNotification text="New Files Added Recently" /> */}
             </div>
           </div>
           <div className="flex flex-col gap-y-4 max-w-[56.25rem]">

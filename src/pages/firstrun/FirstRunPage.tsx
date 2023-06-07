@@ -12,8 +12,8 @@ import { RootState } from '@/core/store';
 
 import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { initialSettings } from '../settings/SettingsPage';
 import type { SettingsType } from '@/core/types/api/settings';
+import { initialSettings } from '../settings/SettingsPage';
 
 type ContextType = {
   fetching: boolean
@@ -49,8 +49,7 @@ function FirstRunPage() {
   const status = useGetInitStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4)
-      navigate('../login', { replace: true });
+    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) navigate('../login', { replace: true });
   }, [status.isLoading]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
@@ -78,12 +77,11 @@ function FirstRunPage() {
         <div className="flex flex-col items-center gap-y-4">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold gap-x-2">
-            Version: {version.isFetching || !version.data ?
-              <Icon path={mdiLoading} spin size={1} className="text-highlight-1" /> :
-            version.data.Server.ReleaseChannel !== 'Stable' ?
-              `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
-              version.data.Server.Version
-            }
+            Version: {version.isFetching || !version.data
+            ? <Icon path={mdiLoading} spin size={1} className="text-highlight-1" />
+            : version.data.Server.ReleaseChannel !== 'Stable'
+              ? `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`
+              : version.data.Server.Version}
           </div>
         </div>
 

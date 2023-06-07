@@ -3,10 +3,10 @@ import { get, map } from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiEyeOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 
-import { EpisodeFileInfo } from './EpisodeFileInfo';
 import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import toast from '@/components/Toast';
 import type { FileType } from '@/core/types/api/file';
+import { EpisodeFileInfo } from './EpisodeFileInfo';
 
 type Props = {
   episodeFiles: FileType[];
@@ -14,7 +14,7 @@ type Props = {
 
 export const EpisodeFiles = ({ episodeFiles }: Props) => {
   const [fileRescanTrigger] = usePostFileRescanMutation();
-  
+
   const rescanFile = async (id) => {
     try {
       await fileRescanTrigger(id).unwrap();
@@ -46,20 +46,24 @@ export const EpisodeFiles = ({ episodeFiles }: Props) => {
                 <Icon path={mdiEyeOutline} size={1} />
                 {selectedFile.IsVariation ? 'Unmark' : 'Mark'} File as Variation
               </div>
-              {selectedFile.AniDB && <a href={`https://anidb.net/file/${selectedFile.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
+              {selectedFile.AniDB && (
+              <a href={`https://anidb.net/file/${selectedFile.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
                 <div className="gap-x-2 flex text-highlight-1 font-semibold items-center">
                   <div className="metadata-link-icon anidb" />
                   {`${selectedFile.AniDB.ID} (AniDB)`}
                   <Icon path={mdiOpenInNew} size={1} />
                 </div>
-              </a>}
-              {ReleaseGroupID > 0 && <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
+              </a>
+              )}
+              {ReleaseGroupID > 0 && (
+              <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
                 <div className="gap-x-2 flex text-highlight-1 font-semibold items-center">
                   <div className="metadata-link-icon anidb" />
                   {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
                   <Icon path={mdiOpenInNew} size={1} />
                 </div>
-              </a>}
+              </a>
+              )}
 
               {selectedFile.IsVariation && <span className="text-highlight-2 ml-auto font-semibold">Variation</span>}
             </div>

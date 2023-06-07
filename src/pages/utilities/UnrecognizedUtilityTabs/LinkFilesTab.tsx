@@ -41,27 +41,24 @@ type ManualLink = {
   EpisodeID: number;
 };
 
-const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void  }) => {
+const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void }) => {
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
 
   const [searchText, setSearchText] = useState('');
 
   const debouncedSearch = useRef(
-    debounce( (query: string) => {
+    debounce((query: string) => {
       searchTrigger({ query, pageSize: 20 }).catch(() => {});
     }, 200),
   ).current;
 
-  useEffect(() => {
-    return () => {
-      debouncedSearch.cancel();
-    };
+  useEffect(() => () => {
+    debouncedSearch.cancel();
   }, [debouncedSearch]);
 
   const handleSearch = (query: string) => {
     setSearchText(query);
-    if (query !== '')
-      debouncedSearch(query);
+    if (query !== '') debouncedSearch(query);
   };
 
   const renderRow = useCallback((data: SeriesAniDBSearchResult) => (
@@ -203,7 +200,7 @@ function LinkFilesTab() {
       if (episodes.length > 0) {
         result.push(
           <div data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}-select`}>
-            <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => addLink(link.FileID, value) } />
+            <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => addLink(link.FileID, value)} />
           </div>,
         );
       } else if (idx === 0) {
@@ -296,7 +293,7 @@ function LinkFilesTab() {
               </div>
               <div className="flex gap-x-3 font-semibold">
                 <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={!selectedSeries.ShokoID}>Range Fill</Button>
-                {/*<Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button>*/}
+                {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
                 <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
                 <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={!selectedSeries.ShokoID}>Save</Button>
               </div>

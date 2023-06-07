@@ -3,11 +3,11 @@ import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 
 import { setSaved as setFirstRunSaved, TestStatusType } from '@/core/slices/firstrun';
+import TransitionDiv from '@/components/TransitionDiv';
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
 import TvDBTab from './MetadataSourcesTabs/TvDBTab';
 import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';
-import TransitionDiv from '@/components/TransitionDiv';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
 

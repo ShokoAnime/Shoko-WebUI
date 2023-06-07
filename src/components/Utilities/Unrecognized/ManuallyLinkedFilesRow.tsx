@@ -111,7 +111,7 @@ function ManuallyLinkedFilesRow(props: Props) {
 
   const table = useReactTable({
     data: files,
-    columns: columns,
+    columns,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     filterFns: {
@@ -121,34 +121,33 @@ function ManuallyLinkedFilesRow(props: Props) {
 
   useEffect(() => {
     table.getRowModel().flatRows.forEach((row) => {
-      if (selectedFiles[row.original.ID])
-        row.toggleSelected(selectedFiles[row.original.ID]);
+      if (selectedFiles[row.original.ID]) row.toggleSelected(selectedFiles[row.original.ID]);
     });
   }, [selectedFiles, table.getRowModel()]);
 
   return (
     <table className="table-fixed text-left border-separate border-spacing-0 w-full">
       <thead>
-      {table.getHeaderGroups().map(headerGroup => (
-        <tr key={headerGroup.id}>
-          {headerGroup.headers.map(header => (
-            <th key={header.id} className={`${header.column.columnDef.meta?.className} pt-4 pb-1.5`}>
-              {flexRender(header.column.columnDef.header, header.getContext())}
-            </th>
-          ))}
-        </tr>
-      ))}
+        {table.getHeaderGroups().map(headerGroup => (
+          <tr key={headerGroup.id}>
+            {headerGroup.headers.map(header => (
+              <th key={header.id} className={`${header.column.columnDef.meta?.className} pt-4 pb-1.5`}>
+                {flexRender(header.column.columnDef.header, header.getContext())}
+              </th>
+            ))}
+          </tr>
+        ))}
       </thead>
       <tbody>
-      {table.getRowModel().rows.map(row => (
-        <tr key={row.id}>
-          {row.getVisibleCells().map(cell => (
-            <td key={cell.id} className="py-1.5">
-              <span className="line-clamp-1 break-all">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
-            </td>
-          ))}
-        </tr>
-      ))}
+        {table.getRowModel().rows.map(row => (
+          <tr key={row.id}>
+            {row.getVisibleCells().map(cell => (
+              <td key={cell.id} className="py-1.5">
+                <span className="line-clamp-1 break-all">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+              </td>
+            ))}
+          </tr>
+        ))}
       </tbody>
     </table>
   );

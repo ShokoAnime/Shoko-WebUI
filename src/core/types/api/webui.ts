@@ -53,7 +53,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleLanguages: string[];
   SubtitleCount: number;
   Location: string;
-  RangeByType: { 
+  RangeByType: {
     Other: WebuiSeriesFileSummaryRangeByType;
     Normal: WebuiSeriesFileSummaryRangeByType;
     Special: WebuiSeriesFileSummaryRangeByType;

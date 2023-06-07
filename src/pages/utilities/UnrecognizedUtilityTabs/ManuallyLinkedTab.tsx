@@ -176,7 +176,7 @@ function ManuallyLinkedTab() {
     <TransitionDiv className="flex flex-col grow gap-y-8 overflow-y-auto">
 
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series /> }>
+        <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series />}>
           <div className="flex items-center gap-x-3">
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} inputClassName="px-4 py-3" />
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />

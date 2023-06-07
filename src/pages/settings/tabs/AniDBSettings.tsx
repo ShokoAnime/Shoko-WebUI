@@ -14,8 +14,8 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import LanguagesModal, { languageDescription } from '@/components/Dialogs/LanguagesModal';
 import toast from '@/components/Toast';
 
-import { useSettingsContext } from '../SettingsPage';
 import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useSettingsContext } from '../SettingsPage';
 
 const UpdateFrequencyValues = () => (
   <>
@@ -80,7 +80,7 @@ function AniDBSettings() {
 
   return (
     <>
-      <div className='font-semibold text-xl'>AniDB</div>
+      <div className="font-semibold text-xl">AniDB</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Login Options</div>
@@ -88,25 +88,25 @@ function AniDBSettings() {
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
-          Username
-          <InputSmall id="username" value={Username} type="text" onChange={event => updateSetting('AniDb', 'Username', event.target.value)} className="w-32 px-3 py-1" />
-        </div>
-        <div className="flex justify-between">
-          Password
-          <InputSmall id="password" value={Password} type="password" onChange={event => updateSetting('AniDb', 'Password', event.target.value)} className="w-32 px-3 py-1" />
-        </div>
-        <div className="flex justify-between">
-          Port
-          <InputSmall id="port" value={ClientPort} type="number" onChange={event => updateSetting('AniDb', 'ClientPort', event.target.value)} className="w-32 px-3 py-1" />
-        </div>
-        <div className="flex justify-between">
-          AVDump Key
-          <InputSmall id="avdump-key" value={AVDumpKey} type="password" onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)} className="w-32 px-3 py-1" />
-        </div>
-        <div className="flex justify-between">
-          AVDump Port
-          <InputSmall id="avdump-port" value={AVDumpClientPort} type="number" onChange={event => updateSetting('AniDb', 'AVDumpClientPort', event.target.value)} className="w-32 px-3 py-1" />
-        </div>
+            Username
+            <InputSmall id="username" value={Username} type="text" onChange={event => updateSetting('AniDb', 'Username', event.target.value)} className="w-32 px-3 py-1" />
+          </div>
+          <div className="flex justify-between">
+            Password
+            <InputSmall id="password" value={Password} type="password" onChange={event => updateSetting('AniDb', 'Password', event.target.value)} className="w-32 px-3 py-1" />
+          </div>
+          <div className="flex justify-between">
+            Port
+            <InputSmall id="port" value={ClientPort} type="number" onChange={event => updateSetting('AniDb', 'ClientPort', event.target.value)} className="w-32 px-3 py-1" />
+          </div>
+          <div className="flex justify-between">
+            AVDump Key
+            <InputSmall id="avdump-key" value={AVDumpKey} type="password" onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)} className="w-32 px-3 py-1" />
+          </div>
+          <div className="flex justify-between">
+            AVDump Port
+            <InputSmall id="avdump-port" value={AVDumpClientPort} type="number" onChange={event => updateSetting('AniDb', 'AVDumpClientPort', event.target.value)} className="w-32 px-3 py-1" />
+          </div>
         </div>
       </div>
 
@@ -160,7 +160,7 @@ function AniDBSettings() {
         <div className="font-semibold">Update Options</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between items-center">
-          <span>Calendar</span>
+            <span>Calendar</span>
             <SelectSmall id="calendar" value={Calendar_UpdateFrequency} onChange={event => updateSetting('AniDb', 'Calendar_UpdateFrequency', event.target.value)}>
               <UpdateFrequencyValues />
             </SelectSmall>

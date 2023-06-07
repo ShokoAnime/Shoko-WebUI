@@ -1,5 +1,5 @@
-import { splitV3Api } from '../splitV3Api';
 import { ImageTypeEnum } from '@/core/types/api/common';
+import { splitV3Api } from '../splitV3Api';
 
 type RandomMetadataResultType = {
   Source: string;
@@ -10,7 +10,7 @@ type RandomMetadataResultType = {
   Width: number | null;
   Height: number | null;
   Disabled: boolean;
-  Series: { 
+  Series: {
     ID: number;
     Name: string;
   }

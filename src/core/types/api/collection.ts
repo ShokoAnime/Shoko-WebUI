@@ -15,7 +15,7 @@ export type CollectionGroupType = {
   Images: ImagesType;
   Name: string;
   Size: number;
-  Sizes:  GroupSizesType;
+  Sizes: GroupSizesType;
 };
 
 export type GroupSizesType = SeriesSizesType & {

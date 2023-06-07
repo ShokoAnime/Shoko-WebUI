@@ -8,9 +8,8 @@ import cx from 'classnames';
 import { setSelectedNode } from '@/core/slices/modals/browseFolder';
 import { RootState } from '@/core/store';
 import { useGetFolderDrivesQuery, useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
-import toast from '../Toast';
-
 import type { DriveType, FolderType } from '@/core/types/api/folder';
+import toast from '../Toast';
 
 type Props = {
   level: number,
@@ -31,10 +30,9 @@ function TreeNode(props: Props) {
   const { level, Path, nodeId } = props;
   const isSelected = nodeId === selectedNode.id;
 
-  const toggleExpanded =  (event: React.MouseEvent) => {
+  const toggleExpanded = (event: React.MouseEvent) => {
     if (!loaded) {
-      if (nodeId !== 0)
-        fetchFolders(Path).catch((reason) => { toast.error(`${reason} - Fetching folder ${Path} failed.`); });
+      if (nodeId !== 0) fetchFolders(Path).catch((reason) => { toast.error(`${reason} - Fetching folder ${Path} failed.`); });
       setExpanded(true);
       setLoaded(true);
     } else {
@@ -96,7 +94,7 @@ function TreeNode(props: Props) {
           </div>
           <span className="select-none">{getChoppedPath()}</span>
         </div>
-        <Icon className={cx('inline-block justify-self-end mr-3 text-highlight-1', { 'hidden': !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
+        <Icon className={cx('inline-block justify-self-end mr-3 text-highlight-1', { hidden: !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
       </div>
       <ul>{children}</ul>
     </li>

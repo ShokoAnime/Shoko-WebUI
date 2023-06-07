@@ -26,7 +26,7 @@ function UnrecognizedUtility() {
     columnHelper.accessor(row => get(row, 'Locations.0.ImportFolderID', -1), {
       header: 'Import Folder',
       id: 'importfolder',
-      cell: info => info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? ''),
+      cell: info => (info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? '')),
       meta: {
         className: 'w-52',
       },

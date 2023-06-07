@@ -58,9 +58,9 @@ const Group = () => {
   return (
     <div className="h-full min-w-full">
       <ShokoPanel title={renderTitle(items.length)}>
-      <div className="flex flex-wrap gap-x-2">
-        {items.map(item => renderDetails(item))}
-      </div>
+        <div className="flex flex-wrap gap-x-2">
+          {items.map(item => renderDetails(item))}
+        </div>
       </ShokoPanel>
     </div>
   );

@@ -10,7 +10,7 @@ type State = {
   [key: number]: AvDumpItem;
 };
 
-const  avdumpSlice = createSlice({
+const avdumpSlice = createSlice({
   name: 'avdump',
   initialState: {} as State,
   reducers: {

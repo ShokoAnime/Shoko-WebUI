@@ -15,11 +15,11 @@ import {
   mdiFileDocumentMultipleOutline,
   mdiPencilCircleOutline,
 } from '@mdi/js';
+import moment from 'moment/moment';
 import React from 'react';
 import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
-import AnidbDescription from './AnidbDescription';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import moment from 'moment/moment';
+import AnidbDescription from './AnidbDescription';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: Array<string> = [];
@@ -77,18 +77,18 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
             <div className="gap-x-4 flex flex-nowrap">
               <div className="gap-x-2 flex align-middle items-center">
                 <Icon path={mdiTelevision} size={1} />
-                <span className='text-sm font-semibold'>{renderFileSources(item.Sizes.FileSources)}</span>
+                <span className="text-sm font-semibold">{renderFileSources(item.Sizes.FileSources)}</span>
               </div>
               <div className="gap-x-2 flex align-middle items-center">
                 <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span className='text-sm font-semibold'>
+                <span className="text-sm font-semibold">
                   {moment(mainSeries?.AirDate).format('MMMM Do, YYYY')} - {!mainSeries?.EndDate ? 'Current' : moment(mainSeries?.EndDate).format('MMMM Do, YYYY')}
                 </span>
               </div>
               {isSeriesOngoing() && (
                 <div className="gap-x-2 flex align-middle items-center">
                   <Icon path={mdiTelevisionAmbientLight} size={1} />
-                  <span className='text-sm font-semibold'>Ongoing Series</span>
+                  <span className="text-sm font-semibold">Ongoing Series</span>
                 </div>
               )}
             </div>
@@ -96,15 +96,15 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
             <div className="gap-x-4 flex flex-nowrap">
               <div className="gap-x-2 flex align-middle items-center">
                 <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-                <span className='text-sm font-semibold'>Episodes {item.Sizes.Local.Episodes} / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Local.Specials} / {item.Sizes.Total.Specials}</span>
+                <span className="text-sm font-semibold">Episodes {item.Sizes.Local.Episodes} / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Local.Specials} / {item.Sizes.Total.Specials}</span>
               </div>
               <div className="gap-x-2 flex align-middle items-center">
                 <Icon path={mdiEyeCheckOutline} size={1} />
-                <span className='text-sm font-semibold'>Episodes {item.Sizes.Watched.Episodes}  / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Watched.Specials} / {item.Sizes.Total.Specials} </span>
+                <span className="text-sm font-semibold">Episodes {item.Sizes.Watched.Episodes}  / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Watched.Specials} / {item.Sizes.Total.Specials} </span>
               </div>
               <div className={cx('gap-x-2 flex align-middle items-center', missingEpisodesCount === 0 && 'hidden')}>
                 <Icon className="text-highlight-4" path={mdiAlertCircleOutline} size={1} />
-                <span className='text-sm font-semibold'>{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
+                <span className="text-sm font-semibold">{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
               </div>
             </div>
           </div>

@@ -1,10 +1,9 @@
 import React from 'react';
 
-import Footer from './Footer';
 import TransitionDiv from '@/components/TransitionDiv';
+import Footer from './Footer';
 
 function DataCollection() {
-
   return (
     <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
       <div className="font-semibold text-xl">Data Collection</div>

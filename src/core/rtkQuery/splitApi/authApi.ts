@@ -1,6 +1,5 @@
-import { splitApi } from '../splitApi';
-
 import type { ApiLoginType, ApiSessionState } from '@/core/types/api';
+import { splitApi } from '../splitApi';
 
 export const authApi = splitApi.injectEndpoints({
   endpoints: build => ({

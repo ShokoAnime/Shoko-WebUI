@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import { mdiMagnify } from '@mdi/js';
 
-import ModalPanel from '../Panels/ModalPanel';
 import { useLazyGetFiltersQuery, useLazyGetTopFiltersQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
+import ModalPanel from '../Panels/ModalPanel';
 
 type Props = {
   show: boolean;
@@ -33,7 +33,7 @@ function FiltersModal({ show, onClose }: Props) {
     }
   }, [show, activeFilter]);
 
-  const filteredList = useMemo(() =>  subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1) ), [subFilters, search]);
+  const filteredList = useMemo(() => subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1)), [subFilters, search]);
 
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold" key={item.IDs.ID}>
@@ -41,7 +41,7 @@ function FiltersModal({ show, onClose }: Props) {
       <span className="text-highlight-2">{item.Size}</span>
     </div>
   );
-  
+
   const renderTabSide = (title, filterId) => (
     <div
       className={cx('font-semibold cursor-pointer', activeTab === title && 'text-highlight-1')}
@@ -51,7 +51,7 @@ function FiltersModal({ show, onClose }: Props) {
       {title}
     </div>
   );
-  
+
   const renderSidePanel = (title, filterId) => (
     <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })} key={filterId}>
       <div className="flex w-full bg-background-border p-2 mb-2 rounded-md">
@@ -82,7 +82,7 @@ function FiltersModal({ show, onClose }: Props) {
           {filters.filter(item => !item.Directory).map(item => renderItem(item))}
         </div>
         {filters.filter(item => item.Directory).map(item => renderSidePanel(item.Name, item.IDs.ID))}
-        
+
       </div>
     </ModalPanel>
   );

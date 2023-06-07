@@ -1,7 +1,7 @@
 import { ImageType, ImagesType, RatingType } from './common';
 
-export type SeriesDetailsType = SeriesType & { 
-  AniDB?: SeriesAniDBType; 
+export type SeriesDetailsType = SeriesType & {
+  AniDB?: SeriesAniDBType;
 };
 
 export type SeriesType = {

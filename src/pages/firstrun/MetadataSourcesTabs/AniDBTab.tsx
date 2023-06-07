@@ -7,9 +7,8 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import TransitionDiv from '@/components/TransitionDiv';
 
-import { useFirstRunSettingsContext } from '../FirstRunPage';
-
 import { TestStatusType } from '@/core/slices/firstrun';
+import { useFirstRunSettingsContext } from '../FirstRunPage';
 
 type Props = {
   setStatus: (status: TestStatusType) => void;

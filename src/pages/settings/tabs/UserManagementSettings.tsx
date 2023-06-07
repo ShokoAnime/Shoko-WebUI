@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { cloneDeep, find, isEqual, remove } from 'lodash';
+import {
+  cloneDeep, find, isEqual, remove,
+} from 'lodash';
 import { Icon } from '@mdi/react';
 import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
@@ -64,9 +66,9 @@ function UserManagementSettings() {
 
   useEffect(() => {
     if (isEqual(selectedUser, initialUser)) return;
-    if (isEqual(selectedUser, find(users, user => user.ID === selectedUser.ID)))
+    if (isEqual(selectedUser, find(users, user => user.ID === selectedUser.ID))) {
       toast.dismiss('unsaved');
-    else {
+    } else {
       toast.info('', 'You have unsaved changes!', {
         autoClose: false,
         draggable: false,
@@ -86,20 +88,25 @@ function UserManagementSettings() {
   };
 
   useEffect(() => {
-    if (newPassword)
+    if (newPassword) {
       toast.info('Password field changed!', 'Click on the "Change" button to save your new password', {
         autoClose: false,
         draggable: false,
         closeOnClick: false,
         toastId: 'password-changed',
       });
-    else {
+    } else {
       toast.dismiss('password-changed');
     }
   }, [newPassword]);
 
   const handlePasswordChange = () => {
-    changePassword({ Password: newPassword, RevokeAPIKeys: logoutOthers, userId: selectedUser.ID, admin: selectedUser.IsAdmin }).unwrap().then(() => {
+    changePassword({
+      Password: newPassword,
+      RevokeAPIKeys: logoutOthers,
+      userId: selectedUser.ID,
+      admin: selectedUser.IsAdmin,
+    }).unwrap().then(() => {
       setNewPassword('');
       if (logoutOthers) {
         toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
@@ -128,6 +135,17 @@ function UserManagementSettings() {
     });
   };
 
+  const renderPlexLink = () => {
+    if (isPlexAuthenticated) {
+      return <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-s w-16 font-semibold h-8">Unlink</Button>;
+    }
+    return getPlexLoginUrlResult?.data ? (
+      <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Login</Button>
+    ) : (
+      <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Authenticate</Button>
+    );
+  };
+
   useEffect(() => {
     if (isPlexAuthenticated) {
       setPlexPollingInterval(0);
@@ -151,9 +169,9 @@ function UserManagementSettings() {
 
   return (
     <>
-      <div className='font-semibold text-xl'>User Management</div>
+      <div className="font-semibold text-xl">User Management</div>
 
-      <div className='flex flex-col'>
+      <div className="flex flex-col">
         <div className="font-semibold mb-4">Current Users</div>
         <div className="flex flex-col gap-y-3">
           {users.map(user => (
@@ -161,56 +179,50 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1"/>
+                  <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1" />
                 </div>
-                <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3"/>
+                <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      <div className='flex flex-col'>
+      <div className="flex flex-col">
         <div className="font-semibold mb-4">User Options</div>
         <div className="flex flex-col gap-y-3">
           <div className="flex justify-between h-8">
-            <div className='mx-0 my-auto'>Display Name</div>
+            <div className="mx-0 my-auto">Display Name</div>
             <InputSmall id="Username" value={selectedUser.Username} type="text" onChange={handleInputChange} className="w-32 px-2" />
           </div>
           <div className="flex justify-between h-8">
-            <div className='mx-0 my-auto'>Plex User Link</div>
-            {isPlexAuthenticated ? (
-              <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-s w-16 font-semibold h-8">Unlink</Button>
-            ) : getPlexLoginUrlResult?.data ? (
-              <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Login</Button>
-            ) : (
-              <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Authenticate</Button>
-            )}
+            <div className="mx-0 my-auto">Plex User Link</div>
+            {renderPlexLink()}
           </div>
-          <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className='h-8'/>
-          <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className='h-8'/>
+          <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className="h-8" />
+          <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className="h-8" />
         </div>
       </div>
 
-      <div className='flex flex-col'>
-        <div className='flex justify-between h-8 mb-4'>
+      <div className="flex flex-col">
+        <div className="flex justify-between h-8 mb-4">
           <div className="font-semibold mx-0 my-auto">Password</div>
           <Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} className="!text-highlight-1 font-semibold !text-base">Change</Button>
         </div>
         <div className="flex flex-col gap-y-3">
           <div className="flex justify-between h-8">
-            <div className='mx-0 my-auto'>New Password</div>
+            <div className="mx-0 my-auto">New Password</div>
             <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" autoComplete="new-password" />
           </div>
           <div className="h-8">
-            <Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className='justify-between'/>
+            <Checkbox justify label="Logout all sessions" id="logout-all" isChecked={logoutOthers} onChange={event => setLogoutOthers(event.target.checked)} className="justify-between" />
           </div>
         </div>
       </div>
 
-      <div className='flex flex-col'>
+      <div className="flex flex-col">
         <div className="font-semibold mb-4">Tag Restrictions</div>
-        <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)}/>
+        <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
         <div className="bg-background-border overflow-y-scroll h-64 mt-2 rounded-md p-4 capitalize">
           {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
             <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
@@ -225,15 +237,13 @@ function UserManagementSettings() {
               <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>
                 {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
                 <Button onClick={() => handleTagChange(tag, false)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3"/>
+                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
                 </Button>
               </div>
             ))
-            :
-            (
+            : (
               <div className="flex grow justify-center items-center font-semibold">No Restricted Tags!</div>
-            )
-          }
+            )}
         </div>
       </div>
 

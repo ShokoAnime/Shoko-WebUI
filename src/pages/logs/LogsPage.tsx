@@ -41,7 +41,7 @@ const LogsPage = () => {
           <Button className="bg-background-nav border border-background-border px-5 py-2 text-font-main" disabled>
             <Icon path={mdiCogOutline} size={1} />
           </Button>
-          {/*TODO: To be moved into settings modal*/}
+          {/* TODO: To be moved into settings modal */}
           <Button className={cx('bg-background-nav border border-background-border px-5 py-2', isScrollToBottom ? 'text-highlight-1' : 'text-font-main')} onClick={() => setScrollToBottom(prev => !prev)}>
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>

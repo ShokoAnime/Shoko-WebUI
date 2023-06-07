@@ -1,11 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { remove } from 'lodash';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import ModalPanel from '../Panels/ModalPanel';
 import Button from '../Input/Button';
 import Checkbox from '../Input/Checkbox';
-import { initialSettings } from '@/pages/settings/SettingsPage';
-
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -74,7 +73,7 @@ function LanguagesModal({ type, onClose }: Props) {
   const [languages, setLanguages] = useState([] as Array<string>);
 
   const handleSave = useCallback(() => {
-    patchSettings({ oldSettings: settings, newSettings: { ...settings, [ type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference' ]: languages }  }).unwrap()
+    patchSettings({ oldSettings: settings, newSettings: { ...settings, [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages } }).unwrap()
       .then(() => onClose())
       .catch(error => console.error(error));
   }, [type, settingsQuery.requestId, languages]);

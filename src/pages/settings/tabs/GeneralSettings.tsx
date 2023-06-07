@@ -6,13 +6,12 @@ import { mdiRefresh } from '@mdi/js';
 
 import { uiVersion } from '@/core/util';
 
-import { useSettingsContext } from '../SettingsPage';
-
 import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import SelectSmall from '@/components/Input/SelectSmall';
 import Checkbox from '@/components/Input/Checkbox';
 import Button from '@/components/Input/Button';
 import { useGetWebuiThemesQuery, useLazyGetWebuiUpdateCheckQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useSettingsContext } from '../SettingsPage';
 
 const UI_VERSION = uiVersion();
 
@@ -107,7 +106,7 @@ function GeneralSettings() {
 
   return (
     <>
-      <div className='font-semibold text-xl'>General</div>
+      <div className="font-semibold text-xl">General</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>

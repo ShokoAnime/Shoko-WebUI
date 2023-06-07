@@ -21,9 +21,8 @@ type Props = {
 function Checkbox({ id, label, isChecked, className, onChange, labelRight, justify, intermediate }: Props) {
   const [focused, setFocused] = useState(false);
 
-
   return (
-    <label htmlFor={id} className={cx([justify && 'justify-between', `${ className }`, 'cursor-pointer flex items-center transition ease-in-out', focused && 'ring-2 ring-highlight-1 ring-inset'])}>
+    <label htmlFor={id} className={cx([justify && 'justify-between', `${className}`, 'cursor-pointer flex items-center transition ease-in-out', focused && 'ring-2 ring-highlight-1 ring-inset'])}>
       <input
         id={id}
         type="checkbox"

@@ -66,40 +66,40 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
 
   return (
     <div key={site} className="flex justify-between">
-    <div className="flex gap-x-2">
-      <div className={`metadata-link-icon ${site}`}/>
-      {linkId ? (
-        <a href={siteLink} className="flex gap-x-2 text-highlight-1 font-semibold" rel="noopener noreferrer" target="_blank">
-          {/*TODO: Use name from metadata source instead of series name in Shoko*/}
-          {`${series} (${linkId})`}
-          <Icon path={mdiOpenInNew} size={1} />
-        </a>
-      ) : 'Series Not Linked'}
-    </div>
-    <div className="flex gap-x-2">
-      {linkId ? (
-        <>
+      <div className="flex gap-x-2">
+        <div className={`metadata-link-icon ${site}`} />
+        {linkId ? (
+          <a href={siteLink} className="flex gap-x-2 text-highlight-1 font-semibold" rel="noopener noreferrer" target="_blank">
+            {/* TODO: Use name from metadata source instead of series name in Shoko */}
+            {`${series} (${linkId})`}
+            <Icon path={mdiOpenInNew} size={1} />
+          </a>
+        ) : 'Series Not Linked'}
+      </div>
+      <div className="flex gap-x-2">
+        {linkId ? (
+          <>
+            <Button disabled>
+              <Icon className="text-highlight-1" path={mdiPencilCircleOutline} size={1} />
+            </Button>
+            <Button disabled>
+              <Icon className="text-highlight-3" path={mdiCloseCircleOutline} size={1} />
+            </Button>
+          </>
+        ) : (
           <Button disabled>
-            <Icon className="text-highlight-1" path={mdiPencilCircleOutline} size={1} />
+            <Icon className="text-highlight-1" path={mdiPlusCircleOutline} size={1} />
           </Button>
-          <Button disabled>
-            <Icon className="text-highlight-3" path={mdiCloseCircleOutline} size={1} />
-          </Button>
-        </>
-      ) : (
-        <Button disabled>
-          <Icon className="text-highlight-1" path={mdiPlusCircleOutline} size={1}/>
-        </Button>
-      )}
+        )}
+      </div>
     </div>
-  </div>
   );
 };
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
   if (!seriesId) { return null; }
-  
+
   const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
   const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
   const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId });
@@ -132,13 +132,13 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Length</div>
-            {/*TODO: Get episode length*/}
+            {/* TODO: Get episode length */}
             <div>-- Minutes/Episode</div>
           </div>
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Status</div>
-            {/*TODO: Check if there are more status types*/}
+            {/* TODO: Check if there are more status types */}
             {(series.AniDB?.EndDate && moment(series.AniDB?.EndDate) < moment()) ? 'Finished' : 'Ongoing'}
           </div>
 
@@ -159,7 +159,7 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Links</div>
-            {/*TODO: Only showing links with Official JP and EN sites for now. To be changed*/}
+            {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
             {jpOfficialSite && (
               <a href={jpOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={jpOfficialSite.Name} className="text-highlight-1 font-semibold">
                 {jpOfficialSite.Name}
@@ -179,7 +179,7 @@ const SeriesOverview = () => {
             {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No episode data available!</div>}
           </ShokoPanel>
           <ShokoPanel
-            title={
+            title={(
               <div className="flex gap-x-2">
                 Metadata Sites
                 <Icon path={mdiChevronRight} size={1} />
@@ -189,7 +189,7 @@ const SeriesOverview = () => {
                   <Icon path={mdiOpenInNew} size={1} />
                 </a>
               </div>
-            }
+            )}
             className="flex grow-0"
             transparent
           >
@@ -211,7 +211,7 @@ const SeriesOverview = () => {
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
                   <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border" />
-                  <span className='text-ellipsis line-clamp-1'>{item.Title}</span>
+                  <span className="text-ellipsis line-clamp-1">{item.Title}</span>
                   <span className="text-highlight-2">{itemRelation}</span>
                 </div>
               );
@@ -228,7 +228,7 @@ const SeriesOverview = () => {
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
                   <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border" />
-                  <span className='text-ellipsis line-clamp-1'>{item.Title}</span>
+                  <span className="text-ellipsis line-clamp-1">{item.Title}</span>
                   <span className="text-highlight-2">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>
               );

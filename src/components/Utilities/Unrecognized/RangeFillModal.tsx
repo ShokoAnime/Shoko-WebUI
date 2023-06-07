@@ -12,8 +12,8 @@ type Props = {
 };
 
 const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
-  const [ rangeStart, setRangeStart ] = useState('');
-  const [ epType, setEpType ] = useState('Normal');
+  const [rangeStart, setRangeStart] = useState('');
+  const [epType, setEpType] = useState('Normal');
 
   const handleFill = () => {
     rangeFill(rangeStart, epType);
@@ -32,7 +32,7 @@ const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
           <option value="Normal">Episode</option>
           <option value="Special">Special</option>
         </SelectSmall>
-        {/*<div>Selected Files Starting Entry</div>*/}
+        {/* <div>Selected Files Starting Entry</div> */}
         <div className="flex justify-between items-center">
           Range Starting Number
           <InputSmall id="RangeStart" type="number" value={rangeStart} onChange={e => setRangeStart(e.target.value)} className="w-16 text-center px-3 py-1" />

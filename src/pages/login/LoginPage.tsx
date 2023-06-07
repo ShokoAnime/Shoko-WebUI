@@ -37,10 +37,10 @@ function LoginPage() {
   const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
   const imageMetadata = useGetRandomMetadataQuery({ imageType: ImageTypeEnum.Fanart });
-  
+
   useEffect(() => {
-    const data = imageMetadata.data;
-    if (!data || !data?.Type) { 
+    const { data } = imageMetadata;
+    if (!data || !data?.Type) {
       setLoginImage('default');
       return;
     }
@@ -57,7 +57,7 @@ function LoginPage() {
       navigate('/', { replace: true });
     }
   }, [status.data]);
-  
+
   useEffect(() => {
     if (!get(version, 'data.Server', false)) { return; }
     const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable' ? version?.data?.Server.Commit : version.data.Server.Version;
@@ -72,33 +72,32 @@ function LoginPage() {
       user: username,
       pass: password,
       device: 'web-ui',
-      rememberUser: rememberUser,
+      rememberUser,
     }).unwrap().then(() => navigate('/'), error => console.error(error));
   };
 
   return (
     <React.Fragment>
       <ToastContainer
-        position={'bottom-right'}
+        position="bottom-right"
         autoClose={4000}
         transition={Slide}
         className="mt-20 !w-[29.5rem]"
         closeButton={false}
         icon={false}
       />
-      <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default'  ? { backgroundImage: `url('${loginImage}')` } : {}}>
+      <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}>
         <div className="absolute top-0 right-0 bg-background-alt/90 px-8 py-4 font-semibold border border-background-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
 
         <div className="flex flex-col items-center p-8 w-[31.25rem] bg-background-alt/90 border border-background-border rounded-md gap-y-8">
           <div className="flex flex-col gap-y-4 items-center">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
-              Version: {version.isFetching || !version.data ?
-                <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" /> :
-              version.data.Server.ReleaseChannel !== 'Stable' ?
-                `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})` :
-                version.data.Server.Version
-              }
+              Version: {version.isFetching || !version.data
+              ? <Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />
+              : version.data.Server.ReleaseChannel !== 'Stable'
+                ? `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`
+                : version.data.Server.Version}
             </div>
           </div>
 

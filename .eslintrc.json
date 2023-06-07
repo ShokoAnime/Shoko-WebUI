@@ -1,5 +1,8 @@
 {
-  "extends": ["airbnb-typescript"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript"
+  ],
   "ignorePatterns": [
     "build/**",
     "vite.config.js"
@@ -56,7 +59,15 @@
     "react/require-default-props": "off",
     "react/state-in-constructor": "off",
     "react/static-property-placement": "off",
-    "@typescript-eslint/space-before-blocks": "off"
+    "@typescript-eslint/space-before-blocks": "off",
+    "max-len": "off",
+    "react/prop-types": "off",
+    "react/function-component-definition": "off",
+    "react/destructuring-assignment": "off",
+    "object-curly-newline": [
+      "error", 
+      { "ImportDeclaration": { "consistent": true }}
+    ]
   },
   "overrides": [
     {
