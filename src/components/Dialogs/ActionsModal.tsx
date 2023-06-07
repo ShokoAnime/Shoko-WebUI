@@ -97,7 +97,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
 
   const [showInfo, setShowInfo] = useState(false);
 
-  const action = useMemo(() => quickActions[actionKey], []);
+  const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { name, functionName, info } = action;
 
   return (

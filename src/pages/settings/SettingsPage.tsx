@@ -245,7 +245,7 @@ function SettingsPage() {
   const { pathname } = useLocation();
 
   const settingsQuery = useGetSettingsQuery();
-  const settings = settingsQuery?.data ?? initialSettings;
+  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
   const [newSettings, setNewSettings] = useState(initialSettings);
@@ -256,12 +256,12 @@ function SettingsPage() {
   useEffect(() => {
     dispatch(setMiscItem({ webuiPreviewTheme: null }));
     setNewSettings(settings);
-  }, [settings]);
+  }, [dispatch, settings]);
 
   const unsavedChanges = useMemo(() => {
     if (isEqual(settings, newSettings)) return false;
     return !isEqual(newSettings, initialSettings);
-  }, [newSettings]);
+  }, [newSettings, settings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
     const tempSettings = { ...(newSettings[type]), [key]: value };

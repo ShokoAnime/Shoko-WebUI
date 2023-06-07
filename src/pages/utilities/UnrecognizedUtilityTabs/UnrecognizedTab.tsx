@@ -69,7 +69,8 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
 
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
+  const tableSelectedRows = table.getSelectedRowModel();
+  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   const deleteFiles = () => {
     let failedFiles = 0;
@@ -162,7 +163,7 @@ function UnrecognizedTab() {
   const { columns: tempColumns } = useUnrecognizedUtilityContext();
 
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const files = filesQuery?.data ?? { Total: 0, List: [] };
+  const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
@@ -256,14 +257,15 @@ function UnrecognizedTab() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
+  const tableSelectedRows = table.getSelectedRowModel();
 
   useEffect(() => {
     table.resetRowSelection();
-  }, [filesQuery.requestId]);
+  }, [files, table]);
 
   const selectedRows = useMemo(
-    () => table.getSelectedRowModel().rows.map(row => row.original),
-    [table.getSelectedRowModel().rows.length],
+    () => tableSelectedRows.rows.map(row => row.original),
+    [tableSelectedRows],
   );
 
   const avdumpFiles = async () => {

@@ -18,7 +18,7 @@ function FiltersModal({ show, onClose }: Props) {
   const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
   const [triggerSubFilter, subFiltersResult] = useLazyGetFiltersQuery({});
   const filters: Array<CollectionFilterType> = filtersResult?.data?.List ?? [] as Array<CollectionFilterType>;
-  const subFilters: Array<CollectionFilterType> = subFiltersResult?.data?.List ?? [] as Array<CollectionFilterType>;
+  const subFilters: Array<CollectionFilterType> = useMemo(() => subFiltersResult?.data?.List ?? [] as Array<CollectionFilterType>, [subFiltersResult]);
 
   const [activeTab, setActiveTab] = useState('Filters');
   const [activeFilter, setActiveFilter] = useState('0');
@@ -31,7 +31,7 @@ function FiltersModal({ show, onClose }: Props) {
     } else {
       triggerSubFilter(activeFilter).catch(() => {});
     }
-  }, [show, activeFilter]);
+  }, [show, activeFilter, trigger, triggerSubFilter]);
 
   const filteredList = useMemo(() => subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1)), [subFilters, search]);
 

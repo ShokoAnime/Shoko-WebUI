@@ -154,7 +154,7 @@ function ManuallyLinkedTab() {
       // eslint-disable-next-line no-param-reassign
       selectedFilesState[fileId] = select;
     });
-  }), []);
+  }), [setSelectedFiles]);
 
   const unlinkFiles = () => {
     const fileIds = Object.keys(selectedFiles).map(parseInt);

@@ -107,7 +107,7 @@ function ManuallyLinkedFilesRow(props: Props) {
       filterFn: 'fuzzy',
       sortingFn: fuzzySort,
     }),
-  ], [episodes]);
+  ], [episodes, getEpTypePrefix, seriesId, updateSelectedFiles]);
 
   const table = useReactTable({
     data: files,
@@ -123,7 +123,7 @@ function ManuallyLinkedFilesRow(props: Props) {
     table.getRowModel().flatRows.forEach((row) => {
       if (selectedFiles[row.original.ID]) row.toggleSelected(selectedFiles[row.original.ID]);
     });
-  }, [selectedFiles, table.getRowModel()]);
+  }, [selectedFiles, table]);
 
   return (
     <table className="table-fixed text-left border-separate border-spacing-0 w-full">

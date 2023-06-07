@@ -34,14 +34,14 @@ const isCharacter = item => item.RoleName === 'Seiyuu';
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
+
   const [mode, setMode] = useState('Character');
   const [search, setSearch] = useState('');
 
-  const castData = useGetSeriesCastQuery({ seriesId });
+  const castData = useGetSeriesCastQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const cast = castData.data;
+
+  if (!seriesId) return null;
 
   return (
     <div className="flex gap-x-8">

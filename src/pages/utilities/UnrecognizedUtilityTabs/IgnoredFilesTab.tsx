@@ -21,7 +21,8 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
   const files = filesQuery?.data ?? { Total: 0, List: [] };
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
+  const tableSelectedRows = table.getSelectedRowModel();
+  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   const restoreFiles = (selected = false) => {
     const fileList = selected ? selectedRows : files.List;
@@ -65,11 +66,12 @@ function IgnoredFilesTab() {
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
   });
-  const selectedRows = useMemo(() => table.getSelectedRowModel().rows.map(row => row.original), [table.getSelectedRowModel().rows.length]);
+  const tableSelectedRows = table.getSelectedRowModel();
+  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   useEffect(() => {
     table.resetRowSelection();
-  }, [files.List]);
+  }, [files.List, table]);
 
   return (
     <div className="flex flex-col grow gap-y-8">

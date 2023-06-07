@@ -42,7 +42,7 @@ const CollectionView = (props: Props) => {
 
   useEffect(() => {
     setGroupTotal(groupTotal);
-  }, [groupTotal]);
+  }, [groupTotal, setGroupTotal]);
 
   const fetchPage = useMemo(() => debounce((page: number) => {
     fetchGroups({ page, pageSize, filterId: filterId ?? '0' }).then((result) => {
@@ -56,7 +56,7 @@ const CollectionView = (props: Props) => {
         OrderByName: true,
       }).then().catch(error => console.error(error));
     }).catch(error => console.error(error)).finally(() => setFetchingPage(false));
-  }, 200), [filterId]);
+  }, 200), [filterId, fetchGroups, fetchGroupExtras]);
 
   useEffect(() => {
     fetchPage.cancel();
@@ -65,7 +65,7 @@ const CollectionView = (props: Props) => {
     fetchPage(1);
 
     return () => fetchPage.cancel();
-  }, [filterId]);
+  }, [filterId, fetchPage]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 

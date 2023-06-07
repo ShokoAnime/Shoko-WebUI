@@ -82,7 +82,7 @@ function SeriesWithoutFilesUtility() {
 
   useEffect(() => {
     table.resetRowSelection();
-  }, [series.List]);
+  }, [series.List, table]);
 
   const deleteSeries = () => {
     let failedSeries = 0;

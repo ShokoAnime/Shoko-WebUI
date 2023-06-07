@@ -62,7 +62,7 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
       default:
         return '#';
     }
-  }, []);
+  }, [linkId, site]);
 
   return (
     <div key={site} className="flex justify-between">
@@ -98,21 +98,22 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
-  if (!seriesId) { return null; }
 
-  const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
-  const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
-  const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const series: SeriesDetailsType = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
   const overview = seriesOverviewData?.data || {} as WebuiSeriesDetailsType;
   const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
   const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;
-  const relatedData = useGetAniDBRelatedQuery({ seriesId });
+  const relatedData = useGetAniDBRelatedQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const related: SeriesAniDBRelatedType[] = relatedData?.data ?? [] as SeriesAniDBRelatedType[];
-  const similarData = useGetAniDBSimilarQuery({ seriesId });
+  const similarData = useGetAniDBSimilarQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
 
-  const jpOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (JP)'), [seriesData.requestId]);
-  const enOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (EN)'), [seriesData.requestId]);
+  const jpOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (JP)'), [series]);
+  const enOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (EN)'), [series]);
+
+  if (!seriesId) return null;
 
   return (
     <React.Fragment>

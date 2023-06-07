@@ -51,11 +51,8 @@ const renderSizes = (ranges) => {
 
 const SeriesFileSummary = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
 
-  const fileSummaryData = useGetSeriesFileSummeryQuery({ SeriesID: seriesId });
+  const fileSummaryData = useGetSeriesFileSummeryQuery({ SeriesID: seriesId! }, { skip: !seriesId });
   const fileSummary = fileSummaryData.data;
 
   const summary = useMemo(() => {
@@ -91,6 +88,8 @@ const SeriesFileSummary = () => {
       Groups,
     };
   }, [fileSummary]);
+
+  if (!seriesId) return null;
 
   return (
     <div className="flex gap-x-8">

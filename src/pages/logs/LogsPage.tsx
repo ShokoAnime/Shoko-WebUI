@@ -27,7 +27,7 @@ const LogsPage = () => {
   useEffect(() => {
     if (!isScrollToBottom || logLines.length === 0) return;
     rowVirtualizer.scrollToIndex(logLines.length - 1, { align: 'start' }); // 'start' scrolls to end and 'end' scrolls to start. ¯\_(ツ)_/¯
-  }, [logLines.length, isScrollToBottom]);
+  }, [logLines.length, isScrollToBottom, rowVirtualizer]);
 
   return (
     <div className="flex flex-col gap-y-8 grow">

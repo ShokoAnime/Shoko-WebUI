@@ -46,7 +46,7 @@ const SeriesEpisodes = () => {
       search,
       pageSize,
     }).then().catch(error => console.error(error)).finally(() => setFetchingPage(false));
-  }, 200), [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
+  }, 200), [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, seriesId, fetchEpisodes]);
 
   useEffect(() => {
     // Cancel fetch if query params change
@@ -57,7 +57,7 @@ const SeriesEpisodes = () => {
     fetchPage(1);
 
     return () => fetchPage.cancel();
-  }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched]);
+  }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, fetchPage]);
 
   return (
     <div className="flex gap-x-8">

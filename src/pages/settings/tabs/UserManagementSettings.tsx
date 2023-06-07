@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -44,7 +44,7 @@ function UserManagementSettings() {
   const navigate = useNavigate();
 
   const usersQuery = useGetUsersQuery();
-  const users = usersQuery.data ?? [];
+  const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
   const [editUser] = usePutUserMutation();
   const [changePassword, changePasswordResult] = usePostChangePasswordMutation();
 
@@ -76,7 +76,7 @@ function UserManagementSettings() {
         toastId: 'unsaved',
       });
     }
-  }, [selectedUser]);
+  }, [selectedUser, users]);
 
   const handleInputChange = (event) => {
     const { id } = event.target;

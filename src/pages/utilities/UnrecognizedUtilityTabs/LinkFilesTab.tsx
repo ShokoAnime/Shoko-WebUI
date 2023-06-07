@@ -78,7 +78,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
       <div className="ml-auto">{data.Type}&nbsp;&nbsp;|&nbsp;&nbsp;</div>
       <div className="w-10">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
     </div>
-  ), []);
+  ), [updateSelectedSeries]);
 
   const searchRows: Array<React.ReactNode> = [];
   forEach(searchResults.data, (result) => {
@@ -124,12 +124,12 @@ function LinkFilesTab() {
       // eslint-disable-next-line no-param-reassign
       linkState[itemIndex].EpisodeID = EpisodeID;
     }
-  }), []);
+  }), [setLinks]);
 
   const removeLink = useCallback((FileID: number) => setLinks((linkState) => {
     const itemIndex = linkState.reverse().findIndex(link => link.FileID === FileID);
     linkState.splice(itemIndex, 1);
-  }), []);
+  }), [setLinks]);
 
   const updateSelectedLink = (idx: number) => {
     if (selectedLink === idx) setSelectedLink(-1);
@@ -145,25 +145,29 @@ function LinkFilesTab() {
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
   const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const episodes = episodesQuery?.data?.List || [];
+  const episodes = useMemo(() => episodesQuery?.data?.List || [], [episodesQuery]);
 
   useEffect(() => {
     if (!selectedSeries.ShokoID) { return; }
     updateEpisodes({ seriesID: selectedSeries.ShokoID, pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB', 'TvDB'] }).catch(() => {});
-  }, [selectedSeries.ShokoID]);
+  }, [selectedSeries.ShokoID, updateEpisodes]);
 
   useEffect(() => {
     if (links.length > 0) return;
     const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
     setLinks(newLinks);
-  }, [episodes, links]);
+  }, [episodes, links, selectedRows, setLinks]);
 
   const updateSelectedSeries = (series: SeriesAniDBSearchResult) => {
     setSelectedSeries(series);
     setLinks([]);
   };
 
-  const episodeOptions = useMemo(() => episodes.map(item => ({ value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 })), [episodes]);
+  const episodeOptions = useMemo(() => {
+    return episodes.map(item => (
+      { value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 }
+    ));
+  }, [episodes]);
   const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
 
   const refreshAniDB = async () => {
@@ -183,7 +187,7 @@ function LinkFilesTab() {
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
     const file = find(selectedRows, ['ID', item.FileID]);
     return file?.Locations?.[0].RelativePath ?? item.FileID;
-  }), [links]);
+  }), [links, selectedRows]);
 
   const renderFileLinks = () => {
     const result: React.ReactNode[] = [];
@@ -226,7 +230,7 @@ function LinkFilesTab() {
       );
     });
     return manualLinkFileRows;
-  }, []);
+  }, [selectedRows]);
 
   const makeLinks = () => {
     forEach(groupedLinksMap, async (fileIds, episodeID) => {

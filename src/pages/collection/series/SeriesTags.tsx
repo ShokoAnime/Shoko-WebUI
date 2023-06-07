@@ -24,14 +24,13 @@ function SeriesTag(props: { item: TagType }) {
 
 const SeriesTags = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
 
   const [search, setSearch] = useState('');
 
-  const tagsData = useGetSeriesTagsQuery({ seriesId });
+  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const tags = tagsData.data;
+
+  if (!seriesId) return null;
 
   return (
     <div className="flex gap-x-8">

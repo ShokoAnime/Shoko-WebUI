@@ -56,7 +56,7 @@ function FirstRunPage() {
 
   useEffect(() => {
     if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) navigate('../login', { replace: true });
-  }, [status.isLoading]);
+  }, [navigate, status]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
 
@@ -88,7 +88,7 @@ function FirstRunPage() {
     }
 
     return version.data.Server.Version;
-  }, [version.isFetching, version.requestId]);
+  }, [version]);
 
   return (
     <div className="flex w-full h-full p-8 gap-x-8 max-w-[120rem] mx-auto">

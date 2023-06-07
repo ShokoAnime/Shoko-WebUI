@@ -47,7 +47,7 @@ function LoginPage() {
     const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
     setLoginImage(uri);
     setLoginSeriesTitle(data?.Series?.Name ?? '');
-  }, [imageMetadata.data]);
+  }, [imageMetadata]);
 
   useEffect(() => {
     if (!status.data) setPollingInterval(500);
@@ -56,7 +56,7 @@ function LoginPage() {
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
       navigate('/', { replace: true });
     }
-  }, [status.data]);
+  }, [status, apiSession, navigate]);
 
   useEffect(() => {
     if (!get(version, 'data.Server', false)) { return; }
@@ -86,7 +86,7 @@ function LoginPage() {
     }
 
     return version.data.Server.Version;
-  }, [version.isFetching, version.requestId]);
+  }, [version]);
 
   return (
     <React.Fragment>

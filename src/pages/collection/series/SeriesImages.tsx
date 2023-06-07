@@ -39,14 +39,11 @@ const InfoLine = ({ title, value }) => (
 
 const SeriesImages = () => {
   const { seriesId } = useParams();
-  if (!seriesId) {
-    return null;
-  }
 
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
 
-  const imagesData = useGetSeriesImagesQuery({ seriesId });
+  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const images = imagesData.data;
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
@@ -58,6 +55,8 @@ const SeriesImages = () => {
     Fanarts: 'h-[16rem] w-[28.29rem]',
     Banners: 'h-[8rem] w-[43.25rem]',
   };
+
+  if (!seriesId) return null;
 
   return (
     <div className="flex gap-x-8">

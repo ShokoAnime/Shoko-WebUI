@@ -54,11 +54,9 @@ const Series = () => {
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  if (!seriesId) { return null; }
-
-  const seriesData = useGetSeriesQuery({ seriesId, includeDataFrom: ['AniDB'] });
-  const series: SeriesDetailsType = seriesData?.data ?? {} as SeriesDetailsType;
-  const tagsData = useGetSeriesTagsQuery({ seriesId, excludeDescriptions: true });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
   const groupData = useGetGroupQuery({ groupId: series.IDs?.ParentGroup }, { skip: !series.IDs?.ParentGroup });
   const group = groupData?.data ?? {} as CollectionGroupType;
@@ -76,7 +74,7 @@ const Series = () => {
     return moment(series.AniDB.EndDate) > moment();
   }, [series]);
 
-  if (!seriesData.isSuccess) { return null; }
+  if (!seriesId || !seriesData.isSuccess) return null;
 
   return (
     <div className="flex flex-col gap-y-8">

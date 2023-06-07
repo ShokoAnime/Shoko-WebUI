@@ -1,5 +1,5 @@
 import React, {
-  useCallback, useEffect, useMemo, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 import { find, toInteger } from 'lodash';
 import { Icon } from '@mdi/react';
@@ -109,10 +109,6 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
   useEffect(() => {
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
-
-  useMemo(() => {
-
-  }, [options, epFilter]);
 
   const handleEpFilter = (event) => {
     setEpFilter(toInteger(event.target.value));
