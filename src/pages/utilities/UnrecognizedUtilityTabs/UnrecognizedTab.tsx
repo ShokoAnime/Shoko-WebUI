@@ -270,6 +270,9 @@ function UnrecognizedTab() {
 
   const avdumpFiles = async () => {
     for (let i = 0; i < selectedRows.length; i += 1) {
+      // Files cannot be dumped in parallel on the server, yet
+      // Use Promise.all when avdump3 is implemented and parallel dumping is possible
+      // eslint-disable-next-line no-await-in-loop
       await runAvdump(selectedRows[i].ID);
     }
   };

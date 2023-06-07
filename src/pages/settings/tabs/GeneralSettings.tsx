@@ -87,9 +87,9 @@ function GeneralSettings() {
   const version = useGetInitVersionQuery();
   const themes = useGetWebuiThemesQuery();
 
-  const currentTheme = useMemo(() => {
-    return themes.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme);
-  }, [themes, WebUI_Settings.theme]);
+  const currentTheme = useMemo(() => (
+    themes.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
+  ), [themes, WebUI_Settings.theme]);
 
   const handleExclusionChange = (event: any) => {
     const { id, checked } = event.target;

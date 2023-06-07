@@ -196,11 +196,12 @@ function ManuallyLinkedTab() {
       </div>
 
       <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
-        {seriesQuery.isFetching ? (
+        {seriesQuery.isFetching && (
           <div className="flex grow justify-center items-center">
             <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
           </div>
-        ) : series.Total > 0 ? (
+        )}
+        {!seriesQuery.isFetching && series.Total > 0 && (
           <div className="flex flex-col w-full overflow-y-auto">
             <div className="flex px-6 py-4 bg-background font-semibold sticky top-0 z-[1] rounded-md border border-background-border">
               <div className="grow">Series</div>
@@ -229,7 +230,8 @@ function ManuallyLinkedTab() {
               </div>
             </div>
           </div>
-        ) : (
+        )}
+        {!seriesQuery.isFetching && series.Total === 0 && (
           <div className="flex items-center justify-center grow font-semibold">No manually linked file(s)!</div>
         )}
       </div>

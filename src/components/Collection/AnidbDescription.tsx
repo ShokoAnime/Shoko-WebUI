@@ -2,10 +2,7 @@ import React from 'react';
 import { mdiAccount } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-const charRegex = new RegExp(
-  '(http:\\/\\/anidb.net\\/c(?:h|r)[0-9]+) \\[([^\\]]+)]',
-  'g',
-);
+const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
 
 const AnidbLink = ({ url, character, text }) => (
   <span className="text-highlight-1" title={url}>

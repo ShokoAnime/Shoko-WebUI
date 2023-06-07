@@ -163,11 +163,11 @@ function LinkFilesTab() {
     setLinks([]);
   };
 
-  const episodeOptions = useMemo(() => {
-    return episodes.map(item => (
+  const episodeOptions = useMemo(() => (
+    episodes.map(item => (
       { value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 }
-    ));
-  }, [episodes]);
+    ))
+  ), [episodes]);
   const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
 
   const refreshAniDB = async () => {

@@ -67,7 +67,7 @@ type Props = {
 function LanguagesModal({ type, onClose }: Props) {
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
-  const LanguagePreference = useMemo(() => type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en'], [type, settings]);
+  const LanguagePreference = useMemo(() => (type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en']), [type, settings]);
   const [patchSettings] = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as Array<string>);

@@ -129,7 +129,7 @@ function LoginPage() {
                 <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
                 <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold" labelRight />
-                <Button className="bg-highlight-1 py-2 w-full font-semibold" type="submit" loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                <Button className="bg-highlight-1 py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
               </form>
             )}
             {status.data?.State === 3 && (
