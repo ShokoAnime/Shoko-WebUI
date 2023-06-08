@@ -148,7 +148,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
           {options.map((item, idx) => (
             <>
               {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-background-alt h-0.5 my-3" />)}
-              {(epFilter > 0 && (item.number === epFilter || epFilter === 0)) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
+              {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
             </>
           ))}
         </div>
