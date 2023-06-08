@@ -157,7 +157,7 @@ function ManuallyLinkedTab() {
   }), [setSelectedFiles]);
 
   const unlinkFiles = () => {
-    const fileIds = Object.keys(selectedFiles).map(parseInt);
+    const fileIds = Object.keys(selectedFiles);
 
     let failedFiles = 0;
     fileIds.forEach((fileId) => {
