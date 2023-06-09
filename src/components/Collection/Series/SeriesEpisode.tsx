@@ -69,8 +69,8 @@ const SeriesEpisode = ({ episode }: Props) => {
       <div className="flex gap-x-8 p-8 items-center z-10">
         <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative group" hidePlaceholderOnHover zoomOnHover>
           <div className="absolute right-3 top-3 z-10 group-hover:opacity-0 pointer-events-none transition-opacity">
-            <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />)
-            <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />)
+            <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
+            <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
           </div>
           <div className="pointer-events-none opacity-0 flex bg-background/50 h-full justify-between p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
             <div>
