@@ -48,6 +48,44 @@ const userApi = splitV3Api.injectEndpoints({
         method: 'POST',
       }),
     }),
+
+    // Change the user avatar for a user
+    postUserChangeAvatar: build.mutation<void, { avatar: File, userId: number }>({
+      query: ({ avatar, userId }) => {
+        const formData = new FormData();
+        formData.append('image', avatar);
+
+        return {
+          url: `User/${userId}/ChangeAvatar`,
+          method: 'POST',
+          body: formData,
+          prepareHeaders: (headers) => {
+            headers.set('Content-Type', 'multipart/form-data');
+            return headers;
+          },
+        };
+      },
+      invalidatesTags: ['Users'],
+    }),
+
+    // Remove the user avatar for a user
+    deleteUserAvatar: build.mutation<void, number>({
+      query: userId => ({
+        url: `User/${userId}/ChangeAvatar`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Users'],
+    }),
+
+    // Get the current Shoko.Server.API.v3.Models.Shoko.User
+    getCurrentUser: build.query<UserType, void>({
+      query: () => ({ url: 'User/Current' }),
+      transformResponse: (response: ApiUserType) => {
+        const { CommunitySites, ...tempUser } = response;
+        return { ...tempUser, CommunitySites: simplifyCommunitySites(CommunitySites) };
+      },
+      providesTags: ['Users'],
+    }),
   }),
 });
 
@@ -55,4 +93,7 @@ export const {
   useGetUsersQuery,
   usePutUserMutation,
   usePostChangePasswordMutation,
+  usePostUserChangeAvatarMutation,
+  useDeleteUserAvatarMutation,
+  useGetCurrentUserQuery,
 } = userApi;

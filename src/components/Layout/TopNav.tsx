@@ -24,6 +24,7 @@ import { setLayoutEditMode } from '@/core/slices/mainpage';
 
 import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 import { RootState } from '@/core/store';
@@ -59,7 +60,6 @@ function TopNav() {
   const { pathname } = useLocation();
 
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
-  const username = useSelector((state: RootState) => state.apiSession.username);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -68,6 +68,8 @@ function TopNav() {
 
   const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, { skip: DEV || !settingsQuery.isSuccess });
   const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
+
+  const currentUser = useGetCurrentUserQuery();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
@@ -140,9 +142,13 @@ function TopNav() {
             </div>
             <div className="flex items-center gap-x-2">
               <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-8 h-8 text-xl rounded-full mr-1">
-                {username.charAt(0)}
+                {
+                  currentUser.data?.Avatar.RelativeFilepath
+                    ? (<img src={`/api/v3/Image/User/Avatar/${currentUser.data?.Avatar.ID}?requestId=${currentUser.requestId}`} alt="avatar" className="w-8 h-8 rounded-full" />)
+                    : currentUser.data?.Username.charAt(0)
+                }
               </div>
-              <span>{username}</span>
+              <span>{currentUser.data?.Username}</span>
               <Icon path={mdiChevronDown} size={0.6666} />
             </div>
             <NavLink to="settings" className={({ isActive }) => (isActive ? 'text-highlight-1' : '')} onClick={() => closeModalsAndSubmenus()}>

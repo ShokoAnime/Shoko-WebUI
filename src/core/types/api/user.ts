@@ -3,6 +3,10 @@ type BaseUserType = {
   Username: string;
   IsAdmin: boolean;
   RestrictedTags: Array<number>;
+  Avatar: {
+    RelativeFilepath: string;
+    ID: number;
+  };
 };
 
 export type CommunitySitesType = {
