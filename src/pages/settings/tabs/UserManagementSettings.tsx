@@ -5,7 +5,7 @@ import {
   cloneDeep, find, isEqual, remove,
 } from 'lodash';
 import { Icon } from '@mdi/react';
-import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
@@ -16,9 +16,9 @@ import Input from '@/components/Input/Input';
 import type { UserType } from '@/core/types/api/user';
 
 import {
-  useGetUsersQuery,
-  usePostChangePasswordMutation,
-  usePutUserMutation,
+  useDeleteUserAvatarMutation,
+  useGetUsersQuery, usePutUserMutation,
+  usePostChangePasswordMutation, usePostUserChangeAvatarMutation,
 } from '@/core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
@@ -37,6 +37,10 @@ const initialUser = {
     Trakt: false,
     Plex: false,
   },
+  Avatar: {
+    RelativeFilepath: '',
+    ID: 0,
+  },
 } as UserType;
 
 function UserManagementSettings() {
@@ -47,6 +51,8 @@ function UserManagementSettings() {
   const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
   const [editUser] = usePutUserMutation();
   const [changePassword, changePasswordResult] = usePostChangePasswordMutation();
+  const [editAvatar, editAvatarResult] = usePostUserChangeAvatarMutation();
+  const [deleteAvatar, deleteAvatarResult] = useDeleteUserAvatarMutation();
 
   const [selectedUser, setSelectedUser] = useState(initialUser);
   const [newPassword, setNewPassword] = useState('');
@@ -66,9 +72,10 @@ function UserManagementSettings() {
 
   useEffect(() => {
     if (isEqual(selectedUser, initialUser)) return;
-    if (isEqual(selectedUser, find(users, user => user.ID === selectedUser.ID))) {
+    const user = find(users, tempUser => tempUser.ID === selectedUser.ID);
+    if (isEqual(selectedUser, user)) {
       toast.dismiss('unsaved');
-    } else {
+    } else if (isEqual(selectedUser.Avatar, user?.Avatar)) { // This is a hack for the toast to not show up when avatar is changed
       toast.info('', 'You have unsaved changes!', {
         autoClose: false,
         draggable: false,
@@ -122,6 +129,19 @@ function UserManagementSettings() {
     setNewPassword('');
     setLogoutOthers(false);
     setSelectedUser(find(users, user => user.ID === selectedUser.ID)!);
+  };
+
+  const changeAvatar = (avatar: File | undefined) => {
+    if (!avatar) return;
+    editAvatar({ avatar, userId: selectedUser.ID })
+      .then(() => toast.success('', 'Avatar updated!'))
+      .catch(error => console.error(error));
+  };
+
+  const removeAvatar = () => {
+    deleteAvatar(selectedUser.ID)
+      .then(() => toast.success('', 'Avatar removed!'))
+      .catch(error => console.error(error));
   };
 
   const handlePlexLogin = () => {
@@ -201,6 +221,24 @@ function UserManagementSettings() {
           </div>
           <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className="h-8" />
           <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className="h-8" />
+          <div className="flex items-center justify-between">
+            Change Avatar (512x512)
+            <div className="flex gap-x-2">
+              <label htmlFor="avatar" className="px-3 py-2 bg-background-alt border border-background-border rounded-md text-sm drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
+                {
+                  editAvatarResult.isLoading
+                    ? <Icon path={mdiLoading} spin size={0.8333} />
+                    : 'Upload'
+                }
+                <input type="file" id="avatar" onChange={e => changeAvatar(e.target.files?.[0])} className="hidden" />
+              </label>
+              {selectedUser.Avatar.RelativeFilepath && (
+                <Button onClick={removeAvatar} loading={deleteAvatarResult.isLoading} loadingSize={0.8333} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border">
+                  Remove
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
