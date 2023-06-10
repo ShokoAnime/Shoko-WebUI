@@ -58,6 +58,15 @@ const userApi = splitV3Api.injectEndpoints({
       invalidatesTags: ['Users'],
     }),
 
+    // Remove the user.
+    deleteUser: build.mutation<void, number>({
+      query: userId => ({
+        url: `User/${userId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Users'],
+    }),
+
     // Change the password for the current user or a user by id.
     postChangePassword: build.mutation<void, { Password: string; RevokeAPIKeys: boolean; ID?: number; }>({
       query: ({ ID, ...body }) => ({
@@ -83,6 +92,7 @@ export const {
   useGetUsersQuery,
   usePostUserMutation,
   usePutUserMutation,
+  useDeleteUserMutation,
   usePostChangePasswordMutation,
   useGetCurrentUserQuery,
 } = userApi;

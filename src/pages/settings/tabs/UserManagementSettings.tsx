@@ -17,6 +17,7 @@ import type { UserType } from '@/core/types/api/user';
 import {
   useGetUsersQuery, usePutUserMutation,
   usePostChangePasswordMutation, useGetCurrentUserQuery,
+  useDeleteUserMutation,
 } from '@/core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
@@ -53,6 +54,7 @@ function UserManagementSettings() {
   const usersQuery = useGetUsersQuery();
   const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
   const [editUser] = usePutUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const [changePassword, changePasswordResult] = usePostChangePasswordMutation();
   const [selectedUser, setSelectedUser] = useImmer(initialUser);
   const [newPassword, setNewPassword] = useState('');
@@ -143,6 +145,15 @@ function UserManagementSettings() {
     setSelectedUser((immerState) => { immerState.Avatar = ''; });
   };
 
+  const deleteSelectedUser = (user: UserType) => {
+    if (currentUser.data?.ID === user.ID) {
+      toast.error('Woah there buddy!', 'You just tried to delete yourself from the matrix. That\'s not the way to go about doing it.');
+    } else {
+      deleteUser(user.ID)
+        .catch(error => console.error(error));
+    }
+  };
+
   const handlePlexLogin = () => {
     window.open(getPlexLoginUrlResult?.data, '_blank');
     setPlexPollingInterval(1000);
@@ -198,9 +209,11 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1" />
+                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-highlight-1" />
                 </div>
-                <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+                <div onClick={() => deleteSelectedUser(user)}>
+                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-highlight-3" />
+                </div>
               </div>
             </div>
           ))}
