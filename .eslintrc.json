@@ -46,7 +46,7 @@
     "no-console": ["error", { "allow": ["warn", "error"] }],
     "no-param-reassign": [
       "error",
-      { "props": true, "ignorePropertyModificationsFor": ["sliceState"] }
+      { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState"] }
     ],
     "prefer-object-spread": "off",
     "prefer-promise-reject-errors": "off",

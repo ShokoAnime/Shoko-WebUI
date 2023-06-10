@@ -16,7 +16,7 @@ const simplifyCommunitySites = (sites: Array<string>) => {
 
 const userApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
-    // List all Users. Admin only
+    // List all users.
     getUsers: build.query<Array<UserType>, void>({
       query: () => ({ url: 'User' }),
       transformResponse: (response: Array<ApiUserType>) => {
@@ -30,54 +30,44 @@ const userApi = splitV3Api.injectEndpoints({
       providesTags: ['Users'],
     }),
 
-    // Edit User. This replaces all values, except Plex and Password.
-    putUser: build.mutation<void, UserType>({
+    // Add a new user.
+    postUser: build.mutation<UserType, Omit<UserType, 'ID'>>({
       query: ({ CommunitySites, ...user }) => ({
         url: 'User',
-        method: 'PUT',
-        body: { ...user, CommunitySites: map(pickBy(CommunitySites, identity), (_, key) => key) },
+        method: 'POST',
+        body: { ...user, CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null } as ApiUserType,
       }),
+      transformResponse: (user: ApiUserType) => {
+        const { CommunitySites, ...tempUser } = user;
+        return { ...tempUser, CommunitySites: simplifyCommunitySites(CommunitySites) };
+      },
       invalidatesTags: ['Users'],
     }),
 
-    // Change the password for a user
-    postChangePassword: build.mutation<void, { Password: string, RevokeAPIKeys: boolean, userId: number, admin: boolean }>({
-      query: ({ admin, userId, ...body }) => ({
-        url: `User/${admin ? userId.toString() : 'Current'}/ChangePassword`,
+    // Edit the current user or a user by id using a raw object to do a partial update.
+    putUser: build.mutation<UserType, UserType>({
+      query: ({ ID, CommunitySites, Password: __, ...user }) => ({
+        url: `User/${ID}`,
+        method: 'PUT',
+        body: { ...user, CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null } as ApiUserType,
+      }),
+      transformResponse: (user: ApiUserType) => {
+        const { CommunitySites, ...tempUser } = user;
+        return { ...tempUser, CommunitySites: simplifyCommunitySites(CommunitySites) };
+      },
+      invalidatesTags: ['Users'],
+    }),
+
+    // Change the password for the current user or a user by id.
+    postChangePassword: build.mutation<void, { Password: string; RevokeAPIKeys: boolean; ID?: number; }>({
+      query: ({ ID, ...body }) => ({
+        url: `User/${ID || 'Current'}/ChangePassword`,
         body,
         method: 'POST',
       }),
     }),
 
-    // Change the user avatar for a user
-    postUserChangeAvatar: build.mutation<void, { avatar: File, userId: number }>({
-      query: ({ avatar, userId }) => {
-        const formData = new FormData();
-        formData.append('image', avatar);
-
-        return {
-          url: `User/${userId}/ChangeAvatar`,
-          method: 'POST',
-          body: formData,
-          prepareHeaders: (headers) => {
-            headers.set('Content-Type', 'multipart/form-data');
-            return headers;
-          },
-        };
-      },
-      invalidatesTags: ['Users'],
-    }),
-
-    // Remove the user avatar for a user
-    deleteUserAvatar: build.mutation<void, number>({
-      query: userId => ({
-        url: `User/${userId}/ChangeAvatar`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Users'],
-    }),
-
-    // Get the current Shoko.Server.API.v3.Models.Shoko.User
+    // Get the current user.
     getCurrentUser: build.query<UserType, void>({
       query: () => ({ url: 'User/Current' }),
       transformResponse: (response: ApiUserType) => {
@@ -91,9 +81,8 @@ const userApi = splitV3Api.injectEndpoints({
 
 export const {
   useGetUsersQuery,
+  usePostUserMutation,
   usePutUserMutation,
   usePostChangePasswordMutation,
-  usePostUserChangeAvatarMutation,
-  useDeleteUserAvatarMutation,
   useGetCurrentUserQuery,
 } = userApi;

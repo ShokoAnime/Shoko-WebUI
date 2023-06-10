@@ -143,8 +143,8 @@ function TopNav() {
             <div className="flex items-center gap-x-2">
               <div className="flex items-center justify-center bg-highlight-1/75 hover:bg-highlight-1 w-8 h-8 text-xl rounded-full mr-1">
                 {
-                  currentUser.data?.Avatar.RelativeFilepath
-                    ? (<img src={`/api/v3/Image/User/Avatar/${currentUser.data?.Avatar.ID}?requestId=${currentUser.requestId}`} alt="avatar" className="w-8 h-8 rounded-full" />)
+                  currentUser.data?.Avatar
+                    ? (<img src={currentUser.data?.Avatar} alt="avatar" className="w-8 h-8 rounded-full" />)
                     : currentUser.data?.Username.charAt(0)
                 }
               </div>
