@@ -1,11 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import {
-  cloneDeep, find, isEqual, remove,
-} from 'lodash';
+import { cloneDeep, find, isEqual, remove } from 'lodash';
+import { useImmer } from 'use-immer';
 import { Icon } from '@mdi/react';
-import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
@@ -16,9 +15,9 @@ import Input from '@/components/Input/Input';
 import type { UserType } from '@/core/types/api/user';
 
 import {
-  useDeleteUserAvatarMutation,
   useGetUsersQuery, usePutUserMutation,
-  usePostChangePasswordMutation, usePostUserChangeAvatarMutation,
+  usePostChangePasswordMutation, useGetCurrentUserQuery,
+  useDeleteUserMutation,
 } from '@/core/rtkQuery/splitV3Api/userApi';
 import {
   useGetPlexAuthenticatedQuery,
@@ -26,6 +25,13 @@ import {
   useLazyGetPlexLoginUrlQuery,
 } from '@/core/rtkQuery/plexApi';
 import { useGetAniDBTagsQuery } from '@/core/rtkQuery/splitV3Api/tagsApi';
+
+const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
+  const reader = new FileReader();
+  reader.onload = () => resolve(reader.result as string);
+  reader.onerror = reject;
+  reader.readAsDataURL(file);
+});
 
 const initialUser = {
   ID: 0,
@@ -37,24 +43,20 @@ const initialUser = {
     Trakt: false,
     Plex: false,
   },
-  Avatar: {
-    RelativeFilepath: '',
-    ID: 0,
-  },
+  Avatar: '',
 } as UserType;
 
 function UserManagementSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const currentUser = useGetCurrentUserQuery();
   const usersQuery = useGetUsersQuery();
   const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
   const [editUser] = usePutUserMutation();
+  const [deleteUser] = useDeleteUserMutation();
   const [changePassword, changePasswordResult] = usePostChangePasswordMutation();
-  const [editAvatar, editAvatarResult] = usePostUserChangeAvatarMutation();
-  const [deleteAvatar, deleteAvatarResult] = useDeleteUserAvatarMutation();
-
-  const [selectedUser, setSelectedUser] = useState(initialUser);
+  const [selectedUser, setSelectedUser] = useImmer(initialUser);
   const [newPassword, setNewPassword] = useState('');
   const [logoutOthers, setLogoutOthers] = useState(false);
   const [plexPollingInterval, setPlexPollingInterval] = useState(0);
@@ -68,14 +70,14 @@ function UserManagementSettings() {
 
   useEffect(() => {
     if (users.length > 0) setSelectedUser(users[0]);
-  }, [users]);
+  }, [users, setSelectedUser]);
 
   useEffect(() => {
     if (isEqual(selectedUser, initialUser)) return;
     const user = find(users, tempUser => tempUser.ID === selectedUser.ID);
     if (isEqual(selectedUser, user)) {
       toast.dismiss('unsaved');
-    } else if (isEqual(selectedUser.Avatar, user?.Avatar)) { // This is a hack for the toast to not show up when avatar is changed
+    } else {
       toast.info('', 'You have unsaved changes!', {
         autoClose: false,
         draggable: false,
@@ -89,7 +91,7 @@ function UserManagementSettings() {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const tempUser = cloneDeep(selectedUser);
-    if (id === 'Trakt') tempUser.CommunitySites[id] = value;
+    if (id === 'Trakt' || id === 'AniDB') tempUser.CommunitySites[id] = value;
     else tempUser[id] = value;
     setSelectedUser(tempUser);
   };
@@ -111,11 +113,10 @@ function UserManagementSettings() {
     changePassword({
       Password: newPassword,
       RevokeAPIKeys: logoutOthers,
-      userId: selectedUser.ID,
-      admin: selectedUser.IsAdmin,
+      ID: selectedUser.ID,
     }).unwrap().then(() => {
       setNewPassword('');
-      if (logoutOthers) {
+      if (currentUser.data?.ID === selectedUser.ID && logoutOthers) {
         toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
         setTimeout(() => {
           dispatch(unsetDetails());
@@ -133,15 +134,24 @@ function UserManagementSettings() {
 
   const changeAvatar = (avatar: File | undefined) => {
     if (!avatar) return;
-    editAvatar({ avatar, userId: selectedUser.ID })
-      .then(() => toast.success('', 'Avatar updated!'))
+    fileToDataUrl(avatar)
+      .then(dataUrl => setSelectedUser((immerState) => { immerState.Avatar = dataUrl; }))
       .catch(error => console.error(error));
   };
 
   const removeAvatar = () => {
-    deleteAvatar(selectedUser.ID)
-      .then(() => toast.success('', 'Avatar removed!'))
-      .catch(error => console.error(error));
+    // Setting the avatar to an empty string will tell the server to remove the
+    // avatar.
+    setSelectedUser((immerState) => { immerState.Avatar = ''; });
+  };
+
+  const deleteSelectedUser = (user: UserType) => {
+    if (currentUser.data?.ID === user.ID) {
+      toast.error('Woah there buddy!', 'You just tried to delete yourself from the matrix. That\'s not the way to go about doing it.');
+    } else {
+      deleteUser(user.ID)
+        .catch(error => console.error(error));
+    }
   };
 
   const handlePlexLogin = () => {
@@ -199,9 +209,11 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="text-highlight-1" />
+                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-highlight-1" />
                 </div>
-                <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+                <div onClick={() => deleteSelectedUser(user)}>
+                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-highlight-3" />
+                </div>
               </div>
             </div>
           ))}
@@ -220,20 +232,17 @@ function UserManagementSettings() {
             {renderPlexLink()}
           </div>
           <Checkbox justify label="Administrator" id="IsAdmin" isChecked={selectedUser.IsAdmin} onChange={handleInputChange} className="h-8" />
+          <Checkbox justify label="AniDB User" id="AniDB" isChecked={selectedUser.CommunitySites?.AniDB} onChange={handleInputChange} className="h-8" />
           <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className="h-8" />
           <div className="flex items-center justify-between">
             Change Avatar (512x512)
             <div className="flex gap-x-2">
               <label htmlFor="avatar" className="px-3 py-2 bg-background-alt border border-background-border rounded-md text-sm drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
-                {
-                  editAvatarResult.isLoading
-                    ? <Icon path={mdiLoading} spin size={0.8333} />
-                    : 'Upload'
-                }
+                Pick
                 <input type="file" id="avatar" onChange={e => changeAvatar(e.target.files?.[0])} className="hidden" />
               </label>
-              {selectedUser.Avatar.RelativeFilepath && (
-                <Button onClick={removeAvatar} loading={deleteAvatarResult.isLoading} loadingSize={0.8333} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border">
+              {selectedUser.Avatar && (
+                <Button onClick={removeAvatar} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border">
                   Remove
                 </Button>
               )}
