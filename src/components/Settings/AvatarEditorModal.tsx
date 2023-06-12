@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
 import { Icon } from '@mdi/react';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
@@ -25,10 +25,9 @@ const AvatarEditorModal = (props: Props) => {
     onClose();
   };
 
-  const handleClose = () => {
-    setScale(1);
-    onClose();
-  };
+  useEffect(() => {
+    if (show) setScale(1);
+  }, [show]);
 
   const handleSave = () => {
     const canvas: HTMLCanvasElement = imageEditor.current?.getImage();
@@ -44,7 +43,6 @@ const AvatarEditorModal = (props: Props) => {
       changeAvatar(canvas.toDataURL('image/webp'));
     }
 
-    setScale(1);
     onClose();
   };
 
@@ -80,7 +78,7 @@ const AvatarEditorModal = (props: Props) => {
         <Icon path={mdiImagePlusOutline} size={1.2} />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={handleClose} className="bg-background-nav px-6 py-2 text-font-main">Cancel</Button>
+        <Button onClick={onClose} className="bg-background-nav px-6 py-2 text-font-main">Cancel</Button>
         <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2">Apply</Button>
       </div>
     </ModalPanel>
