@@ -23,12 +23,12 @@ import {
   createColumnHelper,
   getCoreRowModel,
   getFilteredRowModel,
-  getSortedRowModel,
   Table,
   useReactTable,
 } from '@tanstack/react-table';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useNavigate } from 'react-router-dom';
+import { useDebounce } from 'usehooks-ts';
 
 import toast from '@/components/Toast';
 import { fuzzyFilter } from '@/core/util';
@@ -38,8 +38,7 @@ import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
 import {
-  useDeleteFileMutation,
-  useGetFileUnrecognizedQuery,
+  useDeleteFileMutation, useGetFilesQuery,
   useLazyPostFileAVDumpQuery,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
@@ -48,6 +47,7 @@ import {
 import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
 
 import type { FileType } from '@/core/types/api/file';
+import type { ListResultType } from '@/core/types/api';
 import type { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Input from '@/components/Input/Input';
@@ -59,9 +59,7 @@ import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 const columnHelper = createColumnHelper<FileType>();
 
-const Menu = ({ table }: { table: Table<FileType> }) => {
-  const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
-  const files = filesQuery?.data ?? { Total: 0, List: [] };
+const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void }) => {
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
@@ -137,7 +135,7 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
     <>
       <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
         <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
-          <MenuButton onClick={async () => { table.resetRowSelection(); await filesQuery.refetch(); }} icon={mdiRefresh} name="Refresh List" />
+          <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
           <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
           <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash All" />
           <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy All ED2K Hashes" />
@@ -160,9 +158,12 @@ const Menu = ({ table }: { table: Table<FileType> }) => {
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns: tempColumns } = useUnrecognizedUtilityContext();
+  const { columns: tempColumns, sortCriteria } = useUnrecognizedUtilityContext();
 
-  const filesQuery = useGetFileUnrecognizedQuery({ pageSize: 0 });
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
+
+  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only', search: debouncedSearch, sortOrder: [sortCriteria] });
   const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 
@@ -170,7 +171,6 @@ function UnrecognizedTab() {
 
   const dispatch = useDispatch();
 
-  const [columnFilters, setColumnFilters] = useState([{ id: 'filename', value: '' }] as Array<{ id: string; value: string }>);
   const [dumpInProgress, setDumpInProgress] = useState(false);
 
   const runAvdump = async (fileId: number) => {
@@ -251,11 +251,7 @@ function UnrecognizedTab() {
     filterFns: {
       fuzzy: fuzzyFilter,
     },
-    state: {
-      columnFilters,
-    },
     getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
   const tableSelectedRows = table.getSelectedRowModel();
 
@@ -283,8 +279,8 @@ function UnrecognizedTab() {
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
           <div className="flex items-center gap-x-3">
-            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
-            <Menu table={table} />
+            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
+            <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
             <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
               <Button
                 className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold"
@@ -303,9 +299,15 @@ function UnrecognizedTab() {
       </div>
 
       <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
-        {files.Total > 0 ? (
+        {filesQuery.isLoading && (
+          <div className="flex grow justify-center items-center text-highlight-1">
+            <Icon path={mdiLoading} size={4} spin />
+          </div>
+        )}
+        {!filesQuery.isLoading && files.Total > 0 && (
           <UtilitiesTable table={table} />
-        ) : (
+        )}
+        {!filesQuery.isLoading && files.Total === 0 && (
           <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>
         )}
       </TransitionDiv>
