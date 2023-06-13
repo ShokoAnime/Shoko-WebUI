@@ -33,7 +33,7 @@ function FiltersModal({ show, onClose }: Props) {
     }
   }, [show, activeFilter, trigger, triggerSubFilter]);
 
-  const filteredList = useMemo(() => subFilters.filter(item => !item.Directory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1)), [subFilters, search]);
+  const filteredList = useMemo(() => subFilters.filter(item => !item.IsDirectory && (search === '' || item.Name.toLowerCase().indexOf(search) !== -1)), [subFilters, search]);
 
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold" key={item.IDs.ID}>
@@ -60,7 +60,7 @@ function FiltersModal({ show, onClose }: Props) {
       </div>
       <div className="box-border flex flex-col bg-background-border border border-background-border items-center rounded-md p-4">
         <div className="flex flex-col w-full pr-4 gap-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
-          {filteredList.filter(item => !item.Directory).map(item => renderItem(item))}
+          {filteredList.filter(item => !item.IsDirectory).map(item => renderItem(item))}
         </div>
       </div>
     </div>
@@ -76,12 +76,12 @@ function FiltersModal({ show, onClose }: Props) {
       <div className="flex">
         <div className="flex flex-col min-w-[8rem] border-r-2 border-background-border gap-y-4">
           {renderTabSide('Filters', '0')}
-          {filters.filter(item => item.Directory).map(item => renderTabSide(item.Name, item.IDs.ID))}
+          {filters.filter(item => item.IsDirectory).map(item => renderTabSide(item.Name, item.IDs.ID))}
         </div>
         <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== 'Filters' })}>
-          {filters.filter(item => !item.Directory).map(item => renderItem(item))}
+          {filters.filter(item => !item.IsDirectory).map(item => renderItem(item))}
         </div>
-        {filters.filter(item => item.Directory).map(item => renderSidePanel(item.Name, item.IDs.ID))}
+        {filters.filter(item => item.IsDirectory).map(item => renderSidePanel(item.Name, item.IDs.ID))}
 
       </div>
     </ModalPanel>
