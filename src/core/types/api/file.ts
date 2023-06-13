@@ -217,6 +217,7 @@ export enum FileSortCriteriaEnum {
   SHA1 = 13,
   CRC32 = 14,
   FileName = 15,
+  FileID = 16,
 }
 
 type FileIncludeType = 'false' | 'true' | 'only';
