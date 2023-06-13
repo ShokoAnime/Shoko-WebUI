@@ -1,5 +1,7 @@
+import { PaginationType } from '../api';
 import { SeriesIDsType } from './series';
 import { EpisodeIDsType } from './episode';
+import { DataSourceType } from './common';
 
 type XRefsType = Array<{
   SeriesID: SeriesIDsType;
@@ -197,3 +199,39 @@ export type FileMediaInfoChapterType = {
   Title: string;
   Timestamp: string;
 };
+
+export enum FileSortCriteriaEnum {
+  None = 0,
+  ImportFolderName = 1,
+  ImportFolderID = 2,
+  AbsolutePath = 3,
+  RelativePath = 4,
+  FileSize = 5,
+  DuplicateCount = 6,
+  CreatedAt = 7,
+  ImportedAt = 8,
+  ViewedAt = 9,
+  WatchedAt = 10,
+  ED2K = 11,
+  MD5 = 12,
+  SHA1 = 13,
+  CRC32 = 14,
+}
+
+type FileIncludeType = 'false' | 'true' | 'only';
+
+export type FileRequestType = {
+  includeMissing?: FileIncludeType;
+  includeIgnored?: FileIncludeType;
+  includeVariations?: FileIncludeType;
+  includeDuplicates?: FileIncludeType;
+  includeUnrecognized?: FileIncludeType;
+  includeLinked?: FileIncludeType;
+  includeViewed?: FileIncludeType;
+  includeWatched?: FileIncludeType;
+  sortOrder?: FileSortCriteriaEnum[];
+  includeDataFrom?: DataSourceType[];
+  includeMediaInfo?: boolean;
+  includeXRefs?: boolean;
+  search?: string;
+} & PaginationType;
