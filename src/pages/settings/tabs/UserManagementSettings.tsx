@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { cloneDeep, find, isEqual, remove } from 'lodash';
@@ -12,6 +12,7 @@ import toast from '@/components/Toast';
 import { unsetDetails } from '@/core/slices/apiSession';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
+import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
 import type { UserType } from '@/core/types/api/user';
 
 import {
@@ -25,13 +26,6 @@ import {
   useLazyGetPlexLoginUrlQuery,
 } from '@/core/rtkQuery/plexApi';
 import { useGetAniDBTagsQuery } from '@/core/rtkQuery/splitV3Api/tagsApi';
-
-const fileToDataUrl = (file: File) => new Promise<string>((resolve, reject) => {
-  const reader = new FileReader();
-  reader.onload = () => resolve(reader.result as string);
-  reader.onerror = reject;
-  reader.readAsDataURL(file);
-});
 
 const initialUser = {
   ID: 0,
@@ -61,6 +55,8 @@ function UserManagementSettings() {
   const [logoutOthers, setLogoutOthers] = useState(false);
   const [plexPollingInterval, setPlexPollingInterval] = useState(0);
   const [tagSearch, setTagSearch] = useState('');
+  const [avatarFile, setAvatarFile] = useState<File>();
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
 
   const [getPlexLoginUrl, getPlexLoginUrlResult] = useLazyGetPlexLoginUrlQuery();
   const isPlexAuthenticatedQuery = useGetPlexAuthenticatedQuery(undefined, { pollingInterval: plexPollingInterval });
@@ -132,18 +128,27 @@ function UserManagementSettings() {
     setSelectedUser(find(users, user => user.ID === selectedUser.ID)!);
   };
 
-  const changeAvatar = (avatar: File | undefined) => {
+  const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const avatar = event.target.files?.[0];
+    // eslint-disable-next-line no-param-reassign
+    event.target.value = ''; // This is a hack (yes, another) to make the onChange trigger even when same file is selected
     if (!avatar) return;
-    fileToDataUrl(avatar)
-      .then(dataUrl => setSelectedUser((immerState) => { immerState.Avatar = dataUrl; }))
-      .catch(error => console.error(error));
+    setAvatarFile(avatar);
+    setShowAvatarModal(true);
   };
 
-  const removeAvatar = () => {
-    // Setting the avatar to an empty string will tell the server to remove the
-    // avatar.
-    setSelectedUser((immerState) => { immerState.Avatar = ''; });
-  };
+  const changeAvatar = useCallback((avatar: string) => {
+    setSelectedUser((immerState) => {
+      immerState.Avatar = avatar;
+    });
+  }, [setSelectedUser]);
+
+  const removeAvatar = useCallback(() => {
+    // Setting the avatar to an empty string will tell the server to remove the avatar.
+    setSelectedUser((immerState) => {
+      immerState.Avatar = '';
+    });
+  }, [setSelectedUser]);
 
   const deleteSelectedUser = (user: UserType) => {
     if (currentUser.data?.ID === user.ID) {
@@ -167,7 +172,7 @@ function UserManagementSettings() {
 
   const renderPlexLink = () => {
     if (isPlexAuthenticated) {
-      return <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-s w-16 font-semibold h-8">Unlink</Button>;
+      return <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-xs w-16 font-semibold h-8">Unlink</Button>;
     }
     return getPlexLoginUrlResult?.data ? (
       <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Login</Button>
@@ -235,14 +240,20 @@ function UserManagementSettings() {
           <Checkbox justify label="AniDB User" id="AniDB" isChecked={selectedUser.CommunitySites?.AniDB} onChange={handleInputChange} className="h-8" />
           <Checkbox justify label="Trakt User" id="Trakt" isChecked={selectedUser.CommunitySites?.Trakt} onChange={handleInputChange} className="h-8" />
           <div className="flex items-center justify-between">
-            Change Avatar (512x512)
+            Change Avatar
             <div className="flex gap-x-2">
-              <label htmlFor="avatar" className="px-3 py-2 bg-background-alt border border-background-border rounded-md text-sm drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
+              <label htmlFor="avatar" className="px-3 py-2 bg-background-alt border border-background-border rounded-md text-xs drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
                 Pick
-                <input type="file" id="avatar" onChange={e => changeAvatar(e.target.files?.[0])} className="hidden" />
+                <input
+                  type="file"
+                  id="avatar"
+                  onChange={event => openAvatarModal(event)}
+                  className="hidden"
+                  accept="image/*"
+                />
               </label>
               {selectedUser.Avatar && (
-                <Button onClick={removeAvatar} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border">
+                <Button onClick={removeAvatar} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border text-xs">
                   Remove
                 </Button>
               )}
@@ -294,10 +305,12 @@ function UserManagementSettings() {
         </div>
       </div>
 
-      <div className="flex max-w-[34rem] mt-10 justify-end">
-        <Button onClick={() => handleCancel()} className="bg-background-alt px-3 py-2 border border-background-border">Cancel</Button>
+      <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
+        <Button onClick={() => handleCancel()} className="bg-background-alt px-3 py-2 border border-background-border text-font-main">Cancel</Button>
         <Button onClick={() => editUser(selectedUser)} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
       </div>
+
+      <AvatarEditorModal show={showAvatarModal} onClose={() => setShowAvatarModal(false)} image={avatarFile} changeAvatar={changeAvatar} />
     </>
   );
 }

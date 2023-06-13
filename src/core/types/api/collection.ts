@@ -37,10 +37,10 @@ export type CollectionFilterType = {
     ParentFilter: number | null;
     ID: number;
   },
-  Locked: boolean;
+  IsLocked: boolean;
   ApplyAtSeriesLevel: boolean;
-  Directory: boolean;
-  Hidden: boolean;
+  IsDirectory: boolean;
+  IsHidden: boolean;
   Name: string;
   Size: number;
 };

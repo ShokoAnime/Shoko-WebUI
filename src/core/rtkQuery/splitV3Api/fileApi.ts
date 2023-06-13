@@ -1,5 +1,5 @@
-import type { AVDumpResultType, FileLinkApiType, FileType } from '@/core/types/api/file';
-import type { ListResultType, PaginationType } from '@/core/types/api';
+import type { AVDumpResultType, FileLinkApiType, FileRequestType, FileType } from '@/core/types/api/file';
+import type { ListResultType } from '@/core/types/api';
 import { splitV3Api } from '../splitV3Api';
 
 const fileApi = splitV3Api.injectEndpoints({
@@ -12,18 +12,6 @@ const fileApi = splitV3Api.injectEndpoints({
         params,
         method: 'DELETE',
       }),
-    }),
-
-    // Get ignored files.
-    getFileIgnored: build.query<ListResultType<Array<FileType>>, PaginationType>({
-      query: params => ({ url: 'File/Ignored', params }),
-      providesTags: ['FileIgnored'],
-    }),
-
-    // Get unrecognized files. Shoko.Server.API.v3.Models.Shoko.File.FileDetailed is not relevant here, as there will be no links. Use pageSize and page (index 0) in the query to enable pagination.
-    getFileUnrecognized: build.query<ListResultType<Array<FileType>>, PaginationType>({
-      query: params => ({ url: 'File/Unrecognized', params }),
-      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
     }),
 
     // Mark or unmark a file as ignored.
@@ -79,17 +67,25 @@ const fileApi = splitV3Api.injectEndpoints({
         },
       }),
     }),
+
+    // Get or search through the files accessible to the current user.
+    getFiles: build.query<ListResultType<FileType[]>, FileRequestType>({
+      query: params => ({
+        url: 'File',
+        params,
+      }),
+      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
+    }),
   }),
 });
 
 export const {
   useDeleteFileMutation,
-  useGetFileIgnoredQuery,
-  useGetFileUnrecognizedQuery,
   usePutFileIgnoreMutation,
   useLazyPostFileAVDumpQuery,
   usePostFileRescanMutation,
   usePostFileRehashMutation,
   usePostFileLinkMutation,
   useDeleteFileLinkMutation,
+  useGetFilesQuery,
 } = fileApi;

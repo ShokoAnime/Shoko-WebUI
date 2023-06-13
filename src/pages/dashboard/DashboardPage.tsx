@@ -10,7 +10,7 @@ import Button from '@/components/Input/Button';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import CollectionBreakdown from './panels/CollectionBreakdown';
-import ImportBreakdown from './panels/ImportBreakdown';
+import UnrecognizedFiles from './panels/UnrecognizedFiles';
 import SeriesBreakdown from './panels/SeriesBreakdown';
 import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
@@ -112,7 +112,7 @@ function DashboardPage() {
         <QueueProcessor />
       </div>
       <div key="importBreakdown">
-        <ImportBreakdown />
+        <UnrecognizedFiles />
       </div>
       <div key="recentlyImported">
         <RecentlyImported />
