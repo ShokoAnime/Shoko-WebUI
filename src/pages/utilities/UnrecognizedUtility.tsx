@@ -24,7 +24,7 @@ const columnHelper = createColumnHelper<FileType>();
 function UnrecognizedUtility() {
   const importFolderQuery = useGetImportFoldersQuery();
 
-  const [sortCriteria, setSortCriteria] = useState<FileSortCriteriaEnum>();
+  const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
 
   const columns = useMemo(() => {
     const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
@@ -45,7 +45,7 @@ function UnrecognizedUtility() {
     return [
       columnHelper.accessor(row => get(row, 'Locations.0.ImportFolderID', -1), {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.ImportFolderName)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.ImportFolderName)} className="flex gap-x-2 cursor-pointer items-center">
             Import Folder
             {sortIndicator(FileSortCriteriaEnum.ImportFolderName)}
           </div>
@@ -58,7 +58,7 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', ''), {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.FileName)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.FileName)} className="flex gap-x-2 cursor-pointer items-center">
             Filename
             {sortIndicator(FileSortCriteriaEnum.FileName)}
           </div>
@@ -73,7 +73,7 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor('Hashes.CRC32', {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.CRC32)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.CRC32)} className="flex gap-x-2 cursor-pointer items-center">
             CRC32
             {sortIndicator(FileSortCriteriaEnum.CRC32)}
           </div>
@@ -86,7 +86,7 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor('Size', {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.FileSize)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.FileSize)} className="flex gap-x-2 cursor-pointer items-center">
             Size
             {sortIndicator(FileSortCriteriaEnum.FileSize)}
           </div>
@@ -98,7 +98,7 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor('Created', {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.CreatedAt)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.CreatedAt)} className="flex gap-x-2 cursor-pointer items-center">
             Created
             {sortIndicator(FileSortCriteriaEnum.CreatedAt)}
           </div>

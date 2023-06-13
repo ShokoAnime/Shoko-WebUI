@@ -46,7 +46,7 @@ import {
 } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
 
-import type { FileType } from '@/core/types/api/file';
+import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { ListResultType } from '@/core/types/api';
 import type { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -163,7 +163,12 @@ function UnrecognizedTab() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
-  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only', search: debouncedSearch, sortOrder: [sortCriteria] });
+  const filesQuery = useGetFilesQuery({
+    pageSize: 0,
+    includeUnrecognized: 'only',
+    search: debouncedSearch,
+    sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+  });
   const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
 

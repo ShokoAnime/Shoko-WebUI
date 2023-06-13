@@ -13,7 +13,7 @@ import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/spli
 import { fuzzyFilter } from '@/core/util';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import type { FileType } from '@/core/types/api/file';
+import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { ListResultType } from '@/core/types/api';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -53,7 +53,12 @@ function IgnoredFilesTab() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
-  const filesQuery = useGetFilesQuery({ pageSize: 0, includeIgnored: 'only', search: debouncedSearch, sortOrder: [sortCriteria] });
+  const filesQuery = useGetFilesQuery({
+    pageSize: 0,
+    includeIgnored: 'only',
+    search: debouncedSearch,
+    sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+  });
   const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
 
   const table = useReactTable({
