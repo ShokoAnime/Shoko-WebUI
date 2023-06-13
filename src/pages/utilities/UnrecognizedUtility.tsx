@@ -58,9 +58,9 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', ''), {
         header: () => (
-          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.RelativePath)} className="flex gap-x-2 cursor-pointer">
+          <div onClick={() => handleSortCriteriaChange(FileSortCriteriaEnum.FileName)} className="flex gap-x-2 cursor-pointer">
             Filename
-            {sortIndicator(FileSortCriteriaEnum.RelativePath)}
+            {sortIndicator(FileSortCriteriaEnum.FileName)}
           </div>
         ),
         id: 'filename',
