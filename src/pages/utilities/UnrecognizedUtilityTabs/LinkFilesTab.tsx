@@ -12,7 +12,7 @@ import {
   mdiPlusCircleMultipleOutline,
   mdiSortAlphabeticalAscending,
 } from '@mdi/js';
-import { debounce, filter, find, findIndex, forEach, groupBy, orderBy, toInteger, toNumber } from 'lodash';
+import { debounce, filter, find, findIndex, forEach, groupBy, map, orderBy, toInteger, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import TransitionDiv from '@/components/TransitionDiv';
@@ -232,8 +232,8 @@ function LinkFilesTab() {
     return manualLinkFileRows;
   }, [selectedRows]);
 
-  const makeLinks = () => {
-    forEach(groupedLinksMap, async (fileIds, episodeID) => {
+  const makeLinks = async () => {
+    await Promise.all(map(groupedLinksMap, async (fileIds, episodeID) => {
       const payload: FileLinkApiType = {
         episodeID: toNumber(episodeID),
         fileIDs: [],
@@ -252,14 +252,13 @@ function LinkFilesTab() {
         toast.success('Episode linked!');
       } catch (error) {
         toast.success('Episode linking failed!');
-        return;
       }
+    }));
 
-      await filesQuery.refetch();
-      setLinks([]);
-      setSelectedSeries({} as SeriesAniDBSearchResult);
-      navigate('../');
-    });
+    await filesQuery.refetch();
+    setLinks([]);
+    setSelectedSeries({} as SeriesAniDBSearchResult);
+    navigate('../');
   };
 
   const rangeFill = (rangeStart: string, epType: string) => {
