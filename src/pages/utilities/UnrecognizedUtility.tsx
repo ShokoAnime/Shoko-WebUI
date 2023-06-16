@@ -5,14 +5,14 @@ import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
 import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import { Icon } from '@mdi/react';
+import { mdiMenuDown, mdiMenuUp } from '@mdi/js';
 
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 
 import { fuzzySort } from '@/core/util';
 import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
-import { Icon } from '@mdi/react';
-import { mdiArrowDown, mdiArrowUp } from '@mdi/js';
 
 type ContextType = {
   columns: ColumnDef<FileType, any>[];
@@ -37,8 +37,8 @@ function UnrecognizedUtility() {
     };
 
     const sortIndicator = (criteria: FileSortCriteriaEnum) => {
-      if (sortCriteria === criteria) return <Icon path={mdiArrowUp} size={1} className="text-highlight-1" />;
-      if (sortCriteria === (criteria * -1)) return <Icon path={mdiArrowDown} size={1} className="text-highlight-1" />;
+      if (sortCriteria === criteria) return <Icon path={mdiMenuUp} size={1} className="text-highlight-1" />;
+      if (sortCriteria === (criteria * -1)) return <Icon path={mdiMenuDown} size={1} className="text-highlight-1" />;
       return null;
     };
 
