@@ -143,7 +143,7 @@ function SeriesWithoutFilesUtility() {
 
       <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
         {series.Total > 0 ? (
-          <UtilitiesTable table={table} />
+          <UtilitiesTable table={table} skipSort />
         ) : (
           <div className="flex items-center justify-center grow font-semibold">No series without files!</div>
         )}

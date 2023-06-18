@@ -59,13 +59,16 @@ import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
 
 const columnHelper = createColumnHelper<FileType>();
 
-const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void }) => {
+const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void, setSeriesSelectModal: (show: boolean) => void }) => {
+  const {
+    table, files,
+    refetch, setSeriesSelectModal,
+  } = props;
+
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
   const [fileRescanTrigger] = usePostFileRescanMutation();
-
-  const [seriesSelectModal, setSeriesSelectModal] = useState(false);
 
   const tableSelectedRows = table.getSelectedRowModel();
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
@@ -126,40 +129,34 @@ const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListRe
     if (failedFiles !== fileList.length) toast.success(`Rescanning ${fileList.length} files!`);
   };
 
-  const ed2kLinks = () => {
-    const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath}|${file.Size}|${file.Hashes.ED2K}|/`);
-  };
-
   return (
-    <>
-      <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
-        <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
-          <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
-          <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
-          <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash All" />
-          <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy All ED2K Hashes" />
-        </TransitionDiv>
-        <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length !== 0}>
-          <MenuButton onClick={() => rescanFiles(true)} icon={mdiDatabaseSearchOutline} name="Rescan" />
-          <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
-          <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
-          <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
-          <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
-          <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
-        </TransitionDiv>
-        <span className="text-highlight-2 font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
-      </div>
-      <AvDumpSeriesSelectModal show={seriesSelectModal} onClose={() => setSeriesSelectModal(false)} links={ed2kLinks()} />
-    </>
+    <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
+        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
+        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash All" />
+        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy All ED2K Hashes" />
+      </TransitionDiv>
+      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length !== 0}>
+        <MenuButton onClick={() => rescanFiles(true)} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
+        <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
+        <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
+        <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+      </TransitionDiv>
+      <span className="text-highlight-2 font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+    </div>
   );
 };
 
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns: tempColumns, sortCriteria } = useUnrecognizedUtilityContext();
+  const { columns: tempColumns } = useUnrecognizedUtilityContext();
 
+  const [seriesSelectModal, setSeriesSelectModal] = useState(false);
+  const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
@@ -269,55 +266,84 @@ function UnrecognizedTab() {
     [tableSelectedRows],
   );
 
+  const isAvdumpFinished = useMemo(() => {
+    let notFound = false;
+    forEach(selectedRows, (row) => {
+      if (!avdumpList[row.ID]?.hash) {
+        notFound = true;
+        return false;
+      }
+      return true;
+    });
+    return !notFound;
+  }, [selectedRows, avdumpList]);
+
   const avdumpFiles = async () => {
     for (let i = 0; i < selectedRows.length; i += 1) {
       // Files cannot be dumped in parallel on the server, yet
       // Use Promise.all when avdump3 is implemented and parallel dumping is possible
-      // eslint-disable-next-line no-await-in-loop
-      await runAvdump(selectedRows[i].ID);
+      if (!avdumpList[selectedRows[i].ID]?.hash) {
+        // eslint-disable-next-line no-await-in-loop
+        await runAvdump(selectedRows[i].ID);
+      }
     }
   };
 
+  const handleAvdumpOnClick = () => {
+    if (isAvdumpFinished) setSeriesSelectModal(true);
+    else avdumpFiles().catch(error => console.error(error));
+  };
+
+  const ed2kLinks = () => {
+    const fileList = selectedRows.length > 0 ? selectedRows : files.List;
+    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath}|${file.Size}|${file.Hashes.ED2K}|/`);
+  };
+
   return (
-    <div className="flex flex-col grow gap-y-8">
+    <>
+      <div className="flex flex-col grow gap-y-8">
 
-      <div>
-        <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
-          <div className="flex items-center gap-x-3">
-            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
-            <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
-            <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
-              <Button
-                className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold"
-                onClick={() => navigate('link', { state: { selectedRows } })}
-              >
-                <Icon path={mdiOpenInNew} size={0.8333} />
-                Manual Link
-              </Button>
-              <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={() => avdumpFiles()} disabled={dumpInProgress}>
-                <Icon path={mdiDumpTruck} size={0.8333} />
-                {dumpInProgress ? 'Dumping Files...' : 'AVDump Files'}
-              </Button>
-            </TransitionDiv>
-          </div>
-        </ShokoPanel>
+        <div>
+          <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
+            <div className="flex items-center gap-x-3">
+              <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
+              <Menu table={table} files={files} refetch={() => filesQuery.refetch()} setSeriesSelectModal={setSeriesSelectModal} />
+              <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
+                <Button
+                  className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold"
+                  onClick={() => navigate('link', { state: { selectedRows } })}
+                >
+                  <Icon path={mdiOpenInNew} size={0.8333} />
+                  Manual Link
+                </Button>
+                <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
+                  <Icon path={mdiDumpTruck} size={0.8333} />
+                  {isAvdumpFinished && 'Finish AVDump'}
+                  {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
+                  {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                </Button>
+              </TransitionDiv>
+            </div>
+          </ShokoPanel>
+        </div>
+
+        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
+          {filesQuery.isLoading && (
+            <div className="flex grow justify-center items-center text-highlight-1">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
+          {!filesQuery.isLoading && files.Total > 0 && (
+            <UtilitiesTable table={table} sortCriteria={sortCriteria} setSortCriteria={setSortCriteria} skipSort={Boolean(debouncedSearch)} />
+          )}
+          {!filesQuery.isLoading && files.Total === 0 && (
+            <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>
+          )}
+        </TransitionDiv>
+
       </div>
-
-      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
-        {filesQuery.isLoading && (
-          <div className="flex grow justify-center items-center text-highlight-1">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
-        {!filesQuery.isLoading && files.Total > 0 && (
-          <UtilitiesTable table={table} />
-        )}
-        {!filesQuery.isLoading && files.Total === 0 && (
-          <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>
-        )}
-      </TransitionDiv>
-
-    </div>
+      <AvDumpSeriesSelectModal show={seriesSelectModal} onClose={() => setSeriesSelectModal(false)} links={ed2kLinks()} />
+    </>
   );
 }
 
