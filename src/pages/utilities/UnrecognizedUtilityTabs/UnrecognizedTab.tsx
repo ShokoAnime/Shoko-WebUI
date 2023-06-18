@@ -158,8 +158,9 @@ const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListRe
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns: tempColumns, sortCriteria } = useUnrecognizedUtilityContext();
+  const { columns: tempColumns } = useUnrecognizedUtilityContext();
 
+  const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
@@ -310,7 +311,7 @@ function UnrecognizedTab() {
           </div>
         )}
         {!filesQuery.isLoading && files.Total > 0 && (
-          <UtilitiesTable table={table} />
+          <UtilitiesTable table={table} sortCriteria={sortCriteria} setSortCriteria={setSortCriteria} skipSort={Boolean(debouncedSearch)} />
         )}
         {!filesQuery.isLoading && files.Total === 0 && (
           <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>

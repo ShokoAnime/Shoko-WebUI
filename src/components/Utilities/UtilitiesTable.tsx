@@ -2,15 +2,33 @@ import React, { useRef } from 'react';
 import { flexRender, Row, Table } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
+import { Icon } from '@mdi/react';
+import { mdiMenuUp } from '@mdi/js';
 
-import type { FileType } from '@/core/types/api/file';
+import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   table: Table<FileType> | Table<SeriesType>,
+  sortCriteria: FileSortCriteriaEnum,
+  setSortCriteria: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>,
+  skipSort: boolean;
 };
 
-function UtilitiesTable({ table }: Props) {
+const criteriaMap = {
+  importfolder: FileSortCriteriaEnum.ImportFolderName,
+  filename: FileSortCriteriaEnum.FileName,
+  crc32: FileSortCriteriaEnum.CRC32,
+  size: FileSortCriteriaEnum.FileSize,
+  created: FileSortCriteriaEnum.CreatedAt,
+};
+
+function UtilitiesTable(props: Props) {
+  const {
+    table, skipSort,
+    sortCriteria, setSortCriteria,
+  } = props;
+
   const tableContainerRef = React.useRef<HTMLDivElement>(null);
   const { rows } = table.getRowModel();
 
@@ -47,6 +65,23 @@ function UtilitiesTable({ table }: Props) {
     lastRowSelected.current = row;
   };
 
+  const handleSortCriteriaChange = (id: string) => {
+    const criteria = criteriaMap[id];
+    if (skipSort || !criteria) return;
+
+    setSortCriteria((tempCriteria) => {
+      if (tempCriteria === criteria) return tempCriteria * -1;
+      return criteria;
+    });
+  };
+
+  const sortIndicator = (id: string) => {
+    const criteria = criteriaMap[id];
+    if (skipSort || !criteria || Math.abs(sortCriteria) !== criteria) return null;
+
+    return <Icon path={mdiMenuUp} size={1} className="text-highlight-1 inline ml-2 transition-transform" rotate={sortCriteria === (criteria * -1) ? 180 : 0} />;
+  };
+
   return (
     <div className="w-full grow overflow-y-auto relative" ref={tableContainerRef}>
       <table className="table-fixed text-left border-separate border-spacing-y-2 w-full absolute -top-2" style={{ height: totalSize }}>
@@ -54,13 +89,22 @@ function UtilitiesTable({ table }: Props) {
           {table.getHeaderGroups().map(headerGroup => (
             <tr key={headerGroup.id} className="bg-background">
               {headerGroup.headers.map(header => (
-                <th key={header.id} className={`${header.column.columnDef.meta?.className} py-4 first:rounded-l-md last:rounded-r-md font-semibold border-background-border border-y first:border-l last:border-r first:pl-6`}>
+                <th
+                  key={header.id}
+                  className={cx(
+                    'py-4 first:rounded-l-md last:rounded-r-md font-semibold border-background-border border-y first:border-l last:border-r first:pl-6',
+                    header.column.columnDef.meta?.className,
+                    header.id !== 'status' && !skipSort && 'cursor-pointer',
+                  )}
+                  onClick={() => handleSortCriteriaChange(header.id)}
+                >
                   {header.isPlaceholder
                     ? null
                     : flexRender(
                       header.column.columnDef.header,
                       header.getContext(),
                     )}
+                  {sortIndicator(header.id)}
                 </th>
               ))}
             </tr>
