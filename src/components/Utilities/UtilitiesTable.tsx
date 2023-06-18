@@ -10,8 +10,8 @@ import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   table: Table<FileType> | Table<SeriesType>,
-  sortCriteria: FileSortCriteriaEnum,
-  setSortCriteria: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>,
+  sortCriteria?: FileSortCriteriaEnum,
+  setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>,
   skipSort: boolean;
 };
 
@@ -67,7 +67,7 @@ function UtilitiesTable(props: Props) {
 
   const handleSortCriteriaChange = (id: string) => {
     const criteria = criteriaMap[id];
-    if (skipSort || !criteria) return;
+    if (skipSort || !criteria || !setSortCriteria) return;
 
     setSortCriteria((tempCriteria) => {
       if (tempCriteria === criteria) return tempCriteria * -1;
@@ -77,7 +77,7 @@ function UtilitiesTable(props: Props) {
 
   const sortIndicator = (id: string) => {
     const criteria = criteriaMap[id];
-    if (skipSort || !criteria || Math.abs(sortCriteria) !== criteria) return null;
+    if (skipSort || !criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria) return null;
 
     return <Icon path={mdiMenuUp} size={1} className="text-highlight-1 inline ml-2 transition-transform" rotate={sortCriteria === (criteria * -1) ? 180 : 0} />;
   };
@@ -94,7 +94,7 @@ function UtilitiesTable(props: Props) {
                   className={cx(
                     'py-4 first:rounded-l-md last:rounded-r-md font-semibold border-background-border border-y first:border-l last:border-r first:pl-6',
                     header.column.columnDef.meta?.className,
-                    header.id !== 'status' && !skipSort && 'cursor-pointer',
+                    !skipSort && header.id !== 'status' && 'cursor-pointer',
                   )}
                   onClick={() => handleSortCriteriaChange(header.id)}
                 >
