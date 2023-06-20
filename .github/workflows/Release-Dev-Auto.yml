@@ -78,7 +78,7 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
-          title: New Dev Release!
+          title: New WebUI Dev Build!
           description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
             Update from the WebUI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
