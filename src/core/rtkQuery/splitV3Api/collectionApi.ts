@@ -9,7 +9,7 @@ import { splitV3Api } from '../splitV3Api';
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroups: build.query<InfiniteResultType<CollectionGroupType[]>, PaginationType & { filterId: string }>({
-      query: ({ filterId, ...params }) => ({ url: `Filter/${filterId}/Group`, params }),
+      query: ({ filterId, ...params }) => ({ url: `Filter/${filterId}/Group`, params: { includeEmpty: true, ...params } }),
       transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
