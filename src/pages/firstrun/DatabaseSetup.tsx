@@ -44,11 +44,13 @@ class DatabaseSetup extends React.Component<Props, State> {
 
   renderLegacyDBOptions = () => {
     const {
-      Hostname, Schema, Username, Password,
+      Host, Hostname, Schema, Username, Password,
     } = this.state;
+    const hostId = typeof Host === 'string' ? 'Host' : 'Hostname';
+    const hostValue = Host || Hostname || '';
     return (
       <div className="flex flex-col w-1/2 mt-2">
-        <Input id="Hostname" value={Hostname} label="Hostname" type="text" placeholder="Hostname" onChange={this.handleInputChange} className="py-2" />
+        <Input id={hostId} value={hostValue} label={hostId} type="text" placeholder={hostId} onChange={this.handleInputChange} className="py-2" />
         <Input id="Schema" value={Schema} label="Schema Name" type="text" placeholder="Schema Name" onChange={this.handleInputChange} className="py-2" />
         <Input id="Username" value={Username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} className="py-2" />
         <Input id="Password" value={Password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} className="py-2" />
