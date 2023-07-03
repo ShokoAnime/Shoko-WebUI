@@ -5,8 +5,7 @@ export type SettingsDatabaseType = {
   Username: string;
   Password: string;
   Schema: string;
-  Host: string | undefined;
-  Hostname: string | undefined;
+  Hostname: string;
   SQLite_DatabaseFile: string;
 };
 
