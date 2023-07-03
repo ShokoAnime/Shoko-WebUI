@@ -11,7 +11,7 @@ function* runQuickAction(action) {
   }
 
   let resultJson: any = {};
-  if (data) {
+  if (data !== undefined) {
     resultJson = yield call(ApiActions[key], data);
   } else {
     resultJson = yield call(ApiActions[key]);
