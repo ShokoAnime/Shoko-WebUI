@@ -20,6 +20,7 @@ const SeriesEpisodes = () => {
   const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
+  const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [fetchingPage, setFetchingPage] = useState(false);
   const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
   const episodePages = episodesData.data?.pages ?? {};
@@ -39,6 +40,7 @@ const SeriesEpisodes = () => {
     fetchEpisodes({
       seriesID: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
+      includeHidden: episodeFilterHidden,
       type: episodeFilterType,
       includeWatched: episodeFilterWatched,
       includeDataFrom: ['AniDB', 'TvDB'],
@@ -46,7 +48,7 @@ const SeriesEpisodes = () => {
       search,
       pageSize,
     }).then().catch(error => console.error(error)).finally(() => setFetchingPage(false));
-  }, 200), [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, seriesId, fetchEpisodes]);
+  }, 200), [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, episodeFilterHidden, seriesId, fetchEpisodes]);
 
   useEffect(() => {
     // Cancel fetch if query params change
@@ -79,6 +81,11 @@ const SeriesEpisodes = () => {
           <option value="true">All</option>
           <option value="only">Watched</option>
           <option value="false">Unwatched</option>
+        </Select>
+        <Select id="hidden" label="Hidden Status" value={episodeFilterHidden} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterHidden(event.currentTarget.value)}>
+          <option value="true">All</option>
+          <option value="false">Not Hidden</option>
+          <option value="only">Hidden</option>
         </Select>
       </ShokoPanel>
       <div className="flex flex-col grow gap-y-4">
