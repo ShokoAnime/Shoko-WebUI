@@ -12,6 +12,7 @@ export const initialState = {
     Username: '',
     Password: '',
     Schema: '',
+    Host: '',
     Hostname: '',
     SQLite_DatabaseFile: '',
   },

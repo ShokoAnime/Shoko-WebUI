@@ -179,4 +179,4 @@ tasks.set('start', () => {
 });
 
 // Execute the specified task or default one. E.g.: node run build
-run(/^\w/.test(process.argv[2] || '') ? process.argv[2] : 'start' /* default */);
+run(/^\w/.test(process.argv[2] || '') ? process.argv[2] : 'start' /* default */).catch(() => process.exit(1));
