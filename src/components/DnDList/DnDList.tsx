@@ -41,6 +41,7 @@ function DnDList(props: Props) {
                 )}
               </Draggable>
             ))}
+            {droppableProvided.placeholder}
           </div>
         )}
       </Droppable>

@@ -71,11 +71,10 @@ const seriesApi = splitV3Api.injectEndpoints({
           endpointDefinition,
         }),
       // Always merge incoming data to the cache entry
-      merge: (currentCache, newItems) => {
-        const tempCache = { ...currentCache };
-        tempCache.pages = { ...currentCache.pages, ...newItems.pages };
-        return tempCache;
-      },
+      merge: (currentCache, newItems) => ({
+        pages: { ...currentCache.pages, ...newItems.pages },
+        total: newItems.total,
+      }),
       // Refetch when the page arg changes
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
