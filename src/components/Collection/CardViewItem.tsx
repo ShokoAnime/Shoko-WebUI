@@ -63,7 +63,7 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
             <div className="pointer-events-none opacity-0 flex bg-background/50 h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
-              <Link to="#">
+              <Link to="#" className="h-fit">
                 <Icon path={mdiPencilCircleOutline} size="2rem" className="text-font-main" />
               </Link>
             </div>
