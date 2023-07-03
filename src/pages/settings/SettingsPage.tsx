@@ -288,7 +288,7 @@ function SettingsPage() {
         enterFrom="-translate-x-64"
         enterTo="translate-x-0"
       >
-        <div className="sticky top-[4.25rem]">
+        <div className="sticky top-8">
           <div className="text-xl opacity-100 mb-8">Settings</div>
           <div className="flex flex-col gap-y-4">
             {items.map(item => (

@@ -37,7 +37,7 @@ const GridViewItem = (item: CollectionGroupType) => {
             <CountIcon show={groupCount > 1} className="bg-highlight-5">{item.Size}</CountIcon>
           </div>
           <div className="pointer-events-none opacity-0 flex bg-background/50 h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
-            <Link to="#">
+            <Link to="#" className="h-fit">
               <Icon path={mdiPencilCircleOutline} size="2rem" className="text-font-main" />
             </Link>
           </div>

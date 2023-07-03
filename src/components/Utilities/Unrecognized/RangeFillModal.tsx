@@ -31,8 +31,8 @@ const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
         <SelectSmall label="Type" id="Type" value={epType} onChange={e => setEpType(e.target.value)} className="py-">
           <option value="Normal">Episode</option>
           <option value="Special">Special</option>
+          <option value="Other">Other</option>
         </SelectSmall>
-        {/* <div>Selected Files Starting Entry</div> */}
         <div className="flex justify-between items-center">
           Range Starting Number
           <InputSmall id="RangeStart" type="number" value={rangeStart} onChange={e => setRangeStart(e.target.value)} className="w-16 text-center px-3 py-1" />

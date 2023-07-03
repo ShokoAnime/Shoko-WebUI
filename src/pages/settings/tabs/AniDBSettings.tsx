@@ -203,7 +203,7 @@ function AniDBSettings() {
             </Button>
           </div>
           <div className="flex bg-background-border border border-background-border rounded-md px-3 py-2">
-            <DnDList onDragEnd={onDragEnd}>
+            <DnDList onDragEnd={result => onDragEnd(result)}>
               {newSettings.LanguagePreference.map(language => (
                 {
                   key: language,
