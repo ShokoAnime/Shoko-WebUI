@@ -296,7 +296,7 @@ function UnrecognizedTab() {
 
   const ed2kLinks = () => {
     const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath}|${file.Size}|${file.Hashes.ED2K}|/`);
+    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath ?? '<missing file path>'}|${file.Size}|${file.Hashes.ED2K}|/`);
   };
 
   return (
