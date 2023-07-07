@@ -33,7 +33,7 @@ function UnrecognizedUtility() {
           className: 'w-52',
         },
       }),
-      columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', ''), {
+      columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', '<missing file path>'), {
         header: 'Filename',
         id: 'filename',
         cell: info => <div className="break-all">{info.getValue().split(/[/\\]/g).pop()}</div>,

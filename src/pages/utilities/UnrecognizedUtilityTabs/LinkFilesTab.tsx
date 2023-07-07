@@ -193,7 +193,7 @@ function LinkFilesTab() {
     const result: React.ReactNode[] = [];
     forEach(fileLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
-      const path = file?.Locations?.[0].RelativePath ?? '';
+      const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
       const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
@@ -225,7 +225,7 @@ function LinkFilesTab() {
     forEach(selectedRows, (file) => {
       manualLinkFileRows.push(
         <div className="p-4 w-full odd:bg-background even:bg-background-alt border border-background-border rounded-md leading-5" key={file.ID}>
-          {file.Locations?.[0].RelativePath ?? ''}
+          {file.Locations?.[0].RelativePath ?? '<missing file path>'}
         </div>,
       );
     });

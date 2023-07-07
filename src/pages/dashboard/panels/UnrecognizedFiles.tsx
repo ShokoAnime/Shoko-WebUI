@@ -35,7 +35,7 @@ const FileItem = ({ file }: { file: FileType }) => {
     <div key={file.ID} className="flex items-center">
       <div className="flex flex-col grow">
         <span className="font-semibold">{moment(file.Created).format('yyyy-MM-DD')} / {moment(file.Created).format('hh:mm A')}</span>
-        <span className="break-all max-w-[95%]">{file.Locations[0].RelativePath.split(/[/\\]/g).pop()}</span>
+        <span className="break-all max-w-[95%]">{file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}</span>
       </div>
       <div className="flex justify-between">
         {(avdumpList[file.ID] === undefined || avdumpList[file.ID].fetching) && (

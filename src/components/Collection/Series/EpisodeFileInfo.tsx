@@ -49,12 +49,12 @@ const EpisodeFileInfo = ({ file }) => {
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">File Name</div>
             {/* TODO: Only show filename */}
-            {get(file, 'Locations.0.RelativePath', '')}
+            {get(file, 'Locations.0.RelativePath', '<missing file path>')}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Location</div>
             {/* TODO: Show path not relative path */}
-            {get(file, 'Locations.0.RelativePath', '')}
+            {get(file, 'Locations.0.RelativePath', '<missing file path>')}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Size</div>
