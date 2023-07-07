@@ -78,7 +78,7 @@
     "postcss-import": "^15.1.0",
     "postcss-load-config": "^4.0.1",
     "postcss-preset-env": "^8.4.2",
-    "stylelint": "^15.7.0",
+    "stylelint": "^15.10.1",
     "stylelint-config-standard": "^33.0.0",
     "stylelint-config-tailwindcss": "^0.0.7",
     "stylelint-stylistic": "^0.4.2",
