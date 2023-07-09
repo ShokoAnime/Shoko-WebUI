@@ -117,14 +117,12 @@ const quickActions = {
   'recreate-all-groups': {
     name: 'Recreate All Groups',
     functionName: 'RecreateAllGroups',
-    data: false,
     info: 'Deletes all existing groups in Shoko and recreates them',
   },
 } as {
   [key: string]: {
     name: string;
     functionName: string;
-    data?: boolean;
     info: string;
   }
 };
