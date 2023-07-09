@@ -58,6 +58,7 @@ const actions = {
     data: [
       'avdump-mismatched-files',
       'recreate-all-groups',
+      'rename-all-groups',
       'update-missing-anidb-file-release-groups',
       'update-missing-anidb-file-info',
       'update-all-mediainfo',

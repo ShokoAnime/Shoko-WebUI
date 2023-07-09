@@ -122,6 +122,12 @@ const quickActions = {
     data: false,
     info: 'Deletes all existing groups in Shoko and recreates them',
   },
+  'rename-all-groups': {
+    name: 'Rename All Groups',
+    functionName: 'RenameAllGroups',
+    data: false,
+    info: 'Renames any groups without a custom name set based on the current language preference.'
+  }
 } as {
   [key: string]: {
     name: string;
