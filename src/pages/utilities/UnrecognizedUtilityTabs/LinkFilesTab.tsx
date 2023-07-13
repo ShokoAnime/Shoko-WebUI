@@ -31,7 +31,7 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import toast from '@/components/Toast';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import { FileLinkApiType, FileType } from '@/core/types/api/file';
-import { useGetFilesQuery, usePostFileLinkMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useGetUnrecognizedFilesQuery, usePostFileLinkMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
@@ -144,7 +144,7 @@ function LinkFilesTab() {
   const [refreshSeries, anidbRefreshQuery] = useRefreshAnidbSeriesMutation();
   const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
-  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
+  const filesQuery = useGetUnrecognizedFilesQuery({ pageSize: 0 });
   const episodes = useMemo(() => episodesQuery?.data?.List || [], [episodesQuery]);
 
   useEffect(() => {

@@ -68,10 +68,19 @@ const fileApi = splitV3Api.injectEndpoints({
       }),
     }),
 
-    // Get or search through the files accessible to the current user.
-    getFiles: build.query<ListResultType<FileType[]>, FileRequestType>({
+    // Get or search through the ignored files accessible to the current user.
+    getIgnoredFiles: build.query<ListResultType<FileType[]>, FileRequestType>({
       query: params => ({
-        url: 'File',
+        url: 'File/Ignored',
+        params,
+      }),
+      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
+    }),
+
+    // Get or search through the unrecognized files accessible to the current user.
+    getUnrecognizedFiles: build.query<ListResultType<FileType[]>, FileRequestType>({
+      query: params => ({
+        url: 'File/Unrecognized',
         params,
       }),
       providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
@@ -87,5 +96,6 @@ export const {
   usePostFileRehashMutation,
   usePostFileLinkMutation,
   useDeleteFileLinkMutation,
-  useGetFilesQuery,
+  useGetIgnoredFilesQuery,
+  useGetUnrecognizedFilesQuery,
 } = fileApi;

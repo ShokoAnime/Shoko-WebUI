@@ -38,7 +38,7 @@ import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
 import {
-  useDeleteFileMutation, useGetFilesQuery,
+  useDeleteFileMutation, useGetUnrecognizedFilesQuery,
   useLazyPostFileAVDumpQuery,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
@@ -160,9 +160,8 @@ function UnrecognizedTab() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
-  const filesQuery = useGetFilesQuery({
+  const filesQuery = useGetUnrecognizedFilesQuery({
     pageSize: 0,
-    includeUnrecognized: 'only',
     search: debouncedSearch,
     sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
   });

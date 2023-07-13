@@ -13,7 +13,7 @@ import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
 import toast from '@/components/Toast';
 import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 
-import { useGetFilesQuery, useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useGetUnrecognizedFilesQuery, useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
 
 const FileItem = ({ file }: { file: FileType }) => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ const FileItem = ({ file }: { file: FileType }) => {
 };
 
 function UnrecognizedFiles() {
-  const filesQuery = useGetFilesQuery({ pageSize: 20, includeUnrecognized: 'only', sortOrder: [FileSortCriteriaEnum.FileID * -1] });
+  const filesQuery = useGetUnrecognizedFilesQuery({ pageSize: 20, sortOrder: [FileSortCriteriaEnum.FileID * -1] });
   const files = useMemo(() => filesQuery.data ?? { Total: 0, List: [] }, [filesQuery]);
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);

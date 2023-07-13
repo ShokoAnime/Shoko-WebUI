@@ -9,7 +9,7 @@ import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 
-import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useGetIgnoredFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { fuzzyFilter } from '@/core/util';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -54,9 +54,8 @@ function IgnoredFilesTab() {
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
-  const filesQuery = useGetFilesQuery({
+  const filesQuery = useGetIgnoredFilesQuery({
     pageSize: 0,
-    includeIgnored: 'only',
     search: debouncedSearch,
     sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
   });
