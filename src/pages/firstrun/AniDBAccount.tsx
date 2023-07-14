@@ -61,7 +61,7 @@ function AniDBAccount() {
           {' Click Here '}
         </a>
         to create one. Please note that, due to limitations with AniDB&lsquo;s API, your password must consist of only
-        <span className='font-semibold text-highlight-2'>{' alphanumeric '}</span>
+        <span className="font-semibold text-highlight-2">{' alphanumeric '}</span>
         characters. Using any other characters will result in a ban when you attempt to log in.
       </div>
       <form className="flex flex-col" onSubmit={handleTest}>
