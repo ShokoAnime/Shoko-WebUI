@@ -56,16 +56,16 @@ function AniDBAccount() {
         enhancing your user experience.
       </div>
       <div className="text-justify">
-        An AniDB account is required to use Shoko.&nbsp;
+        An AniDB account is required to use Shoko. If you don't already have an account,
         <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-highlight-1 hover:underline font-semibold">
-          Click Here
+          {` Click Here `}
         </a>
-        &nbsp;to create one if you don't already have an account.
+        to create one. Please note that, due to limitations with AniDB's API, your password must consist of only
+        <span className='font-semibold text-highlight-2'>{` alphanumeric `}</span>
+        characters. Using any other characters will result in a ban when you attempt to log in.
       </div>
       <div className="text-justify">
-        Please note that, due to limitations with AniDB's API, your password must consist of only
-        <strong>alphanumeric</strong> characters. Using any other characters will result in a ban when you attempt to
-        log in.
+
       </div>
       <form className="flex flex-col" onSubmit={handleTest}>
         <Input id="Username" value={Username ?? ''} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
