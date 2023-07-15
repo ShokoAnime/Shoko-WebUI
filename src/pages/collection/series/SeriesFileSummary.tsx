@@ -135,7 +135,7 @@ const SeriesFileSummary = () => {
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
           <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType} />} transparent>
-            <div className="flex">
+            <div className="flex max-h-10">
               <div className="grow flex flex-col gap-y-4 font-semibold">
                 <span>Group</span>
                 <span>Video</span>
