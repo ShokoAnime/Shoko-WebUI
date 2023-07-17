@@ -125,8 +125,8 @@ const Router = () => {
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   useEffect(() => {
-    document.body.className = `${webuiPreviewTheme ?? theme} theme-shoko-gray`;
-  }, [theme, webuiPreviewTheme]);
+    document.body.className = `${apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)} theme-shoko-gray`;
+  }, [apikey, theme, webuiPreviewTheme]);
 
   return (
     <div id="app-container" className="flex h-screen">

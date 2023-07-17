@@ -264,6 +264,10 @@ function SettingsPage() {
   }, [newSettings, settings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
+    if (key === 'theme') {
+      globalThis.localStorage.setItem('theme', value);
+    }
+
     const tempSettings = { ...(newSettings[type]), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
 
