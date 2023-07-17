@@ -34,7 +34,7 @@ function DashboardPage() {
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
-  const [currentLayout, setCurrentLayout] = useState(initialSettings.WebUI_Settings.layout.dashboard);
+  const [currentLayout, setCurrentLayout] = useState(settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard);
 
   useEffect(() => {
     const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
