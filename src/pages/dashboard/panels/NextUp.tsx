@@ -16,7 +16,12 @@ const NextUp = () => {
       <div className="flex shoko-scrollbar">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
-          : <div className="flex justify-center font-semibold mt-4 w-full">Looks Like You&apos;ve Finished Watching Everything at The Moment, You Perfectionist.</div>}
+          : (
+            <div className="flex flex-col justify-center mt-4 w-full text-center gap-y-2">
+              <div>You&apos;ve Finished Every Series In Progress.</div>
+              <div>Time For A New Series?</div>
+            </div>
+          )}
       </div>
     </ShokoPanel>
   );
