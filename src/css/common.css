@@ -81,6 +81,7 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.background');
   color: theme('colors.font-main');
+  display: none;
   font-weight: 400;
 }
 
