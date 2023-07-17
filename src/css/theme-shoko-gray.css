@@ -1,14 +1,24 @@
 .theme-shoko-gray {
-  --color-background: 40 46 56; /* Primary background */
-  --color-background-alt: 44 51 62; /* Secondary background */
-  --color-background-nav: 53 61 74; /* Tertiary background */
-  --color-background-border: 33 36 43; /* General/Primary Border & Fill */
-  --color-border-alt: 63 71 98; /* General/Border Alt */
+  --color-background: 40 46 56;             /* Primary background */
+  --color-background-alt: 44 51 62;         /* Secondary background */
+  --color-background-nav: 53 61 74;         /* Tertiary background */
+  --color-background-border: 33 36 43;      /* General/Primary Border & Fill */
+  --color-border-alt: 63 71 98;             /* General/Border Alt */
   --color-highlight-1: 68 163 255;
+  --color-highlight-1-light: 135 196 255;
+  --color-highlight-1-dark: 22 123 200;
   --color-highlight-2: 16 196 105;
+  --color-highlight-2-light: 46 238 140;
+  --color-highlight-2-dark: 12 142 77;
   --color-highlight-3: 255 108 108;
+  --color-highlight-3-light: 255 184 184;
+  --color-highlight-3-dark: 255 10 10;
   --color-highlight-4: 249 200 81;
+  --color-highlight-4-light: 251 221 148;
+  --color-highlight-4-dark: 232 167 8;
   --color-highlight-5: 185 129 255;
+  --color-highlight-5-light: 206 167 255;
+  --color-highlight-5-dark: 128 25 255;
   --color-font-main: 207 216 227;
   --color-font-alt: 1 15 28;
   --color-image-overlay: 22 27 39;

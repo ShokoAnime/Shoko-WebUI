@@ -10,11 +10,10 @@ import { DashboardNewsType } from '@/core/types/api/dashboard';
 import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
 
 const NewsRow = ({ item }: { item: DashboardNewsType }) => (
-  <div className="flex flex-col gap-y-1" key={item.title}>
-    <p className="font-semibold opacity-75">{item.date_published}</p>
-    <p className="font-semibold">{item.title}</p>
-    <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex gap-x-2 text-highlight-1 font-semibold items-center mt-1">
-      Read More
+  <div className="flex flex-col" key={item.title}>
+    <p className="font-semibold">{item.date_published}</p>
+    <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex text-highlight-1 font-semibold items-center mt-1 space-x-2 hover:text-highlight-1-light">
+      <p className="font-semibold">{item.title}</p>
       <Icon path={mdiOpenInNew} size={1} />
     </a>
   </div>
@@ -28,7 +27,7 @@ function ShokoNews() {
   return (
     <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col gap-y-3">
-        {items.data?.slice(0, 4).map(item => <NewsRow item={item} key={item.link} />)}
+        {items.data?.slice(0, 5).map(item => <NewsRow item={item} key={item.link} />)}
       </div>
     </ShokoPanel>
   );

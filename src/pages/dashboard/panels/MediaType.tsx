@@ -11,7 +11,7 @@ const names = {
   Series: 'TV Series',
 };
 
-function SeriesBreakdown() {
+function MediaType() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
@@ -19,7 +19,7 @@ function SeriesBreakdown() {
   const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
     <div key={`${item}-name`} className="flex mt-5 first:mt-0">
       <span className="grow">{names[item] ?? item} - {count}</span>
-      <span className={`text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
+      <span className={`font-semibold text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
     </div>
   );
 
@@ -59,4 +59,4 @@ function SeriesBreakdown() {
   );
 }
 
-export default SeriesBreakdown;
+export default MediaType;

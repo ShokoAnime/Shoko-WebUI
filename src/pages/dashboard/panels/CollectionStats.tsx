@@ -8,7 +8,7 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 
 import { useGetDashboardStatsQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
 
-function CollectionBreakdown() {
+function CollectionStats() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const stats = useGetDashboardStatsQuery();
@@ -35,9 +35,9 @@ function CollectionBreakdown() {
   const childrenSecond = [
     renderItem('collection-size', 'Collection Size', `${prettyBytes(stats.data?.FileSize || 0, { binary: true })}`),
     renderItem('files', 'Files', stats.data?.FileCount),
-    renderItem('unrecognized-files', 'Files With Unknown Hashes', stats.data?.UnrecognizedFiles, '/webui/utilities/unrecognized'),
-    renderItem('multiple-files', 'Files That Contain Duplicate Episodes', stats.data?.EpisodesWithMultipleFiles),
-    renderItem('duplicate-files', 'Files With Duplicate Hashes', stats.data?.FilesWithDuplicateLocations),
+    renderItem('unrecognized-files', 'Unknown Files', stats.data?.UnrecognizedFiles, '/webui/utilities/unrecognized'),
+    renderItem('multiple-files', 'Duplicate Episodes', stats.data?.EpisodesWithMultipleFiles),
+    renderItem('duplicate-files', 'Duplicate Hashes', stats.data?.FilesWithDuplicateLocations),
   ];
 
   const childrenThird = [
@@ -61,4 +61,4 @@ function CollectionBreakdown() {
   );
 }
 
-export default CollectionBreakdown;
+export default CollectionStats;

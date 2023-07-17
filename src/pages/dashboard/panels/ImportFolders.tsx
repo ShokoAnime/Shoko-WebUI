@@ -83,7 +83,7 @@ function ImportFolders() {
   return (
     <ShokoPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isLoading} editMode={layoutEditMode}>
       {importFolders.length === 0
-        ? (<div className="flex justify-center font-semibold mt-4" key="no-folders">No import folders added!</div>)
+        ? (<div className="flex justify-center font-semibold mt-4" key="no-folders">No Import Folders Added!</div>)
         : importFolders.map(importFolder => renderFolder(importFolder))}
     </ShokoPanel>
   );

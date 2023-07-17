@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { Icon } from '@mdi/react';
-import { mdiContentCopy, mdiFileDocumentCheckOutline, mdiTruck } from '@mdi/js';
+import { mdiContentCopy, mdiFileDocumentCheckOutline, mdiDumpTruck } from '@mdi/js';
 
 import { RootState } from '@/core/store';
 import Button from '@/components/Input/Button';
@@ -39,8 +39,8 @@ const FileItem = ({ file }: { file: FileType }) => {
       </div>
       <div className="flex justify-between">
         {(avdumpList[file.ID] === undefined || avdumpList[file.ID].fetching) && (
-          <Button onClick={() => avdumpFile(file.ID)} className="px-2" loading={avdumpList[file.ID]?.fetching ?? false} disabled={dumpInProgress}>
-            <Icon className="text-highlight-1" path={mdiTruck} size={1} />
+          <Button onClick={() => avdumpFile(file.ID)} className="px-2" loading={avdumpList[file.ID]?.fetching ?? false} disabled={dumpInProgress} tooltip="Dump File">
+            <Icon className="text-highlight-1" path={mdiDumpTruck} size={1} />
           </Button>
         )}
         {(avdumpList[file.ID] && !avdumpList[file.ID].fetching) && (
