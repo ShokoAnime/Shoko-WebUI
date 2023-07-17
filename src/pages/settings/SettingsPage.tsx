@@ -340,7 +340,7 @@ function SettingsPage() {
         <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
         Whoa! You Have Unsaved Changes!
       </div>
-      <div className="h-full w-full -mt-8 left-0 fixed -z-10 !bg-center !bg-cover !bg-no-repeat" style={{ background: 'linear-gradient(180deg, rgb(var(--color-image-overlay)/0.9) 0%, rgb(var(--color-background)) 100%), url(/api/v3/Image/Random/Fanart)' }} />
+      <div className="h-full w-full top-0 left-0 fixed opacity-5 -z-10" style={{ background: `center / cover no-repeat url(/api/v3/Image/Random/Fanart)` }} />
     </div>
   );
 }
