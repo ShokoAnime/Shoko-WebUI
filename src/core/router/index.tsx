@@ -126,6 +126,9 @@ const Router = () => {
 
   useEffect(() => {
     document.body.className = `${apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)} theme-shoko-gray`;
+    setTimeout(() => {
+      document.getElementsByTagName('body')[0].style.display = 'initial';
+    }, 100);
   }, [apikey, theme, webuiPreviewTheme]);
 
   return (
