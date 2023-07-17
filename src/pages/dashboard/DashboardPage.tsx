@@ -94,6 +94,10 @@ function DashboardPage() {
     </div>
   );
 
+  useEffect(() => {
+    window.dispatchEvent(new Event('resize'));
+  }, [currentLayout]);
+
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
