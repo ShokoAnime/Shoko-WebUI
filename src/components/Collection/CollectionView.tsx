@@ -83,8 +83,12 @@ const CollectionView = (props: Props) => {
 
   if (groupTotal === 0) {
     return (
-      <div className="flex grow items-center font-semibold justify-center">
-        {fetchingPage ? (
+      <div className={cx(
+        'flex grow rounded-md items-center font-semibold justify-center',
+        mode === 'grid' && 'px-6 py-8 bg-background-alt border-background-border border',
+      )}
+      >
+        {groupsData.isUninitialized || groupsData.isLoading ? (
           <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
         ) : 'No series/groups available!'}
       </div>
