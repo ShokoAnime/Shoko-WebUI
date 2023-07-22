@@ -16,10 +16,10 @@ import Button from '@/components/Input/Button';
 import type { QueueItemType } from '@/core/types/signalr';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
-import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitApi/queueApi';
+import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitV3Api/queueApi';
 
-const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, images: mdiImageMultipleOutline };
-const names = { hasher: 'Hasher', general: 'General', images: 'Images' };
+const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, image: mdiImageMultipleOutline };
+const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
 function QueueProcessor() {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
@@ -41,15 +41,15 @@ function QueueProcessor() {
         </div>
         <div className="flex text-highlight-2">{count ?? 0}</div>
         <div className="flex items-center">
-          <Button className="mx-2" onClick={() => handleOperation('clear', names[key].toLowerCase())} tooltip="Clear">
+          <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
             <Icon className="text-highlight-1" path={mdiCloseCircleOutline} size={1} />
           </Button>
           {item?.state === 18 ? (
-            <Button className="mx-2" onClick={() => handleOperation('start', names[key].toLowerCase())} tooltip="Resume">
+            <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
               <Icon className="text-highlight-1" path={mdiPlayCircleOutline} size={1} />
             </Button>
           ) : (
-            <Button className="mx-2" onClick={() => handleOperation('pause', names[key].toLowerCase())} tooltip="Pause">
+            <Button className="mx-2" onClick={() => handleOperation('Stop', key)} tooltip="Pause">
               <Icon className="text-highlight-1" path={mdiPauseCircleOutline} size={1} />
             </Button>
           )}
@@ -70,11 +70,11 @@ function QueueProcessor() {
     });
 
     return paused ? (
-      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('start')} title="Resume All">
+      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('StartAll')} title="Resume All">
         <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
       </div>
     ) : (
-      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('pause')} title="Pause All">
+      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('StopAll')} title="Pause All">
         <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
       </div>
     );
@@ -85,7 +85,7 @@ function QueueProcessor() {
   if (items) {
     commands.push(renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));
     commands.push(renderItem('general', items.GeneralQueueState, items.GeneralQueueCount));
-    commands.push(renderItem('images', items.ImageQueueState, items.ImageQueueCount));
+    commands.push(renderItem('image', items.ImageQueueState, items.ImageQueueCount));
   }
 
   return (
