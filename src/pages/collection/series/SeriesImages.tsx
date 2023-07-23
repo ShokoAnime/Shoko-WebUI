@@ -70,7 +70,7 @@ const SeriesImages = () => {
           <InfoLine title="Location" value={filepath} />
           <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
           <InfoLine title="Size" value="-" />
-          <Button className="px-4 py-3 bg-panel-primary text-font-alt rounded-md border border-panel-border" disabled>
+          <Button dropShadow className="px-4 py-3 bg-button-primary hover:bg-button-primary-hover font-semibold text-panel-text-alt rounded-md border border-panel-border" disabled>
             Set As Series Poster
           </Button>
         </ShokoPanel>

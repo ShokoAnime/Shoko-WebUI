@@ -56,7 +56,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
           Copy ED2K Hashes
         </Button>
       </CopyToClipboard>
-      <div className="flex flex-col p-4 overflow-y-auto break-all h-48 rounded-md bg-background-border gap-y-1 text-sm">
+      <div className="flex flex-col p-4 overflow-y-auto break-all rounded-md bg-panel-background-alt gap-y-1 text-sm h-auto">
         {links.map(link => (
           <div key={link.split('|')[4]}>{link}</div>
         ))}
@@ -66,7 +66,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
         {searchResults.isLoading
           ? (
             <div className="flex h-full justify-center items-center">
-              <Icon path={mdiLoading} size={3} spin className="text-highlight-1" />
+              <Icon path={mdiLoading} size={3} spin className="text-panel-primary" />
             </div>
           )
           : (searchResults.data ?? []).map(result => (

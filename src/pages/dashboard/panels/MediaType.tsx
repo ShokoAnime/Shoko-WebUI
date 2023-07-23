@@ -40,7 +40,7 @@ function MediaType() {
   );
 
   const renderBar = (item: string, countPercentage: number) => (
-    <div key={`${item}-bar`} className="flex bg-background-border rounded-md mt-2">
+    <div key={`${item}-bar`} className="flex bg-panel-background-alt rounded-md mt-2">
       <div className={`rounded-md h-4 bg-${renderColor(item)}`} style={{ width: `${countPercentage}%` }} />
     </div>
   );

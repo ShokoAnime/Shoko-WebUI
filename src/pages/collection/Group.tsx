@@ -17,7 +17,7 @@ import { Icon } from '@mdi/react';
 const HoverIcon = ({ icon, label, route }) => (
   <Link to={route}>
     <div className="flex flex-col justify-items-center items-center my-2">
-      <div className="bg-background-border rounded-full inline-block shrink p-4 text-panel-primary mb-2">
+      <div className="bg-panel-background rounded-full inline-block shrink p-4 text-panel-primary mb-2">
         <Icon path={icon} size={1} />
       </div>
       <span className="font-semibold">{label}</span>

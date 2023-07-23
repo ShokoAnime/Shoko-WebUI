@@ -58,7 +58,7 @@ function ProfileModal() {
               </Button>
             </span>
           </div>
-          <div className="bg-highlight-2 my-2 h-1 w-10 flex-shrink-0" />
+          <div className="bg-panel-important my-2 h-1 w-10 flex-shrink-0" />
           <div className="flex flex-col grow justify-between">
             <div className="flex flex-col">
               <div className="flex">

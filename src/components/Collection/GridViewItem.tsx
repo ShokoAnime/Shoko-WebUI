@@ -8,7 +8,7 @@ import type { CollectionGroupType } from '@/core/types/api/collection';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 
 const CountIcon = ({ className, children, show = true }) => (
-  show ? <div className={cx('px-3 py-1 bg-panel-important rounded font-semibold text-panel-text text-center min-w-[1.75rem] bg-opacity-85 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]', className)}>{children}</div> : null
+  show ? <div className={cx('px-3 py-1 rounded font-semibold text-panel-text text-center min-w-[1.75rem] bg-opacity-85 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]', className)}>{children}</div> : null
 );
 
 const GridViewItem = (item: CollectionGroupType) => {
