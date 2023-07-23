@@ -25,7 +25,7 @@ function LocalAccount() {
   const handleSave = (event?: React.FormEvent) => {
     if (event) event.preventDefault();
     createUser(user).unwrap().then(() => {
-      setUserStatus({ type: 'success', text: 'Account creation successful!' });
+      setUserStatus({ type: 'success', text: 'Account Creation Successful!' });
       dispatch(setUserState(user));
       dispatch(setFirstRunSaved('local-account'));
       navigate('../anidb-account');

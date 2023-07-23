@@ -18,7 +18,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
       <div className="flex justify-between font-semibold">
         <div className="opacity-65">Episode {episode.AniDB?.EpisodeNumber}</div>
         { episode.Size > 1 && (
-          <div><span className="text-highlight-2">{episode.Size}</span> Files</div>
+          <div><span className="text-panel-important">{episode.Size}</span> Files</div>
         )}
       </div>
 

@@ -89,11 +89,11 @@ const SeriesEpisodes = () => {
         </Select>
       </ShokoPanel>
       <div className="flex flex-col grow gap-y-4">
-        <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border">
+        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border">
           <div className="font-semibold text-xl">
             Episodes
             <span className="px-2">|</span>
-            <span className="text-highlight-2 pr-2">{episodesData.isUninitialized || episodesData.isLoading ? '-' : episodeTotal }</span>
+            <span className="text-panel-important pr-2">{episodesData.isUninitialized || episodesData.isLoading ? '-' : episodeTotal }</span>
             Entries Listed
           </div>
           <div className="flex gap-x-3">
@@ -125,13 +125,13 @@ const SeriesEpisodes = () => {
                   <div
                     key={virtualItem.key}
                     ref={rowVirtualizer.measureElement}
-                    className="flex flex-col border border-background-border rounded-md bg-background-alt/50"
+                    className="flex flex-col border border-panel-border rounded-md bg-panel-background/50"
                     data-index={virtualItem.index}
                   >
                     {item ? (
                       <SeriesEpisode episode={item} />
                     ) : (
-                      <div className="flex items-center justify-center p-8 h-[332px] text-highlight-1"><Icon path={mdiLoading} spin size={3} /></div> // 332px is the minimum height of a loaded row
+                      <div className="flex items-center justify-center p-8 h-[332px] text-panel-primary"><Icon path={mdiLoading} spin size={3} /></div> // 332px is the minimum height of a loaded row
                     )}
                   </div>
                 );

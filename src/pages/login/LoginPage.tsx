@@ -78,7 +78,7 @@ function LoginPage() {
 
   const parsedVersion = useMemo(() => {
     if (version.isFetching || !version.data) {
-      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />);
+      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />);
     }
 
     if (version.data.Server.ReleaseChannel !== 'Stable') {
@@ -99,9 +99,9 @@ function LoginPage() {
         icon={false}
       />
       <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}>
-        <div className="absolute top-0 right-0 bg-background-alt/90 px-8 py-4 font-semibold border border-background-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
+        <div className="absolute top-0 right-0 bg-panel-background/90 px-8 py-4 font-semibold border border-panel-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
 
-        <div className="flex flex-col items-center p-8 w-[31.25rem] bg-background-alt/90 border border-background-border rounded-md gap-y-8">
+        <div className="flex flex-col items-center p-8 w-[31.25rem] bg-panel-background/90 border border-panel-border rounded-md gap-y-8">
           <div className="flex flex-col gap-y-4 items-center">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
@@ -112,12 +112,12 @@ function LoginPage() {
           <div className="flex flex-col w-full gap-y-4">
             {!status.data?.State && (
               <div className="flex justify-center items-center">
-                <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
+                <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
               </div>
             )}
             {status.data?.State === 1 && (
               <div className="flex flex-col justify-center items-center gap-y-2">
-                <Icon path={mdiLoading} spin className="text-highlight-1" size={4} />
+                <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="text-lg">
                   <span className="font-semibold">Status: </span>{status.data?.StartupMessage ?? 'Unknown'}
@@ -129,12 +129,12 @@ function LoginPage() {
                 <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
                 <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold" labelRight />
-                <Button className="bg-highlight-1 py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                <Button className="bg-button-primary hover:bg-button-primary-hover py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
               </form>
             )}
             {status.data?.State === 3 && (
               <div className="flex flex-col justify-center items-center pb-2 gap-y-2 max-h-[20rem]">
-                <Icon path={mdiCloseCircleOutline} className="text-highlight-3 shrink-0" size={4} />
+                <Icon path={mdiCloseCircleOutline} className="text-panel-warning shrink-0" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
                 <div className="text-lg break-all overflow-y-auto font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
@@ -146,14 +146,14 @@ function LoginPage() {
                   <div>Welcome and thanks for installing Shoko!</div>
                   <div className="text-justify leading-6">
                     Before Shoko can start managing your anime collection for you, you&apos;ll need to go through our&nbsp;
-                    <span className="text-highlight-2 font-bold">First Run Wizard </span>to set everything up.
+                    <span className="text-panel-important font-bold">First Run Wizard </span>to set everything up.
                     Don&apos;t worry, its extremely easy, straightforward and should only take you a couple minutes.
                   </div>
                   <div>
-                    Click <span className="text-highlight-2 font-semibold">Continue</span> below to proceed.
+                    Click <span className="text-panel-important font-semibold">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => navigate('/webui/firstrun')} className="bg-highlight-1 py-2 font-semibold">Continue</Button>
+                <Button onClick={() => navigate('/webui/firstrun')} className="bg-button-primary hover:bg-button-primary-hover py-2 font-semibold">Continue</Button>
               </div>
             )}
           </div>

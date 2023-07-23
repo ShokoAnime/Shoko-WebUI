@@ -113,7 +113,7 @@ function GeneralSettings() {
             onClick={() => webuiUpdateCheck({ channel: newSettings.WebUI_Settings.updateChannel, force: true })}
             tooltip="Check for WebUI Update"
           >
-            <Icon path={mdiRefresh} size={1} className="text-highlight-1" spin={webuiUpdateCheckResult.isFetching} />
+            <Icon path={mdiRefresh} size={1} className="text-panel-primary" spin={webuiUpdateCheckResult.isFetching} />
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
@@ -201,7 +201,7 @@ function GeneralSettings() {
           <Checkbox justify label="Auto Group Series" id="auto-group-series" isChecked={AutoGroupSeries} onChange={event => setNewSettings({ ...newSettings, AutoGroupSeries: event.target.checked })} />
           <Checkbox justify label="Determine Main Series Using Relation Weighing" id="auto-group-using-score" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={event => setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })} />
           Exclude following relations
-          <div className="flex flex-col bg-background-border border border-background-border rounded-md px-3 py-2 gap-y-1.5">
+          <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md px-3 py-2 gap-y-1.5">
             {Object.keys(exclusionMapping).map(item => (
               <Checkbox justify label={exclusionMapping[item].name} id={item} isChecked={AutoGroupSeriesRelationExclusions.includes(exclusionMapping[item].id)} onChange={handleExclusionChange} key={item} />
             ))}

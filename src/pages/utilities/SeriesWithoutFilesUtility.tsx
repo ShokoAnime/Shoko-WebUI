@@ -33,7 +33,7 @@ const columns = [
     cell: info => (
       <div className="flex justify-between">
         {info.getValue()}
-        <span onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')} className="cursor-pointer mr-6 text-highlight-1">
+        <span onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')} className="cursor-pointer mr-6 text-panel-primary">
           <Icon path={mdiOpenInNew} size={1} />
         </span>
       </div>
@@ -100,8 +100,8 @@ function SeriesWithoutFilesUtility() {
 
   const renderOperations = (common = false) => {
     const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
-      <Button onClick={onClick} className="flex items-center font-normal text-font-main gap-x-2">
-        <Icon path={icon} size={1} className={cx({ 'text-highlight-1': highlight })} />
+      <Button onClick={onClick} className="flex items-center font-normal text-panel-text gap-x-2">
+        <Icon path={icon} size={1} className={cx({ 'text-panel-primary': highlight })} />
         {name}
       </Button>
     );
@@ -122,7 +122,7 @@ function SeriesWithoutFilesUtility() {
 
   const renderPanelOptions = () => (
     <div className="flex font-semibold">
-      <span className="text-highlight-2">{series.Total}</span>&nbsp;Empty Series
+      <span className="text-panel-important">{series.Total}</span>&nbsp;Empty Series
     </div>
   );
 
@@ -133,15 +133,17 @@ function SeriesWithoutFilesUtility() {
         <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
           <div className="flex items-center gap-x-3">
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
-            <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative gap-x-4">
+            <div className="box-border flex grow bg-panel-background border border-panel-border items-center rounded-md px-4 py-3 relative gap-x-4">
               {renderOperations(table.getSelectedRowModel().rows.length === 0)}
-              <div className="ml-auto text-highlight-2 font-semibold">{table.getSelectedRowModel().rows.length} Series Selected</div>
+              <div className="ml-auto text-panel-important font-semibold">{table.getSelectedRowModel().rows.length}
+                <span className="text-panel-text">Series Selected</span>
+              </div>
             </div>
           </div>
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
+      <div className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
         {series.Total > 0 ? (
           <UtilitiesTable table={table} skipSort />
         ) : (

@@ -27,7 +27,7 @@ function ModalPanel(props: Props) {
       closeTimeoutMS={150}
     >
       <div className="flex justify-center items-center w-full h-full" onClick={onRequestClose}>
-        <div className={`${className} bg-background w-[40rem] max-h-fit flex rounded-md border border-background-alt`} onClick={e => e.stopPropagation()}>
+        <div className={`${className} bg-panel-background w-[40rem] max-h-fit flex rounded-md border border-panel-border-alt`} onClick={e => e.stopPropagation()}>
           {children}
         </div>
       </div>

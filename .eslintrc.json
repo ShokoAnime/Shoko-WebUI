@@ -6,6 +6,8 @@
   ],
   "ignorePatterns": [
     "build/**",
+    "proxy.config.js",
+    "tailwind.config.js",
     "vite.config.js"
   ],
   "env": {
@@ -66,7 +68,7 @@
     "react/function-component-definition": "off",
     "react/destructuring-assignment": "off",
     "object-curly-newline": [
-      "error", 
+      "error",
       { "ImportDeclaration": { "consistent": true }}
     ],
     "@typescript-eslint/no-unused-vars": [

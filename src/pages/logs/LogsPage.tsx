@@ -31,28 +31,28 @@ const LogsPage = () => {
 
   return (
     <div className="flex flex-col gap-y-8 grow">
-      <div className="flex justify-between bg-background-alt border border-background-border rounded-md px-8 py-4 items-center">
+      <div className="flex justify-between bg-panel-background border border-panel-border rounded-md px-8 py-4 items-center">
         <div className="text-xl font-semibold">Logs</div>
         <div className="flex gap-x-4 items-center">
           <Input id="search" onChange={e => setSearch(e.target.value)} type="text" value={search} placeholder="Search Logs..." startIcon={mdiMagnify} className="w-80" disabled />
-          <Button className="bg-background-nav border border-background-border px-5 py-2 text-font-main" disabled>
+          <Button className="bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-5 py-2 text-font-main" disabled>
             <Icon path={mdiFilterOutline} size={1} />
           </Button>
-          <Button className="bg-background-nav border border-background-border px-5 py-2 text-font-main" disabled>
+          <Button className="bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-5 py-2 text-font-main" disabled>
             <Icon path={mdiCogOutline} size={1} />
           </Button>
           {/* TODO: To be moved into settings modal */}
-          <Button className={cx('bg-background-nav border border-background-border px-5 py-2', isScrollToBottom ? 'text-highlight-1' : 'text-font-main')} onClick={() => setScrollToBottom(prev => !prev)}>
+          <Button className={cx('bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-5 py-2', isScrollToBottom ? 'text-panel-primary' : 'text-font-main')} onClick={() => setScrollToBottom(prev => !prev)}>
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>
         </div>
       </div>
 
-      <div className="flex bg-background-alt border border-background-border rounded-md p-8 grow">
-        <div className="bg-background-border rounded-md grow overflow-y-auto relative" ref={parentRef}>
+      <div className="flex bg-panel-background border border-default-border rounded-md p-8 grow">
+        <div className="bg-panel-background-alt rounded-md grow overflow-y-auto relative" ref={parentRef}>
           {(logsQuery.isLoading || logLines.length === 0) ? (
             <div className="flex grow justify-center items-center h-full">
-              <Icon path={mdiLoading} size={4} className="text-highlight-1" spin />
+              <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
             </div>
           ) : (
             <div className="absolute w-full top-0" style={{ height: rowVirtualizer.getTotalSize() }}>

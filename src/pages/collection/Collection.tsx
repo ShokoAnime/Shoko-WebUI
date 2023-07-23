@@ -11,7 +11,7 @@ import { useGetFilterQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
 const Title = ({ count, filter }: { count: number, filter?: string }) => (
   <div className="font-semibold text-xl flex gap-x-2 items-center">
-    <Link to="/webui/collection" className={cx(filter ? 'text-highlight-1' : 'pointer-events-none')}>Entire Collection</Link>
+    <Link to="/webui/collection" className={cx(filter ? 'text-panel-primary' : 'pointer-events-none')}>Entire Collection</Link>
     {filter && (
       <>
         <Icon path={mdiChevronRight} size={1} />
@@ -19,12 +19,12 @@ const Title = ({ count, filter }: { count: number, filter?: string }) => (
       </>
     )}
     <span>|</span>
-    <span className="text-highlight-2">{count} Items</span>
+    <span className="text-panel-important">{count} Items</span>
   </div>
 );
 
 const OptionButton = ({ icon, onClick }) => (
-  <div className="px-5 py-2 rounded border-background-border border bg-background-nav drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer" onClick={onClick}>
+  <div className="px-5 py-2 rounded border-panel-border border bg-button-secondary drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer" onClick={onClick}>
     <Icon path={icon} size={1} />
   </div>
 );
@@ -46,7 +46,7 @@ function Collection() {
   return (
     <>
       <div className="flex flex-col grow gap-y-8">
-        <div className="rounded-md bg-background-alt p-8 flex justify-between items-center border-background-border border">
+        <div className="rounded-md bg-panel-background p-8 flex justify-between items-center border-panel-border border">
           <Title count={groupTotal} filter={filterName} />
           <div className="flex gap-x-2">
             <OptionButton onClick={toggleFilters} icon={mdiFilterOutline} />
@@ -57,7 +57,7 @@ function Collection() {
         <div className="flex grow">
           <CollectionView mode={mode} setGroupTotal={setGroupTotal} />
           <div className={cx('flex items-start overflow-hidden transition-all', showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0')}>
-            <div className="rounded bg-background-alt p-8 flex grow border-background-border border justify-center items-center line-clamp-1">Filter sidebar</div>
+            <div className="rounded bg-panel-background p-8 flex grow border-panel-border border justify-center items-center line-clamp-1">Filter sidebar</div>
           </div>
         </div>
       </div>

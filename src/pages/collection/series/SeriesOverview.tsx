@@ -37,7 +37,7 @@ const getNextUpThumbnailUrl = (episode: EpisodeType) => {
 
 const NextUpEpisode = ({ nextUpEpisode }) => (
   <div className="flex gap-x-8 items-center z-10">
-    <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative" />
+    <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative" />
     <EpisodeDetails episode={nextUpEpisode} />
   </div>
 );
@@ -69,7 +69,7 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
       <div className="flex gap-x-2">
         <div className={`metadata-link-icon ${site}`} />
         {linkId ? (
-          <a href={siteLink} className="flex gap-x-2 text-highlight-1 font-semibold" rel="noopener noreferrer" target="_blank">
+          <a href={siteLink} className="flex gap-x-2 text-panel-primary font-semibold" rel="noopener noreferrer" target="_blank">
             {/* TODO: Use name from metadata source instead of series name in Shoko */}
             {`${series} (${linkId})`}
             <Icon path={mdiOpenInNew} size={1} />
@@ -80,15 +80,15 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
         {linkId ? (
           <>
             <Button disabled>
-              <Icon className="text-highlight-1" path={mdiPencilCircleOutline} size={1} />
+              <Icon className="text-panel-primary" path={mdiPencilCircleOutline} size={1} />
             </Button>
             <Button disabled>
-              <Icon className="text-highlight-3" path={mdiCloseCircleOutline} size={1} />
+              <Icon className="text-panel-danger" path={mdiCloseCircleOutline} size={1} />
             </Button>
           </>
         ) : (
           <Button disabled>
-            <Icon className="text-highlight-1" path={mdiPlusCircleOutline} size={1} />
+            <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
           </Button>
         )}
       </div>
@@ -145,7 +145,7 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Season</div>
-            {overview?.FirstAirSeason ? <Link className="text-highlight-1 font-semibold" to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}>{overview.FirstAirSeason.Name}</Link> : '--'}
+            {overview?.FirstAirSeason ? <Link className="text-panel-primary font-semibold" to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}>{overview.FirstAirSeason.Name}</Link> : '--'}
           </div>
 
           <div className="flex flex-col gap-y-1">
@@ -162,12 +162,12 @@ const SeriesOverview = () => {
             <div className="font-semibold">Links</div>
             {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
             {jpOfficialSite && (
-              <a href={jpOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={jpOfficialSite.Name} className="text-highlight-1 font-semibold">
+              <a href={jpOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={jpOfficialSite.Name} className="text-panel-primary font-semibold">
                 {jpOfficialSite.Name}
               </a>
             )}
             {enOfficialSite && (
-              <a href={enOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={enOfficialSite.Name} className="text-highlight-1 font-semibold">
+              <a href={enOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={enOfficialSite.Name} className="text-panel-primary font-semibold">
                 {enOfficialSite.Name}
               </a>
             )}
@@ -184,7 +184,7 @@ const SeriesOverview = () => {
               <div className="flex gap-x-2">
                 Metadata Sites
                 <Icon path={mdiChevronRight} size={1} />
-                <a href={`https://anidb.net/anime/${series.IDs.AniDB}`} className="flex gap-x-2 text-highlight-1 items-center" rel="noopener noreferrer" target="_blank">
+                <a href={`https://anidb.net/anime/${series.IDs.AniDB}`} className="flex gap-x-2 text-panel-primary items-center" rel="noopener noreferrer" target="_blank">
                   <div className="metadata-link-icon anidb" />
                   <div>{series.AniDB?.Title}</div>
                   <Icon path={mdiOpenInNew} size={1} />
@@ -211,9 +211,9 @@ const SeriesOverview = () => {
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
-                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border" />
+                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
                   <span className="text-ellipsis line-clamp-1">{item.Title}</span>
-                  <span className="text-highlight-2">{itemRelation}</span>
+                  <span className="text-panel-important">{itemRelation}</span>
                 </div>
               );
             })}
@@ -228,9 +228,9 @@ const SeriesOverview = () => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
-                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border" />
+                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
                   <span className="text-ellipsis line-clamp-1">{item.Title}</span>
-                  <span className="text-highlight-2">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                  <span className="text-panel-important">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>
               );
             })}

@@ -12,7 +12,7 @@ const HeaderFragment = ({ title, range }) => {
   return (
     <React.Fragment>
       <span>{title}</span>
-      <span className="text-highlight-2">{range}</span>
+      <span className="text-panel-important">{range}</span>
     </React.Fragment>
   );
 };
@@ -129,9 +129,9 @@ const SeriesFileSummary = () => {
       </ShokoPanel>
 
       <div className="flex flex-col gap-y-8 grow">
-        <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border font-semibold text-xl">
+        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border font-semibold text-xl">
           Files Breakdown
-          <div><span className="text-highlight-2">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
+          <div><span className="text-panel-important">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
           <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType} />} transparent>
@@ -164,7 +164,7 @@ const SeriesFileSummary = () => {
           {map(fileSummary?.MissingEpisodes, episode => (
             <div className="grid grid-cols-3 mb-4">
               <div className="mr-12">{episode.Type} {episode.EpisodeNumber}</div>
-              <div className="flex mr-12">{find(episode.Titles, ['Language', 'en'])?.Name || '--'} (<a className="text-highlight-1" href={`https://anidb.net/episode/${episode.ID}`} target="_blank" rel="noopener noreferrer">{episode.ID}</a>)<Icon className="text-highlight-1" path={mdiOpenInNew} size={1} /></div>
+              <div className="flex mr-12">{find(episode.Titles, ['Language', 'en'])?.Name || '--'} (<a className="text-panel-primary" href={`https://anidb.net/episode/${episode.ID}`} target="_blank" rel="noopener noreferrer">{episode.ID}</a>)<Icon className="text-panel-primary" path={mdiOpenInNew} size={1} /></div>
               <div>{episode.AirDate}</div>
             </div>
           ))}

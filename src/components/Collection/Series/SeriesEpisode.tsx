@@ -34,14 +34,14 @@ const getThumbnailUrl = (episode: EpisodeType) => {
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
   show
     ? (
-      <div className="px-3 py-2 bg-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-highlight-2">
+      <div className="px-3 py-2 bg-panel-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-panel-important">
         <Icon path={icon} size={1} />
       </div>
     ) : null
 );
 
 const StateButton = ({ icon, active, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
-  <Button className={active ? 'text-highlight-2' : 'text-font-main'} onClick={onClick}>
+  <Button className={active ? 'text-panel-important' : 'text-panel-text'} onClick={onClick}>
     <Icon path={icon} size="2rem" />
   </Button>
 );
@@ -67,7 +67,7 @@ const SeriesEpisode = ({ episode }: Props) => {
   return (
     <React.Fragment>
       <div className="flex gap-x-8 p-8 items-center z-10">
-        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-background-border relative group" hidePlaceholderOnHover zoomOnHover>
+        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative group" hidePlaceholderOnHover zoomOnHover>
           <div className="absolute right-3 top-3 z-10 group-hover:opacity-0 pointer-events-none transition-opacity">
             <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
@@ -84,7 +84,7 @@ const SeriesEpisode = ({ episode }: Props) => {
         </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
-      <div className="flex justify-center py-4 gap-x-4 border-background-border border-t-2 cursor-pointer font-semibold" onClick={handleExpand}>
+      <div className="flex justify-center py-4 gap-x-4 border-panel-border border-t-2 cursor-pointer font-semibold" onClick={handleExpand}>
         File Info
         <Icon
           path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}

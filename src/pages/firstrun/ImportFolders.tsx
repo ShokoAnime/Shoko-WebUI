@@ -57,11 +57,11 @@ const Folder = (props: ImportFolderType) => {
       <div className="flex justify-between font-semibold">
         {Name}
         <div className="flex gap-x-3">
-          <Button onClick={() => dispatch(setImportFolderModalEdit(ID))}>
-            <Icon path={mdiPencilCircleOutline} size={1} className="text-highlight-1" />
+          <Button onClick={() => dispatch(setImportFolderModalEdit(ID))} dropShadow>
+            <Icon path={mdiPencilCircleOutline} size={1} className="text-button-primary hover:text-button-primary-hover" />
           </Button>
-          <Button onClick={() => handleDeleteFolder(ID)}>
-            <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+          <Button onClick={() => handleDeleteFolder(ID)} dropShadow>
+            <Icon path={mdiMinusCircleOutline} size={1} className="text-button-danger hover:text-button-danger-hover" />
           </Button>
         </div>
       </div>
@@ -93,7 +93,7 @@ function ImportFolders() {
           destination.
         </div>
         <div className="flex font-semibold">
-          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} className="bg-highlight-1 py-2 px-8">
+          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} className="bg-button-primary hover:bg-button-primary-hover py-2 px-8">
             Add Import Folder
           </Button>
         </div>

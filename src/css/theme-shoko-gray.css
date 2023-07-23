@@ -1,25 +1,55 @@
 .theme-shoko-gray {
-  --color-background: 40 46 56;             /* Primary background */
-  --color-background-alt: 44 51 62;         /* Secondary background */
-  --color-background-nav: 53 61 74;         /* Tertiary background */
-  --color-background-border: 33 36 43;      /* General/Primary Border & Fill */
-  --color-border-alt: 63 71 98;             /* General/Border Alt */
-  --color-highlight-1: 68 163 255;
-  --color-highlight-1-light: 135 196 255;
-  --color-highlight-1-dark: 22 123 200;
-  --color-highlight-2: 16 196 105;
-  --color-highlight-2-light: 46 238 140;
-  --color-highlight-2-dark: 12 142 77;
-  --color-highlight-3: 255 108 108;
-  --color-highlight-3-light: 255 184 184;
-  --color-highlight-3-dark: 255 10 10;
-  --color-highlight-4: 249 200 81;
-  --color-highlight-4-light: 251 221 148;
-  --color-highlight-4-dark: 232 167 8;
-  --color-highlight-5: 185 129 255;
-  --color-highlight-5-light: 206 167 255;
-  --color-highlight-5-dark: 128 25 255;
-  --color-font-main: 207 216 227;
-  --color-font-alt: 1 15 28;
-  --color-image-overlay: 22 27 39;
+  --color-button-primary: 68 163 255;
+  --color-button-primary-hover: 34 94 183;
+  --color-button-secondary: 53 61 74;
+  --color-button-secondary-hover: 26 34 53;
+  --color-button-danger: 219 69 81;
+  --color-button-danger-hover: 183 54 76;
+  --color-default-background: 40 46 56;
+  --color-default-background-input: 33 36 43;
+  --color-default-border: 33 36 43;
+  --color-default-text: 207 216 227;
+  --color-default-text-alt: 1 15 28;
+  --color-default-primary: 68 163 255;
+  --color-default-primary-hover: 142 211 255;
+  --color-default-important: 16 196 105;
+  --color-header-background: 44 51 62;
+  --color-header-background-alt: 53 61 74;
+  --color-header-border: 33 36 43;
+  --color-header-text: 207 216 227;
+  --color-header-text-alt: 207 216 227;
+  --color-header-primary: 68 163 255;
+  --color-header-primary-hover: 142 211 255;
+  --color-header-important: 16 196 105;
+  --color-header-warning: 249 200 81;
+  --color-logo-background: 40 46 56;
+  --color-logo-highlight: 68 163 255;
+  --color-overlay-background: 40 46 56;
+  --color-overlay-border: 33 36 43;
+  --color-overlay-count-episode: 16 196 105;
+  --color-overlay-count-group: 185 129 255;
+  --color-overlay-icon: 207 216 227;
+  --color-overlay-icon-hover: 68 163 255;
+  --color-panel-background: 44 51 62;
+  --color-panel-background-alt: 33 36 43;
+  --color-panel-background-alt-2: 40 46 56;
+  --color-panel-border: 33 36 43;
+  --color-panel-border-alt: 63 71 98;
+  --color-panel-text: 207 216 227;
+  --color-panel-text-alt: 1 15 28;
+  --color-panel-primary: 68 163 255;
+  --color-panel-primary-hover: 142 211 255;
+  --color-panel-important: 16 196 105;
+  --color-panel-danger: 219 69 81;
+  --color-panel-warning: 249 200 81;
+  --color-panel-purple: 185 129 255;
+  --color-slider-background:  33 36 43;
+  --color-slider-thumb: 68 163 255;
+  --color-toast-background: 40 46 56;
+  --color-toast-border: 33 36 43;
+  --color-toast-text: 207 216 227;
+  --color-toast-primary: 68 163 255;
+  --color-toast-important: 16 196 105;
+  --color-toast-danger: 219 69 81;
+  --color-toast-warning: 249 200 81;
 }

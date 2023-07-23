@@ -66,8 +66,8 @@ function DashboardPage() {
         <div className="flex flex-col">
           Edit Mode Enabled
           <div className="flex items-center justify-end mt-3 gap-x-3 font-semibold">
-            <Button onClick={() => cancelLayoutChange()} className="bg-background-alt px-3 py-1.5 text-font-main">Cancel</Button>
-            <Button onClick={() => saveLayout()} className="bg-highlight-1 px-3 py-1.5">Save</Button>
+            <Button onClick={() => cancelLayoutChange()} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover px-3 py-1.5 text-font-main">Cancel</Button>
+            <Button onClick={() => saveLayout()} dropShadow className="bg-button-primary hover:bg-button-primary-hover text-panel-text-alt px-3 py-1.5">Save</Button>
           </div>
         </div>
       );
@@ -90,7 +90,7 @@ function DashboardPage() {
 
   const renderResizeHandle = () => (
     <div className="react-resizable-handle right-0 bottom-0 cursor-nwse-resize">
-      <Icon path={mdiMenuDown} size={1.5} className="text-highlight-1" rotate={-45} />
+      <Icon path={mdiMenuDown} size={1.5} className="text-panel-primary" rotate={-45} />
     </div>
   );
 

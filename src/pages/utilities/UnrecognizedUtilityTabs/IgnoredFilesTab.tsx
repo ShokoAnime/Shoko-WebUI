@@ -85,17 +85,17 @@ function IgnoredFilesTab() {
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
           <div className="flex items-center gap-x-3">
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
-            <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+            <div className="box-border flex grow bg-panel-background-alt-2 border border-panel-border items-center rounded-md px-4 py-3 relative">
               <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
-              <span className="text-highlight-2 ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+              <span className="text-panel-important ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
             </div>
           </div>
         </ShokoPanel>
       </div>
 
-      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
         {filesQuery.isLoading && (
-          <div className="flex grow justify-center items-center text-highlight-1">
+          <div className="flex grow justify-center items-center text-panel-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}

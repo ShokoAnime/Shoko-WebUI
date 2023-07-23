@@ -112,10 +112,10 @@ function ImportFolderModal() {
         </Select>
         <div className="flex justify-end gap-x-3 font-semibold">
           {edit && (
-            <Button onClick={handleDelete} className="bg-background-nav px-6 py-2 text-font-main" dropShadow>Delete</Button>
+            <Button onClick={handleDelete} className="bg-button-danger hover:bg-button-danger-hover px-6 py-2 text-font-main" dropShadow>Delete</Button>
           )}
-          <Button onClick={handleClose} className="bg-background-nav px-6 py-2 text-font-main" dropShadow>Cancel</Button>
-          <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2 hover:bg-highlight-1-dark" dropShadow disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}>Save</Button>
+          <Button onClick={handleClose} className="bg-button-secondary hover:bg-button-secondary-hover px-6 py-2 text-font-main" dropShadow>Cancel</Button>
+          <Button onClick={handleSave} className="bg-button-primary hover:bg-button-primary-hover px-6 py-2 " dropShadow disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}>Save</Button>
         </div>
       </ModalPanel>
       <BrowseFolderModal onSelect={onFolderSelect} />

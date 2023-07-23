@@ -67,10 +67,10 @@ const getPrefix = (type: EpisodeTypeEnum) => {
 };
 
 const SelectOption = (option: Option & { divider: boolean }) => (
-  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-font-main cursor-default hover:bg-highlight-1 hover:text-font-alt select-none relative px-2 py-0.5 group">
+  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-panel-text hover:bg-panel-primary hover:text-panel-text-alt select-none relative px-2 py-0.5 group cursor-pointer">
     <div className="flex items-center justify-between">
       <span className="flex font-normal truncate grow">
-        <div className="text-highlight-2 w-10 group-hover:text-font-main">{getPrefix(option.type) + option.number}</div>
+        <div className="text-panel-important w-10 group-hover:text-panel-text">{getPrefix(option.type) + option.number}</div>
         |
         <div className="ml-2">{option.label}</div>
       </span>
@@ -123,8 +123,8 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     if (!selected || !selected.label) return emptyValue;
     return (
       <React.Fragment>
-        <span className="text-highlight-2 font-semibold">{selected.number}</span> - {selected.label}
-        {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-font-main bg-background-alt text-sm border-highlight-2 border">{selected.type}</span>}
+        <span className="text-panel-important font-semibold">{selected.number}</span> - {selected.label}
+        {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-panel-text bg-panel-background text-sm border-panel-primary border">{selected.type}</span>}
       </React.Fragment>
     );
   };
@@ -140,14 +140,14 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
     portalEl.style.width = `${displayNode.offsetWidth}px`;
 
     return ReactDOM.createPortal(
-      <Listbox.Options static className="absolute mt-1 w-full z-10 bg-background-alt">
+      <Listbox.Options static className="absolute mt-1 w-full z-10 bg-panel-background">
         <div className="flex gap-x-2">
           <Input className="grow" id="epFilter" type="text" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} inputClassName="py-4 px-3" startIcon={mdiMagnify} placeholder="Input Episode Name or Number..." />
         </div>
-        <div className="rounded-md bg-background-border mt-1 overflow-y-auto max-h-96 p-4">
+        <div className="rounded-md bg-panel-background-alt mt-1 overflow-y-auto max-h-96 p-4">
           {options.map((item, idx) => (
             <>
-              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-background-alt h-0.5 my-3" />)}
+              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-panel-border-alt h-0.5 my-3" />)}
               {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
             </>
           ))}
@@ -162,7 +162,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
       <Listbox value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative h-full">
-            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-background-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-highlight-1', rowIdx % 2 === 0 ? 'bg-background-alt' : 'bg-background')}>
+            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-panel-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary', rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt-2')}>
               <span className="flex items-center">
                 <span className="ml-3 block truncate h-7">{renderSelected()}</span>
               </span>

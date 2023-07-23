@@ -51,10 +51,10 @@ function ImportFolders() {
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex">
             <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-2">
-              <Icon className="text-highlight-1" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180} />
+              <Icon className="text-panel-primary" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180} />
             </Button>
             <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
-              <Icon className="text-highlight-1" path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180} />
+              <Icon className="text-panel-primary" path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180} />
             </Button>
           </div>
         </div>
@@ -76,7 +76,7 @@ function ImportFolders() {
 
   const renderOptions = () => (
     <div className="cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
-      <Icon className="text-highlight-1" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
+      <Icon className="text-panel-primary" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
     </div>
   );
 

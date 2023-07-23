@@ -19,7 +19,7 @@ function CollectionStats() {
         {title}
       </div>
       {link ? (
-        <Link to={link} className="text-highlight-1">{value}</Link>
+        <Link to={link} className="text-panel-primary">{value}</Link>
       ) : (
         <div>{value}</div>
       )}

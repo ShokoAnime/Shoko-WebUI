@@ -106,16 +106,16 @@ const Action = ({ actionKey }: { actionKey: string }) => {
       <div className="flex justify-between gap-x-3">
         {name}
         <div className="flex gap-x-2.5">
-          <Button onClick={() => setShowInfo(prev => !prev)} className="text-highlight-1">
+          <Button onClick={() => setShowInfo(prev => !prev)} className="!text-button-primary hover:!text-button-primary-hover">
             <Icon path={mdiInformationOutline} size={1} />
           </Button>
-          <Button onClick={() => runAction(name, functionName)} className="text-highlight-1">
+          <Button onClick={() => runAction(name, functionName)} className="!text-button-primary hover:!text-button-primary-hover">
             <Icon path={mdiPlayCircleOutline} size={1} />
           </Button>
         </div>
       </div>
       <AnimateHeight height={showInfo ? 'auto' : 0}>
-        <div className="flex bg-background-border rounded-md px-4 py-2 gap-x-2 mt-3">
+        <div className="flex bg-panel-background-alt rounded-md px-4 py-2 gap-x-2 mt-3">
           {/* Icon size reduces if not put in a div */}
           <div className="mt-0.5">
             <Icon path={mdiInformationOutline} size={0.8333} />
@@ -138,10 +138,10 @@ function ActionsModal({ show, onClose }: Props) {
     >
       <div className="font-semibold text-xl">Actions</div>
       <div className="flex">
-        <div className="flex flex-col min-w-[8rem] border-r-2 border-background-border gap-y-4">
+        <div className="flex flex-col min-w-[8rem] border-r-2 border-panel-border gap-y-4">
           {map(actions, (value, key) => (
             <div
-              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-highlight-1')}
+              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-primary')}
               key={key}
               onClick={() => setActiveTab(key)}
             >

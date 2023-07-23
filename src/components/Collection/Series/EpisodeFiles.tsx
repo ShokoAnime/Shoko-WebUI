@@ -37,7 +37,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
         return (
           <div className="flex flex-col gap-y-8" key={selectedFile.ID}>
 
-            <div className="flex px-4 py-3 bg-background border border-background-border rounded-md gap-x-3 grow">
+            <div className="flex px-4 py-3 bg-panel-background border border-panel-borderrounded-md gap-x-3 grow">
               <div className="gap-x-2 flex cursor-pointer items-center" onClick={async () => { await rescanFile(selectedFile.ID); }}>
                 <Icon path={mdiRefresh} size={1} />
                 Force Update File Info
@@ -48,7 +48,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
               </div>
               {selectedFile.AniDB && (
               <a href={`https://anidb.net/file/${selectedFile.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
-                <div className="gap-x-2 flex text-highlight-1 font-semibold items-center">
+                <div className="gap-x-2 flex text-panel-priamry font-semibold items-center">
                   <div className="metadata-link-icon anidb" />
                   {`${selectedFile.AniDB.ID} (AniDB)`}
                   <Icon path={mdiOpenInNew} size={1} />
@@ -57,7 +57,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
               )}
               {ReleaseGroupID > 0 && (
               <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
-                <div className="gap-x-2 flex text-highlight-1 font-semibold items-center">
+                <div className="gap-x-2 flex text-panel-priamry font-semibold items-center">
                   <div className="metadata-link-icon anidb" />
                   {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
                   <Icon path={mdiOpenInNew} size={1} />
@@ -65,7 +65,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
               </a>
               )}
 
-              {selectedFile.IsVariation && <span className="text-highlight-2 ml-auto font-semibold">Variation</span>}
+              {selectedFile.IsVariation && <span className="text-panel-important ml-auto font-semibold">Variation</span>}
             </div>
 
             <EpisodeFileInfo file={selectedFile} />

@@ -51,7 +51,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
     >
       <div className="font-semibold text-xl">AvDump Series Select</div>
       <CopyToClipboard text={ed2kLinks} onCopy={() => toast.success('ED2K hashes copied to clipboard!')}>
-        <Button className="bg-highlight-1 mt-4 p-2 flex items-center justify-center gap-x-2.5 font-semibold">
+        <Button className="bg-panel-primary mt-4 p-2 flex items-center justify-center gap-x-2.5 font-semibold">
           <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
           Copy ED2K Hashes
         </Button>
@@ -62,7 +62,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
         ))}
       </div>
       <Input id="search" value={searchText} type="text" placeholder="Search..." onChange={e => handleSearch(e.target.value)} startIcon={mdiMagnify} />
-      <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-background-border gap-y-1">
+      <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-panel-border gap-y-1">
         {searchResults.isLoading
           ? (
             <div className="flex h-full justify-center items-center">
@@ -72,7 +72,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
           : (searchResults.data ?? []).map(result => (
             <a href={`https://anidb.net/anime/${result.ID}/release/add`} key={result.ID} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center">
               <div className="line-clamp-1">{result.Title}</div>
-              <div className="text-highlight-1">
+              <div className="text-panel-primary">
                 <Icon path={mdiOpenInNew} size={0.833} />
               </div>
             </a>

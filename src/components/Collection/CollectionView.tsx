@@ -85,11 +85,11 @@ const CollectionView = (props: Props) => {
     return (
       <div className={cx(
         'flex grow rounded-md items-center font-semibold justify-center',
-        mode === 'grid' && 'px-6 py-8 bg-background-alt border-background-border border',
+        mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
       )}
       >
         {groupsData.isUninitialized || groupsData.isLoading ? (
-          <Icon path={mdiLoading} size={3} className="text-highlight-1" spin />
+          <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
         ) : 'No series/groups available!'}
       </div>
     );
@@ -98,7 +98,7 @@ const CollectionView = (props: Props) => {
   return (
     <div className={cx(
       'flex grow rounded-md',
-      mode === 'grid' && 'px-6 py-8 bg-background-alt border-background-border border',
+      mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
     )}
     >
       <div className="w-full relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
@@ -155,7 +155,7 @@ const CollectionView = (props: Props) => {
               items.push(
                 <div
                   className={cx(
-                    'flex items-center justify-center text-highlight-1 shrink-0 rounded-md border border-background-border',
+                    'flex items-center justify-center text-panel-primary shrink-0 rounded-md border border-panel-border',
                     mode === 'grid' ? 'w-[13.0625rem] h-[21.0625rem]' : 'w-[56.6875rem] h-[20.5rem]',
                   )}
                   key={`loading-${i}`}

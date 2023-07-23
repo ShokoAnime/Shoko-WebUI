@@ -100,14 +100,14 @@ function LanguagesModal({ type, onClose }: Props) {
       className="p-8 flex-col drop-shadow-lg gap-y-4 h-2/3"
     >
       <div className="font-semibold text-xl">{type} Languages</div>
-      <div className="flex flex-col overflow-y-auto bg-background-border rounded-md border border-background-border px-3 py-2 gap-y-1.5">
+      <div className="flex flex-col overflow-y-auto bg-panel-background-alt rounded-md border border-panel-border px-3 py-2 gap-y-1.5">
         {Object.keys(languageDescription).map(key => (
           <Checkbox id={key} key={key} isChecked={languages.includes(key)} onChange={handleInputChange} label={languageDescription[key]} justify />
         ))}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} className="bg-background-nav px-5 py-2 text-font-main">Discard</Button>
-        <Button onClick={handleSave} className="bg-highlight-1 px-5 py-2" disabled={languages.length === 0}>Save</Button>
+        <Button onClick={onClose} className="bg-button-secondary hover:bg-button-secondary-hover px-5 py-2 text-panel-text">Discard</Button>
+        <Button onClick={handleSave} className="bg-button-primary hover:bg-button-primary-hover px-5 py-2" disabled={languages.length === 0}>Save</Button>
       </div>
     </ModalPanel>
   );

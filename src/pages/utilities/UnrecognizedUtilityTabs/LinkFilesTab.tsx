@@ -64,7 +64,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
   const renderRow = useCallback((data: SeriesAniDBSearchResult) => (
     <div key={data.ID} onClick={() => updateSelectedSeries(data)} className="flex cursor-pointer gap-y-1">
       <div
-        className="flex font-semibold text-highlight-1 w-20"
+        className="flex font-semibold text-panel-primary w-20"
         onClick={(e) => {
           e.stopPropagation();
           window.open(`https://anidb.net/anime/${data.ID}`, '_blank');
@@ -96,7 +96,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex flex-col bg-background-border p-4 rounded-md h-full overflow-y-auto">
+      <div className="flex flex-col bg-panel-border p-4 rounded-md h-full overflow-y-auto">
         {searchRows}
       </div>
     </div>
@@ -196,9 +196,9 @@ function LinkFilesTab() {
       const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
       const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
       result.push(
-        <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
+        <div title={path} className={cx(['flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt-2', selectedLink === idx && 'border-panel-primary'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
           {path}
-          {isSameFile && (<Icon path={mdiLink} size={1} className="text-highlight-2 ml-auto" />)}
+          {isSameFile && (<Icon path={mdiLink} size={1} className="text-panel-important ml-auto" />)}
         </div>,
       );
       if (episodes.length > 0) {
@@ -209,7 +209,7 @@ function LinkFilesTab() {
         );
       } else if (idx === 0) {
         result.push(
-          <Button className="bg-highlight-1 flex items-center justify-center px-3 py-4 font-semibold" key="populate-button" loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>
+          <Button className="bg-panel-primary flex items-center justify-center px-3 py-4 font-semibold" key="populate-button" loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>
             <Icon path={mdiDownloadCircleOutline} size={1} className="mr-2" />
             Populate Series Episode Data
           </Button>,
@@ -224,7 +224,7 @@ function LinkFilesTab() {
     const manualLinkFileRows: Array<React.ReactNode> = [];
     forEach(selectedRows, (file) => {
       manualLinkFileRows.push(
-        <div className="p-4 w-full odd:bg-background even:bg-background-alt border border-background-border rounded-md leading-5" key={file.ID}>
+        <div className="p-4 w-full odd:bg-panel-background-alt-2 even:bg-panel-background border border-panel-border rounded-md leading-5" key={file.ID}>
           {file.Locations?.[0].RelativePath ?? '<missing file path>'}
         </div>,
       );
@@ -288,39 +288,39 @@ function LinkFilesTab() {
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
-              <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+              <div className="box-border flex grow bg-panel-background-alt-2 border border-panel-border items-center rounded-md px-4 py-3 relative">
                 <div className="flex grow gap-x-4">
                   <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={selectedLink === -1} />
                   <MenuButton onClick={() => removeLink(fileLinks[selectedLink].FileID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={selectedLink === -1} />
                 </div>
               </div>
               <div className="flex gap-x-3 font-semibold">
-                <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={!selectedSeries.ShokoID}>Range Fill</Button>
-                {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
-                <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
-                <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={!selectedSeries.ShokoID}>Save</Button>
+                <Button onClick={() => setShowRangeFillModal(true)} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-4 py-3 text-panel-text" disabled={!selectedSeries.ShokoID}>Range Fill</Button>
+                {/* <Button onClick={() => {}} className="bg-panel-background-nav border border-panel-border px-4 py-3 text-panel-text">Auto Fill</Button> */}
+                <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-4 py-3 text-panel-text">Cancel</Button>
+                <Button onClick={makeLinks} dropShadow className="bg-button-primary hover:bg-button-primary-hover border border-panel-border px-4 py-3" disabled={!selectedSeries.ShokoID}>Save</Button>
               </div>
             </div>
           </ShokoPanel>
         </div>
 
-        <div className="grow w-full h-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8 flex gap-x-8">
+        <div className="grow w-full h-full overflow-y-auto rounded-lg bg-panel-background border border-panel-border mt-8 p-8 flex gap-x-8">
           <div className={cx('grid gap-y-2 gap-x-8 auto-rows-min', selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1')}>
-            <div className="flex justify-between bg-background font-semibold p-4 rounded-md border border-background-border">
+            <div className="flex justify-between bg-panel-background-alt-2 font-semibold p-4 rounded-md border border-panel-border">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeries?.ID && (
-              <div className="flex bg-background font-semibold p-4 rounded-md border border-background-border">
+              <div className="flex bg-panel-background-alt-2 font-semibold p-4 rounded-md border border-panel-border">
                 AniDB |&nbsp;
                 <div
-                  className="flex font-semibold text-highlight-1 cursor-pointer"
+                  className="flex font-semibold text-panel-primary cursor-pointer"
                   onClick={() => window.open(`https://anidb.net/anime/${selectedSeries.ID}`, '_blank')}
                 >
                   {selectedSeries.ID} - {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </div>
-                <Button onClick={() => updateSelectedSeries({} as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1">
+                <Button onClick={() => updateSelectedSeries({} as SeriesAniDBSearchResult)} className="ml-auto text-panel-primary">
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>

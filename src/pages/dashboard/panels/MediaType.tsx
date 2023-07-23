@@ -13,19 +13,35 @@ const names = {
 
 function MediaType() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-
   const seriesSummary = useGetDashboardSeriesSummaryQuery();
 
-  const renderName = (item: string, count: number, countPercentage: number, counter: number) => (
+  const renderColor = (type) => {
+    switch (type) {
+      case 'Series':
+        return 'panel-primary';
+      case 'Other':
+        return 'panel-important';
+      case 'Web':
+        return 'panel-danger';
+      case 'Movie':
+        return 'panel-warning';
+      case 'OVA':
+        return 'panel-purple';
+      default:
+        return 'panel-primary';
+    }
+  };
+
+  const renderName = (item: string, count: number, countPercentage: number) => (
     <div key={`${item}-name`} className="flex mt-5 first:mt-0">
       <span className="grow">{names[item] ?? item} - {count}</span>
-      <span className={`font-semibold text-highlight-${counter}`}>{countPercentage.toFixed(2)}%</span>
+      <span className={`font-semibold text-${renderColor(item)}`}>{countPercentage.toFixed(2)}%</span>
     </div>
   );
 
-  const renderBar = (item: string, countPercentage: number, counter: number) => (
+  const renderBar = (item: string, countPercentage: number) => (
     <div key={`${item}-bar`} className="flex bg-background-border rounded-md mt-2">
-      <div className={`rounded-md h-4 bg-highlight-${counter}`} style={{ width: `${countPercentage}%` }} />
+      <div className={`rounded-md h-4 bg-${renderColor(item)}`} style={{ width: `${countPercentage}%` }} />
     </div>
   );
 
@@ -40,16 +56,14 @@ function MediaType() {
   seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
 
   const items: Array<React.ReactNode> = [];
-  let counter = 0;
 
   forEach(seriesSummaryArray, (item) => {
     let countPercentage = 0;
-    counter += 1;
     if (total) {
       countPercentage = (item[1] / total) * 100;
     }
-    items.push(renderName(item[0], item[1], countPercentage, counter));
-    items.push(renderBar(item[0], countPercentage, counter));
+    items.push(renderName(item[0], item[1], countPercentage));
+    items.push(renderBar(item[0], countPercentage));
   });
 
   return (

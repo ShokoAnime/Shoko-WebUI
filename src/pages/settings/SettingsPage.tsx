@@ -286,7 +286,7 @@ function SettingsPage() {
   return (
     <div className="flex grow justify-center gap-x-8 min-h-full" onClick={() => setShowNav(false)}>
       <TransitionDiv
-        className="flex flex-col w-72 bg-background-alt rounded-md border border-background-border p-8 z-10 gap-y-4 font-semibold bg-opacity-50 relative top-0"
+        className="flex flex-col w-72 bg-panel-background rounded-md border border-panel-border p-8 z-10 gap-y-4 font-semibold bg-opacity-50 relative top-0"
         show={!(isSm && !showNav)}
         enter={cx(isSm ? 'transition-transform' : 'transition-none')}
         enterFrom="-translate-x-64"
@@ -296,7 +296,7 @@ function SettingsPage() {
           <div className="text-xl opacity-100 mb-8">Settings</div>
           <div className="flex flex-col gap-y-4">
             {items.map(item => (
-              <NavLink to={item.path} className={({ isActive }) => (isActive ? 'text-highlight-1' : '')} key={item.path}>
+              <NavLink to={item.path} className={({ isActive }) => (isActive ? 'text-panel-primary' : '')} key={item.path}>
                 {item.name}
               </NavLink>
             ))}
@@ -307,15 +307,15 @@ function SettingsPage() {
       {/*  <div className="flex justify-center mb-8 font-semibold"> */}
       {/*    Settings */}
       {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" /> */}
-      {/*    <div className="flex text-highlight-1 rounded pl-2 border border-highlight-1 items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
+      {/*    <div className="flextext-panel-primary rounded pl-2 border border-panel-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
       {/*      {find(items, item => item.path === pathname.split('/').pop())?.name} */}
       {/*      <Icon path={mdiChevronDown} size={1} /> */}
       {/*    </div> */}
       {/*  </div> */}
       {/* )} */}
-      <div className="flex flex-col p-8 bg-background-alt bg-opacity-50 rounded-md border border-background-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
+      <div className="flex flex-col p-8 bg-panel-background bg-opacity-50 rounded-md border border-panel-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
         {settingsQuery.isLoading ? (
-          <div className="flex grow items-center justify-center text-highlight-1">
+          <div className="flex grow items-center justify-centertext-panel-primary">
             <Icon path={mdiLoading} spin size={5} />
           </div>
         ) : (
@@ -329,15 +329,15 @@ function SettingsPage() {
             />
             {pathname.split('/').pop() !== 'user-management' && (
               <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
-                <Button onClick={() => setNewSettings(settings)} className="bg-background-alt px-3 py-2 border border-background-border text-font-main">Cancel</Button>
-                <Button onClick={() => saveSettings()} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+                <Button onClick={() => setNewSettings(settings)} className="bg-panel-background px-3 py-2 border border-panel-border text-panel-text">Cancel</Button>
+                <Button onClick={() => saveSettings()} className="bg-panel-primary px-3 py-2 ml-3 border border-panel-border">Save</Button>
               </div>
             )}
           </>
         )}
       </div>
-      <div className={cx('flex w-96 bg-background-alt border border-background-border rounded-md p-8 gap-x-2 font-semibold items-center bg-opacity-50 sticky top-0 transition-opacity h-full', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
-        <Icon path={mdiInformationOutline} size={1} className="text-highlight-1" />
+      <div className={cx('flex w-96 bg-panel-background border border-panel-border rounded-md p-8 gap-x-2 font-semibold items-center bg-opacity-50 sticky top-0 transition-opacity h-full', unsavedChanges ? 'opacity-100' : 'opacity-0')}>
+        <Icon path={mdiInformationOutline} size={1} className="text-panel-primary" />
         Whoa! You Have Unsaved Changes!
       </div>
       <div className="h-full w-full top-0 left-0 fixed opacity-5 -z-10" style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }} />

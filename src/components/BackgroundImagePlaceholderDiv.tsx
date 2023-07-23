@@ -34,14 +34,14 @@ function BackgroundImagePlaceholderDiv(props: Props) {
     <div className={`${className} overflow-hidden`}>
       <div className={cx('absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]', zoomOnHover && 'group-hover:scale-105 transition-transform')} style={{ background: imageLoaded ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}>
         {imageError && (
-          <div className={cx('w-full h-full flex flex-col justify-center items-center bg-background-nav p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
-            <Icon path={mdiInformationOutline} size={1.5} className="text-highlight-2" />
+          <div className={cx('w-full h-full flex flex-col justify-center items-center bg-default-background p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
+            <Icon path={mdiInformationOutline} size={1.5} className="text-default-important" />
             <div className="my-4 font-semibold">Failed to Load</div>
             Please refresh your browser to correct
           </div>
         )}
         {!imageLoaded && !imageError && (
-          <div className="flex grow items-center justify-center text-highlight-1">
+          <div className="flex grow items-center justify-center text-default-primary">
             <Icon path={mdiLoading} spin size={3} />
           </div>
         )}
