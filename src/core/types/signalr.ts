@@ -1,6 +1,8 @@
 export type QueueItemType = {
   state: number;
   description: string;
+  status: string;
+  currentCommandID: number | null;
 };
 
 export type QueueStatusType = {
