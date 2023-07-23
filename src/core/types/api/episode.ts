@@ -44,6 +44,7 @@ export type EpisodeAniDBType = {
   Type: EpisodeTypeEnum;
   EpisodeNumber: number;
   AirDate: string | null;
+  Title: string;
   Titles: EpisodeTitleType[];
   Description: string;
   Rating: RatingType;

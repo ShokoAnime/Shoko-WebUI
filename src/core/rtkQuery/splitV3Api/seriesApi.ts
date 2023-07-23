@@ -4,7 +4,7 @@ import { omit } from 'lodash';
 import type { SeriesAniDBSearchResult, SeriesRecommendedType, SeriesType } from '@/core/types/api/series';
 import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '@/core/types/api/series';
 import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
-import { EpisodeType } from '@/core/types/api/episode';
+import { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
 import { FileType } from '@/core/types/api/file';
 import { TagType } from '@/core/types/api/tags';
 import { DataSourceType, ImageType } from '@/core/types/api/common';
@@ -24,6 +24,17 @@ export type SeriesEpisodesQueryType = {
   includeWatched?: string;
   type?: string;
   search?:string;
+  fuzzy?: boolean;
+} & PaginationType;
+
+export type SeriesAniDBEpisodesQueryType = {
+  anidbID: number;
+  includeMissing?: string;
+  includeHidden?: string;
+  includeWatched?: string;
+  type?: string;
+  search?:string;
+  fuzzy?: boolean;
 } & PaginationType;
 
 const seriesApi = splitV3Api.injectEndpoints({
@@ -51,6 +62,11 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
+      providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
+    }),
+
+    getSeriesAniDBEpisodes: build.query<ListResultType<EpisodeAniDBType[]>, SeriesAniDBEpisodesQueryType>({
+      query: ({ anidbID, ...params }) => ({ url: `Series/AniDB/${anidbID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
@@ -83,8 +99,8 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
-    refreshAnidbSeries: build.mutation<void, { anidbID: number; force?: boolean; }>({
-      query: ({ anidbID }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=true&createSeriesEntry=true&immediate=true`, method: 'POST' }),
+    refreshAnidbSeries: build.mutation<boolean, { anidbID: number; force?: boolean; createSeries?: boolean }>({
+      query: ({ anidbID, force = false, createSeries = false }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=${force}&createSeriesEntry=${createSeries}&immediate=true`, method: 'POST' }),
       invalidatesTags: ['SeriesEpisodes', 'SeriesSearch'],
     }),
 
@@ -166,6 +182,7 @@ export const {
   useGetSeriesWithoutFilesQuery,
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
+  useLazyGetSeriesAniDBEpisodesQuery,
   useLazyGetSeriesEpisodesInfiniteQuery,
   useRefreshAnidbSeriesMutation,
   useGetAniDBRecommendedAnimeQuery,
