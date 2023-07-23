@@ -9,9 +9,9 @@ import toast from '@/components/Toast';
 import Button from '@/components/Input/Button';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import CollectionBreakdown from './panels/CollectionBreakdown';
+import CollectionStats from './panels/CollectionStats';
 import UnrecognizedFiles from './panels/UnrecognizedFiles';
-import SeriesBreakdown from './panels/SeriesBreakdown';
+import MediaType from './panels/MediaType';
 import QueueProcessor from './panels/QueueProcessor';
 import ShokoNews from './panels/ShokoNews';
 import RecentlyImported from './panels/RecentlyImported';
@@ -34,7 +34,7 @@ function DashboardPage() {
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
-  const [currentLayout, setCurrentLayout] = useState(initialSettings.WebUI_Settings.layout.dashboard);
+  const [currentLayout, setCurrentLayout] = useState(settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard);
 
   useEffect(() => {
     const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
@@ -94,6 +94,10 @@ function DashboardPage() {
     </div>
   );
 
+  useEffect(() => {
+    window.dispatchEvent(new Event('resize'));
+  }, [currentLayout]);
+
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
@@ -118,10 +122,10 @@ function DashboardPage() {
         <RecentlyImported />
       </div>
       <div key="collectionBreakdown">
-        <CollectionBreakdown />
+        <CollectionStats />
       </div>
       <div key="collectionTypeBreakdown">
-        <SeriesBreakdown />
+        <MediaType />
       </div>
       <div key="importFolders">
         <ImportFolders />

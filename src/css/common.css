@@ -81,7 +81,8 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.background');
   color: theme('colors.font-main');
-  font-weight: 300;
+  display: none;
+  font-weight: 400;
 }
 
 ::-webkit-scrollbar {

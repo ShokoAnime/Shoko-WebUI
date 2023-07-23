@@ -16,7 +16,12 @@ const ContinueWatching = () => {
       <div className="flex shoko-scrollbar">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
-          : <div className="flex justify-center font-semibold mt-4 w-full">Congrats on Not Stopping an Episode Halfway Through.</div>}
+          : (
+            <div className="flex flex-col justify-center mt-4 w-full text-center gap-y-2">
+              <div>No Episodes In Progress.</div>
+              <div>Stop An Episode During Playback To Populate This Section.</div>
+            </div>
+          )}
       </div>
     </ShokoPanel>
   );

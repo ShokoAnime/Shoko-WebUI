@@ -19,8 +19,8 @@ const HeaderFragment = ({ title, range }) => {
 
 const Header = ({ ranges }) => (
   <div className="flex gap-x-2">
-    <HeaderFragment title="Episodes" range={ranges?.Normal?.Range} />
-    <HeaderFragment title="Specials" range={ranges?.Specials?.Range} />
+    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
+    <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
     {map(omit(ranges, ['Normal', 'Special']), (item, key) => (
       <HeaderFragment title={key} range={item.Range} />
     ))}
@@ -38,8 +38,16 @@ const renderSizes = (ranges) => {
   const sizes: SizeTotals = {};
   forEach(ranges, (item, key) => {
     let idx;
-    if (key === 'Normal') { idx = 'Episodes'; } else if (key === 'Specials') { idx = 'Specials'; } else { idx = 'Other'; }
-    if (!sizes[idx]) { sizes[idx] = { size: 0, count: 0 }; }
+    if (key === 'Normal') {
+      idx = item.Count > 1 ? 'Episodes' : 'Episode';
+    } else if (key === 'Special') {
+      idx = item.Count > 1 ? 'Specials' : 'Special';
+    } else {
+      idx = 'Other';
+    }
+    if (!sizes[idx]) {
+      sizes[idx] = { size: 0, count: 0 };
+    }
     sizes[idx].size += item.FileSize;
     sizes[idx].count += item.Count;
   });
@@ -108,7 +116,7 @@ const SeriesFileSummary = () => {
         </div>
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">Special Source</span>
-          {summary.SpecialEpisodeSource || '-'}
+          {summary.SpecialEpisodeSource || 'N/A'}
         </div>
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">Total File Size</span>
@@ -123,11 +131,11 @@ const SeriesFileSummary = () => {
       <div className="flex flex-col gap-y-8 grow">
         <div className="rounded-md bg-background-alt/50 px-8 py-4 flex justify-between items-center border-background-border border font-semibold text-xl">
           Files Breakdown
-          <div><span className="text-highlight-2">{fileSummary?.Groups.length || 0}</span> Source Entries</div>
+          <div><span className="text-highlight-2">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
           <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType} />} transparent>
-            <div className="flex">
+            <div className="flex max-h-10">
               <div className="grow flex flex-col gap-y-4 font-semibold">
                 <span>Group</span>
                 <span>Video</span>
@@ -141,18 +149,18 @@ const SeriesFileSummary = () => {
               <div className="grow flex flex-col gap-y-4 font-semibold">
                 <span>Total</span>
                 <span>Audio</span>
-                <span>Subs</span>
+                <span>{range.SubtitleCount > 1 ? 'Subtitles' : 'Subtitle'}</span>
               </div>
               <div className="grow-[2] flex flex-col gap-y-4">
                 <span>{renderSizes(range.RangeByType)}</span>
-                <span>{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
-                <span>{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
+                <span className="uppercase">{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
+                <span className="uppercase">{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
               </div>
             </div>
           </ShokoPanel>
         ))}
         {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
-        <ShokoPanel disableOverflow title="Missing Files">
+        <ShokoPanel disableOverflow title="Missing Files" transparent>
           {map(fileSummary?.MissingEpisodes, episode => (
             <div className="grid grid-cols-3 mb-4">
               <div className="mr-12">{episode.Type} {episode.EpisodeNumber}</div>

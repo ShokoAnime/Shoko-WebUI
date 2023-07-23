@@ -29,8 +29,8 @@ const GridViewItem = (item: CollectionGroupType) => {
   };
 
   return (
-    <Link to={viewRouteLink()}>
-      <div key={`group-${item.IDs.ID}`} className="group shrink-0 w-[13.0625rem] content-center flex flex-col">
+    <Link to={viewRouteLink()} key={`group-${item.IDs.ID}`}>
+      <div className="group shrink-0 w-[13.0625rem] content-center flex flex-col">
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${posters[0].Source}/Poster/${posters[0].ID}`} className="h-[19.0625rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-3 relative" hidePlaceholderOnHover zoomOnHover>
           <div className="absolute right-3 top-3 z-20 flex flex-col gap-y-3">
             <CountIcon show={unwatchedCount > 0} className="bg-highlight-2">{unwatchedCount}</CountIcon>

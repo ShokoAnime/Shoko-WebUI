@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
-import { mdiInformationOutline } from '@mdi/js';
+import { mdiInformationOutline, mdiLoading } from '@mdi/js';
 
 type Props = {
   children?: any;
@@ -18,21 +18,31 @@ function BackgroundImagePlaceholderDiv(props: Props) {
   } = props;
 
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [backgroundImage, setBackgroundImage] = useState(new Image());
 
-  const backgroundImage = new Image();
-  if (imageSrc !== undefined && imageSrc !== null) {
-    backgroundImage.onload = () => setImageLoaded(true);
-    backgroundImage.src = imageSrc;
-  }
+  useEffect(() => {
+    if (!imageSrc) return;
+    const image = new Image();
+    image.onload = () => setImageLoaded(true);
+    image.onerror = () => setImageError(true);
+    image.src = imageSrc;
+    setBackgroundImage(image);
+  }, [imageSrc]);
 
   return (
     <div className={`${className} overflow-hidden`}>
       <div className={cx('absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]', zoomOnHover && 'group-hover:scale-105 transition-transform')} style={{ background: imageLoaded ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}>
-        {!imageLoaded && (
+        {imageError && (
           <div className={cx('w-full h-full flex flex-col justify-center items-center bg-background-nav p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
             <Icon path={mdiInformationOutline} size={1.5} className="text-highlight-2" />
             <div className="my-4 font-semibold">Failed to Load</div>
             Please refresh your browser to correct
+          </div>
+        )}
+        {!imageLoaded && !imageError && (
+          <div className="flex grow items-center justify-center text-highlight-1">
+            <Icon path={mdiLoading} spin size={3} />
           </div>
         )}
       </div>
