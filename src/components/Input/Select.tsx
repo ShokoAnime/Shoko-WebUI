@@ -18,7 +18,7 @@ function Select(props:Props) {
   } = props;
 
   return (
-    <div className={`${className ?? ''}`}>
+    <div className={className ?? ''}>
       <label htmlFor={id}>
         {label && (
           <div className="mb-3 font-semibold">
