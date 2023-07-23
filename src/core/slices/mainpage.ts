@@ -18,19 +18,25 @@ const mainpageSlice = createSlice({
     queueStatus: {
       HasherQueueState: {
         state: 17,
-        description: '',
+        description: 'Idle',
+        currentCommandID: null,
+        status: 'Idle',
+        queueCount: 0,
       },
       GeneralQueueState: {
         state: 17,
-        description: '',
+        description: 'Idle',
+        currentCommandID: null,
+        status: 'Idle',
+        queueCount: 0,
       },
       ImageQueueState: {
         state: 17,
-        description: '',
+        description: 'Idle',
+        currentCommandID: null,
+        status: 'Idle',
+        queueCount: 0,
       },
-      HasherQueueCount: 0,
-      GeneralQueueCount: 0,
-      ImageQueueCount: 0,
     },
     banStatus: {
       http: {

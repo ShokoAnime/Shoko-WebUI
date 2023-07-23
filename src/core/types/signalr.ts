@@ -3,15 +3,13 @@ export type QueueItemType = {
   description: string;
   status: string;
   currentCommandID: number | null;
+  queueCount: number;
 };
 
 export type QueueStatusType = {
   HasherQueueState: QueueItemType;
   GeneralQueueState: QueueItemType;
   ImageQueueState: QueueItemType;
-  HasherQueueCount: number;
-  GeneralQueueCount: number;
-  ImageQueueCount: number;
 };
 
 export type AniDBBanItemType = {
