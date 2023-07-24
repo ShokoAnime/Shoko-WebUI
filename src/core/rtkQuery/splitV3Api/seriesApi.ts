@@ -182,7 +182,7 @@ export const {
   useGetSeriesWithoutFilesQuery,
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
-  useLazyGetSeriesAniDBEpisodesQuery,
+  useGetSeriesAniDBEpisodesQuery,
   useLazyGetSeriesEpisodesInfiniteQuery,
   useRefreshAnidbSeriesMutation,
   useGetAniDBRecommendedAnimeQuery,

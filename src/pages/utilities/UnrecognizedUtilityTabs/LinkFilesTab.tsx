@@ -1,10 +1,10 @@
+// This is the least maintainable file in the entire codebase
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import {
-  mdiDownloadCircleOutline,
-  mdiLink,
+  mdiLink, mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
@@ -14,8 +14,6 @@ import {
 } from '@mdi/js';
 import { debounce, filter, find, findIndex, forEach, groupBy, keys, map, orderBy, toInteger, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/dist/query';
-import type { SerializedError } from '@reduxjs/toolkit';
 
 import TransitionDiv from '@/components/TransitionDiv';
 import Title from '@/components/Utilities/Unrecognized/Title';
@@ -23,7 +21,7 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Button from '@/components/Input/Button';
 import {
   useDeleteSeriesMutation,
-  useLazyGetSeriesAniDBEpisodesQuery,
+  useGetSeriesAniDBEpisodesQuery,
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
@@ -31,7 +29,7 @@ import {
 import { SeriesAniDBSearchResult, SeriesTypeEnum } from '@/core/types/api/series';
 import Input from '@/components/Input/Input';
 import { formatThousand } from '@/core/util';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { EpisodeType, EpisodeTypeEnum } from '@/core/types/api/episode';
 import toast from '@/components/Toast';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import { FileLinkApiType, FileType } from '@/core/types/api/file';
@@ -39,13 +37,14 @@ import { useGetFilesQuery, usePostFileLinkMutation } from '@/core/rtkQuery/split
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
+import { ListResultType } from '@/core/types/api';
 
 type ManualLink = {
   FileID: number;
   EpisodeID: number;
 };
 
-const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void }) => {
+const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void, seriesUpdating: boolean }) => {
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
 
   const [searchText, setSearchText] = useState('');
@@ -85,9 +84,14 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
   ), [updateSelectedSeries]);
 
   const searchRows: Array<React.ReactNode> = [];
-  forEach(searchResults.data, (result) => {
-    searchRows.push(renderRow(result));
-  });
+
+  if (!seriesUpdating) {
+    forEach(searchResults.data, (result) => {
+      searchRows.push(renderRow(result));
+    });
+  } else {
+    searchRows.push(<div className="flex grow justify-center items-center text-highlight-1"><Icon path={mdiLoading} size={4} spin /></div>);
+  }
 
   return (
     <div className="flex flex-col gap-y-2 w-1/2">
@@ -117,6 +121,7 @@ function LinkFilesTab() {
   const [selectedSeries, setSelectedSeries] = useState({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
   const [selectedLink, setSelectedLink] = useState<number>(-1);
   const [showRangeFillModal, setShowRangeFillModal] = useState(false);
+  const [seriesUpdating, setSeriesUpdating] = useState(false);
 
   const [links, setLinks] = useImmer<ManualLink[]>([]);
 
@@ -148,17 +153,12 @@ function LinkFilesTab() {
 
   const [deleteSeries] = useDeleteSeriesMutation();
   const [updateEpisodes] = useLazyGetSeriesEpisodesQuery();
-  const [updateAniDBEpisodes, anidbEpisodesQuery] = useLazyGetSeriesAniDBEpisodesQuery();
-  const [refreshSeries, anidbRefreshQuery] = useRefreshAnidbSeriesMutation();
-  const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
+  const anidbEpisodesQuery = useGetSeriesAniDBEpisodesQuery({ anidbID: selectedSeries.ID, pageSize: 0, includeMissing: 'true' }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
+  const [refreshSeries] = useRefreshAnidbSeriesMutation();
+  const [getAnidbSeries] = useLazyGetSeriesAniDBSearchQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
   const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
   const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
-
-  useEffect(() => {
-    if (!selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown) return;
-    updateAniDBEpisodes({ anidbID: selectedSeries.ID, pageSize: 0, includeMissing: 'true' }).catch(() => {});
-  }, [selectedSeries.ID, selectedSeries.Type, updateAniDBEpisodes]);
 
   useEffect(() => {
     if (links.length > 0) return;
@@ -166,9 +166,23 @@ function LinkFilesTab() {
     setLinks(newLinks);
   }, [episodes, links, selectedRows, setLinks]);
 
-  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => {
-    setSelectedSeries(series);
+  const updateSelectedSeries = async (series: SeriesAniDBSearchResult) => {
     setLinks([]);
+
+    if (series.Type !== SeriesTypeEnum.Unknown) {
+      setSelectedSeries(series);
+      return;
+    }
+
+    setSeriesUpdating(true);
+    try {
+      await refreshSeries({ anidbID: series.ID, force: true }).unwrap();
+      const updatedSeriesData = await getAnidbSeries({ query: `${series.ID}` }).unwrap();
+      setSelectedSeries(updatedSeriesData[0]);
+    } catch (_) {
+      toast.error('Failed to get series data!');
+    }
+    setSeriesUpdating(false);
   };
 
   const episodeOptions = useMemo(() => (
@@ -177,20 +191,6 @@ function LinkFilesTab() {
     ))
   ), [episodes]);
   const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
-
-  const refreshAniDB = async () => {
-    const result = await refreshSeries({ anidbID: selectedSeries.ID, force: true }) as { data: boolean; error?: undefined } | { data?: undefined; error: FetchBaseQueryError | SerializedError };
-    if (result.error || !result.data) {
-      return;
-    }
-    const series = await getAnidbSeries({ query: `${selectedSeries.ID}` }).refetch();
-    if (series.error) {
-      return;
-    }
-    if (series?.data) {
-      setSelectedSeries(series.data[0]);
-    }
-  };
 
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
     const file = find(selectedRows, ['ID', item.FileID]);
@@ -217,10 +217,9 @@ function LinkFilesTab() {
         );
       } else if (idx === 0) {
         result.push(
-          <Button className="bg-highlight-1 flex items-center justify-center px-3 py-4 font-semibold" key="populate-button" loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>
-            <Icon path={mdiDownloadCircleOutline} size={1} className="mr-2" />
-            Populate Series Episode Data
-          </Button>,
+          <div className="flex justify-center items-center">
+            No episodes exist!
+          </div>,
         );
       }
     });
@@ -247,28 +246,35 @@ function LinkFilesTab() {
     let series = selectedSeries;
     const doesNotExist = series.ShokoID === null;
     if (doesNotExist) {
-      const response = await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true }) as { data: boolean; error?: undefined } | { data?: undefined; error: FetchBaseQueryError | SerializedError };
-      if (response.error) {
+      try {
+        await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true }).unwrap();
+      } catch (_) {
         toast.error('Failed to add series! Unable to create shoko series entry.');
         setLoading(false);
         return;
       }
 
-      const seriesResponse = await getAnidbSeries({ query: `${selectedSeries.ID}` }).refetch();
-      if (seriesResponse.error || !seriesResponse.data) {
+      let seriesResponse: SeriesAniDBSearchResult[];
+      try {
+        seriesResponse = await getAnidbSeries({ query: `${selectedSeries.ID}` }).unwrap();
+      } catch (_) {
         toast.error('Failed to add series! Unable to fetch the updated anidb series entry.');
         setLoading(false);
         return;
       }
-      series = seriesResponse.data[0]!;
+
+      [series] = seriesResponse;
       if (series.ShokoID === null) {
         toast.error('Failed to add series! Unable to fetch the updated anidb series entry.');
         setLoading(false);
         return;
       }
     }
-    const shokoEpisodeResponse = await updateEpisodes({ seriesID: series.ShokoID!, includeMissing: 'true', includeHidden: 'true', pageSize: 0 });
-    if (!shokoEpisodeResponse.isSuccess || !shokoEpisodeResponse.data) {
+
+    let shokoEpisodeResponse: ListResultType<EpisodeType[]>;
+    try {
+      shokoEpisodeResponse = await updateEpisodes({ seriesID: series.ShokoID!, includeMissing: 'true', includeHidden: 'true', pageSize: 0 }).unwrap();
+    } catch (_) {
       // if it previously didn't exist, but was made right before this, then
       // delete it again.
       if (doesNotExist && series.ShokoID) {
@@ -278,9 +284,10 @@ function LinkFilesTab() {
       toast.error('Failed to add series! Unable to fetch shoko episodes!');
       return;
     }
+
     const anidbSet = new Set(keys(groupedLinksMap).map(i => parseInt(i, 10)));
     const groupedLinksArray = Array<[number, ManualLink[]]>();
-    forEach(shokoEpisodeResponse.data.List, (episode) => {
+    forEach(shokoEpisodeResponse.List, (episode) => {
       if (anidbSet.has(episode.IDs.AniDB)) {
         groupedLinksArray.push([episode.IDs.ID, groupedLinksMap[episode.IDs.AniDB]]);
       }
@@ -362,8 +369,8 @@ function LinkFilesTab() {
               <div className="flex gap-x-3 font-semibold">
                 <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLoading || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
                 {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
-                <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLoading}>Cancel</Button>
-                <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={isLoading || selectedSeries.Type === SeriesTypeEnum.Unknown}>Save</Button>
+                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLoading}>Cancel</Button>
+                <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={isLoading || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLoading}>Save</Button>
               </div>
             </div>
           </ShokoPanel>
@@ -385,14 +392,14 @@ function LinkFilesTab() {
                   {selectedSeries.ID} - {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </div>
-                <Button onClick={() => updateSelectedSeries({} as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1" disabled={isLoading}>
+                <Button onClick={() => setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1" disabled={isLoading}>
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>
             )}
             {selectedSeries?.ID ? renderFileLinks() : manualLinkFileNodes}
           </div>
-          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} />}
+          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} seriesUpdating={seriesUpdating} />}
         </div>
       </TransitionDiv>
       <RangeFillModal show={showRangeFillModal} onClose={() => setShowRangeFillModal(false)} rangeFill={rangeFill} />
