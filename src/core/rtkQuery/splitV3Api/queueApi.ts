@@ -7,6 +7,7 @@ const queueApi = splitV3Api.injectEndpoints({
         const url = queue ? `queue/${queue}/${operation}` : `queue/${operation}`;
         return {
           url,
+          method: 'POST',
         };
       },
     }),

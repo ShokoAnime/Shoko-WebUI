@@ -32,19 +32,19 @@ function QueueProcessor() {
     await queueOperation({ operation, queue });
   };
 
-  const renderItem = (key: string, item: QueueItemType, count: number) => (
+  const renderItem = (key: string, item: QueueItemType) => (
     <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
-        <div className="flex items-center w-24">
+        <div className="flex items-center w-56">
           <Icon className="mr-4" path={icons[key]} size={1} />
-          <span>{names[key]}</span>
+          <span>{names[key]} - {item?.status ?? 'Idle'}</span>
         </div>
-        <div className="flex text-highlight-2">{count ?? 0}</div>
+        <div className="flex text-highlight-2">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
           <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
             <Icon className="text-highlight-1" path={mdiCloseCircleOutline} size={1} />
           </Button>
-          {item?.state === 18 ? (
+          {item?.status === 'Pausing' || item?.status === 'Paused' ? (
             <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
               <Icon className="text-highlight-1" path={mdiPlayCircleOutline} size={1} />
             </Button>
@@ -66,7 +66,7 @@ function QueueProcessor() {
 
     forEach(items, (item) => {
       if (typeof item === 'number') return;
-      paused = item?.state === 18;
+      paused ||= item?.status === 'Pausing' || item?.status === 'Paused';
     });
 
     return paused ? (
@@ -83,9 +83,9 @@ function QueueProcessor() {
   const commands: Array<React.ReactNode> = [];
 
   if (items) {
-    commands.push(renderItem('hasher', items.HasherQueueState, items.HasherQueueCount));
-    commands.push(renderItem('general', items.GeneralQueueState, items.GeneralQueueCount));
-    commands.push(renderItem('image', items.ImageQueueState, items.ImageQueueCount));
+    commands.push(renderItem('hasher', items.HasherQueueState));
+    commands.push(renderItem('general', items.GeneralQueueState));
+    commands.push(renderItem('image', items.ImageQueueState));
   }
 
   return (
