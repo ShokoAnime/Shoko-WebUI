@@ -22,6 +22,7 @@ import Button from '@/components/Input/Button';
 import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBEpisodesQuery,
+  useLazyGetSeriesAniDBQuery,
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
@@ -155,7 +156,7 @@ function LinkFilesTab() {
   const [updateEpisodes] = useLazyGetSeriesEpisodesQuery();
   const anidbEpisodesQuery = useGetSeriesAniDBEpisodesQuery({ anidbID: selectedSeries.ID, pageSize: 0, includeMissing: 'true' }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
   const [refreshSeries] = useRefreshAnidbSeriesMutation();
-  const [getAnidbSeries] = useLazyGetSeriesAniDBSearchQuery();
+  const [getAnidbSeries] = useLazyGetSeriesAniDBQuery();
   const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
   const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
   const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
@@ -176,9 +177,11 @@ function LinkFilesTab() {
 
     setSeriesUpdating(true);
     try {
-      await refreshSeries({ anidbID: series.ID, force: true }).unwrap();
-      const updatedSeriesData = await getAnidbSeries({ query: `${series.ID}` }).unwrap();
-      setSelectedSeries(updatedSeriesData[0]);
+      const refresh = await refreshSeries({ anidbID: series.ID, force: true }).unwrap();
+      // Because server thinks sending data as false with status 200 is the same as sending error status
+      if (!refresh) throw Error();
+      const updatedSeriesData = await getAnidbSeries(series.ID).unwrap();
+      setSelectedSeries(updatedSeriesData);
     } catch (_) {
       toast.error('Failed to get series data!');
     }
@@ -254,17 +257,15 @@ function LinkFilesTab() {
         return;
       }
 
-      let seriesResponse: SeriesAniDBSearchResult[];
       try {
-        seriesResponse = await getAnidbSeries({ query: `${selectedSeries.ID}` }).unwrap();
+        series = await getAnidbSeries(selectedSeries.ID).unwrap();
       } catch (_) {
         toast.error('Failed to add series! Unable to fetch the updated anidb series entry.');
         setLoading(false);
         return;
       }
 
-      [series] = seriesResponse;
-      if (series.ShokoID === null) {
+      if (!series.ShokoID) {
         toast.error('Failed to add series! Unable to fetch the updated anidb series entry.');
         setLoading(false);
         return;

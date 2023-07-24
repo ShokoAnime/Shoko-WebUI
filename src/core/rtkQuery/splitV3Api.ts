@@ -12,7 +12,7 @@ export const splitV3Api = createApi({
       return headers;
     },
   }),
-  tagTypes: ['EpisodeUpdated', 'FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'ImportFolder', 'SeriesEpisodes', 'SeriesUpdated', 'Settings', 'Users', 'SeriesSearch', 'UtilitiesRefresh', 'WebUIUpdateCheck'],
+  tagTypes: ['EpisodeUpdated', 'FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'ImportFolder', 'SeriesAniDB', 'SeriesEpisodes', 'SeriesUpdated', 'Settings', 'Users', 'SeriesSearch', 'UtilitiesRefresh', 'WebUIUpdateCheck'],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({}),
 });

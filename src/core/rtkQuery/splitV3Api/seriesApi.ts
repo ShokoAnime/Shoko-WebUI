@@ -101,13 +101,13 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Queue a refresh of the AniDB Info for series with AniDB ID
     refreshAnidbSeries: build.mutation<boolean, { anidbID: number; force?: boolean; createSeries?: boolean }>({
       query: ({ anidbID, force = false, createSeries = false }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=${force}&createSeriesEntry=${createSeries}&immediate=true`, method: 'POST' }),
-      invalidatesTags: ['SeriesEpisodes', 'SeriesSearch'],
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes', 'SeriesSearch'],
     }),
 
     // Get AniDB Info from the AniDB ID
-    getSeriesAniDB: build.query<SeriesAniDBSearchResult, { anidbID: number; }>({
-      query: params => ({ url: `Series/AniDB/${params.anidbID}` }),
-      transformResponse: (response: any) => response.List,
+    getSeriesAniDB: build.query<SeriesAniDBSearchResult, number>({
+      query: anidbID => ({ url: `Series/AniDB/${anidbID}` }),
+      providesTags: ['SeriesAniDB'],
     }),
 
     // Gets anidb recommendation for the user
@@ -181,6 +181,7 @@ export const {
   useDeleteSeriesMutation,
   useGetSeriesWithoutFilesQuery,
   useLazyGetSeriesAniDBSearchQuery,
+  useLazyGetSeriesAniDBQuery,
   useLazyGetSeriesEpisodesQuery,
   useGetSeriesAniDBEpisodesQuery,
   useLazyGetSeriesEpisodesInfiniteQuery,
