@@ -129,7 +129,7 @@ const SeriesFileSummary = () => {
       </ShokoPanel>
 
       <div className="flex flex-col gap-y-8 grow">
-        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border font-semibold text-xl">
+        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border font-semibold text-xl">
           Files Breakdown
           <div><span className="text-panel-important">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
         </div>

@@ -36,9 +36,9 @@ const GridViewItem = (item: CollectionGroupType) => {
             <CountIcon show={unwatchedCount > 0} className="bg-overlay-count-episode">{unwatchedCount}</CountIcon>
             <CountIcon show={groupCount > 1} className="bg-overlay-count-group">{item.Size}</CountIcon>
           </div>
-          <div className="pointer-events-none opacity-0 flex bg-overlay-background/50 h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+          <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
             <Link to="#" className="h-fit">
-              <Icon path={mdiPencilCircleOutline} size="2rem" className="text-panel-text" />
+              <Icon path={mdiPencilCircleOutline} size="2rem" className="text-overlay-icon hover:text-overlay-icon-hover" />
             </Link>
           </div>
         </BackgroundImagePlaceholderDiv>

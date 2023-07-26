@@ -89,7 +89,7 @@ const SeriesEpisodes = () => {
         </Select>
       </ShokoPanel>
       <div className="flex flex-col grow gap-y-4">
-        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border">
+        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border">
           <div className="font-semibold text-xl">
             Episodes
             <span className="px-2">|</span>
@@ -125,7 +125,7 @@ const SeriesEpisodes = () => {
                   <div
                     key={virtualItem.key}
                     ref={rowVirtualizer.measureElement}
-                    className="flex flex-col border border-panel-border rounded-md bg-panel-background/50"
+                    className="flex flex-col border border-panel-border rounded-md bg-panel-background-transparent"
                     data-index={virtualItem.index}
                   >
                     {item ? (

@@ -50,14 +50,14 @@ const SeriesCredits = () => {
       </ShokoPanel>
 
       <div className="flex flex-col grow gap-y-4">
-        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border">
+        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border">
           <Heading mode={mode} setMode={setMode} />
           <div className="font-semibold text-xl"><span className="text-panel-important">{cast?.length || 0}</span> Characters Listed</div>
         </div>
 
         <div className="grid grid-cols-4 gap-4">
           {map(filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))), (item, idx) => (
-            <div key={`${mode}-${idx}`} className="rounded-md bg-panel-background/50 p-8 gap-y-4 flex flex-col justify-center items-center border-panel-border border font-semibold">
+            <div key={`${mode}-${idx}`} className="rounded-md bg-panel-background-transparent p-8 gap-y-4 flex flex-col justify-center items-center border-panel-border border font-semibold">
               <div className="flex gap-x-2 z-10">
                 {mode === 'Character' && <CharacterImage imageSrc={getThumbnailUrl(item, 'Character')} className="h-[11.4375rem] w-[9rem] rounded-md relative" />}
                 <CharacterImage imageSrc={getThumbnailUrl(item, 'Staff')} className="h-[11.4375rem] w-[9rem] rounded-md relative" />

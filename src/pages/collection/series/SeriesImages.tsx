@@ -77,11 +77,11 @@ const SeriesImages = () => {
       </div>
 
       <div className="flex flex-col grow gap-y-8">
-        <div className="rounded-md bg-panel-background/50 px-8 py-4 flex justify-between items-center border-panel-border border">
+        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border">
           <Heading type={type} setType={setType} />
           <div className="font-semibold text-xl"><span className="text-panel-important">{get(images, type, []).length}</span> {type} Listed</div>
         </div>
-        <div className="flex flex-wrap gap-4 rounded-md bg-panel-background/50 p-8 border-panel-border border">
+        <div className="flex flex-wrap gap-4 rounded-md bg-panel-background-transparent p-8 border-panel-border border">
           {map(get(images, type, []), (item: ImageType) => (
             <div onClick={() => { setSelectedImage(item); }} key={item?.ID}>
               <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border', sizeMap[type])} />

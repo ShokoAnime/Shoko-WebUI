@@ -78,7 +78,7 @@ const Series = () => {
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="flex w-full gap-x-8 rounded-md bg-panel-background/50 p-8 border-panel-border border">
+      <div className="flex w-full gap-x-8 rounded-md bg-panel-background-transparent p-8 border-panel-border border">
         <div className="grow flex flex-col gap-y-2">
           <div className="flex justify-between">
             <div className="flex gap-x-2">
@@ -122,7 +122,7 @@ const Series = () => {
         </div>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]" />
       </div>
-      <div className="gap-x-8 flex flex-nowrap bg-panel-background/50 border border-panel-border rounded-md p-8 font-semibold">
+      <div className="gap-x-8 flex flex-nowrap bg-panel-background-transparent border border-panel-border rounded-md p-8 font-semibold">
         <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
         <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
         <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />

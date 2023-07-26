@@ -62,9 +62,9 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
-            <div className="pointer-events-none opacity-0 flex bg-overlay-background/50 h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+            <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
               <Link to="#" className="h-fit">
-                <Icon path={mdiPencilCircleOutline} size="2rem" className="text-panel-text" />
+                <Icon path={mdiPencilCircleOutline} size="2rem" className="text-overlay-icon hover:text-overlay-icon-hover" />
               </Link>
             </div>
           </BackgroundImagePlaceholderDiv>
