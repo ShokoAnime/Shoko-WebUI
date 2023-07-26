@@ -34,7 +34,7 @@ const getThumbnailUrl = (episode: EpisodeType) => {
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
   show
     ? (
-      <div className="px-3 py-2 bg-panel-background/85 shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-panel-important">
+      <div className="px-3 py-2 bg-panel-background-transparent shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-panel-important">
         <Icon path={icon} size={1} />
       </div>
     ) : null
@@ -72,7 +72,7 @@ const SeriesEpisode = ({ episode }: Props) => {
             <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
           </div>
-          <div className="pointer-events-none opacity-0 flex bg-background/50 h-full justify-between p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+          <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full justify-between p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
             <div>
               <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} />
             </div>

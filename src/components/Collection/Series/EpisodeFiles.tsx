@@ -37,7 +37,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
         return (
           <div className="flex flex-col gap-y-8" key={selectedFile.ID}>
 
-            <div className="flex px-4 py-3 bg-panel-background border border-panel-borderrounded-md gap-x-3 grow">
+            <div className="flex px-4 py-3 bg-panel-background border border-panel-border rounded-md gap-x-3 grow">
               <div className="gap-x-2 flex cursor-pointer items-center" onClick={async () => { await rescanFile(selectedFile.ID); }}>
                 <Icon path={mdiRefresh} size={1} />
                 Force Update File Info

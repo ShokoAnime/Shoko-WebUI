@@ -37,7 +37,7 @@ const Group = () => {
   const renderDetails = (item: SeriesType) => (
     <div key={`series-${item.IDs.ID}`} className="group mr-4 last:mr-0 shrink-0 w-56 content-center flex flex-col">
       <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${item.Images.Posters[0].Source}/Poster/${item.Images.Posters[0].ID}`} className="h-72 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border my-2">
-        <div className="hidden group-hover:flex bg-panel-background/85 h-full flex-col justify-center items-center">
+        <div className="hidden group-hover:flex bg-overlay-background h-full flex-col justify-center items-center">
           <HoverIcon icon={mdiEyeArrowRightOutline} label="View Series" route={`/webui/collection/series/${item.IDs.ID}`} />
         </div>
       </BackgroundImagePlaceholderDiv>
