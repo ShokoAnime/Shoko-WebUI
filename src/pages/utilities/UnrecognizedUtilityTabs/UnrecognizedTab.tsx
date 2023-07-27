@@ -213,7 +213,7 @@ function UnrecognizedTab() {
         } else if (avdumpList[fileId]?.hash === 'x') {
           icon = {
             path: mdiFileDocumentAlertOutline,
-            color: 'text-highlight-3',
+            color: 'text-panel-danger',
             title: 'Dump Failed!',
             state: 'failed',
           };
