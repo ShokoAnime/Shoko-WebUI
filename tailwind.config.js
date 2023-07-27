@@ -73,7 +73,7 @@ module.exports = {
         'overlay-icon-hover': 'var(--color-overlay-icon-hover)',
         'panel-background': 'var(--color-panel-background)',
         'panel-background-alt': 'var(--color-panel-background-alt)',
-        'panel-background-alt-2': 'var(--color-panel-background-alt-2)',
+        'panel-background-toolbar': 'var(--color-panel-background-toolbar)',
         'panel-background-transparent': 'var(--color-panel-background-transparent)',
         'panel-background-login': 'var(--color-panel-background-login)',
         'panel-border': 'var(--color-panel-border)',

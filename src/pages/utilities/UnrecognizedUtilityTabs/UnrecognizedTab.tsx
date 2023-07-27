@@ -130,7 +130,7 @@ const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>
   };
 
   return (
-    <div className="box-border flex grow bg-panel-background-alt-2 border border-panel-border items-center rounded-md px-4 py-3 relative">
+    <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
       <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
         <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
         <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />

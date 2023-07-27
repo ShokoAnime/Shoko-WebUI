@@ -87,7 +87,7 @@ function UtilitiesTable(props: Props) {
       <table className="table-fixed text-left border-separate border-spacing-y-2 w-full absolute -top-2" style={{ height: totalSize }}>
         <thead className="sticky top-0 z-[1]">
           {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id} className="bg-panel-background-alt-2">
+            <tr key={headerGroup.id} className="bg-panel-background-toolbar">
               {headerGroup.headers.map(header => (
                 <th
                   key={header.id}

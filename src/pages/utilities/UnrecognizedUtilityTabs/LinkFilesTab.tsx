@@ -323,7 +323,7 @@ function LinkFilesTab() {
   ]);
 
   const renderStaticFileLinks = () => map(selectedRows, file => (
-    <div className="p-4 w-full odd:bg-panel-background-alt-2 even:bg-panel-background border border-background-border rounded-md leading-5" key={file.ID}>
+    <div className="p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-background-border rounded-md leading-5" key={file.ID}>
       {file.Locations?.[0].RelativePath ?? '<missing file path>'}
     </div>
   ));
@@ -360,7 +360,7 @@ function LinkFilesTab() {
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
-              <div className="box-border flex grow bg-panel-background-alt-2 border border-panel-border items-center rounded-md px-4 py-3 relative">
+              <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
                 <div className="flex grow gap-x-4">
                   <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={isLinking || selectedLink === -1} />
                   <MenuButton onClick={() => removeLink(fileLinks[selectedLink].FileID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={isLinking || selectedLink === -1} />
@@ -378,12 +378,12 @@ function LinkFilesTab() {
 
         <div className="grow w-full h-full overflow-y-auto rounded-lg bg-panel-background border border-panel-border mt-8 p-8 flex gap-x-8">
           <div className={cx('grid gap-y-2 gap-x-8 auto-rows-min', selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1')}>
-            <div className="flex justify-between bg-panel-background-alt-2 font-semibold p-4 rounded-md border border-panel-border">
+            <div className="flex justify-between bg-panel-background-toolbar font-semibold p-4 rounded-md border border-panel-border">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeries?.ID && (
-              <div className="flex bg-panel-background-alt-2 font-semibold p-4 rounded-md border border-panel-border">
+              <div className="flex bg-panel-background-toolbar font-semibold p-4 rounded-md border border-panel-border">
                 AniDB |&nbsp;
                 <div
                   className="flex font-semibold text-panel-primary cursor-pointer"

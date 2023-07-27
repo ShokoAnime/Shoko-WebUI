@@ -113,7 +113,7 @@ const Menu = ({ selectedFiles, setSelectedFiles }: { selectedFiles: { [_: number
   };
 
   return (
-    <div className="box-border flex grow bg-panel-background-alt-2 border border-panel-border items-center rounded-md px-4 py-3 relative">
+    <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
       <MenuButton onClick={refreshData} icon={mdiRefresh} name="Refresh" />
       <TransitionDiv className="flex grow gap-x-4 ml-4" show={Object.keys(selectedFiles).length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
@@ -203,7 +203,7 @@ function ManuallyLinkedTab() {
         )}
         {!seriesQuery.isFetching && series.Total > 0 && (
           <div className="flex flex-col w-full overflow-y-auto">
-            <div className="flex px-6 py-4 bg-panel-background-alt-2 font-semibold sticky top-0 z-[1] rounded-md border border-panel-border">
+            <div className="flex px-6 py-4 bg-panel-background-toolbar font-semibold sticky top-0 z-[1] rounded-md border border-panel-border">
               <div className="grow">Series</div>
               <div className="w-24">AniDB ID</div>
               <div className="w-32">Link Count</div>
