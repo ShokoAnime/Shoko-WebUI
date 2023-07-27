@@ -99,9 +99,9 @@ function LoginPage() {
         icon={false}
       />
       <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}>
-        <div className="absolute top-0 right-0 bg-panel-background-transparent-alt px-8 py-4 font-semibold border border-panel-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
+        <div className="absolute top-0 right-0 bg-panel-background-login px-8 py-4 font-semibold border border-panel-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
 
-        <div className="flex flex-col items-center p-8 w-[31.25rem] bg-panel-background-transparent-alt border border-panel-border rounded-md gap-y-8">
+        <div className="flex flex-col items-center p-8 w-[31.25rem] bg-panel-background-login border border-panel-border rounded-md gap-y-8">
           <div className="flex flex-col gap-y-4 items-center">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">

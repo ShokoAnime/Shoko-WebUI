@@ -280,7 +280,7 @@ function UserManagementSettings() {
 
       <div className="flex flex-col">
         <div className="font-semibold mb-4">Tag Restrictions</div>
-        <Input type="text" placeholder="Search..." className="bg-panel-background-alt-2" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
+        <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
         <div className="bg-panel-background-alt overflow-y-scroll h-64 mt-2 rounded-md p-4 capitalize">
           {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
             <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
