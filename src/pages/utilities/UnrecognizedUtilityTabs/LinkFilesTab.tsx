@@ -1,10 +1,10 @@
+// This is the least maintainable file in the entire codebase
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import {
-  mdiDownloadCircleOutline,
-  mdiLink,
+  mdiLink, mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
@@ -12,7 +12,7 @@ import {
   mdiPlusCircleMultipleOutline,
   mdiSortAlphabeticalAscending,
 } from '@mdi/js';
-import { debounce, filter, find, findIndex, forEach, groupBy, map, orderBy, toInteger, toNumber } from 'lodash';
+import { debounce, filter, find, findIndex, forEach, groupBy, keys, map, orderBy, reduce, toInteger, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import TransitionDiv from '@/components/TransitionDiv';
@@ -20,14 +20,17 @@ import Title from '@/components/Utilities/Unrecognized/Title';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Button from '@/components/Input/Button';
 import {
+  useDeleteSeriesMutation,
+  useGetSeriesAniDBEpisodesQuery,
+  useLazyGetSeriesAniDBQuery,
   useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { SeriesAniDBSearchResult } from '@/core/types/api/series';
+import { SeriesAniDBSearchResult, SeriesTypeEnum } from '@/core/types/api/series';
 import Input from '@/components/Input/Input';
 import { formatThousand } from '@/core/util';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { EpisodeType, EpisodeTypeEnum } from '@/core/types/api/episode';
 import toast from '@/components/Toast';
 import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import { FileLinkApiType, FileType } from '@/core/types/api/file';
@@ -35,26 +38,22 @@ import { useGetFilesQuery, usePostFileLinkMutation } from '@/core/rtkQuery/split
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
+import { ListResultType } from '@/core/types/api';
 
 type ManualLink = {
   FileID: number;
   EpisodeID: number;
 };
 
-const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void }) => {
+const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void, seriesUpdating: boolean; placeholder: string }) => {
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
-
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState(placeholder);
 
   const debouncedSearch = useRef(
     debounce((query: string) => {
       searchTrigger({ query, pageSize: 20 }).catch(() => {});
     }, 200),
   ).current;
-
-  useEffect(() => () => {
-    debouncedSearch.cancel();
-  }, [debouncedSearch]);
 
   const handleSearch = (query: string) => {
     setSearchText(query);
@@ -80,10 +79,18 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
     </div>
   ), [updateSelectedSeries]);
 
+  useEffect(() => () => {
+    debouncedSearch.cancel();
+  }, [debouncedSearch]);
+
   const searchRows: Array<React.ReactNode> = [];
-  forEach(searchResults.data, (result) => {
-    searchRows.push(renderRow(result));
-  });
+  if (!seriesUpdating) {
+    forEach(searchResults.data, (result) => {
+      searchRows.push(renderRow(result));
+    });
+  } else {
+    searchRows.push(<div className="flex grow justify-center items-center text-highlight-1"><Icon path={mdiLoading} size={4} spin /></div>);
+  }
 
   return (
     <div className="flex flex-col gap-y-2 w-1/2">
@@ -105,15 +112,33 @@ const AnimeSelectPanel = ({ updateSelectedSeries }: { updateSelectedSeries: (ser
 
 function LinkFilesTab() {
   const navigate = useNavigate();
-
   const { selectedRows } = useLocation().state as { selectedRows: FileType[] };
-  if (selectedRows.length === 0) navigate('../', { replace: true });
-
-  const [selectedSeries, setSelectedSeries] = useState({} as SeriesAniDBSearchResult);
+  const [{ isLinking, isLinkingRunning, createdNewSeries }, setLoading] = useState({ isLinking: false, isLinkingRunning: false, createdNewSeries: true });
   const [selectedLink, setSelectedLink] = useState<number>(-1);
+  const [selectedSeries, setSelectedSeries] = useState({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+  const [seriesUpdating, setSeriesUpdating] = useState(false);
   const [showRangeFillModal, setShowRangeFillModal] = useState(false);
-
   const [links, setLinks] = useImmer<ManualLink[]>([]);
+  const [deleteSeries] = useDeleteSeriesMutation();
+  const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
+  const [getAnidbSeries, getAnidbSeriesQuery] = useLazyGetSeriesAniDBQuery();
+  const [refreshSeries] = useRefreshAnidbSeriesMutation();
+  const [updateEpisodes] = useLazyGetSeriesEpisodesQuery();
+  const anidbEpisodesQuery = useGetSeriesAniDBEpisodesQuery({ anidbID: selectedSeries.ID, pageSize: 0, includeMissing: 'true' }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
+  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
+
+  const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
+  const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
+  const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
+    const file = find(selectedRows, ['ID', item.FileID]);
+    return file?.Locations?.[0].RelativePath ?? item.FileID;
+  }), [links, selectedRows]);
+
+  const episodeOptions = useMemo(() => (
+    episodes.map(item => (
+      { value: item.ID, AirDate: item?.AirDate ?? '', label: item?.Title ?? '', type: item?.Type ?? EpisodeTypeEnum.Unknown, number: item?.EpisodeNumber ?? 0 }
+    ))
+  ), [episodes]);
 
   const addLink = useCallback((FileID: number, EpisodeID = 0) => setLinks((linkState) => {
     if (EpisodeID === 0) {
@@ -126,139 +151,51 @@ function LinkFilesTab() {
     }
   }), [setLinks]);
 
-  const removeLink = useCallback((FileID: number) => setLinks((linkState) => {
-    const itemIndex = linkState.reverse().findIndex(link => link.FileID === FileID);
+  const removeLink = useCallback((fileId: number) => setLinks((linkState) => {
+    const itemIndex = linkState.findLastIndex(link => link.FileID === fileId);
     linkState.splice(itemIndex, 1);
   }), [setLinks]);
 
-  const updateSelectedLink = (idx: number) => {
+  const updateSelectedLink = useCallback((idx: number) => {
+    if (isLinking) return;
     if (selectedLink === idx) setSelectedLink(-1);
     else setSelectedLink(idx);
+  }, [isLinking, selectedLink, setSelectedLink]);
+
+  const updateSelectedSeries = async (series: SeriesAniDBSearchResult) => {
+    setLinks([]);
+
+    if (series.Type !== SeriesTypeEnum.Unknown) {
+      setSelectedSeries(series);
+      return;
+    }
+
+    setSeriesUpdating(true);
+    try {
+      const refresh = await refreshSeries({ anidbID: series.ID, force: true }).unwrap();
+      // Because server thinks sending data as false with status 200 is the same as sending error status
+      if (!refresh) throw Error();
+      const updatedSeriesData = await getAnidbSeries(series.ID).unwrap();
+      setSelectedSeries(updatedSeriesData);
+    } catch (_) {
+      toast.error('Failed to get series data!');
+    }
+    setSeriesUpdating(false);
   };
 
-  useEffect(() => {
+  const saveChanges = async () => {
+    if (isLinking) return;
     setSelectedLink(-1);
-  }, [links]);
-
-  const [updateEpisodes, episodesQuery] = useLazyGetSeriesEpisodesQuery();
-  const [refreshSeries, anidbRefreshQuery] = useRefreshAnidbSeriesMutation();
-  const [getAnidbSeries, anidbGetQuery] = useLazyGetSeriesAniDBSearchQuery();
-  const [fileLinkEpisodesTrigger] = usePostFileLinkMutation();
-  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
-  const episodes = useMemo(() => episodesQuery?.data?.List || [], [episodesQuery]);
-
-  useEffect(() => {
-    if (!selectedSeries.ShokoID) { return; }
-    updateEpisodes({ seriesID: selectedSeries.ShokoID, pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB', 'TvDB'] }).catch(() => {});
-  }, [selectedSeries.ShokoID, updateEpisodes]);
-
-  useEffect(() => {
-    if (links.length > 0) return;
-    const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
-    setLinks(newLinks);
-  }, [episodes, links, selectedRows, setLinks]);
-
-  const updateSelectedSeries = (series: SeriesAniDBSearchResult) => {
-    setSelectedSeries(series);
-    setLinks([]);
-  };
-
-  const episodeOptions = useMemo(() => (
-    episodes.map(item => (
-      { value: item.IDs.ID, AirDate: item?.AniDB?.AirDate ?? '', label: `${item.Name}`, type: item?.AniDB?.Type ?? '' as EpisodeTypeEnum, number: item?.AniDB?.EpisodeNumber ?? 0 }
-    ))
-  ), [episodes]);
-  const groupedLinksMap = useMemo(() => groupBy(links, 'EpisodeID'), [links]);
-
-  const refreshAniDB = async () => {
-    const result:any = await refreshSeries({ anidbID: selectedSeries.ID });
-    if (result.error) {
-      return;
-    }
-    const series = await getAnidbSeries({ query: `${selectedSeries.ID}` });
-    if (series.error) {
-      return;
-    }
-    if (series?.data) {
-      setSelectedSeries(series.data[0]);
-    }
-  };
-
-  const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
-    const file = find(selectedRows, ['ID', item.FileID]);
-    return file?.Locations?.[0].RelativePath ?? item.FileID;
-  }), [links, selectedRows]);
-
-  const renderFileLinks = () => {
-    const result: React.ReactNode[] = [];
-    forEach(fileLinks, (link, idx) => {
-      const file = find(selectedRows, ['ID', link.FileID]);
-      const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
-      const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
-      result.push(
-        <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
-          {path}
-          {isSameFile && (<Icon path={mdiLink} size={1} className="text-highlight-2 ml-auto" />)}
-        </div>,
-      );
-      if (episodes.length > 0) {
-        result.push(
-          <div data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}-select`}>
-            <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} onChange={value => addLink(link.FileID, value)} />
-          </div>,
-        );
-      } else if (idx === 0) {
-        result.push(
-          <Button className="bg-highlight-1 flex items-center justify-center px-3 py-4 font-semibold" key="populate-button" loading={anidbGetQuery.isLoading || anidbRefreshQuery.isLoading} onClick={refreshAniDB}>
-            <Icon path={mdiDownloadCircleOutline} size={1} className="mr-2" />
-            Populate Series Episode Data
-          </Button>,
-        );
-      }
-    });
-
-    return result;
-  };
-
-  const manualLinkFileNodes = useMemo(() => {
-    const manualLinkFileRows: Array<React.ReactNode> = [];
-    forEach(selectedRows, (file) => {
-      manualLinkFileRows.push(
-        <div className="p-4 w-full odd:bg-background even:bg-background-alt border border-background-border rounded-md leading-5" key={file.ID}>
-          {file.Locations?.[0].RelativePath ?? '<missing file path>'}
-        </div>,
-      );
-    });
-    return manualLinkFileRows;
-  }, [selectedRows]);
-
-  const makeLinks = async () => {
-    await Promise.all(map(groupedLinksMap, async (fileIds, episodeID) => {
-      const payload: FileLinkApiType = {
-        episodeID: toNumber(episodeID),
-        fileIDs: [],
-      };
-      payload.episodeID = toNumber(episodeID);
-      forEach(fileIds, (link) => {
-        if (link.FileID === 0) {
-          return;
-        }
-        payload.fileIDs.push(link.FileID);
-      });
-
-      if (payload.episodeID === 0 || payload.fileIDs.length === 0) { return; }
+    const doesNotExist = selectedSeries.ShokoID === null;
+    if (doesNotExist) {
       try {
-        await fileLinkEpisodesTrigger(payload).unwrap();
-        toast.success('Episode linked!');
-      } catch (error) {
-        toast.success('Episode linking failed!');
+        await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true }).unwrap();
+      } catch (_) {
+        toast.error('Failed to add series! Unable to create shoko series entry.');
+        setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       }
-    }));
-
-    await filesQuery.refetch();
-    setLinks([]);
-    setSelectedSeries({} as SeriesAniDBSearchResult);
-    navigate('../');
+    }
+    setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
   };
 
   const rangeFill = (rangeStart: string, epType: string) => {
@@ -281,24 +218,159 @@ function LinkFilesTab() {
     });
   };
 
+  const makeLinks = useCallback(async (seriesID: number, anidbMap: Map<number, ManualLink[]>, didNotExist: boolean) => {
+    setLoading(state => ({ ...state, isLinkingRunning: true }));
+
+    let shokoEpisodeResponse: ListResultType<EpisodeType[]>;
+    try {
+      shokoEpisodeResponse = await updateEpisodes({ seriesID, includeMissing: 'true', includeHidden: 'true', pageSize: 0 }).unwrap();
+    } catch (_) {
+      // if it previously didn't exist, but was made right before this, then
+      // delete it again.
+      if (didNotExist) {
+        await deleteSeries({ seriesId: seriesID, deleteFiles: false });
+      }
+      setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
+      toast.error('Failed to add series! Unable to fetch shoko episodes!');
+      return;
+    }
+
+    const groupedLinksArray = Array<[number, ManualLink[]]>();
+    forEach(shokoEpisodeResponse.List, (episode) => {
+      const fileIds = anidbMap.get(episode.IDs.AniDB);
+      if (fileIds) {
+        groupedLinksArray.push([episode.IDs.ID, fileIds]);
+      }
+    });
+
+    if (anidbMap.size !== groupedLinksArray.length) {
+      // if it previously didn't exist, but was made right before this, then
+      // delete it again.
+      if (didNotExist) {
+        await deleteSeries({ seriesId: seriesID, deleteFiles: false });
+      }
+      setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
+      toast.error('Failed to add series! Not all files/episodes accounted for. Try again or contact support.');
+      return;
+    }
+
+    await Promise.all(map(groupedLinksArray, async ([episodeID, fileIds]) => {
+      const payload: FileLinkApiType = {
+        episodeID,
+        fileIDs: [],
+      };
+      payload.episodeID = toNumber(episodeID);
+      forEach(fileIds, (link) => {
+        if (link.FileID === 0) {
+          return;
+        }
+        payload.fileIDs.push(link.FileID);
+      });
+
+      if (payload.episodeID === 0 || payload.fileIDs.length === 0) { return; }
+      try {
+        await fileLinkEpisodesTrigger(payload).unwrap();
+        toast.success('Episode linked!');
+      } catch (error) {
+        toast.error('Episode linking failed!');
+      }
+    }));
+
+    await filesQuery.refetch();
+    setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
+    setLinks([]);
+    setSelectedSeries({} as SeriesAniDBSearchResult);
+    navigate('../');
+  }, [
+    deleteSeries,
+    fileLinkEpisodesTrigger,
+    filesQuery,
+    navigate,
+    setLinks,
+    updateEpisodes,
+  ]);
+
+  useEffect(() => {
+    setSelectedLink(-1);
+  }, [links]);
+
+  useEffect(() => {
+    if (selectedRows.length === 0) {
+      navigate('../', { replace: true });
+    }
+    if (links.length > 0) return;
+    const newLinks = selectedRows.map(file => ({ FileID: file.ID, EpisodeID: 0 }));
+    setLinks(newLinks);
+  }, [episodes, links, selectedRows, setLinks, navigate]);
+
+  useEffect(() => {
+    if (!isLinking || isLinkingRunning || getAnidbSeriesQuery.isLoading || !(getAnidbSeriesQuery.isSuccess && getAnidbSeriesQuery.data.ShokoID)) {
+      return;
+    }
+
+    const seriesID = getAnidbSeriesQuery.data.ShokoID;
+    const anidbMap = new Map(keys(groupedLinksMap).map(i => [parseInt(i, 10), groupedLinksMap[i]]));
+    makeLinks(seriesID, anidbMap, createdNewSeries).catch(() => undefined);
+  }, [
+    isLinking,
+    isLinkingRunning,
+    createdNewSeries,
+    makeLinks,
+    groupedLinksMap,
+    getAnidbSeriesQuery.data,
+    getAnidbSeriesQuery.isLoading,
+    getAnidbSeriesQuery.isSuccess,
+  ]);
+
+  const renderStaticFileLinks = () => map(selectedRows, file => (
+    <div className="p-4 w-full odd:bg-background even:bg-background-alt border border-background-border rounded-md leading-5" key={file.ID}>
+      {file.Locations?.[0].RelativePath ?? '<missing file path>'}
+    </div>
+  ));
+
+  const renderDynamicFileLinks = () => reduce<ManualLink, React.ReactNode[]>(fileLinks, (result, link, idx) => {
+    const file = find(selectedRows, ['ID', link.FileID]);
+    const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
+    const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
+    result.push(
+      <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
+        {path}
+        {isSameFile && (<Icon path={mdiLink} size={1} className="text-highlight-2 ml-auto" />)}
+      </div>,
+    );
+    if (episodes.length > 0) {
+      result.push(
+        <div data-file-id={link.FileID} key={`${link.FileID}-${link.EpisodeID}-${idx}-select`}>
+          <SelectEpisodeList rowIdx={idx} options={episodeOptions} emptyValue="Select episode" value={link.EpisodeID} disabled={isLinking} onChange={value => addLink(link.FileID, value)} />
+        </div>,
+      );
+    } else if (idx === 0) {
+      result.push(
+        <div className="flex justify-center items-center">
+          No episodes exist!
+        </div>,
+      );
+    }
+    return result;
+  }, []);
+
   return (
     <>
       <TransitionDiv className="flex flex-col grow w-full h-full">
-
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
               <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
                 <div className="flex grow gap-x-4">
-                  <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={selectedLink === -1} />
-                  <MenuButton onClick={() => removeLink(fileLinks[selectedLink].FileID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={selectedLink === -1} />
+                  <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={isLinking || selectedLink === -1} />
+                  <MenuButton onClick={() => removeLink(fileLinks[selectedLink].FileID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={isLinking || selectedLink === -1} />
                 </div>
               </div>
               <div className="flex gap-x-3 font-semibold">
-                <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={!selectedSeries.ShokoID}>Range Fill</Button>
+                <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
                 {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
-                <Button onClick={() => { updateSelectedSeries({} as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Cancel</Button>
-                <Button onClick={makeLinks} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={!selectedSeries.ShokoID}>Save</Button>
+                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLinking}>Cancel</Button>
+                <Button onClick={saveChanges} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
             </div>
           </ShokoPanel>
@@ -320,14 +392,14 @@ function LinkFilesTab() {
                   {selectedSeries.ID} - {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </div>
-                <Button onClick={() => updateSelectedSeries({} as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1">
+                <Button onClick={() => setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1" disabled={isLinking}>
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>
             )}
-            {selectedSeries?.ID ? renderFileLinks() : manualLinkFileNodes}
+            {selectedSeries.ID ? renderDynamicFileLinks() : renderStaticFileLinks()}
           </div>
-          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} />}
+          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} seriesUpdating={seriesUpdating} placeholder="" />}
         </div>
       </TransitionDiv>
       <RangeFillModal show={showRangeFillModal} onClose={() => setShowRangeFillModal(false)} rangeFill={rangeFill} />
