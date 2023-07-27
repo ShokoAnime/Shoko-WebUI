@@ -53,6 +53,7 @@ type Props = {
   onChange: (optionValue: number, label: string) => void;
   className?: string;
   emptyValue?: string;
+  disabled?: boolean;
   rowIdx: number;
 };
 
@@ -79,7 +80,7 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   </Listbox.Option>
 );
 /* eslint-disable-next-line object-curly-newline */
-const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
+const SelectEpisodeList = ({ options, disabled = false, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
   const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
   const [portalEl, setPortalEl] = useState(null as any);
@@ -159,7 +160,7 @@ const SelectEpisodeList = ({ options, value, onChange, className, emptyValue = '
 
   return (
     <div className={`${className} h-full`} ref={handleDisplayRef}>
-      <Listbox value={selected} onChange={selectOption}>
+      <Listbox disabled={disabled} value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative h-full">
             <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-panel-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary', rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt-2')}>

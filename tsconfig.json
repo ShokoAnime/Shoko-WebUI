@@ -5,7 +5,7 @@
         "strictNullChecks": true,
         "module": "es2022",
         "jsx": "react",
-        "target": "es2022",
+        "target": "esnext",
         "allowJs": true,
         "checkJs": false,
         "moduleResolution": "node",

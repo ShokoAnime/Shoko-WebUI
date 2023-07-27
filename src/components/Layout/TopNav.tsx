@@ -142,7 +142,7 @@ function TopNav() {
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
               <Icon path={mdiServer} size={0.8333} />
-              <span className="text-header-important">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+              <span className="text-header-important-2">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
             </div>
             <div className="flex items-center gap-x-2">
               <div className="flex items-center justify-center bg-header-primary/75 hover:bg-header-primary w-8 h-8 text-xl rounded-full mr-1">

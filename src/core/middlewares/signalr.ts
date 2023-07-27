@@ -21,11 +21,6 @@ const onQueueStateChange = dispatch => (queue, state) => {
   dispatch(setQueueStatus(newState));
 };
 
-const onQueueCountChange = dispatch => (queue, count) => {
-  const newState = Object.assign({}, { [queue]: count });
-  dispatch(setQueueStatus(newState));
-};
-
 const onQueueConnected = dispatch => (state) => {
   const fixedState = {};
   forEach(state, (item, key) => {
@@ -124,7 +119,6 @@ const signalRMiddleware = ({
 
     // event handlers, you can use these to dispatch actions to update your Redux store
     connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
-    connectionEvents.on('Queue:QueueCountChanged', onQueueCountChange(dispatch));
     connectionEvents.on('Queue:OnConnected', onQueueConnected(dispatch));
 
     connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
