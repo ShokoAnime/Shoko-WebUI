@@ -12,7 +12,7 @@
 
 .profile-modal-image-alpha {
   color: theme('colors.panel-background');
-  background-color: theme('colors.panel-background / 60');
+  background-color: theme('colors.panel-background-transparent');
 }
 
 .modal-transition-left {

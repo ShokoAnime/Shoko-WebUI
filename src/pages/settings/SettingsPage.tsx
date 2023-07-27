@@ -307,7 +307,7 @@ function SettingsPage() {
       {/*  <div className="flex justify-center mb-8 font-semibold"> */}
       {/*    Settings */}
       {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" /> */}
-      {/*    <div className="flextext-panel-primary rounded pl-2 border border-panel-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
+      {/*    <div className="flex text-panel-primary rounded pl-2 border border-panel-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
       {/*      {find(items, item => item.path === pathname.split('/').pop())?.name} */}
       {/*      <Icon path={mdiChevronDown} size={1} /> */}
       {/*    </div> */}
@@ -315,7 +315,7 @@ function SettingsPage() {
       {/* )} */}
       <div className="flex flex-col p-8 bg-panel-background-transparent rounded-md border border-panel-border gap-y-8 w-[37.5rem] min-h-full overflow-y-visible">
         {settingsQuery.isLoading ? (
-          <div className="flex grow items-center justify-centertext-panel-primary">
+          <div className="flex grow items-center justify-center text-panel-primary">
             <Icon path={mdiLoading} spin size={5} />
           </div>
         ) : (

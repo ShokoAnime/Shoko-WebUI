@@ -145,7 +145,7 @@ function TopNav() {
               <span className="text-header-important-2">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
             </div>
             <div className="flex items-center gap-x-2">
-              <div className="flex items-center justify-center bg-header-primary/75 hover:bg-header-primary w-8 h-8 text-xl rounded-full mr-1">
+              <div className="flex items-center justify-center bg-header-primary hover:bg-header-primary-hover w-8 h-8 text-xl rounded-full mr-1">
                 {
                   currentUser.data?.Avatar
                     ? (<img src={currentUser.data?.Avatar} alt="avatar" className="w-8 h-8 rounded-full" />)
