@@ -282,7 +282,7 @@ function UserManagementSettings() {
         <div className="font-semibold mb-4">Tag Restrictions</div>
         <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
         <div className="flex flex-row">
-          <div className="bg-panel-background-alt mt-2 p-4 capitalize w-full rounded-md">
+          <div className="bg-panel-background-alt border border-panel-border mt-2 p-4 capitalize w-full rounded-md">
             <div className="bg-panel-background-alt overflow-y-auto h-64">
               {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
                 <div className="first:mt-0 mt-2 cursor-pointer hover:text-panel-primary" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
@@ -293,7 +293,7 @@ function UserManagementSettings() {
           </div>
         </div>
         <div className="font-semibold my-4">Selected Tags</div>
-        <div className="flex flex-col bg-panel-background-alt rounded-md p-4 min-h-[8rem] ">
+        <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md p-4 min-h-[8rem] ">
           {selectedUser.RestrictedTags?.length
             ? selectedUser.RestrictedTags?.map(tag => (
               <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>

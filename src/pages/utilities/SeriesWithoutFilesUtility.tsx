@@ -133,7 +133,7 @@ function SeriesWithoutFilesUtility() {
         <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
           <div className="flex items-center gap-x-3">
             <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
-            <div className="box-border flex grow bg-panel-background border border-panel-border items-center rounded-md px-4 py-3 relative gap-x-4">
+            <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative gap-x-4">
               {renderOperations(table.getSelectedRowModel().rows.length === 0)}
               <div className="ml-auto text-panel-important font-semibold">{table.getSelectedRowModel().rows.length}
                 <span className="text-panel-text">Series Selected</span>

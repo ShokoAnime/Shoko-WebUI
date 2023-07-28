@@ -115,7 +115,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         </div>
       </div>
       <AnimateHeight height={showInfo ? 'auto' : 0}>
-        <div className="flex bg-panel-background-alt rounded-md px-4 py-2 gap-x-2 mt-3">
+        <div className="flex bg-panel-background-alt border border-panel-border rounded-md px-4 py-2 gap-x-2 mt-3">
           {/* Icon size reduces if not put in a div */}
           <div className="mt-0.5">
             <Icon path={mdiInformationOutline} size={0.8333} />

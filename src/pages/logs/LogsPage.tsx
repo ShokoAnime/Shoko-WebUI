@@ -49,7 +49,7 @@ const LogsPage = () => {
       </div>
 
       <div className="flex bg-panel-background border border-panel-border rounded-md p-8 grow">
-        <div className="bg-panel-background-alt rounded-md w-full py-4 pr-4">
+        <div className="bg-panel-background-alt border border-panel-border  rounded-md w-full py-4 pr-4">
           <div className="bg-panel-background-alt grow overflow-y-auto relative h-full" ref={parentRef}>
             {(logsQuery.isLoading || logLines.length === 0) ? (
               <div className="flex grow justify-center items-center h-full">
