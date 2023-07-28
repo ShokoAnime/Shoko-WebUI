@@ -150,7 +150,7 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Studio</div>
-            {overview?.Studios?.map(item => <div key={item.Name}>{item.Name}</div>)}
+            <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
           </div>
 
           <div className="flex flex-col gap-y-1">
@@ -176,8 +176,8 @@ const SeriesOverview = () => {
         </ShokoPanel>
 
         <div className="flex flex-col gap-y-8 grow">
-          <ShokoPanel title="Episode on Deck" className="flex grow min-h-[22rem]" transparent>
-            {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No episode data available!</div>}
+          <ShokoPanel title="Episode on Deck" className="flex grow" transparent>
+            {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
           <ShokoPanel
             title={(
@@ -196,7 +196,9 @@ const SeriesOverview = () => {
           >
             <div className="grid grid-rows-3 grid-cols-2 gap-x-9 gap-y-4">
               {links.map(site => (
-                <MetadataLink key={site} site={site} id={series.IDs[site]} series={series.Name} />
+                <div className="bg-panel-background border border-panel-border px-4 py-3 rounded">
+                  <MetadataLink key={site} site={site} id={series.IDs[site]} series={series.Name} />
+                </div>
               ))}
             </div>
           </ShokoPanel>

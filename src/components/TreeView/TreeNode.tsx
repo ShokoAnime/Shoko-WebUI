@@ -94,7 +94,7 @@ function TreeNode(props: Props) {
           </div>
           <span className="select-none">{getChoppedPath()}</span>
         </div>
-        <Icon className={cx('inline-block justify-self-end mr-3 text-default-primary', { hidden: !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
+        <Icon className={cx('inline-block justify-self-end mr-3 text-panel-primary', { hidden: !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
       </div>
       <ul>{children}</ul>
     </li>

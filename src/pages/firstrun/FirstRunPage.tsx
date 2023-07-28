@@ -112,10 +112,10 @@ function FirstRunPage() {
         </div>
 
         <div className="flex flex-col w-full gap-y-4 font-semibold">
-          <Button className="flex bg-button-primary hover:bg-button-primary-hover items-center justify-center py-2 border border-panel-border gap-x-1" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')} dropShadow>
+          <Button buttonType="primary" className="flex items-center justify-center py-2 gap-x-1" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
             Get Help on <Icon path={siDiscord.path} size={0.75} /> Discord
           </Button>
-          <Button className="bg-button-primary hover:bg-button-primary-hover py-2 border border-panel-border" onClick={() => window.open('https://docs.shokoanime.com', '_blank')} dropShadow>
+          <Button buttonType="primary" className="py-2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
             Documentation
           </Button>
         </div>

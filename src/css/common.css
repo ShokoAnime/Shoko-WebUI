@@ -68,19 +68,19 @@ input[type='range']:focus {
 
 /* For Chrome, Safari, Edge */
 input[type='range']:focus::-webkit-slider-thumb {
-  outline: 1px solid theme('colors.default-primary-hover');
+  outline: 1px solid theme('colors.panel-primary-hover');
   outline-offset: 0.125rem;
 }
 
 /* For Firefox */
 input[type='range']:focus::-moz-range-thumb {
-  outline: 1px solid theme('colors.default-primary-hover');
+  outline: 1px solid theme('colors.panel-primary-hover');
   outline-offset: 0.125rem;
 }
 
 body {
   background-color: theme('colors.default-background');
-  color: theme('colors.default-text');
+  color: theme('colors.panel-text');
   display: none;
   font-weight: 400;
 }
@@ -99,10 +99,28 @@ body {
   background: theme('colors.slider-thumb');
   border-radius: 10px;
   border: 2px solid theme('colors.slider-background');
+  height: 15%;
 }
 
-.theme-shoko-gray .shoko-scrollbar {
+.bg-panel-background-alt::-webkit-scrollbar-track {
+  background: theme('colors.slider-background-alt');
+  border-radius: 10px;
+}
+
+.bg-panel-background-alt::-webkit-scrollbar-thumb {
+  background: theme('colors.slider-thumb-alt');
+  border-radius: 10px;
+  border: 2px solid theme('colors.slider-background-alt');
+  height: 15%;
+}
+
+.shoko-scrollbar {
   scrollbar-color: theme('colors.slider-thumb') theme('colors.slider-background');
+  scrollbar-width: thin;
+}
+
+.shoko-scrollbar * .bg-panel-background-alt {
+  scrollbar-color: theme('colors.slider-thumb') theme('colors.slider-background-alt');
   scrollbar-width: thin;
 }
 

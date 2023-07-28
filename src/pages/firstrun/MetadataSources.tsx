@@ -52,7 +52,7 @@ function MetadataSources() {
         collection. We highly recommend that you review the settings for each site and configure them to meet your
         preferences.
       </div>
-      <div className="flex border-b-2 border-default-border pb-3 gap-x-2 text-xl">
+      <div className="flex border-b-2 border-panel-border pb-3 gap-x-2 text-xl">
         {renderTabButton('AniDB', 'anidb')}
         |
         {renderTabButton('TMBD', 'moviedb')}

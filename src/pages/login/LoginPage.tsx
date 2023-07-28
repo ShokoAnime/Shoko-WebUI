@@ -129,7 +129,7 @@ function LoginPage() {
                 <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
                 <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
                 <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold" labelRight />
-                <Button className="bg-button-primary hover:bg-button-primary-hover py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                <Button buttonType="primary" className="py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
               </form>
             )}
             {status.data?.State === 3 && (
@@ -153,7 +153,7 @@ function LoginPage() {
                     Click <span className="text-panel-important font-semibold">Continue</span> below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => navigate('/webui/firstrun')} className="bg-button-primary hover:bg-button-primary-hover py-2 font-semibold">Continue</Button>
+                <Button onClick={() => navigate('/webui/firstrun')} buttonType="primary" className="py-2 font-semibold">Continue</Button>
               </div>
             )}
           </div>

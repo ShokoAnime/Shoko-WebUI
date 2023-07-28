@@ -66,8 +66,8 @@ function DashboardPage() {
         <div className="flex flex-col">
           Edit Mode Enabled
           <div className="flex items-center justify-end mt-3 gap-x-3 font-semibold">
-            <Button onClick={() => cancelLayoutChange()} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover px-3 py-1.5 text-font-main">Cancel</Button>
-            <Button onClick={() => saveLayout()} dropShadow className="bg-button-primary hover:bg-button-primary-hover text-panel-text-alt px-3 py-1.5">Save</Button>
+            <Button onClick={() => cancelLayoutChange()} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
+            <Button onClick={() => saveLayout()} buttonType="primary" className="px-3 py-1.5">Save</Button>
           </div>
         </div>
       );

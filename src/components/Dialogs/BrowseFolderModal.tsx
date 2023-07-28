@@ -38,8 +38,8 @@ function BrowseFolderModal(props: Props) {
         <TreeView />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={handleClose} className="bg-button-secondary hover:bg-button-secondary-hover px-6 py-2 text-font-main">Cancel</Button>
-        <Button onClick={handleSelect} className="bg-button-primary hover:bg-button-primary-hover px-6 py-2">Select</Button>
+        <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={handleSelect} buttonType="primary" className="px-6 py-2">Select</Button>
       </div>
     </ModalPanel>
   );

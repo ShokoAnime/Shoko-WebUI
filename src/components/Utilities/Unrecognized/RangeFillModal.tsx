@@ -39,8 +39,8 @@ const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover px-5 py-2 text-panel-text">Cancel</Button>
-        <Button onClick={handleFill} dropShadow className="bg-button-primary hover:bg-button-primary-hover px-5 py-2" disabled={!rangeStart}>Fill</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Cancel</Button>
+        <Button onClick={handleFill} buttonType="primary" className="px-5 py-2" disabled={!rangeStart}>Fill</Button>
       </div>
     </ModalPanel>
   );

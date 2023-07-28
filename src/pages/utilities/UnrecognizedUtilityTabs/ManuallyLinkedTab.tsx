@@ -184,7 +184,8 @@ function ManuallyLinkedTab() {
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
             <TransitionDiv show={Object.keys(selectedFiles).length !== 0} className="flex gap-x-3">
               <Button
-                className="px-4 py-3 bg-button-primary hover:bg-button-primary-hover flex gap-x-2.5 font-semibold"
+                buttonType="primary"
+                className="px-4 py-3 flex gap-x-2.5 font-semibold"
                 onClick={unlinkFiles}
               >
                 <Icon path={mdiLinkOff} size={0.8333} />

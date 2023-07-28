@@ -106,10 +106,10 @@ const Action = ({ actionKey }: { actionKey: string }) => {
       <div className="flex justify-between gap-x-3">
         {name}
         <div className="flex gap-x-2.5">
-          <Button onClick={() => setShowInfo(prev => !prev)} className="!text-button-primary hover:!text-button-primary-hover">
+          <Button onClick={() => setShowInfo(prev => !prev)} className="text-panel-primary">
             <Icon path={mdiInformationOutline} size={1} />
           </Button>
-          <Button onClick={() => runAction(name, functionName)} className="!text-button-primary hover:!text-button-primary-hover">
+          <Button onClick={() => runAction(name, functionName)} className="text-panel-primary">
             <Icon path={mdiPlayCircleOutline} size={1} />
           </Button>
         </div>

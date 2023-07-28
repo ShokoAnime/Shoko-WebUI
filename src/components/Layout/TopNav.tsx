@@ -94,7 +94,8 @@ function TopNav() {
               navigate('/webui/dashboard');
               setTimeout(() => window.location.reload(), 100);
             }}
-            className="bg-button-primary hover:bg-button-primary-hover text-default-text-alt font-semibold py-1.5 w-full"
+            buttonType="primary"
+            className="font-semibold py-1.5 w-full"
           >
             Click Here to Reload
           </Button>
@@ -142,7 +143,7 @@ function TopNav() {
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
               <Icon path={mdiServer} size={0.8333} />
-              <span className="text-header-important-2">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
+              <span className="text-header-important">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
             </div>
             <div className="flex items-center gap-x-2">
               <div className="flex items-center justify-center bg-header-primary hover:bg-header-primary-hover w-8 h-8 text-xl rounded-full mr-1">

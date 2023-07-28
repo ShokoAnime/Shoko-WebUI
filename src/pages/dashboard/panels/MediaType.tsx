@@ -26,7 +26,7 @@ function MediaType() {
       case 'Movie':
         return 'panel-warning';
       case 'OVA':
-        return 'panel-purple';
+        return 'panel-extra';
       default:
         return 'panel-primary';
     }

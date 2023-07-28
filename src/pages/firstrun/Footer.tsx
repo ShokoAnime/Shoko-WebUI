@@ -35,11 +35,11 @@ function Footer(props: Props) {
         {status?.text}
       </div>
       <div className="flex justify-between font-semibold">
-        <Button onClick={() => navigate(-1)} className="bg-button-primary hover:bg-button-primary-hover border border-panel-border py-2 w-1/2 mr-6" disabled={prevDisabled} dropShadow>Back</Button>
+        <Button onClick={() => navigate(-1)} buttonType="primary" className="py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
-          <Button onClick={() => navigate('/', { replace: true })} className="bg-button-primary hover:bg-button-primary-hover border border-panel-border py-2 w-1/2 ml-6" disabled={nextDisabled} dropShadow>Finish</Button>
+          <Button onClick={() => navigate('/', { replace: true })} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (
-          <Button onClick={() => handleNext()} className="bg-button-primary hover:bg-button-primary-hover border border-panel-border py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching} dropShadow>
+          <Button onClick={() => handleNext()} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
             Next
           </Button>
         )}

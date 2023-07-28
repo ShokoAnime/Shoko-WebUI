@@ -310,14 +310,14 @@ function UnrecognizedTab() {
               <Menu table={table} files={files} refetch={() => filesQuery.refetch()} setSeriesSelectModal={setSeriesSelectModal} />
               <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
                 <Button
-                  dropShadow
-                  className="px-4 py-3 bg-button-primary hover:bg-button-primary-hover flex gap-x-2.5 font-semibold"
+                  buttonType="primary"
+                  className="px-4 py-3 flex gap-x-2.5 font-semibold"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
                   Manual Link
                 </Button>
-                <Button dropShadow className="px-4 py-3 bg-button-primary hover:bg-button-primary-hover flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
+                <Button buttonType="primary" className="px-4 py-3 flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
                   <Icon path={mdiDumpTruck} size={0.8333} />
                   {isAvdumpFinished && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}

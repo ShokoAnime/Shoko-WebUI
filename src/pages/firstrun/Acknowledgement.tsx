@@ -39,7 +39,7 @@ function Acknowledgement() {
         expertise to contribute, we invite you to come and chat with us on&nbsp;
         <a href="https://discord.gg/vpeHDsg" target="_blank" rel="noopener noreferrer" className="text-panel-primary hover:underline">Discord</a>.
       </div>
-      <Button onClick={handleNext} className="bg-button-primary hover:bg-button-primary-hover font-semibold py-2" disabled={status.data?.State !== 4}>Continue</Button>
+      <Button onClick={handleNext} buttonType="primary" className="font-semibold py-2" disabled={status.data?.State !== 4}>Continue</Button>
     </TransitionDiv>
   );
 }

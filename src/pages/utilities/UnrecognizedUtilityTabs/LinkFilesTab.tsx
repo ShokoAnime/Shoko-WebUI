@@ -89,7 +89,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
       searchRows.push(renderRow(result));
     });
   } else {
-    searchRows.push(<div className="flex grow justify-center items-center text-default-primary"><Icon path={mdiLoading} size={4} spin /></div>);
+    searchRows.push(<div className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
   }
 
   return (
@@ -367,10 +367,10 @@ function LinkFilesTab() {
                 </div>
               </div>
               <div className="flex gap-x-3 font-semibold">
-                <Button onClick={() => setShowRangeFillModal(true)} dropShadow className="bg-button-secondary hover:bg-button-secondary-hover border border-panel-border px-4 py-3 text-panel-text" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
-                {/* <Button onClick={() => {}} className="bg-panel-background-nav border border-panel-border px-4 py-3 text-panel-text">Auto Fill</Button> */}
-                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} dropShadow className="bg-background-nav border border-panel-border px-4 py-3 text-panel-text" disabled={isLinking}>Cancel</Button>
-                <Button onClick={saveChanges} dropShadow className="bg-button-primary hover:bg-button-primary-hover border border-panel-border px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
+                <Button onClick={() => setShowRangeFillModal(true)} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
+                {/* <Button onClick={() => {}} buttonType="secondary" className="px-4 py-3">Auto Fill</Button> */}
+                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
+                <Button onClick={saveChanges} buttonType="primary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
             </div>
           </ShokoPanel>

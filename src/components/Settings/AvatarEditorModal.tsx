@@ -78,8 +78,8 @@ const AvatarEditorModal = (props: Props) => {
         <Icon path={mdiImagePlusOutline} size={1.2} />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} className="bg-button-secondary hover:bg-button-secondary-hover px-6 py-2 text-font-main">Cancel</Button>
-        <Button onClick={handleSave} className="bg-button-primary hover:bg-button-primary-hover text-default-text px-6 py-2">Apply</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={handleSave} buttonType="primary" className="px-6 py-2">Apply</Button>
       </div>
     </ModalPanel>
   );

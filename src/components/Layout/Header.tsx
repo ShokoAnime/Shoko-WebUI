@@ -23,7 +23,7 @@ function Header({ showSidebar, setShowSidebar }: Props) {
       <ShokoIcon className="w-8" />
       <div className="flex items-center">
         <Icon path={mdiServer} size={1} />
-        <span className="ml-2 text-header-important">{(queueItems.HasherQueueCount + queueItems.GeneralQueueCount + queueItems.ImageQueueCount) ?? 0}</span>
+        <span className="ml-2 text-header-important">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
       </div>
     </div>
   );

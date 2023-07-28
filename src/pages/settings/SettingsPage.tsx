@@ -329,8 +329,8 @@ function SettingsPage() {
             />
             {pathname.split('/').pop() !== 'user-management' && (
               <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
-                <Button onClick={() => setNewSettings(settings)} className="bg-panel-background px-3 py-2 border border-panel-border text-panel-text">Cancel</Button>
-                <Button onClick={() => saveSettings()} className="bg-panel-primary px-3 py-2 ml-3 border border-panel-border">Save</Button>
+                <Button onClick={() => setNewSettings(settings)} buttonType="secondary" className="px-3 py-2">Cancel</Button>
+                <Button onClick={() => saveSettings()} buttonType="primary" className="px-3 py-2 ml-3">Save</Button>
               </div>
             )}
           </>

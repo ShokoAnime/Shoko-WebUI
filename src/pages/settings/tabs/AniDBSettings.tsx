@@ -84,7 +84,7 @@ function AniDBSettings() {
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="flex justify-between">
           <div className="font-semibold">Login Options</div>
-          <Button onClick={() => testLogin()} loading={testAniDbLoginResult.isLoading} className="!text-panel-primary font-semibold !text-base">Test</Button>
+          <Button onClick={() => testLogin()} loading={testAniDbLoginResult.isLoading} buttonType="primary" className="font-semibold !text-base">Test</Button>
         </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
