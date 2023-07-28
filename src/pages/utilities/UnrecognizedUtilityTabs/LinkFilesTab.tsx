@@ -151,8 +151,8 @@ function LinkFilesTab() {
     }
   }), [setLinks]);
 
-  const removeLink = useCallback((FileID: number) => setLinks((linkState) => {
-    const itemIndex = linkState.reverse().findIndex(link => link.FileID === FileID);
+  const removeLink = useCallback((fileId: number) => setLinks((linkState) => {
+    const itemIndex = linkState.findLastIndex(link => link.FileID === fileId);
     linkState.splice(itemIndex, 1);
   }), [setLinks]);
 
