@@ -80,7 +80,7 @@ const SeriesEpisodes = () => {
         <Select id="watched" label="Watched Status" value={episodeFilterWatched} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterWatched(event.currentTarget.value)}>
           <option value="true">All</option>
           <option value="only">Watched</option>
-          <option value="false">Unwatched</option>`
+          <option value="false">Unwatched</option>
         </Select>
         <Select id="hidden" label="Hidden Status" value={episodeFilterHidden} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterHidden(event.currentTarget.value)}>
           <option value="true">All</option>
