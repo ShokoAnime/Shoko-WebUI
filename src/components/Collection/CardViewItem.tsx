@@ -1,8 +1,7 @@
 import { CollectionGroupType } from '@/core/types/api/collection';
 import { WebuiGroupExtra } from '@/core/types/api/webui';
-import { ImageType } from '@/core/types/api/common';
 import cx from 'classnames';
-import { forEach, get } from 'lodash';
+import { forEach } from 'lodash';
 import { Link } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import {
@@ -19,6 +18,7 @@ import moment from 'moment/moment';
 import React from 'react';
 import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import useMainPoster from '@/hooks/useMainPoster';
 import AnidbDescription from './AnidbDescription';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
@@ -37,7 +37,7 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) => {
-  const poster: ImageType = get(item, 'Images.Posters.0');
+  const poster = useMainPoster(item);
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes - item.Sizes.Local.Specials;
 
   const viewRouteLink = () => {
@@ -61,7 +61,7 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
     <div key={`group-${item.IDs.ID}`} className="content-center flex flex-col p-8 gap-y-4 rounded-md bg-panel-background w-[56.6875rem] h-full grow border-overlay-border border shrink-0">
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
-          <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
+          <BackgroundImagePlaceholderDiv image={poster} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
             <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
               <Link to="#" className="h-fit">
                 <Icon path={mdiPencilCircleOutline} size="2rem" className="text-overlay-icon hover:text-overlay-icon-hover" />

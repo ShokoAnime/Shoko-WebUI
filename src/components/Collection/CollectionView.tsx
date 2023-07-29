@@ -148,7 +148,7 @@ const CollectionView = (props: Props) => {
             } else if (item) {
               items.push(
                 mode === 'grid'
-                  ? GridViewItem(item)
+                  ? <GridViewItem item={item} />
                   : CardViewItem(item, groupExtras.find(extra => extra.ID === item.IDs.ID)),
               );
             } else {
