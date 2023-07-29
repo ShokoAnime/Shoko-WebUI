@@ -81,7 +81,6 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.default-background');
   color: theme('colors.panel-text');
-  display: none;
   font-weight: 400;
 }
 
@@ -135,6 +134,10 @@ body {
 #app-root {
   flex: 1;
   height: 100vh;
+}
+
+#app-container {
+  visibility: hidden;
 }
 
 /* stylelint-disable-next-line selector-class-pattern */

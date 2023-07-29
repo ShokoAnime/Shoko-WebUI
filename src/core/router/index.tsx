@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
 import { Navigate, Route } from 'react-router';
@@ -123,16 +123,22 @@ const Router = () => {
 
   const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
+  const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.className = `${apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)} theme-shoko-gray`;
-    setTimeout(() => {
-      document.getElementsByTagName('body')[0].style.display = 'initial';
+    const timeoutId = setTimeout(() => {
+      if (bodyRef.current) {
+        bodyRef.current.style.visibility = 'initial';
+      }
     }, 125);
+    return () => {
+      clearTimeout(timeoutId);
+    };
   }, [apikey, theme, webuiPreviewTheme]);
 
   return (
-    <div id="app-container" className="flex h-screen">
+    <div id="app-container" className="flex h-screen" ref={bodyRef}>
       <RouterProvider router={router} />
     </div>
   );
