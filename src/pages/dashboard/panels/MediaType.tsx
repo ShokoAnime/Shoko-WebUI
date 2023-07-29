@@ -18,10 +18,10 @@ function MediaType() {
   const renderColor = (type) => {
     switch (type) {
       case 'Series': return 'panel-primary';
-      case 'Other': return 'panel-important';
+      case 'Other': return 'panel-extra';
       case 'Web': return 'panel-danger';
-      case 'Movie': return 'panel-warning';
-      case 'OVA': return 'panel-extra';
+      case 'Movie': return 'panel-important';
+      case 'OVA': return 'panel-warning';
       default: return 'panel-primary';
     }
   };
