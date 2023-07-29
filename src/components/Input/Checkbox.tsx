@@ -22,7 +22,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
   const [focused, setFocused] = useState(false);
 
   return (
-    <label htmlFor={id} className={cx([justify && 'justify-between', `${className}`, 'cursor-pointer flex items-center transition ease-in-out', focused && 'ring-2 ring-highlight-1 ring-inset'])}>
+    <label htmlFor={id} className={cx([justify && 'justify-between', `${className}`, 'cursor-pointer flex items-center transition ease-in-out', focused && 'ring-2 ring-panel-primary ring-inset'])}>
       <input
         id={id}
         type="checkbox"
@@ -42,17 +42,17 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         </span>
       )}
       {!intermediate && isChecked && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-primary" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {!intermediate && !isChecked && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-primary" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {intermediate && (
-        <TransitionDiv className="flex text-highlight-1" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-primary" enterFrom="opacity-50" appear={false}>
           <Icon path={mdiCircleHalfFull} size={1} />
         </TransitionDiv>
       )}

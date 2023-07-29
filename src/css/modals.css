@@ -11,8 +11,8 @@
 }
 
 .profile-modal-image-alpha {
-  color: theme('colors.background');
-  background-color: theme('colors.background / 60');
+  color: theme('colors.panel-background');
+  background-color: theme('colors.panel-background-transparent');
 }
 
 .modal-transition-left {

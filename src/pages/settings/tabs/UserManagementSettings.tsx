@@ -172,12 +172,12 @@ function UserManagementSettings() {
 
   const renderPlexLink = () => {
     if (isPlexAuthenticated) {
-      return <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} className="bg-highlight-3 text-xs w-16 font-semibold h-8">Unlink</Button>;
+      return <Button onClick={() => invalidatePlexToken()} loading={invalidatePlexTokenResult.isLoading} loadingSize={0.65} buttonType="danger" className="text-xs w-16 font-semibold h-8">Unlink</Button>;
     }
     return getPlexLoginUrlResult?.data ? (
-      <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Login</Button>
+      <Button onClick={() => handlePlexLogin()} loading={plexPollingInterval !== 0} loadingSize={0.65} buttonType="primary" className="text-xs w-24 h-8">Login</Button>
     ) : (
-      <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} className="bg-highlight-1 text-xs w-24 h-8">Authenticate</Button>
+      <Button onClick={() => getPlexLoginUrl()} loading={getPlexLoginUrlResult.isLoading} loadingSize={0.65} buttonType="primary" className="text-xs w-24 h-8">Authenticate</Button>
     );
   };
 
@@ -214,10 +214,10 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-highlight-1" />
+                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-panel-primary" />
                 </div>
                 <div onClick={() => deleteSelectedUser(user)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-highlight-3" />
+                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-danger" />
                 </div>
               </div>
             </div>
@@ -242,7 +242,7 @@ function UserManagementSettings() {
           <div className="flex items-center justify-between">
             Change Avatar
             <div className="flex gap-x-2">
-              <label htmlFor="avatar" className="px-3 py-2 bg-background-alt border border-background-border rounded-md text-xs drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
+              <Button buttonType="secondary" className="px-3 py-2 bg-button-secondary hover:bg-button-secondary-hover border border-panel-border rounded-md text-xs drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] cursor-pointer font-semibold">
                 Pick
                 <input
                   type="file"
@@ -251,9 +251,9 @@ function UserManagementSettings() {
                   className="hidden"
                   accept="image/*"
                 />
-              </label>
+              </Button>
               {selectedUser.Avatar && (
-                <Button onClick={removeAvatar} className="bg-highlight-3 font-semibold px-3 py-2 border border-background-border text-xs">
+                <Button onClick={removeAvatar} buttonType="danger" className="font-semibold px-3 py-2 text-xs">
                   Remove
                 </Button>
               )}
@@ -265,7 +265,7 @@ function UserManagementSettings() {
       <div className="flex flex-col">
         <div className="flex justify-between h-8 mb-4">
           <div className="font-semibold mx-0 my-auto">Password</div>
-          <Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} className="!text-highlight-1 font-semibold !text-base">Change</Button>
+          <Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} buttonType="primary" className="font-semibold text-xs px-3 py-2">Change</Button>
         </div>
         <div className="flex flex-col gap-y-3">
           <div className="flex justify-between h-8">
@@ -280,22 +280,26 @@ function UserManagementSettings() {
 
       <div className="flex flex-col">
         <div className="font-semibold mb-4">Tag Restrictions</div>
-        <Input type="text" placeholder="Search..." className="bg-background-nav" startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
-        <div className="bg-background-border overflow-y-scroll h-64 mt-2 rounded-md p-4 capitalize">
-          {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
-            <div className="first:mt-0 mt-2 cursor-pointer" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
-              {tag.Name}
+        <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={tagSearch} onChange={event => setTagSearch(event.target.value)} />
+        <div className="flex flex-row">
+          <div className="bg-panel-background-alt border border-panel-border mt-2 p-4 capitalize w-full rounded-md">
+            <div className="bg-panel-background-alt overflow-y-auto h-64">
+              {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
+                <div className="first:mt-0 mt-2 cursor-pointer hover:text-panel-primary" key={`tagData-${tag.ID}`} onClick={() => handleTagChange(tag.ID, true)}>
+                  {tag.Name}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
         <div className="font-semibold my-4">Selected Tags</div>
-        <div className="flex flex-col bg-background-border rounded-md p-4 min-h-[8rem] ">
+        <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md p-4 min-h-[8rem] ">
           {selectedUser.RestrictedTags?.length
             ? selectedUser.RestrictedTags?.map(tag => (
               <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>
                 {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
                 <Button onClick={() => handleTagChange(tag, false)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="text-highlight-3" />
+                  <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-danger" />
                 </Button>
               </div>
             ))
@@ -306,8 +310,8 @@ function UserManagementSettings() {
       </div>
 
       <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
-        <Button onClick={() => handleCancel()} className="bg-background-alt px-3 py-2 border border-background-border text-font-main">Cancel</Button>
-        <Button onClick={() => editUser(selectedUser)} className="bg-highlight-1 px-3 py-2 ml-3 border border-background-border">Save</Button>
+        <Button onClick={() => handleCancel()} buttonType="secondary" className="px-3 py-2">Cancel</Button>
+        <Button onClick={() => editUser(selectedUser)} buttonType="primary" className="px-3 py-2 ml-3">Save</Button>
       </div>
 
       <AvatarEditorModal show={showAvatarModal} onClose={() => setShowAvatarModal(false)} image={avatarFile} changeAvatar={changeAvatar} />

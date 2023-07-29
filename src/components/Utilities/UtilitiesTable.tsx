@@ -79,7 +79,7 @@ function UtilitiesTable(props: Props) {
     const criteria = criteriaMap[id];
     if (skipSort || !criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria) return null;
 
-    return <Icon path={mdiMenuUp} size={1} className="text-highlight-1 inline ml-2 transition-transform" rotate={sortCriteria === (criteria * -1) ? 180 : 0} />;
+    return <Icon path={mdiMenuUp} size={1} className="text-panel-primary inline ml-2 transition-transform" rotate={sortCriteria === (criteria * -1) ? 180 : 0} />;
   };
 
   return (
@@ -87,12 +87,12 @@ function UtilitiesTable(props: Props) {
       <table className="table-fixed text-left border-separate border-spacing-y-2 w-full absolute -top-2" style={{ height: totalSize }}>
         <thead className="sticky top-0 z-[1]">
           {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id} className="bg-background">
+            <tr key={headerGroup.id} className="bg-panel-background-toolbar">
               {headerGroup.headers.map(header => (
                 <th
                   key={header.id}
                   className={cx(
-                    'py-4 first:rounded-l-md last:rounded-r-md font-semibold border-background-border border-y first:border-l last:border-r first:pl-6',
+                    'py-4 first:rounded-l-md last:rounded-r-md font-semibold border-panel-border border-y first:border-l last:border-r first:pl-6',
                     header.column.columnDef.meta?.className,
                     !skipSort && header.id !== 'status' && 'cursor-pointer',
                   )}
@@ -120,9 +120,9 @@ function UtilitiesTable(props: Props) {
             const row = rows[virtualRow.index] as Row<FileType | SeriesType>;
             return (
             // Cannot use even: or odd: for background as it doesn't work properly with virtualizer
-              <tr key={row.id} className={cx(parseInt(row.id, 10) % 2 === 0 ? 'bg-background-alt' : 'bg-background', 'cursor-pointer')} onClick={e => handleRowSelect(e, row)}>
+              <tr key={row.id} className={cx(parseInt(row.id, 10) % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background', 'cursor-pointer')} onClick={e => handleRowSelect(e, row)}>
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className={cx('py-4 first:rounded-l-md last:rounded-r-md border-y first:border-l last:border-r first:pl-6 pr-6 transition-colors', row.getIsSelected() ? 'border-highlight-1' : 'border-background-border')}>
+                  <td key={cell.id} className={cx('py-4 first:rounded-l-md last:rounded-r-md border-y first:border-l last:border-r first:pl-6 pr-6 transition-colors', row.getIsSelected() ? 'border-panel-primary' : 'border-panel-border')}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </td>
                 ))}

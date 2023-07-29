@@ -29,7 +29,7 @@ function FixedPanel(props: Props) {
         </div>
       </div>
       <span
-        className="bg-highlight-2 my-2 h-1 flex-shrink-0"
+        className="bg-panel-primary my-2 h-1 flex-shrink-0"
         style={{
           width: `${title.length / 1.25}rem`,
         }}

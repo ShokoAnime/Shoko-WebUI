@@ -60,7 +60,7 @@ function StartServer() {
         </div>
         <div className="flex justify-center items-center mt-24">
           {pollingInterval === 0 && (status.isUninitialized || status.data?.State === 4) && (
-            <Button onClick={() => handleStart()} className="bg-highlight-2 py-2 w-64 font-semibold">Start Server</Button>
+            <Button onClick={() => handleStart()} buttonType="primary" className="py-2 w-64 font-semibold">Start Server</Button>
           )}
         </div>
       </div>

@@ -17,13 +17,13 @@ const RecommendedAnime = () => {
 
   const renderItem = (series: SeriesAniDBType, matches: number) => (
     <div key={`series-${series.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 justify-center flex flex-col">
-      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/AniDB/Poster/${series.Poster.ID}`} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-background-border mb-2 group">
+      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/AniDB/Poster/${series.Poster.ID}`} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border mb-2 group">
         <div
-          className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-background-nav/85 transition-opacity opacity-0 group-hover:opacity-100"
+          className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-panel-background-transparent transition-opacity opacity-0 group-hover:opacity-100"
           onClick={() => window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
         >
-          <div className="p-5 bg-background-border rounded-full mb-1">
-            <Icon path={mdiEyeArrowRightOutline} size={1} className="text-highlight-1" />
+          <div className="p-5 bg-panel-border rounded-full mb-1">
+            <Icon path={mdiEyeArrowRightOutline} size={1} className="text-panel-primary" />
           </div>
           View Series on AniDB
         </div>

@@ -34,12 +34,12 @@ function Acknowledgement() {
         OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
         DEALINGS IN THE SOFTWARE.
       </div>
-      <div className="font-semibold text-highlight-2">
+      <div className="font-semibold text-panel-important">
         We are constantly seeking talented individuals to join our team! If you believe you have the skills and
         expertise to contribute, we invite you to come and chat with us on&nbsp;
-        <a href="https://discord.gg/vpeHDsg" target="_blank" rel="noopener noreferrer" className="text-highlight-1 hover:underline">Discord</a>.
+        <a href="https://discord.gg/vpeHDsg" target="_blank" rel="noopener noreferrer" className="text-panel-primary hover:underline">Discord</a>.
       </div>
-      <Button onClick={handleNext} className="bg-highlight-1 font-semibold py-2" disabled={status.data?.State !== 4}>Continue</Button>
+      <Button onClick={handleNext} buttonType="primary" className="font-semibold py-2" disabled={status.data?.State !== 4}>Continue</Button>
     </TransitionDiv>
   );
 }

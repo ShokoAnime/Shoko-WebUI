@@ -1,5 +1,5 @@
 .error-page {
-  background-color: theme('colors.background');
+  background-color: theme('colors.default-background');
 
   a {
     color: #49a2df;

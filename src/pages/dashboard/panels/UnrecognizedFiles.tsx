@@ -40,15 +40,15 @@ const FileItem = ({ file }: { file: FileType }) => {
       <div className="flex justify-between">
         {(avdumpList[file.ID] === undefined || avdumpList[file.ID].fetching) && (
           <Button onClick={() => avdumpFile(file.ID)} className="px-2" loading={avdumpList[file.ID]?.fetching ?? false} disabled={dumpInProgress} tooltip="Dump File">
-            <Icon className="text-highlight-1" path={mdiDumpTruck} size={1} />
+            <Icon className="text-panel-primary" path={mdiDumpTruck} size={1} />
           </Button>
         )}
         {(avdumpList[file.ID] && !avdumpList[file.ID].fetching) && (
           <div className="flex px-2 gap-x-2">
             <CopyToClipboard text={avdumpList[file.ID].hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
-              <Icon className="text-highlight-1 cursor-pointer" path={mdiContentCopy} size={1} />
+              <Icon className="text-panel-primary cursor-pointer" path={mdiContentCopy} size={1} />
             </CopyToClipboard>
-            <Icon className="text-highlight-2" path={mdiFileDocumentCheckOutline} size={1} />
+            <Icon className="text-panel-important" path={mdiFileDocumentCheckOutline} size={1} />
           </div>
         )}
       </div>

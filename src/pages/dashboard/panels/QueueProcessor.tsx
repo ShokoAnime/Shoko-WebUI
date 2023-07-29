@@ -39,18 +39,18 @@ function QueueProcessor() {
           <Icon className="mr-4" path={icons[key]} size={1} />
           <span>{names[key]} - {item?.status ?? 'Idle'}</span>
         </div>
-        <div className="flex text-highlight-2">{item.queueCount ?? 0}</div>
+        <div className="flex text-panel-important">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
           <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
-            <Icon className="text-highlight-1" path={mdiCloseCircleOutline} size={1} />
+            <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
           </Button>
           {item?.status === 'Pausing' || item?.status === 'Paused' ? (
             <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
-              <Icon className="text-highlight-1" path={mdiPlayCircleOutline} size={1} />
+              <Icon className="text-panel-primary" path={mdiPlayCircleOutline} size={1} />
             </Button>
           ) : (
             <Button className="mx-2" onClick={() => handleOperation('Stop', key)} tooltip="Pause">
-              <Icon className="text-highlight-1" path={mdiPauseCircleOutline} size={1} />
+              <Icon className="text-panel-primary" path={mdiPauseCircleOutline} size={1} />
             </Button>
           )}
         </div>
@@ -70,11 +70,11 @@ function QueueProcessor() {
     });
 
     return paused ? (
-      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('StartAll')} title="Resume All">
+      <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StartAll')} title="Resume All">
         <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
       </div>
     ) : (
-      <div className="text-highlight-1 mx-2 cursor-pointer" onClick={() => handleOperation('StopAll')} title="Pause All">
+      <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StopAll')} title="Pause All">
         <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
       </div>
     );

@@ -19,10 +19,11 @@ function Toast(props: Props) {
 
   const colorClass = () => {
     switch (toastProps?.type) {
-      case 'success': return 'highlight-2';
-      case 'error': return 'highlight-3';
-      case 'info': return 'highlight-1';
-      default: return 'highlight-1';
+      case 'success': return 'toast-important';
+      case 'error': return 'toast-danger';
+      case 'info': return 'toast-primary';
+      case 'warning': return 'toast-warning';
+      default: return 'toast-primary';
     }
   };
 
@@ -31,9 +32,9 @@ function Toast(props: Props) {
       <span><Icon path={icon} size={1} className={`text-${colorClass()}`} /></span>
       <div className="flex flex-col grow ml-4 mr-8">
         <div className="font-semibold">{header}</div>
-        <div className="text-font-main">{message}</div>
+        <div className="text-toast-text">{message}</div>
       </div>
-      {toastProps?.autoClose && <span onClick={closeToast}><Icon path={mdiCloseCircleOutline} size={1} className="text-font-main opacity-65" /></span>}
+      {toastProps?.autoClose && <span onClick={closeToast}><Icon path={mdiCloseCircleOutline} size={1} className="text-toast-text opacity-65" /></span>}
     </div>
   );
 }

@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
 
 const AnidbLink = ({ url, character, text }) => (
-  <span className="text-highlight-1" title={url}>
+  <span className="text-panel-primary" title={url}>
     {character === true ? <Icon className="inline-block" path={mdiAccount} size={1} /> : null}{' '}
     {text}
   </span>

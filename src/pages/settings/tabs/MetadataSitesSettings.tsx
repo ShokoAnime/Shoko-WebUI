@@ -113,7 +113,7 @@ function MetadataSitesSettings() {
               <div className="flex">
                 Trakt Code:<span className="font-bold ml-1">{traktCodeResult?.data?.usercode}</span>
               </div>
-              <a href={traktCodeResult?.data?.url} rel="noopener noreferrer" target="_blank" className="text-highlight-2 hover:underline">Click here to activate</a>
+              <a href={traktCodeResult?.data?.url} rel="noopener noreferrer" target="_blank" className="text-panel-important hover:underline">Click here to activate</a>
             </div>
           )}
           {TraktTv.TokenExpirationDate === '' && !traktCodeResult?.data?.usercode && (
@@ -121,7 +121,7 @@ function MetadataSitesSettings() {
               Trakt Code
               <Button
                 onClick={() => traktCodeTrigger().then(() => toast.info('You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.', undefined, { autoClose: 10000 }), () => {})}
-                className="bg-highlight-1 px-2 py-1 font-semibold "
+                className="bg-panel-primary px-2 py-1 font-semibold "
               >
                 {traktCodeResult.isFetching ? 'Requesting...' : 'Get Code'}
               </Button>

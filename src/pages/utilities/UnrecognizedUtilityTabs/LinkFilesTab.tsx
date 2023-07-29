@@ -63,7 +63,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
   const renderRow = useCallback((data: SeriesAniDBSearchResult) => (
     <div key={data.ID} onClick={() => updateSelectedSeries(data)} className="flex cursor-pointer gap-y-1">
       <div
-        className="flex font-semibold text-highlight-1 w-20"
+        className="flex font-semibold text-panel-primary w-20"
         onClick={(e) => {
           e.stopPropagation();
           window.open(`https://anidb.net/anime/${data.ID}`, '_blank');
@@ -89,7 +89,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
       searchRows.push(renderRow(result));
     });
   } else {
-    searchRows.push(<div className="flex grow justify-center items-center text-highlight-1"><Icon path={mdiLoading} size={4} spin /></div>);
+    searchRows.push(<div className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
   }
 
   return (
@@ -103,7 +103,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex flex-col bg-background-border p-4 rounded-md h-full overflow-y-auto">
+      <div className="flex flex-col bg-panel-border p-4 rounded-md h-full overflow-y-auto">
         {searchRows}
       </div>
     </div>
@@ -323,7 +323,7 @@ function LinkFilesTab() {
   ]);
 
   const renderStaticFileLinks = () => map(selectedRows, file => (
-    <div className="p-4 w-full odd:bg-background even:bg-background-alt border border-background-border rounded-md leading-5" key={file.ID}>
+    <div className="p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-background-border rounded-md leading-5" key={file.ID}>
       {file.Locations?.[0].RelativePath ?? '<missing file path>'}
     </div>
   ));
@@ -333,9 +333,9 @@ function LinkFilesTab() {
     const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
     const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
     result.push(
-      <div title={path} className={cx(['flex items-center p-4 w-full border border-background-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
+      <div title={path} className={cx(['flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
         {path}
-        {isSameFile && (<Icon path={mdiLink} size={1} className="text-highlight-2 ml-auto" />)}
+        {isSameFile && (<Icon path={mdiLink} size={1} className="text-panel-important ml-auto" />)}
       </div>,
     );
     if (episodes.length > 0) {
@@ -360,39 +360,39 @@ function LinkFilesTab() {
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
-              <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+              <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
                 <div className="flex grow gap-x-4">
                   <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={isLinking || selectedLink === -1} />
                   <MenuButton onClick={() => removeLink(fileLinks[selectedLink].FileID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={isLinking || selectedLink === -1} />
                 </div>
               </div>
               <div className="flex gap-x-3 font-semibold">
-                <Button onClick={() => setShowRangeFillModal(true)} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
-                {/* <Button onClick={() => {}} className="bg-background-nav border border-background-border px-4 py-3 text-font-main">Auto Fill</Button> */}
-                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} className="bg-background-nav border border-background-border px-4 py-3 text-font-main" disabled={isLinking}>Cancel</Button>
-                <Button onClick={saveChanges} className="bg-highlight-1 border border-background-border px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
+                <Button onClick={() => setShowRangeFillModal(true)} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
+                {/* <Button onClick={() => {}} buttonType="secondary" className="px-4 py-3">Auto Fill</Button> */}
+                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
+                <Button onClick={saveChanges} buttonType="primary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
             </div>
           </ShokoPanel>
         </div>
 
-        <div className="grow w-full h-full overflow-y-auto rounded-lg bg-background-alt border border-background-border mt-8 p-8 flex gap-x-8">
+        <div className="grow w-full h-full overflow-y-auto rounded-lg bg-panel-background border border-panel-border mt-8 p-8 flex gap-x-8">
           <div className={cx('grid gap-y-2 gap-x-8 auto-rows-min', selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1')}>
-            <div className="flex justify-between bg-background font-semibold p-4 rounded-md border border-background-border">
+            <div className="flex justify-between bg-panel-background-toolbar font-semibold p-4 rounded-md border border-panel-border">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeries?.ID && (
-              <div className="flex bg-background font-semibold p-4 rounded-md border border-background-border">
+              <div className="flex bg-panel-background-toolbar font-semibold p-4 rounded-md border border-panel-border">
                 AniDB |&nbsp;
                 <div
-                  className="flex font-semibold text-highlight-1 cursor-pointer"
+                  className="flex font-semibold text-panel-primary cursor-pointer"
                   onClick={() => window.open(`https://anidb.net/anime/${selectedSeries.ID}`, '_blank')}
                 >
                   {selectedSeries.ID} - {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </div>
-                <Button onClick={() => setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult)} className="ml-auto text-highlight-1" disabled={isLinking}>
+                <Button onClick={() => setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult)} className="ml-auto text-panel-primary" disabled={isLinking}>
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>

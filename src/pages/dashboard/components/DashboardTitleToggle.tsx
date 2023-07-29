@@ -19,9 +19,9 @@ const DashboardTitleToggle = ({
   <div>
     {title}
     <span className="px-2">&gt;</span>
-    <span className={cx({ 'cursor-pointer': true, 'font-semibold': !secondaryActive, 'text-highlight-1': !secondaryActive })} onClick={() => setSecondaryActive(false)}>{mainTitle}</span>
+    <span className={cx({ 'cursor-pointer': true, 'font-semibold': !secondaryActive, 'text-panel-primary': !secondaryActive })} onClick={() => setSecondaryActive(false)}>{mainTitle}</span>
     <span className="mx-2">|</span>
-    <span className={cx({ 'cursor-pointer': true, 'font-semibold': secondaryActive, 'text-highlight-1': secondaryActive })} onClick={() => setSecondaryActive(true)}>{secondaryTitle}</span>
+    <span className={cx({ 'cursor-pointer': true, 'font-semibold': secondaryActive, 'text-panel-primary': secondaryActive })} onClick={() => setSecondaryActive(true)}>{secondaryTitle}</span>
   </div>
 );
 

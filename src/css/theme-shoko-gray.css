@@ -1,25 +1,55 @@
 .theme-shoko-gray {
-  --color-background: 40 46 56;             /* Primary background */
-  --color-background-alt: 44 51 62;         /* Secondary background */
-  --color-background-nav: 53 61 74;         /* Tertiary background */
-  --color-background-border: 33 36 43;      /* General/Primary Border & Fill */
-  --color-border-alt: 63 71 98;             /* General/Border Alt */
-  --color-highlight-1: 68 163 255;
-  --color-highlight-1-light: 135 196 255;
-  --color-highlight-1-dark: 22 123 200;
-  --color-highlight-2: 16 196 105;
-  --color-highlight-2-light: 46 238 140;
-  --color-highlight-2-dark: 12 142 77;
-  --color-highlight-3: 255 108 108;
-  --color-highlight-3-light: 255 184 184;
-  --color-highlight-3-dark: 255 10 10;
-  --color-highlight-4: 249 200 81;
-  --color-highlight-4-light: 251 221 148;
-  --color-highlight-4-dark: 232 167 8;
-  --color-highlight-5: 185 129 255;
-  --color-highlight-5-light: 206 167 255;
-  --color-highlight-5-dark: 128 25 255;
-  --color-font-main: 207 216 227;
-  --color-font-alt: 1 15 28;
-  --color-image-overlay: 22 27 39;
+  --color-button-primary: #44a3ff;
+  --color-button-primary-hover: #225eb7;
+  --color-button-secondary: #353d4a;
+  --color-button-secondary-hover: #2b323c;
+  --color-button-danger: #db4551;
+  --color-button-danger-hover: #9b2e3f;
+  --color-button-text: #cfd8e3;
+  --color-button-text-alt: #010f1c;
+  --color-default-background: #282e38;
+  --color-default-background-input: #21242b;
+  --color-header-background: #2c333e;
+  --color-header-background-alt: #353d4a;
+  --color-header-border: #21242b;
+  --color-header-text: #cfd8e3;
+  --color-header-text-alt: #cfd8e3;
+  --color-header-primary: #44a3ff;
+  --color-header-primary-hover: #8ed3ff;
+  --color-header-important: #10c469;
+  --color-header-warning: #f9c851;
+  --color-logo-background: #282e38;
+  --color-logo-primary: #44a3ff;
+  --color-overlay-background: #282e38a6;
+  --color-overlay-border: #21242b;
+  --color-overlay-count-episode: #10c469;
+  --color-overlay-count-group: #b981ff;
+  --color-overlay-icon: #cfd8e3;
+  --color-overlay-icon-hover: #44a3ff;
+  --color-panel-background: #2c333e;
+  --color-panel-background-alt: #21242b;
+  --color-panel-background-toolbar: #282e38;
+  --color-panel-background-login: #2c333ee6;
+  --color-panel-background-transparent: #2c333e80;
+  --color-panel-border: #21242b;
+  --color-panel-border-alt: #3f4762;
+  --color-panel-text: #cfd8e3;
+  --color-panel-text-alt: #010f1c;
+  --color-panel-primary: #44a3ff;
+  --color-panel-primary-hover: #8ed3ff;
+  --color-panel-important: #10c469;
+  --color-panel-danger: #db4551;
+  --color-panel-warning: #f9c851;
+  --color-panel-extra: #b981ff;
+  --color-slider-background: #21242b;
+  --color-slider-background-alt: #282e38;
+  --color-slider-thumb: #44a3ff;
+  --color-slider-thumb-alt: #44a3ff;
+  --color-toast-background: #282e38;
+  --color-toast-border: #21242b;
+  --color-toast-text: #cfd8e3;
+  --color-toast-primary: #44a3ff;
+  --color-toast-important: #10c469;
+  --color-toast-danger: #db4551;
+  --color-toast-warning: #f9c851;
 }

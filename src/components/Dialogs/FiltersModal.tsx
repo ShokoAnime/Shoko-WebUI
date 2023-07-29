@@ -38,13 +38,13 @@ function FiltersModal({ show, onClose }: Props) {
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold" key={item.IDs.ID}>
       <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
-      <span className="text-highlight-2">{item.Size}</span>
+      <span className="text-panel-important">{item.Size}</span>
     </div>
   );
 
   const renderTabSide = (title, filterId) => (
     <div
-      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-highlight-1')}
+      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-panel-primary')}
       key={filterId}
       onClick={() => { setActiveTab(title); setActiveFilter(filterId); setSearch(''); }}
     >
@@ -54,11 +54,11 @@ function FiltersModal({ show, onClose }: Props) {
 
   const renderSidePanel = (title, filterId) => (
     <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })} key={filterId}>
-      <div className="flex w-full bg-background-border p-2 mb-2 rounded-md">
+      <div className="flex w-full bg-panel-background-alt p-2 mb-2 rounded-md">
         <Icon path={mdiMagnify} size={1} />
-        <input type="text" placeholder="Search..." className="bg-background-border ml-2" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
+        <input type="text" placeholder="Search..." className="bg-panel-background-alt ml-2" value={search} onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)} />
       </div>
-      <div className="box-border flex flex-col bg-background-border border border-background-border items-center rounded-md p-4">
+      <div className="box-border flex flex-col bg-panel-background-alt border border-panel-border items-center rounded-md p-4">
         <div className="flex flex-col w-full pr-4 gap-y-1 max-h-80 shoko-scrollbar overflow-y-auto">
           {filteredList.filter(item => !item.IsDirectory).map(item => renderItem(item))}
         </div>
@@ -74,7 +74,7 @@ function FiltersModal({ show, onClose }: Props) {
     >
       <div className="font-semibold text-xl">Filters</div>
       <div className="flex">
-        <div className="flex flex-col min-w-[8rem] border-r-2 border-background-border gap-y-4">
+        <div className="flex flex-col min-w-[8rem] border-r-2 border-panel-border gap-y-4">
           {renderTabSide('Filters', '0')}
           {filters.filter(item => item.IsDirectory).map(item => renderTabSide(item.Name, item.IDs.ID))}
         </div>

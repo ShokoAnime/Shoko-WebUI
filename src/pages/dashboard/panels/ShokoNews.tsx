@@ -12,7 +12,7 @@ import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
 const NewsRow = ({ item }: { item: DashboardNewsType }) => (
   <div className="flex flex-col" key={item.title}>
     <p className="font-semibold">{item.date_published}</p>
-    <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex text-highlight-1 font-semibold items-center mt-1 space-x-2 hover:text-highlight-1-light">
+    <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex text-panel-primary font-semibold items-center mt-1 space-x-2 hover:text-panel-primary-hover">
       <p className="font-semibold">{item.title}</p>
       <Icon path={mdiOpenInNew} size={1} />
     </a>

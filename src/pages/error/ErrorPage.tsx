@@ -18,7 +18,7 @@ const Fallback = ({ error, componentStack }) => {
         <p className="title">{error.toString()}</p>
         <p className="text">Trace:<pre>{componentStack}</pre></p>
         <p className="text">
-          <span className="text-highlight-1 cursor-pointer" onClick={() => navigate(-1)}>Go back</span>, or head over to the&nbsp;
+          <span className="text-panel-primary cursor-pointer" onClick={() => navigate(-1)}>Go back</span>, or head over to the&nbsp;
           <Link to="/">home page</Link> to choose a new direction.
         </p>
       </div>

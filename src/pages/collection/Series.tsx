@@ -27,7 +27,7 @@ import { CollectionGroupType } from '@/core/types/api/collection';
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center font-semibold gap-x-2">
-    <Icon path={mdiInformationOutline} size={1} className="text-highlight-2" />
+    <Icon path={mdiInformationOutline} size={1} className="text-panel-important" />
     <div className="flex flex-col">
       {text}
     </div>
@@ -35,16 +35,16 @@ const IconNotification = ({ text }) => (
 );
 
 const SeriesTab = ({ to, icon, text }) => (
-  <NavLink to={to} className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-highlight-1', to === 'edit' && 'ml-auto pointer-events-none opacity-50')}>
+  <NavLink to={to} className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-panel-primary', to === 'edit' && 'ml-auto pointer-events-none opacity-50')}>
     <Icon path={icon} size={1} />
     {text}
   </NavLink>
 );
 
 const SeriesTag = ({ text, type }) => (
-  <div className={cx('text-xs font-semibold flex gap-x-2 items-center border-2 border-border-alt rounded-md p-2 whitespace-nowrap capitalize', type === 'User' ? 'text-highlight-2' : 'text-highlight-1')}>
+  <div className={cx('text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-border-alt rounded-md p-2 whitespace-nowrap capitalize', type === 'User' ? 'text-panel-important' : 'text-panel-primary')}>
     <Icon path={mdiTagTextOutline} size="1rem" />
-    <span className="text-font-main">{text}</span>
+    <span className="text-panel-text">{text}</span>
   </div>
 );
 
@@ -78,13 +78,13 @@ const Series = () => {
 
   return (
     <div className="flex flex-col gap-y-8">
-      <div className="flex w-full gap-x-8 rounded-md bg-background-alt/50 p-8 border-background-border border">
+      <div className="flex w-full gap-x-8 rounded-md bg-panel-background-transparent p-8 border-panel-border border">
         <div className="grow flex flex-col gap-y-2">
           <div className="flex justify-between">
             <div className="flex gap-x-2">
-              <Link className="font-semibold text-highlight-1" to="/webui/collection">Entire Collection</Link>
+              <Link className="font-semibold text-panel-primary" to="/webui/collection">Entire Collection</Link>
               <Icon path={mdiChevronRight} size={1} />
-              <Link className="font-semibold text-highlight-1" to={`/webui/collection/group/${series.IDs?.ParentGroup}`}>{group.Name}</Link>
+              <Link className="font-semibold text-panel-primary" to={`/webui/collection/group/${series.IDs?.ParentGroup}`}>{group.Name}</Link>
               <Icon path={mdiChevronRight} size={1} />
             </div>
             <div className="flex gap-x-3">
@@ -122,7 +122,7 @@ const Series = () => {
         </div>
         <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]" />
       </div>
-      <div className="gap-x-8 flex flex-nowrap bg-background-alt/50 border border-background-border rounded-md p-8 font-semibold">
+      <div className="gap-x-8 flex flex-nowrap bg-panel-background-transparent border border-panel-border rounded-md p-8 font-semibold">
         <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
         <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
         <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />

@@ -35,7 +35,7 @@ function Input(props: Props) {
         <div className="relative">
           {startIcon && <div className="absolute top-1/2 transform -translate-y-1/2 left-3"><Icon path={startIcon} size={1} /></div>}
           <input
-            className={cx([inputClassName, 'appearance-none bg-background-border w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-background-border focus:ring-2 focus:ring-highlight-1 focus:ring-inset', center && 'text-center', startIcon && '!pl-11'])}
+            className={cx([inputClassName, 'appearance-none bg-default-background-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset', center && 'text-center', startIcon && '!pl-11'])}
             id={id}
             type={type}
             placeholder={placeholder ?? ''}
@@ -46,7 +46,7 @@ function Input(props: Props) {
             autoFocus={autoFocus}
             disabled={disabled}
           />
-          {endIcon && <div onClick={endIconClick} className="cursor-pointer absolute top-1/2 transform -translate-y-1/2 right-3 text-highlight-1"><Icon path={endIcon} size={1} horizontal vertical rotate={180} /></div>}
+          {endIcon && <div onClick={endIconClick} className="cursor-pointer absolute top-1/2 transform -translate-y-1/2 right-3 text-panel-primary"><Icon path={endIcon} size={1} horizontal vertical rotate={180} /></div>}
         </div>
       </label>
     </div>

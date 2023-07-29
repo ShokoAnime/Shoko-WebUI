@@ -37,7 +37,7 @@ const MenuItem = ({ text, id }: { text: string, id: string }) => {
     <div key={id} className="flex items-center font-semibold gap-x-7">
       <Icon
         path={path}
-        className="text-highlight-1"
+        className="text-panel-primary"
         size={1}
       />
       {text}
@@ -80,7 +80,7 @@ function FirstRunPage() {
 
   const parsedVersion = useMemo(() => {
     if (version.isFetching || !version.data) {
-      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-highlight-1" />);
+      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />);
     }
 
     if (version.data.Server.ReleaseChannel !== 'Stable') {
@@ -93,7 +93,7 @@ function FirstRunPage() {
   return (
     <div className="flex w-full h-full p-8 gap-x-8 max-w-[120rem] mx-auto">
 
-      <div className="flex flex-col items-center p-8 bg-background-alt border border-background-border w-[31.25rem]">
+      <div className="flex flex-col items-center p-8 bg-panel-background border border-panel-border w-[31.25rem]">
         <div className="flex flex-col items-center gap-y-4">
           <ShokoIcon className="w-32" />
           <div className="flex items-center font-semibold gap-x-2">
@@ -112,16 +112,16 @@ function FirstRunPage() {
         </div>
 
         <div className="flex flex-col w-full gap-y-4 font-semibold">
-          <Button className="flex bg-highlight-1 items-center justify-center py-2 gap-x-1" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
+          <Button buttonType="primary" className="flex items-center justify-center py-2 gap-x-1" onClick={() => window.open('https://discord.gg/vpeHDsg', '_blank')}>
             Get Help on <Icon path={siDiscord.path} size={0.75} /> Discord
           </Button>
-          <Button className="bg-highlight-1 py-2 border border-background-border" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
+          <Button buttonType="primary" className="py-2" onClick={() => window.open('https://docs.shokoanime.com', '_blank')}>
             Documentation
           </Button>
         </div>
       </div>
 
-      <div className="flex flex-col justify-center items-center p-8 bg-background-alt border border-background-border grow">
+      <div className="flex flex-col justify-center items-center p-8 bg-panel-background border border-panel-border grow">
         <Outlet
           context={{
             fetching: settingsQuery.isLoading,

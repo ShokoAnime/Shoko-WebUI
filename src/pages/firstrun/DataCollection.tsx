@@ -10,7 +10,7 @@ function DataCollection() {
       <div className="text-justify">
         Shoko is an open-source project that is developed by volunteers during their free time. In order to improve
         Shoko more effectively, we have implemented&nbsp;
-        <a href="https://sentry.io/" target="_blank" rel="noopener noreferrer" className="text-highlight-1 hover:underline font-bold">Sentry.io</a>
+        <a href="https://sentry.io/" target="_blank" rel="noopener noreferrer" className="text-panel-primary hover:underline font-bold">Sentry.io</a>
         ,which is a third-party service that helps track errors
         and monitor performance.
       </div>

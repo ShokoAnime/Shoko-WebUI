@@ -31,15 +31,15 @@ function Footer(props: Props) {
 
   return (
     <div className="flex flex-col text-lg">
-      <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-highlight-3' : 'text-highlight-2'])}>
+      <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-panel-warning' : 'text-panel-important'])}>
         {status?.text}
       </div>
       <div className="flex justify-between font-semibold">
-        <Button onClick={() => navigate(-1)} className="bg-highlight-1 py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
+        <Button onClick={() => navigate(-1)} buttonType="primary" className="py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
         {finish ? (
-          <Button onClick={() => navigate('/', { replace: true })} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
+          <Button onClick={() => navigate('/', { replace: true })} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
         ) : (
-          <Button onClick={() => handleNext()} className="bg-highlight-1 py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
+          <Button onClick={() => handleNext()} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
             Next
           </Button>
         )}

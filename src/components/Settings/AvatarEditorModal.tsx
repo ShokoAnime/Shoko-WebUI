@@ -59,7 +59,7 @@ const AvatarEditorModal = (props: Props) => {
         height={256}
         borderRadius={9999}
         scale={scale}
-        className="self-center bg-background-border h-auto w-full"
+        className="self-center bg-default-background h-auto w-full rounded"
         onLoadFailure={onLoadFailure}
         ref={imageEditor}
       />
@@ -78,8 +78,8 @@ const AvatarEditorModal = (props: Props) => {
         <Icon path={mdiImagePlusOutline} size={1.2} />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} className="bg-background-nav px-6 py-2 text-font-main">Cancel</Button>
-        <Button onClick={handleSave} className="bg-highlight-1 px-6 py-2">Apply</Button>
+        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={handleSave} buttonType="primary" className="px-6 py-2">Apply</Button>
       </div>
     </ModalPanel>
   );

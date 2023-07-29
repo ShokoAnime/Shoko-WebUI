@@ -21,7 +21,7 @@ function MetadataSources() {
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const renderTabButton = (title: string, key: string) => (
-    <Button onClick={() => setActiveTab(key)} className={cx(['text-font-main', 'font-semibold', '!text-lg', 'drop-shadow-none', activeTab === key && 'text-highlight-1'])}>
+    <Button onClick={() => setActiveTab(key)} className={cx(['!text-panel-text', 'font-semibold', '!text-lg', 'drop-shadow-none', activeTab === key && '!text-panel-primary'])}>
       {title}
     </Button>
   );
@@ -52,7 +52,7 @@ function MetadataSources() {
         collection. We highly recommend that you review the settings for each site and configure them to meet your
         preferences.
       </div>
-      <div className="flex border-b-2 border-background-border pb-3 gap-x-2 text-xl">
+      <div className="flex border-b-2 border-panel-border pb-3 gap-x-2 text-xl">
         {renderTabButton('AniDB', 'anidb')}
         |
         {renderTabButton('TMBD', 'moviedb')}

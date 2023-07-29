@@ -130,7 +130,7 @@ const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>
   };
 
   return (
-    <div className="box-border flex grow bg-background border border-background-border items-center rounded-md px-4 py-3 relative">
+    <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
       <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
         <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
         <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
@@ -145,7 +145,7 @@ const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>
         <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
       </TransitionDiv>
-      <span className="text-highlight-2 font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+      <span className="text-panel-important font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
     </div>
   );
 };
@@ -198,7 +198,7 @@ function UnrecognizedTab() {
 
         let icon = {
           path: mdiInformationOutline,
-          color: 'text-font-main',
+          color: 'text-panel-text',
           title: 'Not Dumped!',
           state: 'idle',
         };
@@ -206,21 +206,21 @@ function UnrecognizedTab() {
         if (avdumpList[fileId]?.fetching) {
           icon = {
             path: mdiLoading,
-            color: 'text-highlight-1',
+            color: 'text-panel-primary',
             title: 'Dumping!',
             state: 'dumping',
           };
         } else if (avdumpList[fileId]?.hash === 'x') {
           icon = {
             path: mdiFileDocumentAlertOutline,
-            color: 'text-highlight-3',
+            color: 'text-panel-danger',
             title: 'Dump Failed!',
             state: 'failed',
           };
         } else if (avdumpList[fileId]?.hash) {
           icon = {
             path: mdiFileDocumentCheckOutline,
-            color: 'text-highlight-2',
+            color: 'text-panel-important',
             title: 'Dumped Successfully!',
             state: 'success',
           };
@@ -310,13 +310,14 @@ function UnrecognizedTab() {
               <Menu table={table} files={files} refetch={() => filesQuery.refetch()} setSeriesSelectModal={setSeriesSelectModal} />
               <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
                 <Button
-                  className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold"
+                  buttonType="primary"
+                  className="px-4 py-3 flex gap-x-2.5 font-semibold"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
                   Manual Link
                 </Button>
-                <Button className="px-4 py-3 bg-highlight-1 flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
+                <Button buttonType="primary" className="px-4 py-3 flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
                   <Icon path={mdiDumpTruck} size={0.8333} />
                   {isAvdumpFinished && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
@@ -327,9 +328,9 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-background-alt border border-background-border p-8">
+        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
           {filesQuery.isLoading && (
-            <div className="flex grow justify-center items-center text-highlight-1">
+            <div className="flex grow justify-center items-center text-panel-primary">
               <Icon path={mdiLoading} size={4} spin />
             </div>
           )}

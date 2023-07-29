@@ -1,14 +1,5 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
-function withOpacityValue(variable) {
-  return ({ opacityValue }) => {
-    if (opacityValue === undefined) {
-      return `rgb(var(${variable}))`;
-    }
-    return `rgb(var(${variable}) / ${opacityValue})`;
-  };
-}
-
 module.exports = {
   plugins: [
       require('@headlessui/tailwindcss')({ prefix: 'ui' }),
@@ -20,13 +11,7 @@ module.exports = {
   ],
   //Any class that is generated dynamically goes here
   safelist: [
-    'bg-highlight-1',
-    'bg-highlight-2',
-    'bg-highlight-3',
-    'bg-highlight-4',
-    'bg-highlight-5',
-    'text-highlight-4',
-    'text-highlight-5',
+    'text-panel-extra',
   ],
   theme: {
     transitionDuration: {
@@ -47,29 +32,63 @@ module.exports = {
         black: 800
       },
       colors: {
-        background: withOpacityValue('--color-background'),
-        'background-nav': withOpacityValue('--color-background-nav'),
-        'background-alt': withOpacityValue('--color-background-alt'),
-        'background-border': withOpacityValue('--color-background-border'),
-        'border-alt': withOpacityValue('--color-border-alt'),
-        'highlight-1': withOpacityValue('--color-highlight-1'),
-        'highlight-1-light': withOpacityValue('--color-highlight-1-light'),
-        'highlight-1-dark': withOpacityValue('--color-highlight-1-dark'),
-        'highlight-2': withOpacityValue('--color-highlight-2'),
-        'highlight-2-light': withOpacityValue('--color-highlight-2-light'),
-        'highlight-2-dark': withOpacityValue('--color-highlight-2-dark'),
-        'highlight-3': withOpacityValue('--color-highlight-3'),
-        'highlight-3-light': withOpacityValue('--color-highlight-3-light'),
-        'highlight-3-dark': withOpacityValue('--color-highlight-3-dark'),
-        'highlight-4': withOpacityValue('--color-highlight-4'),
-        'highlight-4-light': withOpacityValue('--color-highlight-4-light'),
-        'highlight-4-dark': withOpacityValue('--color-highlight-4-dark'),
-        'highlight-5': withOpacityValue('--color-highlight-5'),
-        'highlight-5-light': withOpacityValue('--color-highlight-5-light'),
-        'highlight-5-dark': withOpacityValue('--color-highlight-5-dark'),
-        'font-main': withOpacityValue('--color-font-main'),
-        'font-alt': withOpacityValue('--color-font-alt'),
-        'image-overlay': withOpacityValue('--color-image-overlay'),
+        'button-primary': 'var(--color-button-primary)',
+        'button-primary-hover': 'var(--color-button-primary-hover)',
+        'button-secondary': 'var(--color-button-secondary)',
+        'button-secondary-hover': 'var(--color-button-secondary-hover)',
+        'button-danger': 'var(--color-button-danger)',
+        'button-danger-hover': 'var(--color-button-danger-hover)',
+        'button-text': 'var(--color-button-text)',
+        'button-text-alt': 'var(--color-button-text-alt)',
+        'default-background': 'var(--color-default-background)',
+        'default-background-input': 'var(--color-default-background-input)',
+        'header-background': 'var(--color-header-background)',
+        'header-background-alt': 'var(--color-header-background-alt)',
+        'header-border': 'var(--color-header-border)',
+        'header-border-alt': 'var(--color-header-border-alt)',
+        'header-text': 'var(--color-header-text)',
+        'header-text-alt': 'var(--color-header-text-alt)',
+        'header-primary': 'var(--color-header-primary)',
+        'header-primary-hover': 'var(--color-header-primary-hover)',
+        'header-important': 'var(--color-header-important)',
+        'header-danger': 'var(--color-header-danger)',
+        'header-warning': 'var(--color-header-warning)',
+        'header-purple': 'var(--color-header-purple)',
+        'logo-background': 'var(--color-logo-background)',
+        'logo-primary': 'var(--color-logo-primary)',
+        'overlay-background': 'var(--color-overlay-background)',
+        'overlay-border': 'var(--color-overlay-border)',
+        'overlay-count-episode': 'var(--color-overlay-count-episode)',
+        'overlay-count-group': 'var(--color-overlay-count-group)',
+        'overlay-icon': 'var(--color-overlay-icon)',
+        'overlay-icon-hover': 'var(--color-overlay-icon-hover)',
+        'panel-background': 'var(--color-panel-background)',
+        'panel-background-alt': 'var(--color-panel-background-alt)',
+        'panel-background-toolbar': 'var(--color-panel-background-toolbar)',
+        'panel-background-transparent': 'var(--color-panel-background-transparent)',
+        'panel-background-login': 'var(--color-panel-background-login)',
+        'panel-border': 'var(--color-panel-border)',
+        'panel-border-alt': 'var(--color-panel-border-alt)',
+        'panel-text': 'var(--color-panel-text)',
+        'panel-text-alt': 'var(--color-panel-text-alt)',
+        'panel-primary': 'var(--color-panel-primary)',
+        'panel-primary-hover': 'var(--color-panel-primary-hover)',
+        'panel-important': 'var(--color-panel-important)',
+        'panel-danger': 'var(--color-panel-danger)',
+        'panel-warning': 'var(--color-panel-warning)',
+        'panel-extra': 'var(--color-panel-extra)',
+        'slider-background': 'var(--color-slider-background)',
+        'slider-background-alt': 'var(--color-slider-background-alt)',
+        'slider-thumb': 'var(--color-slider-thumb)',
+        'slider-thumb-alt': 'var(--color-slider-thumb-alt)',
+        'toast-background': 'var(--color-toast-background)',
+        'toast-border': 'var(--color-toast-border)',
+        'toast-text': 'var(--color-toast-text)',
+        'toast-primary': 'var(--color-toast-primary)',
+        'toast-primary-hover': 'var(--color-toast-primary-hover)',
+        'toast-important': 'var(--color-toast-important)',
+        'toast-danger': 'var(--color-toast-danger)',
+        'toast-warning': 'var(--color-toast-warning)',
         transparent: 'transparent',
       },
       spacing: {
