@@ -62,7 +62,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
         ))}
       </div>
       <Input id="search" value={searchText} type="text" placeholder="Search..." onChange={e => handleSearch(e.target.value)} startIcon={mdiMagnify} />
-      <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-panel-border gap-y-1">
+      <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-panel-background-alt border border-panel-border gap-y-1">
         {searchResults.isLoading
           ? (
             <div className="flex h-full justify-center items-center">

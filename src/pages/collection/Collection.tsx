@@ -46,7 +46,7 @@ function Collection() {
   return (
     <>
       <div className="flex flex-col grow gap-y-8">
-        <div className="rounded-md bg-panel-background p-8 flex justify-between items-center border-panel-border border">
+        <div className="rounded-md bg-panel-background p-8 flex justify-between items-center border-panel-border border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
           <Title count={groupTotal} filter={filterName} />
           <div className="flex gap-x-2">
             <OptionButton onClick={toggleFilters} icon={mdiFilterOutline} />

@@ -103,7 +103,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex flex-col bg-panel-border p-4 rounded-md h-full overflow-y-auto">
+      <div className="flex flex-col bg-panel-background-alt border border-panel-border p-4 rounded-md h-full overflow-y-auto">
         {searchRows}
       </div>
     </div>
@@ -323,7 +323,7 @@ function LinkFilesTab() {
   ]);
 
   const renderStaticFileLinks = () => map(selectedRows, file => (
-    <div className="p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-background-border rounded-md leading-5" key={file.ID}>
+    <div className="p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-panel-border rounded-md leading-5" key={file.ID}>
       {file.Locations?.[0].RelativePath ?? '<missing file path>'}
     </div>
   ));
@@ -333,7 +333,7 @@ function LinkFilesTab() {
     const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
     const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
     result.push(
-      <div title={path} className={cx(['flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-background-alt' : 'bg-background', selectedLink === idx && 'border-highlight-1'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
+      <div title={path} className={cx(['flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5', idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar', selectedLink === idx && 'border-panel-primary'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} data-file-id={link.FileID} onClick={() => updateSelectedLink(idx)}>
         {path}
         {isSameFile && (<Icon path={mdiLink} size={1} className="text-panel-important ml-auto" />)}
       </div>,
