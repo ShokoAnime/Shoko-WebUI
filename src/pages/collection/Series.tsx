@@ -24,6 +24,7 @@ import { TagType } from '@/core/types/api/tags';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { CollectionGroupType } from '@/core/types/api/collection';
+import useMainPoster from '@/hooks/useMainPoster';
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center font-semibold gap-x-2">
@@ -56,6 +57,7 @@ const Series = () => {
 
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
   const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const mainPoster = useMainPoster(series);
   const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
   const groupData = useGetGroupQuery({ groupId: series.IDs?.ParentGroup }, { skip: !series.IDs?.ParentGroup });
@@ -120,7 +122,7 @@ const Series = () => {
             <AnidbDescription text={series?.AniDB?.Description} />
           </div>
         </div>
-        <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${series.Images.Posters[0].Source}/Poster/${series.Images.Posters[0].ID}`} className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]" />
+        <BackgroundImagePlaceholderDiv image={mainPoster} className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]" />
       </div>
       <div className="gap-x-8 flex flex-nowrap bg-panel-background-transparent border border-panel-border rounded-md p-8 font-semibold">
         <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />

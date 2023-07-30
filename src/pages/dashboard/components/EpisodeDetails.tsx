@@ -42,7 +42,7 @@ function EpisodeDetails(props: Props): JSX.Element {
           <p className="truncate text-center text-sm mb-2 opacity-75">{relativeTime}</p>
         </>
       ) : null}
-      <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${episode.SeriesPoster.Source}/Poster/${episode.SeriesPoster.ID}`} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border mb-3">
+      <BackgroundImagePlaceholderDiv image={episode.SeriesPoster} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border mb-3">
         {percentage && (<div className="absolute bottom-0 left-0 h-1 bg-panel-primary" style={{ width: percentage }} />)}
         {isInCollection && (
         <div className="absolute bg-panel-background-transparent top-3 right-3 rounded p-1">
