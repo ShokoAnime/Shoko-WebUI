@@ -148,7 +148,7 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
         <div className="rounded-md bg-panel-background-alt mt-1 overflow-y-auto max-h-96 p-4">
           {options.map((item, idx) => (
             <>
-              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-panel-border-alt h-0.5 my-3" />)}
+              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-panel-background-alt border border-panel-border h-0.5 my-3" />)}
               {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
             </>
           ))}
@@ -163,7 +163,7 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
       <Listbox disabled={disabled} value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative h-full">
-            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-panel-border rounded-md shadow-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary', rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar')}>
+            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary', rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar')}>
               <span className="flex items-center">
                 <span className="ml-3 block truncate h-7">{renderSelected()}</span>
               </span>

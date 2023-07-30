@@ -22,7 +22,7 @@ const RecommendedAnime = () => {
           className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-panel-background-transparent transition-opacity opacity-0 group-hover:opacity-100"
           onClick={() => window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
         >
-          <div className="p-5 bg-panel-border rounded-full mb-1">
+          <div className="p-5 bg-panel-background-alt border border-panel-border rounded-full mb-1">
             <Icon path={mdiEyeArrowRightOutline} size={1} className="text-panel-primary" />
           </div>
           View Series on AniDB
