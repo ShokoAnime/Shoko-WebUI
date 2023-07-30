@@ -58,7 +58,7 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
   };
 
   return (
-    <div key={`group-${item.IDs.ID}`} className="content-center flex flex-col p-8 gap-y-4 rounded-md bg-panel-background w-[56.6875rem] h-full grow border-overlay-border border shrink-0 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+    <div key={`group-${item.IDs.ID}`} className="content-center flex flex-col p-8 gap-y-4 rounded-md bg-panel-background w-[56.6875rem] h-full grow border-overlay-border border shrink-0">
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${poster.Source}/Poster/${poster.ID}`} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
