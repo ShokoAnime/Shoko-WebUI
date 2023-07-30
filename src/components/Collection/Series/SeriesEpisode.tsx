@@ -10,7 +10,6 @@ import {
 } from '@mdi/js';
 import AnimateHeight from 'react-animate-height';
 
-import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import {
@@ -18,17 +17,12 @@ import {
   usePostEpisodeWatchedMutation,
 } from '@/core/rtkQuery/splitV3Api/episodeApi';
 import Button from '@/components/Input/Button';
+import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
 
 type Props = {
   episode: EpisodeType;
-};
-
-const getThumbnailUrl = (episode: EpisodeType) => {
-  const thumbnail = get<EpisodeType, string, ImageType | null>(episode, 'TvDB.0.Thumbnail', null);
-  if (thumbnail === null) { return null; }
-  return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
 };
 
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
@@ -47,6 +41,7 @@ const StateButton = ({ icon, active, onClick }: { icon: string, active: boolean,
 );
 
 const SeriesEpisode = ({ episode }: Props) => {
+  const thumbnail = useEpisodeThumbnail(episode);
   const [isOpen, setIsOpen] = useState(false);
   const episodeId = get(episode, 'IDs.ID', 0).toString();
 
@@ -67,7 +62,7 @@ const SeriesEpisode = ({ episode }: Props) => {
   return (
     <React.Fragment>
       <div className="flex gap-x-8 p-8 items-center z-10">
-        <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(episode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative group" hidePlaceholderOnHover zoomOnHover>
+        <BackgroundImagePlaceholderDiv image={thumbnail} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative group" hidePlaceholderOnHover zoomOnHover>
           <div className="absolute right-3 top-3 z-10 group-hover:opacity-0 pointer-events-none transition-opacity">
             <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />

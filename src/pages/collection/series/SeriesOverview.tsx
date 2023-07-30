@@ -26,21 +26,19 @@ import { ImageType } from '@/core/types/api/common';
 import { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
 import Button from '@/components/Input/Button';
+import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 const links = ['TMDB', 'TvDB', 'MAL', 'AniList', 'TraktTv'];
 
-const getNextUpThumbnailUrl = (episode: EpisodeType) => {
-  const thumbnail = get<EpisodeType, string, ImageType | null>(episode, 'TvDB.0.Thumbnail', null);
-  if (thumbnail === null) { return null; }
-  return `/api/v3/Image/TvDB/Thumb/${thumbnail.ID}`;
+const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
+  const thumbnail = useEpisodeThumbnail(nextUpEpisode);
+  return (
+    <div className="flex gap-x-8 items-center z-10">
+      <BackgroundImagePlaceholderDiv image={thumbnail} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative" />
+      <EpisodeDetails episode={nextUpEpisode} />
+    </div>
+  );
 };
-
-const NextUpEpisode = ({ nextUpEpisode }) => (
-  <div className="flex gap-x-8 items-center z-10">
-    <BackgroundImagePlaceholderDiv imageSrc={getNextUpThumbnailUrl(nextUpEpisode)} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative" />
-    <EpisodeDetails episode={nextUpEpisode} />
-  </div>
-);
 
 const MetadataLink = ({ site, id, series }: { site: string, id: number | number[], series: string }) => {
   const linkId = Array.isArray(id) ? id[0] : id;
@@ -213,7 +211,7 @@ const SeriesOverview = () => {
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
-                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
                   <span className="text-ellipsis line-clamp-1">{item.Title}</span>
                   <span className="text-panel-important">{itemRelation}</span>
                 </div>
@@ -230,7 +228,7 @@ const SeriesOverview = () => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
               return (
                 <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
-                  <BackgroundImagePlaceholderDiv imageSrc={`/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail?.ID}`} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
                   <span className="text-ellipsis line-clamp-1">{item.Title}</span>
                   <span className="text-panel-important">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>

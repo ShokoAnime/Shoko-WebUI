@@ -25,11 +25,6 @@ const Heading = React.memo(({ type, setType }:{ type: string; setType: Function;
   </div>
 ));
 
-const getThumbnailUrl = (thumbnail: ImageType) => {
-  if (thumbnail === null) { return null; }
-  return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
-};
-
 const InfoLine = ({ title, value }) => (
   <div className="flex flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
@@ -84,7 +79,7 @@ const SeriesImages = () => {
         <div className="flex flex-wrap gap-4 rounded-md bg-panel-background-transparent p-8 border-panel-border border">
           {map(get(images, type, []), (item: ImageType) => (
             <div onClick={() => { setSelectedImage(item); }} key={item?.ID}>
-              <BackgroundImagePlaceholderDiv imageSrc={getThumbnailUrl(item)} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border', sizeMap[type])} />
+              <BackgroundImagePlaceholderDiv image={item} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border', sizeMap[type])} />
             </div>
           ))}
         </div>
