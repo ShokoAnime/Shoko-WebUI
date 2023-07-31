@@ -13,6 +13,7 @@ export const initApi = splitV3Api.injectEndpoints({
           Server: {
             Version: serverVersion?.Version,
             ReleaseChannel: 'Dev',
+            ReleaseDate: serverVersion?.ReleaseDate,
             Commit: 'NA',
           },
         } as VersionType;

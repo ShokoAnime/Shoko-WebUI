@@ -103,6 +103,17 @@ function GeneralSettings() {
     }
   };
 
+  // TODO: figure out better type for this
+  const absoluteTime = (timestamp: any) => {
+    if (version.data) {
+      return new Intl.DateTimeFormat(undefined, {
+        dateStyle: 'medium',
+        timeStyle: 'medium',
+      }).format(new Date(timestamp));
+    }
+    return 'Unable to render release date.';
+  };
+
   return (
     <>
       <div className="font-semibold text-xl">General</div>
@@ -123,8 +134,10 @@ function GeneralSettings() {
             version.data?.Server.Version
           )}
           </div>
+          <div className="flex justify-between"><span>Server Build Date</span>{absoluteTime(version.data?.Server.ReleaseDate)}</div>
           <div className="flex justify-between"><span>Server Channel</span>{version.data?.Server.ReleaseChannel}</div>
-          <div className="flex justify-between"><span>Web UI Version</span>{UI_VERSION}</div>
+          <div className="flex justify-between"><span>Web UI Version</span>{`${version.data?.WebUI?.Version} (${UI_VERSION})`}</div>
+          <div className="flex justify-between"><span>Web UI  Build Date</span>{absoluteTime(version.data?.WebUI?.ReleaseDate)}</div>
           <div className="flex justify-between items-center">
             <span>Web UI Channel</span>
             <SelectSmall id="update-channel" value={WebUI_Settings.updateChannel} onChange={event => updateSetting('WebUI_Settings', 'updateChannel', event.target.value)}>
