@@ -19,7 +19,7 @@ function ImportSettings() {
       <div className="font-semibold text-xl">Import</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="font-semibold">Import Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Import on start" id="import-on-start" isChecked={RunOnStart} onChange={event => updateSetting('Import', 'RunOnStart', event.target.checked)} />
           <Checkbox justify label="Rename on import" id="rename-on-import" isChecked={RenameOnImport} onChange={event => updateSetting('Import', 'RenameOnImport', event.target.checked)} />
           <Checkbox justify label="Move on import" id="move-on-import" isChecked={MoveOnImport} onChange={event => updateSetting('Import', 'MoveOnImport', event.target.checked)} />

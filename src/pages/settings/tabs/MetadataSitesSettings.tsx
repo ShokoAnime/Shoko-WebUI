@@ -49,7 +49,7 @@ function MetadataSitesSettings() {
       <div className="font-semibold text-xl">Metadata Sites</div>
       <div className="flex flex-col mt-0.5 gap-y-4">
         <div className="font-semibold">MovieDB Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Download Fanart" id="download-tmdb-fanart" isChecked={MovieDb.AutoFanart} onChange={event => updateSetting('MovieDb', 'AutoFanart', event.target.checked)} />
           <div className={cx('flex justify-between transition-opacity', !MovieDb.AutoFanart && 'pointer-events-none opacity-50')}>
             Max Fanart
@@ -65,7 +65,7 @@ function MetadataSitesSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">TVDB Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Auto Link" id="autolink-tvdb" isChecked={TvDB.AutoLink} onChange={event => updateSetting('TvDB', 'AutoLink', event.target.checked)} />
           <div className="flex justify-between items-center">
             <span>Language</span>
@@ -106,7 +106,7 @@ function MetadataSitesSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Trakt Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Enabled" id="trakt-enabled" isChecked={TraktTv.Enabled} onChange={event => updateSetting('TraktTv', 'Enabled', event.target.checked)} />
           {TraktTv.TokenExpirationDate === '' && traktCodeResult?.data?.usercode && (
             <div className={cx('flex justify-between items-center mt', !TraktTv.Enabled && 'pointer-events-none opacity-50')}>
@@ -128,7 +128,7 @@ function MetadataSitesSettings() {
             </div>
           )}
           {TraktTv.TokenExpirationDate !== '' && (
-            <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-50', 'gap-y-1')}>
+            <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-50', 'gap-y-2')}>
               <div className="flex justify-between"><span>Token valid until</span>{moment(TraktTv.TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}</div>
               <div className="flex justify-between items-center">
                 <span>Automatically Update Data</span>
