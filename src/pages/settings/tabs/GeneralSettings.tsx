@@ -161,15 +161,15 @@ function GeneralSettings() {
           </div>
           <div className="flex justify-between items-center">
             <span>Description</span>
-            {currentTheme?.Description ?? '-'}
+            <span className="max-w-xs truncate">{currentTheme?.Description ?? 'The default theme.'}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>Version</span>
-            {currentTheme?.Version ?? '-'}
+            {currentTheme?.Version ?? '1.0.0'}
           </div>
           <div className="flex justify-between items-center">
             <span>Author</span>
-            {currentTheme?.Author ?? '-'}
+            {currentTheme?.Author ?? 'Shoko Staff'}
           </div>
         </div>
       </div>
