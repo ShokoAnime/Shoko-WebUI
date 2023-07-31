@@ -51,7 +51,7 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
     >
       <div className="font-semibold text-xl">AvDump Series Select</div>
       <CopyToClipboard text={ed2kLinks} onCopy={() => toast.success('ED2K hashes copied to clipboard!')}>
-        <Button className="bg-panel-primary mt-4 p-2 flex items-center justify-center gap-x-2.5 font-semibold">
+        <Button className="bg-panel-primary text-panel-text-alt mt-4 p-2 flex items-center justify-center gap-x-2.5 font-semibold">
           <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
           Copy ED2K Hashes
         </Button>
