@@ -210,10 +210,10 @@ const SeriesOverview = () => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
               return (
-                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
+                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
                   <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1">{item.Title}</span>
-                  <span className="text-panel-important">{itemRelation}</span>
+                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                  <span className="text-panel-important text-sm">{itemRelation}</span>
                 </div>
               );
             })}
@@ -227,10 +227,10 @@ const SeriesOverview = () => {
             {similar.map((item) => {
               const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
               return (
-                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center text-sm font-semibold">
+                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
                   <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1">{item.Title}</span>
-                  <span className="text-panel-important">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                  <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
                 </div>
               );
             })}
