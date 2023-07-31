@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
-import { mdiRefresh } from '@mdi/js';
+import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
 
 import { uiVersion } from '@/core/util';
 
@@ -103,17 +103,6 @@ function GeneralSettings() {
     }
   };
 
-  // TODO: figure out better type for this
-  const absoluteTime = (timestamp: any) => {
-    if (version.data) {
-      return new Intl.DateTimeFormat(undefined, {
-        dateStyle: 'medium',
-        timeStyle: 'medium',
-      }).format(new Date(timestamp));
-    }
-    return 'Unable to render release date.';
-  };
-
   return (
     <>
       <div className="font-semibold text-xl">General</div>
@@ -128,16 +117,28 @@ function GeneralSettings() {
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
-          <div className="flex justify-between"><span>Server Version</span>{version.data?.Server.ReleaseChannel !== 'Stable' ? (
-            `${version.data?.Server.Version} (${version.data?.Server.Commit?.slice(0, 7)})`
-          ) : (
-            version.data?.Server.Version
-          )}
+          <div className="flex justify-between"><span>Server Version</span>
+            <div className="flex gap-2">
+              {version.data?.Server.Version}
+              <a
+                className="text-panel-primary"
+                target="_blank"
+                href={`https://github.com/ShokoAnime/ShokoServer/compare/${version.data?.Server.Commit?.slice(0, 7)}...master`}
+                rel="noreferrer"
+              >
+                {`(${version.data?.Server.Commit?.slice(0, 7)})`}
+              </a>
+              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+            </div>
           </div>
-          <div className="flex justify-between"><span>Server Build Date</span>{absoluteTime(version.data?.Server.ReleaseDate)}</div>
           <div className="flex justify-between"><span>Server Channel</span>{version.data?.Server.ReleaseChannel}</div>
-          <div className="flex justify-between"><span>Web UI Version</span>{`${version.data?.WebUI?.Version} (${UI_VERSION})`}</div>
-          <div className="flex justify-between"><span>Web UI  Build Date</span>{absoluteTime(version.data?.WebUI?.ReleaseDate)}</div>
+          <div className="flex justify-between"><span>Web UI Version</span>
+            <div className="flex gap-2">
+              {version.data?.WebUI?.Version}
+              <a className="text-panel-primary" target="_blank" href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${UI_VERSION}...master`} rel="noreferrer">{`(${UI_VERSION})`}</a>
+              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+            </div>
+          </div>
           <div className="flex justify-between items-center">
             <span>Web UI Channel</span>
             <SelectSmall id="update-channel" value={WebUI_Settings.updateChannel} onChange={event => updateSetting('WebUI_Settings', 'updateChannel', event.target.value)}>
