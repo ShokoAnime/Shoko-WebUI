@@ -12,8 +12,8 @@ export const initialState = {
     Username: '',
     Password: '',
     Schema: '',
-    Host: '',
-    Hostname: '',
+    Host: undefined,
+    Hostname: undefined,
     SQLite_DatabaseFile: '',
   },
   AniDb: {
