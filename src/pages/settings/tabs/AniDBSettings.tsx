@@ -86,7 +86,7 @@ function AniDBSettings() {
           <div className="font-semibold">Login Options</div>
           <Button onClick={() => testLogin()} loading={testAniDbLoginResult.isLoading} buttonType="primary" className="font-semibold !text-base">Test</Button>
         </div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <div className="flex justify-between">
             Username
             <InputSmall id="username" value={Username} type="text" onChange={event => updateSetting('AniDb', 'Username', event.target.value)} className="w-32 px-3 py-1" />
@@ -112,7 +112,7 @@ function AniDBSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Download Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Character Images" id="character-images" isChecked={DownloadCharacters} onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked)} />
           <Checkbox justify label="Creator Images" id="creator-images" isChecked={DownloadCreators} onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)} />
           <Checkbox justify label="Release Groups" id="release-groups" isChecked={DownloadReleaseGroups} onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)} />
@@ -126,7 +126,7 @@ function AniDBSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Mylist Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Add Files" id="add-files" isChecked={MyList_AddFiles} onChange={event => updateSetting('AniDb', 'MyList_AddFiles', event.target.checked)} />
           <Checkbox justify label="Read Watched" id="read-watched" isChecked={MyList_ReadWatched} onChange={event => updateSetting('AniDb', 'MyList_ReadWatched', event.target.checked)} />
           <Checkbox justify label="Read Unwatched" id="read-unwatched" isChecked={MyList_ReadUnwatched} onChange={event => updateSetting('AniDb', 'MyList_ReadUnwatched', event.target.checked)} />
@@ -158,7 +158,7 @@ function AniDBSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Update Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <div className="flex justify-between items-center">
             <span>Calendar</span>
             <SelectSmall id="calendar" value={Calendar_UpdateFrequency} onChange={event => updateSetting('AniDb', 'Calendar_UpdateFrequency', event.target.value)}>
@@ -194,7 +194,7 @@ function AniDBSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Language Options</div>
-        <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox label="Also Use Synonyms" id="LanguageUseSynonyms" isChecked={newSettings.LanguageUseSynonyms} onChange={event => setNewSettings({ ...newSettings, LanguageUseSynonyms: event.target.checked })} justify />
           <div className="flex justify-between">
             Series Title (Drag to Reorder)
@@ -202,7 +202,7 @@ function AniDBSettings() {
               <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex bg-panel-background-alt border border-panel-border rounded-md px-3 py-2">
+          <div className="flex bg-panel-background-alt border border-panel-border rounded-md p-4">
             <DnDList onDragEnd={result => onDragEnd(result)}>
               {newSettings.LanguagePreference.map(language => (
                 {
@@ -225,7 +225,7 @@ function AniDBSettings() {
               <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex bg-panel-background-alt border border-panel-border rounded-md px-3 py-2">
+          <div className="flex bg-panel-background-alt border border-panel-border rounded-md p-4">
             <DnDList onDragEnd={result => onDragEnd(result, true)}>
               {newSettings.EpisodeLanguagePreference.map(language => (
                 {

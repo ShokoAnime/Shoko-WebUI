@@ -15,6 +15,11 @@ module.exports = {
     'bg-panel-danger',
     'bg-panel-warning',
     'text-panel-extra',
+    'text-toast-danger',
+    'text-toast-important',
+    'text-toast-primary',
+    'text-toast-primary-hover',
+    'text-toast-warning',
   ],
   theme: {
     transitionDuration: {

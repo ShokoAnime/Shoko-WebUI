@@ -208,7 +208,7 @@ function UserManagementSettings() {
 
       <div className="flex flex-col">
         <div className="font-semibold mb-4">Current Users</div>
-        <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           {users.map(user => (
             <div className="flex justify-between" key={`user-${user.ID}`}>
               <div>{user.Username}</div>
@@ -227,7 +227,7 @@ function UserManagementSettings() {
 
       <div className="flex flex-col">
         <div className="font-semibold mb-4">User Options</div>
-        <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <div className="flex justify-between h-8">
             <div className="mx-0 my-auto">Display Name</div>
             <InputSmall id="Username" value={selectedUser.Username} type="text" onChange={handleInputChange} className="w-32 px-2" />
@@ -267,7 +267,7 @@ function UserManagementSettings() {
           <div className="font-semibold mx-0 my-auto">Password</div>
           <Button onClick={() => handlePasswordChange()} loading={changePasswordResult.isLoading} disabled={newPassword === ''} buttonType="primary" className="font-semibold text-xs px-3 py-2">Change</Button>
         </div>
-        <div className="flex flex-col gap-y-3">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <div className="flex justify-between h-8">
             <div className="mx-0 my-auto">New Password</div>
             <InputSmall id="new-password" value={newPassword} type="password" onChange={event => setNewPassword(event.target.value)} className="w-32 px-2 py-0.5" autoComplete="new-password" />
@@ -292,24 +292,26 @@ function UserManagementSettings() {
             </div>
           </div>
         </div>
-        <div className="font-semibold my-4">Selected Tags</div>
-        <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md p-4 min-h-[8rem] ">
-          {selectedUser.RestrictedTags?.length
-            ? selectedUser.RestrictedTags?.map(tag => (
-              <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>
-                {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
-                <Button onClick={() => handleTagChange(tag, false)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-danger" />
-                </Button>
-              </div>
-            ))
-            : (
-              <div className="flex grow justify-center items-center font-semibold">No Restricted Tags!</div>
-            )}
+        <div className="border-b border-panel-border pb-8">
+          <div className="font-semibold my-4">Selected Tags</div>
+          <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md p-4 min-h-[8rem]">
+            {selectedUser.RestrictedTags?.length
+              ? selectedUser.RestrictedTags?.map(tag => (
+                <div className="flex justify-between first:mt-0 mt-2 capitalize" key={`selectedTag-${tag}`}>
+                  {tags.data?.find(tagData => tagData.ID === tag)?.Name ?? 'Unknown'}
+                  <Button onClick={() => handleTagChange(tag, false)}>
+                    <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-danger" />
+                  </Button>
+                </div>
+              ))
+              : (
+                <div className="flex grow justify-center items-center font-semibold">No Restricted Tags!</div>
+              )}
+          </div>
         </div>
       </div>
 
-      <div className="flex max-w-[34rem] mt-10 justify-end font-semibold">
+      <div className="flex max-w-[34rem] justify-end font-semibold">
         <Button onClick={() => handleCancel()} buttonType="secondary" className="px-3 py-2">Cancel</Button>
         <Button onClick={() => editUser(selectedUser)} buttonType="primary" className="px-3 py-2 ml-3">Save</Button>
       </div>

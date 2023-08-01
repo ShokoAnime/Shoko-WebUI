@@ -2,7 +2,7 @@
 import React, { useMemo } from 'react';
 import cx from 'classnames';
 import { Icon } from '@mdi/react';
-import { mdiRefresh } from '@mdi/js';
+import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
 
 import { uiVersion } from '@/core/util';
 
@@ -106,7 +106,7 @@ function GeneralSettings() {
   return (
     <>
       <div className="font-semibold text-xl">General</div>
-      <div className="flex flex-col mt-0.5 gap-y-4">
+      <div className="flex flex-col mt-0.5 gap-y-4 border-b border-panel-border pb-8">
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
@@ -116,15 +116,29 @@ function GeneralSettings() {
             <Icon path={mdiRefresh} size={1} className="text-panel-primary" spin={webuiUpdateCheckResult.isFetching} />
           </Button>
         </div>
-        <div className="flex flex-col gap-y-1">
-          <div className="flex justify-between"><span>Server Version</span>{version.data?.Server.ReleaseChannel !== 'Stable' ? (
-            `${version.data?.Server.Version} (${version.data?.Server.Commit?.slice(0, 7)})`
-          ) : (
-            version.data?.Server.Version
-          )}
+        <div className="flex flex-col gap-y-2">
+          <div className="flex justify-between"><span>Server Version</span>
+            <div className="flex gap-2">
+              {version.data?.Server.Version}
+              <a
+                className="text-panel-primary"
+                target="_blank"
+                href={`https://github.com/ShokoAnime/ShokoServer/compare/${version.data?.Server.Commit?.slice(0, 7)}...master`}
+                rel="noreferrer"
+              >
+                {`(${version.data?.Server.Commit?.slice(0, 7)})`}
+              </a>
+              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+            </div>
           </div>
           <div className="flex justify-between"><span>Server Channel</span>{version.data?.Server.ReleaseChannel}</div>
-          <div className="flex justify-between"><span>Web UI Version</span>{UI_VERSION}</div>
+          <div className="flex justify-between"><span>Web UI Version</span>
+            <div className="flex gap-2">
+              {version.data?.WebUI?.Version}
+              <a className="text-panel-primary" target="_blank" href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${UI_VERSION}...master`} rel="noreferrer">{`(${UI_VERSION})`}</a>
+              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+            </div>
+          </div>
           <div className="flex justify-between items-center">
             <span>Web UI Channel</span>
             <SelectSmall id="update-channel" value={WebUI_Settings.updateChannel} onChange={event => updateSetting('WebUI_Settings', 'updateChannel', event.target.value)}>
@@ -135,9 +149,9 @@ function GeneralSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
         <div className="font-semibold">Theme Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2">
           <div className="flex justify-between items-center">
             Theme
             <SelectSmall id="theme" value={WebUI_Settings.theme} onChange={event => updateSetting('WebUI_Settings', 'theme', event.target.value)}>
@@ -147,20 +161,20 @@ function GeneralSettings() {
           </div>
           <div className="flex justify-between items-center">
             <span>Description</span>
-            {currentTheme?.Description ?? '-'}
+            <span className="max-w-xs truncate">{currentTheme?.Description ?? 'The default theme.'}</span>
           </div>
           <div className="flex justify-between items-center">
             <span>Version</span>
-            {currentTheme?.Version ?? '-'}
+            {currentTheme?.Version ?? '1.0.0'}
           </div>
           <div className="flex justify-between items-center">
             <span>Author</span>
-            {currentTheme?.Author ?? '-'}
+            {currentTheme?.Author ?? 'Shoko Staff'}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
         <div className="flex justify-between">
           <div className="font-semibold">Notification Options</div>
           <Checkbox label="Enable" id="enable-notifications" isChecked={WebUI_Settings?.notifications ?? true} onChange={event => updateSetting('WebUI_Settings', 'notifications', event.target.checked)} />
@@ -174,12 +188,12 @@ function GeneralSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
         <div className="flex justify-between">
           <div className="font-semibold">Log Options</div>
           <Checkbox id="enable-logs" label="Enable" isChecked={LogRotator.Enabled} onChange={event => updateSetting('LogRotator', 'Enabled', event.target.checked)} />
         </div>
-        <div className={cx('flex flex-col transition-opacity gap-y-1', !LogRotator.Enabled && 'pointer-events-none opacity-50')}>
+        <div className={cx('flex flex-col transition-opacity gap-y-2', !LogRotator.Enabled && 'pointer-events-none opacity-50')}>
           <Checkbox justify label="Compress Logs" id="compress-logs" isChecked={LogRotator.Zip} onChange={event => updateSetting('LogRotator', 'Zip', event.target.checked)} />
           <Checkbox justify label="Delete Older Logs" id="delete-logs" isChecked={LogRotator.Delete} onChange={event => updateSetting('LogRotator', 'Delete', event.target.checked)} />
           <div className={cx('flex justify-between items-center transition-opacity', !LogRotator.Delete && 'pointer-events-none opacity-50')}>
@@ -197,11 +211,11 @@ function GeneralSettings() {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Relation Options</div>
-        <div className="flex flex-col gap-y-1">
+        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
           <Checkbox justify label="Auto Group Series" id="auto-group-series" isChecked={AutoGroupSeries} onChange={event => setNewSettings({ ...newSettings, AutoGroupSeries: event.target.checked })} />
           <Checkbox justify label="Determine Main Series Using Relation Weighing" id="auto-group-using-score" isChecked={AutoGroupSeriesUseScoreAlgorithm} onChange={event => setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })} />
           Exclude following relations
-          <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md px-3 py-2 gap-y-1.5">
+          <div className="flex flex-col bg-panel-background-alt border border-panel-border rounded-md p-4 2 gap-y-2.5">
             {Object.keys(exclusionMapping).map(item => (
               <Checkbox justify label={exclusionMapping[item].name} id={item} isChecked={AutoGroupSeriesRelationExclusions.includes(exclusionMapping[item].id)} onChange={handleExclusionChange} key={item} />
             ))}
