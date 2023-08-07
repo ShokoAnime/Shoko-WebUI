@@ -9,9 +9,21 @@ import { DashboardNewsType } from '@/core/types/api/dashboard';
 
 import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
 
+function isWithinXDaysFromToday(date: string) {
+  const itemDate = new Date(date);
+  const currentDate = new Date();
+  const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+  const differenceInMilliseconds = currentDate.getTime() - itemDate.getTime();
+  const differenceInDays = Math.floor(differenceInMilliseconds / oneDayInMilliseconds);
+  return differenceInDays <= 14;
+}
+
 const NewsRow = ({ item }: { item: DashboardNewsType }) => (
   <div className="flex flex-col" key={item.title}>
-    <p className="font-semibold">{item.date_published}</p>
+    <div className="flex gap-x-4">
+      <p className="font-semibold">{item.date_published}</p>
+      <p className="font-semibold text-panel-important">{isWithinXDaysFromToday(item.date_published) && 'New Post!'}</p>
+    </div>
     <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex text-panel-primary font-semibold items-center mt-1 space-x-2 hover:text-panel-primary-hover">
       <p className="font-semibold">{item.title}</p>
       <Icon path={mdiOpenInNew} size={1} />
