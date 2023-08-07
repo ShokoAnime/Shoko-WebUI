@@ -20,9 +20,9 @@ const newNewsCheck = (date: string) => {
 
 const NewsRow = ({ item }: { item: DashboardNewsType }) => (
   <div className="flex flex-col" key={item.title}>
-    <div className="flex gap-x-4">
-      <p className="font-semibold">{item.date_published}</p>
-      <p className="font-semibold text-panel-important">{newNewsCheck(item.date_published) && 'New Post!'}</p>
+    <div className="flex gap-x-4 font-semibold">
+      <p>{item.date_published}</p>
+      {newNewsCheck(item.date_published) && (<p className="text-panel-important">New Post</p>)}
     </div>
     <a href={item.link} rel="noopener noreferrer" target="_blank" className="flex text-panel-primary font-semibold items-center mt-1 space-x-2 hover:text-panel-primary-hover">
       <p className="font-semibold">{item.title}</p>
