@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
-import { useGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { find, forEach, get, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { Icon } from '@mdi/react';
 import { mdiOpenInNew } from '@mdi/js';
+
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { useGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
 const HeaderFragment = ({ title, range }) => {
   if (!title || !range) { return null; }
@@ -129,13 +130,14 @@ const SeriesFileSummary = () => {
       </ShokoPanel>
 
       <div className="flex flex-col gap-y-8 grow">
-        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border font-semibold text-xl">
+        <div className="rounded bg-panel-background-transparent px-8 py-5 flex justify-between items-center border-panel-border border font-semibold text-xl">
           Files Breakdown
           <div><span className="text-panel-important">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => (
-          <ShokoPanel key={`range-${idx}`} className="grow" title={<Header ranges={range.RangeByType} />} transparent>
-            <div className="flex max-h-10">
+          <div key={`range-${idx}`} className="flex flex-col p-8 rounded border-panel-border border gap-y-8">
+            <div className="flex font-semibold text-xl"><Header ranges={range.RangeByType} /></div>
+            <div className="flex">
               <div className="grow flex flex-col gap-y-4 font-semibold">
                 <span>Group</span>
                 <span>Video</span>
@@ -154,21 +156,29 @@ const SeriesFileSummary = () => {
               <div className="grow-[2] flex flex-col gap-y-4">
                 <span>{renderSizes(range.RangeByType)}</span>
                 <span className="uppercase">{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
-                <span className="uppercase">{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
+                {range.SubtitleCount > 0 ? (
+                  <span className="uppercase">{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
+                ) : '-'}
               </div>
             </div>
-          </ShokoPanel>
+          </div>
         ))}
         {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
-        <ShokoPanel disableOverflow title="Missing Files" transparent>
-          {map(fileSummary?.MissingEpisodes, episode => (
-            <div className="grid grid-cols-3 mb-4">
-              <div className="mr-12">{episode.Type} {episode.EpisodeNumber}</div>
-              <div className="flex mr-12">{find(episode.Titles, ['Language', 'en'])?.Name || '--'} (<a className="text-panel-primary" href={`https://anidb.net/episode/${episode.ID}`} target="_blank" rel="noopener noreferrer">{episode.ID}</a>)<Icon className="text-panel-primary" path={mdiOpenInNew} size={1} /></div>
-              <div>{episode.AirDate}</div>
-            </div>
-          ))}
-        </ShokoPanel>
+          <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
+            {map(fileSummary?.MissingEpisodes, episode => (
+              <div className="grid grid-cols-6 gap-x-12">
+                <div>{episode.Type} {episode.EpisodeNumber}</div>
+                <div className="col-span-4">
+                  {find(episode.Titles, ['Language', 'en'])?.Name || '--'} (
+                  <a className="inline-flex items-center gap-x-1 text-panel-primary" href={`https://anidb.net/episode/${episode.ID}`} target="_blank" rel="noopener noreferrer">
+                    {episode.ID}<Icon className="text-panel-primary" path={mdiOpenInNew} size={0.8333} />
+                  </a>
+                  )
+                </div>
+                <div>{episode.AirDate}</div>
+              </div>
+            ))}
+          </ShokoPanel>
         )}
       </div>
     </div>
