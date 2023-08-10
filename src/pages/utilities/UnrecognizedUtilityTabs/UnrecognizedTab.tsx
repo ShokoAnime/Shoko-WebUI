@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import cx from 'classnames';
-import { forEach } from 'lodash';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-import { Icon } from '@mdi/react';
+import { useNavigate } from 'react-router-dom';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -19,50 +18,54 @@ import {
   mdiOpenInNew,
   mdiRefresh,
 } from '@mdi/js';
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  getFilteredRowModel,
-  Table,
-  useReactTable,
-} from '@tanstack/react-table';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { useNavigate } from 'react-router-dom';
+import { Icon } from '@mdi/react';
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import cx from 'classnames';
+import { forEach } from 'lodash';
 import { useDebounce } from 'usehooks-ts';
 
-import toast from '@/components/Toast';
-import { fuzzyFilter } from '@/core/util';
-
 import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
+import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-
 import {
-  useDeleteFileMutation, useGetFilesQuery,
+  useDeleteFileMutation,
+  useGetFilesQuery,
   useLazyPostFileAVDumpQuery,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
 } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
+import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
+import { fuzzyFilter } from '@/core/util';
+import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
 
-import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
-import type { ListResultType } from '@/core/types/api';
 import type { RootState } from '@/core/store';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-import Input from '@/components/Input/Input';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
-import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
-import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
-import Title from '@/components/Utilities/Unrecognized/Title';
-import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
+import type { ListResultType } from '@/core/types/api';
+import type { Table } from '@tanstack/react-table';
 
 const columnHelper = createColumnHelper<FileType>();
 
-const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void, setSeriesSelectModal: (show: boolean) => void }) => {
+const Menu = (
+  props: {
+    table: Table<FileType>;
+    files: ListResultType<FileType[]>;
+    refetch: () => void;
+    setSeriesSelectModal: (show: boolean) => void;
+  },
+) => {
   const {
-    table, files,
-    refetch, setSeriesSelectModal,
+    files,
+    refetch,
+    setSeriesSelectModal,
+    table,
   } = props;
 
   const [fileDeleteTrigger] = useDeleteFileMutation();
@@ -130,22 +133,42 @@ const Menu = (props: { table: Table<FileType>, files: ListResultType<FileType[]>
   };
 
   return (
-    <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
-      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
-        <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRefresh} name="Refresh List" />
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton
+          onClick={() => {
+            table.resetRowSelection();
+            refetch();
+          }}
+          icon={mdiRefresh}
+          name="Refresh List"
+        />
         <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
         <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash All" />
-        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy All ED2K Hashes" />
+        <MenuButton
+          onClick={() => setSeriesSelectModal(true)}
+          icon={mdiFileDocumentOutline}
+          name="Copy All ED2K Hashes"
+        />
       </TransitionDiv>
-      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length !== 0}>
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => rescanFiles(true)} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
-        <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+        <MenuButton
+          onClick={() => table.resetRowSelection()}
+          icon={mdiCloseCircleOutline}
+          name="Cancel Selection"
+          highlight
+        />
       </TransitionDiv>
-      <span className="text-panel-important font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+      <span className="ml-auto font-semibold text-panel-important">
+        {selectedRows.length}
+        &nbsp;
+      </span>
+      Files Selected
     </div>
   );
 };
@@ -227,16 +250,36 @@ function UnrecognizedTab() {
         }
 
         return (
-          <div className="flex ml-4">
-            {icon.state === 'success' ? (
-              <CopyToClipboard text={avdumpList[fileId].hash || ''} onCopy={() => toast.success('Copied to clipboard!')}>
-                <Icon path={icon.path} spin={icon.path === mdiLoading} size={1} className={`${icon.color} cursor-pointer`} title={icon.title} />
-              </CopyToClipboard>
-            ) : (
-              <Button onClick={() => handleClick(icon.state)} className={cx((icon.state === 'dumping' || dumpInProgress) && 'cursor-default')}>
-                <Icon path={icon.path} spin={icon.path === mdiLoading} size={1} className={icon.color} title={icon.title} />
-              </Button>
-            )}
+          <div className="ml-4 flex">
+            {icon.state === 'success'
+              ? (
+                <CopyToClipboard
+                  text={avdumpList[fileId].hash || ''}
+                  onCopy={() => toast.success('Copied to clipboard!')}
+                >
+                  <Icon
+                    path={icon.path}
+                    spin={icon.path === mdiLoading}
+                    size={1}
+                    className={`${icon.color} cursor-pointer`}
+                    title={icon.title}
+                  />
+                </CopyToClipboard>
+              )
+              : (
+                <Button
+                  onClick={() => handleClick(icon.state)}
+                  className={cx((icon.state === 'dumping' || dumpInProgress) && 'cursor-default')}
+                >
+                  <Icon
+                    path={icon.path}
+                    spin={icon.path === mdiLoading}
+                    size={1}
+                    className={icon.color}
+                    title={icon.title}
+                  />
+                </Button>
+              )}
           </div>
         );
       },
@@ -296,28 +339,48 @@ function UnrecognizedTab() {
 
   const ed2kLinks = () => {
     const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''}|${file.Size}|${file.Hashes.ED2K}|/`);
+    return fileList.map((file) => {
+      const fileName = file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? '';
+      return `ed2k://|file|${fileName}|${file.Size}|${file.Hashes.ED2K}|/`;
+    });
   };
 
   return (
     <>
-      <div className="flex flex-col grow gap-y-8">
-
+      <div className="flex grow flex-col gap-y-8">
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
             <div className="flex items-center gap-x-3">
-              <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
-              <Menu table={table} files={files} refetch={() => filesQuery.refetch()} setSeriesSelectModal={setSeriesSelectModal} />
+              <Input
+                type="text"
+                placeholder="Search..."
+                startIcon={mdiMagnify}
+                id="search"
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                inputClassName="px-4 py-3"
+              />
+              <Menu
+                table={table}
+                files={files}
+                refetch={() => filesQuery.refetch()}
+                setSeriesSelectModal={setSeriesSelectModal}
+              />
               <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
                 <Button
                   buttonType="primary"
-                  className="px-4 py-3 flex gap-x-2.5 font-semibold"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
                   Manual Link
                 </Button>
-                <Button buttonType="primary" className="px-4 py-3 flex gap-x-2.5 font-semibold" onClick={handleAvdumpOnClick} disabled={dumpInProgress}>
+                <Button
+                  buttonType="primary"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                  onClick={handleAvdumpOnClick}
+                  disabled={dumpInProgress}
+                >
                   <Icon path={mdiDumpTruck} size={0.8333} />
                   {isAvdumpFinished && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
@@ -328,22 +391,30 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
+        <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
           {filesQuery.isLoading && (
-            <div className="flex grow justify-center items-center text-panel-primary">
+            <div className="flex grow items-center justify-center text-panel-primary">
               <Icon path={mdiLoading} size={4} spin />
             </div>
           )}
           {!filesQuery.isLoading && files.Total > 0 && (
-            <UtilitiesTable table={table} sortCriteria={sortCriteria} setSortCriteria={setSortCriteria} skipSort={Boolean(debouncedSearch)} />
+            <UtilitiesTable
+              table={table}
+              sortCriteria={sortCriteria}
+              setSortCriteria={setSortCriteria}
+              skipSort={Boolean(debouncedSearch)}
+            />
           )}
           {!filesQuery.isLoading && files.Total === 0 && (
-            <div className="flex items-center justify-center grow font-semibold">No unrecognized file(s)!</div>
+            <div className="flex grow items-center justify-center font-semibold">No unrecognized file(s)!</div>
           )}
         </TransitionDiv>
-
       </div>
-      <AvDumpSeriesSelectModal show={seriesSelectModal} onClose={() => setSeriesSelectModal(false)} links={ed2kLinks()} />
+      <AvDumpSeriesSelectModal
+        show={seriesSelectModal}
+        onClose={() => setSeriesSelectModal(false)}
+        links={ed2kLinks()}
+      />
     </>
   );
 }

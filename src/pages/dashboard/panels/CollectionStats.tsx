@@ -1,12 +1,12 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import prettyBytes from 'pretty-bytes';
 import { Link } from 'react-router-dom';
+import prettyBytes from 'pretty-bytes';
 
-import { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-
 import { useGetDashboardStatsQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
+
+import type { RootState } from '@/core/store';
 
 function CollectionStats() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -15,14 +15,10 @@ function CollectionStats() {
 
   const renderItem = (key: string, title: string, value: string | number = 0, link?: string) => (
     <div key={key} className="flex">
-      <div className="grow mb-1 last:mb-0">
+      <div className="mb-1 grow last:mb-0">
         {title}
       </div>
-      {link ? (
-        <Link to={link} className="text-panel-primary">{value}</Link>
-      ) : (
-        <div>{value}</div>
-      )}
+      {link ? <Link to={link} className="text-panel-primary">{value}</Link> : <div>{value}</div>}
     </div>
   );
 
@@ -51,10 +47,10 @@ function CollectionStats() {
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>
-      <div className="flex flex-col mt-4 leading-5">
+      <div className="mt-4 flex flex-col leading-5">
         {childrenSecond}
       </div>
-      <div className="flex flex-col mt-4 leading-5">
+      <div className="mt-4 flex flex-col leading-5">
         {childrenThird}
       </div>
     </ShokoPanel>

@@ -1,7 +1,8 @@
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { DataSourceType } from '@/core/types/api/common';
 import type { EpisodeAniDBType, EpisodeTvDBType, EpisodeType } from '@/core/types/api/episode';
-import { FileType } from '@/core/types/api/file';
-import { DataSourceType } from '@/core/types/api/common';
-import { splitV3Api } from '../splitV3Api';
+import type { FileType } from '@/core/types/api/file';
 
 type EpisodeFilesQuery = {
   episodeId: string;
@@ -62,6 +63,6 @@ export const {
   useGetEpisodeQuery,
   useGetEpisodeTvdbQuery,
   useLazyGetEpisodeFilesQuery,
-  usePostEpisodeWatchedMutation,
   usePostEpisodeHiddenMutation,
+  usePostEpisodeWatchedMutation,
 } = episodeApi;

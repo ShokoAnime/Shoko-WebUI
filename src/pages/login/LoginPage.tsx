@@ -1,25 +1,25 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import cx from 'classnames';
 import { useNavigate } from 'react-router-dom';
-import * as Sentry from '@sentry/browser';
-import { get } from 'lodash';
 import { Slide, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
-import { Icon } from '@mdi/react';
 import { mdiCloseCircleOutline, mdiGithub, mdiHelpCircleOutline, mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import * as Sentry from '@sentry/browser';
+import cx from 'classnames';
+import { get } from 'lodash';
+import 'react-toastify/dist/ReactToastify.min.css';
 import { siDiscord } from 'simple-icons';
 
-import { RootState } from '@/core/store';
 import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
 import Checkbox from '@/components/Input/Checkbox';
+import Input from '@/components/Input/Input';
 import ShokoIcon from '@/components/ShokoIcon';
-
-import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
-import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
 import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
+import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
+import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { ImageTypeEnum } from '@/core/types/api/common';
+
+import type { RootState } from '@/core/store';
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -59,8 +59,10 @@ function LoginPage() {
   }, [status, apiSession, navigate]);
 
   useEffect(() => {
-    if (!get(version, 'data.Server', false)) { return; }
-    const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable' ? version?.data?.Server.Commit : version.data.Server.Version;
+    if (!get(version, 'data.Server', false)) return;
+    const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable'
+      ? version?.data?.Server.Commit
+      : version.data.Server.Version;
     Sentry.setTag('server_version', versionHash);
   }, [version]);
 
@@ -78,18 +80,20 @@ function LoginPage() {
 
   const parsedVersion = useMemo(() => {
     if (version.isFetching || !version.data) {
-      return (<Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />);
+      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />;
     }
 
     if (version.data.Server.ReleaseChannel !== 'Stable') {
-      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${version.data.Server.Commit?.slice(0, 7)})`;
+      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${
+        version.data.Server.Commit?.slice(0, 7)
+      })`;
     }
 
     return version.data.Server.Version;
   }, [version]);
 
   return (
-    <React.Fragment>
+    <>
       <ToastContainer
         position="bottom-right"
         autoClose={4000}
@@ -98,46 +102,88 @@ function LoginPage() {
         closeButton={false}
         icon={false}
       />
-      <div className={cx('flex h-screen w-screen login-image items-center justify-center relative', loginImage === 'default' && 'login-image-default')} style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}>
-        <div className="absolute top-0 right-0 bg-panel-background-login px-8 py-4 font-semibold border border-panel-border">{imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}</div>
+      <div
+        className={cx(
+          'flex h-screen w-screen login-image items-center justify-center relative',
+          loginImage === 'default' && 'login-image-default',
+        )}
+        style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}
+      >
+        <div className="absolute right-0 top-0 border border-panel-border bg-panel-background-login px-8 py-4 font-semibold">
+          {imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}
+        </div>
 
-        <div className="flex flex-col items-center p-8 w-[31.25rem] bg-panel-background-login border border-panel-border rounded-md gap-y-8">
-          <div className="flex flex-col gap-y-4 items-center">
+        <div className="flex w-[31.25rem] flex-col items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-login p-8">
+          <div className="flex flex-col items-center gap-y-4">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
-              Version: {parsedVersion}
+              Version:&nbsp;
+              {parsedVersion}
             </div>
           </div>
 
-          <div className="flex flex-col w-full gap-y-4">
+          <div className="flex w-full flex-col gap-y-4">
             {!status.data?.State && (
-              <div className="flex justify-center items-center">
+              <div className="flex items-center justify-center">
                 <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
               </div>
             )}
             {status.data?.State === 1 && (
-              <div className="flex flex-col justify-center items-center gap-y-2">
+              <div className="flex flex-col items-center justify-center gap-y-2">
                 <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="text-lg">
-                  <span className="font-semibold">Status: </span>{status.data?.StartupMessage ?? 'Unknown'}
+                  <span className="font-semibold">Status:</span>
+                  {status.data?.StartupMessage ?? 'Unknown'}
                 </div>
               </div>
             )}
             {status.data?.State === 2 && (
               <form onSubmit={handleSignIn} className="flex flex-col gap-y-8">
-                <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={e => setUsername(e.target.value)} />
-                <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={e => setPassword(e.target.value)} />
-                <Checkbox id="rememberUser" label="Remember Me" isChecked={rememberUser} onChange={e => setRememberUser(e.target.checked)} className="font-semibold" labelRight />
-                <Button buttonType="primary" className="py-2 w-full font-semibold" submit loading={isFetchingLogin} disabled={version.isFetching || username === ''}>Login</Button>
+                <Input
+                  autoFocus
+                  id="username"
+                  value={username}
+                  label="Username"
+                  type="text"
+                  placeholder="Username"
+                  onChange={e => setUsername(e.target.value)}
+                />
+                <Input
+                  id="password"
+                  value={password}
+                  label="Password"
+                  type="password"
+                  placeholder="Password"
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <Checkbox
+                  id="rememberUser"
+                  label="Remember Me"
+                  isChecked={rememberUser}
+                  onChange={e => setRememberUser(e.target.checked)}
+                  className="font-semibold"
+                  labelRight
+                />
+                <Button
+                  buttonType="primary"
+                  className="w-full py-2 font-semibold"
+                  submit
+                  loading={isFetchingLogin}
+                  disabled={version.isFetching || username === ''}
+                >
+                  Login
+                </Button>
               </form>
             )}
             {status.data?.State === 3 && (
-              <div className="flex flex-col justify-center items-center pb-2 gap-y-2 max-h-[20rem]">
-                <Icon path={mdiCloseCircleOutline} className="text-panel-warning shrink-0" size={4} />
+              <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
+                <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-warning" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
-                <div className="text-lg break-all overflow-y-auto font-semibold">{status.data?.StartupMessage ?? 'Unknown'}</div>
+                <div className="overflow-y-auto break-all text-lg font-semibold">
+                  {status.data?.StartupMessage ?? 'Unknown'}
+                </div>
               </div>
             )}
             {status.data?.State === 4 && (
@@ -145,36 +191,57 @@ function LoginPage() {
                 <div className="flex flex-col gap-y-4 px-4">
                   <div>Welcome and thanks for installing Shoko!</div>
                   <div className="text-justify leading-6">
-                    Before Shoko can start managing your anime collection for you, you&apos;ll need to go through our&nbsp;
-                    <span className="text-panel-important font-bold">First Run Wizard </span>to set everything up.
-                    Don&apos;t worry, its extremely easy, straightforward and should only take you a couple minutes.
+                    Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
+                    our&nbsp;
+                    <span className="font-bold text-panel-important">First Run Wizard</span>
+                    to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only take you
+                    a couple minutes.
                   </div>
                   <div>
-                    Click <span className="text-panel-important font-semibold">Continue</span> below to proceed.
+                    Click&nbsp;
+                    <span className="font-semibold text-panel-important">Continue</span>
+                    &nbsp;below to proceed.
                   </div>
                 </div>
-                <Button onClick={() => navigate('/webui/firstrun')} buttonType="primary" className="py-2 font-semibold">Continue</Button>
+                <Button onClick={() => navigate('/webui/firstrun')} buttonType="primary" className="py-2 font-semibold">
+                  Continue
+                </Button>
               </div>
             )}
           </div>
 
-          <div className="flex font-semibold gap-x-8">
-            <a href="https://discord.gg/vpeHDsg" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2">
+          <div className="flex gap-x-8 font-semibold">
+            <a
+              href="https://discord.gg/vpeHDsg"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-x-2"
+            >
               <Icon path={siDiscord.path} size={1} />
               Discord
             </a>
-            <a href="https://docs.shokoanime.com" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2">
+            <a
+              href="https://docs.shokoanime.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-x-2"
+            >
               <Icon path={mdiHelpCircleOutline} size={1} />
               Docs
             </a>
-            <a href="https://github.com/ShokoAnime" target="_blank" rel="noopener noreferrer" className="flex items-center gap-x-2">
+            <a
+              href="https://github.com/ShokoAnime"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-x-2"
+            >
               <Icon path={mdiGithub} size={1} />
               GitHub
             </a>
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 }
 

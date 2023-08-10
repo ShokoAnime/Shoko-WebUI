@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router';
+import { mdiOpenInNew } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { find, forEach, get, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { Icon } from '@mdi/react';
-import { mdiOpenInNew } from '@mdi/js';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
-const HeaderFragment = ({ title, range }) => {
-  if (!title || !range) { return null; }
+const HeaderFragment = ({ range, title }) => {
+  if (!title || !range) return null;
   return (
-    <React.Fragment>
+    <>
       <span>{title}</span>
       <span className="text-panel-important">{range}</span>
-    </React.Fragment>
+    </>
   );
 };
 
@@ -22,17 +22,15 @@ const Header = ({ ranges }) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
-    {map(omit(ranges, ['Normal', 'Special']), (item, key) => (
-      <HeaderFragment title={key} range={item.Range} />
-    ))}
+    {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
   </div>
 );
 
 type SizeTotals = {
-  [key: string] : {
+  [key: string]: {
     size: number;
     count: number;
-  }
+  };
 };
 
 const renderSizes = (ranges) => {
@@ -72,7 +70,7 @@ const SeriesFileSummary = () => {
     const SpecialEpisodeSourceMap = {};
     const GroupsMap: string[] = [];
     forEach(fileSummary?.Groups, (group) => {
-      if (GroupsMap.indexOf(group.GroupName) === -1) { GroupsMap.push(group.GroupName); }
+      if (GroupsMap.indexOf(group.GroupName) === -1) GroupsMap.push(group.GroupName);
       forEach(group.RangeByType, (item, type) => {
         TotalEpisodeCount += item.Count;
         TotalEpisodeSize += item.FileSize;
@@ -102,7 +100,12 @@ const SeriesFileSummary = () => {
 
   return (
     <div className="flex gap-x-8">
-      <ShokoPanel title="Files Overview" className="w-[22.375rem] sticky top-0 shrink-0" transparent contentClassName="gap-y-8">
+      <ShokoPanel
+        title="Files Overview"
+        className="sticky top-0 w-[22.375rem] shrink-0"
+        transparent
+        contentClassName="gap-y-8"
+      >
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">Episode Count</span>
           {summary.TotalEpisodeCount}
@@ -129,49 +132,99 @@ const SeriesFileSummary = () => {
         </div>
       </ShokoPanel>
 
-      <div className="flex flex-col gap-y-8 grow">
-        <div className="rounded bg-panel-background-transparent px-8 py-5 flex justify-between items-center border-panel-border border font-semibold text-xl">
+      <div className="flex grow flex-col gap-y-8">
+        <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-8 py-5 text-xl font-semibold">
           Files Breakdown
-          <div><span className="text-panel-important">{fileSummary?.Groups.length || 0}</span> Source {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
+          <div>
+            <span className="text-panel-important">{fileSummary?.Groups.length || 0}</span>
+            &nbsp;Source&nbsp;
+            {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}
+          </div>
         </div>
-        {map(fileSummary?.Groups, (range, idx) => (
-          <div key={`range-${idx}`} className="flex flex-col p-8 rounded border-panel-border border gap-y-8">
-            <div className="flex font-semibold text-xl"><Header ranges={range.RangeByType} /></div>
-            <div className="flex">
-              <div className="grow flex flex-col gap-y-4 font-semibold">
-                <span>Group</span>
-                <span>Video</span>
-                <span>Location</span>
+        {map(
+          fileSummary?.Groups,
+          (range, idx) => (
+            <div key={`range-${idx}`} className="flex flex-col gap-y-8 rounded border border-panel-border p-8">
+              <div className="flex text-xl font-semibold">
+                <Header ranges={range.RangeByType} />
               </div>
-              <div className="grow-[2] flex flex-col gap-y-4">
-                <span>{range.GroupName} | v{range.Version}</span>
-                <span>{range.Source} | {range.BitDepth}-bit | {range.Resolution} | {range.Width}x{range.Height} | {range.VideoCodecs} </span>
-                <span>{range.Location}</span>
-              </div>
-              <div className="grow flex flex-col gap-y-4 font-semibold">
-                <span>Total</span>
-                <span>Audio</span>
-                <span>{range.SubtitleCount > 1 ? 'Subtitles' : 'Subtitle'}</span>
-              </div>
-              <div className="grow-[2] flex flex-col gap-y-4">
-                <span>{renderSizes(range.RangeByType)}</span>
-                <span className="uppercase">{range.AudioCodecs} | {range.AudioCount > 1 ? `Multi Audio (${range.AudioLanguages.join(', ')})` : range.AudioLanguages.toString()}</span>
-                {range.SubtitleCount > 0 ? (
-                  <span className="uppercase">{range.SubtitleCodecs} | {range.SubtitleCount > 1 ? `Multi Subs (${range.SubtitleLanguages.join(', ')})` : range.SubtitleLanguages.toString()}</span>
-                ) : '-'}
+              <div className="flex">
+                <div className="flex grow flex-col gap-y-4 font-semibold">
+                  <span>Group</span>
+                  <span>Video</span>
+                  <span>Location</span>
+                </div>
+                <div className="flex grow-[2] flex-col gap-y-4">
+                  <span>
+                    {range.GroupName}
+                    &nbsp;| v
+                    {range.Version}
+                  </span>
+                  <span>
+                    {range.Source}
+                    &nbsp;|&nbsp;
+                    {range.BitDepth}
+                    -bit |&nbsp;
+                    {range.Resolution}
+                    &nbsp;|&nbsp;
+                    {range.Width}
+                    x
+                    {range.Height}
+                    &nbsp;|&nbsp;
+                    {range.VideoCodecs}
+                  </span>
+                  <span>{range.Location}</span>
+                </div>
+                <div className="flex grow flex-col gap-y-4 font-semibold">
+                  <span>Total</span>
+                  <span>Audio</span>
+                  <span>{range.SubtitleCount > 1 ? 'Subtitles' : 'Subtitle'}</span>
+                </div>
+                <div className="flex grow-[2] flex-col gap-y-4">
+                  <span>{renderSizes(range.RangeByType)}</span>
+                  <span className="uppercase">
+                    {range.AudioCodecs}
+                    &nbsp;|
+                    {range.AudioCount > 1
+                      ? `Multi Audio (${range.AudioLanguages.join(', ')})`
+                      : range.AudioLanguages.toString()}
+                  </span>
+                  {range.SubtitleCount > 0
+                    ? (
+                      <span className="uppercase">
+                        {range.SubtitleCodecs}
+                        &nbsp;|
+                        {range.SubtitleCount > 1
+                          ? `Multi Subs (${range.SubtitleLanguages.join(', ')})`
+                          : range.SubtitleLanguages.toString()}
+                      </span>
+                    )
+                    : '-'}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          ),
+        )}
         {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
           <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
             {map(fileSummary?.MissingEpisodes, episode => (
               <div className="grid grid-cols-6 gap-x-12">
-                <div>{episode.Type} {episode.EpisodeNumber}</div>
+                <div>
+                  {episode.Type}
+                  &nbsp;
+                  {episode.EpisodeNumber}
+                </div>
                 <div className="col-span-4">
-                  {find(episode.Titles, ['Language', 'en'])?.Name || '--'} (
-                  <a className="inline-flex items-center gap-x-1 text-panel-primary" href={`https://anidb.net/episode/${episode.ID}`} target="_blank" rel="noopener noreferrer">
-                    {episode.ID}<Icon className="text-panel-primary" path={mdiOpenInNew} size={0.8333} />
+                  {find(episode.Titles, ['Language', 'en'])?.Name || '--'}
+                  &nbsp;(
+                  <a
+                    className="inline-flex items-center gap-x-1 text-panel-primary"
+                    href={`https://anidb.net/episode/${episode.ID}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {episode.ID}
+                    <Icon className="text-panel-primary" path={mdiOpenInNew} size={0.8333} />
                   </a>
                   )
                 </div>

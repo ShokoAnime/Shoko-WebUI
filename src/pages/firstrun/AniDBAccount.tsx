@@ -4,19 +4,19 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
-
-import {
-  setSaved as setFirstRunSaved,
-  TestStatusType,
-  unsetSaved as unsetFirstRunSaved,
-} from '@/core/slices/firstrun';
 import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { setSaved as setFirstRunSaved, unsetSaved as unsetFirstRunSaved } from '@/core/slices/firstrun';
+
 import { useFirstRunSettingsContext } from './FirstRunPage';
 import Footer from './Footer';
 
+import type { TestStatusType } from '@/core/slices/firstrun';
+
 function AniDBAccount() {
   const {
-    newSettings, saveSettings, updateSetting,
+    newSettings,
+    saveSettings,
+    updateSetting,
   } = useFirstRunSettingsContext();
 
   const dispatch = useDispatch();
@@ -25,7 +25,7 @@ function AniDBAccount() {
   const [testAniDbLogin, testAniDbLoginResult] = usePostAniDBTestLoginMutation();
   const [anidbStatus, setAnidbStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
-  const { Username, Password } = newSettings.AniDb;
+  const { Password, Username } = newSettings.AniDb;
 
   const handleInputChange = (event: any) => {
     const { id, value } = event.target;
@@ -48,8 +48,8 @@ function AniDBAccount() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
-      <div className="font-semibold text-xl">Adding Your AniDB Account</div>
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8">
+      <div className="text-xl font-semibold">Adding Your AniDB Account</div>
       <div className="text-justify">
         Shoko utilizes AniDB to compare file hashes with its vast database, enabling a quick identification and addition
         of series to your collection. Additionally, AniDB provides supplementary information about series and episodes,
@@ -57,7 +57,12 @@ function AniDBAccount() {
       </div>
       <div className="text-justify">
         An AniDB account is required to use Shoko. If you don&lsquo;t already have an account,
-        <a href="https://anidb.net/" target="_blank" rel="noreferrer" className="text-panel-primary hover:underline font-semibold">
+        <a
+          href="https://anidb.net/"
+          target="_blank"
+          rel="noreferrer"
+          className="font-semibold text-panel-primary hover:underline"
+        >
           {' Click Here '}
         </a>
         to create one. Please note that, due to limitations with AniDB&lsquo;s API, your password must consist of only
@@ -65,11 +70,31 @@ function AniDBAccount() {
         characters. Using any other characters will result in a ban when you attempt to log in.
       </div>
       <form className="flex flex-col" onSubmit={handleTest}>
-        <Input id="Username" value={Username ?? ''} label="Username" type="text" placeholder="Username" onChange={handleInputChange} />
-        <Input id="Password" value={Password ?? ''} label="Password" type="password" placeholder="Password" onChange={handleInputChange} className="mt-9" />
+        <Input
+          id="Username"
+          value={Username ?? ''}
+          label="Username"
+          type="text"
+          placeholder="Username"
+          onChange={handleInputChange}
+        />
+        <Input
+          id="Password"
+          value={Password ?? ''}
+          label="Password"
+          type="password"
+          placeholder="Password"
+          onChange={handleInputChange}
+          className="mt-9"
+        />
         <input type="submit" hidden />
       </form>
-      <Footer nextDisabled={!Username || !Password} saveFunction={handleTest} isFetching={testAniDbLoginResult.isLoading} status={anidbStatus} />
+      <Footer
+        nextDisabled={!Username || !Password}
+        saveFunction={handleTest}
+        isFetching={testAniDbLoginResult.isLoading}
+        status={anidbStatus}
+      />
     </TransitionDiv>
   );
 }

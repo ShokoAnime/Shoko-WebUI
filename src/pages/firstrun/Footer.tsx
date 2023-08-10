@@ -7,13 +7,13 @@ import Button from '@/components/Input/Button';
 import type { TestStatusType } from '@/core/slices/firstrun';
 
 type Props = {
-  nextPage?: string,
-  prevDisabled?: boolean,
-  nextDisabled?: boolean,
-  isFetching?: boolean,
-  finish?: boolean,
-  status?: TestStatusType,
-  saveFunction?: () => void,
+  nextPage?: string;
+  prevDisabled?: boolean;
+  nextDisabled?: boolean;
+  isFetching?: boolean;
+  finish?: boolean;
+  status?: TestStatusType;
+  saveFunction?: () => void;
 };
 
 function Footer(props: Props) {
@@ -26,23 +26,49 @@ function Footer(props: Props) {
   };
 
   const {
-    finish, status, prevDisabled, nextDisabled, isFetching,
+    finish,
+    isFetching,
+    nextDisabled,
+    prevDisabled,
+    status,
   } = props;
 
   return (
     <div className="flex flex-col text-lg">
-      <div className={cx(['flex items-center mb-5', status?.type === 'error' ? 'text-panel-warning' : 'text-panel-important'])}>
+      <div
+        className={cx([
+          'flex items-center mb-5',
+          status?.type === 'error' ? 'text-panel-warning' : 'text-panel-important',
+        ])}
+      >
         {status?.text}
       </div>
       <div className="flex justify-between font-semibold">
-        <Button onClick={() => navigate(-1)} buttonType="primary" className="py-2 w-1/2 mr-6" disabled={prevDisabled}>Back</Button>
-        {finish ? (
-          <Button onClick={() => navigate('/', { replace: true })} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled}>Finish</Button>
-        ) : (
-          <Button onClick={() => handleNext()} buttonType="primary" className="py-2 w-1/2 ml-6" disabled={nextDisabled || isFetching} loading={isFetching}>
-            Next
-          </Button>
-        )}
+        <Button onClick={() => navigate(-1)} buttonType="primary" className="mr-6 w-1/2 py-2" disabled={prevDisabled}>
+          Back
+        </Button>
+        {finish
+          ? (
+            <Button
+              onClick={() => navigate('/', { replace: true })}
+              buttonType="primary"
+              className="ml-6 w-1/2 py-2"
+              disabled={nextDisabled}
+            >
+              Finish
+            </Button>
+          )
+          : (
+            <Button
+              onClick={() => handleNext()}
+              buttonType="primary"
+              className="ml-6 w-1/2 py-2"
+              disabled={nextDisabled || isFetching}
+              loading={isFetching}
+            >
+              Next
+            </Button>
+          )}
       </div>
     </div>
   );

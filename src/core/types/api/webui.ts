@@ -1,6 +1,6 @@
-import { ImageType, RatingType } from './common';
-import { CollectionFilterType } from './collection';
-import { SeriesTitleType } from './series';
+import type { CollectionFilterType } from './collection';
+import type { ImageType, RatingType } from './common';
+import type { SeriesTitleType } from './series';
 
 export type WebuiGroupExtraTag = {
   ID: number;
@@ -64,7 +64,7 @@ export type WebuiSeriesFileSummaryGroupType = {
     Parody: WebuiSeriesFileSummaryRangeByType;
     Interview: WebuiSeriesFileSummaryRangeByType;
     Extra: WebuiSeriesFileSummaryRangeByType;
-  }
+  };
 };
 
 export type WebuiSeriesFileSummaryRangeByType = {
@@ -86,7 +86,7 @@ export type WebuiSeriesFileSummaryMissingEpisodeType = {
     Source: string;
     Votes: number;
     Type: string;
-  }
+  };
 };
 
 export type WebuiTheme = {

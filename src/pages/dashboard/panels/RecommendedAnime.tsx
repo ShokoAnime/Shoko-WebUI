@@ -1,14 +1,14 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { Icon } from '@mdi/react';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
-import { RootState } from '@/core/store';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-
-import { useGetAniDBRecommendedAnimeQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import type { SeriesAniDBType } from '@/core/types/api/series';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { useGetAniDBRecommendedAnimeQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+
+import type { RootState } from '@/core/store';
+import type { SeriesAniDBType } from '@/core/types/api/series';
 
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -16,30 +16,37 @@ const RecommendedAnime = () => {
   const items = useGetAniDBRecommendedAnimeQuery({ pageSize: 20 });
 
   const renderItem = (series: SeriesAniDBType, matches: number) => (
-    <div key={`series-${series.ID}`} className="mr-4 last:mr-0 shrink-0 w-56 justify-center flex flex-col">
-      <BackgroundImagePlaceholderDiv image={series.Poster} className="relative h-80 rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border mb-2 group">
+    <div key={`series-${series.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
+      <BackgroundImagePlaceholderDiv
+        image={series.Poster}
+        className="group relative mb-2 h-80 rounded border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+      >
         <div
-          className="absolute top-0 left-0 flex flex-col items-center justify-center w-full h-full font-semibold text-sm cursor-pointer bg-panel-background-transparent transition-opacity opacity-0 group-hover:opacity-100"
-          onClick={() => window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
+          className="absolute left-0 top-0 flex h-full w-full cursor-pointer flex-col items-center justify-center bg-panel-background-transparent text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100"
+          onClick={() =>
+            window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
         >
-          <div className="p-5 bg-panel-background-alt border border-panel-border rounded-full mb-1">
+          <div className="mb-1 rounded-full border border-panel-border bg-panel-background-alt p-5">
             <Icon path={mdiEyeArrowRightOutline} size={1} className="text-panel-primary" />
           </div>
           View Series on AniDB
         </div>
       </BackgroundImagePlaceholderDiv>
       <p className="truncate text-center text-base font-semibold" title={series.Title}>{series.Title}</p>
-      <p className="truncate text-center text-sm" title={`${matches} Matches`}>{matches} Matches</p>
+      <p className="truncate text-center text-sm" title={`${matches} Matches`}>
+        {matches}
+        &nbsp;Matches
+      </p>
     </div>
   );
 
   return (
     <ShokoPanel title="Recommended Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
-      <div className="flex shoko-scrollbar">
+      <div className="shoko-scrollbar flex">
         {(items.data?.length ?? 0) > 0
           ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
           : (
-            <div className="flex flex-col justify-center mt-4 w-full text-center gap-y-2">
+            <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
               <div>No Recommended Anime!</div>
               <div>Watch Anime To Populate This Section.</div>
             </div>

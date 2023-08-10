@@ -1,14 +1,15 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import TreeView from '@/components/TreeView/TreeView';
 import { setSelectedNode, setStatus } from '@/core/slices/modals/browseFolder';
-import Button from '../Input/Button';
-import TreeView from '../TreeView/TreeView';
-import ModalPanel from '../Panels/ModalPanel';
+
+import type { RootState } from '@/core/store';
 
 type Props = {
-  onSelect: (value: string) => void,
+  onSelect: (value: string) => void;
 };
 
 function BrowseFolderModal(props: Props) {
@@ -30,11 +31,11 @@ function BrowseFolderModal(props: Props) {
   return (
     <ModalPanel
       show={status}
-      className="p-8 flex-col drop-shadow-lg gap-y-8 !top-0"
+      className="!top-0 flex-col gap-y-8 p-8 drop-shadow-lg"
       onRequestClose={() => handleClose()}
     >
-      <div className="font-semibold text-xl">Select Import Folder</div>
-      <div className="p-4 bg-panel-background-alt border border-panel-border rounded">
+      <div className="text-xl font-semibold">Select Import Folder</div>
+      <div className="rounded border border-panel-border bg-panel-background-alt p-4">
         <TreeView />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">

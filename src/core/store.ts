@@ -1,17 +1,17 @@
-import { throttle } from 'lodash';
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
-import signalrMiddleware from './middlewares/signalr';
-import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
-import { loadState, saveState } from './localStorage';
-import combinedReducer from './reducers';
-import Events from './events';
+import { throttle } from 'lodash';
 
+import Events from './events';
+import { loadState, saveState } from './localStorage';
+import rtkQueryErrorMiddleware from './middlewares/rtkQueryError';
+import signalrMiddleware from './middlewares/signalr';
+import combinedReducer from './reducers';
 import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';
+import { plexApi } from './rtkQuery/plexApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
-import { plexApi } from './rtkQuery/plexApi';
 
 const rootReducer = (state, action) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
@@ -26,15 +26,16 @@ export type RootState = ReturnType<typeof rootReducer>;
 
 const store = configureStore({
   reducer: rootReducer,
-  middleware: getDefaultMiddleware => getDefaultMiddleware().concat(
-    rtkQueryErrorMiddleware,
-    splitV3Api.middleware,
-    splitApi.middleware,
-    externalApi.middleware,
-    logsApi.middleware,
-    plexApi.middleware,
-    signalrMiddleware,
-  ),
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(
+      rtkQueryErrorMiddleware,
+      splitV3Api.middleware,
+      splitApi.middleware,
+      externalApi.middleware,
+      logsApi.middleware,
+      plexApi.middleware,
+      signalrMiddleware,
+    ),
   preloadedState: loadState(),
   devTools: process.env.NODE_ENV !== 'production',
 });

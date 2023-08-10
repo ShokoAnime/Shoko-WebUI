@@ -2,10 +2,10 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 
 function Acknowledgement() {
   const dispatch = useDispatch();
@@ -20,12 +20,12 @@ function Acknowledgement() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col text-justify justify-center max-w-[38rem] gap-y-8">
-      <div className="font-semibold text-xl">Acknowledgement</div>
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8 text-justify">
+      <div className="text-xl font-semibold">Acknowledgement</div>
       <div>
         It is important to clarify that Shoko is an anime cataloging program and not a standalone streaming service.
-        Therefore, it requires access to physical files for playback.
-        Additionally, Shoko does not offer any services for obtaining or downloading anime series.
+        Therefore, it requires access to physical files for playback. Additionally, Shoko does not offer any services
+        for obtaining or downloading anime series.
       </div>
       <div>
         THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
@@ -37,9 +37,24 @@ function Acknowledgement() {
       <div className="font-semibold text-panel-important">
         We are constantly seeking talented individuals to join our team! If you believe you have the skills and
         expertise to contribute, we invite you to come and chat with us on&nbsp;
-        <a href="https://discord.gg/vpeHDsg" target="_blank" rel="noopener noreferrer" className="text-panel-primary hover:underline">Discord</a>.
+        <a
+          href="https://discord.gg/vpeHDsg"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-panel-primary hover:underline"
+        >
+          Discord
+        </a>
+        .
       </div>
-      <Button onClick={handleNext} buttonType="primary" className="font-semibold py-2" disabled={status.data?.State !== 4}>Continue</Button>
+      <Button
+        onClick={handleNext}
+        buttonType="primary"
+        className="py-2 font-semibold"
+        disabled={status.data?.State !== 4}
+      >
+        Continue
+      </Button>
     </TransitionDiv>
   );
 }

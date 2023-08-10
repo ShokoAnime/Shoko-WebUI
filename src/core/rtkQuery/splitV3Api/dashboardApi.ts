@@ -1,3 +1,5 @@
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { PaginationType } from '@/core/types/api';
 import type {
   DashboardEpisodeDetailsType,
@@ -5,12 +7,10 @@ import type {
   DashboardStatsType,
 } from '@/core/types/api/dashboard';
 import type { SeriesType } from '@/core/types/api/series';
-import { splitV3Api } from '../splitV3Api';
 
 const dashboardApi = splitV3Api.injectEndpoints({
   // refetchOnMountOrArgChange: true, // Refresh stats on component mount/page refresh (I think it works correctly)
   endpoints: build => ({
-
     // Get the counters of various collection stats
     getDashboardStats: build.query<DashboardStatsType, void>({
       query: () => ({ url: 'Dashboard/Stats' }),
@@ -63,11 +63,11 @@ const dashboardApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useGetDashboardStatsQuery,
-  useGetDashboardSeriesSummaryQuery,
-  useGetDashboardRecentlyAddedEpisodesQuery,
-  useGetDashboardRecentlyAddedSeriesQuery,
+  useGetDashboardAniDBCalendarQuery,
   useGetDashboardContinueWatchingEpisodesQuery,
   useGetDashboardNextUpEpisodesQuery,
-  useGetDashboardAniDBCalendarQuery,
+  useGetDashboardRecentlyAddedEpisodesQuery,
+  useGetDashboardRecentlyAddedSeriesQuery,
+  useGetDashboardSeriesSummaryQuery,
+  useGetDashboardStatsQuery,
 } = dashboardApi;

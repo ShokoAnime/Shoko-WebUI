@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { find } from 'lodash';
+import { mdiOpenInNew } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import {
   createColumnHelper,
   flexRender,
@@ -7,14 +8,13 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import { find } from 'lodash';
 
 import Checkbox from '@/components/Input/Checkbox';
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
+import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
-import { EpisodeType } from '@/core/types/api/episode';
-import { Icon } from '@mdi/react';
-import { mdiOpenInNew } from '@mdi/js';
 
 type Props = {
   seriesId: number;
@@ -27,15 +27,19 @@ type Props = {
 const columnHelper = createColumnHelper<FileType>();
 
 function ManuallyLinkedFilesRow(props: Props) {
-  const { seriesId, updateSelectedFiles, selectedFiles, episodes, files } = props;
+  const { episodes, files, selectedFiles, seriesId, updateSelectedFiles } = props;
 
   const getEpTypePrefix = useCallback(
     (epType: string) => {
       switch (epType) {
-        case 'Normal': return 'EP';
-        case 'Special': return 'SP';
-        case 'ThemeSong': return 'C';
-        default: return '';
+        case 'Normal':
+          return 'EP';
+        case 'Special':
+          return 'SP';
+        case 'ThemeSong':
+          return 'C';
+        default:
+          return '';
       }
     },
     [],
@@ -85,9 +89,16 @@ function ManuallyLinkedFilesRow(props: Props) {
         const episode = find(episodes, item => item.IDs.ID === row.original.SeriesIDs![0].EpisodeIDs[0].ID)!;
         return (
           <div className="flex">
-            {`${getEpTypePrefix(episode?.AniDB?.Type ?? '')} ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}&nbsp;
-            (<span className="text-panel-primary font-semibold">{episode?.IDs?.AniDB}</span>)
-            <a href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`} rel="noopener noreferrer" target="_blank" className="text-panel-primary ml-2">
+            {`${getEpTypePrefix(episode?.AniDB?.Type ?? '')} ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}
+            &nbsp;(
+            <span className="font-semibold text-panel-primary">{episode?.IDs?.AniDB}</span>
+            )
+            <a
+              href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`}
+              rel="noopener noreferrer"
+              target="_blank"
+              className="ml-2 text-panel-primary"
+            >
               <Icon path={mdiOpenInNew} size={1} />
             </a>
           </div>
@@ -126,12 +137,12 @@ function ManuallyLinkedFilesRow(props: Props) {
   }, [selectedFiles, table]);
 
   return (
-    <table className="table-fixed text-left border-separate border-spacing-0 w-full">
+    <table className="w-full table-fixed border-separate border-spacing-0 text-left">
       <thead>
         {table.getHeaderGroups().map(headerGroup => (
           <tr key={headerGroup.id}>
             {headerGroup.headers.map(header => (
-              <th key={header.id} className={`${header.column.columnDef.meta?.className} pt-4 pb-1.5`}>
+              <th key={header.id} className={`${header.column.columnDef.meta?.className} pb-1.5 pt-4`}>
                 {flexRender(header.column.columnDef.header, header.getContext())}
               </th>
             ))}
@@ -143,7 +154,9 @@ function ManuallyLinkedFilesRow(props: Props) {
           <tr key={row.id}>
             {row.getVisibleCells().map(cell => (
               <td key={cell.id} className="py-1.5">
-                <span className="line-clamp-1 break-all">{flexRender(cell.column.columnDef.cell, cell.getContext())}</span>
+                <span className="line-clamp-1 break-all">
+                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </span>
               </td>
             ))}
           </tr>

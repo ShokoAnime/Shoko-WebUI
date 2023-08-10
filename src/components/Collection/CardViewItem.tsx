@@ -1,44 +1,53 @@
-import { CollectionGroupType } from '@/core/types/api/collection';
-import { WebuiGroupExtra } from '@/core/types/api/webui';
-import cx from 'classnames';
-import { forEach } from 'lodash';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from '@mdi/react';
 import {
   mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
   mdiEyeCheckOutline,
-  mdiTagTextOutline,
-  mdiTelevisionAmbientLight,
-  mdiTelevision,
   mdiFileDocumentMultipleOutline,
   mdiPencilCircleOutline,
+  mdiTagTextOutline,
+  mdiTelevision,
+  mdiTelevisionAmbientLight,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import { forEach } from 'lodash';
 import moment from 'moment/moment';
-import React from 'react';
-import { SeriesSizesFileSourcesType } from '@/core/types/api/series';
+
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import useMainPoster from '@/hooks/useMainPoster';
+
 import AnidbDescription from './AnidbDescription';
+
+import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { SeriesSizesFileSourcesType } from '@/core/types/api/series';
+import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: Array<string> = [];
   forEach(sources, (source, type) => {
-    if (source !== 0) { output.push(type); }
+    if (source !== 0) output.push(type);
   });
   return output.join(' / ');
 };
 
 const SeriesTag = ({ text, type }) => (
-  <div className={cx('text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-border-alt rounded-md p-2 whitespace-nowrap capitalize', type === 'User' ? 'text-panel-important' : 'text-panel-primary')}>
+  <div
+    className={cx(
+      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-border-alt rounded-md p-2 whitespace-nowrap capitalize',
+      type === 'User' ? 'text-panel-important' : 'text-panel-primary',
+    )}
+  >
     <Icon path={mdiTagTextOutline} size="1rem" />
     <span className="text-panel-text">{text}</span>
   </div>
 );
 
-const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) => {
+const CardViewItem = ({ item, mainSeries }: { item: CollectionGroupType, mainSeries?: WebuiGroupExtra }) => {
   const poster = useMainPoster(item);
-  const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes - item.Sizes.Local.Specials;
+  const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
+    - item.Sizes.Local.Specials;
 
   const viewRouteLink = () => {
     let link = '/webui/collection/';
@@ -58,62 +67,102 @@ const CardViewItem = (item: CollectionGroupType, mainSeries?: WebuiGroupExtra) =
   };
 
   return (
-    <div key={`group-${item.IDs.ID}`} className="content-center flex flex-col p-8 gap-y-4 rounded-md bg-panel-background w-[56.6875rem] h-full grow border-overlay-border border shrink-0">
+    <div
+      key={`group-${item.IDs.ID}`}
+      className="flex h-full w-[56.6875rem] shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-overlay-border bg-panel-background p-8"
+    >
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
-          <BackgroundImagePlaceholderDiv image={poster} className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative" hidePlaceholderOnHover zoomOnHover>
-            <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+          <BackgroundImagePlaceholderDiv
+            image={poster}
+            className="group relative h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+            hidePlaceholderOnHover
+            zoomOnHover
+          >
+            <div className="pointer-events-none z-10 flex h-full bg-overlay-background p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
               <Link to="#" className="h-fit">
-                <Icon path={mdiPencilCircleOutline} size="2rem" className="text-overlay-icon hover:text-overlay-icon-hover" />
+                <Icon
+                  path={mdiPencilCircleOutline}
+                  size="2rem"
+                  className="text-overlay-icon hover:text-overlay-icon-hover"
+                />
               </Link>
             </div>
           </BackgroundImagePlaceholderDiv>
         </Link>
         <div className="flex flex-col gap-y-4">
-
           <div className="font-semibold" title={item.Name}>{item.Name}</div>
 
           <div className="flex flex-col gap-y-3">
-            <div className="gap-x-4 flex flex-nowrap">
-              <div className="gap-x-2 flex align-middle items-center">
+            <div className="flex flex-nowrap gap-x-4">
+              <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiTelevision} size={1} />
                 <span className="text-sm font-semibold">{renderFileSources(item.Sizes.FileSources)}</span>
               </div>
-              <div className="gap-x-2 flex align-middle items-center">
+              <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiCalendarMonthOutline} size={1} />
                 <span className="text-sm font-semibold">
-                  {moment(mainSeries?.AirDate).format('MMMM Do, YYYY')} - {!mainSeries?.EndDate ? 'Current' : moment(mainSeries?.EndDate).format('MMMM Do, YYYY')}
+                  {moment(mainSeries?.AirDate).format('MMMM Do, YYYY')}
+                  &nbsp;-&nbsp;
+                  {!mainSeries?.EndDate ? 'Current' : moment(mainSeries?.EndDate).format('MMMM Do, YYYY')}
                 </span>
               </div>
               {isSeriesOngoing() && (
-                <div className="gap-x-2 flex align-middle items-center">
+                <div className="flex items-center gap-x-2 align-middle">
                   <Icon path={mdiTelevisionAmbientLight} size={1} />
                   <span className="text-sm font-semibold">Ongoing Series</span>
                 </div>
               )}
             </div>
 
-            <div className="gap-x-4 flex flex-nowrap">
-              <div className="gap-x-2 flex align-middle items-center">
+            <div className="flex flex-nowrap gap-x-4">
+              <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-                <span className="text-sm font-semibold">Episodes {item.Sizes.Local.Episodes} / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Local.Specials} / {item.Sizes.Total.Specials}</span>
+                <span className="text-sm font-semibold">
+                  Episodes&nbsp;
+                  {item.Sizes.Local.Episodes}
+                  &nbsp;/&nbsp;
+                  {item.Sizes.Total.Episodes}
+                  &nbsp;| Specials&nbsp;
+                  {item.Sizes.Local.Specials}
+                  &nbsp;/&nbsp;
+                  {item.Sizes.Total.Specials}
+                </span>
               </div>
-              <div className="gap-x-2 flex align-middle items-center">
+              <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiEyeCheckOutline} size={1} />
-                <span className="text-sm font-semibold">Episodes {item.Sizes.Watched.Episodes}  / {item.Sizes.Total.Episodes} | Specials {item.Sizes.Watched.Specials} / {item.Sizes.Total.Specials} </span>
+                <span className="text-sm font-semibold">
+                  Episodes&nbsp;
+                  {item.Sizes.Watched.Episodes}
+                  &nbsp;/&nbsp;
+                  {item.Sizes.Total.Episodes}
+                  &nbsp;| Specials&nbsp;
+                  {item.Sizes.Watched.Specials}
+                  &nbsp;/&nbsp;
+                  {item.Sizes.Total.Specials}
+                </span>
               </div>
               <div className={cx('gap-x-2 flex align-middle items-center', missingEpisodesCount === 0 && 'hidden')}>
                 <Icon className="text-panel-warning" path={mdiAlertCircleOutline} size={1} />
-                <span className="text-sm font-semibold">{item.Sizes.Total.Episodes - item.Sizes.Local.Episodes} ({item.Sizes.Total.Specials - item.Sizes.Local.Specials})</span>
+                <span className="text-sm font-semibold">
+                  {item.Sizes.Total.Episodes - item.Sizes.Local.Episodes}
+                  &nbsp;(
+                  {item.Sizes.Total.Specials - item.Sizes.Local.Specials}
+                  )
+                </span>
               </div>
             </div>
           </div>
 
-          <div className="text-sm line-clamp-4"><AnidbDescription text={item.Description} /></div>
+          <div className="line-clamp-4 text-sm">
+            <AnidbDescription text={item.Description} />
+          </div>
         </div>
       </div>
-      <div className="flex items-start flex-wrap h-9 gap-x-2 overflow-hidden">
-        {mainSeries?.Tags.slice(0, 10).map(tag => <SeriesTag key={`${mainSeries.ID}-${tag.Name}`} text={tag.Name} type={tag.Source} />) ?? ''}
+      <div className="flex h-9 flex-wrap items-start gap-x-2 overflow-hidden">
+        {mainSeries?.Tags.slice(0, 10).map(tag => (
+          <SeriesTag key={`${mainSeries.ID}-${tag.Name}`} text={tag.Name} type={tag.Source} />
+        )) ?? ''}
       </div>
     </div>
   );

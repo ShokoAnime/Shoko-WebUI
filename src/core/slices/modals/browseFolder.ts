@@ -1,4 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
+
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 const browseFolderSlice = createSlice({
   name: 'browseFolder',
@@ -20,7 +22,8 @@ const browseFolderSlice = createSlice({
 });
 
 export const {
-  setStatus, setSelectedNode,
+  setSelectedNode,
+  setStatus,
 } = browseFolderSlice.actions;
 
 export default browseFolderSlice.reducer;

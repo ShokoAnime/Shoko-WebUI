@@ -1,10 +1,15 @@
 import jsonpatch from 'fast-json-patch';
 
-import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
-import { SettingsAnidbLoginType } from '@/core/types/api/settings';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 import { webuiSettingsPatches } from '@/core/patches';
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+
+import type {
+  SettingsAnidbLoginType,
+  SettingsServerType,
+  SettingsType,
+  WebUISettingsType,
+} from '@/core/types/api/settings';
 
 const settingsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -12,10 +17,16 @@ const settingsApi = splitV3Api.injectEndpoints({
     getSettings: build.query<SettingsType, void>({
       query: () => ({ url: 'Settings' }),
       transformResponse: (response: SettingsServerType) => {
-        let webuiSettings = JSON.parse(response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings) as WebUISettingsType;
+        let webuiSettings = JSON.parse(
+          response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings,
+        ) as WebUISettingsType;
         const settingsRevision = webuiSettings.settingsRevision ?? 0;
-        if (settingsRevision < 4) webuiSettings = { ...initialSettings.WebUI_Settings, settingsRevision: Number(Object.keys(webuiSettingsPatches).pop()) };
-        else {
+        if (settingsRevision < 4) {
+          webuiSettings = {
+            ...initialSettings.WebUI_Settings,
+            settingsRevision: Number(Object.keys(webuiSettingsPatches).pop()),
+          };
+        } else {
           Object
             .keys(webuiSettingsPatches)
             .map(Number)
@@ -33,10 +44,19 @@ const settingsApi = splitV3Api.injectEndpoints({
     }),
 
     // JsonPatch the settings
-    patchSettings: build.mutation<void, { oldSettings: SettingsType, newSettings: SettingsType, skipValidation?: boolean }>({
-      query: ({ oldSettings, newSettings, ...params }) => {
-        const original: SettingsServerType = { ...oldSettings, WebUI_Settings: JSON.stringify(oldSettings.WebUI_Settings) };
-        const changed: SettingsServerType = { ...newSettings, WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings) };
+    patchSettings: build.mutation<
+      void,
+      { oldSettings: SettingsType, newSettings: SettingsType, skipValidation?: boolean }
+    >({
+      query: ({ newSettings, oldSettings, ...params }) => {
+        const original: SettingsServerType = {
+          ...oldSettings,
+          WebUI_Settings: JSON.stringify(oldSettings.WebUI_Settings),
+        };
+        const changed: SettingsServerType = {
+          ...newSettings,
+          WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings),
+        };
         const postData = jsonpatch.compare(original, changed);
         return {
           url: 'Settings',

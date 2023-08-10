@@ -1,12 +1,13 @@
 import React from 'react';
-import { toast, ToastContentProps, ToastOptions } from 'react-toastify';
-import { Icon } from '@mdi/react';
+import { toast } from 'react-toastify';
+import type { ToastContentProps, ToastOptions } from 'react-toastify';
 import {
   mdiAlertCircleOutline,
   mdiCheckboxMarkedCircleOutline,
   mdiCloseCircleOutline,
   mdiInformationOutline,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 type Props = Partial<ToastContentProps> & {
   header: string;
@@ -14,27 +15,30 @@ type Props = Partial<ToastContentProps> & {
   icon: string;
 };
 
-function Toast(props: Props) {
-  const { closeToast, toastProps, header, message, icon } = props;
+const colorClass = {
+  success: 'text-toast-important',
+  error: 'text-toast-danger',
+  info: 'text-toast-primary',
+  warning: 'text-toast-warning',
+};
 
-  const colorClass = () => {
-    switch (toastProps?.type) {
-      case 'success': return 'toast-important';
-      case 'error': return 'toast-danger';
-      case 'info': return 'toast-primary';
-      case 'warning': return 'toast-warning';
-      default: return 'toast-primary';
-    }
-  };
+function Toast(props: Props) {
+  const { closeToast, header, icon, message, toastProps } = props;
 
   return (
     <div className="flex">
-      <span><Icon path={icon} size={1} className={`text-${colorClass()}`} /></span>
-      <div className="flex flex-col grow ml-4 mr-8">
+      <span>
+        <Icon path={icon} size={1} className={colorClass[toastProps?.type ?? 'info']} />
+      </span>
+      <div className="ml-4 mr-8 flex grow flex-col">
         <div className="font-semibold">{header}</div>
         <div className="text-toast-text">{message}</div>
       </div>
-      {toastProps?.autoClose && <span onClick={closeToast}><Icon path={mdiCloseCircleOutline} size={1} className="text-toast-text opacity-65" /></span>}
+      {toastProps?.autoClose && (
+        <span onClick={closeToast}>
+          <Icon path={mdiCloseCircleOutline} size={1} className="text-toast-text opacity-65" />
+        </span>
+      )}
     </div>
   );
 }
@@ -57,7 +61,8 @@ const info = (header: string, message?: React.ReactNode, options?: ToastOptions)
 
 const dismiss = (id: string) => toast.dismiss(id);
 
-const infoUpdate = (id: string, header: string, message?: React.ReactNode) => toast.update(id, { render: <Toast header={header} message={message} icon={mdiInformationOutline} /> });
+const infoUpdate = (id: string, header: string, message?: React.ReactNode) =>
+  toast.update(id, { render: <Toast header={header} message={message} icon={mdiInformationOutline} /> });
 
 const isActive = (id: string) => toast.isActive(id);
 

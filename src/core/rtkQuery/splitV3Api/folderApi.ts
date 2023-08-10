@@ -1,5 +1,6 @@
-import { DriveType, FolderType } from '@/core/types/api/folder';
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { DriveType, FolderType } from '@/core/types/api/folder';
 
 let id = 0;
 export const getNextId = () => {

@@ -1,11 +1,12 @@
 import { get, omit } from 'lodash';
 
-import { RootState } from './store';
 import { externalApi } from './rtkQuery/externalApi';
 import { logsApi } from './rtkQuery/logsApi';
 import { plexApi } from './rtkQuery/plexApi';
 import { splitApi } from './rtkQuery/splitApi';
 import { splitV3Api } from './rtkQuery/splitV3Api';
+
+import type { RootState } from './store';
 
 const { VITE_APPVERSION } = import.meta.env;
 

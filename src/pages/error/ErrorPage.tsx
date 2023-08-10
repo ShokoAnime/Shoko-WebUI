@@ -1,12 +1,12 @@
 import React from 'react';
-import * as Sentry from '@sentry/react';
 import { Link, useNavigate } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 
 type Props = {
   children?: any;
 };
 
-const Fallback = ({ error, componentStack }) => {
+const Fallback = ({ componentStack, error }) => {
   const navigate = useNavigate();
 
   return (
@@ -16,10 +16,15 @@ const Fallback = ({ error, componentStack }) => {
         <p className="title">You broke the Web UI, congratulations.</p>
         <p className="text">Hopefully useful information:</p>
         <p className="title">{error.toString()}</p>
-        <p className="text">Trace:<pre>{componentStack}</pre></p>
         <p className="text">
-          <span className="text-panel-primary cursor-pointer" onClick={() => navigate(-1)}>Go back</span>, or head over to the&nbsp;
-          <Link to="/">home page</Link> to choose a new direction.
+          Trace:
+          <pre>{componentStack}</pre>
+        </p>
+        <p className="text">
+          <span className="cursor-pointer text-panel-primary" onClick={() => navigate(-1)}>Go back</span>
+          , or head over to the&nbsp;
+          <Link to="/">home page</Link>
+          &nbsp;to choose a new direction.
         </p>
       </div>
     </div>

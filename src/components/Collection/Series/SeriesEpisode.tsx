@@ -1,25 +1,22 @@
 import React, { useState } from 'react';
-import { get } from 'lodash';
-import { Icon } from '@mdi/react';
-import {
-  mdiChevronDown,
-  mdiEyeCheckOutline,
-  mdiEyeOffOutline,
-  mdiLoading,
-  mdiPencilCircleOutline,
-} from '@mdi/js';
 import AnimateHeight from 'react-animate-height';
+import { mdiChevronDown, mdiEyeCheckOutline, mdiEyeOffOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { get } from 'lodash';
 
-import type { EpisodeType } from '@/core/types/api/episode';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import Button from '@/components/Input/Button';
 import {
-  useLazyGetEpisodeFilesQuery, usePostEpisodeHiddenMutation,
+  useLazyGetEpisodeFilesQuery,
+  usePostEpisodeHiddenMutation,
   usePostEpisodeWatchedMutation,
 } from '@/core/rtkQuery/splitV3Api/episodeApi';
-import Button from '@/components/Input/Button';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
+
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
+
+import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
   episode: EpisodeType;
@@ -28,13 +25,14 @@ type Props = {
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
   show
     ? (
-      <div className="px-3 py-2 bg-panel-background-transparent shadow-[0_4px_4px_rgba(0,0,0,0.25)] rounded-md flex items-center justify-center text-panel-important">
+      <div className="flex items-center justify-center rounded-md bg-panel-background-transparent px-3 py-2 text-panel-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
         <Icon path={icon} size={1} />
       </div>
-    ) : null
+    )
+    : null
 );
 
-const StateButton = ({ icon, active, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
+const StateButton = ({ active, icon, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
   <Button className={active ? 'text-panel-important' : 'text-panel-text'} onClick={onClick}>
     <Icon path={icon} size="2rem" />
   </Button>
@@ -60,26 +58,42 @@ const SeriesEpisode = ({ episode }: Props) => {
   };
 
   return (
-    <React.Fragment>
-      <div className="flex gap-x-8 p-8 items-center z-10">
-        <BackgroundImagePlaceholderDiv image={thumbnail} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative group" hidePlaceholderOnHover zoomOnHover>
-          <div className="absolute right-3 top-3 z-10 group-hover:opacity-0 pointer-events-none transition-opacity">
+    <>
+      <div className="z-10 flex items-center gap-x-8 p-8">
+        <BackgroundImagePlaceholderDiv
+          image={thumbnail}
+          className="group relative h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+          hidePlaceholderOnHover
+          zoomOnHover
+        >
+          <div className="pointer-events-none absolute right-3 top-3 z-10 transition-opacity group-hover:opacity-0">
             <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
           </div>
-          <div className="pointer-events-none opacity-0 flex bg-overlay-background h-full justify-between p-3 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity z-10">
+          <div className="pointer-events-none z-10 flex h-full justify-between bg-overlay-background p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <div>
               <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} />
             </div>
             <div className="flex flex-col gap-y-8">
-              <StateButton icon={mdiEyeCheckOutline} active={episode.Watched !== null} onClick={() => markWatched({ episodeId, watched: episode.Watched === null })} />
-              <StateButton icon={mdiEyeOffOutline} active={episode.IsHidden} onClick={() => markHidden({ episodeId, hidden: !episode.IsHidden })} />
+              <StateButton
+                icon={mdiEyeCheckOutline}
+                active={episode.Watched !== null}
+                onClick={() => markWatched({ episodeId, watched: episode.Watched === null })}
+              />
+              <StateButton
+                icon={mdiEyeOffOutline}
+                active={episode.IsHidden}
+                onClick={() => markHidden({ episodeId, hidden: !episode.IsHidden })}
+              />
             </div>
           </div>
         </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
-      <div className="flex justify-center py-4 gap-x-4 border-panel-border border-t-2 cursor-pointer font-semibold" onClick={handleExpand}>
+      <div
+        className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
+        onClick={handleExpand}
+      >
         File Info
         <Icon
           path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}
@@ -92,7 +106,7 @@ const SeriesEpisode = ({ episode }: Props) => {
       <AnimateHeight height={isOpen ? 'auto' : 0}>
         <EpisodeFiles episodeFiles={episodeFilesResult.data ?? []} />
       </AnimateHeight>
-    </React.Fragment>
+    </>
   );
 };
 

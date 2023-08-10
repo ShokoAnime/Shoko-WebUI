@@ -1,26 +1,28 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { forEach } from 'lodash';
-import { Icon } from '@mdi/react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
-import { getCoreRowModel, getFilteredRowModel, Table, useReactTable } from '@tanstack/react-table';
+import { Icon } from '@mdi/react';
+import { getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { forEach } from 'lodash';
 import { useDebounce } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
-import TransitionDiv from '@/components/TransitionDiv';
-import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-
-import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { fuzzyFilter } from '@/core/util';
-
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
-import type { ListResultType } from '@/core/types/api';
+import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
-import { useUnrecognizedUtilityContext } from '../UnrecognizedUtility';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
+import { fuzzyFilter } from '@/core/util';
+import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
 
-const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void }) => {
+import type { ListResultType } from '@/core/types/api';
+import type { Table } from '@tanstack/react-table';
+
+const Menu = (
+  { files, refetch, table }: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void },
+) => {
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 
   const tableSelectedRows = table.getSelectedRowModel();
@@ -35,11 +37,18 @@ const Menu = ({ table, files, refetch }: { table: Table<FileType>, files: ListRe
 
   return (
     <>
-      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length === 0}>
-        <MenuButton onClick={() => { table.resetRowSelection(); refetch(); }} icon={mdiRestart} name="Refresh" />
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton
+          onClick={() => {
+            table.resetRowSelection();
+            refetch();
+          }}
+          icon={mdiRestart}
+          name="Refresh"
+        />
         <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore All" />
       </TransitionDiv>
-      <TransitionDiv className="flex grow absolute gap-x-4" show={selectedRows.length !== 0}>
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore All" highlight />
         <MenuButton onClick={table.resetRowSelection} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
       </TransitionDiv>
@@ -79,34 +88,49 @@ function IgnoredFilesTab() {
   }, [files, table]);
 
   return (
-    <div className="flex flex-col grow gap-y-8">
-
+    <div className="flex grow flex-col gap-y-8">
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
           <div className="flex items-center gap-x-3">
-            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={search} onChange={e => setSearch(e.target.value)} inputClassName="px-4 py-3" />
-            <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              inputClassName="px-4 py-3"
+            />
+            <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
               <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
-              <span className="text-panel-important ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
+              <span className="ml-auto text-panel-important">
+                {selectedRows.length}
+                &nbsp;
+              </span>
+              Files Selected
             </div>
           </div>
         </ShokoPanel>
       </div>
 
-      <TransitionDiv className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
         {filesQuery.isLoading && (
-          <div className="flex grow justify-center items-center text-panel-primary">
+          <div className="flex grow items-center justify-center text-panel-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
         {!filesQuery.isLoading && files.Total > 0 && (
-          <UtilitiesTable table={table} sortCriteria={sortCriteria} setSortCriteria={setSortCriteria} skipSort={Boolean(debouncedSearch)} />
+          <UtilitiesTable
+            table={table}
+            sortCriteria={sortCriteria}
+            setSortCriteria={setSortCriteria}
+            skipSort={Boolean(debouncedSearch)}
+          />
         )}
         {!filesQuery.isLoading && files.Total === 0 && (
-          <div className="flex items-center justify-center grow font-semibold">No ignored file(s)!</div>
+          <div className="flex grow items-center justify-center font-semibold">No ignored file(s)!</div>
         )}
       </TransitionDiv>
-
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import AvatarEditor from 'react-avatar-editor';
-import { Icon } from '@mdi/react';
 import { mdiImageMinusOutline, mdiImagePlusOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
-import ModalPanel from '@/components/Panels/ModalPanel';
 import Button from '@/components/Input/Button';
+import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 
 type Props = {
@@ -15,7 +15,7 @@ type Props = {
 };
 
 const AvatarEditorModal = (props: Props) => {
-  const { show, onClose, image, changeAvatar } = props;
+  const { changeAvatar, image, onClose, show } = props;
 
   const imageEditor = useRef<AvatarEditor>(null);
   const [scale, setScale] = useState(1);
@@ -50,20 +50,20 @@ const AvatarEditorModal = (props: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-8 !w-96"
+      className="!w-96 flex-col gap-y-8 p-8 drop-shadow-lg"
     >
-      <div className="flex font-semibold text-xl">Avatar</div>
+      <div className="flex text-xl font-semibold">Avatar</div>
       <AvatarEditor
         image={image}
         width={256}
         height={256}
         borderRadius={9999}
         scale={scale}
-        className="self-center bg-default-background h-auto w-full rounded"
+        className="h-auto w-full self-center rounded bg-default-background"
         onLoadFailure={onLoadFailure}
         ref={imageEditor}
       />
-      <div className="flex gap-x-4 items-center">
+      <div className="flex items-center gap-x-4">
         <Icon path={mdiImageMinusOutline} size={0.9} />
         <input
           name="scale"

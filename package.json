@@ -75,6 +75,8 @@
     "eslint-plugin-jsx-a11y": "^6.7.1",
     "eslint-plugin-react": "^7.33.0",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-sort-destructure-keys": "^1.5.0",
+    "eslint-plugin-tailwindcss": "^3.13.0",
     "postcss": "^8.4.27",
     "postcss-import": "^15.1.0",
     "postcss-load-config": "^4.0.1",
@@ -89,10 +91,12 @@
     "vite": "^4.4.6"
   },
   "scripts": {
-    "eslint": "eslint --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src",
-    "eslint-fix": "eslint --fix --ext .js --ext .jsx --ext .ts --ext tsx --cache --format=node_modules/eslint-formatter-pretty src",
+    "eslint": "eslint --cache --format=node_modules/eslint-formatter-pretty src",
+    "eslint:fix": "eslint --fix --cache --format=node_modules/eslint-formatter-pretty src",
+    "dprint": "dprint check",
+    "dprint:fix": "dprint fmt",
     "stylelint": "stylelint \"src/css/*.css\"",
-    "lint": "yarn run eslint && yarn run stylelint",
+    "lint": "yarn run dprint && yarn run eslint && yarn run stylelint",
     "build": "cross-env NODE_ENV=production vite build",
     "build:debug": "cross-env NODE_ENV=development vite build",
     "start": "cross-env NODE_ENV=development vite dev"

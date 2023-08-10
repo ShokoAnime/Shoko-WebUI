@@ -1,7 +1,5 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { forEach } from 'lodash';
-import { Icon } from '@mdi/react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   mdiCloseCircleOutline,
   mdiFormatListBulletedSquare,
@@ -11,15 +9,19 @@ import {
   mdiPoundBoxOutline,
   mdiTextBoxOutline,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { forEach } from 'lodash';
 import { useEventCallback } from 'usehooks-ts';
 
-import { RootState } from '@/core/store';
 import Button from '@/components/Input/Button';
 import type { SignalRQueueType } from '@/core/types/signalr';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
 import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitV3Api/queueApi';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
+
+import type { RootState } from '@/core/store';
+import type { QueueItemType } from '@/core/types/signalr';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, image: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
@@ -42,9 +44,13 @@ function QueueProcessor() {
   const renderItem = (key: string, item: SignalRQueueType) => (
     <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
-        <div className="flex items-center w-56">
+        <div className="flex w-56 items-center">
           <Icon className="mr-4" path={icons[key]} size={1} />
-          <span>{names[key]} - {item?.status ?? 'Idle'}</span>
+          <span>
+            {names[key]}
+            &nbsp;-&nbsp;
+            {item?.status ?? 'Idle'}
+          </span>
         </div>
         <div className="flex text-panel-important">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
@@ -62,7 +68,7 @@ function QueueProcessor() {
           </Button>
         </div>
       </div>
-      <div className="flex break-all h-12 mt-2">
+      <div className="mt-2 flex h-12 break-all">
         {item?.description ?? 'Idle'}
       </div>
     </div>
@@ -106,7 +112,7 @@ function QueueProcessor() {
 
   return (
     <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched} editMode={layoutEditMode}>
-      <div className="flex flex-col justify-between h-full">
+      <div className="flex h-full flex-col justify-between">
         {commands}
       </div>
     </ShokoPanel>

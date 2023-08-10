@@ -1,9 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import AnimateHeight from 'react-animate-height';
 import { useDispatch } from 'react-redux';
-import cx from 'classnames';
-import Fuse from 'fuse.js';
-import { useVirtualizer, VirtualItem } from '@tanstack/react-virtual';
-import { Icon } from '@mdi/react';
 import {
   mdiChevronDown,
   mdiCloseCircleOutline,
@@ -14,31 +11,41 @@ import {
   mdiOpenInNew,
   mdiRefresh,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
+import cx from 'classnames';
+import Fuse from 'fuse.js';
 import moment from 'moment/moment';
-import AnimateHeight from 'react-animate-height';
+import { useImmer } from 'use-immer';
 
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import Title from '@/components/Utilities/Unrecognized/Title';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import {
   useGetSeriesWithManuallyLinkedFilesQuery,
   useLazyGetSeriesEpisodesQuery,
   useLazyGetSeriesFilesQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { SeriesType } from '@/core/types/api/series';
-import { ListResultType } from '@/core/types/api';
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
-import toast from '@/components/Toast';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-import Input from '@/components/Input/Input';
-import Title from '@/components/Utilities/Unrecognized/Title';
-import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
-import { useImmer } from 'use-immer';
-import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
-import Button from '@/components/Input/Button';
+
+import type { ListResultType } from '@/core/types/api';
+import type { SeriesType } from '@/core/types/api/series';
+import type { VirtualItem } from '@tanstack/react-virtual';
 
 const SeriesRow = (
-  { row, virtualRow, selectedFiles, updateSelectedFiles }: { row: SeriesType, virtualRow: VirtualItem, selectedFiles: { [_: number]: boolean }, updateSelectedFiles: (fileIds: number[], select?: boolean) => void },
+  { row, selectedFiles, updateSelectedFiles, virtualRow }: {
+    row: SeriesType;
+    virtualRow: VirtualItem;
+    selectedFiles: { [_: number]: boolean };
+    updateSelectedFiles: (fileIds: number[], select?: boolean) => void;
+  },
 ) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -60,19 +67,39 @@ const SeriesRow = (
   };
 
   return (
-    <div className={cx(virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background', 'relative py-4 text-left')}>
+    <div
+      className={cx(
+        virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background',
+        'relative py-4 text-left',
+      )}
+    >
       <div
         className="flex cursor-pointer px-8"
         onClick={handleExpand}
       >
-        <div className="grow line-clamp-1">{row.Name}</div>
-        <a href={`https://anidb.net/anime/${row.IDs.AniDB}`} rel="noopener noreferrer" target="_blank" className="text-panel-primary font-semibold w-24 flex gap-x-2" onClick={e => e.stopPropagation()}>
+        <div className="line-clamp-1 grow">{row.Name}</div>
+        <a
+          href={`https://anidb.net/anime/${row.IDs.AniDB}`}
+          rel="noopener noreferrer"
+          target="_blank"
+          className="flex w-24 gap-x-2 font-semibold text-panel-primary"
+          onClick={e => e.stopPropagation()}
+        >
           {row.IDs.AniDB}
           <Icon path={mdiOpenInNew} size={1} />
         </a>
-        <div className="w-32">{row.Sizes.FileSources.Unknown} files</div>
+        <div className="w-32">
+          {row.Sizes.FileSources.Unknown}
+          &nbsp;files
+        </div>
         <div className="w-64">{moment(row.Created).format('MMMM DD YYYY, HH:mm')}</div>
-        <Icon path={loading ? mdiLoading : mdiChevronDown} spin={loading} size={1} rotate={open ? 180 : 0} className="transition-transform" />
+        <Icon
+          path={loading ? mdiLoading : mdiChevronDown}
+          spin={loading}
+          size={1}
+          rotate={open ? 180 : 0}
+          className="transition-transform"
+        />
       </div>
       <AnimateHeight height={open ? 'auto' : 0}>
         <ManuallyLinkedFilesRow
@@ -87,7 +114,12 @@ const SeriesRow = (
   );
 };
 
-const Menu = ({ selectedFiles, setSelectedFiles }: { selectedFiles: { [_: number]: boolean }, setSelectedFiles: (files: { [_: number]: boolean }) => void }) => {
+const Menu = (
+  { selectedFiles, setSelectedFiles }: {
+    selectedFiles: { [_: number]: boolean };
+    setSelectedFiles: (files: { [_: number]: boolean }) => void;
+  },
+) => {
   const dispatch = useDispatch();
 
   const [rescanFile] = usePostFileRescanMutation();
@@ -113,13 +145,22 @@ const Menu = ({ selectedFiles, setSelectedFiles }: { selectedFiles: { [_: number
   };
 
   return (
-    <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
       <MenuButton onClick={refreshData} icon={mdiRefresh} name="Refresh" />
-      <TransitionDiv className="flex grow gap-x-4 ml-4" show={Object.keys(selectedFiles).length !== 0}>
+      <TransitionDiv className="ml-4 flex grow gap-x-4" show={Object.keys(selectedFiles).length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => setSelectedFiles({})} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+        <MenuButton
+          onClick={() => setSelectedFiles({})}
+          icon={mdiCloseCircleOutline}
+          name="Cancel Selection"
+          highlight
+        />
       </TransitionDiv>
-      <span className="text-panel-important ml-auto">{Object.keys(selectedFiles).length}&nbsp;</span>Files Selected
+      <span className="ml-auto text-panel-important">
+        {Object.keys(selectedFiles).length}
+        &nbsp;
+      </span>
+      Files Selected
     </div>
   );
 };
@@ -149,12 +190,16 @@ function ManuallyLinkedTab() {
   const virtualItems = rowVirtualizer.getVirtualItems();
 
   const [selectedFiles, setSelectedFiles] = useImmer<{ [key: number]: boolean }>({});
-  const updateSelectedFiles = useCallback((fileIds: number[], select = true) => setSelectedFiles((selectedFilesState) => {
-    fileIds.forEach((fileId) => {
-      // eslint-disable-next-line no-param-reassign
-      selectedFilesState[fileId] = select;
-    });
-  }), [setSelectedFiles]);
+  const updateSelectedFiles = useCallback(
+    (fileIds: number[], select = true) =>
+      setSelectedFiles((selectedFilesState) => {
+        fileIds.forEach((fileId) => {
+          // eslint-disable-next-line no-param-reassign
+          selectedFilesState[fileId] = select;
+        });
+      }),
+    [setSelectedFiles],
+  );
 
   const unlinkFiles = () => {
     const fileIds = Object.keys(selectedFiles);
@@ -175,17 +220,24 @@ function ManuallyLinkedTab() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col grow gap-y-8 overflow-y-auto">
-
+    <TransitionDiv className="flex grow flex-col gap-y-8 overflow-y-auto">
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series />}>
           <div className="flex items-center gap-x-3">
-            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} inputClassName="px-4 py-3" />
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              inputClassName="px-4 py-3"
+            />
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
             <TransitionDiv show={Object.keys(selectedFiles).length !== 0} className="flex gap-x-3">
               <Button
                 buttonType="primary"
-                className="px-4 py-3 flex gap-x-2.5 font-semibold"
+                className="flex gap-x-2.5 px-4 py-3 font-semibold"
                 onClick={unlinkFiles}
               >
                 <Icon path={mdiLinkOff} size={0.8333} />
@@ -196,34 +248,42 @@ function ManuallyLinkedTab() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
+      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
         {seriesQuery.isFetching && (
-          <div className="flex grow justify-center items-center">
+          <div className="flex grow items-center justify-center">
             <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
           </div>
         )}
         {!seriesQuery.isFetching && series.Total > 0 && (
-          <div className="flex flex-col w-full overflow-y-auto">
-            <div className="flex px-6 py-4 bg-panel-background-toolbar font-semibold sticky top-0 z-[1] rounded-md border border-panel-border">
+          <div className="flex w-full flex-col overflow-y-auto">
+            <div className="sticky top-0 z-[1] flex rounded-md border border-panel-border bg-panel-background-toolbar px-6 py-4 font-semibold">
               <div className="grow">Series</div>
               <div className="w-24">AniDB ID</div>
               <div className="w-32">Link Count</div>
               <div className="w-64">Date Linked</div>
               <div className="w-10" />
             </div>
-            <div ref={parentRef} className="grow overflow-y-auto relative">
-              <div className="w-full absolute top-0" style={{ height: rowVirtualizer.getTotalSize() }}>
-                <div className="w-full absolute top-0 left-0" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
+            <div ref={parentRef} className="relative grow overflow-y-auto">
+              <div className="absolute top-0 w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+                <div
+                  className="absolute left-0 top-0 w-full"
+                  style={{ transform: `translateY(${virtualItems[0].start}px)` }}
+                >
                   {virtualItems.map((virtualRow) => {
                     const row = filteredSeries[virtualRow.index];
                     return (
                       <div
-                        className="border-panel-border border rounded-md mt-2"
+                        className="mt-2 rounded-md border border-panel-border"
                         key={virtualRow.key}
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}
                       >
-                        <SeriesRow row={row} virtualRow={virtualRow} selectedFiles={selectedFiles} updateSelectedFiles={updateSelectedFiles} />
+                        <SeriesRow
+                          row={row}
+                          virtualRow={virtualRow}
+                          selectedFiles={selectedFiles}
+                          updateSelectedFiles={updateSelectedFiles}
+                        />
                       </div>
                     );
                   })}
@@ -233,7 +293,7 @@ function ManuallyLinkedTab() {
           </div>
         )}
         {!seriesQuery.isFetching && series.Total === 0 && (
-          <div className="flex items-center justify-center grow font-semibold">No Manually Linked File(s)!</div>
+          <div className="flex grow items-center justify-center font-semibold">No Manually Linked File(s)!</div>
         )}
       </div>
     </TransitionDiv>

@@ -1,8 +1,9 @@
-import * as Sentry from '@sentry/react';
 import React from 'react';
+import * as Sentry from '@sentry/react';
 import { createRoot } from 'react-dom/client';
+
 import App from './core/app';
-import { uiVersion, isDebug } from './core/util';
+import { isDebug, uiVersion } from './core/util';
 import './css/main.css';
 
 if (!isDebug()) {

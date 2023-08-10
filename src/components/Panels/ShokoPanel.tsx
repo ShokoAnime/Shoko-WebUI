@@ -1,7 +1,7 @@
-import React, { ReactNode } from 'react';
-import cx from 'classnames';
-import { Icon } from '@mdi/react';
+import React, { type ReactNode } from 'react';
 import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 type Props = {
   title: ReactNode;
@@ -16,10 +16,31 @@ type Props = {
   contentClassName?: string;
 };
 
-const ShokoPanel = ({ className, contentClassName, title, options, children, isFetching, editMode, fullHeight = true, disableOverflow = false, transparent = false }: Props) => (
-  <div className={cx('flex flex-col overflow-hidden transition-colors border rounded p-8', fullHeight && 'h-full', editMode ? 'pointer-events-none border-panel-primary' : 'border-panel-border', transparent ? 'bg-panel-background-transparent' : 'bg-panel-background', className)}>
-    <div className="flex justify-between items-center mb-8">
-      <span className="flex font-semibold text-xl">{title}</span>
+const ShokoPanel = (
+  {
+    children,
+    className,
+    contentClassName,
+    disableOverflow = false,
+    editMode,
+    fullHeight = true,
+    isFetching,
+    options,
+    title,
+    transparent = false,
+  }: Props,
+) => (
+  <div
+    className={cx(
+      'flex flex-col overflow-hidden transition-colors border rounded p-8',
+      fullHeight && 'h-full',
+      editMode ? 'pointer-events-none border-panel-primary' : 'border-panel-border',
+      transparent ? 'bg-panel-background-transparent' : 'bg-panel-background',
+      className,
+    )}
+  >
+    <div className="mb-8 flex items-center justify-between">
+      <span className="flex text-xl font-semibold">{title}</span>
       <div
         className="flex"
         onMouseDown={event => event.stopPropagation()}
@@ -28,8 +49,20 @@ const ShokoPanel = ({ className, contentClassName, title, options, children, isF
         {options}
       </div>
     </div>
-    <div className={cx('flex grow flex-col shoko-scrollbar', disableOverflow === false && 'overflow-y-auto', contentClassName)}>
-      {isFetching ? <div className="flex grow justify-center items-center"><Icon path={mdiLoading} spin size={1} /></div> : children}
+    <div
+      className={cx(
+        'flex grow flex-col shoko-scrollbar',
+        disableOverflow === false && 'overflow-y-auto',
+        contentClassName,
+      )}
+    >
+      {isFetching
+        ? (
+          <div className="flex grow items-center justify-center">
+            <Icon path={mdiLoading} spin size={1} />
+          </div>
+        )
+        : children}
     </div>
   </div>
 );

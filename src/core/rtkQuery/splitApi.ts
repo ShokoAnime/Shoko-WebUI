@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { RootState } from '../store';
+import type { RootState } from '@/core/store';
 
 export const splitApi = createApi({
   reducerPath: 'splitApi',

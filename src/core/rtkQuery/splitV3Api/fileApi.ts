@@ -1,10 +1,10 @@
-import type { AVDumpResultType, FileLinkManyApiType, FileLinkOneApiType, FileRequestType, FileType } from '@/core/types/api/file';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { ListResultType } from '@/core/types/api';
-import { splitV3Api } from '../splitV3Api';
+import type { AVDumpResultType, FileLinkManyApiType, FileLinkOneApiType, FileRequestType, FileType } from '@/core/types/api/file';
 
 const fileApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
-
     // Delete a file.
     deleteFile: build.mutation<void, { fileId: number, removeFolder: boolean }>({
       query: ({ fileId, ...params }) => ({
@@ -89,13 +89,13 @@ const fileApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useDeleteFileMutation,
-  usePutFileIgnoreMutation,
-  useLazyPostFileAVDumpQuery,
-  usePostFileRescanMutation,
-  usePostFileRehashMutation,
-  usePostFileLinkOneMutation,
-  usePostFileLinkManyMutation,
   useDeleteFileLinkMutation,
+  useDeleteFileMutation,
   useGetFilesQuery,
+  useLazyPostFileAVDumpQuery,
+  usePostFileLinkManyMutation,
+  usePostFileLinkOneMutation,
+  usePostFileRehashMutation,
+  usePostFileRescanMutation,
+  usePutFileIgnoreMutation,
 } = fileApi;

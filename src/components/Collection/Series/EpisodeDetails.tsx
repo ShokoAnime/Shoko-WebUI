@@ -1,10 +1,10 @@
-import { toNumber } from 'lodash';
 import React from 'react';
-import moment from 'moment/moment';
-import { Icon } from '@mdi/react';
 import { mdiCalendarMonthOutline, mdiClockOutline, mdiStarHalfFull } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { toNumber } from 'lodash';
+import moment from 'moment/moment';
 
-import { EpisodeType } from '@/core/types/api/episode';
+import type { EpisodeType } from '@/core/types/api/episode';
 
 const getDuration = (duration) => {
   const minutes = moment.duration(duration).asMinutes();
@@ -14,11 +14,17 @@ const getDuration = (duration) => {
 
 function EpisodeDetails({ episode }: { episode: EpisodeType }) {
   return (
-    <div className="flex flex-col gap-y-4 grow">
+    <div className="flex grow flex-col gap-y-4">
       <div className="flex justify-between font-semibold">
-        <div className="opacity-65">Episode {episode.AniDB?.EpisodeNumber}</div>
-        { episode.Size > 1 && (
-          <div><span className="text-panel-important">{episode.Size}</span> Files</div>
+        <div className="opacity-65">
+          Episode
+          {episode.AniDB?.EpisodeNumber}
+        </div>
+        {episode.Size > 1 && (
+          <div>
+            <span className="text-panel-important">{episode.Size}</span>
+            &nbsp;Files
+          </div>
         )}
       </div>
 
@@ -26,16 +32,19 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
         {episode.Name}
       </div>
 
-      <div className="flex gap-x-2 font-semibold text-sm items-center">
+      <div className="flex items-center gap-x-2 text-sm font-semibold">
         <Icon path={mdiCalendarMonthOutline} size={1} />
         {moment(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
         <Icon path={mdiClockOutline} size={1} />
         {getDuration(episode.Duration)}
         <Icon path={mdiStarHalfFull} size={1} />
-        {toNumber(episode.AniDB?.Rating.Value).toFixed(2)} ({episode.AniDB?.Rating.Votes} Votes)
+        {toNumber(episode.AniDB?.Rating.Value).toFixed(2)}
+        &nbsp;(
+        {episode.AniDB?.Rating.Votes}
+        &nbsp;Votes)
       </div>
 
-      <div className="flex line-clamp-3">
+      <div className="line-clamp-3 flex">
         {episode.AniDB?.Description}
       </div>
     </div>

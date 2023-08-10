@@ -1,4 +1,4 @@
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 const actionsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

@@ -1,5 +1,6 @@
-import { ImageTypeEnum } from '@/core/types/api/common';
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { ImageTypeEnum } from '@/core/types/api/common';
 
 type RandomMetadataResultType = {
   Source: string;
@@ -13,7 +14,7 @@ type RandomMetadataResultType = {
   Series: {
     ID: number;
     Name: string;
-  }
+  };
 };
 
 const imageApi = splitV3Api.injectEndpoints({

@@ -1,14 +1,22 @@
 import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
 import { omit } from 'lodash';
 
-import type { SeriesAniDBSearchResult, SeriesRecommendedType, SeriesType } from '@/core/types/api/series';
-import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesCast, SeriesDetailsType } from '@/core/types/api/series';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
-import { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
-import { FileType } from '@/core/types/api/file';
-import { TagType } from '@/core/types/api/tags';
-import { DataSourceType, ImageType } from '@/core/types/api/common';
-import { splitV3Api } from '../splitV3Api';
+import type { DataSourceType, ImageType } from '@/core/types/api/common';
+import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
+import type { FileType } from '@/core/types/api/file';
+import type {
+  SeriesAniDBRelatedType,
+  SeriesAniDBSearchResult,
+  SeriesAniDBSimilarType,
+  SeriesCast,
+  SeriesDetailsType,
+  SeriesRecommendedType,
+  SeriesType,
+} from '@/core/types/api/series';
+import type { TagType } from '@/core/types/api/tags';
 
 type SeriesImagesQueryResultType = {
   Posters: ImageType[];
@@ -23,7 +31,7 @@ export type SeriesEpisodesQueryType = {
   includeDataFrom?: DataSourceType[];
   includeWatched?: string;
   type?: string;
-  search?:string;
+  search?: string;
   fuzzy?: boolean;
 } & PaginationType;
 
@@ -33,13 +41,12 @@ export type SeriesAniDBEpisodesQueryType = {
   includeHidden?: string;
   includeWatched?: string;
   type?: string;
-  search?:string;
+  search?: string;
   fuzzy?: boolean;
 } & PaginationType;
 
 const seriesApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
-
     // Delete a Series
     deleteSeries: build.mutation<void, { seriesId: number, deleteFiles: boolean }>({
       query: ({ seriesId, ...params }) => ({ url: `Series/${seriesId}`, method: 'DELETE', params }),
@@ -80,7 +87,7 @@ const seriesApi = splitV3Api.injectEndpoints({
         total: response.Total,
       }),
       // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
+      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
         defaultSerializeQueryArgs({
           endpointName,
           queryArgs: omit(queryArgs, ['page']),
@@ -99,8 +106,11 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Queue a refresh of the AniDB Info for series with AniDB ID
-    refreshAnidbSeries: build.mutation<boolean, { anidbID: number; force?: boolean; createSeries?: boolean }>({
-      query: ({ anidbID, force = false, createSeries = false }) => ({ url: `Series/AniDB/${anidbID}/Refresh?force=${force}&createSeriesEntry=${createSeries}&immediate=true`, method: 'POST' }),
+    refreshAnidbSeries: build.mutation<boolean, { anidbID: number, force?: boolean, createSeries?: boolean }>({
+      query: ({ anidbID, createSeries = false, force = false }) => ({
+        url: `Series/AniDB/${anidbID}/Refresh?force=${force}&createSeriesEntry=${createSeries}&immediate=true`,
+        method: 'POST',
+      }),
       invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes', 'SeriesSearch'],
     }),
 
@@ -124,7 +134,10 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['FileMatched', 'UtilitiesRefresh'],
     }),
 
-    getSeriesFiles: build.query<Array<FileType>, { seriesId: number, isManuallyLinked: boolean, includeXRefs: boolean }>({
+    getSeriesFiles: build.query<
+      Array<FileType>,
+      { seriesId: number, isManuallyLinked: boolean, includeXRefs: boolean }
+    >({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/File`,
         params,
@@ -132,14 +145,14 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['FileMatched', 'UtilitiesRefresh'],
     }),
 
-    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] } >({
+    getSeries: build.query<SeriesDetailsType, { seriesId: string, includeDataFrom?: string[] }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}`,
         params,
       }),
     }),
 
-    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean } >({
+    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/Tags`,
         params,
@@ -158,18 +171,20 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
     }),
     // Get the next Shoko.Server.API.v3.Models.Shoko.Episode for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    nextUpEpisode: build.query<EpisodeType, { seriesId: number; }>({
-      query: ({ seriesId }) => ({ url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB&includeMissing=false` }),
+    nextUpEpisode: build.query<EpisodeType, { seriesId: number }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/NextUpEpisode?includeDataFrom=AniDB&includeDataFrom=TvDB&includeMissing=false`,
+      }),
     }),
 
-    getSeriesCast: build.query<SeriesCast[], { seriesId: string } >({
+    getSeriesCast: build.query<SeriesCast[], { seriesId: string }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/Cast`,
         params,
       }),
     }),
 
-    getSeriesImages: build.query<SeriesImagesQueryResultType, { seriesId: string } >({
+    getSeriesImages: build.query<SeriesImagesQueryResultType, { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/Images`,
       }),
@@ -179,21 +194,21 @@ const seriesApi = splitV3Api.injectEndpoints({
 
 export const {
   useDeleteSeriesMutation,
-  useGetSeriesWithoutFilesQuery,
-  useLazyGetSeriesAniDBSearchQuery,
-  useLazyGetSeriesAniDBQuery,
-  useLazyGetSeriesEpisodesQuery,
-  useGetSeriesAniDBEpisodesQuery,
-  useLazyGetSeriesEpisodesInfiniteQuery,
-  useRefreshAnidbSeriesMutation,
   useGetAniDBRecommendedAnimeQuery,
-  useGetSeriesWithManuallyLinkedFilesQuery,
-  useLazyGetSeriesFilesQuery,
-  useGetSeriesQuery,
-  useGetSeriesTagsQuery,
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,
-  useNextUpEpisodeQuery,
+  useGetSeriesAniDBEpisodesQuery,
   useGetSeriesCastQuery,
   useGetSeriesImagesQuery,
+  useGetSeriesQuery,
+  useGetSeriesTagsQuery,
+  useGetSeriesWithManuallyLinkedFilesQuery,
+  useGetSeriesWithoutFilesQuery,
+  useLazyGetSeriesAniDBQuery,
+  useLazyGetSeriesAniDBSearchQuery,
+  useLazyGetSeriesEpisodesInfiniteQuery,
+  useLazyGetSeriesEpisodesQuery,
+  useLazyGetSeriesFilesQuery,
+  useNextUpEpisodeQuery,
+  useRefreshAnidbSeriesMutation,
 } = seriesApi;

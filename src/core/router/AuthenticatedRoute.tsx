@@ -1,9 +1,10 @@
 import React from 'react';
-import { Navigate } from 'react-router';
 import { useSelector } from 'react-redux';
+import { Navigate } from 'react-router';
+
+import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 
 import type { RootState } from '@/core/store';
-import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 
 type Props = {
   children: JSX.Element;
@@ -16,7 +17,7 @@ function AuthenticatedRoute(props: Props) {
 
   return (serverState === 2 && isAuthenticated)
     ? props.children
-    : (<Navigate to="/webui/login" replace />);
+    : <Navigate to="/webui/login" replace />;
 }
 
 export default AuthenticatedRoute;

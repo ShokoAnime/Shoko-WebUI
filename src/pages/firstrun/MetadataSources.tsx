@@ -2,15 +2,17 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 
-import { setSaved as setFirstRunSaved, TestStatusType } from '@/core/slices/firstrun';
-import TransitionDiv from '@/components/TransitionDiv';
 import Button from '@/components/Input/Button';
-import Footer from './Footer';
-import AniDBTab from './MetadataSourcesTabs/AniDBTab';
-import TvDBTab from './MetadataSourcesTabs/TvDBTab';
-import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';
+import TransitionDiv from '@/components/TransitionDiv';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
+import Footer from './Footer';
+import AniDBTab from './MetadataSourcesTabs/AniDBTab';
+import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';
+import TvDBTab from './MetadataSourcesTabs/TvDBTab';
+
+import type { TestStatusType } from '@/core/slices/firstrun';
 
 function MetadataSources() {
   const { saveSettings } = useFirstRunSettingsContext();
@@ -29,13 +31,13 @@ function MetadataSources() {
   const renderTabContent = () => {
     switch (activeTab) {
       case 'anidb':
-        return (<AniDBTab setStatus={setStatus} />);
+        return <AniDBTab setStatus={setStatus} />;
       case 'tvdb':
-        return (<TvDBTab />);
+        return <TvDBTab />;
       case 'moviedb':
-        return (<MovieDBTab />);
+        return <MovieDBTab />;
       default:
-        return (<AniDBTab setStatus={setStatus} />);
+        return <AniDBTab setStatus={setStatus} />;
     }
   };
 
@@ -45,14 +47,14 @@ function MetadataSources() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col overflow-y-auto justify-center max-w-[38rem] gap-y-8">
-      <div className="font-semibold text-xl">Metadata Sites</div>
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8 overflow-y-auto">
+      <div className="text-xl font-semibold">Metadata Sites</div>
       <div className="text-justify">
         Shoko offers support for various community sites that provide additional metadata for the series in your
         collection. We highly recommend that you review the settings for each site and configure them to meet your
         preferences.
       </div>
-      <div className="flex border-b-2 border-panel-border pb-3 gap-x-2 text-xl">
+      <div className="flex gap-x-2 border-b-2 border-panel-border pb-3 text-xl">
         {renderTabButton('AniDB', 'anidb')}
         |
         {renderTabButton('TMBD', 'moviedb')}
@@ -60,7 +62,7 @@ function MetadataSources() {
         {renderTabButton('TVDB', 'tvdb')}
         {/* TODO: Add plex and trakt settings. Currently they only work after the setup is completed. */}
       </div>
-      <div className="flex flex-col pr-8 overflow-y-auto flex-shrink h-80">
+      <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
         {renderTabContent()}
       </div>
       <Footer nextPage="start-server" saveFunction={handleSave} status={status} />

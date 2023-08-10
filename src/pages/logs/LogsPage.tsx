@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import { Icon } from '@mdi/react';
 import { mdiArrowVerticalLock, mdiCogOutline, mdiFilterOutline, mdiLoading, mdiMagnify } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 
-import { useGetLogsQuery } from '@/core/rtkQuery/logsApi';
-import { LogLineType } from '@/core/types/api/common';
-import Input from '@/components/Input/Input';
 import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import { useGetLogsQuery } from '@/core/rtkQuery/logsApi';
+
+import type { LogLineType } from '@/core/types/api/common';
 
 const LogsPage = () => {
   const [id] = useState(new Date().getTime());
@@ -30,11 +31,20 @@ const LogsPage = () => {
   }, [logLines.length, isScrollToBottom, rowVirtualizer]);
 
   return (
-    <div className="flex flex-col gap-y-8 grow">
-      <div className="flex justify-between bg-panel-background border border-panel-border rounded-md px-8 py-4 items-center">
+    <div className="flex grow flex-col gap-y-8">
+      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background px-8 py-4">
         <div className="text-xl font-semibold">Logs</div>
-        <div className="flex gap-x-4 items-center">
-          <Input id="search" onChange={e => setSearch(e.target.value)} type="text" value={search} placeholder="Search Logs..." startIcon={mdiMagnify} className="w-80" disabled />
+        <div className="flex items-center gap-x-4">
+          <Input
+            id="search"
+            onChange={e => setSearch(e.target.value)}
+            type="text"
+            value={search}
+            placeholder="Search Logs..."
+            startIcon={mdiMagnify}
+            className="w-80"
+            disabled
+          />
           <Button buttonType="secondary" className="px-5 py-2" disabled>
             <Icon path={mdiFilterOutline} size={1} />
           </Button>
@@ -42,40 +52,49 @@ const LogsPage = () => {
             <Icon path={mdiCogOutline} size={1} />
           </Button>
           {/* TODO: To be moved into settings modal */}
-          <Button buttonType="secondary" className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-primary' : '!text-panel-text')} onClick={() => setScrollToBottom(prev => !prev)}>
+          <Button
+            buttonType="secondary"
+            className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-primary' : '!text-panel-text')}
+            onClick={() => setScrollToBottom(prev => !prev)}
+          >
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>
         </div>
       </div>
 
-      <div className="flex bg-panel-background border border-panel-border rounded-md p-8 grow">
-        <div className="bg-panel-background-alt border border-panel-border  rounded-md w-full py-4 pr-4">
-          <div className="bg-panel-background-alt grow overflow-y-auto relative h-full" ref={parentRef}>
-            {(logsQuery.isLoading || logLines.length === 0) ? (
-              <div className="flex grow justify-center items-center h-full">
-                <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
-              </div>
-            ) : (
-              <div className="absolute w-full top-0" style={{ height: rowVirtualizer.getTotalSize() }}>
-                <div className="absolute left-4 space-y-1 w-[95%]" style={{ transform: `translateY(${virtualItems[0].start}px)` }}>
-                  {virtualItems.map((virtualRow) => {
-                    const row = logLines[virtualRow.index];
-                    return (
-                      <div
-                        className="flex gap-x-8"
-                        key={virtualRow.key}
-                        data-index={virtualRow.key}
-                        ref={rowVirtualizer.measureElement}
-                      >
-                        <div className="shrink-0 w-[11.5rem] opacity-50">{row.timeStamp}</div>
-                        <div className="shrink-0 w-[2.8rem]">{row.level}</div>
-                        <div>{row.message}</div>
-                      </div>
-                    );
-                  })}
+      <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
+        <div className="w-full rounded-md border  border-panel-border bg-panel-background-alt py-4 pr-4">
+          <div className="relative h-full grow overflow-y-auto bg-panel-background-alt" ref={parentRef}>
+            {(logsQuery.isLoading || logLines.length === 0)
+              ? (
+                <div className="flex h-full grow items-center justify-center">
+                  <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
                 </div>
-              </div>
-            )}
+              )
+              : (
+                <div className="absolute top-0 w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+                  <div
+                    className="absolute left-4 w-[95%] space-y-1"
+                    style={{ transform: `translateY(${virtualItems[0].start}px)` }}
+                  >
+                    {virtualItems.map((virtualRow) => {
+                      const row = logLines[virtualRow.index];
+                      return (
+                        <div
+                          className="flex gap-x-8"
+                          key={virtualRow.key}
+                          data-index={virtualRow.key}
+                          ref={rowVirtualizer.measureElement}
+                        >
+                          <div className="w-[11.5rem] shrink-0 opacity-50">{row.timeStamp}</div>
+                          <div className="w-[2.8rem] shrink-0">{row.level}</div>
+                          <div>{row.message}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
           </div>
         </div>
       </div>

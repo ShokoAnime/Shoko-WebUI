@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-import ModalPanel from '@/components/Panels/ModalPanel';
-import SelectSmall from '@/components/Input/SelectSmall';
-import InputSmall from '@/components/Input/InputSmall';
 import Button from '@/components/Input/Button';
+import InputSmall from '@/components/Input/InputSmall';
+import SelectSmall from '@/components/Input/SelectSmall';
+import ModalPanel from '@/components/Panels/ModalPanel';
 
 type Props = {
   show: boolean;
@@ -11,7 +11,7 @@ type Props = {
   rangeFill: (rangeStart: string, epType: string) => void;
 };
 
-const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
+const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
   const [rangeStart, setRangeStart] = useState('');
   const [epType, setEpType] = useState('Normal');
 
@@ -24,18 +24,24 @@ const RangeFillModal = ({ show, onClose, rangeFill }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-8"
+      className="flex-col gap-y-8 p-8 drop-shadow-lg"
     >
-      <div className="font-semibold text-xl">Range Fill Options</div>
+      <div className="text-xl font-semibold">Range Fill Options</div>
       <div className="flex flex-col gap-y-3.5">
-        <SelectSmall label="Type" id="Type" value={epType} onChange={e => setEpType(e.target.value)} className="py-">
+        <SelectSmall label="Type" id="Type" value={epType} onChange={e => setEpType(e.target.value)}>
           <option value="Normal">Episode</option>
           <option value="Special">Special</option>
           <option value="Other">Other</option>
         </SelectSmall>
-        <div className="flex justify-between items-center">
+        <div className="flex items-center justify-between">
           Range Starting Number
-          <InputSmall id="RangeStart" type="number" value={rangeStart} onChange={e => setRangeStart(e.target.value)} className="w-16 text-center px-3 py-1" />
+          <InputSmall
+            id="RangeStart"
+            type="number"
+            value={rangeStart}
+            onChange={e => setRangeStart(e.target.value)}
+            className="w-16 px-3 py-1 text-center"
+          />
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">

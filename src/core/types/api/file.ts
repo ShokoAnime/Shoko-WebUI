@@ -1,7 +1,7 @@
-import { PaginationType } from '../api';
-import { SeriesIDsType } from './series';
-import { EpisodeIDsType } from './episode';
-import { DataSourceType } from './common';
+import type { DataSourceType } from './common';
+import type { EpisodeIDsType } from './episode';
+import type { SeriesIDsType } from './series';
+import type { PaginationType } from '@/core/types/api';
 
 type XRefsType = Array<{
   SeriesID: SeriesIDsType;
@@ -141,7 +141,7 @@ export type FileMediaInfoVideoType = {
   Codec: {
     Simplified: string;
     Raw: string;
-  }
+  };
   Format: {
     Name: string;
     Profile: string;
@@ -150,7 +150,7 @@ export type FileMediaInfoVideoType = {
     BVOP: boolean;
     QPel: boolean;
     ReferenceFrames: number;
-  }
+  };
 };
 
 export type FileMediaInfoAudioType = {
@@ -160,7 +160,7 @@ export type FileMediaInfoAudioType = {
   SamplingRate: number;
   CompressionMode: string;
   BitRate: number;
-  BitRateMode: string | null,
+  BitRateMode: string | null;
   BitDepth: number;
   ID: number;
   UID: string;
@@ -173,11 +173,11 @@ export type FileMediaInfoAudioType = {
   Codec: {
     Simplified: string;
     Raw: string;
-  },
+  };
   Format: {
     Name: string;
     AdditionalFeatures: string;
-  }
+  };
 };
 
 export type FileMediaInfoSubtitlesType = {
@@ -194,10 +194,10 @@ export type FileMediaInfoSubtitlesType = {
   Codec: {
     Simplified: string;
     Raw: string;
-  },
+  };
   Format: {
     Name: string;
-  }
+  };
 };
 
 export type FileMediaInfoChapterType = {

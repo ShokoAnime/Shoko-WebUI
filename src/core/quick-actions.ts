@@ -7,7 +7,8 @@ const quickActions = {
   'sync-mylist': {
     name: 'Sync AniDB MyList',
     functionName: 'SyncMyList',
-    info: 'Syncs all of the states in Shoko\'s library to AniDB. BEWARE THIS IS ONE WAY AND CAN ERASE ANIDB DATA IRREVERSIBLY',
+    info:
+      'Syncs all of the states in Shoko\'s library to AniDB. BEWARE THIS IS ONE WAY AND CAN ERASE ANIDB DATA IRREVERSIBLY',
   },
   'add-all-manually-linked-files-to-mylist': {
     name: 'Add All Manual Links To MyList',
@@ -17,7 +18,8 @@ const quickActions = {
   'download-missing-anidb-data': {
     name: 'Download Missing AniDB Data',
     functionName: 'DownloadMissingAniDBAnimeData',
-    info: 'Force downloads XML data from AniDB. This should only be necessary if the XML has been edited/deleted or Shoko has closed/crashed unexpectedly',
+    info:
+      'Force downloads XML data from AniDB. This should only be necessary if the XML has been edited/deleted or Shoko has closed/crashed unexpectedly',
   },
   'update-anidb-calendar': {
     name: 'Update AniDB Calendar',
@@ -47,12 +49,14 @@ const quickActions = {
   'regen-tvdb-links': {
     name: 'Regenerate TvDB Links',
     functionName: 'RegenerateAllTvDBEpisodeMatchings',
-    info: 'Regenerate all episode matchings for TvDB. You should not need to run this unless someone from the Shoko team or the release notes have told you to',
+    info:
+      'Regenerate all episode matchings for TvDB. You should not need to run this unless someone from the Shoko team or the release notes have told you to',
   },
   'run-import': {
     name: 'Run Import',
     functionName: 'RunImport',
-    info: 'Checks for new files in your Shoko folders, hashes them, and scans sites (AniDB, TvDB, etc) for metadata and images',
+    info:
+      'Checks for new files in your Shoko folders, hashes them, and scans sites (AniDB, TvDB, etc) for metadata and images',
   },
   'import-new-files': {
     name: 'Import New Files',
@@ -82,7 +86,8 @@ const quickActions = {
   'update-missing-anidb-file-info': {
     name: 'Update Missing AniDB File Info',
     functionName: 'UpdateMissingAniDBFileInfo?missingInfo=true&outOfDate=true',
-    info: 'Update AniDB Files with missing file info, including with missing release groups and with out-of-date internal data versions.',
+    info:
+      'Update AniDB Files with missing file info, including with missing release groups and with out-of-date internal data versions.',
   },
   'update-all-images': {
     name: 'Update All Images',
@@ -129,7 +134,7 @@ const quickActions = {
     name: string;
     functionName: string;
     info: string;
-  }
+  };
 };
 
 export default quickActions;

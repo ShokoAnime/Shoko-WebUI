@@ -1,16 +1,16 @@
 import React, { useMemo, useState } from 'react';
+import AnimateHeight from 'react-animate-height';
+import { mdiInformationOutline, mdiPlayCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
-import { Icon } from '@mdi/react';
-import { mdiInformationOutline, mdiPlayCircleOutline } from '@mdi/js';
-import AnimateHeight from 'react-animate-height';
 
-import toast from '@/components/Toast';
+import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
+import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/rtkQuery/splitV3Api/actionsApi';
-import Button from '@/components/Input/Button';
-import TransitionDiv from '@/components/TransitionDiv';
 
 const actions = {
   import: {
@@ -99,7 +99,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   const [showInfo, setShowInfo] = useState(false);
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
-  const { name, functionName, info } = action;
+  const { functionName, info, name } = action;
 
   return (
     <TransitionDiv>
@@ -115,7 +115,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         </div>
       </div>
       <AnimateHeight height={showInfo ? 'auto' : 0}>
-        <div className="flex bg-panel-background-alt border border-panel-border rounded-md px-4 py-2 gap-x-2 mt-3">
+        <div className="mt-3 flex gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
           {/* Icon size reduces if not put in a div */}
           <div className="mt-0.5">
             <Icon path={mdiInformationOutline} size={0.8333} />
@@ -127,18 +127,18 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   );
 };
 
-function ActionsModal({ show, onClose }: Props) {
+function ActionsModal({ onClose, show }: Props) {
   const [activeTab, setActiveTab] = useState('import');
 
   return (
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-8 w-[40rem]"
+      className="w-[40rem] flex-col gap-y-8 p-8 drop-shadow-lg"
     >
-      <div className="font-semibold text-xl">Actions</div>
+      <div className="text-xl font-semibold">Actions</div>
       <div className="flex">
-        <div className="flex flex-col min-w-[8rem] border-r-2 border-panel-border gap-y-4">
+        <div className="flex min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {map(actions, (value, key) => (
             <div
               className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-primary')}
@@ -150,10 +150,8 @@ function ActionsModal({ show, onClose }: Props) {
           ))}
         </div>
 
-        <div className="flex flex-col grow gap-y-2 pl-8">
-          {actions[activeTab].data.map(key => (
-            <Action actionKey={key} key={key} />
-          ))}
+        <div className="flex grow flex-col gap-y-2 pl-8">
+          {actions[activeTab].data.map(key => <Action actionKey={key} key={key} />)}
         </div>
       </div>
     </ModalPanel>

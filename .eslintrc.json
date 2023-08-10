@@ -2,19 +2,18 @@
   "extends": [
     "airbnb",
     "airbnb-typescript",
-    "airbnb/hooks"
+    "airbnb/hooks",
+    "plugin:tailwindcss/recommended"
   ],
   "ignorePatterns": [
-    "build/**",
-    "proxy.config.js",
-    "tailwind.config.js",
-    "vite.config.js"
+    "/*",
+    "!/src"
   ],
   "env": {
     "browser": true,
     "es6": true
   },
-  "plugins": ["import", "react", "react-hooks", "jsx-a11y"],
+  "plugins": ["import", "react", "react-hooks", "jsx-a11y", "sort-destructure-keys"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -22,94 +21,90 @@
   "settings": {
     "import/resolver": {
       "typescript": {}
+    },
+    "tailwindcss": {
+      "callees": ["classnames"]
     }
   },
   "rules": {
-    "@typescript-eslint/await-thenable": "warn",
+    "@typescript-eslint/consistent-type-imports": "error",
+    "@typescript-eslint/indent": "off",
     "@typescript-eslint/no-floating-promises": [
       "warn",
       { "ignoreIIFE": true, "ignoreVoid": false }
     ],
-    "@typescript-eslint/no-redeclare": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_", "caughtErrorsIgnorePattern": "^_" }
+    ],
     "@typescript-eslint/no-use-before-define": [
       "error",
       { "functions": false }
     ],
-    "arrow-parens": ["error", "as-needed", { "requireForBlockBody": true }],
+    "arrow-parens": [
+      "error",
+      "as-needed",
+      { "requireForBlockBody": true }
+    ],
     "implicit-arrow-linebreak": "off",
+    "import/order": [
+      "error",
+      {
+        "newlines-between": "always",
+        "groups": [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+          "object",
+          "type"
+        ],
+        "pathGroups": [{ "pattern": "react*", "group": "external", "position": "before" }],
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "distinctGroup": false,
+        "alphabetize": { "order": "asc" }
+      }
+    ],
     "import/no-cycle": "off",
-    "import/no-extraneous-dependencies": "off",
-    "jsx-a11y/anchor-has-content": "off",
+    "import/prefer-default-export": "off",
     "jsx-a11y/anchor-is-valid": "off",
     "jsx-a11y/click-events-have-key-events": "off",
-    "jsx-a11y/label-has-for": "off",
-    "jsx-a11y/no-noninteractive-element-interactions": "off",
+    "jsx-a11y/no-autofocus": "off",
     "jsx-a11y/no-static-element-interactions": "off",
-    "no-console": ["error", { "allow": ["warn", "error"] }],
+    "max-len": "off",
+    "no-console": [
+      "error",
+      { "allow": ["warn", "error"] }
+    ],
     "no-param-reassign": [
       "error",
       { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState"] }
     ],
-    "prefer-object-spread": "off",
-    "prefer-promise-reject-errors": "off",
-    "react/forbid-prop-types": "off",
-    "react/jsx-filename-extension": "off",
-    "react/jsx-fragments": "off",
-    "react/jsx-one-expression-per-line": "off",
-    "react/jsx-props-no-spreading": "off",
-    "react/no-did-update-set-state": "off",
-    "react/prefer-stateless-function": "off",
-    "react/require-default-props": "off",
-    "react/state-in-constructor": "off",
-    "react/static-property-placement": "off",
-    "@typescript-eslint/space-before-blocks": "off",
-    "max-len": "off",
-    "react/prop-types": "off",
-    "react/function-component-definition": "off",
-    "react/destructuring-assignment": "off",
     "object-curly-newline": [
       "error",
       { "ImportDeclaration": { "consistent": true }}
     ],
-    "@typescript-eslint/no-unused-vars": [
+    "prefer-object-spread": "off",
+    "react/destructuring-assignment": "off",
+    "react/function-component-definition": "off",
+    "react/jsx-one-expression-per-line": [
       "error",
-      {
-        "argsIgnorePattern": "^_",
-        "varsIgnorePattern": "^_",
-        "caughtErrorsIgnorePattern": "^_"
-      }
+      { "allow": "single-child" }
+    ],
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-wrap-multilines": [
+      "error",
+      { "prop": "ignore" }
     ],
     "react/no-unstable-nested-components": [
       "error",
-      {
-        "allowAsProps": true
-      }
+      { "allowAsProps": true }
     ],
-    "import/prefer-default-export": "off"
-  },
-  "overrides": [
-    {
-      "files": [
-        "postcss.config.js",
-        "proxy.config.default.js",
-        "babel.config.js"
-      ],
-      "parser": "espree",
-      "parserOptions": {
-        "ecmaVersion": 2018
-      },
-      "rules": {
-        "@typescript-eslint/await-thenable": "off",
-        "@typescript-eslint/dot-notation": "off",
-        "@typescript-eslint/naming-convention": "off",
-        "@typescript-eslint/no-floating-promises": "off",
-        "@typescript-eslint/no-implied-eval": "off",
-        "@typescript-eslint/no-throw-literal": "off",
-        "@typescript-eslint/return-await": "off",
-        "global-require": "off",
-        "import/no-dynamic-require": "off",
-        "no-console": "off"
-      }
-    }
-  ]
+    "react/prefer-stateless-function": "off",
+    "react/prop-types": "off",
+    "react/require-default-props": "off",
+    "sort-destructure-keys/sort-destructure-keys": 2
+  }
 }

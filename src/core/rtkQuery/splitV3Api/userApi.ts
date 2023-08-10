@@ -1,6 +1,8 @@
-import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api/user';
 import { identity, map, pickBy } from 'lodash';
-import { splitV3Api } from '../splitV3Api';
+
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api/user';
 
 const simplifyCommunitySites = (sites: Array<string>) => {
   const result: CommunitySitesType = {
@@ -35,7 +37,10 @@ const userApi = splitV3Api.injectEndpoints({
       query: ({ CommunitySites, ...user }) => ({
         url: 'User',
         method: 'POST',
-        body: { ...user, CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null } as ApiUserType,
+        body: {
+          ...user,
+          CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null,
+        } as ApiUserType,
       }),
       transformResponse: (user: ApiUserType) => {
         const { CommunitySites, ...tempUser } = user;
@@ -46,10 +51,13 @@ const userApi = splitV3Api.injectEndpoints({
 
     // Edit the current user or a user by id using a raw object to do a partial update.
     putUser: build.mutation<UserType, UserType>({
-      query: ({ ID, CommunitySites, Password: __, ...user }) => ({
+      query: ({ CommunitySites, ID, Password: __, ...user }) => ({
         url: `User/${ID}`,
         method: 'PUT',
-        body: { ...user, CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null } as ApiUserType,
+        body: {
+          ...user,
+          CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (_, key) => key) : null,
+        } as ApiUserType,
       }),
       transformResponse: (user: ApiUserType) => {
         const { CommunitySites, ...tempUser } = user;
@@ -68,7 +76,7 @@ const userApi = splitV3Api.injectEndpoints({
     }),
 
     // Change the password for the current user or a user by id.
-    postChangePassword: build.mutation<void, { Password: string; RevokeAPIKeys: boolean; ID?: number; }>({
+    postChangePassword: build.mutation<void, { Password: string, RevokeAPIKeys: boolean, ID?: number }>({
       query: ({ ID, ...body }) => ({
         url: `User/${ID || 'Current'}/ChangePassword`,
         body,
@@ -89,10 +97,10 @@ const userApi = splitV3Api.injectEndpoints({
 });
 
 export const {
+  useDeleteUserMutation,
+  useGetCurrentUserQuery,
   useGetUsersQuery,
+  usePostChangePasswordMutation,
   usePostUserMutation,
   usePutUserMutation,
-  useDeleteUserMutation,
-  usePostChangePasswordMutation,
-  useGetCurrentUserQuery,
 } = userApi;

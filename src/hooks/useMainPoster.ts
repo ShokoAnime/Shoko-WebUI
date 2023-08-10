@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { CollectionGroupType } from '@/core/types/api/collection';
-import { ImageType } from '@/core/types/api/common';
-import { SeriesType } from '@/core/types/api/series';
+import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { ImageType } from '@/core/types/api/common';
+import type { SeriesType } from '@/core/types/api/series';
 
 function useMainPoster(target: SeriesType | CollectionGroupType): ImageType | null {
   return useMemo(() => {

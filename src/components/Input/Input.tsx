@@ -1,6 +1,6 @@
 import React from 'react';
-import cx from 'classnames';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 type Props = {
   id: string;
@@ -23,30 +23,67 @@ type Props = {
 
 function Input(props: Props) {
   const {
-    id, label, center, type, placeholder, value, className, startIcon,
-    autoFocus, disabled, onChange, onKeyUp, endIcon, endIconClick, inline,
+    autoFocus,
+    center,
+    className,
+    disabled,
+    endIcon,
+    endIconClick,
+    id,
+    inline,
     inputClassName,
+    label,
+    onChange,
+    onKeyUp,
+    placeholder,
+    startIcon,
+    type,
+    value,
   } = props;
 
   return (
     <div className={className}>
       <label htmlFor={id} className={cx({ 'flex flex-row justify-center': inline })}>
-        {label && <div className={cx('font-semibold text-base', { 'mb-3': !inline, 'flex items-center mr-3 whitespace-nowrap': inline })}>{label}</div>}
+        {label && (
+          <div
+            className={cx('font-semibold text-base', {
+              'mb-3': !inline,
+              'flex items-center mr-3 whitespace-nowrap': inline,
+            })}
+          >
+            {label}
+          </div>
+        )}
         <div className="relative">
-          {startIcon && <div className="absolute top-1/2 transform -translate-y-1/2 left-3"><Icon path={startIcon} size={1} /></div>}
+          {startIcon && (
+            <div className="absolute left-3 top-1/2 -translate-y-1/2">
+              <Icon path={startIcon} size={1} />
+            </div>
+          )}
           <input
-            className={cx([inputClassName, 'appearance-none bg-default-background-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset', center && 'text-center', startIcon && '!pl-11'])}
+            className={cx([
+              inputClassName,
+              'appearance-none bg-default-background-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset',
+              center && 'text-center',
+              startIcon && '!pl-11',
+            ])}
             id={id}
             type={type}
             placeholder={placeholder ?? ''}
             value={value}
             onChange={onChange}
             onKeyUp={onKeyUp}
-              // eslint-disable-next-line jsx-a11y/no-autofocus
             autoFocus={autoFocus}
             disabled={disabled}
           />
-          {endIcon && <div onClick={endIconClick} className="cursor-pointer absolute top-1/2 transform -translate-y-1/2 right-3 text-panel-primary"><Icon path={endIcon} size={1} horizontal vertical rotate={180} /></div>}
+          {endIcon && (
+            <div
+              onClick={endIconClick}
+              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-panel-primary"
+            >
+              <Icon path={endIcon} size={1} horizontal vertical rotate={180} />
+            </div>
+          )}
         </div>
       </label>
     </div>

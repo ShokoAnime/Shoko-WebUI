@@ -61,7 +61,30 @@ export type SettingsTvdbDownloadType = {
   AutoLink: boolean;
 };
 
-export type SettingsTvdbLanguageType = 'zh' | 'en' | 'sv' | 'no' | 'da' | 'fi' | 'nl' | 'de' | 'it' | 'es' | 'fr' | 'pl' | 'hu' | 'el' | 'tr' | 'ru' | 'he' | 'ja' | 'pt' | 'cs' | 'sl' | 'hr' | 'ko';
+export type SettingsTvdbLanguageType =
+  | 'zh'
+  | 'en'
+  | 'sv'
+  | 'no'
+  | 'da'
+  | 'fi'
+  | 'nl'
+  | 'de'
+  | 'it'
+  | 'es'
+  | 'fr'
+  | 'pl'
+  | 'hu'
+  | 'el'
+  | 'tr'
+  | 'ru'
+  | 'he'
+  | 'ja'
+  | 'pt'
+  | 'cs'
+  | 'sl'
+  | 'hr'
+  | 'ko';
 
 export type SettingsTvdbPrefsType = {
   AutoFanartAmount: number;
@@ -111,8 +134,12 @@ export type SettingsServerType = {
   WebUI_Settings: string;
   FirstRun: boolean;
   Database: SettingsDatabaseType;
-  AniDb: SettingsAnidbLoginType & SettingsAnidbType & SettingsAnidbDownloadType
-  & SettingsAnidbMylistType & SettingsAnidbUpdateType;
+  AniDb:
+    & SettingsAnidbLoginType
+    & SettingsAnidbType
+    & SettingsAnidbDownloadType
+    & SettingsAnidbMylistType
+    & SettingsAnidbUpdateType;
   TvDB: SettingsTvdbDownloadType & SettingsTvdbPrefsType;
   MovieDb: SettingsMoviedbType;
   TraktTv: SettingsTraktType;
@@ -144,7 +171,7 @@ type LayoutItemType = {
 };
 
 export type LayoutType = {
-  [breakpoint: string]: Array<LayoutItemType>
+  [breakpoint: string]: Array<LayoutItemType>;
 };
 
 export type WebUISettingsType = {

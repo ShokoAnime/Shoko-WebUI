@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import type { UserType } from '@/core/types/api/init';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 export type TestStatusType = {
   type: 'error' | 'success' | '';
@@ -36,7 +37,9 @@ const firstrunSlice = createSlice({
 });
 
 export const {
-  setSaved, setUser, unsetSaved,
+  setSaved,
+  setUser,
+  unsetSaved,
 } = firstrunSlice.actions;
 
 export default firstrunSlice.reducer;

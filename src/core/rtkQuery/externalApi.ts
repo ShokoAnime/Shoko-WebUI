@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
 import type { DashboardNewsType } from '@/core/types/api/dashboard';
 
 export const externalApi = createApi({
