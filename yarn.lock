@@ -813,6 +813,48 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@dprint/darwin-arm64@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/darwin-arm64@npm:0.40.2"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@dprint/darwin-x64@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/darwin-x64@npm:0.40.2"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@dprint/linux-arm64-glibc@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/linux-arm64-glibc@npm:0.40.2"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@dprint/linux-x64-glibc@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/linux-x64-glibc@npm:0.40.2"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@dprint/linux-x64-musl@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/linux-x64-musl@npm:0.40.2"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@dprint/win32-x64@npm:0.40.2":
+  version: 0.40.2
+  resolution: "@dprint/win32-x64@npm:0.40.2"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@esbuild/android-arm64@npm:0.18.16":
   version: 0.18.16
   resolution: "@esbuild/android-arm64@npm:0.18.16"
@@ -2998,6 +3040,35 @@ __metadata:
   version: 16.3.1
   resolution: "dotenv@npm:16.3.1"
   checksum: 15d75e7279018f4bafd0ee9706593dd14455ddb71b3bcba9c52574460b7ccaf67d5cf8b2c08a5af1a9da6db36c956a04a1192b101ee102a3e0cf8817bbcf3dfd
+  languageName: node
+  linkType: hard
+
+"dprint@npm:^0.40.2":
+  version: 0.40.2
+  resolution: "dprint@npm:0.40.2"
+  dependencies:
+    "@dprint/darwin-arm64": 0.40.2
+    "@dprint/darwin-x64": 0.40.2
+    "@dprint/linux-arm64-glibc": 0.40.2
+    "@dprint/linux-x64-glibc": 0.40.2
+    "@dprint/linux-x64-musl": 0.40.2
+    "@dprint/win32-x64": 0.40.2
+  dependenciesMeta:
+    "@dprint/darwin-arm64":
+      optional: true
+    "@dprint/darwin-x64":
+      optional: true
+    "@dprint/linux-arm64-glibc":
+      optional: true
+    "@dprint/linux-x64-glibc":
+      optional: true
+    "@dprint/linux-x64-musl":
+      optional: true
+    "@dprint/win32-x64":
+      optional: true
+  bin:
+    dprint: bin.js
+  checksum: 60f4ec7830fa7281cc43571b237d3b4f5263c780ccb6607fde0062dde619828b45f8d9d506616be82aeb904a311ff58d5fae594bea23da2d00758f8e96307cfb
   languageName: node
   linkType: hard
 
@@ -7453,6 +7524,7 @@ resolve@^1.1.7:
     "@vitejs/plugin-react": ^4.0.3
     classnames: ^2.3.2
     cross-env: ^7.0.3
+    dprint: ^0.40.2
     eslint: ^8.45.0
     eslint-config-airbnb: ^19.0.4
     eslint-config-airbnb-typescript: ^17.1.0
