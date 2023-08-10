@@ -11,8 +11,7 @@ import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-
-import { initialSettings } from '@/pages/settings/settings/SettingsPage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 function MainPage() {
   const dispatch = useDispatch();
