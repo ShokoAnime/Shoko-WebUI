@@ -23,14 +23,16 @@ import cx from 'classnames';
 import { siDiscord } from 'simple-icons';
 import semver from 'semver';
 import AnimateHeight from 'react-animate-height';
+import { useEventCallback } from 'usehooks-ts';
 
-import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
 
 import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
+import QueueModal from '@/components/Dialogs/QueueModal';
 import { RootState } from '@/core/store';
 import Button from '../Input/Button';
 import toast from '../Toast';
@@ -66,6 +68,7 @@ function TopNav() {
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+  const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
 
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
@@ -82,6 +85,14 @@ function TopNav() {
     setShowActionsModal(false);
     setShowUtilitiesMenu(false);
   };
+
+  const handleQueueModalOpen = useEventCallback(() => {
+    dispatch(setQueueModalOpen(true));
+  });
+
+  const handleQueueModalClose = useEventCallback(() => {
+    dispatch(setQueueModalOpen(false));
+  });
 
   const handleWebUiUpdate = () => {
     const renderToast = () => (
@@ -142,7 +153,9 @@ function TopNav() {
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
-              <Icon path={mdiServer} size={0.8333} />
+              <div className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])} onClick={handleQueueModalOpen} title="Show Queue Modal">
+                <Icon path={mdiServer} size={0.8333} />
+              </div>
               <span className="text-header-important">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
             </div>
             <div className="flex items-center gap-x-2">
@@ -227,6 +240,7 @@ function TopNav() {
         </AnimateHeight>
       </div>
       <ActionsModal show={showActionsModal} onClose={() => setShowActionsModal(false)} />
+      <QueueModal show={showQueueModal} onClose={handleQueueModalClose} />
     </>
   );
 }
