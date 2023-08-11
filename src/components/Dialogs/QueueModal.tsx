@@ -86,9 +86,8 @@ function QueueModal({ show: showModal, onClose }: Props) {
   ), [tabs, activeTab, count]);
 
   const items = useMemo(() => {
-    // Don't render items if the modal is not shown or if we have a running
-    // command and the page size is 1.
-    if (!showModal || (pageSize === 1 && currentCommand != null)) {
+    // Don't render items if the modal is not shown.
+    if (!showModal) {
       return [];
     }
 
