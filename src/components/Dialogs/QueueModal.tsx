@@ -13,6 +13,8 @@ import { QueueItemType } from '@/core/types/api/queue';
 import Input from '../Input/Input';
 import MenuButton from '../Utilities/Unrecognized/MenuButton';
 
+type QueueName = keyof typeof names;
+
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
 const stateNames = { hasher: 'HasherQueueState', general: 'GeneralQueueState', image: 'ImageQueueState' } as const;
@@ -21,7 +23,7 @@ type Props = {
   onClose: () => void;
 };
 
-const TabButton = ({ id, name, activeTab, setActiveTab }: { id: keyof typeof names; name: string; activeTab: keyof typeof names; setActiveTab(value: keyof typeof names): void; }) => (
+const TabButton = ({ id, name, activeTab, setActiveTab }: { id: QueueName; name: string; activeTab: QueueName; setActiveTab(value: QueueName): void; }) => (
   <div className={cx(['cursor-pointer', id === activeTab ? 'text-panel-primary' : undefined])} onClick={() => setActiveTab(id)}>
     {name}
   </div>
@@ -29,13 +31,13 @@ const TabButton = ({ id, name, activeTab, setActiveTab }: { id: keyof typeof nam
 
 function QueueModal({ show: showModal, onClose }: Props) {
   const state = useSelector((root: RootState) => root.mainpage.queueStatus);
-  const [activeTab, setActiveTab] = useState<keyof typeof names>('hasher');
+  const [activeTab, setActiveTab] = useState<QueueName>('hasher');
   const [pageSize, setPageSize] = useState(10);
   const [showAll, setShowAll] = useState(true);
   const [getQuery, query] = useLazyGetQueueItemsQuery();
   const [queueOperation] = useGetQueueOperationMutation();
-  const [expectedTab, setExpectedTab] = useState<keyof typeof names | null>(null);
-  const lastActiveTab = useRef<keyof typeof names | null>(null);
+  const [expectedTab, setExpectedTab] = useState<QueueName | null>(null);
+  const lastActiveTab = useRef<QueueName | null>(null);
 
   const isLoading = expectedTab !== activeTab;
   const count = showModal ? state[stateNames[activeTab]].queueCount : 0;
@@ -67,23 +69,16 @@ function QueueModal({ show: showModal, onClose }: Props) {
 
   const throttled = useMemo(() => throttle((props) => { getQuery(props).catch(console.error); }, 500), [getQuery]);
 
-  const tabs = useMemo(() => reduce(Object.keys(names) as Array<keyof typeof names>, (array, key, index, { length }) => {
-    array.push(<TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />);
-    if (index !== length - 1) {
-      array.push(<div key={`${key}.1`}>|</div>);
-    }
-    return array;
-  }, new Array<React.ReactNode>()), [activeTab]);
-
-  const title = useMemo(() => (
-    <div className="flex items-center font-semibold gap-x-0.5">
-      Queue
-      <Icon path={mdiChevronRight} size={1} />
-      {tabs}
-      <div className="flex flex-grow" />
-      <div className="flex gap-x-1"><div className="text-panel-important">{count < 0 ? '-' : count}</div> {names[activeTab]} Entries</div>
-    </div>
-  ), [tabs, activeTab, count]);
+  const tabs = useMemo(() => map(Object.keys(names) as Array<QueueName>, (key, index, { length }) => (
+    index !== length - 1 ? (
+      <>
+        <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
+        <div key={`${key}.1`}>|</div>
+      </>
+    ) : (
+      <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
+    )
+  )), [activeTab]);
 
   const items = useMemo(() => {
     // Don't render items if the modal is not shown.
@@ -113,9 +108,8 @@ function QueueModal({ show: showModal, onClose }: Props) {
           {item.Name}
         </div>
         <div className={cx(['px-4', item.IsRunning ? 'text-panel-important' : undefined, item.IsDisabled ? 'text-panel-warning' : undefined])}>
-          {item.isRunning && (<Icon path={mdiRun} size={1} />}
-          {!item.isRunning && (<Icon path={item.IsDisabled ? mdiAlertCircleOutline : mdiHelpCircleOutline} size={1} />}
-
+          {item.IsRunning && <Icon path={mdiRun} size={1} />}
+          {!item.IsRunning && <Icon path={item.IsDisabled ? mdiAlertCircleOutline : mdiHelpCircleOutline} size={1} />}
         </div>
       </div>
     ));
@@ -194,7 +188,13 @@ function QueueModal({ show: showModal, onClose }: Props) {
       onRequestClose={onClose}
       className="p-8 flex-col drop-shadow-lg gap-y-8 w-[56.875rem]"
     >
-      {title}
+      <div className="flex items-center font-semibold gap-x-0.5">
+        Queue
+        <Icon path={mdiChevronRight} size={1} />
+        {tabs}
+        <div className="flex flex-grow" />
+        <div className="flex gap-x-1"><div className="text-panel-important">{count < 0 ? '-' : count}</div> {names[activeTab]} Entries</div>
+      </div>
       <div className="flex align-items-start gap-x-3 align-self-stretch">
         <div className="flex flex-grow py-3 px-4 align-items-center gap-x-2 align-self-stretch border border-panel-border rounded-md bg-panel-background-toolbar">
           <MenuButton highlight onClick={handleShowDisabledToggle} icon={showAll ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline} name="Show Disabled Queue Items" />
