@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { forEach } from 'lodash';
 import { Icon } from '@mdi/react';
 import {
@@ -9,30 +9,37 @@ import {
   mdiPauseCircleOutline,
   mdiPlayCircleOutline,
   mdiPoundBoxOutline,
+  mdiTextBoxOutline,
 } from '@mdi/js';
+import { useEventCallback } from 'usehooks-ts';
 
 import { RootState } from '@/core/store';
 import Button from '@/components/Input/Button';
-import type { QueueItemType } from '@/core/types/signalr';
+import type { SignalRQueueType } from '@/core/types/signalr';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
 import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitV3Api/queueApi';
+import { setQueueModalOpen } from '@/core/slices/mainpage';
 
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, image: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
 function QueueProcessor() {
+  const dispatch = useDispatch();
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const items = useSelector((state: RootState) => state.mainpage.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const [queueOperation] = useGetQueueOperationMutation();
-
-  const handleOperation = async (operation: string, queue?: string) => {
+  const handleOperation = useEventCallback(async (operation: string, queue?: string) => {
     await queueOperation({ operation, queue });
-  };
+  });
 
-  const renderItem = (key: string, item: QueueItemType) => (
+  const handleOpenQueueDialog = useEventCallback(() => {
+    dispatch(setQueueModalOpen(true));
+  });
+
+  const renderItem = (key: string, item: SignalRQueueType) => (
     <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
         <div className="flex items-center w-56">
@@ -41,9 +48,6 @@ function QueueProcessor() {
         </div>
         <div className="flex text-panel-important">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
-          <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
-            <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
-          </Button>
           {item?.status === 'Pausing' || item?.status === 'Paused' ? (
             <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
               <Icon className="text-panel-primary" path={mdiPlayCircleOutline} size={1} />
@@ -53,6 +57,9 @@ function QueueProcessor() {
               <Icon className="text-panel-primary" path={mdiPauseCircleOutline} size={1} />
             </Button>
           )}
+          <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
+            <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
+          </Button>
         </div>
       </div>
       <div className="flex break-all h-12 mt-2">
@@ -62,21 +69,30 @@ function QueueProcessor() {
   );
 
   const renderOptions = () => {
-    let paused = true;
+    let paused = false;
 
     forEach(items, (item) => {
-      if (typeof item === 'number') return;
       paused ||= item?.status === 'Pausing' || item?.status === 'Paused';
     });
 
-    return paused ? (
-      <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StartAll')} title="Resume All">
-        <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
-      </div>
-    ) : (
-      <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StopAll')} title="Pause All">
-        <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
-      </div>
+    return (
+      <>
+        {paused ? (
+          <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StartAll')} title="Resume All">
+            <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
+          </div>
+        ) : (
+          <div className="text-panel-primary mx-2 cursor-pointer" onClick={() => handleOperation('StopAll')} title="Pause All">
+            <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
+          </div>
+        )}
+        <Button className="mx-2" onClick={() => handleOperation('ClearAll')} tooltip="Clear All">
+          <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
+        </Button>
+        <Button className="mx-2" onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
+          <Icon className="text-panel-primary" path={mdiTextBoxOutline} size={1} />
+        </Button>
+      </>
     );
   };
 

@@ -1,4 +1,4 @@
-export type QueueItemType = {
+export type SignalRQueueType = {
   state: number;
   description: string;
   status: string;
@@ -7,9 +7,9 @@ export type QueueItemType = {
 };
 
 export type QueueStatusType = {
-  HasherQueueState: QueueItemType;
-  GeneralQueueState: QueueItemType;
-  ImageQueueState: QueueItemType;
+  HasherQueueState: SignalRQueueType;
+  GeneralQueueState: SignalRQueueType;
+  ImageQueueState: SignalRQueueType;
 };
 
 export type AniDBBanItemType = {

@@ -8,6 +8,7 @@ type State = {
   };
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
+  queueModalOpen: boolean;
   layoutEditMode: boolean;
 };
 
@@ -48,6 +49,7 @@ const mainpageSlice = createSlice({
         value: false,
       },
     } as AniDBBanType,
+    queueModalOpen: false,
     layoutEditMode: false,
   } as State,
   reducers: {
@@ -66,6 +68,9 @@ const mainpageSlice = createSlice({
     setLayoutEditMode(sliceState, action) {
       sliceState.layoutEditMode = action.payload;
     },
+    setQueueModalOpen(sliceState, action) {
+      sliceState.queueModalOpen = action.payload;
+    },
   },
 });
 
@@ -75,6 +80,7 @@ export const {
   setUdpBanStatus,
   setHttpBanStatus,
   setLayoutEditMode,
+  setQueueModalOpen,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
