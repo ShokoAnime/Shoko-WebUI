@@ -16,9 +16,18 @@ export type AniDBBanItemType = {
   message: string;
   pauseTimeSecs: number;
   updateTime: string;
-  updateType: number;
+  updateType: AniDBBanTypeEnum;
   value: boolean;
 };
+
+export const enum AniDBBanTypeEnum {
+  None = 0,
+  UDPBan = 1,
+  HTTPBan = 2,
+  InvalidSession = 3,
+  OverloadBackoff = 4,
+  WaitingOnResponse = 5,
+}
 
 export type AniDBBanType = {
   http: AniDBBanItemType;
