@@ -92,7 +92,7 @@ function QueueModal({ show: showModal, onClose }: Props) {
     }
 
     if (expectedTab !== activeTab) {
-      if (query.isUninitialized || query.isLoading || query.isFetching) {
+      if (query.isUninitialized || query.isFetching) {
         return [];
       }
       setExpectedTab(activeTab);
@@ -113,8 +113,9 @@ function QueueModal({ show: showModal, onClose }: Props) {
           {item.Name}
         </div>
         <div className={cx(['px-4', item.IsRunning ? 'text-panel-important' : undefined, item.IsDisabled ? 'text-panel-warning' : undefined])}>
-          {/* eslint-disable-next-line no-nested-ternary */}
-          <Icon path={item.IsRunning ? mdiRun : item.IsDisabled ? mdiAlertCircleOutline : mdiHelpCircleOutline} size={1} />
+          {item.isRunning && (<Icon path={mdiRun} size={1} />}
+          {!item.isRunning && (<Icon path={item.IsDisabled ? mdiAlertCircleOutline : mdiHelpCircleOutline} size={1} />}
+
         </div>
       </div>
     ));
@@ -131,7 +132,7 @@ function QueueModal({ show: showModal, onClose }: Props) {
       );
     }
     return itemArray;
-  }, [showModal, activeTab, query.data, pageSize, currentCommand, expectedTab, query.isUninitialized, query.isLoading, query.isFetching]);
+  }, [showModal, activeTab, query, pageSize, currentCommand, expectedTab]);
 
   const handlePageSizeChange = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -214,16 +215,16 @@ function QueueModal({ show: showModal, onClose }: Props) {
               </div>
             </div>
             {items}
-            {isLoading ? (
+            {isLoading && (
               <div className="flex flex-grow items-center justify-center">
                 <Icon path={mdiLoading} spin size={3} />
               </div>
-            ) : null}
-            {!isLoading && items.length === 0 ? (
+            )}
+            {!isLoading && items.length === 0 && (
               <div className="flex flex-grow items-center justify-center">
                 <p>{names[activeTab]} Queue Is Empty.</p>
               </div>
-            ) : null}
+            )}
           </div>
         </div>
       </div>

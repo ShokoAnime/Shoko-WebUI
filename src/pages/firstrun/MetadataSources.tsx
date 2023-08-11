@@ -21,7 +21,7 @@ function MetadataSources() {
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const renderTabButton = (title: string, key: string) => (
-    <Button onClick={() => setActiveTab(key)} className={cx(['text-panel-text', 'font-semibold', '!text-lg', 'drop-shadow-none', activeTab === key && '!text-panel-primary'])}>
+    <Button onClick={() => setActiveTab(key)} className={cx(['font-semibold', '!text-lg', 'drop-shadow-none', activeTab === key ? '!text-panel-primary' : '!text-panel-text'])}>
       {title}
     </Button>
   );
