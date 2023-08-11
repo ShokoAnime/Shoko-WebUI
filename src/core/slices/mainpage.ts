@@ -80,6 +80,8 @@ export const {
   setHttpBanStatus,
   setLayoutEditMode,
   setQueueModalOpen,
+  setQueueStatus,
+  setUdpBanStatus,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;
