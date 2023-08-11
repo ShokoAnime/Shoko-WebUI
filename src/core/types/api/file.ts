@@ -92,7 +92,12 @@ export type AVDumpResultType = {
   Ed2k: string;
 };
 
-export type FileLinkApiType = {
+export type FileLinkOneApiType = {
+  fileID: number;
+  episodeIDs: Array<number>;
+};
+
+export type FileLinkManyApiType = {
   fileIDs: Array<number>;
   episodeID: number;
 };

@@ -1,4 +1,4 @@
-import type { AVDumpResultType, FileLinkApiType, FileRequestType, FileType } from '@/core/types/api/file';
+import type { AVDumpResultType, FileLinkManyApiType, FileLinkOneApiType, FileRequestType, FileType } from '@/core/types/api/file';
 import type { ListResultType } from '@/core/types/api';
 import { splitV3Api } from '../splitV3Api';
 
@@ -49,7 +49,16 @@ const fileApi = splitV3Api.injectEndpoints({
     }),
 
     // Link multiple files to a single episode.
-    postFileLink: build.mutation<void, FileLinkApiType>({
+    postFileLinkOne: build.mutation<void, FileLinkOneApiType>({
+      query: ({ fileID, ...params }) => ({
+        url: `File/${fileID}/Link`,
+        method: 'POST',
+        body: params,
+      }),
+    }),
+
+    // Link multiple files to a single episode.
+    postFileLinkMany: build.mutation<void, FileLinkManyApiType>({
       query: params => ({
         url: 'File/Link',
         method: 'POST',
@@ -85,7 +94,8 @@ export const {
   useLazyPostFileAVDumpQuery,
   usePostFileRescanMutation,
   usePostFileRehashMutation,
-  usePostFileLinkMutation,
+  usePostFileLinkOneMutation,
+  usePostFileLinkManyMutation,
   useDeleteFileLinkMutation,
   useGetFilesQuery,
 } = fileApi;
