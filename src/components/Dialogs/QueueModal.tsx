@@ -13,8 +13,6 @@ import { QueueItemType } from '@/core/types/api/queue';
 import Input from '../Input/Input';
 import MenuButton from '../Utilities/Unrecognized/MenuButton';
 
-type QueueName = keyof typeof names;
-
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
 const stateNames = { hasher: 'HasherQueueState', general: 'GeneralQueueState', image: 'ImageQueueState' } as const;
@@ -29,7 +27,9 @@ const TabButton = ({ id, name, activeTab, setActiveTab }: { id: QueueName; name:
   </div>
 );
 
-function QueueModal({ show: showModal, onClose }: Props) {
+type QueueName = keyof typeof names;
+
+const QueueModal = ({ show: showModal, onClose }: Props) => {
   const state = useSelector((root: RootState) => root.mainpage.queueStatus);
   const [activeTab, setActiveTab] = useState<QueueName>('hasher');
   const [pageSize, setPageSize] = useState(10);
@@ -230,6 +230,6 @@ function QueueModal({ show: showModal, onClose }: Props) {
       </div>
     </ModalPanel>
   );
-}
+};
 
 export default QueueModal;
