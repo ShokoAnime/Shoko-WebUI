@@ -14,8 +14,11 @@ const queueApi = splitV3Api.injectEndpoints({
         };
       },
     }),
-    getQueueItems: build.query<ListResultType<QueueItemType[]>, { queueName: string; showAll?: boolean } & PaginationType>({
-      query: ({ queueName, showAll = true, page = 1, pageSize = 10 }) => ({
+    getQueueItems: build.query<
+      ListResultType<QueueItemType[]>,
+      { queueName: string, showAll?: boolean } & PaginationType
+    >({
+      query: ({ page = 1, pageSize = 10, queueName, showAll = true }) => ({
         url: `Queue/${queueName}/Items`,
         params: { showAll, page, pageSize },
       }),
@@ -25,7 +28,7 @@ const queueApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useGetQueueOperationMutation,
   useGetQueueItemsQuery,
+  useGetQueueOperationMutation,
   useLazyGetQueueItemsQuery,
 } = queueApi;

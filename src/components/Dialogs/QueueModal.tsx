@@ -1,17 +1,26 @@
 import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+  mdiAlertCircleOutline,
+  mdiCheckboxMarkedCircleOutline,
+  mdiChevronRight,
+  mdiCircleOutline,
+  mdiHelpCircleOutline,
+  mdiLoading,
+  mdiRun,
+} from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, map, reduce, throttle } from 'lodash';
-import { Icon } from '@mdi/react';
-import { mdiAlertCircleOutline, mdiCheckboxMarkedCircleOutline, mdiChevronRight, mdiCircleOutline, mdiHelpCircleOutline, mdiLoading, mdiRun } from '@mdi/js';
 import { useEventCallback } from 'usehooks-ts';
 
+import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useGetQueueOperationMutation, useLazyGetQueueItemsQuery } from '@/core/rtkQuery/splitV3Api/queueApi';
-import { RootState } from '@/core/store';
-import { QueueItemType } from '@/core/types/api/queue';
-import Input from '../Input/Input';
-import MenuButton from '../Utilities/Unrecognized/MenuButton';
+
+import type { RootState } from '@/core/store';
+import type { QueueItemType } from '@/core/types/api/queue';
 
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
@@ -21,15 +30,25 @@ type Props = {
   onClose: () => void;
 };
 
-const TabButton = ({ id, name, activeTab, setActiveTab }: { id: QueueName; name: string; activeTab: QueueName; setActiveTab(value: QueueName): void; }) => (
-  <div className={cx(['cursor-pointer', id === activeTab ? 'text-panel-primary' : undefined])} onClick={() => setActiveTab(id)}>
+const TabButton = (
+  { activeTab, id, name, setActiveTab }: {
+    id: QueueName;
+    name: string;
+    activeTab: QueueName;
+    setActiveTab(value: QueueName): void;
+  },
+) => (
+  <div
+    className={cx(['cursor-pointer', id === activeTab ? 'text-panel-primary' : undefined])}
+    onClick={() => setActiveTab(id)}
+  >
     {name}
   </div>
 );
 
 type QueueName = keyof typeof names;
 
-const QueueModal = ({ show: showModal, onClose }: Props) => {
+const QueueModal = ({ onClose, show: showModal }: Props) => {
   const state = useSelector((root: RootState) => root.mainpage.queueStatus);
   const [activeTab, setActiveTab] = useState<QueueName>('hasher');
   const [pageSize, setPageSize] = useState(10);
@@ -42,10 +61,14 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
   const isLoading = expectedTab !== activeTab;
   const count = showModal ? state[stateNames[activeTab]].queueCount : 0;
 
-  const { isPaused, isAllPaused } = useMemo(
+  const { isAllPaused, isPaused } = useMemo(
     () => ({
       isPaused: state[stateNames[activeTab]].status === 'Paused' || state[stateNames[activeTab]].status === 'Pausing',
-      isAllPaused: reduce(state, (allPaused, item) => allPaused && (item?.status === 'Pausing' || item?.status === 'Paused'), true),
+      isAllPaused: reduce(
+        state,
+        (allPaused, item) => allPaused && (item?.status === 'Pausing' || item?.status === 'Paused'),
+        true,
+      ),
     }),
     [state, activeTab],
   );
@@ -67,18 +90,22 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
     } as QueueItemType;
   }, [showModal, state, activeTab]);
 
-  const throttled = useMemo(() => throttle((props) => { getQuery(props).catch(console.error); }, 500), [getQuery]);
+  const throttled = useMemo(() =>
+    throttle((props) => {
+      getQuery(props).catch(console.error);
+    }, 500), [getQuery]);
 
-  const tabs = useMemo(() => map(Object.keys(names) as Array<QueueName>, (key, index, { length }) => (
-    index !== length - 1 ? (
-      <>
-        <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
-        <div key={`${key}.1`}>|</div>
-      </>
-    ) : (
-      <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
-    )
-  )), [activeTab]);
+  const tabs = useMemo(() =>
+    map(Object.keys(names) as Array<QueueName>, (key, index, { length }) => (
+      index !== length - 1
+        ? (
+          <>
+            <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
+            <div key={`${key}.1`}>|</div>
+          </>
+        )
+        : <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
+    )), [activeTab]);
 
   const items = useMemo(() => {
     // Don't render items if the modal is not shown.
@@ -104,10 +131,16 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
 
     const itemArray = map(array, item => (
       <div className="mt-2 flex gap-x-3" key={`item-${item.ID}`}>
-        <div className="flex-grow">
+        <div className="grow">
           {item.Name}
         </div>
-        <div className={cx(['px-4', item.IsRunning ? 'text-panel-important' : undefined, item.IsDisabled ? 'text-panel-warning' : undefined])}>
+        <div
+          className={cx([
+            'px-4',
+            item.IsRunning ? 'text-panel-important' : undefined,
+            item.IsDisabled ? 'text-panel-warning' : undefined,
+          ])}
+        >
           {item.IsRunning && <Icon path={mdiRun} size={1} />}
           {!item.IsRunning && <Icon path={item.IsDisabled ? mdiAlertCircleOutline : mdiHelpCircleOutline} size={1} />}
         </div>
@@ -116,7 +149,7 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
     if (currentCommand != null) {
       itemArray.unshift(
         <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}`}>
-          <div className="flex-grow">
+          <div className="grow">
             {currentCommand.Name}
           </div>
           <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-important' : undefined])}>
@@ -170,7 +203,7 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
       } else {
         throttled({ queueName: activeTab, showAll, pageSize });
       }
-    // Reset the tab after the modal is closed.
+      // Reset the tab after the modal is closed.
     } else if (activeTab !== 'hasher') {
       const id = setTimeout(() => {
         setExpectedTab(null);
@@ -186,28 +219,54 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
     <ModalPanel
       show={showModal}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-8 w-[56.875rem]"
+      className="w-[56.875rem] flex-col gap-y-8 p-8 drop-shadow-lg"
     >
-      <div className="flex items-center font-semibold gap-x-0.5">
+      <div className="flex items-center gap-x-0.5 font-semibold">
         Queue
         <Icon path={mdiChevronRight} size={1} />
         {tabs}
-        <div className="flex flex-grow" />
-        <div className="flex gap-x-1"><div className="text-panel-important">{count < 0 ? '-' : count}</div> {names[activeTab]} Entries</div>
-      </div>
-      <div className="flex align-items-start gap-x-3 align-self-stretch">
-        <div className="flex flex-grow py-3 px-4 align-items-center gap-x-2 align-self-stretch border border-panel-border rounded-md bg-panel-background-toolbar">
-          <MenuButton highlight onClick={handleShowDisabledToggle} icon={showAll ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline} name="Show Disabled Queue Items" />
-          <MenuButton highlight onClick={handleToggleAllQueues} icon={isAllPaused ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline} name="Pause All Queues" />
-          <MenuButton highlight onClick={handleToggleQueue} icon={isPaused ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline} name={`Pause ${names[activeTab]} Queue`} />
+        <div className="flex grow" />
+        <div className="flex gap-x-1">
+          <div className="text-panel-important">{count < 0 ? '-' : count}</div>
+          &nbsp;
+          {names[activeTab]}
+          &nbsp;Entries
         </div>
-        <Input type="number" id="pageSize" value={pageSize} onChange={handlePageSizeChange} inputClassName="px-4 py-3 max-w-[4rem] text-center" />
+      </div>
+      <div className="flex gap-x-3">
+        <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+          <MenuButton
+            highlight
+            onClick={handleShowDisabledToggle}
+            icon={showAll ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline}
+            name="Show Disabled Queue Items"
+          />
+          <MenuButton
+            highlight
+            onClick={handleToggleAllQueues}
+            icon={isAllPaused ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline}
+            name="Pause All Queues"
+          />
+          <MenuButton
+            highlight
+            onClick={handleToggleQueue}
+            icon={isPaused ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline}
+            name={`Pause ${names[activeTab]} Queue`}
+          />
+        </div>
+        <Input
+          type="number"
+          id="pageSize"
+          value={pageSize}
+          onChange={handlePageSizeChange}
+          inputClassName="px-4 py-3 max-w-[4rem] text-center"
+        />
       </div>
       <div className="flex flex-row">
-        <div className="bg-panel-background-alt border border-panel-border mt-2 p-4 capitalize w-full rounded-md">
-          <div className="flex flex-col bg-panel-background-alt overflow-y-auto h-64">
+        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">
+          <div className="flex h-64 flex-col overflow-y-auto bg-panel-background-alt">
             <div className="mt-0 flex gap-x-3">
-              <div className="flex-grow">
+              <div className="grow">
                 <strong>Task</strong>
               </div>
               <div className="px-1">
@@ -216,13 +275,16 @@ const QueueModal = ({ show: showModal, onClose }: Props) => {
             </div>
             {items}
             {isLoading && (
-              <div className="flex flex-grow items-center justify-center">
+              <div className="flex grow items-center justify-center">
                 <Icon path={mdiLoading} spin size={3} />
               </div>
             )}
             {!isLoading && items.length === 0 && (
-              <div className="flex flex-grow items-center justify-center">
-                <p>{names[activeTab]} Queue Is Empty.</p>
+              <div className="flex grow items-center justify-center">
+                <p>
+                  {names[activeTab]}
+                  &nbsp;Queue Is Empty.
+                </p>
               </div>
             )}
           </div>
