@@ -1,5 +1,5 @@
 // This is the least maintainable file in the entire codebase
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -40,6 +40,7 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import { ListResultType } from '@/core/types/api';
+import { detectShow, findMostCommonShowName } from '@/core/utils/auto-match-logic';
 
 type ManualLink = {
   LinkID: number;
@@ -103,23 +104,13 @@ const parseLinks = (links: ManualLink[]) => {
   return { manyToMany, manyToOne, oneToMany, oneToOne };
 };
 
-const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }: { updateSelectedSeries: (series: SeriesAniDBSearchResult) => void, seriesUpdating: boolean; placeholder: string }) => {
-  const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
-  const [searchText, setSearchText] = useState(placeholder);
+const AnimeResultRow = ({ updateSelectedSeries, data }: { updateSelectedSeries(series: SeriesAniDBSearchResult): void; data: SeriesAniDBSearchResult }) => {
+  const handleOnClick = useEventCallback(() => {
+    updateSelectedSeries(data);
+  });
 
-  const debouncedSearch = useRef(
-    debounce((query: string) => {
-      searchTrigger({ query, pageSize: 20 }).catch(() => {});
-    }, 200),
-  ).current;
-
-  const handleSearch = (query: string) => {
-    setSearchText(query);
-    if (query !== '') debouncedSearch(query);
-  };
-
-  const renderRow = useCallback((data: SeriesAniDBSearchResult) => (
-    <div key={data.ID} onClick={() => updateSelectedSeries(data)} className="flex cursor-pointer gap-y-1">
+  return (
+    <div key={data.ID} onClick={handleOnClick} className="flex cursor-pointer gap-y-1">
       <div
         className="flex font-semibold text-panel-primary w-20"
         onClick={(e) => {
@@ -135,20 +126,43 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
       <div className="ml-auto">{data.Type}&nbsp;&nbsp;|&nbsp;&nbsp;</div>
       <div className="w-10">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
     </div>
-  ), [updateSelectedSeries]);
+  );
+};
+
+const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }: { updateSelectedSeries(series: SeriesAniDBSearchResult): void; seriesUpdating: boolean; placeholder: string }) => {
+  const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
+  const [searchText, setSearchText] = useState(placeholder);
+
+  const debouncedSearch = useMemo(() => debounce((query: string) => {
+    searchTrigger({ query, pageSize: 20 }).catch(() => {});
+  }, 200), [searchTrigger]);
+
+  const searchRows = useMemo(() => {
+    const rows: React.ReactNode[] = [];
+    if (!seriesUpdating) {
+      forEach(searchResults.data, (data) => {
+        rows.push(<AnimeResultRow data={data} updateSelectedSeries={updateSelectedSeries} />);
+      });
+    } else {
+      rows.push(<div className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
+    }
+    return rows;
+  }, [searchResults.data, seriesUpdating, updateSelectedSeries]);
+
+  const handleSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchText(query);
+    if (query !== '') debouncedSearch(query);
+  });
+
+  useEffect(() => {
+    setSearchText(placeholder);
+    if (placeholder !== '') debouncedSearch(placeholder);
+  }, [placeholder, debouncedSearch]);
 
   useEffect(() => () => {
     debouncedSearch.cancel();
   }, [debouncedSearch]);
-
-  const searchRows: Array<React.ReactNode> = [];
-  if (!seriesUpdating) {
-    forEach(searchResults.data, (result) => {
-      searchRows.push(renderRow(result));
-    });
-  } else {
-    searchRows.push(<div className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
-  }
 
   return (
     <div className="flex flex-col gap-y-2 w-1/2">
@@ -156,7 +170,7 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
         id="link-search"
         type="text"
         value={searchText}
-        onChange={e => handleSearch(e.target.value)}
+        onChange={handleSearch}
         placeholder="Enter Series Name or AniDB ID..."
         inputClassName="!p-4"
         startIcon={mdiMagnify}
@@ -185,6 +199,18 @@ function LinkFilesTab() {
   const [updateEpisodes] = useLazyGetSeriesEpisodesQuery();
   const anidbEpisodesQuery = useGetSeriesAniDBEpisodesQuery({ anidbID: selectedSeries.ID, pageSize: 0, includeMissing: 'true' }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
   const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
+
+  const showDataMap = useMemo(() => new Map(
+    selectedRows
+      .map((file) => {
+        const path = file?.Locations?.[0]?.RelativePath || '';
+        const details = detectShow(path);
+        return { file, path, details };
+      })
+      .map(mapping => [mapping.file.ID, mapping]),
+  ), [selectedRows]);
+
+  const initialSearchName = useMemo(() => findMostCommonShowName(map(groupBy(links, 'FileID'), l => showDataMap.get(l[0].FileID)!.details)), [showDataMap, links]);
 
   const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
   const fileLinks = useMemo(() => orderBy<ManualLink>(links, (item) => {
@@ -215,11 +241,11 @@ function LinkFilesTab() {
     linkState.splice(itemIndex, 1);
   }));
 
-  const updateSelectedLink = useCallback((idx: number) => {
+  const updateSelectedLink = useEventCallback((idx: number) => {
     if (isLinking) return;
     if (selectedLink === idx) setSelectedLink(-1);
     else setSelectedLink(idx);
-  }, [isLinking, selectedLink, setSelectedLink]);
+  });
 
   const updateSelectedSeries = useEventCallback(async (series: SeriesAniDBSearchResult) => {
     setLinks((linkState) => {
@@ -260,7 +286,7 @@ function LinkFilesTab() {
     setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
   });
 
-  const rangeFill = (rangeStart: string, epType: string) => {
+  const rangeFill = useEventCallback((rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
       toast.error('Value is not a positive integer.');
       return;
@@ -278,7 +304,49 @@ function LinkFilesTab() {
       if (!ep) { return; }
       addLink(link.FileID, ep.value);
     });
-  };
+  });
+
+  const autoFill = useEventCallback(() => {
+    if (!episodes.length) return;
+    const newLinks: ManualLink[] = [];
+    forEach(groupBy(links, 'FileID'), (l) => {
+      const { FileID } = l[0];
+      const { details } = showDataMap.get(FileID)!;
+      // skip links.
+      if (!details) {
+        newLinks.push(...l);
+        return;
+      }
+
+      const { episodeStart, episodeEnd, episodeType } = details;
+
+      // single episode link
+      if ((episodeEnd - episodeStart) === 0) {
+        const episodeNumber = episodeStart;
+        const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
+        if (!episode) {
+          newLinks.push(...l);
+          return;
+        }
+        newLinks.push({ LinkID: generateLinkID(), FileID, EpisodeID: episode.ID });
+        return;
+      }
+
+      // multi episode link
+      let foundLinks = false;
+      for (let episodeNumber = episodeStart; episodeNumber <= episodeEnd; episodeNumber += 1) {
+        const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
+        if (episode) {
+          foundLinks = true;
+          newLinks.push({ LinkID: generateLinkID(), FileID, EpisodeID: episode.ID });
+        }
+      }
+      if (!foundLinks) {
+        newLinks.push(...l);
+      }
+    });
+    setLinks(newLinks);
+  });
 
   const makeLinks = useEventCallback(async (seriesID: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
@@ -420,7 +488,7 @@ function LinkFilesTab() {
               </div>
               <div className="flex gap-x-3 font-semibold">
                 <Button onClick={() => setShowRangeFillModal(true)} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
-                {/* <Button onClick={() => {}} buttonType="secondary" className="px-4 py-3">Auto Fill</Button> */}
+                <Button onClick={autoFill} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Auto Fill</Button>
                 <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
                 <Button onClick={saveChanges} buttonType="primary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
@@ -451,7 +519,7 @@ function LinkFilesTab() {
             )}
             {selectedSeries.ID ? renderDynamicFileLinks() : renderStaticFileLinks()}
           </div>
-          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} seriesUpdating={seriesUpdating} placeholder="" />}
+          {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} seriesUpdating={seriesUpdating} placeholder={initialSearchName} />}
         </div>
       </TransitionDiv>
       <RangeFillModal show={showRangeFillModal} onClose={() => setShowRangeFillModal(false)} rangeFill={rangeFill} />
