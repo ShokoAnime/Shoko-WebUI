@@ -63,6 +63,8 @@ const getPrefix = (type: EpisodeTypeEnum) => {
     case EpisodeTypeEnum.Special: return 'S';
     case EpisodeTypeEnum.ThemeSong: return 'C';
     case EpisodeTypeEnum.Trailer: return 'T';
+    case EpisodeTypeEnum.Other: return 'O';
+    case EpisodeTypeEnum.Parody: return 'P';
     default: return '';
   }
 };
@@ -71,7 +73,7 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-panel-text hover:bg-panel-primary hover:text-panel-text-alt select-none relative px-2 py-0.5 group cursor-pointer">
     <div className="flex items-center justify-between">
       <span className="flex font-normal truncate grow">
-        <div className="text-panel-important w-10 group-hover:text-panel-text">{getPrefix(option.type) + option.number}</div>
+        <div className="flex-shrink-0 text-panel-important w-10 group-hover:text-panel-text">{getPrefix(option.type) + option.number}</div>
         |
         <div className="ml-2">{option.label}</div>
       </span>
@@ -79,7 +81,7 @@ const SelectOption = (option: Option & { divider: boolean }) => (
     </div>
   </Listbox.Option>
 );
-/* eslint-disable-next-line object-curly-newline */
+
 const SelectEpisodeList = ({ options, disabled = false, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
   const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
