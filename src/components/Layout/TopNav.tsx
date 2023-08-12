@@ -11,7 +11,6 @@ import {
   mdiFormatListBulletedSquare,
   mdiGithub,
   mdiHelpCircleOutline,
-  mdiInformationOutline,
   mdiLayersTripleOutline,
   mdiLoading,
   mdiServer,
@@ -38,6 +37,7 @@ import Button from '../Input/Button';
 import toast from '../Toast';
 
 import ShokoIcon from '../ShokoIcon';
+import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
 const { DEV, VITE_APPVERSION } = import.meta.env;
 
@@ -212,18 +212,8 @@ function TopNav() {
                 </div>
               )}
               {/* TODO: This maybe works, maybe doesn't. Cannot test properly. */}
-              {(banStatus?.udp?.updateType === 1 && banStatus?.udp?.value) && (
-                <div className="flex items-center font-semibold cursor-pointer gap-x-2.5">
-                  <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
-                  AniDB UDP Ban Detected!
-                </div>
-              )}
-              {(banStatus?.http?.updateType === 2 && banStatus?.http?.value) && (
-                <div className="flex items-center font-semibold cursor-pointer gap-x-2.5">
-                  <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
-                  AniDB HTTP Ban Detected!
-                </div>
-              )}
+              <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
+              <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex gap-x-5">
                 <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} />
                 <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} />
