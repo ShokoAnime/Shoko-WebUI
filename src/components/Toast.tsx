@@ -47,6 +47,10 @@ const error = (header: string, message?: React.ReactNode, options?: ToastOptions
   toast.error(<Toast header={header} message={message} icon={mdiAlertCircleOutline} />, options);
 };
 
+const warning = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
+  toast.warning(<Toast header={header} message={message} icon={mdiAlertCircleOutline} />, options);
+};
+
 const info = (header: string, message?: React.ReactNode, options?: ToastOptions) => {
   toast.info(<Toast header={header} message={message} icon={mdiInformationOutline} />, options);
 };
@@ -60,6 +64,7 @@ const isActive = (id: string) => toast.isActive(id);
 export default {
   success,
   error,
+  warning,
   info,
   dismiss,
   infoUpdate,

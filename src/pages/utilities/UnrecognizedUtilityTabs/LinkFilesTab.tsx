@@ -40,7 +40,7 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import { ListResultType } from '@/core/types/api';
-import { detectShow, findMostCommonShowName } from '@/core/utils/auto-match-logic';
+import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
 type ManualLink = {
   LinkID: number;
@@ -71,6 +71,7 @@ const parseLinks = (links: ManualLink[]) => {
   const filteredLinks = filter(links, link => link.FileID !== 0 && link.EpisodeID !== 0);
   const groupedByFileId = groupBy(filteredLinks, 'FileID');
   const groupedByEpisodeId = groupBy(filteredLinks, 'EpisodeID');
+  const none = filter(links, link => link.FileID === 0 || link.EpisodeID === 0);
   const oneToOne: ManualLink[] = [];
   const oneToMany: ManualLinkOneToMany[] = [];
   const manyToOne: ManualLinkManyToOne[] = [];
@@ -101,7 +102,7 @@ const parseLinks = (links: ManualLink[]) => {
   });
   manyToMany = uniqBy(manyToMany, l => `${l.FileID}-${l.EpisodeID}`);
 
-  return { manyToMany, manyToOne, oneToMany, oneToOne };
+  return { manyToMany, manyToOne, oneToMany, oneToOne, none };
 };
 
 const AnimeResultRow = ({ updateSelectedSeries, data }: { updateSelectedSeries(series: SeriesAniDBSearchResult): void; data: SeriesAniDBSearchResult }) => {
@@ -141,10 +142,10 @@ const AnimeSelectPanel = ({ updateSelectedSeries, seriesUpdating, placeholder }:
     const rows: React.ReactNode[] = [];
     if (!seriesUpdating) {
       forEach(searchResults.data, (data) => {
-        rows.push(<AnimeResultRow data={data} updateSelectedSeries={updateSelectedSeries} />);
+        rows.push(<AnimeResultRow key={data.ID} data={data} updateSelectedSeries={updateSelectedSeries} />);
       });
     } else {
-      rows.push(<div className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
+      rows.push(<div key="loading" className="flex grow justify-center items-center text-panel-primary"><Icon path={mdiLoading} size={4} spin /></div>);
     }
     return rows;
   }, [searchResults.data, seriesUpdating, updateSelectedSeries]);
@@ -236,10 +237,13 @@ function LinkFilesTab() {
     }
   }));
 
-  const removeLink = useEventCallback((fileId: number) => setLinks((linkState) => {
-    const itemIndex = linkState.findLastIndex(link => link.FileID === fileId);
-    linkState.splice(itemIndex, 1);
-  }));
+  const removeLink = useEventCallback((fileId: number) => {
+    setSelectedLink(-1);
+    setLinks((linkState) => {
+      const itemIndex = linkState.findLastIndex(link => link.FileID === fileId);
+      linkState.splice(itemIndex, 1);
+    });
+  });
 
   const updateSelectedLink = useEventCallback((idx: number) => {
     if (isLinking) return;
@@ -302,19 +306,21 @@ function LinkFilesTab() {
     forEach(fileLinks, (link) => {
       const ep = filtered.shift();
       if (!ep) { return; }
-      addLink(link.FileID, ep.value);
+      addLink(link.FileID, ep.value, link.LinkID);
     });
   });
 
   const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
     let hasChanged = false;
+    let skipped = false;
     const newLinks: ManualLink[] = [];
     forEach(groupBy(links, 'FileID'), (l) => {
       const { FileID } = l[0];
       const { details } = showDataMap.get(FileID)!;
       // skip links.
       if (!details) {
+        skipped = true;
         newLinks.push(...l);
         return;
       }
@@ -326,6 +332,7 @@ function LinkFilesTab() {
         const episodeNumber = episodeStart;
         const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
         if (!episode) {
+          skipped = true;
           newLinks.push(...l);
           return;
         }
@@ -345,12 +352,17 @@ function LinkFilesTab() {
         }
       }
       if (!foundLinks) {
+        skipped = true;
         newLinks.push(...l);
       }
     });
     if (hasChanged) {
       setLinks(newLinks);
-      toast.success('Auto matching applied.', 'Be sure to verify before saving!');
+      if (skipped) {
+        toast.warning('Auto matching applied', 'Some matches could not be filled it. Be sure to vefify the ones that were, and fill in the rest!');
+      } else {
+        toast.success('Auto matching applied.', 'Be sure to verify before saving!');
+      }
     }
   });
 
@@ -367,13 +379,13 @@ function LinkFilesTab() {
         await deleteSeries({ seriesId: seriesID, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
-      toast.error('Failed to add episodes! Unable to fetch shoko episodes!');
+      toast.error('Linking aborted!', 'Unable to fetch shoko episodes!');
       return;
     }
 
     const anidbMap = new Map(shokoEpisodeResponse.List.map(i => [i.IDs.AniDB, i.IDs.ID]));
-    const mappedLinks: ManualLink[] = manualLinks.map(({ LinkID, FileID, EpisodeID }) => ({ LinkID, FileID, EpisodeID: anidbMap.get(EpisodeID)! }));
-    const { manyToMany, manyToOne, oneToMany, oneToOne } = parseLinks(mappedLinks);
+    const mappedLinks: ManualLink[] = manualLinks.map(({ LinkID, FileID, EpisodeID }) => ({ LinkID, FileID, EpisodeID: anidbMap.get(EpisodeID) || 0 }));
+    const { manyToMany, manyToOne, oneToMany, oneToOne, none } = parseLinks(mappedLinks);
     if (manyToMany.length) {
       // if it previously didn't exist, but was made right before this, then
       // delete it again.
@@ -381,33 +393,42 @@ function LinkFilesTab() {
         await deleteSeries({ seriesId: seriesID, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
-      toast.error('Failed to add episodes! Unable create many-to-many relations. Try again or contact support.');
+      toast.error('Linking aborted!', 'Unable create many-to-many relations. Try again or contact support.');
       return;
     }
 
     await Promise.all([
+      ...map(none, async ({ FileID }) => {
+        if (FileID === 0) return;
+        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
+        toast.warning('Episode linking skipped!', `Path: ${path}`);
+      }),
       ...map(oneToOne, async ({ EpisodeID, FileID }) => {
+        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
         try {
           await fileLinkOneOrManyTrigger({ episodeIDs: [EpisodeID], fileID: FileID }).unwrap();
-          toast.success('Episode linked!');
+          toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`);
         } catch (error) {
-          toast.error('Episode linking failed!');
+          toast.error('Failed at 1:1 linking!', `Path: ${path}`);
         }
       }),
       ...map(oneToMany, async ({ EpisodeIDs, FileID }) => {
+        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
         try {
           await fileLinkOneOrManyTrigger({ episodeIDs: EpisodeIDs, fileID: FileID }).unwrap();
-          toast.success('1-To-Many Episode linked!');
+          toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`);
         } catch (error) {
-          toast.error('Episode linking failed!');
+          toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`);
         }
       }),
       ...map(manyToOne, async ({ EpisodeID, FileIDs }) => {
+        const episode = find(episodes, ['ID', EpisodeID]);
+        const episodeDetails = episode ? `Episode: ${episode.EpisodeNumber} - ${episode.Title}` : `Episode: ${EpisodeID}`;
         try {
           await fileLinkManyTrigger({ episodeID: EpisodeID, fileIDs: FileIDs }).unwrap();
-          toast.success('Many-To-1 Episode linked!');
+          toast.success(`Scheduled a ${FileIDs.length}:1 mapping for linking!`, episodeDetails);
         } catch (error) {
-          toast.error('Episode linking failed!');
+          toast.error(`Failed at ${FileIDs.length}:1 linking!`, episodeDetails);
         }
       }),
     ]);
@@ -423,7 +444,6 @@ function LinkFilesTab() {
     if (links.length === 0) {
       navigate('../', { replace: true });
     }
-    setSelectedLink(-1);
   }, [links, navigate]);
 
   useEffect(() => {
@@ -454,7 +474,7 @@ function LinkFilesTab() {
     const file = find(selectedRows, ['ID', link.FileID]);
     const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
     return (
-      <div title={path} className={cx(['p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-panel-border rounded-md leading-5', selectedLink === idx && 'border-panel-primary'])} key={`${link.FileID}-${link.EpisodeID}-${idx}`} onClick={() => updateSelectedLink(idx)}>
+      <div title={path} className={cx(['p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-panel-border rounded-md leading-5', selectedLink === idx && 'border-panel-primary'])} key={`${link.FileID}-${link.EpisodeID}-${idx}-static`} onClick={() => updateSelectedLink(idx)}>
         {path}
       </div>
     );
