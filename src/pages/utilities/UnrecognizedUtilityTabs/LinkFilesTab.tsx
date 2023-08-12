@@ -308,6 +308,7 @@ function LinkFilesTab() {
 
   const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
+    let hasChanged = false;
     const newLinks: ManualLink[] = [];
     forEach(groupBy(links, 'FileID'), (l) => {
       const { FileID } = l[0];
@@ -328,6 +329,7 @@ function LinkFilesTab() {
           newLinks.push(...l);
           return;
         }
+        hasChanged = true;
         newLinks.push({ LinkID: generateLinkID(), FileID, EpisodeID: episode.ID });
         return;
       }
@@ -338,6 +340,7 @@ function LinkFilesTab() {
         const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
         if (episode) {
           foundLinks = true;
+          hasChanged = true;
           newLinks.push({ LinkID: generateLinkID(), FileID, EpisodeID: episode.ID });
         }
       }
@@ -345,7 +348,10 @@ function LinkFilesTab() {
         newLinks.push(...l);
       }
     });
-    setLinks(newLinks);
+    if (hasChanged) {
+      setLinks(newLinks);
+      toast.success('Auto matching applied.', 'Be sure to verify before saving!');
+    }
   });
 
   const makeLinks = useEventCallback(async (seriesID: number, manualLinks: ManualLink[], didNotExist: boolean) => {
@@ -421,6 +427,12 @@ function LinkFilesTab() {
   }, [links, navigate]);
 
   useEffect(() => {
+    if (selectedSeries.ID && episodes.length) {
+      autoFill();
+    }
+  }, [selectedSeries.ID, episodes.length, autoFill]);
+
+  useEffect(() => {
     const seriesId = selectedSeries?.ShokoID ?? getAnidbSeriesQuery.data?.ShokoID;
     if (!seriesId || !isLinking || isLinkingRunning) {
       return;
@@ -488,7 +500,6 @@ function LinkFilesTab() {
               </div>
               <div className="flex gap-x-3 font-semibold">
                 <Button onClick={() => setShowRangeFillModal(true)} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
-                <Button onClick={autoFill} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Auto Fill</Button>
                 <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
                 <Button onClick={saveChanges} buttonType="primary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
