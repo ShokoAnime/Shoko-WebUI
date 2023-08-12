@@ -111,21 +111,16 @@ const AnimeResultRow = ({ updateSelectedSeries, data }: { updateSelectedSeries(s
   });
 
   return (
-    <div key={data.ID} onClick={handleOnClick} className="flex cursor-pointer gap-y-1">
-      <div
-        className="flex font-semibold text-panel-primary w-20"
-        onClick={(e) => {
-          e.stopPropagation();
-          window.open(`https://anidb.net/anime/${data.ID}`, '_blank');
-        }}
-      >
+    <div key={data.ID} onClick={handleOnClick} className="flex cursor-pointer gap-y-1 gap-x-2">
+      <a className="flex flex-shrink-0 font-semibold text-panel-primary w-20" href={`https://anidb.net/anime/${data.ID}`} target="_blank" rel="noopener noreferrer">
         {data.ID}
         <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
-      </div>
-      &nbsp;&nbsp;|&nbsp;&nbsp;
+      </a>
+      |
       <div>{data.Title}</div>
-      <div className="ml-auto">{data.Type}&nbsp;&nbsp;|&nbsp;&nbsp;</div>
-      <div className="w-10">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
+      <div className="ml-auto">{data.Type}</div>
+      |
+      <div className="w-10 flex-shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
     </div>
   );
 };
@@ -237,10 +232,15 @@ function LinkFilesTab() {
     }
   }));
 
-  const removeLink = useEventCallback((fileId: number) => {
+  const duplicateLink = useEventCallback(() => {
+    addLink(fileLinks[selectedLink].FileID);
+  });
+
+  const removeLink = useEventCallback(() => {
+    const { LinkID } = fileLinks[selectedLink];
     setSelectedLink(-1);
     setLinks((linkState) => {
-      const itemIndex = linkState.findLastIndex(link => link.FileID === fileId);
+      const itemIndex = linkState.findLastIndex(link => link.LinkID === LinkID);
       linkState.splice(itemIndex, 1);
     });
   });
@@ -273,6 +273,23 @@ function LinkFilesTab() {
       toast.error('Failed to get series data!');
     }
     setSeriesUpdating(false);
+  });
+
+  const editSelectedSeries = useEventCallback(() => {
+    setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+  });
+
+  const openRangeFill = useEventCallback(() => {
+    setShowRangeFillModal(true);
+  });
+
+  const closeRangeFill = useEventCallback(() => {
+    setShowRangeFillModal(false);
+  });
+
+  const cancelChanges = useEventCallback(() => {
+    setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
+    navigate('../');
   });
 
   const saveChanges = useEventCallback(async () => {
@@ -514,13 +531,13 @@ function LinkFilesTab() {
             <div className="flex items-center gap-x-3">
               <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative">
                 <div className="flex grow gap-x-4">
-                  <MenuButton onClick={() => addLink(fileLinks[selectedLink].FileID)} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={isLinking || selectedLink === -1 || !selectedSeries.ID} />
-                  <MenuButton onClick={() => removeLink(fileLinks[selectedLink].LinkID)} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={isLinking || selectedLink === -1} />
+                  <MenuButton onClick={duplicateLink} icon={mdiPlusCircleMultipleOutline} name="Duplicate Entry" disabled={isLinking || selectedLink === -1 || !selectedSeries.ID} />
+                  <MenuButton onClick={removeLink} icon={mdiMinusCircleOutline} name="Remove Entry" disabled={isLinking || selectedLink === -1} />
                 </div>
               </div>
               <div className="flex gap-x-3 font-semibold">
-                <Button onClick={() => setShowRangeFillModal(true)} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
-                <Button onClick={() => { setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult); navigate('../'); }} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
+                <Button onClick={openRangeFill} buttonType="secondary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}>Range Fill</Button>
+                <Button onClick={cancelChanges} buttonType="secondary" className="px-4 py-3" disabled={isLinking}>Cancel</Button>
                 <Button onClick={saveChanges} buttonType="primary" className="px-4 py-3" disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown} loading={isLinking}>Save</Button>
               </div>
             </div>
@@ -536,14 +553,11 @@ function LinkFilesTab() {
             {selectedSeries?.ID && (
               <div className="flex bg-panel-background-toolbar font-semibold p-4 rounded-md border border-panel-border">
                 AniDB |&nbsp;
-                <div
-                  className="flex font-semibold text-panel-primary cursor-pointer"
-                  onClick={() => window.open(`https://anidb.net/anime/${selectedSeries.ID}`, '_blank')}
-                >
+                <a className="flex font-semibold text-panel-primary cursor-pointer" href={`https://anidb.net/anime/${selectedSeries.ID}`} target="_blank" rel="noopener noreferrer">
                   {selectedSeries.ID} - {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
-                </div>
-                <Button onClick={() => setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult)} className="ml-auto text-panel-primary" disabled={isLinking}>
+                </a>
+                <Button onClick={editSelectedSeries} className="ml-auto text-panel-primary" disabled={isLinking}>
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>
@@ -553,7 +567,7 @@ function LinkFilesTab() {
           {!selectedSeries?.ID && <AnimeSelectPanel updateSelectedSeries={updateSelectedSeries} seriesUpdating={seriesUpdating} placeholder={initialSearchName} />}
         </div>
       </TransitionDiv>
-      <RangeFillModal show={showRangeFillModal} onClose={() => setShowRangeFillModal(false)} rangeFill={rangeFill} />
+      <RangeFillModal show={showRangeFillModal} onClose={closeRangeFill} rangeFill={rangeFill} />
     </>
   );
 }
