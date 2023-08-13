@@ -74,7 +74,7 @@ const router = createBrowserRouter(
           <Route path="utilities">
             <Route index element={<Navigate to="unrecognized" replace />} />
             <Route path="unrecognized" element={<UnrecognizedUtility />}>
-              <Route index element={<Navigate to="files" />} />
+              <Route index element={<Navigate to="files" replace />} />
               <Route path="files" element={<UnrecognizedTab />} />
               <Route path="files/link" element={<LinkFilesTab />} />
               <Route path="manually-linked-files" element={<ManuallyLinkedTab />} />
