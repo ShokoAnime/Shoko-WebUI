@@ -14,7 +14,7 @@ const FileItem = ({ file }: { file: FileType }) => (
     <div className="flex grow flex-col">
       <span className="font-semibold">
         {moment(file.Created).format('yyyy-MM-DD')}
-        &nbsp;/
+        &nbsp;/&nbsp;
         {moment(file.Created).format('hh:mm A')}
       </span>
       <span className="max-w-[95%] break-all">
