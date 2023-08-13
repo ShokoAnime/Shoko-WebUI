@@ -131,7 +131,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
 
     const itemArray = map(array, item => (
       <div className="mt-2 flex gap-x-3" key={`item-${item.ID}`}>
-        <div className="grow">
+        <div className="grow break-all">
           {item.Name}
         </div>
         <div
@@ -148,8 +148,8 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     ));
     if (currentCommand != null) {
       itemArray.unshift(
-        <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}`}>
-          <div className="grow">
+        <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}-running`}>
+          <div className="grow break-all">
             {currentCommand.Name}
           </div>
           <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-important' : undefined])}>
