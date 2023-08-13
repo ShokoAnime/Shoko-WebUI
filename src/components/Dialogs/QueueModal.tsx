@@ -99,10 +99,10 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     map(Object.keys(names) as Array<QueueName>, (key, index, { length }) => (
       index !== length - 1
         ? (
-          <>
-            <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
-            <div key={`${key}.1`}>|</div>
-          </>
+          <React.Fragment key={key}>
+            <TabButton id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
+            |
+          </React.Fragment>
         )
         : <TabButton key={key} id={key} name={names[key]} activeTab={activeTab} setActiveTab={setActiveTab} />
     )), [activeTab]);
@@ -224,7 +224,9 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       <div className="flex items-center gap-x-0.5 font-semibold">
         Queue
         <Icon path={mdiChevronRight} size={1} />
-        {tabs}
+        <div className="flex gap-x-2">
+          {tabs}
+        </div>
         <div className="flex grow" />
         <div className="flex gap-x-1">
           <div className="text-panel-important">{count < 0 ? '-' : count}</div>
