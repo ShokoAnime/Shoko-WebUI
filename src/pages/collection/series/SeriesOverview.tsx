@@ -25,9 +25,8 @@ import {
 import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
-import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '@/core/types/api/series';
+import type { SeriesAniDBRelatedType, SeriesAniDBSimilarType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
 const links = ['TMDB', 'TvDB', 'MAL', 'AniList', 'TraktTv'];
@@ -112,7 +111,7 @@ const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
-  const series: SeriesDetailsType = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const series = useMemo(() => seriesData?.data, [seriesData]);
   const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
   const overview = seriesOverviewData?.data || {} as WebuiSeriesDetailsType;
   const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
@@ -122,10 +121,10 @@ const SeriesOverview = () => {
   const similarData = useGetAniDBSimilarQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
 
-  const jpOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (JP)'), [series]);
-  const enOfficialSite = useMemo(() => series.Links.find(link => link.Name === 'Official Site (EN)'), [series]);
+  const jpOfficialSite = useMemo(() => series?.Links.find(link => link.Name === 'Official Site (JP)'), [series]);
+  const enOfficialSite = useMemo(() => series?.Links.find(link => link.Name === 'Official Site (EN)'), [series]);
 
-  if (!seriesId) return null;
+  if (!seriesId || !series) return null;
 
   return (
     <>
@@ -253,20 +252,24 @@ const SeriesOverview = () => {
         <ShokoPanel title="Related Anime" className="w-full" transparent>
           <div className="flex gap-x-5">
             {related.map((item) => {
-              const thumbnail: ImageType = get(item, 'Poster', {} as ImageType);
+              const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
+              const isDisabled = item.ShokoID === null;
+              if (isDisabled) {
+                return (
+                  <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
+                    <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                    <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                    <span className="text-panel-important text-sm">{itemRelation}</span>
+                  </div>
+                );
+              }
               return (
-                <div
-                  key={`image-${thumbnail?.ID}`}
-                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
-                >
-                  <BackgroundImagePlaceholderDiv
-                    image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
-                  />
-                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-important">{itemRelation}</span>
-                </div>
+                <Link key={`image-${thumbnail?.ID}-link`} to={`/webui/collection/series/${item.ShokoID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
+                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                  <span className="text-panel-important text-sm">{itemRelation}</span>
+                </Link>
               );
             })}
           </div>
@@ -277,24 +280,23 @@ const SeriesOverview = () => {
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
           <div className="shoko-scrollbar flex gap-x-5">
             {similar.map((item) => {
-              const thumbnail: ImageType = get(item, 'Poster', {} as ImageType);
+              const thumbnail = get(item, 'Poster', null);
+              const isDisabled = item.ShokoID === null;
+              if (isDisabled) {
+                return (
+                  <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
+                    <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                    <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                    <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                  </div>
+                );
+              }
               return (
-                <div
-                  key={`image-${thumbnail?.ID}`}
-                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
-                >
-                  <BackgroundImagePlaceholderDiv
-                    image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
-                  />
-                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-important">
-                    {round(item.UserApproval.Value, 2)}
-                    % (
-                    {item.UserApproval.Votes}
-                    &nbsp;votes)
-                  </span>
-                </div>
+                <Link key={`image-${thumbnail?.ID}-link`} to={`/webui/collection/series/${item.ShokoID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
+                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
+                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
+                  <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                </Link>
               );
             })}
           </div>
