@@ -105,7 +105,10 @@
     "postinstall": "husky install"
   },
   "lint-staged": {
-    "*.{ts,tsx}": ["dprint fmt", "eslint --cache --format=node_modules/eslint-formatter-pretty"],
+    "*.{ts,tsx}": [
+      "dprint fmt",
+      "eslint --cache --format=node_modules/eslint-formatter-pretty"
+    ],
     "*.css": "stylelint"
   },
   "packageManager": "yarn@3.3.0"
