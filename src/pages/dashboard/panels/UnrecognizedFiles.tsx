@@ -2,19 +2,24 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 
-import { useGetFilesQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
+import { useGetFilesQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 
 import type { RootState } from '@/core/store';
 
 const FileItem = ({ file }: { file: FileType }) => (
   <div key={file.ID} className="flex items-center">
-    <div className="flex flex-col grow">
-      <span className="font-semibold">{moment(file.Created).format('yyyy-MM-DD')} / {moment(file.Created).format('hh:mm A')}</span>
-      <span className="break-all max-w-[95%]">{file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}</span>
+    <div className="flex grow flex-col">
+      <span className="font-semibold">
+        {moment(file.Created).format('yyyy-MM-DD')}
+        &nbsp;/
+        {moment(file.Created).format('hh:mm A')}
+      </span>
+      <span className="max-w-[95%] break-all">
+        {file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
+      </span>
     </div>
     <AVDumpFileIcon truck file={file} />
   </div>

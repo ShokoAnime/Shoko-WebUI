@@ -99,7 +99,12 @@ export type AVDumpEventType = {
   sessionID: number;
   message: string;
 } | {
-  type: AVDumpEventTypeEnum.InstalledAVDump | AVDumpEventTypeEnum.InstallingAVDump | AVDumpEventTypeEnum.InvalidCredentials | AVDumpEventTypeEnum.MissingApiKey | AVDumpEventTypeEnum.Timeout | AVDumpEventTypeEnum.InvalidCredentials;
+  type:
+    | AVDumpEventTypeEnum.InstalledAVDump
+    | AVDumpEventTypeEnum.InstallingAVDump
+    | AVDumpEventTypeEnum.InvalidCredentials
+    | AVDumpEventTypeEnum.MissingApiKey
+    | AVDumpEventTypeEnum.Timeout;
 } | {
   type: AVDumpEventTypeEnum.InstallException;
   message: string;

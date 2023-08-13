@@ -97,7 +97,10 @@ function TopNav() {
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
 
-  const isOffline = useMemo(() => !(networkStatus === NetworkAvailability.Internet || networkStatus === NetworkAvailability.PartialInternet), [networkStatus]);
+  const isOffline = useMemo(
+    () => !(networkStatus === NetworkAvailability.Internet || networkStatus === NetworkAvailability.PartialInternet),
+    [networkStatus],
+  );
 
   const closeModalsAndSubmenus = () => {
     setShowActionsModal(false);
@@ -262,7 +265,7 @@ function TopNav() {
                 </div>
               )}
               {isOffline && (
-                <div className="flex items-center font-semibold cursor-pointer gap-x-2.5">
+                <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold">
                   <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
                   No Internet Connection.
                 </div>

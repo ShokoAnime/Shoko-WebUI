@@ -5,10 +5,11 @@ import { Icon } from '@mdi/react';
 import { find, forEach, get, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Select from '@/components/Input/Select';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useLazyGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
+
+import type { WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
 
 const HeaderFragment = ({ range, title }) => {
   if (!title || !range) return null;
@@ -30,7 +31,7 @@ const Header = ({ ranges }) => (
 
 const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroupType }) => {
   const sizes = useMemo(() => {
-    const sizeMap: Record<string, { size: number; count: number; }> = {};
+    const sizeMap: Record<string, { size: number, count: number }> = {};
     forEach(group.RangeByType, (item, key) => {
       let idx = 'Other';
       if (key === 'Normal') {
@@ -102,25 +103,27 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
   const locationDetails = group.FileLocation ?? '-';
 
   return (
-    <div className="flex flex-col p-8 rounded border-panel-border border gap-y-8">
-      <div className="flex font-semibold text-xl"><Header ranges={group.RangeByType} /></div>
+    <div className="flex flex-col gap-y-8 rounded border border-panel-border p-8">
+      <div className="flex text-xl font-semibold">
+        <Header ranges={group.RangeByType} />
+      </div>
       <div className="flex">
-        <div className="grow flex flex-col gap-y-4 font-semibold">
+        <div className="flex grow flex-col gap-y-4 font-semibold">
           <span>Group</span>
           <span>Video</span>
           <span>Location</span>
         </div>
-        <div className="grow-[2] flex flex-col gap-y-4">
+        <div className="flex grow-[2] flex-col gap-y-4">
           <span>{groupDetails}</span>
           <span>{videoDetails}</span>
           <span>{locationDetails}</span>
         </div>
-        <div className="grow flex flex-col gap-y-4 font-semibold">
+        <div className="flex grow flex-col gap-y-4 font-semibold">
           <span>Total</span>
           <span>Audio</span>
           <span>Subtitles</span>
         </div>
-        <div className="grow-[2] flex flex-col gap-y-4">
+        <div className="flex grow-[2] flex-col gap-y-4">
           <span>{sizes}</span>
           <span>{audioDetails}</span>
           <span>{subtitleDetails}</span>
@@ -139,10 +142,10 @@ const SeriesFileSummary = () => {
 
   const summary = useMemo(() => {
     let TotalEpisodeSize = 0;
-    const ByTypeMap: Record<string, { count: number; source: Record<string, number> }> = {};
+    const ByTypeMap: Record<string, { count: number, source: Record<string, number> }> = {};
     const GroupsMap: string[] = [];
     forEach(fileSummary?.Groups, (group) => {
-      if (group.GroupNameShort && GroupsMap.indexOf(group.GroupNameShort) === -1) { GroupsMap.push(group.GroupNameShort); }
+      if (group.GroupNameShort && GroupsMap.indexOf(group.GroupNameShort) === -1) GroupsMap.push(group.GroupNameShort);
       forEach(group.RangeByType, (item, type) => {
         TotalEpisodeSize += item.FileSize;
         const mappedType = type === 'Normal' ? 'Episode' : type;
@@ -154,7 +157,10 @@ const SeriesFileSummary = () => {
       });
     });
 
-    const SourceByType = map(ByTypeMap, ({ count, source }, type) => ({ type, count, source: map(source, (c, s) => `${s} (${c})`).join(', ') || 'N/A' }));
+    const SourceByType = map(
+      ByTypeMap,
+      ({ count, source }, type) => ({ type, count, source: map(source, (c, s) => `${s} (${c})`).join(', ') || 'N/A' }),
+    );
     const Groups = GroupsMap.join(', ');
 
     return {
@@ -173,24 +179,46 @@ const SeriesFileSummary = () => {
 
   return (
     <div className="flex gap-x-8">
-      <ShokoPanel title="Files Overview" className="w-[22.375rem] sticky top-0 shrink-0" transparent contentClassName="gap-y-8">
-        <Select id="episodeType" label="Group By" value={groupBy} onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setGroupBy(event.target.value)}>
+      <ShokoPanel
+        title="Files Overview"
+        className="sticky top-0 w-[22.375rem] shrink-0"
+        transparent
+        contentClassName="gap-y-8"
+      >
+        <Select
+          id="episodeType"
+          label="Group By"
+          value={groupBy}
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setGroupBy(event.target.value)}
+        >
           <option value="">Nothing</option>
           <option value="GroupName">+ Release Group</option>
           <option value="GroupName,FileVersion,FileSource">+ File Source</option>
           <option value="GroupName,FileVersion,FileSource,FileLocation">+ Location</option>
-          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion">+ Video</option>
-          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount">+ Audio</option>
-          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount">+ Subtitles</option>
+          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion">
+            + Video
+          </option>
+          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount">
+            + Audio
+          </option>
+          <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount">
+            + Subtitles
+          </option>
         </Select>
-        {map(summary.SourceByType, ({ type, count, source }, index) => (
+        {map(summary.SourceByType, ({ count, source, type }, index) => (
           <Fragment key={`${type}-${index}`}>
             <div className="flex flex-col gap-y-1">
-              <span className="font-semibold">{type} Count</span>
+              <span className="font-semibold">
+                {type}
+                &nbsp;Count
+              </span>
               {count}
             </div>
             <div className="flex flex-col gap-y-1">
-              <span className="font-semibold">{type} Source</span>
+              <span className="font-semibold">
+                {type}
+                &nbsp;Source
+              </span>
               {source}
             </div>
           </Fragment>
@@ -208,7 +236,11 @@ const SeriesFileSummary = () => {
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-8 py-5 text-xl font-semibold">
           Files Breakdown
-          <div><span className="text-panel-important">{fileSummary?.Groups.length || 0}</span> {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}</div>
+          <div>
+            <span className="text-panel-important">{fileSummary?.Groups.length || 0}</span>
+            &nbsp;
+            {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}
+          </div>
         </div>
         {map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
         {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (

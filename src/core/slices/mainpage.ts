@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AniDBBanItemType, AniDBBanType, NetworkAvailability, QueueStatusType } from '@/core/types/signalr';
+import { NetworkAvailability } from '@/core/types/signalr';
+
+import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/types/signalr';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {

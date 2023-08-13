@@ -1,32 +1,45 @@
-import cx from 'classnames';
-import { throttle } from 'lodash';
 import React, { useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEventCallback } from 'usehooks-ts';
-import { mdiDumpTruck, mdiFileDocumentAlertOutline, mdiFileDocumentCheckOutline, mdiFileDocumentRefreshOutline, mdiInformationOutline, mdiLoading } from '@mdi/js';
+import {
+  mdiDumpTruck,
+  mdiFileDocumentAlertOutline,
+  mdiFileDocumentCheckOutline,
+  mdiFileDocumentRefreshOutline,
+  mdiInformationOutline,
+  mdiLoading,
+} from '@mdi/js';
 import Icon from '@mdi/react';
-
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { RootState } from '@/core/store';
-import { FileType } from '@/core/types/api/file';
+import cx from 'classnames';
+import { throttle } from 'lodash';
+import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
+
+import type { RootState } from '@/core/store';
+import type { FileType } from '@/core/types/api/file';
 
 // This should be shared across _all_ icons. That's why it's not defined outside
 // the component body. This is to throttle the invalidate events sent to RTK
 // query.
 const throttledFn = throttle((fn: () => any) => fn(), 1000);
 
-const AVDumpFileIcon = ({ file, truck = false }: { file: FileType; truck?: boolean }) => {
+const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
   const dispatch = useDispatch();
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
   const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
-  const hash = useMemo(() => `ed2k://|file|${file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''}|${file.Size}|${file.Hashes.ED2K}|/`, [file]);
+  const hash = useMemo(
+    () =>
+      `ed2k://|file|${
+        file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
+      }|${file.Size}|${file.Hashes.ED2K}|/`,
+    [file],
+  );
   const { color, path, state, title } = useMemo(() => {
     if (dumpSession?.status === 'Running') {
       return {
@@ -100,16 +113,21 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType; truck?: boole
   });
 
   return (
-    <div className="flex ml-4">
-      {state === 'success' ? (
-        <CopyToClipboard text={hash} onCopy={() => toast.success('Copied to clipboard!')}>
-          <Icon path={path} spin={path === mdiLoading} size={1} className={`${color} cursor-pointer`} title={title} />
-        </CopyToClipboard>
-      ) : (
-        <Button onClick={handleClick} className={cx((state !== 'idle' && state !== 'failed') && 'cursor-default pointer-events-none')}>
-          <Icon path={path} spin={path === mdiLoading} size={1} className={color} title={title} />
-        </Button>
-      )}
+    <div className="ml-4 flex">
+      {state === 'success'
+        ? (
+          <CopyToClipboard text={hash} onCopy={() => toast.success('Copied to clipboard!')}>
+            <Icon path={path} spin={path === mdiLoading} size={1} className={`${color} cursor-pointer`} title={title} />
+          </CopyToClipboard>
+        )
+        : (
+          <Button
+            onClick={handleClick}
+            className={cx((state !== 'idle' && state !== 'failed') && 'cursor-default pointer-events-none')}
+          >
+            <Icon path={path} spin={path === mdiLoading} size={1} className={color} title={title} />
+          </Button>
+        )}
     </div>
   );
 };

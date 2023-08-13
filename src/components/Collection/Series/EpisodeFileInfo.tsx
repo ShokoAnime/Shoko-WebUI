@@ -2,10 +2,10 @@ import React, { useMemo } from 'react';
 import { get, map, toNumber } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { FileType } from '@/core/types/api/file';
+import type { FileType } from '@/core/types/api/file';
 
 const EpisodeFileInfo = ({ file }: { file: FileType }) => {
-  const { folderPath, fileName } = useMemo(() => {
+  const { fileName, folderPath } = useMemo(() => {
     const absolutePath = get(file, 'Locations.0.AbsolutePath', '<missing file path>');
     return {
       fileName: absolutePath.split(/[/\\]+/).pop(),

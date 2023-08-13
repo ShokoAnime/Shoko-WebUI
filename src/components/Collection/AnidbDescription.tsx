@@ -32,9 +32,7 @@ const AnidbDescription = ({ text }: { text: string | null | undefined }) => {
     lines.push(modifiedText.substring(prevPos));
   }
   LinkRegex.lastIndex = 0;
-  return (
-    <div>{lines.join('')}</div>
-  );
+  return <div>{lines.join('')}</div>;
 };
 
 export default React.memo(AnidbDescription);

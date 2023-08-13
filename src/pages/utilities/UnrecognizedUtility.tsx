@@ -6,14 +6,13 @@ import { find, get } from 'lodash';
 import moment from 'moment';
 import prettyBytes from 'pretty-bytes';
 
+import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import { fuzzySort } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 import type { ColumnDef } from '@tanstack/react-table';
-
-import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 
 type ContextType = {
   columns: ColumnDef<FileType, any>[];

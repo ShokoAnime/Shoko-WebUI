@@ -51,7 +51,8 @@ const Menu = (
     table: Table<FileType>;
     refetch(): void;
     setSeriesSelectModal(show: boolean): void;
-  }) => {
+  },
+) => {
   const {
     files,
     refetch,
@@ -170,10 +171,25 @@ const Menu = (
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
-        <MenuButton onClick={() => table.resetRowSelection()} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+        <MenuButton
+          onClick={() => table.resetRowSelection()}
+          icon={mdiCloseCircleOutline}
+          name="Cancel Selection"
+          highlight
+        />
       </TransitionDiv>
-      <span className="text-panel-important font-semibold ml-auto">{selectedRows.length}&nbsp;</span>Files Selected
-      <DeleteFilesModal show={showConfirmModal} selectedFiles={selectedRows} removeFile={removeFileFromSelection} onClose={cancelDelete} onConfirm={deleteFiles} />
+      <span className="ml-auto font-semibold text-panel-important">
+        {selectedRows.length}
+        &nbsp;
+      </span>
+      Files Selected
+      <DeleteFilesModal
+        show={showConfirmModal}
+        selectedFiles={selectedRows}
+        removeFile={removeFileFromSelection}
+        onClose={cancelDelete}
+        onConfirm={deleteFiles}
+      />
     </div>
   );
 };
@@ -231,7 +247,12 @@ function UnrecognizedTab() {
 
   const getED2KLinks = useEventCallback(() => {
     const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map(file => `ed2k://|file|${file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''}|${file.Size}|${file.Hashes.ED2K}|/`);
+    return fileList.map(
+      file =>
+        `ed2k://|file|${
+          file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
+        }|${file.Size}|${file.Hashes.ED2K}|/`,
+    );
   });
 
   return (
@@ -264,7 +285,12 @@ function UnrecognizedTab() {
                   <Icon path={mdiOpenInNew} size={0.8333} />
                   Manual Link
                 </Button>
-                <Button buttonType="primary" className="px-4 py-3 flex gap-x-2.5 font-semibold" onClick={handleAvdumpClick} disabled={dumpInProgress}>
+                <Button
+                  buttonType="primary"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                  onClick={handleAvdumpClick}
+                  disabled={dumpInProgress}
+                >
                   <Icon path={mdiDumpTruck} size={0.8333} />
                   {isAvdumpFinished && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
@@ -295,7 +321,11 @@ function UnrecognizedTab() {
         </TransitionDiv>
       </div>
 
-      <AvDumpSeriesSelectModal show={seriesSelectModal} onClose={() => setSeriesSelectModal(false)} getLinks={getED2KLinks} />
+      <AvDumpSeriesSelectModal
+        show={seriesSelectModal}
+        onClose={() => setSeriesSelectModal(false)}
+        getLinks={getED2KLinks}
+      />
     </>
   );
 }

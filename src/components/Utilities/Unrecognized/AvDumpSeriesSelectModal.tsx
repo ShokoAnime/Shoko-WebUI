@@ -16,7 +16,7 @@ type Props = {
   getLinks(): string[];
 };
 
-function AvDumpSeriesSelectModal({ getLinks, show, onClose }: Props) {
+function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const [searchText, setSearchText] = useState('');
 
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
@@ -59,9 +59,7 @@ function AvDumpSeriesSelectModal({ getLinks, show, onClose }: Props) {
         </Button>
       </CopyToClipboard>
       <div className="flex h-auto flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {ed2kLinks.split('\n').map(link => (
-          <div key={link.split('|')[4]}>{link}</div>
-        ))}
+        {ed2kLinks.split('\n').map(link => <div key={link.split('|')[4]}>{link}</div>)}
       </div>
       <Input
         id="search"

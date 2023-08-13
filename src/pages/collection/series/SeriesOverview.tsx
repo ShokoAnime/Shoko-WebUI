@@ -257,18 +257,31 @@ const SeriesOverview = () => {
               const isDisabled = item.ShokoID === null;
               if (isDisabled) {
                 return (
-                  <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                    <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                    <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                    <span className="text-panel-important text-sm">{itemRelation}</span>
+                  <div
+                    key={`image-${thumbnail?.ID}`}
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                  >
+                    <BackgroundImagePlaceholderDiv
+                      image={thumbnail}
+                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                    />
+                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                    <span className="text-sm text-panel-important">{itemRelation}</span>
                   </div>
                 );
               }
               return (
-                <Link key={`image-${thumbnail?.ID}-link`} to={`/webui/collection/series/${item.ShokoID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                  <span className="text-panel-important text-sm">{itemRelation}</span>
+                <Link
+                  key={`image-${thumbnail?.ID}-link`}
+                  to={`/webui/collection/series/${item.ShokoID}`}
+                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                >
+                  <BackgroundImagePlaceholderDiv
+                    image={thumbnail}
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                  />
+                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                  <span className="text-sm text-panel-important">{itemRelation}</span>
                 </Link>
               );
             })}
@@ -284,18 +297,41 @@ const SeriesOverview = () => {
               const isDisabled = item.ShokoID === null;
               if (isDisabled) {
                 return (
-                  <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                    <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                    <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                    <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                  <div
+                    key={`image-${thumbnail?.ID}`}
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                  >
+                    <BackgroundImagePlaceholderDiv
+                      image={thumbnail}
+                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                    />
+                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                    <span className="text-sm text-panel-important">
+                      {round(item.UserApproval.Value, 2)}
+                      % (
+                      {item.UserApproval.Votes}
+                      &nbsp;votes)
+                    </span>
                   </div>
                 );
               }
               return (
-                <Link key={`image-${thumbnail?.ID}-link`} to={`/webui/collection/series/${item.ShokoID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                  <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                <Link
+                  key={`image-${thumbnail?.ID}-link`}
+                  to={`/webui/collection/series/${item.ShokoID}`}
+                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                >
+                  <BackgroundImagePlaceholderDiv
+                    image={thumbnail}
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                  />
+                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                  <span className="text-sm text-panel-important">
+                    {round(item.UserApproval.Value, 2)}
+                    % (
+                    {item.UserApproval.Votes}
+                    &nbsp;votes)
+                  </span>
                 </Link>
               );
             })}
