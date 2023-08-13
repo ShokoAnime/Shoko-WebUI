@@ -25,11 +25,12 @@ const fileApi = splitV3Api.injectEndpoints({
     }),
 
     // Run a file through AVDump and return the result.
-    postFileAVDump: build.query<void, number>({
+    postFileAVDump: build.mutation<void, number>({
       query: fileId => ({
         url: `File/${fileId}/AVDump?immediate=false`,
         method: 'POST',
       }),
+      invalidatesTags: ['AVDumpEvent'],
     }),
 
     // Rescan a file on AniDB.
@@ -92,7 +93,7 @@ export const {
   useDeleteFileLinkMutation,
   useDeleteFileMutation,
   useGetFilesQuery,
-  useLazyPostFileAVDumpQuery,
+  usePostFileAVDumpMutation,
   usePostFileLinkManyMutation,
   usePostFileLinkOneMutation,
   usePostFileRehashMutation,

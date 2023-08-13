@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
   mdiDumpTruck,
   mdiFileDocumentAlertOutline,
@@ -11,26 +11,18 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { throttle } from 'lodash';
 import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { useLazyPostFileAVDumpQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { usePostFileAVDumpMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 
-// This should be shared across _all_ icons. That's why it's not defined outside
-// the component body. This is to throttle the invalidate events sent to RTK
-// query.
-const throttledFn = throttle((fn: () => any) => fn(), 1000);
-
 const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
-  const dispatch = useDispatch();
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
-  const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
+  const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
   const hash = useMemo(
@@ -106,9 +98,6 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const handleClick = useEventCallback(async () => {
     if (state === 'idle' || state === 'failed') {
       await fileAvdumpTrigger(fileId);
-      throttledFn(() => {
-        dispatch(splitV3Api.util.invalidateTags(['AVDumpEvent']));
-      });
     }
   });
 

@@ -33,7 +33,7 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import {
   useDeleteFileMutation,
   useGetFilesQuery,
-  useLazyPostFileAVDumpQuery,
+  usePostFileAVDumpMutation,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
@@ -210,7 +210,7 @@ function UnrecognizedTab() {
     sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
   });
   const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
-  const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
+  const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
