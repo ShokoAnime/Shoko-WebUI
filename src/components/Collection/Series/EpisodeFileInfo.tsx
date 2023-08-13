@@ -1,8 +1,18 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { get, map, toNumber } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-const EpisodeFileInfo = ({ file }) => {
+import { FileType } from '@/core/types/api/file';
+
+const EpisodeFileInfo = ({ file }: { file: FileType }) => {
+  const { folderPath, fileName } = useMemo(() => {
+    const absolutePath = get(file, 'Locations.0.AbsolutePath', '<missing file path>');
+    return {
+      fileName: absolutePath.split(/[/\\]+/).pop(),
+      folderPath: absolutePath.slice(0, absolutePath.replaceAll('\\', '/').lastIndexOf('/') + 1),
+    };
+  }, [file]);
+
   const VideoInfo: string[] = [];
   const VideoSource = get(file, 'AniDB.Source');
   if (VideoSource) {
@@ -28,14 +38,14 @@ const EpisodeFileInfo = ({ file }) => {
 
   const AudioInfo: string[] = [];
   const AudioFormat = get(file, 'MediaInfo.Audio.0.Format.Name');
-  const AudioLanguages = map(file.MediaInfo.Audio, item => item.LanguageCode);
+  const AudioLanguages = map(file.MediaInfo?.Audio, item => item.LanguageCode);
   if (AudioFormat) {
     AudioInfo.push(AudioFormat);
   }
   if (AudioLanguages && AudioLanguages.length > 0) {
     AudioInfo.push(`${AudioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${AudioLanguages.join(',')})`);
   }
-  const SubtitleLanguages = map(file.MediaInfo.Subtitles, item => item.LanguageCode);
+  const SubtitleLanguages = map(file.MediaInfo?.Subtitles, item => item.LanguageCode);
   if (SubtitleLanguages && SubtitleLanguages.length > 0) {
     AudioInfo.push(`${SubtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${SubtitleLanguages.join(',')})`);
   }
@@ -47,13 +57,11 @@ const EpisodeFileInfo = ({ file }) => {
         <div className="flex flex-col gap-y-1">
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">File Name</div>
-            {/* TODO: Only show filename */}
-            {get(file, 'Locations.0.RelativePath', '<missing file path>')}
+            {fileName}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Location</div>
-            {/* TODO: Show path not relative path */}
-            {get(file, 'Locations.0.RelativePath', '<missing file path>')}
+            {folderPath}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Size</div>

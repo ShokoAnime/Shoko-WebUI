@@ -33,7 +33,7 @@ const episodeApi = splitV3Api.injectEndpoints({
     }),
     // Get the Shoko.Server.API.v3.Models.Shoko.Files for the Shoko.Server.API.v3.Models.Shoko.Episode with the given episodeID.
     getEpisodeFiles: build.query<FileType[], EpisodeFilesQuery>({
-      query: ({ episodeId, ...params }) => ({ url: `Episode/${episodeId}/File`, params }),
+      query: ({ episodeId, ...params }) => ({ url: `Episode/${episodeId}/File?includeAbsolutePaths=true`, params }),
     }),
     // Set the watched status on an episode
     postEpisodeWatched: build.mutation<void, { episodeId: string, watched: boolean }>({

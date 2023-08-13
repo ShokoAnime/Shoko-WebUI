@@ -20,6 +20,7 @@ export type FileType = {
   Locations: Array<{
     ImportFolderID: number;
     RelativePath: string;
+    AbsolutePath?: string;
     IsAccessible: boolean;
   }>;
   Duration: string;
