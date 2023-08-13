@@ -166,10 +166,17 @@ function TopNav() {
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
-              <div className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])} onClick={handleQueueModalOpen} title="Show Queue Modal">
+              <div
+                className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])}
+                onClick={handleQueueModalOpen}
+                title="Show Queue Modal"
+              >
                 <Icon path={mdiServer} size={0.8333} />
               </div>
-              <span className="text-header-important">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
+              <span className="text-header-important">
+                {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
+                  + queueItems.ImageQueueState.queueCount) ?? 0}
+              </span>
             </div>
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-primary text-xl hover:bg-header-primary-hover">

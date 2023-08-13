@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
-import { useEventCallback } from 'usehooks-ts';
 import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
-
-import { AniDBBanItemType, AniDBBanTypeEnum } from '@/core/types/signalr';
+import { useEventCallback } from 'usehooks-ts';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { AniDBBanTypeEnum } from '@/core/types/signalr';
+
+import type { AniDBBanItemType } from '@/core/types/signalr';
 
 type Props = {
   type: 'HTTP' | 'UDP';
   banStatus: AniDBBanItemType;
 };
 
-const AniDBBanDetectionItem = ({ type, banStatus }: Props) => {
+const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
   const [showModal, setModalOpen] = useState(false);
 
   const banType = type === 'HTTP' ? AniDBBanTypeEnum.HTTPBan : AniDBBanTypeEnum.UDPBan;
@@ -31,26 +32,38 @@ const AniDBBanDetectionItem = ({ type, banStatus }: Props) => {
 
   return (
     <>
-      <div className="flex items-center font-semibold cursor-pointer gap-x-2.5" onClick={handleOpen}>
+      <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold" onClick={handleOpen}>
         <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
-        AniDB {type} Ban Detected!
+        AniDB&nbsp;
+        {type}
+        &nbsp;Ban Detected!
       </div>
       <ModalPanel
         show={showModal}
         onRequestClose={handleClose}
-        className="p-8 flex-col drop-shadow-lg gap-y-8 w-[31.25rem]"
+        className="w-[31.25rem] flex-col gap-y-8 p-8 drop-shadow-lg"
       >
-        <h5 className="text-xl font-bold">AniDB {type} Ban Detected</h5>
+        <h5 className="text-xl font-bold">
+          AniDB&nbsp;
+          {type}
+          &nbsp;Ban Detected
+        </h5>
         <div className="flex flex-col gap-y-8">
           <p>
-            It looks like you’ve been <span className="text-panel-important font-bold">temporarily banned</span> for
-            excessive connection attempts. It happens and just means you’ll need to wait a bit for the temporary ban to
-            expire.
+            It looks like you’ve been&nbsp;
+            <span className="font-bold text-panel-important">temporarily banned</span>
+            &nbsp;for excessive connection attempts. It happens and just means you’ll need to wait a bit for the
+            temporary ban to expire.
           </p>
           <p>
             Click the link below to learn more and how you can minimize the chances of an AniDB Ban.
           </p>
-          <a href="https://docs.shokoanime.com/faq" target="_blank" rel="noopener noreferrer" className="text-panel-primary font-bold flex gap-x-2">
+          <a
+            href="https://docs.shokoanime.com/faq"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex gap-x-2 font-bold text-panel-primary"
+          >
             AniDB Ban | Shoko Docs
             <Icon path={mdiOpenInNew} size={1} />
           </a>

@@ -58,13 +58,19 @@ type Props = {
 
 const getPrefix = (type: EpisodeTypeEnum) => {
   switch (type) {
-    case EpisodeTypeEnum.Normal: return '';
-    case EpisodeTypeEnum.Special: return 'S';
-    case EpisodeTypeEnum.ThemeSong: return 'C';
-    case EpisodeTypeEnum.Trailer: return 'T';
-    case EpisodeTypeEnum.Other: return 'O';
-    case EpisodeTypeEnum.Parody: return 'P';
-    default: return '';
+    case EpisodeTypeEnum.Special:
+      return 'S';
+    case EpisodeTypeEnum.ThemeSong:
+      return 'C';
+    case EpisodeTypeEnum.Trailer:
+      return 'T';
+    case EpisodeTypeEnum.Other:
+      return 'O';
+    case EpisodeTypeEnum.Parody:
+      return 'P';
+    case EpisodeTypeEnum.Normal:
+    default:
+      return '';
   }
 };
 
@@ -75,8 +81,10 @@ const SelectOption = (option: Option & { divider: boolean }) => (
     className="group relative cursor-pointer select-none px-2 py-0.5 text-panel-text hover:bg-panel-primary hover:text-panel-text-alt"
   >
     <div className="flex items-center justify-between">
-      <span className="flex font-normal truncate grow">
-        <div className="flex-shrink-0 text-panel-important w-10 group-hover:text-panel-text">{getPrefix(option.type) + option.number}</div>
+      <span className="flex grow truncate font-normal">
+        <div className="w-10 shrink-0 text-panel-important group-hover:text-panel-text">
+          {getPrefix(option.type) + option.number}
+        </div>
         |
         <div className="ml-2">{option.label}</div>
       </span>
@@ -85,7 +93,9 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   </Listbox.Option>
 );
 
-const SelectEpisodeList = ({ options, disabled = false, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
+const SelectEpisodeList = (
+  { className, disabled = false, emptyValue = '', onChange, options, rowIdx, value }: Props,
+) => {
   const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
   const [portalEl, setPortalEl] = useState(null as any);

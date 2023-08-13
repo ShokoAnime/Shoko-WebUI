@@ -1,7 +1,13 @@
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { ListResultType } from '@/core/types/api';
-import type { AVDumpResultType, FileLinkManyApiType, FileLinkOneApiType, FileRequestType, FileType } from '@/core/types/api/file';
+import type {
+  AVDumpResultType,
+  FileLinkManyApiType,
+  FileLinkOneApiType,
+  FileRequestType,
+  FileType,
+} from '@/core/types/api/file';
 
 const fileApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

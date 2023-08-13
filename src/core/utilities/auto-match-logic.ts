@@ -23,7 +23,12 @@ export interface PathMatchRule {
   regex: RegExp;
   parentRegex?: RegExp;
   grandParentRegex?: RegExp;
-  transform?(show: PathDetails, match: RegExpExecArray, parentMatch: RegExpExecArray | null, grandparentMatch: RegExpExecArray | null): PathDetails | null;
+  transform?(
+    show: PathDetails,
+    match: RegExpExecArray,
+    parentMatch: RegExpExecArray | null,
+    grandparentMatch: RegExpExecArray | null,
+  ): PathDetails | null;
   defaults?: Partial<PathDetails>;
 }
 
@@ -54,14 +59,18 @@ const detectEpisodeType = (matchGroups: Record<string, string | undefined>): Epi
 export function detectShow(filePath: string | undefined | null): PathDetails | null {
   if (!filePath) return null;
 
-  let [fileName = null, parentDir = null, grandParentDir = null] = filePath.trim().split(/[/\\]+/).filter(s => s).reverse();
+  let [fileName = null, parentDir = null, grandParentDir = null] = filePath.trim().split(/[/\\]+/).filter(s => s)
+    .reverse();
   if (grandParentDir && DriveLetterRegex.test(grandParentDir)) grandParentDir = null;
   else if (parentDir && DriveLetterRegex.test(parentDir)) parentDir = null;
   else if (fileName && DriveLetterRegex.test(fileName)) fileName = null;
   if (!fileName) return null;
 
   for (let index = 0; index < PathMatchRuleSet.length; index += 1) {
-    const { name: ruleName, regex, defaults = {}, grandParentRegex, parentRegex, transform = noopTransform } = PathMatchRuleSet[index];
+    // TODO: I couldn't find a dprint setting to make the = go to next line. This needs to be fixed.
+    /* eslint-disable-next-line operator-linebreak */
+    const { defaults = {}, grandParentRegex, name: ruleName, parentRegex, regex, transform = noopTransform } =
+      PathMatchRuleSet[index];
     const match = fileName ? regex.exec(fileName) : null;
     const parentMatch = parentRegex && parentDir ? parentRegex.exec(parentDir) : null;
     const grandParentMatch = grandParentRegex && grandParentDir ? grandParentRegex.exec(grandParentDir) : null;
