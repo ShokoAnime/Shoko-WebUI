@@ -19,6 +19,11 @@ export type SeriesOverviewApiRequest = {
   SeriesID: string;
 };
 
+export type SeriesFileSummaryApiRequest = {
+  SeriesID: string;
+  groupBy?: string;
+};
+
 const webuiApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroupView: build.query<WebuiGroupExtra[], GroupViewApiRequest>({
@@ -55,8 +60,8 @@ const webuiApi = splitV3Api.injectEndpoints({
     }),
 
     // Check for latest version for the selected channel and return a Shoko.Server.API.v3.Models.Common.ComponentVersion containing the version information.
-    getSeriesFileSummery: build.query<WebuiSeriesFileSummaryType, SeriesOverviewApiRequest>({
-      query: ({ SeriesID }) => ({ url: `WebUI/Series/${SeriesID}/FileSummary` }),
+    getSeriesFileSummery: build.query<WebuiSeriesFileSummaryType, SeriesFileSummaryApiRequest>({
+      query: ({ SeriesID, ...params }) => ({ url: `WebUI/Series/${SeriesID}/FileSummary`, params }),
     }),
 
     // Retrieves the list of available themes.
@@ -67,11 +72,11 @@ const webuiApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useGetSeriesFileSummeryQuery,
   useGetSeriesOverviewQuery,
   useGetWebuiThemesQuery,
   useGetWebuiUpdateCheckQuery,
   useGetWebuiUpdateMutation,
   useLazyGetGroupViewQuery,
+  useLazyGetSeriesFileSummeryQuery,
   useLazyGetWebuiUpdateCheckQuery,
 } = webuiApi;

@@ -38,21 +38,22 @@ export type WebuiSeriesFileSummaryType = {
 };
 
 export type WebuiSeriesFileSummaryGroupType = {
-  GroupName: string;
-  Version: number;
-  Source: string;
-  BitDepth: number;
-  Resolution: string;
-  Width: number;
-  Height: number;
-  VideoCodecs: string;
-  AudioCodecs: string;
-  AudioLanguages: string[];
-  AudioCount: number;
-  SubtitleCodecs: string;
-  SubtitleLanguages: string[];
-  SubtitleCount: number;
-  Location: string;
+  GroupName?: string;
+  GroupNameShort?: string;
+  FileVersion?: number;
+  FileSource?: string;
+  FileLocation?: string;
+  VideoCodecs?: string;
+  VideoBitDepth?: number;
+  VideoResolution?: string;
+  VideoWidth?: number;
+  VideoHeight?: number;
+  AudioCodecs?: string;
+  AudioLanguages?: string[];
+  AudioStreamCount?: number;
+  SubtitleCodecs?: string;
+  SubtitleLanguages?: string[];
+  SubtitleStreamCount?: number;
   RangeByType: {
     Other: WebuiSeriesFileSummaryRangeByType;
     Normal: WebuiSeriesFileSummaryRangeByType;
