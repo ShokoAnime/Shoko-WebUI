@@ -85,7 +85,7 @@ function ImportFolders() {
           <div>
             {prettyBytes(folder.FileSize ?? 0, { binary: true })}
             &nbsp;(
-            {(folder.Size ?? 2043).toLocaleString('en-US')}
+            {(folder.Size ?? 0).toLocaleString('en-US')}
             &nbsp;Series)
           </div>
         </div>
