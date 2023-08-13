@@ -1,4 +1,4 @@
-import { ImageType, RatingType } from './common';
+import type { ImageType, RatingType } from './common';
 
 export type EpisodeType = {
   IDs: EpisodeIDsType;
@@ -8,7 +8,7 @@ export type EpisodeType = {
   Watched: string | null;
   Size: number;
   AniDB?: EpisodeAniDBType;
-  TvDB?:EpisodeTvDBType[];
+  TvDB?: EpisodeTvDBType[];
   IsHidden: boolean;
 };
 

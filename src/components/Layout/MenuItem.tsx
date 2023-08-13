@@ -1,8 +1,14 @@
 import React from 'react';
-import cx from 'classnames';
+import {
+  mdiCogOutline,
+  mdiFormatListBulletedSquare,
+  mdiLayersTripleOutline,
+  mdiTabletDashboard,
+  mdiTextBoxOutline,
+  mdiTools,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
-
-import { mdiCogOutline, mdiTabletDashboard, mdiLayersTripleOutline, mdiTools, mdiFormatListBulletedSquare, mdiTextBoxOutline } from '@mdi/js';
+import cx from 'classnames';
 
 const iconMap = {
   dashboard: mdiTabletDashboard,
@@ -31,12 +37,15 @@ export type MenuItemProps = {
 
 function MenuItem(props: MenuItemProps) {
   const {
-    icon, label, className, onClick,
+    className,
+    icon,
+    label,
+    onClick,
   } = props;
 
   return (
     <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
-      <div className="w-5 flex justify-center content-center">
+      <div className="flex w-5 content-center justify-center">
         <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180} />
       </div>
       <div className="pl-4 font-semibold">{label}</div>

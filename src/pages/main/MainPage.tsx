@@ -1,19 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Outlet } from 'react-router';
 import { useMediaQuery } from 'react-responsive';
+import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-
-import Events from '@/core/events';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import ProfileModal from '@/components/Dialogs/ProfileModal';
 import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
-
+import Events from '@/core/events';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { initialSettings } from '../settings/SettingsPage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 function MainPage() {
   const dispatch = useDispatch();
@@ -21,7 +19,7 @@ function MainPage() {
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   const settingsQuery = useGetSettingsQuery();
-  const { toastPosition, notifications } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
+  const { notifications, toastPosition } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   const [showSmSidebar, setShowSmSidebar] = useState(false);
 
@@ -32,7 +30,7 @@ function MainPage() {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   return (
-    <React.Fragment>
+    <>
       {notifications && (
         <ToastContainer
           position={toastPosition}
@@ -43,18 +41,21 @@ function MainPage() {
           icon={false}
         />
       )}
-      <div className="flex flex-col grow overflow-x-clip">
+      <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
         <ProfileModal />
         <TopNav />
-        {isSm && (<Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />)}
-        <div className="grow shoko-scrollbar overflow-y-auto py-8 scroll-gutter" ref={scrollRef}>
-          <div className="max-w-[120rem] w-full mx-auto px-8 min-h-full flex flex-col scroll-no-gutter" onClick={() => setShowSmSidebar(false)}>
+        {isSm && <Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />}
+        <div className="shoko-scrollbar scroll-gutter grow overflow-y-auto py-8" ref={scrollRef}>
+          <div
+            className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-8"
+            onClick={() => setShowSmSidebar(false)}
+          >
             <Outlet context={{ scrollRef }} />
           </div>
         </div>
       </div>
-    </React.Fragment>
+    </>
   );
 }
 

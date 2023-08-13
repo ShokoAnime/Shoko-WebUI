@@ -4,9 +4,10 @@ import { Icon } from '@mdi/react';
 
 const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
 
-const AnidbLink = ({ url, character, text }) => (
+const AnidbLink = ({ character, text, url }) => (
   <span className="text-panel-primary" title={url}>
-    {character === true ? <Icon className="inline-block" path={mdiAccount} size={1} /> : null}{' '}
+    {character === true ? <Icon className="inline-block" path={mdiAccount} size={1} /> : null}
+    &nbsp;
     {text}
   </span>
 );
@@ -31,9 +32,7 @@ const AnidbDescription = ({ text }) => {
     lines.push(text.substring(prevPos));
   }
 
-  return (
-    <div>{lines}</div>
-  );
+  return <div>{lines}</div>;
 };
 
 export default React.memo(AnidbDescription);

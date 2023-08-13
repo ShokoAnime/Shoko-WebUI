@@ -1,10 +1,13 @@
 /* eslint-disable no-param-reassign */
-import { each, isObject, unset } from 'lodash';
-import { FilterFn, SortingFn, sortingFns } from '@tanstack/react-table';
-import { compareItems, RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
+import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
+import { sortingFns } from '@tanstack/react-table';
 import formatThousands from 'format-thousands';
+import { each, isObject, unset } from 'lodash';
 
-const { DEV, VITE_GITHASH, VITE_APPVERSION } = import.meta.env;
+import type { RankingInfo } from '@tanstack/match-sorter-utils';
+import type { FilterFn, SortingFn } from '@tanstack/react-table';
+
+const { DEV, VITE_APPVERSION, VITE_GITHASH } = import.meta.env;
 
 export function uiVersion() {
   return DEV ? VITE_GITHASH : VITE_APPVERSION;
@@ -51,10 +54,10 @@ export function omitDeepBy(value: any, iteratee: Function) {
 
 declare module '@tanstack/table-core' {
   interface FilterFns {
-    fuzzy: FilterFn<unknown>
+    fuzzy: FilterFn<unknown>;
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: RankingInfo;
   }
 }
 

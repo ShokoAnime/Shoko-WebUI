@@ -1,30 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-
-import { createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom';
-import { Navigate, Route } from 'react-router';
 import { useSelector } from 'react-redux';
+import { Navigate, Route } from 'react-router';
+import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 
-import { RootState } from '@/core/store';
-
-import FirstRunPage from '@/pages/firstrun/FirstRunPage';
-import LoginPage from '@/pages/login/LoginPage';
-import MainPage from '@/pages/main/MainPage';
-import NoMatchPage from '@/pages/nomatch';
-
-// Main page
-import DashboardPage from '@/pages/dashboard/DashboardPage';
-import LogsPage from '@/pages/logs/LogsPage';
-
-// First run
-import Acknowledgement from '@/pages/firstrun/Acknowledgement';
-import AniDBAccount from '@/pages/firstrun/AniDBAccount';
-import DataCollection from '@/pages/firstrun/DataCollection';
-import ImportFolders from '@/pages/firstrun/ImportFolders';
-import LocalAccount from '@/pages/firstrun/LocalAccount';
-import MetadataSources from '@/pages/firstrun/MetadataSources';
-import StartServer from '@/pages/firstrun/StartServer';
-
-// Collection
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import Collection from '@/pages/collection/Collection';
 import Group from '@/pages/collection/Group';
 import Series from '@/pages/collection/Series';
@@ -34,26 +13,36 @@ import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
 import SeriesImages from '@/pages/collection/series/SeriesImages';
 import SeriesOverview from '@/pages/collection/series/SeriesOverview';
 import SeriesTags from '@/pages/collection/series/SeriesTags';
-
-// Utilities
-import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
-import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
-import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
-import MultipleFilesUtility from '@/pages/utilities/MultipleFilesUtility';
-import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
-import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
-import UnrecognizedUtility from '@/pages/utilities/UnrecognizedUtility';
-
-// Settings
+import DashboardPage from '@/pages/dashboard/DashboardPage';
+import Acknowledgement from '@/pages/firstrun/Acknowledgement';
+import AniDBAccount from '@/pages/firstrun/AniDBAccount';
+import DataCollection from '@/pages/firstrun/DataCollection';
+import FirstRunPage from '@/pages/firstrun/FirstRunPage';
+import ImportFolders from '@/pages/firstrun/ImportFolders';
+import LocalAccount from '@/pages/firstrun/LocalAccount';
+import MetadataSources from '@/pages/firstrun/MetadataSources';
+import StartServer from '@/pages/firstrun/StartServer';
+import LoginPage from '@/pages/login/LoginPage';
+import LogsPage from '@/pages/logs/LogsPage';
+import MainPage from '@/pages/main/MainPage';
+import NoMatchPage from '@/pages/nomatch';
+import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
-import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
+import MultipleFilesUtility from '@/pages/utilities/MultipleFilesUtility';
+import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
+import UnrecognizedUtility from '@/pages/utilities/UnrecognizedUtility';
+import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
+import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
+import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
+import UnrecognizedTab from '@/pages/utilities/UnrecognizedUtilityTabs/UnrecognizedTab';
+
 import AuthenticatedRoute from './AuthenticatedRoute';
 
-import { useGetSettingsQuery } from '../rtkQuery/splitV3Api/settingsApi';
+import type { RootState } from '@/core/store';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -73,7 +62,13 @@ const router = createBrowserRouter(
           <Route path="import-folders" element={<ImportFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
         </Route>
-        <Route element={<AuthenticatedRoute><MainPage /></AuthenticatedRoute>}>
+        <Route
+          element={
+            <AuthenticatedRoute>
+              <MainPage />
+            </AuthenticatedRoute>
+          }
+        >
           <Route index element={<Navigate to="dashboard" />} />
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="utilities">
@@ -126,7 +121,9 @@ const Router = () => {
   const bodyRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    document.body.className = `${apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)} theme-shoko-gray`;
+    document.body.className = `${
+      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)
+    } theme-shoko-gray`;
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
         bodyRef.current.style.visibility = 'initial';

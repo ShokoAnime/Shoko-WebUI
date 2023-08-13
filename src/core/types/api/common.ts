@@ -58,7 +58,7 @@ export type FilterType = {
   IDs: {
     ParentFilter: number;
     ID: number;
-  }
+  };
   Locked: boolean;
   ApplyAtSeriesLevel: boolean;
   Directory: boolean;

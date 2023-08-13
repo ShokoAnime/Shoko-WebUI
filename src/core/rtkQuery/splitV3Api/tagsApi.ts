@@ -1,6 +1,7 @@
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { ListResultType, PaginationType } from '@/core/types/api';
 import type { TagType } from '@/core/types/api/tags';
-import { splitV3Api } from '../splitV3Api';
 
 const tagsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({

@@ -1,10 +1,11 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
 import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/types/signalr';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
   fetched: {
-    [key: string]: boolean,
+    [key: string]: boolean;
   };
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
@@ -76,11 +77,11 @@ const mainpageSlice = createSlice({
 
 export const {
   setFetched,
-  setQueueStatus,
-  setUdpBanStatus,
   setHttpBanStatus,
   setLayoutEditMode,
   setQueueModalOpen,
+  setQueueStatus,
+  setUdpBanStatus,
 } = mainpageSlice.actions;
 
 export default mainpageSlice.reducer;

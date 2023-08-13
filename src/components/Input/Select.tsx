@@ -1,6 +1,6 @@
 import React from 'react';
-import { Icon } from '@mdi/react';
 import { mdiChevronDown } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 type Props = {
   id: string;
@@ -11,10 +11,14 @@ type Props = {
   label?: string;
 };
 
-function Select(props:Props) {
+function Select(props: Props) {
   const {
-    id, value, className, children, onChange,
+    children,
+    className,
+    id,
     label,
+    onChange,
+    value,
   } = props;
 
   return (
@@ -25,11 +29,16 @@ function Select(props:Props) {
             {label}
           </div>
         )}
-        <div className="w-auto relative">
-          <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded pl-2 py-1.5 pr-8 focus:shadow-none focus:outline-none bg-default-background-input border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset transition ease-in-out">
+        <div className="relative w-auto">
+          <select
+            id={id}
+            value={value}
+            onChange={onChange}
+            className="w-full appearance-none rounded border border-panel-border bg-default-background-input py-1.5 pl-2 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-primary"
+          >
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 pr-2 py-2">
+          <div className="pointer-events-none absolute inset-y-0 right-0 py-2 pr-2">
             <Icon path={mdiChevronDown} size={1} />
           </div>
         </div>

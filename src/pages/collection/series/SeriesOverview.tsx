@@ -1,17 +1,21 @@
 import React, { useMemo } from 'react';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { get, round, toNumber } from 'lodash';
-import { Icon } from '@mdi/react';
 import {
   mdiChevronRight,
   mdiCloseCircleOutline,
-  mdiOpenInNew, mdiPencilCircleOutline,
+  mdiOpenInNew,
+  mdiPencilCircleOutline,
   mdiPlusCircleOutline,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { get, round, toNumber } from 'lodash';
 import moment from 'moment';
 
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
+import Button from '@/components/Input/Button';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,
@@ -19,28 +23,29 @@ import {
   useNextUpEpisodeQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '@/core/types/api/series';
-import { EpisodeType } from '@/core/types/api/episode';
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { ImageType } from '@/core/types/api/common';
-import { WebuiSeriesDetailsType } from '@/core/types/api/webui';
-import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
-import Button from '@/components/Input/Button';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
+
+import type { ImageType } from '@/core/types/api/common';
+import type { EpisodeType } from '@/core/types/api/episode';
+import type { SeriesAniDBRelatedType, SeriesAniDBSimilarType, SeriesDetailsType } from '@/core/types/api/series';
+import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
 const links = ['TMDB', 'TvDB', 'MAL', 'AniList', 'TraktTv'];
 
 const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   const thumbnail = useEpisodeThumbnail(nextUpEpisode);
   return (
-    <div className="flex gap-x-8 items-center z-10">
-      <BackgroundImagePlaceholderDiv image={thumbnail} className="min-w-[22.3125rem] h-[13rem] rounded-md border border-panel-border relative" />
+    <div className="z-10 flex items-center gap-x-8">
+      <BackgroundImagePlaceholderDiv
+        image={thumbnail}
+        className="relative h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+      />
       <EpisodeDetails episode={nextUpEpisode} />
     </div>
   );
 };
 
-const MetadataLink = ({ site, id, series }: { site: string, id: number | number[], series: string }) => {
+const MetadataLink = ({ id, series, site }: { site: string, id: number | number[], series: string }) => {
   const linkId = Array.isArray(id) ? id[0] : id;
 
   const siteLink = useMemo(() => {
@@ -66,29 +71,38 @@ const MetadataLink = ({ site, id, series }: { site: string, id: number | number[
     <div key={site} className="flex justify-between">
       <div className="flex gap-x-2">
         <div className={`metadata-link-icon ${site}`} />
-        {linkId ? (
-          <a href={siteLink} className="flex gap-x-2 text-panel-primary font-semibold" rel="noopener noreferrer" target="_blank">
-            {/* TODO: Use name from metadata source instead of series name in Shoko */}
-            {`${series} (${linkId})`}
-            <Icon path={mdiOpenInNew} size={1} />
-          </a>
-        ) : 'Series Not Linked'}
+        {linkId
+          ? (
+            <a
+              href={siteLink}
+              className="flex gap-x-2 font-semibold text-panel-primary"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {/* TODO: Use name from metadata source instead of series name in Shoko */}
+              {`${series} (${linkId})`}
+              <Icon path={mdiOpenInNew} size={1} />
+            </a>
+          )
+          : 'Series Not Linked'}
       </div>
       <div className="flex gap-x-2">
-        {linkId ? (
-          <>
+        {linkId
+          ? (
+            <>
+              <Button disabled>
+                <Icon className="text-panel-primary" path={mdiPencilCircleOutline} size={1} />
+              </Button>
+              <Button disabled>
+                <Icon className="text-panel-danger" path={mdiCloseCircleOutline} size={1} />
+              </Button>
+            </>
+          )
+          : (
             <Button disabled>
-              <Icon className="text-panel-primary" path={mdiPencilCircleOutline} size={1} />
+              <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
-            <Button disabled>
-              <Icon className="text-panel-danger" path={mdiCloseCircleOutline} size={1} />
-            </Button>
-          </>
-        ) : (
-          <Button disabled>
-            <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
-          </Button>
-        )}
+          )}
       </div>
     </div>
   );
@@ -114,10 +128,9 @@ const SeriesOverview = () => {
   if (!seriesId) return null;
 
   return (
-    <React.Fragment>
+    <>
       <div className="flex gap-x-8">
         <ShokoPanel title="Additional information" className="min-w-fit" transparent contentClassName="gap-y-4">
-
           <div className="flex flex-col gap-y-1 capitalize">
             <div className="font-semibold">Source</div>
             {overview.SourceMaterial}
@@ -125,8 +138,14 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Episodes</div>
-            <div>{series.Sizes.Total.Episodes} Episodes</div>
-            <div>{series.Sizes.Total.Specials} Specials</div>
+            <div>
+              {series.Sizes.Total.Episodes}
+              &nbsp;Episodes
+            </div>
+            <div>
+              {series.Sizes.Total.Specials}
+              &nbsp;Specials
+            </div>
           </div>
 
           <div className="flex flex-col gap-y-1">
@@ -143,7 +162,16 @@ const SeriesOverview = () => {
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Season</div>
-            {overview?.FirstAirSeason ? <Link className="text-panel-primary font-semibold" to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}>{overview.FirstAirSeason.Name}</Link> : '--'}
+            {overview?.FirstAirSeason
+              ? (
+                <Link
+                  className="font-semibold text-panel-primary"
+                  to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
+                >
+                  {overview.FirstAirSeason.Name}
+                </Link>
+              )
+              : '--'}
           </div>
 
           <div className="flex flex-col gap-y-1">
@@ -160,41 +188,59 @@ const SeriesOverview = () => {
             <div className="font-semibold">Links</div>
             {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
             {jpOfficialSite && (
-              <a href={jpOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={jpOfficialSite.Name} className="text-panel-primary font-semibold">
+              <a
+                href={jpOfficialSite.URL}
+                rel="noopener noreferrer"
+                target="_blank"
+                key={jpOfficialSite.Name}
+                className="font-semibold text-panel-primary"
+              >
                 {jpOfficialSite.Name}
               </a>
             )}
             {enOfficialSite && (
-              <a href={enOfficialSite.URL} rel="noopener noreferrer" target="_blank" key={enOfficialSite.Name} className="text-panel-primary font-semibold">
+              <a
+                href={enOfficialSite.URL}
+                rel="noopener noreferrer"
+                target="_blank"
+                key={enOfficialSite.Name}
+                className="font-semibold text-panel-primary"
+              >
                 {enOfficialSite.Name}
               </a>
             )}
           </div>
-
         </ShokoPanel>
 
-        <div className="flex flex-col gap-y-8 grow">
+        <div className="flex grow flex-col gap-y-8">
           <ShokoPanel title="Episode on Deck" className="flex grow" transparent>
-            {get(nextUpEpisode, 'Name', false) ? <NextUpEpisode nextUpEpisode={nextUpEpisode} /> : <div className="flex grow justify-center items-center font-semibold">No Episode Data Available!</div>}
+            {get(nextUpEpisode, 'Name', false)
+              ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
+              : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
           <ShokoPanel
-            title={(
+            title={
               <div className="flex gap-x-2">
                 Metadata Sites
                 <Icon path={mdiChevronRight} size={1} />
-                <a href={`https://anidb.net/anime/${series.IDs.AniDB}`} className="flex gap-x-2 text-panel-primary items-center" rel="noopener noreferrer" target="_blank">
+                <a
+                  href={`https://anidb.net/anime/${series.IDs.AniDB}`}
+                  className="flex items-center gap-x-2 text-panel-primary"
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
                   <div className="metadata-link-icon anidb" />
                   <div>{series.AniDB?.Title}</div>
                   <Icon path={mdiOpenInNew} size={1} />
                 </a>
               </div>
-            )}
+            }
             className="flex grow-0"
             transparent
           >
-            <div className="grid grid-rows-3 grid-cols-2 gap-x-9 gap-y-4">
+            <div className="grid grid-cols-2 grid-rows-3 gap-x-9 gap-y-4">
               {links.map(site => (
-                <div className="bg-panel-background border border-panel-border px-4 py-3 rounded">
+                <div className="rounded border border-panel-border bg-panel-background px-4 py-3">
                   <MetadataLink key={site} site={site} id={series.IDs[site]} series={series.Name} />
                 </div>
               ))}
@@ -207,13 +253,19 @@ const SeriesOverview = () => {
         <ShokoPanel title="Related Anime" className="w-full" transparent>
           <div className="flex gap-x-5">
             {related.map((item) => {
-              const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
+              const thumbnail: ImageType = get(item, 'Poster', {} as ImageType);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
               return (
-                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                  <span className="text-panel-important text-sm">{itemRelation}</span>
+                <div
+                  key={`image-${thumbnail?.ID}`}
+                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                >
+                  <BackgroundImagePlaceholderDiv
+                    image={thumbnail}
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                  />
+                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                  <span className="text-sm text-panel-important">{itemRelation}</span>
                 </div>
               );
             })}
@@ -223,21 +275,32 @@ const SeriesOverview = () => {
 
       {similar.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className="flex gap-x-5 shoko-scrollbar">
+          <div className="shoko-scrollbar flex gap-x-5">
             {similar.map((item) => {
-              const thumbnail :ImageType = get(item, 'Poster', {} as ImageType);
+              const thumbnail: ImageType = get(item, 'Poster', {} as ImageType);
               return (
-                <div key={`image-${thumbnail?.ID}`} className="shrink-0 w-[13.875rem] flex flex-col gap-y-2 text-center font-semibold">
-                  <BackgroundImagePlaceholderDiv image={thumbnail} className="h-[19.875rem] w-[13.875rem] rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border" />
-                  <span className="text-ellipsis line-clamp-1 text-sm">{item.Title}</span>
-                  <span className="text-panel-important text-sm">{round(item.UserApproval.Value, 2)}% ({item.UserApproval.Votes} votes)</span>
+                <div
+                  key={`image-${thumbnail?.ID}`}
+                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                >
+                  <BackgroundImagePlaceholderDiv
+                    image={thumbnail}
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                  />
+                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                  <span className="text-sm text-panel-important">
+                    {round(item.UserApproval.Value, 2)}
+                    % (
+                    {item.UserApproval.Votes}
+                    &nbsp;votes)
+                  </span>
                 </div>
               );
             })}
           </div>
         </ShokoPanel>
       )}
-    </React.Fragment>
+    </>
   );
 };
 

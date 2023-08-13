@@ -2,14 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-import { RootState } from '@/core/store';
-import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-
-import { useGetInitStartServerMutation, useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
+import { useGetInitStartServerMutation, useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+
 import Footer from './Footer';
+
+import type { RootState } from '@/core/store';
 
 function StartServer() {
   const dispatch = useDispatch();
@@ -47,8 +48,8 @@ function StartServer() {
   }, [status.data]);
 
   return (
-    <TransitionDiv className="flex flex-col justify-center max-w-[38rem] gap-y-8">
-      <div className="font-semibold text-xl">Start Server</div>
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8">
+      <div className="text-xl font-semibold">Start Server</div>
       <div className="text-justify">
         On this page you can try and start the server, startup progress will be reported below. After the startup and
         database creation process is complete you will be able to setup import folders.
@@ -56,15 +57,23 @@ function StartServer() {
       <div className="flex flex-col">
         <div className="flex gap-x-2">
           <span className="font-semibold">Status:</span>
-          {status.data?.State === 2 ? (<span className="font-semibold">Started!</span>) : (status.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
+          {status.data?.State === 2
+            ? <span className="font-semibold">Started!</span>
+            : (status.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
         </div>
-        <div className="flex justify-center items-center mt-24">
+        <div className="mt-24 flex items-center justify-center">
           {pollingInterval === 0 && (status.isUninitialized || status.data?.State === 4) && (
-            <Button onClick={() => handleStart()} buttonType="primary" className="py-2 w-64 font-semibold">Start Server</Button>
+            <Button onClick={() => handleStart()} buttonType="primary" className="w-64 py-2 font-semibold">
+              Start Server
+            </Button>
           )}
         </div>
       </div>
-      <Footer prevDisabled={status.data?.State !== 4} nextDisabled={status.data?.State !== 2} saveFunction={handleNext} />
+      <Footer
+        prevDisabled={status.data?.State !== 4}
+        nextDisabled={status.data?.State !== 2}
+        saveFunction={handleNext}
+      />
     </TransitionDiv>
   );
 }

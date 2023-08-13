@@ -1,16 +1,17 @@
 import React, { useMemo } from 'react';
 import { Outlet } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
+import { createColumnHelper } from '@tanstack/react-table';
 import { find, get } from 'lodash';
-import prettyBytes from 'pretty-bytes';
 import moment from 'moment';
-import { ColumnDef, createColumnHelper } from '@tanstack/react-table';
+import prettyBytes from 'pretty-bytes';
 
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
-
 import { fuzzySort } from '@/core/util';
+
 import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { ColumnDef } from '@tanstack/react-table';
 
 type ContextType = {
   columns: ColumnDef<FileType, any>[];
@@ -28,7 +29,8 @@ function UnrecognizedUtility() {
       columnHelper.accessor(row => get(row, 'Locations.0.ImportFolderID', -1), {
         header: 'Import Folder',
         id: 'importfolder',
-        cell: info => (info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? '')),
+        cell:
+          info => (info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? '')),
         meta: {
           className: 'w-52',
         },

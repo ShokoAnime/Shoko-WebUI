@@ -1,6 +1,6 @@
 import React from 'react';
-import { Icon } from '@mdi/react';
 import { mdiChevronDown } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 type Props = {
   id: string;
@@ -13,22 +13,31 @@ type Props = {
 
 function SelectSmall(props: Props) {
   const {
-    id, value, className, children,
-    label, onChange,
+    children,
+    className,
+    id,
+    label,
+    onChange,
+    value,
   } = props;
 
   return (
-    <label className={`${className} flex justify-between items-center`} htmlFor={id}>
+    <label className={`${className} flex items-center justify-between`} htmlFor={id}>
       {label && (
         <div className="flex justify-center">
           {label}
         </div>
       )}
-      <div className="w-auto relative">
-        <select id={id} value={value} onChange={onChange} className="w-full appearance-none rounded py-1 pl-3 pr-8 focus:shadow-none focus:outline-none bg-default-background-input border border-panel-border focus:border-panel-primary text-sm transition ease-in-out">
+      <div className="relative w-auto">
+        <select
+          id={id}
+          value={value}
+          onChange={onChange}
+          className="w-full appearance-none rounded border border-panel-border bg-default-background-input py-1 pl-3 pr-8 text-sm transition ease-in-out focus:border-panel-primary focus:shadow-none focus:outline-none"
+        >
           {children}
         </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 px-1 py-1">
+        <div className="pointer-events-none absolute inset-y-0 right-0 p-1">
           <Icon path={mdiChevronDown} size={1} />
         </div>
       </div>

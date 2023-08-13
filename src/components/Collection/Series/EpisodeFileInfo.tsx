@@ -1,5 +1,5 @@
-import { get, map, toNumber } from 'lodash';
 import React from 'react';
+import { get, map, toNumber } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 const EpisodeFileInfo = ({ file }) => {
@@ -42,9 +42,8 @@ const EpisodeFileInfo = ({ file }) => {
 
   return (
     <div className="flex flex-col gap-y-8">
-
       <div className="flex flex-col gap-y-4">
-        <div className="opacity-65 font-semibold text-xl">File Details</div>
+        <div className="text-xl font-semibold opacity-65">File Details</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">File Name</div>
@@ -62,7 +61,9 @@ const EpisodeFileInfo = ({ file }) => {
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Group</div>
-            {get(file, 'AniDB.ReleaseGroup.Name', '')} | v{get(file, 'AniDB.Version', '')}
+            {get(file, 'AniDB.ReleaseGroup.Name', '')}
+            &nbsp;| v
+            {get(file, 'AniDB.Version', '')}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Video</div>
@@ -76,7 +77,7 @@ const EpisodeFileInfo = ({ file }) => {
       </div>
 
       <div className="flex flex-col gap-y-4">
-        <div className="opacity-65 font-semibold text-xl">File Hashes</div>
+        <div className="text-xl font-semibold opacity-65">File Hashes</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Hash</div>

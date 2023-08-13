@@ -29,7 +29,7 @@ export type ComponentVersionType = {
 };
 
 export type VersionType = {
-  Server: ComponentVersionType
+  Server: ComponentVersionType;
   Commons?: {
     Version: string;
   };
@@ -39,5 +39,5 @@ export type VersionType = {
   MediaInfo?: {
     Version: string | null;
   };
-  WebUI?: ComponentVersionType,
+  WebUI?: ComponentVersionType;
 };

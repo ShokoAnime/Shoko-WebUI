@@ -1,4 +1,4 @@
-import { WebUISettingsType } from './types/api/settings';
+import type { WebUISettingsType } from './types/api/settings';
 
 export const webuiSettingsPatches = {
   5: (oldWebuiSettings) => {

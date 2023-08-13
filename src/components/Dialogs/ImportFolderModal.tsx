@@ -1,24 +1,26 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { find } from 'lodash';
 import { mdiFolderOpen } from '@mdi/js';
+import { find } from 'lodash';
 
-import { RootState } from '@/core/store';
-import { setStatus } from '@/core/slices/modals/importFolder';
-import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import Select from '@/components/Input/Select';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
 import {
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
   useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
 } from '@/core/rtkQuery/splitV3Api/importFolderApi';
-import { ImportFolderType } from '@/core/types/api/import-folder';
-import toast from '../Toast';
-import Button from '../Input/Button';
-import Input from '../Input/Input';
-import Select from '../Input/Select';
-import ModalPanel from '../Panels/ModalPanel';
+import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
+import { setStatus } from '@/core/slices/modals/importFolder';
+
 import BrowseFolderModal from './BrowseFolderModal';
+
+import type { RootState } from '@/core/store';
+import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 const defaultImportFolder = {
   WatchForNewFiles: false,
@@ -31,7 +33,7 @@ const defaultImportFolder = {
 function ImportFolderModal() {
   const dispatch = useDispatch();
 
-  const { status, edit, ID } = useSelector((state: RootState) => state.modals.importFolder);
+  const { ID, edit, status } = useSelector((state: RootState) => state.modals.importFolder);
 
   const importFolderQuery = useGetImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
@@ -47,14 +49,14 @@ function ImportFolderModal() {
 
     if (edit) {
       const folderDetails = find(importFolders, { ID }) ?? {};
-      setImportFolder(({ ...importFolder, ...folderDetails }));
+      setImportFolder({ ...importFolder, ...folderDetails });
     }
   };
 
   const handleInputChange = (event: any) => {
     const name = event.target.id;
     const value = name === 'WatchForNewFiles' ? event.target.value === '1' : event.target.value;
-    setImportFolder(({ ...importFolder, [name]: value }));
+    setImportFolder({ ...importFolder, [name]: value });
   };
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
@@ -93,29 +95,64 @@ function ImportFolderModal() {
     <>
       <ModalPanel
         show={status}
-        className="p-8 flex-col drop-shadow-lg gap-y-8 !top-0"
+        className="!top-0 flex-col gap-y-8 p-8 drop-shadow-lg"
         onRequestClose={() => handleClose()}
         onAfterOpen={() => getFolderDetails()}
       >
-        <div className="font-semibold text-xl">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</div>
-        <Input id="Name" value={importFolder.Name} label="Name" type="text" placeholder="Folder name" onChange={handleInputChange} className="w-full" />
-        <Input id="Path" value={importFolder.Path} label="Location" type="text" placeholder="Location" onChange={handleInputChange} className="w-full" endIcon={mdiFolderOpen} endIconClick={handleBrowse} />
-        <Select label="Drop Type" id="DropFolderType" value={importFolder.DropFolderType} onChange={handleInputChange} className="w-full">
+        <div className="text-xl font-semibold">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</div>
+        <Input
+          id="Name"
+          value={importFolder.Name}
+          label="Name"
+          type="text"
+          placeholder="Folder name"
+          onChange={handleInputChange}
+          className="w-full"
+        />
+        <Input
+          id="Path"
+          value={importFolder.Path}
+          label="Location"
+          type="text"
+          placeholder="Location"
+          onChange={handleInputChange}
+          className="w-full"
+          endIcon={mdiFolderOpen}
+          endIconClick={handleBrowse}
+        />
+        <Select
+          label="Drop Type"
+          id="DropFolderType"
+          value={importFolder.DropFolderType}
+          onChange={handleInputChange}
+          className="w-full"
+        >
           <option value={0}>None</option>
           <option value={1}>Source</option>
           <option value={2}>Destination</option>
           <option value={3}>Both</option>
         </Select>
-        <Select label="Watch For New Files" id="WatchForNewFiles" value={importFolder.WatchForNewFiles ? 1 : 0} onChange={handleInputChange} className="w-full">
+        <Select
+          label="Watch For New Files"
+          id="WatchForNewFiles"
+          value={importFolder.WatchForNewFiles ? 1 : 0}
+          onChange={handleInputChange}
+          className="w-full"
+        >
           <option value={0}>No</option>
           <option value={1}>Yes</option>
         </Select>
         <div className="flex justify-end gap-x-3 font-semibold">
-          {edit && (
-            <Button onClick={handleDelete} buttonType="danger" className="px-6 py-2">Delete</Button>
-          )}
+          {edit && <Button onClick={handleDelete} buttonType="danger" className="px-6 py-2">Delete</Button>}
           <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
-          <Button onClick={handleSave} buttonType="primary" className="px-6 py-2 " disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}>Save</Button>
+          <Button
+            onClick={handleSave}
+            buttonType="primary"
+            className="px-6 py-2"
+            disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}
+          >
+            Save
+          </Button>
         </div>
       </ModalPanel>
       <BrowseFolderModal onSelect={onFolderSelect} />

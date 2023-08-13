@@ -1,26 +1,49 @@
-import { useParams } from 'react-router';
 import React, { useState } from 'react';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { get, map, split } from 'lodash';
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import cx from 'classnames';
-import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { ImageType } from '@/core/types/api/common';
-import Checkbox from '@/components/Input/Checkbox';
-import Button from '@/components/Input/Button';
+import { useParams } from 'react-router';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import { get, map, split } from 'lodash';
 
-const Heading = React.memo(({ type, setType }:{ type: string; setType: Function; }) => (
-  <div className="flex gap-x-2 font-semibold text-xl items-center">
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+
+import type { ImageType } from '@/core/types/api/common';
+
+const Heading = React.memo(({ setType, type }: { type: string, setType: Function }) => (
+  <div className="flex items-center gap-x-2 text-xl font-semibold">
     Images
     <Icon path={mdiChevronRight} size={1} />
     <div className="flex gap-x-1">
-      <span onClick={() => { setType('Posters'); }} className={cx(type === 'Posters' && 'text-panel-primary')}>Poster</span>
+      <span
+        onClick={() => {
+          setType('Posters');
+        }}
+        className={cx(type === 'Posters' && 'text-panel-primary')}
+      >
+        Poster
+      </span>
       |
-      <span onClick={() => { setType('Fanarts'); }} className={cx(type === 'Fanarts' && 'text-panel-primary')}>Fanart</span>
+      <span
+        onClick={() => {
+          setType('Fanarts');
+        }}
+        className={cx(type === 'Fanarts' && 'text-panel-primary')}
+      >
+        Fanart
+      </span>
       |
-      <span onClick={() => { setType('Banners'); }} className={cx(type === 'Banners' && 'text-panel-primary')}>Banners</span>
+      <span
+        onClick={() => {
+          setType('Banners');
+        }}
+        className={cx(type === 'Banners' && 'text-panel-primary')}
+      >
+        Banners
+      </span>
     </div>
   </div>
 ));
@@ -55,8 +78,13 @@ const SeriesImages = () => {
 
   return (
     <div className="flex gap-x-8">
-      <div className="shrink-0 w-[22.375rem] flex flex-col gap-y-8 sticky top-0">
-        <ShokoPanel title="Image Options" transparent contentClassName="gap-y-2 pointer-events-none opacity-50" fullHeight={false}>
+      <div className="sticky top-0 flex w-[22.375rem] shrink-0 flex-col gap-y-8">
+        <ShokoPanel
+          title="Image Options"
+          transparent
+          contentClassName="gap-y-2 pointer-events-none opacity-50"
+          fullHeight={false}
+        >
           <Checkbox id="random-poster" isChecked={false} onChange={() => {}} label="Random Poster on Load" justify />
           <Checkbox id="random-fanart" isChecked={false} onChange={() => {}} label="Random Fanart on Load" justify />
         </ShokoPanel>
@@ -65,21 +93,42 @@ const SeriesImages = () => {
           <InfoLine title="Location" value={filepath} />
           <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
           <InfoLine title="Size" value="-" />
-          <Button buttonType="primary" className="px-4 py-3 font-semibold rounded-md border border-panel-border" disabled>
+          <Button
+            buttonType="primary"
+            className="rounded-md border border-panel-border px-4 py-3 font-semibold"
+            disabled
+          >
             Set As Series Poster
           </Button>
         </ShokoPanel>
       </div>
 
-      <div className="flex flex-col grow gap-y-8">
-        <div className="rounded-md bg-panel-background-transparent px-8 py-4 flex justify-between items-center border-panel-border border">
+      <div className="flex grow flex-col gap-y-8">
+        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
           <Heading type={type} setType={setType} />
-          <div className="font-semibold text-xl"><span className="text-panel-important">{get(images, type, []).length}</span> {type} Listed</div>
+          <div className="text-xl font-semibold">
+            <span className="text-panel-important">{get(images, type, []).length}</span>
+            &nbsp;
+            {type}
+            &nbsp;Listed
+          </div>
         </div>
-        <div className="flex flex-wrap gap-4 rounded-md bg-panel-background-transparent p-8 border-panel-border border">
+        <div className="flex flex-wrap gap-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
           {map(get(images, type, []), (item: ImageType) => (
-            <div onClick={() => { setSelectedImage(item); }} key={item?.ID}>
-              <BackgroundImagePlaceholderDiv image={item} className={cx('rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border', item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border', sizeMap[type])} />
+            <div
+              onClick={() => {
+                setSelectedImage(item);
+              }}
+              key={item?.ID}
+            >
+              <BackgroundImagePlaceholderDiv
+                image={item}
+                className={cx(
+                  'rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border',
+                  item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border',
+                  sizeMap[type],
+                )}
+              />
             </div>
           ))}
         </div>

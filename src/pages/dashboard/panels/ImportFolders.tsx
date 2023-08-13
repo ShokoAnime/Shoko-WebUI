@@ -1,17 +1,17 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import prettyBytes from 'pretty-bytes';
 import { mdiDatabaseEditOutline, mdiDatabaseSearchOutline, mdiFolderPlusOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import prettyBytes from 'pretty-bytes';
 
-import { RootState } from '@/core/store';
-import toast from '@/components/Toast';
 import Button from '@/components/Input/Button';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
+import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
 
+import type { RootState } from '@/core/store';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { Icon } from '@mdi/react';
-import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 
 function ImportFolders() {
   const dispatch = useDispatch();
@@ -46,44 +46,72 @@ function ImportFolders() {
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
 
     return (
-      <div key={folder.ID} className="flex flex-col mt-6 first:mt-0">
-        <div className="flex justify-between items-center mb-3">
+      <div key={folder.ID} className="mt-6 flex flex-col first:mt-0">
+        <div className="mb-3 flex items-center justify-between">
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex">
             <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-2">
-              <Icon className="text-panel-primary" path={mdiDatabaseSearchOutline} size={1} horizontal vertical rotate={180} />
+              <Icon
+                className="text-panel-primary"
+                path={mdiDatabaseSearchOutline}
+                size={1}
+                horizontal
+                vertical
+                rotate={180}
+              />
             </Button>
             <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
-              <Icon className="text-panel-primary" path={mdiDatabaseEditOutline} size={1} horizontal vertical rotate={180} />
+              <Icon
+                className="text-panel-primary"
+                path={mdiDatabaseEditOutline}
+                size={1}
+                horizontal
+                vertical
+                rotate={180}
+              />
             </Button>
           </div>
         </div>
-        <div className="flex mb-1">
-          <div className="flex-grow">Location</div>
+        <div className="mb-1 flex">
+          <div className="grow">Location</div>
           <div>{folder.Path}</div>
         </div>
-        <div className="flex mb-1">
-          <div className="flex-grow">Type</div>
+        <div className="mb-1 flex">
+          <div className="grow">Type</div>
           <div>{flags}</div>
         </div>
         <div className="flex">
           <div className="grow">Size</div>
-          <div>{prettyBytes(folder.FileSize ?? 0, { binary: true })} ({(folder.Size ?? 2043).toLocaleString('en-US')} Series)</div>
+          <div>
+            {prettyBytes(folder.FileSize ?? 0, { binary: true })}
+            &nbsp;(
+            {(folder.Size ?? 2043).toLocaleString('en-US')}
+            &nbsp;Series)
+          </div>
         </div>
       </div>
     );
   };
 
   const renderOptions = () => (
-    <div className="cursor-pointer" onClick={() => setImportFolderModalStatus(true)} title="Add Folder">
+    <div
+      className="cursor-pointer"
+      onClick={() => setImportFolderModalStatus(true)}
+      title="Add Folder"
+    >
       <Icon className="text-panel-primary" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
     </div>
   );
 
   return (
-    <ShokoPanel title="Import Folders" options={renderOptions()} isFetching={importFolderQuery.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel
+      title="Import Folders"
+      options={renderOptions()}
+      isFetching={importFolderQuery.isLoading}
+      editMode={layoutEditMode}
+    >
       {importFolders.length === 0
-        ? (<div className="flex justify-center font-semibold mt-4" key="no-folders">No Import Folders Added!</div>)
+        ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">No Import Folders Added!</div>
         : importFolders.map(importFolder => renderFolder(importFolder))}
     </ShokoPanel>
   );

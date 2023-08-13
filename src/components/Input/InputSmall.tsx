@@ -15,21 +15,27 @@ type Props = {
 
 function InputSmall(props: Props) {
   const {
-    id, type, placeholder, value, className,
-    autoFocus, disabled, onChange, onKeyUp,
     autoComplete,
+    autoFocus,
+    className,
+    disabled,
+    id,
+    onChange,
+    onKeyUp,
+    placeholder,
+    type,
+    value,
   } = props;
 
   return (
     <input
-      className={`${className} appearance-none bg-default-background-input focus:shadow-none focus:outline-none rounded-md text-sm input-field transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset`}
+      className={`${className} appearance-none rounded-md border border-panel-border bg-default-background-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-primary`}
       id={id}
       type={type}
       placeholder={placeholder ?? ''}
       value={value}
       onChange={onChange}
       onKeyUp={onKeyUp}
-      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus={autoFocus}
       disabled={disabled}
       autoComplete={autoComplete ?? 'on'}

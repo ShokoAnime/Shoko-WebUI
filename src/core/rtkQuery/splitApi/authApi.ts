@@ -1,5 +1,6 @@
+import { splitApi } from '@/core/rtkQuery/splitApi';
+
 import type { ApiLoginType, ApiSessionState } from '@/core/types/api';
-import { splitApi } from '../splitApi';
 
 export const authApi = splitApi.injectEndpoints({
   endpoints: build => ({
@@ -11,7 +12,7 @@ export const authApi = splitApi.injectEndpoints({
         method: 'POST',
       }),
       transformResponse: (response: { apikey: string }, _, arg) => {
-        const { user: username, rememberUser } = arg;
+        const { rememberUser, user: username } = arg;
         return { ...response, username, rememberUser };
       },
     }),

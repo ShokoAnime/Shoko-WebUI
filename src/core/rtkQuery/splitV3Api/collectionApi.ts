@@ -1,15 +1,19 @@
 import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
 import { omit } from 'lodash';
 
-import { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
-import { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
-import { SeriesType } from '@/core/types/api/series';
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
+import type { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
+import type { SeriesType } from '@/core/types/api/series';
 
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroups: build.query<InfiniteResultType<CollectionGroupType[]>, PaginationType & { filterId: string }>({
-      query: ({ filterId, ...params }) => ({ url: `Filter/${filterId}/Group`, params: { includeEmpty: true, ...params } }),
+      query: ({ filterId, ...params }) => ({
+        url: `Filter/${filterId}/Group`,
+        params: { includeEmpty: true, ...params },
+      }),
       transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
@@ -17,7 +21,7 @@ const collectionApi = splitV3Api.injectEndpoints({
         total: response.Total,
       }),
       // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointName, queryArgs, endpointDefinition }) =>
+      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
         defaultSerializeQueryArgs({
           endpointName,
           queryArgs: omit(queryArgs, ['page']),
@@ -37,8 +41,11 @@ const collectionApi = splitV3Api.injectEndpoints({
     getGroup: build.query<CollectionGroupType, { groupId: number }>({
       query: ({ groupId }) => ({ url: `Group/${groupId}` }),
     }),
-    getGroupLetters: build.query<{ [index: string]: number }, { includeEmpty: boolean; topLevelOnly: boolean; }>({
-      query: ({ includeEmpty = false, topLevelOnly = true }) => ({ url: 'Group/Letters', params: { includeEmpty, topLevelOnly } }),
+    getGroupLetters: build.query<{ [index: string]: number }, { includeEmpty: boolean, topLevelOnly: boolean }>({
+      query: ({ includeEmpty = false, topLevelOnly = true }) => ({
+        url: 'Group/Letters',
+        params: { includeEmpty, topLevelOnly },
+      }),
     }),
     getGroupSeries: build.query<Array<SeriesType>, { groupId?: string }>({
       query: ({ groupId }) => ({ url: `Group/${groupId}/Series` }),
@@ -49,8 +56,14 @@ const collectionApi = splitV3Api.injectEndpoints({
     getFilters: build.query<ListResultType<Array<CollectionFilterType>>, string>({
       query: filterId => ({ url: `Filter/${filterId}/Filter`, params: { page: 1, pageSize: 0 } }),
     }),
-    getFilterGroupLetters: build.query<{ [index: string]: number }, { includeEmpty: boolean; topLevelOnly: boolean; filterId?: string }>({
-      query: ({ includeEmpty = false, topLevelOnly = true, filterId = '' }) => ({ url: `Filter/${filterId}/Group/Letters`, params: { includeEmpty, topLevelOnly } }),
+    getFilterGroupLetters: build.query<
+      { [index: string]: number },
+      { includeEmpty: boolean, topLevelOnly: boolean, filterId?: string }
+    >({
+      query: ({ filterId = '', includeEmpty = false, topLevelOnly = true }) => ({
+        url: `Filter/${filterId}/Group/Letters`,
+        params: { includeEmpty, topLevelOnly },
+      }),
     }),
     getFilter: build.query<CollectionFilterType, { filterId?: string }>({
       query: ({ filterId }) => ({ url: `Filter/${filterId}` }),
@@ -59,10 +72,10 @@ const collectionApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useLazyGetGroupsQuery,
-  useGetGroupSeriesQuery,
-  useLazyGetTopFiltersQuery,
-  useLazyGetFiltersQuery,
   useGetFilterQuery,
   useGetGroupQuery,
+  useGetGroupSeriesQuery,
+  useLazyGetFiltersQuery,
+  useLazyGetGroupsQuery,
+  useLazyGetTopFiltersQuery,
 } = collectionApi;

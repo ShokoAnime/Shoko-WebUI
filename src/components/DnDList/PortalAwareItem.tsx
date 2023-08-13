@@ -1,14 +1,14 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import type { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
+import ReactDOM from 'react-dom';
 
 const portal: HTMLElement = document.createElement('div');
 document.body.appendChild(portal);
 
 type Props = {
-  provided: DraggableProvided,
-  snapshot: DraggableStateSnapshot,
-  children: React.ReactNode,
+  provided: DraggableProvided;
+  snapshot: DraggableStateSnapshot;
+  children: React.ReactNode;
 };
 
 function PortalAwareItem(props: Props) {

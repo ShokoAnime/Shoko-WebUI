@@ -1,12 +1,19 @@
-/* eslint-disable max-len */
-import { HttpTransportType, HubConnection, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
-import moment from 'moment';
+/* dprint-ignore-file */
+import {
+  HttpTransportType,
+  type HubConnection,
+  HubConnectionBuilder,
+  JsonHubProtocol,
+  LogLevel,
+} from '@microsoft/signalr';
 import { debounce, defer, delay, forEach, round } from 'lodash';
+import moment from 'moment';
+
+import Events from '@/core/events';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
 
 import type { AniDBBanItemType } from '@/core/types/signalr';
-import Events from '../events';
-import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '../slices/mainpage';
-import { splitV3Api } from '../rtkQuery/splitV3Api';
 
 let lastRetry = moment();
 let attempts = 0;
@@ -74,73 +81,87 @@ const onEpisodeUpdated = dispatch => () => {
   dispatch(splitV3Api.util.invalidateTags(['EpisodeUpdated']));
 };
 
-const startSignalRConnection = connection => connection.start().then(() => {
-  lastRetry = moment();
-  attempts = 0;
-}).catch(err => console.error('SignalR Connection Error: ', err));
+const startSignalRConnection = connection =>
+  connection.start().then(() => {
+    lastRetry = moment();
+    attempts = 0;
+  }).catch(err => console.error('SignalR Connection Error: ', err));
 
 const handleReconnect = (connection) => {
-  if (attempts < 4) { attempts += 1; }
+  if (attempts < 4) attempts += 1;
   const duration = moment.duration(lastRetry.diff(moment()));
   lastRetry = moment();
   const elapsed = duration.as('milliseconds');
   const timeout = round(Math.min(Math.exp(attempts) * 2000, maxTimeout));
   if (elapsed < timeout) {
-    delay((conn) => { startSignalRConnection(conn); }, timeout, connection);
+    delay(
+      (conn) => {
+        startSignalRConnection(conn);
+      },
+      timeout,
+      connection,
+    );
   } else {
-    defer((conn) => { startSignalRConnection(conn); }, connection);
+    defer((conn) => {
+      startSignalRConnection(conn);
+    }, connection);
   }
 };
 
 const signalRMiddleware = ({
   dispatch,
   getState,
-}) => next => async (action) => {
-  // register signalR after the user logged in
-  if (action.type === Events.MAINPAGE_LOAD) {
-    if (connectionEvents !== undefined) { return next(action); }
-    const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue';
+}) =>
+  next =>
+    async (action) => {
+      // register signalR after the user logged in
+      if (action.type === Events.MAINPAGE_LOAD) {
+        if (connectionEvents !== undefined) return next(action);
+        const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue';
 
-    const protocol = new JsonHubProtocol();
+        const protocol = new JsonHubProtocol();
 
-    // let transport to fall back to to LongPolling if it needs to
-    // eslint-disable-next-line no-bitwise
-    const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
+        // let transport to fall back to to LongPolling if it needs to
+        // eslint-disable-next-line no-bitwise
+        const transport = HttpTransportType.WebSockets | HttpTransportType.LongPolling;
 
-    const options = {
-      transport,
-      logMessageContent: true,
-      logger: LogLevel.Warning,
-      accessTokenFactory: () => getState().apiSession.apikey,
+        const options = {
+          transport,
+          logMessageContent: true,
+          logger: LogLevel.Warning,
+          accessTokenFactory: () => getState().apiSession.apikey,
+        };
+
+        // create the connection instance
+        connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
+
+        // event handlers, you can use these to dispatch actions to update your Redux store
+        connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
+        connectionEvents.on('Queue:OnConnected', onQueueConnected(dispatch));
+
+        connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
+        connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
+        connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
+
+        // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
+        connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));
+        connectionEvents.on('ShokoEvent:FileHashed', onFileHashed(dispatch));
+        connectionEvents.on('ShokoEvent:FileMatched', onFileMatched(dispatch));
+        connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated(dispatch));
+        connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated(dispatch));
+
+        // re-establish the connection if connection dropped
+        connectionEvents.onclose(() =>
+          debounce(() => {
+            handleReconnect(connectionEvents);
+          }, 5000));
+
+        startSignalRConnection(connectionEvents);
+      } else if (action.type === Events.AUTH_LOGOUT) {
+        await connectionEvents?.stop();
+      }
+
+      return next(action);
     };
-
-    // create the connection instance
-    connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
-
-    // event handlers, you can use these to dispatch actions to update your Redux store
-    connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
-    connectionEvents.on('Queue:OnConnected', onQueueConnected(dispatch));
-
-    connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
-    connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
-    connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
-
-    // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
-    connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));
-    connectionEvents.on('ShokoEvent:FileHashed', onFileHashed(dispatch));
-    connectionEvents.on('ShokoEvent:FileMatched', onFileMatched(dispatch));
-    connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated(dispatch));
-    connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated(dispatch));
-
-    // re-establish the connection if connection dropped
-    connectionEvents.onclose(() => debounce(() => { handleReconnect(connectionEvents); }, 5000));
-
-    startSignalRConnection(connectionEvents);
-  } else if (action.type === Events.AUTH_LOGOUT) {
-    await connectionEvents?.stop();
-  }
-
-  return next(action);
-};
 
 export default signalRMiddleware;

@@ -2,10 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
-import { RootState } from '@/core/store';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-
 import { useGetDashboardSeriesSummaryQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
+
+import type { RootState } from '@/core/store';
 
 const names = {
   Series: 'TV Series',
@@ -17,25 +17,40 @@ function MediaType() {
 
   const renderColor = (type) => {
     switch (type) {
-      case 'Series': return 'panel-primary';
-      case 'Other': return 'panel-extra';
-      case 'Web': return 'panel-danger';
-      case 'Movie': return 'panel-important';
-      case 'OVA': return 'panel-warning';
-      default: return 'panel-primary';
+      case 'Series':
+        return 'panel-primary';
+      case 'Other':
+        return 'panel-extra';
+      case 'Web':
+        return 'panel-danger';
+      case 'Movie':
+        return 'panel-important';
+      case 'OVA':
+        return 'panel-warning';
+      default:
+        return 'panel-primary';
     }
   };
 
   const renderName = (item: string, count: number, countPercentage: number) => (
-    <div key={`${item}-name`} className="flex mt-5 first:mt-0">
-      <span className="grow">{names[item] ?? item} - {count}</span>
-      <span className={`font-semibold text-${renderColor(item)}`}>{countPercentage.toFixed(2)}%</span>
+    <div key={`${item}-name`} className="mt-5 flex first:mt-0">
+      <span className="grow">
+        {names[item] ?? item}
+        &nbsp;-&nbsp;
+        {count}
+      </span>
+      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
+      <span className={`text-${renderColor(item)} font-semibold`}>
+        {countPercentage.toFixed(2)}
+        %
+      </span>
     </div>
   );
 
   const renderBar = (item: string, countPercentage: number) => (
-    <div key={`${item}-bar`} className="flex bg-panel-background-alt rounded-md mt-2">
-      <div className={`rounded-md h-4 bg-${renderColor(item)}`} style={{ width: `${countPercentage}%` }} />
+    <div key={`${item}-bar`} className="mt-2 flex rounded-md bg-panel-background-alt">
+      {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
+      <div className={`bg-${renderColor(item)} h-4 rounded-md`} style={{ width: `${countPercentage}%` }} />
     </div>
   );
 
@@ -43,7 +58,7 @@ function MediaType() {
   const seriesSummaryArray: Array<any> = [];
 
   forEach(seriesSummary.data, (item, key) => {
-    total += (item ?? 0);
+    total += item ?? 0;
     seriesSummaryArray.push([key, item]);
   });
 

@@ -1,14 +1,22 @@
-import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
 import { isRejectedWithValue } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
 import toast from '@/components/Toast';
-import Events from '../events';
+import Events from '@/core/events';
 
-type ProblemDetails = { title: string; status: number; type: string; errors: Record<string, string[]>; traceId: string; };
+import type { Middleware, MiddlewareAPI } from '@reduxjs/toolkit';
+
+type ProblemDetails = {
+  title: string;
+  status: number;
+  type: string;
+  errors: Record<string, string[]>;
+  traceId: string;
+};
 
 const isErrorObject = (target: any): target is ProblemDetails =>
-  typeof target === 'object' && target !== null && typeof target.title === 'string' && typeof target.errors === 'object' && target.errors !== null;
+  typeof target === 'object' && target !== null && typeof target.title === 'string' && typeof target.errors === 'object'
+  && target.errors !== null;
 
 const rtkQueryErrorLogger: Middleware = (_api: MiddlewareAPI) => dispatch => (action) => {
   if (isRejectedWithValue(action)) {
@@ -24,12 +32,20 @@ const rtkQueryErrorLogger: Middleware = (_api: MiddlewareAPI) => dispatch => (ac
       const endpoint = `${method} ${url.pathname + url.search}`;
       if (isErrorObject(data)) {
         if (data.title === 'One or more validation errors occurred.') {
-          forEach(Object.entries(data.errors), ([key, messageList]) =>
-            forEach(messageList, message =>
-              toast.error(message, `Error for key "${key}" during \`${endpoint}\` (${endpointName})`)));
+          forEach(
+            Object.entries(data.errors),
+            ([key, messageList]) =>
+              forEach(
+                messageList,
+                message => toast.error(message, `Error for key "${key}" during \`${endpoint}\` (${endpointName})`),
+              ),
+          );
         }
       } else {
-        toast.error(action.payload.error ?? `${action.payload.status} - ${action.error.message}`, `Error occured during \`${endpoint}\` (${endpointName})`);
+        toast.error(
+          action.payload.error ?? `${action.payload.status} - ${action.error.message}`,
+          `Error occured during \`${endpoint}\` (${endpointName})`,
+        );
       }
     }
   }

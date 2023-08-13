@@ -1,5 +1,6 @@
-import { ImportFolderType } from '@/core/types/api/import-folder';
-import { splitV3Api } from '../splitV3Api';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
+import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 const importFolderApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -24,7 +25,7 @@ const importFolderApi = splitV3Api.injectEndpoints({
       }),
       invalidatesTags: ['ImportFolder'],
     }),
-    deleteImportFolder: build.mutation<boolean, { folderId: number; removeRecords?: boolean; updateMyList?: boolean; }>({
+    deleteImportFolder: build.mutation<boolean, { folderId: number, removeRecords?: boolean, updateMyList?: boolean }>({
       query: ({ folderId, ...params }) => ({
         url: `ImportFolder/${folderId}`,
         method: 'DELETE',
@@ -39,9 +40,9 @@ const importFolderApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useGetImportFoldersQuery,
-  useUpdateImportFolderMutation,
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
+  useGetImportFoldersQuery,
   useLazyRescanImportFolderQuery,
+  useUpdateImportFolderMutation,
 } = importFolderApi;

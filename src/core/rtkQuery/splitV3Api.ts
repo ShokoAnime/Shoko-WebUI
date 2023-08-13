@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { RootState } from '../store';
+import type { RootState } from '@/core/store';
 
 export const splitV3Api = createApi({
   reducerPath: 'splitV3Api',
@@ -12,7 +12,23 @@ export const splitV3Api = createApi({
       return headers;
     },
   }),
-  tagTypes: ['EpisodeUpdated', 'FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'ImportFolder', 'SeriesAniDB', 'SeriesEpisodes', 'SeriesUpdated', 'Settings', 'Users', 'SeriesSearch', 'UtilitiesRefresh', 'WebUIUpdateCheck', 'QueueItems'],
+  tagTypes: [
+    'EpisodeUpdated',
+    'FileDeleted',
+    'FileHashed',
+    'FileIgnored',
+    'FileMatched',
+    'ImportFolder',
+    'SeriesAniDB',
+    'SeriesEpisodes',
+    'SeriesUpdated',
+    'Settings',
+    'Users',
+    'SeriesSearch',
+    'UtilitiesRefresh',
+    'WebUIUpdateCheck',
+    'QueueItems',
+  ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({}),
 });

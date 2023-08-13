@@ -1,7 +1,12 @@
-import type { WebuiGroupExtra, WebuiSeriesDetailsType } from '@/core/types/api/webui';
-import { WebuiSeriesFileSummaryType, WebuiTheme } from '@/core/types/api/webui';
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { ComponentVersionType } from '@/core/types/api/init';
-import { splitV3Api } from '../splitV3Api';
+import type {
+  WebuiGroupExtra,
+  WebuiSeriesDetailsType,
+  WebuiSeriesFileSummaryType,
+  WebuiTheme,
+} from '@/core/types/api/webui';
 
 export type GroupViewApiRequest = {
   GroupIDs: number[];
@@ -62,11 +67,11 @@ const webuiApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useLazyGetGroupViewQuery,
+  useGetSeriesFileSummeryQuery,
+  useGetSeriesOverviewQuery,
+  useGetWebuiThemesQuery,
   useGetWebuiUpdateCheckQuery,
   useGetWebuiUpdateMutation,
-  useGetSeriesOverviewQuery,
-  useGetSeriesFileSummeryQuery,
-  useGetWebuiThemesQuery,
+  useLazyGetGroupViewQuery,
   useLazyGetWebuiUpdateCheckQuery,
 } = webuiApi;

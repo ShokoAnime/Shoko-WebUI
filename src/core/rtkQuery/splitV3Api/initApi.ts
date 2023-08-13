@@ -1,5 +1,6 @@
+import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+
 import type { LegacyVersionType, ServerStatusType, UserType, VersionType } from '@/core/types/api/init';
-import { splitV3Api } from '../splitV3Api';
 
 export const initApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -52,10 +53,10 @@ export const initApi = splitV3Api.injectEndpoints({
 });
 
 export const {
-  useGetInitVersionQuery,
   useGetInitDatabaseTestMutation,
   useGetInitDefaultUserQuery,
-  usePostInitDefaultUserMutation,
   useGetInitStartServerMutation,
   useGetInitStatusQuery,
+  useGetInitVersionQuery,
+  usePostInitDefaultUserMutation,
 } = initApi;

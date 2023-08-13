@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { forEach } from 'lodash';
-import cx from 'classnames';
-import moment from 'moment';
-import { Icon } from '@mdi/react';
 import { mdiCloseCircleOutline, mdiMagnify, mdiMinusCircleOutline, mdiOpenInNew, mdiRestart } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import {
   createColumnHelper,
   getCoreRowModel,
@@ -11,18 +8,20 @@ import {
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table';
+import cx from 'classnames';
+import { forEach } from 'lodash';
+import moment from 'moment';
 
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import Button from '@/components/Input/Button';
-import TransitionDiv from '@/components/TransitionDiv';
 import Input from '@/components/Input/Input';
-import type { SeriesType } from '@/core/types/api/series';
-
+import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
+import TransitionDiv from '@/components/TransitionDiv';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { fuzzyFilter, fuzzySort } from '@/core/util';
 
-import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import toast from '@/components/Toast';
+import type { SeriesType } from '@/core/types/api/series';
 
 const columnHelper = createColumnHelper<SeriesType>();
 
@@ -33,7 +32,10 @@ const columns = [
     cell: info => (
       <div className="flex justify-between">
         {info.getValue()}
-        <span onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')} className="cursor-pointer mr-6 text-panel-primary">
+        <span
+          onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')}
+          className="mr-6 cursor-pointer text-panel-primary"
+        >
           <Icon path={mdiOpenInNew} size={1} />
         </span>
       </div>
@@ -64,7 +66,9 @@ function SeriesWithoutFilesUtility() {
   const series = seriesQuery?.data ?? { Total: 0, List: [] };
   const [deleteSeriesTrigger] = useDeleteSeriesMutation();
 
-  const [columnFilters, setColumnFilters] = useState([{ id: 'Name', value: '' }] as Array<{ id: string; value: string }>);
+  const [columnFilters, setColumnFilters] = useState(
+    [{ id: 'Name', value: '' }] as Array<{ id: string, value: string }>,
+  );
 
   const table = useReactTable({
     data: series.List,
@@ -100,7 +104,7 @@ function SeriesWithoutFilesUtility() {
 
   const renderOperations = (common = false) => {
     const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
-      <Button onClick={onClick} className="flex items-center font-normal text-panel-text gap-x-2">
+      <Button onClick={onClick} className="flex items-center gap-x-2 font-normal text-panel-text">
         <Icon path={icon} size={1} className={cx({ 'text-panel-primary': highlight })} />
         {name}
       </Button>
@@ -108,10 +112,14 @@ function SeriesWithoutFilesUtility() {
 
     return (
       <>
-        {renderButton(async () => {
-          table.resetRowSelection();
-          await seriesQuery.refetch();
-        }, mdiRestart, 'Refresh')}
+        {renderButton(
+          async () => {
+            table.resetRowSelection();
+            await seriesQuery.refetch();
+          },
+          mdiRestart,
+          'Refresh',
+        )}
         <TransitionDiv className="flex grow gap-x-4" show={!common}>
           {renderButton(() => deleteSeries(), mdiMinusCircleOutline, 'Delete', true)}
           {renderButton(() => table.resetRowSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
@@ -122,20 +130,29 @@ function SeriesWithoutFilesUtility() {
 
   const renderPanelOptions = () => (
     <div className="flex font-semibold">
-      <span className="text-panel-important">{series.Total}</span>&nbsp;Empty Series
+      <span className="text-panel-important">{series.Total}</span>
+      &nbsp;Empty Series
     </div>
   );
 
   return (
-    <div className="flex flex-col grow gap-y-8">
-
+    <div className="flex grow flex-col gap-y-8">
       <div>
         <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
           <div className="flex items-center gap-x-3">
-            <Input type="text" placeholder="Search..." startIcon={mdiMagnify} id="search" value={columnFilters[0].value} onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])} inputClassName="px-4 py-3" />
-            <div className="box-border flex grow bg-panel-background-toolbar border border-panel-border items-center rounded-md px-4 py-3 relative gap-x-4">
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={columnFilters[0].value}
+              onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])}
+              inputClassName="px-4 py-3"
+            />
+            <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
               {renderOperations(table.getSelectedRowModel().rows.length === 0)}
-              <div className="ml-auto text-panel-important font-semibold">{table.getSelectedRowModel().rows.length}
+              <div className="ml-auto font-semibold text-panel-important">
+                {table.getSelectedRowModel().rows.length}
                 <span className="text-panel-text">Series Selected</span>
               </div>
             </div>
@@ -143,12 +160,10 @@ function SeriesWithoutFilesUtility() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md bg-panel-background border border-panel-border p-8">
-        {series.Total > 0 ? (
-          <UtilitiesTable table={table} skipSort />
-        ) : (
-          <div className="flex items-center justify-center grow font-semibold">No series without files!</div>
-        )}
+      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
+        {series.Total > 0
+          ? <UtilitiesTable table={table} skipSort />
+          : <div className="flex grow items-center justify-center font-semibold">No series without files!</div>}
       </div>
     </div>
   );

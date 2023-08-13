@@ -1,8 +1,6 @@
 import React from 'react';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import type {
-  DraggableProvided, DroppableProvided, DraggableStateSnapshot, DropResult,
-} from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import type { DraggableProvided, DraggableStateSnapshot, DropResult, DroppableProvided } from 'react-beautiful-dnd';
 
 import PortalAwareItem from './PortalAwareItem';
 
@@ -12,7 +10,7 @@ type Props = {
 };
 
 function DnDList(props: Props) {
-  const { onDragEnd, children } = props;
+  const { children, onDragEnd } = props;
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
@@ -20,7 +18,7 @@ function DnDList(props: Props) {
           <div
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
-            className="flex-grow"
+            className="grow"
           >
             {children.map((child, index) => (
               <Draggable

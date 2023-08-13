@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
-import { Icon } from '@mdi/react';
 import {
   mdiChevronDown,
   mdiCogOutline,
@@ -18,42 +18,53 @@ import {
   mdiTextBoxOutline,
   mdiTools,
 } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { siDiscord } from 'simple-icons';
 import semver from 'semver';
-import AnimateHeight from 'react-animate-height';
+import { siDiscord } from 'simple-icons';
 import { useEventCallback } from 'usehooks-ts';
 
-import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
-
-import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 import QueueModal from '@/components/Dialogs/QueueModal';
-import { RootState } from '@/core/store';
-import Button from '../Input/Button';
-import toast from '../Toast';
+import Button from '@/components/Input/Button';
+import ShokoIcon from '@/components/ShokoIcon';
+import toast from '@/components/Toast';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
+import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
-import ShokoIcon from '../ShokoIcon';
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
+
+import type { RootState } from '@/core/store';
 
 const { DEV, VITE_APPVERSION } = import.meta.env;
 
-const MenuItem = ({ id, text, icon, onClick, isHighlighted }: { id: string, text: string, icon: string, onClick: () => void, isHighlighted: boolean }) => (
+const MenuItem = (
+  { icon, id, isHighlighted, onClick, text }: {
+    id: string;
+    text: string;
+    icon: string;
+    onClick: () => void;
+    isHighlighted: boolean;
+  },
+) => (
   <NavLink
     to={id}
     key={id}
     className={({ isActive }) => cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-header-primary')}
-    onClick={(e) => { e.preventDefault(); onClick(); }}
+    onClick={(e) => {
+      e.preventDefault();
+      onClick();
+    }}
   >
     <Icon path={icon} size={0.8333} />
     {text}
   </NavLink>
 );
 
-const ExternalLinkMenuItem = ({ url, icon }: { url: string, icon: string }) => (
+const ExternalLinkMenuItem = ({ icon, url }: { url: string, icon: string }) => (
   <a href={url} target="_blank" rel="noreferrer noopener">
     <Icon path={icon} size={0.8333} />
   </a>
@@ -73,7 +84,9 @@ function TopNav() {
   const settingsQuery = useGetSettingsQuery();
   const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
-  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, { skip: DEV || !settingsQuery.isSuccess });
+  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, {
+    skip: DEV || !settingsQuery.isSuccess,
+  });
   const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
 
   const currentUser = useGetCurrentUserQuery();
@@ -106,7 +119,7 @@ function TopNav() {
               setTimeout(() => window.location.reload(), 100);
             }}
             buttonType="primary"
-            className="font-semibold py-1.5 w-full"
+            className="w-full py-1.5 font-semibold"
           >
             Click Here to Reload
           </Button>
@@ -145,47 +158,70 @@ function TopNav() {
 
   return (
     <>
-      <div className="flex flex-col bg-header-background drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] z-[100] text-sm font-semibold text-header-text">
-        <div className="flex justify-between px-8 py-6 items-center max-w-[120rem] w-full mx-auto">
+      <div className="z-[100] flex flex-col bg-header-background text-sm font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-8 py-6">
           <div className="flex items-center gap-x-2">
             <ShokoIcon className="w-6" />
-            <span className="text-xl font-semibold mt-1">Shoko</span>
+            <span className="mt-1 text-xl font-semibold">Shoko</span>
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
-              <div className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])} onClick={handleQueueModalOpen} title="Show Queue Modal">
+              <div
+                className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])}
+                onClick={handleQueueModalOpen}
+                title="Show Queue Modal"
+              >
                 <Icon path={mdiServer} size={0.8333} />
               </div>
-              <span className="text-header-important">{(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount + queueItems.ImageQueueState.queueCount) ?? 0}</span>
+              <span className="text-header-important">
+                {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
+                  + queueItems.ImageQueueState.queueCount) ?? 0}
+              </span>
             </div>
             <div className="flex items-center gap-x-2">
-              <div className="flex items-center justify-center bg-header-primary hover:bg-header-primary-hover w-8 h-8 text-xl rounded-full mr-1">
-                {
-                  currentUser.data?.Avatar
-                    ? (<img src={currentUser.data?.Avatar} alt="avatar" className="w-8 h-8 rounded-full" />)
-                    : currentUser.data?.Username.charAt(0)
-                }
+              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-primary text-xl hover:bg-header-primary-hover">
+                {currentUser.data?.Avatar
+                  ? <img src={currentUser.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
+                  : currentUser.data?.Username.charAt(0)}
               </div>
               <span>{currentUser.data?.Username}</span>
               <Icon path={mdiChevronDown} size={0.6666} />
             </div>
-            <NavLink to="settings" className={({ isActive }) => (isActive ? 'text-header-primary' : '')} onClick={() => closeModalsAndSubmenus()}>
+            <NavLink
+              to="settings"
+              className={({ isActive }) => (isActive ? 'text-header-primary' : '')}
+              onClick={() => closeModalsAndSubmenus()}
+            >
               <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>
           </div>
         </div>
         <div className="bg-header-background-alt text-header-text-alt">
-          <div className="flex justify-between px-8 py-4 max-w-[120rem] w-full mx-auto">
+          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-8 py-4">
             <div className="flex gap-x-8">
               {renderLinkMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
-              <div className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-50 pointer-events-none')}>
+              <div
+                className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-50 pointer-events-none')}
+              >
                 {renderLinkMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
-                <MenuItem id="utilities" text="Utilities" icon={mdiTools} onClick={() => setShowUtilitiesMenu(prev => !prev)} isHighlighted={showUtilitiesMenu} />
-                <MenuItem id="actions" text="Actions" icon={mdiFormatListBulletedSquare} onClick={() => setShowActionsModal(true)} isHighlighted={showActionsModal} />
+                <MenuItem
+                  id="utilities"
+                  text="Utilities"
+                  icon={mdiTools}
+                  onClick={() => setShowUtilitiesMenu(prev => !prev)}
+                  isHighlighted={showUtilitiesMenu}
+                />
+                <MenuItem
+                  id="actions"
+                  text="Actions"
+                  icon={mdiFormatListBulletedSquare}
+                  onClick={() => setShowActionsModal(true)}
+                  isHighlighted={showActionsModal}
+                />
                 {renderLinkMenuItem('log', 'Log', mdiTextBoxOutline)}
               </div>
             </div>
-            <div className="flex gap-8 justify-end">
+            <div className="flex justify-end gap-8">
               {pathname === '/webui/dashboard' && (
                 <MenuItem
                   id="dashboard-settings"
@@ -198,16 +234,25 @@ function TopNav() {
                   isHighlighted={layoutEditMode}
                 />
               )}
-              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION)) || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
-                <div className="flex items-center font-semibold cursor-pointer gap-x-2.5" onClick={() => handleWebUiUpdate()}>
+              {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION))
+                || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
+                <div
+                  className="flex cursor-pointer items-center gap-x-2.5 font-semibold"
+                  onClick={() => handleWebUiUpdate()}
+                >
                   <Icon
-                    path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? mdiLoading : mdiDownloadCircleOutline}
+                    path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
+                      ? mdiLoading
+                      : mdiDownloadCircleOutline}
                     size={1}
-                    className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading ? 'text-header-primary' : 'text-header-important'}
+                    className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
+                      ? 'text-header-primary'
+                      : 'text-header-important'}
                     spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                   />
                   <div className="flex">
-                    Web UI {webuiUpdateStatus}
+                    Web UI&nbsp;
+                    {webuiUpdateStatus}
                   </div>
                 </div>
               )}
@@ -222,8 +267,11 @@ function TopNav() {
             </div>
           </div>
         </div>
-        <AnimateHeight height={showUtilitiesMenu ? 'auto' : 0} className="bg-header-background-alt border-t border-header-border">
-          <div className="max-w-[120rem] w-full mx-auto flex px-8 py-4 gap-x-8">
+        <AnimateHeight
+          height={showUtilitiesMenu ? 'auto' : 0}
+          className="border-t border-header-border bg-header-background-alt"
+        >
+          <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
             {renderLinkMenuItem('utilities/unrecognized', 'Unrecognized Files', mdiFileQuestionOutline)}
             {renderLinkMenuItem('utilities/series-without-files', 'Series Without Files', mdiFileDocumentAlertOutline)}
           </div>

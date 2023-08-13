@@ -1,0 +1,21 @@
+{
+  "lineWidth": 120,
+  "typescript": {
+    "exportDeclaration.sortNamedExports": "caseSensitive",
+    "importDeclaration.sortNamedImports": "caseSensitive",
+    "jsx.multiLineParens": "prefer",
+    "jsx.quoteStyle": "preferDouble",
+    "module.sortExportDeclarations": "maintain",
+    "module.sortImportDeclarations": "maintain",
+    "quoteProps": "asNeeded",
+    "quoteStyle": "alwaysSingle",
+    "semiColons": "always",
+    "typeLiteral.separatorKind.singleLine": "comma"
+  },
+  "includes": [
+    "src/**"
+  ],
+  "plugins": [
+    "https://plugins.dprint.dev/typescript-0.86.1.wasm"
+  ]
+}

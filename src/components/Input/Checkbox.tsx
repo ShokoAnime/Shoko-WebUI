@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import cx from 'classnames';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import {
-  mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull,
-} from '@mdi/js';
+import cx from 'classnames';
 
-import TransitionDiv from '../TransitionDiv';
+import TransitionDiv from '@/components/TransitionDiv';
 
 type Props = {
   id: string;
@@ -18,17 +16,25 @@ type Props = {
   onChange: (event: any) => void;
 };
 
-function Checkbox({ id, label, isChecked, className, onChange, labelRight, justify, intermediate }: Props) {
+function Checkbox({ className, id, intermediate, isChecked, justify, label, labelRight, onChange }: Props) {
   const [focused, setFocused] = useState(false);
 
   return (
-    <label htmlFor={id} className={cx([justify && 'justify-between', `${className}`, 'cursor-pointer flex items-center transition ease-in-out', focused && 'ring-2 ring-panel-primary ring-inset'])}>
+    <label
+      htmlFor={id}
+      className={cx([
+        justify && 'justify-between',
+        `${className}`,
+        'cursor-pointer flex items-center transition ease-in-out',
+        focused && 'ring-2 ring-panel-primary ring-inset',
+      ])}
+    >
       <input
         id={id}
         type="checkbox"
         checked={isChecked}
         onChange={onChange}
-        className="border-0 overflow-hidden p-0 absolute whitespace-nowrap w-0 h-0"
+        className="absolute h-0 w-0 overflow-hidden whitespace-nowrap border-0 p-0"
         style={{
           clip: 'rect(0 0 0 0)',
           clipPath: 'inset(50%)',
@@ -37,7 +43,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="flex items-center mr-2">
+        <span className="mr-2 flex items-center">
           {label}
         </span>
       )}
@@ -57,7 +63,7 @@ function Checkbox({ id, label, isChecked, className, onChange, labelRight, justi
         </TransitionDiv>
       )}
       {labelRight && (
-        <span className="flex items-center font-semibold ml-2">
+        <span className="ml-2 flex items-center font-semibold">
           {label}
         </span>
       )}

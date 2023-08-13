@@ -13,8 +13,13 @@ type Props = {
 
 function TransitionDiv(props: Props) {
   const {
-    enter, enterFrom, enterTo, className, children,
-    show, appear,
+    appear,
+    children,
+    className,
+    enter,
+    enterFrom,
+    enterTo,
+    show,
   } = props;
 
   return (
@@ -24,7 +29,6 @@ function TransitionDiv(props: Props) {
       enter={enter ?? 'transition-opacity'}
       enterFrom={enterFrom ?? 'opacity-0'}
       enterTo={enterTo ?? 'opacity-100'}
-      // FIXME: Leave transitions don't seem to be working
       leave={enter ?? 'transition-opacity'}
       leaveFrom={enterTo ?? 'opacity-100'}
       leaveTo={enterFrom ?? 'opacity-0'}

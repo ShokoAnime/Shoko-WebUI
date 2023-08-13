@@ -1,14 +1,13 @@
-import React, {
-  useCallback, useEffect, useRef, useState,
-} from 'react';
-import { find, toInteger } from 'lodash';
-import { Icon } from '@mdi/react';
-import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
-import { Listbox } from '@headlessui/react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
+import { Listbox } from '@headlessui/react';
+import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { find, toInteger } from 'lodash';
 
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+
 import Input from './Input';
 
 function getOffsetTop(rect, vertical) {
@@ -59,21 +58,33 @@ type Props = {
 
 const getPrefix = (type: EpisodeTypeEnum) => {
   switch (type) {
-    case EpisodeTypeEnum.Normal: return '';
-    case EpisodeTypeEnum.Special: return 'S';
-    case EpisodeTypeEnum.ThemeSong: return 'C';
-    case EpisodeTypeEnum.Trailer: return 'T';
-    case EpisodeTypeEnum.Other: return 'O';
-    case EpisodeTypeEnum.Parody: return 'P';
-    default: return '';
+    case EpisodeTypeEnum.Special:
+      return 'S';
+    case EpisodeTypeEnum.ThemeSong:
+      return 'C';
+    case EpisodeTypeEnum.Trailer:
+      return 'T';
+    case EpisodeTypeEnum.Other:
+      return 'O';
+    case EpisodeTypeEnum.Parody:
+      return 'P';
+    case EpisodeTypeEnum.Normal:
+    default:
+      return '';
   }
 };
 
 const SelectOption = (option: Option & { divider: boolean }) => (
-  <Listbox.Option value={option} key={`listbox-item-${option.value}`} className="text-panel-text hover:bg-panel-primary hover:text-panel-text-alt select-none relative px-2 py-0.5 group cursor-pointer">
+  <Listbox.Option
+    value={option}
+    key={`listbox-item-${option.value}`}
+    className="group relative cursor-pointer select-none px-2 py-0.5 text-panel-text hover:bg-panel-primary hover:text-panel-text-alt"
+  >
     <div className="flex items-center justify-between">
-      <span className="flex font-normal truncate grow">
-        <div className="flex-shrink-0 text-panel-important w-10 group-hover:text-panel-text">{getPrefix(option.type) + option.number}</div>
+      <span className="flex grow truncate font-normal">
+        <div className="w-10 shrink-0 text-panel-important group-hover:text-panel-text">
+          {getPrefix(option.type) + option.number}
+        </div>
         |
         <div className="ml-2">{option.label}</div>
       </span>
@@ -82,7 +93,9 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   </Listbox.Option>
 );
 
-const SelectEpisodeList = ({ options, disabled = false, value, onChange, className, emptyValue = '', rowIdx }: Props) => {
+const SelectEpisodeList = (
+  { className, disabled = false, emptyValue = '', onChange, options, rowIdx, value }: Props,
+) => {
   const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
   const [portalEl, setPortalEl] = useState(null as any);
@@ -92,7 +105,7 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
 
   useEffect(() => {
     const modalRoot = document.getElementById('modal-root');
-    if (modalRoot === null) { return undefined; }
+    if (modalRoot === null) return undefined;
     const el = document.createElement('div');
     modalRoot.appendChild(el);
     setPortalEl(el);
@@ -125,15 +138,21 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
   const renderSelected = () => {
     if (!selected || !selected.label) return emptyValue;
     return (
-      <React.Fragment>
-        <span className="text-panel-important font-semibold">{selected.number}</span> - {selected.label}
-        {selected.type && selected.type !== 'Normal' && <span className="mx-2 px-1 py-0.5 rounded-md text-panel-text bg-panel-background text-sm border-panel-primary border">{selected.type}</span>}
-      </React.Fragment>
+      <>
+        <span className="font-semibold text-panel-important">{selected.number}</span>
+        &nbsp;-&nbsp;
+        {selected.label}
+        {selected.type && selected.type !== 'Normal' && (
+          <span className="mx-2 rounded-md border border-panel-primary bg-panel-background px-1 py-0.5 text-sm text-panel-text">
+            {selected.type}
+          </span>
+        )}
+      </>
     );
   };
 
   const renderPortal = (open) => {
-    if (displayNode === null || portalEl === null || open !== true) { return null; }
+    if (displayNode === null || portalEl === null || open !== true) return null;
     const rect = displayNode.getBoundingClientRect();
     const top = rect.top + getOffsetTop(rect, 'bottom') + window.scrollY;
     const left = rect.left + getOffsetLeft(rect, 0);
@@ -143,15 +162,32 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
     portalEl.style.width = `${displayNode.offsetWidth}px`;
 
     return ReactDOM.createPortal(
-      <Listbox.Options static className="absolute mt-1 w-full z-10 bg-panel-background">
+      <Listbox.Options static className="absolute z-10 mt-1 w-full bg-panel-background">
         <div className="flex gap-x-2">
-          <Input className="grow" id="epFilter" type="text" value={epFilter === 0 ? '' : epFilter} onChange={handleEpFilter} inputClassName="py-4 px-3" startIcon={mdiMagnify} placeholder="Input Episode Name or Number..." />
+          <Input
+            className="grow"
+            id="epFilter"
+            type="text"
+            value={epFilter === 0 ? '' : epFilter}
+            onChange={handleEpFilter}
+            inputClassName="py-4 px-3"
+            startIcon={mdiMagnify}
+            placeholder="Input Episode Name or Number..."
+          />
         </div>
-        <div className="rounded-md bg-panel-background-alt mt-1 overflow-y-auto max-h-96 p-4">
+        <div className="mt-1 max-h-96 overflow-y-auto rounded-md bg-panel-background-alt p-4">
           {options.map((item, idx) => (
             <>
-              {idx !== 0 && item.type !== options[idx - 1].type && (<div className="bg-panel-background-alt border border-panel-border h-0.5 my-3" />)}
-              {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (<SelectOption key={`listbox-item-${item.value}`} {...item} divider={idx > 0 && item.type !== options[idx - 1].type} />)}
+              {idx !== 0 && item.type !== options[idx - 1].type && (
+                <div className="my-3 h-0.5 border border-panel-border bg-panel-background-alt" />
+              )}
+              {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (
+                <SelectOption
+                  key={`listbox-item-${item.value}`}
+                  {...item}
+                  divider={idx > 0 && item.type !== options[idx - 1].type}
+                />
+              )}
             </>
           ))}
         </div>
@@ -165,11 +201,17 @@ const SelectEpisodeList = ({ options, disabled = false, value, onChange, classNa
       <Listbox disabled={disabled} value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative h-full">
-            <Listbox.Button ref={buttonRef} className={cx('relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary', rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar')}>
+            <Listbox.Button
+              ref={buttonRef}
+              className={cx(
+                'relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary',
+                rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar',
+              )}
+            >
               <span className="flex items-center">
-                <span className="ml-3 block truncate h-7">{renderSelected()}</span>
+                <span className="ml-3 block h-7 truncate">{renderSelected()}</span>
               </span>
-              <span className="ml-3 absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+              <span className="pointer-events-none absolute inset-y-0 right-0 ml-3 flex items-center pr-2">
                 <Icon className="cursor-pointer" path={open ? mdiChevronUp : mdiChevronDown} size={1} />
               </span>
             </Listbox.Button>

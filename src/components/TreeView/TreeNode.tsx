@@ -1,20 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { forEach } from 'lodash';
 import { mdiCheckboxMarkedCircleOutline, mdiChevronUp, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { forEach } from 'lodash';
 
-import { setSelectedNode } from '@/core/slices/modals/browseFolder';
-import { RootState } from '@/core/store';
+import toast from '@/components/Toast';
 import { useGetFolderDrivesQuery, useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
+import { setSelectedNode } from '@/core/slices/modals/browseFolder';
+
+import type { RootState } from '@/core/store';
 import type { DriveType, FolderType } from '@/core/types/api/folder';
-import toast from '../Toast';
 
 type Props = {
-  level: number,
-  Path: string,
-  nodeId: number,
+  level: number;
+  Path: string;
+  nodeId: number;
 };
 
 function TreeNode(props: Props) {
@@ -27,12 +28,16 @@ function TreeNode(props: Props) {
   const [expanded, setExpanded] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const { level, Path, nodeId } = props;
+  const { Path, level, nodeId } = props;
   const isSelected = nodeId === selectedNode.id;
 
   const toggleExpanded = (event: React.MouseEvent) => {
     if (!loaded) {
-      if (nodeId !== 0) fetchFolders(Path).catch((reason) => { toast.error(`${reason} - Fetching folder ${Path} failed.`); });
+      if (nodeId !== 0) {
+        fetchFolders(Path).catch((reason) => {
+          toast.error(`${reason} - Fetching folder ${Path} failed.`);
+        });
+      }
       setExpanded(true);
       setLoaded(true);
     } else {
@@ -50,12 +55,14 @@ function TreeNode(props: Props) {
   const data = nodeId === 0 ? drives.data! : folders.data!;
   if (expanded) {
     forEach(data, (node: DriveType | FolderType) => {
-      children.push(<TreeNode
-        key={node.nodeId}
-        nodeId={node.nodeId}
-        Path={node.Path}
-        level={level + 1}
-      />);
+      children.push(
+        <TreeNode
+          key={node.nodeId}
+          nodeId={node.nodeId}
+          Path={node.Path}
+          level={level + 1}
+        />,
+      );
     });
   }
 
@@ -94,7 +101,11 @@ function TreeNode(props: Props) {
           </div>
           <span className="select-none">{getChoppedPath()}</span>
         </div>
-        <Icon className={cx('inline-block justify-self-end mr-3 text-panel-primary', { hidden: !isSelected })} path={mdiCheckboxMarkedCircleOutline} size={1} />
+        <Icon
+          className={cx('inline-block justify-self-end mr-3 text-panel-primary', { hidden: !isSelected })}
+          path={mdiCheckboxMarkedCircleOutline}
+          size={1}
+        />
       </div>
       <ul>{children}</ul>
     </li>

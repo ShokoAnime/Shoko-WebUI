@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import cx from 'classnames';
-import { Icon } from '@mdi/react';
 import { mdiInformationOutline, mdiLoading } from '@mdi/js';
-import { ImageType } from '@/core/types/api/common';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
+
+import type { ImageType } from '@/core/types/api/common';
 
 type Props = {
   children?: any;
@@ -14,8 +15,11 @@ type Props = {
 
 function BackgroundImagePlaceholderDiv(props: Props) {
   const {
-    children, className, zoomOnHover,
-    image, hidePlaceholderOnHover,
+    children,
+    className,
+    hidePlaceholderOnHover,
+    image,
+    zoomOnHover,
   } = props;
   const imageSource = useMemo(() => {
     if (!image) {
@@ -35,11 +39,15 @@ function BackgroundImagePlaceholderDiv(props: Props) {
   useEffect(() => {
     setBackgroundImage(null);
     if (!imageSource) {
-      setImageError(imageSource === null ? (
-        'Image is not available. Run the validate image action or wait for the image queue to settle.'
-      ) : (
-        'No image metadata.'
-      ));
+      setImageError(
+        imageSource === null
+          ? (
+            'Image is not available. Run the validate image action or wait for the image queue to settle.'
+          )
+          : (
+            'No image metadata.'
+          ),
+      );
       return undefined;
     }
     setImageError(null);
@@ -65,9 +73,20 @@ function BackgroundImagePlaceholderDiv(props: Props) {
 
   return (
     <div className={`${className} overflow-hidden`}>
-      <div className={cx('absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]', zoomOnHover && 'group-hover:scale-105 transition-transform')} style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}>
+      <div
+        className={cx(
+          'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]',
+          zoomOnHover && 'group-hover:scale-105 transition-transform',
+        )}
+        style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
+      >
         {imageError && (
-          <div className={cx('w-full h-full flex flex-col justify-center items-center bg-overlay-background p-8', hidePlaceholderOnHover && 'group-hover:opacity-0')}>
+          <div
+            className={cx(
+              'w-full h-full flex flex-col justify-center items-center bg-overlay-background p-8',
+              hidePlaceholderOnHover && 'group-hover:opacity-0',
+            )}
+          >
             <Icon path={mdiInformationOutline} size={1.5} className="text-panel-important" />
             <div className="my-4 font-semibold">Failed to Load</div>
             {imageError}

@@ -3,12 +3,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiClose, mdiPencil } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import { RootState } from '@/core/store';
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import ModalPanel from '@/components/Panels/ModalPanel';
 import Events from '@/core/events';
 import { setStatus as setProfileModalStatus } from '@/core/slices/modals/profile';
-import Button from '../Input/Button';
-import ModalPanel from '../Panels/ModalPanel';
-import Input from '../Input/Input';
+
+import type { RootState } from '@/core/store';
 
 function ProfileModal() {
   const dispatch = useDispatch();
@@ -43,42 +44,71 @@ function ProfileModal() {
 
   return (
     <ModalPanel show={status} className="profile-modal" onRequestClose={() => handleClose()}>
-      <div className="flex flex-col w-full h-full">
-        <div className="flex profile-modal-image rounded-l-lg">
-          <div className="flex grow profile-modal-image-alpha justify-center items-center rounded-l-lg">
-            <span className="flex items-center justify-center bg-panel-primary w-48 h-48 text-2xl rounded-full mr-2">{oldUsername.charAt(0)}</span>
+      <div className="flex h-full w-full flex-col">
+        <div className="profile-modal-image flex rounded-l-lg">
+          <div className="profile-modal-image-alpha flex grow items-center justify-center rounded-l-lg">
+            <span className="mr-2 flex h-48 w-48 items-center justify-center rounded-full bg-panel-primary text-2xl">
+              {oldUsername.charAt(0)}
+            </span>
           </div>
         </div>
         <div className="flex grow flex-col px-4 py-2">
           <div className="flex justify-between">
-            <span className="flex font-semibold text-base uppercase">User Profile</span>
+            <span className="flex text-base font-semibold uppercase">User Profile</span>
             <span className="flex">
               <Button onClick={() => handleClose()}>
                 <Icon path={mdiClose} size={1} />
               </Button>
             </span>
           </div>
-          <div className="bg-panel-important my-2 h-1 w-10 flex-shrink-0" />
-          <div className="flex flex-col grow justify-between">
+          <div className="my-2 h-1 w-10 shrink-0 bg-panel-important" />
+          <div className="flex grow flex-col justify-between">
             <div className="flex flex-col">
               <div className="flex">
-                <Input className="w-24" label="Username" id="username" value={username} type="text" disabled={usernameDisabled} onChange={e => setUsername(e.target.value)} />
-                <Button onClick={() => setUsernameDisabled(false)} className="flex mt-1">
+                <Input
+                  className="w-24"
+                  label="Username"
+                  id="username"
+                  value={username}
+                  type="text"
+                  disabled={usernameDisabled}
+                  onChange={e => setUsername(e.target.value)}
+                />
+                <Button onClick={() => setUsernameDisabled(false)} className="mt-1 flex">
                   <Icon className="text-panel-primary" path={mdiPencil} size={1} />
                 </Button>
               </div>
-              <div className="flex mt-1">
-                <Input className="w-24" label="Password" id="password" value={password} type="password" placeholder="Password" disabled={passwordDisabled} onChange={e => setPassword(e.target.value)} />
-                <Button onClick={() => setPasswordDisabled(false)} className="flex mt-1">
+              <div className="mt-1 flex">
+                <Input
+                  className="w-24"
+                  label="Password"
+                  id="password"
+                  value={password}
+                  type="password"
+                  placeholder="Password"
+                  disabled={passwordDisabled}
+                  onChange={e => setPassword(e.target.value)}
+                />
+                <Button onClick={() => setPasswordDisabled(false)} className="mt-1 flex">
                   <Icon className="text-panel-primary" path={mdiPencil} size={1} />
                 </Button>
               </div>
-              <div className="flex mt-1">
-                <Input className="w-24" label="User Group" id="user-group" value="Admin" type="text" disabled onChange={() => { }} />
+              <div className="mt-1 flex">
+                <Input
+                  className="w-24"
+                  label="User Group"
+                  id="user-group"
+                  value="Admin"
+                  type="text"
+                  disabled
+                  onChange={() => {}}
+                />
               </div>
             </div>
-            <div className="flex justify-end mb-2">
-              <Button onClick={() => handleClose(true)} className="py-1 px-4 bg-panel-primary font-semibold text-sm">Save</Button>
+            <div className="mb-2 flex justify-end">
+              <Button onClick={() => handleClose(true)} className="bg-panel-primary px-4 py-1 text-sm font-semibold">
+                Save
+              </Button>
             </div>
           </div>
         </div>

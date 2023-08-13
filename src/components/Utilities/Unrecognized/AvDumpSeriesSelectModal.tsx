@@ -1,13 +1,14 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import ModalPanel from '@/components/Panels/ModalPanel';
-import Button from '@/components/Input/Button';
-import { Icon } from '@mdi/react';
-import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
-import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { debounce } from 'lodash';
-import Input from '@/components/Input/Input';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
+import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { debounce } from 'lodash';
+
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 type Props = {
   show: boolean;
@@ -15,7 +16,7 @@ type Props = {
   links: string[];
 };
 
-function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
+function AvDumpSeriesSelectModal({ links, onClose, show }: Props) {
   const [searchText, setSearchText] = useState('');
 
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
@@ -47,30 +48,41 @@ function AvDumpSeriesSelectModal({ show, onClose, links }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-4"
+      className="flex-col gap-y-4 p-8 drop-shadow-lg"
     >
-      <div className="font-semibold text-xl">AvDump Series Select</div>
+      <div className="text-xl font-semibold">AvDump Series Select</div>
       <CopyToClipboard text={ed2kLinks} onCopy={() => toast.success('ED2K hashes copied to clipboard!')}>
-        <Button className="bg-panel-primary text-panel-text-alt mt-4 p-2 flex items-center justify-center gap-x-2.5 font-semibold">
+        <Button className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-primary p-2 font-semibold text-panel-text-alt">
           <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
           Copy ED2K Hashes
         </Button>
       </CopyToClipboard>
-      <div className="flex flex-col p-4 overflow-y-auto break-all rounded-md bg-panel-background-alt gap-y-1 text-sm h-auto">
-        {links.map(link => (
-          <div key={link.split('|')[4]}>{link}</div>
-        ))}
+      <div className="flex h-auto flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
+        {links.map(link => <div key={link.split('|')[4]}>{link}</div>)}
       </div>
-      <Input id="search" value={searchText} type="text" placeholder="Search..." onChange={e => handleSearch(e.target.value)} startIcon={mdiMagnify} />
-      <div className="flex flex-col p-4 overflow-x-clip overflow-y-auto h-64 rounded-md bg-panel-background-alt border border-panel-border gap-y-1">
+      <Input
+        id="search"
+        value={searchText}
+        type="text"
+        placeholder="Search..."
+        onChange={e => handleSearch(e.target.value)}
+        startIcon={mdiMagnify}
+      />
+      <div className="flex h-64 flex-col gap-y-1 overflow-y-auto overflow-x-clip rounded-md border border-panel-border bg-panel-background-alt p-4">
         {searchResults.isLoading
           ? (
-            <div className="flex h-full justify-center items-center">
+            <div className="flex h-full items-center justify-center">
               <Icon path={mdiLoading} size={3} spin className="text-panel-primary" />
             </div>
           )
           : (searchResults.data ?? []).map(result => (
-            <a href={`https://anidb.net/anime/${result.ID}/release/add`} key={result.ID} target="_blank" rel="noopener noreferrer" className="flex justify-between items-center">
+            <a
+              href={`https://anidb.net/anime/${result.ID}/release/add`}
+              key={result.ID}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-between"
+            >
               <div className="line-clamp-1">{result.Title}</div>
               <div className="text-panel-primary">
                 <Icon path={mdiOpenInNew} size={0.833} />

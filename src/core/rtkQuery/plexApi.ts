@@ -1,6 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
-import { RootState } from '../store';
+import type { RootState } from '@/core/store';
 
 export const plexApi = createApi({
   reducerPath: 'plexApi',
@@ -43,7 +43,7 @@ export const plexApi = createApi({
 });
 
 export const {
-  useLazyGetPlexLoginUrlQuery,
   useGetPlexAuthenticatedQuery,
   useInvalidatePlexTokenMutation,
+  useLazyGetPlexLoginUrlQuery,
 } = plexApi;

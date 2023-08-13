@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { omit } from 'lodash';
+
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 type AvDumpItem = {
   hash: string;

@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { remove } from 'lodash';
-import { initialSettings } from '@/pages/settings/SettingsPage';
+
+import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
+import ModalPanel from '@/components/Panels/ModalPanel';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import ModalPanel from '../Panels/ModalPanel';
-import Button from '../Input/Button';
-import Checkbox from '../Input/Checkbox';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -64,16 +65,27 @@ type Props = {
   onClose: () => void;
 };
 
-function LanguagesModal({ type, onClose }: Props) {
+function LanguagesModal({ onClose, type }: Props) {
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
-  const LanguagePreference = useMemo(() => (type === 'Episode' ? settings.EpisodeLanguagePreference ?? ['en'] : settings.LanguagePreference ?? ['x-jat', 'en']), [type, settings]);
+  const LanguagePreference = useMemo(
+    () => (type === 'Episode'
+      ? settings.EpisodeLanguagePreference ?? ['en']
+      : settings.LanguagePreference ?? ['x-jat', 'en']),
+    [type, settings],
+  );
   const [patchSettings] = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as Array<string>);
 
   const handleSave = useCallback(() => {
-    patchSettings({ oldSettings: settings, newSettings: { ...settings, [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages } }).unwrap()
+    patchSettings({
+      oldSettings: settings,
+      newSettings: {
+        ...settings,
+        [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages,
+      },
+    }).unwrap()
       .then(() => onClose())
       .catch(error => console.error(error));
   }, [type, settings, languages, patchSettings, onClose]);
@@ -83,7 +95,7 @@ function LanguagesModal({ type, onClose }: Props) {
   }, [type, LanguagePreference]);
 
   const handleInputChange = (event: any) => {
-    const { id, checked: value } = event.target;
+    const { checked: value, id } = event.target;
 
     const newLanguages = languages.slice();
 
@@ -97,17 +109,29 @@ function LanguagesModal({ type, onClose }: Props) {
     <ModalPanel
       show={type !== null}
       onRequestClose={onClose}
-      className="p-8 flex-col drop-shadow-lg gap-y-4 h-2/3"
+      className="h-2/3 flex-col gap-y-4 p-8 drop-shadow-lg"
     >
-      <div className="font-semibold text-xl">{type} Languages</div>
-      <div className="flex flex-col overflow-y-auto bg-panel-background-alt rounded-md border border-panel-border px-3 py-2 gap-y-1.5">
+      <div className="text-xl font-semibold">
+        {type}
+        &nbsp;Languages
+      </div>
+      <div className="flex flex-col gap-y-1.5 overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-3 py-2">
         {Object.keys(languageDescription).map(key => (
-          <Checkbox id={key} key={key} isChecked={languages.includes(key)} onChange={handleInputChange} label={languageDescription[key]} justify />
+          <Checkbox
+            id={key}
+            key={key}
+            isChecked={languages.includes(key)}
+            onChange={handleInputChange}
+            label={languageDescription[key]}
+            justify
+          />
         ))}
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Discard</Button>
-        <Button onClick={handleSave} buttonType="primary" className="px-5 py-2" disabled={languages.length === 0}>Save</Button>
+        <Button onClick={handleSave} buttonType="primary" className="px-5 py-2" disabled={languages.length === 0}>
+          Save
+        </Button>
       </div>
     </ModalPanel>
   );

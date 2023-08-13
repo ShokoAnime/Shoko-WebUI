@@ -1,27 +1,28 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { Responsive, WidthProvider } from 'react-grid-layout';
-import { Icon } from '@mdi/react';
+import { useDispatch, useSelector } from 'react-redux';
 import { mdiMenuDown } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
-import { RootState } from '@/core/store';
-import toast from '@/components/Toast';
 import Button from '@/components/Input/Button';
-import { setLayoutEditMode } from '@/core/slices/mainpage';
+import toast from '@/components/Toast';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import CollectionStats from './panels/CollectionStats';
-import UnrecognizedFiles from './panels/UnrecognizedFiles';
-import MediaType from './panels/MediaType';
-import QueueProcessor from './panels/QueueProcessor';
-import ShokoNews from './panels/ShokoNews';
-import RecentlyImported from './panels/RecentlyImported';
-import ImportFolders from './panels/ImportFolders';
-import ContinueWatching from './panels/ContinueWatching';
-import NextUp from './panels/NextUp';
-import UpcomingAnime from './panels/UpcomingAnime';
-import RecommendedAnime from './panels/RecommendedAnime';
+import { setLayoutEditMode } from '@/core/slices/mainpage';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
-import { initialSettings } from '../settings/SettingsPage';
+import CollectionStats from './panels/CollectionStats';
+import ContinueWatching from './panels/ContinueWatching';
+import ImportFolders from './panels/ImportFolders';
+import MediaType from './panels/MediaType';
+import NextUp from './panels/NextUp';
+import QueueProcessor from './panels/QueueProcessor';
+import RecentlyImported from './panels/RecentlyImported';
+import RecommendedAnime from './panels/RecommendedAnime';
+import ShokoNews from './panels/ShokoNews';
+import UnrecognizedFiles from './panels/UnrecognizedFiles';
+import UpcomingAnime from './panels/UpcomingAnime';
+
+import type { RootState } from '@/core/store';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -34,7 +35,9 @@ function DashboardPage() {
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
-  const [currentLayout, setCurrentLayout] = useState(settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard);
+  const [currentLayout, setCurrentLayout] = useState(
+    settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard,
+  );
 
   useEffect(() => {
     const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
@@ -65,7 +68,7 @@ function DashboardPage() {
       const renderToast = () => (
         <div className="flex flex-col">
           Edit Mode Enabled
-          <div className="flex items-center justify-end mt-3 gap-x-3 font-semibold">
+          <div className="mt-3 flex items-center justify-end gap-x-3 font-semibold">
             <Button onClick={() => cancelLayoutChange()} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
             <Button onClick={() => saveLayout()} buttonType="primary" className="px-3 py-1.5">Save</Button>
           </div>
@@ -89,7 +92,7 @@ function DashboardPage() {
   }, [layoutEditMode, currentLayout, cancelLayoutChange, saveLayout]);
 
   const renderResizeHandle = () => (
-    <div className="react-resizable-handle right-0 bottom-0 cursor-nwse-resize">
+    <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
       <Icon path={mdiMenuDown} size={1.5} className="text-panel-primary" rotate={-45} />
     </div>
   );

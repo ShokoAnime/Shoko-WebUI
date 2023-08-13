@@ -1,15 +1,15 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
-import { useVirtualizer } from '@tanstack/react-virtual';
 import useMeasure from 'react-use-measure';
-import { Icon } from '@mdi/react';
 import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
 
-import GridViewItem from '@/components/Collection/GridViewItem';
 import CardViewItem from '@/components/Collection/CardViewItem';
+import GridViewItem from '@/components/Collection/GridViewItem';
 import { useLazyGetGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 
@@ -44,19 +44,20 @@ const CollectionView = (props: Props) => {
     setGroupTotal(groupTotal);
   }, [groupTotal, setGroupTotal]);
 
-  const fetchPage = useMemo(() => debounce((page: number) => {
-    fetchGroups({ page, pageSize, filterId: filterId ?? '0' }).then((result) => {
-      if (!result.data) return;
+  const fetchPage = useMemo(() =>
+    debounce((page: number) => {
+      fetchGroups({ page, pageSize, filterId: filterId ?? '0' }).then((result) => {
+        if (!result.data) return;
 
-      const ids = result.data.pages[page].map(group => group.IDs.ID);
-      fetchGroupExtras({
-        GroupIDs: ids,
-        TagFilter: 128,
-        TagLimit: 20,
-        OrderByName: true,
-      }).then().catch(error => console.error(error));
-    }).catch(error => console.error(error)).finally(() => setFetchingPage(false));
-  }, 200), [filterId, fetchGroups, fetchGroupExtras]);
+        const ids = result.data.pages[page].map(group => group.IDs.ID);
+        fetchGroupExtras({
+          GroupIDs: ids,
+          TagFilter: 128,
+          TagLimit: 20,
+          OrderByName: true,
+        }).then().catch(error => console.error(error));
+      }).catch(error => console.error(error)).finally(() => setFetchingPage(false));
+    }, 200), [filterId, fetchGroups, fetchGroupExtras]);
 
   useEffect(() => {
     fetchPage.cancel();
@@ -83,25 +84,27 @@ const CollectionView = (props: Props) => {
 
   if (groupTotal === 0) {
     return (
-      <div className={cx(
-        'flex grow rounded-md items-center font-semibold justify-center',
-        mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
-      )}
+      <div
+        className={cx(
+          'flex grow rounded-md items-center font-semibold justify-center',
+          mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
+        )}
       >
-        {groupsData.isUninitialized || groupsData.isLoading ? (
-          <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
-        ) : 'No series/groups available!'}
+        {groupsData.isUninitialized || groupsData.isLoading
+          ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
+          : 'No series/groups available!'}
       </div>
     );
   }
 
   return (
-    <div className={cx(
-      'flex grow rounded-md',
-      mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
-    )}
+    <div
+      className={cx(
+        'flex grow rounded-md',
+        mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
+      )}
     >
-      <div className="w-full relative" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
+      <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
         {/* Each row is considered a virtual item here instead of each group */}
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const { index } = virtualRow;
@@ -144,12 +147,14 @@ const CollectionView = (props: Props) => {
             const isPlaceholder = i > groupTotal - 1;
 
             if (isPlaceholder) {
-              items.push(<div className={cx(mode === 'grid' ? 'w-[13.0625rem]' : 'w-[56.6875rem]')} key={`placeholder-${i}`} />);
+              items.push(
+                <div className={cx(mode === 'grid' ? 'w-[13.0625rem]' : 'w-[56.6875rem]')} key={`placeholder-${i}`} />,
+              );
             } else if (item) {
               items.push(
                 mode === 'grid'
                   ? <GridViewItem item={item} />
-                  : CardViewItem(item, groupExtras.find(extra => extra.ID === item.IDs.ID)),
+                  : <CardViewItem item={item} mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)} />,
               );
             } else {
               items.push(

@@ -1,4 +1,4 @@
-import { ImageType, ImagesType, RatingType } from './common';
+import type { ImageType, ImagesType, RatingType } from './common';
 
 export type SeriesDetailsType = SeriesType & {
   AniDB?: SeriesAniDBType;
@@ -153,8 +153,8 @@ export type SeriesSizesEpisodeCountsType = {
 };
 
 export type SeriesRecommendedType = {
-  Anime: SeriesAniDBType,
-  SimilarTo: number,
+  Anime: SeriesAniDBType;
+  SimilarTo: number;
 };
 
 export type SeriesAniDBRelatedType = {
