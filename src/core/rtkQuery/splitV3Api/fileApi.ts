@@ -2,7 +2,6 @@ import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { ListResultType } from '@/core/types/api';
 import type {
-  AVDumpResultType,
   FileLinkManyApiType,
   FileLinkOneApiType,
   FileRequestType,
@@ -31,9 +30,9 @@ const fileApi = splitV3Api.injectEndpoints({
     }),
 
     // Run a file through AVDump and return the result.
-    postFileAVDump: build.query<AVDumpResultType, number>({
+    postFileAVDump: build.query<void, number>({
       query: fileId => ({
-        url: `File/${fileId}/AVDump`,
+        url: `File/${fileId}/AVDump?immediate=false`,
         method: 'POST',
       }),
     }),
@@ -89,7 +88,7 @@ const fileApi = splitV3Api.injectEndpoints({
         url: 'File',
         params,
       }),
-      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
+      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'AVDumpEvent'],
     }),
   }),
 });

@@ -13,6 +13,8 @@ import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 import type { ColumnDef } from '@tanstack/react-table';
 
+import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
+
 type ContextType = {
   columns: ColumnDef<FileType, any>[];
 };
@@ -65,6 +67,14 @@ function UnrecognizedUtility() {
         cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
         meta: {
           className: 'w-64',
+        },
+      }),
+      columnHelper.display({
+        id: 'status',
+        header: 'Status',
+        cell: info => <AVDumpFileIcon file={info.row.original} />,
+        meta: {
+          className: 'w-20',
         },
       }),
     ];

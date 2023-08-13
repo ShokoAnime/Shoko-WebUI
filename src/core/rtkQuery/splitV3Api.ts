@@ -28,6 +28,7 @@ export const splitV3Api = createApi({
     'UtilitiesRefresh',
     'WebUIUpdateCheck',
     'QueueItems',
+    'AVDumpEvent',
   ],
   refetchOnMountOrArgChange: true,
   endpoints: () => ({}),

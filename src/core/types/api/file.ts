@@ -33,6 +33,7 @@ export type FileType = {
   SeriesIDs?: XRefsType;
   AniDB?: FileAniDBType;
   MediaInfo?: FileMediaInfoType;
+  AVDump: FileAVDumpType;
 };
 
 export type FileAniDBType = {
@@ -54,6 +55,21 @@ export type FileAniDBType = {
   VideoCodec: string;
   Chaptered: boolean;
   Updated: string;
+};
+
+export type FileAVDumpType = {
+  Status: 'Queued' | null;
+  LastDumpedAt: string | null;
+  LastVersion: string | null;
+} | {
+  Status: 'Running' | null;
+  Progress: number;
+  SucceededCreqCount: number;
+  FailedCreqCount: number;
+  PendingCreqCount: number;
+  StartedAt: string;
+  LastDumpedAt: string | null;
+  LastVersion: string | null;
 };
 
 export type FileAniDBReleaseGroupType = {
@@ -87,11 +103,6 @@ export const enum FileSourceEnum {
   LaserDisc = 'LaserDisc',
   Camera = 'Camera',
 }
-
-export type AVDumpResultType = {
-  FullOutput: string;
-  Ed2k: string;
-};
 
 export type FileLinkOneApiType = {
   fileID: number;

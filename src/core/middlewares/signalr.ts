@@ -13,7 +13,8 @@ import Events from '@/core/events';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
 
-import type { AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
+import { AVDumpEventType, AVDumpEventTypeEnum, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
+import { restoreAVDumpSessions, updateAVDumpEvent } from '../slices/utilities/avdump';
 
 let lastRetry = moment();
 let attempts = 0;
@@ -65,6 +66,26 @@ const onNetworkChanged = dispatch => ({ networkAvailability }: { networkAvailabi
   dispatch(setNetworkStatus(networkAvailability));
 };
 
+// AVDump Events
+
+const onAvDumpConnected = dispatch => (state: AVDumpRestoreType[]) => {
+  dispatch(restoreAVDumpSessions(state));
+};
+
+const onAvDumpEvent = dispatch => (event: AVDumpEventType) => {
+  switch (event.type) {
+    case AVDumpEventTypeEnum.Started:
+    case AVDumpEventTypeEnum.Success:
+    case AVDumpEventTypeEnum.Failure:
+    case AVDumpEventTypeEnum.GenericException:
+    case AVDumpEventTypeEnum.InstallException:
+      dispatch(updateAVDumpEvent(event));
+      break;
+
+    default:
+      break;
+  }
+};
 
 // Shoko Events
 
@@ -124,7 +145,7 @@ const signalRMiddleware = ({
       // register signalR after the user logged in
       if (action.type === Events.MAINPAGE_LOAD) {
         if (connectionEvents !== undefined) return next(action);
-        const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network';
+        const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump';
 
         const protocol = new JsonHubProtocol();
 
@@ -152,6 +173,9 @@ const signalRMiddleware = ({
 
         connectionEvents.on('Network:OnConnected', onNetworkChanged(dispatch));
         connectionEvents.on('Network:NetworkAvailabilityChanged', onNetworkChanged(dispatch));
+
+        connectionEvents.on('AVDump:OnConnected', onAvDumpConnected(dispatch));
+        connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
 
         // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
         connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));
