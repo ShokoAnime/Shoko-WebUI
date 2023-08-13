@@ -1,38 +1,40 @@
 import React from 'react';
-import { mdiAccount } from '@mdi/js';
-import { Icon } from '@mdi/react';
 
-const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
+const RemoveSummaryRegex = /^\n(Source|Note|Summary):.*/mg;
 
-const AnidbLink = ({ character, text, url }) => (
-  <span className="text-panel-primary" title={url}>
-    {character === true ? <Icon className="inline-block" path={mdiAccount} size={1} /> : null}
-    &nbsp;
-    {text}
-  </span>
-);
+const CleanMiscLinesRegex = /^(\*|--|~) /sg;
 
-const AnidbDescription = ({ text }) => {
-  const lines = [] as Array<JSX.Element>;
+const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
+
+const LinkRegex = /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat])(?<id>\d+)) \[(?<text>[^\]]+)]/g;
+
+const AnidbDescription = ({ text }: { text: string | null | undefined }) => {
+  const modifiedText = text
+    ?.replaceAll(CleanMiscLinesRegex, '')
+    .replaceAll(RemoveSummaryRegex, '')
+    .replaceAll(CleanMultiEmptyLinesRegex, '\n') ?? '';
+
+  const lines = [] as Array<React.ReactNode>;
   let prevPos = 0;
   let pos = 0;
-  let link = charRegex.exec(text);
-
+  let link = LinkRegex.exec(modifiedText);
   while (link !== null) {
     pos = link.index;
-    lines.push(text.substring(prevPos, pos));
+    lines.push(modifiedText.substring(prevPos, pos));
     prevPos = pos + link[0].length;
     lines.push(
-      <AnidbLink key={pos} character url={link[1]} text={link[2]} />,
+      link[4],
     );
-    link = charRegex.exec(text);
+    link = LinkRegex.exec(modifiedText);
   }
 
-  if (prevPos < text.length) {
-    lines.push(text.substring(prevPos));
+  if (prevPos < modifiedText.length) {
+    lines.push(modifiedText.substring(prevPos));
   }
-
-  return <div>{lines}</div>;
+  LinkRegex.lastIndex = 0;
+  return (
+    <div>{lines.join('')}</div>
+  );
 };
 
 export default React.memo(AnidbDescription);
