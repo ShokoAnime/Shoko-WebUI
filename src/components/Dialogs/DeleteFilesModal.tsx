@@ -3,8 +3,8 @@ import { mdiMinusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useEventCallback } from 'usehooks-ts';
 
-import Button from '../Input/Button';
-import ModalPanel from '../Panels/ModalPanel';
+import Button from '@/components/Input/Button';
+import ModalPanel from '@/components/Panels/ModalPanel';
 
 import type { FileType } from '@/core/types/api/file';
 

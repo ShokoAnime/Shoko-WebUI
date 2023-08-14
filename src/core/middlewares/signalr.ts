@@ -14,7 +14,7 @@ import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
-import { restoreAVDumpSessions, updateAVDumpEvent } from '../slices/utilities/avdump';
+import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
 
 import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
 
