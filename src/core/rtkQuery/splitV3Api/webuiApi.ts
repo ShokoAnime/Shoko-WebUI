@@ -55,8 +55,8 @@ const webuiApi = splitV3Api.injectEndpoints({
     }),
 
     // Check for latest version for the selected channel and return a Shoko.Server.API.v3.Models.Common.ComponentVersion containing the version information.
-    getWebuiUpdate: build.mutation<void, 'Stable' | 'Dev'>({
-      query: channel => ({ url: 'WebUI/Update', params: { channel } }),
+    postWebuiUpdate: build.mutation<void, 'Stable' | 'Dev'>({
+      query: channel => ({ url: 'WebUI/Update', params: { channel }, method: 'POST' }),
     }),
 
     // Check for latest version for the selected channel and return a Shoko.Server.API.v3.Models.Common.ComponentVersion containing the version information.
@@ -75,8 +75,8 @@ export const {
   useGetSeriesOverviewQuery,
   useGetWebuiThemesQuery,
   useGetWebuiUpdateCheckQuery,
-  useGetWebuiUpdateMutation,
   useLazyGetGroupViewQuery,
   useLazyGetSeriesFileSummeryQuery,
   useLazyGetWebuiUpdateCheckQuery,
+  usePostWebuiUpdateMutation,
 } = webuiApi;

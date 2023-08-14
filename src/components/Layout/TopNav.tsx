@@ -32,7 +32,7 @@ import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
-import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useGetWebuiUpdateCheckQuery, usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
 import { initialSettings } from '@/pages/settings/SettingsPage';
@@ -90,7 +90,7 @@ function TopNav() {
   const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, {
     skip: DEV || !settingsQuery.isSuccess,
   });
-  const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
+  const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
 
   const currentUser = useGetCurrentUserQuery();
 
