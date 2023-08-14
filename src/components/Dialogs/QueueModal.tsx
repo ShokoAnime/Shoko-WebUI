@@ -14,6 +14,7 @@ import cx from 'classnames';
 import { filter, map, reduce, throttle } from 'lodash';
 import { useEventCallback } from 'usehooks-ts';
 
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -190,6 +191,10 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     await queueOperation({ operation: isPaused ? 'Start' : 'Stop', queue: activeTab });
   });
 
+  const handleClearQueue = useEventCallback(async () => {
+    await queueOperation({ operation: 'Clear', queue: activeTab });
+  });
+
   // We're intentionally not letting RTK invalidate any tags for automagic query
   // updates, since if we did then it would fetch in the background when the
   // modal is not in view, since it's technically always mounted, just not
@@ -263,6 +268,13 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
           onChange={handlePageSizeChange}
           inputClassName="px-4 py-3 max-w-[4rem] text-center"
         />
+        <Button
+          buttonType="secondary"
+          className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
+          onClick={handleClearQueue}
+        >
+          Clear Queue
+        </Button>
       </div>
       <div className="flex flex-row">
         <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">
