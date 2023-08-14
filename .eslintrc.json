@@ -82,6 +82,10 @@
       "error",
       { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState"] }
     ],
+    "no-restricted-imports": [
+      "error",
+      { "patterns": [{ "group": ["../*"], "message": "Please use @/ instead." }] }
+    ],
     "object-curly-newline": [
       "error",
       { "ImportDeclaration": { "consistent": true }}
