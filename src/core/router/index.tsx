@@ -5,7 +5,7 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'r
 
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import Collection from '@/pages/collection/Collection';
-import Group from '@/pages/collection/Group';
+import GroupView from '@/pages/collection/GroupView';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
@@ -87,7 +87,7 @@ const router = createBrowserRouter(
           <Route path="collection">
             <Route index element={<Collection />} />
             <Route path="filter/:filterId" element={<Collection />} />
-            <Route path="group/:groupId" element={<Group />} />
+            <Route path="group/:groupId" element={<GroupView />} />
             <Route path="series/:seriesId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />

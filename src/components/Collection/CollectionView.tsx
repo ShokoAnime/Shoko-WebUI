@@ -153,8 +153,14 @@ const CollectionView = (props: Props) => {
             } else if (item) {
               items.push(
                 mode === 'grid'
-                  ? <GridViewItem item={item} />
-                  : <CardViewItem item={item} mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)} />,
+                  ? <GridViewItem item={item} key={`group-${item.IDs.ID}`} />
+                  : (
+                    <CardViewItem
+                      item={item}
+                      mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)}
+                      key={`group-${item.IDs.ID}`}
+                    />
+                  ),
               );
             } else {
               items.push(

@@ -1,32 +1,13 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
-import { mdiChevronRight, mdiCogOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
+import { mdiCogOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import { useGetFilterQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-
-const Title = ({ count, filter }: { count: number, filter?: string }) => (
-  <div className="flex items-center gap-x-2 text-xl font-semibold">
-    <Link to="/webui/collection" className={cx(filter ? 'text-panel-primary' : 'pointer-events-none')}>
-      Entire Collection
-    </Link>
-    {filter && (
-      <>
-        <Icon path={mdiChevronRight} size={1} />
-        {filter}
-      </>
-    )}
-    <span>|</span>
-    <span className="text-panel-important">
-      {count}
-      &nbsp;Items
-    </span>
-  </div>
-);
 
 const OptionButton = ({ icon, onClick }) => (
   <div
@@ -57,7 +38,7 @@ function Collection() {
     <>
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
-          <Title count={groupTotal} filter={filterName} />
+          <CollectionTitle count={groupTotal} filterOrGroup={filterName} />
           <div className="flex gap-x-2">
             <OptionButton onClick={toggleFilters} icon={mdiFilterOutline} />
             <OptionButton onClick={toggleMode} icon={mode === 'grid' ? mdiFormatListText : mdiViewGridOutline} />

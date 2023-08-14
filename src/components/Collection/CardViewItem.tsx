@@ -67,10 +67,7 @@ const CardViewItem = ({ item, mainSeries }: { item: CollectionGroupType, mainSer
   };
 
   return (
-    <div
-      key={`group-${item.IDs.ID}`}
-      className="flex h-full w-[56.6875rem] shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-overlay-border bg-panel-background p-8"
-    >
+    <div className="flex h-full w-[56.6875rem] shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-overlay-border bg-panel-background p-8">
       <div className="flex gap-x-4">
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
