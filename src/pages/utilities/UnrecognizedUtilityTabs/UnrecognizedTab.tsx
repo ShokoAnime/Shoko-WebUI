@@ -78,16 +78,9 @@ const Menu = (
     setShowConfirmModal(false);
   });
 
-  const removeFileFromSelection = useEventCallback((fileId: number) => {
-    // Figure this out.
-    some(tableSelectedRows.rows, (row) => {
-      if (row.original.ID === fileId) {
-        row.toggleSelected(false);
-        return true;
-      }
-      return false;
-    });
-  });
+  const removeFileFromSelection = useEventCallback(
+    (fileId: number) => tableSelectedRows.rows.find(row => row.original.ID === fileId)?.toggleSelected(false),
+  );
 
   const deleteFiles = useEventCallback(() => {
     table.resetRowSelection();
