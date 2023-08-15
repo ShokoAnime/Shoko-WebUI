@@ -8,13 +8,13 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 
 import type { FileType } from '@/core/types/api/file';
 
-interface Props {
+type Props = {
   selectedFiles: FileType[];
   show: boolean;
   removeFile(fileId: number): void;
   onConfirm(): void;
   onClose(): void;
-}
+};
 
 function DeleteFilesModal(props: Props) {
   const { onClose, onConfirm, removeFile, selectedFiles, show: showModal } = props;
