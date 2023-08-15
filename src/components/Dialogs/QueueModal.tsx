@@ -78,14 +78,16 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     if (!showModal) {
       return null;
     }
-    const Name = state[stateNames[activeTab]].description;
-    if (Name === 'Idle' || Name === 'Paused') {
+    const current = state[stateNames[activeTab]];
+    const Description = current.description;
+    if (Description === 'Idle' || Description === 'Paused') {
       return null;
     }
     return {
-      ID: state[stateNames[activeTab]].currentCommandID || 0,
-      Name,
-      Type: 'Active',
+      ID: current.currentCommandID || 0,
+      Name: 'UnknownCommandRequest_0',
+      Description,
+      Type: 'ActiveCommand',
       IsDisabled: false,
       IsRunning: true,
     } as QueueItemType;
@@ -133,7 +135,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     const itemArray = map(array, item => (
       <div className="mt-2 flex gap-x-3" key={`item-${item.ID}`}>
         <div className="grow break-all">
-          {item.Name}
+          {item.Description}
         </div>
         <div
           className={cx([
@@ -151,7 +153,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       itemArray.unshift(
         <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}-running`}>
           <div className="grow break-all">
-            {currentCommand.Name}
+            {currentCommand.Description}
           </div>
           <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-important' : undefined])}>
             <Icon path={currentCommand.IsRunning ? mdiRun : mdiHelpCircleOutline} size={1} />
