@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 const RemoveSummaryRegex = /^\n(Source|Note|Summary):.*/mg;
 
@@ -9,30 +9,33 @@ const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
 const LinkRegex = /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat])(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
 const AnidbDescription = ({ text }: { text: string | null | undefined }) => {
-  const modifiedText = text
-    ?.replaceAll(CleanMiscLinesRegex, '')
-    .replaceAll(RemoveSummaryRegex, '')
-    .replaceAll(CleanMultiEmptyLinesRegex, '\n') ?? '';
+  const modifiedText = useMemo(() => {
+    const cleanedText = text
+      ?.replaceAll(CleanMiscLinesRegex, '')
+      .replaceAll(RemoveSummaryRegex, '')
+      .replaceAll(CleanMultiEmptyLinesRegex, '\n') ?? '';
 
-  const lines = [] as Array<React.ReactNode>;
-  let prevPos = 0;
-  let pos = 0;
-  let link = LinkRegex.exec(modifiedText);
-  while (link !== null) {
-    pos = link.index;
-    lines.push(modifiedText.substring(prevPos, pos));
-    prevPos = pos + link[0].length;
-    lines.push(
-      link[4],
-    );
-    link = LinkRegex.exec(modifiedText);
-  }
+    const lines = [] as Array<React.ReactNode>;
+    let prevPos = 0;
+    let pos = 0;
+    let link = LinkRegex.exec(cleanedText);
+    while (link !== null) {
+      pos = link.index;
+      lines.push(cleanedText.substring(prevPos, pos));
+      prevPos = pos + link[0].length;
+      lines.push(
+        link[4],
+      );
+      link = LinkRegex.exec(cleanedText);
+    }
 
-  if (prevPos < modifiedText.length) {
-    lines.push(modifiedText.substring(prevPos));
-  }
-  LinkRegex.lastIndex = 0;
-  return <div>{lines.join('')}</div>;
+    if (prevPos < cleanedText.length) {
+      lines.push(cleanedText.substring(prevPos));
+    }
+    LinkRegex.lastIndex = 0;
+    return lines.join('');
+  }, [text]);
+  return <div>{modifiedText}</div>;
 };
 
 export default React.memo(AnidbDescription);
