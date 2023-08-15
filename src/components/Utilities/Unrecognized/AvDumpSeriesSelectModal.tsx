@@ -3,7 +3,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { toast } from 'react-toastify';
 import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { debounce } from 'lodash';
+import { debounce, forEach } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -12,11 +12,11 @@ import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/ser
 
 type Props = {
   show: boolean;
-  onClose: () => void;
-  links: string[];
+  onClose(): void;
+  getLinks(): string[];
 };
 
-function AvDumpSeriesSelectModal({ links, onClose, show }: Props) {
+function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const [searchText, setSearchText] = useState('');
 
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
@@ -37,12 +37,13 @@ function AvDumpSeriesSelectModal({ links, onClose, show }: Props) {
   }, [debouncedSearch]);
 
   const ed2kLinks = useMemo(() => {
+    if (!show) return '';
     let tempEd2kLinks = '';
-    links.forEach((link) => {
+    forEach(getLinks(), (link) => {
       tempEd2kLinks += `${link}\n`;
     });
     return tempEd2kLinks;
-  }, [links]);
+  }, [getLinks, show]);
 
   return (
     <ModalPanel
@@ -57,8 +58,8 @@ function AvDumpSeriesSelectModal({ links, onClose, show }: Props) {
           Copy ED2K Hashes
         </Button>
       </CopyToClipboard>
-      <div className="flex h-auto flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {links.map(link => <div key={link.split('|')[4]}>{link}</div>)}
+      <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
+        {ed2kLinks.split('\n').map(link => <div key={link.split('|')[4]}>{link}</div>)}
       </div>
       <Input
         id="search"

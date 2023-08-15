@@ -11,6 +11,7 @@ import {
   mdiFormatListBulletedSquare,
   mdiGithub,
   mdiHelpCircleOutline,
+  mdiInformationOutline,
   mdiLayersTripleOutline,
   mdiLoading,
   mdiServer,
@@ -31,8 +32,9 @@ import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
-import { useGetWebuiUpdateCheckQuery, useGetWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useGetWebuiUpdateCheckQuery, usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
+import { NetworkAvailability } from '@/core/types/signalr';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
@@ -77,6 +79,7 @@ function TopNav() {
   const { pathname } = useLocation();
 
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const networkStatus = useSelector((state: RootState) => state.mainpage.networkStatus);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
@@ -87,12 +90,17 @@ function TopNav() {
   const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, {
     skip: DEV || !settingsQuery.isSuccess,
   });
-  const [webuiUpdateTrigger, webuiUpdateResult] = useGetWebuiUpdateMutation();
+  const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
 
   const currentUser = useGetCurrentUserQuery();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
+
+  const isOffline = useMemo(
+    () => !(networkStatus === NetworkAvailability.Internet || networkStatus === NetworkAvailability.PartialInternet),
+    [networkStatus],
+  );
 
   const closeModalsAndSubmenus = () => {
     setShowActionsModal(false);
@@ -256,7 +264,12 @@ function TopNav() {
                   </div>
                 </div>
               )}
-              {/* TODO: This maybe works, maybe doesn't. Cannot test properly. */}
+              {isOffline && (
+                <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold">
+                  <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
+                  No Internet Connection.
+                </div>
+              )}
               <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex gap-x-5">

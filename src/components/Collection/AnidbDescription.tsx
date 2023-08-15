@@ -1,38 +1,41 @@
-import React from 'react';
-import { mdiAccount } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import React, { useMemo } from 'react';
 
-const charRegex = /(http:\/\/anidb\.net\/c(?:h|r)[0-9]+) \[([^\]]+)]/g;
+const RemoveSummaryRegex = /^\n(Source|Note|Summary):.*/mg;
 
-const AnidbLink = ({ character, text, url }) => (
-  <span className="text-panel-primary" title={url}>
-    {character === true ? <Icon className="inline-block" path={mdiAccount} size={1} /> : null}
-    &nbsp;
-    {text}
-  </span>
-);
+const CleanMiscLinesRegex = /^(\*|--|~) /sg;
 
-const AnidbDescription = ({ text }) => {
-  const lines = [] as Array<JSX.Element>;
-  let prevPos = 0;
-  let pos = 0;
-  let link = charRegex.exec(text);
+const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
 
-  while (link !== null) {
-    pos = link.index;
-    lines.push(text.substring(prevPos, pos));
-    prevPos = pos + link[0].length;
-    lines.push(
-      <AnidbLink key={pos} character url={link[1]} text={link[2]} />,
-    );
-    link = charRegex.exec(text);
-  }
+const LinkRegex = /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat])(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
-  if (prevPos < text.length) {
-    lines.push(text.substring(prevPos));
-  }
+const AnidbDescription = ({ text }: { text: string }) => {
+  const modifiedText = useMemo(() => {
+    const cleanedText = text
+      .replaceAll(CleanMiscLinesRegex, '')
+      .replaceAll(RemoveSummaryRegex, '')
+      .replaceAll(CleanMultiEmptyLinesRegex, '\n');
 
-  return <div>{lines}</div>;
+    const lines = [] as Array<React.ReactNode>;
+    let prevPos = 0;
+    let pos = 0;
+    let link = LinkRegex.exec(cleanedText);
+    while (link !== null) {
+      pos = link.index;
+      lines.push(cleanedText.substring(prevPos, pos));
+      prevPos = pos + link[0].length;
+      lines.push(
+        link[4],
+      );
+      link = LinkRegex.exec(cleanedText);
+    }
+
+    if (prevPos < cleanedText.length) {
+      lines.push(cleanedText.substring(prevPos));
+    }
+    LinkRegex.lastIndex = 0;
+    return lines.join('');
+  }, [text]);
+  return <div>{modifiedText}</div>;
 };
 
 export default React.memo(AnidbDescription);

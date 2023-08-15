@@ -152,7 +152,7 @@ const CardViewItem = ({ item, mainSeries }: { item: CollectionGroupType, mainSer
           </div>
 
           <div className="line-clamp-4 text-sm">
-            <AnidbDescription text={item.Description} />
+            <AnidbDescription text={item.Description ?? ''} />
           </div>
         </div>
       </div>

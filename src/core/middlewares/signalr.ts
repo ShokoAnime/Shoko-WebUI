@@ -11,9 +11,11 @@ import moment from 'moment';
 
 import Events from '@/core/events';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { setFetched, setHttpBanStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
+import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
+import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
+import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
-import type { AniDBBanItemType } from '@/core/types/signalr';
+import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
 
 let lastRetry = moment();
 let attempts = 0;
@@ -57,6 +59,33 @@ const onAniDBUDPStateUpdate = dispatch => (state: AniDBBanItemType) => {
 
 const onAniDBHttpStateUpdate = dispatch => (state: AniDBBanItemType) => {
   dispatch(setHttpBanStatus(state));
+};
+
+// Network Events
+
+const onNetworkChanged = dispatch => ({ networkAvailability }: { networkAvailability: NetworkAvailability }) => {
+  dispatch(setNetworkStatus(networkAvailability));
+};
+
+// AVDump Events
+
+const onAvDumpConnected = dispatch => (state: AVDumpRestoreType[]) => {
+  dispatch(restoreAVDumpSessions(state));
+};
+
+const onAvDumpEvent = dispatch => (event: AVDumpEventType) => {
+  switch (event.type) {
+    case AVDumpEventTypeEnum.Started:
+    case AVDumpEventTypeEnum.Success:
+    case AVDumpEventTypeEnum.Failure:
+    case AVDumpEventTypeEnum.GenericException:
+    case AVDumpEventTypeEnum.InstallException:
+      dispatch(updateAVDumpEvent(event));
+      break;
+
+    default:
+      break;
+  }
 };
 
 // Shoko Events
@@ -117,7 +146,7 @@ const signalRMiddleware = ({
       // register signalR after the user logged in
       if (action.type === Events.MAINPAGE_LOAD) {
         if (connectionEvents !== undefined) return next(action);
-        const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue';
+        const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump';
 
         const protocol = new JsonHubProtocol();
 
@@ -142,6 +171,12 @@ const signalRMiddleware = ({
         connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
         connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
         connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
+
+        connectionEvents.on('Network:OnConnected', onNetworkChanged(dispatch));
+        connectionEvents.on('Network:NetworkAvailabilityChanged', onNetworkChanged(dispatch));
+
+        connectionEvents.on('AVDump:OnConnected', onAvDumpConnected(dispatch));
+        connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
 
         // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
         connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));

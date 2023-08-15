@@ -146,7 +146,7 @@ const Series = () => {
             <div className="flex flex-nowrap gap-x-4">
               {tags.slice(0, 7).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
             </div>
-            <AnidbDescription text={series?.AniDB?.Description} />
+            <AnidbDescription text={series?.AniDB?.Description ?? ''} />
           </div>
         </div>
         <BackgroundImagePlaceholderDiv

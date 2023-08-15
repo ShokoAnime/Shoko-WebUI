@@ -1,13 +1,7 @@
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { ListResultType } from '@/core/types/api';
-import type {
-  AVDumpResultType,
-  FileLinkManyApiType,
-  FileLinkOneApiType,
-  FileRequestType,
-  FileType,
-} from '@/core/types/api/file';
+import type { FileLinkManyApiType, FileLinkOneApiType, FileRequestType, FileType } from '@/core/types/api/file';
 
 const fileApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
@@ -31,11 +25,12 @@ const fileApi = splitV3Api.injectEndpoints({
     }),
 
     // Run a file through AVDump and return the result.
-    postFileAVDump: build.query<AVDumpResultType, number>({
+    postFileAVDump: build.mutation<void, number>({
       query: fileId => ({
-        url: `File/${fileId}/AVDump`,
+        url: `File/${fileId}/AVDump?immediate=false`,
         method: 'POST',
       }),
+      invalidatesTags: ['AVDumpEvent'],
     }),
 
     // Rescan a file on AniDB.
@@ -89,7 +84,7 @@ const fileApi = splitV3Api.injectEndpoints({
         url: 'File',
         params,
       }),
-      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched'],
+      providesTags: ['FileDeleted', 'FileHashed', 'FileIgnored', 'FileMatched', 'AVDumpEvent'],
     }),
   }),
 });
@@ -98,7 +93,7 @@ export const {
   useDeleteFileLinkMutation,
   useDeleteFileMutation,
   useGetFilesQuery,
-  useLazyPostFileAVDumpQuery,
+  usePostFileAVDumpMutation,
   usePostFileLinkManyMutation,
   usePostFileLinkOneMutation,
   usePostFileRehashMutation,

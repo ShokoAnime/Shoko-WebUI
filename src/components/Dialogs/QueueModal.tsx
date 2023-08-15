@@ -14,6 +14,7 @@ import cx from 'classnames';
 import { filter, map, reduce, throttle } from 'lodash';
 import { useEventCallback } from 'usehooks-ts';
 
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -77,14 +78,16 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     if (!showModal) {
       return null;
     }
-    const Name = state[stateNames[activeTab]].description;
-    if (Name === 'Idle' || Name === 'Paused') {
+    const current = state[stateNames[activeTab]];
+    const Description = current.description;
+    if (Description === 'Idle' || Description === 'Paused') {
       return null;
     }
     return {
-      ID: state[stateNames[activeTab]].currentCommandID || 0,
-      Name,
-      Type: 'Active',
+      ID: current.currentCommandID || 0,
+      Name: 'UnknownCommandRequest_0',
+      Description,
+      Type: 'ActiveCommand',
       IsDisabled: false,
       IsRunning: true,
     } as QueueItemType;
@@ -131,8 +134,8 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
 
     const itemArray = map(array, item => (
       <div className="mt-2 flex gap-x-3" key={`item-${item.ID}`}>
-        <div className="grow">
-          {item.Name}
+        <div className="grow break-all">
+          {item.Description}
         </div>
         <div
           className={cx([
@@ -148,9 +151,9 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     ));
     if (currentCommand != null) {
       itemArray.unshift(
-        <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}`}>
-          <div className="grow">
-            {currentCommand.Name}
+        <div className="mt-2 flex gap-x-3" key={`item-${currentCommand.ID}-running`}>
+          <div className="grow break-all">
+            {currentCommand.Description}
           </div>
           <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-important' : undefined])}>
             <Icon path={currentCommand.IsRunning ? mdiRun : mdiHelpCircleOutline} size={1} />
@@ -188,6 +191,10 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
 
   const handleToggleQueue = useEventCallback(async () => {
     await queueOperation({ operation: isPaused ? 'Start' : 'Stop', queue: activeTab });
+  });
+
+  const handleClearQueue = useEventCallback(async () => {
+    await queueOperation({ operation: 'Clear', queue: activeTab });
   });
 
   // We're intentionally not letting RTK invalidate any tags for automagic query
@@ -263,6 +270,13 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
           onChange={handlePageSizeChange}
           inputClassName="px-4 py-3 max-w-[4rem] text-center"
         />
+        <Button
+          buttonType="secondary"
+          className="flex items-center gap-x-2.5 px-4 py-3 font-semibold"
+          onClick={handleClearQueue}
+        >
+          Clear Queue
+        </Button>
       </div>
       <div className="flex flex-row">
         <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">

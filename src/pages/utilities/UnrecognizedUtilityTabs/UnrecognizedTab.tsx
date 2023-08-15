@@ -1,6 +1,5 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   mdiCloseCircleOutline,
@@ -8,10 +7,7 @@ import {
   mdiDatabaseSyncOutline,
   mdiDumpTruck,
   mdiEyeOffOutline,
-  mdiFileDocumentAlertOutline,
-  mdiFileDocumentCheckOutline,
   mdiFileDocumentOutline,
-  mdiInformationOutline,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
@@ -20,15 +16,16 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
-import cx from 'classnames';
-import { forEach } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { every, forEach, some } from 'lodash';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
+import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
+import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -37,12 +34,11 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import {
   useDeleteFileMutation,
   useGetFilesQuery,
-  useLazyPostFileAVDumpQuery,
+  usePostFileAVDumpMutation,
   usePostFileRehashMutation,
   usePostFileRescanMutation,
   usePutFileIgnoreMutation,
 } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { setItem as setAvdumpItem } from '@/core/slices/utilities/avdump';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { fuzzyFilter } from '@/core/util';
 import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
@@ -55,10 +51,10 @@ const columnHelper = createColumnHelper<FileType>();
 
 const Menu = (
   props: {
-    table: Table<FileType>;
     files: ListResultType<FileType[]>;
-    refetch: () => void;
-    setSeriesSelectModal: (show: boolean) => void;
+    table: Table<FileType>;
+    refetch(): void;
+    setSeriesSelectModal(show: boolean): void;
   },
 ) => {
   const {
@@ -68,6 +64,8 @@ const Menu = (
     table,
   } = props;
 
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
   const [fileRehashTrigger] = usePostFileRehashMutation();
@@ -76,7 +74,20 @@ const Menu = (
   const tableSelectedRows = table.getSelectedRowModel();
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
-  const deleteFiles = () => {
+  const showDeleteConfirmation = useEventCallback(() => {
+    setShowConfirmModal(true);
+  });
+
+  const cancelDelete = useEventCallback(() => {
+    setShowConfirmModal(false);
+  });
+
+  const removeFileFromSelection = useEventCallback(
+    (fileId: number) => tableSelectedRows.rows.find(row => row.original.ID === fileId)?.toggleSelected(false),
+  );
+
+  const deleteFiles = useEventCallback(() => {
+    table.resetRowSelection();
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
       fileDeleteTrigger({ fileId: row.ID, removeFolder: true }).catch((error) => {
@@ -87,9 +98,9 @@ const Menu = (
 
     if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
-  };
+  });
 
-  const ignoreFiles = () => {
+  const ignoreFiles = useEventCallback(() => {
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
       fileIgnoreTrigger({ fileId: row.ID, value: true }).unwrap().catch((error) => {
@@ -100,9 +111,9 @@ const Menu = (
 
     if (failedFiles) toast.error(`Error ignoring ${failedFiles} files!`);
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
-  };
+  });
 
-  const rehashFiles = (selected = false) => {
+  const rehashFiles = useEventCallback((selected = false) => {
     let failedFiles = 0;
     const fileList = selected ? selectedRows : files.List;
 
@@ -115,9 +126,9 @@ const Menu = (
 
     if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
     if (failedFiles !== fileList.length) toast.success(`Rehashing ${fileList.length} files!`);
-  };
+  });
 
-  const rescanFiles = (selected = false) => {
+  const rescanFiles = useEventCallback((selected = false) => {
     let failedFiles = 0;
     const fileList = selected ? selectedRows : files.List;
 
@@ -130,7 +141,7 @@ const Menu = (
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
     if (failedFiles !== fileList.length) toast.success(`Rescanning ${fileList.length} files!`);
-  };
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
@@ -156,7 +167,7 @@ const Menu = (
         <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
-        <MenuButton onClick={deleteFiles} icon={mdiMinusCircleOutline} name="Delete" highlight />
+        <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
           onClick={() => table.resetRowSelection()}
           icon={mdiCloseCircleOutline}
@@ -169,6 +180,13 @@ const Menu = (
         &nbsp;
       </span>
       Files Selected
+      <DeleteFilesModal
+        show={showConfirmModal}
+        selectedFiles={selectedRows}
+        removeFile={removeFileFromSelection}
+        onClose={cancelDelete}
+        onConfirm={deleteFiles}
+      />
     </div>
   );
 };
@@ -176,8 +194,18 @@ const Menu = (
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns: tempColumns } = useUnrecognizedUtilityContext();
-
+  const { columns: staticColumns } = useUnrecognizedUtilityContext();
+  const columns = useMemo(() => [
+    ...staticColumns,
+    columnHelper.display({
+      id: 'status',
+      header: 'Status',
+      cell: info => <AVDumpFileIcon file={info.row.original} />,
+      meta: {
+        className: 'w-20',
+      },
+    }),
+  ], [staticColumns]);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
@@ -190,104 +218,9 @@ function UnrecognizedTab() {
     sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
   });
   const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
-  const [fileAvdumpTrigger] = useLazyPostFileAVDumpQuery();
+  const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
-
-  const dispatch = useDispatch();
-
-  const [dumpInProgress, setDumpInProgress] = useState(false);
-
-  const runAvdump = async (fileId: number) => {
-    setDumpInProgress(true);
-    dispatch(setAvdumpItem({ id: fileId, hash: '', fetching: true }));
-    const result = await fileAvdumpTrigger(fileId);
-    dispatch(setAvdumpItem({ id: fileId, hash: result.data?.Ed2k ?? 'x', fetching: false }));
-    setDumpInProgress(false);
-  };
-
-  const columns = [
-    ...tempColumns,
-    columnHelper.display({
-      id: 'status',
-      header: 'Status',
-      cell: (info) => {
-        const fileId = info.row.original.ID;
-
-        const handleClick = async (state: string) => {
-          if (dumpInProgress || state === 'dumping') return;
-          await runAvdump(fileId);
-        };
-
-        let icon = {
-          path: mdiInformationOutline,
-          color: 'text-panel-text',
-          title: 'Not Dumped!',
-          state: 'idle',
-        };
-
-        if (avdumpList[fileId]?.fetching) {
-          icon = {
-            path: mdiLoading,
-            color: 'text-panel-primary',
-            title: 'Dumping!',
-            state: 'dumping',
-          };
-        } else if (avdumpList[fileId]?.hash === 'x') {
-          icon = {
-            path: mdiFileDocumentAlertOutline,
-            color: 'text-panel-danger',
-            title: 'Dump Failed!',
-            state: 'failed',
-          };
-        } else if (avdumpList[fileId]?.hash) {
-          icon = {
-            path: mdiFileDocumentCheckOutline,
-            color: 'text-panel-important',
-            title: 'Dumped Successfully!',
-            state: 'success',
-          };
-        }
-
-        return (
-          <div className="ml-4 flex">
-            {icon.state === 'success'
-              ? (
-                <CopyToClipboard
-                  text={avdumpList[fileId].hash || ''}
-                  onCopy={() => toast.success('Copied to clipboard!')}
-                >
-                  <Icon
-                    path={icon.path}
-                    spin={icon.path === mdiLoading}
-                    size={1}
-                    className={`${icon.color} cursor-pointer`}
-                    title={icon.title}
-                  />
-                </CopyToClipboard>
-              )
-              : (
-                <Button
-                  onClick={() => handleClick(icon.state)}
-                  className={cx((icon.state === 'dumping' || dumpInProgress) && 'cursor-default')}
-                >
-                  <Icon
-                    path={icon.path}
-                    spin={icon.path === mdiLoading}
-                    size={1}
-                    className={icon.color}
-                    title={icon.title}
-                  />
-                </Button>
-              )}
-          </div>
-        );
-      },
-      meta: {
-        className: 'w-20',
-      },
-    }),
-  ];
 
   const table = useReactTable({
     data: files.List,
@@ -299,51 +232,30 @@ function UnrecognizedTab() {
     getFilteredRowModel: getFilteredRowModel(),
   });
   const tableSelectedRows = table.getSelectedRowModel();
+  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
+  const isAvdumpFinished = useMemo(() => every(selectedRows, row => row.AVDump.LastDumpedAt), [selectedRows]);
+  const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
-  useEffect(() => {
-    table.resetRowSelection();
-  }, [files, table]);
-
-  const selectedRows = useMemo(
-    () => tableSelectedRows.rows.map(row => row.original),
-    [tableSelectedRows],
-  );
-
-  const isAvdumpFinished = useMemo(() => {
-    let notFound = false;
-    forEach(selectedRows, (row) => {
-      if (!avdumpList[row.ID]?.hash) {
-        notFound = true;
-        return false;
-      }
-      return true;
-    });
-    return !notFound;
-  }, [selectedRows, avdumpList]);
-
-  const avdumpFiles = async () => {
-    for (let i = 0; i < selectedRows.length; i += 1) {
-      // Files cannot be dumped in parallel on the server, yet
-      // Use Promise.all when avdump3 is implemented and parallel dumping is possible
-      if (!avdumpList[selectedRows[i].ID]?.hash) {
-        // eslint-disable-next-line no-await-in-loop
-        await runAvdump(selectedRows[i].ID);
-      }
+  const handleAvdumpClick = useEventCallback(async () => {
+    if (isAvdumpFinished && !dumpInProgress) {
+      setSeriesSelectModal(true);
+    } else {
+      forEach(
+        selectedRows,
+        row => !row?.AVDump?.LastDumpedAt && !row.AVDump.Status && fileAvdumpTrigger(row.ID).catch(console.error),
+      );
     }
-  };
+  });
 
-  const handleAvdumpOnClick = () => {
-    if (isAvdumpFinished) setSeriesSelectModal(true);
-    else avdumpFiles().catch(error => console.error(error));
-  };
-
-  const ed2kLinks = () => {
+  const getED2KLinks = useEventCallback(() => {
     const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map((file) => {
-      const fileName = file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? '';
-      return `ed2k://|file|${fileName}|${file.Size}|${file.Hashes.ED2K}|/`;
-    });
-  };
+    return fileList.map(
+      file =>
+        `ed2k://|file|${
+          file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
+        }|${file.Size}|${file.Hashes.ED2K}|/`,
+    );
+  });
 
   return (
     <>
@@ -378,7 +290,7 @@ function UnrecognizedTab() {
                 <Button
                   buttonType="primary"
                   className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                  onClick={handleAvdumpOnClick}
+                  onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
                   <Icon path={mdiDumpTruck} size={0.8333} />
@@ -410,10 +322,11 @@ function UnrecognizedTab() {
           )}
         </TransitionDiv>
       </div>
+
       <AvDumpSeriesSelectModal
         show={seriesSelectModal}
         onClose={() => setSeriesSelectModal(false)}
-        links={ed2kLinks()}
+        getLinks={getED2KLinks}
       />
     </>
   );
