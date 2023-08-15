@@ -1,9 +1,10 @@
-import { type PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/types/signalr';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 type AvDumpSession = {
   fileIDs: number[];
