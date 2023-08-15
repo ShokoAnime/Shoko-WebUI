@@ -15,7 +15,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { type Table, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { createColumnHelper, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
 import { every, forEach, map, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
@@ -25,6 +25,7 @@ import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
+import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -44,6 +45,9 @@ import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUti
 
 import type { RootState } from '@/core/store';
 import type { ListResultType } from '@/core/types/api';
+import type { Table } from '@tanstack/react-table';
+
+const columnHelper = createColumnHelper<FileType>();
 
 const Menu = (
   props: {
@@ -190,7 +194,18 @@ const Menu = (
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns } = useUnrecognizedUtilityContext();
+  const { columns: staticColumns } = useUnrecognizedUtilityContext();
+  const columns = useMemo(() => [
+    ...staticColumns,
+    columnHelper.display({
+      id: 'status',
+      header: 'Status',
+      cell: info => <AVDumpFileIcon file={info.row.original} />,
+      meta: {
+        className: 'w-20',
+      },
+    }),
+  ], [staticColumns]);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');

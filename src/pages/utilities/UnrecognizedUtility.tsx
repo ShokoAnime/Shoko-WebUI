@@ -6,7 +6,6 @@ import { find, get } from 'lodash';
 import moment from 'moment';
 import prettyBytes from 'pretty-bytes';
 
-import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import { fuzzySort } from '@/core/util';
 
@@ -66,14 +65,6 @@ function UnrecognizedUtility() {
         cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
         meta: {
           className: 'w-64',
-        },
-      }),
-      columnHelper.display({
-        id: 'status',
-        header: 'Status',
-        cell: info => <AVDumpFileIcon file={info.row.original} />,
-        meta: {
-          className: 'w-20',
         },
       }),
     ];
