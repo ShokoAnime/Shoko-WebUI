@@ -62,7 +62,7 @@ export type FileAVDumpType = {
   LastDumpedAt: string | null;
   LastVersion: string | null;
 } | {
-  Status: 'Running' | null;
+  Status: 'Running';
   Progress: number;
   SucceededCreqCount: number;
   FailedCreqCount: number;
