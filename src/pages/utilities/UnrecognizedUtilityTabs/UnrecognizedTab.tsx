@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { createColumnHelper, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
-import { every, forEach, map, some } from 'lodash';
+import { every, forEach, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
@@ -240,16 +240,10 @@ function UnrecognizedTab() {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     } else {
-      try {
-        await Promise.all(map(selectedRows, async (row) => {
-          if (row && !row.AVDump.LastDumpedAt && !row.AVDump.Status) {
-            // eslint-disable-next-line no-await-in-loop
-            await fileAvdumpTrigger(row.ID);
-          }
-        }));
-      } catch (error) {
-        console.error(error);
-      }
+      forEach(
+        selectedRows,
+        row => !row?.AVDump?.LastDumpedAt && !row.AVDump.Status && fileAvdumpTrigger(row.ID).catch(console.error),
+      );
     }
   });
 
