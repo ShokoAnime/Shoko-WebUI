@@ -8,12 +8,12 @@ const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
 
 const LinkRegex = /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat])(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
-const AnidbDescription = ({ text }: { text: string | null | undefined }) => {
+const AnidbDescription = ({ text }: { text: string }) => {
   const modifiedText = useMemo(() => {
     const cleanedText = text
-      ?.replaceAll(CleanMiscLinesRegex, '')
+      .replaceAll(CleanMiscLinesRegex, '')
       .replaceAll(RemoveSummaryRegex, '')
-      .replaceAll(CleanMultiEmptyLinesRegex, '\n') ?? '';
+      .replaceAll(CleanMultiEmptyLinesRegex, '\n');
 
     const lines = [] as Array<React.ReactNode>;
     let prevPos = 0;
