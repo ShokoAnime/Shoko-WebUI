@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -206,7 +206,7 @@ const SeriesFileSummary = () => {
           </option>
         </Select>
         {map(summary.SourceByType, ({ count, source, type }, index) => (
-          <Fragment key={`${type}-${index}`}>
+          <React.Fragment key={`${type}-${index}`}>
             <div className="flex flex-col gap-y-1">
               <span className="font-semibold">
                 {type}
@@ -221,7 +221,7 @@ const SeriesFileSummary = () => {
               </span>
               {source}
             </div>
-          </Fragment>
+          </React.Fragment>
         ))}
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">Total File Size</span>
