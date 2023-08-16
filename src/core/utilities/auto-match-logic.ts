@@ -6,7 +6,6 @@ import PathMatchRuleSet from './auto-match-regexes';
 
 export interface PathDetails {
   filePath: string;
-  fileExtension: string | null;
   releaseGroup: string | null;
   crc32: string | null;
   showName: string | null;
@@ -24,7 +23,7 @@ export interface PathMatchRule {
   parentRegex?: RegExp;
   grandParentRegex?: RegExp;
   transform?(
-    show: PathDetails,
+    pathDetails: PathDetails,
     match: RegExpExecArray,
     parentMatch: RegExpExecArray | null,
     grandparentMatch: RegExpExecArray | null,
@@ -75,28 +74,41 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
     const parentMatch = parentRegex && parentDir ? parentRegex.exec(parentDir) : null;
     const grandParentMatch = grandParentRegex && grandParentDir ? grandParentRegex.exec(grandParentDir) : null;
     if (match && match.groups) {
+      // We accept specials in-between episodes or episode ranges, so we split
+      // the range and parse the text as floats.
+      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode.split('-').filter(s => s)
+        .map(parseFloat);
+
       // Swap episode numbers if they're reversed.
-      let [episodeStart = 0, episodeEnd = episodeStart] = match.groups.episode.split('-').map(parseFloat);
-      if (episodeEnd !== null) {
-        const desiredCount = episodeEnd - episodeStart;
-        if (desiredCount < 0) {
-          const tempEpisode = episodeStart;
-          episodeStart = episodeEnd;
-          episodeEnd = tempEpisode;
-        }
+      if (episodeEnd - episodeStart < 0) {
+        const tempEpisode = episodeStart;
+        episodeStart = episodeEnd;
+        episodeEnd = tempEpisode;
+      }
+
+      // Special handling of in-between episodes specials. We can't get the
+      // special episode number, but we can guess it based on context later
+      // provided the user tries to link all the episodes in the series at once.
+      //
+      // The user is responsible if they link it without checking. We even show
+      // a notification telling them to verify the matches before saving.
+      let episodeType = detectEpisodeType(match.groups);
+      if (episodeType === EpisodeTypeEnum.Normal && episodeStart === episodeEnd && !Number.isInteger(episodeStart)) {
+        episodeType = EpisodeTypeEnum.Special;
+        episodeStart = 0;
+        episodeEnd = 0;
       }
 
       // Make sure we have a valid show name.
       let showName = match.groups.showName?.trim() || null;
       if (showName && showName === 'Episode') showName = null;
-      const show: PathDetails = {
+      let pathDetails: PathDetails | null = {
         releaseGroup: match.groups.releaseGroup || null,
         crc32: match.groups.crc32?.toUpperCase() || null,
         showName,
         season: match.groups.season ? parseFloat(match.groups.season) : null,
-        fileExtension: match.groups.extension || null,
         version: match.groups.version ? parseFloat(match.groups.version) : null,
-        episodeType: detectEpisodeType(match.groups),
+        episodeType,
         ...defaults,
         episodeStart,
         episodeEnd,
@@ -107,20 +119,24 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       // Inherit show name and release group from grand parent or parent.
       if (grandParentMatch && grandParentMatch.groups && parentMatch && parentMatch.groups) {
         const releaseGroup = grandParentMatch.groups.releaseGroup || null;
-        if (releaseGroup) show.releaseGroup = releaseGroup;
+        if (releaseGroup) pathDetails.releaseGroup = releaseGroup;
         showName = grandParentMatch.groups.showName?.trim() || null;
-        if (showName && showName) show.showName = showName;
+        if (showName && showName) pathDetails.showName = showName;
       }
       if (parentMatch && parentMatch.groups) {
         const releaseGroup = parentMatch.groups.releaseGroup || null;
-        if (releaseGroup) show.releaseGroup = releaseGroup;
+        if (releaseGroup) pathDetails.releaseGroup = releaseGroup;
         showName = parentMatch.groups.showName?.trim() || null;
-        if (showName && showName) show.showName = showName;
+        if (showName && showName) pathDetails.showName = showName;
       }
 
-      const finalShow = transform(show, match, parentMatch, grandParentMatch);
-      if (finalShow) {
-        return finalShow;
+      // Transform the details if the rule has a trasformer/validator.
+      pathDetails = transform(pathDetails, match, parentMatch, grandParentMatch);
+
+      // Since the transformer also can return null (to invalidte the match)
+      // then we need to check if the transformed details before returning.
+      if (pathDetails) {
+        return pathDetails;
       }
     }
   }
