@@ -177,18 +177,17 @@ const SelectEpisodeList = (
         </div>
         <div className="mt-1 max-h-96 overflow-y-auto rounded-md bg-panel-background-alt p-4">
           {options.map((item, idx) => (
-            <>
+            <React.Fragment key={`listbox-item-${item.value}`}>
               {idx !== 0 && item.type !== options[idx - 1].type && (
                 <div className="my-3 h-0.5 border border-panel-border bg-panel-background-alt" />
               )}
               {((epFilter > 0 && item.number === epFilter) || epFilter === 0) && (
                 <SelectOption
-                  key={`listbox-item-${item.value}`}
                   {...item}
                   divider={idx > 0 && item.type !== options[idx - 1].type}
                 />
               )}
-            </>
+            </React.Fragment>
           ))}
         </div>
       </Listbox.Options>,

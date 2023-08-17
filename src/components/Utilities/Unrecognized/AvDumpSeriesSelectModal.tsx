@@ -66,7 +66,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         Copy ED2K Hashes
       </Button>
       <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {ed2kLinks.split('\n').map(link => <div key={link.split('|')[4]}>{link}</div>)}
+        {ed2kLinks.split('\n').map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
       </div>
       <Input
         id="search"
