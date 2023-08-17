@@ -29,6 +29,7 @@ const Menu = (
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   const restoreFiles = (selected = false) => {
+    table.resetRowSelection();
     const fileList = selected ? selectedRows : files.List;
     forEach(fileList, (row) => {
       fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});
