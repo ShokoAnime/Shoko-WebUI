@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import { useSelector } from 'react-redux';
 import {
   mdiDumpTruck,
@@ -11,7 +10,7 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { useEventCallback } from 'usehooks-ts';
+import { useCopyToClipboard, useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
@@ -25,6 +24,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
+
   const hash = useMemo(
     () =>
       `ed2k://|file|${
@@ -32,6 +32,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
       }|${file.Size}|${file.Hashes.ED2K}|/`,
     [file],
   );
+
   const { color, path, state, title } = useMemo(() => {
     if (dumpSession?.status === 'Running') {
       return {
@@ -95,23 +96,31 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     } as const;
   }, [file, dumpSession, truck]);
 
-  const handleClick = useEventCallback(async () => {
+  const handleDump = useEventCallback(async (event: React.MouseEvent) => {
+    event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
       await fileAvdumpTrigger(fileId);
     }
   });
 
+  const [, copy] = useCopyToClipboard();
+  const handleCopy = async (event: React.MouseEvent) => {
+    event.stopPropagation();
+    await copy(hash);
+    toast.success('Copied to clipboard!');
+  };
+
   return (
     <div className="ml-4 flex">
       {state === 'success'
         ? (
-          <CopyToClipboard text={hash} onCopy={() => toast.success('Copied to clipboard!')}>
+          <div onClick={handleCopy}>
             <Icon path={path} spin={path === mdiLoading} size={1} className={`${color} cursor-pointer`} title={title} />
-          </CopyToClipboard>
+          </div>
         )
         : (
           <Button
-            onClick={handleClick}
+            onClick={handleDump}
             className={cx((state !== 'idle' && state !== 'failed') && 'cursor-default pointer-events-none')}
           >
             <Icon path={path} spin={path === mdiLoading} size={1} className={color} title={title} />
