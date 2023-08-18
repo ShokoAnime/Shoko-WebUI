@@ -22,8 +22,9 @@
   --color-logo-primary: #44a3ff;
   --color-overlay-background: #282e38a6;
   --color-overlay-border: #21242b;
-  --color-overlay-count-episode: #10c469;
-  --color-overlay-count-group: #b981ff;
+  --color-overlay-count-episode: #10c469d9;
+  --color-overlay-count-group: #b981ffd9;
+  --color-overlay-count-text: #fff;
   --color-overlay-icon: #cfd8e3;
   --color-overlay-icon-hover: #44a3ff;
   --color-panel-background: #2c333e;
