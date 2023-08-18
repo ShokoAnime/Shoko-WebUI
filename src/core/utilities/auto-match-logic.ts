@@ -1,5 +1,3 @@
-import { reduce } from 'lodash';
-
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import PathMatchRuleSet from './auto-match-regexes';
@@ -146,7 +144,7 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
     return '';
   }
 
-  const showNameMap = reduce(showList, (acc, show) => {
+  const showNameMap = showList.reduce((acc, show) => {
     if (show && show.showName) {
       acc.set(show.showName, (acc.get(show.showName) || 0) + 1);
     }
@@ -157,5 +155,36 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
     return '';
   }
 
-  return reduce(Array.from(showNameMap.keys()), (a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), '')!;
+  // If we couldn't find a show name that appeared more than two times, then try
+  // to look for a shared prefix in the show names, but if we can't find one
+  // then fallback to the first found show name, since it doesn't matter at that
+  // point.
+  const showNames = Array.from(showNameMap.keys());
+  const allShowNamesAppearOnce = Array.from(showNameMap.values()).every(value => value === 1);
+  if (allShowNamesAppearOnce) {
+    const sharedShowName = findSharedShowName(showNames);
+    if (sharedShowName) {
+      return sharedShowName;
+    }
+
+    return showNames[0];
+  }
+
+  return showNames.reduce((a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), '')!;
+}
+
+function findSharedShowName(showNames: string[]): string {
+  if (!showNames.length) {
+    return '';
+  }
+
+  let lastMatchingIndex = 0;
+  const sortedArr = showNames.slice().sort();
+  const firstName = sortedArr[0];
+  const lastName = sortedArr[sortedArr.length - 1];
+  while (lastMatchingIndex < firstName.length && firstName[lastMatchingIndex] === lastName[lastMatchingIndex]) {
+    lastMatchingIndex += 1;
+  }
+
+  return firstName.slice(0, lastMatchingIndex).trim();
 }
