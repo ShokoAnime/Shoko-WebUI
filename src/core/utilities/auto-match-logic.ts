@@ -7,7 +7,6 @@ import PathMatchRuleSet from './auto-match-regexes';
 export interface PathDetails {
   filePath: string;
   releaseGroup: string | null;
-  crc32: string | null;
   showName: string | null;
   season: number | null;
   episodeStart: number;
@@ -76,8 +75,8 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
     if (match && match.groups) {
       // We accept specials in-between episodes or episode ranges, so we split
       // the range and parse the text as floats.
-      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode.split('-').filter(s => s)
-        .map(parseFloat);
+      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(s => s)
+        .map(parseFloat) ?? [];
 
       // Swap episode numbers if they're reversed.
       if (episodeEnd - episodeStart < 0) {
@@ -104,7 +103,6 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       if (showName && showName === 'Episode') showName = null;
       let pathDetails: PathDetails | null = {
         releaseGroup: match.groups.releaseGroup || null,
-        crc32: match.groups.crc32?.toUpperCase() || null,
         showName,
         season: match.groups.season ? parseFloat(match.groups.season) : null,
         version: match.groups.version ? parseFloat(match.groups.version) : null,
