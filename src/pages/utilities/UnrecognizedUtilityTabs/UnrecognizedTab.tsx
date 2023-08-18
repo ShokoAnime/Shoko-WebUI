@@ -101,6 +101,7 @@ const Menu = (
   });
 
   const ignoreFiles = useEventCallback(() => {
+    table.resetRowSelection();
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
       fileIgnoreTrigger({ fileId: row.ID, value: true }).unwrap().catch((error) => {
@@ -114,6 +115,7 @@ const Menu = (
   });
 
   const rehashFiles = useEventCallback((selected = false) => {
+    table.resetRowSelection();
     let failedFiles = 0;
     const fileList = selected ? selectedRows : files.List;
 
@@ -129,6 +131,7 @@ const Menu = (
   });
 
   const rescanFiles = useEventCallback((selected = false) => {
+    table.resetRowSelection();
     let failedFiles = 0;
     const fileList = selected ? selectedRows : files.List;
 

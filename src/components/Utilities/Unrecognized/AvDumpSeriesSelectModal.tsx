@@ -1,13 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { toast } from 'react-toastify';
 import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { debounce, forEach } from 'lodash';
+import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
 import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 type Props = {
@@ -45,6 +45,12 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     return tempEd2kLinks;
   }, [getLinks, show]);
 
+  const [, copy] = useCopyToClipboard();
+  const handleCopy = async () => {
+    await copy(ed2kLinks);
+    toast.success('ED2K hashes copied to clipboard!');
+  };
+
   return (
     <ModalPanel
       show={show}
@@ -52,14 +58,15 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       className="flex-col gap-y-4 p-8 drop-shadow-lg"
     >
       <div className="text-xl font-semibold">AvDump Series Select</div>
-      <CopyToClipboard text={ed2kLinks} onCopy={() => toast.success('ED2K hashes copied to clipboard!')}>
-        <Button className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-primary p-2 font-semibold text-panel-text-alt">
-          <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
-          Copy ED2K Hashes
-        </Button>
-      </CopyToClipboard>
+      <Button
+        className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-primary p-2 font-semibold text-panel-text-alt"
+        onClick={handleCopy}
+      >
+        <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
+        Copy ED2K Hashes
+      </Button>
       <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {ed2kLinks.split('\n').map(link => <div key={link.split('|')[4]}>{link}</div>)}
+        {ed2kLinks.split('\n').map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
       </div>
       <Input
         id="search"

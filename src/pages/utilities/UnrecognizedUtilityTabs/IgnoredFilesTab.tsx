@@ -29,6 +29,7 @@ const Menu = (
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
 
   const restoreFiles = (selected = false) => {
+    table.resetRowSelection();
     const fileList = selected ? selectedRows : files.List;
     forEach(fileList, (row) => {
       fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});
@@ -49,7 +50,7 @@ const Menu = (
         <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore All" />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore All" highlight />
+        <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore" highlight />
         <MenuButton onClick={table.resetRowSelection} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
       </TransitionDiv>
     </>

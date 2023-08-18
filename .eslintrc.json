@@ -93,6 +93,10 @@
     "prefer-object-spread": "off",
     "react/destructuring-assignment": "off",
     "react/function-component-definition": "off",
+    "react/jsx-key": [
+      "error",
+      { "checkFragmentShorthand": true, "checkKeyMustBeforeSpread": true }
+    ],
     "react/jsx-one-expression-per-line": [
       "error",
       { "allow": "single-child" }
