@@ -1,3 +1,5 @@
+import { every, reduce } from 'lodash';
+
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import PathMatchRuleSet from './auto-match-regexes';
@@ -84,8 +86,9 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       }
 
       // Special handling of in-between episodes specials. We can't get the
-      // special episode number, but we can guess it based on context later
-      // provided the user tries to link all the episodes in the series at once.
+      // special episode number, but we can guess it based on context provided
+      // later when/if the user tries to link all the episodes in the series at
+      // once.
       //
       // The user is responsible if they link it without checking. We even show
       // a notification telling them to verify the matches before saving.
@@ -99,7 +102,7 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       // Make sure we have a valid show name.
       let showName = match.groups.showName?.trim() || null;
       if (showName && showName === 'Episode') showName = null;
-      let pathDetails: PathDetails | null = {
+      const initialDetails: PathDetails = {
         releaseGroup: match.groups.releaseGroup || null,
         showName,
         season: match.groups.season ? parseFloat(match.groups.season) : null,
@@ -115,24 +118,24 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       // Inherit show name and release group from grand parent or parent.
       if (grandParentMatch && grandParentMatch.groups && parentMatch && parentMatch.groups) {
         const releaseGroup = grandParentMatch.groups.releaseGroup || null;
-        if (releaseGroup) pathDetails.releaseGroup = releaseGroup;
+        if (releaseGroup) initialDetails.releaseGroup = releaseGroup;
         showName = grandParentMatch.groups.showName?.trim() || null;
-        if (showName && showName) pathDetails.showName = showName;
+        if (showName && showName) initialDetails.showName = showName;
       }
       if (parentMatch && parentMatch.groups) {
         const releaseGroup = parentMatch.groups.releaseGroup || null;
-        if (releaseGroup) pathDetails.releaseGroup = releaseGroup;
+        if (releaseGroup) initialDetails.releaseGroup = releaseGroup;
         showName = parentMatch.groups.showName?.trim() || null;
-        if (showName && showName) pathDetails.showName = showName;
+        if (showName && showName) initialDetails.showName = showName;
       }
 
       // Transform the details if the rule has a trasformer/validator.
-      pathDetails = transform(pathDetails, match, parentMatch, grandParentMatch);
+      const finalDetails = transform(initialDetails, match, parentMatch, grandParentMatch);
 
       // Since the transformer also can return null (to invalidte the match)
       // then we need to check if the transformed details before returning.
-      if (pathDetails) {
-        return pathDetails;
+      if (finalDetails) {
+        return finalDetails;
       }
     }
   }
@@ -144,7 +147,7 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
     return '';
   }
 
-  const showNameMap = showList.reduce((acc, show) => {
+  const showNameMap = reduce(showList, (acc, show) => {
     if (show && show.showName) {
       acc.set(show.showName, (acc.get(show.showName) || 0) + 1);
     }
@@ -160,7 +163,7 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
   // then fallback to the first found show name, since it doesn't matter at that
   // point.
   const showNames = Array.from(showNameMap.keys());
-  const allShowNamesAppearOnce = Array.from(showNameMap.values()).every(value => value === 1);
+  const allShowNamesAppearOnce = every(Array.from(showNameMap.values()), value => value === 1);
   if (allShowNamesAppearOnce) {
     const sharedShowName = findSharedShowName(showNames);
     if (sharedShowName) {
@@ -170,7 +173,7 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
     return showNames[0];
   }
 
-  return showNames.reduce((a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), '')!;
+  return reduce(showNames, (a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), '')!;
 }
 
 function findSharedShowName(showNames: string[]): string {
