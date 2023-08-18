@@ -4,19 +4,22 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import PathMatchRuleSet from './auto-match-regexes';
 
-export interface PathDetails {
+export type PathDetails = {
   filePath: string;
+  fileExtension: string | null;
   releaseGroup: string | null;
   showName: string | null;
   season: number | null;
+  episodeName: string | null;
   episodeStart: number;
   episodeEnd: number;
   episodeType: EpisodeTypeEnum;
   version: number | null;
+  crc32: string | null;
   ruleName: string;
-}
+};
 
-export interface PathMatchRule {
+export type PathMatchRule = {
   name: string;
   regex: RegExp;
   parentRegex?: RegExp;
@@ -28,7 +31,7 @@ export interface PathMatchRule {
     grandparentMatch: RegExpExecArray | null,
   ): PathDetails | null;
   defaults?: Partial<PathDetails>;
-}
+};
 
 const DriveLetterRegex = /^[A-Z]:$/;
 
@@ -103,15 +106,18 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       let showName = match.groups.showName?.trim() || null;
       if (showName && showName === 'Episode') showName = null;
       const initialDetails: PathDetails = {
+        filePath,
+        fileExtension: match.groups.extension || null,
         releaseGroup: match.groups.releaseGroup || null,
         showName,
         season: match.groups.season ? parseFloat(match.groups.season) : null,
-        version: match.groups.version ? parseFloat(match.groups.version) : null,
-        episodeType,
-        ...defaults,
+        episodeName: match.groups.episodeName || null,
         episodeStart,
         episodeEnd,
-        filePath,
+        episodeType,
+        version: match.groups.version ? parseFloat(match.groups.version) : null,
+        crc32: match.groups.crc32 || null,
+        ...defaults,
         ruleName,
       };
 
