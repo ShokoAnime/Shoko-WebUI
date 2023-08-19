@@ -179,7 +179,7 @@ export function findMostCommonShowName(showList: Array<PathDetails | null>): str
     return showNames[0];
   }
 
-  return reduce(showNames, (a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), '')!;
+  return reduce(showNames, (a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), showNames[0])!;
 }
 
 function findSharedShowName(showNames: string[]): string {
