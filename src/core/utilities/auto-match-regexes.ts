@@ -24,7 +24,7 @@ const defaultTransform = (originalDetails: PathDetails, match: RegExpExecArray) 
     let showName = modifiedDetails.showName.replace(TrimShowNameRegex, '');
 
     // Fix movie name when no episode number is provided.
-    const { episode, episodeName } = match.groups!;
+    const { episode, episodeName, year } = match.groups!;
     if (episodeName && !episode) {
       const { episodeName: [rangeEnd], showName: [, rangeStart] } = match.indices!.groups!;
       const inBetween = match[0].slice(rangeStart, rangeEnd);
@@ -42,6 +42,12 @@ const defaultTransform = (originalDetails: PathDetails, match: RegExpExecArray) 
       if (showName.startsWith('//')) {
         showName = `.${showName}`;
       }
+    }
+
+    // Append the "season" number to the show name to help with the search if a
+    // year was not found.
+    if (modifiedDetails.season !== null && modifiedDetails.season !== 1 && episode && !year) {
+      showName += ` S${modifiedDetails.season}`;
     }
 
     modifiedDetails.showName = showName;
