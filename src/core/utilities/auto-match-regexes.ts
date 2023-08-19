@@ -5,7 +5,7 @@ import type { PathDetails, PathMatchRule } from './auto-match-logic';
 const TrimShowNameRegex =
   /(?![\s_.]*\(part[\s_.]*[ivx]+\))(?![\s_.]*\((?:19|20)\d{2}\))(?:[\s_.]*(?:[([{][^)\]}\n]*[)\]}]|(?:(?<![a-z])(?:\d{3,4}[pi](?:-+hi\w*)?|(?:[uf]?hd|sd)|\d{3,4}x\d{3,4}|dual[\s_.-]*audio|(?:www|web|bd|dvd|ld|blu[\s_.-]*ray)(?:[\s_.-]*(?:rip|dl))?|dl|rip|(?:av1|hevc|h26[45])(?:-[a-z0-9]{1,3})?|(?:opus|ac3|aac|flac)(?:[\s._]*[257]\.[0124](?:[_.-]+\w{1,3})?)?|(?:\w{2,3}[\s_.-]*)?(?:sub(?:title)?s?|dub)|(?:un)?cen(?:\.|sored)?)[\s_.]*){1,20})){0,20}[\s_.]*$/i;
 
-const ReStitchRegex = /^[\s_.]*(?:-+[\s_.]*)?$/i;
+const ReStitchRegex = /^[\s_.]*-+[\s_.]*$/i;
 
 const Crc32Regex = /\(([0-9a-fA-F]{8})\)|\[([0-9a-fA-F]{8})\]/;
 
