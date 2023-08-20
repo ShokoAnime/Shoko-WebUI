@@ -563,7 +563,7 @@ function LinkFilesTab() {
   ]);
 
   const renderStaticFileLinks = () =>
-    map(fileLinks, (link, idx) => {
+    map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
       return (
