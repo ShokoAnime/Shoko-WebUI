@@ -1,3 +1,5 @@
+/* global globalThis */
+
 import { get, omit } from 'lodash';
 
 import { externalApi } from './rtkQuery/externalApi';

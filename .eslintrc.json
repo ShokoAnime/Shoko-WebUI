@@ -41,6 +41,10 @@
       "error",
       { "functions": false }
     ],
+    "@typescript-eslint/consistent-type-definitions": [
+      "error",
+      "type"
+    ],
     "arrow-parens": [
       "error",
       "as-needed",
@@ -113,6 +117,7 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "sort-destructure-keys/sort-destructure-keys": 2
+    "sort-destructure-keys/sort-destructure-keys": 2,
+    "no-undef": "error"
   }
 }

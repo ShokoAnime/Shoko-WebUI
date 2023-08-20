@@ -53,9 +53,11 @@ export function omitDeepBy(value: any, iteratee: Function) {
 // tanstack table helpers
 
 declare module '@tanstack/table-core' {
+  /* eslint-disable-next-line  @typescript-eslint/consistent-type-definitions */
   interface FilterFns {
     fuzzy: FilterFn<unknown>;
   }
+  /* eslint-disable-next-line  @typescript-eslint/consistent-type-definitions */
   interface FilterMeta {
     itemRank: RankingInfo;
   }
