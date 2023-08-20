@@ -236,7 +236,14 @@ function UnrecognizedTab() {
   });
   const tableSelectedRows = table.getSelectedRowModel();
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
-  const isAvdumpFinished = useMemo(() => every(selectedRows, row => row.AVDump.LastDumpedAt), [selectedRows]);
+  const isAvdumpFinished = useMemo(
+    () =>
+      every(
+        selectedRows,
+        row => avdumpList.sessions[avdumpList.sessionMap[row.ID]]?.status === 'Success' || row.AVDump.LastDumpedAt,
+      ),
+    [selectedRows, avdumpList],
+  );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
   const handleAvdumpClick = useEventCallback(async () => {
