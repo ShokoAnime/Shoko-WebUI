@@ -1,4 +1,5 @@
 import React from 'react';
+import type { JSX } from 'react';
 import type { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
 

@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import type { JSX } from 'react';
 import { mdiLayersTripleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import moment from 'moment';
