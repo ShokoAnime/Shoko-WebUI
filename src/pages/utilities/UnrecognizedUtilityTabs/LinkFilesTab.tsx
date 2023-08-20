@@ -252,7 +252,7 @@ function LinkFilesTab() {
   );
 
   const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
-  const fileLinks = useMemo(() =>
+  const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);
       return file?.Locations?.[0].RelativePath ?? item.FileID;
@@ -288,11 +288,11 @@ function LinkFilesTab() {
   );
 
   const duplicateLink = useEventCallback(() => {
-    addLink(fileLinks[selectedLink].FileID);
+    addLink(orderedLinks[selectedLink].FileID);
   });
 
   const removeLink = useEventCallback(() => {
-    const { LinkID } = fileLinks[selectedLink];
+    const { LinkID } = orderedLinks[selectedLink];
     setSelectedLink(-1);
     setLinks((linkState) => {
       const itemIndex = linkState.findLastIndex(link => link.LinkID === LinkID);
@@ -377,7 +377,7 @@ function LinkFilesTab() {
       return;
     }
     const filtered = items.slice(idx);
-    forEach(fileLinks, (link) => {
+    forEach(orderedLinks, (link) => {
       const ep = filtered.shift();
       if (!ep) return;
       addLink(link.FileID, ep.value, link.LinkID);
@@ -389,7 +389,8 @@ function LinkFilesTab() {
     let hasChanged = false;
     let skipped = false;
     const newLinks: ManualLink[] = [];
-    forEach(groupBy(links, 'FileID'), (l) => {
+    let specials = 0;
+    forEach(groupBy(orderedLinks, 'FileID'), (l) => {
       const { FileID } = l[0];
       const { details } = showDataMap.get(FileID)!;
       // skip links.
@@ -403,7 +404,10 @@ function LinkFilesTab() {
 
       // single episode link
       if ((episodeEnd - episodeStart) === 0) {
-        const episodeNumber = episodeStart;
+        // Special handling of specials if we were unable to determine the episode number during the detection phase.
+        const episodeNumber = episodeType === EpisodeTypeEnum.Special && episodeStart === 0
+          ? specials += 1
+          : episodeStart;
         const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
         if (!episode) {
           skipped = true;
@@ -559,7 +563,7 @@ function LinkFilesTab() {
   ]);
 
   const renderStaticFileLinks = () =>
-    map(fileLinks, (link, idx) => {
+    map(orderedLinks, (link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
       return (
@@ -578,10 +582,10 @@ function LinkFilesTab() {
     });
 
   const renderDynamicFileLinks = () =>
-    reduce<ManualLink, React.ReactNode[]>(fileLinks, (result, link, idx) => {
+    reduce<ManualLink, React.ReactNode[]>(orderedLinks, (result, link, idx) => {
       const file = find(selectedRows, ['ID', link.FileID]);
       const path = file?.Locations?.[0].RelativePath ?? '<missing file path>';
-      const isSameFile = idx > 0 && fileLinks[idx - 1].FileID === link.FileID;
+      const isSameFile = idx > 0 && orderedLinks[idx - 1].FileID === link.FileID;
       result.push(
         <div
           title={path}
