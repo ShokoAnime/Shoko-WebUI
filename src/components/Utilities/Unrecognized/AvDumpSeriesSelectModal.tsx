@@ -2,13 +2,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { debounce, forEach } from 'lodash';
-import { useCopyToClipboard, useEventCallback } from 'usehooks-ts';
+import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
 type Props = {
@@ -52,10 +53,10 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     handleSearch(commonSeries);
   }, [commonSeries, handleSearch]);
 
-  const [, copy] = useCopyToClipboard();
-  const handleCopy = async () => {
-    await copy(ed2kLinks);
-    toast.success('ED2K hashes copied to clipboard!');
+  const handleCopy = () => {
+    copyToClipboard(ed2kLinks)
+      .then(() => toast.success('ED2K hashes copied to clipboard!'))
+      .catch(() => toast.error('ED2K hashes copy failed!'));
   };
 
   return (

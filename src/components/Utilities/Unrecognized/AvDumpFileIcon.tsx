@@ -10,11 +10,12 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { useCopyToClipboard, useEventCallback } from 'usehooks-ts';
+import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { usePostFileAVDumpMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { copyToClipboard } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
@@ -103,11 +104,11 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     }
   });
 
-  const [, copy] = useCopyToClipboard();
-  const handleCopy = async (event: React.MouseEvent) => {
+  const handleCopy = (event: React.MouseEvent) => {
     event.stopPropagation();
-    await copy(hash);
-    toast.success('Copied to clipboard!');
+    copyToClipboard(hash)
+      .then(() => toast.success('ED2K hash copied to clipboard!'))
+      .catch(() => toast.error('ED2K hash copy failed!'));
   };
 
   return (

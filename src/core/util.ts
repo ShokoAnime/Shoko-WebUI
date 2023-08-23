@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
 import { sortingFns } from '@tanstack/react-table';
+import copy from 'copy-to-clipboard';
 import formatThousands from 'format-thousands';
 import { each, isObject, unset } from 'lodash';
 
@@ -81,5 +82,18 @@ export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
 };
 
 export const formatThousand = (n: number) => formatThousands(n, ',');
+
+export const copyToClipboard = async (text: string) => {
+  try {
+    if (navigator?.clipboard) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
+    return copy(text);
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
 
 export default {};
