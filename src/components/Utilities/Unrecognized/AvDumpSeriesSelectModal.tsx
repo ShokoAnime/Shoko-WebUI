@@ -2,13 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { mdiFileDocumentMultipleOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { debounce, forEach } from 'lodash';
-import { useCopyToClipboard } from 'usehooks-ts';
+import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { copyToClipboard } from '@/core/util';
+import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
 type Props = {
   show: boolean;
@@ -17,8 +19,19 @@ type Props = {
 };
 
 function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
-  const [searchText, setSearchText] = useState('');
-
+  const { ed2kLinks, links } = useMemo(() => {
+    if (!show) return { ed2kLinks: '', links: [] };
+    const tempLinks = getLinks();
+    let tempEd2kLinks = '';
+    forEach(tempLinks, (link) => {
+      tempEd2kLinks += `${link}\n`;
+    });
+    return { ed2kLinks: tempEd2kLinks, links: tempLinks };
+  }, [getLinks, show]);
+  const commonSeries = useMemo(() => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))), [
+    links,
+  ]);
+  const [searchText, setSearchText] = useState(() => commonSeries);
   const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
 
   const debouncedSearch = useRef(
@@ -27,28 +40,23 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     }, 200),
   ).current;
 
-  const handleSearch = (query: string) => {
+  const handleSearch = useEventCallback((query: string) => {
     setSearchText(query);
     if (query !== '') debouncedSearch(query);
-  };
+  });
 
   useEffect(() => () => {
     debouncedSearch.cancel();
   }, [debouncedSearch]);
 
-  const ed2kLinks = useMemo(() => {
-    if (!show) return '';
-    let tempEd2kLinks = '';
-    forEach(getLinks(), (link) => {
-      tempEd2kLinks += `${link}\n`;
-    });
-    return tempEd2kLinks;
-  }, [getLinks, show]);
+  useEffect(() => {
+    handleSearch(commonSeries);
+  }, [commonSeries, handleSearch]);
 
-  const [, copy] = useCopyToClipboard();
-  const handleCopy = async () => {
-    await copy(ed2kLinks);
-    toast.success('ED2K hashes copied to clipboard!');
+  const handleCopy = () => {
+    copyToClipboard(ed2kLinks)
+      .then(() => toast.success('ED2K hashes copied to clipboard!'))
+      .catch(() => toast.error('ED2K hashes copy failed!'));
   };
 
   return (
@@ -66,7 +74,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         Copy ED2K Hashes
       </Button>
       <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {ed2kLinks.split('\n').map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
+        {links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
       </div>
       <Input
         id="search"

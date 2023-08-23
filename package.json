@@ -21,6 +21,7 @@
     "@tanstack/react-table": "^8.9.3",
     "@tanstack/react-virtual": "^3.0.0-beta.54",
     "classnames": "^2.3.2",
+    "copy-to-clipboard": "^3.3.3",
     "fast-json-patch": "^3.1.1",
     "format-thousands": "^2.0.0",
     "fuse.js": "^6.6.2",
