@@ -43,7 +43,7 @@ function ProfileModal() {
   };
 
   return (
-    <ModalPanel show={status} className="profile-modal" onRequestClose={() => handleClose()}>
+    <ModalPanel show={status} className="profile-modal" onRequestClose={() => handleClose()} title="Profile">
       <div className="flex h-full w-full flex-col">
         <div className="profile-modal-image flex rounded-l-lg">
           <div className="profile-modal-image-alpha flex grow items-center justify-center rounded-l-lg">

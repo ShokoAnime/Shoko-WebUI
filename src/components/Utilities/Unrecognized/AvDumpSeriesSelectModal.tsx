@@ -63,9 +63,8 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="flex-col gap-y-4 p-8 drop-shadow-lg"
+      title="AvDump Series Select"
     >
-      <div className="text-xl font-semibold">AvDump Series Select</div>
       <Button
         className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-primary p-2 font-semibold text-panel-text-alt"
         onClick={handleCopy}

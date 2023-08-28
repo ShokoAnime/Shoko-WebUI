@@ -114,6 +114,15 @@ const seriesApi = splitV3Api.injectEndpoints({
       invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes', 'SeriesSearch'],
     }),
 
+    // Queue a refresh of the AniDB Info for series with ID
+    refreshSeriesAnidbInfo: build.mutation<boolean, { seriesId: number, force?: boolean, cacheOnly?: boolean }>({
+      query: ({ cacheOnly = false, force = false, seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Refresh?force=${force}&cacheOnly=${cacheOnly}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
+
     // Get AniDB Info from the AniDB ID
     getSeriesAniDB: build.query<SeriesAniDBSearchResult, number>({
       query: anidbID => ({ url: `Series/AniDB/${anidbID}` }),
@@ -150,6 +159,7 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}`,
         params,
       }),
+      providesTags: ['SeriesAniDB'],
     }),
 
     getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
@@ -189,6 +199,33 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}/Images`,
       }),
     }),
+
+    // Queue a refresh of the AniDB Info for series with ID
+    refreshSeriesTvdbInfo: build.mutation<boolean, { seriesId: number, force?: boolean }>({
+      query: ({ force = false, seriesId }) => ({
+        url: `Series/${seriesId}/TvDB/Refresh?force=${force}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesEpisodes'],
+    }),
+
+    // Rescan all files for a series
+    rescanSeriesFiles: build.mutation<void, { seriesId: number }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/File/Rescan`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
+
+    // Rehash all files for a series
+    rehashSeriesFiles: build.mutation<void, { seriesId: number }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/File/Rehash`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
   }),
 });
 
@@ -211,4 +248,8 @@ export const {
   useLazyGetSeriesFilesQuery,
   useNextUpEpisodeQuery,
   useRefreshAnidbSeriesMutation,
+  useRefreshSeriesAnidbInfoMutation,
+  useRefreshSeriesTvdbInfoMutation,
+  useRehashSeriesFilesMutation,
+  useRescanSeriesFilesMutation,
 } = seriesApi;

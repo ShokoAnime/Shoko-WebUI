@@ -49,6 +49,23 @@ const TabButton = (
 
 type QueueName = keyof typeof names;
 
+const Title = ({ activeTab, count, tabs }: { activeTab: string, count: number, tabs: React.ReactNode[] }) => (
+  <div className="flex items-center gap-x-0.5 font-semibold">
+    Queue
+    <Icon path={mdiChevronRight} size={1} />
+    <div className="flex gap-x-2">
+      {tabs}
+    </div>
+    <div className="flex grow" />
+    <div className="flex gap-x-1">
+      <div className="text-panel-important">{count < 0 ? '-' : count}</div>
+      &nbsp;
+      {names[activeTab]}
+      &nbsp;Entries
+    </div>
+  </div>
+);
+
 const QueueModal = ({ onClose, show: showModal }: Props) => {
   const state = useSelector((root: RootState) => root.mainpage.queueStatus);
   const [activeTab, setActiveTab] = useState<QueueName>('hasher');
@@ -226,22 +243,9 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     <ModalPanel
       show={showModal}
       onRequestClose={onClose}
-      className="w-[56.875rem] flex-col gap-y-8 p-8 drop-shadow-lg"
+      size="lg"
+      title={<Title activeTab={activeTab} count={count} tabs={tabs} />}
     >
-      <div className="flex items-center gap-x-0.5 font-semibold">
-        Queue
-        <Icon path={mdiChevronRight} size={1} />
-        <div className="flex gap-x-2">
-          {tabs}
-        </div>
-        <div className="flex grow" />
-        <div className="flex gap-x-1">
-          <div className="text-panel-important">{count < 0 ? '-' : count}</div>
-          &nbsp;
-          {names[activeTab]}
-          &nbsp;Entries
-        </div>
-      </div>
       <div className="flex gap-x-3">
         <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
           <MenuButton

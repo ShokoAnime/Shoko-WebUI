@@ -99,10 +99,9 @@ function FiltersModal({ onClose, show }: Props) {
   return (
     <ModalPanel
       show={show}
-      className="flex-col gap-y-8 p-8 drop-shadow-lg"
       onRequestClose={onClose}
+      title="Filters"
     >
-      <div className="text-xl font-semibold">Filters</div>
       <div className="flex">
         <div className="flex min-h-[24rem] min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {renderTabSide('Filters', '0')}
