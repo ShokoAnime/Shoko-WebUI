@@ -34,7 +34,7 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
   const triggerAnidbRefresh = useEventCallback((force: boolean, cacheOnly: boolean) => {
     refreshAnidb({ seriesId, force, cacheOnly })
       .then(() => toast.success('AniDB refresh queued!'))
-      .catch(() => toast.error('AniDB refresh failed!'));
+      .catch(console.error);
   });
 
   return (
@@ -44,7 +44,7 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
         onClick={() => {
           rescanSeriesFiles({ seriesId })
             .then(() => toast.success('Series files rescan queued!'))
-            .catch(() => toast.error('Series files rescan failed!'));
+            .catch(console.error);
         }}
       />
       <Action
@@ -52,7 +52,7 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
         onClick={() => {
           rehashSeriesFiles({ seriesId })
             .then(() => toast.success('Series files rehash queued!'))
-            .catch(() => toast.error('Series files rehash failed!'));
+            .catch(console.error);
         }}
       />
       <Action
@@ -60,7 +60,7 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
         onClick={() => {
           refreshTvdb({ seriesId })
             .then(() => toast.success('TvDB refresh queued!'))
-            .catch(() => toast.error('TvDB refresh failed!'));
+            .catch(console.error);
         }}
       />
       <Action name="Update AniDB Info" onClick={() => triggerAnidbRefresh(false, false)} />
