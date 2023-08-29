@@ -18,10 +18,10 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
 
       - name: Build
-        run: yarn build
+        run: pnpm build

@@ -21,10 +21,10 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
 
       - name: Get new version
         uses: zwaldowski/semver-release-action@v3
@@ -39,7 +39,7 @@ jobs:
         run: npm version ${{ steps.semver.outputs.version_tag }} --no-git-tag-version
 
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 

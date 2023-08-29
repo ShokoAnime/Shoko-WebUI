@@ -56,16 +56,16 @@ jobs:
           node-version: 18
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
 
       - name: Update version in package.json
         run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 

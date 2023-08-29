@@ -17,11 +17,11 @@ jobs:
         with:
           node-version: '14'
       - name: Install dependencies
-        run: yarn install --production=false
+        run: pnpm install --production=false
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
       - name: Update release
