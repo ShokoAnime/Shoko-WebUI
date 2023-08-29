@@ -99,7 +99,7 @@
     "dprint": "dprint check",
     "dprint:fix": "dprint fmt",
     "stylelint": "stylelint \"src/css/*.css\"",
-    "lint": "yarn run dprint && yarn run eslint && yarn run stylelint",
+    "lint": "pnpm dprint && pnpm eslint && pnpm stylelint",
     "build": "cross-env NODE_ENV=production vite build",
     "build:debug": "cross-env NODE_ENV=development vite build",
     "start": "cross-env NODE_ENV=development vite dev",
@@ -112,5 +112,5 @@
     ],
     "*.css": "stylelint"
   },
-  "packageManager": "yarn@3.3.0"
+  "packageManager": "pnpm@8.7.0"
 }
