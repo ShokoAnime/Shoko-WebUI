@@ -200,7 +200,7 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
     }),
 
-    // Queue a refresh of the AniDB Info for series with ID
+    // Queue a refresh of all the TvDB data linked to a series using the seriesID.
     refreshSeriesTvdbInfo: build.mutation<boolean, { seriesId: number, force?: boolean }>({
       query: ({ force = false, seriesId }) => ({
         url: `Series/${seriesId}/TvDB/Refresh?force=${force}`,
