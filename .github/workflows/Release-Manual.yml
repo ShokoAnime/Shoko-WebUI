@@ -55,8 +55,11 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: pnpm install
+      - name: Setup pnpm and install dependencies
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: true
 
       - name: Lint
         run: pnpm lint --quiet
