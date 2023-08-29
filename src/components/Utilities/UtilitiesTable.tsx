@@ -127,6 +127,7 @@ function UtilitiesTable(props: Props) {
         <tbody>
           {paddingTop > 0 && (
             <tr>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
               <td style={{ height: `${paddingTop}px` }} />
             </tr>
           )}
@@ -158,6 +159,7 @@ function UtilitiesTable(props: Props) {
           })}
           {paddingBottom > 0 && (
             <tr>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
               <td style={{ height: `${paddingBottom}px` }} />
             </tr>
           )}
