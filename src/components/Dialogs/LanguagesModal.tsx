@@ -109,12 +109,8 @@ function LanguagesModal({ onClose, type }: Props) {
     <ModalPanel
       show={type !== null}
       onRequestClose={onClose}
-      className="h-2/3 flex-col gap-y-4 p-8 drop-shadow-lg"
+      title={`${type} Languages`}
     >
-      <div className="text-xl font-semibold">
-        {type}
-        &nbsp;Languages
-      </div>
       <div className="flex flex-col gap-y-1.5 overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-3 py-2">
         {Object.keys(languageDescription).map(key => (
           <Checkbox

@@ -16,6 +16,16 @@ type Props = {
   onClose(): void;
 };
 
+const Title = ({ fileCount }: { fileCount: number }) => (
+  <div className="flex flex-row justify-between gap-x-0.5 text-xl font-semibold">
+    <div>Delete Confirmation</div>
+    <div className="flex gap-x-1">
+      <div className="text-panel-important">{fileCount}</div>
+      &nbsp;Files
+    </div>
+  </div>
+);
+
 function DeleteFilesModal(props: Props) {
   const { onClose, onConfirm, removeFile, selectedFiles, show: showModal } = props;
 
@@ -54,15 +64,9 @@ function DeleteFilesModal(props: Props) {
     <ModalPanel
       show={showModal}
       onRequestClose={onClose}
-      className="w-[56.875rem] flex-col gap-y-8 p-8 drop-shadow-lg"
+      size="lg"
+      title={<Title fileCount={fileList.length} />}
     >
-      <div className="flex flex-row justify-between gap-x-0.5 text-xl font-semibold">
-        <div>Delete Confirmation</div>
-        <div className="flex gap-x-1">
-          <div className="text-panel-important">{fileList.length}</div>
-          &nbsp;Files
-        </div>
-      </div>
       <div className="flex flex-col gap-y-4">
         <p>
           Please confirm you would like to delete the following files. This is a destructive process and cannot be

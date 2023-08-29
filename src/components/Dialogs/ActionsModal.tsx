@@ -134,9 +134,8 @@ function ActionsModal({ onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="w-[40rem] flex-col gap-y-8 p-8 drop-shadow-lg"
+      title="Actions"
     >
-      <div className="text-xl font-semibold">Actions</div>
       <div className="flex">
         <div className="flex min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {map(actions, (value, key) => (

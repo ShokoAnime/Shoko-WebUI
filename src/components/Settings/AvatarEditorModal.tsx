@@ -50,9 +50,9 @@ const AvatarEditorModal = (props: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="!w-96 flex-col gap-y-8 p-8 drop-shadow-lg"
+      size="sm"
+      title="Avatar"
     >
-      <div className="flex text-xl font-semibold">Avatar</div>
       <AvatarEditor
         image={image}
         width={256}

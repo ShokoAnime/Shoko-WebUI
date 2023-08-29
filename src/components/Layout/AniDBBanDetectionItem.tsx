@@ -41,13 +41,9 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
       <ModalPanel
         show={showModal}
         onRequestClose={handleClose}
-        className="w-[31.25rem] flex-col gap-y-8 p-8 drop-shadow-lg"
+        size="sm"
+        title={`AniDB ${type} Ban Detected`}
       >
-        <h5 className="text-xl font-bold">
-          AniDB&nbsp;
-          {type}
-          &nbsp;Ban Detected
-        </h5>
         <div className="flex flex-col gap-y-8">
           <p>
             It looks like you’ve been&nbsp;

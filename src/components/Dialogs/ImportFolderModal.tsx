@@ -95,11 +95,10 @@ function ImportFolderModal() {
     <>
       <ModalPanel
         show={status}
-        className="!top-0 flex-col gap-y-8 p-8 drop-shadow-lg"
         onRequestClose={() => handleClose()}
         onAfterOpen={() => getFolderDetails()}
+        title={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
       >
-        <div className="text-xl font-semibold">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</div>
         <Input
           id="Name"
           value={importFolder.Name}

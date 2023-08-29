@@ -31,10 +31,9 @@ function BrowseFolderModal(props: Props) {
   return (
     <ModalPanel
       show={status}
-      className="!top-0 flex-col gap-y-8 p-8 drop-shadow-lg"
       onRequestClose={() => handleClose()}
+      title="Select Import Folder"
     >
-      <div className="text-xl font-semibold">Select Import Folder</div>
       <div className="rounded border border-panel-border bg-panel-background-alt p-4">
         <TreeView />
       </div>
