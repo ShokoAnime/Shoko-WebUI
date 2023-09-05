@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -18,6 +18,7 @@ function StartServer() {
 
   const [pollingInterval, setPollingInterval] = useState(0);
 
+  const { setIsPersistent } = useOutletContext<{ setIsPersistent(value: boolean): void }>();
   const [startServer] = useGetInitStartServerMutation();
   const [login] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
@@ -39,6 +40,7 @@ function StartServer() {
   };
 
   const handleStart = () => {
+    setIsPersistent(true);
     startServer().catch(() => {});
     setPollingInterval(500);
   };
