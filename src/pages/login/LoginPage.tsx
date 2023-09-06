@@ -110,7 +110,7 @@ function LoginPage() {
         style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}
       >
         <div className="absolute right-0 top-0 border border-panel-border bg-panel-background-login px-8 py-4 font-semibold">
-          {imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}
+          {imageMetadata.isError ? 'One Piece' : loginSeriesTitle}
         </div>
 
         <div className="flex w-[31.25rem] flex-col items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-login p-8">
