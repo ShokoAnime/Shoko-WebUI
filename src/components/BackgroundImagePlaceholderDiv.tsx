@@ -72,7 +72,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
   }, [imageSource]);
 
   return (
-    <div className={`${className} overflow-hidden`}>
+    <div className={`${className} relative overflow-hidden`}>
       <div
         className={cx(
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]',

@@ -62,7 +62,7 @@ const SeriesEpisode = ({ episode }: Props) => {
       <div className="z-10 flex items-center gap-x-8 p-8">
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
-          className="group relative h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+          className="group h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
           hidePlaceholderOnHover
           zoomOnHover
         >
