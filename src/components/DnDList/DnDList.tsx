@@ -6,7 +6,7 @@ import PortalAwareItem from './PortalAwareItem';
 
 type Props = {
   onDragEnd: (result: DropResult) => void;
-  children: Array<{ key: string, item: React.ReactNode }>;
+  children: { key: string, item: React.ReactNode }[];
 };
 
 function DnDList(props: Props) {

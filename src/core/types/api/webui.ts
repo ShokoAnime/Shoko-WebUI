@@ -15,7 +15,7 @@ export type WebuiGroupExtra = {
   Rating: RatingType;
   AirDate: string | null;
   EndDate: string | null;
-  Tags: Array<WebuiGroupExtraTag>;
+  Tags: WebuiGroupExtraTag[];
 };
 
 export type WebuiSeriesRolePerson = {

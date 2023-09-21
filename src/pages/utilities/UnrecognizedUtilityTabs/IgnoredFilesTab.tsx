@@ -47,11 +47,16 @@ const Menu = (
           icon={mdiRestart}
           name="Refresh"
         />
-        <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore All" />
+        <MenuButton onClick={() => restoreFiles()} icon={mdiEyeOutline} name="Restore All" />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore" highlight />
-        <MenuButton onClick={table.resetRowSelection} icon={mdiCloseCircleOutline} name="Cancel Selection" highlight />
+        <MenuButton
+          onClick={() => table.resetRowSelection()}
+          icon={mdiCloseCircleOutline}
+          name="Cancel Selection"
+          highlight
+        />
       </TransitionDiv>
     </>
   );

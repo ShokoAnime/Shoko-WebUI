@@ -67,7 +67,7 @@ function SeriesWithoutFilesUtility() {
   const [deleteSeriesTrigger] = useDeleteSeriesMutation();
 
   const [columnFilters, setColumnFilters] = useState(
-    [{ id: 'Name', value: '' }] as Array<{ id: string, value: string }>,
+    [{ id: 'Name', value: '' }] as { id: string, value: string }[],
   );
 
   const table = useReactTable({

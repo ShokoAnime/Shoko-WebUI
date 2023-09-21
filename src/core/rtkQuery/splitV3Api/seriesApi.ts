@@ -60,9 +60,9 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Search the title dump for the given query or directly using the anidb id.
-    getSeriesAniDBSearch: build.query<Array<SeriesAniDBSearchResult>, { query: string } & PaginationType>({
+    getSeriesAniDBSearch: build.query<SeriesAniDBSearchResult[], { query: string } & PaginationType>({
       query: ({ query, ...params }) => ({ url: `Series/AniDB/Search/${encodeURIComponent(query)}`, params }),
-      transformResponse: (response: ListResultType<Array<SeriesAniDBSearchResult>>) => response.List,
+      transformResponse: (response: ListResultType<SeriesAniDBSearchResult[]>) => response.List,
       providesTags: ['SeriesSearch'],
     }),
 
@@ -130,12 +130,12 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Gets anidb recommendation for the user
-    getAniDBRecommendedAnime: build.query<Array<SeriesRecommendedType>, PaginationType>({
+    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
-      transformResponse: (response: ListResultType<Array<SeriesRecommendedType>>) => response.List,
+      transformResponse: (response: ListResultType<SeriesRecommendedType[]>) => response.List,
     }),
 
-    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<Array<SeriesType>>, PaginationType>({
+    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
       query: params => ({
         url: 'Series/WithManuallyLinkedFiles',
         params,
@@ -144,7 +144,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     getSeriesFiles: build.query<
-      Array<FileType>,
+      FileType[],
       { seriesId: number, isManuallyLinked: boolean, includeXRefs: boolean }
     >({
       query: ({ seriesId, ...params }) => ({
@@ -162,20 +162,20 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesAniDB'],
     }),
 
-    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
+    getSeriesTags: build.query<TagType[], { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/Tags`,
         params,
       }),
     }),
 
-    getAniDBRelated: build.query<Array<SeriesAniDBRelatedType>, { seriesId: string }>({
+    getAniDBRelated: build.query<SeriesAniDBRelatedType[], { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/AniDB/Related`,
       }),
     }),
 
-    getAniDBSimilar: build.query<Array<SeriesAniDBSimilarType>, { seriesId: string }>({
+    getAniDBSimilar: build.query<SeriesAniDBSimilarType[], { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/AniDB/Similar`,
       }),

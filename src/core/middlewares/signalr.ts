@@ -48,7 +48,7 @@ const onQueueConnected = dispatch => (state) => {
 
 // AniDB Events
 
-const onAniDBConnected = dispatch => (state: Array<AniDBBanItemType>) => {
+const onAniDBConnected = dispatch => (state: AniDBBanItemType[]) => {
   dispatch(setUdpBanStatus(state[0]));
   dispatch(setHttpBanStatus(state[1]));
 };

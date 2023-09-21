@@ -76,7 +76,7 @@ function LanguagesModal({ onClose, type }: Props) {
   );
   const [patchSettings] = usePatchSettingsMutation();
 
-  const [languages, setLanguages] = useState([] as Array<string>);
+  const [languages, setLanguages] = useState([] as string[]);
 
   const handleSave = useCallback(() => {
     patchSettings({

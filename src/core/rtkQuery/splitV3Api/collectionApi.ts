@@ -47,13 +47,13 @@ const collectionApi = splitV3Api.injectEndpoints({
         params: { includeEmpty, topLevelOnly },
       }),
     }),
-    getGroupSeries: build.query<Array<SeriesType>, { groupId?: string }>({
+    getGroupSeries: build.query<SeriesType[], { groupId?: string }>({
       query: ({ groupId }) => ({ url: `Group/${groupId}/Series` }),
     }),
-    getTopFilters: build.query<ListResultType<Array<CollectionFilterType>>, PaginationType>({
+    getTopFilters: build.query<ListResultType<CollectionFilterType[]>, PaginationType>({
       query: params => ({ url: 'Filter', params: { page: params.page ?? 1, pageSize: params.pageSize ?? 0 } }),
     }),
-    getFilters: build.query<ListResultType<Array<CollectionFilterType>>, string>({
+    getFilters: build.query<ListResultType<CollectionFilterType[]>, string>({
       query: filterId => ({ url: `Filter/${filterId}/Filter`, params: { page: 1, pageSize: 0 } }),
     }),
     getFilterGroupLetters: build.query<

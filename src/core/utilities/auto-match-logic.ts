@@ -148,8 +148,8 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
   return null;
 }
 
-export function findMostCommonShowName(showList: Array<PathDetails | null>): string {
-  if (showList.length === 0) {
+export function findMostCommonShowName(showList: PathDetails[] | null): string {
+  if (!showList || showList.length === 0) {
     return '';
   }
 

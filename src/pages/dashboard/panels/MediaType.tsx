@@ -55,7 +55,7 @@ function MediaType() {
   );
 
   let total = 0;
-  const seriesSummaryArray: Array<[string, number]> = [];
+  const seriesSummaryArray: [string, number][] = [];
 
   forEach(seriesSummary.data, (item, key) => {
     total += item ?? 0;
@@ -64,7 +64,7 @@ function MediaType() {
 
   seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
 
-  const items: Array<React.ReactNode> = [];
+  const items: React.ReactNode[] = [];
 
   forEach(seriesSummaryArray, (item) => {
     let countPercentage = 0;

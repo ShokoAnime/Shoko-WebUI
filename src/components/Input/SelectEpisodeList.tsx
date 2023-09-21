@@ -47,7 +47,7 @@ type Option = {
 };
 
 type Props = {
-  options: Array<Option>;
+  options: Option[];
   value: number;
   onChange: (optionValue: number, label: string) => void;
   className?: string;
