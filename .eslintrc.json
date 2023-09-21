@@ -3,7 +3,8 @@
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
-    "plugin:tailwindcss/recommended"
+    "plugin:tailwindcss/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "ignorePatterns": [
     "/*",
@@ -45,7 +46,6 @@
       "error",
       "type"
     ],
-    "@typescript-eslint/no-explicit-any": "error",
     "arrow-parens": [
       "error",
       "as-needed",

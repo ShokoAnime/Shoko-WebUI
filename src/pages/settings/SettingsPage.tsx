@@ -500,8 +500,8 @@ export const initialSettings = {
 
 type ContextType = {
   newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => {};
-  updateSetting: (type: string, key: string, value: string) => {};
+  setNewSettings: (settings: SettingsType) => void;
+  updateSetting: (type: string, key: string, value: string) => void;
 };
 
 function SettingsPage() {

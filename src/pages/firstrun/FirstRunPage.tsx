@@ -18,8 +18,8 @@ import type { SettingsType } from '@/core/types/api/settings';
 type ContextType = {
   fetching: boolean;
   newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => {};
-  updateSetting: (type: string, key: string, value: string) => {};
+  setNewSettings: (settings: SettingsType) => void;
+  updateSetting: (type: string, key: string, value: string) => void;
   saveSettings: () => Promise<void>;
 };
 

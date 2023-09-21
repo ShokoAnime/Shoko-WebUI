@@ -13,7 +13,7 @@ import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { ImageType } from '@/core/types/api/common';
 
-const Heading = React.memo(({ setType, type }: { type: string, setType: Function }) => (
+const Heading = React.memo(({ setType, type }: { type: string, setType: (string) => void }) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     Images
     <Icon path={mdiChevronRight} size={1} />

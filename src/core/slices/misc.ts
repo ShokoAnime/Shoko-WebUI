@@ -17,7 +17,7 @@ const miscSlice = createSlice({
     webuiPreviewTheme: null,
   },
   reducers: {
-    setItem(sliceState, action: PayloadAction) {
+    setItem(sliceState, action: PayloadAction<object>) {
       return Object.assign({}, sliceState, action.payload);
     },
   },
