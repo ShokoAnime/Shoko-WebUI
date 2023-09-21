@@ -57,7 +57,7 @@ function UtilitiesTable(props: Props) {
       const lrIndex = lastRowSelected?.current?.index ?? row.index;
       const fromIndex = Math.min(lrIndex, row.index);
       const toIndex = Math.max(lrIndex, row.index);
-      const rowSelection: any = {};
+      const rowSelection = {};
       for (let i = fromIndex; i <= toIndex; i += 1) {
         rowSelection[i] = lastRowSelected.current?.getIsSelected() ?? true;
       }

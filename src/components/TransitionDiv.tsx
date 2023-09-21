@@ -2,7 +2,7 @@ import React from 'react';
 import { Transition } from '@headlessui/react';
 
 type Props = {
-  children: any;
+  children: React.ReactNode;
   className?: string;
   enter?: string;
   enterFrom?: string;

@@ -103,7 +103,12 @@ function SeriesWithoutFilesUtility() {
   };
 
   const renderOperations = (common = false) => {
-    const renderButton = (onClick: (...args: any) => void, icon: string, name: string, highlight = false) => (
+    const renderButton = (
+      onClick: React.MouseEventHandler<HTMLButtonElement>,
+      icon: string,
+      name: string,
+      highlight = false,
+    ) => (
       <Button onClick={onClick} className="flex items-center gap-x-2 font-normal text-panel-text">
         <Icon path={icon} size={1} className={cx({ 'text-panel-primary': highlight })} />
         {name}

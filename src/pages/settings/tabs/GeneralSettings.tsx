@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
+import type { ChangeEvent } from 'react';
 import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -93,7 +94,7 @@ function GeneralSettings() {
     themes.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
   ), [themes, WebUI_Settings.theme]);
 
-  const handleExclusionChange = (event: any) => {
+  const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked, id } = event.target;
 
     if (checked) {

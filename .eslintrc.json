@@ -45,6 +45,7 @@
       "error",
       "type"
     ],
+    "@typescript-eslint/no-explicit-any": "error",
     "arrow-parens": [
       "error",
       "as-needed",

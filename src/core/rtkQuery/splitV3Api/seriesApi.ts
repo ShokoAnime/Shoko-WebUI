@@ -62,7 +62,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Search the title dump for the given query or directly using the anidb id.
     getSeriesAniDBSearch: build.query<Array<SeriesAniDBSearchResult>, { query: string } & PaginationType>({
       query: ({ query, ...params }) => ({ url: `Series/AniDB/Search/${encodeURIComponent(query)}`, params }),
-      transformResponse: (response: any) => response.List,
+      transformResponse: (response: ListResultType<Array<SeriesAniDBSearchResult>>) => response.List,
       providesTags: ['SeriesSearch'],
     }),
 
@@ -132,7 +132,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Gets anidb recommendation for the user
     getAniDBRecommendedAnime: build.query<Array<SeriesRecommendedType>, PaginationType>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
-      transformResponse: (response: any) => response.List,
+      transformResponse: (response: ListResultType<Array<SeriesRecommendedType>>) => response.List,
     }),
 
     getSeriesWithManuallyLinkedFiles: build.query<ListResultType<Array<SeriesType>>, PaginationType>({

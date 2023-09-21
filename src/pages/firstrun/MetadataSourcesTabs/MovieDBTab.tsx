@@ -11,7 +11,7 @@ function MovieDBTab() {
 
   const { AutoFanart, AutoFanartAmount, AutoPosters, AutoPostersAmount } = newSettings.MovieDb;
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event) => {
     const propId = event.target.id.replace('MovieDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     updateSetting('MovieDb', propId, value);

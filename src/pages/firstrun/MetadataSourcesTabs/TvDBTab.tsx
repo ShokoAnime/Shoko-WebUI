@@ -11,7 +11,7 @@ import { tvdbLanguages } from '@/pages/settings/tabs/MetadataSitesSettings';
 function TvDBTab() {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event) => {
     const propId = event.target.id.replace('TvDB_', '');
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     updateSetting('TvDB', propId, value);

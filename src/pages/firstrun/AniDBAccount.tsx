@@ -27,7 +27,7 @@ function AniDBAccount() {
 
   const { Password, Username } = newSettings.AniDb;
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event) => {
     const { id, value } = event.target;
     updateSetting('AniDb', id, value);
     setAnidbStatus({ type: 'success', text: '' });

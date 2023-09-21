@@ -3,8 +3,9 @@ import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
 import { sortingFns } from '@tanstack/react-table';
 import copy from 'copy-to-clipboard';
 import formatThousands from 'format-thousands';
-import { each, isObject, unset } from 'lodash';
+import { isObject } from 'lodash';
 
+import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { RankingInfo } from '@tanstack/match-sorter-utils';
 import type { FilterFn, SortingFn } from '@tanstack/react-table';
 
@@ -37,20 +38,6 @@ export function mergeDeep(...objects) {
   }, {});
 }
 
-// Needed to compare layout properties.
-// Stolen from https://stackoverflow.com/questions/37246775/
-export function omitDeepBy(value: any, iteratee: Function) {
-  each(value, (v, k) => {
-    if (iteratee(v, k)) {
-      unset(value, k);
-    } else if (isObject(v)) {
-      omitDeepBy(v, iteratee);
-    }
-  });
-
-  return value;
-}
-
 // tanstack table helpers
 
 declare module '@tanstack/table-core' {
@@ -64,13 +51,13 @@ declare module '@tanstack/table-core' {
   }
 }
 
-export const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+export const fuzzyFilter: FilterFn<{}> = (row, columnId, value, addMeta) => {
   const itemRank = rankItem(row.getValue(columnId), value);
   addMeta({ itemRank });
   return itemRank.passed;
 };
 
-export const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
+export const fuzzySort: SortingFn<{}> = (rowA, rowB, columnId) => {
   let dir = 0;
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
@@ -95,5 +82,28 @@ export const copyToClipboard = async (text: string) => {
     return false;
   }
 };
+
+/**
+ * Type predicate to narrow an unknown error to `FetchBaseQueryError`
+ */
+export function isFetchBaseQueryError(
+  error: unknown,
+): error is FetchBaseQueryError {
+  return typeof error === 'object' && error != null && 'status' in error;
+}
+
+/**
+ * Type predicate to narrow an unknown error to an object with a string 'message' property
+ */
+export function isErrorWithMessage(
+  error: unknown,
+): error is { message: string } {
+  return (
+    typeof error === 'object'
+    && error != null
+    && 'message' in error
+    && typeof (error as Error).message === 'string'
+  );
+}
 
 export default {};

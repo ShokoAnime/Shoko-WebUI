@@ -94,7 +94,7 @@ function LanguagesModal({ onClose, type }: Props) {
     if (type !== null) setLanguages(LanguagePreference);
   }, [type, LanguagePreference]);
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event) => {
     const { checked: value, id } = event.target;
 
     const newLanguages = languages.slice();

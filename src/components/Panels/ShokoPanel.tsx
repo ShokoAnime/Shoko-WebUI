@@ -5,8 +5,8 @@ import cx from 'classnames';
 
 type Props = {
   title: ReactNode;
-  children: any;
-  options?: any;
+  children: React.ReactNode;
+  options?: React.ReactNode;
   className?: string;
   isFetching?: boolean;
   editMode?: boolean;

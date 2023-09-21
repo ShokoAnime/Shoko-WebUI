@@ -5,8 +5,8 @@ type Props = {
   type: string;
   placeholder?: string;
   value: string | number;
-  onChange: (event: any) => void;
-  onKeyUp?: (event: any) => void;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   autoFocus?: boolean;
   disabled?: boolean;
