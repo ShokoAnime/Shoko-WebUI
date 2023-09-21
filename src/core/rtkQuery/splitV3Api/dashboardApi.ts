@@ -31,31 +31,31 @@ const dashboardApi = splitV3Api.injectEndpoints({
     }),
 
     // Get a list of recently added episodes (with additional details).
-    getDashboardRecentlyAddedEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+    getDashboardRecentlyAddedEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
       query: params => ({ url: 'Dashboard/RecentlyAddedEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileMatched'],
     }),
 
     // Get a list of recently added series.
-    getDashboardRecentlyAddedSeries: build.query<Array<SeriesType>, PaginationType>({
+    getDashboardRecentlyAddedSeries: build.query<SeriesType[], PaginationType>({
       query: params => ({ url: 'Dashboard/RecentlyAddedSeries', params }),
       providesTags: ['FileDeleted', 'FileMatched', 'SeriesUpdated'],
     }),
 
     // Get a list of the episodes to continue watching in recently watched order
-    getDashboardContinueWatchingEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+    getDashboardContinueWatchingEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
       query: params => ({ url: 'Dashboard/ContinueWatchingEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'SeriesUpdated'],
     }),
 
     // Get the next episodes for series that currently don't have an active watch session for the user.
-    getDashboardNextUpEpisodes: build.query<Array<DashboardEpisodeDetailsType>, PaginationType>({
+    getDashboardNextUpEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
       query: params => ({ url: 'Dashboard/NextUpEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileMatched', 'SeriesUpdated'],
     }),
 
     // Get a list of the episodes to continue watching (soon-to-be) in recently watched order
-    getDashboardAniDBCalendar: build.query<Array<DashboardEpisodeDetailsType>, { showAll: boolean }>({
+    getDashboardAniDBCalendar: build.query<DashboardEpisodeDetailsType[], { showAll: boolean }>({
       query: params => ({ url: 'Dashboard/AniDBCalendar', params }),
       providesTags: ['SeriesUpdated'],
     }),

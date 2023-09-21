@@ -5,8 +5,8 @@ import type { CollectionGroupType } from '@/core/types/api/collection';
 
 type State = {
   total: number;
-  groups: Array<CollectionGroupType>;
-  fetchedPages: Record<number, Array<CollectionGroupType>>;
+  groups: CollectionGroupType[];
+  fetchedPages: Record<number, CollectionGroupType[]>;
 };
 
 const collectionSlice = createSlice({

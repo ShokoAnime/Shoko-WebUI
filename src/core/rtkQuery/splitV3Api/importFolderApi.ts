@@ -5,7 +5,7 @@ import type { ImportFolderType } from '@/core/types/api/import-folder';
 const importFolderApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     // Get import folders
-    getImportFolders: build.query<Array<ImportFolderType>, void>({
+    getImportFolders: build.query<ImportFolderType[], void>({
       query: () => ({ url: 'ImportFolder' }),
       providesTags: ['FileDeleted', 'FileHashed', 'FileMatched', 'ImportFolder', 'SeriesUpdated'],
     }),

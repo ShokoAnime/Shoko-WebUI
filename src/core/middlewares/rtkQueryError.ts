@@ -14,7 +14,7 @@ type ProblemDetails = {
   traceId: string;
 };
 
-const isErrorObject = (target: any): target is ProblemDetails =>
+const isErrorObject = (target): target is ProblemDetails =>
   typeof target === 'object' && target !== null && typeof target.title === 'string' && typeof target.errors === 'object'
   && target.errors !== null;
 

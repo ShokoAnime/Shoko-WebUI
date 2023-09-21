@@ -116,7 +116,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     }, 500), [getQuery]);
 
   const tabs = useMemo(() =>
-    map(Object.keys(names) as Array<QueueName>, (key, index, { length }) => (
+    map(Object.keys(names) as QueueName[], (key, index, { length }) => (
       index !== length - 1
         ? (
           <React.Fragment key={key}>

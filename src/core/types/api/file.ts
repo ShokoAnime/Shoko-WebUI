@@ -3,10 +3,17 @@ import type { EpisodeIDsType } from './episode';
 import type { SeriesIDsType } from './series';
 import type { PaginationType } from '@/core/types/api';
 
-type XRefsType = Array<{
+type XRefsType = {
   SeriesID: SeriesIDsType;
   EpisodeIDs: EpisodeIDsType;
-}>;
+};
+
+type FileTypeLocation = {
+  ImportFolderID: number;
+  RelativePath: string;
+  AbsolutePath?: string;
+  IsAccessible: boolean;
+};
 
 export type FileType = {
   ID: number;
@@ -17,12 +24,7 @@ export type FileType = {
     CRC32: string;
     MD5: string;
   };
-  Locations: Array<{
-    ImportFolderID: number;
-    RelativePath: string;
-    AbsolutePath?: string;
-    IsAccessible: boolean;
-  }>;
+  Locations: FileTypeLocation[];
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;
@@ -30,7 +32,7 @@ export type FileType = {
   Created: string;
   Updated: string;
   IsVariation: boolean;
-  SeriesIDs?: XRefsType;
+  SeriesIDs?: XRefsType[];
   AniDB?: FileAniDBType;
   MediaInfo?: FileMediaInfoType;
   AVDump: FileAVDumpType;
@@ -78,16 +80,18 @@ export type FileAniDBReleaseGroupType = {
   ShortName: string;
 };
 
+type FileDetailedTypeSeriesID = {
+  SeriesID: FileIDsType;
+  EpisodeIDs: FileIDsType[];
+};
+
 export type FileDetailedType = FileType & {
-  SeriesIDs: Array<{
-    SeriesID: FileIDsType;
-    EpisodeIDs: Array<FileIDsType>;
-  }>;
+  SeriesIDs: FileDetailedTypeSeriesID[];
 };
 
 export type FileIDsType = {
   AniDB: number;
-  TvDB: Array<number>;
+  TvDB: number[];
   ID: number;
 };
 
@@ -106,11 +110,11 @@ export const enum FileSourceEnum {
 
 export type FileLinkOneApiType = {
   fileID: number;
-  episodeIDs: Array<number>;
+  episodeIDs: number[];
 };
 
 export type FileLinkManyApiType = {
-  fileIDs: Array<number>;
+  fileIDs: number[];
   episodeID: number;
 };
 

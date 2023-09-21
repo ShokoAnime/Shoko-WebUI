@@ -17,9 +17,9 @@ type Props = {
 function FiltersModal({ onClose, show }: Props) {
   const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
   const [triggerSubFilter, subFiltersResult] = useLazyGetFiltersQuery({});
-  const filters: Array<CollectionFilterType> = filtersResult?.data?.List ?? [] as Array<CollectionFilterType>;
-  const subFilters: Array<CollectionFilterType> = useMemo(
-    () => subFiltersResult?.data?.List ?? [] as Array<CollectionFilterType>,
+  const filters: CollectionFilterType[] = filtersResult?.data?.List ?? [] as CollectionFilterType[];
+  const subFilters: CollectionFilterType[] = useMemo(
+    () => subFiltersResult?.data?.List ?? [] as CollectionFilterType[],
     [subFiltersResult],
   );
 

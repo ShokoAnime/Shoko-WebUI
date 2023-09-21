@@ -6,9 +6,9 @@ import type { TagType } from '@/core/types/api/tags';
 const tagsApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     // Get a list of all known anidb tags, optionally with a filter applied.
-    getAniDBTags: build.query<Array<TagType>, PaginationType & { excludeDescriptions?: boolean }>({
+    getAniDBTags: build.query<TagType[], PaginationType & { excludeDescriptions?: boolean }>({
       query: params => ({ url: 'Tag/AniDB', params }),
-      transformResponse: (response: ListResultType<Array<TagType>>) => response.List,
+      transformResponse: (response: ListResultType<TagType[]>) => response.List,
     }),
   }),
 });

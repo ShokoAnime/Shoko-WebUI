@@ -25,7 +25,7 @@ import type { SeriesSizesFileSourcesType } from '@/core/types/api/series';
 import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
-  const output: Array<string> = [];
+  const output: string[] = [];
   forEach(sources, (source, type) => {
     if (source !== 0) output.push(type);
   });

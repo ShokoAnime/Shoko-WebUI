@@ -32,7 +32,7 @@ export type MenuItemProps = {
   icon: IconType;
   label: string;
   className?: string;
-  onClick: (event: any) => void;
+  onClick: React.MouseEventHandler<HTMLDivElement>;
 };
 
 function MenuItem(props: MenuItemProps) {

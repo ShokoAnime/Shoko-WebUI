@@ -4,7 +4,7 @@ import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { ApiUserType, CommunitySitesType, UserType } from '@/core/types/api/user';
 
-const simplifyCommunitySites = (sites: Array<string>) => {
+const simplifyCommunitySites = (sites: string[]) => {
   const result: CommunitySitesType = {
     AniDB: false,
     Trakt: false,
@@ -19,10 +19,10 @@ const simplifyCommunitySites = (sites: Array<string>) => {
 const userApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     // List all users.
-    getUsers: build.query<Array<UserType>, void>({
+    getUsers: build.query<UserType[], void>({
       query: () => ({ url: 'User' }),
-      transformResponse: (response: Array<ApiUserType>) => {
-        const users: Array<UserType> = [];
+      transformResponse: (response: ApiUserType[]) => {
+        const users: UserType[] = [];
         response.forEach((user) => {
           const { CommunitySites, ...tempUser } = user;
           users.push({ ...tempUser, CommunitySites: simplifyCommunitySites(CommunitySites) });

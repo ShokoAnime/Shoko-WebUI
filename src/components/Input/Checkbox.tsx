@@ -13,7 +13,7 @@ type Props = {
   className?: string;
   labelRight?: boolean;
   justify?: boolean;
-  onChange: (event: any) => void;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
 function Checkbox({ className, id, intermediate, isChecked, justify, label, labelRight, onChange }: Props) {

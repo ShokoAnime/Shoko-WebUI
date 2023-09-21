@@ -14,6 +14,7 @@ import type { ImportFolderType } from '@/core/types/api/import-folder';
 import type { ColumnDef } from '@tanstack/react-table';
 
 type ContextType = {
+  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
   columns: ColumnDef<FileType, any>[];
 };
 
