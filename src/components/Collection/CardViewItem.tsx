@@ -72,7 +72,7 @@ const CardViewItem = ({ item, mainSeries }: { item: CollectionGroupType, mainSer
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
             image={poster}
-            className="group relative h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+            className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
             hidePlaceholderOnHover
             zoomOnHover
           >
