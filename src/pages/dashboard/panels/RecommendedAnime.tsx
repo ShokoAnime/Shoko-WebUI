@@ -19,7 +19,7 @@ const RecommendedAnime = () => {
     <div key={`series-${series.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
       <BackgroundImagePlaceholderDiv
         image={series.Poster}
-        className="group relative mb-2 h-80 rounded border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+        className="group mb-2 h-80 rounded border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
       >
         <div
           className="absolute left-0 top-0 flex h-full w-full cursor-pointer flex-col items-center justify-center bg-panel-background-transparent text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100"

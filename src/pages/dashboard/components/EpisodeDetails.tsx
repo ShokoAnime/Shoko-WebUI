@@ -51,7 +51,7 @@ function EpisodeDetails(props: Props): JSX.Element {
         : null}
       <BackgroundImagePlaceholderDiv
         image={episode.SeriesPoster}
-        className="relative mb-3 h-80 rounded border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+        className="mb-3 h-80 rounded border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
       >
         {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-primary" style={{ width: percentage }} />}
         {isInCollection && (

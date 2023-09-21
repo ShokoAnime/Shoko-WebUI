@@ -37,7 +37,7 @@ const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
     <div className="z-10 flex items-center gap-x-8">
       <BackgroundImagePlaceholderDiv
         image={thumbnail}
-        className="relative h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+        className="h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
       />
       <EpisodeDetails episode={nextUpEpisode} />
     </div>

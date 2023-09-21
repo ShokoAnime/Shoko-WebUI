@@ -124,7 +124,7 @@ const SeriesImages = () => {
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] relative border',
+                  'rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border',
                   item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border',
                   sizeMap[type],
                 )}
