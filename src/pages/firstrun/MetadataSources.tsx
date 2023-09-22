@@ -65,7 +65,7 @@ function MetadataSources() {
       <div className="flex gap-x-2 border-b-2 border-panel-border pb-3 text-xl">
         {renderTabButton('AniDB', 'anidb')}
         |
-        {renderTabButton('TMBD', 'moviedb')}
+        {renderTabButton('TMDB', 'moviedb')}
         |
         {renderTabButton('TVDB', 'tvdb')}
         {/* TODO: Add plex and trakt settings. Currently they only work after the setup is completed. */}

@@ -17,7 +17,7 @@ function Header({ setShowSidebar, showSidebar }: Props) {
   const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
 
   return (
-    <div className="z-[100] flex max-h-15 items-center justify-between bg-header-background-alt p-4 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+    <div className="z-[100] flex max-h-15 items-center justify-between bg-header-background-alt p-4 drop-shadow-md">
       <Button onClick={() => setShowSidebar(!showSidebar)}>
         <Icon path={showSidebar ? mdiBackburger : mdiMenu} size={1} className="text-header-text" />
       </Button>

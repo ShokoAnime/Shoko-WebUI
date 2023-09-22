@@ -19,7 +19,7 @@ const getThumbnailUrl = (item: SeriesCast, mode: string) => {
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
 };
 
-const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (string) => void }) => (
+const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: string) => void }) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     Credits
     <Icon path={mdiChevronRight} size={1} />

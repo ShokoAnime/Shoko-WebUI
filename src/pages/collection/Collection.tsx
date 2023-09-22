@@ -11,7 +11,7 @@ import { useGetFilterQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 
 const OptionButton = ({ icon, onClick }) => (
   <div
-    className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+    className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
     onClick={onClick}
   >
     <Icon path={icon} size={1} />

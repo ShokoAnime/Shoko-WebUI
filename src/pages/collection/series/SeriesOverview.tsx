@@ -263,7 +263,7 @@ const SeriesOverview = () => {
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
                     <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                     <span className="text-sm text-panel-important">{itemRelation}</span>
@@ -278,7 +278,7 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                   />
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-important">{itemRelation}</span>
@@ -303,7 +303,7 @@ const SeriesOverview = () => {
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
                     <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                     <span className="text-sm text-panel-important">
@@ -323,7 +323,7 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                   />
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-important">

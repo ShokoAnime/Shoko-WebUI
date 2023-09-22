@@ -155,7 +155,7 @@ const Series = () => {
           </div>
           <BackgroundImagePlaceholderDiv
             image={mainPoster}
-            className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+            className="h-[23.875rem] w-[17.0625rem] rounded drop-shadow-md"
           />
         </div>
         <div className="flex flex-nowrap gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">

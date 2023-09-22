@@ -7,4 +7,5 @@ export const webuiSettingsPatches = {
     else webuiSettings.updateChannel = 'Stable';
     return { ...webuiSettings, settingsRevision: 5 };
   },
-} as Record<number, (any) => WebUISettingsType>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

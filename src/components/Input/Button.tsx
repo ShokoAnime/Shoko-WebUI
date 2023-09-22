@@ -39,9 +39,9 @@ function Button(props: Props) {
       type={submit ? 'submit' : 'button'}
       title={tooltip}
       className={cx([
-        `${className} button font-semibold transition ease-in-out text-sm rounded focus:shadow-none focus:outline-none`,
+        `${className} button font-semibold transition ease-in-out rounded focus:shadow-none focus:outline-none`,
         buttonType !== undefined
-        && `${buttonTypeClasses[buttonType]} drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border border-panel-border`,
+        && `${buttonTypeClasses[buttonType]} drop-shadow-md border border-panel-border`,
         loading && 'cursor-default',
         disabled && 'opacity-50 cursor-default',
       ])}

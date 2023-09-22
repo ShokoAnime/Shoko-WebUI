@@ -13,7 +13,7 @@ import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { ImageType } from '@/core/types/api/common';
 
-const Heading = React.memo(({ setType, type }: { type: string, setType: (string) => void }) => (
+const Heading = React.memo(({ setType, type }: { type: string, setType: (type: string) => void }) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     Images
     <Icon path={mdiChevronRight} size={1} />
@@ -124,7 +124,7 @@ const SeriesImages = () => {
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-md drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] border',
+                  'rounded-md drop-shadow-md border',
                   item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border',
                   sizeMap[type],
                 )}
