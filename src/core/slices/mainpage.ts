@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NetworkAvailability } from '@/core/types/signalr';
 
 import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/types/signalr';
+import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
@@ -61,7 +62,7 @@ const mainpageSlice = createSlice({
     setFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
     },
-    setQueueStatus(sliceState, action) {
+    setQueueStatus(sliceState, action: PayloadAction<Partial<QueueStatusType>>) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
     setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
@@ -91,5 +92,7 @@ export const {
   setQueueStatus,
   setUdpBanStatus,
 } = mainpageSlice.actions;
+
+export type MainpageActionTypes = SliceActions<typeof mainpageSlice.actions>;
 
 export default mainpageSlice.reducer;

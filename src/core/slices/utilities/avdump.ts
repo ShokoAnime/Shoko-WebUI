@@ -5,6 +5,7 @@ import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/types/signalr';
 import type { PayloadAction } from '@reduxjs/toolkit';
+import { SliceActions } from '@/core/types/util';
 
 type AvDumpSession = {
   fileIDs: number[];
@@ -84,5 +85,7 @@ const avdumpSlice = createSlice({
 });
 
 export const { restoreAVDumpSessions, updateAVDumpEvent } = avdumpSlice.actions;
+
+export type AvdumpActionTypes = SliceActions<typeof avdumpSlice.actions>;
 
 export default avdumpSlice.reducer;
