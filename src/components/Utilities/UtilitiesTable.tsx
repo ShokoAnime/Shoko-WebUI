@@ -57,7 +57,7 @@ function UtilitiesTable(props: Props) {
       const lrIndex = lastRowSelected?.current?.index ?? row.index;
       const fromIndex = Math.min(lrIndex, row.index);
       const toIndex = Math.max(lrIndex, row.index);
-      const rowSelection: any = {};
+      const rowSelection = {};
       for (let i = fromIndex; i <= toIndex; i += 1) {
         rowSelection[i] = lastRowSelected.current?.getIsSelected() ?? true;
       }
@@ -127,6 +127,7 @@ function UtilitiesTable(props: Props) {
         <tbody>
           {paddingTop > 0 && (
             <tr>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
               <td style={{ height: `${paddingTop}px` }} />
             </tr>
           )}
@@ -158,6 +159,7 @@ function UtilitiesTable(props: Props) {
           })}
           {paddingBottom > 0 && (
             <tr>
+              {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
               <td style={{ height: `${paddingBottom}px` }} />
             </tr>
           )}

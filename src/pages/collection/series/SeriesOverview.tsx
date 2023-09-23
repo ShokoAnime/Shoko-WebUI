@@ -37,7 +37,7 @@ const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
     <div className="z-10 flex items-center gap-x-8">
       <BackgroundImagePlaceholderDiv
         image={thumbnail}
-        className="relative h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+        className="h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
       />
       <EpisodeDetails episode={nextUpEpisode} />
     </div>
@@ -239,8 +239,8 @@ const SeriesOverview = () => {
           >
             <div className="grid grid-cols-2 grid-rows-3 gap-x-9 gap-y-4">
               {links.map(site => (
-                <div className="rounded border border-panel-border bg-panel-background px-4 py-3">
-                  <MetadataLink key={site} site={site} id={series.IDs[site]} series={series.Name} />
+                <div className="rounded border border-panel-border bg-panel-background px-4 py-3" key={site}>
+                  <MetadataLink site={site} id={series.IDs[site]} series={series.Name} />
                 </div>
               ))}
             </div>

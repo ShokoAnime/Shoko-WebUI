@@ -226,9 +226,10 @@ function UserManagementSettings() {
     if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
       tempUser.RestrictedTags.push(tagId);
       tempUser.RestrictedTags = tempUser.RestrictedTags.sort((tagA, tagB) => {
-        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name!;
-        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name!;
-        return tagAName.localeCompare(tagBName);
+        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name;
+        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name;
+        if (tagAName === undefined || tagBName === undefined) return 0;
+        return tagAName?.localeCompare(tagBName);
       });
     }
     if (!selected) remove(tempUser.RestrictedTags, tag => tag === tagId);
@@ -302,8 +303,8 @@ function UserManagementSettings() {
           <div className="flex items-center justify-between">
             Change Avatar
             <div className="flex gap-x-2">
-              <Button
-                buttonType="secondary"
+              <label
+                htmlFor="avatar"
                 className="cursor-pointer rounded-md border border-panel-border bg-button-secondary px-3 py-2 text-xs font-semibold drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)] hover:bg-button-secondary-hover"
               >
                 Pick
@@ -314,7 +315,7 @@ function UserManagementSettings() {
                   className="hidden"
                   accept="image/*"
                 />
-              </Button>
+              </label>
               {selectedUser.Avatar && (
                 <Button onClick={removeAvatar} buttonType="danger" className="px-3 py-2 text-xs font-semibold">
                   Remove

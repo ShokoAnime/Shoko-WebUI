@@ -109,7 +109,7 @@ export type SettingsMoviedbType = {
 };
 
 export type SettingsPlexType = {
-  Libraries: Array<number>;
+  Libraries: number[];
   Token: string;
   Server: string;
 };
@@ -127,7 +127,7 @@ export type SettingsImportType = {
   RenameThenMove: boolean;
   RunOnStart: boolean;
   UseExistingFileWatchedStatus: boolean;
-  VideoExtensions: Array<string>;
+  VideoExtensions: string[];
 };
 
 export type SettingsServerType = {
@@ -150,8 +150,8 @@ export type SettingsServerType = {
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
   LanguageUseSynonyms: boolean;
-  LanguagePreference: Array<string>;
-  EpisodeLanguagePreference: Array<string>;
+  LanguagePreference: string[];
+  EpisodeLanguagePreference: string[];
   Import: SettingsImportType;
   TraceLog: boolean;
 };
@@ -171,7 +171,7 @@ type LayoutItemType = {
 };
 
 export type LayoutType = {
-  [breakpoint: string]: Array<LayoutItemType>;
+  [breakpoint: string]: LayoutItemType[];
 };
 
 export type WebUISettingsType = {

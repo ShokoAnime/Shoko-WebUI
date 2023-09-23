@@ -8,15 +8,15 @@ type Props = {
   type: string;
   placeholder?: string;
   value: string | number;
-  onChange: (event: any) => void;
-  onKeyUp?: (event: any) => void;
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;
   disabled?: boolean;
   center?: boolean;
   endIcon?: string;
-  endIconClick?: (event: any) => void;
+  endIconClick?: React.MouseEventHandler<HTMLDivElement>;
   startIcon?: string;
   inline?: boolean;
 };

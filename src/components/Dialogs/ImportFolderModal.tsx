@@ -16,6 +16,7 @@ import {
 } from '@/core/rtkQuery/splitV3Api/importFolderApi';
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/importFolder';
+import { isErrorWithMessage } from '@/core/util';
 
 import BrowseFolderModal from './BrowseFolderModal';
 
@@ -53,7 +54,7 @@ function ImportFolderModal() {
     }
   };
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const name = event.target.id;
     const value = name === 'WatchForNewFiles' ? event.target.value === '1' : event.target.value;
     setImportFolder({ ...importFolder, [name]: value });
@@ -62,28 +63,37 @@ function ImportFolderModal() {
   const handleBrowse = () => dispatch(setBrowseStatus(true));
   const handleClose = () => dispatch(setStatus(false));
   const handleDelete = async () => {
-    // TODO: can this be better typed?
-    const result: any = await deleteFolder({ folderId: ID });
-    if (!result.error) {
+    try {
+      await deleteFolder({ folderId: ID }).unwrap();
       toast.success('Import folder deleted!');
       dispatch(setStatus(false));
+    } catch (err) {
+      if (isErrorWithMessage(err)) {
+        console.error(err.message);
+      }
     }
   };
 
   const handleSave = async () => {
-    // TODO: can this be better typed?
-    let result;
     if (edit) {
-      result = await updateFolder(importFolder);
-      if (!result.error) {
+      try {
+        await updateFolder(importFolder);
         toast.success('Import folder edited!');
         dispatch(setStatus(false));
+      } catch (err) {
+        if (isErrorWithMessage(err)) {
+          console.error(err.message);
+        }
       }
     } else {
-      result = await createFolder(importFolder);
-      if (!result.error) {
+      try {
+        await createFolder(importFolder);
         toast.success('Import folder added!');
         dispatch(setStatus(false));
+      } catch (err) {
+        if (isErrorWithMessage(err)) {
+          console.error(err.message);
+        }
       }
     }
   };
@@ -95,11 +105,10 @@ function ImportFolderModal() {
     <>
       <ModalPanel
         show={status}
-        className="!top-0 flex-col gap-y-8 p-8 drop-shadow-lg"
         onRequestClose={() => handleClose()}
         onAfterOpen={() => getFolderDetails()}
+        title={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
       >
-        <div className="text-xl font-semibold">{edit ? 'Edit Import Folder' : 'Add New Import Folder'}</div>
         <Input
           id="Name"
           value={importFolder.Name}

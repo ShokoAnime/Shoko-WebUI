@@ -60,9 +60,9 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Search the title dump for the given query or directly using the anidb id.
-    getSeriesAniDBSearch: build.query<Array<SeriesAniDBSearchResult>, { query: string } & PaginationType>({
+    getSeriesAniDBSearch: build.query<SeriesAniDBSearchResult[], { query: string } & PaginationType>({
       query: ({ query, ...params }) => ({ url: `Series/AniDB/Search/${encodeURIComponent(query)}`, params }),
-      transformResponse: (response: any) => response.List,
+      transformResponse: (response: ListResultType<SeriesAniDBSearchResult[]>) => response.List,
       providesTags: ['SeriesSearch'],
     }),
 
@@ -114,6 +114,15 @@ const seriesApi = splitV3Api.injectEndpoints({
       invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes', 'SeriesSearch'],
     }),
 
+    // Queue a refresh of the AniDB Info for series with ID
+    refreshSeriesAnidbInfo: build.mutation<boolean, { seriesId: number, force?: boolean, cacheOnly?: boolean }>({
+      query: ({ cacheOnly = false, force = false, seriesId }) => ({
+        url: `Series/${seriesId}/AniDB/Refresh?force=${force}&cacheOnly=${cacheOnly}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
+
     // Get AniDB Info from the AniDB ID
     getSeriesAniDB: build.query<SeriesAniDBSearchResult, number>({
       query: anidbID => ({ url: `Series/AniDB/${anidbID}` }),
@@ -121,12 +130,12 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Gets anidb recommendation for the user
-    getAniDBRecommendedAnime: build.query<Array<SeriesRecommendedType>, PaginationType>({
+    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
-      transformResponse: (response: any) => response.List,
+      transformResponse: (response: ListResultType<SeriesRecommendedType[]>) => response.List,
     }),
 
-    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<Array<SeriesType>>, PaginationType>({
+    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
       query: params => ({
         url: 'Series/WithManuallyLinkedFiles',
         params,
@@ -135,7 +144,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     getSeriesFiles: build.query<
-      Array<FileType>,
+      FileType[],
       { seriesId: number, isManuallyLinked: boolean, includeXRefs: boolean }
     >({
       query: ({ seriesId, ...params }) => ({
@@ -150,22 +159,23 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}`,
         params,
       }),
+      providesTags: ['SeriesAniDB'],
     }),
 
-    getSeriesTags: build.query<Array<TagType>, { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
+    getSeriesTags: build.query<TagType[], { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/Tags`,
         params,
       }),
     }),
 
-    getAniDBRelated: build.query<Array<SeriesAniDBRelatedType>, { seriesId: string }>({
+    getAniDBRelated: build.query<SeriesAniDBRelatedType[], { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/AniDB/Related`,
       }),
     }),
 
-    getAniDBSimilar: build.query<Array<SeriesAniDBSimilarType>, { seriesId: string }>({
+    getAniDBSimilar: build.query<SeriesAniDBSimilarType[], { seriesId: string }>({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/AniDB/Similar`,
       }),
@@ -189,6 +199,33 @@ const seriesApi = splitV3Api.injectEndpoints({
         url: `Series/${seriesId}/Images`,
       }),
     }),
+
+    // Queue a refresh of all the TvDB data linked to a series using the seriesID.
+    refreshSeriesTvdbInfo: build.mutation<boolean, { seriesId: number, force?: boolean }>({
+      query: ({ force = false, seriesId }) => ({
+        url: `Series/${seriesId}/TvDB/Refresh?force=${force}`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesEpisodes'],
+    }),
+
+    // Rescan all files for a series
+    rescanSeriesFiles: build.mutation<void, { seriesId: number }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/File/Rescan`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
+
+    // Rehash all files for a series
+    rehashSeriesFiles: build.mutation<void, { seriesId: number }>({
+      query: ({ seriesId }) => ({
+        url: `Series/${seriesId}/File/Rehash`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['SeriesAniDB', 'SeriesEpisodes'],
+    }),
   }),
 });
 
@@ -211,4 +248,8 @@ export const {
   useLazyGetSeriesFilesQuery,
   useNextUpEpisodeQuery,
   useRefreshAnidbSeriesMutation,
+  useRefreshSeriesAnidbInfoMutation,
+  useRefreshSeriesTvdbInfoMutation,
+  useRehashSeriesFilesMutation,
+  useRescanSeriesFilesMutation,
 } = seriesApi;

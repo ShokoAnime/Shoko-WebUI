@@ -17,7 +17,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
     <div className="flex grow flex-col gap-y-4">
       <div className="flex justify-between font-semibold">
         <div className="opacity-65">
-          Episode
+          Episode&nbsp;
           {episode.AniDB?.EpisodeNumber}
         </div>
         {episode.Size > 1 && (

@@ -2,7 +2,7 @@ type BaseUserType = {
   ID: number;
   Username: string;
   IsAdmin: boolean;
-  RestrictedTags: Array<number>;
+  RestrictedTags: number[];
   Avatar: string;
   Password?: string;
 };
@@ -13,6 +13,6 @@ export type CommunitySitesType = {
   Plex: boolean;
 };
 
-export type ApiUserType = BaseUserType & { CommunitySites: Array<string> };
+export type ApiUserType = BaseUserType & { CommunitySites: string[] };
 
 export type UserType = BaseUserType & { CommunitySites: CommunitySitesType };

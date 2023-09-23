@@ -17,9 +17,9 @@ type Props = {
 function FiltersModal({ onClose, show }: Props) {
   const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
   const [triggerSubFilter, subFiltersResult] = useLazyGetFiltersQuery({});
-  const filters: Array<CollectionFilterType> = filtersResult?.data?.List ?? [] as Array<CollectionFilterType>;
-  const subFilters: Array<CollectionFilterType> = useMemo(
-    () => subFiltersResult?.data?.List ?? [] as Array<CollectionFilterType>,
+  const filters: CollectionFilterType[] = filtersResult?.data?.List ?? [] as CollectionFilterType[];
+  const subFilters: CollectionFilterType[] = useMemo(
+    () => subFiltersResult?.data?.List ?? [] as CollectionFilterType[],
     [subFiltersResult],
   );
 
@@ -99,10 +99,9 @@ function FiltersModal({ onClose, show }: Props) {
   return (
     <ModalPanel
       show={show}
-      className="flex-col gap-y-8 p-8 drop-shadow-lg"
       onRequestClose={onClose}
+      title="Filters"
     >
-      <div className="text-xl font-semibold">Filters</div>
       <div className="flex">
         <div className="flex min-h-[24rem] min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {renderTabSide('Filters', '0')}

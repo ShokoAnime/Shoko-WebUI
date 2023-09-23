@@ -11,6 +11,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/rtkQuery/splitV3Api/actionsApi';
+import { isErrorWithMessage } from '@/core/util';
 
 const actions = {
   import: {
@@ -89,10 +90,13 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   const [runActionTrigger] = useRunActionMutation();
 
   const runAction = async (name: string, action) => {
-    // TODO: figure out better type for this
-    const result: any = await runActionTrigger(action);
-    if (!result.error) {
+    try {
+      await runActionTrigger(action);
       toast.success(`Running action "${name}"`);
+    } catch (err) {
+      if (isErrorWithMessage(err)) {
+        console.error(err.message);
+      }
     }
   };
 
@@ -134,9 +138,8 @@ function ActionsModal({ onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      className="w-[40rem] flex-col gap-y-8 p-8 drop-shadow-lg"
+      title="Actions"
     >
-      <div className="text-xl font-semibold">Actions</div>
       <div className="flex">
         <div className="flex min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {map(actions, (value, key) => (

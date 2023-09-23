@@ -55,17 +55,20 @@ jobs:
         with:
           node-version: 18
 
-      - name: Install dependencies
-        run: yarn install
+      - name: Setup pnpm and install dependencies
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: true
 
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
 
       - name: Update version in package.json
         run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Build
-        run: yarn build
+        run: pnpm build
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 

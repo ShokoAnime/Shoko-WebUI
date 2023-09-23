@@ -3,7 +3,8 @@
     "airbnb",
     "airbnb-typescript",
     "airbnb/hooks",
-    "plugin:tailwindcss/recommended"
+    "plugin:tailwindcss/recommended",
+    "plugin:@typescript-eslint/recommended"
   ],
   "ignorePatterns": [
     "/*",
@@ -41,6 +42,11 @@
       "error",
       { "functions": false }
     ],
+    "@typescript-eslint/consistent-type-definitions": [
+      "error",
+      "type"
+    ],
+    "@typescript-eslint/array-type": "error",
     "arrow-parens": [
       "error",
       "as-needed",
@@ -93,6 +99,10 @@
     "prefer-object-spread": "off",
     "react/destructuring-assignment": "off",
     "react/function-component-definition": "off",
+    "react/jsx-key": [
+      "error",
+      { "checkFragmentShorthand": true, "checkKeyMustBeforeSpread": true }
+    ],
     "react/jsx-one-expression-per-line": [
       "error",
       { "allow": "single-child" }
@@ -109,6 +119,7 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "sort-destructure-keys/sort-destructure-keys": 2
+    "sort-destructure-keys/sort-destructure-keys": 2,
+    "no-undef": "error"
   }
 }

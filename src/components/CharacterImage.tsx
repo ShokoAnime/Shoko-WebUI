@@ -4,7 +4,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
   className?: string;
   imageSrc: string | null;
   hidePlaceholderOnHover?: boolean;

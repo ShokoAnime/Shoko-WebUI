@@ -18,8 +18,8 @@ import type { SettingsType } from '@/core/types/api/settings';
 type ContextType = {
   fetching: boolean;
   newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => {};
-  updateSetting: (type: string, key: string, value: string) => {};
+  setNewSettings: (settings: SettingsType) => void;
+  updateSetting: (type: string, key: string, value: string) => void;
   saveSettings: () => Promise<void>;
 };
 
@@ -52,13 +52,14 @@ function FirstRunPage() {
   const settingsQuery = useGetSettingsQuery();
   const settings = settingsQuery?.data ?? initialSettings;
   const [patchSettings] = usePatchSettingsMutation();
+  const [isPersistent, setIsPersistent] = useState(false);
   const status = useGetInitStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && !status.isLoading && status.data?.State !== 4) {
+    if (!status.isUninitialized && !isPersistent && !status.isLoading && status.data?.State !== 4) {
       navigate('../login', { replace: true });
     }
-  }, [navigate, status]);
+  }, [navigate, status, isPersistent]);
 
   const [newSettings, setNewSettings] = useState(initialSettings);
 
@@ -140,6 +141,7 @@ function FirstRunPage() {
           context={{
             fetching: settingsQuery.isLoading,
             newSettings,
+            setIsPersistent,
             setNewSettings,
             updateSetting,
             saveSettings,

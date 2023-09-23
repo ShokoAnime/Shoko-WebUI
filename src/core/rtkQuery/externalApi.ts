@@ -8,9 +8,9 @@ export const externalApi = createApi({
   refetchOnMountOrArgChange: true,
   endpoints: build => ({
     // Get blog posts from shokoanime.com
-    getShokoNewsFeed: build.query<Array<DashboardNewsType>, void>({
+    getShokoNewsFeed: build.query<DashboardNewsType[], void>({
       query: () => ({ url: 'https://shokoanime.com/jsonfeed/index.json' }),
-      transformResponse: (response: any) => response.items ?? [],
+      transformResponse: (response: { items?: DashboardNewsType[] }) => response.items ?? [],
     }),
   }),
 });
