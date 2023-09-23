@@ -5,9 +5,9 @@ import { Icon } from '@mdi/react';
 type Props = {
   id: string;
   value: string | number;
-  onChange: (event: any) => void;
+  onChange: React.ChangeEventHandler<HTMLSelectElement>;
   className?: string;
-  children: any;
+  children: React.ReactNode;
   label?: string;
 };
 

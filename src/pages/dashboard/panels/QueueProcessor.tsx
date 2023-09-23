@@ -112,7 +112,7 @@ function QueueProcessor() {
     );
   };
 
-  const commands: Array<React.ReactNode> = [];
+  const commands: React.ReactNode[] = [];
 
   if (items) {
     commands.push(renderItem('hasher', items.HasherQueueState));

@@ -47,7 +47,7 @@ type Option = {
 };
 
 type Props = {
-  options: Array<Option>;
+  options: Option[];
   value: number;
   onChange: (optionValue: number, label: string) => void;
   className?: string;
@@ -98,8 +98,8 @@ const SelectEpisodeList = (
 ) => {
   const [epFilter, setEpFilter] = useState(0);
   const [selected, setSelected] = useState(options[0]);
-  const [portalEl, setPortalEl] = useState(null as any);
-  const [displayNode, setDisplayNode] = React.useState(null as any);
+  const [portalEl, setPortalEl] = useState<HTMLDivElement | null>(null);
+  const [displayNode, setDisplayNode] = React.useState<HTMLDivElement | null>(null);
   const displayRef = useRef(null);
   const buttonRef = useRef(null);
 

@@ -54,7 +54,7 @@ function ManuallyLinkedFilesRow(props: Props) {
             id={`checkbox-${seriesId}-all`}
             isChecked={table.getIsAllRowsSelected()}
             onChange={() => {
-              const selectedIds: Array<number> = [];
+              const selectedIds: number[] = [];
               table.getRowModel().flatRows.reduce((result, row) => {
                 result.push(row.original.ID);
                 return result;

@@ -3,7 +3,7 @@ import Modal from 'react-modal';
 import cx from 'classnames';
 
 type Props = {
-  children: any;
+  children: React.ReactNode;
   show: boolean;
   title: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';

@@ -226,9 +226,10 @@ function UserManagementSettings() {
     if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
       tempUser.RestrictedTags.push(tagId);
       tempUser.RestrictedTags = tempUser.RestrictedTags.sort((tagA, tagB) => {
-        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name!;
-        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name!;
-        return tagAName.localeCompare(tagBName);
+        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name;
+        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name;
+        if (tagAName === undefined || tagBName === undefined) return 0;
+        return tagAName?.localeCompare(tagBName);
       });
     }
     if (!selected) remove(tempUser.RestrictedTags, tag => tag === tagId);

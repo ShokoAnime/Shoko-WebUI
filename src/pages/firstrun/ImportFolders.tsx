@@ -13,6 +13,7 @@ import {
   setEdit as setImportFolderModalEdit,
   setStatus as setImportFolderModalStatus,
 } from '@/core/slices/modals/importFolder';
+import { isErrorWithMessage } from '@/core/util';
 
 import Footer from './Footer';
 
@@ -31,10 +32,13 @@ const Folder = (props: ImportFolderType) => {
   const [deleteFolder] = useDeleteImportFolderMutation();
 
   const handleDeleteFolder = async (folderId) => {
-    // TODO: can this be better typed?
-    const result: any = await deleteFolder({ folderId });
-    if (!result.error) {
+    try {
+      await deleteFolder({ folderId });
       toast.success('Import folder deleted!');
+    } catch (err) {
+      if (isErrorWithMessage(err)) {
+        console.error(err.message);
+      }
     }
   };
 

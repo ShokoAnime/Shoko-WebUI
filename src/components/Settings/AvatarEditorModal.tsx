@@ -30,7 +30,8 @@ const AvatarEditorModal = (props: Props) => {
   }, [show]);
 
   const handleSave = () => {
-    const canvas: HTMLCanvasElement = imageEditor.current?.getImage();
+    if (!imageEditor.current) return;
+    const canvas: HTMLCanvasElement = imageEditor.current.getImage();
 
     if (canvas.width > 512) {
       const resizedCanvas = document.createElement('canvas');

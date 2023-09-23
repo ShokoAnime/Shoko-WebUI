@@ -16,7 +16,7 @@ const GroupView = () => {
 
   const group = useGetGroupQuery({ groupId: Number(groupId) }, { skip: !groupId });
   const series = useGetGroupSeriesQuery({ groupId }, { skip: !groupId });
-  const seriesInGroup = useMemo(() => series?.data ?? [] as Array<SeriesType>, [series]);
+  const seriesInGroup = useMemo(() => series?.data ?? [] as SeriesType[], [series]);
 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
   const itemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width - 40) / itemWidth));

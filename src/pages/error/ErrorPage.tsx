@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
 };
 
 const Fallback = ({ componentStack, error }) => {

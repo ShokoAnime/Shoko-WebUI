@@ -15,7 +15,7 @@ const AnidbDescription = ({ text }: { text: string }) => {
       .replaceAll(RemoveSummaryRegex, '')
       .replaceAll(CleanMultiEmptyLinesRegex, '\n');
 
-    const lines = [] as Array<React.ReactNode>;
+    const lines = [] as React.ReactNode[];
     let prevPos = 0;
     let pos = 0;
     let link = LinkRegex.exec(cleanedText);

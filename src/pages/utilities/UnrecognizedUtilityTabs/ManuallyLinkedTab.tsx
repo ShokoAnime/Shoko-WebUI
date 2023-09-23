@@ -171,7 +171,7 @@ function ManuallyLinkedTab() {
   const [unlinkFile] = useDeleteFileLinkMutation();
 
   const seriesQuery = useGetSeriesWithManuallyLinkedFilesQuery({ pageSize: 0 });
-  const series: ListResultType<Array<SeriesType>> = seriesQuery.data ?? { Total: 0, List: [] };
+  const series: ListResultType<SeriesType[]> = seriesQuery.data ?? { Total: 0, List: [] };
 
   const [searchQuery, setSearchQuery] = useState('');
   const filteredSeries = useMemo(() => {

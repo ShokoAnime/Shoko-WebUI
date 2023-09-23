@@ -51,7 +51,7 @@ function TreeNode(props: Props) {
     event.stopPropagation();
   };
 
-  const children: Array<React.ReactNode> = [];
+  const children: React.ReactNode[] = [];
   const data = nodeId === 0 ? drives.data! : folders.data!;
   if (expanded) {
     forEach(data, (node: DriveType | FolderType) => {

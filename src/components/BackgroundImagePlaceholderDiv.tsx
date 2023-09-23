@@ -6,7 +6,7 @@ import cx from 'classnames';
 import type { ImageType } from '@/core/types/api/common';
 
 type Props = {
-  children?: any;
+  children?: React.ReactNode;
   className?: string;
   image: ImageType | null;
   hidePlaceholderOnHover?: boolean;

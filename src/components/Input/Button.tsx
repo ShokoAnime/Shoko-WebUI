@@ -6,11 +6,11 @@ import cx from 'classnames';
 type Props = {
   buttonType?: string;
   className?: string;
-  children: any;
+  children: React.ReactNode;
   disabled?: boolean;
   loading?: boolean;
   loadingSize?: number;
-  onClick?: (...args: any) => void;
+  onClick?: React.MouseEventHandler<HTMLButtonElement>;
   submit?: boolean;
   tooltip?: string;
 };
