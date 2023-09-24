@@ -75,7 +75,6 @@ module.exports = {
         'panel-background-alt': 'var(--color-panel-background-alt)',
         'panel-background-toolbar': 'var(--color-panel-background-toolbar)',
         'panel-background-transparent': 'var(--color-panel-background-transparent)',
-        'panel-background-login': 'var(--color-panel-background-login)',
         'panel-border': 'var(--color-panel-border)',
         'panel-border-alt': 'var(--color-panel-border-alt)',
         'panel-text': 'var(--color-panel-text)',
@@ -112,6 +111,9 @@ module.exports = {
       opacity: {
         '65': '.65',
         '85': '.85',
+      },
+      dropShadow: {
+        'md': '0px 4px 4px rgba(0, 0, 0, 0.25)',
       }
     },
   },

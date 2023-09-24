@@ -109,11 +109,11 @@ function LoginPage() {
         )}
         style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}
       >
-        <div className="absolute right-0 top-0 border border-panel-border bg-panel-background-login px-8 py-4 font-semibold">
-          {imageMetadata.isError ? 'Spy X Family' : loginSeriesTitle}
+        <div className="absolute right-0 top-0 border border-panel-border bg-panel-background-transparent px-8 py-4 font-semibold">
+          {imageMetadata.isError ? 'One Piece' : loginSeriesTitle}
         </div>
 
-        <div className="flex w-[31.25rem] flex-col items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-login p-8">
+        <div className="flex w-[30rem] flex-col items-center gap-y-8 rounded-lg border border-panel-border bg-panel-background-transparent p-8 drop-shadow-md">
           <div className="flex flex-col items-center gap-y-4">
             <ShokoIcon className="w-24" />
             <div className="font-semibold">
@@ -187,15 +187,15 @@ function LoginPage() {
               </div>
             )}
             {status.data?.State === 4 && (
-              <div className="flex flex-col gap-y-12 py-8">
-                <div className="flex flex-col gap-y-4 px-4">
+              <div className="flex flex-col gap-y-8">
+                <div className="flex flex-col gap-y-4">
                   <div>Welcome and thanks for installing Shoko!</div>
-                  <div className="text-justify leading-6">
+                  <div className="text-justify">
                     Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
                     our&nbsp;
                     <span className="font-bold text-panel-important">First Run Wizard</span>
-                    to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only take you
-                    a couple minutes.
+                    &nbsp;to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only
+                    take you a couple minutes.
                   </div>
                   <div>
                     Click&nbsp;

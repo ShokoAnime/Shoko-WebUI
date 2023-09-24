@@ -47,7 +47,7 @@ const GridViewItem = ({ isSeries = false, item }: Props) => {
       <div className="group flex w-[13.0625rem] shrink-0 flex-col content-center">
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="mb-3 h-[19.0625rem] rounded-md border border-overlay-border drop-shadow-[0_4px_4px_rgba(0,0,0,0.25)]"
+          className="mb-3 h-[19.0625rem] rounded-md border border-overlay-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >

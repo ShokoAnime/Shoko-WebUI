@@ -81,7 +81,7 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.default-background');
   color: theme('colors.panel-text');
-  font-weight: 400;
+  font-weight: 300;
 }
 
 ::-webkit-scrollbar {
@@ -177,7 +177,7 @@ body {
 }
 
 .login-image-default {
-  background-image: url('/images/SpyXFamily.jpg');
+  background-image: url('/images/OnePiece.png');
 }
 
 /* Chromium Autofill Fix */
