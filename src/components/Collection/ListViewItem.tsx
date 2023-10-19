@@ -158,8 +158,12 @@ const ListViewItem = ({ isSeries, item, mainSeries }: Props) => {
                 <Icon path={mdiCalendarMonthOutline} size={1} />
                 <span className="text-sm font-semibold">
                   {moment(airDate).format('MMMM Do, YYYY')}
-                  &nbsp;-&nbsp;
-                  {!endDate ? 'Current' : moment(endDate).format('MMMM Do, YYYY')}
+                  {airDate !== endDate && (
+                    <>
+                      &nbsp;-&nbsp;
+                      {!endDate ? 'Current' : moment(endDate).format('MMMM Do, YYYY')}
+                    </>
+                  )}
                 </span>
               </div>
               {isSeriesOngoing && (
