@@ -8,56 +8,97 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
 
-import CardViewItem from '@/components/Collection/CardViewItem';
-import GridViewItem from '@/components/Collection/GridViewItem';
-import { useLazyGetGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import ListViewItem from '@/components/Collection/ListViewItem';
+import PosterViewItem from '@/components/Collection/PosterViewItem';
+import { useLazyGetGroupSeriesQuery, useLazyGetGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+
+import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   mode: string;
   setGroupTotal: (total: number) => void;
+  setTimelineSeries: (series: SeriesType[]) => void;
+  type: 'collection' | 'group';
 };
 
-const pageSize = 50;
+const defaultPageSize = 50;
 
-const CollectionView = (props: Props) => {
-  const { mode, setGroupTotal } = props;
+export const posterItemSize = {
+  width: 209,
+  height: 363,
+  gap: 16,
+};
 
-  const { filterId } = useParams();
+export const listItemSize = {
+  width: 907,
+  height: 328,
+  widthAlt: 740,
+  gap: 32,
+};
+
+const CollectionView = ({ mode, setGroupTotal, setTimelineSeries, type }: Props) => {
+  const { filterId, groupId } = useParams();
+
+  const settingsQuery = useGetSettingsQuery();
+  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const { showRandomPoster: showRandomPosterGrid } = settings.WebUI_Settings.collection.poster;
+  const { showRandomPoster: showRandomPosterList } = settings.WebUI_Settings.collection.list;
+  const showRandomPoster = useMemo(
+    () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),
+    [mode, showRandomPosterGrid, showRandomPosterList],
+  );
 
   const [itemWidth, itemHeight, itemGap] = useMemo(() => {
-    // Gaps are intentionally left with + notation to remove the need for calculations if dimensions are being changed
-    if (mode === 'grid') return [209 + 16, 337 + 16, 16]; // + 16 is to account for gap/margin
-    return [907 + 32, 328 + 32, 32]; // + 32 is to account for gap/margin
-  }, [mode]);
+    if (mode === 'poster') return [posterItemSize.width, posterItemSize.height, posterItemSize.gap];
+    return [groupId ? listItemSize.widthAlt : listItemSize.width, listItemSize.height, listItemSize.gap];
+  }, [mode, groupId]);
 
   const [fetchingPage, setFetchingPage] = useState(false);
 
   const [fetchGroups, groupsData] = useLazyGetGroupsQuery();
-  const groupPages = groupsData.data?.pages ?? {};
-  const groupTotal = groupsData.data?.total ?? 0;
+  const [fetchSeries, seriesData] = useLazyGetGroupSeriesQuery();
+
+  const pages = useMemo(
+    () => (type === 'collection' ? groupsData.data?.pages : seriesData.data?.pages) ?? {},
+    [groupsData, seriesData, type],
+  );
+  const total = (type === 'collection' ? groupsData.data?.total : seriesData.data?.total) ?? 0;
 
   const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewQuery();
   const groupExtras = groupExtrasData.data ?? [];
 
   useEffect(() => {
-    setGroupTotal(groupTotal);
-  }, [groupTotal, setGroupTotal]);
+    setGroupTotal(total);
+    if (type === 'group' && pages[1]) {
+      setTimelineSeries(pages[1] as SeriesType[]);
+    }
+  }, [total, setGroupTotal, type, pages, setTimelineSeries]);
+
+  // 999 to make it effectively infinite since Group/{id}/Series is not paginated
+  const pageSize = useMemo(() => (type === 'collection' ? defaultPageSize : 999), [type]);
 
   const fetchPage = useMemo(() =>
     debounce((page: number) => {
-      fetchGroups({ page, pageSize, filterId: filterId ?? '0' }).then((result) => {
-        if (!result.data) return;
+      if (type === 'collection') {
+        fetchGroups({ page, pageSize, filterId: filterId ?? '0', randomImages: showRandomPoster }).then(
+          (result) => {
+            if (!result.data) return;
 
-        const ids = result.data.pages[page].map(group => group.IDs.ID);
-        fetchGroupExtras({
-          GroupIDs: ids,
-          TagFilter: 128,
-          TagLimit: 20,
-          OrderByName: true,
-        }).then().catch(error => console.error(error));
-      }).catch(error => console.error(error)).finally(() => setFetchingPage(false));
-    }, 200), [filterId, fetchGroups, fetchGroupExtras]);
+            const ids = result.data.pages[page].map(group => group.IDs.ID);
+            fetchGroupExtras({
+              GroupIDs: ids,
+              TagFilter: 128,
+              TagLimit: 20,
+            }).then().catch(error => console.error(error));
+          },
+        ).catch(error => console.error(error)).finally(() => setFetchingPage(false));
+      } else {
+        fetchSeries({ groupId, randomImages: showRandomPoster }).then().catch(error => console.error(error));
+      }
+    }, 200), [filterId, fetchGroups, fetchGroupExtras, fetchSeries, groupId, pageSize, showRandomPoster, type]);
 
   useEffect(() => {
     fetchPage.cancel();
@@ -72,22 +113,22 @@ const CollectionView = (props: Props) => {
 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
-  const itemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width + itemGap) / itemWidth));
-  const count = useMemo(() => Math.ceil(groupTotal / itemsPerRow), [groupTotal, itemsPerRow]);
+  const itemsPerRow = Math.max(1, Math.floor(gridContainerBounds.width / itemWidth));
+  const count = useMemo(() => Math.ceil(total / itemsPerRow), [total, itemsPerRow]);
 
   const virtualizer = useVirtualizer({
     count,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => itemHeight,
+    estimateSize: () => itemHeight + itemGap,
     overscan: 2,
   });
 
-  if (groupTotal === 0) {
+  if (total === 0) {
     return (
       <div
         className={cx(
           'flex grow rounded-md items-center font-semibold justify-center',
-          mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
+          mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
         )}
       >
         {groupsData.isUninitialized || groupsData.isLoading
@@ -101,7 +142,7 @@ const CollectionView = (props: Props) => {
     <div
       className={cx(
         'flex grow rounded-md',
-        mode === 'grid' && 'px-6 py-8 bg-panel-background border-panel-border border',
+        mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
       )}
     >
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
@@ -121,8 +162,8 @@ const CollectionView = (props: Props) => {
           const neededPage1 = Math.ceil((fromIndex + 1) / pageSize);
           const neededPage2 = Math.ceil(toIndex / pageSize);
 
-          const groupList1 = groupPages[neededPage1];
-          const groupList2 = groupPages[neededPage2];
+          const groupList1 = pages[neededPage1];
+          const groupList2 = pages[neededPage2];
 
           if (groupList1 === undefined && !fetchingPage) {
             setFetchingPage(true);
@@ -138,38 +179,44 @@ const CollectionView = (props: Props) => {
           for (let i = fromIndex; i < toIndex; i += 1) {
             const neededPage = Math.ceil((i + 1) / pageSize);
             const relativeIndex = i % pageSize;
-            const groupList = groupPages[neededPage];
+            const groupList = pages[neededPage];
 
             const item = groupList !== undefined ? groupList[relativeIndex] : undefined;
 
             // Placeholder to solve formatting issues.
             // Used to fill the empty "slots" in the last row
-            const isPlaceholder = i > groupTotal - 1;
+            const isPlaceholder = i > total - 1;
 
             if (isPlaceholder) {
               items.push(
-                <div className={cx(mode === 'grid' ? 'w-[13.0625rem]' : 'w-[56.6875rem]')} key={`placeholder-${i}`} />,
+                <div
+                  key={`placeholder-${i}`}
+                  style={{
+                    width: `${itemWidth / 16}rem`,
+                  }}
+                />,
               );
             } else if (item) {
               items.push(
-                mode === 'grid'
-                  ? <GridViewItem item={item} key={`group-${item.IDs.ID}`} />
+                mode === 'poster'
+                  ? <PosterViewItem item={item} key={`group-${item.IDs.ID}`} isSeries={type === 'group'} />
                   : (
-                    <CardViewItem
+                    <ListViewItem
                       item={item}
                       mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)}
                       key={`group-${item.IDs.ID}`}
+                      isSeries={type === 'group'}
                     />
                   ),
               );
             } else {
               items.push(
                 <div
-                  className={cx(
-                    'flex items-center justify-center text-panel-primary shrink-0 rounded-md border border-panel-border',
-                    mode === 'grid' ? 'w-[13.0625rem] h-[21.0625rem]' : 'w-[56.6875rem] h-[20.5rem]',
-                  )}
+                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-primary"
                   key={`loading-${i}`}
+                  style={{
+                    width: `${itemWidth / 16}rem`,
+                  }}
                 >
                   <Icon path={mdiLoading} spin size={3} />
                 </div>,
@@ -180,12 +227,17 @@ const CollectionView = (props: Props) => {
           return (
             <div
               className={cx(
-                'absolute top-0 left-0 w-full flex items-center justify-center last:mb-0',
-                mode === 'grid' ? 'h-[21.0625rem] gap-x-4 mb-4' : 'h-[20.5rem] gap-x-8 mb-8',
+                'absolute top-0 left-0 w-full flex items-center justify-center last:pb-0',
+                mode === 'poster'
+                  ? 'gap-x-4 pb-4'
+                  : 'gap-x-8 pb-8',
               )}
-              style={{ transform: `translateY(${virtualRow.start}px)` }}
+              style={{
+                transform: `translateY(${virtualRow.start}px)`,
+              }}
               key={virtualRow.key}
               data-index={virtualRow.index}
+              ref={virtualizer.measureElement}
             >
               {items}
             </div>

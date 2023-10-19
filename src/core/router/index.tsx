@@ -6,7 +6,6 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'r
 
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import Collection from '@/pages/collection/Collection';
-import GroupView from '@/pages/collection/GroupView';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
 import SeriesEpisodes from '@/pages/collection/series/SeriesEpisodes';
@@ -86,9 +85,9 @@ const router = createBrowserRouter(
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
-            <Route index element={<Collection />} />
-            <Route path="filter/:filterId" element={<Collection />} />
-            <Route path="group/:groupId" element={<GroupView />} />
+            <Route index element={<Collection type="collection" />} />
+            <Route path="filter/:filterId" element={<Collection type="collection" />} />
+            <Route path="group/:groupId" element={<Collection type="group" />} />
             <Route path="series/:seriesId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />
@@ -115,7 +114,7 @@ const router = createBrowserRouter(
 
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
-  const webuiPreviewTheme = useSelector((state: RootState) => state.misc.webuiPreviewTheme) as string;
+  const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) ?? '') as string;
 
   const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
