@@ -53,9 +53,10 @@ type Props = {
   item: CollectionGroupType | SeriesType;
   isSeries?: boolean;
   mainSeries?: WebuiGroupExtra;
+  isSidebarOpen: boolean;
 };
 
-const ListViewItem = ({ isSeries, item, mainSeries }: Props) => {
+const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
   const settingsQuery = useGetSettingsQuery(undefined, { refetchOnMountOrArgChange: false });
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
@@ -115,7 +116,7 @@ const ListViewItem = ({ isSeries, item, mainSeries }: Props) => {
     <div
       className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-overlay-border bg-panel-background p-8"
       style={{
-        width: `${(isSeries ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
+        width: `${((isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
       }}
     >
       <div className="flex gap-x-4">

@@ -55,13 +55,8 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
   );
 };
 
-const TimelineSidebar = ({ mode, series }: { mode: 'poster' | 'list', series: SeriesType[] }) => (
-  <div
-    className={cx(
-      'flex overflow-hidden transition-all min-h-full',
-      mode === 'poster' ? 'w-[26.125rem]' : 'w-[20.875rem]',
-    )}
-  >
+const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
+  <div className="flex min-h-full w-[26.125rem] overflow-hidden transition-all">
     <div className="ml-8 flex grow flex-col gap-y-8 rounded border border-panel-border bg-panel-background p-8">
       <div className="text-xl font-semibold">Timeline</div>
       <div className="flex flex-col gap-y-4">
@@ -128,18 +123,24 @@ function Collection({ type }: Props) {
           </div>
         </div>
         <div className="flex grow">
-          <CollectionView mode={mode} setGroupTotal={setGroupTotal} setTimelineSeries={setTimelineSeries} type={type} />
+          <CollectionView
+            mode={mode}
+            setGroupTotal={setGroupTotal}
+            setTimelineSeries={setTimelineSeries}
+            type={type}
+            isSidebarOpen={showFilterSidebar}
+          />
           <div
             className={cx(
               'flex items-start overflow-hidden transition-all',
-              (!groupId && showFilterSidebar) ? 'w-[26.125rem] opacity-100 ml-8' : 'w-0 opacity-0',
+              (!groupId && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            <div className="line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
+            <div className="ml-8 line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
               Filter sidebar
             </div>
           </div>
-          {groupId && <TimelineSidebar mode={mode} series={timelineSeries} />}
+          {groupId && <TimelineSidebar series={timelineSeries} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />

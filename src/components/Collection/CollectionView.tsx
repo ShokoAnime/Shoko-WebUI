@@ -22,6 +22,7 @@ type Props = {
   setGroupTotal: (total: number) => void;
   setTimelineSeries: (series: SeriesType[]) => void;
   type: 'collection' | 'group';
+  isSidebarOpen: boolean;
 };
 
 const defaultPageSize = 50;
@@ -35,11 +36,11 @@ export const posterItemSize = {
 export const listItemSize = {
   width: 907,
   height: 328,
-  widthAlt: 740,
+  widthAlt: 698,
   gap: 32,
 };
 
-const CollectionView = ({ mode, setGroupTotal, setTimelineSeries, type }: Props) => {
+const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries, type }: Props) => {
   const { filterId, groupId } = useParams();
 
   const settingsQuery = useGetSettingsQuery();
@@ -53,8 +54,12 @@ const CollectionView = ({ mode, setGroupTotal, setTimelineSeries, type }: Props)
 
   const [itemWidth, itemHeight, itemGap] = useMemo(() => {
     if (mode === 'poster') return [posterItemSize.width, posterItemSize.height, posterItemSize.gap];
-    return [groupId ? listItemSize.widthAlt : listItemSize.width, listItemSize.height, listItemSize.gap];
-  }, [mode, groupId]);
+    return [
+      (groupId || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width,
+      listItemSize.height,
+      listItemSize.gap,
+    ];
+  }, [isSidebarOpen, mode, groupId]);
 
   const [fetchingPage, setFetchingPage] = useState(false);
 
@@ -206,6 +211,7 @@ const CollectionView = ({ mode, setGroupTotal, setTimelineSeries, type }: Props)
                       mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)}
                       key={`group-${item.IDs.ID}`}
                       isSeries={type === 'group'}
+                      isSidebarOpen={isSidebarOpen}
                     />
                   ),
               );
