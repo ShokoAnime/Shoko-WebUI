@@ -132,7 +132,7 @@ function Collection({ type }: Props) {
           <div
             className={cx(
               'flex items-start overflow-hidden transition-all',
-              showFilterSidebar ? 'w-[26.125rem] opacity-100 ml-8' : 'w-0 opacity-0',
+              (!groupId && showFilterSidebar) ? 'w-[26.125rem] opacity-100 ml-8' : 'w-0 opacity-0',
             )}
           >
             <div className="line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
