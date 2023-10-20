@@ -50,7 +50,7 @@ const collectionApi = splitV3Api.injectEndpoints({
         params: { includeEmpty, topLevelOnly },
       }),
     }),
-    getGroupSeries: build.query<InfiniteResultType<SeriesType[]>, { groupId?: string, randomImages?: boolean }>({
+    getGroupSeries: build.query<InfiniteResultType<SeriesType[]>, { groupId: string, randomImages?: boolean }>({
       query: ({ groupId, randomImages = true }) => ({
         url: `Group/${groupId}/Series`,
         params: {
