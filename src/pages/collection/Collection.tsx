@@ -56,8 +56,8 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 };
 
 const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
-  <div className="flex min-h-full w-[26.125rem] overflow-hidden transition-all">
-    <div className="ml-8 flex grow flex-col gap-y-8 rounded border border-panel-border bg-panel-background p-8">
+  <div className="flex min-h-full overflow-hidden transition-all">
+    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-8 rounded border border-panel-border bg-panel-background p-8">
       <div className="text-xl font-semibold">Timeline</div>
       <div className="flex flex-col gap-y-4">
         {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
