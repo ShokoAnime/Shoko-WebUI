@@ -12,7 +12,7 @@ export type GroupViewApiRequest = {
   GroupIDs: number[];
   TagFilter: number;
   TagLimit: number;
-  OrderByName: boolean;
+  OrderByName?: boolean;
 };
 
 export type SeriesOverviewApiRequest = {

@@ -410,6 +410,22 @@ export const initialSettings = {
     toastPosition: 'bottom-right',
     updateChannel: semver.prerelease(uiVersion()) ? 'Dev' : 'Stable',
     layout: initialLayout,
+    collection: {
+      view: 'poster',
+      poster: {
+        showEpisodeCount: true,
+        showGroupIndicator: true,
+        showUnwatchedCount: true,
+        showRandomPoster: false,
+      },
+      list: {
+        showItemType: true,
+        showGroupIndicator: true,
+        showTopTags: true,
+        showCustomTags: true,
+        showRandomPoster: false,
+      },
+    },
   },
   FirstRun: false,
   Database: {
@@ -544,7 +560,6 @@ function SettingsPage() {
   const saveSettings = async () => {
     try {
       await patchSettings({ oldSettings: settings, newSettings }).unwrap();
-      await settingsQuery.refetch();
     } catch (error) { /* empty */ }
   };
 

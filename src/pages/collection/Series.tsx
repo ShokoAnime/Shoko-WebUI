@@ -77,7 +77,9 @@ const Series = () => {
   const mainPoster = useMainPoster(series);
   const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
-  const groupData = useGetGroupQuery({ groupId: series.IDs?.ParentGroup }, { skip: !series.IDs?.ParentGroup });
+  const groupData = useGetGroupQuery({ groupId: series.IDs?.ParentGroup.toString() }, {
+    skip: !series.IDs?.ParentGroup,
+  });
   const group = groupData?.data ?? {} as CollectionGroupType;
 
   useEffect(() => {

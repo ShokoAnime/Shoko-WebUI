@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiCogOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
+import { Link } from 'react-router-dom';
+import { mdiCogOutline, mdiFilterMenuOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { cloneDeep } from 'lodash';
+import moment from 'moment/moment';
 
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
+import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
-import { useGetFilterQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetFilterQuery, useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { SeriesTypeEnum } from '@/core/types/api/series';
+import useMainPoster from '@/hooks/useMainPoster';
+import { initialSettings } from '@/pages/settings/SettingsPage';
+
+import type { SeriesType } from '@/core/types/api/series';
 
 const OptionButton = ({ icon, onClick }) => (
   <div
@@ -18,18 +29,79 @@ const OptionButton = ({ icon, onClick }) => (
   </div>
 );
 
-function Collection() {
-  const { filterId } = useParams();
+const TimelineItem = ({ series }: { series: SeriesType }) => {
+  const mainPoster = useMainPoster(series);
+  const seriesType = series.AniDB?.Type === SeriesTypeEnum.TVSpecial
+    ? 'TV Special'
+    : series.AniDB?.Type;
+
+  return (
+    <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+      <div className="flex gap-x-4" key={series.IDs.ID}>
+        <BackgroundImagePlaceholderDiv
+          image={mainPoster}
+          className="h-20 w-[3.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
+        />
+        <div className="flex flex-col font-semibold">
+          <div className="flex gap-y-2">
+            {moment(series.AniDB?.AirDate).year()}
+            &nbsp;|&nbsp;
+            <div className="text-panel-important">{seriesType}</div>
+          </div>
+          <div className="line-clamp-2">{series.Name}</div>
+        </div>
+      </div>
+    </Link>
+  );
+};
+
+const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
+  <div className="flex min-h-full overflow-hidden transition-all">
+    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-8 rounded border border-panel-border bg-panel-background p-8">
+      <div className="text-xl font-semibold">Timeline</div>
+      <div className="flex flex-col gap-y-4">
+        {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
+      </div>
+    </div>
+  </div>
+);
+
+type Props = {
+  type: 'collection' | 'group';
+};
+
+function Collection({ type }: Props) {
+  const { filterId, groupId } = useParams();
 
   const filterData = useGetFilterQuery({ filterId }, { skip: !filterId });
-  const filterName = filterId && filterData?.data?.Name;
+  const groupData = useGetGroupQuery({ groupId: groupId! }, { skip: !groupId });
+  const subsectionName = type === 'collection' ? filterData?.data?.Name : groupData?.data?.Name;
 
-  const [mode, setMode] = useState('grid');
+  const settingsQuery = useGetSettingsQuery();
+  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const viewSetting = settings.WebUI_Settings.collection.view;
+  const [patchSettings] = usePatchSettingsMutation();
+
+  const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, setShowFilterSidebar] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
+  const [showDisplaySettingsModal, setShowDisplaySettingsModal] = useState(false);
   const [groupTotal, setGroupTotal] = useState(0);
+  const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
-  const toggleMode = () => setMode(mode === 'card' ? 'grid' : 'card');
+  useEffect(() => {
+    setMode(viewSetting);
+  }, [viewSetting]);
+
+  const toggleMode = async () => {
+    const newMode = mode === 'list' ? 'poster' : 'list';
+    // Optimistically update view mode to reduce lag without waiting for settings refetch.
+    setMode(newMode);
+    const newSettings = cloneDeep(settings);
+    newSettings.WebUI_Settings.collection.view = newMode;
+    patchSettings({ oldSettings: settings, newSettings }).catch(console.error);
+  };
+
   const toggleFilters = () => {
     setShowFilterSidebar(!showFilterSidebar);
   };
@@ -38,28 +110,41 @@ function Collection() {
     <>
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
-          <CollectionTitle count={groupTotal} filterOrGroup={filterName} />
+          <CollectionTitle count={groupTotal} filterOrGroup={subsectionName} />
           <div className="flex gap-x-2">
-            <OptionButton onClick={toggleFilters} icon={mdiFilterOutline} />
-            <OptionButton onClick={toggleMode} icon={mode === 'grid' ? mdiFormatListText : mdiViewGridOutline} />
-            <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiCogOutline} />
+            {!groupId && (
+              <>
+                <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
+                <OptionButton onClick={toggleFilters} icon={mdiFilterOutline} />
+              </>
+            )}
+            <OptionButton onClick={toggleMode} icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline} />
+            <OptionButton onClick={() => setShowDisplaySettingsModal(true)} icon={mdiCogOutline} />
           </div>
         </div>
         <div className="flex grow">
-          <CollectionView mode={mode} setGroupTotal={setGroupTotal} />
+          <CollectionView
+            mode={mode}
+            setGroupTotal={setGroupTotal}
+            setTimelineSeries={setTimelineSeries}
+            type={type}
+            isSidebarOpen={showFilterSidebar}
+          />
           <div
             className={cx(
               'flex items-start overflow-hidden transition-all',
-              showFilterSidebar ? 'w-[25.9375rem] opacity-100 ml-8' : 'w-0 opacity-0',
+              (!groupId && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            <div className="line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
+            <div className="ml-8 line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
               Filter sidebar
             </div>
           </div>
+          {groupId && <TimelineSidebar series={timelineSeries} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />
+      <DisplaySettingsModal show={showDisplaySettingsModal} onClose={() => setShowDisplaySettingsModal(false)} />
     </>
   );
 }

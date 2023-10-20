@@ -162,7 +162,7 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesAniDB'],
     }),
 
-    getSeriesTags: build.query<TagType[], { seriesId: string, filter?: string, excludeDescriptions?: boolean }>({
+    getSeriesTags: build.query<TagType[], { seriesId: string, filter?: number, excludeDescriptions?: boolean }>({
       query: ({ seriesId, ...params }) => ({
         url: `Series/${seriesId}/Tags`,
         params,

@@ -183,6 +183,22 @@ export type WebUISettingsType = {
   layout: {
     [key: string]: LayoutType;
   };
+  collection: {
+    view: 'poster' | 'list';
+    poster: {
+      showEpisodeCount: boolean;
+      showGroupIndicator: boolean;
+      showUnwatchedCount: boolean;
+      showRandomPoster: boolean;
+    };
+    list: {
+      showItemType: boolean;
+      showGroupIndicator: boolean;
+      showTopTags: boolean;
+      showCustomTags: boolean;
+      showRandomPoster: boolean;
+    };
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {

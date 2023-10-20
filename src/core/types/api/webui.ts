@@ -1,13 +1,7 @@
 import type { CollectionFilterType } from './collection';
 import type { ImageType, RatingType } from './common';
 import type { SeriesTitleType } from './series';
-
-export type WebuiGroupExtraTag = {
-  ID: number;
-  Name: string;
-  Weight: number;
-  Source: 'AniDB' | 'User';
-};
+import type { TagType } from '@/core/types/api/tags';
 
 export type WebuiGroupExtra = {
   ID: number;
@@ -15,7 +9,7 @@ export type WebuiGroupExtra = {
   Rating: RatingType;
   AirDate: string | null;
   EndDate: string | null;
-  Tags: WebuiGroupExtraTag[];
+  Tags: TagType[];
 };
 
 export type WebuiSeriesRolePerson = {

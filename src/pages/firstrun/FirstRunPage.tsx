@@ -75,7 +75,6 @@ function FirstRunPage() {
   const saveSettings = async () => {
     try {
       await patchSettings({ oldSettings: settings, newSettings, skipValidation: true }).unwrap();
-      await settingsQuery.refetch();
     } catch (error) {
       console.error(error);
     }

@@ -31,10 +31,12 @@
   --color-panel-background-alt: #21242b;
   --color-panel-background-toolbar: #282e38;
   --color-panel-background-transparent: #2c333ee6;
+  --color-panel-background-overlay: #1e2027e5;
   --color-panel-border: #21242b;
   --color-panel-border-alt: #3f4762;
   --color-panel-text: #cfd8e3;
   --color-panel-text-alt: #010f1c;
+  --color-panel-text-transparent: #cfd8e3a6;
   --color-panel-primary: #44a3ff;
   --color-panel-primary-hover: #8ed3ff;
   --color-panel-important: #10c469;
