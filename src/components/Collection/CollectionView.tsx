@@ -133,8 +133,11 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
-  const itemsPerRow = Math.max(1, Math.floor(gridContainerBounds.width / itemWidth));
-  const count = useMemo(() => Math.ceil(total / itemsPerRow), [total, itemsPerRow]);
+  const [itemsPerRow, count] = useMemo(() => {
+    const tempItemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width) / itemWidth));
+    const tempCount = total === -1 ? 0 : Math.ceil(total / tempItemsPerRow);
+    return [tempItemsPerRow, tempCount];
+  }, [gridContainerBounds.width, itemWidth, total]);
 
   const virtualizer = useVirtualizer({
     count,
@@ -154,9 +157,13 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
           mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
         )}
       >
-        {isLoading || seriesData.total === -1
-          ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
-          : 'No series/groups available!'}
+        {/* This is always equal width to the actual grid container so we are using the ref here */}
+        {/* Otherwise we would need two refs to remove flicker */}
+        <div className="flex w-full justify-center" ref={gridContainerRef}>
+          {isLoading || seriesData.total === -1
+            ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
+            : 'No series/groups available!'}
+        </div>
       </div>
     );
   }
@@ -168,7 +175,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
         mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
       )}
     >
-      <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
+      <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
         {/* Each row is considered a virtual item here instead of each group */}
         {virtualizer.getVirtualItems().map((virtualRow) => {
           const { index } = virtualRow;
