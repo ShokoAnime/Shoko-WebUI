@@ -288,7 +288,7 @@ function UnrecognizedTab() {
                 refetch={() => filesQuery.refetch()}
                 setSeriesSelectModal={setSeriesSelectModal}
               />
-              <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
+              <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
                 <Button
                   buttonType="primary"
                   className="flex gap-x-2.5 px-4 py-3 font-semibold"
@@ -304,7 +304,7 @@ function UnrecognizedTab() {
                   disabled={dumpInProgress}
                 >
                   <Icon path={mdiDumpTruck} size={0.8333} />
-                  {isAvdumpFinished && 'Finish AVDump'}
+                  {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
                   {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
                 </Button>

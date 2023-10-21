@@ -162,7 +162,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
       <div
         className={cx(
           'flex grow rounded-md items-center font-semibold justify-center',
-          mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
+          mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
         )}
       >
         {/* This is always equal width to the actual grid container so we are using the ref here */}
@@ -180,7 +180,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     <div
       className={cx(
         'flex grow rounded-md',
-        mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
+        mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
       )}
     >
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>

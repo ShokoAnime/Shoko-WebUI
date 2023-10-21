@@ -111,17 +111,19 @@ function LanguagesModal({ onClose, type }: Props) {
       onRequestClose={onClose}
       title={`${type} Languages`}
     >
-      <div className="flex flex-col gap-y-1.5 overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt px-3 py-2">
-        {Object.keys(languageDescription).map(key => (
-          <Checkbox
-            id={key}
-            key={key}
-            isChecked={languages.includes(key)}
-            onChange={handleInputChange}
-            label={languageDescription[key]}
-            justify
-          />
-        ))}
+      <div className="w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+        <div className="flex h-80 flex-col gap-y-1.5 overflow-y-auto rounded-md bg-panel-input px-3 py-2">
+          {Object.keys(languageDescription).map(key => (
+            <Checkbox
+              id={key}
+              key={key}
+              isChecked={languages.includes(key)}
+              onChange={handleInputChange}
+              label={languageDescription[key]}
+              justify
+            />
+          ))}
+        </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Discard</Button>

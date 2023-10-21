@@ -38,7 +38,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
 
         return (
           <div className="flex flex-col gap-y-8" key={selectedFile.ID}>
-            <div className="flex grow gap-x-3 rounded-md border border-panel-border bg-panel-background px-4 py-3">
+            <div className="flex grow gap-x-3 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
               <div
                 className="flex cursor-pointer items-center gap-x-2"
                 onClick={async () => {

@@ -16,7 +16,7 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
         className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
       />
       <p className="mb-1 truncate text-center text-sm font-semibold" title={series.Name}>{series.Name}</p>
-      <p className="truncate text-center text-sm opacity-75" title={`${series.Size} Files`}>
+      <p className="truncate text-center text-sm font-semibold opacity-65" title={`${series.Size} Files`}>
         {series.Size}
         &nbsp;Files
       </p>

@@ -311,7 +311,7 @@ function GeneralSettings() {
               setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
           />
           Exclude following relations
-          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-input p-4">
             {Object.keys(exclusionMapping).map(item => (
               <Checkbox
                 justify

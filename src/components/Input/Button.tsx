@@ -44,7 +44,7 @@ function Button(props: Props) {
       className={cx([
         `${className} button font-semibold transition ease-in-out rounded focus:shadow-none focus:outline-none`,
         buttonType !== undefined
-        && `${buttonTypeClasses[buttonType]} drop-shadow-md`,
+        && `${buttonTypeClasses[buttonType]} border border-panel-border`,
         loading && 'cursor-default',
         disabled && 'opacity-50 cursor-default',
       ])}

@@ -79,7 +79,7 @@ function Input(props: Props) {
           {endIcon && (
             <div
               onClick={endIconClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-panel-text-primary"
+              className="text-panel-icon-primary absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
             >
               <Icon path={endIcon} size={1} horizontal vertical rotate={180} />
             </div>

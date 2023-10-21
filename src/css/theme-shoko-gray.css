@@ -12,7 +12,7 @@
   --button-secondary-hover: #404a59;
   --button-secondary-text: #cfd8e3;
   --header-background: #2c333e;
-  --header-icon-primary: #cfd8e3;
+  --header-icon: #cfd8e3;
   --header-text: #cfd8e3;
   --header-text-primary: #44a3ff;
   --header-text-important: #10c469;
@@ -25,10 +25,10 @@
   --panel-background-overlay: #1e2027e5;
   --panel-background-transparent: #2c333ea6;
   --panel-border: #21242b;
+  --panel-icon: #cfd8e3;
   --panel-icon-action: #44a3ff;
+  --panel-icon-danger: #ff6c6c;
   --panel-icon-important: #10c469;
-  --panel-icon-primary: #cfd8e3;
-  --panel-icon-remove: #ff6c6c;
   --panel-icon-warning: #f9c851;
   --panel-input: #1e2027;
   --panel-tags: #3f4762;
@@ -37,7 +37,6 @@
   --panel-text-important: #10c469;
   --panel-text-other: #b981ff;
   --panel-text-primary: #44a3ff;
-  --panel-text-primary65: #cfd8e3a6;
   --panel-text-warning: #f9c851;
   --slider-background: #21242b;
   --slider-background-alt: #282e38;

@@ -75,7 +75,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
     <div className={`${className} relative overflow-hidden`}>
       <div
         className={cx(
-          'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]',
+          'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-md',
           zoomOnHover && 'group-hover:scale-105 transition-transform',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}

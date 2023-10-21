@@ -81,7 +81,7 @@ function DashboardPage() {
           draggable: false,
           closeOnClick: false,
           toastId: 'layoutEditMode',
-          className: 'w-64 ml-auto',
+          className: 'max-w-[17rem] ml-auto',
         });
       } else {
         toast.infoUpdate('layoutEditMode', '', renderToast());

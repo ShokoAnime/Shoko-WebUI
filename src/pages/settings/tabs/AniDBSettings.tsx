@@ -362,7 +362,7 @@ function AniDBSettings() {
               <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
             <DnDList onDragEnd={result => onDragEnd(result)}>
               {newSettings.LanguagePreference.map(language => (
                 {
@@ -385,7 +385,7 @@ function AniDBSettings() {
               <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
             <DnDList onDragEnd={result => onDragEnd(result, true)}>
               {newSettings.EpisodeLanguagePreference.map(language => (
                 {

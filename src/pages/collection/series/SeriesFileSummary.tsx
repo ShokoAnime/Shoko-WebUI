@@ -103,7 +103,7 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
   const locationDetails = group.FileLocation ?? '-';
 
   return (
-    <div className="flex flex-col gap-y-8 rounded border border-panel-border p-8">
+    <div className="flex flex-col gap-y-8 rounded border border-panel-border bg-panel-background-transparent p-8">
       <div className="flex text-xl font-semibold">
         <Header ranges={group.RangeByType} />
       </div>

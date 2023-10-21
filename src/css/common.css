@@ -83,7 +83,7 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.panel-background-alt');
   color: theme('colors.panel-text');
-  font-weight: 300;
+  font-weight: 400;
 }
 
 ::-webkit-scrollbar {
@@ -103,12 +103,12 @@ body {
   height: 15%;
 }
 
-.bg-panel-background-alt::-webkit-scrollbar-track {
+.bg-panel-input::-webkit-scrollbar-track {
   background: theme('colors.slider-background-alt');
   border-radius: 10px;
 }
 
-.bg-panel-background-alt::-webkit-scrollbar-thumb {
+.bg-panel-input::-webkit-scrollbar-thumb {
   background: theme('colors.slider-color-alt');
   border-radius: 10px;
   border: 2px solid theme('colors.slider-background-alt');
@@ -120,7 +120,7 @@ body {
   scrollbar-width: thin;
 }
 
-.shoko-scrollbar * .bg-panel-background-alt {
+.shoko-scrollbar * .bg-panel-input {
   scrollbar-color: theme('colors.slider-color-alt') theme('colors.slider-background-alt');
   scrollbar-width: thin;
 }

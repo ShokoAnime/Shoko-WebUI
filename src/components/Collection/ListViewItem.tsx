@@ -40,7 +40,7 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
 const SeriesTag = ({ text, type }: { text: string, type: 'AniDB' | 'User' }) => (
   <div
     className={cx(
-      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-border-alt rounded-md p-2 whitespace-nowrap capitalize',
+      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-md p-2 whitespace-nowrap capitalize',
       type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
     )}
   >
@@ -114,7 +114,7 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
 
   return (
     <div
-      className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-overlay-border bg-panel-background p-8"
+      className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-panel-border bg-panel-background p-8"
       style={{
         width: `${((isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
       }}
@@ -132,12 +132,12 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
                 <Icon
                   path={mdiPencilCircleOutline}
                   size="2rem"
-                  className="text-overlay-icon"
+                  className="text-panel-icon-important"
                 />
               </Link>
             </div>
             {showGroupIndicator && groupCount > 1 && (
-              <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text-transparent opacity-100 transition-opacity group-hover:opacity-0">
+              <div className="text-panel-text-transparent absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">
                 {groupCount}
                 &nbsp;Series
               </div>

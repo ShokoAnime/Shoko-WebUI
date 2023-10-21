@@ -38,7 +38,7 @@ function Select(props: Props) {
           >
             {children}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 py-2 pr-2">
+          <div className="pointer-events-none absolute inset-y-0 right-0 py-2 pr-2 text-panel-icon">
             <Icon path={mdiChevronDown} size={1} />
           </div>
         </div>

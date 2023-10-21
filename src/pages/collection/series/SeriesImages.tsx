@@ -125,7 +125,7 @@ const SeriesImages = () => {
                 image={item}
                 className={cx(
                   'rounded-md drop-shadow-md border',
-                  item === selectedImage ? 'border-panel-important border-2 opacity-50' : 'border-panel-border',
+                  item === selectedImage ? 'border-panel-text-important border-2 opacity-65' : 'border-panel-border',
                   sizeMap[type],
                 )}
               />

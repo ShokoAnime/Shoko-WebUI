@@ -239,7 +239,7 @@ const SeriesOverview = () => {
           >
             <div className="grid grid-cols-2 grid-rows-3 gap-x-9 gap-y-4">
               {links.map(site => (
-                <div className="rounded border border-panel-border bg-panel-background px-4 py-3" key={site}>
+                <div className="rounded border border-panel-border bg-panel-background-alt px-4 py-3" key={site}>
                   <MetadataLink site={site} id={series.IDs[site]} series={series.Name} />
                 </div>
               ))}

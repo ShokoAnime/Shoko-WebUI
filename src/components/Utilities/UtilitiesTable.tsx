@@ -138,7 +138,7 @@ function UtilitiesTable(props: Props) {
               <tr
                 key={row.id}
                 className={cx(
-                  parseInt(row.id, 10) % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background',
+                  parseInt(row.id, 10) % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
                   'cursor-pointer',
                 )}
                 onClick={e => handleRowSelect(e, row)}

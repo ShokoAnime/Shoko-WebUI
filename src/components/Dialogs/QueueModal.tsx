@@ -282,21 +282,21 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
           Clear Queue
         </Button>
       </div>
-      <div className="flex flex-row">
-        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">
-          <div className="flex h-64 flex-col overflow-y-auto bg-panel-background-alt">
-            <div className="mt-0 flex gap-x-3">
-              <div className="grow">
-                <strong>Task</strong>
-              </div>
-              <div className="px-1">
-                <strong>Status</strong>
-              </div>
-            </div>
+      <div className="flex flex-col">
+        <div className="flex w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+          <div className="grow">
+            <strong>Task</strong>
+          </div>
+          <div className="px-1">
+            <strong>Status</strong>
+          </div>
+        </div>
+        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+          <div className="flex h-64 flex-col overflow-y-auto bg-panel-input">
             {items}
             {isLoading && (
               <div className="flex grow items-center justify-center">
-                <Icon path={mdiLoading} spin size={3} />
+                <Icon className="text-panel-text-primary" path={mdiLoading} spin size={3} />
               </div>
             )}
             {!isLoading && items.length === 0 && (

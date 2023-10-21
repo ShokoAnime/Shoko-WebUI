@@ -13,9 +13,9 @@ type Props = {
 };
 
 const sizeClass = {
-  sm: 'w-[31.25rem]',
+  sm: 'w-[32rem]',
   md: 'w-[40rem]',
-  lg: 'w-[56.875rem]',
+  lg: 'w-[62rem]',
 };
 
 function ModalPanel(props: Props) {

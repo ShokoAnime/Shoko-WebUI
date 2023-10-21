@@ -27,7 +27,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => (
       href={item.link}
       rel="noopener noreferrer"
       target="_blank"
-      className="mt-1 flex items-center space-x-2 font-semibold text-panel-text-primary"
+      className="mt-1 flex items-center space-x-2 font-semibold text-panel-icon-action"
     >
       <p className="font-semibold">{item.title}</p>
       <Icon path={mdiOpenInNew} size={1} />

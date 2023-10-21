@@ -375,8 +375,8 @@ function UserManagementSettings() {
           onChange={event => setTagSearch(event.target.value)}
         />
         <div className="flex flex-row">
-          <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">
-            <div className="h-64 overflow-y-auto bg-panel-background-alt">
+          <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+            <div className="h-64 overflow-y-auto bg-panel-input">
               {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
                 <div
                   className="mt-2 cursor-pointer first:mt-0"
@@ -391,7 +391,7 @@ function UserManagementSettings() {
         </div>
         <div className="border-b border-panel-border pb-8">
           <div className="my-4 font-semibold">Selected Tags</div>
-          <div className="flex min-h-[8rem] flex-col rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex min-h-[8rem] flex-col rounded-md border border-panel-border bg-panel-input p-4">
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
                 <div className="mt-2 flex justify-between capitalize first:mt-0" key={`selectedTag-${tag}`}>

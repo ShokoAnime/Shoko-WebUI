@@ -45,7 +45,7 @@ function EpisodeDetails(props: Props): JSX.Element {
         ? (
           <>
             <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
-            <p className="mb-2 truncate text-center text-sm opacity-75">{relativeTime}</p>
+            <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
           </>
         )
         : null}
@@ -65,7 +65,7 @@ function EpisodeDetails(props: Props): JSX.Element {
       <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
         {episode.SeriesTitle}
       </p>
-      <p className="truncate text-center text-sm opacity-75" title={title}>{title}</p>
+      <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
     </div>
   );
 }

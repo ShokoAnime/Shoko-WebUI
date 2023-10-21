@@ -11,15 +11,8 @@ module.exports = {
   ],
   //Any class that is generated dynamically goes here
   safelist: [
-    'bg-panel-extra',
-    'bg-panel-danger',
-    'bg-panel-warning',
-    'text-panel-extra',
-    'text-toast-danger',
-    'text-toast-important',
-    'text-toast-primary',
-    'text-toast-primary-hover',
-    'text-toast-warning',
+    'bg-panel-text-other',
+    'text-panel-text-other',
   ],
   theme: {
     transitionDuration: {
@@ -40,7 +33,7 @@ module.exports = {
         black: 800
       },
       colors: {
-        'button-danger': 'var(--button-delete)',
+        'button-danger': 'var(--button-danger)',
         'button-danger-border': 'var(--button-danger-border)',
         'button-danger-hover': 'var(--button-danger-hover)',
         'button-danger-text': 'var(--button-danger-text)',
@@ -53,7 +46,7 @@ module.exports = {
         'button-secondary-hover': 'var(--button-secondary-hover)',
         'button-secondary-text': 'var(--button-secondary-text)',
         'header-background': 'var(--header-background)',
-        'header-icon-primary': 'var(--header-icon-primary)',
+        'header-icon': 'var(--header-icon)',
         'header-text': 'var(--header-text)',
         'header-text-primary': 'var(--header-text-primary)',
         'header-text-important': 'var(--header-text-important)',
@@ -66,10 +59,10 @@ module.exports = {
         'panel-background-overlay': 'var(--panel-background-overlay)',
         'panel-background-transparent': 'var(--panel-background-transparent)',
         'panel-border': 'var(--panel-border)',
+        'panel-icon': 'var(--panel-icon)',
         'panel-icon-action': 'var(--panel-icon-action)',
+        'panel-icon-danger': 'var(--panel-icon-remove)',
         'panel-icon-important': 'var(--panel-icon-important)',
-        'panel-icon-primary': 'var(--panel-icon-primary)',
-        'panel-icon-remove': 'var(--panel-icon-remove)',
         'panel-icon-warning': 'var(--panel-icon-warning)',
         'panel-input': 'var(--panel-input)',
         'panel-tags': 'var(--panel-tags)',
@@ -78,7 +71,6 @@ module.exports = {
         'panel-text-important': 'var(--panel-text-important)',
         'panel-text-other': 'var(--panel-text-other)',
         'panel-text-primary': 'var(--panel-text-primary)',
-        'panel-text-primary65': 'var(--panel-text-primary65)',
         'panel-text-warning': 'var(--panel-text-warning)',
         'slider-background': 'var(--slider-background)',
         'slider-background-alt': 'var(--slider-background-alt)',

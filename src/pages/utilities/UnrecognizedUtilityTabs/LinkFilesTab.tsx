@@ -124,7 +124,11 @@ const AnimeResultRow = (
   });
 
   return (
-    <div key={data.ID} onClick={handleOnClick} className="flex cursor-pointer gap-x-2 gap-y-1">
+    <div
+      key={data.ID}
+      onClick={handleOnClick}
+      className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
+    >
       <a
         className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
         href={`https://anidb.net/anime/${data.ID}`}
@@ -155,7 +159,7 @@ const AnimeSelectPanel = (
 
   const debouncedSearch = useMemo(() =>
     debounce((query: string) => {
-      searchTrigger({ query, pageSize: 20 }).catch(() => {});
+      searchTrigger({ query, pageSize: 40 }).catch(() => {});
     }, 200), [searchTrigger]);
 
   const searchRows = useMemo(() => {
@@ -200,7 +204,7 @@ const AnimeSelectPanel = (
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex h-full flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt p-4">
+      <div className="flex flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
         {searchRows}
       </div>
     </div>

@@ -63,8 +63,8 @@ const LogsPage = () => {
       </div>
 
       <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
-        <div className="w-full rounded-md border  border-panel-border bg-panel-background-alt py-4 pr-4">
-          <div className="relative h-full grow overflow-y-auto bg-panel-background-alt" ref={parentRef}>
+        <div className="w-full rounded-md border border-panel-border bg-panel-input py-4 pr-4">
+          <div className="relative h-full grow overflow-y-auto bg-panel-input" ref={parentRef}>
             {(logsQuery.isLoading || logLines.length === 0)
               ? (
                 <div className="flex h-full grow items-center justify-center">

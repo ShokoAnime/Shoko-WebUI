@@ -65,45 +65,52 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       onRequestClose={onClose}
       title="AvDump Series Select"
     >
-      <Button
-        className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-text-primary p-2 font-semibold text-panel-text-alt"
-        onClick={handleCopy}
-      >
-        <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
-        Copy ED2K Hashes
-      </Button>
-      <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-background-alt p-4 text-sm">
-        {links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
-      </div>
-      <Input
-        id="search"
-        value={searchText}
-        type="text"
-        placeholder="Search..."
-        onChange={e => handleSearch(e.target.value)}
-        startIcon={mdiMagnify}
-      />
-      <div className="flex h-64 flex-col gap-y-1 overflow-y-auto overflow-x-clip rounded-md border border-panel-border bg-panel-background-alt p-4">
-        {searchResults.isLoading
-          ? (
-            <div className="flex h-full items-center justify-center">
-              <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
+      <div className="flex flex-col gap-y-4">
+        <Button
+          buttonType="primary"
+          className="flex w-full items-center justify-center gap-x-2.5 p-2"
+          onClick={handleCopy}
+        >
+          <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
+          Copy ED2K Hashes
+        </Button>
+        <div className="flex h-auto max-h-64 flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-input p-4 text-sm">
+          {links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)}
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <Input
+            id="search"
+            value={searchText}
+            type="text"
+            placeholder="Search..."
+            onChange={e => handleSearch(e.target.value)}
+            startIcon={mdiMagnify}
+          />
+          <div className="w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+            <div className="flex h-72 flex-col gap-y-1 overflow-y-auto overflow-x-clip rounded-md bg-panel-input pr-2 ">
+              {searchResults.isLoading
+                ? (
+                  <div className="flex h-full items-center justify-center">
+                    <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
+                  </div>
+                )
+                : (searchResults.data ?? []).map(result => (
+                  <a
+                    href={`https://anidb.net/anime/${result.ID}/release/add`}
+                    key={result.ID}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-between"
+                  >
+                    <div className="line-clamp-1">{result.Title}</div>
+                    <div className="text-panel-text-primary">
+                      <Icon path={mdiOpenInNew} size={0.833} />
+                    </div>
+                  </a>
+                ))}
             </div>
-          )
-          : (searchResults.data ?? []).map(result => (
-            <a
-              href={`https://anidb.net/anime/${result.ID}/release/add`}
-              key={result.ID}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center justify-between"
-            >
-              <div className="line-clamp-1">{result.Title}</div>
-              <div className="text-panel-text-primary">
-                <Icon path={mdiOpenInNew} size={0.833} />
-              </div>
-            </a>
-          ))}
+          </div>
+        </div>
       </div>
     </ModalPanel>
   );
