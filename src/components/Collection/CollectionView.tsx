@@ -15,13 +15,13 @@ import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
+import type { InfiniteResultType } from '@/core/types/api';
 import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   mode: string;
   setGroupTotal: (total: number) => void;
   setTimelineSeries: (series: SeriesType[]) => void;
-  type: 'collection' | 'group';
   isSidebarOpen: boolean;
 };
 
@@ -40,7 +40,7 @@ export const listItemSize = {
   gap: 32,
 };
 
-const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries, type }: Props) => {
+const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries }: Props) => {
   const { filterId, groupId } = useParams();
 
   const settingsQuery = useGetSettingsQuery();
@@ -64,30 +64,35 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
   const [fetchingPage, setFetchingPage] = useState(false);
 
   const [fetchGroups, groupsData] = useLazyGetGroupsQuery();
-  const [fetchSeries, seriesData] = useLazyGetGroupSeriesQuery();
+  const [fetchSeries, seriesDataResult] = useLazyGetGroupSeriesQuery();
+  const [seriesData, setSeriesData] = useState<InfiniteResultType<SeriesType[]>>({ pages: [], total: -1 });
 
-  const pages = useMemo(
-    () => (type === 'collection' ? groupsData.data?.pages : seriesData.data?.pages) ?? {},
-    [groupsData, seriesData, type],
+  const [pages, total] = useMemo(
+    () => {
+      const data = groupId ? seriesData : groupsData?.data;
+      return [data?.pages ?? {}, data?.total ?? 0];
+    },
+    [groupId, groupsData, seriesData],
   );
-  const total = (type === 'collection' ? groupsData.data?.total : seriesData.data?.total) ?? 0;
 
   const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewQuery();
   const groupExtras = groupExtrasData.data ?? [];
 
   useEffect(() => {
     setGroupTotal(total);
-    if (type === 'group' && pages[1]) {
+    if (groupId && pages[1]) {
       setTimelineSeries(pages[1] as SeriesType[]);
+    } else {
+      setTimelineSeries([]);
     }
-  }, [total, setGroupTotal, type, pages, setTimelineSeries]);
+  }, [total, setGroupTotal, groupId, pages, setTimelineSeries]);
 
   // 999 to make it effectively infinite since Group/{id}/Series is not paginated
-  const pageSize = useMemo(() => (type === 'collection' ? defaultPageSize : 999), [type]);
+  const pageSize = useMemo(() => (groupId ? 999 : defaultPageSize), [groupId]);
 
   const fetchPage = useMemo(() =>
     debounce((page: number) => {
-      if (type === 'collection') {
+      if (!groupId) {
         fetchGroups({ page, pageSize, filterId: filterId ?? '0', randomImages: showRandomPoster }).then(
           (result) => {
             if (!result.data) return;
@@ -101,18 +106,28 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
           },
         ).catch(error => console.error(error)).finally(() => setFetchingPage(false));
       } else {
-        fetchSeries({ groupId, randomImages: showRandomPoster }).then().catch(error => console.error(error));
+        fetchSeries({ groupId, randomImages: showRandomPoster })
+          .then(result => result.data && setSeriesData(result.data))
+          .catch(error => console.error(error)).finally(() => setFetchingPage(false));
       }
-    }, 200), [filterId, fetchGroups, fetchGroupExtras, fetchSeries, groupId, pageSize, showRandomPoster, type]);
+    }, 200), [filterId, fetchGroups, fetchGroupExtras, fetchSeries, groupId, pageSize, showRandomPoster]);
 
   useEffect(() => {
     fetchPage.cancel();
     setFetchingPage(false);
 
-    fetchPage(1);
+    const shouldFetch = groupId ? true : groupsData.isUninitialized;
+
+    if (shouldFetch) {
+      fetchPage(1);
+    }
 
     return () => fetchPage.cancel();
-  }, [filterId, fetchPage]);
+  }, [filterId, groupId, groupsData.isUninitialized, fetchPage]);
+
+  useEffect(() => {
+    if (!groupId) setSeriesData({ pages: [], total: -1 });
+  }, [groupId]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
@@ -128,7 +143,10 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
     overscan: 2,
   });
 
-  if (total === 0) {
+  if (total <= 0) {
+    const isLoading = groupId
+      ? (seriesDataResult.isUninitialized || seriesDataResult.isLoading)
+      : (groupsData.isUninitialized || groupsData.isLoading);
     return (
       <div
         className={cx(
@@ -136,7 +154,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
           mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
         )}
       >
-        {groupsData.isUninitialized || groupsData.isLoading
+        {isLoading || seriesData.total === -1
           ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
           : 'No series/groups available!'}
       </div>
@@ -204,13 +222,13 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
             } else if (item) {
               items.push(
                 mode === 'poster'
-                  ? <PosterViewItem item={item} key={`group-${item.IDs.ID}`} isSeries={type === 'group'} />
+                  ? <PosterViewItem item={item} key={`group-${item.IDs.ID}`} isSeries={!!groupId} />
                   : (
                     <ListViewItem
                       item={item}
                       mainSeries={groupExtras.find(extra => extra.ID === item.IDs.ID)}
                       key={`group-${item.IDs.ID}`}
-                      isSeries={type === 'group'}
+                      isSeries={!!groupId}
                       isSidebarOpen={isSidebarOpen}
                     />
                   ),

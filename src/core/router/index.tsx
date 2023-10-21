@@ -85,9 +85,9 @@ const router = createBrowserRouter(
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
-            <Route index element={<Collection type="collection" />} />
-            <Route path="filter/:filterId" element={<Collection type="collection" />} />
-            <Route path="group/:groupId" element={<Collection type="group" />} />
+            <Route index element={<Collection />} />
+            <Route path="filter/:filterId" element={<Collection />} />
+            <Route path="group/:groupId" element={<Collection />} />
             <Route path="series/:seriesId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />

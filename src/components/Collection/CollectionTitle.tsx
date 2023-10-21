@@ -22,7 +22,7 @@ const CollectionTitle = ({ count, filterOrGroup }: Props) => (
     )}
     <span>|</span>
     <span className="text-panel-important">
-      {count}
+      {count === -1 ? 0 : count}
       &nbsp;Items
     </span>
   </div>
