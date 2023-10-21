@@ -11,9 +11,9 @@ const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroups: build.query<
       InfiniteResultType<CollectionGroupType[]>,
-      PaginationType & { filterId: string, randomImages?: boolean }
+      PaginationType & { filterId: string, randomImages?: boolean, queryId: number }
     >({
-      query: ({ filterId, randomImages, ...params }) => ({
+      query: ({ filterId, queryId: _, randomImages, ...params }) => ({
         url: `Filter/${filterId}/Group`,
         params: { includeEmpty: true, randomImages, ...params },
       }),
