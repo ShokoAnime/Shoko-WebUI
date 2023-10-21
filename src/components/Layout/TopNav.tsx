@@ -61,14 +61,14 @@ const MenuItem = (
       onClick();
     }}
   >
-    <Icon path={icon} size={0.8333} />
+    <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
     {text}
   </NavLink>
 );
 
 const ExternalLinkMenuItem = ({ icon, url }: { url: string, icon: string }) => (
   <a href={url} target="_blank" rel="noreferrer noopener">
-    <Icon path={icon} size={0.8333} />
+    <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
   </a>
 );
 
@@ -150,10 +150,10 @@ function TopNav() {
     <NavLink
       to={path}
       key={path.split('/').pop()}
-      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-header-text-primary')}
+      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-topnav-text-primary')}
       onClick={closeModalsAndSubmenus}
     >
-      <Icon path={icon} size={0.8333} />
+      <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
       {text}
     </NavLink>
   ), []);
@@ -175,11 +175,11 @@ function TopNav() {
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
               <div
-                className={cx(['cursor-pointer', showQueueModal ? 'text-header-text-primary' : undefined])}
+                className={cx(['cursor-pointer', showQueueModal ? 'text-topnav-text-primary' : undefined])}
                 onClick={handleQueueModalOpen}
                 title="Show Queue Modal"
               >
-                <Icon path={mdiServer} size={0.8333} />
+                <Icon className="text-header-icon" path={mdiServer} size={0.8333} />
               </div>
               <span className="text-header-text-important">
                 {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
@@ -187,7 +187,7 @@ function TopNav() {
               </span>
             </div>
             <div className="flex items-center gap-x-2">
-              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-header-user-text text-xl">
+              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
                 {currentUser.data?.Avatar
                   ? <img src={currentUser.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
                   : currentUser.data?.Username.charAt(0)}
@@ -197,10 +197,10 @@ function TopNav() {
             </div>
             <NavLink
               to="settings"
-              className={({ isActive }) => (isActive ? 'text-header-text-primary' : '')}
+              className={({ isActive }) => (isActive ? 'text-topnav-text-primary' : '')}
               onClick={() => closeModalsAndSubmenus()}
             >
-              <Icon path={mdiCogOutline} size={0.8333} />
+              <Icon className="text-header-icon" path={mdiCogOutline} size={0.8333} />
             </NavLink>
           </div>
         </div>
@@ -254,7 +254,7 @@ function TopNav() {
                       : mdiDownloadCircleOutline}
                     size={1}
                     className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
-                      ? 'text-header-text-primary'
+                      ? 'text-topnav-text-primary'
                       : 'text-header-text-important'}
                     spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                   />

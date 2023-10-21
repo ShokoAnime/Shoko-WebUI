@@ -121,7 +121,7 @@ function GeneralSettings() {
             <Icon
               path={mdiRefresh}
               size={1}
-              className="text-panel-text-primary"
+              className="text-panel-icon-action"
               spin={webuiUpdateCheckResult.isFetching}
             />
           </Button>
@@ -141,7 +141,7 @@ function GeneralSettings() {
               >
                 {`(${version.data?.Server.Commit?.slice(0, 7)})`}
               </a>
-              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex justify-between">
@@ -160,7 +160,7 @@ function GeneralSettings() {
               >
                 {`(${UI_VERSION})`}
               </a>
-              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex items-center justify-between">

@@ -48,7 +48,7 @@ const SeriesTab = ({ icon, text, to }) => (
         isActive && 'text-panel-text-primary',
       )}
   >
-    <Icon path={icon} size={1} />
+    <Icon className="text-panel-icon" path={icon} size={1} />
     {text}
   </NavLink>
 );

@@ -248,10 +248,10 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-panel-text-primary" />
+                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-panel-icon-action" />
                 </div>
                 <div onClick={() => deleteSelectedUser(user)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-text-danger" />
+                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-icon-danger" />
                 </div>
               </div>
             </div>

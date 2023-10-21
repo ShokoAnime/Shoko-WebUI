@@ -14,7 +14,6 @@
   --header-background: #2c333e;
   --header-icon: #cfd8e3;
   --header-text: #cfd8e3;
-  --header-text-primary: #44a3ff;
   --header-text-important: #10c469;
   --header-user-background: #44a3ff;
   --header-user-text: #010f1c;
@@ -48,4 +47,5 @@
   --topnav-icon-primary: #cfd8e3;
   --topnav-icon-warning: #f9c851;
   --topnav-text: #cfd8e3;
+  --topnav-text-primary: #44a3ff;
 }

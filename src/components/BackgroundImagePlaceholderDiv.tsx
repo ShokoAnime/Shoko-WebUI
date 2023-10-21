@@ -87,7 +87,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
               hidePlaceholderOnHover && 'group-hover:opacity-0',
             )}
           >
-            <Icon path={mdiInformationOutline} size={1.5} className="text-panel-text-important" />
+            <Icon path={mdiInformationOutline} size={1.5} className="text-panel-icon-important" />
             <div className="my-4 font-semibold">Failed to Load</div>
             {imageError}
           </div>

@@ -48,7 +48,6 @@ module.exports = {
         'header-background': 'var(--header-background)',
         'header-icon': 'var(--header-icon)',
         'header-text': 'var(--header-text)',
-        'header-text-primary': 'var(--header-text-primary)',
         'header-text-important': 'var(--header-text-important)',
         'header-user-background': 'var(--header-user-background)',
         'header-user-text': 'var(--header-user-text)',
@@ -82,6 +81,7 @@ module.exports = {
         'topnav-icon-primary': 'var(--topnav-icon-primary)',
         'topnav-icon-warning': 'var(--topnav-icon-warning)',
         'topnav-text': 'var(--topnav-text)',
+        'topnav-text-primary': 'var(--topnav-text-primary)',
         transparent: 'transparent',
       },
       spacing: {

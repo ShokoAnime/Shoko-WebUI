@@ -80,7 +80,7 @@ const MetadataLink = ({ id, series, site }: { site: string, id: number | number[
             >
               {/* TODO: Use name from metadata source instead of series name in Shoko */}
               {`${series} (${linkId})`}
-              <Icon path={mdiOpenInNew} size={1} />
+              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )
           : 'Series Not Linked'}
@@ -90,16 +90,16 @@ const MetadataLink = ({ id, series, site }: { site: string, id: number | number[
           ? (
             <>
               <Button disabled>
-                <Icon className="text-panel-text-primary" path={mdiPencilCircleOutline} size={1} />
+                <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
               </Button>
               <Button disabled>
-                <Icon className="text-panel-text-danger" path={mdiCloseCircleOutline} size={1} />
+                <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
               </Button>
             </>
           )
           : (
             <Button disabled>
-              <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
+              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
             </Button>
           )}
       </div>
