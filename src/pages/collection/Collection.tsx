@@ -66,16 +66,12 @@ const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
   </div>
 );
 
-type Props = {
-  type: 'collection' | 'group';
-};
-
-function Collection({ type }: Props) {
+function Collection() {
   const { filterId, groupId } = useParams();
 
   const filterData = useGetFilterQuery({ filterId }, { skip: !filterId });
   const groupData = useGetGroupQuery({ groupId: groupId! }, { skip: !groupId });
-  const subsectionName = type === 'collection' ? filterData?.data?.Name : groupData?.data?.Name;
+  const subsectionName = groupId ? groupData?.data?.Name : filterData?.data?.Name;
 
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
@@ -127,7 +123,6 @@ function Collection({ type }: Props) {
             mode={mode}
             setGroupTotal={setGroupTotal}
             setTimelineSeries={setTimelineSeries}
-            type={type}
             isSidebarOpen={showFilterSidebar}
           />
           <div
