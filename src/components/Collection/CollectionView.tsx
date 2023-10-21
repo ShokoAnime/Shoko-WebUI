@@ -66,6 +66,8 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
   const [fetchGroups, groupsData] = useLazyGetGroupsQuery();
   const [fetchSeries, seriesDataResult] = useLazyGetGroupSeriesQuery();
   const [seriesData, setSeriesData] = useState<InfiniteResultType<SeriesType[]>>({ pages: [], total: -1 });
+  // This is to set an extra arg for groupsQuery so that cache is invalidated correctly. Using state because this should not change once component is mounted.
+  const [groupQueryId] = useState(Date.now());
 
   const [pages, total] = useMemo(
     () => {
@@ -93,7 +95,13 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
   const fetchPage = useMemo(() =>
     debounce((page: number) => {
       if (!groupId) {
-        fetchGroups({ page, pageSize, filterId: filterId ?? '0', randomImages: showRandomPoster }).then(
+        fetchGroups({
+          page,
+          pageSize,
+          filterId: filterId ?? '0',
+          randomImages: showRandomPoster,
+          queryId: groupQueryId,
+        }).then(
           (result) => {
             if (!result.data) return;
 
@@ -110,7 +118,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
           .then(result => result.data && setSeriesData(result.data))
           .catch(error => console.error(error)).finally(() => setFetchingPage(false));
       }
-    }, 200), [filterId, fetchGroups, fetchGroupExtras, fetchSeries, groupId, pageSize, showRandomPoster]);
+    }, 200), [groupId, fetchGroups, pageSize, filterId, showRandomPoster, groupQueryId, fetchGroupExtras, fetchSeries]);
 
   useEffect(() => {
     fetchPage.cancel();
