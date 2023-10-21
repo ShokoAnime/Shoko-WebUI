@@ -87,7 +87,7 @@ function UtilitiesTable(props: Props) {
       <Icon
         path={mdiMenuUp}
         size={1}
-        className="ml-2 inline text-panel-primary transition-transform"
+        className="ml-2 inline text-panel-text-primary transition-transform"
         rotate={sortCriteria === (criteria * -1) ? 180 : 0}
       />
     );
@@ -101,7 +101,7 @@ function UtilitiesTable(props: Props) {
       >
         <thead className="sticky top-0 z-[1]">
           {table.getHeaderGroups().map(headerGroup => (
-            <tr key={headerGroup.id} className="bg-panel-background-toolbar">
+            <tr key={headerGroup.id} className="bg-panel-background-alt">
               {headerGroup.headers.map(header => (
                 <th
                   key={header.id}
@@ -148,7 +148,7 @@ function UtilitiesTable(props: Props) {
                     key={cell.id}
                     className={cx(
                       'py-4 first:rounded-l-md last:rounded-r-md border-y first:border-l last:border-r first:pl-6 pr-6 transition-colors',
-                      row.getIsSelected() ? 'border-panel-primary' : 'border-panel-border',
+                      row.getIsSelected() ? 'border-panel-text-primary' : 'border-panel-border',
                     )}
                   >
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}

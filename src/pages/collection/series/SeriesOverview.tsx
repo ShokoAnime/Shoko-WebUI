@@ -74,7 +74,7 @@ const MetadataLink = ({ id, series, site }: { site: string, id: number | number[
           ? (
             <a
               href={siteLink}
-              className="flex gap-x-2 font-semibold text-panel-primary"
+              className="flex gap-x-2 font-semibold text-panel-text-primary"
               rel="noopener noreferrer"
               target="_blank"
             >
@@ -90,16 +90,16 @@ const MetadataLink = ({ id, series, site }: { site: string, id: number | number[
           ? (
             <>
               <Button disabled>
-                <Icon className="text-panel-primary" path={mdiPencilCircleOutline} size={1} />
+                <Icon className="text-panel-text-primary" path={mdiPencilCircleOutline} size={1} />
               </Button>
               <Button disabled>
-                <Icon className="text-panel-danger" path={mdiCloseCircleOutline} size={1} />
+                <Icon className="text-panel-text-danger" path={mdiCloseCircleOutline} size={1} />
               </Button>
             </>
           )
           : (
             <Button disabled>
-              <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
+              <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           )}
       </div>
@@ -164,7 +164,7 @@ const SeriesOverview = () => {
             {overview?.FirstAirSeason
               ? (
                 <Link
-                  className="font-semibold text-panel-primary"
+                  className="font-semibold text-panel-text-primary"
                   to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
                 >
                   {overview.FirstAirSeason.Name}
@@ -192,7 +192,7 @@ const SeriesOverview = () => {
                 rel="noopener noreferrer"
                 target="_blank"
                 key={jpOfficialSite.Name}
-                className="font-semibold text-panel-primary"
+                className="font-semibold text-panel-text-primary"
               >
                 {jpOfficialSite.Name}
               </a>
@@ -203,7 +203,7 @@ const SeriesOverview = () => {
                 rel="noopener noreferrer"
                 target="_blank"
                 key={enOfficialSite.Name}
-                className="font-semibold text-panel-primary"
+                className="font-semibold text-panel-text-primary"
               >
                 {enOfficialSite.Name}
               </a>
@@ -224,7 +224,7 @@ const SeriesOverview = () => {
                 <Icon path={mdiChevronRight} size={1} />
                 <a
                   href={`https://anidb.net/anime/${series.IDs.AniDB}`}
-                  className="flex items-center gap-x-2 text-panel-primary"
+                  className="flex items-center gap-x-2 text-panel-text-primary"
                   rel="noopener noreferrer"
                   target="_blank"
                 >
@@ -266,7 +266,7 @@ const SeriesOverview = () => {
                       className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
                     <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-important">{itemRelation}</span>
+                    <span className="text-sm text-panel-text-important">{itemRelation}</span>
                   </div>
                 );
               }
@@ -281,7 +281,7 @@ const SeriesOverview = () => {
                     className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                   />
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-important">{itemRelation}</span>
+                  <span className="text-sm text-panel-text-important">{itemRelation}</span>
                 </Link>
               );
             })}
@@ -306,7 +306,7 @@ const SeriesOverview = () => {
                       className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
                     <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-important">
+                    <span className="text-sm text-panel-text-important">
                       {round(item.UserApproval.Value, 2)}
                       % (
                       {item.UserApproval.Votes}
@@ -326,7 +326,7 @@ const SeriesOverview = () => {
                     className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                   />
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-important">
+                  <span className="text-sm text-panel-text-important">
                     {round(item.UserApproval.Value, 2)}
                     % (
                     {item.UserApproval.Votes}

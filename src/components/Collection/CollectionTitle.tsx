@@ -11,7 +11,7 @@ type Props = {
 
 const CollectionTitle = ({ count, filterOrGroup }: Props) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
-    <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-primary' : 'pointer-events-none')}>
+    <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
       Entire Collection
     </Link>
     {filterOrGroup && (
@@ -21,7 +21,7 @@ const CollectionTitle = ({ count, filterOrGroup }: Props) => (
       </>
     )}
     <span>|</span>
-    <span className="text-panel-important">
+    <span className="text-panel-text-important">
       {count}
       &nbsp;Items
     </span>

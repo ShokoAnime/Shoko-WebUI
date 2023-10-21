@@ -110,10 +110,10 @@ const Action = ({ actionKey }: { actionKey: string }) => {
       <div className="flex justify-between gap-x-3">
         {name}
         <div className="flex gap-x-2.5">
-          <Button onClick={() => setShowInfo(prev => !prev)} className="text-panel-primary">
+          <Button onClick={() => setShowInfo(prev => !prev)} className="text-panel-text-primary">
             <Icon path={mdiInformationOutline} size={1} />
           </Button>
-          <Button onClick={() => runAction(name, functionName)} className="text-panel-primary">
+          <Button onClick={() => runAction(name, functionName)} className="text-panel-text-primary">
             <Icon path={mdiPlayCircleOutline} size={1} />
           </Button>
         </div>
@@ -144,7 +144,7 @@ function ActionsModal({ onClose, show }: Props) {
         <div className="flex min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {map(actions, (value, key) => (
             <div
-              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-primary')}
+              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
               key={key}
               onClick={() => setActiveTab(key)}
             >

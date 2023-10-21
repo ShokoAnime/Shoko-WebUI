@@ -15,7 +15,7 @@ function DataCollection() {
           href="https://sentry.io/"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-bold text-panel-primary hover:underline"
+          className="font-bold text-panel-text-primary hover:underline"
         >
           Sentry.io
         </a>

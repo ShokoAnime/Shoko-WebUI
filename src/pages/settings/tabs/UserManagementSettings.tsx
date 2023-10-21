@@ -248,10 +248,10 @@ function UserManagementSettings() {
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
-                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-panel-primary" />
+                  <Icon path={mdiCircleEditOutline} size={1} className="cursor-pointer text-panel-text-primary" />
                 </div>
                 <div onClick={() => deleteSelectedUser(user)}>
-                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-danger" />
+                  <Icon path={mdiMinusCircleOutline} size={1} className="cursor-pointer text-panel-text-danger" />
                 </div>
               </div>
             </div>
@@ -379,7 +379,7 @@ function UserManagementSettings() {
             <div className="h-64 overflow-y-auto bg-panel-background-alt">
               {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
                 <div
-                  className="mt-2 cursor-pointer first:mt-0 hover:text-panel-primary"
+                  className="mt-2 cursor-pointer first:mt-0"
                   key={`tagData-${tag.ID}`}
                   onClick={() => handleTagChange(tag.ID, true)}
                 >
@@ -403,7 +403,7 @@ function UserManagementSettings() {
                     onClick={() =>
                       handleTagChange(tag, false)}
                   >
-                    <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-danger" />
+                    <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-text-danger" />
                   </Button>
                 </div>
               ))

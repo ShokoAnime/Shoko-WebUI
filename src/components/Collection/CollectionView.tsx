@@ -137,7 +137,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
         )}
       >
         {groupsData.isUninitialized || groupsData.isLoading
-          ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
+          ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
           : 'No series/groups available!'}
       </div>
     );
@@ -218,7 +218,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries,
             } else {
               items.push(
                 <div
-                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-primary"
+                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-text-primary"
                   key={`loading-${i}`}
                   style={{
                     width: `${itemWidth / 16}rem`,

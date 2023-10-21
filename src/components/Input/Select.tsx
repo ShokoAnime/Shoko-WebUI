@@ -34,7 +34,7 @@ function Select(props: Props) {
             id={id}
             value={value}
             onChange={onChange}
-            className="w-full appearance-none rounded border border-panel-border bg-default-background-input py-1.5 pl-2 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-primary"
+            className="w-full appearance-none rounded border border-panel-border bg-panel-input py-1.5 pl-2 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
           >
             {children}
           </select>

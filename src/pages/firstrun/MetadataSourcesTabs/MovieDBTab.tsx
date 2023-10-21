@@ -18,36 +18,45 @@ function MovieDBTab() {
   };
 
   return (
-    <TransitionDiv className="flex flex-col gap-y-2">
-      <div className="font-semibold">Download Options</div>
-      <Checkbox
-        label="Fanart"
-        id="MovieDB_AutoFanart"
-        isChecked={AutoFanart}
-        onChange={handleInputChange}
-        justify
-        className="mt-4"
-      />
-      <div className={cx('flex justify-between transition-opacity', !AutoFanart && 'pointer-events-none opacity-50')}>
-        Max Fanart
-        <InputSmall
-          id="MovieDB_AutoFanartAmount"
-          value={AutoFanartAmount}
-          type="text"
+    <TransitionDiv className="flex flex-col gap-y-8">
+      <div className="font-semibold pb-4 border-b-2 border-panel-border">Download Options</div>
+      <div className="flex flex-col gap-y-2">
+        <Checkbox
+          label="Fanart"
+          id="MovieDB_AutoFanart"
+          isChecked={AutoFanart}
           onChange={handleInputChange}
-          className="w-10 px-2 py-0.5"
+          justify
         />
-      </div>
-      <Checkbox label="Posters" id="MovieDB_AutoPosters" isChecked={AutoPosters} onChange={handleInputChange} justify />
-      <div className={cx('flex justify-between transition-opacity', !AutoPosters && 'pointer-events-none opacity-50')}>
-        Max Posters
-        <InputSmall
-          id="MovieDB_AutoPostersAmount"
-          value={AutoPostersAmount}
-          type="text"
+        <div className={cx('flex justify-between transition-opacity', !AutoFanart && 'pointer-events-none opacity-50')}>
+          Max Fanart
+          <InputSmall
+            id="MovieDB_AutoFanartAmount"
+            value={AutoFanartAmount}
+            type="text"
+            onChange={handleInputChange}
+            className="w-10 px-2 py-0.5"
+          />
+        </div>
+        <Checkbox
+          label="Posters"
+          id="MovieDB_AutoPosters"
+          isChecked={AutoPosters}
           onChange={handleInputChange}
-          className="w-10 px-2 py-0.5"
+          justify
         />
+        <div
+          className={cx('flex justify-between transition-opacity', !AutoPosters && 'pointer-events-none opacity-50')}
+        >
+          Max Posters
+          <InputSmall
+            id="MovieDB_AutoPostersAmount"
+            value={AutoPostersAmount}
+            type="text"
+            onChange={handleInputChange}
+            className="w-10 px-2 py-0.5"
+          />
+        </div>
       </div>
     </TransitionDiv>
   );

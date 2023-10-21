@@ -37,7 +37,7 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
     <div key={id} className="flex items-center gap-x-7 text-xl font-semibold">
       <Icon
         path={path}
-        className="text-panel-primary"
+        className="text-panel-icon-action"
         size={1}
       />
       {text}
@@ -82,7 +82,7 @@ function FirstRunPage() {
 
   const parsedVersion = useMemo(() => {
     if (version.isFetching || !version.data) {
-      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />;
+      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
     }
 
     if (version.data.Server.ReleaseChannel !== 'Stable') {

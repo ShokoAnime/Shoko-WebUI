@@ -91,13 +91,13 @@ function ManuallyLinkedFilesRow(props: Props) {
           <div className="flex">
             {`${getEpTypePrefix(episode?.AniDB?.Type ?? '')} ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}
             &nbsp;(
-            <span className="font-semibold text-panel-primary">{episode?.IDs?.AniDB}</span>
+            <span className="font-semibold text-panel-text-primary">{episode?.IDs?.AniDB}</span>
             )
             <a
               href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`}
               rel="noopener noreferrer"
               target="_blank"
-              className="ml-2 text-panel-primary"
+              className="ml-2 text-panel-text-primary"
             >
               <Icon path={mdiOpenInNew} size={1} />
             </a>

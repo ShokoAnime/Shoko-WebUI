@@ -578,7 +578,7 @@ function SettingsPage() {
             {items.map(item => (
               <NavLink
                 to={item.path}
-                className={({ isActive }) => (isActive ? 'text-panel-primary' : '')}
+                className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}
                 key={item.path}
               >
                 {item.name}
@@ -591,7 +591,7 @@ function SettingsPage() {
       {/*  <div className="flex justify-center mb-8 font-semibold"> */}
       {/*    Settings */}
       {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" /> */}
-      {/*    <div className="flex text-panel-primary rounded pl-2 border border-panel-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
+      {/*    <div className="flex text-panel-text-primary rounded pl-2 border border-panel-text-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
       {/*      {find(items, item => item.path === pathname.split('/').pop())?.name} */}
       {/*      <Icon path={mdiChevronDown} size={1} /> */}
       {/*    </div> */}
@@ -600,7 +600,7 @@ function SettingsPage() {
       <div className="flex min-h-full w-[37.5rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
         {settingsQuery.isLoading
           ? (
-            <div className="flex grow items-center justify-center text-panel-primary">
+            <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} spin size={5} />
             </div>
           )
@@ -630,7 +630,7 @@ function SettingsPage() {
           unsavedChanges ? 'opacity-100' : 'opacity-0',
         )}
       >
-        <Icon path={mdiInformationOutline} size={1} className="text-panel-primary" />
+        <Icon path={mdiInformationOutline} size={1} className="text-panel-text-primary" />
         Whoa! You Have Unsaved Changes!
       </div>
       <div

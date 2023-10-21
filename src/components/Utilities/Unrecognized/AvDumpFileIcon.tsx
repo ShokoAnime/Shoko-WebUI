@@ -38,7 +38,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (dumpSession?.status === 'Running') {
       return {
         path: mdiLoading,
-        color: 'text-panel-primary',
+        color: 'text-panel-text-primary',
         title: 'Dumping Now!',
         state: 'running',
       } as const;
@@ -47,7 +47,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (dumpSession?.status === 'Failed') {
       return {
         path: mdiFileDocumentAlertOutline,
-        color: 'text-panel-danger',
+        color: 'text-panel-text-danger',
         title: 'Dump Failed!',
         state: 'failed',
       } as const;
@@ -56,7 +56,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (dumpSession?.status === 'Success') {
       return {
         path: mdiFileDocumentCheckOutline,
-        color: 'text-panel-important',
+        color: 'text-panel-text-important',
         title: 'Dumped Successfully!',
         state: 'success',
       } as const;
@@ -65,7 +65,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (file.AVDump.Status === 'Queued') {
       return {
         path: mdiFileDocumentRefreshOutline,
-        color: 'text-panel-warning',
+        color: 'text-panel-text-warning',
         title: 'Dumping Queued!',
         state: 'queued',
       } as const;
@@ -74,7 +74,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (file.AVDump.LastDumpedAt) {
       return {
         path: mdiFileDocumentCheckOutline,
-        color: 'text-panel-important',
+        color: 'text-panel-text-important',
         title: 'Previously Dumped!',
         state: 'success',
       } as const;
@@ -83,7 +83,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     if (truck) {
       return {
         path: mdiDumpTruck,
-        color: 'text-panel-primary',
+        color: 'text-panel-text-primary',
         title: 'Click to Dump!',
         state: 'idle',
       } as const;

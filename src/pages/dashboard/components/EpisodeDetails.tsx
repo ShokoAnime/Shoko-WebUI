@@ -53,7 +53,9 @@ function EpisodeDetails(props: Props): JSX.Element {
         image={episode.SeriesPoster}
         className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
       >
-        {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-primary" style={{ width: percentage }} />}
+        {percentage && (
+          <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />
+        )}
         {isInCollection && (
           <div className="absolute right-3 top-3 rounded bg-panel-background-transparent p-1">
             <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is Already in Collection!" />

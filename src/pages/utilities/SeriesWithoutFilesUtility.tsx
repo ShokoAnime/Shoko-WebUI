@@ -34,7 +34,7 @@ const columns = [
         {info.getValue()}
         <span
           onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')}
-          className="mr-6 cursor-pointer text-panel-primary"
+          className="mr-6 cursor-pointer text-panel-text-primary"
         >
           <Icon path={mdiOpenInNew} size={1} />
         </span>
@@ -110,7 +110,7 @@ function SeriesWithoutFilesUtility() {
       highlight = false,
     ) => (
       <Button onClick={onClick} className="flex items-center gap-x-2 font-normal text-panel-text">
-        <Icon path={icon} size={1} className={cx({ 'text-panel-primary': highlight })} />
+        <Icon path={icon} size={1} className={cx({ 'text-panel-text-primary': highlight })} />
         {name}
       </Button>
     );
@@ -135,7 +135,7 @@ function SeriesWithoutFilesUtility() {
 
   const renderPanelOptions = () => (
     <div className="flex font-semibold">
-      <span className="text-panel-important">{series.Total}</span>
+      <span className="text-panel-text-important">{series.Total}</span>
       &nbsp;Empty Series
     </div>
   );
@@ -154,9 +154,9 @@ function SeriesWithoutFilesUtility() {
               onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])}
               inputClassName="px-4 py-3"
             />
-            <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+            <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
               {renderOperations(table.getSelectedRowModel().rows.length === 0)}
-              <div className="ml-auto font-semibold text-panel-important">
+              <div className="ml-auto font-semibold text-panel-text-important">
                 {table.getSelectedRowModel().rows.length}
                 <span className="text-panel-text">Series Selected</span>
               </div>

@@ -16,9 +16,12 @@ type Props = {
 };
 
 const buttonTypeClasses = {
-  primary: 'bg-button-primary hover:bg-button-primary-hover text-button-text-alt',
-  secondary: 'bg-button-secondary hover:bg-button-secondary-hover text-button-text',
-  danger: 'bg-button-danger hover:bg-button-danger-hover text-button-text-alt',
+  primary:
+    'bg-button-primary text-button-primary-text border-2 border-button-primary-border rounded-md hover:bg-button-primary-hover',
+  secondary:
+    'bg-button-secondary text-button-secondary-text border-2 border-button-secondary-border rounded-md hover:bg-button-secondary-hover',
+  danger:
+    'bg-button-danger text-button-danger-text border-2 border-button-danger-border rounded-md hover:bg-button-danger-hover',
 };
 
 function Button(props: Props) {
@@ -41,7 +44,7 @@ function Button(props: Props) {
       className={cx([
         `${className} button font-semibold transition ease-in-out rounded focus:shadow-none focus:outline-none`,
         buttonType !== undefined
-        && `${buttonTypeClasses[buttonType]} drop-shadow-md border border-panel-border`,
+        && `${buttonTypeClasses[buttonType]} drop-shadow-md`,
         loading && 'cursor-default',
         disabled && 'opacity-50 cursor-default',
       ])}

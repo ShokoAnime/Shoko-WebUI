@@ -18,7 +18,7 @@ function CollectionStats() {
       <div className="mb-1 grow last:mb-0">
         {title}
       </div>
-      {link ? <Link to={link} className="text-panel-primary">{value}</Link> : <div>{value}</div>}
+      {link ? <Link to={link} className="text-panel-text-primary">{value}</Link> : <div>{value}</div>}
     </div>
   );
 

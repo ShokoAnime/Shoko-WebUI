@@ -22,7 +22,7 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
         onClick={() => {
           setType('Posters');
         }}
-        className={cx(type === 'Posters' && 'text-panel-primary')}
+        className={cx(type === 'Posters' && 'text-panel-text-primary')}
       >
         Poster
       </span>
@@ -31,7 +31,7 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
         onClick={() => {
           setType('Fanarts');
         }}
-        className={cx(type === 'Fanarts' && 'text-panel-primary')}
+        className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
       >
         Fanart
       </span>
@@ -40,7 +40,7 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
         onClick={() => {
           setType('Banners');
         }}
-        className={cx(type === 'Banners' && 'text-panel-primary')}
+        className={cx(type === 'Banners' && 'text-panel-text-primary')}
       >
         Banners
       </span>
@@ -107,7 +107,7 @@ const SeriesImages = () => {
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
           <Heading type={type} setType={setType} />
           <div className="text-xl font-semibold">
-            <span className="text-panel-important">{get(images, type, []).length}</span>
+            <span className="text-panel-text-important">{get(images, type, []).length}</span>
             &nbsp;
             {type}
             &nbsp;Listed

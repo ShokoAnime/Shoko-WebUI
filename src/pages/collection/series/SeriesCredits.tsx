@@ -28,7 +28,7 @@ const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: s
         onClick={() => {
           setMode('Character');
         }}
-        className={cx(mode === 'Character' && 'text-panel-primary', 'cursor-pointer')}
+        className={cx(mode === 'Character' && 'text-panel-text-primary', 'cursor-pointer')}
       >
         Characters
       </span>
@@ -37,7 +37,7 @@ const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: s
         onClick={() => {
           setMode('Staff');
         }}
-        className={cx(mode === 'Staff' && 'text-panel-primary', 'cursor-pointer')}
+        className={cx(mode === 'Staff' && 'text-panel-text-primary', 'cursor-pointer')}
       >
         Staff
       </span>
@@ -82,7 +82,7 @@ const SeriesCredits = () => {
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
           <Heading mode={mode} setMode={setMode} />
           <div className="text-xl font-semibold">
-            <span className="text-panel-important">{cast?.length || 0}</span>
+            <span className="text-panel-text-important">{cast?.length || 0}</span>
             &nbsp;Characters Listed
           </div>
         </div>

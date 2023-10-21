@@ -40,7 +40,7 @@ const EditSeriesModal = (props: Props) => {
         <div className="flex min-w-[10rem] flex-col gap-y-4 border-r-2 border-panel-border">
           {map(tabs, (value, key) => (
             <div
-              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-primary')}
+              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
               key={key}
               onClick={() => setActiveTab(key)}
             >

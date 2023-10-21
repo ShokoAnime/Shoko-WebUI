@@ -54,7 +54,7 @@ const LogsPage = () => {
           {/* TODO: To be moved into settings modal */}
           <Button
             buttonType="secondary"
-            className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-primary' : '!text-panel-text')}
+            className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
           >
             <Icon path={mdiArrowVerticalLock} size={1} />
@@ -68,7 +68,7 @@ const LogsPage = () => {
             {(logsQuery.isLoading || logLines.length === 0)
               ? (
                 <div className="flex h-full grow items-center justify-center">
-                  <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
+                  <Icon path={mdiLoading} size={4} className="text-panel-text-primary" spin />
                 </div>
               )
               : (

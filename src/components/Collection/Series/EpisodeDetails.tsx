@@ -22,7 +22,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
         </div>
         {episode.Size > 1 && (
           <div>
-            <span className="text-panel-important">{episode.Size}</span>
+            <span className="text-panel-text-important">{episode.Size}</span>
             &nbsp;Files
           </div>
         )}

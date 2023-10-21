@@ -38,7 +38,7 @@ function Footer(props: Props) {
       <div
         className={cx([
           'flex items-center mb-5',
-          status?.type === 'error' ? 'text-panel-warning' : 'text-panel-important',
+          status?.type === 'error' ? 'text-panel-text-warning' : 'text-panel-text-important',
         ])}
       >
         {status?.text}
@@ -52,7 +52,7 @@ function Footer(props: Props) {
             <Button
               onClick={() => navigate('/', { replace: true })}
               buttonType="primary"
-              className="ml-6 w-1/2 py-2"
+              className="w-1/2 px-4 py-2"
               disabled={nextDisabled}
             >
               Finish
@@ -62,7 +62,7 @@ function Footer(props: Props) {
             <Button
               onClick={() => handleNext()}
               buttonType="primary"
-              className="ml-6 w-1/2 py-2"
+              className="w-1/2 px-4 py-2"
               disabled={nextDisabled || isFetching}
               loading={isFetching}
             >

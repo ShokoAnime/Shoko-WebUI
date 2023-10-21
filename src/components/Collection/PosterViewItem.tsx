@@ -58,16 +58,16 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           {showUnwatchedCount && (
             <div className="absolute right-0 top-0 flex min-w-[2.5rem] justify-center rounded-bl-md bg-panel-background-overlay p-2 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
               {unwatchedCount || (
-                <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-important" />
+                <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-text-important" />
               )}
             </div>
           )}
-          <div className="pointer-events-none z-50 flex h-full bg-overlay-background p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <Link to="#" className="h-fit">
               <Icon
                 path={mdiPencilCircleOutline}
                 size="2rem"
-                className="text-overlay-icon hover:text-overlay-icon-hover"
+                className="text-overlay-icon"
               />
             </Link>
           </div>
@@ -81,7 +81,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>{item.Name}</p>
         {showEpisodeCount && (
           <p
-            className="mt-1.5 line-clamp-1 text-ellipsis text-center text-sm font-semibold text-panel-text-transparent"
+            className="mt-1.5 line-clamp-1 text-ellipsis text-center text-sm font-semibold text-panel-text"
             title={episodeCount.toString()}
           >
             {episodeCount}

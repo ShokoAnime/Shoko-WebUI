@@ -32,7 +32,7 @@ import type { TagType } from '@/core/types/api/tags';
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center gap-x-2 font-semibold">
-    <Icon path={mdiInformationOutline} size={1} className="text-panel-important" />
+    <Icon path={mdiInformationOutline} size={1} className="text-panel-text-important" />
     <div className="flex flex-col">
       {text}
     </div>
@@ -45,7 +45,7 @@ const SeriesTab = ({ icon, text, to }) => (
     className={({ isActive }) =>
       cx(
         'flex items-center gap-x-2',
-        isActive && 'text-panel-primary',
+        isActive && 'text-panel-text-primary',
       )}
   >
     <Icon path={icon} size={1} />
@@ -57,7 +57,7 @@ const SeriesTag = ({ text, type }) => (
   <div
     className={cx(
       'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-border-alt rounded-md p-2 whitespace-nowrap capitalize',
-      type === 'User' ? 'text-panel-important' : 'text-panel-primary',
+      type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
     )}
   >
     <Icon path={mdiTagTextOutline} size="1rem" />
@@ -104,10 +104,10 @@ const Series = () => {
           <div className="flex grow flex-col gap-y-2">
             <div className="flex justify-between">
               <div className="flex gap-x-2">
-                <Link className="font-semibold text-panel-primary" to="/webui/collection">Entire Collection</Link>
+                <Link className="font-semibold text-panel-text-primary" to="/webui/collection">Entire Collection</Link>
                 <Icon path={mdiChevronRight} size={1} />
                 <Link
-                  className="font-semibold text-panel-primary"
+                  className="font-semibold text-panel-text-primary"
                   to={`/webui/collection/group/${series.IDs?.ParentGroup}`}
                 >
                   {group.Name}

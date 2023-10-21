@@ -126,7 +126,7 @@ const AnimeResultRow = (
   return (
     <div key={data.ID} onClick={handleOnClick} className="flex cursor-pointer gap-x-2 gap-y-1">
       <a
-        className="flex w-20 shrink-0 font-semibold text-panel-primary"
+        className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
         href={`https://anidb.net/anime/${data.ID}`}
         target="_blank"
         rel="noopener noreferrer"
@@ -166,7 +166,7 @@ const AnimeSelectPanel = (
       });
     } else {
       rows.push(
-        <div key="loading" className="flex grow items-center justify-center text-panel-primary">
+        <div key="loading" className="flex grow items-center justify-center text-panel-text-primary">
           <Icon path={mdiLoading} size={4} spin />
         </div>,
       );
@@ -570,8 +570,8 @@ function LinkFilesTab() {
         <div
           title={path}
           className={cx([
-            'p-4 w-full odd:bg-panel-background-toolbar even:bg-panel-background border border-panel-border rounded-md leading-5',
-            selectedLink === idx && 'border-panel-primary',
+            'p-4 w-full odd:bg-panel-background-alt even:bg-panel-background border border-panel-border rounded-md leading-5',
+            selectedLink === idx && 'border-panel-text-primary',
           ])}
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
           onClick={() => updateSelectedLink(idx)}
@@ -591,15 +591,15 @@ function LinkFilesTab() {
           title={path}
           className={cx([
             'flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5',
-            idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar',
-            selectedLink === idx && 'border-panel-primary',
+            idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+            selectedLink === idx && 'border-panel-text-primary',
           ])}
           key={`${link.FileID}-${link.EpisodeID}-${idx}`}
           data-file-id={link.FileID}
           onClick={() => updateSelectedLink(idx)}
         >
           {path}
-          {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-important" />}
+          {isSameFile && <Icon path={mdiLink} size={1} className="ml-auto text-panel-text-important" />}
         </div>,
       );
       if (episodes.length > 0) {
@@ -631,7 +631,7 @@ function LinkFilesTab() {
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
-              <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+              <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div className="flex grow gap-x-4">
                   <MenuButton
                     onClick={duplicateLink}
@@ -680,15 +680,15 @@ function LinkFilesTab() {
               selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1',
             )}
           >
-            <div className="flex justify-between rounded-md border border-panel-border bg-panel-background-toolbar p-4 font-semibold">
+            <div className="flex justify-between rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeries?.ID && (
-              <div className="flex rounded-md border border-panel-border bg-panel-background-toolbar p-4 font-semibold">
+              <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
                 AniDB |&nbsp;
                 <a
-                  className="flex cursor-pointer font-semibold text-panel-primary"
+                  className="flex cursor-pointer font-semibold text-panel-text-primary"
                   href={`https://anidb.net/anime/${selectedSeries.ID}`}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -698,7 +698,7 @@ function LinkFilesTab() {
                   {selectedSeries.Title}
                   <Icon path={mdiOpenInNew} size={1} className="ml-3" />
                 </a>
-                <Button onClick={editSelectedSeries} className="ml-auto text-panel-primary" disabled={isLinking}>
+                <Button onClick={editSelectedSeries} className="ml-auto text-panel-text-primary" disabled={isLinking}>
                   <Icon path={mdiPencilCircleOutline} size={1} />
                 </Button>
               </div>

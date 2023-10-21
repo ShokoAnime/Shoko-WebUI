@@ -80,7 +80,7 @@ function LoginPage() {
 
   const parsedVersion = useMemo(() => {
     if (version.isFetching || !version.data) {
-      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-primary" />;
+      return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-text-primary" />;
     }
 
     if (version.data.Server.ReleaseChannel !== 'Stable') {
@@ -125,12 +125,12 @@ function LoginPage() {
           <div className="flex w-full flex-col gap-y-4">
             {!status.data?.State && (
               <div className="flex items-center justify-center">
-                <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
+                <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
               </div>
             )}
             {status.data?.State === 1 && (
               <div className="flex flex-col items-center justify-center gap-y-2">
-                <Icon path={mdiLoading} spin className="text-panel-primary" size={4} />
+                <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
                 <div className="text-lg">
                   <span className="font-semibold">Status:</span>
@@ -178,7 +178,7 @@ function LoginPage() {
             )}
             {status.data?.State === 3 && (
               <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
-                <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-warning" size={4} />
+                <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
                 <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                 Check the error message below
                 <div className="overflow-y-auto break-all text-lg font-semibold">
@@ -193,13 +193,13 @@ function LoginPage() {
                   <div className="text-justify">
                     Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
                     our&nbsp;
-                    <span className="font-bold text-panel-important">First Run Wizard</span>
+                    <span className="font-bold text-panel-text-important">First Run Wizard</span>
                     &nbsp;to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only
                     take you a couple minutes.
                   </div>
                   <div>
                     Click&nbsp;
-                    <span className="font-semibold text-panel-important">Continue</span>
+                    <span className="font-semibold text-panel-text-important">Continue</span>
                     &nbsp;below to proceed.
                   </div>
                 </div>

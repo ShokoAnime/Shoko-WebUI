@@ -44,7 +44,7 @@ function ModalPanel(props: Props) {
       <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex max-h-[66%] flex-col gap-y-8 rounded-md border border-panel-border-alt bg-panel-background p-8 drop-shadow-lg',
+            'flex max-h-[66%] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background p-8 drop-shadow-lg',
             sizeClass[size ?? 'md'],
             className,
           )}

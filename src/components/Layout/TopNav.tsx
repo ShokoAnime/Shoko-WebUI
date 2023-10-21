@@ -150,7 +150,7 @@ function TopNav() {
     <NavLink
       to={path}
       key={path.split('/').pop()}
-      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-header-primary')}
+      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-header-text-primary')}
       onClick={closeModalsAndSubmenus}
     >
       <Icon path={icon} size={0.8333} />
@@ -175,19 +175,19 @@ function TopNav() {
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
               <div
-                className={cx(['cursor-pointer', showQueueModal ? 'text-header-primary' : undefined])}
+                className={cx(['cursor-pointer', showQueueModal ? 'text-header-text-primary' : undefined])}
                 onClick={handleQueueModalOpen}
                 title="Show Queue Modal"
               >
                 <Icon path={mdiServer} size={0.8333} />
               </div>
-              <span className="text-header-important">
+              <span className="text-header-text-important">
                 {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
                   + queueItems.ImageQueueState.queueCount) ?? 0}
               </span>
             </div>
             <div className="flex items-center gap-x-2">
-              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-primary text-xl hover:bg-header-primary-hover">
+              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-header-user-text text-xl">
                 {currentUser.data?.Avatar
                   ? <img src={currentUser.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
                   : currentUser.data?.Username.charAt(0)}
@@ -197,14 +197,14 @@ function TopNav() {
             </div>
             <NavLink
               to="settings"
-              className={({ isActive }) => (isActive ? 'text-header-primary' : '')}
+              className={({ isActive }) => (isActive ? 'text-header-text-primary' : '')}
               onClick={() => closeModalsAndSubmenus()}
             >
               <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>
           </div>
         </div>
-        <div className="bg-header-background-alt text-header-text-alt">
+        <div className="bg-topnav-background text-topnav-text">
           <div className="mx-auto flex w-full max-w-[120rem] justify-between px-8 py-4">
             <div className="flex gap-x-8">
               {renderLinkMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
@@ -254,8 +254,8 @@ function TopNav() {
                       : mdiDownloadCircleOutline}
                     size={1}
                     className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
-                      ? 'text-header-primary'
-                      : 'text-header-important'}
+                      ? 'text-header-text-primary'
+                      : 'text-header-text-important'}
                     spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
                   />
                   <div className="flex">
@@ -266,7 +266,7 @@ function TopNav() {
               )}
               {isOffline && (
                 <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold">
-                  <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
+                  <Icon path={mdiInformationOutline} size={1} className="text-topnav-icon-warning" />
                   No Internet Connection.
                 </div>
               )}
@@ -282,7 +282,7 @@ function TopNav() {
         </div>
         <AnimateHeight
           height={showUtilitiesMenu ? 'auto' : 0}
-          className="border-t border-header-border bg-header-background-alt"
+          className="border-t border-topnav-border bg-topnav-background"
         >
           <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
             {renderLinkMenuItem('utilities/unrecognized', 'Unrecognized Files', mdiFileQuestionOutline)}

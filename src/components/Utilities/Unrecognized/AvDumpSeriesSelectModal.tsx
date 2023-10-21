@@ -66,7 +66,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       title="AvDump Series Select"
     >
       <Button
-        className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-primary p-2 font-semibold text-panel-text-alt"
+        className="mt-4 flex items-center justify-center gap-x-2.5 bg-panel-text-primary p-2 font-semibold text-panel-text-alt"
         onClick={handleCopy}
       >
         <Icon path={mdiFileDocumentMultipleOutline} size={0.833} />
@@ -87,7 +87,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         {searchResults.isLoading
           ? (
             <div className="flex h-full items-center justify-center">
-              <Icon path={mdiLoading} size={3} spin className="text-panel-primary" />
+              <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
             </div>
           )
           : (searchResults.data ?? []).map(result => (
@@ -99,7 +99,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
               className="flex items-center justify-between"
             >
               <div className="line-clamp-1">{result.Title}</div>
-              <div className="text-panel-primary">
+              <div className="text-panel-text-primary">
                 <Icon path={mdiOpenInNew} size={0.833} />
               </div>
             </a>

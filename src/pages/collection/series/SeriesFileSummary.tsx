@@ -16,7 +16,7 @@ const HeaderFragment = ({ range, title }) => {
   return (
     <>
       <span>{title}</span>
-      <span className="text-panel-important">{range}</span>
+      <span className="text-panel-text-important">{range}</span>
     </>
   );
 };
@@ -237,7 +237,7 @@ const SeriesFileSummary = () => {
         <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-8 py-5 text-xl font-semibold">
           Files Breakdown
           <div>
-            <span className="text-panel-important">{fileSummary?.Groups.length || 0}</span>
+            <span className="text-panel-text-important">{fileSummary?.Groups.length || 0}</span>
             &nbsp;
             {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}
           </div>
@@ -256,13 +256,13 @@ const SeriesFileSummary = () => {
                   {find(episode.Titles, ['Language', 'en'])?.Name || '--'}
                   &nbsp;(
                   <a
-                    className="inline-flex items-center gap-x-1 text-panel-primary"
+                    className="inline-flex items-center gap-x-1 text-panel-text-primary"
                     href={`https://anidb.net/episode/${episode.ID}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {episode.ID}
-                    <Icon className="text-panel-primary" path={mdiOpenInNew} size={0.8333} />
+                    <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={0.8333} />
                   </a>
                   )
                 </div>

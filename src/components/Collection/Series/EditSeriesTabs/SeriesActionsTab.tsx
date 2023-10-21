@@ -19,7 +19,7 @@ type Props = {
 const Action = ({ name, onClick }: { name: string, onClick: () => void }) => (
   <div className="flex justify-between gap-x-3" onClick={onClick}>
     {name}
-    <Button onClick={() => {}} className="text-panel-primary">
+    <Button onClick={() => {}} className="text-panel-text-primary">
       <Icon path={mdiPlayCircleOutline} size={1} />
     </Button>
   </div>
