@@ -47,7 +47,7 @@ function ProfileModal() {
       <div className="flex h-full w-full flex-col">
         <div className="profile-modal-image flex rounded-l-lg">
           <div className="profile-modal-image-alpha flex grow items-center justify-center rounded-l-lg">
-            <span className="mr-2 flex h-48 w-48 items-center justify-center rounded-full bg-panel-primary text-2xl">
+            <span className="mr-2 flex h-48 w-48 items-center justify-center rounded-full bg-panel-text-primary text-2xl">
               {oldUsername.charAt(0)}
             </span>
           </div>
@@ -61,7 +61,7 @@ function ProfileModal() {
               </Button>
             </span>
           </div>
-          <div className="my-2 h-1 w-10 shrink-0 bg-panel-important" />
+          <div className="my-2 h-1 w-10 shrink-0 bg-panel-text-important" />
           <div className="flex grow flex-col justify-between">
             <div className="flex flex-col">
               <div className="flex">
@@ -75,7 +75,7 @@ function ProfileModal() {
                   onChange={e => setUsername(e.target.value)}
                 />
                 <Button onClick={() => setUsernameDisabled(false)} className="mt-1 flex">
-                  <Icon className="text-panel-primary" path={mdiPencil} size={1} />
+                  <Icon className="text-panel-text-primary" path={mdiPencil} size={1} />
                 </Button>
               </div>
               <div className="mt-1 flex">
@@ -90,7 +90,7 @@ function ProfileModal() {
                   onChange={e => setPassword(e.target.value)}
                 />
                 <Button onClick={() => setPasswordDisabled(false)} className="mt-1 flex">
-                  <Icon className="text-panel-primary" path={mdiPencil} size={1} />
+                  <Icon className="text-panel-text-primary" path={mdiPencil} size={1} />
                 </Button>
               </div>
               <div className="mt-1 flex">
@@ -106,7 +106,10 @@ function ProfileModal() {
               </div>
             </div>
             <div className="mb-2 flex justify-end">
-              <Button onClick={() => handleClose(true)} className="bg-panel-primary px-4 py-1 text-sm font-semibold">
+              <Button
+                onClick={() => handleClose(true)}
+                className="bg-panel-text-primary px-4 py-1 text-sm font-semibold"
+              >
                 Save
               </Button>
             </div>

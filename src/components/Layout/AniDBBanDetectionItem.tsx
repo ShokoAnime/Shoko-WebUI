@@ -33,7 +33,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
   return (
     <>
       <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold" onClick={handleOpen}>
-        <Icon path={mdiInformationOutline} size={1} className="text-header-warning" />
+        <Icon path={mdiInformationOutline} size={1} className="text-topnav-icon-warning" />
         AniDB&nbsp;
         {type}
         &nbsp;Ban Detected!
@@ -47,7 +47,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
         <div className="flex flex-col gap-y-8">
           <p>
             It looks like you’ve been&nbsp;
-            <span className="font-bold text-panel-important">temporarily banned</span>
+            <span className="font-bold text-panel-text-important">temporarily banned</span>
             &nbsp;for excessive connection attempts. It happens and just means you’ll need to wait a bit for the
             temporary ban to expire.
           </p>
@@ -58,7 +58,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
             href="https://docs.shokoanime.com/faq"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex gap-x-2 font-bold text-panel-primary"
+            className="flex gap-x-2 font-bold text-panel-text-primary"
           >
             AniDB Ban | Shoko Docs
             <Icon path={mdiOpenInNew} size={1} />

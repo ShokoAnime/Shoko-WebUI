@@ -16,10 +16,10 @@ type Props = Partial<ToastContentProps> & {
 };
 
 const colorClass = {
-  success: 'text-toast-important',
-  error: 'text-toast-danger',
-  info: 'text-toast-primary',
-  warning: 'text-toast-warning',
+  success: 'text-panel-text-important',
+  error: 'text-panel-text-danger',
+  info: 'text-panel-text-primary',
+  warning: 'text-panel-text-warning',
 };
 
 function Toast(props: Props) {
@@ -32,11 +32,11 @@ function Toast(props: Props) {
       </span>
       <div className="ml-4 mr-8 flex grow flex-col">
         <div className="font-semibold">{header}</div>
-        <div className="text-toast-text">{message}</div>
+        <div className="text-panel-text">{message}</div>
       </div>
       {toastProps?.autoClose && (
         <span onClick={closeToast}>
-          <Icon path={mdiCloseCircleOutline} size={1} className="text-toast-text opacity-65" />
+          <Icon path={mdiCloseCircleOutline} size={1} className="text-panel-text opacity-65" />
         </span>
       )}
     </div>

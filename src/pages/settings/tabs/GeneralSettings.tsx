@@ -118,7 +118,12 @@ function GeneralSettings() {
             onClick={() => webuiUpdateCheck({ channel: newSettings.WebUI_Settings.updateChannel, force: true })}
             tooltip="Check for WebUI Update"
           >
-            <Icon path={mdiRefresh} size={1} className="text-panel-primary" spin={webuiUpdateCheckResult.isFetching} />
+            <Icon
+              path={mdiRefresh}
+              size={1}
+              className="text-panel-text-primary"
+              spin={webuiUpdateCheckResult.isFetching}
+            />
           </Button>
         </div>
         <div className="flex flex-col gap-y-2">
@@ -127,7 +132,7 @@ function GeneralSettings() {
             <div className="flex gap-2">
               {version.data?.Server.Version}
               <a
-                className="text-panel-primary"
+                className="text-panel-text-primary"
                 target="_blank"
                 href={`https://github.com/ShokoAnime/ShokoServer/compare/${
                   version.data?.Server.Commit?.slice(0, 7)
@@ -136,7 +141,7 @@ function GeneralSettings() {
               >
                 {`(${version.data?.Server.Commit?.slice(0, 7)})`}
               </a>
-              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex justify-between">
@@ -148,14 +153,14 @@ function GeneralSettings() {
             <div className="flex gap-2">
               {version.data?.WebUI?.Version}
               <a
-                className="text-panel-primary"
+                className="text-panel-text-primary"
                 target="_blank"
                 href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${UI_VERSION}...master`}
                 rel="noreferrer"
               >
                 {`(${UI_VERSION})`}
               </a>
-              <Icon className="text-panel-primary" path={mdiOpenInNew} size={1} />
+              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex items-center justify-between">
@@ -306,7 +311,7 @@ function GeneralSettings() {
               setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
           />
           Exclude following relations
-          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-input p-4">
             {Object.keys(exclusionMapping).map(item => (
               <Checkbox
                 justify

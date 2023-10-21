@@ -21,7 +21,7 @@ const Fallback = ({ componentStack, error }) => {
           <pre>{componentStack}</pre>
         </p>
         <p className="text">
-          <span className="cursor-pointer text-panel-primary" onClick={() => navigate(-1)}>Go back</span>
+          <span className="cursor-pointer text-panel-text-primary" onClick={() => navigate(-1)}>Go back</span>
           , or head over to the&nbsp;
           <Link to="/">home page</Link>
           &nbsp;to choose a new direction.

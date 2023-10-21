@@ -18,17 +18,17 @@ function MediaType() {
   const renderColor = (type) => {
     switch (type) {
       case 'Series':
-        return 'panel-primary';
+        return 'panel-text-primary';
       case 'Other':
-        return 'panel-extra';
+        return 'panel-text-other';
       case 'Web':
-        return 'panel-danger';
+        return 'panel-text-danger';
       case 'Movie':
-        return 'panel-important';
+        return 'panel-text-important';
       case 'OVA':
-        return 'panel-warning';
+        return 'panel-text-warning';
       default:
-        return 'panel-primary';
+        return 'panel-text-primary';
     }
   };
 
@@ -48,7 +48,7 @@ function MediaType() {
   );
 
   const renderBar = (item: string, countPercentage: number) => (
-    <div key={`${item}-bar`} className="mt-2 flex rounded-md bg-panel-background-alt">
+    <div key={`${item}-bar`} className="mt-2 flex rounded-md bg-panel-input">
       {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className={`bg-${renderColor(item)} h-4 rounded-md`} style={{ width: `${countPercentage}%` }} />
     </div>

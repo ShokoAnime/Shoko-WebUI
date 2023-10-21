@@ -227,7 +227,7 @@ function MetadataSitesSettings() {
                 href={traktCodeResult?.data?.url}
                 rel="noopener noreferrer"
                 target="_blank"
-                className="text-panel-important hover:underline"
+                className="text-panel-text-important hover:underline"
               >
                 Click here to activate
               </a>
@@ -246,7 +246,7 @@ function MetadataSitesSettings() {
                       undefined,
                       { autoClose: 10000 },
                     ), () => {})}
-                className="bg-panel-primary px-2 py-1 font-semibold "
+                className="bg-panel-text-primary px-2 py-1 font-semibold "
               >
                 {traktCodeResult.isFetching ? 'Requesting...' : 'Get Code'}
               </Button>

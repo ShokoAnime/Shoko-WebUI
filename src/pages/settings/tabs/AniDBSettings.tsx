@@ -359,10 +359,10 @@ function AniDBSettings() {
           <div className="flex justify-between">
             Series Title (Drag to Reorder)
             <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
-              <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
+              <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
             <DnDList onDragEnd={result => onDragEnd(result)}>
               {newSettings.LanguagePreference.map(language => (
                 {
@@ -371,7 +371,7 @@ function AniDBSettings() {
                     <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
                       {languageDescription[language]}
                       <Button onClick={() => removeLanguage(language)} tooltip="Remove">
-                        <Icon className="text-panel-primary" path={mdiMinusCircleOutline} size={1} />
+                        <Icon className="text-panel-text-primary" path={mdiMinusCircleOutline} size={1} />
                       </Button>
                     </div>
                   ),
@@ -382,10 +382,10 @@ function AniDBSettings() {
           <div className="flex justify-between">
             Episode Title (Drag to Reorder)
             <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
-              <Icon className="text-panel-primary" path={mdiPlusCircleOutline} size={1} />
+              <Icon className="text-panel-text-primary" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
             <DnDList onDragEnd={result => onDragEnd(result, true)}>
               {newSettings.EpisodeLanguagePreference.map(language => (
                 {
@@ -394,7 +394,7 @@ function AniDBSettings() {
                     <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
                       {languageDescription[language]}
                       <Button onClick={() => removeLanguage(language, true)} tooltip="Remove">
-                        <Icon className="text-panel-primary" path={mdiMinusCircleOutline} size={1} />
+                        <Icon className="text-panel-text-primary" path={mdiMinusCircleOutline} size={1} />
                       </Button>
                     </div>
                   ),

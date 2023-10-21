@@ -1,11 +1,8 @@
 import React, { useMemo } from 'react';
 
 const RemoveSummaryRegex = /^\n(Source|Note|Summary):.*/mg;
-
 const CleanMiscLinesRegex = /^(\*|--|~) /sg;
-
 const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
-
 const LinkRegex = /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat])(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
 const AnidbDescription = ({ text }: { text: string }) => {

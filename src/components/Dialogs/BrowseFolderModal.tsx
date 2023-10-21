@@ -34,7 +34,7 @@ function BrowseFolderModal(props: Props) {
       onRequestClose={() => handleClose()}
       title="Select Import Folder"
     >
-      <div className="rounded border border-panel-border bg-panel-background-alt p-4">
+      <div className="rounded border border-panel-border bg-panel-input p-4">
         <TreeView />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">

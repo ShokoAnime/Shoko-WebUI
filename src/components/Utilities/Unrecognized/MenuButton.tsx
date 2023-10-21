@@ -14,7 +14,7 @@ const MenuButton = (
   },
 ) => (
   <Button onClick={onClick} className="flex items-center gap-x-2 text-panel-text" disabled={disabled}>
-    <Icon path={icon} size={0.8333} className={cx({ 'text-panel-primary': highlight })} />
+    <Icon path={icon} size={0.8333} className={cx({ 'text-panel-text-primary': highlight })} />
     {name}
   </Button>
 );

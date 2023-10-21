@@ -61,12 +61,14 @@ function AniDBAccount() {
           href="https://anidb.net/"
           target="_blank"
           rel="noreferrer"
-          className="font-semibold text-panel-primary hover:underline"
+          className="font-semibold text-panel-text-primary hover:underline"
         >
-          {' Click Here '}
+          {' '}
+          Click Here
+          {' '}
         </a>
         to create one. Please note that, due to limitations with AniDB&lsquo;s API, your password must consist of only
-        <span className="font-semibold text-panel-important">{' alphanumeric '}</span>
+        <span className="font-semibold text-panel-text-important">{' alphanumeric '}</span>
         characters. Using any other characters will result in a ban when you attempt to log in.
       </div>
       <form className="flex flex-col" onSubmit={handleTest}>

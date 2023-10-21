@@ -34,14 +34,14 @@ function Acknowledgement() {
         OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
         DEALINGS IN THE SOFTWARE.
       </div>
-      <div className="font-semibold text-panel-important">
+      <div className="font-semibold text-panel-text-important">
         We are constantly seeking talented individuals to join our team! If you believe you have the skills and
         expertise to contribute, we invite you to come and chat with us on&nbsp;
         <a
           href="https://discord.gg/vpeHDsg"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-panel-primary hover:underline"
+          className="text-panel-text-primary hover:underline"
         >
           Discord
         </a>

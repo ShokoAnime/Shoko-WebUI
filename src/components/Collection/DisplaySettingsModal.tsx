@@ -62,7 +62,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
       <div className="flex flex-col gap-y-8">
         <div className="flex flex-col gap-y-4">
           <div className="border-b border-panel-border pb-4 font-semibold">Poster View Options</div>
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-y-2">
             <Checkbox
               justify
               label="Total Episodes"
@@ -96,7 +96,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
         <div className="flex flex-col gap-y-4">
           <div className="border-b border-panel-border pb-4 font-semibold">List View Options</div>
-          <div className="flex flex-col gap-y-3">
+          <div className="flex flex-col gap-2">
             <Checkbox
               justify
               label="Item Type"

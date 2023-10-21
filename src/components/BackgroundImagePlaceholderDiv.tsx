@@ -75,7 +75,7 @@ function BackgroundImagePlaceholderDiv(props: Props) {
     <div className={`${className} relative overflow-hidden`}>
       <div
         className={cx(
-          'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1]',
+          'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-md',
           zoomOnHover && 'group-hover:scale-105 transition-transform',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
@@ -83,17 +83,17 @@ function BackgroundImagePlaceholderDiv(props: Props) {
         {imageError && (
           <div
             className={cx(
-              'w-full h-full flex flex-col justify-center items-center bg-overlay-background p-8',
+              'w-full h-full flex flex-col justify-center items-center bg-panel-input p-8',
               hidePlaceholderOnHover && 'group-hover:opacity-0',
             )}
           >
-            <Icon path={mdiInformationOutline} size={1.5} className="text-panel-important" />
+            <Icon path={mdiInformationOutline} size={1.5} className="text-panel-text-important" />
             <div className="my-4 font-semibold">Failed to Load</div>
             {imageError}
           </div>
         )}
         {!backgroundImage && !imageError && (
-          <div className="flex grow items-center justify-center text-panel-primary">
+          <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} spin size={3} />
           </div>
         )}

@@ -147,7 +147,7 @@ const Menu = (
   });
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
@@ -178,7 +178,7 @@ const Menu = (
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-important">
+      <span className="ml-auto font-semibold text-panel-text-important">
         {selectedRows.length}
         &nbsp;
       </span>
@@ -288,7 +288,7 @@ function UnrecognizedTab() {
                 refetch={() => filesQuery.refetch()}
                 setSeriesSelectModal={setSeriesSelectModal}
               />
-              <TransitionDiv show={selectedRows.length !== 0} className="flex gap-x-3">
+              <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
                 <Button
                   buttonType="primary"
                   className="flex gap-x-2.5 px-4 py-3 font-semibold"
@@ -304,7 +304,7 @@ function UnrecognizedTab() {
                   disabled={dumpInProgress}
                 >
                   <Icon path={mdiDumpTruck} size={0.8333} />
-                  {isAvdumpFinished && 'Finish AVDump'}
+                  {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
                   {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
                   {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
                 </Button>
@@ -315,7 +315,7 @@ function UnrecognizedTab() {
 
         <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
           {filesQuery.isLoading && (
-            <div className="flex grow items-center justify-center text-panel-primary">
+            <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />
             </div>
           )}

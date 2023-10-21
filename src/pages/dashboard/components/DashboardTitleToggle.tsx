@@ -23,7 +23,7 @@ const DashboardTitleToggle = ({
       className={cx({
         'cursor-pointer': true,
         'font-semibold': !secondaryActive,
-        'text-panel-primary': !secondaryActive,
+        'text-panel-text-primary': !secondaryActive,
       })}
       onClick={() => setSecondaryActive(false)}
     >
@@ -34,7 +34,7 @@ const DashboardTitleToggle = ({
       className={cx({
         'cursor-pointer': true,
         'font-semibold': secondaryActive,
-        'text-panel-primary': secondaryActive,
+        'text-panel-text-primary': secondaryActive,
       })}
       onClick={() => setSecondaryActive(true)}
     >

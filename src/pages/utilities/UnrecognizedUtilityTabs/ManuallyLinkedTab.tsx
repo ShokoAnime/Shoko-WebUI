@@ -82,7 +82,7 @@ const SeriesRow = (
           href={`https://anidb.net/anime/${row.IDs.AniDB}`}
           rel="noopener noreferrer"
           target="_blank"
-          className="flex w-24 gap-x-2 font-semibold text-panel-primary"
+          className="flex w-24 gap-x-2 font-semibold text-panel-text-primary"
           onClick={e => e.stopPropagation()}
         >
           {row.IDs.AniDB}
@@ -145,7 +145,7 @@ const Menu = (
   };
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
       <MenuButton onClick={refreshData} icon={mdiRefresh} name="Refresh" />
       <TransitionDiv className="ml-4 flex grow gap-x-4" show={Object.keys(selectedFiles).length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
@@ -156,7 +156,7 @@ const Menu = (
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto text-panel-important">
+      <span className="ml-auto text-panel-text-important">
         {Object.keys(selectedFiles).length}
         &nbsp;
       </span>
@@ -251,12 +251,12 @@ function ManuallyLinkedTab() {
       <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
         {seriesQuery.isFetching && (
           <div className="flex grow items-center justify-center">
-            <Icon path={mdiLoading} size={4} className="text-panel-primary" spin />
+            <Icon path={mdiLoading} size={4} className="text-panel-text-primary" spin />
           </div>
         )}
         {!seriesQuery.isFetching && series.Total > 0 && (
           <div className="flex w-full flex-col overflow-y-auto">
-            <div className="sticky top-0 z-[1] flex rounded-md border border-panel-border bg-panel-background-toolbar px-6 py-4 font-semibold">
+            <div className="sticky top-0 z-[1] flex rounded-md border border-panel-border bg-panel-background-alt px-6 py-4 font-semibold">
               <div className="grow">Series</div>
               <div className="w-24">AniDB ID</div>
               <div className="w-32">Link Count</div>

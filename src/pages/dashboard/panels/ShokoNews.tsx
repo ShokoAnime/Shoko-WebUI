@@ -21,13 +21,13 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => (
   <div className="flex flex-col" key={item.title}>
     <div className="flex gap-x-4 font-semibold">
       <p>{item.date_published}</p>
-      {newNewsCheck(item.date_published) && <p className="text-panel-important">New Post</p>}
+      {newNewsCheck(item.date_published) && <p className="text-panel-text-important">New Post</p>}
     </div>
     <a
       href={item.link}
       rel="noopener noreferrer"
       target="_blank"
-      className="mt-1 flex items-center space-x-2 font-semibold text-panel-primary hover:text-panel-primary-hover"
+      className="mt-1 flex items-center space-x-2 font-semibold text-panel-icon-action"
     >
       <p className="font-semibold">{item.title}</p>
       <Icon path={mdiOpenInNew} size={1} />

@@ -50,21 +50,21 @@ function QueueProcessor() {
             {item?.status ?? 'Idle'}
           </span>
         </div>
-        <div className="flex text-panel-important">{item.queueCount ?? 0}</div>
+        <div className="flex text-panel-text-important">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
           {item?.status === 'Pausing' || item?.status === 'Paused'
             ? (
               <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
-                <Icon className="text-panel-primary" path={mdiPlayCircleOutline} size={1} />
+                <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
               </Button>
             )
             : (
               <Button className="mx-2" onClick={() => handleOperation('Stop', key)} tooltip="Pause">
-                <Icon className="text-panel-primary" path={mdiPauseCircleOutline} size={1} />
+                <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
               </Button>
             )}
           <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
-            <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
+            <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
           </Button>
         </div>
       </div>
@@ -86,7 +86,7 @@ function QueueProcessor() {
         {paused
           ? (
             <div
-              className="mx-2 cursor-pointer text-panel-primary"
+              className="mx-2 cursor-pointer text-panel-icon-action"
               onClick={() => handleOperation('StartAll')}
               title="Resume All"
             >
@@ -95,7 +95,7 @@ function QueueProcessor() {
           )
           : (
             <div
-              className="mx-2 cursor-pointer text-panel-primary"
+              className="mx-2 cursor-pointer text-panel-icon-action"
               onClick={() => handleOperation('StopAll')}
               title="Pause All"
             >
@@ -103,10 +103,10 @@ function QueueProcessor() {
             </div>
           )}
         <Button className="mx-2" onClick={() => handleOperation('ClearAll')} tooltip="Clear All">
-          <Icon className="text-panel-primary" path={mdiCloseCircleOutline} size={1} />
+          <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
         </Button>
         <Button className="mx-2" onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
-          <Icon className="text-panel-primary" path={mdiTextBoxOutline} size={1} />
+          <Icon className="text-panel-icon-action" path={mdiTextBoxOutline} size={1} />
         </Button>
       </>
     );

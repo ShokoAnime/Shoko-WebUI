@@ -68,10 +68,10 @@ const Folder = (props: ImportFolderType) => {
         {Name}
         <div className="flex gap-x-3">
           <Button onClick={() => dispatch(setImportFolderModalEdit(ID))}>
-            <Icon path={mdiPencilCircleOutline} size={1} className="text-panel-primary" />
+            <Icon path={mdiPencilCircleOutline} size={1} className="text-panel-text-primary" />
           </Button>
           <Button onClick={() => handleDeleteFolder(ID)}>
-            <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-danger" />
+            <Icon path={mdiMinusCircleOutline} size={1} className="text-panel-text-danger" />
           </Button>
         </div>
       </div>

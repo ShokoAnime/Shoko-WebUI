@@ -52,7 +52,7 @@ function ImportFolders() {
           <div className="flex">
             <Button onClick={() => rescanFolder(folder.ID, folder.Name)} tooltip="Rescan Folder" className="mr-2">
               <Icon
-                className="text-panel-primary"
+                className="text-panel-icon-action"
                 path={mdiDatabaseSearchOutline}
                 size={1}
                 horizontal
@@ -62,7 +62,7 @@ function ImportFolders() {
             </Button>
             <Button onClick={() => openImportFolderModalEdit(folder.ID)} tooltip="Edit Folder">
               <Icon
-                className="text-panel-primary"
+                className="text-panel-icon-action"
                 path={mdiDatabaseEditOutline}
                 size={1}
                 horizontal
@@ -99,7 +99,7 @@ function ImportFolders() {
       onClick={() => setImportFolderModalStatus(true)}
       title="Add Folder"
     >
-      <Icon className="text-panel-primary" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
+      <Icon className="text-panel-icon-action" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
     </div>
   );
 

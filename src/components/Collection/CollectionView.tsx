@@ -162,14 +162,14 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
       <div
         className={cx(
           'flex grow rounded-md items-center font-semibold justify-center',
-          mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
+          mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
         )}
       >
         {/* This is always equal width to the actual grid container so we are using the ref here */}
         {/* Otherwise we would need two refs to remove flicker */}
         <div className="flex w-full justify-center" ref={gridContainerRef}>
           {isLoading || seriesData.total === -1
-            ? <Icon path={mdiLoading} size={3} className="text-panel-primary" spin />
+            ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
             : 'No series/groups available!'}
         </div>
       </div>
@@ -180,7 +180,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     <div
       className={cx(
         'flex grow rounded-md',
-        mode === 'poster' && 'px-6 py-8 bg-panel-background border-panel-border border',
+        mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
       )}
     >
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }}>
@@ -251,7 +251,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
             } else {
               items.push(
                 <div
-                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-primary"
+                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-text-primary"
                   key={`loading-${i}`}
                   style={{
                     width: `${itemWidth / 16}rem`,

@@ -78,11 +78,11 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   <Listbox.Option
     value={option}
     key={`listbox-item-${option.value}`}
-    className="group relative cursor-pointer select-none px-2 py-0.5 text-panel-text hover:bg-panel-primary hover:text-panel-text-alt"
+    className="group relative cursor-pointer select-none px-2 py-0.5 text-panel-text"
   >
     <div className="flex items-center justify-between">
       <span className="flex grow truncate font-normal">
-        <div className="w-10 shrink-0 text-panel-important group-hover:text-panel-text">
+        <div className="w-10 shrink-0 text-panel-text-important">
           {getPrefix(option.type) + option.number}
         </div>
         |
@@ -139,11 +139,11 @@ const SelectEpisodeList = (
     if (!selected || !selected.label) return emptyValue;
     return (
       <>
-        <span className="font-semibold text-panel-important">{selected.number}</span>
+        <span className="font-semibold text-panel-text-important">{selected.number}</span>
         &nbsp;-&nbsp;
         {selected.label}
         {selected.type && selected.type !== 'Normal' && (
-          <span className="mx-2 rounded-md border border-panel-primary bg-panel-background px-1 py-0.5 text-sm text-panel-text">
+          <span className="mx-2 rounded-md border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
             {selected.type}
           </span>
         )}
@@ -175,7 +175,7 @@ const SelectEpisodeList = (
             placeholder="Input Episode Name or Number..."
           />
         </div>
-        <div className="mt-1 max-h-96 overflow-y-auto rounded-md bg-panel-background-alt p-4">
+        <div className="mt-1 max-h-96 overflow-y-auto rounded-md bg-panel-input border border-panel-border p-4">
           {options.map((item, idx) => (
             <React.Fragment key={`listbox-item-${item.value}`}>
               {idx !== 0 && item.type !== options[idx - 1].type && (
@@ -203,8 +203,8 @@ const SelectEpisodeList = (
             <Listbox.Button
               ref={buttonRef}
               className={cx(
-                'relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-primary',
-                rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-toolbar',
+                'relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-text-primary',
+                rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
               )}
             >
               <span className="flex items-center">

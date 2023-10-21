@@ -34,7 +34,7 @@ const ShokoPanel = (
     className={cx(
       'flex flex-col overflow-hidden transition-colors border rounded p-8',
       fullHeight && 'h-full',
-      editMode ? 'pointer-events-none border-panel-primary' : 'border-panel-border',
+      editMode ? 'pointer-events-none border-panel-text-primary' : 'border-panel-border',
       transparent ? 'bg-panel-background-transparent' : 'bg-panel-background',
       className,
     )}

@@ -63,7 +63,7 @@ function Input(props: Props) {
           <input
             className={cx([
               inputClassName,
-              'appearance-none bg-default-background-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-primary focus:ring-inset',
+              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
               center && 'text-center',
               startIcon && '!pl-11',
             ])}
@@ -79,7 +79,7 @@ function Input(props: Props) {
           {endIcon && (
             <div
               onClick={endIconClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-panel-primary"
+              className="text-panel-icon-primary absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer"
             >
               <Icon path={endIcon} size={1} horizontal vertical rotate={180} />
             </div>

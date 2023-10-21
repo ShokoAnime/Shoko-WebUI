@@ -107,9 +107,9 @@ function IgnoredFilesTab() {
               onChange={e => setSearch(e.target.value)}
               inputClassName="px-4 py-3"
             />
-            <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+            <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
               <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
-              <span className="ml-auto text-panel-important">
+              <span className="ml-auto text-panel-text-important">
                 {selectedRows.length}
                 &nbsp;
               </span>
@@ -121,7 +121,7 @@ function IgnoredFilesTab() {
 
       <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
         {filesQuery.isLoading && (
-          <div className="flex grow items-center justify-center text-panel-primary">
+          <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}

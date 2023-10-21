@@ -131,7 +131,7 @@ const SeriesEpisodes = () => {
           <div className="text-xl font-semibold">
             Episodes
             <span className="px-2">|</span>
-            <span className="pr-2 text-panel-important">
+            <span className="pr-2 text-panel-text-important">
               {episodesData.isUninitialized || episodesData.isLoading ? '-' : episodeTotal}
             </span>
             Entries Listed
@@ -173,7 +173,7 @@ const SeriesEpisodes = () => {
                     >
                       {item ? <SeriesEpisode episode={item} /> : (
                         // 332px is the minimum height of a loaded row
-                        <div className="flex h-[332px] items-center justify-center p-8 text-panel-primary">
+                        <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
                           <Icon path={mdiLoading} spin size={3} />
                         </div>
                       )}

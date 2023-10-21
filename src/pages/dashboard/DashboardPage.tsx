@@ -81,7 +81,7 @@ function DashboardPage() {
           draggable: false,
           closeOnClick: false,
           toastId: 'layoutEditMode',
-          className: 'w-64 ml-auto',
+          className: 'max-w-[17rem] ml-auto',
         });
       } else {
         toast.infoUpdate('layoutEditMode', '', renderToast());
@@ -93,7 +93,7 @@ function DashboardPage() {
 
   const renderResizeHandle = () => (
     <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
-      <Icon path={mdiMenuDown} size={1.5} className="text-panel-primary" rotate={-45} />
+      <Icon path={mdiMenuDown} size={1.5} className="text-panel-text-primary" rotate={-45} />
     </div>
   );
 

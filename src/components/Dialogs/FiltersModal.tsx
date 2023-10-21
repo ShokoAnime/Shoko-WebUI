@@ -47,13 +47,13 @@ function FiltersModal({ onClose, show }: Props) {
   const renderItem = (item: CollectionFilterType) => (
     <div className="flex justify-between font-semibold" key={item.IDs.ID}>
       <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
-      <span className="text-panel-important">{item.Size}</span>
+      <span className="text-panel-text-important">{item.Size}</span>
     </div>
   );
 
   const renderTabSide = (title, filterId) => (
     <div
-      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-panel-primary')}
+      className={cx('font-semibold cursor-pointer', activeTab === title && 'text-panel-text-primary')}
       key={filterId}
       onClick={() => {
         setActiveTab(title);
@@ -87,7 +87,7 @@ function FiltersModal({ onClose, show }: Props) {
             : (
               <div className="text-center">
                 Your search for&nbsp;
-                <span className="font-semibold text-panel-important">{search}</span>
+                <span className="font-semibold text-panel-text-important">{search}</span>
                 &nbsp;returned zero results.
               </div>
             )}

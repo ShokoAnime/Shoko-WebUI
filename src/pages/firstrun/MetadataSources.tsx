@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { mdiChevronRight } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
@@ -27,9 +29,10 @@ function MetadataSources() {
       onClick={() => setActiveTab(key)}
       className={cx([
         'font-semibold',
-        '!text-lg',
         'drop-shadow-none',
-        activeTab === key ? '!text-panel-primary' : '!text-panel-text',
+        '!border-none',
+        '!bg-transparent',
+        activeTab === key ? 'text-panel-text-primary' : '!text-panel-text',
       ])}
     >
       {title}
@@ -62,7 +65,9 @@ function MetadataSources() {
         collection. We highly recommend that you review the settings for each site and configure them to meet your
         preferences.
       </div>
-      <div className="flex gap-x-2 border-b-2 border-panel-border pb-3 text-xl">
+      <div className="flex gap-x-2 pb-3 text-xl font-semibold items-center">
+        <div>Recently Imported</div>
+        <Icon path={mdiChevronRight} size={1} />
         {renderTabButton('AniDB', 'anidb')}
         |
         {renderTabButton('TMDB', 'moviedb')}

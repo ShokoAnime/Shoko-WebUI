@@ -45,7 +45,7 @@ function EpisodeDetails(props: Props): JSX.Element {
         ? (
           <>
             <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
-            <p className="mb-2 truncate text-center text-sm opacity-75">{relativeTime}</p>
+            <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
           </>
         )
         : null}
@@ -53,7 +53,9 @@ function EpisodeDetails(props: Props): JSX.Element {
         image={episode.SeriesPoster}
         className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
       >
-        {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-primary" style={{ width: percentage }} />}
+        {percentage && (
+          <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />
+        )}
         {isInCollection && (
           <div className="absolute right-3 top-3 rounded bg-panel-background-transparent p-1">
             <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is Already in Collection!" />
@@ -63,7 +65,7 @@ function EpisodeDetails(props: Props): JSX.Element {
       <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
         {episode.SeriesTitle}
       </p>
-      <p className="truncate text-center text-sm opacity-75" title={title}>{title}</p>
+      <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
     </div>
   );
 }

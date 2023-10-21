@@ -40,7 +40,7 @@ const TabButton = (
   },
 ) => (
   <div
-    className={cx(['cursor-pointer', id === activeTab ? 'text-panel-primary' : undefined])}
+    className={cx(['cursor-pointer', id === activeTab ? 'text-panel-text-primary' : undefined])}
     onClick={() => setActiveTab(id)}
   >
     {name}
@@ -58,7 +58,7 @@ const Title = ({ activeTab, count, tabs }: { activeTab: string, count: number, t
     </div>
     <div className="flex grow" />
     <div className="flex gap-x-1">
-      <div className="text-panel-important">{count < 0 ? '-' : count}</div>
+      <div className="text-panel-text-important">{count < 0 ? '-' : count}</div>
       &nbsp;
       {names[activeTab]}
       &nbsp;Entries
@@ -157,8 +157,8 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
         <div
           className={cx([
             'px-4',
-            item.IsRunning ? 'text-panel-important' : undefined,
-            item.IsDisabled ? 'text-panel-warning' : undefined,
+            item.IsRunning ? 'text-panel-text-important' : undefined,
+            item.IsDisabled ? 'text-panel-text-warning' : undefined,
           ])}
         >
           {item.IsRunning && <Icon path={mdiRun} size={1} />}
@@ -172,7 +172,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
           <div className="grow break-all">
             {currentCommand.Description}
           </div>
-          <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-important' : undefined])}>
+          <div className={cx(['px-4', currentCommand.IsRunning ? 'text-panel-text-important' : undefined])}>
             <Icon path={currentCommand.IsRunning ? mdiRun : mdiHelpCircleOutline} size={1} />
           </div>
         </div>,
@@ -247,7 +247,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       title={<Title activeTab={activeTab} count={count} tabs={tabs} />}
     >
       <div className="flex gap-x-3">
-        <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-toolbar px-4 py-3">
+        <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
           <MenuButton
             highlight
             onClick={handleShowDisabledToggle}
@@ -282,21 +282,21 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
           Clear Queue
         </Button>
       </div>
-      <div className="flex flex-row">
-        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4 capitalize">
-          <div className="flex h-64 flex-col overflow-y-auto bg-panel-background-alt">
-            <div className="mt-0 flex gap-x-3">
-              <div className="grow">
-                <strong>Task</strong>
-              </div>
-              <div className="px-1">
-                <strong>Status</strong>
-              </div>
-            </div>
+      <div className="flex flex-col">
+        <div className="flex w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+          <div className="grow">
+            <strong>Task</strong>
+          </div>
+          <div className="px-1">
+            <strong>Status</strong>
+          </div>
+        </div>
+        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+          <div className="flex h-64 flex-col overflow-y-auto bg-panel-input">
             {items}
             {isLoading && (
               <div className="flex grow items-center justify-center">
-                <Icon path={mdiLoading} spin size={3} />
+                <Icon className="text-panel-text-primary" path={mdiLoading} spin size={3} />
               </div>
             )}
             {!isLoading && items.length === 0 && (

@@ -1,7 +1,7 @@
 .error-page {
-  background-color: theme('colors.default-background');
+  background-color: theme('colors.panel-background-alt');
 
-  a {
+  & a {
     color: #49a2df;
     font-weight: 600;
   }

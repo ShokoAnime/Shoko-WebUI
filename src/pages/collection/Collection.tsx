@@ -46,7 +46,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
           <div className="flex gap-y-2">
             {moment(series.AniDB?.AirDate).year()}
             &nbsp;|&nbsp;
-            <div className="text-panel-important">{seriesType}</div>
+            <div className="text-panel-text-important">{seriesType}</div>
           </div>
           <div className="line-clamp-2">{series.Name}</div>
         </div>

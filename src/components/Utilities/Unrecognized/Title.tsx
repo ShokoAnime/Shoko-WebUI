@@ -4,7 +4,7 @@ import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 const TabButton = ({ id, name }: { id: string, name: string }) => (
-  <NavLink to={`../${id}`} className={({ isActive }) => (isActive ? 'text-panel-primary' : '')}>
+  <NavLink to={`../${id}`} className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}>
     {name}
   </NavLink>
 );

@@ -25,7 +25,7 @@ type Props = {
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
   show
     ? (
-      <div className="flex items-center justify-center rounded-md bg-panel-background-transparent px-3 py-2 text-panel-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+      <div className="flex items-center justify-center rounded-md bg-panel-background-transparent px-3 py-2 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
         <Icon path={icon} size={1} />
       </div>
     )
@@ -33,7 +33,7 @@ const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
 );
 
 const StateButton = ({ active, icon, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
-  <Button className={active ? 'text-panel-important' : 'text-panel-text'} onClick={onClick}>
+  <Button className={active ? 'text-panel-text-important' : 'text-panel-text'} onClick={onClick}>
     <Icon path={icon} size="2rem" />
   </Button>
 );
@@ -70,7 +70,7 @@ const SeriesEpisode = ({ episode }: Props) => {
             <StateIcon icon={mdiEyeCheckOutline} show={episode.Watched !== null} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
           </div>
-          <div className="pointer-events-none z-10 flex h-full justify-between bg-overlay-background p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          <div className="pointer-events-none z-10 flex h-full justify-between bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <div>
               <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} />
             </div>

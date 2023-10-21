@@ -20,7 +20,7 @@ const Title = ({ fileCount }: { fileCount: number }) => (
   <div className="flex flex-row justify-between gap-x-0.5 text-xl font-semibold">
     <div>Delete Confirmation</div>
     <div className="flex gap-x-1">
-      <div className="text-panel-important">{fileCount}</div>
+      <div className="text-panel-text-important">{fileCount}</div>
       &nbsp;Files
     </div>
   </div>
@@ -46,7 +46,7 @@ function DeleteFilesModal(props: Props) {
             {file.Locations[0]?.RelativePath?.split(/[/\\]+/g).slice(-2).join('/')
               ?? `<missing file path for ${file.ID}>`}
           </div>
-          <div className="cursor-pointer text-panel-danger">
+          <div className="cursor-pointer text-panel-text-danger">
             <Icon path={mdiMinusCircleOutline} size={1} />
           </div>
         </div>
