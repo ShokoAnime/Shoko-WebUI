@@ -114,7 +114,7 @@ const router = createBrowserRouter(
 
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
-  const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) ?? '') as string;
+  const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
 
   const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
