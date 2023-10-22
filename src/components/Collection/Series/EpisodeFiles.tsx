@@ -45,11 +45,11 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
                   await rescanFile(selectedFile.ID);
                 }}
               >
-                <Icon path={mdiRefresh} size={1} />
+                <Icon className="text-panel-icon-action" path={mdiRefresh} size={1} />
                 Force Update File Info
               </div>
               <div className="flex items-center gap-x-2">
-                <Icon path={mdiEyeOutline} size={1} />
+                <Icon className="text-panel-icon-action" path={mdiEyeOutline} size={1} />
                 {selectedFile.IsVariation ? 'Unmark' : 'Mark'}
                 &nbsp;File as Variation
               </div>
@@ -58,7 +58,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
                   <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                     <div className="metadata-link-icon anidb" />
                     {`${selectedFile.AniDB.ID} (AniDB)`}
-                    <Icon path={mdiOpenInNew} size={1} />
+                    <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                   </div>
                 </a>
               )}
@@ -67,7 +67,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
                   <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                     <div className="metadata-link-icon anidb" />
                     {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
-                    <Icon path={mdiOpenInNew} size={1} />
+                    <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                   </div>
                 </a>
               )}

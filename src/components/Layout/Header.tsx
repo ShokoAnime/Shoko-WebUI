@@ -19,7 +19,7 @@ function Header({ setShowSidebar, showSidebar }: Props) {
   return (
     <div className="z-[100] flex max-h-15 items-center justify-between bg-topnav-background p-4 drop-shadow-md">
       <Button onClick={() => setShowSidebar(!showSidebar)}>
-        <Icon path={showSidebar ? mdiBackburger : mdiMenu} size={1} className="text-header-text" />
+        <Icon path={showSidebar ? mdiBackburger : mdiMenu} size={1} className="text-header-icon" />
       </Button>
       <ShokoIcon className="w-8" />
       <div className="flex items-center">

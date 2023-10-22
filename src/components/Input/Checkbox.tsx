@@ -48,18 +48,18 @@ function Checkbox({ className, id, intermediate, isChecked, justify, label, labe
         </span>
       )}
       {!intermediate && isChecked && (
-        <TransitionDiv className="flex text-panel-text-primary" enterFrom="opacity-50" appear={false}>
-          <Icon path={mdiCheckboxMarkedCircleOutline} size={1} />
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+          <Icon className="text-panel-icon-action" path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {!intermediate && !isChecked && (
-        <TransitionDiv className="flex text-panel-text-primary" enterFrom="opacity-50" appear={false}>
-          <Icon path={mdiCheckboxBlankCircleOutline} size={1} />
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+          <Icon className="text-panel-icon-action" path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {intermediate && (
-        <TransitionDiv className="flex text-panel-text-primary" enterFrom="opacity-50" appear={false}>
-          <Icon path={mdiCircleHalfFull} size={1} />
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+          <Icon className="text-panel-icon-action" path={mdiCircleHalfFull} size={1} />
         </TransitionDiv>
       )}
       {labelRight && (

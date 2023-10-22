@@ -33,11 +33,11 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
       </div>
 
       <div className="flex items-center gap-x-2 text-sm font-semibold">
-        <Icon path={mdiCalendarMonthOutline} size={1} />
+        <Icon className="text-panel-icon" path={mdiCalendarMonthOutline} size={1} />
         {moment(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
-        <Icon path={mdiClockOutline} size={1} />
+        <Icon className="text-panel-icon" path={mdiClockOutline} size={1} />
         {getDuration(episode.Duration)}
-        <Icon path={mdiStarHalfFull} size={1} />
+        <Icon className="text-panel-icon" path={mdiStarHalfFull} size={1} />
         {toNumber(episode.AniDB?.Rating.Value).toFixed(2)}
         &nbsp;(
         {episode.AniDB?.Rating.Votes}
