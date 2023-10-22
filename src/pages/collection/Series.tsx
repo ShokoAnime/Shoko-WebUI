@@ -106,13 +106,17 @@ const Series = () => {
               <div className="flex gap-x-2">
                 <Link className="font-semibold text-panel-text-primary" to="/webui/collection">Entire Collection</Link>
                 <Icon path={mdiChevronRight} size={1} />
-                <Link
-                  className="font-semibold text-panel-text-primary"
-                  to={`/webui/collection/group/${series.IDs?.ParentGroup}`}
-                >
-                  {group.Name}
-                </Link>
-                <Icon path={mdiChevronRight} size={1} />
+                {group.Size > 1 && (
+                  <>
+                    <Link
+                      className="font-semibold text-panel-text-primary"
+                      to={`/webui/collection/group/${series.IDs?.ParentGroup}`}
+                    >
+                      {group.Name}
+                    </Link>
+                    <Icon path={mdiChevronRight} size={1} />
+                  </>
+                )}
               </div>
               <div className="flex gap-x-3">
                 {isSeriesOngoing && <IconNotification text="Series is Ongoing" />}
