@@ -1,4 +1,5 @@
 import React, { type JSX } from 'react';
+import { Link } from 'react-router-dom';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -10,17 +11,26 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
   const mainPoster = useMainPoster(series);
 
   return (
-    <div key={`series-${series.IDs.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
-      <BackgroundImagePlaceholderDiv
-        image={mainPoster}
-        className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
-      />
-      <p className="mb-1 truncate text-center text-sm font-semibold" title={series.Name}>{series.Name}</p>
-      <p className="truncate text-center text-sm font-semibold opacity-65" title={`${series.Size} Files`}>
-        {series.Size}
-        &nbsp;Files
-      </p>
-    </div>
+    <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+      <div
+        key={`series-${series.IDs.ID}`}
+        className="last:mr-0 group mr-4 flex w-56 shrink-0 flex-col justify-center"
+      >
+        <BackgroundImagePlaceholderDiv
+          image={mainPoster}
+          className="mb-3 h-80 rounded-md border border-panel-border drop-shadow-md "
+          hidePlaceholderOnHover
+          zoomOnHover
+        >
+          <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+        </BackgroundImagePlaceholderDiv>
+        <p className="mb-1 truncate text-center text-sm font-semibold" title={series.Name}>{series.Name}</p>
+        <p className="truncate text-center text-sm font-semibold opacity-65" title={`${series.Size} Files`}>
+          {series.Size}
+          &nbsp;Files
+        </p>
+      </div>
+    </Link>
   );
 }
 

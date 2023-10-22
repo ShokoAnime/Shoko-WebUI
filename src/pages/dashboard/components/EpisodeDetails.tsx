@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import type { JSX } from 'react';
+import { Link } from 'react-router-dom';
 import { mdiLayersTripleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import moment from 'moment';
@@ -8,6 +9,12 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
+
+type Props = {
+  episode: DashboardEpisodeDetailsType;
+  showDate?: boolean;
+  isInCollection?: boolean;
+};
 
 const CalendarConfig: moment.CalendarSpec = {
   sameDay: '[Today]',
@@ -18,20 +25,49 @@ const CalendarConfig: moment.CalendarSpec = {
   sameElse: 'dddd',
 };
 
-type Props = {
-  episode: DashboardEpisodeDetailsType;
-  showDate?: boolean;
-  isInCollection?: boolean;
-};
+const DateSection: React.FC<{ airDate: moment.Moment, relativeTime: string }> = ({ airDate, relativeTime }) => (
+  <>
+    <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
+    <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
+  </>
+);
 
-function EpisodeDetails(props: Props): JSX.Element {
-  const { episode, isInCollection, showDate } = props;
+const ImageSection: React.FC<
+  { episode: DashboardEpisodeDetailsType, percentage: string | null, isInCollection: boolean }
+> = ({ episode, isInCollection, percentage }) => (
+  <BackgroundImagePlaceholderDiv
+    image={episode.SeriesPoster}
+    className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
+    hidePlaceholderOnHover
+    zoomOnHover
+  >
+    {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />}
+    {isInCollection && (
+      <div className="absolute right-3 top-3 rounded bg-panel-background-transparent p-1">
+        <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is Already in Collection!" />
+      </div>
+    )}
+    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+  </BackgroundImagePlaceholderDiv>
+);
+
+const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: string }> = ({ episode, title }) => (
+  <>
+    <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
+      {episode.SeriesTitle}
+    </p>
+    <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
+  </>
+);
+
+function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): JSX.Element {
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
     const duration = moment.duration(episode.Duration);
     const resumePosition = moment.duration(episode.ResumePosition);
     return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
   }, [episode.Duration, episode.ResumePosition]);
+
   const airDate = useMemo(() => moment(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(CalendarConfig), [airDate]);
   const title = useMemo(
@@ -39,33 +75,26 @@ function EpisodeDetails(props: Props): JSX.Element {
     [episode.Type, episode.Title, episode.Number],
   );
 
+  const content = (
+    <>
+      {showDate && <DateSection airDate={airDate} relativeTime={relativeTime} />}
+      <ImageSection episode={episode} percentage={percentage} isInCollection={isInCollection} />
+      <TitleSection episode={episode} title={title} />
+    </>
+  );
+
   return (
-    <div key={`episode-${episode.IDs.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
-      {showDate
+    <div
+      key={`episode-${episode.IDs.ID}`}
+      className={`${episode.IDs.ShokoSeries && ('group')} mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0`}
+    >
+      {episode.IDs.ShokoSeries
         ? (
-          <>
-            <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
-            <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
-          </>
+          <Link to={`/webui/collection/series/${episode.IDs.ShokoSeries}`}>
+            {content}
+          </Link>
         )
-        : null}
-      <BackgroundImagePlaceholderDiv
-        image={episode.SeriesPoster}
-        className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
-      >
-        {percentage && (
-          <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />
-        )}
-        {isInCollection && (
-          <div className="absolute right-3 top-3 rounded bg-panel-background-transparent p-1">
-            <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is Already in Collection!" />
-          </div>
-        )}
-      </BackgroundImagePlaceholderDiv>
-      <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
-        {episode.SeriesTitle}
-      </p>
-      <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
+        : content}
     </div>
   );
 }
