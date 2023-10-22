@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
-import { mdiLayersTripleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -37,17 +35,17 @@ const ImageSection: React.FC<
 > = ({ episode, isInCollection, percentage }) => (
   <BackgroundImagePlaceholderDiv
     image={episode.SeriesPoster}
-    className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
+    className="mb-3 h-80 rounded-lg border border-panel-border drop-shadow-md"
     hidePlaceholderOnHover
     zoomOnHover
   >
     {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />}
     {isInCollection && (
-      <div className="absolute right-3 top-3 rounded bg-panel-background-transparent p-1">
-        <Icon path={mdiLayersTripleOutline} size={0.75} title="Episode is Already in Collection!" />
+      <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+        In Collection
       </div>
     )}
-    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100" />
   </BackgroundImagePlaceholderDiv>
 );
 
