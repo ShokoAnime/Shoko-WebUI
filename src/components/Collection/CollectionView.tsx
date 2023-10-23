@@ -142,10 +142,10 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
   const [itemsPerRow, count] = useMemo(() => {
-    const tempItemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width) / itemWidth));
+    const tempItemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width + itemGap) / (itemWidth + itemGap)));
     const tempCount = total === -1 ? 0 : Math.ceil(total / tempItemsPerRow);
     return [tempItemsPerRow, tempCount];
-  }, [gridContainerBounds.width, itemWidth, total]);
+  }, [gridContainerBounds.width, itemGap, itemWidth, total]);
 
   const virtualizer = useVirtualizer({
     count,
@@ -255,6 +255,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
                   key={`loading-${i}`}
                   style={{
                     width: `${itemWidth / 16}rem`,
+                    height: `${itemHeight / 16}rem`,
                   }}
                 >
                   <Icon path={mdiLoading} spin size={3} />
