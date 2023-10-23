@@ -142,7 +142,8 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
   const [itemsPerRow, count] = useMemo(() => {
-    const tempItemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width + itemGap) / (itemWidth + itemGap)));
+    // + 4 is to account for scrollbar, otherwise only 7 items show up in a row at max width
+    const tempItemsPerRow = Math.max(1, Math.floor((gridContainerBounds.width + itemGap + 4) / (itemWidth + itemGap)));
     const tempCount = total === -1 ? 0 : Math.ceil(total / tempItemsPerRow);
     return [tempItemsPerRow, tempCount];
   }, [gridContainerBounds.width, itemGap, itemWidth, total]);

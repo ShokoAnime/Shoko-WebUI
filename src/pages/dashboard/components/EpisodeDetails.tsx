@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
-import type { JSX } from 'react';
 import { Link } from 'react-router-dom';
+import { mdiLayersTripleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -84,7 +86,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   return (
     <div
       key={`episode-${episode.IDs.ID}`}
-      className={`${episode.IDs.ShokoSeries && ('group')} mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0`}
+      className={cx('mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0', episode.IDs.ShokoSeries 'group')}
     >
       {episode.IDs.ShokoSeries
         ? (
