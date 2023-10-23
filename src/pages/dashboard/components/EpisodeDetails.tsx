@@ -1,7 +1,5 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { mdiLayersTripleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import moment from 'moment';
 
@@ -60,7 +58,7 @@ const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: stri
   </>
 );
 
-function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): JSX.Element {
+function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode {
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
     const duration = moment.duration(episode.Duration);
@@ -86,7 +84,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   return (
     <div
       key={`episode-${episode.IDs.ID}`}
-      className={cx('mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0', episode.IDs.ShokoSeries 'group')}
+      className={cx('mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0', episode.IDs.ShokoSeries && 'group')}
     >
       {episode.IDs.ShokoSeries
         ? (
