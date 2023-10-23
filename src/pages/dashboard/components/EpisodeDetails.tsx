@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { JSX } from 'react';
+import { Link } from 'react-router-dom';
 import { mdiLayersTripleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import moment from 'moment';
@@ -24,7 +24,7 @@ type Props = {
   isInCollection?: boolean;
 };
 
-function EpisodeDetails(props: Props): JSX.Element {
+function EpisodeDetails(props: Props): React.ReactNode {
   const { episode, isInCollection, showDate } = props;
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
@@ -40,7 +40,11 @@ function EpisodeDetails(props: Props): JSX.Element {
   );
 
   return (
-    <div key={`episode-${episode.IDs.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
+    <Link
+      key={`episode-${episode.IDs.ID}`}
+      className="group mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0"
+      to={`/webui/collection/series/${episode.IDs.ShokoSeries}/episodes`}
+    >
       {showDate
         ? (
           <>
@@ -52,6 +56,7 @@ function EpisodeDetails(props: Props): JSX.Element {
       <BackgroundImagePlaceholderDiv
         image={episode.SeriesPoster}
         className="mb-3 h-80 rounded border border-panel-border drop-shadow-md"
+        zoomOnHover
       >
         {percentage && (
           <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />
@@ -66,7 +71,7 @@ function EpisodeDetails(props: Props): JSX.Element {
         {episode.SeriesTitle}
       </p>
       <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
-    </div>
+    </Link>
   );
 }
 
