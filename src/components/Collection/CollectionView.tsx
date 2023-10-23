@@ -255,6 +255,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
                   key={`loading-${i}`}
                   style={{
                     width: `${itemWidth / 16}rem`,
+                    height: `${itemHeight / 16}rem`,
                   }}
                 >
                   <Icon path={mdiLoading} spin size={3} />
