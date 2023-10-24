@@ -110,7 +110,7 @@ const Series = () => {
                   <>
                     <Link
                       className="font-semibold text-panel-text-primary"
-                      to={`/webui/collection/group/${series.IDs?.ParentGroup}`}
+                      to={`/webui/collection/group/${series.IDs.ParentGroup}`}
                     >
                       {group.Name}
                     </Link>
