@@ -55,20 +55,21 @@ const MenuItem = (
   <NavLink
     to={id}
     key={id}
-    className={({ isActive }) => cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-header-primary')}
+    className={({ isActive }) =>
+      cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-topnav-icon-primary')}
     onClick={(e) => {
       e.preventDefault();
       onClick();
     }}
   >
-    <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
+    <Icon path={icon} size={0.8333} />
     {text}
   </NavLink>
 );
 
 const ExternalLinkMenuItem = ({ icon, url }: { url: string, icon: string }) => (
   <a href={url} target="_blank" rel="noreferrer noopener">
-    <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
+    <Icon className="text-topnav-icon" path={icon} size={0.8333} />
   </a>
 );
 
@@ -153,7 +154,7 @@ function TopNav() {
       className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-topnav-text-primary')}
       onClick={closeModalsAndSubmenus}
     >
-      <Icon className="text-topnav-icon-primary" path={icon} size={0.8333} />
+      <Icon path={icon} size={0.8333} />
       {text}
     </NavLink>
   ), []);
@@ -170,16 +171,16 @@ function TopNav() {
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-8 py-6">
           <div className="flex items-center gap-x-2">
             <ShokoIcon className="w-6" />
-            <span className="mt-1 text-xl font-semibold">Shoko</span>
+            <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
           </div>
           <div className="flex items-center gap-x-8">
             <div className="flex items-center gap-x-2">
               <div
-                className={cx(['cursor-pointer', showQueueModal ? 'text-topnav-text-primary' : undefined])}
+                className={cx(['cursor-pointer', showQueueModal ? 'text-header-icon-primary' : undefined])}
                 onClick={handleQueueModalOpen}
                 title="Show Queue Modal"
               >
-                <Icon className="text-header-icon" path={mdiServer} size={0.8333} />
+                <Icon path={mdiServer} size={0.8333} />
               </div>
               <span className="text-header-text-important">
                 {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
@@ -192,15 +193,15 @@ function TopNav() {
                   ? <img src={currentUser.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
                   : currentUser.data?.Username.charAt(0)}
               </div>
-              <span>{currentUser.data?.Username}</span>
+              <span className="text-header-text">{currentUser.data?.Username}</span>
               <Icon path={mdiChevronDown} size={0.6666} />
             </div>
             <NavLink
               to="settings"
-              className={({ isActive }) => (isActive ? 'text-topnav-text-primary' : '')}
+              className={({ isActive }) => (isActive ? 'text-header-icon-primary' : '')}
               onClick={() => closeModalsAndSubmenus()}
             >
-              <Icon className="text-header-icon" path={mdiCogOutline} size={0.8333} />
+              <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>
           </div>
         </div>

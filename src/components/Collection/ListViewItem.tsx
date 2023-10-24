@@ -132,12 +132,12 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
                 <Icon
                   path={mdiPencilCircleOutline}
                   size="2rem"
-                  className="text-panel-icon-important"
+                  className="text-panel-icon"
                 />
               </Link>
             </div>
             {showGroupIndicator && groupCount > 1 && (
-              <div className="text-panel-text-transparent absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">
+              <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">
                 {groupCount}
                 &nbsp;Series
               </div>
