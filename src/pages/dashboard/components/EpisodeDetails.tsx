@@ -45,7 +45,7 @@ const ImageSection: React.FC<
         In Collection
       </div>
     )}
-    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 group-hover:pointer-events-auto group-hover:opacity-100" />
+    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
   </BackgroundImagePlaceholderDiv>
 );
 
