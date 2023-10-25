@@ -11,7 +11,10 @@ module.exports = {
   ],
   //Any class that is generated dynamically goes here
   safelist: [
+    'bg-panel-text-danger',
+    'bg-panel-text-important',
     'bg-panel-text-other',
+    'bg-panel-text-warning',
     'text-panel-text-other',
   ],
   theme: {
