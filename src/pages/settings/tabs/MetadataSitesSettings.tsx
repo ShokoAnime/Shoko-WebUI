@@ -1,7 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -11,8 +10,6 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useLazyGetTraktCodeQuery } from '@/core/rtkQuery/splitApi/traktApi';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
-
-dayjs.extend(advancedFormat);
 
 export const tvdbLanguages = [
   ['en', 'English'],

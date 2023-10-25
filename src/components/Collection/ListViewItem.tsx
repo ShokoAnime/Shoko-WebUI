@@ -13,7 +13,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { forEach, reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -29,8 +28,6 @@ import AnidbDescription from './AnidbDescription';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesSizesFileSourcesType, SeriesType } from '@/core/types/api/series';
 import type { WebuiGroupExtra } from '@/core/types/api/webui';
-
-dayjs.extend(advancedFormat);
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: string[] = [];

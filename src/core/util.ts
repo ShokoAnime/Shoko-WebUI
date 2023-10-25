@@ -2,12 +2,20 @@
 import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
 import { sortingFns } from '@tanstack/react-table';
 import copy from 'copy-to-clipboard';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import calendar from 'dayjs/plugin/calendar';
+import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { isObject, toNumber } from 'lodash';
 
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { RankingInfo } from '@tanstack/match-sorter-utils';
 import type { FilterFn, SortingFn } from '@tanstack/react-table';
+
+dayjs.extend(advancedFormat);
+dayjs.extend(calendar);
+dayjs.extend(durationPlugin);
 
 const { DEV, VITE_APPVERSION, VITE_GITHASH } = import.meta.env;
 

@@ -17,7 +17,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { get, isArray, random } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -30,8 +29,6 @@ import useMainPoster from '@/hooks/useMainPoster';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesDetailsType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
-
-dayjs.extend(advancedFormat);
 
 const IconNotification = ({ text }) => (
   <div className="flex items-center gap-x-2 font-semibold">

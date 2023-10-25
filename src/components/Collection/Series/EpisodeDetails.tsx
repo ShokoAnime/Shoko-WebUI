@@ -2,16 +2,11 @@ import React from 'react';
 import { mdiCalendarMonthOutline, mdiClockOutline, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
-import durationPlugin from 'dayjs/plugin/duration';
 import { toNumber } from 'lodash';
 
 import { convertTimeSpanToMs } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
-
-dayjs.extend(advancedFormat);
-dayjs.extend(durationPlugin);
 
 const getDuration = (duration: string) => {
   const minutes = dayjs.duration(convertTimeSpanToMs(duration)).asMinutes();

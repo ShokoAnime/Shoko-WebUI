@@ -2,19 +2,12 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
 import dayjs from 'dayjs';
-import advancedFormat from 'dayjs/plugin/advancedFormat';
-import calendar from 'dayjs/plugin/calendar';
-import durationPlugin from 'dayjs/plugin/duration';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { convertTimeSpanToMs } from '@/core/util';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
-
-dayjs.extend(advancedFormat);
-dayjs.extend(calendar);
-dayjs.extend(durationPlugin);
 
 type Props = {
   episode: DashboardEpisodeDetailsType;
