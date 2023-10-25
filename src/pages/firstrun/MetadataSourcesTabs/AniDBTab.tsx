@@ -65,7 +65,7 @@ function AniDBTab({ setStatus }: Props) {
 
   return (
     <TransitionDiv className="flex flex-col gap-y-8">
-      <div className="font-semibold pb-4 border-b-2 border-panel-border">Download Options</div>
+      <div className="border-b-2 border-panel-border pb-4 font-semibold">Download Options</div>
       <div className="flex flex-col gap-y-2">
         <Checkbox
           label="Character Images"
@@ -112,7 +112,7 @@ function AniDBTab({ setStatus }: Props) {
         </div>
       </div>
 
-      <div className="font-semibold pb-4 border-b-2 border-panel-border">Mylist Options</div>
+      <div className="border-b-2 border-panel-border pb-4 font-semibold">Mylist Options</div>
       <div className="flex flex-col gap-y-2">
         <Checkbox
           label="Add Files"
@@ -176,7 +176,7 @@ function AniDBTab({ setStatus }: Props) {
         </SelectSmall>
       </div>
 
-      <div className="font-semibold pb-4 border-b-2 border-panel-border">Update Options</div>
+      <div className="border-b-2 border-panel-border pb-4 font-semibold">Update Options</div>
       <div className="flex flex-col gap-y-2">
         <SelectSmall
           label="Calendar"

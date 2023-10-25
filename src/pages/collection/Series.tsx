@@ -96,9 +96,10 @@ const Series = () => {
     setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
   }, [images, imagesData]);
 
-  const isSeriesOngoing = useMemo(() => {
-    if (!series.AniDB?.EndDate) return true;
-    return moment(series.AniDB.EndDate) > moment();
+  const [airDate, endDate, isSeriesOngoing] = useMemo(() => {
+    const tempAirDate = dayjs(series.AniDB?.AirDate);
+    const tempEndDate = dayjs(series.AniDB?.EndDate);
+    return [tempAirDate, tempEndDate, series.AniDB?.EndDate ? tempEndDate.isAfter(dayjs()) : true];
   }, [series]);
 
   if (!seriesId || !seriesData.isSuccess) return null;
@@ -143,11 +144,13 @@ const Series = () => {
                 <div className="flex items-center gap-x-2">
                   <Icon className="text-panel-icon" path={mdiCalendarMonthOutline} size={1} />
                   <span>
-                    {moment(series?.AniDB?.AirDate).format('MMM DD, YYYY')}
-                    &nbsp;-&nbsp;
-                    {series?.AniDB?.EndDate === null
-                      ? 'Current'
-                      : moment(series?.AniDB?.EndDate).format('MMM DD, YYYY')}
+                    {airDate.format('MMMM Do, YYYY')}
+                    {!airDate.isSame(endDate) && (
+                      <>
+                        &nbsp;-&nbsp;
+                        {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
+                      </>
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center gap-x-2">

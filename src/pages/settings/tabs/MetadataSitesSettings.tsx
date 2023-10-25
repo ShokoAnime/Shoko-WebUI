@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
-import moment from 'moment/moment';
+import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -8,6 +8,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useLazyGetTraktCodeQuery } from '@/core/rtkQuery/splitApi/traktApi';
+import { dayjs } from '@/core/util';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
 export const tvdbLanguages = [
@@ -256,7 +257,7 @@ function MetadataSitesSettings() {
             <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-50', 'gap-y-2')}>
               <div className="flex justify-between">
                 <span>Token valid until</span>
-                {moment(TraktTv.TokenExpirationDate, 'X').format('MMM Do YYYY, h:mm A')}
+                {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
               </div>
               <div className="flex items-center justify-between">
                 <span>Automatically Update Data</span>

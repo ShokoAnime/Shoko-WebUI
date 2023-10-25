@@ -1,12 +1,13 @@
 import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { concat } from 'lodash';
-import moment from 'moment';
+
+import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 import type { LogLineType } from '@/core/types/api/common';
 
-const formatStamp = date => moment(date).format('YYYY-MM-DD HH:mm:ss');
+const formatStamp = (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 const formatTimestamps = (lines: LogLineType[]): LogLineType[] =>
   lines.map<LogLineType>(item => ({ ...item, timeStamp: formatStamp(item.timeStamp) }));
 
