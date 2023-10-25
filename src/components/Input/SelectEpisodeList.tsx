@@ -175,7 +175,7 @@ const SelectEpisodeList = (
             placeholder="Input Episode Name or Number..."
           />
         </div>
-        <div className="mt-1 max-h-96 overflow-y-auto rounded-md bg-panel-input border border-panel-border p-4">
+        <div className="mt-1 max-h-96 overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
           {options.map((item, idx) => (
             <React.Fragment key={`listbox-item-${item.value}`}>
               {idx !== 0 && item.type !== options[idx - 1].type && (

@@ -65,7 +65,7 @@ function MetadataSources() {
         collection. We highly recommend that you review the settings for each site and configure them to meet your
         preferences.
       </div>
-      <div className="flex gap-x-2 pb-3 text-xl font-semibold items-center">
+      <div className="flex items-center gap-x-2 pb-3 text-xl font-semibold">
         <div>Recently Imported</div>
         <Icon path={mdiChevronRight} size={1} />
         {renderTabButton('AniDB', 'anidb')}

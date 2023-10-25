@@ -17,13 +17,13 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, isArray, random } from 'lodash';
-import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { useGetSeriesQuery, useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -90,9 +90,10 @@ const Series = () => {
     setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
   }, [series]);
 
-  const isSeriesOngoing = useMemo(() => {
-    if (!series.AniDB?.EndDate) return true;
-    return moment(series.AniDB.EndDate) > moment();
+  const [airDate, endDate, isSeriesOngoing] = useMemo(() => {
+    const tempAirDate = dayjs(series.AniDB?.AirDate);
+    const tempEndDate = dayjs(series.AniDB?.EndDate);
+    return [tempAirDate, tempEndDate, series.AniDB?.EndDate ? tempEndDate.isAfter(dayjs()) : true];
   }, [series]);
 
   if (!seriesId || !seriesData.isSuccess) return null;
@@ -137,11 +138,13 @@ const Series = () => {
                 <div className="flex items-center gap-x-2">
                   <Icon className="text-panel-icon" path={mdiCalendarMonthOutline} size={1} />
                   <span>
-                    {moment(series?.AniDB?.AirDate).format('MMM DD, YYYY')}
-                    &nbsp;-&nbsp;
-                    {series?.AniDB?.EndDate === null
-                      ? 'Current'
-                      : moment(series?.AniDB?.EndDate).format('MMM DD, YYYY')}
+                    {airDate.format('MMMM Do, YYYY')}
+                    {!airDate.isSame(endDate) && (
+                      <>
+                        &nbsp;-&nbsp;
+                        {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
+                      </>
+                    )}
                   </span>
                 </div>
                 <div className="flex items-center gap-x-2">

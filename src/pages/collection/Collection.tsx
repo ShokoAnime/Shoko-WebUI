@@ -5,7 +5,6 @@ import { mdiCogOutline, mdiFilterMenuOutline, mdiFilterOutline, mdiFormatListTex
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { cloneDeep } from 'lodash';
-import moment from 'moment/moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
@@ -15,6 +14,7 @@ import FiltersModal from '@/components/Dialogs/FiltersModal';
 import { useGetFilterQuery, useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { SeriesTypeEnum } from '@/core/types/api/series';
+import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -44,7 +44,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
         />
         <div className="flex flex-col font-semibold">
           <div className="flex gap-y-2">
-            {moment(series.AniDB?.AirDate).year()}
+            {dayjs(series.AniDB?.AirDate).year()}
             &nbsp;|&nbsp;
             <div className="text-panel-text-important">{seriesType}</div>
           </div>

@@ -2,18 +2,16 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import moment from 'moment';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
+import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 import type { DashboardNewsType } from '@/core/types/api/dashboard';
 
 const newNewsCheck = (date: string) => {
-  const itemDate = moment(date);
-  const currentDate = moment();
-  const differenceInDays = currentDate.diff(itemDate, 'days');
+  const differenceInDays = dayjs().diff(dayjs(date), 'day');
   return differenceInDays <= 14;
 };
 

@@ -10,7 +10,6 @@ import {
 } from '@tanstack/react-table';
 import cx from 'classnames';
 import { forEach } from 'lodash';
-import moment from 'moment';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -19,7 +18,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { fuzzyFilter, fuzzySort } from '@/core/util';
+import { dayjs, fuzzyFilter, fuzzySort } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
 
@@ -54,7 +53,7 @@ const columns = [
   }),
   columnHelper.accessor('Created', {
     header: 'Date Added',
-    cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+    cell: info => dayjs(info.getValue()).format('MMMM DD YYYY, HH:mm'),
     meta: {
       className: 'w-64',
     },

@@ -19,7 +19,7 @@ function MovieDBTab() {
 
   return (
     <TransitionDiv className="flex flex-col gap-y-8">
-      <div className="font-semibold pb-4 border-b-2 border-panel-border">Download Options</div>
+      <div className="border-b-2 border-panel-border pb-4 font-semibold">Download Options</div>
       <div className="flex flex-col gap-y-2">
         <Checkbox
           label="Fanart"
