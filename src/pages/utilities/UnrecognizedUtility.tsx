@@ -2,8 +2,8 @@ import React, { useMemo } from 'react';
 import { Outlet } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
+import dayjs from 'dayjs';
 import { find, get } from 'lodash';
-import moment from 'moment';
 import prettyBytes from 'pretty-bytes';
 
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
@@ -63,7 +63,7 @@ function UnrecognizedUtility() {
       }),
       columnHelper.accessor('Created', {
         id: 'created',
-        cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+        cell: info => dayjs(info.getValue()).format('MMMM DD YYYY, HH:mm'),
         meta: {
           className: 'w-64',
         },

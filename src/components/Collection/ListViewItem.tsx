@@ -12,8 +12,9 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { forEach, reduce } from 'lodash';
-import moment from 'moment/moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { listItemSize } from '@/components/Collection/CollectionView';
@@ -28,6 +29,8 @@ import AnidbDescription from './AnidbDescription';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesSizesFileSourcesType, SeriesType } from '@/core/types/api/series';
 import type { WebuiGroupExtra } from '@/core/types/api/webui';
+
+dayjs.extend(advancedFormat);
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: string[] = [];
@@ -71,15 +74,29 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
     - item.Sizes.Local.Specials;
 
-  const [airDate, description, endDate, groupCount] = useMemo(() => {
+  const [airDate, description, endDate, groupCount, isSeriesOngoing] = useMemo(() => {
     if (isSeries) {
       const series = (item as SeriesType).AniDB;
-      return [series?.AirDate, series?.Description, series?.EndDate, 0];
+      const tempEndDate = dayjs(series?.EndDate);
+      return [
+        dayjs(series?.AirDate),
+        series?.Description,
+        tempEndDate,
+        0,
+        series?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
+      ];
     }
 
     const group = item as CollectionGroupType;
     const tempCount = reduce(group.Sizes.SeriesTypes, (count, value) => count + value, 0);
-    return [mainSeries?.AirDate, group.Description, mainSeries?.EndDate, tempCount];
+    const tempEndDate = dayjs(mainSeries?.EndDate);
+    return [
+      dayjs(mainSeries?.AirDate),
+      group.Description,
+      tempEndDate,
+      tempCount,
+      mainSeries?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
+    ];
   }, [isSeries, item, mainSeries?.AirDate, mainSeries?.EndDate]);
 
   const viewRouteLink = () => {
@@ -95,11 +112,6 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
 
     return link;
   };
-
-  const isSeriesOngoing = useMemo(() => {
-    if (!endDate) return true;
-    return moment(endDate) > moment();
-  }, [endDate]);
 
   const tags = useMemo(
     () => {
@@ -158,11 +170,11 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
               <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiCalendarMonthOutline} size={1} />
                 <span className="text-sm font-semibold">
-                  {moment(airDate).format('MMMM Do, YYYY')}
-                  {airDate !== endDate && (
+                  {airDate.format('MMMM Do, YYYY')}
+                  {!airDate.isSame(endDate) && (
                     <>
                       &nbsp;-&nbsp;
-                      {!endDate ? 'Current' : moment(endDate).format('MMMM Do, YYYY')}
+                      {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
                     </>
                   )}
                 </span>

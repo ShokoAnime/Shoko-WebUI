@@ -1,12 +1,20 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import calendar from 'dayjs/plugin/calendar';
+import durationPlugin from 'dayjs/plugin/duration';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { convertTimeSpanToMs } from '@/core/util';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
+
+dayjs.extend(advancedFormat);
+dayjs.extend(calendar);
+dayjs.extend(durationPlugin);
 
 type Props = {
   episode: DashboardEpisodeDetailsType;
@@ -14,7 +22,7 @@ type Props = {
   isInCollection?: boolean;
 };
 
-const CalendarConfig: moment.CalendarSpec = {
+const CalendarConfig = {
   sameDay: '[Today]',
   nextDay: '[Tomorrow]',
   nextWeek: 'dddd',
@@ -23,7 +31,7 @@ const CalendarConfig: moment.CalendarSpec = {
   sameElse: 'dddd',
 };
 
-const DateSection: React.FC<{ airDate: moment.Moment, relativeTime: string }> = ({ airDate, relativeTime }) => (
+const DateSection: React.FC<{ airDate: dayjs.Dayjs, relativeTime: string }> = ({ airDate, relativeTime }) => (
   <>
     <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
     <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
@@ -61,13 +69,13 @@ const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: stri
 function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode {
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
-    const duration = moment.duration(episode.Duration);
-    const resumePosition = moment.duration(episode.ResumePosition);
+    const duration = dayjs.duration(convertTimeSpanToMs(episode.Duration));
+    const resumePosition = dayjs.duration(convertTimeSpanToMs(episode.ResumePosition));
     return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
   }, [episode.Duration, episode.ResumePosition]);
 
-  const airDate = useMemo(() => moment(episode.AirDate), [episode.AirDate]);
-  const relativeTime = useMemo(() => airDate.calendar(CalendarConfig), [airDate]);
+  const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
+  const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
   const title = useMemo(
     () => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`,
     [episode.Type, episode.Title, episode.Number],

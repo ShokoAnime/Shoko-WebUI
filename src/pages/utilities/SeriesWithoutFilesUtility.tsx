@@ -9,8 +9,8 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import cx from 'classnames';
+import dayjs from 'dayjs';
 import { forEach } from 'lodash';
-import moment from 'moment';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -54,7 +54,7 @@ const columns = [
   }),
   columnHelper.accessor('Created', {
     header: 'Date Added',
-    cell: info => moment(info.getValue()).format('MMMM DD YYYY, HH:mm'),
+    cell: info => dayjs(info.getValue()).format('MMMM DD YYYY, HH:mm'),
     meta: {
       className: 'w-64',
     },

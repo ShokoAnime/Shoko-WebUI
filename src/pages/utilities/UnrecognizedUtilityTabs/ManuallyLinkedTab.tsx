@@ -14,8 +14,8 @@ import {
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
+import dayjs from 'dayjs';
 import Fuse from 'fuse.js';
-import moment from 'moment/moment';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -92,7 +92,7 @@ const SeriesRow = (
           {row.Sizes.FileSources.Unknown}
           &nbsp;files
         </div>
-        <div className="w-64">{moment(row.Created).format('MMMM DD YYYY, HH:mm')}</div>
+        <div className="w-64">{dayjs(row.Created).format('MMMM DD YYYY, HH:mm')}</div>
         <Icon
           path={loading ? mdiLoading : mdiChevronDown}
           spin={loading}

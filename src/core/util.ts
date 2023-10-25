@@ -3,7 +3,7 @@ import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
 import { sortingFns } from '@tanstack/react-table';
 import copy from 'copy-to-clipboard';
 import formatThousands from 'format-thousands';
-import { isObject } from 'lodash';
+import { isObject, toNumber } from 'lodash';
 
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import type { RankingInfo } from '@tanstack/match-sorter-utils';
@@ -81,6 +81,16 @@ export const copyToClipboard = async (text: string) => {
     console.error(error);
     return false;
   }
+};
+
+/**
+ * To convert TimeSpan returned by ASP.NET for duration (eg. 00:24:02.2424) to milliseconds
+ */
+export const convertTimeSpanToMs = (timeSpan: string) => {
+  const [duration, durationMs] = timeSpan.split('.');
+  const [hours, minutes, seconds] = duration.split(':');
+  return (((toNumber(hours) * 3600) + (toNumber(minutes) * 60) + toNumber(seconds)) * 1000)
+    + toNumber(durationMs.slice(0, 3));
 };
 
 /**

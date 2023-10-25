@@ -1,13 +1,20 @@
 import React from 'react';
 import { mdiCalendarMonthOutline, mdiClockOutline, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import dayjs from 'dayjs';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
+import durationPlugin from 'dayjs/plugin/duration';
 import { toNumber } from 'lodash';
-import moment from 'moment/moment';
+
+import { convertTimeSpanToMs } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
-const getDuration = (duration) => {
-  const minutes = moment.duration(duration).asMinutes();
+dayjs.extend(advancedFormat);
+dayjs.extend(durationPlugin);
+
+const getDuration = (duration: string) => {
+  const minutes = dayjs.duration(convertTimeSpanToMs(duration)).asMinutes();
   const intMinutes = Math.round(toNumber(minutes));
   return `${intMinutes} minutes`;
 };
@@ -34,7 +41,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
 
       <div className="flex items-center gap-x-2 text-sm font-semibold">
         <Icon className="text-panel-icon" path={mdiCalendarMonthOutline} size={1} />
-        {moment(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
+        {dayjs(episode.AniDB?.AirDate).format('MMMM Do, YYYY')}
         <Icon className="text-panel-icon" path={mdiClockOutline} size={1} />
         {getDuration(episode.Duration)}
         <Icon className="text-panel-icon" path={mdiStarHalfFull} size={1} />

@@ -9,8 +9,8 @@ import {
   mdiPlusCircleOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import dayjs from 'dayjs';
 import { get, round, toNumber } from 'lodash';
-import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
@@ -156,7 +156,7 @@ const SeriesOverview = () => {
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Status</div>
             {/* TODO: Check if there are more status types */}
-            {(series.AniDB?.EndDate && moment(series.AniDB?.EndDate) < moment()) ? 'Finished' : 'Ongoing'}
+            {(series.AniDB?.EndDate && dayjs(series.AniDB.EndDate).isAfter(dayjs())) ? 'Ongoing' : 'Finished'}
           </div>
 
           <div className="flex flex-col gap-y-1">

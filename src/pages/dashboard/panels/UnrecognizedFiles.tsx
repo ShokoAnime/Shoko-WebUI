@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
@@ -9,21 +9,24 @@ import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 
 import type { RootState } from '@/core/store';
 
-const FileItem = ({ file }: { file: FileType }) => (
-  <div key={file.ID} className="flex items-center">
-    <div className="flex grow flex-col">
-      <span className="font-semibold">
-        {moment(file.Created).format('yyyy-MM-DD')}
-        &nbsp;/&nbsp;
-        {moment(file.Created).format('hh:mm A')}
-      </span>
-      <span className="max-w-[95%] break-all">
-        {file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
-      </span>
+const FileItem = ({ file }: { file: FileType }) => {
+  const createdTime = dayjs(file.Created);
+  return (
+    <div key={file.ID} className="flex items-center">
+      <div className="flex grow flex-col">
+        <span className="font-semibold">
+          {createdTime.format('YYYY-MM-DD')}
+          &nbsp;/&nbsp;
+          {createdTime.format('HH:mm')}
+        </span>
+        <span className="max-w-[95%] break-all">
+          {file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
+        </span>
+      </div>
+      <AVDumpFileIcon truck file={file} />
     </div>
-    <AVDumpFileIcon truck file={file} />
-  </div>
-);
+  );
+};
 
 function UnrecognizedFiles() {
   const filesQuery = useGetFilesQuery({

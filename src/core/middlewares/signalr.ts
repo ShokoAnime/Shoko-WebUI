@@ -6,8 +6,8 @@ import {
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
+import dayjs from 'dayjs';
 import { debounce, defer, delay, forEach, round } from 'lodash';
-import moment from 'moment';
 
 import Events from '@/core/events';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
@@ -17,7 +17,7 @@ import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
 import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
 
-let lastRetry = moment();
+let lastRetry = dayjs();
 let attempts = 0;
 const maxTimeout = 60000;
 
@@ -112,16 +112,15 @@ const onEpisodeUpdated = dispatch => () => {
 
 const startSignalRConnection = connection =>
   connection.start().then(() => {
-    lastRetry = moment();
+    lastRetry = dayjs();
     attempts = 0;
   }).catch(err => console.error('SignalR Connection Error: ', err));
 
 const handleReconnect = (connection) => {
   if (attempts < 4) attempts += 1;
-  const duration = moment.duration(lastRetry.diff(moment()));
-  lastRetry = moment();
-  const elapsed = duration.as('milliseconds');
+  const elapsed = dayjs().diff(lastRetry);
   const timeout = round(Math.min(Math.exp(attempts) * 2000, maxTimeout));
+  lastRetry = dayjs();
   if (elapsed < timeout) {
     delay(
       (conn) => {
