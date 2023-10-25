@@ -1,7 +1,8 @@
 import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import dayjs from 'dayjs';
 import { concat } from 'lodash';
+
+import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 import type { LogLineType } from '@/core/types/api/common';

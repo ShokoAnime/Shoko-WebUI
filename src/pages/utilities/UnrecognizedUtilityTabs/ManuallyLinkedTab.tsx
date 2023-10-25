@@ -14,7 +14,6 @@ import {
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 import Fuse from 'fuse.js';
 import { useImmer } from 'use-immer';
 
@@ -34,6 +33,7 @@ import {
   useLazyGetSeriesEpisodesQuery,
   useLazyGetSeriesFilesQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { dayjs } from '@/core/util';
 
 import type { ListResultType } from '@/core/types/api';
 import type { SeriesType } from '@/core/types/api/series';

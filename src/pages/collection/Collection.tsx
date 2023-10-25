@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { mdiCogOutline, mdiFilterMenuOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 import { cloneDeep } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -15,6 +14,7 @@ import FiltersModal from '@/components/Dialogs/FiltersModal';
 import { useGetFilterQuery, useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { SeriesTypeEnum } from '@/core/types/api/series';
+import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 

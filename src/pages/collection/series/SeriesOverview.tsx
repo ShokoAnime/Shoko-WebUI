@@ -9,7 +9,6 @@ import {
   mdiPlusCircleOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import dayjs from 'dayjs';
 import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -23,6 +22,7 @@ import {
   useNextUpEpisodeQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { dayjs } from '@/core/util';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import type { EpisodeType } from '@/core/types/api/episode';

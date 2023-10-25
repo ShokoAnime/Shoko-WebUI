@@ -17,6 +17,8 @@ dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
 dayjs.extend(durationPlugin);
 
+export { default as dayjs } from 'dayjs';
+
 const { DEV, VITE_APPVERSION, VITE_GITHASH } = import.meta.env;
 
 export function uiVersion() {

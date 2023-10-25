@@ -6,7 +6,6 @@ import {
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
-import dayjs from 'dayjs';
 import { debounce, defer, delay, forEach, round } from 'lodash';
 
 import Events from '@/core/events';
@@ -14,6 +13,7 @@ import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
+import { dayjs } from '@/core/util';
 
 import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
 

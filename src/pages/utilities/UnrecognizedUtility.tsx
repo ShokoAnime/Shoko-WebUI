@@ -2,12 +2,11 @@ import React, { useMemo } from 'react';
 import { Outlet } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { createColumnHelper } from '@tanstack/react-table';
-import dayjs from 'dayjs';
 import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
-import { fuzzySort } from '@/core/util';
+import { dayjs, fuzzySort } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';

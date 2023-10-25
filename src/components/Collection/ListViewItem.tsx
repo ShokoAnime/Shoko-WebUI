@@ -12,14 +12,13 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 import { forEach, reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { listItemSize } from '@/components/Collection/CollectionView';
 import { useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { formatThousand } from '@/core/util';
+import { dayjs, formatThousand } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 

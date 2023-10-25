@@ -1,10 +1,9 @@
 import React from 'react';
 import { mdiCalendarMonthOutline, mdiClockOutline, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import dayjs from 'dayjs';
 import { toNumber } from 'lodash';
 
-import { convertTimeSpanToMs } from '@/core/util';
+import { convertTimeSpanToMs, dayjs } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 

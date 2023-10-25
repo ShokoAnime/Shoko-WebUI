@@ -1,11 +1,10 @@
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
-import { convertTimeSpanToMs } from '@/core/util';
+import { convertTimeSpanToMs, dayjs } from '@/core/util';
 
 import type { DashboardEpisodeDetailsType } from '@/core/types/api/dashboard';
 

@@ -9,7 +9,6 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import cx from 'classnames';
-import dayjs from 'dayjs';
 import { forEach } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -19,7 +18,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { fuzzyFilter, fuzzySort } from '@/core/util';
+import { dayjs, fuzzyFilter, fuzzySort } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
 

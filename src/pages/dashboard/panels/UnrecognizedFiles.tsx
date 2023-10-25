@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import dayjs from 'dayjs';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import { useGetFilesQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
+import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 
