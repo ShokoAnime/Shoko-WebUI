@@ -16,14 +16,18 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, isArray, random } from 'lodash';
+import { get, isArray } from 'lodash';
 import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import { useGetSeriesQuery, useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import {
+  useGetSeriesImagesQuery,
+  useGetSeriesQuery,
+  useGetSeriesTagsQuery,
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -74,6 +78,8 @@ const Series = () => {
 
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
   const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const images = useMemo(() => imagesData ?? {} as SeriesDetailsType, [imagesData]);
   const mainPoster = useMainPoster(series);
   const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
@@ -83,12 +89,12 @@ const Series = () => {
   const group = groupData?.data ?? {} as CollectionGroupType;
 
   useEffect(() => {
-    const fanarts = get(series, 'Images.Fanarts', []);
+    const fanarts = get(images, 'data.Fanarts', []);
     if (!isArray(fanarts) || fanarts.length === 0) return;
-    const randomIdx = fanarts.length > 1 ? random(0, fanarts.length) : 0;
+    const randomIdx = Math.floor(Math.random() * fanarts.length);
     const randomImage = fanarts[randomIdx];
     setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
-  }, [series]);
+  }, [images, imagesData]);
 
   const isSeriesOngoing = useMemo(() => {
     if (!series.AniDB?.EndDate) return true;
