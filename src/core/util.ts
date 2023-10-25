@@ -100,7 +100,7 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
   const [duration, durationMs] = timeSpan.split('.');
   const [hours, minutes, seconds] = duration.split(':');
   return (((toNumber(hours) * 3600) + (toNumber(minutes) * 60) + toNumber(seconds)) * 1000)
-    + toNumber(durationMs.slice(0, 3));
+    + toNumber((durationMs ?? '0').slice(0, 3));
 };
 
 /**
