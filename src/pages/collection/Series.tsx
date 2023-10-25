@@ -17,7 +17,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, isArray } from 'lodash';
-import moment from 'moment';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
@@ -28,6 +27,7 @@ import {
   useGetSeriesQuery,
   useGetSeriesTagsQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -52,7 +52,7 @@ const SeriesTab = ({ icon, text, to }) => (
         isActive && 'text-panel-text-primary',
       )}
   >
-    <Icon path={icon} size={1} />
+    <Icon className="text-panel-icon" path={icon} size={1} />
     {text}
   </NavLink>
 );
