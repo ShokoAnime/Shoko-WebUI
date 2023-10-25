@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import AnimateHeight from 'react-animate-height';
-import { mdiInformationOutline, mdiPlayCircleOutline } from '@mdi/js';
+import { mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -17,10 +16,10 @@ const actions = {
   import: {
     title: 'Import',
     data: [
+      'run-import',
       'remove-missing-files-mylist',
       'remove-missing-files',
       'import-new-files',
-      'run-import',
     ],
   },
   anidb: {
@@ -89,7 +88,7 @@ type Props = {
 const Action = ({ actionKey }: { actionKey: string }) => {
   const [runActionTrigger] = useRunActionMutation();
 
-  const runAction = async (name: string, action) => {
+  const runAction = async (name: string, action: string) => {
     try {
       await runActionTrigger(action);
       toast.success(`Running action "${name}"`);
@@ -100,33 +99,20 @@ const Action = ({ actionKey }: { actionKey: string }) => {
     }
   };
 
-  const [showInfo, setShowInfo] = useState(false);
-
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
-  const { functionName, info, name } = action;
+  const { functionName, name } = action;
 
   return (
-    <TransitionDiv>
-      <div className="flex justify-between gap-x-3">
+    <TransitionDiv className="flex flex-col gap-y-2">
+      <div className="flex justify-between">
         {name}
-        <div className="flex gap-x-2.5">
-          <Button onClick={() => setShowInfo(prev => !prev)} className="text-panel-text-primary">
-            <Icon path={mdiInformationOutline} size={1} />
-          </Button>
-          <Button onClick={() => runAction(name, functionName)} className="text-panel-text-primary">
-            <Icon path={mdiPlayCircleOutline} size={1} />
-          </Button>
-        </div>
+        <Button onClick={() => runAction(name, functionName)} className="text-panel-icon-action">
+          <Icon path={mdiPlayCircleOutline} size={1} />
+        </Button>
       </div>
-      <AnimateHeight height={showInfo ? 'auto' : 0}>
-        <div className="mt-3 flex gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2">
-          {/* Icon size reduces if not put in a div */}
-          <div className="mt-0.5">
-            <Icon path={mdiInformationOutline} size={0.8333} />
-          </div>
-          {info}
-        </div>
-      </AnimateHeight>
+      <div className="flex text-sm text-panel-text opacity-65">
+        {quickActions[actionKey].info}
+      </div>
     </TransitionDiv>
   );
 };
@@ -138,23 +124,28 @@ function ActionsModal({ onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      title="Actions"
+      noPadding
     >
-      <div className="flex">
-        <div className="flex min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
-          {map(actions, (value, key) => (
-            <div
-              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
-              key={key}
-              onClick={() => setActiveTab(key)}
-            >
-              {value.title}
-            </div>
-          ))}
+      <div className="flex h-[26.75rem]">
+        <div className="flex shrink-0 flex-col gap-y-8 border-r border-panel-border bg-panel-background-alt p-8 font-semibold">
+          <div className="text-xl">Actions</div>
+          <div className="flex flex-col gap-y-4">
+            {map(actions, (value, key) => (
+              <div
+                className={cx('cursor-pointer', activeTab === key && 'text-panel-text-primary')}
+                key={key}
+                onClick={() => setActiveTab(key)}
+              >
+                {value.title}
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="flex grow flex-col gap-y-2 pl-8">
-          {actions[activeTab].data.map(key => <Action actionKey={key} key={key} />)}
+        <div className="flex grow p-8 pr-6">
+          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2">
+            {actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}
+          </div>
         </div>
       </div>
     </ModalPanel>
