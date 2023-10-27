@@ -16,13 +16,17 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, isArray, random } from 'lodash';
+import { get, isArray } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import { useGetSeriesQuery, useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import {
+  useGetSeriesImagesQuery,
+  useGetSeriesQuery,
+  useGetSeriesTagsQuery,
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -74,6 +78,8 @@ const Series = () => {
 
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
   const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const images = useMemo(() => imagesData ?? {} as SeriesDetailsType, [imagesData]);
   const mainPoster = useMainPoster(series);
   const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
@@ -83,12 +89,12 @@ const Series = () => {
   const group = groupData?.data ?? {} as CollectionGroupType;
 
   useEffect(() => {
-    const fanarts = get(series, 'Images.Fanarts', []);
+    const fanarts = get(images, 'data.Fanarts', []);
     if (!isArray(fanarts) || fanarts.length === 0) return;
-    const randomIdx = fanarts.length > 1 ? random(0, fanarts.length) : 0;
+    const randomIdx = Math.floor(Math.random() * fanarts.length);
     const randomImage = fanarts[randomIdx];
     setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
-  }, [series]);
+  }, [images, imagesData]);
 
   const [airDate, endDate, isSeriesOngoing] = useMemo(() => {
     const tempAirDate = dayjs(series.AniDB?.AirDate);
@@ -106,7 +112,7 @@ const Series = () => {
             <div className="flex justify-between">
               <div className="flex gap-x-2">
                 <Link className="font-semibold text-panel-text-primary" to="/webui/collection">Entire Collection</Link>
-                <Icon path={mdiChevronRight} size={1} />
+                <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
                 {group.Size > 1 && (
                   <>
                     <Link
@@ -115,7 +121,7 @@ const Series = () => {
                     >
                       {group.Name}
                     </Link>
-                    <Icon path={mdiChevronRight} size={1} />
+                    <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
                   </>
                 )}
               </div>
