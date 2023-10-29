@@ -64,7 +64,7 @@ module.exports = {
         'panel-border': 'var(--panel-border)',
         'panel-icon': 'var(--panel-icon)',
         'panel-icon-action': 'var(--panel-icon-action)',
-        'panel-icon-danger': 'var(--panel-icon-remove)',
+        'panel-icon-danger': 'var(--panel-icon-danger)',
         'panel-icon-important': 'var(--panel-icon-important)',
         'panel-icon-warning': 'var(--panel-icon-warning)',
         'panel-input': 'var(--panel-input)',

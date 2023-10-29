@@ -112,7 +112,7 @@ function AniDBSettings() {
             onClick={() => testLogin()}
             loading={testAniDbLoginResult.isLoading}
             buttonType="primary"
-            className="!text-base font-semibold"
+            className="px-4"
           >
             Test
           </Button>
@@ -179,28 +179,28 @@ function AniDBSettings() {
             label="Character Images"
             id="character-images"
             isChecked={DownloadCharacters}
-            onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'DownloadCharacters', event.target.checked)}
           />
           <Checkbox
             justify
             label="Creator Images"
             id="creator-images"
             isChecked={DownloadCreators}
-            onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'DownloadCreators', event.target.checked)}
           />
           <Checkbox
             justify
             label="Release Groups"
             id="release-groups"
             isChecked={DownloadReleaseGroups}
-            onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'DownloadReleaseGroups', event.target.checked)}
           />
           <Checkbox
             justify
             label="Related Anime"
             id="related-anime"
             isChecked={DownloadRelatedAnime}
-            onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'DownloadRelatedAnime', event.target.checked)}
           />
           <div
             className={cx(
@@ -228,35 +228,35 @@ function AniDBSettings() {
             label="Add Files"
             id="add-files"
             isChecked={MyList_AddFiles}
-            onChange={event => updateSetting('AniDb', 'MyList_AddFiles', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'MyList_AddFiles', event.target.checked)}
           />
           <Checkbox
             justify
             label="Read Watched"
             id="read-watched"
             isChecked={MyList_ReadWatched}
-            onChange={event => updateSetting('AniDb', 'MyList_ReadWatched', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'MyList_ReadWatched', event.target.checked)}
           />
           <Checkbox
             justify
             label="Read Unwatched"
             id="read-unwatched"
             isChecked={MyList_ReadUnwatched}
-            onChange={event => updateSetting('AniDb', 'MyList_ReadUnwatched', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'MyList_ReadUnwatched', event.target.checked)}
           />
           <Checkbox
             justify
             label="Set Watched"
             id="set-watched"
             isChecked={MyList_SetWatched}
-            onChange={event => updateSetting('AniDb', 'MyList_SetWatched', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'MyList_SetWatched', event.target.checked)}
           />
           <Checkbox
             justify
             label="Set Unwatched"
             id="set-unwatched"
             isChecked={MyList_SetUnwatched}
-            onChange={event => updateSetting('AniDb', 'MyList_SetUnwatched', event.target.checked.toString())}
+            onChange={event => updateSetting('AniDb', 'MyList_SetUnwatched', event.target.checked)}
           />
           <div className="flex items-center justify-between">
             <span>Storage State</span>
