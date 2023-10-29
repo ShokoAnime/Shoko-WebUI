@@ -517,7 +517,7 @@ export const initialSettings = {
 type ContextType = {
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => void;
-  updateSetting: (type: string, key: string, value: string) => void;
+  updateSetting: (type: string, key: string, value: string | boolean) => void;
 };
 
 function SettingsPage() {
