@@ -112,7 +112,7 @@ function AniDBSettings() {
             onClick={() => testLogin()}
             loading={testAniDbLoginResult.isLoading}
             buttonType="primary"
-            className="!text-base font-semibold"
+            className="px-4"
           >
             Test
           </Button>

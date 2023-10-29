@@ -247,7 +247,8 @@ function MetadataSitesSettings() {
                       undefined,
                       { autoClose: 10000 },
                     ), () => {})}
-                className="bg-panel-text-primary px-2 py-1 font-semibold "
+                className="px-4"
+                buttonType="primary"
               >
                 {traktCodeResult.isFetching ? 'Requesting...' : 'Get Code'}
               </Button>
