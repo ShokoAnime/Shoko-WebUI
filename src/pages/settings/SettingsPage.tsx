@@ -544,8 +544,8 @@ function SettingsPage() {
     return !isEqual(newSettings, initialSettings);
   }, [newSettings, settings]);
 
-  const updateSetting = (type: string, key: string, value: string) => {
-    if (key === 'theme') {
+  const updateSetting = (type: string, key: string, value: string | boolean) => {
+    if (key === 'theme' && typeof value === 'string') {
       globalThis.localStorage.setItem('theme', value);
     }
 
