@@ -186,38 +186,65 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
             <div className="flex flex-nowrap gap-x-4">
               <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiFileDocumentMultipleOutline} size={1} />
-                <span className="text-sm font-semibold">
-                  EP:&nbsp;
-                  {formatThousand(item.Sizes.Local.Episodes)}
-                  &nbsp;/&nbsp;
-                  {formatThousand(item.Sizes.Total.Episodes)}
-                  &nbsp;| SP:&nbsp;
-                  {formatThousand(item.Sizes.Local.Specials)}
-                  &nbsp;/&nbsp;
-                  {formatThousand(item.Sizes.Total.Specials)}
-                </span>
+                <div className="flex gap-x-2 text-sm font-semibold ">
+                  <div className="flex gap-x-1">
+                    <span>EP:</span>
+                    {formatThousand(item.Sizes.Local.Episodes)}
+                    <span>/</span>
+                    {formatThousand(item.Sizes.Total.Episodes)}
+                  </div>
+                  {item.Sizes.Total.Specials !== 0 && (
+                    <>
+                      <span>|</span>
+                      <div className="flex gap-x-1">
+                        <span>SP:</span>
+                        {formatThousand(item.Sizes.Local.Specials)}
+                        <span>/</span>
+                        {formatThousand(item.Sizes.Total.Specials)}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiEyeOutline} size={1} />
-                <span className="text-sm font-semibold">
-                  EP:&nbsp;
-                  {formatThousand(item.Sizes.Watched.Episodes)}
-                  &nbsp;/&nbsp;
-                  {formatThousand(item.Sizes.Total.Episodes)}
-                  &nbsp;| SP:&nbsp;
-                  {formatThousand(item.Sizes.Watched.Specials)}
-                  &nbsp;/&nbsp;
-                  {formatThousand(item.Sizes.Total.Specials)}
-                </span>
+                <div className="flex gap-x-2 text-sm font-semibold">
+                  <div className="flex gap-x-1">
+                    <span>EP:</span>
+                    {formatThousand(item.Sizes.Watched.Episodes)}
+                    <span>/</span>
+                    {formatThousand(item.Sizes.Total.Episodes)}
+                  </div>
+                  {item.Sizes.Total.Specials !== 0 && (
+                    <>
+                      <span>|</span>
+                      <div className="flex gap-x-1">
+                        <span>SP:</span>
+                        {formatThousand(item.Sizes.Watched.Specials)}
+                        <span>/</span>
+                        {formatThousand(item.Sizes.Total.Specials)}
+                      </div>
+                    </>
+                  )}
+                </div>
               </div>
               <div className={cx('gap-x-2 flex align-middle items-center', missingEpisodesCount === 0 && 'hidden')}>
                 <Icon className="text-panel-text-warning" path={mdiAlertCircleOutline} size={1} />
-                <span className="text-sm font-semibold">
-                  {formatThousand(item.Sizes.Total.Episodes - item.Sizes.Local.Episodes)}
-                  &nbsp;(
-                  {formatThousand(item.Sizes.Total.Specials - item.Sizes.Local.Specials)}
-                  )
-                </span>
+                <div className="flex gap-x-2 text-sm font-semibold">
+                  {item.Sizes.Total.Episodes - item.Sizes.Local.Episodes !== 0 && (
+                    <>
+                      <div className="flex gap-x-1">
+                        <span>EP:</span>
+                        {formatThousand(item.Sizes.Total.Episodes - item.Sizes.Local.Episodes)}
+                      </div>
+                      {item.Sizes.Total.Specials - item.Sizes.Local.Specials !== 0 && <span>|</span>}
+                    </>
+                  )}
+                  <div className="flex gap-x-1">
+                    <span>SP:</span>
+                    {formatThousand(item.Sizes.Total.Specials - item.Sizes.Local.Specials)}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
