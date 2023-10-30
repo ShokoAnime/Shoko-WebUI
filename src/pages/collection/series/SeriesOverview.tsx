@@ -129,7 +129,7 @@ const SeriesOverview = () => {
   return (
     <>
       <div className="flex gap-x-8">
-        <ShokoPanel title="Additional information" className="min-w-fit" transparent contentClassName="gap-y-4">
+        <ShokoPanel title="Additional information" className="!h-auto min-w-fit" transparent contentClassName="gap-y-4">
           <div className="flex flex-col gap-y-1 capitalize">
             <div className="font-semibold">Source</div>
             {overview.SourceMaterial}
@@ -178,41 +178,47 @@ const SeriesOverview = () => {
             <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
           </div>
 
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Producers</div>
-            {overview?.Producers?.map(item => <div key={item.Name}>{item.Name}</div>)}
-          </div>
+          {/* <div className="flex flex-col gap-y-1"> */}
+          {/*   <div className="font-semibold">Producers</div> */}
+          {/*   {overview?.Producers?.map(item => <div key={item.Name}>{item.Name}</div>)} */}
+          {/* </div> */}
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Links</div>
             {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
             {jpOfficialSite && (
-              <a
-                href={jpOfficialSite.URL}
-                rel="noopener noreferrer"
-                target="_blank"
-                key={jpOfficialSite.Name}
-                className="font-semibold text-panel-text-primary"
-              >
-                {jpOfficialSite.Name}
-              </a>
+              <div className="flex gap-x-2">
+                <a
+                  href={jpOfficialSite.URL}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  key={jpOfficialSite.Name}
+                  className="font-semibold text-panel-text-primary"
+                >
+                  {jpOfficialSite.Name}
+                </a>
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
             )}
             {enOfficialSite && (
-              <a
-                href={enOfficialSite.URL}
-                rel="noopener noreferrer"
-                target="_blank"
-                key={enOfficialSite.Name}
-                className="font-semibold text-panel-text-primary"
-              >
-                {enOfficialSite.Name}
-              </a>
+              <div className="flex gap-x-2">
+                <a
+                  href={enOfficialSite.URL}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  key={enOfficialSite.Name}
+                  className="font-semibold text-panel-text-primary"
+                >
+                  {enOfficialSite.Name}
+                </a>
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
             )}
           </div>
         </ShokoPanel>
 
         <div className="flex grow flex-col gap-y-8">
-          <ShokoPanel title="Episode on Deck" className="flex grow" transparent>
+          <ShokoPanel title="Episode on Deck" className="flex grow overflow-visible" transparent>
             {get(nextUpEpisode, 'Name', false)
               ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
