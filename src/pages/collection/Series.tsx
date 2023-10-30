@@ -183,7 +183,7 @@ const Series = () => {
                       <span>EP:</span>
                       {formatThousand(series.Sizes.Watched.Episodes)}
                       <span>/</span>
-                      {formatThousand(series.Sizes.Total.Episodes)}
+                      {formatThousand(series.Sizes.Local.Episodes)}
                     </div>
                     {series.Sizes.Total.Specials !== 0 && (
                       <>
@@ -192,7 +192,7 @@ const Series = () => {
                           <span>SP:</span>
                           {formatThousand(series.Sizes.Watched.Specials)}
                           <span>/</span>
-                          {formatThousand(series.Sizes.Total.Specials)}
+                          {formatThousand(series.Sizes.Local.Specials)}
                         </div>
                       </>
                     )}
