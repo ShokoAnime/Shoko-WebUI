@@ -9,6 +9,7 @@ import {
   mdiPlusCircleOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -256,7 +257,7 @@ const SeriesOverview = () => {
 
       {related.length > 0 && (
         <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className={`flex gap-x-5 ${related.length > 7 && ('mb-4')}`}>
+          <div className={cx('flex gap-x-5', related.length > 7 && ('mb-4'))}>
             {related.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -304,7 +305,7 @@ const SeriesOverview = () => {
 
       {similar.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className={`shoko-scrollbar flex gap-x-5 ${similar.length > 7 && ('mb-4')}`}>
+          <div className={cx('shoko-scrollbar flex gap-x-5', similar.length > 7 && ('mb-4'))}>
             {similar.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const isDisabled = item.ShokoID === null;
@@ -312,7 +313,7 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold "
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
