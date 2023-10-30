@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
 
+import AnidbDescription from '@/components/Collection/AnidbDescription';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
@@ -27,7 +28,9 @@ function SeriesTag(props: { item: TagType }) {
         &nbsp;
         <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1} />
       </div>
-      <div className={cx('leading-5', { 'line-clamp-2': !isOpen })}>{item.Description}</div>
+      <div className={cx('leading-5', { 'line-clamp-2': !isOpen })}>
+        <AnidbDescription text={item?.Description || 'No description set.'} />
+      </div>
     </div>
   );
 }
