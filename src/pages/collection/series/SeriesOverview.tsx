@@ -250,7 +250,7 @@ const SeriesOverview = () => {
 
       {related.length > 0 && (
         <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className="flex gap-x-5">
+          <div className={`flex gap-x-5 ${related.length > 7 && ('mb-4')}`}>
             {related.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -278,8 +278,15 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
-                  />
+                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    hidePlaceholderOnHover
+                    zoomOnHover
+                  >
+                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                      In Collection
+                    </div>
+                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                  </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">{itemRelation}</span>
                 </Link>
@@ -291,7 +298,7 @@ const SeriesOverview = () => {
 
       {similar.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className="shoko-scrollbar flex gap-x-5">
+          <div className={`shoko-scrollbar flex gap-x-5 ${similar.length > 7 && ('mb-4')}`}>
             {similar.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const isDisabled = item.ShokoID === null;
@@ -299,7 +306,7 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold "
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
@@ -323,8 +330,13 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
-                  />
+                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                  >
+                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                      In Collection
+                    </div>
+                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                  </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">
                     {round(item.UserApproval.Value, 2)}
