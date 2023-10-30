@@ -12,7 +12,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { forEach, reduce } from 'lodash';
+import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { listItemSize } from '@/components/Collection/CollectionView';
@@ -30,9 +30,14 @@ import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: string[] = [];
-  forEach(sources, (source, type) => {
-    if (source !== 0) output.push(type);
+  const typeMap = { Unknown: 'Unk', BluRay: 'BD' };
+
+  Object.entries(sources).forEach(([type, source]) => {
+    if (source !== 0) {
+      output.push(typeMap[type] || type);
+    }
   });
+
   return output.join(' | ');
 };
 
@@ -213,7 +218,7 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
                     <span>EP:</span>
                     {formatThousand(item.Sizes.Watched.Episodes)}
                     <span>/</span>
-                    {formatThousand(item.Sizes.Total.Episodes)}
+                    {formatThousand(item.Sizes.Local.Episodes)}
                   </div>
                   {item.Sizes.Total.Specials !== 0 && (
                     <>
@@ -222,7 +227,7 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
                         <span>SP:</span>
                         {formatThousand(item.Sizes.Watched.Specials)}
                         <span>/</span>
-                        {formatThousand(item.Sizes.Total.Specials)}
+                        {formatThousand(item.Sizes.Local.Specials)}
                       </div>
                     </>
                   )}
