@@ -46,7 +46,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
       </div>
 
       <div className="line-clamp-3 flex">
-        {episode.AniDB?.Description}
+        {episode.AniDB?.Description !== '' ? episode.AniDB?.Description : 'Episode description not available.'}
       </div>
     </div>
   );
