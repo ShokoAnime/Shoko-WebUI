@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
 import Button from '@/components/Input/Button';
+import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { unsetDetails } from '@/core/slices/apiSession';
 
@@ -11,6 +12,7 @@ const ErrorBoundary = () => {
   const navigate = useNavigate();
   const error = useRouteError() as Error; // There is no type definition provided.
 
+  const version = useGetInitVersionQuery();
   const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
@@ -68,14 +70,16 @@ const ErrorBoundary = () => {
             Force update to Stable Web UI
           </Button>
 
-          <Button
-            onClick={() => handleWebUiUpdate('Dev')}
-            className="px-4 py-2 drop-shadow-md"
-            buttonType="primary"
-            loading={updateChannel === 'Dev' && webuiUpdateResult.isLoading}
-          >
-            Force update to Dev Web UI
-          </Button>
+          {version.data?.Server.ReleaseChannel !== 'Stable' && (
+            <Button
+              onClick={() => handleWebUiUpdate('Dev')}
+              className="px-4 py-2 drop-shadow-md"
+              buttonType="primary"
+              loading={updateChannel === 'Dev' && webuiUpdateResult.isLoading}
+            >
+              Force update to Dev Web UI
+            </Button>
+          )}
 
           <Button
             onClick={() => handleLogout()}
