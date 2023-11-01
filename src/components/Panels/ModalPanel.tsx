@@ -5,9 +5,10 @@ import cx from 'classnames';
 type Props = {
   children: React.ReactNode;
   show: boolean;
-  title: React.ReactNode;
+  title?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   className?: string;
+  noPadding?: boolean;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
 };
@@ -22,6 +23,7 @@ function ModalPanel(props: Props) {
   const {
     children,
     className,
+    noPadding,
     onAfterOpen,
     onRequestClose,
     show,
@@ -44,13 +46,14 @@ function ModalPanel(props: Props) {
       <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex max-h-[66%] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background p-8 drop-shadow-lg',
+            'flex max-h-[66%] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
+            !noPadding && 'p-8',
             sizeClass[size ?? 'md'],
             className,
           )}
           onClick={e => e.stopPropagation()}
         >
-          <div className="text-xl font-semibold">{title}</div>
+          {title && <div className="text-xl font-semibold">{title}</div>}
           <div className="flex flex-col gap-y-8">
             {children}
           </div>
