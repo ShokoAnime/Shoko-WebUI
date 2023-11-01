@@ -3,7 +3,9 @@ import React, { useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import * as Sentry from '@sentry/react';
 
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
@@ -25,7 +27,6 @@ import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
-import NoMatchPage from '@/pages/nomatch';
 import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
@@ -44,9 +45,11 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 
 import type { RootState } from '@/core/store';
 
-const router = createBrowserRouter(
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouter(createBrowserRouter);
+
+const router = sentryCreateBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" errorElement={<NoMatchPage />}>
+    <Route path="/" errorElement={<ErrorBoundary />}>
       <Route index element={<Navigate to="/webui" replace />} />
       <Route path="index.html" element={<Navigate to="/webui" replace />} />
       <Route path="webui">
