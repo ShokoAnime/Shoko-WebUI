@@ -9,6 +9,7 @@ import {
   mdiPlusCircleOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -129,7 +130,7 @@ const SeriesOverview = () => {
   return (
     <>
       <div className="flex gap-x-8">
-        <ShokoPanel title="Additional information" className="min-w-fit" transparent contentClassName="gap-y-4">
+        <ShokoPanel title="Additional information" className="!h-auto min-w-fit" transparent contentClassName="gap-y-4">
           <div className="flex flex-col gap-y-1 capitalize">
             <div className="font-semibold">Source</div>
             {overview.SourceMaterial}
@@ -178,41 +179,47 @@ const SeriesOverview = () => {
             <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
           </div>
 
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Producers</div>
-            {overview?.Producers?.map(item => <div key={item.Name}>{item.Name}</div>)}
-          </div>
+          {/* <div className="flex flex-col gap-y-1"> */}
+          {/*   <div className="font-semibold">Producers</div> */}
+          {/*   {overview?.Producers?.map(item => <div key={item.Name}>{item.Name}</div>)} */}
+          {/* </div> */}
 
           <div className="flex flex-col gap-y-1">
             <div className="font-semibold">Links</div>
             {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
             {jpOfficialSite && (
-              <a
-                href={jpOfficialSite.URL}
-                rel="noopener noreferrer"
-                target="_blank"
-                key={jpOfficialSite.Name}
-                className="font-semibold text-panel-text-primary"
-              >
-                {jpOfficialSite.Name}
-              </a>
+              <div className="flex gap-x-2">
+                <a
+                  href={jpOfficialSite.URL}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  key={jpOfficialSite.Name}
+                  className="font-semibold text-panel-text-primary"
+                >
+                  {jpOfficialSite.Name}
+                </a>
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
             )}
             {enOfficialSite && (
-              <a
-                href={enOfficialSite.URL}
-                rel="noopener noreferrer"
-                target="_blank"
-                key={enOfficialSite.Name}
-                className="font-semibold text-panel-text-primary"
-              >
-                {enOfficialSite.Name}
-              </a>
+              <div className="flex gap-x-2">
+                <a
+                  href={enOfficialSite.URL}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                  key={enOfficialSite.Name}
+                  className="font-semibold text-panel-text-primary"
+                >
+                  {enOfficialSite.Name}
+                </a>
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
             )}
           </div>
         </ShokoPanel>
 
         <div className="flex grow flex-col gap-y-8">
-          <ShokoPanel title="Episode on Deck" className="flex grow" transparent>
+          <ShokoPanel title="Episode on Deck" className="flex grow overflow-visible" transparent>
             {get(nextUpEpisode, 'Name', false)
               ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
@@ -250,7 +257,7 @@ const SeriesOverview = () => {
 
       {related.length > 0 && (
         <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className="flex gap-x-5">
+          <div className={cx('flex gap-x-5', related.length > 7 && ('mb-4'))}>
             {related.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -278,8 +285,15 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
-                  />
+                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    hidePlaceholderOnHover
+                    zoomOnHover
+                  >
+                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                      In Collection
+                    </div>
+                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                  </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">{itemRelation}</span>
                 </Link>
@@ -291,7 +305,7 @@ const SeriesOverview = () => {
 
       {similar.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className="shoko-scrollbar flex gap-x-5">
+          <div className={cx('shoko-scrollbar flex gap-x-5', similar.length > 7 && ('mb-4'))}>
             {similar.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const isDisabled = item.ShokoID === null;
@@ -323,8 +337,13 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
-                  />
+                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                  >
+                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                      In Collection
+                    </div>
+                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                  </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">
                     {round(item.UserApproval.Value, 2)}

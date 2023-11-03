@@ -3,6 +3,7 @@ import { Outlet, useParams } from 'react-router';
 import { Link, NavLink, useOutletContext } from 'react-router-dom';
 import {
   mdiAccountGroupOutline,
+  mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
   mdiChevronRight,
   mdiEyeOutline,
@@ -27,7 +28,7 @@ import {
   useGetSeriesQuery,
   useGetSeriesTagsQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { dayjs } from '@/core/util';
+import { dayjs, formatThousand } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -131,7 +132,7 @@ const Series = () => {
                 {/* <IconNotification text="New Files Added Recently" /> */}
               </div>
             </div>
-            <div className="flex max-w-[56.25rem] flex-col gap-y-4">
+            <div className="flex max-w-[60rem] flex-col gap-y-4">
               <div className="text-4xl font-semibold">{series.Name}</div>
               <div className="text-xl font-semibold opacity-65">
                 {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
@@ -154,13 +155,70 @@ const Series = () => {
                   </span>
                 </div>
                 <div className="flex items-center gap-x-2">
-                  <Icon className="text-panel-icon" path={mdiFileDocumentMultipleOutline} size={1} />
-                  {`${series?.Sizes.Local.Episodes} / ${series?.Sizes.Total.Episodes} | ${series?.Sizes.Local.Specials} / ${series?.Sizes.Total.Specials}`}
+                  <Icon path={mdiFileDocumentMultipleOutline} size={1} />
+                  <div className="flex gap-x-2 text-sm font-semibold ">
+                    <div className="flex gap-x-1">
+                      <span>EP:</span>
+                      {formatThousand(series.Sizes.Local.Episodes)}
+                      <span>/</span>
+                      {formatThousand(series.Sizes.Total.Episodes)}
+                    </div>
+                    {series.Sizes.Total.Specials !== 0 && (
+                      <>
+                        <span>|</span>
+                        <div className="flex gap-x-1">
+                          <span>SP:</span>
+                          {formatThousand(series.Sizes.Local.Specials)}
+                          <span>/</span>
+                          {formatThousand(series.Sizes.Total.Specials)}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
                 <div className="flex items-center gap-x-2">
-                  <Icon className="text-panel-icon" path={mdiEyeOutline} size={1} />
-                  {`${series?.Sizes.Watched.Episodes} / ${series?.Sizes.Total.Episodes} | ${series?.Sizes.Watched.Specials} / ${series?.Sizes.Total.Specials}`}
+                  <Icon path={mdiEyeOutline} size={1} />
+                  <div className="flex gap-x-2 text-sm font-semibold">
+                    <div className="flex gap-x-1">
+                      <span>EP:</span>
+                      {formatThousand(series.Sizes.Watched.Episodes)}
+                      <span>/</span>
+                      {formatThousand(series.Sizes.Local.Episodes)}
+                    </div>
+                    {series.Sizes.Total.Specials !== 0 && (
+                      <>
+                        <span>|</span>
+                        <div className="flex gap-x-1">
+                          <span>SP:</span>
+                          {formatThousand(series.Sizes.Watched.Specials)}
+                          <span>/</span>
+                          {formatThousand(series.Sizes.Local.Specials)}
+                        </div>
+                      </>
+                    )}
+                  </div>
                 </div>
+                {(series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0
+                  || series.Sizes.Total.Specials - series.Sizes.Local.Specials !== 0) && (
+                  <div className="flex items-center gap-x-2">
+                    <Icon className="text-panel-text-warning" path={mdiAlertCircleOutline} size={1} />
+                    {series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0 && (
+                      <div className="flex gap-x-2 text-sm font-semibold">
+                        <div className="flex gap-x-1">
+                          <span>EP:</span>
+                          {formatThousand(series.Sizes.Total.Episodes - series.Sizes.Local.Episodes)}
+                        </div>
+                      </div>
+                    )}
+                    {series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0 && <span>|</span>}
+                    {series.Sizes.Total.Specials - series.Sizes.Local.Specials !== 0 && (
+                      <div className="flex gap-x-1">
+                        <span>SP:</span>
+                        {formatThousand(series.Sizes.Total.Specials - series.Sizes.Local.Specials)}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
               <div className="flex flex-nowrap gap-x-4">
                 {tags.slice(0, 7).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
