@@ -71,60 +71,75 @@ const SeriesEpisodes = () => {
   }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, fetchPage]);
 
   return (
-    <div className="flex gap-x-8">
-      <ShokoPanel title="Search & Filter" className="sticky top-0 w-[25rem]" transparent contentClassName="gap-y-8">
-        <Input
-          id="search"
-          label="Title Search"
-          startIcon={mdiMagnify}
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        />
-        <Select
-          id="episodeType"
-          label="Episode Type"
-          value={episodeFilterType}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterType(event.currentTarget.value)}
-        >
-          <option value="">All</option>
-          <option value="Normal">Normal</option>
-          <option value="Special">Specials</option>
-          <option value="Other">Others</option>
-          <option value="Unknown,ThemeVideo,Trailer,Parody">Misc.</option>
-        </Select>
-        <Select
-          id="status"
-          label="Availability"
-          value={episodeFilterAvailability}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            setEpisodeFilterAvailability(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="false">Available</option>
-          <option value="only">Missing</option>
-        </Select>
-        <Select
-          id="watched"
-          label="Watched Status"
-          value={episodeFilterWatched}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterWatched(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="only">Watched</option>
-          <option value="false">Unwatched</option>
-        </Select>
-        <Select
-          id="hidden"
-          label="Hidden Status"
-          value={episodeFilterHidden}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterHidden(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="false">Not Hidden</option>
-          <option value="only">Hidden</option>
-        </Select>
+    <>
+      <ShokoPanel
+        title="Search & Filter"
+        className="flex flex-col"
+        transparent
+        fullHeight={false}
+        contentClassName="gap-y-8"
+      >
+        <div className="flex gap-x-4">
+          <Input
+            id="search"
+            label="Title Search"
+            startIcon={mdiMagnify}
+            type="text"
+            placeholder="Search..."
+            value={search}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+            className="w-1/5"
+          />
+          <Select
+            id="episodeType"
+            label="Episode Type"
+            value={episodeFilterType}
+            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterType(event.currentTarget.value)}
+            className="w-1/5"
+          >
+            <option value="">All</option>
+            <option value="Normal">Normal</option>
+            <option value="Special">Specials</option>
+            <option value="Other">Others</option>
+            <option value="Unknown,ThemeVideo,Trailer,Parody">Misc.</option>
+          </Select>
+          <Select
+            id="status"
+            label="Availability"
+            value={episodeFilterAvailability}
+            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+              setEpisodeFilterAvailability(event.currentTarget.value)}
+            className="w-1/5"
+          >
+            <option value="true">All</option>
+            <option value="false">Available</option>
+            <option value="only">Missing</option>
+          </Select>
+          <Select
+            id="watched"
+            label="Watched Status"
+            value={episodeFilterWatched}
+            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+              setEpisodeFilterWatched(event.currentTarget.value)}
+            className="w-1/5"
+          >
+            <option value="true">All</option>
+            <option value="only">Watched</option>
+            <option value="false">Unwatched</option>
+          </Select>
+          <Select
+            id="hidden"
+            label="Hidden Status"
+            value={episodeFilterHidden}
+            onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+              setEpisodeFilterHidden(event.currentTarget.value)}
+            className="w-1/5"
+          >
+            <option value="true">All</option>
+            <option value="false">Not Hidden</option>
+            <option value="only">Hidden</option>
+          </Select>
+        </div>
       </ShokoPanel>
       <div className="flex grow flex-col gap-y-4">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
@@ -185,7 +200,7 @@ const SeriesEpisodes = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

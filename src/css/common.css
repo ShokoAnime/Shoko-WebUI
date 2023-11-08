@@ -204,7 +204,8 @@ input:autofill {
   background-position: center;
   background-size: cover;
 
-  &.anidb {
+  /* stylelint-disable-next-line selector-class-pattern */
+  &.AniDB {
     background-image: url('/images/community/24-AniDB.png');
   }
 
