@@ -37,7 +37,9 @@ const RecentlyImported = () => {
       <div className="shoko-scrollbar relative flex">
         <TransitionDiv show={!showSeries} className="absolute flex">
           {(episodes.data?.length ?? 0) > 0
-            ? episodes.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ShokoFile} />)
+            ? episodes.data?.map(item => (
+              <EpisodeDetails episode={item} key={`${item.IDs.ShokoEpisode}-${item.IDs.ShokoFile}`} />
+            ))
             : <div className="mt-4 flex w-full justify-center font-semibold">No Recently Imported Episodes!</div>}
         </TransitionDiv>
         <TransitionDiv show={showSeries} className="absolute flex">
