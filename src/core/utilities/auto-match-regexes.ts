@@ -81,6 +81,13 @@ try {
 
   PathMatchRuleSet.push(
     {
+      name: 'anti-timestamp',
+      regex:
+        /^\d{4}[._:\- ]\d{2}[._:\- ]\d{2}[._:\- T]\d{2}[._:\- ]\d{2}[._:\- ]\d{2}(?:[._:\- ]\d{1,6})?(?:Z|[+-]\d{2}:?\d{2})?\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
+      // invalidate the match.
+      transform: () => null,
+    },
+    {
       name: 'default',
       regex:
         /^(?:[{[(](?<releaseGroup>[^)}\]]+)[)}\]][\s_.]*)?(?<showName>(?<isMovie2>gekijouban[\s_.]+)?(?:[a-z]+[\s_.]+\d+(?=[\s_.]*(?:-+[\s_.]*)[a-z]+))?.+?(?<!\d)(?:[\s_.]*\(part[\s_.]*[ivx]+\))?(?<isMovie>[\s_.]*(?:[-!+]+[\s_.]*)?(?:the[\s_.]+)?movie)?(?:[\s_.]*\(part[\s_.]*[ivx]+\))?(?:[\s_.]*\((?<year>(?:19|20)\d{2})\))?)[\s_.]*(?:-+[\s_.]*)?(?:(?:(?<isThemeSong>(?<![a-z])(?:nc)?(?:ed|op)[\s_.]*))|(?<isSpecial>sp(?:ecial)?)|(?<isOVA>ova)(?:[\s_.]+(?:[_-]+[\s_.]*)?e|(?=e))|s(?:eason)?(?<season>\d+)(?:[\s_.]+(?:[_-]+[\s_.]*)?e?|(?=e))|)(?:(?<!part[\s_.]*)(?:(?<![a-z])e(?:ps?|pisodes?)?[\s_.]*)?(?<episode>\d+(?:-+\d+|\.5)?|(?<=(?:ed|op)\s*)\d+\.\d+))(?:v(?<version>\d{1,2}))?(?:[\s_.]*-+(?:[\s_.]+(?<episodeName>(?!\d)[^([{\n]*?))?)?(?:[\s_.]+(?:[\s_.]*-+)?)?(?:[\s_.]*(?:\([^)]*\)|\[[^\]]*\]|{[^}]*}|[([{]+[^)\]}\n]*[)\]}]+|(?:(?<![a-z])(?:jpn?|jap(?:anese)?|en|eng(?:lish)?|es|(?:spa(?:nish)?|de|ger(?:man)?)|\d{3,4}[pi](?:-+hi\w*)?|(?:[uf]?hd|sd)|\d{3,4}x\d{3,4}|dual[\s_.-]*audio|(?:www|web|bd|dvd|ld|blu[\s_.-]*ray)(?:[\s_.-]*(?:rip|dl))?|dl|rip|(?:av1|hevc|[hx]26[45])(?:-[a-z0-9]{1,6})?|(?:dolby(?:[\s_.-]*atmos)?|dts|opus|ac3|aac|flac)(?:[\s._]*[257]\.[0124](?:[_.-]+\w{1,6})?)?|(?:\w{2,3}[\s_.-]*)?(?:sub(?:title)?s?|dub)|(?:un)?cen(?:\.|sored)?)[\s_.]*){1,20})){0,20}[\s_.]*\.(?<extension>[a-zA-Z0-9_\-+]+)$/id,
