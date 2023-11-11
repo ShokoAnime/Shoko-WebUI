@@ -42,7 +42,7 @@ const ErrorBoundary = () => {
         <div className="flex flex-col gap-y-4">
           <div>Lets get you back into the Web UI.</div>
           <div>
-            If crashed during an update, select&nbsp;
+            If you are seeing this page after updating, select&nbsp;
             <span className="font-semibold text-panel-text-important">Force Update to Stable Web UI</span>
             , otherwise select&nbsp;
             <span className="font-semibold text-panel-text-important">Logout of Web UI</span>
