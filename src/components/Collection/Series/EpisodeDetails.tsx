@@ -45,7 +45,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
         &nbsp;Votes)
       </div>
 
-      <div className="line-clamp-3 flex">
+      <div className="line-clamp-3">
         {episode.AniDB?.Description !== '' ? episode.AniDB?.Description : 'Episode description not available.'}
       </div>
     </div>
