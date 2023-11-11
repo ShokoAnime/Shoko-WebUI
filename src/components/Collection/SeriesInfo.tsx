@@ -139,47 +139,6 @@ const SeriesInfo = () => {
           <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
         </div>
       </div>
-
-      {/*   <div className="flex flex-col gap-y-4"> */}
-      {/*   <div className="text-xl font-semibold"> */}
-      {/*     Links */}
-      {/*   </div> */}
-      {/*   <div className="border-b-2 border-panel-border" /> */}
-      {/*   <div className="flex flex-col gap-y-2"> */}
-      {/*     {series?.Links.map(link => ( */}
-      {/*       (link.Type === 'source' || link.Type === 'wiki' */}
-      {/*         || link.Type === 'english-metadata') && ( */}
-      {/*         <div */}
-      {/*           key={link.Name} */}
-      {/*           className="flex rounded border border-panel-border bg-panel-background-alt px-4 py-3" */}
-      {/*         > */}
-      {/*           <Icon className="text-panel-icon" path={mdiWeb} size={1} /> */}
-      {/*           <a */}
-      {/*             className="px-2 font-semibold text-panel-text-primary" */}
-      {/*             href={link.URL} */}
-      {/*             rel="noopener noreferrer" */}
-      {/*             target="_blank" */}
-      {/*           > */}
-      {/*             {link.Name} */}
-      {/*           </a> */}
-      {/*           <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} /> */}
-      {/*         </div> */}
-      {/*       ) */}
-      {/*     ))} */}
-      {/*     <div className="flex rounded border border-panel-border bg-panel-background-alt px-4 py-3"> */}
-      {/*       <div className="metadata-link-icon MAL" /> */}
-      {/*       <a */}
-      {/*         href={`https://myanimelist.net/anime/${series.IDs.MAL[0]}`} */}
-      {/*         className="px-2 font-semibold text-panel-text-primary" */}
-      {/*         rel="noopener noreferrer" */}
-      {/*         target="_blank" */}
-      {/*       > */}
-      {/*         My Anime List */}
-      {/*       </a> */}
-      {/*       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} /> */}
-      {/*     </div> */}
-      {/*   </div> */}
-      {/* </div> */}
     </div>
   );
 };
