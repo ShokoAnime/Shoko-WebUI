@@ -1,20 +1,12 @@
 import React, { useMemo } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import {
-  mdiChevronRight,
-  mdiCloseCircleOutline,
-  mdiOpenInNew,
-  mdiPencilCircleOutline,
-  mdiPlusCircleOutline,
-} from '@mdi/js';
-import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
-import Button from '@/components/Input/Button';
+import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
   useGetAniDBRelatedQuery,
@@ -22,15 +14,10 @@ import {
   useGetSeriesQuery,
   useNextUpEpisodeQuery,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { dayjs } from '@/core/util';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { SeriesAniDBRelatedType, SeriesAniDBSimilarType } from '@/core/types/api/series';
-import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
-
-const links = ['TMDB', 'TvDB', 'MAL', 'AniList', 'TraktTv'];
 
 const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   const thumbnail = useEpisodeThumbnail(nextUpEpisode);
@@ -45,76 +32,11 @@ const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   );
 };
 
-const MetadataLink = ({ id, series, site }: { site: string, id: number | number[], series: string }) => {
-  const linkId = Array.isArray(id) ? id[0] : id;
-
-  const siteLink = useMemo(() => {
-    switch (site) {
-      case 'TMDB':
-        return `https://www.themoviedb.org/movie/${linkId}`;
-      case 'TvDB':
-        // TODO: Figure how to get tvdb series link using ID
-        return '#';
-      case 'MAL':
-        return `https://myanimelist.net/anime/${linkId}`;
-      case 'AniList':
-        return `https://anilist.co/anime/${linkId}`;
-      case 'TraktTv':
-        // TODO: Figure how to get trakt series link using ID
-        return '#';
-      default:
-        return '#';
-    }
-  }, [linkId, site]);
-
-  return (
-    <div key={site} className="flex justify-between">
-      <div className="flex gap-x-2">
-        <div className={`metadata-link-icon ${site}`} />
-        {linkId
-          ? (
-            <a
-              href={siteLink}
-              className="flex gap-x-2 font-semibold text-panel-text-primary"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {/* TODO: Use name from metadata source instead of series name in Shoko */}
-              {`${series} (${linkId})`}
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-            </a>
-          )
-          : 'Series Not Linked'}
-      </div>
-      <div className="flex gap-x-2">
-        {linkId
-          ? (
-            <>
-              <Button disabled>
-                <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
-              </Button>
-              <Button disabled>
-                <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
-              </Button>
-            </>
-          )
-          : (
-            <Button disabled>
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          )}
-      </div>
-    </div>
-  );
-};
-
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
   const series = useMemo(() => seriesData?.data, [seriesData]);
-  const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
-  const overview = seriesOverviewData?.data || {} as WebuiSeriesDetailsType;
   const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
   const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;
   const relatedData = useGetAniDBRelatedQuery({ seriesId: seriesId! }, { skip: !seriesId });
@@ -122,132 +44,33 @@ const SeriesOverview = () => {
   const similarData = useGetAniDBSimilarQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
 
-  const jpOfficialSite = useMemo(() => series?.Links.find(link => link.Name === 'Official Site (JP)'), [series]);
-  const enOfficialSite = useMemo(() => series?.Links.find(link => link.Name === 'Official Site (EN)'), [series]);
+  // Links
+  const metadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
 
   if (!seriesId || !series) return null;
 
   return (
     <>
       <div className="flex gap-x-8">
-        <ShokoPanel title="Additional information" className="!h-auto min-w-fit" transparent contentClassName="gap-y-4">
-          <div className="flex flex-col gap-y-1 capitalize">
-            <div className="font-semibold">Source</div>
-            {overview.SourceMaterial}
-          </div>
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Episodes</div>
-            <div>
-              {series.Sizes.Total.Episodes}
-              &nbsp;Episodes
-            </div>
-            <div>
-              {series.Sizes.Total.Specials}
-              &nbsp;Specials
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Length</div>
-            {/* TODO: Get episode length */}
-            <div>-- Minutes/Episode</div>
-          </div>
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Status</div>
-            {/* TODO: Check if there are more status types */}
-            {(series.AniDB?.EndDate && dayjs(series.AniDB.EndDate).isAfter(dayjs())) ? 'Ongoing' : 'Finished'}
-          </div>
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Season</div>
-            {overview?.FirstAirSeason
-              ? (
-                <Link
-                  className="font-semibold text-panel-text-primary"
-                  to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
-                >
-                  {overview.FirstAirSeason.Name}
-                </Link>
-              )
-              : '--'}
-          </div>
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Studio</div>
-            <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
-          </div>
-
-          {/* <div className="flex flex-col gap-y-1"> */}
-          {/*   <div className="font-semibold">Producers</div> */}
-          {/*   {overview?.Producers?.map(item => <div key={item.Name}>{item.Name}</div>)} */}
-          {/* </div> */}
-
-          <div className="flex flex-col gap-y-1">
-            <div className="font-semibold">Links</div>
-            {/* TODO: Only showing links with Official JP and EN sites for now. To be changed */}
-            {jpOfficialSite && (
-              <div className="flex gap-x-2">
-                <a
-                  href={jpOfficialSite.URL}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  key={jpOfficialSite.Name}
-                  className="font-semibold text-panel-text-primary"
-                >
-                  {jpOfficialSite.Name}
-                </a>
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </div>
-            )}
-            {enOfficialSite && (
-              <div className="flex gap-x-2">
-                <a
-                  href={enOfficialSite.URL}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  key={enOfficialSite.Name}
-                  className="font-semibold text-panel-text-primary"
-                >
-                  {enOfficialSite.Name}
-                </a>
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </div>
-            )}
-          </div>
-        </ShokoPanel>
-
-        <div className="flex grow flex-col gap-y-8">
-          <ShokoPanel title="Episode on Deck" className="flex grow overflow-visible" transparent>
+        <div className="flex grow flex-row gap-x-8 w-full">
+          <ShokoPanel
+            title="Episode on Deck"
+            className="flex w-full max-w-[71.875rem] grow overflow-visible"
+            transparent
+          >
             {get(nextUpEpisode, 'Name', false)
               ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
           <ShokoPanel
-            title={
-              <div className="flex gap-x-2">
-                Metadata Sites
-                <Icon path={mdiChevronRight} size={1} />
-                <a
-                  href={`https://anidb.net/anime/${series.IDs.AniDB}`}
-                  className="flex items-center gap-x-2 text-panel-text-primary"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  <div className="metadata-link-icon anidb" />
-                  <div>{series.AniDB?.Title}</div>
-                  <Icon path={mdiOpenInNew} size={1} />
-                </a>
-              </div>
-            }
-            className="flex grow-0"
+            title="Metadata Sites"
+            className="flex w-full max-w-[42.188rem] grow-0"
             transparent
           >
-            <div className="grid grid-cols-2 grid-rows-3 gap-x-9 gap-y-4">
-              {links.map(site => (
+            <div className="flex flex-col gap-y-2">
+              {metadataLinks.map(site => (
                 <div className="rounded border border-panel-border bg-panel-background-alt px-4 py-3" key={site}>
-                  <MetadataLink site={site} id={series.IDs[site]} series={series.Name} />
+                  <SeriesMetadata site={site} id={series.IDs[site]} />
                 </div>
               ))}
             </div>
