@@ -29,7 +29,7 @@ export type PathMatchRule = {
     match: RegExpExecArray,
     parentMatch: RegExpExecArray | null,
     grandparentMatch: RegExpExecArray | null,
-  ): PathDetails | null;
+  ): PathDetails | null | false;
   defaults?: Partial<PathDetails>;
 };
 
@@ -139,9 +139,15 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       const finalDetails = transform(initialDetails, match, parentMatch, grandParentMatch);
 
       // Since the transformer also can return null (to invalidte the match)
-      // then we need to check if the transformed details before returning.
+      // then we need to check the transformed details before returning.
       if (finalDetails) {
         return finalDetails;
+      }
+
+      // Break the loop if we receive `null`, continue the loop if we receive
+      // `false`.
+      if (finalDetails === null) {
+        break;
       }
     }
   }
