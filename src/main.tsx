@@ -1,4 +1,5 @@
 import React from 'react';
+import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import { createRoot } from 'react-dom/client';
 
@@ -12,7 +13,15 @@ if (!isDebug()) {
     environment: 'production',
     release: uiVersion(),
     integrations: [
-      new Sentry.BrowserTracing(),
+      new Sentry.BrowserTracing({
+        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+          React.useEffect,
+          useLocation,
+          useNavigationType,
+          createRoutesFromChildren,
+          matchRoutes,
+        ),
+      }),
       new Sentry.Replay({
         maskAllText: true,
         blockAllMedia: false,
