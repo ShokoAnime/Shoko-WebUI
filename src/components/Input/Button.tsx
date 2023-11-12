@@ -17,11 +17,11 @@ type Props = {
 
 const buttonTypeClasses = {
   primary:
-    'bg-button-primary text-button-primary-text border-2 border-button-primary-border rounded-md hover:bg-button-primary-hover',
+    'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover',
   secondary:
-    'bg-button-secondary text-button-secondary-text border-2 border-button-secondary-border rounded-md hover:bg-button-secondary-hover',
+    'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-md hover:bg-button-secondary-hover',
   danger:
-    'bg-button-danger text-button-danger-text border-2 border-button-danger-border rounded-md hover:bg-button-danger-hover',
+    'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md hover:bg-button-danger-hover',
 };
 
 function Button(props: Props) {

@@ -16,9 +16,15 @@ type Props = {
   seriesId: number;
 };
 
-const Action = ({ name, onClick }: { name: string, onClick: () => void }) => (
-  <div className="flex justify-between gap-x-3" onClick={onClick}>
-    {name}
+const Action = ({ description, name, onClick }: { name: string, description: string, onClick: () => void }) => (
+  <div
+    className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0"
+    onClick={onClick}
+  >
+    <div className="flex w-full max-w-[35rem] flex-col gap-y-2">
+      <div>{name}</div>
+      <div className="text-sm opacity-65">{description}</div>
+    </div>
     <Button onClick={() => {}} className="text-panel-text-primary">
       <Icon path={mdiPlayCircleOutline} size={1} />
     </Button>
@@ -38,9 +44,10 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
   });
 
   return (
-    <div className="flex grow flex-col gap-y-2">
+    <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-scroll">
       <Action
         name="Rescan Files"
+        description="Rescans every file associated with the series."
         onClick={() => {
           rescanSeriesFiles({ seriesId })
             .then(() => toast.success('Series files rescan queued!'))
@@ -49,6 +56,7 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
       />
       <Action
         name="Rehash Files"
+        description="Rehashes every file associated with the series."
         onClick={() => {
           rehashSeriesFiles({ seriesId })
             .then(() => toast.success('Series files rehash queued!'))
@@ -57,15 +65,28 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
       />
       <Action
         name="Update TVDB Info"
+        description="Gets the latest series information from TheTVDB database."
         onClick={() => {
           refreshTvdb({ seriesId })
             .then(() => toast.success('TvDB refresh queued!'))
             .catch(console.error);
         }}
       />
-      <Action name="Update AniDB Info" onClick={() => triggerAnidbRefresh(false, false)} />
-      <Action name="Update AniDB Info - Force" onClick={() => triggerAnidbRefresh(true, false)} />
-      <Action name="Update AniDB Info - XML Cache" onClick={() => triggerAnidbRefresh(false, true)} />
+      <Action
+        name="Update AniDB Info"
+        description="Gets the latest series information from the AniDB database."
+        onClick={() => triggerAnidbRefresh(false, false)}
+      />
+      <Action
+        name="Update AniDB Info - Force"
+        description="Forces a complete update from AniDB, bypassing usual checks."
+        onClick={() => triggerAnidbRefresh(true, false)}
+      />
+      <Action
+        name="Update AniDB Info - XML Cache"
+        description="Updates AniDB data using information from local XML cache."
+        onClick={() => triggerAnidbRefresh(false, true)}
+      />
     </div>
   );
 };

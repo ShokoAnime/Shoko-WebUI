@@ -56,7 +56,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
               {selectedFile.AniDB && (
                 <a href={`https://anidb.net/file/${selectedFile.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
                   <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                    <div className="metadata-link-icon anidb" />
+                    <div className="metadata-link-icon AniDB" />
                     {`${selectedFile.AniDB.ID} (AniDB)`}
                     <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                   </div>
@@ -65,7 +65,7 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
               {ReleaseGroupID > 0 && (
                 <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
                   <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                    <div className="metadata-link-icon anidb" />
+                    <div className="metadata-link-icon AniDB" />
                     {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
                     <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                   </div>

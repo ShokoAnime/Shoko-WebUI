@@ -96,7 +96,7 @@ function UtilitiesTable(props: Props) {
   return (
     <div className="relative w-full grow overflow-y-auto" ref={tableContainerRef}>
       <table
-        className="absolute -top-2 w-full table-fixed border-separate border-spacing-y-2 text-left"
+        className="absolute -top-2 w-full table-fixed border-separate border-spacing-y-2 pr-4 text-left"
         style={{ height: totalSize }}
       >
         <thead className="sticky top-0 z-[1]">

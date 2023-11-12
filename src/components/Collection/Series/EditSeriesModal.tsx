@@ -35,9 +35,9 @@ const EditSeriesModal = (props: Props) => {
   const [activeTab, setActiveTab] = useState('actions');
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} title="Edit Series">
+    <ModalPanel show={show} onRequestClose={onClose} title="Edit Series" noPadding titleLeft>
       <div className="flex">
-        <div className="flex min-w-[10rem] flex-col gap-y-4 border-r-2 border-panel-border">
+        <div className="flex w-[12rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
           {map(tabs, (value, key) => (
             <div
               className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
@@ -48,7 +48,7 @@ const EditSeriesModal = (props: Props) => {
             </div>
           ))}
         </div>
-        <div className="ml-8 w-full">
+        <div className="w-full p-8">
           {renderTab(activeTab, seriesId)}
         </div>
       </div>
