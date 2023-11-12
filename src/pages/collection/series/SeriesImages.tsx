@@ -7,6 +7,7 @@ import { get, map, split } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
@@ -78,6 +79,15 @@ const SeriesImages = () => {
   return (
     <div className="flex gap-x-8">
       <div className="sticky top-0 flex w-[22.375rem] shrink-0 flex-col gap-y-8">
+        <ShokoPanel
+          title="Image Options"
+          transparent
+          contentClassName="gap-y-2 pointer-events-none opacity-50"
+          fullHeight={false}
+        >
+          <Checkbox id="random-poster" isChecked={false} onChange={() => {}} label="Random Poster on Load" justify />
+          <Checkbox id="random-fanart" isChecked={false} onChange={() => {}} label="Random Fanart on Load" justify />
+        </ShokoPanel>
         <ShokoPanel title="Selected Image Info" transparent contentClassName="gap-y-4" fullHeight={false}>
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
