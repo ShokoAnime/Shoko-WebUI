@@ -58,7 +58,7 @@ function ModalPanel(props: Props) {
           {title && (
             <div
               className={cx(
-                'border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold rounded-md',
+                'border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold rounded-t-md',
                 !titleLeft && ('text-center'),
               )}
             >
