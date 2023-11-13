@@ -18,17 +18,17 @@ const UpcomingAnime = () => {
 
   return (
     <ShokoPanel
-      title={
+      title="Upcoming Anime"
+      editMode={layoutEditMode}
+      isFetching={showAll ? items.isLoading : localItems.isLoading}
+      options={
         <DashboardTitleToggle
-          title="Upcoming Anime"
           mainTitle="My Collection"
           secondaryTitle="All"
           secondaryActive={showAll}
           setSecondaryActive={setShowAll}
         />
       }
-      editMode={layoutEditMode}
-      isFetching={showAll ? items.isLoading : localItems.isLoading}
     >
       <div className="shoko-scrollbar relative flex">
         <TransitionDiv show={!showAll} className="absolute flex w-full">

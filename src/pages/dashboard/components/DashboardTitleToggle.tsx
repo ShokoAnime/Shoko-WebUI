@@ -1,8 +1,9 @@
 import React from 'react';
 import cx from 'classnames';
 
+import Button from '@/components/Input/Button';
+
 type Props = {
-  title: string;
   mainTitle: string;
   secondaryTitle: string;
   secondaryActive: boolean;
@@ -14,33 +15,27 @@ const DashboardTitleToggle = ({
   secondaryActive,
   secondaryTitle,
   setSecondaryActive,
-  title,
 }: Props) => (
-  <div>
-    {title}
-    <span className="px-2">&gt;</span>
-    <span
-      className={cx({
-        'cursor-pointer': true,
-        'font-semibold': !secondaryActive,
-        'text-panel-text-primary': !secondaryActive,
-      })}
+  <>
+    <Button
       onClick={() => setSecondaryActive(false)}
+      className={cx(
+        'px-3 py-2 rounded-l-md rounded-r-none border border-panel-border w-36',
+        !secondaryActive && 'bg-panel-input text-panel-text-primary',
+      )}
     >
       {mainTitle}
-    </span>
-    <span className="mx-2">|</span>
-    <span
-      className={cx({
-        'cursor-pointer': true,
-        'font-semibold': secondaryActive,
-        'text-panel-text-primary': secondaryActive,
-      })}
+    </Button>
+    <Button
       onClick={() => setSecondaryActive(true)}
+      className={cx(
+        'px-3 py-2 rounded-l-none rounded-r-md border border-l-0 border-panel-border w-36',
+        secondaryActive && 'bg-panel-input text-panel-text-primary',
+      )}
     >
       {secondaryTitle}
-    </span>
-  </div>
+    </Button>
+  </>
 );
 
 export default DashboardTitleToggle;

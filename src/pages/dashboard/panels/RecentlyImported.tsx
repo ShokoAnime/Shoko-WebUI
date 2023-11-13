@@ -22,17 +22,17 @@ const RecentlyImported = () => {
 
   return (
     <ShokoPanel
-      title={
+      title="Recently Imported"
+      editMode={layoutEditMode}
+      isFetching={showSeries ? series.isLoading : episodes.isLoading}
+      options={
         <DashboardTitleToggle
-          title="Recently Imported"
           mainTitle="Episodes"
           secondaryTitle="Series"
           secondaryActive={showSeries}
           setSecondaryActive={setShowSeries}
         />
       }
-      editMode={layoutEditMode}
-      isFetching={showSeries ? series.isLoading : episodes.isLoading}
     >
       <div className="shoko-scrollbar relative flex">
         <TransitionDiv show={!showSeries} className="absolute flex">
