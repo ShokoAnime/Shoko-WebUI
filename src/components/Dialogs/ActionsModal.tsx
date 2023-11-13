@@ -103,16 +103,14 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   const { functionName, name } = action;
 
   return (
-    <TransitionDiv className="flex flex-col gap-y-2">
-      <div className="flex justify-between">
-        {name}
-        <Button onClick={() => runAction(name, functionName)} className="text-panel-icon-action">
-          <Icon path={mdiPlayCircleOutline} size={1} />
-        </Button>
+    <TransitionDiv className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">
+      <div className="flex w-full max-w-[35rem] flex-col gap-y-2">
+        <div>{name}</div>
+        <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
       </div>
-      <div className="flex text-sm text-panel-text opacity-65">
-        {quickActions[actionKey].info}
-      </div>
+      <Button onClick={() => runAction(name, functionName)} className="text-panel-icon-action">
+        <Icon path={mdiPlayCircleOutline} size={1} />
+      </Button>
     </TransitionDiv>
   );
 };
@@ -124,11 +122,13 @@ function ActionsModal({ onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
+      title="Actions"
+      size="md"
+      titleLeft
       noPadding
     >
-      <div className="flex h-[26.75rem]">
-        <div className="flex shrink-0 flex-col gap-y-8 border-r border-panel-border bg-panel-background-alt p-8 font-semibold">
-          <div className="text-xl">Actions</div>
+      <div className="flex h-[23rem]">
+        <div className="flex w-[9.375rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
           <div className="flex flex-col gap-y-4">
             {map(actions, (value, key) => (
               <div
@@ -143,7 +143,7 @@ function ActionsModal({ onClose, show }: Props) {
         </div>
 
         <div className="flex grow p-8 pr-6">
-          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2">
+          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2 ">
             {actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}
           </div>
         </div>

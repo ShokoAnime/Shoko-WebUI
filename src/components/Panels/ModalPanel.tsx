@@ -6,16 +6,17 @@ type Props = {
   children: React.ReactNode;
   show: boolean;
   title?: React.ReactNode;
+  titleLeft?: boolean;
   size?: 'sm' | 'md' | 'lg';
-  className?: string;
   noPadding?: boolean;
+  className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
 };
 
 const sizeClass = {
   sm: 'w-[32rem]',
-  md: 'w-[40rem]',
+  md: 'w-[56.25rem]',
   lg: 'w-[62rem]',
 };
 
@@ -29,6 +30,7 @@ function ModalPanel(props: Props) {
     show,
     size,
     title,
+    titleLeft,
   } = props;
 
   Modal.setAppElement('#app-root');
@@ -46,15 +48,24 @@ function ModalPanel(props: Props) {
       <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex max-h-[66%] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
-            !noPadding && 'p-8',
+            'flex max-h-[66%] flex-col rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
             sizeClass[size ?? 'md'],
+            !noPadding && ('gap-y-8'),
             className,
           )}
           onClick={e => e.stopPropagation()}
         >
-          {title && <div className="text-xl font-semibold">{title}</div>}
-          <div className="flex flex-col gap-y-8">
+          {title && (
+            <div
+              className={cx(
+                'border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold',
+                !titleLeft && ('text-center'),
+              )}
+            >
+              {title}
+            </div>
+          )}
+          <div className={cx('flex flex-col gap-y-8', !noPadding && ('px-8 pb-8'))}>
             {children}
           </div>
         </div>

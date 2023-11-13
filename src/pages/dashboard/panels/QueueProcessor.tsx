@@ -50,7 +50,7 @@ function QueueProcessor() {
             {item?.status ?? 'Idle'}
           </span>
         </div>
-        <div className="flex text-panel-text-important">{item.queueCount ?? 0}</div>
+        <div className="flex font-semibold text-panel-text-important">{item.queueCount ?? 0}</div>
         <div className="flex items-center">
           {item?.status === 'Pausing' || item?.status === 'Paused'
             ? (

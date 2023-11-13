@@ -12,7 +12,7 @@ import type { RootState } from '@/core/store';
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
   return (
-    <div key={file.ID} className="flex items-center">
+    <div key={file.ID} className="flex items-center pr-4">
       <div className="flex grow flex-col">
         <span className="font-semibold">
           {createdTime.format('YYYY-MM-DD')}
@@ -40,7 +40,16 @@ function UnrecognizedFiles() {
 
   return (
     <ShokoPanel
-      title="Unrecognized Files"
+      title={
+        <div className="flex w-full flex-row justify-between">
+          <div>Unrecognized Files</div>
+          <div>
+            <span className="text-panel-text-important">{files.List.length}</span>
+            &nbsp;
+            <span>Files</span>
+          </div>
+        </div>
+      }
       isFetching={filesQuery.isLoading}
       editMode={layoutEditMode}
       contentClassName="gap-y-3"
