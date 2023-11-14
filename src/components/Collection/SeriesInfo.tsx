@@ -6,7 +6,6 @@ import { useGetSeriesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { dayjs, formatThousand } from '@/core/util';
 
-import type { SeriesDetailsType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
 const SeriesInfo = () => {
@@ -16,10 +15,10 @@ const SeriesInfo = () => {
   const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
   const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
-  const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
 
-  const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
-  const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
+  const startDate = useMemo(() => (series?.AniDB?.AirDate != null ? dayjs(series?.AniDB?.AirDate) : null), [series]);
+  const endDate = useMemo(() => (series?.AniDB?.EndDate != null ? dayjs(series?.AniDB?.EndDate) : null), [series]);
   const airDate = useMemo(() => {
     if (!startDate) {
       return 'Unknown';
@@ -41,6 +40,8 @@ const SeriesInfo = () => {
     }
     return 'Finished';
   }, [startDate, endDate]);
+
+  if (!series || !seriesId) return null;
 
   return (
     <div className="flex w-full max-w-[31.25rem] flex-col gap-y-8">
