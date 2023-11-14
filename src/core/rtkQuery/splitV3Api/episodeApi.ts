@@ -53,7 +53,7 @@ const episodeApi = splitV3Api.injectEndpoints({
           updateStats: true,
         },
       }),
-      invalidatesTags: ['SeriesEpisodes'],
+      invalidatesTags: ['SeriesEpisodes', 'SeriesAniDB'],
     }),
   }),
 });

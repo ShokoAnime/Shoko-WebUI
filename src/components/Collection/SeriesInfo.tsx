@@ -62,24 +62,21 @@ const SeriesInfo = () => {
           </div>
         </div>
 
-        {(series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0
-          || series.Sizes.Total.Specials - series.Sizes.Local.Specials !== 0) && (
+        {(series.Sizes.Missing.Episodes !== 0 || series.Sizes.Missing.Specials !== 0) && (
           <div className="flex flex-col items-center">
             <div className="font-semibold ">Missing</div>
             <div className="flex flex-row gap-x-1">
-              {series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0 && (
+              {series.Sizes.Missing.Episodes !== 0 && (
                 <>
                   <span>EP:</span>
-                  <span>{formatThousand(series.Sizes.Total.Episodes - series.Sizes.Local.Episodes)}</span>
+                  <span>{formatThousand(series.Sizes.Missing.Episodes)}</span>
                 </>
               )}
-              {series.Sizes.Total.Episodes - series.Sizes.Local.Episodes !== 0
-                && series.Sizes.Total.Specials - series.Sizes.Local.Specials !== 0
-                && <span>|</span>}
-              {series.Sizes.Total.Specials - series.Sizes.Local.Specials !== 0 && (
+              {series.Sizes.Missing.Episodes !== 0 && series.Sizes.Missing.Specials !== 0 && <span>|</span>}
+              {series.Sizes.Missing.Specials !== 0 && (
                 <>
                   <span>SP:</span>
-                  <span>{formatThousand(series.Sizes.Total.Specials - series.Sizes.Local.Specials)}</span>
+                  <span>{formatThousand(series.Sizes.Missing.Specials)}</span>
                 </>
               )}
             </div>
