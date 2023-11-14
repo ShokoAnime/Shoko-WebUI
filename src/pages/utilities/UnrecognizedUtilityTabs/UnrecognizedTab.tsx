@@ -162,13 +162,13 @@ const Menu = (
         <MenuButton
           onClick={() => setSeriesSelectModal(true)}
           icon={mdiFileDocumentOutline}
-          name="Copy All ED2K Hashes"
+          name="Add All To AniDB"
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => rescanFiles(true)} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
-        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Copy ED2K Hash" />
+        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
@@ -259,12 +259,15 @@ function UnrecognizedTab() {
 
   const getED2KLinks = useEventCallback(() => {
     const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return fileList.map(
-      file =>
-        `ed2k://|file|${
-          file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
-        }|${file.Size}|${file.Hashes.ED2K}|/`,
-    );
+    return {
+      fileIds: fileList.map(file => file.ID),
+      links: fileList.map(
+        file =>
+          `ed2k://|file|${
+            file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
+          }|${file.Size}|${file.Hashes.ED2K}|/`,
+      ),
+    };
   });
 
   return (
@@ -335,7 +338,10 @@ function UnrecognizedTab() {
 
       <AvDumpSeriesSelectModal
         show={seriesSelectModal}
-        onClose={() => setSeriesSelectModal(false)}
+        onClose={(refresh?: boolean) => {
+          if (refresh) table.resetRowSelection();
+          setSeriesSelectModal(false);
+        }}
         getLinks={getED2KLinks}
       />
     </>
