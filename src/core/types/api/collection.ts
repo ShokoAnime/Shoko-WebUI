@@ -12,6 +12,7 @@ export type CollectionGroupType = {
   SortName: string | null;
   Description: string | null;
   HasCustomName: boolean;
+  HasCustomDescription: boolean;
   Images: ImagesType;
   Name: string;
   Size: number;
@@ -20,6 +21,7 @@ export type CollectionGroupType = {
 
 export type GroupSizesType = SeriesSizesType & {
   SeriesTypes: GroupSizesSeriesTypesType;
+  SubGroups: number;
 };
 
 export type GroupSizesSeriesTypesType = {
