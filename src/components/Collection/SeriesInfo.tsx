@@ -18,9 +18,12 @@ const SeriesInfo = () => {
   const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
   const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
 
-  const startDate = useMemo(() => dayjs(series.AniDB?.AirDate), [series]);
-  const endDate = useMemo(() => (series.AniDB?.EndDate !== null ? dayjs(series.AniDB?.EndDate) : null), [series]);
-  const airDate = () => {
+  const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
+  const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
+  const airDate = useMemo(() => {
+    if (!startDate) {
+      return 'Unknown';
+    }
     if (endDate) {
       if (startDate.format('MMM DD, YYYY') === endDate.format('MMM DD, YYYY')) {
         return startDate.format('MMM DD, YYYY');
@@ -28,7 +31,16 @@ const SeriesInfo = () => {
       return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
     }
     return `${startDate.format('MMM DD, YYYY')} - Ongoing`;
-  };
+  }, [startDate, endDate]);
+  const status = useMemo(() => {
+    if (!startDate) {
+      return 'Unknown';
+    }
+    if (endDate && endDate.isAfter(dayjs())) {
+      return 'Ongoing';
+    }
+    return 'Finished';
+  }, [startDate, endDate]);
 
   return (
     <div className="flex w-full max-w-[31.25rem] flex-col gap-y-8">
@@ -93,15 +105,21 @@ const SeriesInfo = () => {
           {overview.SourceMaterial}
         </div>
         <div className="flex justify-between capitalize">
+          <div className="font-semibold">Restricted</div>
+          <div>
+            {series.AniDB?.Restricted ? 'Yes' : 'No'}
+          </div>
+        </div>
+        <div className="flex justify-between capitalize">
           <div className="font-semibold">Air Date</div>
           <div>
-            {airDate()}
+            {airDate}
           </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Status</div>
           {/* TODO: Check if there are more status types */}
-          {(series.AniDB?.EndDate && dayjs(series.AniDB.EndDate).isAfter(dayjs())) ? 'Ongoing' : 'Finished'}
+          {status}
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Episodes</div>
