@@ -228,6 +228,9 @@ function UnrecognizedTab() {
   const table = useReactTable({
     data: files.List,
     columns,
+    getRowId(row) {
+      return row.ID.toString();
+    },
     getCoreRowModel: getCoreRowModel(),
     filterFns: {
       fuzzy: fuzzyFilter,
