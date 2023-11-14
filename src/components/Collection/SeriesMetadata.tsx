@@ -3,9 +3,12 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import { useDeleteSeriesTvdbLinkMutation } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
-const MetadataLink = ({ id, site }: { site: string, id: number | number[] }) => {
+const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId: number, site: string }) => {
   const linkId = Array.isArray(id) ? id[0] : id;
+
+  const [disableTvDBTrigger] = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {
     switch (site) {
@@ -23,6 +26,18 @@ const MetadataLink = ({ id, site }: { site: string, id: number | number[] }) => 
         return '#';
     }
   }, [linkId, site]);
+
+  const canDisable = site === 'TvDB';
+
+  const disableMetadata = () => {
+    switch (site) {
+      case 'TvDB':
+        disableTvDBTrigger({ seriesId, tvdbShowId: linkId }).catch(() => {});
+        break;
+      default:
+        break;
+    }
+  };
 
   return (
     <div key={site} className="flex justify-between">
@@ -50,7 +65,7 @@ const MetadataLink = ({ id, site }: { site: string, id: number | number[] }) => 
                 <Button disabled>
                   <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
                 </Button>
-                <Button disabled>
+                <Button disabled={!canDisable} onClick={disableMetadata}>
                   <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
                 </Button>
               </>
