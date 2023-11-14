@@ -74,7 +74,7 @@ const SeriesTags = () => {
           </div>
         </div>
         <div className="grid grid-cols-3 gap-8">
-          {map(tags, (item, index) => <SeriesTag key={index} item={item} />)}
+          {map(tags, item => <SeriesTag key={item.ID} item={item} />)}
         </div>
       </div>
     </div>
