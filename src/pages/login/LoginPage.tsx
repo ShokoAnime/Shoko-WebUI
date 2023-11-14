@@ -18,12 +18,12 @@ import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
 import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
 import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { ImageTypeEnum } from '@/core/types/api/common';
-import { useHashQuery } from '@/hooks/query';
+import { useHashQueryParameter } from '@/hooks/query';
 
 import type { RootState } from '@/core/store';
 
 function LoginPage() {
-  const [{ returnTo = '/', ...rest }, setHashQuery] = useHashQuery();
+  const [returnTo, setReturnTo] = useHashQueryParameter('returnTo', '/webui/');
   const navigate = useNavigate();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
@@ -45,7 +45,7 @@ function LoginPage() {
 
   const setRedirect = () => {
     if (seriesId === 0) return;
-    setHashQuery({ returnTo: `/webui/collection/series/${seriesId}`, ...rest });
+    setReturnTo(`/webui/collection/series/${seriesId}`);
   };
 
   useEffect(() => {
