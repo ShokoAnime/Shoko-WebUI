@@ -23,7 +23,7 @@ import { useHashQuery } from '@/hooks/query';
 import type { RootState } from '@/core/store';
 
 function LoginPage() {
-  const [{ returnTo = '/' }] = useHashQuery();
+  const [{ returnTo = '/', ...rest }, setHashQuery] = useHashQuery();
   const navigate = useNavigate();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
@@ -32,23 +32,33 @@ function LoginPage() {
   const [password, setPassword] = useState('');
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
-  const [loginImage, setLoginImage] = useState('');
-  const [loginSeriesTitle, setLoginSeriesTitle] = useState('');
+  const [{ imageUrl, seriesId, seriesName }, setLoginImage] = useState(() => ({
+    imageUrl: 'default',
+    seriesName: '',
+    seriesId: 0,
+  }));
 
   const version = useGetInitVersionQuery();
   const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
   const status = useGetInitStatusQuery(undefined, { pollingInterval });
   const imageMetadata = useGetRandomMetadataQuery({ imageType: ImageTypeEnum.Fanart });
 
+  const setRedirect = () => {
+    if (seriesId === 0) return;
+    setHashQuery({ returnTo: `/webui/collection/series/${seriesId}`, ...rest });
+  };
+
   useEffect(() => {
     const { data } = imageMetadata;
     if (!data || !data?.Type) {
-      setLoginImage('default');
+      setLoginImage({ imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 });
       return;
     }
-    const uri = `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`;
-    setLoginImage(uri);
-    setLoginSeriesTitle(data?.Series?.Name ?? '');
+    setLoginImage({
+      imageUrl: `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`,
+      seriesName: data?.Series?.Name ?? '',
+      seriesId: data?.Series?.ID ?? 0,
+    });
   }, [imageMetadata]);
 
   useEffect(() => {
@@ -107,12 +117,18 @@ function LoginPage() {
       <div
         className={cx(
           'flex h-screen w-screen login-image items-center justify-center relative',
-          loginImage === 'default' && 'login-image-default',
+          imageUrl === 'default' && 'login-image-default',
         )}
-        style={loginImage !== '' && loginImage !== 'default' ? { backgroundImage: `url('${loginImage}')` } : {}}
+        style={imageUrl !== '' && imageUrl !== 'default' ? { backgroundImage: `url('${imageUrl}')` } : {}}
       >
-        <div className="absolute right-0 top-0 border border-panel-border bg-panel-background-transparent px-8 py-4 font-semibold">
-          {imageMetadata.isError ? 'One Piece' : loginSeriesTitle}
+        <div
+          onClick={setRedirect}
+          className={cx(
+            'absolute right-0 top-0 border border-panel-border bg-panel-background-transparent px-8 py-4 font-semibold',
+            seriesId && 'cursor-pointer',
+          )}
+        >
+          {imageMetadata.isError ? 'One Piece' : seriesName}
         </div>
 
         <div className="flex w-[30rem] flex-col items-center gap-y-8 rounded-lg border border-panel-border bg-panel-background-transparent p-8 drop-shadow-md">
