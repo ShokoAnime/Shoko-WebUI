@@ -65,7 +65,7 @@ function LoginPage() {
     if (!status.data) setPollingInterval(500);
     else if (status.data?.State !== 1) setPollingInterval(0);
 
-    if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
+    if (status.data?.State === 2 && apiSession.apikey !== '') {
       navigate(returnTo, { replace: true });
     }
   }, [status, apiSession, navigate, returnTo]);
