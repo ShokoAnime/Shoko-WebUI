@@ -200,7 +200,7 @@ const AnimeSelectPanel = (
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
+      <div className="flex grow flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
         {searchRows}
       </div>
     </div>
