@@ -273,7 +273,7 @@ function TopNav() {
               )}
               <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
-              <div className="flex gap-x-5">
+              <div className="flex items-center gap-x-5">
                 <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} />
                 <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} />
                 <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} />
