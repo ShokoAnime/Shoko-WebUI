@@ -200,6 +200,15 @@ const seriesApi = splitV3Api.injectEndpoints({
       }),
     }),
 
+    changeSeriesImage: build.mutation<ResponseType, { seriesId: string, imageType: string, params: object }>({
+      query: ({ imageType, params, seriesId }) => ({
+        url: `Series/${seriesId}/Images/${imageType}`,
+        method: 'PUT',
+        body: params,
+      }),
+      invalidatesTags: ['SeriesAniDB'],
+    }),
+
     // Queue a refresh of all the TvDB data linked to a series using the seriesID.
     refreshSeriesTvdbInfo: build.mutation<boolean, { seriesId: number, force?: boolean }>({
       query: ({ force = false, seriesId }) => ({
@@ -230,6 +239,7 @@ const seriesApi = splitV3Api.injectEndpoints({
 });
 
 export const {
+  useChangeSeriesImageMutation,
   useDeleteSeriesMutation,
   useGetAniDBRecommendedAnimeQuery,
   useGetAniDBRelatedQuery,

@@ -9,7 +9,8 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import toast from '@/components/Toast';
+import { useChangeSeriesImageMutation, useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -60,8 +61,8 @@ const SeriesImages = () => {
 
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
-
   const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const [changeImage] = useChangeSeriesImageMutation();
   const images = imagesData.data;
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
@@ -96,7 +97,16 @@ const SeriesImages = () => {
           <Button
             buttonType="primary"
             className="rounded-md border border-panel-border px-4 py-3 font-semibold"
-            disabled
+            disabled={!Object.keys(selectedImage).length}
+            onClick={() => {
+              changeImage({
+                seriesId,
+                imageType: selectedImage.Type,
+                params: { ID: selectedImage.ID, Source: selectedImage.Source },
+              })
+                .then(() => toast.success(`Series ${selectedImage.Type} has been changed.`))
+                .catch(console.error);
+            }}
           >
             Set As Series Poster
           </Button>
