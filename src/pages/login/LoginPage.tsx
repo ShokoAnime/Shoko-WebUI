@@ -18,10 +18,12 @@ import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
 import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
 import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
 import { ImageTypeEnum } from '@/core/types/api/common';
+import { useHashQuery } from '@/hooks/query';
 
 import type { RootState } from '@/core/store';
 
 function LoginPage() {
+  const [{ returnTo = '/' }] = useHashQuery();
   const navigate = useNavigate();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
@@ -54,9 +56,9 @@ function LoginPage() {
     else if (status.data?.State !== 1) setPollingInterval(0);
 
     if (status.data?.State === 2 && apiSession.rememberUser && apiSession.apikey !== '') {
-      navigate('/', { replace: true });
+      navigate(returnTo, { replace: true });
     }
-  }, [status, apiSession, navigate]);
+  }, [status, apiSession, navigate, returnTo]);
 
   useEffect(() => {
     if (!get(version, 'data.Server', false)) return;
@@ -75,7 +77,7 @@ function LoginPage() {
       pass: password,
       device: 'web-ui',
       rememberUser,
-    }).unwrap().then(() => navigate('/'), error => console.error(error));
+    }).unwrap().then(() => navigate(returnTo), error => console.error(error));
   };
 
   const parsedVersion = useMemo(() => {
