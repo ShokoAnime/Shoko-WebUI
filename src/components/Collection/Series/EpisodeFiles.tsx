@@ -1,10 +1,11 @@
-import React from 'react';
-import { mdiEyeOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
+import React, { useMemo, useState } from 'react';
+import { mdiEyeOutline, mdiOpenInNew, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
 
+import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import toast from '@/components/Toast';
-import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useDeleteFileMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 
 import EpisodeFileInfo from './EpisodeFileInfo';
 
@@ -15,9 +16,31 @@ type Props = {
 };
 
 const EpisodeFiles = ({ episodeFiles }: Props) => {
+  const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileRescanTrigger] = usePostFileRescanMutation();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedFileToDelete, setSelectedFileToDelete] = useState<FileType | null>(null);
+  const selectedFilesToDelete = useMemo(() => (selectedFileToDelete ? [selectedFileToDelete] : []), [
+    selectedFileToDelete,
+  ]);
 
-  const rescanFile = async (id) => {
+  const deleteFiles = async () => {
+    if (!selectedFileToDelete) return;
+    try {
+      // eslint-disable-next-line no-await-in-loop
+      await fileDeleteTrigger({ fileId: selectedFileToDelete.ID, removeFolder: true }).unwrap();
+      toast.success('Deleted file!');
+    } catch (error) {
+      toast.error(`Failed to delete file! ${error}`);
+    }
+  };
+
+  const closeDeleteModal = () => {
+    setSelectedFileToDelete(null);
+    setShowDeleteModal(false);
+  };
+
+  const rescanFile = async (id: number) => {
     try {
       await fileRescanTrigger(id).unwrap();
       toast.success('Rescanning file!');
@@ -71,6 +94,16 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
                   </div>
                 </a>
               )}
+              <div
+                className="flex cursor-pointer items-center gap-x-2 text-panel-text-danger"
+                onClick={() => {
+                  setShowDeleteModal(true);
+                  setSelectedFileToDelete(selectedFile);
+                }}
+              >
+                <Icon path={mdiTrashCanOutline} size={1} />
+                Delete File
+              </div>
 
               {selectedFile.IsVariation && (
                 <span className="ml-auto font-semibold text-panel-text-important">Variation</span>
@@ -81,6 +114,13 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
           </div>
         );
       })}
+      <DeleteFilesModal
+        show={showDeleteModal}
+        selectedFiles={selectedFilesToDelete}
+        removeFile={closeDeleteModal}
+        onClose={closeDeleteModal}
+        onConfirm={deleteFiles}
+      />
     </div>
   );
 };
