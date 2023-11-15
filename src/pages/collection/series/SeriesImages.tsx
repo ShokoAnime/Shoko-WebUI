@@ -14,7 +14,9 @@ import { useChangeSeriesImageMutation, useGetSeriesImagesQuery } from '@/core/rt
 
 import type { ImageType } from '@/core/types/api/common';
 
-const Heading = React.memo(({ setType, type }: { type: string, setType: (type: string) => void }) => (
+const Heading = React.memo((
+  { onTypeChange, setType, type }: { type: string, setType: (type: string) => void, onTypeChange: () => void },
+) => (
   <div className="flex cursor-pointer items-center gap-x-2 text-xl font-semibold">
     Images
     <Icon path={mdiChevronRight} size={1} />
@@ -22,10 +24,11 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
       <span
         onClick={() => {
           setType('Posters');
+          onTypeChange();
         }}
         className={cx(type === 'Posters' && 'text-panel-text-primary')}
       >
-        Poster
+        Posters
       </span>
       |
       <span
@@ -34,7 +37,7 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
         }}
         className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
       >
-        Fanart
+        Fanarts
       </span>
       |
       <span
@@ -75,6 +78,10 @@ const SeriesImages = () => {
     Banners: 'h-[8rem] w-[43.25rem]',
   };
 
+  const resetSelectedImage = () => {
+    setSelectedImage({} as ImageType);
+  };
+
   if (!seriesId) return null;
 
   return (
@@ -97,25 +104,27 @@ const SeriesImages = () => {
           <Button
             buttonType="primary"
             className="rounded-md border border-panel-border px-4 py-3 font-semibold"
-            disabled={!Object.keys(selectedImage).length}
+            disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
               changeImage({
                 seriesId,
-                imageType: selectedImage.Type,
-                params: { ID: selectedImage.ID, Source: selectedImage.Source },
+                image: selectedImage,
               })
-                .then(() => toast.success(`Series ${selectedImage.Type} has been changed.`))
+                .then(() => {
+                  setSelectedImage({} as ImageType);
+                  toast.success(`Series ${selectedImage.Type} image has been changed.`);
+                })
                 .catch(console.error);
             }}
           >
-            Set As Series Poster
+            {`Set As Default ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
       </div>
 
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-          <Heading type={type} setType={setType} />
+          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
           <div className="text-xl font-semibold">
             <span className="text-panel-text-important">{get(images, type, []).length}</span>
             &nbsp;

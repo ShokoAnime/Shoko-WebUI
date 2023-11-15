@@ -22,6 +22,7 @@ export const splitV3Api = createApi({
     'ImportFolder',
     'QueueItems',
     'SeriesAniDB',
+    'SeriesImages',
     'SeriesEpisodes',
     'SeriesUpdated',
     'Settings',

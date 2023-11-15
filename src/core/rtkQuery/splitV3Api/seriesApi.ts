@@ -198,15 +198,19 @@ const seriesApi = splitV3Api.injectEndpoints({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/Images`,
       }),
+      providesTags: ['SeriesImages'],
     }),
 
-    changeSeriesImage: build.mutation<ResponseType, { seriesId: string, imageType: string, params: object }>({
-      query: ({ imageType, params, seriesId }) => ({
-        url: `Series/${seriesId}/Images/${imageType}`,
+    changeSeriesImage: build.mutation<
+      ResponseType,
+      { seriesId: string, image: Pick<ImageType, 'ID' | 'Source' | 'Type'> }
+    >({
+      query: ({ image, seriesId }) => ({
+        url: `Series/${seriesId}/Images/${image.Type}`,
         method: 'PUT',
-        body: params,
+        body: { ID: image.ID, Source: image.Source },
       }),
-      invalidatesTags: ['SeriesAniDB'],
+      invalidatesTags: ['SeriesAniDB', 'SeriesImages'],
     }),
 
     // Queue a refresh of all the TvDB data linked to a series using the seriesID.
