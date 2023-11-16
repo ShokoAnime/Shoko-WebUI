@@ -30,7 +30,7 @@ import QueueModal from '@/components/Dialogs/QueueModal';
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useCheckNetworkConnectivityMutation, useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
 import { useGetWebuiUpdateCheckQuery, usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
@@ -92,6 +92,8 @@ function TopNav() {
     skip: DEV || !settingsQuery.isSuccess,
   });
   const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
+
+  const [checkNetworkConnectivity, checkNetworkConnectivityResult] = useCheckNetworkConnectivityMutation();
 
   const currentUser = useGetCurrentUserQuery();
 
@@ -266,14 +268,32 @@ function TopNav() {
                 </div>
               )}
               {isOffline && (
-                <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold">
-                  <Icon path={mdiInformationOutline} size={1} className="text-topnav-icon-warning" />
-                  No Internet Connection.
-                </div>
+                <Button
+                  className="flex items-center gap-x-2 font-semibold"
+                  onClick={() => checkNetworkConnectivity()}
+                >
+                  {checkNetworkConnectivityResult.isLoading
+                    ? (
+                      <Icon
+                        path={mdiLoading}
+                        size={1}
+                        className="text-panel-text-primary"
+                        spin
+                      />
+                    )
+                    : (
+                      <Icon
+                        path={mdiInformationOutline}
+                        size={1}
+                        className="text-topnav-icon-warning"
+                      />
+                    )}
+                  No Internet Connection
+                </Button>
               )}
               <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
-              <div className="flex gap-x-5">
+              <div className="flex items-center gap-x-5">
                 <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} />
                 <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} />
                 <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} />
