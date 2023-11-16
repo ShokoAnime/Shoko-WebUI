@@ -9,11 +9,14 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import toast from '@/components/Toast';
+import { useChangeSeriesImageMutation, useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { ImageType } from '@/core/types/api/common';
 
-const Heading = React.memo(({ setType, type }: { type: string, setType: (type: string) => void }) => (
+const Heading = React.memo((
+  { onTypeChange, setType, type }: { type: string, setType: (type: string) => void, onTypeChange: () => void },
+) => (
   <div className="flex cursor-pointer items-center gap-x-2 text-xl font-semibold">
     Images
     <Icon path={mdiChevronRight} size={1} />
@@ -21,10 +24,11 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
       <span
         onClick={() => {
           setType('Posters');
+          onTypeChange();
         }}
         className={cx(type === 'Posters' && 'text-panel-text-primary')}
       >
-        Poster
+        Posters
       </span>
       |
       <span
@@ -33,7 +37,7 @@ const Heading = React.memo(({ setType, type }: { type: string, setType: (type: s
         }}
         className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
       >
-        Fanart
+        Fanarts
       </span>
       |
       <span
@@ -60,8 +64,8 @@ const SeriesImages = () => {
 
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
-
   const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const [changeImage] = useChangeSeriesImageMutation();
   const images = imagesData.data;
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
@@ -72,6 +76,10 @@ const SeriesImages = () => {
     Posters: 'h-[20.0625rem] w-[13.75rem]',
     Fanarts: 'h-[16rem] w-[28.29rem]',
     Banners: 'h-[8rem] w-[43.25rem]',
+  };
+
+  const resetSelectedImage = () => {
+    setSelectedImage({} as ImageType);
   };
 
   if (!seriesId) return null;
@@ -96,16 +104,27 @@ const SeriesImages = () => {
           <Button
             buttonType="primary"
             className="rounded-md border border-panel-border px-4 py-3 font-semibold"
-            disabled
+            disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
+            onClick={() => {
+              changeImage({
+                seriesId,
+                image: selectedImage,
+              })
+                .then(() => {
+                  setSelectedImage({} as ImageType);
+                  toast.success(`Series ${selectedImage.Type} image has been changed.`);
+                })
+                .catch(console.error);
+            }}
           >
-            Set As Series Poster
+            {`Set As Default ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
       </div>
 
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-          <Heading type={type} setType={setType} />
+          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
           <div className="text-xl font-semibold">
             <span className="text-panel-text-important">{get(images, type, []).length}</span>
             &nbsp;

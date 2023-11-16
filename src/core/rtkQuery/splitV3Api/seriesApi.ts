@@ -198,6 +198,19 @@ const seriesApi = splitV3Api.injectEndpoints({
       query: ({ seriesId }) => ({
         url: `Series/${seriesId}/Images`,
       }),
+      providesTags: ['SeriesAniDB'],
+    }),
+
+    changeSeriesImage: build.mutation<
+      ResponseType,
+      { seriesId: string, image: Pick<ImageType, 'ID' | 'Source' | 'Type'> }
+    >({
+      query: ({ image, seriesId }) => ({
+        url: `Series/${seriesId}/Images/${image.Type}`,
+        method: 'PUT',
+        body: { ID: image.ID, Source: image.Source },
+      }),
+      invalidatesTags: ['SeriesAniDB'],
     }),
 
     // Queue a refresh of all the TvDB data linked to a series using the seriesID.
@@ -230,6 +243,7 @@ const seriesApi = splitV3Api.injectEndpoints({
 });
 
 export const {
+  useChangeSeriesImageMutation,
   useDeleteSeriesMutation,
   useGetAniDBRecommendedAnimeQuery,
   useGetAniDBRelatedQuery,

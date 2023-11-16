@@ -13,7 +13,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, isArray } from 'lodash';
+import { get } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
@@ -28,6 +28,7 @@ import {
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { ImageType } from '@/core/types/api/common';
 import type { SeriesDetailsType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
@@ -77,11 +78,13 @@ const Series = () => {
   const group = groupData?.data ?? {} as CollectionGroupType;
 
   useEffect(() => {
-    const fanarts = get(images, 'data.Fanarts', []);
-    if (!isArray(fanarts) || fanarts.length === 0) return;
-    const randomIdx = Math.floor(Math.random() * fanarts.length);
-    const randomImage = fanarts[randomIdx];
-    setFanartUri(`/api/v3/Image/${randomImage.Source}/${randomImage.Type}/${randomImage.ID}`);
+    const allFanarts: ImageType[] = get(images, 'data.Fanarts', []);
+    if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
+
+    const defaultFanart = allFanarts.find(fanart => fanart.Preferred);
+    if (defaultFanart) {
+      setFanartUri(`/api/v3/Image/${defaultFanart.Source}/${defaultFanart.Type}/${defaultFanart.ID}`);
+    }
   }, [images, imagesData]);
 
   if (!seriesId || !seriesData.isSuccess) return null;
