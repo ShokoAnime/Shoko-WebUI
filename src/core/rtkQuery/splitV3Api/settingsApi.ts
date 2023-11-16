@@ -77,10 +77,19 @@ const settingsApi = splitV3Api.injectEndpoints({
         responseHandler: 'text',
       }),
     }),
+
+    // Forcefully re-checks the current network connectivity, then returns the updated details for the server.
+    checkNetworkConnectivity: build.mutation<void, void>({
+      query: () => ({
+        url: 'Settings/Connectivity',
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
 export const {
+  useCheckNetworkConnectivityMutation,
   useGetSettingsQuery,
   usePatchSettingsMutation,
   usePostAniDBTestLoginMutation,
