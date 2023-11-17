@@ -426,6 +426,18 @@ export const initialSettings = {
         showRandomPoster: false,
       },
     },
+    dashboard: {
+      hideCollectionBreakdown: false,
+      hideQueueProcessor: false,
+      hideRecentlyImported: false,
+      hideShokoNews: false,
+      hideImportFolders: false,
+      combineContinueWatching: false,
+      hideR18Content: false,
+      shokoNewsPostsCount: 5,
+      recentlyImportedFilesCount: 30,
+      recentlyImportedSeriesCount: 20,
+    },
   },
   FirstRun: false,
   Database: {

@@ -199,6 +199,18 @@ export type WebUISettingsType = {
       showRandomPoster: boolean;
     };
   };
+  dashboard: {
+    hideCollectionBreakdown: boolean;
+    hideQueueProcessor: boolean;
+    hideRecentlyImported: boolean;
+    hideShokoNews: boolean;
+    hideImportFolders: boolean;
+    combineContinueWatching: boolean;
+    hideR18Content: boolean;
+    shokoNewsPostsCount: number;
+    recentlyImportedFilesCount: number;
+    recentlyImportedSeriesCount: number;
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {

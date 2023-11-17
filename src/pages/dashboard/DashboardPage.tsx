@@ -35,6 +35,14 @@ function DashboardPage() {
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
 
+  const {
+    hideCollectionBreakdown,
+    hideImportFolders,
+    hideQueueProcessor,
+    hideRecentlyImported,
+    hideShokoNews,
+  } = settings.WebUI_Settings.dashboard;
+
   const [currentLayout, setCurrentLayout] = useState(
     settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard,
   );
@@ -115,27 +123,37 @@ function DashboardPage() {
       resizeHandle={renderResizeHandle()}
       containerPadding={[0, 0]}
     >
-      <div key="queueProcessor">
-        <QueueProcessor />
-      </div>
+      {!hideQueueProcessor && (
+        <div key="queueProcessor">
+          <QueueProcessor />
+        </div>
+      )}
       <div key="importBreakdown">
         <UnrecognizedFiles />
       </div>
-      <div key="recentlyImported">
-        <RecentlyImported />
-      </div>
-      <div key="collectionBreakdown">
-        <CollectionStats />
-      </div>
+      {!hideRecentlyImported && (
+        <div key="recentlyImported">
+          <RecentlyImported />
+        </div>
+      )}
+      {!hideCollectionBreakdown && (
+        <div key="collectionBreakdown">
+          <CollectionStats />
+        </div>
+      )}
       <div key="collectionTypeBreakdown">
         <MediaType />
       </div>
-      <div key="importFolders">
-        <ImportFolders />
-      </div>
-      <div key="shokoNews">
-        <ShokoNews />
-      </div>
+      {!hideImportFolders && (
+        <div key="importFolders">
+          <ImportFolders />
+        </div>
+      )}
+      {!hideShokoNews && (
+        <div key="shokoNews">
+          <ShokoNews />
+        </div>
+      )}
       <div key="continueWatching">
         <ContinueWatching />
       </div>
