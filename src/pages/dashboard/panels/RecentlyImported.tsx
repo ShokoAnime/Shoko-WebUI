@@ -34,16 +34,11 @@ const RecentlyImported = () => {
     pageSize: recentlyImportedEpisodesCount,
   });
 
-  const isLoading = useMemo(() => {
-    if (showSeries) return series.isUninitialized || series.isLoading;
-    return episodes.isUninitialized || episodes.isLoading;
-  }, [episodes, series, showSeries]);
-
   return (
     <ShokoPanel
       title="Recently Imported"
       editMode={layoutEditMode}
-      isFetching={isLoading}
+      isFetching={showSeries ? series.isLoading : episodes.isLoading}
       options={
         <DashboardTitleToggle
           mainTitle="Episodes"
@@ -53,18 +48,18 @@ const RecentlyImported = () => {
         />
       }
     >
-      <div className="shoko-scrollbar relative flex">
-        <TransitionDiv show={!showSeries} className="absolute flex">
+      <div className="shoko-scrollbar relative flex grow items-center">
+        <TransitionDiv show={!showSeries} className="absolute flex w-full">
           {(episodes.data?.length ?? 0) > 0
             ? episodes.data?.map(item => (
               <EpisodeDetails episode={item} key={`${item.IDs.ShokoEpisode}-${item.IDs.ShokoFile}`} />
             ))
-            : <div className="mt-4 flex w-full justify-center font-semibold">No Recently Imported Episodes!</div>}
+            : <div className="flex w-full justify-center font-semibold">No Recently Imported Episodes!</div>}
         </TransitionDiv>
-        <TransitionDiv show={showSeries} className="absolute flex">
+        <TransitionDiv show={showSeries} className="absolute flex w-full">
           {(series.data?.length ?? 0) > 0
             ? series.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
-            : <div className="mt-4 flex w-full justify-center font-semibold">No Recently Imported Series!</div>}
+            : <div className="flex w-full justify-center font-semibold">No Recently Imported Series!</div>}
         </TransitionDiv>
       </div>
     </ShokoPanel>
