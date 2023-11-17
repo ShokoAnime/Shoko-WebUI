@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMenuDown } from '@mdi/js';
+import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
@@ -36,6 +36,7 @@ function DashboardPage() {
   const [patchSettings] = usePatchSettingsMutation();
 
   const {
+    combineContinueWatching,
     hideCollectionBreakdown,
     hideImportFolders,
     hideQueueProcessor,
@@ -109,6 +110,14 @@ function DashboardPage() {
     window.dispatchEvent(new Event('resize'));
   }, [currentLayout]);
 
+  if (!settingsQuery.isSuccess) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
+
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
@@ -154,9 +163,11 @@ function DashboardPage() {
           <ShokoNews />
         </div>
       )}
-      <div key="continueWatching">
-        <ContinueWatching />
-      </div>
+      {!combineContinueWatching && (
+        <div key="continueWatching">
+          <ContinueWatching />
+        </div>
+      )}
       <div key="nextUp">
         <NextUp />
       </div>

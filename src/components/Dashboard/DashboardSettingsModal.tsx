@@ -56,7 +56,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     hideR18Content,
     hideRecentlyImported,
     hideShokoNews,
-    recentlyImportedFilesCount,
+    recentlyImportedEpisodesCount,
     recentlyImportedSeriesCount,
     shokoNewsPostsCount,
   } = newSettings.WebUI_Settings.dashboard;
@@ -64,7 +64,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const updateSetting = (key: keyof typeof settings.WebUI_Settings.dashboard, value: boolean | number) => {
     const tempSettings = cloneDeep(newSettings);
     if (
-      key === 'recentlyImportedFilesCount' || key === 'recentlyImportedSeriesCount' || key === 'shokoNewsPostsCount'
+      key === 'recentlyImportedEpisodesCount' || key === 'recentlyImportedSeriesCount' || key === 'shokoNewsPostsCount'
     ) {
       tempSettings.WebUI_Settings.dashboard[key] = value as number;
     } else {
@@ -163,12 +163,12 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
             />
           </div>
           <div className="flex items-center justify-between">
-            Recently Imported Files
+            Recently Imported Episodes
             <InputSmall
               id="recently-imported-files"
               type="number"
-              value={recentlyImportedFilesCount}
-              onChange={event => updateSetting('recentlyImportedFilesCount', toNumber(event.target.value))}
+              value={recentlyImportedEpisodesCount}
+              onChange={event => updateSetting('recentlyImportedEpisodesCount', toNumber(event.target.value))}
               className="w-12 px-2 py-0.5 text-center"
             />
           </div>

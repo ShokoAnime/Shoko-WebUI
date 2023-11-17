@@ -21,6 +21,11 @@ export type PaginationType = {
   page?: number;
 };
 
+export type DashboardPaginationType = PaginationType & {
+  includeRestricted: boolean;
+  onlyUnwatched?: boolean;
+};
+
 export type ListResultType<T> = {
   Total: number;
   List: T;

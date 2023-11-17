@@ -208,7 +208,7 @@ export type WebUISettingsType = {
     combineContinueWatching: boolean;
     hideR18Content: boolean;
     shokoNewsPostsCount: number;
-    recentlyImportedFilesCount: number;
+    recentlyImportedEpisodesCount: number;
     recentlyImportedSeriesCount: number;
   };
 };
