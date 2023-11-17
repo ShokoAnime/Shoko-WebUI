@@ -52,7 +52,7 @@ const SeriesOverview = () => {
   return (
     <>
       <div className="flex gap-x-8">
-        <div className="flex grow flex-row gap-x-8 w-full">
+        <div className="flex w-full grow flex-row gap-x-8">
           <ShokoPanel
             title="Episode on Deck"
             className="flex w-full max-w-[71.875rem] grow overflow-visible"
