@@ -17,7 +17,7 @@ const UpcomingAnime = () => {
   const [showAll, setShowAll] = useState(false);
 
   const settingsQuery = useGetSettingsQuery();
-  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery.data]);
+  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const { hideR18Content } = settings.WebUI_Settings.dashboard;
 
   const localItems = useGetDashboardAniDBCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
