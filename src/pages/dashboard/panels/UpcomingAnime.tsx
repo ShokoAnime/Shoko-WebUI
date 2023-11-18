@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useGetDashboardAniDBCalendarQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import DashboardTitleToggle from '@/pages/dashboard/components/DashboardTitleToggle';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 
@@ -13,8 +15,13 @@ const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const [showAll, setShowAll] = useState(false);
-  const localItems = useGetDashboardAniDBCalendarQuery({ showAll: false });
-  const items = useGetDashboardAniDBCalendarQuery({ showAll: true });
+
+  const settingsQuery = useGetSettingsQuery();
+  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery.data]);
+  const { hideR18Content } = settings.WebUI_Settings.dashboard;
+
+  const localItems = useGetDashboardAniDBCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
+  const items = useGetDashboardAniDBCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
 
   return (
     <ShokoPanel

@@ -9,6 +9,7 @@ type Props = {
   id: string;
   label?: string;
   isChecked: boolean;
+  disabled?: boolean;
   intermediate?: boolean;
   className?: string;
   labelRight?: boolean;
@@ -16,7 +17,9 @@ type Props = {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-function Checkbox({ className, id, intermediate, isChecked, justify, label, labelRight, onChange }: Props) {
+function Checkbox(
+  { className, disabled = false, id, intermediate, isChecked, justify, label, labelRight, onChange }: Props,
+) {
   const [focused, setFocused] = useState(false);
 
   return (
@@ -27,13 +30,14 @@ function Checkbox({ className, id, intermediate, isChecked, justify, label, labe
         `${className}`,
         'cursor-pointer flex items-center transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
+        disabled && 'opacity-50 cursor-auto',
       ])}
     >
       <input
         id={id}
         type="checkbox"
-        checked={isChecked}
-        onChange={onChange}
+        checked={!disabled && isChecked}
+        onChange={disabled ? undefined : onChange}
         className="absolute h-0 w-0 overflow-hidden whitespace-nowrap border-0 p-0"
         style={{
           clip: 'rect(0 0 0 0)',

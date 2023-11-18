@@ -37,11 +37,17 @@ function DashboardPage() {
 
   const {
     combineContinueWatching,
-    hideCollectionBreakdown,
+    hideCollectionStats,
+    hideContinueWatching,
     hideImportFolders,
+    hideMediaType,
+    hideNextUp,
     hideQueueProcessor,
     hideRecentlyImported,
+    hideRecommendedAnime,
     hideShokoNews,
+    hideUnrecognizedFiles,
+    hideUpcomingAnime,
   } = settings.WebUI_Settings.dashboard;
 
   const [currentLayout, setCurrentLayout] = useState(
@@ -137,22 +143,26 @@ function DashboardPage() {
           <QueueProcessor />
         </div>
       )}
-      <div key="importBreakdown">
-        <UnrecognizedFiles />
-      </div>
+      {!hideUnrecognizedFiles && (
+        <div key="unrecognizedFiles">
+          <UnrecognizedFiles />
+        </div>
+      )}
       {!hideRecentlyImported && (
         <div key="recentlyImported">
           <RecentlyImported />
         </div>
       )}
-      {!hideCollectionBreakdown && (
+      {!hideCollectionStats && (
         <div key="collectionBreakdown">
           <CollectionStats />
         </div>
       )}
-      <div key="collectionTypeBreakdown">
-        <MediaType />
-      </div>
+      {!hideMediaType && (
+        <div key="collectionTypeBreakdown">
+          <MediaType />
+        </div>
+      )}
       {!hideImportFolders && (
         <div key="importFolders">
           <ImportFolders />
@@ -163,20 +173,26 @@ function DashboardPage() {
           <ShokoNews />
         </div>
       )}
-      {!combineContinueWatching && (
+      {(!hideContinueWatching && !combineContinueWatching) && (
         <div key="continueWatching">
           <ContinueWatching />
         </div>
       )}
-      <div key="nextUp">
-        <NextUp />
-      </div>
-      <div key="upcomingAnime">
-        <UpcomingAnime />
-      </div>
-      <div key="recommendedAnime">
-        <RecommendedAnime />
-      </div>
+      {!hideNextUp && (
+        <div key="nextUp">
+          <NextUp />
+        </div>
+      )}
+      {!hideUpcomingAnime && (
+        <div key="upcomingAnime">
+          <UpcomingAnime />
+        </div>
+      )}
+      {!hideRecommendedAnime && (
+        <div key="recommendedAnime">
+          <RecommendedAnime />
+        </div>
+      )}
     </ResponsiveGridLayout>
   );
 }

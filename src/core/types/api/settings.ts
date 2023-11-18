@@ -200,11 +200,17 @@ export type WebUISettingsType = {
     };
   };
   dashboard: {
-    hideCollectionBreakdown: boolean;
     hideQueueProcessor: boolean;
+    hideUnrecognizedFiles: boolean;
     hideRecentlyImported: boolean;
-    hideShokoNews: boolean;
+    hideCollectionStats: boolean;
+    hideMediaType: boolean;
     hideImportFolders: boolean;
+    hideShokoNews: boolean;
+    hideContinueWatching: boolean;
+    hideNextUp: boolean;
+    hideUpcomingAnime: boolean;
+    hideRecommendedAnime: boolean;
     combineContinueWatching: boolean;
     hideR18Content: boolean;
     shokoNewsPostsCount: number;
