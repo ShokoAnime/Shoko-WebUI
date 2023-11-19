@@ -98,7 +98,13 @@ const Series = () => {
             <BackgroundImagePlaceholderDiv
               image={mainPoster}
               className="h-[25.75rem] w-[18.188rem] rounded drop-shadow-md"
-            />
+            >
+              {(series.AniDB?.Restricted ?? false) && (
+                <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                  18+ Adults Only
+                </div>
+              )}
+            </BackgroundImagePlaceholderDiv>
             <div className="flex w-full max-w-[56.25rem] grow flex-col gap-y-2">
               <div className="flex justify-between">
                 <div className="flex gap-x-2">

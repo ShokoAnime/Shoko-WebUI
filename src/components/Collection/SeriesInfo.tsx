@@ -109,12 +109,6 @@ const SeriesInfo = () => {
           {overview.SourceMaterial}
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Restricted</div>
-          <div>
-            {series.AniDB?.Restricted ? 'Yes' : 'No'}
-          </div>
-        </div>
-        <div className="flex justify-between capitalize">
           <div className="font-semibold">Air Date</div>
           <div>
             {airDate}
