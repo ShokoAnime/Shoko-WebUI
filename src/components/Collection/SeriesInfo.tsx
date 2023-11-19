@@ -47,7 +47,7 @@ const SeriesInfo = () => {
     <div className="flex w-full max-w-[31.25rem] flex-col gap-y-8">
       <div className="flex w-full flex-row justify-around gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
         <div className="flex flex-col items-center">
-          <div className="font-semibold ">File Count</div>
+          <div className="font-semibold ">Local</div>
           <div className="flex flex-row gap-x-1">
             <span>EP:</span>
             <span>{formatThousand(series.Sizes.Local.Episodes)}</span>
