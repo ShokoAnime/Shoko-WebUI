@@ -14,7 +14,10 @@ const SeriesInfo = () => {
   // Series Data;
   const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
   const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
   const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
 
   const startDate = useMemo(() => (series?.AniDB?.AirDate != null ? dayjs(series?.AniDB?.AirDate) : null), [series]);

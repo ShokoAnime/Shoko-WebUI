@@ -38,7 +38,10 @@ const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
   const series = useMemo(() => seriesData?.data, [seriesData]);
   const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
   const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;

@@ -63,7 +63,10 @@ const Series = () => {
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
   const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
   const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const images = useMemo(() => imagesData ?? null, [imagesData]);

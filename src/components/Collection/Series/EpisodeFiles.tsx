@@ -13,10 +13,11 @@ import EpisodeFileInfo from './EpisodeFileInfo';
 import type { FileType } from '@/core/types/api/file';
 
 type Props = {
+  animeId: number;
   episodeFiles: FileType[];
 };
 
-const EpisodeFiles = ({ episodeFiles }: Props) => {
+const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
   const [fileDeleteTrigger] = useDeleteFileMutation();
   const [fileRescanTrigger] = usePostFileRescanMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -88,7 +89,11 @@ const EpisodeFiles = ({ episodeFiles }: Props) => {
                   </a>
                 )}
                 {ReleaseGroupID > 0 && (
-                  <a href={`https://anidb.net/group/${ReleaseGroupID}`} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${animeId}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
                       {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
