@@ -51,19 +51,19 @@ function QueueProcessor() {
           </span>
         </div>
         <div className="flex font-semibold text-panel-text-important">{item.queueCount ?? 0}</div>
-        <div className="flex items-center">
+        <div className="flex items-center gap-x-2">
           {item?.status === 'Pausing' || item?.status === 'Paused'
             ? (
-              <Button className="mx-2" onClick={() => handleOperation('Start', key)} tooltip="Resume">
+              <Button onClick={() => handleOperation('Start', key)} tooltip="Resume">
                 <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
               </Button>
             )
             : (
-              <Button className="mx-2" onClick={() => handleOperation('Stop', key)} tooltip="Pause">
+              <Button onClick={() => handleOperation('Stop', key)} tooltip="Pause">
                 <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
               </Button>
             )}
-          <Button className="mx-2" onClick={() => handleOperation('Clear', key)} tooltip="Clear">
+          <Button onClick={() => handleOperation('Clear', key)} tooltip="Clear">
             <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
           </Button>
         </div>
@@ -82,33 +82,25 @@ function QueueProcessor() {
     });
 
     return (
-      <>
-        {paused
-          ? (
-            <div
-              className="mx-2 cursor-pointer text-panel-icon-action"
-              onClick={() => handleOperation('StartAll')}
-              title="Resume All"
-            >
-              <Icon path={mdiPlayCircleOutline} size={1} horizontal vertical rotate={180} />
-            </div>
-          )
-          : (
-            <div
-              className="mx-2 cursor-pointer text-panel-icon-action"
-              onClick={() => handleOperation('StopAll')}
-              title="Pause All"
-            >
-              <Icon path={mdiPauseCircleOutline} size={1} horizontal vertical rotate={180} />
-            </div>
-          )}
-        <Button className="mx-2" onClick={() => handleOperation('ClearAll')} tooltip="Clear All">
-          <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
-        </Button>
-        <Button className="mx-2" onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
+      <div className="flex gap-x-2">
+        <Button onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
           <Icon className="text-panel-icon-action" path={mdiTextBoxOutline} size={1} />
         </Button>
-      </>
+        {paused
+          ? (
+            <Button onClick={() => handleOperation('StartAll')} tooltip="Resume All">
+              <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
+            </Button>
+          )
+          : (
+            <Button onClick={() => handleOperation('StopAll')} tooltip="Pause All">
+              <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
+            </Button>
+          )}
+        <Button onClick={() => handleOperation('ClearAll')} tooltip="Clear All">
+          <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
+        </Button>
+      </div>
     );
   };
 

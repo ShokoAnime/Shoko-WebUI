@@ -58,8 +58,8 @@ const ShokoPanel = (
     >
       {isFetching
         ? (
-          <div className="flex grow items-center justify-center">
-            <Icon path={mdiLoading} spin size={1} />
+          <div className="flex grow items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} spin size={3} />
           </div>
         )
         : children}

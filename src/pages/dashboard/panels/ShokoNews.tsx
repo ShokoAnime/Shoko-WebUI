@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { dayjs } from '@/core/util';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { DashboardNewsType } from '@/core/types/api/dashboard';
@@ -38,10 +40,16 @@ function ShokoNews() {
 
   const items = useGetShokoNewsFeedQuery();
 
+  const settingsQuery = useGetSettingsQuery();
+  const { shokoNewsPostsCount } = useMemo(
+    () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
+    [settingsQuery],
+  );
+
   return (
     <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
       <div className="flex flex-col gap-y-3">
-        {items.data?.slice(0, 5).map(item => <NewsRow item={item} key={item.link} />)}
+        {items.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
       </div>
     </ShokoPanel>
   );

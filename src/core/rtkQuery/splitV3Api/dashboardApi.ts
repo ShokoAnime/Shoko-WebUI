@@ -1,6 +1,6 @@
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
-import type { PaginationType } from '@/core/types/api';
+import type { DashboardPaginationType } from '@/core/types/api';
 import type {
   DashboardEpisodeDetailsType,
   DashboardSeriesSummaryType,
@@ -31,31 +31,34 @@ const dashboardApi = splitV3Api.injectEndpoints({
     }),
 
     // Get a list of recently added episodes (with additional details).
-    getDashboardRecentlyAddedEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
+    getDashboardRecentlyAddedEpisodes: build.query<DashboardEpisodeDetailsType[], DashboardPaginationType>({
       query: params => ({ url: 'Dashboard/RecentlyAddedEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileMatched'],
     }),
 
     // Get a list of recently added series.
-    getDashboardRecentlyAddedSeries: build.query<SeriesType[], PaginationType>({
+    getDashboardRecentlyAddedSeries: build.query<SeriesType[], DashboardPaginationType>({
       query: params => ({ url: 'Dashboard/RecentlyAddedSeries', params }),
       providesTags: ['FileDeleted', 'FileMatched', 'SeriesUpdated'],
     }),
 
     // Get a list of the episodes to continue watching in recently watched order
-    getDashboardContinueWatchingEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
+    getDashboardContinueWatchingEpisodes: build.query<DashboardEpisodeDetailsType[], DashboardPaginationType>({
       query: params => ({ url: 'Dashboard/ContinueWatchingEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'SeriesUpdated'],
     }),
 
     // Get the next episodes for series that currently don't have an active watch session for the user.
-    getDashboardNextUpEpisodes: build.query<DashboardEpisodeDetailsType[], PaginationType>({
+    getDashboardNextUpEpisodes: build.query<DashboardEpisodeDetailsType[], DashboardPaginationType>({
       query: params => ({ url: 'Dashboard/NextUpEpisodes', params }),
       providesTags: ['EpisodeUpdated', 'FileDeleted', 'FileMatched', 'SeriesUpdated'],
     }),
 
     // Get a list of the episodes to continue watching (soon-to-be) in recently watched order
-    getDashboardAniDBCalendar: build.query<DashboardEpisodeDetailsType[], { showAll: boolean }>({
+    getDashboardAniDBCalendar: build.query<
+      DashboardEpisodeDetailsType[],
+      { includeRestricted: boolean, showAll: boolean }
+    >({
       query: params => ({ url: 'Dashboard/AniDBCalendar', params }),
       providesTags: ['SeriesUpdated'],
     }),

@@ -199,6 +199,24 @@ export type WebUISettingsType = {
       showRandomPoster: boolean;
     };
   };
+  dashboard: {
+    hideQueueProcessor: boolean;
+    hideUnrecognizedFiles: boolean;
+    hideRecentlyImported: boolean;
+    hideCollectionStats: boolean;
+    hideMediaType: boolean;
+    hideImportFolders: boolean;
+    hideShokoNews: boolean;
+    hideContinueWatching: boolean;
+    hideNextUp: boolean;
+    hideUpcomingAnime: boolean;
+    hideRecommendedAnime: boolean;
+    combineContinueWatching: boolean;
+    hideR18Content: boolean;
+    shokoNewsPostsCount: number;
+    recentlyImportedEpisodesCount: number;
+    recentlyImportedSeriesCount: number;
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {

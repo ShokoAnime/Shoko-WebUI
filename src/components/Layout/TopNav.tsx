@@ -25,6 +25,7 @@ import semver from 'semver';
 import { siDiscord } from 'simple-icons';
 import { useEventCallback } from 'usehooks-ts';
 
+import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 import QueueModal from '@/components/Dialogs/QueueModal';
 import Button from '@/components/Input/Button';
@@ -33,7 +34,7 @@ import toast from '@/components/Toast';
 import { useCheckNetworkConnectivityMutation, useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
 import { useGetWebuiUpdateCheckQuery, usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { setLayoutEditMode, setQueueModalOpen } from '@/core/slices/mainpage';
+import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -99,6 +100,7 @@ function TopNav() {
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
+  const [showDashboardSettingsModal, setShowDashboardSettingsModal] = useState(false);
 
   const isOffline = useMemo(
     () => !(networkStatus === NetworkAvailability.Internet || networkStatus === NetworkAvailability.PartialInternet),
@@ -107,6 +109,7 @@ function TopNav() {
 
   const closeModalsAndSubmenus = () => {
     setShowActionsModal(false);
+    setShowDashboardSettingsModal(false);
     setShowUtilitiesMenu(false);
   };
 
@@ -219,14 +222,20 @@ function TopNav() {
                   id="utilities"
                   text="Utilities"
                   icon={mdiTools}
-                  onClick={() => setShowUtilitiesMenu(prev => !prev)}
+                  onClick={() => {
+                    closeModalsAndSubmenus();
+                    setShowUtilitiesMenu(prev => !prev);
+                  }}
                   isHighlighted={showUtilitiesMenu}
                 />
                 <MenuItem
                   id="actions"
                   text="Actions"
                   icon={mdiFormatListBulletedSquare}
-                  onClick={() => setShowActionsModal(true)}
+                  onClick={() => {
+                    closeModalsAndSubmenus();
+                    setShowActionsModal(true);
+                  }}
                   isHighlighted={showActionsModal}
                 />
                 {renderLinkMenuItem('log', 'Log', mdiTextBoxOutline)}
@@ -239,10 +248,10 @@ function TopNav() {
                   text="Dashboard Settings"
                   icon={mdiTabletDashboard}
                   onClick={() => {
-                    dispatch(setLayoutEditMode(true));
                     closeModalsAndSubmenus();
+                    setShowDashboardSettingsModal(true);
                   }}
-                  isHighlighted={layoutEditMode}
+                  isHighlighted={layoutEditMode || showDashboardSettingsModal}
                 />
               )}
               {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION))
@@ -312,6 +321,7 @@ function TopNav() {
         </AnimateHeight>
       </div>
       <ActionsModal show={showActionsModal} onClose={() => setShowActionsModal(false)} />
+      <DashboardSettingsModal show={showDashboardSettingsModal} onClose={() => setShowDashboardSettingsModal(false)} />
       <QueueModal show={showQueueModal} onClose={handleQueueModalClose} />
     </>
   );

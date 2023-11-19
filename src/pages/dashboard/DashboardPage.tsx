@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMenuDown } from '@mdi/js';
+import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
@@ -34,6 +34,21 @@ function DashboardPage() {
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const [patchSettings] = usePatchSettingsMutation();
+
+  const {
+    combineContinueWatching,
+    hideCollectionStats,
+    hideContinueWatching,
+    hideImportFolders,
+    hideMediaType,
+    hideNextUp,
+    hideQueueProcessor,
+    hideRecentlyImported,
+    hideRecommendedAnime,
+    hideShokoNews,
+    hideUnrecognizedFiles,
+    hideUpcomingAnime,
+  } = settings.WebUI_Settings.dashboard;
 
   const [currentLayout, setCurrentLayout] = useState(
     settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard,
@@ -101,6 +116,14 @@ function DashboardPage() {
     window.dispatchEvent(new Event('resize'));
   }, [currentLayout]);
 
+  if (!settingsQuery.isSuccess) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
+
   return (
     <ResponsiveGridLayout
       layouts={currentLayout}
@@ -115,39 +138,61 @@ function DashboardPage() {
       resizeHandle={renderResizeHandle()}
       containerPadding={[0, 0]}
     >
-      <div key="queueProcessor">
-        <QueueProcessor />
-      </div>
-      <div key="importBreakdown">
-        <UnrecognizedFiles />
-      </div>
-      <div key="recentlyImported">
-        <RecentlyImported />
-      </div>
-      <div key="collectionBreakdown">
-        <CollectionStats />
-      </div>
-      <div key="collectionTypeBreakdown">
-        <MediaType />
-      </div>
-      <div key="importFolders">
-        <ImportFolders />
-      </div>
-      <div key="shokoNews">
-        <ShokoNews />
-      </div>
-      <div key="continueWatching">
-        <ContinueWatching />
-      </div>
-      <div key="nextUp">
-        <NextUp />
-      </div>
-      <div key="upcomingAnime">
-        <UpcomingAnime />
-      </div>
-      <div key="recommendedAnime">
-        <RecommendedAnime />
-      </div>
+      {!hideQueueProcessor && (
+        <div key="queueProcessor">
+          <QueueProcessor />
+        </div>
+      )}
+      {!hideUnrecognizedFiles && (
+        <div key="unrecognizedFiles">
+          <UnrecognizedFiles />
+        </div>
+      )}
+      {!hideRecentlyImported && (
+        <div key="recentlyImported">
+          <RecentlyImported />
+        </div>
+      )}
+      {!hideCollectionStats && (
+        <div key="collectionBreakdown">
+          <CollectionStats />
+        </div>
+      )}
+      {!hideMediaType && (
+        <div key="collectionTypeBreakdown">
+          <MediaType />
+        </div>
+      )}
+      {!hideImportFolders && (
+        <div key="importFolders">
+          <ImportFolders />
+        </div>
+      )}
+      {!hideShokoNews && (
+        <div key="shokoNews">
+          <ShokoNews />
+        </div>
+      )}
+      {(!hideContinueWatching && !combineContinueWatching) && (
+        <div key="continueWatching">
+          <ContinueWatching />
+        </div>
+      )}
+      {!hideNextUp && (
+        <div key="nextUp">
+          <NextUp />
+        </div>
+      )}
+      {!hideUpcomingAnime && (
+        <div key="upcomingAnime">
+          <UpcomingAnime />
+        </div>
+      )}
+      {!hideRecommendedAnime && (
+        <div key="recommendedAnime">
+          <RecommendedAnime />
+        </div>
+      )}
     </ResponsiveGridLayout>
   );
 }
