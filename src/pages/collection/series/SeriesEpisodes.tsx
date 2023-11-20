@@ -156,7 +156,7 @@ const SeriesEpisodes = () => {
           <div className="grow">
             <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
               <div
-                className="absolute left-0 top-0 flex w-full flex-col gap-y-4"
+                className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
                 style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
               >
                 {virtualItems.map((virtualItem) => {
