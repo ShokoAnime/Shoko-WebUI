@@ -98,6 +98,7 @@ function ManuallyLinkedFilesRow(props: Props) {
               rel="noopener noreferrer"
               target="_blank"
               className="ml-2 text-panel-text-primary"
+              aria-label="Open AniDB episode page"
             >
               <Icon path={mdiOpenInNew} size={1} />
             </a>

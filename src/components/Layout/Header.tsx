@@ -25,8 +25,8 @@ function Header({ setShowSidebar, showSidebar }: Props) {
       <div className="flex items-center">
         <Icon path={mdiServer} size={1} />
         <span className="ml-2 text-header-text-important">
-          {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
-            + queueItems.ImageQueueState.queueCount) ?? 0}
+          {queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
+            + queueItems.ImageQueueState.queueCount}
         </span>
       </div>
     </div>
