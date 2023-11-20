@@ -25,7 +25,8 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
         {episode.Size > 1 && (
           <div>
             <span className="text-panel-text-important">{episode.Size}</span>
-            &nbsp;Files
+            &nbsp;
+            {episode.Size === 1 ? 'File' : 'Files'}
           </div>
         )}
       </div>

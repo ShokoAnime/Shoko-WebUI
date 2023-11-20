@@ -6,7 +6,8 @@ const ItemCount = ({ filesCount, series = false }: { filesCount: number, series?
       {filesCount}
       &nbsp;
     </span>
-    {series ? 'Series' : 'Files'}
+    {series && 'Series'}
+    {!series && (filesCount === 1 ? 'File' : 'Files')}
   </div>
 );
 

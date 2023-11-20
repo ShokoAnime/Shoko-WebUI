@@ -182,7 +182,8 @@ const Menu = (
         {selectedRows.length}
         &nbsp;
       </span>
-      Files Selected
+      {selectedRows.length === 1 ? 'File' : 'Files'}
+      &nbsp; Selected
       <DeleteFilesModal
         show={showConfirmModal}
         selectedFiles={selectedRows}

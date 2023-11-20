@@ -160,7 +160,8 @@ const Menu = (
         {Object.keys(selectedFiles).length}
         &nbsp;
       </span>
-      Files Selected
+      {Object.keys(selectedFiles).length === 1 ? 'File' : 'Files'}
+      &nbsp; Selected
     </div>
   );
 };
