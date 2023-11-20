@@ -134,11 +134,10 @@ function UtilitiesTable(props: Props) {
           {virtualRows.map((virtualRow) => {
             const row = rows[virtualRow.index] as Row<FileType | SeriesType>;
             return (
-              // Cannot use even: or odd: for background as it doesn't work properly with virtualizer
               <tr
                 key={row.id}
                 className={cx(
-                  parseInt(row.id, 10) % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+                  virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
                   'cursor-pointer',
                 )}
                 onClick={e => handleRowSelect(e, row)}
