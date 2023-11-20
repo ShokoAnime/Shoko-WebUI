@@ -172,7 +172,6 @@ const SeriesEpisodes = () => {
                   return (
                     <div
                       key={virtualItem.key}
-                      ref={rowVirtualizer.measureElement}
                       className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
                       data-index={virtualItem.index}
                     >
