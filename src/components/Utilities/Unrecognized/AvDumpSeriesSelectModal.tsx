@@ -155,7 +155,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       titleLeft
       noPadding
     >
-      <div className="flex flex-col gap-y-4 p-5">
+      <div className="flex flex-col gap-y-4 p-8">
         {activeStep === 1 && (
           <>
             <StepDescription>
@@ -167,10 +167,12 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                   'Click the blue button below to copy the ED2K hashes for use in the next step.'
                 )}
             </StepDescription>
-            <div className="shoko-scrollbar flex h-[14.5rem] flex-col gap-y-1 overflow-y-scroll break-all rounded-md bg-panel-input p-4 text-sm">
-              {links.length
-                ? links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)
-                : <div>No files selected.</div>}
+            <div className="flex grow rounded-md border border-panel-border bg-panel-input p-4">
+              <div className="shoko-scrollbar flex h-[14.5rem] flex-col gap-y-1 overflow-y-auto break-all rounded-md bg-panel-input pr-4">
+                {links.length
+                  ? links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)
+                  : <div>No files selected.</div>}
+              </div>
             </div>
             <div className="flex justify-end gap-x-2.5">
               <Button
