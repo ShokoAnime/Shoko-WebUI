@@ -68,8 +68,8 @@ const MenuItem = (
   </NavLink>
 );
 
-const ExternalLinkMenuItem = ({ icon, url }: { url: string, icon: string }) => (
-  <a href={url} target="_blank" rel="noreferrer noopener">
+const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
+  <a href={url} target="_blank" rel="noreferrer noopener" aria-label={`Open ${name}`}>
     <Icon className="text-topnav-icon" path={icon} size={0.8333} />
   </a>
 );
@@ -188,8 +188,8 @@ function TopNav() {
                 <Icon path={mdiServer} size={0.8333} />
               </div>
               <span className="text-header-text-important">
-                {(queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
-                  + queueItems.ImageQueueState.queueCount) ?? 0}
+                {queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
+                  + queueItems.ImageQueueState.queueCount}
               </span>
             </div>
             <div className="flex items-center gap-x-2">
@@ -303,9 +303,9 @@ function TopNav() {
               <AniDBBanDetectionItem type="HTTP" banStatus={banStatus.http} />
               <AniDBBanDetectionItem type="UDP" banStatus={banStatus.udp} />
               <div className="flex items-center gap-x-5">
-                <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} />
-                <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} />
-                <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} />
+                <ExternalLinkMenuItem url="https://discord.gg/vpeHDsg" icon={siDiscord.path} name="Discord" />
+                <ExternalLinkMenuItem url="https://docs.shokoanime.com" icon={mdiHelpCircleOutline} name="Docs" />
+                <ExternalLinkMenuItem url="https://github.com/ShokoAnime" icon={mdiGithub} name="GitHub" />
               </div>
             </div>
           </div>
