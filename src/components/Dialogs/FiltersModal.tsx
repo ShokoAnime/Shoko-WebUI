@@ -81,7 +81,7 @@ function FiltersModal({ onClose, show }: Props) {
         />
       </div>
       <div className="box-border flex h-full flex-col items-center rounded-md border border-panel-border bg-panel-background-alt p-4">
-        <div className="shoko-scrollbar flex max-h-[18rem] w-full flex-col gap-y-1  overflow-y-auto bg-panel-background-alt pr-4">
+        <div className="shoko-scrollbar flex max-h-[18rem] w-full flex-col gap-y-1 overflow-y-auto bg-panel-background-alt pr-4">
           {filteredList.length !== 0
             ? filteredList.filter(item => !item.IsDirectory).map(item => renderItem(item))
             : (

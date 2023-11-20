@@ -91,22 +91,26 @@ const SeriesEpisode = ({ animeId, episode }: Props) => {
         </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
-      <div
-        className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
-        onClick={handleExpand}
-      >
-        File Info
-        <Icon
-          path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}
-          size={1}
-          rotate={isOpen ? 180 : 0}
-          className="transition-transform"
-          spin={episodeFilesResult.isFetching}
-        />
+      {episode.Size !== 0 && (
+        <div
+          className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
+          onClick={handleExpand}
+        >
+          File Info
+          <Icon
+            path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}
+            size={1}
+            rotate={isOpen ? 180 : 0}
+            className="transition-transform"
+            spin={episodeFilesResult.isFetching}
+          />
+        </div>
+      )}
+      <div>
+        <AnimateHeight height={isOpen ? 'auto' : 0}>
+          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesResult.data ?? []} />
+        </AnimateHeight>
       </div>
-      <AnimateHeight height={isOpen ? 'auto' : 0}>
-        <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesResult.data ?? []} />
-      </AnimateHeight>
     </>
   );
 };
