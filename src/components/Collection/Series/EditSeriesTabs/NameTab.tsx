@@ -13,7 +13,9 @@ const NameTab = ({ seriesId }: Props) => {
   const [search, setSearch] = useState('');
   const [nameEditable, setNameEditable] = useState(false);
 
-  const seriesQuery = useGetSeriesQuery({ seriesId: seriesId.toString(), includeDataFrom: ['AniDB'] });
+  const seriesQuery = useGetSeriesQuery({ seriesId: seriesId.toString(), includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+  });
 
   useEffect(() => {
     setName(seriesQuery.data?.Name ?? '');

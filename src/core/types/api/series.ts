@@ -129,6 +129,7 @@ export type SeriesSizesType = {
   Local: SeriesSizesEpisodeCountsType;
   Watched: SeriesSizesEpisodeCountsType;
   Total: SeriesSizesEpisodeCountsType;
+  Missing: SeriesSizesReducedEpisodeCountsType;
 };
 
 export type SeriesSizesFileSourcesType = {
@@ -151,6 +152,11 @@ export type SeriesSizesEpisodeCountsType = {
   Trailers: number;
   Parodies: number;
   Others: number;
+};
+
+export type SeriesSizesReducedEpisodeCountsType = {
+  Episodes: number;
+  Specials: number;
 };
 
 export type SeriesRecommendedType = {

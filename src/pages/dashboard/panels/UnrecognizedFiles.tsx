@@ -46,7 +46,9 @@ function UnrecognizedFiles() {
           <div>
             <span className="text-panel-text-important">{files.List.length}</span>
             &nbsp;
-            <span>Files</span>
+            <span>
+              {files.List.length === 1 ? 'File' : 'Files'}
+            </span>
           </div>
         </div>
       }

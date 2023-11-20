@@ -32,10 +32,16 @@ const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   );
 };
 
+// Links
+const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
+
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
   const series = useMemo(() => seriesData?.data, [seriesData]);
   const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
   const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;
@@ -43,9 +49,6 @@ const SeriesOverview = () => {
   const related: SeriesAniDBRelatedType[] = relatedData?.data ?? [] as SeriesAniDBRelatedType[];
   const similarData = useGetAniDBSimilarQuery({ seriesId: seriesId! }, { skip: !seriesId });
   const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
-
-  // Links
-  const metadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
 
   if (!seriesId || !series) return null;
 
@@ -68,11 +71,28 @@ const SeriesOverview = () => {
             transparent
           >
             <div className="flex flex-col gap-y-2">
-              {metadataLinks.map(site => (
-                <div className="rounded border border-panel-border bg-panel-background-alt px-4 py-3" key={site}>
-                  <SeriesMetadata site={site} id={series.IDs[site]} />
-                </div>
-              ))}
+              {MetadataLinks.map((site) => {
+                const idOrIds = series.IDs[site] as number | number[];
+                if (typeof idOrIds === 'number' || idOrIds.length === 0) {
+                  const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
+                  return (
+                    <div
+                      className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                      key={`${site}-${id}`}
+                    >
+                      <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
+                    </div>
+                  );
+                }
+                return idOrIds.map(id => (
+                  <div
+                    className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                    key={`${site}-${id}`}
+                  >
+                    <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
+                  </div>
+                ));
+              })}
             </div>
           </ShokoPanel>
         </div>

@@ -113,7 +113,8 @@ function IgnoredFilesTab() {
                 {selectedRows.length}
                 &nbsp;
               </span>
-              Files Selected
+              {selectedRows.length === 1 ? 'File' : 'Files'}
+              &nbsp; Selected
             </div>
           </div>
         </ShokoPanel>

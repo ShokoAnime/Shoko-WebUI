@@ -19,6 +19,7 @@ import EpisodeFiles from './EpisodeFiles';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
+  animeId: number;
   episode: EpisodeType;
 };
 
@@ -38,7 +39,7 @@ const StateButton = ({ active, icon, onClick }: { icon: string, active: boolean,
   </Button>
 );
 
-const SeriesEpisode = ({ episode }: Props) => {
+const SeriesEpisode = ({ animeId, episode }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
   const [isOpen, setIsOpen] = useState(false);
   const episodeId = get(episode, 'IDs.ID', 0).toString();
@@ -104,7 +105,7 @@ const SeriesEpisode = ({ episode }: Props) => {
         />
       </div>
       <AnimateHeight height={isOpen ? 'auto' : 0}>
-        <EpisodeFiles episodeFiles={episodeFilesResult.data ?? []} />
+        <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesResult.data ?? []} />
       </AnimateHeight>
     </>
   );

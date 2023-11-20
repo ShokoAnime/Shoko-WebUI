@@ -12,6 +12,7 @@ const fileApi = splitV3Api.injectEndpoints({
         params,
         method: 'DELETE',
       }),
+      invalidatesTags: ['SeriesEpisodes', 'SeriesUpdated', 'SeriesAniDB'],
     }),
 
     // Mark or unmark a file as ignored.

@@ -10,7 +10,7 @@ import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesQuery, useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 const pageSize = 26;
 
@@ -23,6 +23,11 @@ const SeriesEpisodes = () => {
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [fetchingPage, setFetchingPage] = useState(false);
   const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
+  const animeId = useMemo(() => seriesData?.data?.IDs.AniDB ?? 0, [seriesData]);
   const episodePages = episodesData.data?.pages ?? {};
   const episodeTotal = episodesData.data?.total ?? 0;
 
@@ -171,7 +176,7 @@ const SeriesEpisodes = () => {
                       className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
                       data-index={virtualItem.index}
                     >
-                      {item ? <SeriesEpisode episode={item} /> : (
+                      {item ? <SeriesEpisode animeId={animeId} episode={item} /> : (
                         // 332px is the minimum height of a loaded row
                         <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
                           <Icon path={mdiLoading} spin size={3} />

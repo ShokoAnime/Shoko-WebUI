@@ -27,9 +27,7 @@ import {
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import useMainPoster from '@/hooks/useMainPoster';
 
-import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { ImageType } from '@/core/types/api/common';
-import type { SeriesDetailsType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
 const SeriesTab = ({ icon, text, to }) => (
@@ -65,17 +63,20 @@ const Series = () => {
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, { skip: !seriesId });
-  const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
+    refetchOnMountOrArgChange: false,
+    skip: !seriesId,
+  });
+  const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
   const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
-  const images = useMemo(() => imagesData ?? {} as SeriesDetailsType, [imagesData]);
+  const images = useMemo(() => imagesData ?? null, [imagesData]);
   const mainPoster = useMainPoster(series);
   const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
-  const groupData = useGetGroupQuery({ groupId: series.IDs?.ParentGroup.toString() }, {
-    skip: !series.IDs?.ParentGroup,
+  const groupData = useGetGroupQuery({ groupId: series?.IDs?.ParentGroup.toString() ?? '' }, {
+    skip: !series?.IDs?.ParentGroup,
   });
-  const group = groupData?.data ?? {} as CollectionGroupType;
+  const group = groupData?.data ?? null;
 
   useEffect(() => {
     const allFanarts: ImageType[] = get(images, 'data.Fanarts', []);
@@ -87,7 +88,7 @@ const Series = () => {
     }
   }, [images, imagesData]);
 
-  if (!seriesId || !seriesData.isSuccess) return null;
+  if (!series || !seriesId || !seriesData.isSuccess) return null;
 
   return (
     <>
@@ -97,7 +98,13 @@ const Series = () => {
             <BackgroundImagePlaceholderDiv
               image={mainPoster}
               className="h-[25.75rem] w-[18.188rem] rounded drop-shadow-md"
-            />
+            >
+              {(series.AniDB?.Restricted ?? false) && (
+                <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                  18+ Adults Only
+                </div>
+              )}
+            </BackgroundImagePlaceholderDiv>
             <div className="flex w-full max-w-[56.25rem] grow flex-col gap-y-2">
               <div className="flex justify-between">
                 <div className="flex gap-x-2">
@@ -105,7 +112,7 @@ const Series = () => {
                     Entire Collection
                   </Link>
                   <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                  {group.Size > 1 && (
+                  {group && group.Size > 1 && (
                     <>
                       <Link
                         className="font-semibold text-panel-text-primary"

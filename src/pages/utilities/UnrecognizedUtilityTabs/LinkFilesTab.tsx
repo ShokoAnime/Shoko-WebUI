@@ -27,11 +27,7 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import Title from '@/components/Utilities/Unrecognized/Title';
-import {
-  useGetFilesQuery,
-  usePostFileLinkManyMutation,
-  usePostFileLinkOneMutation,
-} from '@/core/rtkQuery/splitV3Api/fileApi';
+import { usePostFileLinkManyMutation, usePostFileLinkOneMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBEpisodesQuery,
@@ -204,7 +200,7 @@ const AnimeSelectPanel = (
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
+      <div className="flex grow flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
         {searchRows}
       </div>
     </div>
@@ -237,7 +233,6 @@ function LinkFilesTab() {
     pageSize: 0,
     includeMissing: 'true',
   }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
-  const filesQuery = useGetFilesQuery({ pageSize: 0, includeUnrecognized: 'only' });
 
   const showDataMap = useMemo(() =>
     new Map(
@@ -529,7 +524,6 @@ function LinkFilesTab() {
       }),
     ]);
 
-    await filesQuery.refetch();
     setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
     setLinks([]);
     setSelectedSeries({} as SeriesAniDBSearchResult);

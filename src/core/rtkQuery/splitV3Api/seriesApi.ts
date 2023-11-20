@@ -53,6 +53,15 @@ const seriesApi = splitV3Api.injectEndpoints({
       invalidatesTags: ['SeriesUpdated'],
     }),
 
+    deleteSeriesTvdbLink: build.mutation<void, { seriesId: number, tvdbShowId: number }>({
+      query: ({ seriesId, tvdbShowId }) => ({
+        url: `Series/${seriesId}/TvDB`,
+        method: 'DELETE',
+        body: { ID: tvdbShowId },
+      }),
+      invalidatesTags: ['SeriesUpdated', 'SeriesAniDB', 'SeriesEpisodes'],
+    }),
+
     // Get a paginated list of Shoko.Server.API.v3.Models.Shoko.Series without local files, available to the current Shoko.Server.API.v3.Models.Shoko.User.
     getSeriesWithoutFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
       query: params => ({ url: 'Series/WithoutFiles', params }),
@@ -245,6 +254,7 @@ const seriesApi = splitV3Api.injectEndpoints({
 export const {
   useChangeSeriesImageMutation,
   useDeleteSeriesMutation,
+  useDeleteSeriesTvdbLinkMutation,
   useGetAniDBRecommendedAnimeQuery,
   useGetAniDBRelatedQuery,
   useGetAniDBSimilarQuery,

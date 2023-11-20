@@ -17,7 +17,7 @@ const Title = () => (
     <div>|</div>
     <TabButton id="manually-linked-files" name="Manually Linked" />
     <div>|</div>
-    <TabButton id="ignored-files" name="Ignored Files" />
+    <TabButton id="ignored-files" name="Ignored" />
   </div>
 );
 

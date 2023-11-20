@@ -25,7 +25,10 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
         <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
       </BackgroundImagePlaceholderDiv>
       <p className="mb-1 truncate text-center text-sm font-semibold" title={series.Name}>{series.Name}</p>
-      <p className="truncate text-center text-sm font-semibold opacity-65" title={`${series.Size} Files`}>
+      <p
+        className="truncate text-center text-sm font-semibold opacity-65"
+        title={`${series.Size} ${series.Size === 1 ? 'File' : 'Files'}`}
+      >
         {series.Size}
         &nbsp;
         {series.Size === 1 ? 'File' : 'Files'}
