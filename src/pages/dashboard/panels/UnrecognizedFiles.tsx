@@ -44,10 +44,10 @@ function UnrecognizedFiles() {
         <div className="flex w-full flex-row justify-between">
           <div>Unrecognized Files</div>
           <div>
-            <span className="text-panel-text-important">{files.List.length}</span>
+            <span className="text-panel-text-important">{files.Total}</span>
             &nbsp;
             <span>
-              {files.List.length === 1 ? 'File' : 'Files'}
+              {files.Total === 1 ? 'File' : 'Files'}
             </span>
           </div>
         </div>
