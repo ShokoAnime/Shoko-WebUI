@@ -97,7 +97,8 @@ const SeriesEpisodes = () => {
           <option value="Normal">Normal</option>
           <option value="Special">Specials</option>
           <option value="Other">Others</option>
-          <option value="Unknown,ThemeVideo,Trailer,Parody">Misc.</option>
+          <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
+          <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
           id="status"
