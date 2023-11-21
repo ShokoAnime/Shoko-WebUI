@@ -21,7 +21,8 @@ const Title = ({ fileCount }: { fileCount: number }) => (
     <div>Delete Confirmation</div>
     <div className="flex gap-x-1">
       <div className="text-panel-text-important">{fileCount}</div>
-      &nbsp;Files
+      &nbsp;
+      {fileCount === 1 ? 'File' : 'Files'}
     </div>
   </div>
 );
