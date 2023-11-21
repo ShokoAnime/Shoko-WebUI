@@ -85,7 +85,7 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
-    // Toggles the watched state for all the episodes that fit the query.
+    // Set the watched state for all the episodes that fit the query.
     setSeriesEpisodesWatched: build.mutation<void, SeriesEpisodesQueryBaseType & { value: boolean }>({
       query: ({ seriesID, ...params }) => ({
         url: `Series/${seriesID}/Episode/Watched`,
