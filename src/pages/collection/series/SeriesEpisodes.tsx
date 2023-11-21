@@ -7,10 +7,16 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
+import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetSeriesQuery, useLazyGetSeriesEpisodesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import toast from '@/components/Toast';
+import {
+  useGetSeriesQuery,
+  useLazyGetSeriesEpisodesInfiniteQuery,
+  useSetSeriesEpisodesWatchedMutation,
+} from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 const pageSize = 26;
 
@@ -27,6 +33,8 @@ const SeriesEpisodes = () => {
     refetchOnMountOrArgChange: false,
     skip: !seriesId,
   });
+  const [setEpisodesWatched] = useSetSeriesEpisodesWatchedMutation();
+
   const animeId = useMemo(() => seriesData?.data?.IDs.AniDB ?? 0, [seriesData]);
   const episodePages = episodesData.data?.pages ?? {};
   const episodeTotal = episodesData.data?.total ?? 0;
@@ -74,6 +82,23 @@ const SeriesEpisodes = () => {
 
     return () => fetchPage.cancel();
   }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, fetchPage]);
+
+  const handleMarkWatched = async (watched: boolean) => {
+    try {
+      await setEpisodesWatched({
+        seriesID: toNumber(seriesId),
+        includeMissing: episodeFilterAvailability,
+        includeHidden: episodeFilterHidden,
+        type: episodeFilterType,
+        includeWatched: episodeFilterWatched,
+        value: watched,
+      }).unwrap();
+      toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`);
+    } catch (error) {
+      console.error(error);
+      toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`);
+    }
+  };
 
   return (
     <div className="flex gap-x-8">
@@ -142,15 +167,15 @@ const SeriesEpisodes = () => {
             </span>
             Entries Listed
           </div>
-          <div className="flex gap-x-3">
-            <div className="flex gap-x-2">
+          <div className="flex gap-x-6">
+            <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(true)}>
               <Icon path={mdiEyeCheckOutline} size={1} />
-              <span>Mark Filtered As Watched</span>
-            </div>
-            <div className="flex gap-x-2">
+              Mark Filtered As Watched
+            </Button>
+            <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
               <Icon path={mdiEyeOutline} size={1} />
-              <span>Mark Filtered Unwatched</span>
-            </div>
+              Mark Filtered Unwatched
+            </Button>
           </div>
         </div>
         {episodeTotal !== 0 && (
