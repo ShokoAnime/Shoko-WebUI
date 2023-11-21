@@ -174,7 +174,7 @@ const SeriesEpisodes = () => {
             </Button>
             <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
               <Icon path={mdiEyeOutline} size={1} />
-              Mark Filtered Unwatched
+              Mark Filtered As Unwatched
             </Button>
           </div>
         </div>
