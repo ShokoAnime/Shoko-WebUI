@@ -25,15 +25,7 @@ const criteriaMap = {
   created: FileSortCriteriaEnum.CreatedAt,
 };
 
-function isFileType(target: FileType | SeriesType): target is FileType {
-  // @ts-expect-error - Trying to access an unknown property.
-  return typeof target.ID === 'number';
-}
-
-function selectRowId(target: FileType | SeriesType): string | number {
-  return isFileType(target) ? target.ID : target.IDs.ID;
-}
-
+const selectRowId = (target: FileType | SeriesType) => 'ID' in target ? target.ID : target.IDs.ID;
 function UtilitiesTable(props: Props) {
   const {
     setSortCriteria,
