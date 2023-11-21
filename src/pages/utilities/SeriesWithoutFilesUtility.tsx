@@ -72,6 +72,9 @@ function SeriesWithoutFilesUtility() {
   const table = useReactTable({
     data: series.List,
     columns,
+    getRowId(row) {
+      return row.IDs.ID.toString();
+    },
     getCoreRowModel: getCoreRowModel(),
     filterFns: {
       fuzzy: fuzzyFilter,
