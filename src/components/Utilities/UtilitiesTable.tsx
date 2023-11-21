@@ -25,7 +25,8 @@ const criteriaMap = {
   created: FileSortCriteriaEnum.CreatedAt,
 };
 
-const selectRowId = (target: FileType | SeriesType) => 'ID' in target ? target.ID : target.IDs.ID;
+const selectRowId = (target: FileType | SeriesType) => ('ID' in target ? target.ID : target.IDs.ID);
+
 function UtilitiesTable(props: Props) {
   const {
     setSortCriteria,
