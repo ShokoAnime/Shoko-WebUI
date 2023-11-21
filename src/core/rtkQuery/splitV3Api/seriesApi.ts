@@ -24,16 +24,20 @@ type SeriesImagesQueryResultType = {
   Fanarts: ImageType[];
 };
 
-export type SeriesEpisodesQueryType = {
+type SeriesEpisodesQueryBaseType = {
   seriesID: number;
   includeMissing?: string;
   includeHidden?: string;
-  includeDataFrom?: DataSourceType[];
   includeWatched?: string;
   type?: string;
   search?: string;
   fuzzy?: boolean;
-} & PaginationType;
+};
+
+export type SeriesEpisodesQueryType =
+  & SeriesEpisodesQueryBaseType
+  & { includeDataFrom?: DataSourceType[] }
+  & PaginationType;
 
 export type SeriesAniDBEpisodesQueryType = {
   anidbID: number;
@@ -79,6 +83,16 @@ const seriesApi = splitV3Api.injectEndpoints({
     getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
+    }),
+
+    // Set the watched state for all the episodes that fit the query.
+    setSeriesEpisodesWatched: build.mutation<void, SeriesEpisodesQueryBaseType & { value: boolean }>({
+      query: ({ seriesID, ...params }) => ({
+        url: `Series/${seriesID}/Episode/Watched`,
+        method: 'POST',
+        params,
+      }),
+      invalidatesTags: ['EpisodeUpdated', 'SeriesEpisodes'],
     }),
 
     getSeriesAniDBEpisodes: build.query<ListResultType<EpisodeAniDBType[]>, SeriesAniDBEpisodesQueryType>({
@@ -276,4 +290,5 @@ export const {
   useRefreshSeriesTvdbInfoMutation,
   useRehashSeriesFilesMutation,
   useRescanSeriesFilesMutation,
+  useSetSeriesEpisodesWatchedMutation,
 } = seriesApi;
