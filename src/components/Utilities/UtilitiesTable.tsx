@@ -25,6 +25,15 @@ const criteriaMap = {
   created: FileSortCriteriaEnum.CreatedAt,
 };
 
+function isFileType(target: FileType | SeriesType): target is FileType {
+  // @ts-expect-error - Trying to access an unknown property.
+  return typeof target.ID === 'number';
+}
+
+function selectRowId(target: FileType | SeriesType): string | number {
+  return isFileType(target) ? target.ID : target.IDs.ID;
+}
+
 function UtilitiesTable(props: Props) {
   const {
     setSortCriteria,
@@ -57,9 +66,11 @@ function UtilitiesTable(props: Props) {
       const lrIndex = lastRowSelected?.current?.index ?? row.index;
       const fromIndex = Math.min(lrIndex, row.index);
       const toIndex = Math.max(lrIndex, row.index);
+      const isSelected = lastRowSelected.current?.getIsSelected() ?? true;
       const rowSelection = {};
       for (let i = fromIndex; i <= toIndex; i += 1) {
-        rowSelection[i] = lastRowSelected.current?.getIsSelected() ?? true;
+        const id = selectRowId(rows[i].original);
+        rowSelection[id] = isSelected;
       }
       table.setRowSelection(rowSelection);
     } else if (window?.getSelection()?.type !== 'Range') {
