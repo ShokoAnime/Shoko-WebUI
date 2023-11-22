@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { useGetSeriesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
-import { dayjs, formatThousand } from '@/core/util';
+import { convertTimeSpanToMs, dayjs, formatThousand } from '@/core/util';
 
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
@@ -80,8 +80,7 @@ const SeriesInfo = () => {
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Length</div>
-          {/* TODO: Get episode length */}
-          <div>-- Minutes/Episode</div>
+          {`${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Minutes/Episode`}
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Season</div>
