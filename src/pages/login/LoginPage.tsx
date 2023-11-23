@@ -122,7 +122,7 @@ function LoginPage() {
         style={imageUrl !== '' && imageUrl !== 'default' ? { backgroundImage: `url('${imageUrl}')` } : {}}
       >
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
-          <div className="flex flex-row items-center p-8">
+          <div className="flex flex-row items-center gap-x-16 p-8">
             <div className="flex w-[15.625em] flex-col items-center gap-y-8">
               <ShokoIcon className="w-24" />
               <div className="flex flex-col gap-y-2 text-center font-semibold">
