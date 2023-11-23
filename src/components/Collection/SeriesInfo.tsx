@@ -91,7 +91,9 @@ const SeriesInfo = () => {
               </div>
               <div className="flex justify-between capitalize">
                 <div className="font-semibold">Length</div>
-                {`${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Minutes/Episode`}
+                {overview.RuntimeLength
+                  ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Minutes/Episode`
+                  : '--'}
               </div>
               <div className="flex justify-between capitalize">
                 <div className="font-semibold">Season</div>

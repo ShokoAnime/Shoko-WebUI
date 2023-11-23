@@ -24,7 +24,7 @@ export type WebuiSeriesDetailsType = {
   Studios: WebuiSeriesRolePerson[];
   Producers: WebuiSeriesRolePerson[];
   SourceMaterial: string | null;
-  RuntimeLength: string;
+  RuntimeLength: string | null;
 };
 
 export type WebuiSeriesFileSummaryType = {
