@@ -121,141 +121,151 @@ function LoginPage() {
         )}
         style={imageUrl !== '' && imageUrl !== 'default' ? { backgroundImage: `url('${imageUrl}')` } : {}}
       >
-        <div
-          onClick={setRedirect}
-          className={cx(
-            'absolute right-0 top-0 border border-panel-border bg-panel-background-transparent px-8 py-4 font-semibold',
-            seriesId && 'cursor-pointer',
-          )}
-        >
-          {imageMetadata.isError ? 'One Piece' : seriesName}
-        </div>
-
-        <div className="flex w-[30rem] flex-col items-center gap-y-8 rounded-lg border border-panel-border bg-panel-background-transparent p-8 drop-shadow-md">
-          <div className="flex flex-col items-center gap-y-4">
-            <ShokoIcon className="w-24" />
-            <div className="font-semibold">
-              Version:&nbsp;
-              {parsedVersion}
+        <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
+          <div className="flex flex-row items-center gap-x-16 p-8">
+            <div className="flex w-[15.625em] flex-col items-center gap-y-8">
+              <ShokoIcon className="w-24" />
+              <div className="flex flex-col gap-y-2 text-center font-semibold">
+                <span>Version</span>
+                <span>{parsedVersion}</span>
+              </div>
+            </div>
+            <div className="flex w-[28rem] flex-col gap-y-4">
+              {!status.data?.State && (
+                <div className="flex items-center justify-center">
+                  <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
+                </div>
+              )}
+              {status.data?.State === 1 && (
+                <div className="flex flex-col items-center justify-center gap-y-2">
+                  <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
+                  <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
+                  <div className="text-lg">
+                    <span className="font-semibold">Status:</span>
+                    {status.data?.StartupMessage ?? 'Unknown'}
+                  </div>
+                </div>
+              )}
+              {status.data?.State === 2 && (
+                <form onSubmit={handleSignIn} className="flex flex-col gap-y-8">
+                  <Input
+                    autoFocus
+                    id="username"
+                    value={username}
+                    label="Username"
+                    type="text"
+                    placeholder="Username"
+                    onChange={e => setUsername(e.target.value)}
+                  />
+                  <Input
+                    id="password"
+                    value={password}
+                    label="Password"
+                    type="password"
+                    placeholder="Password"
+                    onChange={e => setPassword(e.target.value)}
+                  />
+                  <Checkbox
+                    id="rememberUser"
+                    label="Remember Me"
+                    isChecked={rememberUser}
+                    onChange={e => setRememberUser(e.target.checked)}
+                    className="font-semibold"
+                    labelRight
+                  />
+                  <Button
+                    buttonType="primary"
+                    className="w-full py-2 font-semibold"
+                    submit
+                    loading={isFetchingLogin}
+                    disabled={version.isFetching || username === ''}
+                  >
+                    Login
+                  </Button>
+                </form>
+              )}
+              {status.data?.State === 3 && (
+                <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
+                  <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
+                  <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
+                  Check the error message below
+                  <div className="overflow-y-auto break-all text-lg font-semibold">
+                    {status.data?.StartupMessage ?? 'Unknown'}
+                  </div>
+                </div>
+              )}
+              {status.data?.State === 4 && (
+                <div className="flex flex-col gap-y-8">
+                  <div className="flex flex-col gap-y-4">
+                    <div>Welcome and thanks for installing Shoko!</div>
+                    <div className="text-justify">
+                      Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
+                      our&nbsp;
+                      <span className="font-bold text-panel-text-important">First Run Wizard</span>
+                      &nbsp;to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only
+                      take you a couple minutes.
+                    </div>
+                    <div>
+                      Click&nbsp;
+                      <span className="font-semibold text-panel-text-important">Continue</span>
+                      &nbsp;below to proceed.
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => navigate('/webui/firstrun')}
+                    buttonType="primary"
+                    className="py-2 font-semibold"
+                  >
+                    Continue
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-
-          <div className="flex w-full flex-col gap-y-4">
-            {!status.data?.State && (
-              <div className="flex items-center justify-center">
-                <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
-              </div>
-            )}
-            {status.data?.State === 1 && (
-              <div className="flex flex-col items-center justify-center gap-y-2">
-                <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
-                <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
-                <div className="text-lg">
-                  <span className="font-semibold">Status:</span>
-                  {status.data?.StartupMessage ?? 'Unknown'}
-                </div>
-              </div>
-            )}
-            {status.data?.State === 2 && (
-              <form onSubmit={handleSignIn} className="flex flex-col gap-y-8">
-                <Input
-                  autoFocus
-                  id="username"
-                  value={username}
-                  label="Username"
-                  type="text"
-                  placeholder="Username"
-                  onChange={e => setUsername(e.target.value)}
-                />
-                <Input
-                  id="password"
-                  value={password}
-                  label="Password"
-                  type="password"
-                  placeholder="Password"
-                  onChange={e => setPassword(e.target.value)}
-                />
-                <Checkbox
-                  id="rememberUser"
-                  label="Remember Me"
-                  isChecked={rememberUser}
-                  onChange={e => setRememberUser(e.target.checked)}
-                  className="font-semibold"
-                  labelRight
-                />
-                <Button
-                  buttonType="primary"
-                  className="w-full py-2 font-semibold"
-                  submit
-                  loading={isFetchingLogin}
-                  disabled={version.isFetching || username === ''}
-                >
-                  Login
-                </Button>
-              </form>
-            )}
-            {status.data?.State === 3 && (
-              <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
-                <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
-                <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
-                Check the error message below
-                <div className="overflow-y-auto break-all text-lg font-semibold">
-                  {status.data?.StartupMessage ?? 'Unknown'}
-                </div>
-              </div>
-            )}
-            {status.data?.State === 4 && (
-              <div className="flex flex-col gap-y-8">
-                <div className="flex flex-col gap-y-4">
-                  <div>Welcome and thanks for installing Shoko!</div>
-                  <div className="text-justify">
-                    Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
-                    our&nbsp;
-                    <span className="font-bold text-panel-text-important">First Run Wizard</span>
-                    &nbsp;to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only
-                    take you a couple minutes.
-                  </div>
-                  <div>
-                    Click&nbsp;
-                    <span className="font-semibold text-panel-text-important">Continue</span>
-                    &nbsp;below to proceed.
-                  </div>
-                </div>
-                <Button onClick={() => navigate('/webui/firstrun')} buttonType="primary" className="py-2 font-semibold">
-                  Continue
-                </Button>
-              </div>
-            )}
-          </div>
-
-          <div className="flex gap-x-8 font-semibold">
-            <a
-              href="https://discord.gg/vpeHDsg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-x-2"
+          <div className="flex w-full flex-row justify-between gap-x-8 border-t-2 border-panel-border px-8 py-4 font-semibold">
+            <div
+              className={cx(
+                'font-semibold truncate w-[23rem]',
+                seriesId && 'cursor-pointer',
+              )}
+              onClick={setRedirect}
             >
-              <Icon path={siDiscord.path} size={1} />
-              Discord
-            </a>
-            <a
-              href="https://docs.shokoanime.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-x-2"
-            >
-              <Icon path={mdiHelpCircleOutline} size={1} />
-              Docs
-            </a>
-            <a
-              href="https://github.com/ShokoAnime"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-x-2"
-            >
-              <Icon path={mdiGithub} size={1} />
-              GitHub
-            </a>
+              {/* eslint-disable-next-line no-nested-ternary */}
+              {imageMetadata.data?.Series === undefined
+                ? 'Series Name Not Found'
+                : imageMetadata.isError
+                ? 'One Piece'
+                : seriesName}
+            </div>
+            <div className="flex flex-row gap-x-4">
+              <a
+                href="https://discord.gg/vpeHDsg"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-2"
+              >
+                <Icon path={siDiscord.path} size={1} />
+                Discord
+              </a>
+              <a
+                href="https://docs.shokoanime.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-2"
+              >
+                <Icon path={mdiHelpCircleOutline} size={1} />
+                Docs
+              </a>
+              <a
+                href="https://github.com/ShokoAnime"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-x-2"
+              >
+                <Icon path={mdiGithub} size={1} />
+                GitHub
+              </a>
+            </div>
           </div>
         </div>
       </div>
