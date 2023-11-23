@@ -19,9 +19,10 @@ type Props = {
 const Title = ({ fileCount }: { fileCount: number }) => (
   <div className="flex flex-row justify-between gap-x-0.5 text-xl font-semibold">
     <div>Delete Confirmation</div>
-    <div className="flex gap-x-1">
-      <div className="text-panel-text-important">{fileCount}</div>
-      &nbsp;Files
+    <div>
+      <span className="text-panel-text-important">{fileCount}</span>
+      &nbsp;
+      {fileCount === 1 ? 'File' : 'Files'}
     </div>
   </div>
 );

@@ -25,6 +25,8 @@ const criteriaMap = {
   created: FileSortCriteriaEnum.CreatedAt,
 };
 
+const selectRowId = (target: FileType | SeriesType) => ('ID' in target ? target.ID : target.IDs.ID);
+
 function UtilitiesTable(props: Props) {
   const {
     setSortCriteria,
@@ -57,9 +59,11 @@ function UtilitiesTable(props: Props) {
       const lrIndex = lastRowSelected?.current?.index ?? row.index;
       const fromIndex = Math.min(lrIndex, row.index);
       const toIndex = Math.max(lrIndex, row.index);
+      const isSelected = lastRowSelected.current?.getIsSelected() ?? true;
       const rowSelection = {};
       for (let i = fromIndex; i <= toIndex; i += 1) {
-        rowSelection[i] = lastRowSelected.current?.getIsSelected() ?? true;
+        const id = selectRowId(rows[i].original);
+        rowSelection[id] = isSelected;
       }
       table.setRowSelection(rowSelection);
     } else if (window?.getSelection()?.type !== 'Range') {
