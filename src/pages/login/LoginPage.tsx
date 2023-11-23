@@ -225,7 +225,7 @@ function LoginPage() {
           <div className="flex w-full flex-row justify-between gap-x-8 border-t-2 border-panel-border px-8 py-4 font-semibold">
             <div
               className={cx(
-                'font-semibold truncate w-[20rem]',
+                'font-semibold truncate w-[23rem]',
                 seriesId && 'cursor-pointer',
               )}
               onClick={setRedirect}
