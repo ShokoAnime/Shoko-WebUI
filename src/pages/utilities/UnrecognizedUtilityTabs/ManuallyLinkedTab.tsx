@@ -69,7 +69,7 @@ const SeriesRow = (
   return (
     <div
       className={cx(
-        virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background',
+        virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
         'relative py-4 text-left',
       )}
     >
