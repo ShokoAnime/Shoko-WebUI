@@ -66,38 +66,32 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
     return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
   }, [episode.Duration, episode.ResumePosition]);
 
-  const anidbEpisodeAlias = (type: EpisodeTypeEnum, epTitle: string) => {
-    // TODO: This is a hack, we need update backend to make the EpisodeTypeEnum make more sense.
-    if (type === EpisodeTypeEnum.ThemeSong) {
-      if (epTitle.includes('Opening')) return 'OP';
-      if (epTitle.includes('Ending')) return 'ED';
-      return '';
-    }
-
-    // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes
+  const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string => {
+    const fullPrefixes = (prefix: string) => `${prefix}${epNumber}`;
+    // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes#Type
     switch (type) {
+      case EpisodeTypeEnum.ThemeSong:
       case EpisodeTypeEnum.OpeningSong:
-        return 'OP';
       case EpisodeTypeEnum.EndingSong:
-        return 'ED';
+        return fullPrefixes('C');
       case EpisodeTypeEnum.Special:
       case EpisodeTypeEnum.Extra:
-        return 'S';
+        return fullPrefixes('S');
       case EpisodeTypeEnum.Trailer:
-        return 'T';
+        return fullPrefixes('T');
       case EpisodeTypeEnum.Other:
-        return 'O';
+        return fullPrefixes('O');
       case EpisodeTypeEnum.Parody:
-        return 'P';
+        return fullPrefixes('P');
       default:
-        return '';
+        return fullPrefixes('');
     }
   };
 
   const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
   const title = useMemo(
-    () => `${anidbEpisodeAlias(episode.Type, episode.Title)}${episode.Number} - ${episode.Title}`,
+    () => `${anidbEpisodePrefixes(episode.Type, episode.Number)} - ${episode.Title}`,
     [episode.Type, episode.Title, episode.Number],
   );
 
