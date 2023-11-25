@@ -89,13 +89,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
   const title = useMemo(
-    () => {
-      if (episode.Type === EpisodeTypeEnum.Normal) {
-        return `${episode.Number} - ${episode.Title}`;
-      }
-
-      return `${anidbEpisodeAlias(episode.Type, episode.Title)}${episode.Number} - ${episode.Title}`;
-    },
+    () => `${anidbEpisodeAlias(episode.Type, episode.Title)}${episode.Number} - ${episode.Title}`,
     [episode.Type, episode.Title, episode.Number],
   );
 
