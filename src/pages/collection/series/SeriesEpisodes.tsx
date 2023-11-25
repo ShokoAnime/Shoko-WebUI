@@ -197,7 +197,7 @@ const SeriesEpisodes = () => {
                   }
                   return (
                     <div
-                      key={virtualItem.key}
+                      key={`${episodesData.requestId}-${virtualItem.key}`}
                       className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
                       data-index={virtualItem.index}
                     >
