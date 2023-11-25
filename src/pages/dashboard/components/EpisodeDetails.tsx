@@ -74,13 +74,21 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
       return '';
     }
 
+    // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes
     switch (type) {
       case EpisodeTypeEnum.OpeningSong:
         return 'OP';
       case EpisodeTypeEnum.EndingSong:
         return 'ED';
       case EpisodeTypeEnum.Special:
+      case EpisodeTypeEnum.Extra:
         return 'S';
+      case EpisodeTypeEnum.Trailer:
+        return 'T';
+      case EpisodeTypeEnum.Other:
+        return 'O';
+      case EpisodeTypeEnum.Parody:
+        return 'P';
       default:
         return '';
     }
