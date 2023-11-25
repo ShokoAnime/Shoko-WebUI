@@ -66,10 +66,36 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
     return `${((resumePosition.asMilliseconds() / duration.asMilliseconds()) * 100).toFixed(2)}%`;
   }, [episode.Duration, episode.ResumePosition]);
 
+  const anidbEpisodeAlias = (type: EpisodeTypeEnum, epTitle: string) => {
+    // TODO: This is a hack, we need update backend to make the EpisodeTypeEnum make more sense.
+    if (type === EpisodeTypeEnum.ThemeSong) {
+      if (epTitle.includes('Opening')) return 'OP';
+      if (epTitle.includes('Ending')) return 'ED';
+      return '';
+    }
+
+    switch (type) {
+      case EpisodeTypeEnum.OpeningSong:
+        return 'OP';
+      case EpisodeTypeEnum.EndingSong:
+        return 'ED';
+      case EpisodeTypeEnum.Special:
+        return 'S';
+      default:
+        return '';
+    }
+  };
+
   const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
   const title = useMemo(
-    () => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`,
+    () => {
+      if (episode.Type === EpisodeTypeEnum.Normal) {
+        return `${episode.Number} - ${episode.Title}`;
+      }
+
+      return `${anidbEpisodeAlias(episode.Type, episode.Title)}${episode.Number} - ${episode.Title}`;
+    },
     [episode.Type, episode.Title, episode.Number],
   );
 
