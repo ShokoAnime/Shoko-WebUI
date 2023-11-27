@@ -58,6 +58,28 @@ const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: stri
   </>
 );
 
+const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string => {
+  const fullPrefixes = (prefix: string) => `${prefix}${epNumber}`;
+  // Prefixes for episode types base on https://wiki.anidb.net/Content:Episodes#Type
+  switch (type) {
+    case EpisodeTypeEnum.ThemeSong:
+    case EpisodeTypeEnum.OpeningSong:
+    case EpisodeTypeEnum.EndingSong:
+      return fullPrefixes('C');
+    case EpisodeTypeEnum.Special:
+    case EpisodeTypeEnum.Extra:
+      return fullPrefixes('S');
+    case EpisodeTypeEnum.Trailer:
+      return fullPrefixes('T');
+    case EpisodeTypeEnum.Other:
+      return fullPrefixes('O');
+    case EpisodeTypeEnum.Parody:
+      return fullPrefixes('P');
+    default:
+      return fullPrefixes('');
+  }
+};
+
 function EpisodeDetails({ episode, isInCollection = false, showDate = false }: Props): React.ReactNode {
   const percentage = useMemo(() => {
     if (episode.ResumePosition == null) return null;
@@ -69,7 +91,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   const airDate = useMemo(() => dayjs(episode.AirDate), [episode.AirDate]);
   const relativeTime = useMemo(() => airDate.calendar(null, CalendarConfig), [airDate]);
   const title = useMemo(
-    () => `${episode.Type === EpisodeTypeEnum.Normal ? '' : episode.Type[0]}${episode.Number} - ${episode.Title}`,
+    () => `${anidbEpisodePrefixes(episode.Type, episode.Number)} - ${episode.Title}`,
     [episode.Type, episode.Title, episode.Number],
   );
 
