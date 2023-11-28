@@ -231,10 +231,10 @@ function LoginPage() {
               onClick={setRedirect}
             >
               {/* eslint-disable-next-line no-nested-ternary */}
-              {imageMetadata.data?.Series === undefined
-                ? 'Series Not Found'
-                : imageMetadata.isError
+              {imageMetadata.isError
                 ? 'One Piece'
+                : imageMetadata.data?.Series === undefined
+                ? 'Series Not Found'
                 : seriesName}
             </div>
             <div className="flex flex-row gap-x-4">
