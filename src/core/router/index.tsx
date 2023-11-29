@@ -1,6 +1,6 @@
 /* global globalThis */
 import React, { createContext, useEffect, useRef, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
@@ -118,8 +118,6 @@ const router = sentryCreateBrowserRouter(
 export const BodyVisibleContext = createContext(false);
 
 const Router = () => {
-  const dispatch = useDispatch();
-
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
   const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
 
@@ -141,7 +139,7 @@ const Router = () => {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [apikey, dispatch, theme, webuiPreviewTheme]);
+  }, [apikey, theme, webuiPreviewTheme]);
 
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
