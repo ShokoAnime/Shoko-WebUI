@@ -43,6 +43,8 @@ export const listItemSize = {
 const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries }: Props) => {
   const { filterId, groupId } = useParams();
 
+  const [currentFilterId, setCurrentFilterId] = useState(filterId);
+
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const { showRandomPoster: showRandomPosterGrid } = settings.WebUI_Settings.collection.poster;
@@ -124,14 +126,22 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     fetchPage.cancel();
     setFetchingPage(false);
 
-    const shouldFetch = groupId ? true : groupsData.isUninitialized;
+    let shouldFetch: boolean;
+    if (groupId) {
+      shouldFetch = true;
+    } else if (filterId !== currentFilterId) {
+      setCurrentFilterId(filterId);
+      shouldFetch = true;
+    } else {
+      shouldFetch = groupsData.isUninitialized;
+    }
 
     if (shouldFetch) {
       fetchPage(1);
     }
 
     return () => fetchPage.cancel();
-  }, [filterId, groupId, groupsData.isUninitialized, fetchPage]);
+  }, [currentFilterId, filterId, groupId, groupsData.isUninitialized, fetchPage]);
 
   useEffect(() => {
     if (!groupId) setSeriesData({ pages: [], total: -1 });
