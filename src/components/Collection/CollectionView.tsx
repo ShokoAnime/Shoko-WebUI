@@ -141,7 +141,9 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     }
 
     return () => fetchPage.cancel();
-  }, [currentFilterId, filterId, groupId, groupsData.isUninitialized, fetchPage]);
+    // TODO: Figure out how to do it better
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterId, groupId, groupsData.isUninitialized, fetchPage]);
 
   useEffect(() => {
     if (!groupId) setSeriesData({ pages: [], total: -1 });
