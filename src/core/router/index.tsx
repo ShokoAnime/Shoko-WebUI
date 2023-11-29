@@ -1,5 +1,5 @@
 /* global globalThis */
-import React, { useEffect, useRef } from 'react';
+import React, { createContext, useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
@@ -115,6 +115,8 @@ const router = sentryCreateBrowserRouter(
   ),
 );
 
+export const BodyVisibleContext = createContext(false);
+
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
   const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
@@ -122,6 +124,7 @@ const Router = () => {
   const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
   const bodyRef = useRef<HTMLDivElement>(null);
+  const [bodyVisible, setBodyVisible] = useState(false);
 
   useEffect(() => {
     document.body.className = `${
@@ -130,6 +133,7 @@ const Router = () => {
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
         bodyRef.current.style.visibility = 'initial';
+        setBodyVisible(true);
       }
     }, 125);
     return () => {
@@ -139,7 +143,9 @@ const Router = () => {
 
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
-      <RouterProvider router={router} />
+      <BodyVisibleContext.Provider value={bodyVisible}>
+        <RouterProvider router={router} />
+      </BodyVisibleContext.Provider>
     </div>
   );
 };

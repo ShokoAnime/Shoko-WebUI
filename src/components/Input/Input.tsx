@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+
+import { BodyVisibleContext } from '@/core/router';
 
 type Props = {
   id: string;
@@ -41,6 +43,15 @@ function Input(props: Props) {
     value,
   } = props;
 
+  const bodyVisible = useContext(BodyVisibleContext);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && bodyVisible && inputRef.current) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus, bodyVisible]);
+
   return (
     <div className={className}>
       <label htmlFor={id} className={cx({ 'flex flex-row justify-center': inline })}>
@@ -73,8 +84,8 @@ function Input(props: Props) {
             value={value}
             onChange={onChange}
             onKeyUp={onKeyUp}
-            autoFocus={autoFocus}
             disabled={disabled}
+            ref={inputRef}
           />
           {endIcon && (
             <div
