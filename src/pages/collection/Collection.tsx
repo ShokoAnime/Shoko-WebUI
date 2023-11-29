@@ -71,7 +71,7 @@ function Collection() {
 
   const filterData = useGetFilterQuery({ filterId }, { skip: !filterId });
   const groupData = useGetGroupQuery({ groupId: groupId! }, { skip: !groupId });
-  const subsectionName = groupId ? groupData?.data?.Name : filterData?.data?.Name;
+  const subsectionName = groupId ? groupData?.data?.Name : filterId && filterData?.data?.Name;
 
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
