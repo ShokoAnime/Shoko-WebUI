@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+
+import type { RootState } from '@/core/store';
 
 type Props = {
   id: string;
@@ -41,6 +44,15 @@ function Input(props: Props) {
     value,
   } = props;
 
+  const bodyVisible = useSelector((state: RootState) => state.misc.bodyVisible);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus && bodyVisible && inputRef.current) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus, bodyVisible]);
+
   return (
     <div className={className}>
       <label htmlFor={id} className={cx({ 'flex flex-row justify-center': inline })}>
@@ -73,8 +85,8 @@ function Input(props: Props) {
             value={value}
             onChange={onChange}
             onKeyUp={onKeyUp}
-            autoFocus={autoFocus}
             disabled={disabled}
+            ref={inputRef}
           />
           {endIcon && (
             <div

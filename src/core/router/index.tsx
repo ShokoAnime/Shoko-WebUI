@@ -1,12 +1,13 @@
 /* global globalThis */
 import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { setItem as setMiscItem } from '@/core/slices/misc';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
@@ -116,6 +117,8 @@ const router = sentryCreateBrowserRouter(
 );
 
 const Router = () => {
+  const dispatch = useDispatch();
+
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
   const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
 
@@ -130,12 +133,13 @@ const Router = () => {
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
         bodyRef.current.style.visibility = 'initial';
+        dispatch(setMiscItem({ bodyVisible: true }));
       }
     }, 125);
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [apikey, theme, webuiPreviewTheme]);
+  }, [apikey, dispatch, theme, webuiPreviewTheme]);
 
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
