@@ -5,7 +5,6 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 const miscSlice = createSlice({
   name: 'misc',
   initialState: {
-    bodyVisible: false,
     trakt: {
       usercode: '',
       url: '',

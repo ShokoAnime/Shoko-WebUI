@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext, useEffect, useRef } from 'react';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import type { RootState } from '@/core/store';
+import { BodyVisibleContext } from '@/core/router';
 
 type Props = {
   id: string;
@@ -44,7 +43,7 @@ function Input(props: Props) {
     value,
   } = props;
 
-  const bodyVisible = useSelector((state: RootState) => state.misc.bodyVisible);
+  const bodyVisible = useContext(BodyVisibleContext);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
