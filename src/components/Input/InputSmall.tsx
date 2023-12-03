@@ -11,6 +11,8 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   autoComplete?: string;
+
+  suffixes?: (props: Props) => React.ReactNode;
 };
 
 function InputSmall(props: Props) {
@@ -23,23 +25,28 @@ function InputSmall(props: Props) {
     onChange,
     onKeyUp,
     placeholder,
+    suffixes,
     type,
     value,
   } = props;
 
   return (
-    <input
-      className={`${className} appearance-none rounded-md border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
-      id={id}
-      type={type}
-      placeholder={placeholder ?? ''}
-      value={value}
-      onChange={onChange}
-      onKeyUp={onKeyUp}
-      autoFocus={autoFocus}
-      disabled={disabled}
-      autoComplete={autoComplete ?? 'on'}
-    />
+    <>
+      <input
+        className={`${className} appearance-none rounded-md border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
+        id={id}
+        type={type}
+        placeholder={placeholder ?? ''}
+        value={value}
+        onChange={onChange}
+        onKeyUp={onKeyUp}
+        autoFocus={autoFocus}
+        disabled={disabled}
+        autoComplete={autoComplete ?? 'on'}
+      />
+
+      {suffixes && suffixes(props)}
+    </>
   );
 }
 

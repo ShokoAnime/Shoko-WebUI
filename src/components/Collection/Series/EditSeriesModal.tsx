@@ -6,6 +6,9 @@ import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import SeriesActionsTab from '@/components/Collection/Series/EditSeriesTabs/SeriesActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 
+// import GroupTab from './EditSeriesTabs/GroupTab';
+// import PersonalStats from './EditSeriesTabs/PersonalStats';
+
 type Props = {
   show: boolean;
   onClose: () => void;
@@ -23,6 +26,10 @@ const renderTab = (activeTab: string, seriesId: number) => {
   switch (activeTab) {
     case 'actions':
       return <SeriesActionsTab seriesId={seriesId} />;
+    // case 'group':
+    //   return <GroupTab seriesId={seriesId} />;
+    // case 'stats':
+    //   return <PersonalStats />;
     case 'name':
     default:
       return <NameTab seriesId={seriesId} />;
