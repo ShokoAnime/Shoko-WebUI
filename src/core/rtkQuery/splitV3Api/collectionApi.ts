@@ -81,14 +81,10 @@ const collectionApi = splitV3Api.injectEndpoints({
         params: { includeEmpty, topLevelOnly },
       }),
     }),
-    getFilter: build.query<CollectionFilterType, { filterId?: string }>({
-      query: ({ filterId }) => ({ url: `Filter/${filterId}` }),
-    }),
   }),
 });
 
 export const {
-  useGetFilterQuery,
   useGetGroupQuery,
   useLazyGetFiltersQuery,
   useLazyGetGroupSeriesQuery,
