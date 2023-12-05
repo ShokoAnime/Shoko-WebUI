@@ -6,6 +6,7 @@ import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import SeriesActionsTab from '@/components/Collection/Series/EditSeriesTabs/SeriesActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 
+// TODO: Add tabs after implementing back-end endpoint for GroupTab and PersonalStats
 // import GroupTab from './EditSeriesTabs/GroupTab';
 // import PersonalStats from './EditSeriesTabs/PersonalStats';
 
