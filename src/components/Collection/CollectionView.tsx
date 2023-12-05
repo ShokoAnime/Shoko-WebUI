@@ -12,9 +12,9 @@ import ListViewItem from '@/components/Collection/ListViewItem';
 import PosterViewItem from '@/components/Collection/PosterViewItem';
 import buildFilter from '@/core/buildFilter';
 import { useLazyGetGroupSeriesQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import { useGetFilterQuery, useLazyGetFilteredGroupsQuery } from '@/core/rtkQuery/splitV3Api/filterApi';
+import { useGetFilterQuery, useLazyGetFilteredGroupsInfiniteQuery } from '@/core/rtkQuery/splitV3Api/filterApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useLazyGetGroupViewInfiniteQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { InfiniteResultType } from '@/core/types/api';
@@ -101,7 +101,7 @@ const CollectionView = ({ isSidebarOpen, mode, searchQuery, setGroupTotal, setTi
 
   const [fetchingPage, setFetchingPage] = useState(false);
 
-  const [fetchGroups, groupsData] = useLazyGetFilteredGroupsQuery();
+  const [fetchGroups, groupsData] = useLazyGetFilteredGroupsInfiniteQuery();
   const [fetchSeries, seriesDataResult] = useLazyGetGroupSeriesQuery();
   const [seriesData, setSeriesData] = useState<InfiniteResultType<SeriesType[]>>({ pages: [], total: -1 });
   // This is to set an extra arg for groupsQuery so that cache is invalidated correctly. Using state because this should not change once component is mounted.
@@ -115,7 +115,7 @@ const CollectionView = ({ isSidebarOpen, mode, searchQuery, setGroupTotal, setTi
     [groupId, groupsData, seriesData],
   );
 
-  const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewQuery();
+  const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewInfiniteQuery();
   const groupExtras = groupExtrasData.data ?? [];
 
   useEffect(() => {

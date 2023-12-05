@@ -17,7 +17,7 @@ const filterApi = splitV3Api.injectEndpoints({
         },
       }),
     }),
-    getFilteredGroups: build.query<
+    getFilteredGroupsInfinite: build.query<
       InfiniteResultType<CollectionGroupType[]>,
       PaginationType & { randomImages?: boolean, filterCriteria: FilterType, queryId: number }
     >({
@@ -56,5 +56,5 @@ const filterApi = splitV3Api.injectEndpoints({
 
 export const {
   useGetFilterQuery,
-  useLazyGetFilteredGroupsQuery,
+  useLazyGetFilteredGroupsInfiniteQuery,
 } = filterApi;
