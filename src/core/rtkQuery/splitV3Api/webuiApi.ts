@@ -26,7 +26,7 @@ export type SeriesFileSummaryApiRequest = {
 
 const webuiApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
-    getGroupView: build.query<WebuiGroupExtra[], GroupViewApiRequest>({
+    getGroupViewInfinite: build.query<WebuiGroupExtra[], GroupViewApiRequest>({
       query: params => ({ url: 'WebUI/GroupView', body: params, method: 'POST' }),
       // Only have one cache entry because the arg always maps to one string
       serializeQueryArgs: ({ endpointName }) => endpointName,
@@ -75,7 +75,7 @@ export const {
   useGetSeriesOverviewQuery,
   useGetWebuiThemesQuery,
   useGetWebuiUpdateCheckQuery,
-  useLazyGetGroupViewQuery,
+  useLazyGetGroupViewInfiniteQuery,
   useLazyGetSeriesFileSummeryQuery,
   useLazyGetWebuiUpdateCheckQuery,
   usePostWebuiUpdateMutation,

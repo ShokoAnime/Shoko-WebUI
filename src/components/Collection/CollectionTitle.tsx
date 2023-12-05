@@ -7,9 +7,10 @@ import cx from 'classnames';
 type Props = {
   count: number;
   filterOrGroup?: string;
+  searchQuery: string;
 };
 
-const CollectionTitle = ({ count, filterOrGroup }: Props) => (
+const CollectionTitle = ({ count, filterOrGroup, searchQuery }: Props) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
       Entire Collection
@@ -18,6 +19,12 @@ const CollectionTitle = ({ count, filterOrGroup }: Props) => (
       <>
         <Icon path={mdiChevronRight} size={1} />
         {filterOrGroup}
+      </>
+    )}
+    {searchQuery && (
+      <>
+        <Icon path={mdiChevronRight} size={1} />
+        Search Results
       </>
     )}
     <span>|</span>

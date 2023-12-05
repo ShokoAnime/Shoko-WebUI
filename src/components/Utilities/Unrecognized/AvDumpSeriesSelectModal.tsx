@@ -1,15 +1,15 @@
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { debounce, forEach } from 'lodash';
-import { useEventCallback } from 'usehooks-ts';
+import { forEach } from 'lodash';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { useLazyGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
@@ -62,24 +62,19 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     });
     return { ed2kLinks: tempEd2kLinks, links: tempLinks, fileIds: tempFileIds };
   }, [getLinks, show]);
-  const commonSeries = useMemo(() => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))), [
-    links,
-  ]);
-  const initRef = useRef(false);
-  const [searchText, setSearchText] = useState(() => commonSeries);
-  const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
+  const commonSeries = useMemo(
+    () => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))),
+    [links],
+  );
+  const [searchText, setSearchText] = useState('');
   const [activeStep, setActiveStep] = useState(1);
   const [copyFailed, setCopyFailed] = useState(false);
+  const debouncedSearch = useDebounce(searchText, 200);
+  const searchQuery = useGetSeriesAniDBSearchQuery({ query: debouncedSearch }, { skip: !debouncedSearch });
 
-  const debouncedSearch = useRef(
-    debounce((query: string) => {
-      searchTrigger({ query, pageSize: 20 }).catch(() => {});
-    }, 200),
-  ).current;
-
-  const handleClose = () => {
-    onClose(false);
-  };
+  useEffect(() => {
+    setSearchText(commonSeries);
+  }, [commonSeries]);
 
   const handleNextStep = () => {
     setActiveStep(activeStep + 1);
@@ -89,18 +84,6 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     setCopyFailed(false);
     setActiveStep(activeStep - 1);
   };
-
-  const handleSearch = useEventCallback((query: string) => {
-    setSearchText(query);
-    if (query !== '') {
-      if (initRef.current) {
-        initRef.current = false;
-        searchTrigger({ query, pageSize: 20 }).catch(() => {});
-      } else {
-        debouncedSearch(query);
-      }
-    }
-  });
 
   const handleCopy = () => {
     copyToClipboard(ed2kLinks)
@@ -129,17 +112,8 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     if (failedFiles !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
   });
 
-  useEffect(() => () => {
-    debouncedSearch.cancel();
-  }, [debouncedSearch]);
-
-  useEffect(() => {
-    handleSearch(commonSeries);
-  }, [commonSeries, handleSearch]);
-
   useLayoutEffect(() => () => {
     if (show) return;
-    initRef.current = true;
     setSearchText('');
     setClickedLink(false);
     setCopyFailed(false);
@@ -178,7 +152,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
               <Button
                 buttonType="secondary"
                 className="flex items-center justify-center px-4 py-2"
-                onClick={handleClose}
+                onClick={() => onClose(false)}
               >
                 Cancel
               </Button>
@@ -216,18 +190,18 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                 value={searchText}
                 type="text"
                 placeholder="Search..."
-                onChange={e => handleSearch(e.target.value)}
+                onChange={e => setSearchText(e.target.value)}
                 startIcon={mdiMagnify}
               />
               <div className="w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
                 <div className="shoko-scrollbar flex h-[9.5rem] flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-md bg-panel-input pr-2 ">
-                  {initRef.current || searchResults.isError || searchResults.isFetching
+                  {searchQuery.isError || searchQuery.isFetching
                     ? (
                       <div className="flex h-full items-center justify-center">
                         <Icon path={mdiLoading} size={3} spin className="text-panel-text-primary" />
                       </div>
                     )
-                    : (searchResults.data ?? []).map(result => (
+                    : (searchQuery.data ?? []).map(result => (
                       <a
                         href={`https://anidb.net/anime/${result.ID}/release/add`}
                         key={result.ID}
