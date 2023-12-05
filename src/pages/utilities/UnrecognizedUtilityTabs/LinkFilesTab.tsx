@@ -13,9 +13,9 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { debounce, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
+import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useEventCallback } from 'usehooks-ts';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -31,8 +31,8 @@ import { usePostFileLinkManyMutation, usePostFileLinkOneMutation } from '@/core/
 import {
   useDeleteSeriesMutation,
   useGetSeriesAniDBEpisodesQuery,
+  useGetSeriesAniDBSearchQuery,
   useLazyGetSeriesAniDBQuery,
-  useLazyGetSeriesAniDBSearchQuery,
   useLazyGetSeriesEpisodesQuery,
   useRefreshAnidbSeriesMutation,
 } from '@/core/rtkQuery/splitV3Api/seriesApi';
@@ -150,18 +150,14 @@ const AnimeSelectPanel = (
     placeholder: string;
   },
 ) => {
-  const [searchTrigger, searchResults] = useLazyGetSeriesAniDBSearchQuery();
   const [searchText, setSearchText] = useState(placeholder);
-
-  const debouncedSearch = useMemo(() =>
-    debounce((query: string) => {
-      searchTrigger({ query, pageSize: 40 }).catch(() => {});
-    }, 200), [searchTrigger]);
+  const debouncedSearch = useDebounce(searchText, 200);
+  const searchQuery = useGetSeriesAniDBSearchQuery({ query: debouncedSearch }, { skip: !debouncedSearch });
 
   const searchRows = useMemo(() => {
     const rows: React.ReactNode[] = [];
     if (!seriesUpdating) {
-      forEach(searchResults.data, (data) => {
+      forEach(searchQuery.data, (data) => {
         rows.push(<AnimeResultRow key={data.ID} data={data} updateSelectedSeries={updateSelectedSeries} />);
       });
     } else {
@@ -172,22 +168,7 @@ const AnimeSelectPanel = (
       );
     }
     return rows;
-  }, [searchResults.data, seriesUpdating, updateSelectedSeries]);
-
-  const handleSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchText(query);
-    if (query !== '') debouncedSearch(query);
-  });
-
-  useEffect(() => {
-    setSearchText(placeholder);
-    if (placeholder !== '') debouncedSearch(placeholder);
-  }, [placeholder, debouncedSearch]);
-
-  useEffect(() => () => {
-    debouncedSearch.cancel();
-  }, [debouncedSearch]);
+  }, [searchQuery, seriesUpdating, updateSelectedSeries]);
 
   return (
     <div className="flex w-1/2 flex-col gap-y-2">
@@ -195,7 +176,7 @@ const AnimeSelectPanel = (
         id="link-search"
         type="text"
         value={searchText}
-        onChange={handleSearch}
+        onChange={e => setSearchText(e.target.value)}
         placeholder="Enter Series Name or AniDB ID..."
         inputClassName="!p-4"
         startIcon={mdiMagnify}
