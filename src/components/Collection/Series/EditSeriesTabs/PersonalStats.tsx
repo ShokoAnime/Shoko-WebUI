@@ -18,7 +18,7 @@ function PersonalStats() {
   };
 
   const seriesScore = {
-    isGlobale: true,
+    isGlobal: true,
     anidb: 5,
     anilist: 4,
     animeshon: 2,
@@ -39,7 +39,7 @@ function PersonalStats() {
                 type="number"
                 onChange={(_) => {}}
                 value={watchedState.episodes.current}
-                suffixes={_ => (
+                suffixes={() => (
                   <div className="flex items-center gap-x-1 text-sm">
                     <span>/</span>
                     <span>{watchedState.episodes.total}</span>
@@ -57,7 +57,7 @@ function PersonalStats() {
                 type="number"
                 onChange={(_) => {}}
                 value={watchedState.specials.current}
-                suffixes={_ => (
+                suffixes={() => (
                   <div className="flex items-center gap-x-1 text-sm">
                     <span>/</span>
                     <span>{watchedState.specials.total}</span>
@@ -76,7 +76,7 @@ function PersonalStats() {
             justify
             label="Set Score Globally"
             id="total-episodes"
-            isChecked={seriesScore.isGlobale}
+            isChecked={seriesScore.isGlobal}
             onChange={(_) => {}}
           />
           <div className="flex items-center justify-between">

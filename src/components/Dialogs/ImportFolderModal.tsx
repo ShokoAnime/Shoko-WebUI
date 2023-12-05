@@ -127,8 +127,7 @@ function ImportFolderModal() {
           placeholder="Location"
           onChange={handleInputChange}
           className="w-full"
-          endIcon={mdiFolderOpen}
-          endIconClick={handleBrowse}
+          endIcons={[{ icon: mdiFolderOpen, onClick: handleBrowse }]}
         />
         <Select
           label="Drop Type"

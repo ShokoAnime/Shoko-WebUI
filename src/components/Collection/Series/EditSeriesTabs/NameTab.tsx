@@ -22,8 +22,7 @@ const NameTab = ({ seriesId }: Props) => {
   });
 
   const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
-
-  const getAniDbSeries = (): SeriesTitleType[] => {
+  const getAniDbSeries = useMemo((): SeriesTitleType[] => {
     const pages = seriesResults.data?.pages;
     if (!pages) return [];
 
@@ -31,12 +30,12 @@ const NameTab = ({ seriesId }: Props) => {
     if (!keys?.length) return [];
 
     return pages[1];
-  };
+  }, [seriesResults]);
 
   const searchSeries = useMemo(() =>
     debounce(async () => {
       await fetchSeries({
-        startsWith: search?.length ? search : undefined,
+        startsWith: search,
         pageSize: 5,
       });
     }, 250), [search, fetchSeries]);
@@ -120,7 +119,7 @@ const NameTab = ({ seriesId }: Props) => {
           }
           return acc;
         }, [] as React.JSX.Element[])}
-        {search && getAniDbSeries().map(title => renderTitle(title))}
+        {search && getAniDbSeries.map(title => renderTitle(title))}
       </div>
     </div>
   );

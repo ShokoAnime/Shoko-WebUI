@@ -51,7 +51,7 @@ const collectionApi = splitV3Api.injectEndpoints({
       }),
     }),
 
-    getGroupInfinites: build.query<
+    getGroupInfinite: build.query<
       InfiniteResultType<CollectionGroupType[]>,
       PaginationType & { randomImages?: boolean, startsWith?: string, topLevelOnly?: boolean, includeEmpty?: boolean }
     >({
@@ -122,10 +122,10 @@ const collectionApi = splitV3Api.injectEndpoints({
 
 export const {
   useGetFilterQuery,
-  useGetGroupInfinitesQuery,
+  useGetGroupInfiniteQuery,
   useGetGroupQuery,
   useLazyGetFiltersQuery,
-  useLazyGetGroupInfinitesQuery,
+  useLazyGetGroupInfiniteQuery,
   useLazyGetGroupSeriesQuery,
   useLazyGetGroupsQuery,
   useLazyGetTopFiltersQuery,

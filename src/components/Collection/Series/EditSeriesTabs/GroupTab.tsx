@@ -4,7 +4,7 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 
 import Input from '@/components/Input/Input';
-import { useLazyGetGroupInfinitesQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useLazyGetGroupInfiniteQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import { useGetSeriesGroupQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -14,17 +14,17 @@ type Props = {
 };
 
 function GroupTab({ seriesId }: Props) {
-  const [name, setName] = useState<string>('');
-  const [search, setSearch] = useState<string>('');
-  const [nameEditable, setNameEditable] = useState<boolean>(false);
+  const [name, setName] = useState('');
+  const [search, setSearch] = useState('');
+  const [nameEditable, setNameEditable] = useState(false);
 
   const groupQuery = useGetSeriesGroupQuery({ seriesId: seriesId.toString(), topLevel: false }, {
     refetchOnMountOrArgChange: false,
   });
 
-  const [fetchGroup, groupResults] = useLazyGetGroupInfinitesQuery();
+  const [fetchGroup, groupResults] = useLazyGetGroupInfiniteQuery();
 
-  const getAniDbGroup = (): CollectionGroupType[] => {
+  const getAniDbGroup = useMemo((): CollectionGroupType[] => {
     const pages = groupResults.data?.pages;
     if (!pages) return [];
 
@@ -32,17 +32,18 @@ function GroupTab({ seriesId }: Props) {
     if (!keys?.length) return [];
 
     return pages[1];
-  };
+  }, [groupResults]);
 
   const searchGroup = useMemo(() =>
     debounce(async () => {
       await fetchGroup({
-        startsWith: search?.length ? search : undefined,
+        startsWith: search,
         pageSize: 5,
       });
     }, 250), [search, fetchGroup]);
 
   useEffect(() => {
+    if (!search) return;
     searchGroup()?.then()?.catch(console.error);
   }, [search, searchGroup]);
 
@@ -111,7 +112,7 @@ function GroupTab({ seriesId }: Props) {
         )}
       >
         {!search && groupQuery.isSuccess && renderTitle(groupQuery.data)}
-        {search && groupResults.isSuccess && getAniDbGroup().map(renderTitle)}
+        {search && groupResults.isSuccess && getAniDbGroup.map(renderTitle)}
       </div>
     </div>
   );
