@@ -1,17 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
-import { mdiCogOutline, mdiFilterMenuOutline, mdiFilterOutline, mdiFormatListText, mdiViewGridOutline } from '@mdi/js';
+import {
+  mdiCogOutline,
+  mdiFilterMenuOutline,
+  mdiFilterOutline,
+  mdiFormatListText,
+  mdiMagnify,
+  mdiViewGridOutline,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { cloneDeep } from 'lodash';
+import { useDebounce } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
-import { useGetFilterQuery, useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import Input from '@/components/Input/Input';
+import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetFilterQuery } from '@/core/rtkQuery/splitV3Api/filterApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { dayjs } from '@/core/util';
@@ -69,7 +79,7 @@ const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
 function Collection() {
   const { filterId, groupId } = useParams();
 
-  const filterData = useGetFilterQuery({ filterId }, { skip: !filterId });
+  const filterData = useGetFilterQuery({ filterId: filterId! }, { skip: !filterId });
   const groupData = useGetGroupQuery({ groupId: groupId! }, { skip: !groupId });
   const subsectionName = groupId ? groupData?.data?.Name : filterId && filterData?.data?.Name;
 
@@ -84,6 +94,8 @@ function Collection() {
   const [showDisplaySettingsModal, setShowDisplaySettingsModal] = useState(false);
   const [groupTotal, setGroupTotal] = useState(0);
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
 
   useEffect(() => {
     setMode(viewSetting);
@@ -106,8 +118,20 @@ function Collection() {
     <>
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
-          <CollectionTitle count={groupTotal} filterOrGroup={subsectionName} />
+          <CollectionTitle
+            count={groupTotal}
+            filterOrGroup={subsectionName}
+            searchQuery={debouncedSearch}
+          />
           <div className="flex gap-x-2">
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
             {!groupId && (
               <>
                 <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
@@ -124,6 +148,7 @@ function Collection() {
             setGroupTotal={setGroupTotal}
             setTimelineSeries={setTimelineSeries}
             isSidebarOpen={showFilterSidebar}
+            searchQuery={debouncedSearch}
           />
           <div
             className={cx(

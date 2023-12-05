@@ -9,7 +9,7 @@ import type { SeriesType } from '@/core/types/api/series';
 
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
-    getGroups: build.query<
+    getGroupsInfinite: build.query<
       InfiniteResultType<CollectionGroupType[]>,
       PaginationType & { filterId: string, randomImages?: boolean, queryId: number }
     >({
@@ -114,19 +114,15 @@ const collectionApi = splitV3Api.injectEndpoints({
         params: { includeEmpty, topLevelOnly },
       }),
     }),
-    getFilter: build.query<CollectionFilterType, { filterId?: string }>({
-      query: ({ filterId }) => ({ url: `Filter/${filterId}` }),
-    }),
   }),
 });
 
 export const {
-  useGetFilterQuery,
   useGetGroupInfiniteQuery,
   useGetGroupQuery,
   useLazyGetFiltersQuery,
   useLazyGetGroupInfiniteQuery,
   useLazyGetGroupSeriesQuery,
-  useLazyGetGroupsQuery,
+  useLazyGetGroupsInfiniteQuery,
   useLazyGetTopFiltersQuery,
 } = collectionApi;

@@ -10,12 +10,15 @@ import { debounce } from 'lodash';
 
 import ListViewItem from '@/components/Collection/ListViewItem';
 import PosterViewItem from '@/components/Collection/PosterViewItem';
-import { useLazyGetGroupSeriesQuery, useLazyGetGroupsQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import buildFilter from '@/core/buildFilter';
+import { useLazyGetGroupSeriesQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetFilterQuery, useLazyGetFilteredGroupsInfiniteQuery } from '@/core/rtkQuery/splitV3Api/filterApi';
 import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { useLazyGetGroupViewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useLazyGetGroupViewInfiniteQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { InfiniteResultType } from '@/core/types/api';
+import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
@@ -23,6 +26,7 @@ type Props = {
   setGroupTotal: (total: number) => void;
   setTimelineSeries: (series: SeriesType[]) => void;
   isSidebarOpen: boolean;
+  searchQuery: string;
 };
 
 const defaultPageSize = 50;
@@ -40,10 +44,40 @@ export const listItemSize = {
   gap: 32,
 };
 
-const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries }: Props) => {
+const getFilter = (query: string, filterCondition?: FilterCondition): FilterType => {
+  let finalCondition: FilterCondition | undefined;
+  if (query) {
+    const searchCondition: FilterCondition = {
+      Type: 'StringFuzzyMatches',
+      Left: {
+        Type: 'NameSelector',
+      },
+      Parameter: query,
+    };
+
+    if (filterCondition) {
+      finalCondition = buildFilter([searchCondition, filterCondition]);
+    } else {
+      finalCondition = buildFilter([searchCondition]);
+    }
+  } else if (filterCondition) {
+    finalCondition = buildFilter([filterCondition]);
+  }
+
+  return (
+    finalCondition
+      ? {
+        Expression: finalCondition,
+      }
+      : {}
+  );
+};
+
+const CollectionView = ({ isSidebarOpen, mode, searchQuery, setGroupTotal, setTimelineSeries }: Props) => {
   const { filterId, groupId } = useParams();
 
   const [currentFilterId, setCurrentFilterId] = useState(filterId);
+  const [currentSearch, setCurrentSearch] = useState(searchQuery);
 
   const settingsQuery = useGetSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
@@ -53,6 +87,8 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),
     [mode, showRandomPosterGrid, showRandomPosterList],
   );
+
+  const filterQuery = useGetFilterQuery({ filterId: filterId! }, { skip: !filterId });
 
   const [itemWidth, itemHeight, itemGap] = useMemo(() => {
     if (mode === 'poster') return [posterItemSize.width, posterItemSize.height, posterItemSize.gap];
@@ -65,7 +101,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
 
   const [fetchingPage, setFetchingPage] = useState(false);
 
-  const [fetchGroups, groupsData] = useLazyGetGroupsQuery();
+  const [fetchGroups, groupsData] = useLazyGetFilteredGroupsInfiniteQuery();
   const [fetchSeries, seriesDataResult] = useLazyGetGroupSeriesQuery();
   const [seriesData, setSeriesData] = useState<InfiniteResultType<SeriesType[]>>({ pages: [], total: -1 });
   // This is to set an extra arg for groupsQuery so that cache is invalidated correctly. Using state because this should not change once component is mounted.
@@ -79,7 +115,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     [groupId, groupsData, seriesData],
   );
 
-  const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewQuery();
+  const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewInfiniteQuery();
   const groupExtras = groupExtrasData.data ?? [];
 
   useEffect(() => {
@@ -100,11 +136,13 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
         fetchGroups({
           page,
           pageSize,
-          filterId: filterId ?? '0',
           randomImages: showRandomPoster,
+          filterCriteria: getFilter(searchQuery, filterId ? filterQuery.data?.Expression : undefined),
           queryId: groupQueryId,
         }).then(
           (result) => {
+            setCurrentFilterId(filterId);
+
             if (!result.data) return;
 
             const ids = result.data.pages[page].map(group => group.IDs.ID);
@@ -120,7 +158,18 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
           .then(result => result.data && setSeriesData(result.data))
           .catch(error => console.error(error)).finally(() => setFetchingPage(false));
       }
-    }, 200), [groupId, fetchGroups, pageSize, filterId, showRandomPoster, groupQueryId, fetchGroupExtras, fetchSeries]);
+    }, 200), [
+    groupId,
+    fetchGroups,
+    pageSize,
+    showRandomPoster,
+    searchQuery,
+    filterId,
+    filterQuery.data?.Expression,
+    groupQueryId,
+    fetchGroupExtras,
+    fetchSeries,
+  ]);
 
   useEffect(() => {
     fetchPage.cancel();
@@ -129,8 +178,10 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     let shouldFetch: boolean;
     if (groupId) {
       shouldFetch = true;
+    } else if (searchQuery !== currentSearch) {
+      setCurrentSearch(searchQuery);
+      shouldFetch = true;
     } else if (filterId !== currentFilterId) {
-      setCurrentFilterId(filterId);
       shouldFetch = true;
     } else {
       shouldFetch = groupsData.isUninitialized;
@@ -143,7 +194,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
     return () => fetchPage.cancel();
     // TODO: Figure out how to do it better
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterId, groupId, groupsData.isUninitialized, fetchPage]);
+  }, [filterId, groupId, groupsData.isUninitialized, fetchPage, searchQuery]);
 
   useEffect(() => {
     if (!groupId) setSeriesData({ pages: [], total: -1 });
@@ -181,7 +232,7 @@ const CollectionView = ({ isSidebarOpen, mode, setGroupTotal, setTimelineSeries 
         {/* This is always equal width to the actual grid container so we are using the ref here */}
         {/* Otherwise we would need two refs to remove flicker */}
         <div className="flex w-full justify-center" ref={gridContainerRef}>
-          {isLoading || seriesData.total === -1
+          {isLoading || (groupId && seriesData.total === -1)
             ? <Icon path={mdiLoading} size={3} className="text-panel-text-primary" spin />
             : 'No series/groups available!'}
         </div>
