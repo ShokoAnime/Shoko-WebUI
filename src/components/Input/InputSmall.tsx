@@ -12,7 +12,7 @@ type Props = {
   disabled?: boolean;
   autoComplete?: string;
 
-  suffixes?: () => React.ReactNode;
+  suffixes?: React.ReactNode;
 };
 
 function InputSmall(props: Props) {
@@ -45,7 +45,7 @@ function InputSmall(props: Props) {
         autoComplete={autoComplete ?? 'on'}
       />
 
-      {suffixes && suffixes()}
+      {suffixes}
     </>
   );
 }

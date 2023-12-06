@@ -39,12 +39,12 @@ function PersonalStats() {
                 type="number"
                 onChange={(_) => {}}
                 value={watchedState.episodes.current}
-                suffixes={() => (
+                suffixes={
                   <div className="flex items-center gap-x-1 text-sm">
                     <span>/</span>
                     <span>{watchedState.episodes.total}</span>
                   </div>
-                )}
+                }
               />
             </div>
           </div>
@@ -57,12 +57,12 @@ function PersonalStats() {
                 type="number"
                 onChange={(_) => {}}
                 value={watchedState.specials.current}
-                suffixes={() => (
+                suffixes={
                   <div className="flex items-center gap-x-1 text-sm">
                     <span>/</span>
                     <span>{watchedState.specials.total}</span>
                   </div>
-                )}
+                }
               />
             </div>
           </div>
