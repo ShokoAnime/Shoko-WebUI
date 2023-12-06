@@ -82,7 +82,7 @@ const CollectionView = (props: Props) => {
     return (
       <div
         className={cx(
-          'flex grow rounded-md items-center font-semibold justify-center',
+          'flex grow rounded-md items-center font-semibold justify-center max-h-screen',
           mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
         )}
       >
