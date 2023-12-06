@@ -187,14 +187,16 @@ function Collection() {
             searchQuery={debouncedSearch}
           />
           <div className="flex gap-x-2">
-            <Input
-              id="search"
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-            />
+            {(!isSeries || total > 12) && (
+              <Input
+                id="search"
+                type="text"
+                placeholder="Search..."
+                startIcon={mdiMagnify}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+              />
+            )}
             {!isSeries && (
               <>
                 <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
