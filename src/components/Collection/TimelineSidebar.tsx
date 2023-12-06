@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { SeriesTypeEnum } from '@/core/types/api/series';
@@ -34,13 +36,21 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
   );
 };
 
-const TimelineSidebar = ({ series }: { series: SeriesType[] }) => (
+const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: SeriesType[] }) => (
   <div className="flex min-h-full overflow-hidden transition-all">
     <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-8 rounded border border-panel-border bg-panel-background p-8">
       <div className="text-xl font-semibold">Timeline</div>
-      <div className="flex flex-col gap-y-4">
-        {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
-      </div>
+      {isFetching
+        ? (
+          <div className="flex grow items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} size={3} spin />
+          </div>
+        )
+        : (
+          <div className="flex flex-col gap-y-4">
+            {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
+          </div>
+        )}
     </div>
   </div>
 );

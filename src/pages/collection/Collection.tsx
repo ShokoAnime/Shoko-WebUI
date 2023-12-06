@@ -227,7 +227,7 @@ function Collection() {
               Filter sidebar
             </div>
           </div>
-          {isSeries && <TimelineSidebar series={timelineSeries} />}
+          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={isFetching} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />
