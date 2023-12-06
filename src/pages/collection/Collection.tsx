@@ -93,8 +93,13 @@ function Collection() {
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDisplaySettingsModal, setShowDisplaySettingsModal] = useState(false);
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+
+  const [groupSearch, setGroupSearch] = useState('');
+  const debouncedGroupSearch = useDebounce(groupSearch, 200);
+
+  const [seriesSearch, setSeriesSearch] = useState('');
+  const debouncedSeriesSearch = useDebounce(seriesSearch, 200);
+
   const [currentPage, setCurrentPage] = useState(1);
   const setCurrentPageDebounced = useMemo(
     () => debounce((page: number) => setCurrentPage(page), 200),
@@ -112,7 +117,8 @@ function Collection() {
   }, [viewSetting]);
 
   useEffect(() => {
-    setSearch('');
+    setGroupSearch('');
+    setSeriesSearch('');
   }, [isSeries]);
 
   const toggleMode = async () => {
@@ -131,14 +137,14 @@ function Collection() {
     page: currentPage,
     pageSize: defaultPageSize,
     randomImages: showRandomPoster,
-    filterCriteria: getFilter(debouncedSearch, filterId ? filterQuery.data?.Expression : undefined, false),
+    filterCriteria: getFilter(debouncedGroupSearch, filterId ? filterQuery.data?.Expression : undefined, false),
   });
 
   const seriesQuery = useGetFilteredGroupSeriesQuery(
     {
       groupId: groupId!,
       randomImages: showRandomPoster,
-      filterCriteria: getFilter(debouncedSearch),
+      filterCriteria: getFilter(debouncedSeriesSearch),
     },
     { skip: !isSeries },
   );
@@ -156,9 +162,9 @@ function Collection() {
   );
 
   useEffect(() => {
-    if (!isSeries || debouncedSearch) return;
+    if (!isSeries || debouncedSeriesSearch) return;
     setTimelineSeries((pages[1] ?? []) as SeriesType[]);
-  }, [debouncedSearch, isSeries, pages]);
+  }, [debouncedSeriesSearch, isSeries, pages]);
 
   const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewInfiniteQuery();
   const groupExtras = groupExtrasData.currentData ?? [];
@@ -184,19 +190,17 @@ function Collection() {
           <CollectionTitle
             count={(total === 0 && isFetching) ? -1 : total}
             filterOrGroup={subsectionName}
-            searchQuery={debouncedSearch}
+            searchQuery={isSeries ? debouncedSeriesSearch : debouncedGroupSearch}
           />
           <div className="flex gap-x-2">
-            {(!isSeries || total > 12) && (
-              <Input
-                id="search"
-                type="text"
-                placeholder="Search..."
-                startIcon={mdiMagnify}
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
-            )}
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              value={isSeries ? seriesSearch : groupSearch}
+              onChange={e => (isSeries ? setSeriesSearch(e.target.value) : setGroupSearch(e.target.value))}
+            />
             {!isSeries && (
               <>
                 <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
@@ -229,7 +233,7 @@ function Collection() {
               Filter sidebar
             </div>
           </div>
-          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={isFetching} />}
+          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isLoading} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />
