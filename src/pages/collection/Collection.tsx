@@ -20,8 +20,12 @@ import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import Input from '@/components/Input/Input';
 import buildFilter from '@/core/buildFilter';
-import { useGetGroupQuery, useGetGroupSeriesQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import { useGetFilterQuery, useGetFilteredGroupsInfiniteQuery } from '@/core/rtkQuery/splitV3Api/filterApi';
+import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import {
+  useGetFilterQuery,
+  useGetFilteredGroupSeriesQuery,
+  useGetFilteredGroupsInfiniteQuery,
+} from '@/core/rtkQuery/splitV3Api/filterApi';
 import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
 import { useLazyGetGroupViewInfiniteQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
 import { initialSettings } from '@/pages/settings/SettingsPage';
@@ -31,7 +35,7 @@ import type { SeriesType } from '@/core/types/api/series';
 
 const defaultPageSize = 50;
 
-const getFilter = (query: string, filterCondition?: FilterCondition): FilterType => {
+const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
   let finalCondition: FilterCondition | undefined;
   if (query) {
     const searchCondition: FilterCondition = {
@@ -54,6 +58,7 @@ const getFilter = (query: string, filterCondition?: FilterCondition): FilterType
   return (
     finalCondition
       ? {
+        ApplyAtSeriesLevel: isSeries,
         Expression: finalCondition,
       }
       : {}
@@ -87,6 +92,7 @@ function Collection() {
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [showDisplaySettingsModal, setShowDisplaySettingsModal] = useState(false);
+  const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
   const [currentPage, setCurrentPage] = useState(1);
@@ -125,11 +131,15 @@ function Collection() {
     page: currentPage,
     pageSize: defaultPageSize,
     randomImages: showRandomPoster,
-    filterCriteria: getFilter(debouncedSearch, filterId ? filterQuery.data?.Expression : undefined),
+    filterCriteria: getFilter(debouncedSearch, filterId ? filterQuery.data?.Expression : undefined, false),
   });
 
-  const seriesQuery = useGetGroupSeriesQuery(
-    { groupId: groupId!, randomImages: showRandomPoster },
+  const seriesQuery = useGetFilteredGroupSeriesQuery(
+    {
+      groupId: groupId!,
+      randomImages: showRandomPoster,
+      filterCriteria: getFilter(debouncedSearch),
+    },
     { skip: !isSeries },
   );
 
@@ -144,6 +154,11 @@ function Collection() {
     },
     [isSeries, groupsQuery.currentData, seriesQuery.currentData],
   );
+
+  useEffect(() => {
+    if (!isSeries || debouncedSearch) return;
+    setTimelineSeries((pages[1] ?? []) as SeriesType[]);
+  }, [debouncedSearch, isSeries, pages]);
 
   const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewInfiniteQuery();
   const groupExtras = groupExtrasData.currentData ?? [];
@@ -172,16 +187,16 @@ function Collection() {
             searchQuery={debouncedSearch}
           />
           <div className="flex gap-x-2">
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
             {!isSeries && (
               <>
-                <Input
-                  id="search"
-                  type="text"
-                  placeholder="Search..."
-                  startIcon={mdiMagnify}
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
                 <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
                 <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} />
               </>
@@ -212,7 +227,7 @@ function Collection() {
               Filter sidebar
             </div>
           </div>
-          {isSeries && <TimelineSidebar series={(pages[1] ?? []) as SeriesType[]} />}
+          {isSeries && <TimelineSidebar series={timelineSeries} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />
