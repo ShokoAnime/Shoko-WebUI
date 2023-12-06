@@ -86,8 +86,7 @@ const collectionApi = splitV3Api.injectEndpoints({
 
 export const {
   useGetGroupQuery,
+  useGetGroupSeriesQuery,
   useLazyGetFiltersQuery,
-  useLazyGetGroupSeriesQuery,
-  useLazyGetGroupsInfiniteQuery,
   useLazyGetTopFiltersQuery,
 } = collectionApi;

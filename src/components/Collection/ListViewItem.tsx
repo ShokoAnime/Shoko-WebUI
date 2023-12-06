@@ -56,11 +56,11 @@ const SeriesTag = ({ text, type }: { text: string, type: 'AniDB' | 'User' }) => 
 type Props = {
   item: CollectionGroupType | SeriesType;
   isSeries?: boolean;
-  mainSeries?: WebuiGroupExtra;
+  groupExtras?: WebuiGroupExtra;
   isSidebarOpen: boolean;
 };
 
-const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
+const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => {
   const settingsQuery = useGetSettingsQuery(undefined, { refetchOnMountOrArgChange: false });
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
@@ -90,15 +90,15 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
 
     const group = item as CollectionGroupType;
     const tempCount = reduce(group.Sizes.SeriesTypes, (count, value) => count + value, 0);
-    const tempEndDate = dayjs(mainSeries?.EndDate);
+    const tempEndDate = dayjs(groupExtras?.EndDate);
     return [
-      dayjs(mainSeries?.AirDate),
+      dayjs(groupExtras?.AirDate),
       group.Description,
       tempEndDate,
       tempCount,
-      mainSeries?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
+      groupExtras?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
     ];
-  }, [isSeries, item, mainSeries?.AirDate, mainSeries?.EndDate]);
+  }, [isSeries, item, groupExtras?.AirDate, groupExtras?.EndDate]);
 
   const viewRouteLink = () => {
     let link = '/webui/collection/';
@@ -116,13 +116,13 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
 
   const tags = useMemo(
     () => {
-      let tempTags = (isSeries ? seriesTags?.data : mainSeries?.Tags) ?? [];
+      let tempTags = (isSeries ? seriesTags?.data : groupExtras?.Tags) ?? [];
       if (!showTopTags) tempTags = tempTags.filter(tag => tag.Source !== 'AniDB');
       if (!showCustomTags) tempTags = tempTags.filter(tag => tag.Source !== 'User');
       tempTags = tempTags.toSorted((tagA, tagB) => tagB.Source.localeCompare(tagA.Source));
       return tempTags.slice(0, 10);
     },
-    [isSeries, mainSeries?.Tags, seriesTags, showCustomTags, showTopTags],
+    [isSeries, groupExtras?.Tags, seriesTags, showCustomTags, showTopTags],
   );
 
   return (
@@ -261,7 +261,8 @@ const ListViewItem = ({ isSeries, isSidebarOpen, item, mainSeries }: Props) => {
       </div>
       {tags.length > 0 && (
         <div className="flex h-9 flex-wrap items-start gap-x-2 overflow-hidden">
-          {tags.map(tag => <SeriesTag key={`${mainSeries?.ID}-${tag.Name}`} text={tag.Name} type={tag.Source} />) ?? ''}
+          {tags.map(tag => <SeriesTag key={`${groupExtras?.ID}-${tag.Name}`} text={tag.Name} type={tag.Source} />)
+            ?? ''}
         </div>
       )}
     </div>

@@ -27,13 +27,14 @@ const CollectionTitle = ({ count, filterOrGroup, searchQuery }: Props) => (
         Search Results
       </>
     )}
-    <span>|</span>
-    <span className="text-panel-text-important">
-      {/* Count is set to -1 when series data is empty and is used as a flag to signify that in other places */}
-      {/* But ideally we should 0 to the user */}
-      {count === -1 ? 0 : count}
-      &nbsp;Items
-    </span>
+    {count >= 0 && (
+      <>
+        <span>|</span>
+        <span className="text-panel-text-important">
+          {`${count} Items`}
+        </span>
+      </>
+    )}
   </div>
 );
 

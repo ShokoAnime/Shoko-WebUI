@@ -19,9 +19,9 @@ const filterApi = splitV3Api.injectEndpoints({
     }),
     getFilteredGroupsInfinite: build.query<
       InfiniteResultType<CollectionGroupType[]>,
-      PaginationType & { randomImages?: boolean, filterCriteria: FilterType, queryId: number }
+      PaginationType & { randomImages?: boolean, filterCriteria: FilterType }
     >({
-      query: ({ filterCriteria, queryId: _, ...params }) => ({
+      query: ({ filterCriteria, ...params }) => ({
         url: 'Filter/Preview/Group',
         method: 'POST',
         params,
@@ -56,5 +56,5 @@ const filterApi = splitV3Api.injectEndpoints({
 
 export const {
   useGetFilterQuery,
-  useLazyGetFilteredGroupsInfiniteQuery,
+  useGetFilteredGroupsInfiniteQuery,
 } = filterApi;
