@@ -13,7 +13,10 @@ import type { SeriesAniDBType } from '@/core/types/api/series';
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const items = useGetAniDBRecommendedAnimeQuery({ pageSize: 20 });
+  const items = useGetAniDBRecommendedAnimeQuery({
+    includeRestricted: !hideR18Content,
+    pageSize: 20,
+  });
 
   const renderItem = (series: SeriesAniDBType, matches: number) => (
     <div key={`series-${series.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
