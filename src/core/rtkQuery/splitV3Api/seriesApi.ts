@@ -1,6 +1,9 @@
-import { defaultSerializeQueryArgs } from '@reduxjs/toolkit/query';
-import { omit } from 'lodash';
-
+import {
+  paginatedForceRefetch,
+  paginatedQueryMerge,
+  serializePaginatedQueryArgs,
+  transformPaginatedResponse,
+} from '@/core/rtkPaginationUtil';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
@@ -105,28 +108,10 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
     getSeriesEpisodesInfinite: build.query<InfiniteResultType<EpisodeType>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
-      transformResponse: (response: ListResultType<EpisodeType>, _, args) => ({
-        pages: {
-          [args.page ?? 1]: response.List,
-        },
-        total: response.Total,
-      }),
-      // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
-        defaultSerializeQueryArgs({
-          endpointName,
-          queryArgs: omit(queryArgs, ['page']),
-          endpointDefinition,
-        }),
-      // Always merge incoming data to the cache entry
-      merge: (currentCache, newItems) => ({
-        pages: { ...currentCache.pages, ...newItems.pages },
-        total: newItems.total,
-      }),
-      // Refetch when the page arg changes
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
+      transformResponse: transformPaginatedResponse,
+      serializeQueryArgs: serializePaginatedQueryArgs,
+      merge: paginatedQueryMerge,
+      forceRefetch: paginatedForceRefetch,
       providesTags: ['SeriesEpisodes'],
     }),
 
@@ -156,28 +141,10 @@ const seriesApi = splitV3Api.injectEndpoints({
 
     getSeriesInfinite: build.query<InfiniteResultType<SeriesTitleType>, PaginationType & { startsWith?: string }>({
       query: ({ ...params }) => ({ url: 'Series', params: { ...params } }),
-      transformResponse: (response: ListResultType<SeriesTitleType>, _, args) => ({
-        pages: {
-          [args.page ?? 1]: response.List,
-        },
-        total: response.Total,
-      }),
-      // Only have one cache entry because the arg always maps to one string
-      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
-        defaultSerializeQueryArgs({
-          endpointName,
-          queryArgs: omit(queryArgs, ['page']),
-          endpointDefinition,
-        }),
-      // Always merge incoming data to the cache entry
-      merge: (currentCache, newItems) => ({
-        pages: { ...currentCache.pages, ...newItems.pages },
-        total: newItems.total,
-      }),
-      // Refetch when the page arg changes
-      forceRefetch({ currentArg, previousArg }) {
-        return currentArg !== previousArg;
-      },
+      transformResponse: transformPaginatedResponse,
+      serializeQueryArgs: serializePaginatedQueryArgs,
+      merge: paginatedQueryMerge,
+      forceRefetch: paginatedForceRefetch,
       providesTags: ['SeriesSearch'],
     }),
 

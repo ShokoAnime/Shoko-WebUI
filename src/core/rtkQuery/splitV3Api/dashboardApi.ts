@@ -9,7 +9,6 @@ import type {
 import type { SeriesType } from '@/core/types/api/series';
 
 const dashboardApi = splitV3Api.injectEndpoints({
-  // refetchOnMountOrArgChange: true, // Refresh stats on component mount/page refresh (I think it works correctly)
   endpoints: build => ({
     // Get the counters of various collection stats
     getDashboardStats: build.query<DashboardStatsType, void>({
