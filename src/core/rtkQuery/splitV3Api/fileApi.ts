@@ -80,7 +80,7 @@ const fileApi = splitV3Api.injectEndpoints({
     }),
 
     // Get or search through the files accessible to the current user.
-    getFiles: build.query<ListResultType<FileType[]>, FileRequestType>({
+    getFiles: build.query<ListResultType<FileType>, FileRequestType>({
       query: params => ({
         url: 'File',
         params,

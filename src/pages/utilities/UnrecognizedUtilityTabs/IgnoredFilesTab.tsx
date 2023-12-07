@@ -21,7 +21,7 @@ import type { ListResultType } from '@/core/types/api';
 import type { Table } from '@tanstack/react-table';
 
 const Menu = (
-  { files, refetch, table }: { table: Table<FileType>, files: ListResultType<FileType[]>, refetch: () => void },
+  { files, refetch, table }: { table: Table<FileType>, files: ListResultType<FileType>, refetch: () => void },
 ) => {
   const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
 

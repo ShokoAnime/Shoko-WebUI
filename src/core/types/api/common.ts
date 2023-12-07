@@ -1,8 +1,3 @@
-export type ListResultType<T> = {
-  Total: number;
-  List: T[];
-};
-
 export type ImageType = {
   Source: ImageSourceEnum;
   Type: ImageTypeEnum;

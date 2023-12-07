@@ -8,7 +8,7 @@ const tagsApi = splitV3Api.injectEndpoints({
     // Get a list of all known anidb tags, optionally with a filter applied.
     getAniDBTags: build.query<TagType[], PaginationType & { excludeDescriptions?: boolean }>({
       query: params => ({ url: 'Tag/AniDB', params }),
-      transformResponse: (response: ListResultType<TagType[]>) => response.List,
+      transformResponse: (response: ListResultType<TagType>) => response.List,
     }),
   }),
 });
