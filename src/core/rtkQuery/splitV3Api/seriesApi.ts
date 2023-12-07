@@ -4,6 +4,7 @@ import { omit } from 'lodash';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
 import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
+import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { DataSourceType, ImageType } from '@/core/types/api/common';
 import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -14,6 +15,7 @@ import type {
   SeriesCast,
   SeriesDetailsType,
   SeriesRecommendedType,
+  SeriesTitleType,
   SeriesType,
 } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
@@ -152,6 +154,33 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesAniDB'],
     }),
 
+    getSeriesInfinite: build.query<InfiniteResultType<SeriesTitleType[]>, PaginationType & { startsWith?: string }>({
+      query: ({ ...params }) => ({ url: 'Series', params: { ...params } }),
+      transformResponse: (response: ListResultType<SeriesTitleType[]>, _, args) => ({
+        pages: {
+          [args.page ?? 1]: response.List,
+        },
+        total: response.Total,
+      }),
+      // Only have one cache entry because the arg always maps to one string
+      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
+        defaultSerializeQueryArgs({
+          endpointName,
+          queryArgs: omit(queryArgs, ['page']),
+          endpointDefinition,
+        }),
+      // Always merge incoming data to the cache entry
+      merge: (currentCache, newItems) => ({
+        pages: { ...currentCache.pages, ...newItems.pages },
+        total: newItems.total,
+      }),
+      // Refetch when the page arg changes
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+      providesTags: ['SeriesSearch'],
+    }),
+
     // Gets anidb recommendation for the user
     getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
@@ -183,6 +212,13 @@ const seriesApi = splitV3Api.injectEndpoints({
         params,
       }),
       providesTags: ['SeriesAniDB'],
+    }),
+
+    getSeriesGroup: build.query<CollectionGroupType, { seriesId: string, topLevel: boolean }>({
+      query: ({ seriesId, ...params }) => ({
+        url: `Series/${seriesId}/Group`,
+        params,
+      }),
     }),
 
     getSeriesTags: build.query<TagType[], { seriesId: string, filter?: number, excludeDescriptions?: boolean }>({
@@ -275,7 +311,9 @@ export const {
   useGetSeriesAniDBEpisodesQuery,
   useGetSeriesAniDBSearchQuery,
   useGetSeriesCastQuery,
+  useGetSeriesGroupQuery,
   useGetSeriesImagesQuery,
+  useGetSeriesInfiniteQuery,
   useGetSeriesQuery,
   useGetSeriesTagsQuery,
   useGetSeriesWithManuallyLinkedFilesQuery,
@@ -284,6 +322,8 @@ export const {
   useLazyGetSeriesEpisodesInfiniteQuery,
   useLazyGetSeriesEpisodesQuery,
   useLazyGetSeriesFilesQuery,
+  useLazyGetSeriesGroupQuery,
+  useLazyGetSeriesInfiniteQuery,
   useNextUpEpisodeQuery,
   useRefreshAnidbSeriesMutation,
   useRefreshSeriesAnidbInfoMutation,

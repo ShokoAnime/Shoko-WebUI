@@ -4,59 +4,62 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 
 import Input from '@/components/Input/Input';
-import { useGetSeriesQuery, useLazyGetSeriesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useLazyGetGroupInfiniteQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useGetSeriesGroupQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
-import type { SeriesTitleType } from '@/core/types/api/series';
+import type { CollectionGroupType } from '@/core/types/api/collection';
 
 type Props = {
   seriesId: number;
 };
 
-const NameTab = ({ seriesId }: Props) => {
+function GroupTab({ seriesId }: Props) {
   const [name, setName] = useState('');
   const [search, setSearch] = useState('');
   const [nameEditable, setNameEditable] = useState(false);
 
-  const seriesQuery = useGetSeriesQuery({ seriesId: seriesId.toString(), includeDataFrom: ['AniDB'] }, {
+  const groupQuery = useGetSeriesGroupQuery({ seriesId: seriesId.toString(), topLevel: false }, {
     refetchOnMountOrArgChange: false,
   });
 
-  const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
-  const getAniDbSeries = useMemo((): SeriesTitleType[] => {
-    const pages = seriesResults.data?.pages;
+  const [fetchGroup, groupResults] = useLazyGetGroupInfiniteQuery();
+
+  const getAniDbGroup = useMemo((): CollectionGroupType[] => {
+    const pages = groupResults.data?.pages;
     if (!pages) return [];
 
     const keys = Object.keys(pages);
     if (!keys?.length) return [];
 
     return pages[1];
-  }, [seriesResults]);
+  }, [groupResults]);
 
-  const searchSeries = useMemo(() =>
+  const searchGroup = useMemo(() =>
     debounce(async () => {
-      await fetchSeries({
+      await fetchGroup({
         startsWith: search,
         pageSize: 5,
       });
-    }, 250), [search, fetchSeries]);
-
-  useEffect(() => {
-    setName(seriesQuery.data?.Name ?? '');
-  }, [seriesQuery]);
+    }, 250), [search, fetchGroup]);
 
   useEffect(() => {
     if (!search) return;
-    searchSeries()?.then()?.catch(console.error);
-  }, [search, searchSeries]);
+    searchGroup()?.then()?.catch(console.error);
+  }, [search, searchGroup]);
 
-  const renderTitle = useCallback((title: SeriesTitleType) => (
+  useEffect(() => {
+    const { data } = groupQuery;
+    setName(data?.Name ?? '');
+  }, [groupQuery]);
+
+  const renderTitle = useCallback((group: CollectionGroupType) => (
     <div
       className="flex cursor-pointer justify-between"
-      key={title.Language}
-      onClick={() => setName(title.Name)}
+      key={group.IDs.MainSeries}
+      onClick={() => setName(group.Name)}
     >
-      <div>{title.Name}</div>
-      {title.Language}
+      <div>{group.Name}</div>
+      {group.IDs.MainSeries}
     </div>
   ), []);
 
@@ -104,25 +107,15 @@ const NameTab = ({ seriesId }: Props) => {
       />
       <div
         className={cx(
-          'mt-1 flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-background-alt p-4 overflow-hidden',
+          'mt-1 flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-background-alt p-4',
           !nameEditable && 'invisible',
         )}
       >
-        {!search && seriesQuery.data?.AniDB?.Titles.reduce((acc, title) => {
-          if (!search) {
-            acc.push(renderTitle(title));
-            return acc;
-          }
-          if (title.Name.toLowerCase().includes(search.toLowerCase())) {
-            acc.push(renderTitle(title));
-            return acc;
-          }
-          return acc;
-        }, [] as React.ReactNode[])}
-        {search && getAniDbSeries.map(title => renderTitle(title))}
+        {!search && groupQuery.isSuccess && renderTitle(groupQuery.data)}
+        {search && groupResults.isSuccess && getAniDbGroup.map(renderTitle)}
       </div>
     </div>
   );
-};
+}
 
-export default NameTab;
+export default GroupTab;

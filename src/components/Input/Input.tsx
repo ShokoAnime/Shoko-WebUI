@@ -17,8 +17,7 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   center?: boolean;
-  endIcon?: string;
-  endIconClick?: React.MouseEventHandler<HTMLDivElement>;
+  endIcons?: { icon: string, className?: string, onClick?: React.MouseEventHandler<HTMLDivElement> }[];
   startIcon?: string;
   inline?: boolean;
 };
@@ -29,8 +28,7 @@ function Input(props: Props) {
     center,
     className,
     disabled,
-    endIcon,
-    endIconClick,
+    endIcons,
     id,
     inline,
     inputClassName,
@@ -87,12 +85,17 @@ function Input(props: Props) {
             disabled={disabled}
             ref={inputRef}
           />
-          {endIcon && (
-            <div
-              onClick={endIconClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer text-panel-text"
-            >
-              <Icon path={endIcon} size={1} horizontal vertical rotate={180} />
+          {endIcons?.length && (
+            <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
+              {endIcons.map(icon => (
+                <div
+                  key={`input-${icon.icon}`}
+                  onClick={icon.onClick}
+                  className={cx('cursor-pointer text-panel-text', icon.className)}
+                >
+                  <Icon path={icon.icon} size={1} />
+                </div>
+              ), [] as React.ReactNode[])}
             </div>
           )}
         </div>

@@ -50,6 +50,39 @@ const collectionApi = splitV3Api.injectEndpoints({
         params: { includeEmpty, topLevelOnly },
       }),
     }),
+
+    getGroupInfinite: build.query<
+      InfiniteResultType<CollectionGroupType[]>,
+      PaginationType & { randomImages?: boolean, startsWith?: string, topLevelOnly?: boolean, includeEmpty?: boolean }
+    >({
+      query: ({ ...params }) => ({
+        url: 'Group',
+        params: { ...params },
+      }),
+      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
+        pages: {
+          [args.page ?? 1]: response.List,
+        },
+        total: response.Total,
+      }),
+      // Only have one cache entry because the arg always maps to one string
+      serializeQueryArgs: ({ endpointDefinition, endpointName, queryArgs }) =>
+        defaultSerializeQueryArgs({
+          endpointName,
+          queryArgs: omit(queryArgs, ['page']),
+          endpointDefinition,
+        }),
+      // Always merge incoming data to the cache entry
+      merge: (currentCache, newItems) => {
+        const tempCache = { ...currentCache };
+        tempCache.pages = { ...currentCache.pages, ...newItems.pages };
+        return tempCache;
+      },
+      // Refetch when the page arg changes
+      forceRefetch({ currentArg, previousArg }) {
+        return currentArg !== previousArg;
+      },
+    }),
     getGroupSeries: build.query<InfiniteResultType<SeriesType[]>, { groupId: string, randomImages?: boolean }>({
       query: ({ groupId, randomImages = true }) => ({
         url: `Group/${groupId}/Series`,
@@ -85,7 +118,11 @@ const collectionApi = splitV3Api.injectEndpoints({
 });
 
 export const {
+  useGetGroupInfiniteQuery,
   useGetGroupQuery,
   useLazyGetFiltersQuery,
+  useLazyGetGroupInfiniteQuery,
+  useLazyGetGroupSeriesQuery,
+  useLazyGetGroupsInfiniteQuery,
   useLazyGetTopFiltersQuery,
 } = collectionApi;
