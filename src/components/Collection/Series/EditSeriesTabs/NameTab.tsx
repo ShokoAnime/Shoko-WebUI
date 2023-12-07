@@ -118,7 +118,7 @@ const NameTab = ({ seriesId }: Props) => {
             return acc;
           }
           return acc;
-        }, [] as React.JSX.Element[])}
+        }, [] as React.ReactNode[])}
         {search && getAniDbSeries.map(title => renderTitle(title))}
       </div>
     </div>

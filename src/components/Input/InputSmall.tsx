@@ -11,7 +11,6 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   autoComplete?: string;
-
   suffixes?: React.ReactNode;
 };
 
