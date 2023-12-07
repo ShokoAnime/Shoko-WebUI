@@ -10,14 +10,14 @@ import type { SeriesType } from '@/core/types/api/series';
 const collectionApi = splitV3Api.injectEndpoints({
   endpoints: build => ({
     getGroupsInfinite: build.query<
-      InfiniteResultType<CollectionGroupType[]>,
+      InfiniteResultType<CollectionGroupType>,
       PaginationType & { filterId: string, randomImages?: boolean, queryId: number }
     >({
       query: ({ filterId, queryId: _, randomImages, ...params }) => ({
         url: `Filter/${filterId}/Group`,
         params: { includeEmpty: true, randomImages, ...params },
       }),
-      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
+      transformResponse: (response: ListResultType<CollectionGroupType>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
         },
@@ -52,14 +52,14 @@ const collectionApi = splitV3Api.injectEndpoints({
     }),
 
     getGroupInfinite: build.query<
-      InfiniteResultType<CollectionGroupType[]>,
+      InfiniteResultType<CollectionGroupType>,
       PaginationType & { randomImages?: boolean, startsWith?: string, topLevelOnly?: boolean, includeEmpty?: boolean }
     >({
       query: ({ ...params }) => ({
         url: 'Group',
         params: { ...params },
       }),
-      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
+      transformResponse: (response: ListResultType<CollectionGroupType>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
         },
@@ -83,7 +83,7 @@ const collectionApi = splitV3Api.injectEndpoints({
         return currentArg !== previousArg;
       },
     }),
-    getGroupSeries: build.query<InfiniteResultType<SeriesType[]>, { groupId: string, randomImages?: boolean }>({
+    getGroupSeries: build.query<InfiniteResultType<SeriesType>, { groupId: string, randomImages?: boolean }>({
       query: ({ groupId, randomImages = true }) => ({
         url: `Group/${groupId}/Series`,
         params: {
@@ -99,10 +99,10 @@ const collectionApi = splitV3Api.injectEndpoints({
         total: response.length,
       }),
     }),
-    getTopFilters: build.query<ListResultType<CollectionFilterType[]>, PaginationType>({
+    getTopFilters: build.query<ListResultType<CollectionFilterType>, PaginationType>({
       query: params => ({ url: 'Filter', params: { page: params.page ?? 1, pageSize: params.pageSize ?? 0 } }),
     }),
-    getFilters: build.query<ListResultType<CollectionFilterType[]>, string>({
+    getFilters: build.query<ListResultType<CollectionFilterType>, string>({
       query: filterId => ({ url: `Filter/${filterId}/Filter`, params: { page: 1, pageSize: 0 } }),
     }),
     getFilterGroupLetters: build.query<

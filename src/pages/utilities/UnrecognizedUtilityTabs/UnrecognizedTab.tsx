@@ -51,7 +51,7 @@ const columnHelper = createColumnHelper<FileType>();
 
 const Menu = (
   props: {
-    files: ListResultType<FileType[]>;
+    files: ListResultType<FileType>;
     table: Table<FileType>;
     refetch(): void;
     setSeriesSelectModal(show: boolean): void;

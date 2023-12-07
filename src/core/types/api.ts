@@ -28,7 +28,7 @@ export type DashboardPaginationType = PaginationType & {
 
 export type ListResultType<T> = {
   Total: number;
-  List: T;
+  List: T[];
 };
 
 export type TraktCodeType = {
@@ -42,6 +42,6 @@ export type WebUIVersionType = {
 };
 
 export type InfiniteResultType<T> = {
-  pages: Record<number, T>;
+  pages: Record<number, T[]>;
   total: number;
 };

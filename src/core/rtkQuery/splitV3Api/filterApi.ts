@@ -19,7 +19,7 @@ const filterApi = splitV3Api.injectEndpoints({
       }),
     }),
     getFilteredGroupsInfinite: build.query<
-      InfiniteResultType<CollectionGroupType[]>,
+      InfiniteResultType<CollectionGroupType>,
       PaginationType & { randomImages?: boolean, filterCriteria: FilterType }
     >({
       query: ({ filterCriteria, ...params }) => ({
@@ -28,7 +28,7 @@ const filterApi = splitV3Api.injectEndpoints({
         params,
         body: filterCriteria,
       }),
-      transformResponse: (response: ListResultType<CollectionGroupType[]>, _, args) => ({
+      transformResponse: (response: ListResultType<CollectionGroupType>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
         },
@@ -53,7 +53,7 @@ const filterApi = splitV3Api.injectEndpoints({
       },
     }),
     getFilteredGroupSeries: build.query<
-      InfiniteResultType<SeriesType[]>,
+      InfiniteResultType<SeriesType>,
       { groupId: string, randomImages?: boolean, filterCriteria: FilterType }
     >({
       query: ({ filterCriteria, groupId, ...params }) => ({

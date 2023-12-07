@@ -69,7 +69,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Get a paginated list of Shoko.Server.API.v3.Models.Shoko.Series without local files, available to the current Shoko.Server.API.v3.Models.Shoko.User.
-    getSeriesWithoutFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
+    getSeriesWithoutFiles: build.query<ListResultType<SeriesType>, PaginationType>({
       query: params => ({ url: 'Series/WithoutFiles', params }),
       providesTags: ['SeriesUpdated'],
     }),
@@ -77,12 +77,12 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Search the title dump for the given query or directly using the anidb id.
     getSeriesAniDBSearch: build.query<SeriesAniDBSearchResult[], { query: string } & PaginationType>({
       query: ({ query, ...params }) => ({ url: `Series/AniDB/Search/${encodeURIComponent(query)}`, params }),
-      transformResponse: (response: ListResultType<SeriesAniDBSearchResult[]>) => response.List,
+      transformResponse: (response: ListResultType<SeriesAniDBSearchResult>) => response.List,
       providesTags: ['SeriesSearch'],
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodes: build.query<ListResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
+    getSeriesEpisodes: build.query<ListResultType<EpisodeType>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
@@ -97,15 +97,15 @@ const seriesApi = splitV3Api.injectEndpoints({
       invalidatesTags: ['EpisodeUpdated', 'SeriesEpisodes'],
     }),
 
-    getSeriesAniDBEpisodes: build.query<ListResultType<EpisodeAniDBType[]>, SeriesAniDBEpisodesQueryType>({
+    getSeriesAniDBEpisodes: build.query<ListResultType<EpisodeAniDBType>, SeriesAniDBEpisodesQueryType>({
       query: ({ anidbID, ...params }) => ({ url: `Series/AniDB/${anidbID}/Episode`, params }),
       providesTags: ['SeriesEpisodes', 'UtilitiesRefresh'],
     }),
 
     // Get the Shoko.Server.API.v3.Models.Shoko.Episodes for the Shoko.Server.API.v3.Models.Shoko.Series with seriesID.
-    getSeriesEpisodesInfinite: build.query<InfiniteResultType<EpisodeType[]>, SeriesEpisodesQueryType>({
+    getSeriesEpisodesInfinite: build.query<InfiniteResultType<EpisodeType>, SeriesEpisodesQueryType>({
       query: ({ seriesID, ...params }) => ({ url: `Series/${seriesID}/Episode`, params }),
-      transformResponse: (response: ListResultType<EpisodeType[]>, _, args) => ({
+      transformResponse: (response: ListResultType<EpisodeType>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
         },
@@ -154,9 +154,9 @@ const seriesApi = splitV3Api.injectEndpoints({
       providesTags: ['SeriesAniDB'],
     }),
 
-    getSeriesInfinite: build.query<InfiniteResultType<SeriesTitleType[]>, PaginationType & { startsWith?: string }>({
+    getSeriesInfinite: build.query<InfiniteResultType<SeriesTitleType>, PaginationType & { startsWith?: string }>({
       query: ({ ...params }) => ({ url: 'Series', params: { ...params } }),
-      transformResponse: (response: ListResultType<SeriesTitleType[]>, _, args) => ({
+      transformResponse: (response: ListResultType<SeriesTitleType>, _, args) => ({
         pages: {
           [args.page ?? 1]: response.List,
         },
@@ -184,10 +184,10 @@ const seriesApi = splitV3Api.injectEndpoints({
     // Gets anidb recommendation for the user
     getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
-      transformResponse: (response: ListResultType<SeriesRecommendedType[]>) => response.List,
+      transformResponse: (response: ListResultType<SeriesRecommendedType>) => response.List,
     }),
 
-    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<SeriesType[]>, PaginationType>({
+    getSeriesWithManuallyLinkedFiles: build.query<ListResultType<SeriesType>, PaginationType>({
       query: params => ({
         url: 'Series/WithManuallyLinkedFiles',
         params,

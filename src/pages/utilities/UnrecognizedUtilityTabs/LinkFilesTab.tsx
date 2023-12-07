@@ -430,7 +430,7 @@ function LinkFilesTab() {
   const makeLinks = useEventCallback(async (seriesID: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
 
-    let shokoEpisodeResponse: ListResultType<EpisodeType[]>;
+    let shokoEpisodeResponse: ListResultType<EpisodeType>;
     try {
       shokoEpisodeResponse = await updateEpisodes({
         seriesID,

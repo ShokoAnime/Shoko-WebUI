@@ -15,7 +15,7 @@ const queueApi = splitV3Api.injectEndpoints({
       },
     }),
     getQueueItems: build.query<
-      ListResultType<QueueItemType[]>,
+      ListResultType<QueueItemType>,
       { queueName: string, showAll?: boolean } & PaginationType
     >({
       query: ({ page = 1, pageSize = 10, queueName, showAll = true }) => ({
