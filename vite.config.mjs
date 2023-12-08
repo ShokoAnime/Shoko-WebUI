@@ -6,7 +6,6 @@ import pkg from './package.json';
 import { defineConfig } from 'vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
-import checker from 'vite-plugin-checker'
 
 export default defineConfig(async () => {
   const isDebug = process.env.NODE_ENV !== 'production';
@@ -47,13 +46,7 @@ export default defineConfig(async () => {
       sourcemap: true,
       chunkSizeWarningLimit: 2000
     },
-    plugins: [
-      react(),
-      sentryPlugin,
-      checker({
-        typescript: true,
-      }),
-    ],
+    plugins: [react(), sentryPlugin],
     base: "/webui/"
   };
 });
