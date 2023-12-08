@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -6,12 +6,20 @@ import { Icon } from '@mdi/react';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useGetAniDBRecommendedAnimeQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { SeriesAniDBType } from '@/core/types/api/series';
 
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
+  const settingsQuery = useGetSettingsQuery();
+  const { hideR18Content } = useMemo(
+    () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
+    [settingsQuery],
+  );
 
   const items = useGetAniDBRecommendedAnimeQuery({
     includeRestricted: !hideR18Content,
