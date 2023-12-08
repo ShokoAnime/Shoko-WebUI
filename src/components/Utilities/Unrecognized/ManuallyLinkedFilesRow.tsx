@@ -1,17 +1,10 @@
 import React, { useCallback, useEffect, useMemo } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import {
-  createColumnHelper,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { find } from 'lodash';
 
 import Checkbox from '@/components/Input/Checkbox';
-import { fuzzyFilter, fuzzySort } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -116,8 +109,7 @@ function ManuallyLinkedFilesRow(props: Props) {
       meta: {
         className: 'w-128',
       },
-      filterFn: 'fuzzy',
-      sortingFn: fuzzySort,
+      // TODO: Use filter and sort from server
     }),
   ], [episodes, getEpTypePrefix, seriesId, updateSelectedFiles]);
 
@@ -125,10 +117,6 @@ function ManuallyLinkedFilesRow(props: Props) {
     data: files,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
   });
 
   useEffect(() => {

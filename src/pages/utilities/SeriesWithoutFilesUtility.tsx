@@ -1,13 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { mdiCloseCircleOutline, mdiMagnify, mdiMinusCircleOutline, mdiOpenInNew, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import {
-  createColumnHelper,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from '@tanstack/react-table';
+import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import cx from 'classnames';
 import { forEach } from 'lodash';
 
@@ -18,7 +12,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { dayjs, fuzzyFilter, fuzzySort } from '@/core/util';
+import { dayjs } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
 
@@ -48,8 +42,6 @@ const columns = [
     meta: {
       className: 'w-auto',
     },
-    filterFn: 'fuzzy',
-    sortingFn: fuzzySort,
   }),
   columnHelper.accessor('Created', {
     header: 'Date Added',
@@ -65,10 +57,6 @@ function SeriesWithoutFilesUtility() {
   const series = seriesQuery?.data ?? { Total: 0, List: [] };
   const [deleteSeriesTrigger] = useDeleteSeriesMutation();
 
-  const [columnFilters, setColumnFilters] = useState(
-    [{ id: 'Name', value: '' }] as { id: string, value: string }[],
-  );
-
   const table = useReactTable({
     data: series.List,
     columns,
@@ -76,14 +64,6 @@ function SeriesWithoutFilesUtility() {
       return row.IDs.ID.toString();
     },
     getCoreRowModel: getCoreRowModel(),
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
-    state: {
-      columnFilters,
-    },
-    getFilteredRowModel: getFilteredRowModel(),
-    getSortedRowModel: getSortedRowModel(),
   });
 
   useEffect(() => {
@@ -152,8 +132,8 @@ function SeriesWithoutFilesUtility() {
               placeholder="Search..."
               startIcon={mdiMagnify}
               id="search"
-              value={columnFilters[0].value}
-              onChange={e => setColumnFilters([{ id: 'filename', value: e.target.value }])}
+              value=""
+              onChange={() => {}}
               inputClassName="px-4 py-3"
             />
             <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">

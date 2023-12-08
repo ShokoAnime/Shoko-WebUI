@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { forEach } from 'lodash';
 import { useDebounce } from 'usehooks-ts';
 
@@ -14,7 +14,6 @@ import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { fuzzyFilter } from '@/core/util';
 import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { ListResultType } from '@/core/types/api';
@@ -84,10 +83,6 @@ function IgnoredFilesTab() {
       return row.ID.toString();
     },
     getCoreRowModel: getCoreRowModel(),
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
-    getFilteredRowModel: getFilteredRowModel(),
   });
   const tableSelectedRows = table.getSelectedRowModel();
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
