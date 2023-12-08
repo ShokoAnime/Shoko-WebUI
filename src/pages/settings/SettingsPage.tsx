@@ -535,7 +535,7 @@ export const initialSettings = {
 type ContextType = {
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => void;
-  updateSetting: (type: string, key: string, value: string | boolean) => void;
+  updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
 };
 
 function SettingsPage() {
@@ -562,7 +562,7 @@ function SettingsPage() {
     return !isEqual(newSettings, initialSettings);
   }, [newSettings, settings]);
 
-  const updateSetting = (type: string, key: string, value: string | boolean) => {
+  const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
     if (key === 'theme' && typeof value === 'string') {
       globalThis.localStorage.setItem('theme', value);
     }

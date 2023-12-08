@@ -47,6 +47,8 @@ const AvatarEditorModal = (props: Props) => {
     onClose();
   };
 
+  if (!image) return null;
+
   return (
     <ModalPanel
       show={show}

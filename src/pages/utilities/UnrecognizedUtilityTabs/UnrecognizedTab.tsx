@@ -15,7 +15,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createColumnHelper, getCoreRowModel, getFilteredRowModel, useReactTable } from '@tanstack/react-table';
+import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import { every, forEach, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
@@ -40,7 +40,6 @@ import {
   usePutFileIgnoreMutation,
 } from '@/core/rtkQuery/splitV3Api/fileApi';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { fuzzyFilter } from '@/core/util';
 import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { RootState } from '@/core/store';
@@ -233,10 +232,6 @@ function UnrecognizedTab() {
       return row.ID.toString();
     },
     getCoreRowModel: getCoreRowModel(),
-    filterFns: {
-      fuzzy: fuzzyFilter,
-    },
-    getFilteredRowModel: getFilteredRowModel(),
   });
   const tableSelectedRows = table.getSelectedRowModel();
   const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);

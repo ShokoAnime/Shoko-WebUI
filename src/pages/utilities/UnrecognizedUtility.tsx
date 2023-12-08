@@ -6,7 +6,7 @@ import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
-import { dayjs, fuzzySort } from '@/core/util';
+import { dayjs } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
@@ -42,8 +42,6 @@ function UnrecognizedUtility() {
         meta: {
           className: 'w-auto',
         },
-        filterFn: 'fuzzy',
-        sortingFn: fuzzySort,
       }),
       columnHelper.accessor('Hashes.CRC32', {
         header: 'CRC32',

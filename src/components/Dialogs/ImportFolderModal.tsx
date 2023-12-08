@@ -54,7 +54,7 @@ function ImportFolderModal() {
     }
   };
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const name = event.target.id;
     const value = name === 'WatchForNewFiles' ? event.target.value === '1' : event.target.value;
     setImportFolder({ ...importFolder, [name]: value });

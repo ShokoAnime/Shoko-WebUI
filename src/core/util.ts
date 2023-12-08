@@ -1,6 +1,4 @@
 /* eslint-disable no-param-reassign */
-import { compareItems, rankItem } from '@tanstack/match-sorter-utils';
-import { sortingFns } from '@tanstack/react-table';
 import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -10,8 +8,6 @@ import formatThousands from 'format-thousands';
 import { isObject, toNumber } from 'lodash';
 
 import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import type { RankingInfo } from '@tanstack/match-sorter-utils';
-import type { FilterFn, SortingFn } from '@tanstack/react-table';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
@@ -47,36 +43,6 @@ export function mergeDeep(...objects) {
     return prev;
   }, {});
 }
-
-// tanstack table helpers
-
-declare module '@tanstack/table-core' {
-  /* eslint-disable-next-line  @typescript-eslint/consistent-type-definitions */
-  interface FilterFns {
-    fuzzy: FilterFn<unknown>;
-  }
-  /* eslint-disable-next-line  @typescript-eslint/consistent-type-definitions */
-  interface FilterMeta {
-    itemRank: RankingInfo;
-  }
-}
-
-export const fuzzyFilter: FilterFn<object> = (row, columnId, value, addMeta) => {
-  const itemRank = rankItem(row.getValue(columnId), value);
-  addMeta({ itemRank });
-  return itemRank.passed;
-};
-
-export const fuzzySort: SortingFn<object> = (rowA, rowB, columnId) => {
-  let dir = 0;
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId].itemRank!,
-      rowB.columnFiltersMeta[columnId].itemRank!,
-    );
-  }
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
 
 export const formatThousand = (n: number) => formatThousands(n, ',');
 
