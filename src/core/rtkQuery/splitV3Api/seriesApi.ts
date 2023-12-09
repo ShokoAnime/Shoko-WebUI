@@ -6,7 +6,7 @@ import {
 } from '@/core/rtkPaginationUtil';
 import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
 
-import type { InfiniteResultType, ListResultType, PaginationType, RecommendedPaginationType } from '@/core/types/api';
+import type { InfiniteResultType, ListResultType, PaginationType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { DataSourceType, ImageType } from '@/core/types/api/common';
 import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
@@ -149,7 +149,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Gets anidb recommendation for the user
-    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], RecommendedPaginationType>({
+    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType & { includeRestricted: boolean }>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
       transformResponse: (response: ListResultType<SeriesRecommendedType>) => response.List,
     }),
