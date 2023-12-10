@@ -149,7 +149,7 @@ const seriesApi = splitV3Api.injectEndpoints({
     }),
 
     // Gets anidb recommendation for the user
-    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType>({
+    getAniDBRecommendedAnime: build.query<SeriesRecommendedType[], PaginationType & { includeRestricted: boolean }>({
       query: params => ({ url: 'Series/AniDB/RecommendedForYou', params: { ...params, showAll: true } }),
       transformResponse: (response: ListResultType<SeriesRecommendedType>) => response.List,
     }),
