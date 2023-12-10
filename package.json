@@ -101,8 +101,8 @@
     "stylelint": "stylelint \"src/css/*.css\"",
     "tscheck": "tsc --noEmit",
     "lint": "pnpm tscheck && pnpm dprint && pnpm eslint && pnpm stylelint",
-    "build": "cross-env NODE_ENV=production pnpm tscheck && vite build",
-    "build:debug": "cross-env NODE_ENV=development pnpm tscheck && vite build",
+    "build": "cross-env NODE_ENV=production vite build",
+    "build:debug": "cross-env NODE_ENV=development vite build",
     "start": "cross-env NODE_ENV=development vite",
     "postinstall": "husky install"
   },
