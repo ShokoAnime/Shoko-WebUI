@@ -19,7 +19,7 @@ const NameTab = ({ seriesId }: Props) => {
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 
-  // Needs an actual endpoint to get series names instead of getting all series
+  // TODO: Needs an actual endpoint to get series names instead of getting all series
   // const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
   // const getAniDbSeries = useMemo((): SeriesTitleType[] => {
   //   const pages = seriesResults.data?.pages;
