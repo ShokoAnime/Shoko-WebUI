@@ -13,7 +13,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
-import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
 const UpdateFrequencyValues = () => (
@@ -30,7 +30,7 @@ const UpdateFrequencyValues = () => (
 function AniDBSettings() {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
-  const [testAniDbLoginTrigger, testAniDbLoginResult] = usePostAniDBTestLoginMutation();
+  const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
 
   const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | null>(null);
 
@@ -88,12 +88,10 @@ function AniDBSettings() {
   };
 
   const testLogin = async () => {
-    await testAniDbLoginTrigger({ Username, Password });
-    if (testAniDbLoginResult.isError) {
-      toast.error('Incorrect Username/Password!');
-    } else {
-      toast.success('AniDB Login Successful!');
-    }
+    testAniDbLogin({ Username, Password }, {
+      onSuccess: () => toast.success('AniDB Login Successful!'),
+      onError: () => toast.error('Incorrect Username/Password!'),
+    });
   };
 
   const validateAndSaveRelationDepth = (depth: string) => {
@@ -110,7 +108,7 @@ function AniDBSettings() {
           <div className="font-semibold">Login Options</div>
           <Button
             onClick={() => testLogin()}
-            loading={testAniDbLoginResult.isLoading}
+            loading={isAnidbLoginPending}
             buttonType="primary"
             className="px-4"
           >

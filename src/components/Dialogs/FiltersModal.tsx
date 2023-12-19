@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { mdiMagnify } from '@mdi/js';
+import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { useDebounce } from 'usehooks-ts';
 
+import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useLazyGetFiltersQuery, useLazyGetTopFiltersQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
+import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
 
@@ -14,87 +16,102 @@ type Props = {
   onClose: () => void;
 };
 
-function FiltersModal({ onClose, show }: Props) {
-  const [trigger, filtersResult] = useLazyGetTopFiltersQuery({});
-  const [triggerSubFilter, subFiltersResult] = useLazyGetFiltersQuery({});
-  const filters: CollectionFilterType[] = filtersResult?.data?.List ?? [] as CollectionFilterType[];
-  const subFilters: CollectionFilterType[] = useMemo(
-    () => subFiltersResult?.data?.List ?? [] as CollectionFilterType[],
-    [subFiltersResult],
-  );
-
-  const [activeTab, setActiveTab] = useState('Filters');
-  const [activeFilter, setActiveFilter] = useState('0');
-  const [search, setSearch] = useState('');
-
-  useEffect(() => {
-    if (!show) return;
-    if (activeFilter === '0') {
-      trigger({}).catch(() => {});
-    } else {
-      triggerSubFilter(activeFilter).catch(() => {});
-    }
-  }, [show, activeFilter, trigger, triggerSubFilter]);
-
-  const filteredList = useMemo(
-    () =>
-      subFilters.filter(
-        item => (!item.IsDirectory && (search === '' || item.Name.toLowerCase().indexOf(search.toLowerCase()) !== -1)),
-      ),
-    [subFilters, search],
-  );
-
-  const renderItem = (item: CollectionFilterType) => (
-    <div className="flex justify-between font-semibold" key={item.IDs.ID}>
-      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
-      <span className="text-panel-text-important">{item.Size}</span>
-    </div>
-  );
-
-  const renderTabSide = (title, filterId) => (
+const TabButton = (
+  props: { activeTab: string, filterId: number, onTabChange: (filterId: number, title: string) => void, title: string },
+) => {
+  const { activeTab, filterId, onTabChange, title } = props;
+  return (
     <div
       className={cx('font-semibold cursor-pointer', activeTab === title && 'text-panel-text-primary')}
       key={filterId}
-      onClick={() => {
-        setActiveTab(title);
-        setActiveFilter(filterId);
-        setSearch('');
-      }}
+      onClick={() => onTabChange(filterId, title)}
     >
       {title}
     </div>
   );
+};
 
-  const renderSidePanel = (title: string, filterId: React.Key | null | undefined) => (
+const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => (
+  <div className="flex justify-between font-semibold" key={item.IDs.ID}>
+    <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
+    <span className="text-panel-text-important">{item.Size}</span>
+  </div>
+);
+
+const SidePanel = (
+  props: { activeFilter: number, activeTab: string, filterId: number, onClose: () => void, title: string },
+) => {
+  const { activeFilter, activeTab, filterId, onClose, title } = props;
+
+  const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
+
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
+
+  useEffect(() => () => setSearch(''), []);
+
+  const filteredList = useMemo(() => {
+    if (subFiltersQuery.isSuccess) {
+      return subFiltersQuery.data.List.filter(
+        item => (!item.IsDirectory
+          && (debouncedSearch === '' || item.Name.toLowerCase().indexOf(debouncedSearch.toLowerCase()) !== -1)),
+      );
+    }
+    return [];
+  }, [debouncedSearch, subFiltersQuery.data, subFiltersQuery.isSuccess]);
+
+  if (activeFilter !== filterId) return null;
+
+  return (
     <div
-      className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === '0' })}
-      key={filterId}
+      className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === 0 })}
     >
-      <div className="mb-2 flex w-full rounded-md bg-panel-background-alt p-2">
-        <Icon path={mdiMagnify} size={1} />
-        <input
-          type="text"
-          placeholder="Search..."
-          className="ml-2 bg-panel-background-alt"
-          value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        />
-      </div>
+      <Input
+        type="text"
+        placeholder="Search..."
+        startIcon={mdiMagnify}
+        id="search"
+        value={search}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+        inputClassName="px-4 py-3"
+      />
       <div className="box-border flex h-full flex-col items-center rounded-md border border-panel-border bg-panel-background-alt p-4">
-        <div className="shoko-scrollbar flex max-h-[18rem] w-full flex-col gap-y-1 overflow-y-auto bg-panel-background-alt pr-4">
-          {filteredList.length !== 0
-            ? filteredList.filter(item => !item.IsDirectory).map(item => renderItem(item))
-            : (
-              <div className="text-center">
-                Your search for&nbsp;
-                <span className="font-semibold text-panel-text-important">{search}</span>
-                &nbsp;returned zero results.
-              </div>
-            )}
+        <div className="shoko-scrollbar flex max-h-[18rem] w-full grow flex-col gap-y-1 overflow-y-auto bg-panel-background-alt pr-4">
+          {subFiltersQuery.isPending && (
+            <div className="flex grow items-center justify-center">
+              <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
+            </div>
+          )}
+
+          {subFiltersQuery.isSuccess && filteredList.length === 0 && (
+            <div className="text-center">
+              Your search for&nbsp;
+              <span className="font-semibold text-panel-text-important">{search}</span>
+              &nbsp;returned zero results.
+            </div>
+          )}
+
+          {subFiltersQuery.isSuccess && filteredList.length > 0 && (
+            filteredList.filter(item => !item.IsDirectory)
+              .map(item => <Item item={item} key={item.IDs.ID} onClose={onClose} />)
+          )}
         </div>
       </div>
     </div>
   );
+};
+
+function FiltersModal({ onClose, show }: Props) {
+  const filtersQuery = useFiltersQuery(show);
+  const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery]);
+
+  const [activeTab, setActiveTab] = useState('Filters');
+  const [activeFilter, setActiveFilter] = useState(0);
+
+  const onTabChange = (filterId: number, title: string) => {
+    setActiveTab(title);
+    setActiveFilter(filterId);
+  };
 
   return (
     <ModalPanel
@@ -104,13 +121,48 @@ function FiltersModal({ onClose, show }: Props) {
     >
       <div className="flex">
         <div className="flex min-h-[24rem] min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
-          {renderTabSide('Filters', '0')}
-          {filters.filter(item => item.IsDirectory).map(item => renderTabSide(item.Name, item.IDs.ID))}
+          <TabButton activeTab={activeTab} filterId={0} onTabChange={onTabChange} title="Filters" />
+          {filters.filter(item => item.IsDirectory)
+            .map(item => (
+              <TabButton
+                key={item.IDs.ID}
+                activeTab={activeTab}
+                filterId={item.IDs.ID}
+                onTabChange={onTabChange}
+                title={item.Name}
+              />
+            ))}
         </div>
-        <div className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== 'Filters' })}>
-          {filters.filter(item => !item.IsDirectory).map(item => renderItem(item))}
-        </div>
-        {filters.filter(item => item.IsDirectory).map(item => renderSidePanel(item.Name, item.IDs.ID))}
+
+        {filtersQuery.isPending && (
+          <div className="flex grow items-center justify-center">
+            <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
+          </div>
+        )}
+
+        {filtersQuery.isSuccess && activeTab === 'Filters' && (
+          <div className="flex grow flex-col gap-y-2 pl-8">
+            {filters.filter(item => !item.IsDirectory).map(item => (
+              <Item item={item} key={item.IDs.ID} onClose={onClose} />
+            ))}
+          </div>
+        )}
+
+        {filtersQuery.isSuccess && activeTab !== 'Filters' && filters
+          .filter(
+            item => item.IsDirectory,
+          ).map(
+            item => (
+              <SidePanel
+                key={item.IDs.ID}
+                filterId={item.IDs.ID}
+                activeFilter={activeFilter}
+                activeTab={activeTab}
+                title={item.Name}
+                onClose={onClose}
+              />
+            ),
+          )}
       </div>
     </ModalPanel>
   );

@@ -3,12 +3,12 @@ import { useParams } from 'react-router';
 import { mdiChevronDown, mdiChevronUp, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { map } from 'lodash';
+import { map, toNumber } from 'lodash';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 
 import type { TagType } from '@/core/types/api/tags';
 
@@ -40,8 +40,7 @@ const SeriesTags = () => {
 
   const [search, setSearch] = useState('');
 
-  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId! }, { skip: !seriesId });
-  const tags = tagsData.data;
+  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), {}, !!seriesId);
 
   if (!seriesId) return null;
 
@@ -69,12 +68,12 @@ const SeriesTags = () => {
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4 text-xl font-semibold">
           Tags
           <div>
-            <span className="text-panel-text-important">{tags?.length || 0}</span>
+            <span className="text-panel-text-important">{tagsQuery.data?.length || 0}</span>
             &nbsp;Tags Listed
           </div>
         </div>
         <div className="grid grid-cols-3 gap-8">
-          {map(tags, item => <SeriesTag key={item.ID} item={item} />)}
+          {map(tagsQuery.data ?? [], item => <SeriesTag key={item.ID} item={item} />)}
         </div>
       </div>
     </div>

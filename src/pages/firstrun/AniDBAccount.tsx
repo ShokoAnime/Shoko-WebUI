@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
-import { usePostAniDBTestLoginMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import { setSaved as setFirstRunSaved, unsetSaved as unsetFirstRunSaved } from '@/core/slices/firstrun';
 
 import { useFirstRunSettingsContext } from './FirstRunPage';
@@ -22,12 +22,12 @@ function AniDBAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [testAniDbLogin, testAniDbLoginResult] = usePostAniDBTestLoginMutation();
+  const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
   const [anidbStatus, setAnidbStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   const { Password, Username } = newSettings.AniDb;
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     updateSetting('AniDb', id, value);
     setAnidbStatus({ type: 'success', text: '' });
@@ -36,14 +36,17 @@ function AniDBAccount() {
 
   const handleTest = (event?: React.FormEvent) => {
     if (event) event.preventDefault();
-    testAniDbLogin({ Username, Password }).unwrap().then(async () => {
-      setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
-      await saveSettings();
-      dispatch(setFirstRunSaved('anidb-account'));
-      navigate('../metadata-sources');
-    }, (error) => {
-      console.error(error);
-      setAnidbStatus({ type: 'error', text: error.data });
+    testAniDbLogin({ Username, Password }, {
+      onSuccess: async () => {
+        setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
+        await saveSettings();
+        dispatch(setFirstRunSaved('anidb-account'));
+        navigate('../metadata-sources');
+      },
+      onError: (error) => {
+        console.error(error);
+        setAnidbStatus({ type: 'error', text: error.message });
+      },
     });
   };
 
@@ -94,7 +97,7 @@ function AniDBAccount() {
       <Footer
         nextDisabled={!Username || !Password}
         saveFunction={handleTest}
-        isFetching={testAniDbLoginResult.isLoading}
+        isFetching={isAnidbLoginPending}
         status={anidbStatus}
       />
     </TransitionDiv>

@@ -108,16 +108,6 @@ export const enum FileSourceEnum {
   Camera = 'Camera',
 }
 
-export type FileLinkOneApiType = {
-  fileID: number;
-  episodeIDs: number[];
-};
-
-export type FileLinkManyApiType = {
-  fileIDs: number[];
-  episodeID: number;
-};
-
 export type FileMediaInfoType = {
   Title: string;
   Duration: string;
@@ -241,20 +231,16 @@ export enum FileSortCriteriaEnum {
   FileID = 16,
 }
 
-type FileIncludeType = 'false' | 'true' | 'only';
-
-export type FileRequestType = {
-  includeMissing?: FileIncludeType;
-  includeIgnored?: FileIncludeType;
-  includeVariations?: FileIncludeType;
-  includeDuplicates?: FileIncludeType;
-  includeUnrecognized?: FileIncludeType;
-  includeLinked?: FileIncludeType;
-  includeViewed?: FileIncludeType;
-  includeWatched?: FileIncludeType;
-  sortOrder?: FileSortCriteriaEnum[];
-  includeDataFrom?: DataSourceType[];
-  includeMediaInfo?: boolean;
-  includeXRefs?: boolean;
+type SeriesEpisodesQueryBaseType = {
+  includeMissing?: string;
+  includeHidden?: string;
+  includeWatched?: string;
+  type?: string;
   search?: string;
-} & PaginationType;
+  fuzzy?: boolean;
+};
+
+export type SeriesEpisodesQueryType =
+  & SeriesEpisodesQueryBaseType
+  & { includeDataFrom?: DataSourceType[] }
+  & PaginationType;

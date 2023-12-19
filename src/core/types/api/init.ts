@@ -14,14 +14,6 @@ export type ServerStatusType = {
   };
 };
 
-type LegacyVersionTypeItem = {
-  Name: string;
-  Version: string;
-  ReleaseDate: string;
-};
-
-export type LegacyVersionType = LegacyVersionTypeItem[];
-
 export type ComponentVersionType = {
   Version: string;
   ReleaseChannel: 'Stable' | 'Dev' | 'Debug';

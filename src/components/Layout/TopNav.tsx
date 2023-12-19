@@ -31,9 +31,11 @@ import QueueModal from '@/components/Dialogs/QueueModal';
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
-import { useCheckNetworkConnectivityMutation, useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { useGetCurrentUserQuery } from '@/core/rtkQuery/splitV3Api/userApi';
-import { useGetWebuiUpdateCheckQuery, usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useCheckNetworkConnectivityMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useCurrentUserQuery } from '@/core/react-query/user/queries';
+import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
+import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
 import { initialSettings } from '@/pages/settings/SettingsPage';
@@ -86,17 +88,24 @@ function TopNav() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
   const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
 
-  const settingsQuery = useGetSettingsQuery();
-  const webuiSettings = settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
+  const settingsQuery = useSettingsQuery();
+  const webuiSettings = useMemo(() => settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings, [
+    settingsQuery,
+  ]);
 
-  const checkWebuiUpdate = useGetWebuiUpdateCheckQuery({ channel: webuiSettings.updateChannel, force: false }, {
-    skip: DEV || !settingsQuery.isSuccess,
-  });
-  const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
+  const checkWebuiUpdate = useWebuiUpdateCheckQuery(
+    { channel: webuiSettings.updateChannel, force: false },
+    !DEV && settingsQuery.isSuccess,
+  );
+  const {
+    isPending: isUpdateWebuiPending,
+    isSuccess: isUpdateWebuiSuccess,
+    mutate: updateWebui,
+  } = useUpdateWebuiMutation();
 
-  const [checkNetworkConnectivity, checkNetworkConnectivityResult] = useCheckNetworkConnectivityMutation();
+  const { isPending: isNetworkCheckPending, mutate: checkNetworkConnectivity } = useCheckNetworkConnectivityMutation();
 
-  const currentUser = useGetCurrentUserQuery();
+  const currentUser = useCurrentUserQuery();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
@@ -141,15 +150,16 @@ function TopNav() {
       </div>
     );
 
-    webuiUpdateTrigger(webuiSettings.updateChannel).unwrap().then(() => {
-      toast.success('', renderToast(), {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'webui-update',
-        className: 'w-80 ml-auto',
-      });
-    }, error => console.error(error));
+    updateWebui(webuiSettings.updateChannel, {
+      onSuccess: () =>
+        toast.success('', renderToast(), {
+          autoClose: false,
+          draggable: false,
+          closeOnClick: false,
+          toastId: 'webui-update',
+          className: 'w-80 ml-auto',
+        }),
+    });
   };
 
   const renderLinkMenuItem = useCallback((path: string, text: string, icon: string) => (
@@ -165,10 +175,10 @@ function TopNav() {
   ), []);
 
   const webuiUpdateStatus = useMemo(() => {
-    if (webuiUpdateResult.isLoading) return 'Updating...';
+    if (isUpdateWebuiPending) return 'Updating...';
     if (checkWebuiUpdate.isFetching) return 'Checking for update';
     return 'Update Available';
-  }, [webuiUpdateResult.isLoading, checkWebuiUpdate.isFetching]);
+  }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching]);
 
   return (
     <>
@@ -255,20 +265,20 @@ function TopNav() {
                 />
               )}
               {((checkWebuiUpdate.isSuccess && semver.gt(checkWebuiUpdate.data.Version, VITE_APPVERSION))
-                || checkWebuiUpdate.isFetching) && !webuiUpdateResult.isSuccess && (
+                || checkWebuiUpdate.isFetching) && !isUpdateWebuiSuccess && (
                 <div
                   className="flex cursor-pointer items-center gap-x-2.5 font-semibold"
                   onClick={() => handleWebUiUpdate()}
                 >
                   <Icon
-                    path={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
+                    path={checkWebuiUpdate.isFetching || isUpdateWebuiPending
                       ? mdiLoading
                       : mdiDownloadCircleOutline}
                     size={1}
-                    className={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading
+                    className={checkWebuiUpdate.isFetching || isUpdateWebuiPending
                       ? 'text-topnav-text-primary'
                       : 'text-header-text-important'}
-                    spin={checkWebuiUpdate.isFetching || webuiUpdateResult.isLoading}
+                    spin={checkWebuiUpdate.isFetching || isUpdateWebuiPending}
                   />
                   <div className="flex">
                     Web UI&nbsp;
@@ -281,7 +291,7 @@ function TopNav() {
                   className="flex items-center gap-x-2 font-semibold"
                   onClick={() => checkNetworkConnectivity()}
                 >
-                  {checkNetworkConnectivityResult.isLoading
+                  {isNetworkCheckPending
                     ? (
                       <Icon
                         path={mdiLoading}

@@ -4,7 +4,8 @@ import { remove } from 'lodash';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 export const languageDescription = {
@@ -66,7 +67,7 @@ type Props = {
 };
 
 function LanguagesModal({ onClose, type }: Props) {
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
   const LanguagePreference = useMemo(
     () => (type === 'Episode'
@@ -74,7 +75,7 @@ function LanguagesModal({ onClose, type }: Props) {
       : settings.LanguagePreference ?? ['x-jat', 'en']),
     [type, settings],
   );
-  const [patchSettings] = usePatchSettingsMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const [languages, setLanguages] = useState([] as string[]);
 
@@ -85,16 +86,16 @@ function LanguagesModal({ onClose, type }: Props) {
         ...settings,
         [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages,
       },
-    }).unwrap()
-      .then(() => onClose())
-      .catch(error => console.error(error));
+    }, {
+      onSuccess: () => onClose(),
+    });
   }, [type, settings, languages, patchSettings, onClose]);
 
   useEffect(() => {
     if (type !== null) setLanguages(LanguagePreference);
   }, [type, LanguagePreference]);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked: value, id } = event.target;
 
     const newLanguages = languages.slice();

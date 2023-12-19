@@ -9,15 +9,14 @@ import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
-  useGetAniDBRelatedQuery,
-  useGetAniDBSimilarQuery,
-  useGetSeriesQuery,
-  useNextUpEpisodeQuery,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+  useRelatedAnimeQuery,
+  useSeriesNextUpQuery,
+  useSeriesQuery,
+  useSimilarAnimeQuery,
+} from '@/core/react-query/series/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { SeriesAniDBRelatedType, SeriesAniDBSimilarType } from '@/core/types/api/series';
 
 const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   const thumbnail = useEpisodeThumbnail(nextUpEpisode);
@@ -38,17 +37,18 @@ const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-    skip: !seriesId,
-  });
-  const series = useMemo(() => seriesData?.data, [seriesData]);
-  const nextUpEpisodeData = useNextUpEpisodeQuery({ seriesId: toNumber(seriesId) });
-  const nextUpEpisode: EpisodeType = nextUpEpisodeData?.data ?? {} as EpisodeType;
-  const relatedData = useGetAniDBRelatedQuery({ seriesId: seriesId! }, { skip: !seriesId });
-  const related: SeriesAniDBRelatedType[] = relatedData?.data ?? [] as SeriesAniDBRelatedType[];
-  const similarData = useGetAniDBSimilarQuery({ seriesId: seriesId! }, { skip: !seriesId });
-  const similar: SeriesAniDBSimilarType[] = similarData?.data ?? [] as SeriesAniDBSimilarType[];
+  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const series = useMemo(() => seriesQuery?.data ?? null, [seriesQuery]);
+  const nextUpEpisodeData = useSeriesNextUpQuery(toNumber(seriesId!), {
+    includeDataFrom: ['AniDB', 'TvDB'],
+    includeMissing: true,
+  }, !!seriesId);
+  const relatedData = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
+  const similarData = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
+
+  const nextUpEpisode = useMemo(() => nextUpEpisodeData?.data ?? {} as EpisodeType, [nextUpEpisodeData]);
+  const related = useMemo(() => relatedData?.data ?? [], [relatedData]);
+  const similar = useMemo(() => similarData?.data ?? [], [similarData]);
 
   if (!seriesId || !series) return null;
 

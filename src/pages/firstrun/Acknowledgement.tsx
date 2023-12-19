@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 
 function Acknowledgement() {
   const dispatch = useDispatch();
 
-  const status = useGetInitStatusQuery();
+  const status = useServerStatusQuery();
 
   const navigate = useNavigate();
 

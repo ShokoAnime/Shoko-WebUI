@@ -7,7 +7,8 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -42,9 +43,9 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const [newSettings, setNewSettings] = useState(initialSettings);
   const [activeTab, setActiveTab] = useState('widgets');
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
-  const [patchSettings] = usePatchSettingsMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
     setNewSettings(settings);
@@ -79,13 +80,6 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       tempSettings.WebUI_Settings.dashboard[key] = value as boolean;
     }
     setNewSettings(tempSettings);
-  };
-
-  const handleSave = async () => {
-    try {
-      await patchSettings({ oldSettings: settings, newSettings }).unwrap();
-      onClose();
-    } catch (error) { /* empty */ }
   };
 
   const handleCancel = () => {
@@ -261,7 +255,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           <div className="flex justify-end gap-x-3 border-t border-panel-border pt-8 font-semibold">
             <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
             <Button
-              onClick={handleSave}
+              onClick={() => patchSettings({ oldSettings: settings, newSettings })}
               buttonType="primary"
               className="px-6 py-2"
             >

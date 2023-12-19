@@ -8,8 +8,9 @@ import { siDiscord } from 'simple-icons';
 
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
-import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
@@ -48,15 +49,15 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
 function FirstRunPage() {
   const navigate = useNavigate();
 
-  const version = useGetInitVersionQuery();
-  const settingsQuery = useGetSettingsQuery();
-  const settings = settingsQuery?.data ?? initialSettings;
-  const [patchSettings] = usePatchSettingsMutation();
+  const version = useVersionQuery();
+  const settingsQuery = useSettingsQuery();
+  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const { mutate: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
-  const status = useGetInitStatusQuery();
+  const status = useServerStatusQuery();
 
   useEffect(() => {
-    if (!status.isUninitialized && !isPersistent && !status.isLoading && status.data?.State !== 4) {
+    if ((status.isSuccess || status.isError) && !isPersistent && !status.isLoading && status.data?.State !== 4) {
       navigate('../login', { replace: true });
     }
   }, [navigate, status, isPersistent]);
@@ -73,11 +74,7 @@ function FirstRunPage() {
   };
 
   const saveSettings = async () => {
-    try {
-      await patchSettings({ oldSettings: settings, newSettings, skipValidation: true }).unwrap();
-    } catch (error) {
-      console.error(error);
-    }
+    patchSettings({ oldSettings: settings, newSettings, skipValidation: true });
   };
 
   const parsedVersion = useMemo(() => {

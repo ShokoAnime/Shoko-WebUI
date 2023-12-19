@@ -10,7 +10,8 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { cloneDeep, debounce } from 'lodash';
+import { cloneDeep, toNumber } from 'lodash';
+import { useImmer } from 'use-immer';
 import { useDebounce, useToggle } from 'usehooks-ts';
 
 import CollectionTitle from '@/components/Collection/CollectionTitle';
@@ -20,20 +21,21 @@ import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import Input from '@/components/Input/Input';
 import buildFilter from '@/core/buildFilter';
-import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
 import {
-  useGetFilterQuery,
-  useGetFilteredGroupSeriesQuery,
-  useGetFilteredGroupsInfiniteQuery,
-} from '@/core/rtkQuery/splitV3Api/filterApi';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
-import { useLazyGetGroupViewInfiniteQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+  useFilterQuery,
+  useFilteredGroupSeries,
+  useFilteredGroupsInfiniteQuery,
+} from '@/core/react-query/filter/queries';
+import { useGroupQuery } from '@/core/react-query/group/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useGroupViewQuery } from '@/core/react-query/webui/queries';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
-
-const defaultPageSize = 50;
+import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
   let finalCondition: FilterCondition | undefined;
@@ -78,11 +80,11 @@ function Collection() {
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
 
-  const filterQuery = useGetFilterQuery({ filterId: filterId! }, { skip: !filterId });
-  const groupData = useGetGroupQuery({ groupId: groupId! }, { skip: !isSeries });
-  const subsectionName = isSeries ? groupData?.data?.Name : filterId && filterQuery?.data?.Name;
+  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId);
+  const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
+  const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const viewSetting = settings.WebUI_Settings.collection.view;
   const { showRandomPoster: showRandomPosterGrid } = settings.WebUI_Settings.collection.poster;
@@ -100,17 +102,11 @@ function Collection() {
   const [seriesSearch, setSeriesSearch] = useState('');
   const debouncedSeriesSearch = useDebounce(seriesSearch, 200);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const setCurrentPageDebounced = useMemo(
-    () => debounce((page: number) => setCurrentPage(page), 200),
-    [],
-  );
-
   const showRandomPoster = useMemo(
     () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),
     [mode, showRandomPosterGrid, showRandomPosterList],
   );
-  const [patchSettings] = usePatchSettingsMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
     setMode(viewSetting);
@@ -127,68 +123,67 @@ function Collection() {
     setMode(newMode);
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
-    patchSettings({ oldSettings: settings, newSettings }).catch(console.error);
+    patchSettings({ oldSettings: settings, newSettings });
   };
 
-  // Q: Why is { skip: isSeries } not added here?
-  // A: When skip parameter changes while navigating to a group and back, the query is refired even if the data already
-  // exists causing flickers in the UI.
-  const groupsQuery = useGetFilteredGroupsInfiniteQuery({
-    page: currentPage,
-    pageSize: defaultPageSize,
+  const groupsQuery = useFilteredGroupsInfiniteQuery({
+    pageSize: 50,
     randomImages: showRandomPoster,
     filterCriteria: getFilter(debouncedGroupSearch, filterId ? filterQuery.data?.Expression : undefined, false),
   });
+  const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
+  const lastPageIds = useMemo(
+    () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
+    [groupsQuery],
+  );
 
-  const seriesQuery = useGetFilteredGroupSeriesQuery(
+  const seriesQuery = useFilteredGroupSeries(
+    toNumber(groupId!),
     {
-      groupId: groupId!,
-      randomImages: showRandomPoster,
       filterCriteria: getFilter(debouncedSeriesSearch),
+      randomImages: showRandomPoster,
     },
-    { skip: !isSeries },
+    isSeries,
   );
 
   const isFetching = useMemo(
     () => (isSeries ? seriesQuery.isFetching : groupsQuery.isFetching),
     [isSeries, seriesQuery.isFetching, groupsQuery.isFetching],
   );
-  const [pages, total] = useMemo(
+  const [items, total] = useMemo(
     () => {
-      const data = isSeries ? seriesQuery.currentData : groupsQuery.currentData;
-      return [data?.pages ?? {}, data?.total ?? 0];
+      const data = isSeries ? seriesQuery.data : groups;
+      const tempTotal = isSeries ? seriesQuery.data?.length : groupsTotal;
+      return [data ?? [], tempTotal ?? 0];
     },
-    [isSeries, groupsQuery.currentData, seriesQuery.currentData],
+    [groups, groupsTotal, isSeries, seriesQuery.data],
   );
 
   useEffect(() => {
-    if (!isSeries || debouncedSeriesSearch) return;
-    setTimelineSeries((pages[1] ?? []) as SeriesType[]);
-  }, [debouncedSeriesSearch, isSeries, pages]);
+    if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
+    setTimelineSeries(seriesQuery.data);
+  }, [debouncedSeriesSearch, isSeries, seriesQuery]);
 
-  const [fetchGroupExtras, groupExtrasData] = useLazyGetGroupViewInfiniteQuery();
-  const groupExtras = groupExtrasData.currentData ?? [];
+  // Couldn't find a way to do it in the query itself like we had in RTKQ, so doing it here
+  const [groupExtras, setGroupExtras] = useImmer<WebuiGroupExtra[]>([]);
+  const groupExtrasQuery = useGroupViewQuery({
+    GroupIDs: lastPageIds,
+    TagFilter: 128,
+    TagLimit: 20,
+  });
 
   useEffect(() => {
-    const ids = groupsQuery.data?.pages[currentPage]?.map(group => group.IDs.ID) ?? [];
-    if (!ids.length) return;
-    fetchGroupExtras({
-      GroupIDs: ids,
-      TagFilter: 128,
-      TagLimit: 20,
-    }).then().catch(error => console.error(error));
-  }, [currentPage, fetchGroupExtras, groupsQuery]);
-
-  // This can be inside CollectionView but then defaultPageSize has to be passed to it so same either way
-  // 999 to make it effectively infinite since Group/{id}/Series is not paginated
-  const pageSize = useMemo(() => (groupId ? 999 : defaultPageSize), [groupId]);
+    if (!groupExtrasQuery.isSuccess) return;
+    setGroupExtras(immerState => [...immerState, ...groupExtrasQuery.data]);
+  }, [groupExtrasQuery.data, groupExtrasQuery.isSuccess, setGroupExtras]);
 
   return (
     <>
       <div className="flex grow flex-col gap-y-8">
         <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
           <CollectionTitle
-            count={(total === 0 && isFetching) ? -1 : total}
+            // eslint-disable-next-line no-nested-ternary
+            count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
             filterOrGroup={subsectionName}
             searchQuery={isSeries ? debouncedSeriesSearch : debouncedGroupSearch}
           />
@@ -214,13 +209,13 @@ function Collection() {
         <div className="flex grow">
           <CollectionView
             groupExtras={groupExtras}
+            fetchNextPage={groupsQuery.fetchNextPage}
+            isFetchingNextPage={groupsQuery.isFetchingNextPage}
             isFetching={isFetching}
             isSeries={isSeries}
             isSidebarOpen={showFilterSidebar}
+            items={items}
             mode={mode}
-            pageSize={pageSize}
-            pages={pages}
-            setCurrentPage={setCurrentPageDebounced}
             total={total}
           />
           <div

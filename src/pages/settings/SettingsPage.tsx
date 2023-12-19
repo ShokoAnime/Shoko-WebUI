@@ -12,7 +12,8 @@ import semver from 'semver';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import { uiVersion } from '@/core/util';
 
@@ -543,9 +544,9 @@ function SettingsPage() {
 
   const { pathname } = useLocation();
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
-  const [patchSettings] = usePatchSettingsMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const [newSettings, setNewSettings] = useState(initialSettings);
   const [showNav, setShowNav] = useState(false);
@@ -573,12 +574,6 @@ function SettingsPage() {
     if (type === 'WebUI_Settings' && key === 'theme') {
       dispatch(setMiscItem({ webuiPreviewTheme: value }));
     }
-  };
-
-  const saveSettings = async () => {
-    try {
-      await patchSettings({ oldSettings: settings, newSettings }).unwrap();
-    } catch (error) { /* empty */ }
   };
 
   return (
@@ -636,7 +631,13 @@ function SettingsPage() {
                   <Button onClick={() => setNewSettings(settings)} buttonType="secondary" className="px-3 py-2">
                     Cancel
                   </Button>
-                  <Button onClick={() => saveSettings()} buttonType="primary" className="ml-3 px-3 py-2">Save</Button>
+                  <Button
+                    onClick={() => patchSettings({ oldSettings: settings, newSettings })}
+                    buttonType="primary"
+                    className="ml-3 px-3 py-2"
+                  >
+                    Save
+                  </Button>
                 </div>
               )}
             </>

@@ -7,7 +7,8 @@ import prettyBytes from 'pretty-bytes';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
-import { useGetImportFoldersQuery, useLazyRescanImportFolderQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { useRescanImportFolderMutation } from '@/core/react-query/import-folder/mutations';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
 
 import type { RootState } from '@/core/store';
@@ -18,13 +19,14 @@ function ImportFolders() {
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [rescanTrigger] = useLazyRescanImportFolderQuery();
-  const importFolderQuery = useGetImportFoldersQuery();
+  const { mutate: rescanImportFolder } = useRescanImportFolderMutation();
+  const importFolderQuery = useImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   const rescanFolder = (ID: number, name: string) => {
-    toast.success('Scan Import Folder Success', `Import Folder ${name} queued for scanning.`);
-    rescanTrigger(ID).catch(() => {});
+    rescanImportFolder(ID, {
+      onSuccess: () => toast.success('Scan Import Folder Success', `Import Folder ${name} queued for scanning.`),
+    });
   };
   const setImportFolderModalStatus = (status: boolean) => dispatch(setStatus(status));
   const openImportFolderModalEdit = (ID: number) => dispatch(setEdit(ID));

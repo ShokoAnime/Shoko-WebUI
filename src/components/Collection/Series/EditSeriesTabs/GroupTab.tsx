@@ -1,11 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
-import { debounce } from 'lodash';
+import { useDebounce } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
-import { useLazyGetGroupInfiniteQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import { useGetSeriesGroupQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGroupsInfiniteQuery } from '@/core/react-query/group/queries';
+import { useSeriesGroupQuery } from '@/core/react-query/series/queries';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 
@@ -13,55 +14,30 @@ type Props = {
   seriesId: number;
 };
 
+const Title = ({ group }: { group: CollectionGroupType }) => (
+  <div
+    className="flex cursor-pointer justify-between"
+    key={group.IDs.MainSeries}
+    onClick={() => {}}
+  >
+    <div>{group.Name}</div>
+    {group.IDs.MainSeries}
+  </div>
+);
+
 function GroupTab({ seriesId }: Props) {
   const [name, setName] = useState('');
-  const [search, setSearch] = useState('');
   const [nameEditable, setNameEditable] = useState(false);
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
 
-  const groupQuery = useGetSeriesGroupQuery({ seriesId: seriesId.toString(), topLevel: false }, {
-    refetchOnMountOrArgChange: false,
-  });
-
-  const [fetchGroup, groupResults] = useLazyGetGroupInfiniteQuery();
-
-  const getAniDbGroup = useMemo((): CollectionGroupType[] => {
-    const pages = groupResults.data?.pages;
-    if (!pages) return [];
-
-    const keys = Object.keys(pages);
-    if (!keys?.length) return [];
-
-    return pages[1];
-  }, [groupResults]);
-
-  const searchGroup = useMemo(() =>
-    debounce(async () => {
-      await fetchGroup({
-        startsWith: search,
-        pageSize: 5,
-      });
-    }, 250), [search, fetchGroup]);
+  const groupQuery = useSeriesGroupQuery(seriesId, false);
+  const groupsQuery = useGroupsInfiniteQuery({ startsWith: debouncedSearch, pageSize: 10 });
+  const [groups] = useFlattenListResult(groupsQuery.data);
 
   useEffect(() => {
-    if (!search) return;
-    searchGroup()?.then()?.catch(console.error);
-  }, [search, searchGroup]);
-
-  useEffect(() => {
-    const { data } = groupQuery;
-    setName(data?.Name ?? '');
-  }, [groupQuery]);
-
-  const renderTitle = useCallback((group: CollectionGroupType) => (
-    <div
-      className="flex cursor-pointer justify-between"
-      key={group.IDs.MainSeries}
-      onClick={() => setName(group.Name)}
-    >
-      <div>{group.Name}</div>
-      {group.IDs.MainSeries}
-    </div>
-  ), []);
+    if (groupQuery.isSuccess) setName(groupQuery.data.Name);
+  }, [groupQuery.isSuccess, groupQuery.data?.Name]);
 
   const nameInputIcons = useCallback(() => {
     if (!nameEditable) {
@@ -111,8 +87,8 @@ function GroupTab({ seriesId }: Props) {
           !nameEditable && 'invisible',
         )}
       >
-        {!search && groupQuery.isSuccess && renderTitle(groupQuery.data)}
-        {search && groupResults.isSuccess && getAniDbGroup.map(renderTitle)}
+        {!debouncedSearch && groupQuery.isSuccess && <Title group={groupQuery.data} />}
+        {debouncedSearch && groupsQuery.isSuccess && groups.map(group => <Title key={group.IDs.ID} group={group} />)}
       </div>
     </div>
   );

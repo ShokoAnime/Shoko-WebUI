@@ -1,157 +1,126 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createColumnHelper, flexRender, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { find } from 'lodash';
+import cx from 'classnames';
+import { find, forEach, toNumber } from 'lodash';
 
-import Checkbox from '@/components/Input/Checkbox';
+import { useRowSelection } from '@/hooks/useRowSelection';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 
 type Props = {
-  seriesId: number;
   updateSelectedFiles: (fileIds: number[], select?: boolean) => void;
-  selectedFiles: { [key: number]: boolean };
+  selectedFiles: Record<number, boolean>;
   files: FileType[];
   episodes: EpisodeType[];
 };
 
-const columnHelper = createColumnHelper<FileType>();
+const episodePrefixMap = {
+  Normal: 'EP',
+  Special: 'SP',
+  ThemeSong: 'C',
+};
 
 function ManuallyLinkedFilesRow(props: Props) {
-  const { episodes, files, selectedFiles, seriesId, updateSelectedFiles } = props;
+  const {
+    episodes,
+    files,
+    selectedFiles,
+    updateSelectedFiles,
+  } = props;
 
-  const getEpTypePrefix = useCallback(
-    (epType: string) => {
-      switch (epType) {
-        case 'Normal':
-          return 'EP';
-        case 'Special':
-          return 'SP';
-        case 'ThemeSong':
-          return 'C';
-        default:
-          return '';
-      }
-    },
-    [],
-  );
-
-  const columns = useMemo(() => [
-    columnHelper.display({
-      id: 'checkbox',
-      header: ({ table }) => (
-        <div className="flex items-center justify-center">
-          <Checkbox
-            id={`checkbox-${seriesId}-all`}
-            isChecked={table.getIsAllRowsSelected()}
-            onChange={() => {
-              const selectedIds: number[] = [];
-              table.getRowModel().flatRows.reduce((result, row) => {
-                result.push(row.original.ID);
-                return result;
-              }, selectedIds);
-              updateSelectedFiles(selectedIds, !table.getIsAllRowsSelected());
-              table.toggleAllRowsSelected();
-            }}
-            intermediate={table.getIsSomeRowsSelected()}
-          />
-        </div>
-      ),
-      cell: ({ row }) => (
-        <div className="flex items-center justify-center">
-          <Checkbox
-            id={`checkbox-${seriesId}-${row.id}`}
-            isChecked={row.getIsSelected()}
-            onChange={() => {
-              updateSelectedFiles([row.original.ID], !row.getIsSelected());
-              row.toggleSelected();
-            }}
-          />
-        </div>
-      ),
-      meta: {
-        className: 'w-20',
-      },
-    }),
-    columnHelper.display({
-      id: 'entry',
-      header: 'Entry',
-      cell: ({ row }) => {
-        const episode = find(episodes, item => item.IDs.ID === row.original.SeriesIDs![0].EpisodeIDs[0].ID)!;
-        return (
-          <div className="flex">
-            {`${getEpTypePrefix(episode?.AniDB?.Type ?? '')} ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}
-            &nbsp;(
-            <span className="font-semibold text-panel-text-primary">{episode?.IDs?.AniDB}</span>
-            )
-            <a
-              href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`}
-              rel="noopener noreferrer"
-              target="_blank"
-              className="ml-2 text-panel-text-primary"
-              aria-label="Open AniDB episode page"
-            >
-              <Icon path={mdiOpenInNew} size={1} />
-            </a>
-          </div>
-        );
-      },
-      meta: {
-        className: 'w-auto',
-      },
-    }),
-    columnHelper.accessor(row => row.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>', {
-      header: 'File',
-      id: 'file',
-      cell: info => info.getValue(),
-      meta: {
-        className: 'w-128',
-      },
-      // TODO: Use filter and sort from server
-    }),
-  ], [episodes, getEpTypePrefix, seriesId, updateSelectedFiles]);
-
-  const table = useReactTable({
-    data: files,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-  });
+  const {
+    handleRowSelect,
+    rowSelection,
+    setRowSelection,
+  } = useRowSelection<FileType>(files);
 
   useEffect(() => {
-    table.getRowModel().flatRows.forEach((row) => {
-      if (selectedFiles[row.original.ID]) row.toggleSelected(selectedFiles[row.original.ID]);
+    forEach(rowSelection, (value, key) => {
+      updateSelectedFiles([toNumber(key)], value);
     });
-  }, [selectedFiles, table]);
+  }, [rowSelection, updateSelectedFiles]);
+
+  useEffect(() => {
+    if (Object.keys(selectedFiles).length === 0) setRowSelection({});
+  }, [selectedFiles, setRowSelection]);
+
+  const [lastRowSelected, setLastRowSelected] = useState<number | null>(null);
+  const handleSelect = useCallback((event: React.MouseEvent, index: number) => {
+    if (event.shiftKey) {
+      window?.getSelection()?.removeAllRanges();
+      const lrIndex = lastRowSelected ?? index;
+      const fromIndex = Math.min(lrIndex, index);
+      const toIndex = Math.max(lrIndex, index);
+      const isSelected = lastRowSelected !== null
+        ? rowSelection[files[lastRowSelected].ID]
+        : true;
+      const tempRowSelection: Record<number, boolean> = {};
+      for (let i = fromIndex; i <= toIndex; i += 1) {
+        const id = files[i].ID;
+        tempRowSelection[id] = isSelected;
+      }
+      setRowSelection(tempRowSelection);
+    } else if (window?.getSelection()?.type !== 'Range') {
+      const id = files[index].ID;
+      handleRowSelect(id, !rowSelection[id]);
+      setLastRowSelected(index);
+    }
+  }, [files, handleRowSelect, lastRowSelected, rowSelection, setRowSelection]);
 
   return (
-    <table className="w-full table-fixed border-separate border-spacing-0 text-left">
-      <thead>
-        {table.getHeaderGroups().map(headerGroup => (
-          <tr key={headerGroup.id}>
-            {headerGroup.headers.map(header => (
-              <th key={header.id} className={`${header.column.columnDef.meta?.className} pb-1.5 pt-4`}>
-                {flexRender(header.column.columnDef.header, header.getContext())}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map(row => (
-          <tr key={row.id}>
-            {row.getVisibleCells().map(cell => (
-              <td key={cell.id} className="py-1.5">
-                <span className="line-clamp-1 break-all">
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </span>
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+    <div className="mt-4 flex flex-col">
+      <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
+        <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
+          Entry
+        </div>
+        <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
+          File
+        </div>
+      </div>
+      {files.map((file, index) => {
+        const episode = find(episodes, item => item.IDs.ID === file.SeriesIDs![0].EpisodeIDs[0].ID)!;
+        const selected = rowSelection[file.ID];
+
+        return (
+          <div className="mt-2 rounded-md" key={file.ID}>
+            <div
+              className={cx(
+                'bg-panel-background flex relative cursor-pointer rounded-md border p-4 text-left transition-colors',
+                selected ? 'border-panel-text-primary' : 'border-panel-border',
+                'border-panel-border',
+              )}
+              onClick={event => handleSelect(event, index)}
+            >
+              <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
+                <div className="flex">
+                  {`${
+                    episodePrefixMap[episode?.AniDB?.Type ?? ''] ?? ''
+                  } ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}
+                  &nbsp;(
+                  <span className="font-semibold text-panel-text-primary">{episode?.IDs?.AniDB}</span>
+                  )
+                  <a
+                    href={`https://anidb.net/episode/${episode?.IDs?.AniDB}`}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                    className="ml-2 text-panel-text-primary"
+                    aria-label="Open AniDB episode page"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    <Icon path={mdiOpenInNew} size={1} />
+                  </a>
+                </div>
+              </div>
+              <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
+                {file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

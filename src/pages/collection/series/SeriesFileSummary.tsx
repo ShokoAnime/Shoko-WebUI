@@ -1,13 +1,13 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { find, forEach, get, map, omit } from 'lodash';
+import { find, forEach, get, map, omit, toNumber } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useLazyGetSeriesFileSummeryQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
 import type { WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
 
@@ -137,8 +137,8 @@ const SeriesFileSummary = () => {
   const { seriesId } = useParams();
 
   const [groupBy, setGroupBy] = useState('GroupName,FileVersion,FileSource');
-  const [getFileSummary, fileSummaryQuery] = useLazyGetSeriesFileSummeryQuery();
-  const fileSummary = fileSummaryQuery.data;
+  const fileSummaryQuery = useSeriesFileSummaryQuery(toNumber(seriesId!), { groupBy }, !!seriesId);
+  const fileSummary = useMemo(() => fileSummaryQuery.data, [fileSummaryQuery]);
 
   const summary = useMemo(() => {
     let TotalEpisodeSize = 0;
@@ -169,11 +169,6 @@ const SeriesFileSummary = () => {
       Groups,
     };
   }, [fileSummary]);
-
-  useEffect(() => {
-    if (!seriesId) return;
-    getFileSummary({ SeriesID: seriesId, groupBy }).catch(console.error);
-  }, [seriesId, groupBy, getFileSummary]);
 
   if (!seriesId) return null;
 
@@ -246,7 +241,7 @@ const SeriesFileSummary = () => {
         {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
           <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
             {map(fileSummary?.MissingEpisodes, episode => (
-              <div className="grid grid-cols-6 gap-x-12">
+              <div className="grid grid-cols-6 gap-x-12" key={episode.ID}>
                 <div>
                   {episode.Type}
                   &nbsp;

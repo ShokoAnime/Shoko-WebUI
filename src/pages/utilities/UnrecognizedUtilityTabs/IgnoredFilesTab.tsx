@@ -1,100 +1,139 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { forEach } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { useQueryClient } from '@tanstack/react-query';
+import { find, forEach } from 'lodash';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { useGetFilesQuery, usePutFileIgnoreMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useIgnoreFileMutation } from '@/core/react-query/file/mutations';
+import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import { useRowSelection } from '@/hooks/useRowSelection';
+import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
-import type { ListResultType } from '@/core/types/api';
-import type { Table } from '@tanstack/react-table';
+import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
+import type { Updater } from 'use-immer';
 
 const Menu = (
-  { files, refetch, table }: { table: Table<FileType>, files: ListResultType<FileType>, refetch: () => void },
+  props: {
+    selectedRows: FileType[];
+    setSelectedRows: Updater<Record<number, boolean>>;
+  },
 ) => {
-  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
+  const {
+    selectedRows,
+    setSelectedRows,
+  } = props;
 
-  const tableSelectedRows = table.getSelectedRowModel();
-  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
+  const queryClient = useQueryClient();
 
-  const restoreFiles = (selected = false) => {
-    table.resetRowSelection();
-    const fileList = selected ? selectedRows : files.List;
-    forEach(fileList, (row) => {
-      fileIgnoreTrigger({ fileId: row.ID, value: false }).catch(() => {});
+  const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
+
+  const restoreFiles = useEventCallback((_ = false) => {
+    setSelectedRows([]);
+    let failedFiles = 0;
+    forEach(selectedRows, (row) => {
+      ignoreFile({ fileId: row.ID, ignore: false }).catch((error) => {
+        failedFiles += 1;
+        console.error(error);
+      });
     });
-  };
+
+    if (failedFiles) toast.error(`Error restoring ${failedFiles} files!`);
+    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files restored!`);
+  });
 
   return (
-    <>
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
-            table.resetRowSelection();
-            refetch();
+            setSelectedRows([]);
+            queryClient.invalidateQueries({
+              queryKey: ['files', { include_only: ['Ignored'] }],
+            }).catch(() => {});
           }}
           icon={mdiRestart}
           name="Refresh"
         />
-        <MenuButton onClick={() => restoreFiles()} icon={mdiEyeOutline} name="Restore All" />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore" highlight />
         <MenuButton
-          onClick={() => table.resetRowSelection()}
+          onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
           name="Cancel Selection"
           highlight
         />
       </TransitionDiv>
-    </>
+      <span className="ml-auto font-semibold text-panel-text-important">
+        {selectedRows.length}
+        &nbsp;
+      </span>
+      {selectedRows.length === 1 ? 'File ' : 'Files '}
+      Selected
+    </div>
   );
 };
 
 function IgnoredFilesTab() {
-  const { columns } = useUnrecognizedUtilityContext();
-
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
 
-  const filesQuery = useGetFilesQuery({
-    pageSize: 0,
-    includeIgnored: 'only',
-    search: debouncedSearch,
-    sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
-  });
-  const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
+  const importFolderQuery = useImportFoldersQuery();
+  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery]);
 
-  const table = useReactTable({
-    data: files.List,
-    columns,
-    getRowId(row) {
-      return row.ID.toString();
+  const filesQuery = useFilesInfiniteQuery(
+    {
+      pageSize: 50,
+      include_only: ['Ignored'],
+      sortOrder: debouncedSearch
+        ? []
+        : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
     },
-    getCoreRowModel: getCoreRowModel(),
-  });
-  const tableSelectedRows = table.getSelectedRowModel();
-  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
+    debouncedSearch,
+  );
+  const [files, fileCount] = useFlattenListResult(filesQuery.data);
 
-  useEffect(() => {
-    table.resetRowSelection();
-  }, [files, table]);
+  const columns = useMemo<UtilityHeaderType<FileType>[]>(
+    () => [
+      {
+        id: 'importFolder',
+        name: 'Import Folder',
+        className: 'w-40',
+        item: file =>
+          find(
+            importFolders,
+            { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+          )?.Name ?? '<Unknown>',
+      },
+      ...staticColumns,
+    ],
+    [importFolders],
+  );
+
+  const {
+    handleRowSelect,
+    rowSelection,
+    selectedRows,
+    setRowSelection,
+  } = useRowSelection<FileType>(files);
 
   return (
     <div className="flex grow flex-col gap-y-8">
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
+        <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} />}>
           <div className="flex items-center gap-x-3">
             <Input
               type="text"
@@ -105,35 +144,39 @@ function IgnoredFilesTab() {
               onChange={e => setSearch(e.target.value)}
               inputClassName="px-4 py-3"
             />
-            <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-              <Menu table={table} files={files} refetch={() => filesQuery.refetch()} />
-              <span className="ml-auto text-panel-text-important">
-                {selectedRows.length}
-                &nbsp;
-              </span>
-              {selectedRows.length === 1 ? 'File' : 'Files'}
-              &nbsp; Selected
-            </div>
+            <Menu
+              selectedRows={selectedRows}
+              setSelectedRows={setRowSelection}
+            />
           </div>
         </ShokoPanel>
       </div>
 
       <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
-        {filesQuery.isLoading && (
+        {filesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
-        {!filesQuery.isLoading && files.Total > 0 && (
-          <UtilitiesTable
-            table={table}
-            sortCriteria={sortCriteria}
-            setSortCriteria={setSortCriteria}
-            skipSort={Boolean(debouncedSearch)}
-          />
-        )}
-        {!filesQuery.isLoading && files.Total === 0 && (
+
+        {!filesQuery.isPending && fileCount === 0 && (
           <div className="flex grow items-center justify-center font-semibold">No ignored file(s)!</div>
+        )}
+
+        {filesQuery.isSuccess && fileCount > 0 && (
+          <UtilitiesTable
+            count={fileCount}
+            fetchNextPage={filesQuery.fetchNextPage}
+            handleRowSelect={handleRowSelect}
+            columns={columns}
+            isFetchingNextPage={filesQuery.isFetchingNextPage}
+            rows={files}
+            rowSelection={rowSelection}
+            setSelectedRows={setRowSelection}
+            setSortCriteria={setSortCriteria}
+            skipSort={!!debouncedSearch}
+            sortCriteria={sortCriteria}
+          />
         )}
       </TransitionDiv>
     </div>

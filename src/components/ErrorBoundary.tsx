@@ -4,8 +4,8 @@ import { useNavigate, useRouteError } from 'react-router-dom';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
-import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
-import { usePostWebuiUpdateMutation } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useVersionQuery } from '@/core/react-query/init/queries';
+import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { unsetDetails } from '@/core/slices/apiSession';
 
 const ErrorBoundary = () => {
@@ -13,8 +13,8 @@ const ErrorBoundary = () => {
   const navigate = useNavigate();
   const error = useRouteError() as Error; // There is no type definition provided.
 
-  const version = useGetInitVersionQuery();
-  const [webuiUpdateTrigger, webuiUpdateResult] = usePostWebuiUpdateMutation();
+  const version = useVersionQuery();
+  const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
@@ -25,7 +25,9 @@ const ErrorBoundary = () => {
 
   const handleWebUiUpdate = (channel: 'Stable' | 'Dev') => {
     setUpdateChannel(channel);
-    webuiUpdateTrigger(channel).unwrap().then(() => handleLogout(), err => console.error(err));
+    updateWebui(channel, {
+      onSuccess: () => handleLogout(),
+    });
   };
 
   return (
@@ -66,7 +68,7 @@ const ErrorBoundary = () => {
             onClick={() => handleWebUiUpdate('Stable')}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
-            loading={updateChannel === 'Stable' && webuiUpdateResult.isLoading}
+            loading={updateChannel === 'Stable' && isUpdateWebuiPending}
           >
             Force update to Stable Web UI
           </Button>
@@ -76,7 +78,7 @@ const ErrorBoundary = () => {
               onClick={() => handleWebUiUpdate('Dev')}
               className="px-4 py-2 drop-shadow-md"
               buttonType="primary"
-              loading={updateChannel === 'Dev' && webuiUpdateResult.isLoading}
+              loading={updateChannel === 'Dev' && isUpdateWebuiPending}
             >
               Force update to Dev Web UI
             </Button>

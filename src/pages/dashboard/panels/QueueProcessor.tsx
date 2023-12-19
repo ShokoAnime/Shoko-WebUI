@@ -15,7 +15,7 @@ import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetQueueOperationMutation } from '@/core/rtkQuery/splitV3Api/queueApi';
+import { useQueueOperationMutation } from '@/core/react-query/queue/mutations';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 
 import type { RootState } from '@/core/store';
@@ -30,10 +30,10 @@ function QueueProcessor() {
   const items = useSelector((state: RootState) => state.mainpage.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [queueOperation] = useGetQueueOperationMutation();
-  const handleOperation = useEventCallback(async (operation: string, queue?: string) => {
-    await queueOperation({ operation, queue });
-  });
+  const { mutate: queueOperation } = useQueueOperationMutation();
+  const handleOperation = useEventCallback(
+    (operation: string, queue?: string) => queueOperation({ operation, queue }),
+  );
 
   const handleOpenQueueDialog = useEventCallback(() => {
     dispatch(setQueueModalOpen(true));

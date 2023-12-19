@@ -6,7 +6,7 @@ import cx from 'classnames';
 import { forEach } from 'lodash';
 
 import toast from '@/components/Toast';
-import { useGetFolderDrivesQuery, useLazyGetFolderQuery } from '@/core/rtkQuery/splitV3Api/folderApi';
+import { useFolderDrivesQuery, useFolderQuery } from '@/core/react-query/folder/queries';
 import { setSelectedNode } from '@/core/slices/modals/browseFolder';
 
 import type { RootState } from '@/core/store';
@@ -14,30 +14,32 @@ import type { DriveType, FolderType } from '@/core/types/api/folder';
 
 type Props = {
   level: number;
-  Path: string;
   nodeId: number;
+  path: string;
+  isAccessible?: boolean;
 };
 
 function TreeNode(props: Props) {
   const dispatch = useDispatch();
 
-  const drives = useGetFolderDrivesQuery(undefined, { skip: props.nodeId !== 0 });
-  const [fetchFolders, folders] = useLazyGetFolderQuery();
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
 
   const [expanded, setExpanded] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  const { Path, level, nodeId } = props;
+  const { isAccessible, level, nodeId, path } = props;
   const isSelected = nodeId === selectedNode.id;
 
+  const drives = useFolderDrivesQuery(nodeId === 0);
+  const folders = useFolderQuery(path, nodeId !== 0 && expanded);
+
+  useEffect(() => {
+    if (folders.isError) toast.error(`${folders.error} - Fetching folder ${path} failed.`);
+  }, [path, folders.error, folders.isError]);
+
   const toggleExpanded = (event: React.MouseEvent) => {
+    if (!isAccessible) return;
     if (!loaded) {
-      if (nodeId !== 0) {
-        fetchFolders(Path).catch((reason) => {
-          toast.error(`${reason} - Fetching folder ${Path} failed.`);
-        });
-      }
       setExpanded(true);
       setLoaded(true);
     } else {
@@ -47,7 +49,7 @@ function TreeNode(props: Props) {
   };
 
   const toggleSelected = (event: React.MouseEvent) => {
-    dispatch(setSelectedNode({ id: nodeId, Path }));
+    dispatch(setSelectedNode({ id: nodeId, path }));
     event.stopPropagation();
   };
 
@@ -55,23 +57,25 @@ function TreeNode(props: Props) {
   const data = nodeId === 0 ? drives.data! : folders.data!;
   if (expanded) {
     forEach(data, (node: DriveType | FolderType) => {
+      if ('IsAccessible' in node && !node.IsAccessible) return;
       children.push(
         <TreeNode
           key={node.nodeId}
           nodeId={node.nodeId}
-          Path={node.Path}
+          path={node.Path}
           level={level + 1}
+          isAccessible={'IsAccessible' in node ? node.IsAccessible : undefined}
         />,
       );
     });
   }
 
   const getChoppedPath = () => {
-    const isUnix = Path.indexOf('/') !== -1;
+    const isUnix = path.indexOf('/') !== -1;
 
-    if (isUnix && level === 2) return Path;
+    if (isUnix && level === 2) return path;
 
-    const splitPath = Path.split(/[/\\]/g);
+    const splitPath = path.split(/[/\\]/g);
     let part = splitPath.pop();
     if (part === '') {
       part = splitPath.pop();
@@ -99,7 +103,9 @@ function TreeNode(props: Props) {
               className="transition-transform"
             />
           </div>
-          <span className="select-none">{getChoppedPath()}</span>
+          <span className={cx('select-none', selectedNode.path === path && 'text-panel-text-primary')}>
+            {getChoppedPath()}
+          </span>
         </div>
         <Icon
           className={cx('inline-block justify-self-end mr-3 text-panel-text-primary', { hidden: !isSelected })}

@@ -14,7 +14,7 @@ import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { usePostFileAVDumpMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useAvdumpFileMutation } from '@/core/react-query/file/mutations';
 import { copyToClipboard } from '@/core/util';
 
 import type { RootState } from '@/core/store';
@@ -22,7 +22,7 @@ import type { FileType } from '@/core/types/api/file';
 
 const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
-  const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
+  const { mutate: avdumpFile } = useAvdumpFileMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
@@ -97,10 +97,10 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     } as const;
   }, [file, dumpSession, truck]);
 
-  const handleDump = useEventCallback(async (event: React.MouseEvent) => {
+  const handleDump = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
-      await fileAvdumpTrigger(fileId);
+      avdumpFile(fileId);
     }
   });
 

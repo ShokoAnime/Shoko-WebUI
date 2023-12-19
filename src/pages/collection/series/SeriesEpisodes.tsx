@@ -1,10 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Button from '@/components/Input/Button';
@@ -12,93 +13,78 @@ import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
-import {
-  useGetSeriesQuery,
-  useLazyGetSeriesEpisodesInfiniteQuery,
-  useSetSeriesEpisodesWatchedMutation,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
+import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
 const pageSize = 26;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
-  const [search, setSearch] = useState('');
   const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
-  const [fetchingPage, setFetchingPage] = useState(false);
-  const [fetchEpisodes, episodesData] = useLazyGetSeriesEpisodesInfiniteQuery();
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-    skip: !seriesId,
-  });
-  const [setEpisodesWatched] = useSetSeriesEpisodesWatchedMutation();
+  const [search, setSearch] = useState('');
+  const debouncedSearch = useDebounce(search, 200);
 
-  const animeId = useMemo(() => seriesData?.data?.IDs.AniDB ?? 0, [seriesData]);
-  const episodePages = episodesData.data?.pages ?? {};
-  const episodeTotal = episodesData.data?.total ?? 0;
+  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
+    toNumber(seriesId!),
+    {
+      includeMissing: episodeFilterAvailability,
+      includeHidden: episodeFilterHidden,
+      type: episodeFilterType,
+      includeWatched: episodeFilterWatched,
+      includeDataFrom: ['AniDB', 'TvDB'],
+      search: debouncedSearch,
+      pageSize,
+    },
+    !!seriesId,
+  );
+  const {
+    data,
+    dataUpdatedAt,
+    fetchNextPage,
+    isFetchingNextPage,
+    isSuccess,
+  } = seriesEpisodesQuery;
+  const [episodes, episodeCount] = useFlattenListResult(data);
+
+  const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
+
+  const animeId = useMemo(() => seriesQuery?.data?.IDs.AniDB ?? 0, [seriesQuery]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
-
   const rowVirtualizer = useVirtualizer({
-    count: episodeTotal,
+    count: episodeCount,
     getScrollElement: () => scrollRef.current,
     estimateSize: () => 332, // 332px is the minimum height of a loaded row
     overscan: 5,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
 
-  const fetchPage = useMemo(() =>
-    debounce((page: number) => {
-      fetchEpisodes({
-        seriesID: toNumber(seriesId),
-        includeMissing: episodeFilterAvailability,
-        includeHidden: episodeFilterHidden,
-        type: episodeFilterType,
-        includeWatched: episodeFilterWatched,
-        includeDataFrom: ['AniDB', 'TvDB'],
-        page,
-        search,
-        pageSize,
-      }).then().catch(error => console.error(error)).finally(() => setFetchingPage(false));
-    }, 200), [
-    search,
-    episodeFilterAvailability,
-    episodeFilterType,
-    episodeFilterWatched,
-    episodeFilterHidden,
-    seriesId,
-    fetchEpisodes,
-  ]);
+  const fetchNextPageDebounced = useMemo(
+    () =>
+      debounce(() => {
+        fetchNextPage().catch(() => {});
+      }, 50),
+    [fetchNextPage],
+  );
 
-  useEffect(() => {
-    // Cancel fetch if query params change
-    fetchPage.cancel();
-    setFetchingPage(false);
-
-    // Fetch first page if query params change as new data is required
-    fetchPage(1);
-
-    return () => fetchPage.cancel();
-  }, [search, episodeFilterAvailability, episodeFilterType, episodeFilterWatched, fetchPage]);
-
-  const handleMarkWatched = async (watched: boolean) => {
-    try {
-      await setEpisodesWatched({
-        seriesID: toNumber(seriesId),
-        includeMissing: episodeFilterAvailability,
-        includeHidden: episodeFilterHidden,
-        type: episodeFilterType,
-        includeWatched: episodeFilterWatched,
-        value: watched,
-      }).unwrap();
-      toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`);
-    } catch (error) {
-      console.error(error);
-      toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`);
-    }
-  };
+  const handleMarkWatched = useEventCallback((watched: boolean) => {
+    watchEpisode({
+      seriesId: toNumber(seriesId),
+      includeMissing: episodeFilterAvailability,
+      includeHidden: episodeFilterHidden,
+      type: episodeFilterType,
+      includeWatched: episodeFilterWatched,
+      value: watched,
+    }, {
+      onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
+      onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
+    });
+  });
 
   return (
     <div className="flex gap-x-8">
@@ -163,7 +149,7 @@ const SeriesEpisodes = () => {
             Episodes
             <span className="px-2">|</span>
             <span className="pr-2 text-panel-text-important">
-              {episodesData.isUninitialized || episodesData.isLoading ? '-' : episodeTotal}
+              {isSuccess ? episodeCount : '-'}
             </span>
             Entries Listed
           </div>
@@ -178,42 +164,37 @@ const SeriesEpisodes = () => {
             </Button>
           </div>
         </div>
-        {episodeTotal !== 0 && (
-          <div className="grow">
-            <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-              <div
-                className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
-                style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
-              >
-                {virtualItems.map((virtualItem) => {
-                  const { index } = virtualItem;
-                  const neededPage = Math.ceil((index + 1) / pageSize);
-                  const relativeIndex = index % pageSize;
-                  const episodeList = episodePages[neededPage];
-                  const item = episodeList !== undefined ? episodeList[relativeIndex] : undefined;
-                  if (episodeList === undefined && !fetchingPage) {
-                    setFetchingPage(true);
-                    fetchPage(neededPage);
-                  }
-                  return (
-                    <div
-                      key={`${episodesData.requestId}-${virtualItem.key}`}
-                      className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
-                      data-index={virtualItem.index}
-                    >
-                      {item ? <SeriesEpisode animeId={animeId} episode={item} /> : (
-                        // 332px is the minimum height of a loaded row
+        <div className="grow">
+          <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+            <div
+              className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
+              style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+            >
+              {virtualItems.map((virtualItem) => {
+                const page = Math.ceil((virtualItem.index + 1) / pageSize);
+                const episode = episodes[virtualItem.index];
+
+                if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
+
+                return (
+                  <div
+                    key={`${dataUpdatedAt}-${virtualItem.key}`}
+                    className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
+                    data-index={virtualItem.index}
+                  >
+                    {episode
+                      ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
+                      : (
                         <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
                           <Icon path={mdiLoading} spin size={3} />
                         </div>
                       )}
-                    </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

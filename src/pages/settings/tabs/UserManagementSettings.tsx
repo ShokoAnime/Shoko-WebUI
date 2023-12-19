@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { mdiCircleEditOutline, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
+import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { cloneDeep, find, isEqual, remove } from 'lodash';
 import { useImmer } from 'use-immer';
@@ -12,19 +12,15 @@ import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
 import toast from '@/components/Toast';
+import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
+import { usePlexLoginUrlQuery, usePlexStatusQuery } from '@/core/react-query/plex/queries';
+import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import {
-  useGetPlexAuthenticatedQuery,
-  useInvalidatePlexTokenMutation,
-  useLazyGetPlexLoginUrlQuery,
-} from '@/core/rtkQuery/plexApi';
-import { useGetAniDBTagsQuery } from '@/core/rtkQuery/splitV3Api/tagsApi';
-import {
+  useChangePasswordMutation,
   useDeleteUserMutation,
-  useGetCurrentUserQuery,
-  useGetUsersQuery,
-  usePostChangePasswordMutation,
   usePutUserMutation,
-} from '@/core/rtkQuery/splitV3Api/userApi';
+} from '@/core/react-query/user/mutations';
+import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
 import { unsetDetails } from '@/core/slices/apiSession';
 
 import type { UserType } from '@/core/types/api/user';
@@ -46,12 +42,12 @@ function UserManagementSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentUser = useGetCurrentUserQuery();
-  const usersQuery = useGetUsersQuery();
+  const currentUser = useCurrentUserQuery();
+  const usersQuery = useUsersQuery();
   const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
-  const [editUser] = usePutUserMutation();
-  const [deleteUser] = useDeleteUserMutation();
-  const [changePassword, changePasswordResult] = usePostChangePasswordMutation();
+  const { mutate: editUser } = usePutUserMutation();
+  const { mutate: deleteUser } = useDeleteUserMutation();
+  const { isPending: isChangePasswordPending, mutate: changePassword } = useChangePasswordMutation();
   const [selectedUser, setSelectedUser] = useImmer(initialUser);
   const [newPassword, setNewPassword] = useState('');
   const [logoutOthers, setLogoutOthers] = useState(false);
@@ -60,11 +56,11 @@ function UserManagementSettings() {
   const [avatarFile, setAvatarFile] = useState<File>();
   const [showAvatarModal, setShowAvatarModal] = useState(false);
 
-  const [getPlexLoginUrl, getPlexLoginUrlResult] = useLazyGetPlexLoginUrlQuery();
-  const isPlexAuthenticatedQuery = useGetPlexAuthenticatedQuery(undefined, { pollingInterval: plexPollingInterval });
+  const plexLoginUrlQuery = usePlexLoginUrlQuery(false);
+  const isPlexAuthenticatedQuery = usePlexStatusQuery(plexPollingInterval);
   const isPlexAuthenticated = isPlexAuthenticatedQuery?.data ?? false;
-  const [invalidatePlexToken, invalidatePlexTokenResult] = useInvalidatePlexTokenMutation();
-  const tags = useGetAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
+  const { isPending: isInvalidatePlexTokenPending, mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
+  const tags = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
 
   useEffect(() => {
     if (users.length > 0) setSelectedUser(users[0]);
@@ -85,11 +81,11 @@ function UserManagementSettings() {
     }
   }, [selectedUser, users]);
 
-  const handleInputChange = (event) => {
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
     const tempUser = cloneDeep(selectedUser);
-    if (id === 'Trakt' || id === 'AniDB') tempUser.CommunitySites[id] = value;
+    if ((id === 'Trakt' || id === 'AniDB') && typeof value === 'boolean') tempUser.CommunitySites[id] = value;
     else tempUser[id] = value;
     setSelectedUser(tempUser);
   };
@@ -111,17 +107,19 @@ function UserManagementSettings() {
     changePassword({
       Password: newPassword,
       RevokeAPIKeys: logoutOthers,
-      ID: selectedUser.ID,
-    }).unwrap().then(() => {
-      setNewPassword('');
-      if (currentUser.data?.ID === selectedUser.ID && logoutOthers) {
-        toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
-        setTimeout(() => {
-          dispatch(unsetDetails());
-          navigate('/webui/login');
-        }, 6000);
-      } else toast.success('Password changed successfully!');
-    }, error => console.error(error));
+      userId: selectedUser.ID,
+    }, {
+      onSuccess: () => {
+        setNewPassword('');
+        if (currentUser.data?.ID === selectedUser.ID && logoutOthers) {
+          toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
+          setTimeout(() => {
+            dispatch(unsetDetails());
+            navigate('/webui/login');
+          }, 6000);
+        } else toast.success('Password changed successfully!');
+      },
+    });
   };
 
   const handleCancel = () => {
@@ -159,13 +157,12 @@ function UserManagementSettings() {
         'You just tried to delete yourself from the matrix. That\'s not the way to go about doing it.',
       );
     } else {
-      deleteUser(user.ID)
-        .catch(error => console.error(error));
+      deleteUser(user.ID);
     }
   };
 
   const handlePlexLogin = () => {
-    window.open(getPlexLoginUrlResult?.data, '_blank');
+    window.open(plexLoginUrlQuery?.data, '_blank');
     setPlexPollingInterval(1000);
     toast.info('Checking plex login status!', '', {
       autoClose: false,
@@ -180,7 +177,7 @@ function UserManagementSettings() {
       return (
         <Button
           onClick={() => invalidatePlexToken()}
-          loading={invalidatePlexTokenResult.isLoading}
+          loading={isInvalidatePlexTokenPending}
           loadingSize={0.65}
           buttonType="danger"
           className="h-8 w-16 text-xs font-semibold"
@@ -189,7 +186,7 @@ function UserManagementSettings() {
         </Button>
       );
     }
-    return getPlexLoginUrlResult?.data
+    return plexLoginUrlQuery?.data
       ? (
         <Button
           onClick={() => handlePlexLogin()}
@@ -203,8 +200,8 @@ function UserManagementSettings() {
       )
       : (
         <Button
-          onClick={() => getPlexLoginUrl()}
-          loading={getPlexLoginUrlResult.isLoading}
+          onClick={() => plexLoginUrlQuery.refetch()}
+          loading={plexLoginUrlQuery.isFetching}
           loadingSize={0.65}
           buttonType="primary"
           className="h-8 w-24 text-xs"
@@ -331,7 +328,7 @@ function UserManagementSettings() {
           <div className="mx-0 my-auto font-semibold">Password</div>
           <Button
             onClick={() => handlePasswordChange()}
-            loading={changePasswordResult.isLoading}
+            loading={isChangePasswordPending}
             disabled={newPassword === ''}
             buttonType="primary"
             className="px-3 py-2 text-xs font-semibold"
@@ -374,8 +371,13 @@ function UserManagementSettings() {
           value={tagSearch}
           onChange={event => setTagSearch(event.target.value)}
         />
-        <div className="flex flex-row">
-          <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+          {tags.isPending && (
+            <div className="flex h-64 items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} spin size={3} />
+            </div>
+          )}
+          {tags.isSuccess && (
             <div className="h-64 overflow-y-auto bg-panel-input">
               {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
                 <div
@@ -387,7 +389,7 @@ function UserManagementSettings() {
                 </div>
               ))}
             </div>
-          </div>
+          )}
         </div>
         <div className="border-b border-panel-border pb-8">
           <div className="my-4 font-semibold">Selected Tags</div>

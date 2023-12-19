@@ -9,7 +9,7 @@ import {
 import { debounce, defer, delay, forEach, round } from 'lodash';
 
 import Events from '@/core/events';
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
+import { invalidateOnEvent } from '@/core/react-query/queryClient';
 import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
@@ -90,26 +90,6 @@ const onAvDumpEvent = dispatch => (event: AVDumpEventType) => {
 
 // Shoko Events
 
-const onFileDeleted = dispatch => () => {
-  dispatch(splitV3Api.util.invalidateTags(['FileDeleted']));
-};
-
-const onFileHashed = dispatch => () => {
-  dispatch(splitV3Api.util.invalidateTags(['FileHashed']));
-};
-
-const onFileMatched = dispatch => () => {
-  dispatch(splitV3Api.util.invalidateTags(['FileMatched']));
-};
-
-const onSeriesUpdated = dispatch => () => {
-  dispatch(splitV3Api.util.invalidateTags(['SeriesUpdated']));
-};
-
-const onEpisodeUpdated = dispatch => () => {
-  dispatch(splitV3Api.util.invalidateTags(['EpisodeUpdated']));
-};
-
 const startSignalRConnection = connection =>
   connection.start().then(() => {
     lastRetry = dayjs();
@@ -178,11 +158,11 @@ const signalRMiddleware = ({
         connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
 
         // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
-        connectionEvents.on('ShokoEvent:FileDeleted', onFileDeleted(dispatch));
-        connectionEvents.on('ShokoEvent:FileHashed', onFileHashed(dispatch));
-        connectionEvents.on('ShokoEvent:FileMatched', onFileMatched(dispatch));
-        connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated(dispatch));
-        connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated(dispatch));
+        connectionEvents.on('ShokoEvent:FileDeleted', () => invalidateOnEvent('FileDeleted'));
+        connectionEvents.on('ShokoEvent:FileHashed', () => invalidateOnEvent('FileHashed'));
+        connectionEvents.on('ShokoEvent:FileMatched', () => invalidateOnEvent('FileMatched'));
+        // connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated);
+        // connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated);
 
         // re-establish the connection if connection dropped
         connectionEvents.onclose(() =>

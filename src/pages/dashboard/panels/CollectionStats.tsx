@@ -4,14 +4,14 @@ import { Link } from 'react-router-dom';
 import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetDashboardStatsQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
+import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 
 import type { RootState } from '@/core/store';
 
 function CollectionStats() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const stats = useGetDashboardStatsQuery();
+  const stats = useDashbordStatsQuery();
 
   const renderItem = (key: string, title: string, value: string | number = 0, link?: string) => (
     <div key={key} className="flex">
@@ -43,7 +43,7 @@ function CollectionStats() {
   ];
 
   return (
-    <ShokoPanel title="Collection Statistics" isFetching={stats.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Collection Statistics" isFetching={stats.isPending} editMode={layoutEditMode}>
       <div className="flex flex-col leading-5">
         {childrenFirst}
       </div>

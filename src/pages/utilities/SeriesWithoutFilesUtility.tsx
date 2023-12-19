@@ -1,156 +1,164 @@
-import React, { useEffect } from 'react';
-import { mdiCloseCircleOutline, mdiMagnify, mdiMinusCircleOutline, mdiOpenInNew, mdiRestart } from '@mdi/js';
+import React from 'react';
+import { mdiCloseCircleOutline, mdiLoading, mdiMinusCircleOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import cx from 'classnames';
+import { useQueryClient } from '@tanstack/react-query';
 import { forEach } from 'lodash';
 
-import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
+import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import { useDeleteSeriesMutation, useGetSeriesWithoutFilesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
+import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import { useRowSelection } from '@/hooks/useRowSelection';
 
 import type { SeriesType } from '@/core/types/api/series';
+import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
+import type { Updater } from 'use-immer';
 
-const columnHelper = createColumnHelper<SeriesType>();
-
-const columns = [
-  columnHelper.accessor('IDs.AniDB', {
-    header: 'AniDB ID',
-    id: 'ID',
-    cell: info => (
+const columns: UtilityHeaderType<SeriesType>[] = [
+  {
+    id: 'id',
+    name: 'AniDB ID',
+    className: 'w-32',
+    item: series => (
       <div className="flex justify-between">
-        {info.getValue()}
-        <span
-          onClick={() => window.open(`https://anidb.net/anime/${info.getValue()}`, '_blank')}
+        {series.IDs.AniDB}
+        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
+        <a
+          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
+          target="_blank"
+          rel="noreferrer noopener"
           className="mr-6 cursor-pointer text-panel-text-primary"
         >
           <Icon path={mdiOpenInNew} size={1} />
-        </span>
+        </a>
       </div>
     ),
-    meta: {
-      className: 'w-32',
-    },
-  }),
-  columnHelper.accessor('Name', {
-    cell: info => info.getValue(),
-    meta: {
-      className: 'w-auto',
-    },
-  }),
-  columnHelper.accessor('Created', {
-    header: 'Date Added',
-    cell: info => dayjs(info.getValue()).format('MMMM DD YYYY, HH:mm'),
-    meta: {
-      className: 'w-64',
-    },
-  }),
+  },
+  {
+    id: 'name',
+    name: 'Name',
+    className: 'overflow-hidden line-clamp-1 grow basis-0',
+    item: series => series.Name,
+  },
+  {
+    id: 'created',
+    name: 'Date Added',
+    className: 'w-64',
+    item: series => dayjs(series.Created).format('MMMM DD YYYY, HH:mm'),
+  },
 ];
 
-function SeriesWithoutFilesUtility() {
-  const seriesQuery = useGetSeriesWithoutFilesQuery({ pageSize: 0 });
-  const series = seriesQuery?.data ?? { Total: 0, List: [] };
-  const [deleteSeriesTrigger] = useDeleteSeriesMutation();
+const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Record<number, boolean>> }) => {
+  const { selectedRows, setSelectedRows } = props;
 
-  const table = useReactTable({
-    data: series.List,
-    columns,
-    getRowId(row) {
-      return row.IDs.ID.toString();
-    },
-    getCoreRowModel: getCoreRowModel(),
-  });
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    table.resetRowSelection();
-  }, [series.List, table]);
+  const { mutateAsync: deleteSeries } = useDeleteSeriesMutation();
 
-  const deleteSeries = () => {
+  const handleDeleteSeries = () => {
     let failedSeries = 0;
-    forEach(table.getSelectedRowModel().rows, (row) => {
-      deleteSeriesTrigger({ seriesId: row.original.IDs.ID, deleteFiles: false }).catch((error) => {
+    forEach(selectedRows, (row) => {
+      deleteSeries({ seriesId: row.IDs.ID, deleteFiles: false }).catch((error) => {
         failedSeries += 1;
         console.error(error);
       });
     });
 
-    const selectedRowsLength = table.getSelectedRowModel().rows.length;
     if (failedSeries) toast.error(`Error deleting ${failedSeries} series!`);
-    if (failedSeries !== selectedRowsLength) toast.success(`${selectedRowsLength} series deleted!`);
+    if (failedSeries !== selectedRows.length) toast.success(`${selectedRows.length} series deleted!`);
   };
 
-  const renderOperations = (common = false) => {
-    const renderButton = (
-      onClick: React.MouseEventHandler<HTMLButtonElement>,
-      icon: string,
-      name: string,
-      highlight = false,
-    ) => (
-      <Button onClick={onClick} className="flex items-center gap-x-2 font-normal text-panel-text">
-        <Icon path={icon} size={1} className={cx({ 'text-panel-text-primary': highlight })} />
-        {name}
-      </Button>
-    );
-
-    return (
-      <>
-        {renderButton(
-          async () => {
-            table.resetRowSelection();
-            await seriesQuery.refetch();
-          },
-          mdiRestart,
-          'Refresh',
-        )}
-        <TransitionDiv className="flex grow gap-x-4" show={!common}>
-          {renderButton(() => deleteSeries(), mdiMinusCircleOutline, 'Delete', true)}
-          {renderButton(() => table.resetRowSelection(), mdiCloseCircleOutline, 'Cancel Selection', true)}
-        </TransitionDiv>
-      </>
-    );
-  };
-
-  const renderPanelOptions = () => (
-    <div className="flex font-semibold">
-      <span className="text-panel-text-important">{series.Total}</span>
-      &nbsp;Empty Series
+  return (
+    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+      <MenuButton
+        onClick={() => {
+          setSelectedRows([]);
+          queryClient.invalidateQueries({
+            queryKey: ['series-without-files'],
+          }).catch(() => {});
+        }}
+        icon={mdiRefresh}
+        name="Refresh"
+      />
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
+        <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
+        <MenuButton
+          onClick={() => setSelectedRows([])}
+          icon={mdiCloseCircleOutline}
+          name="Cancel Selection"
+          highlight
+        />
+      </TransitionDiv>
+      <span className="ml-auto font-semibold text-panel-text-important">
+        {selectedRows.length}
+        &nbsp;
+      </span>
+      Series Selected
     </div>
   );
+};
+
+function SeriesWithoutFilesUtility() {
+  const seriesQuery = useSeriesWithoutFilesInfiniteQuery({ pageSize: 25 });
+  const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
+
+  const {
+    handleRowSelect,
+    rowSelection,
+    selectedRows,
+    setRowSelection,
+  } = useRowSelection<SeriesType>(series);
 
   return (
     <div className="flex grow flex-col gap-y-8">
       <div>
-        <ShokoPanel title="Series Without Files" options={renderPanelOptions()}>
+        <ShokoPanel title="Series Without Files" options={<ItemCount count={seriesCount} series />}>
           <div className="flex items-center gap-x-3">
-            <Input
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              id="search"
-              value=""
-              onChange={() => {}}
-              inputClassName="px-4 py-3"
-            />
-            <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-              {renderOperations(table.getSelectedRowModel().rows.length === 0)}
-              <div className="ml-auto font-semibold text-panel-text-important">
-                {table.getSelectedRowModel().rows.length}
-                <span className="text-panel-text">Series Selected</span>
-              </div>
-            </div>
+            {/* Endpoint doesn't have search */}
+            {/* <Input */}
+            {/*   type="text" */}
+            {/*   placeholder="Search..." */}
+            {/*   startIcon={mdiMagnify} */}
+            {/*   id="search" */}
+            {/*   value="" */}
+            {/*   onChange={() => {}} */}
+            {/*   inputClassName="px-4 py-3" */}
+            {/* /> */}
+            <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
           </div>
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
-        {series.Total > 0
-          ? <UtilitiesTable table={table} skipSort />
-          : <div className="flex grow items-center justify-center font-semibold">No series without files!</div>}
+      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+        {seriesQuery.isPending && (
+          <div className="flex grow items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} size={4} spin />
+          </div>
+        )}
+
+        {!seriesQuery.isPending && seriesCount === 0 && (
+          <div className="flex grow items-center justify-center font-semibold">No series without files!</div>
+        )}
+
+        {seriesQuery.isSuccess && seriesCount > 0 && (
+          <UtilitiesTable
+            columns={columns}
+            count={seriesCount}
+            fetchNextPage={seriesQuery.fetchNextPage}
+            handleRowSelect={handleRowSelect}
+            isFetchingNextPage={seriesQuery.isFetchingNextPage}
+            rows={series}
+            rowSelection={rowSelection}
+            setSelectedRows={setRowSelection}
+            skipSort
+          />
+        )}
       </div>
     </div>
   );

@@ -15,10 +15,10 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js v18
+      - name: Setup Node.js v20
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Setup pnpm and install dependencies
         uses: pnpm/action-setup@v2
@@ -29,11 +29,18 @@ jobs:
       - name: Lint
         run: pnpm lint --quiet
 
+      - name: Determine bump type
+        uses: zwaldowski/match-label-action@v4
+        id: bump
+        with:
+          allowed: premajor,preminor,prepatch
+          default_match: prerelease
+
       - name: Get new version
         uses: zwaldowski/semver-release-action@v3
         id: semver
         with:
-          bump: prerelease
+          bump: ${{ steps.bump.outputs.match }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
           dry_run: true
           preid: 'dev'
@@ -85,6 +92,6 @@ jobs:
           description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
             Update from the WebUI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
-            
+
             **Changelog**:
             ${{ env.CHANGELOG }}

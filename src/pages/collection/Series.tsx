@@ -13,18 +13,14 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get } from 'lodash';
+import { get, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
-import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import {
-  useGetSeriesImagesQuery,
-  useGetSeriesQuery,
-  useGetSeriesTagsQuery,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGroupQuery } from '@/core/react-query/group/queries';
+import { useSeriesImagesQuery, useSeriesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -63,20 +59,14 @@ const Series = () => {
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-    skip: !seriesId,
-  });
-  const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
-  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const series = useMemo(() => seriesQuery?.data ?? null, [seriesQuery]);
+  const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const images = useMemo(() => imagesData ?? null, [imagesData]);
   const mainPoster = useMainPoster(series);
-  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
+  const tagsData = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
-  const groupData = useGetGroupQuery({ groupId: series?.IDs?.ParentGroup.toString() ?? '' }, {
-    skip: !series?.IDs?.ParentGroup,
-  });
-  const group = groupData?.data ?? null;
+  const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
   useEffect(() => {
     const allFanarts: ImageType[] = get(images, 'data.Fanarts', []);
@@ -88,7 +78,7 @@ const Series = () => {
     }
   }, [images, imagesData]);
 
-  if (!series || !seriesId || !seriesData.isSuccess) return null;
+  if (!series || !seriesId || !seriesQuery.isSuccess) return null;
 
   return (
     <>
@@ -112,13 +102,13 @@ const Series = () => {
                     Entire Collection
                   </Link>
                   <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                  {group && group.Size > 1 && (
+                  {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
                     <>
                       <Link
                         className="font-semibold text-panel-text-primary"
                         to={`/webui/collection/group/${series.IDs.ParentGroup}`}
                       >
-                        {group.Name}
+                        {groupQuery.data.Name}
                       </Link>
                       <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
                     </>

@@ -9,8 +9,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
-import { useRunActionMutation } from '@/core/rtkQuery/splitV3Api/actionsApi';
-import { isErrorWithMessage } from '@/core/util';
+import { useRunActionMutation } from '@/core/react-query/action/mutations';
 
 const actions = {
   import: {
@@ -86,17 +85,12 @@ type Props = {
 };
 
 const Action = ({ actionKey }: { actionKey: string }) => {
-  const [runActionTrigger] = useRunActionMutation();
+  const { mutate: runAction } = useRunActionMutation();
 
-  const runAction = async (name: string, action: string) => {
-    try {
-      await runActionTrigger(action);
-      toast.success(`Running action "${name}"`);
-    } catch (err) {
-      if (isErrorWithMessage(err)) {
-        console.error(err.message);
-      }
-    }
+  const handleAction = async (name: string, action: string) => {
+    runAction(action, {
+      onSuccess: () => toast.success(`Running action "${name}"`),
+    });
   };
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
@@ -108,7 +102,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         <div>{name}</div>
         <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
       </div>
-      <Button onClick={() => runAction(name, functionName)} className="text-panel-icon-action">
+      <Button onClick={() => handleAction(name, functionName)} className="text-panel-icon-action">
         <Icon path={mdiPlayCircleOutline} size={1} />
       </Button>
     </TransitionDiv>

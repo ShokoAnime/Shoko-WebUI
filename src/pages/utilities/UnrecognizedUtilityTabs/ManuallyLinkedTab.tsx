@@ -1,24 +1,18 @@
-import React, { useCallback, useMemo, useState } from 'react';
-import AnimateHeight from 'react-animate-height';
-import { useDispatch } from 'react-redux';
+import React, { createContext, useCallback, useContext, useMemo } from 'react';
 import {
-  mdiChevronDown,
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiLinkOff,
   mdiLoading,
-  mdiMagnify,
   mdiOpenInNew,
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useVirtualizer } from '@tanstack/react-virtual';
-import cx from 'classnames';
-import Fuse from 'fuse.js';
+import { toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -26,128 +20,142 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import ManuallyLinkedFilesRow from '@/components/Utilities/Unrecognized/ManuallyLinkedFilesRow';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
-import { splitV3Api } from '@/core/rtkQuery/splitV3Api';
-import { useDeleteFileLinkMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { useDeleteFileLinkMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
+import { invalidateTags } from '@/core/react-query/queryClient';
+import { prefetchSeriesEpisodesInfiniteQuery, prefetchSeriesFilesQuery } from '@/core/react-query/series/prefetch';
 import {
-  useGetSeriesWithManuallyLinkedFilesQuery,
-  useLazyGetSeriesEpisodesQuery,
-  useLazyGetSeriesFilesQuery,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+  useSeriesEpisodesInfiniteQuery,
+  useSeriesFilesQuery,
+  useSeriesWithLinkedFilesInfiniteQuery,
+} from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
-import type { ListResultType } from '@/core/types/api';
 import type { SeriesType } from '@/core/types/api/series';
-import type { VirtualItem } from '@tanstack/react-virtual';
+import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
+import type { Updater } from 'use-immer';
 
-const SeriesRow = (
-  { row, selectedFiles, updateSelectedFiles, virtualRow }: {
-    row: SeriesType;
-    virtualRow: VirtualItem;
-    selectedFiles: { [_: number]: boolean };
-    updateSelectedFiles: (fileIds: number[], select?: boolean) => void;
+const columns: UtilityHeaderType<SeriesType>[] = [
+  {
+    id: 'series',
+    name: 'Series',
+    className: 'overflow-hidden line-clamp-1 grow basis-0',
+    item: series => series.Name,
   },
-) => {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const [getFiles, filesResult] = useLazyGetSeriesFilesQuery();
-  const [getEpisodes, episodesResult] = useLazyGetSeriesEpisodesQuery();
-
-  const handleExpand = async () => {
-    if (open) {
-      setOpen(false);
-      return;
-    }
-
-    setLoading(true);
-    await getFiles({ seriesId: row.IDs.ID, isManuallyLinked: true, includeXRefs: true }, true);
-    await getEpisodes({ pageSize: 0, seriesID: row.IDs.ID, includeMissing: 'true', includeDataFrom: ['AniDB'] }, true);
-    setLoading(false);
-    setOpen(true);
-  };
-
-  return (
-    <div
-      className={cx(
-        virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
-        'relative py-4 text-left',
-      )}
-    >
-      <div
-        className="flex cursor-pointer px-8"
-        onClick={handleExpand}
-      >
-        <div className="line-clamp-1 grow">{row.Name}</div>
+  {
+    id: 'id',
+    name: 'AniDB ID',
+    className: 'w-32',
+    item: series => (
+      <div className="flex justify-between">
+        {series.IDs.AniDB}
         <a
-          href={`https://anidb.net/anime/${row.IDs.AniDB}`}
-          rel="noopener noreferrer"
+          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
           target="_blank"
-          className="flex w-24 gap-x-2 font-semibold text-panel-text-primary"
+          rel="noreferrer noopener"
+          className="mr-6 cursor-pointer text-panel-text-primary"
+          aria-label="Open AniDB series page"
           onClick={e => e.stopPropagation()}
         >
-          {row.IDs.AniDB}
           <Icon path={mdiOpenInNew} size={1} />
         </a>
-        <div className="w-32">
-          {row.Sizes.FileSources.Unknown}
-          &nbsp;files
-        </div>
-        <div className="w-64">{dayjs(row.Created).format('MMMM DD YYYY, HH:mm')}</div>
-        <Icon
-          path={loading ? mdiLoading : mdiChevronDown}
-          spin={loading}
-          size={1}
-          rotate={open ? 180 : 0}
-          className="transition-transform"
-        />
       </div>
-      <AnimateHeight height={open ? 'auto' : 0}>
-        <ManuallyLinkedFilesRow
-          seriesId={row.IDs.ID}
-          updateSelectedFiles={updateSelectedFiles}
-          selectedFiles={selectedFiles}
-          files={filesResult?.data ?? []}
-          episodes={episodesResult?.data?.List ?? []}
-        />
-      </AnimateHeight>
-    </div>
+    ),
+  },
+  {
+    id: 'link-count',
+    name: 'Link Count',
+    className: 'w-32',
+    item: (series) => {
+      const count = series.Sizes.FileSources.Unknown;
+      return `${count} ${count === 1 ? 'file' : 'files'}`;
+    },
+  },
+  // TODO: Either actually use "date linked" here or remove the column
+  {
+    id: 'created',
+    name: 'Date Added',
+    className: 'w-64',
+    item: series => dayjs(series.Created).format('MMMM DD YYYY, HH:mm'),
+  },
+];
+
+type SelectedFilesType = { selectedFiles: Record<number, boolean>, setSelectedFiles: Updater<Record<number, boolean>> };
+
+const SelectedFilesContext = createContext<
+  SelectedFilesType | undefined
+>(undefined);
+
+const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean>>) =>
+  useCallback(
+    (fileIds: number[], select = true) => {
+      setSelectedFiles((immerState) => {
+        fileIds.forEach((fileId) => {
+          immerState[fileId] = select;
+        });
+      });
+    },
+    [setSelectedFiles],
+  );
+
+const FilesTable = ({ id, open }: { id: number, open: boolean }) => {
+  const filesQuery = useSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] }, open);
+  const episodesQuery = useSeriesEpisodesInfiniteQuery(
+    id,
+    {
+      pageSize: 0,
+      includeMissing: 'true',
+      includeDataFrom: ['AniDB'],
+    },
+    open,
+  );
+  const [episodes] = useFlattenListResult(episodesQuery.data);
+
+  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext) as SelectedFilesType;
+  const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
+
+  return (
+    <ManuallyLinkedFilesRow
+      updateSelectedFiles={updateSelectedFiles}
+      selectedFiles={selectedFiles}
+      files={filesQuery?.data ?? []}
+      episodes={episodes ?? []}
+    />
   );
 };
 
-const Menu = (
-  { selectedFiles, setSelectedFiles }: {
-    selectedFiles: { [_: number]: boolean };
-    setSelectedFiles: (files: { [_: number]: boolean }) => void;
-  },
-) => {
-  const dispatch = useDispatch();
+const Menu = (props: SelectedFilesType) => {
+  const { selectedFiles, setSelectedFiles } = props;
+  const selectedIds = useMemo(
+    () => Object.keys(selectedFiles).filter(key => selectedFiles[key]).map(toNumber),
+    [selectedFiles],
+  );
 
-  const [rescanFile] = usePostFileRescanMutation();
+  const { mutateAsync: rescanFile } = useRescanFileMutation();
 
   const refreshData = () => {
-    dispatch(splitV3Api.util.invalidateTags(['UtilitiesRefresh']));
+    invalidateTags('UtilitiesRefresh');
     setSelectedFiles({});
   };
 
   const rescanFiles = () => {
-    const fileIds = Object.keys(selectedFiles).map(parseInt);
-
     let failedFiles = 0;
-    fileIds.forEach((fileId) => {
-      rescanFile(fileId).unwrap().catch((error) => {
+    selectedIds.forEach((fileId) => {
+      rescanFile(fileId).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
     });
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-    if (failedFiles !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
+    if (failedFiles !== selectedIds.length) toast.success(`Rescanning ${selectedIds.length} files!`);
   };
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
       <MenuButton onClick={refreshData} icon={mdiRefresh} name="Refresh" />
-      <TransitionDiv className="ml-4 flex grow gap-x-4" show={Object.keys(selectedFiles).length !== 0}>
+      <TransitionDiv className="ml-4 flex grow gap-x-4" show={selectedIds.length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton
           onClick={() => setSelectedFiles({})}
@@ -157,83 +165,66 @@ const Menu = (
         />
       </TransitionDiv>
       <span className="ml-auto text-panel-text-important">
-        {Object.keys(selectedFiles).length}
+        {selectedIds.length}
         &nbsp;
       </span>
-      {Object.keys(selectedFiles).length === 1 ? 'File' : 'Files'}
-      &nbsp; Selected
+      {selectedIds.length === 1 ? 'File ' : 'Files '}
+      Selected
     </div>
   );
 };
 
 function ManuallyLinkedTab() {
-  const dispatch = useDispatch();
+  const seriesQuery = useSeriesWithLinkedFilesInfiniteQuery({ pageSize: 25 });
+  const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const [unlinkFile] = useDeleteFileLinkMutation();
+  const { mutateAsync: unlinkFile } = useDeleteFileLinkMutation();
 
-  const seriesQuery = useGetSeriesWithManuallyLinkedFilesQuery({ pageSize: 0 });
-  const series: ListResultType<SeriesType> = seriesQuery.data ?? { Total: 0, List: [] };
+  const [selectedFiles, setSelectedFiles] = useImmer<Record<number, boolean>>({});
 
-  const [searchQuery, setSearchQuery] = useState('');
-  const filteredSeries = useMemo(() => {
-    if (searchQuery === '') return series.List;
-    const fuse = new Fuse(series.List, { isCaseSensitive: true, shouldSort: true, keys: ['Name'] });
-    return fuse.search(searchQuery).map(result => result.item);
-  }, [series.List, searchQuery]);
-
-  const parentRef = React.useRef<HTMLDivElement>(null);
-  const rowVirtualizer = useVirtualizer({
-    count: filteredSeries.length,
-    getScrollElement: () => parentRef.current,
-    estimateSize: () => 60,
-    overscan: 10,
-  });
-  const virtualItems = rowVirtualizer.getVirtualItems();
-
-  const [selectedFiles, setSelectedFiles] = useImmer<{ [key: number]: boolean }>({});
-  const updateSelectedFiles = useCallback(
-    (fileIds: number[], select = true) =>
-      setSelectedFiles((selectedFilesState) => {
-        fileIds.forEach((fileId) => {
-          // eslint-disable-next-line no-param-reassign
-          selectedFilesState[fileId] = select;
-        });
-      }),
-    [setSelectedFiles],
-  );
-
-  const unlinkFiles = () => {
+  const unlinkFiles = useEventCallback(() => {
     const fileIds = Object.keys(selectedFiles);
 
     let failedFiles = 0;
     fileIds.forEach((fileId) => {
-      unlinkFile(fileId).unwrap().catch((error) => {
+      unlinkFile(toNumber(fileId)).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
     });
 
-    if (failedFiles) toast.error(`Error ignoring ${failedFiles} files!`);
+    if (failedFiles) toast.error(`Error unlinking ${failedFiles} files!`);
     if (failedFiles !== fileIds.length) toast.success(`${fileIds.length} files unlinked!`);
 
-    dispatch(splitV3Api.util.invalidateTags(['UtilitiesRefresh']));
+    invalidateTags('UtilitiesRefresh');
     setSelectedFiles({});
+  });
+
+  const onExpand = async (id: number) => {
+    await prefetchSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] });
+    await prefetchSeriesEpisodesInfiniteQuery(id, { pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB'] });
   };
+
+  const selectedFilesContextValue = useMemo(
+    () => ({ selectedFiles, setSelectedFiles } as SelectedFilesType),
+    [selectedFiles, setSelectedFiles],
+  );
 
   return (
     <TransitionDiv className="flex grow flex-col gap-y-8 overflow-y-auto">
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount filesCount={series.Total} series />}>
+        <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
           <div className="flex items-center gap-x-3">
-            <Input
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              id="search"
-              value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
-              inputClassName="px-4 py-3"
-            />
+            {/* Endpoint doesn't have search */}
+            {/* <Input */}
+            {/*   type="text" */}
+            {/*   placeholder="Search..." */}
+            {/*   startIcon={mdiMagnify} */}
+            {/*   id="search" */}
+            {/*   value="" */}
+            {/*   onChange={(e) => {}} */}
+            {/*   inputClassName="px-4 py-3" */}
+            {/* /> */}
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
             <TransitionDiv show={Object.keys(selectedFiles).length !== 0} className="flex gap-x-3">
               <Button
@@ -249,52 +240,32 @@ function ManuallyLinkedTab() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
-        {seriesQuery.isFetching && (
-          <div className="flex grow items-center justify-center">
-            <Icon path={mdiLoading} size={4} className="text-panel-text-primary" spin />
+      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+        {seriesQuery.isPending && (
+          <div className="flex grow items-center justify-center text-panel-text-primary">
+            <Icon path={mdiLoading} size={4} spin />
           </div>
         )}
-        {!seriesQuery.isFetching && series.Total > 0 && (
-          <div className="flex w-full flex-col overflow-y-auto">
-            <div className="sticky top-0 z-[1] flex rounded-md border border-panel-border bg-panel-background-alt px-6 py-4 font-semibold">
-              <div className="grow">Series</div>
-              <div className="w-24">AniDB ID</div>
-              <div className="w-32">Link Count</div>
-              <div className="w-64">Date Linked</div>
-              <div className="w-10" />
-            </div>
-            <div ref={parentRef} className="relative grow overflow-y-auto">
-              <div className="absolute top-0 w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-                <div
-                  className="absolute left-0 top-0 w-full"
-                  style={{ transform: `translateY(${virtualItems[0].start}px)` }}
-                >
-                  {virtualItems.map((virtualRow) => {
-                    const row = filteredSeries[virtualRow.index];
-                    return (
-                      <div
-                        className="mt-2 rounded-md border border-panel-border"
-                        key={virtualRow.key}
-                        data-index={virtualRow.index}
-                        ref={rowVirtualizer.measureElement}
-                      >
-                        <SeriesRow
-                          row={row}
-                          virtualRow={virtualRow}
-                          selectedFiles={selectedFiles}
-                          updateSelectedFiles={updateSelectedFiles}
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+
+        {!seriesQuery.isPending && seriesCount === 0 && (
+          <div className="flex grow items-center justify-center font-semibold">
+            No manually linked files!
           </div>
         )}
-        {!seriesQuery.isFetching && series.Total === 0 && (
-          <div className="flex grow items-center justify-center font-semibold">No Manually Linked File(s)!</div>
+
+        {seriesQuery.isSuccess && seriesCount > 0 && (
+          <SelectedFilesContext.Provider value={selectedFilesContextValue}>
+            <UtilitiesTable
+              ExpandedNode={FilesTable}
+              columns={columns}
+              count={seriesCount}
+              fetchNextPage={seriesQuery.fetchNextPage}
+              isFetchingNextPage={seriesQuery.isFetchingNextPage}
+              onExpand={onExpand}
+              rows={series}
+              skipSort
+            />
+          </SelectedFilesContext.Provider>
         )}
       </div>
     </TransitionDiv>

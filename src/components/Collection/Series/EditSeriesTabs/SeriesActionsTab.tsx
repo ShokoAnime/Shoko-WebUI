@@ -6,11 +6,11 @@ import { useEventCallback } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import {
-  useRefreshSeriesAnidbInfoMutation,
-  useRefreshSeriesTvdbInfoMutation,
+  useRefreshSeriesAniDBInfoMutation,
+  useRefreshSeriesTvdbInfoMutatation,
   useRehashSeriesFilesMutation,
   useRescanSeriesFilesMutation,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+} from '@/core/react-query/series/mutations';
 
 type Props = {
   seriesId: number;
@@ -32,15 +32,15 @@ const Action = ({ description, name, onClick }: { name: string, description: str
 );
 
 const SeriesActionsTab = ({ seriesId }: Props) => {
-  const [refreshAnidb] = useRefreshSeriesAnidbInfoMutation();
-  const [refreshTvdb] = useRefreshSeriesTvdbInfoMutation();
-  const [rehashSeriesFiles] = useRehashSeriesFilesMutation();
-  const [rescanSeriesFiles] = useRescanSeriesFilesMutation();
+  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
+  const { mutate: refreshTvdb } = useRefreshSeriesTvdbInfoMutatation();
+  const { mutate: rehashSeriesFiles } = useRehashSeriesFilesMutation();
+  const { mutate: rescanSeriesFiles } = useRescanSeriesFilesMutation();
 
   const triggerAnidbRefresh = useEventCallback((force: boolean, cacheOnly: boolean) => {
-    refreshAnidb({ seriesId, force, cacheOnly })
-      .then(() => toast.success('AniDB refresh queued!'))
-      .catch(console.error);
+    refreshAnidb({ seriesId, force, cacheOnly }, {
+      onSuccess: () => toast.success('AniDB refresh queued!'),
+    });
   });
 
   return (
@@ -48,29 +48,26 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
       <Action
         name="Rescan Files"
         description="Rescans every file associated with the series."
-        onClick={() => {
-          rescanSeriesFiles({ seriesId })
-            .then(() => toast.success('Series files rescan queued!'))
-            .catch(console.error);
-        }}
+        onClick={() =>
+          rescanSeriesFiles(seriesId, {
+            onSuccess: () => toast.success('Series files rescan queued!'),
+          })}
       />
       <Action
         name="Rehash Files"
         description="Rehashes every file associated with the series."
-        onClick={() => {
-          rehashSeriesFiles({ seriesId })
-            .then(() => toast.success('Series files rehash queued!'))
-            .catch(console.error);
-        }}
+        onClick={() =>
+          rehashSeriesFiles(seriesId, {
+            onSuccess: () => toast.success('Series files rehash queued!'),
+          })}
       />
       <Action
         name="Update TVDB Info"
         description="Gets the latest series information from TheTVDB database."
-        onClick={() => {
-          refreshTvdb({ seriesId })
-            .then(() => toast.success('TvDB refresh queued!'))
-            .catch(console.error);
-        }}
+        onClick={() =>
+          refreshTvdb({ seriesId }, {
+            onSuccess: () => toast.success('TvDB refresh queued!'),
+          })}
       />
       <Action
         name="Update AniDB Info"

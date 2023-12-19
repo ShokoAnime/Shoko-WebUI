@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
-import { debounce } from 'lodash';
 
 import Input from '@/components/Input/Input';
-import { useGetSeriesQuery, useLazyGetSeriesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useSeriesQuery } from '@/core/react-query/series/queries';
+// import { useLazyGetSeriesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
 import type { SeriesTitleType } from '@/core/types/api/series';
 
@@ -17,37 +17,36 @@ const NameTab = ({ seriesId }: Props) => {
   const [search, setSearch] = useState('');
   const [nameEditable, setNameEditable] = useState(false);
 
-  const seriesQuery = useGetSeriesQuery({ seriesId: seriesId.toString(), includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-  });
+  const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 
-  const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
-  const getAniDbSeries = useMemo((): SeriesTitleType[] => {
-    const pages = seriesResults.data?.pages;
-    if (!pages) return [];
+  // Needs an actual endpoint to get series names instead of getting all series
+  // const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
+  // const getAniDbSeries = useMemo((): SeriesTitleType[] => {
+  //   const pages = seriesResults.data?.pages;
+  //   if (!pages) return [];
+  //
+  //   const keys = Object.keys(pages);
+  //   if (!keys?.length) return [];
+  //
+  //   return pages[1];
+  // }, [seriesResults]);
 
-    const keys = Object.keys(pages);
-    if (!keys?.length) return [];
-
-    return pages[1];
-  }, [seriesResults]);
-
-  const searchSeries = useMemo(() =>
-    debounce(async () => {
-      await fetchSeries({
-        startsWith: search,
-        pageSize: 5,
-      });
-    }, 250), [search, fetchSeries]);
+  // const searchSeries = useMemo(() =>
+  //   debounce(async () => {
+  //     await fetchSeries({
+  //       startsWith: search,
+  //       pageSize: 5,
+  //     });
+  //   }, 250), [search, fetchSeries]);
 
   useEffect(() => {
     setName(seriesQuery.data?.Name ?? '');
   }, [seriesQuery]);
 
-  useEffect(() => {
-    if (!search) return;
-    searchSeries()?.then()?.catch(console.error);
-  }, [search, searchSeries]);
+  // useEffect(() => {
+  //   if (!search) return;
+  //   searchSeries()?.then()?.catch(console.error);
+  // }, [search, searchSeries]);
 
   const renderTitle = useCallback((title: SeriesTitleType) => (
     <div
@@ -119,7 +118,7 @@ const NameTab = ({ seriesId }: Props) => {
           }
           return acc;
         }, [] as React.ReactNode[])}
-        {search && getAniDbSeries.map(title => renderTitle(title))}
+        {/* {search && getAniDbSeries.map(title => renderTitle(title))} */}
       </div>
     </div>
   );

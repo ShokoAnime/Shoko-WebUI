@@ -6,7 +6,7 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { posterItemSize } from '@/components/Collection/CollectionView';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useMainPoster from '@/hooks/useMainPoster';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -19,7 +19,7 @@ type Props = {
 };
 
 const PosterViewItem = ({ isSeries = false, item }: Props) => {
-  const settingsQuery = useGetSettingsQuery(undefined, { refetchOnMountOrArgChange: false });
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 

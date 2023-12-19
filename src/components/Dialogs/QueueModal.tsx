@@ -18,7 +18,8 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
-import { useGetQueueOperationMutation, useLazyGetQueueItemsQuery } from '@/core/rtkQuery/splitV3Api/queueApi';
+import { useQueueOperationMutation } from '@/core/react-query/queue/mutations';
+import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
 
 import type { RootState } from '@/core/store';
 import type { QueueItemType } from '@/core/types/api/queue';
@@ -71,8 +72,8 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
   const [activeTab, setActiveTab] = useState<QueueName>('hasher');
   const [pageSize, setPageSize] = useState(10);
   const [showAll, setShowAll] = useState(true);
-  const [getQuery, query] = useLazyGetQueueItemsQuery();
-  const [queueOperation] = useGetQueueOperationMutation();
+  const queueQuery = useQueueItemsQuery(activeTab, { showAll, pageSize }, false);
+  const { mutate: queueOperation } = useQueueOperationMutation();
   const [expectedTab, setExpectedTab] = useState<QueueName | null>(null);
   const lastActiveTab = useRef<QueueName | null>(null);
 
@@ -110,10 +111,10 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     } as QueueItemType;
   }, [showModal, state, activeTab]);
 
-  const throttled = useMemo(() =>
-    throttle((props) => {
-      getQuery(props).catch(console.error);
-    }, 500), [getQuery]);
+  const throttledQueueQuery = useMemo(() =>
+    throttle(() => {
+      queueQuery.refetch().catch(console.error);
+    }, 500), [queueQuery]);
 
   const tabs = useMemo(() =>
     map(Object.keys(names) as QueueName[], (key, index, { length }) => (
@@ -134,13 +135,13 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     }
 
     if (expectedTab !== activeTab) {
-      if (query.isUninitialized || query.isFetching) {
+      if (!queueQuery.isSuccess) {
         return [];
       }
       setExpectedTab(activeTab);
     }
 
-    let array = query.data?.List ?? [];
+    let array = queueQuery.data?.List ?? [];
     if (currentCommand != null) {
       array = filter(array, item => item.ID !== currentCommand.ID);
       // Remove the last item if the above filtering did nothing.
@@ -179,7 +180,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       );
     }
     return itemArray;
-  }, [showModal, activeTab, query, pageSize, currentCommand, expectedTab]);
+  }, [showModal, activeTab, queueQuery, pageSize, currentCommand, expectedTab]);
 
   const handlePageSizeChange = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -202,17 +203,17 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     setShowAll(!showAll);
   });
 
-  const handleToggleAllQueues = useEventCallback(async () => {
-    await queueOperation({ operation: isAllPaused ? 'StartAll' : 'StopAll' });
-  });
+  const handleToggleAllQueues = useEventCallback(
+    () => queueOperation({ operation: isAllPaused ? 'StartAll' : 'StopAll' }),
+  );
 
-  const handleToggleQueue = useEventCallback(async () => {
-    await queueOperation({ operation: isPaused ? 'Start' : 'Stop', queue: activeTab });
-  });
+  const handleToggleQueue = useEventCallback(
+    () => queueOperation({ operation: isPaused ? 'Start' : 'Stop', queue: activeTab }),
+  );
 
-  const handleClearQueue = useEventCallback(async () => {
-    await queueOperation({ operation: 'Clear', queue: activeTab });
-  });
+  const handleClearQueue = useEventCallback(
+    () => queueOperation({ operation: 'Clear', queue: activeTab }),
+  );
 
   // We're intentionally not letting RTK invalidate any tags for automagic query
   // updates, since if we did then it would fetch in the background when the
@@ -223,9 +224,9 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       if (activeTab !== lastActiveTab.current) {
         setExpectedTab(null);
         lastActiveTab.current = activeTab;
-        getQuery({ queueName: activeTab, showAll, pageSize }).catch(() => undefined);
+        queueQuery.refetch().catch(() => undefined);
       } else {
-        throttled({ queueName: activeTab, showAll, pageSize });
+        throttledQueueQuery();
       }
       // Reset the tab after the modal is closed.
     } else if (activeTab !== 'hasher') {
@@ -237,7 +238,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       return () => clearTimeout(id);
     }
     return () => undefined;
-  }, [showModal, activeTab, showAll, pageSize, throttled, getQuery, count]);
+  }, [showModal, activeTab, showAll, pageSize, throttledQueueQuery, queueQuery, count]);
 
   return (
     <ModalPanel

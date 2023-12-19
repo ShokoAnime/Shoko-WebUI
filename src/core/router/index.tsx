@@ -6,7 +6,7 @@ import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'r
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
@@ -121,7 +121,7 @@ const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
   const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
 
-  const settingsQuery = useGetSettingsQuery(undefined, { skip: apikey === '' });
+  const settingsQuery = useSettingsQuery(!!apikey);
   const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyVisible, setBodyVisible] = useState(false);

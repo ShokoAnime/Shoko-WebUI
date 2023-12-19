@@ -4,8 +4,8 @@ import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetShokoNewsFeedQuery } from '@/core/rtkQuery/externalApi';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useShokoNewsQuery } from '@/core/react-query/external/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs } from '@/core/util';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -38,9 +38,9 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => (
 function ShokoNews() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const items = useGetShokoNewsFeedQuery();
+  const items = useShokoNewsQuery();
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const { shokoNewsPostsCount } = useMemo(
     () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
     [settingsQuery],

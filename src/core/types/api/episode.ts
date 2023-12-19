@@ -1,4 +1,4 @@
-import type { ImageType, RatingType } from './common';
+import type { DataSourceType, ImageType, RatingType } from './common';
 
 export type EpisodeType = {
   IDs: EpisodeIDsType;
@@ -16,6 +16,7 @@ export type EpisodeIDsType = {
   ID: number;
   AniDB: number;
   TvDB: number[];
+  ParentSeries: number;
 };
 
 export type EpisodeTitleType = {
@@ -63,4 +64,11 @@ export type EpisodeTvDBType = {
   AirsBeforeEpisode: number | null;
   Rating: RatingType | null;
   Thumbnail: ImageType;
+};
+
+export type EpisodeFilesQueryType = {
+  includeDataFrom?: DataSourceType[];
+  includeXRefs?: boolean;
+  isManuallyLinked?: boolean;
+  includeMediaInfo?: boolean;
 };
