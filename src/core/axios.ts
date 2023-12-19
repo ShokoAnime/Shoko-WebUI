@@ -25,8 +25,6 @@ export const axiosPlex = axiosDefault.create({
 export const axiosExternal = axiosDefault.create();
 
 const addApikeyInterceptor = (config: InternalAxiosRequestConfig) => {
-  // eslint-disable-next-line no-param-reassign
-  config.headers.apikey = (store.getState() as RootState).apiSession.apikey;
   const tempConfig = config;
   tempConfig.headers.apikey = (store.getState() as RootState).apiSession.apikey;
   return tempConfig;
