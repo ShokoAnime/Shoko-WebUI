@@ -3,12 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { transformSeriesSummary } from '@/core/react-query/dashboard/helpers';
 
-import type { DashboardRequestType } from '@/core/react-query/types';
 import type {
   DashboardCalendarRequestType,
   DashboardContinueWatchingRequestType,
   DashboardNextUpRequestType,
 } from '@/core/react-query/dashboard/types';
+import type { DashboardRequestType } from '@/core/react-query/types';
 import type {
   DashboardEpisodeDetailsType,
   DashboardSeriesSummaryType,
