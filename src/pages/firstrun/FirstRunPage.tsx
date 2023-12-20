@@ -92,7 +92,7 @@ function FirstRunPage() {
   }, [version]);
 
   return (
-    <div className="login-image-default flex w-full justify-center">
+    <div className=" flex w-full justify-center">
       <div className="flex h-full w-full max-w-[120rem] gap-x-8 p-8">
         <div className="flex w-[31.25rem] flex-col items-center rounded-md border border-panel-border bg-panel-background-transparent p-8">
           <div className="flex flex-col items-center gap-y-4">
@@ -146,6 +146,10 @@ function FirstRunPage() {
           />
         </div>
       </div>
+      <div
+        className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
+        style={{ background: 'center / cover no-repeat url(\'/webui/images/OnePiece.png\')' }}
+      />
     </div>
   );
 }

@@ -121,10 +121,9 @@ function LoginPage() {
       />
       <div
         className={cx(
-          'flex h-screen w-screen login-image items-center justify-center relative',
+          'flex h-screen w-screen items-center justify-center relative',
           imageUrl === 'default' && 'login-image-default',
         )}
-        style={imageUrl !== '' && imageUrl !== 'default' ? { backgroundImage: `url('${imageUrl}')` } : {}}
       >
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex flex-row items-center gap-x-16 p-8">
@@ -273,6 +272,12 @@ function LoginPage() {
             </div>
           </div>
         </div>
+        <div
+          className="fixed left-0 top-0 -z-10 h-full w-full opacity-50"
+          style={imageUrl !== '' && imageUrl !== 'default'
+            ? { background: `center / cover no-repeat url('${imageUrl}')` }
+            : {}}
+        />
       </div>
     </>
   );
