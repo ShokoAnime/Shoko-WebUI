@@ -10,17 +10,26 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error: AxiosError | Error) => {
-        if (failureCount < 4) return true; // 1 initial request + retry 4 times
+        let errorHeader: string;
+        let errorMessage: string;
+        let errorStatus = 0;
 
         if (isAxiosError(error)) {
           const { message } = error;
           const { method, url } = error.config as AxiosRequestConfig;
           const { status } = error.response as AxiosResponse ?? {};
 
-          toast.error(`${method?.toUpperCase()} ${url}`, `Error ${status} ${message}`);
+          errorHeader = `${method?.toUpperCase()} ${url}`;
+          errorMessage = `Error ${status} ${message}`;
+          errorStatus = status;
         } else {
-          toast.error('[API]', `Error ${error.message}`);
+          errorHeader = '[API]';
+          errorMessage = `Error ${error.message}`;
         }
+
+        if (errorStatus !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
+
+        toast.error(errorHeader, errorMessage);
 
         return false;
       },

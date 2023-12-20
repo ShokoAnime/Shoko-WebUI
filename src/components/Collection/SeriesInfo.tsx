@@ -9,6 +9,7 @@ import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
 import { convertTimeSpanToMs, dayjs, formatThousand } from '@/core/util';
 
+import type { SeriesType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
 const SeriesInfo = () => {
@@ -18,10 +19,10 @@ const SeriesInfo = () => {
   const seriesOverviewData = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
   const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? null, [seriesQuery]);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
 
-  const startDate = useMemo(() => (series?.AniDB?.AirDate != null ? dayjs(series?.AniDB?.AirDate) : null), [series]);
-  const endDate = useMemo(() => (series?.AniDB?.EndDate != null ? dayjs(series?.AniDB?.EndDate) : null), [series]);
+  const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
+  const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
   const airDate = useMemo(() => {
     if (!startDate) {
       return 'Unknown';
@@ -49,7 +50,7 @@ const SeriesInfo = () => {
   return (
     <div className="flex w-full max-w-[31.25rem] flex-col gap-y-8">
       <div className="flex w-full grow flex-col gap-y-3 rounded-md border border-panel-border bg-panel-background-transparent p-8">
-        {seriesQuery.isLoading || seriesOverviewData.isLoading
+        {!seriesQuery.isSuccess || !seriesOverviewData.isSuccess
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={3} spin />
@@ -125,12 +126,12 @@ const SeriesInfo = () => {
                 <div className="font-semibold ">Local</div>
                 <div className="flex flex-row gap-x-1">
                   <span>EP:</span>
-                  <span>{formatThousand((series?.Sizes.Local.Episodes) ?? 0)}</span>
-                  {series?.Sizes.Local.Specials !== 0 && (
+                  <span>{formatThousand(series.Sizes.Local.Episodes)}</span>
+                  {series.Sizes.Local.Specials !== 0 && (
                     <>
                       <span>|</span>
                       <span>SP:</span>
-                      <span>{formatThousand((series?.Sizes.Local.Specials) ?? 0)}</span>
+                      <span>{formatThousand(series.Sizes.Local.Specials)}</span>
                     </>
                   )}
                 </div>
@@ -139,12 +140,12 @@ const SeriesInfo = () => {
                 <div className="font-semibold ">Watched</div>
                 <div className="flex flex-row gap-x-1">
                   <span>EP:</span>
-                  <span>{formatThousand((series?.Sizes.Watched.Episodes) ?? 0)}</span>
-                  {(series?.Sizes.Total.Specials !== 0 && series?.Sizes.Local.Specials !== 0) && (
+                  <span>{formatThousand(series.Sizes.Watched.Episodes)}</span>
+                  {(series.Sizes.Total.Specials !== 0 && series.Sizes.Local.Specials !== 0) && (
                     <>
                       <span>|</span>
                       <span>SP:</span>
-                      <span>{formatThousand((series?.Sizes.Watched.Specials) ?? 0)}</span>
+                      <span>{formatThousand(series.Sizes.Watched.Specials)}</span>
                     </>
                   )}
                 </div>
@@ -157,14 +158,14 @@ const SeriesInfo = () => {
                     {series?.Sizes.Missing.Episodes !== 0 && (
                       <>
                         <span>EP:</span>
-                        <span>{formatThousand((series?.Sizes.Missing.Episodes) ?? 0)}</span>
+                        <span>{formatThousand(series.Sizes.Missing.Episodes)}</span>
                       </>
                     )}
-                    {series?.Sizes.Missing.Episodes !== 0 && series?.Sizes.Missing.Specials !== 0 && <span>|</span>}
-                    {series?.Sizes.Missing.Specials !== 0 && (
+                    {series.Sizes.Missing.Episodes !== 0 && series.Sizes.Missing.Specials !== 0 && <span>|</span>}
+                    {series.Sizes.Missing.Specials !== 0 && (
                       <>
                         <span>SP:</span>
-                        <span>{formatThousand((series?.Sizes.Missing.Specials) ?? 0)}</span>
+                        <span>{formatThousand(series.Sizes.Missing.Specials)}</span>
                       </>
                     )}
                   </div>

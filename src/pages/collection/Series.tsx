@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
-import { Link, NavLink, useOutletContext } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import {
   mdiAccountGroupOutline,
   mdiChevronRight,
@@ -8,6 +8,7 @@ import {
   mdiFilmstrip,
   mdiImageMultipleOutline,
   mdiInformationOutline,
+  mdiLoading,
   mdiPencilCircleOutline,
   mdiTagTextOutline,
 } from '@mdi/js';
@@ -24,6 +25,7 @@ import { useSeriesImagesQuery, useSeriesQuery, useSeriesTagsQuery } from '@/core
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { ImageType } from '@/core/types/api/common';
+import type { SeriesType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
 const SeriesTab = ({ icon, text, to }) => (
@@ -53,6 +55,7 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const Series = () => {
+  const navigate = useNavigate();
   const { seriesId } = useParams();
   const [fanartUri, setFanartUri] = useState('');
   const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
@@ -60,7 +63,7 @@ const Series = () => {
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? null, [seriesQuery]);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
   const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const images = useMemo(() => imagesData ?? null, [imagesData]);
   const mainPoster = useMainPoster(series);
@@ -78,7 +81,18 @@ const Series = () => {
     }
   }, [images, imagesData]);
 
-  if (!series || !seriesId || !seriesQuery.isSuccess) return null;
+  if (seriesQuery.isError) {
+    navigate('../');
+    return null;
+  }
+
+  if (!seriesQuery.isSuccess) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -130,7 +144,7 @@ const Series = () => {
                   </div>
                 </div>
                 <div className="line-clamp-[7]">
-                  <AnidbDescription text={series?.AniDB?.Description ?? ''} />
+                  <AnidbDescription text={series.AniDB?.Description ?? ''} />
                 </div>
               </div>
             </div>

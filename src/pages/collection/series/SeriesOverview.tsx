@@ -17,6 +17,7 @@ import {
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import type { EpisodeType } from '@/core/types/api/episode';
+import type { SeriesType } from '@/core/types/api/series';
 
 const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   const thumbnail = useEpisodeThumbnail(nextUpEpisode);
@@ -38,7 +39,7 @@ const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? null, [seriesQuery]);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
   const nextUpEpisodeData = useSeriesNextUpQuery(toNumber(seriesId!), {
     includeDataFrom: ['AniDB', 'TvDB'],
     includeMissing: true,
@@ -50,8 +51,6 @@ const SeriesOverview = () => {
   const related = useMemo(() => relatedData?.data ?? [], [relatedData]);
   const similar = useMemo(() => similarData?.data ?? [], [similarData]);
 
-  if (!seriesId || !series) return null;
-
   return (
     <>
       <div className="flex gap-x-8">
@@ -60,6 +59,7 @@ const SeriesOverview = () => {
             title="Episode on Deck"
             className="flex w-full max-w-[71.875rem] grow overflow-visible"
             transparent
+            isFetching={nextUpEpisodeData.isFetching}
           >
             {get(nextUpEpisode, 'Name', false)
               ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
