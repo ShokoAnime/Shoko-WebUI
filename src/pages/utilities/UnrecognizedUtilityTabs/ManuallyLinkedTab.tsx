@@ -22,18 +22,18 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteFileLinkMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 import { prefetchSeriesEpisodesInfiniteQuery, prefetchSeriesFilesQuery } from '@/core/react-query/series/prefetch';
-import {
-  useSeriesEpisodesInfiniteQuery,
-  useSeriesFilesQuery,
-  useSeriesWithLinkedFilesInfiniteQuery,
-} from '@/core/react-query/series/queries';
+import { useSeriesWithLinkedFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
+import type { ListResultType } from '@/core/types/api';
+import type { EpisodeType } from '@/core/types/api/episode';
+import type { FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
+import type { InfiniteData } from '@tanstack/react-query';
 import type { Updater } from 'use-immer';
 
 const columns: UtilityHeaderType<SeriesType>[] = [
@@ -105,19 +105,24 @@ const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean
     [setSelectedFiles],
   );
 
-const FilesTable = ({ id, open }: { id: number, open: boolean }) => {
-  const filesQuery = useSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] }, open);
-  const episodesQuery = useSeriesEpisodesInfiniteQuery(
-    id,
-    {
-      pageSize: 0,
-      includeMissing: 'true',
-      includeDataFrom: ['AniDB'],
-    },
-    open,
-    60000,
+const FilesTable = ({ id: seriesId }: { id: number }) => {
+  // We are prefetching the query before opening this "dropdown", so just fetching from cache instead.
+  const files = queryClient.getQueryData<ListResultType<FileType>>(
+    ['series', 'files', seriesId, { include: ['XRefs'], include_only: ['ManualLinks'] }],
   );
-  const [episodes] = useFlattenListResult(episodesQuery.data);
+  const episodesResult = queryClient.getQueryData<InfiniteData<ListResultType<EpisodeType>>>(
+    [
+      'series',
+      'episodes',
+      seriesId,
+      {
+        pageSize: 0,
+        includeMissing: 'true',
+        includeDataFrom: ['AniDB'],
+      },
+    ],
+  );
+  const [episodes] = useFlattenListResult(episodesResult);
 
   const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext) as SelectedFilesType;
   const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
@@ -126,7 +131,7 @@ const FilesTable = ({ id, open }: { id: number, open: boolean }) => {
     <ManuallyLinkedFilesRow
       updateSelectedFiles={updateSelectedFiles}
       selectedFiles={selectedFiles}
-      files={filesQuery?.data ?? []}
+      files={files?.List ?? []}
       episodes={episodes ?? []}
     />
   );

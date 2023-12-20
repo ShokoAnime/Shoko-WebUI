@@ -2,7 +2,6 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
-import { getSeriesEpisodesQueryKey, getSeriesFilesQueryKey } from '@/core/react-query/series/helpers';
 
 import type {
   SeriesAniDBEpisodesRequestType,
@@ -73,10 +72,9 @@ export const useSeriesEpisodesInfiniteQuery = (
   seriesId: number,
   params: SeriesEpisodesInfiniteRequestType,
   enabled = true,
-  staleTime = 0,
 ) =>
   useInfiniteQuery<ListResultType<EpisodeType>>({
-    queryKey: getSeriesEpisodesQueryKey(seriesId, params),
+    queryKey: ['series', 'episodes', seriesId, params],
     queryFn: ({ pageParam }) =>
       axios.get(
         `Series/${seriesId}/Episode`,
@@ -93,20 +91,19 @@ export const useSeriesEpisodesInfiniteQuery = (
       return lastPageParam + 1;
     },
     enabled,
-    staleTime,
   });
 
+// Unused: but keeping it as it might be used in the future for other utilities
 export const useSeriesFilesQuery = (
   seriesId: number,
   params: FileRequestType,
   enabled = true,
 ) =>
   useQuery<ListResultType<FileType>, unknown, FileType[]>({
-    queryKey: getSeriesFilesQueryKey(seriesId, params),
+    queryKey: ['series', 'files', seriesId, params],
     queryFn: () => axios.get(`Series/${seriesId}/File`, { params }),
     select: transformListResultSimplified,
     enabled,
-    staleTime: 60000,
   });
 
 export const useSeriesGroupQuery = (seriesId: number, topLevel: boolean) =>
