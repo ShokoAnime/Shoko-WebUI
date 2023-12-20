@@ -15,8 +15,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import { every, forEach, some } from 'lodash';
+import { every, find, forEach, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
@@ -32,46 +31,44 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import {
+  useAvdumpFileMutation,
   useDeleteFileMutation,
-  useGetFilesQuery,
-  usePostFileAVDumpMutation,
-  usePostFileRehashMutation,
-  usePostFileRescanMutation,
-  usePutFileIgnoreMutation,
-} from '@/core/rtkQuery/splitV3Api/fileApi';
-import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { useUnrecognizedUtilityContext } from '@/pages/utilities/UnrecognizedUtility';
+  useIgnoreFileMutation,
+  useRehashFileMutation,
+  useRescanFileMutation,
+} from '@/core/react-query/file/mutations';
+import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import { FileSortCriteriaEnum } from '@/core/types/api/file';
+import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import { useRowSelection } from '@/hooks/useRowSelection';
+import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { RootState } from '@/core/store';
-import type { ListResultType } from '@/core/types/api';
-import type { Table } from '@tanstack/react-table';
-
-const columnHelper = createColumnHelper<FileType>();
+import type { FileType } from '@/core/types/api/file';
+import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
+import type { Updater } from 'use-immer';
 
 const Menu = (
   props: {
-    files: ListResultType<FileType>;
-    table: Table<FileType>;
-    refetch(): void;
+    selectedRows: FileType[];
+    setSelectedRows: Updater<Record<number, boolean>>;
     setSeriesSelectModal(show: boolean): void;
   },
 ) => {
   const {
-    files,
-    refetch,
+    selectedRows,
+    setSelectedRows,
     setSeriesSelectModal,
-    table,
   } = props;
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const [fileDeleteTrigger] = useDeleteFileMutation();
-  const [fileIgnoreTrigger] = usePutFileIgnoreMutation();
-  const [fileRehashTrigger] = usePostFileRehashMutation();
-  const [fileRescanTrigger] = usePostFileRescanMutation();
-
-  const tableSelectedRows = table.getSelectedRowModel();
-  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
+  const { mutateAsync: deleteFile } = useDeleteFileMutation();
+  const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
+  const { mutateAsync: rehashFile } = useRehashFileMutation();
+  const { mutateAsync: rescanFile } = useRescanFileMutation();
 
   const showDeleteConfirmation = useEventCallback(() => {
     setShowConfirmModal(true);
@@ -82,14 +79,18 @@ const Menu = (
   });
 
   const removeFileFromSelection = useEventCallback(
-    (fileId: number) => tableSelectedRows.rows.find(row => row.original.ID === fileId)?.toggleSelected(false),
+    (fileId: number) =>
+      setSelectedRows((immerState) => {
+        immerState[fileId] = false;
+        return immerState;
+      }),
   );
 
   const deleteFiles = useEventCallback(() => {
-    table.resetRowSelection();
+    setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
-      fileDeleteTrigger({ fileId: row.ID, removeFolder: true }).catch((error) => {
+      deleteFile({ fileId: row.ID, removeFolder: true }).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
@@ -100,10 +101,10 @@ const Menu = (
   });
 
   const ignoreFiles = useEventCallback(() => {
-    table.resetRowSelection();
+    setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
-      fileIgnoreTrigger({ fileId: row.ID, value: true }).unwrap().catch((error) => {
+      ignoreFile({ fileId: row.ID, ignore: true }).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
@@ -113,36 +114,31 @@ const Menu = (
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
   });
 
-  const rehashFiles = useEventCallback((selected = false) => {
-    table.resetRowSelection();
+  const rehashFiles = useEventCallback(() => {
+    setSelectedRows([]);
     let failedFiles = 0;
-    const fileList = selected ? selectedRows : files.List;
 
-    forEach(fileList, (file) => {
-      fileRehashTrigger(file.ID).unwrap().catch((error) => {
+    forEach(selectedRows, (file) => {
+      rehashFile(file.ID).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
     });
 
     if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
-    if (failedFiles !== fileList.length) toast.success(`Rehashing ${fileList.length} files!`);
   });
 
-  const rescanFiles = useEventCallback((selected = false) => {
-    table.resetRowSelection();
+  const rescanFiles = useEventCallback(() => {
+    setSelectedRows([]);
     let failedFiles = 0;
-    const fileList = selected ? selectedRows : files.List;
-
-    forEach(fileList, (file) => {
-      fileRescanTrigger(file.ID).unwrap().catch((error) => {
+    forEach(selectedRows, (file) => {
+      rescanFile(file.ID).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });
     });
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-    if (failedFiles !== fileList.length) toast.success(`Rescanning ${fileList.length} files!`);
   });
 
   return (
@@ -150,28 +146,21 @@ const Menu = (
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
-            table.resetRowSelection();
-            refetch();
+            setSelectedRows([]);
+            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
           }}
           icon={mdiRefresh}
-          name="Refresh List"
-        />
-        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan All" />
-        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash All" />
-        <MenuButton
-          onClick={() => setSeriesSelectModal(true)}
-          icon={mdiFileDocumentOutline}
-          name="Add All To AniDB"
+          name="Refresh"
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => rescanFiles(true)} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => rehashFiles(true)} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
-          onClick={() => table.resetRowSelection()}
+          onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
           name="Cancel Selection"
           highlight
@@ -181,8 +170,8 @@ const Menu = (
         {selectedRows.length}
         &nbsp;
       </span>
-      {selectedRows.length === 1 ? 'File' : 'Files'}
-      &nbsp; Selected
+      {selectedRows.length === 1 ? 'File ' : 'Files '}
+      Selected
       <DeleteFilesModal
         show={showConfirmModal}
         selectedFiles={selectedRows}
@@ -197,50 +186,66 @@ const Menu = (
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
-  const { columns: staticColumns } = useUnrecognizedUtilityContext();
-  const columns = useMemo(() => [
-    ...staticColumns,
-    columnHelper.display({
-      id: 'status',
-      header: 'Status',
-      cell: info => <AVDumpFileIcon file={info.row.original} />,
-      meta: {
-        className: 'w-20',
-      },
-    }),
-  ], [staticColumns]);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
   const debouncedSearch = useDebounce(search, 200);
+  const { mutate: avdumpFile } = useAvdumpFileMutation();
 
-  const filesQuery = useGetFilesQuery({
-    pageSize: 0,
-    includeUnrecognized: 'only',
-    search: debouncedSearch,
-    sortOrder: debouncedSearch ? [] : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
-  });
-  const files = useMemo(() => filesQuery?.data ?? { Total: 0, List: [] }, [filesQuery]);
-  const [fileAvdumpTrigger] = usePostFileAVDumpMutation();
+  const importFolderQuery = useImportFoldersQuery();
+  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery]);
+
+  const filesQuery = useFilesInfiniteQuery(
+    {
+      pageSize: 50,
+      include_only: ['Unrecognized'],
+      sortOrder: debouncedSearch
+        ? []
+        : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+    },
+    debouncedSearch,
+  );
+  const [files, fileCount] = useFlattenListResult(filesQuery.data);
+
+  const columns = useMemo<UtilityHeaderType<FileType>[]>(
+    () => [
+      {
+        id: 'importFolder',
+        name: 'Import Folder',
+        className: 'w-40',
+        item: file =>
+          find(
+            importFolders,
+            { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+          )?.Name ?? '<Unknown>',
+      },
+      ...staticColumns,
+      {
+        id: 'status',
+        name: 'Status',
+        className: 'w-16',
+        item: file => <AVDumpFileIcon file={file} />,
+      },
+    ],
+    [importFolders],
+  );
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
 
-  const table = useReactTable({
-    data: files.List,
-    columns,
-    getRowId(row) {
-      return row.ID.toString();
-    },
-    getCoreRowModel: getCoreRowModel(),
-  });
-  const tableSelectedRows = table.getSelectedRowModel();
-  const selectedRows = useMemo(() => tableSelectedRows.rows.map(row => row.original), [tableSelectedRows]);
+  const {
+    handleRowSelect,
+    rowSelection,
+    selectedRows,
+    setRowSelection,
+  } = useRowSelection<FileType>(files);
+
   const isAvdumpFinished = useMemo(
-    () =>
-      every(
+    () => (selectedRows.length > 0
+      ? every(
         selectedRows,
         row => avdumpList.sessions[avdumpList.sessionMap[row.ID]]?.status === 'Success' || row.AVDump.LastDumpedAt,
-      ),
+      )
+      : false),
     [selectedRows, avdumpList],
   );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
@@ -251,29 +256,26 @@ function UnrecognizedTab() {
     } else {
       forEach(
         selectedRows,
-        row => !row?.AVDump?.LastDumpedAt && !row.AVDump.Status && fileAvdumpTrigger(row.ID).catch(console.error),
+        row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID),
       );
     }
   });
 
-  const getED2KLinks = useEventCallback(() => {
-    const fileList = selectedRows.length > 0 ? selectedRows : files.List;
-    return {
-      fileIds: fileList.map(file => file.ID),
-      links: fileList.map(
-        file =>
-          `ed2k://|file|${
-            file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
-          }|${file.Size}|${file.Hashes.ED2K}|/`,
-      ),
-    };
-  });
+  const getED2KLinks = useEventCallback(() => ({
+    fileIds: selectedRows.map(file => file.ID),
+    links: selectedRows.map(
+      file =>
+        `ed2k://|file|${
+          file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
+        }|${file.Size}|${file.Hashes.ED2K}|/`,
+    ),
+  }));
 
   return (
     <>
       <div className="flex grow flex-col gap-y-8">
         <div>
-          <ShokoPanel title={<Title />} options={<ItemCount filesCount={files.Total} />}>
+          <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} />}>
             <div className="flex items-center gap-x-3">
               <Input
                 type="text"
@@ -285,9 +287,8 @@ function UnrecognizedTab() {
                 inputClassName="px-4 py-3"
               />
               <Menu
-                table={table}
-                files={files}
-                refetch={() => filesQuery.refetch()}
+                selectedRows={selectedRows}
+                setSelectedRows={setRowSelection}
                 setSeriesSelectModal={setSeriesSelectModal}
               />
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
@@ -315,30 +316,39 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
-          {filesQuery.isLoading && (
+        <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+          {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />
             </div>
           )}
-          {!filesQuery.isLoading && files.Total > 0 && (
-            <UtilitiesTable
-              table={table}
-              sortCriteria={sortCriteria}
-              setSortCriteria={setSortCriteria}
-              skipSort={Boolean(debouncedSearch)}
-            />
-          )}
-          {!filesQuery.isLoading && files.Total === 0 && (
+
+          {!filesQuery.isPending && fileCount === 0 && (
             <div className="flex grow items-center justify-center font-semibold">No unrecognized file(s)!</div>
           )}
-        </TransitionDiv>
+
+          {filesQuery.isSuccess && fileCount > 0 && (
+            <UtilitiesTable
+              count={fileCount}
+              fetchNextPage={filesQuery.fetchNextPage}
+              handleRowSelect={handleRowSelect}
+              columns={columns}
+              isFetchingNextPage={filesQuery.isFetchingNextPage}
+              rows={files}
+              rowSelection={rowSelection}
+              setSelectedRows={setRowSelection}
+              setSortCriteria={setSortCriteria}
+              skipSort={!!debouncedSearch}
+              sortCriteria={sortCriteria}
+            />
+          )}
+        </div>
       </div>
 
       <AvDumpSeriesSelectModal
         show={seriesSelectModal}
         onClose={(refresh?: boolean) => {
-          if (refresh) table.resetRowSelection();
+          if (refresh) setRowSelection({});
           setSeriesSelectModal(false);
         }}
         getLinks={getED2KLinks}

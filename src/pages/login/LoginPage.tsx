@@ -14,9 +14,9 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoIcon from '@/components/ShokoIcon';
-import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
-import { useGetRandomMetadataQuery } from '@/core/rtkQuery/splitV3Api/imageApi';
-import { useGetInitStatusQuery, useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useLoginMutation } from '@/core/react-query/auth/mutations';
+import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
+import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { ImageTypeEnum } from '@/core/types/api/common';
 import { useHashQueryParameter } from '@/hooks/query';
 
@@ -38,10 +38,10 @@ function LoginPage() {
     seriesId: 0,
   }));
 
-  const version = useGetInitVersionQuery();
-  const [login, { isLoading: isFetchingLogin }] = usePostAuthMutation();
-  const status = useGetInitStatusQuery(undefined, { pollingInterval });
-  const imageMetadata = useGetRandomMetadataQuery({ imageType: ImageTypeEnum.Fanart });
+  const version = useVersionQuery();
+  const { isPending: isLoginPending, mutate: login } = useLoginMutation();
+  const status = useServerStatusQuery(pollingInterval);
+  const imageMetadataQuery = useRandomImageMetadataQuery(ImageTypeEnum.Fanart);
 
   const setRedirect = () => {
     if (seriesId === 0) return;
@@ -49,17 +49,17 @@ function LoginPage() {
   };
 
   useEffect(() => {
-    const { data } = imageMetadata;
-    if (!data || !data?.Type) {
+    if (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data.Type) {
       setLoginImage({ imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 });
       return;
     }
+    const { ID, Series, Source, Type } = imageMetadataQuery.data;
     setLoginImage({
-      imageUrl: `/api/v3/Image/${data.Source}/${data.Type}/${data.ID}`,
-      seriesName: data?.Series?.Name ?? '',
-      seriesId: data?.Series?.ID ?? 0,
+      imageUrl: `/api/v3/Image/${Source}/${Type}/${ID}`,
+      seriesName: Series?.Name ?? '',
+      seriesId: Series?.ID ?? 0,
     });
-  }, [imageMetadata]);
+  }, [imageMetadataQuery.isSuccess, imageMetadataQuery.data]);
 
   useEffect(() => {
     if (!status.data) setPollingInterval(500);
@@ -78,16 +78,21 @@ function LoginPage() {
     Sentry.setTag('server_version', versionHash);
   }, [version]);
 
-  const handleSignIn = async (event: React.FormEvent) => {
+  const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();
     if (!username) return;
 
-    login({
-      user: username,
-      pass: password,
-      device: 'web-ui',
-      rememberUser,
-    }).unwrap().then(() => navigate(returnTo), error => console.error(error));
+    login(
+      {
+        user: username,
+        pass: password,
+        device: 'web-ui',
+        rememberUser,
+      },
+      {
+        onSuccess: () => navigate(returnTo),
+      },
+    );
   };
 
   const parsedVersion = useMemo(() => {
@@ -176,7 +181,7 @@ function LoginPage() {
                     buttonType="primary"
                     className="w-full py-2 font-semibold"
                     submit
-                    loading={isFetchingLogin}
+                    loading={isLoginPending}
                     disabled={version.isFetching || username === ''}
                   >
                     Login
@@ -230,9 +235,9 @@ function LoginPage() {
               onClick={setRedirect}
             >
               {/* eslint-disable-next-line no-nested-ternary */}
-              {imageMetadata.isError
+              {imageMetadataQuery.isError
                 ? 'One Piece'
-                : imageMetadata.data?.Series === undefined
+                : imageMetadataQuery.data?.Series === undefined
                 ? 'Series Not Found'
                 : seriesName}
             </div>

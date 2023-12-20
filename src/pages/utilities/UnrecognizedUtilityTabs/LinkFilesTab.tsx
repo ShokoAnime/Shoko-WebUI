@@ -27,22 +27,22 @@ import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import Title from '@/components/Utilities/Unrecognized/Title';
-import { usePostFileLinkManyMutation, usePostFileLinkOneMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
 import {
-  useDeleteSeriesMutation,
-  useGetSeriesAniDBEpisodesQuery,
-  useGetSeriesAniDBSearchQuery,
-  useLazyGetSeriesAniDBQuery,
-  useLazyGetSeriesEpisodesQuery,
-  useRefreshAnidbSeriesMutation,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+  useLinkManyFilesToOneEpisodeMutation,
+  useLinkOneFileToManyEpisodesMutation,
+} from '@/core/react-query/file/mutations';
+import { useDeleteSeriesMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
+import {
+  useSeriesAniDBEpisodesQuery,
+  useSeriesAniDBQuery,
+  useSeriesAniDBSearchQuery,
+  useSeriesEpisodesInfiniteQuery,
+} from '@/core/react-query/series/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
-import type { ListResultType } from '@/core/types/api';
-import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
@@ -152,7 +152,7 @@ const AnimeSelectPanel = (
 ) => {
   const [searchText, setSearchText] = useState(placeholder);
   const debouncedSearch = useDebounce(searchText, 200);
-  const searchQuery = useGetSeriesAniDBSearchQuery({ query: debouncedSearch }, { skip: !debouncedSearch });
+  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   const searchRows = useMemo(() => {
     const rows: React.ReactNode[] = [];
@@ -200,20 +200,34 @@ function LinkFilesTab() {
   const [selectedSeries, setSelectedSeries] = useState({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
   const [seriesUpdating, setSeriesUpdating] = useState(false);
   const [showRangeFillModal, setShowRangeFillModal] = useState(false);
+  const [seriesToFetch, setSeriesToFetch] = useState(0);
   const [links, setLinks] = useImmer<ManualLink[]>(
     () => selectedRows.map(file => ({ LinkID: generateLinkID(), FileID: file.ID, EpisodeID: 0 })),
   );
-  const [deleteSeries] = useDeleteSeriesMutation();
-  const [fileLinkManyTrigger] = usePostFileLinkManyMutation();
-  const [fileLinkOneOrManyTrigger] = usePostFileLinkOneMutation();
-  const [getAnidbSeries, getAnidbSeriesQuery] = useLazyGetSeriesAniDBQuery();
-  const [refreshSeries] = useRefreshAnidbSeriesMutation();
-  const [updateEpisodes] = useLazyGetSeriesEpisodesQuery();
-  const anidbEpisodesQuery = useGetSeriesAniDBEpisodesQuery({
-    anidbID: selectedSeries.ID,
-    pageSize: 0,
-    includeMissing: 'true',
-  }, { skip: !selectedSeries.ID || selectedSeries.Type === SeriesTypeEnum.Unknown });
+
+  const { mutate: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
+  const { mutate: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
+
+  const { mutate: deleteSeries } = useDeleteSeriesMutation();
+  const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
+  const seriesAniDBQuery = useSeriesAniDBQuery(seriesToFetch, false);
+  const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
+    selectedSeries?.ShokoID ?? seriesAniDBQuery.data?.ShokoID ?? 0,
+    {
+      includeMissing: 'true',
+      includeHidden: 'true',
+      pageSize: 0,
+    },
+    false,
+  );
+  const anidbEpisodesQuery = useSeriesAniDBEpisodesQuery(
+    selectedSeries.ID,
+    {
+      pageSize: 0,
+      includeMissing: 'true',
+    },
+    !!selectedSeries.ID && selectedSeries.Type !== SeriesTypeEnum.Unknown,
+  );
 
   const showDataMap = useMemo(() =>
     new Map(
@@ -231,7 +245,7 @@ function LinkFilesTab() {
     [showDataMap, links],
   );
 
-  const episodes = useMemo(() => anidbEpisodesQuery?.data?.List || [], [anidbEpisodesQuery]);
+  const episodes = useMemo(() => anidbEpisodesQuery?.data || [], [anidbEpisodesQuery]);
   const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);
@@ -300,15 +314,20 @@ function LinkFilesTab() {
     }
 
     setSeriesUpdating(true);
-    try {
-      const refresh = await refreshSeries({ anidbID: series.ID, force: true }).unwrap();
-      // Because server thinks sending data as false with status 200 is the same as sending error status
-      if (!refresh) throw Error();
-      const updatedSeriesData = await getAnidbSeries(series.ID).unwrap();
-      setSelectedSeries(updatedSeriesData);
-    } catch (_) {
-      toast.error('Failed to get series data!');
+    setSeriesToFetch(series.ID);
+
+    const refresh = await refreshSeries({ anidbID: series.ID, force: true, immediate: true });
+
+    if (refresh) {
+      const updatedSeriesData = await seriesAniDBQuery.refetch();
+      if (updatedSeriesData.isSuccess) {
+        setSelectedSeries(updatedSeriesData.data);
+        setSeriesUpdating(false);
+        return;
+      }
     }
+
+    toast.error('Failed to get series data!');
     setSeriesUpdating(false);
   });
 
@@ -335,7 +354,7 @@ function LinkFilesTab() {
     const doesNotExist = selectedSeries.ShokoID === null;
     if (doesNotExist) {
       try {
-        await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true }).unwrap();
+        await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true, immediate: true });
       } catch (_) {
         toast.error('Failed to add series! Unable to create shoko series entry.');
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
@@ -427,27 +446,23 @@ function LinkFilesTab() {
     }
   });
 
-  const makeLinks = useEventCallback(async (seriesID: number, manualLinks: ManualLink[], didNotExist: boolean) => {
+  const makeLinks = useEventCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
 
-    let shokoEpisodeResponse: ListResultType<EpisodeType>;
-    try {
-      shokoEpisodeResponse = await updateEpisodes({
-        seriesID,
-        includeMissing: 'true',
-        includeHidden: 'true',
-        pageSize: 0,
-      }).unwrap();
-    } catch (_) {
+    const seriesEpisodesData = await seriesEpisodesQuery.refetch();
+
+    if (!seriesEpisodesData.isSuccess) {
       // if it previously didn't exist, but was made right before this, then
       // delete it again.
       if (didNotExist) {
-        await deleteSeries({ seriesId: seriesID, deleteFiles: false });
+        deleteSeries({ seriesId, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       toast.error('Linking aborted!', 'Unable to fetch shoko episodes!');
       return;
     }
+
+    const shokoEpisodeResponse = seriesEpisodesData.data.pages[0];
 
     const anidbMap = new Map(shokoEpisodeResponse.List.map(i => [i.IDs.AniDB, i.IDs.ID]));
     const mappedLinks: ManualLink[] = manualLinks.map(({ EpisodeID, FileID, LinkID }) => ({
@@ -456,11 +471,12 @@ function LinkFilesTab() {
       EpisodeID: anidbMap.get(EpisodeID) || 0,
     }));
     const { manyToMany, manyToOne, none, oneToMany, oneToOne } = parseLinks(mappedLinks);
+
     if (manyToMany.length) {
       // if it previously didn't exist, but was made right before this, then
       // delete it again.
       if (didNotExist) {
-        await deleteSeries({ seriesId: seriesID, deleteFiles: false });
+        deleteSeries({ seriesId, deleteFiles: false });
       }
       setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       toast.error('Linking aborted!', 'Unable create many-to-many relations. Try again or contact support.');
@@ -475,33 +491,27 @@ function LinkFilesTab() {
       }),
       ...map(oneToOne, async ({ EpisodeID, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        try {
-          await fileLinkOneOrManyTrigger({ episodeIDs: [EpisodeID], fileID: FileID }).unwrap();
-          toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`);
-        } catch (error) {
-          toast.error('Failed at 1:1 linking!', `Path: ${path}`);
-        }
+        linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }, {
+          onSuccess: () => toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`),
+          onError: () => toast.error('Failed at 1:1 linking!', `Path: ${path}`),
+        });
       }),
       ...map(oneToMany, async ({ EpisodeIDs, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        try {
-          await fileLinkOneOrManyTrigger({ episodeIDs: EpisodeIDs, fileID: FileID }).unwrap();
-          toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`);
-        } catch (error) {
-          toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`);
-        }
+        linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }, {
+          onSuccess: () => toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`),
+          onError: () => toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`),
+        });
       }),
       ...map(manyToOne, async ({ EpisodeID, FileIDs }) => {
         const episode = find(episodes, ['ID', EpisodeID]);
         const episodeDetails = episode
           ? `Episode: ${episode.EpisodeNumber} - ${episode.Title}`
           : `Episode: ${EpisodeID}`;
-        try {
-          await fileLinkManyTrigger({ episodeID: EpisodeID, fileIDs: FileIDs }).unwrap();
-          toast.success(`Scheduled a ${FileIDs.length}:1 mapping for linking!`, episodeDetails);
-        } catch (error) {
-          toast.error(`Failed at ${FileIDs.length}:1 linking!`, episodeDetails);
-        }
+        linkManyFilesToOneEpisode({ episodeID: EpisodeID, fileIDs: FileIDs }, {
+          onSuccess: () => toast.success(`Scheduled a ${FileIDs.length}:1 mapping for linking!`, episodeDetails),
+          onError: () => toast.error(`Failed at ${FileIDs.length}:1 linking!`, episodeDetails),
+        });
       }),
     ]);
 
@@ -524,7 +534,7 @@ function LinkFilesTab() {
   }, [selectedSeries.ID, episodes.length, autoFill]);
 
   useEffect(() => {
-    const seriesId = selectedSeries?.ShokoID ?? getAnidbSeriesQuery.data?.ShokoID;
+    const seriesId = selectedSeries?.ShokoID ?? seriesAniDBQuery.data?.ShokoID;
     if (!seriesId || !isLinking || isLinkingRunning) {
       return;
     }
@@ -537,8 +547,8 @@ function LinkFilesTab() {
     makeLinks,
     links,
     selectedSeries.ShokoID,
-    getAnidbSeriesQuery.data,
-    getAnidbSeriesQuery.isFetching,
+    seriesAniDBQuery.data,
+    seriesAniDBQuery.isFetching,
   ]);
 
   const renderStaticFileLinks = () =>
@@ -608,7 +618,7 @@ function LinkFilesTab() {
     <>
       <TransitionDiv className="flex h-full w-full grow flex-col">
         <div>
-          <ShokoPanel title={<Title />} options={<ItemCount filesCount={selectedRows.length} />}>
+          <ShokoPanel title={<Title />} options={<ItemCount count={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
               <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div className="flex grow gap-x-4">

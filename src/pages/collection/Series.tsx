@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
-import { Link, NavLink, useOutletContext } from 'react-router-dom';
+import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import {
   mdiAccountGroupOutline,
   mdiChevronRight,
@@ -8,26 +8,24 @@ import {
   mdiFilmstrip,
   mdiImageMultipleOutline,
   mdiInformationOutline,
+  mdiLoading,
   mdiPencilCircleOutline,
   mdiTagTextOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get } from 'lodash';
+import { get, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
-import { useGetGroupQuery } from '@/core/rtkQuery/splitV3Api/collectionApi';
-import {
-  useGetSeriesImagesQuery,
-  useGetSeriesQuery,
-  useGetSeriesTagsQuery,
-} from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useGroupQuery } from '@/core/react-query/group/queries';
+import { useSeriesImagesQuery, useSeriesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { ImageType } from '@/core/types/api/common';
+import type { SeriesType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
 const SeriesTab = ({ icon, text, to }) => (
@@ -57,26 +55,21 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const Series = () => {
+  const navigate = useNavigate();
   const { seriesId } = useParams();
   const [fanartUri, setFanartUri] = useState('');
   const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-    skip: !seriesId,
-  });
-  const series = useMemo(() => seriesData?.data ?? null, [seriesData]);
-  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
+  const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const images = useMemo(() => imagesData ?? null, [imagesData]);
   const mainPoster = useMainPoster(series);
-  const tagsData = useGetSeriesTagsQuery({ seriesId: seriesId!, excludeDescriptions: true }, { skip: !seriesId });
+  const tagsData = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
   const tags: TagType[] = tagsData?.data ?? [] as TagType[];
-  const groupData = useGetGroupQuery({ groupId: series?.IDs?.ParentGroup.toString() ?? '' }, {
-    skip: !series?.IDs?.ParentGroup,
-  });
-  const group = groupData?.data ?? null;
+  const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
   useEffect(() => {
     const allFanarts: ImageType[] = get(images, 'data.Fanarts', []);
@@ -88,7 +81,18 @@ const Series = () => {
     }
   }, [images, imagesData]);
 
-  if (!series || !seriesId || !seriesData.isSuccess) return null;
+  if (seriesQuery.isError) {
+    navigate('../');
+    return null;
+  }
+
+  if (!seriesQuery.isSuccess) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
 
   return (
     <>
@@ -112,13 +116,13 @@ const Series = () => {
                     Entire Collection
                   </Link>
                   <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                  {group && group.Size > 1 && (
+                  {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
                     <>
                       <Link
                         className="font-semibold text-panel-text-primary"
                         to={`/webui/collection/group/${series.IDs.ParentGroup}`}
                       >
-                        {group.Name}
+                        {groupQuery.data.Name}
                       </Link>
                       <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
                     </>
@@ -139,7 +143,9 @@ const Series = () => {
                     </NavLink>
                   </div>
                 </div>
-                <AnidbDescription text={series?.AniDB?.Description ?? ''} />
+                <div className="line-clamp-[7]">
+                  <AnidbDescription text={series.AniDB?.Description ?? ''} />
+                </div>
               </div>
             </div>
           </div>

@@ -8,7 +8,7 @@ const browseFolderSlice = createSlice({
     status: false,
     selectedNode: {
       id: -1,
-      Path: '',
+      path: '',
     },
   },
   reducers: {

@@ -70,7 +70,7 @@ export function useURLParameter(
   return [currentValue, setQueryParameter];
 }
 
-export const useQuery = <T extends Query<Record<string, unknown>>>() => useURLSearch<T>(false);
+export const useURLQuery = <T extends Query<Record<string, unknown>>>() => useURLSearch<T>(false);
 
 export const useHashQuery = <T extends Query<Record<string, unknown>>>() => useURLSearch<T>(true);
 

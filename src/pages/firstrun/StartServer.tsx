@@ -4,8 +4,9 @@ import { useNavigate, useOutletContext } from 'react-router-dom';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
-import { usePostAuthMutation } from '@/core/rtkQuery/splitApi/authApi';
-import { useGetInitStartServerMutation, useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useLoginMutation } from '@/core/react-query/auth/mutations';
+import { useStartServerMutation } from '@/core/react-query/init/mutations';
+import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 
 import Footer from './Footer';
@@ -19,29 +20,31 @@ function StartServer() {
   const [pollingInterval, setPollingInterval] = useState(0);
 
   const { setIsPersistent } = useOutletContext<{ setIsPersistent(value: boolean): void }>();
-  const [startServer] = useGetInitStartServerMutation();
-  const [login] = usePostAuthMutation();
-  const status = useGetInitStatusQuery(undefined, { pollingInterval });
+  const { mutate: startServer } = useStartServerMutation();
+  const { mutate: login } = useLoginMutation();
+  const status = useServerStatusQuery(pollingInterval);
 
   const user = useSelector((state: RootState) => state.firstrun.user);
 
   const handleNext = () => {
     setPollingInterval(0);
     dispatch(setFirstRunSaved('start-server'));
-    login({
-      user: user.Username,
-      pass: user.Password,
-      device: 'web-ui',
-      rememberUser: false,
-    }).unwrap().then(
-      () => navigate('../import-folders'),
-      error => console.error(error),
+    login(
+      {
+        user: user.Username,
+        pass: user.Password,
+        device: 'web-ui',
+        rememberUser: false,
+      },
+      {
+        onSuccess: () => navigate('../import-folders'),
+      },
     );
   };
 
   const handleStart = () => {
     setIsPersistent(true);
-    startServer().catch(() => {});
+    startServer();
     setPollingInterval(500);
   };
 
@@ -64,7 +67,7 @@ function StartServer() {
             : (status.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
         </div>
         <div className="mt-24 flex items-center justify-center">
-          {pollingInterval === 0 && (status.isUninitialized || status.data?.State === 4) && (
+          {pollingInterval === 0 && ((!status.isSuccess && !status.isError) || status.data?.State === 4) && (
             <Button onClick={() => handleStart()} buttonType="primary" className="w-64 py-2 font-semibold">
               Start Server
             </Button>

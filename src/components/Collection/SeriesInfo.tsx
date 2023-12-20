@@ -3,28 +3,26 @@ import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { toNumber } from 'lodash';
 
-import { useGetSeriesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { useGetSeriesOverviewQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
 import { convertTimeSpanToMs, dayjs, formatThousand } from '@/core/util';
 
-import type { SeriesDetailsType } from '@/core/types/api/series';
+import type { SeriesType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
 
 const SeriesInfo = () => {
   const { seriesId } = useParams();
 
   // Series Data;
-  const seriesOverviewData = useGetSeriesOverviewQuery({ SeriesID: seriesId! }, { skip: !seriesId });
+  const seriesOverviewData = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
   const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
-  const seriesData = useGetSeriesQuery({ seriesId: seriesId!, includeDataFrom: ['AniDB'] }, {
-    refetchOnMountOrArgChange: false,
-    skip: !seriesId,
-  });
-  const series = useMemo(() => seriesData?.data ?? {} as SeriesDetailsType, [seriesData]);
+  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
 
-  const startDate = useMemo(() => (series?.AniDB?.AirDate != null ? dayjs(series?.AniDB?.AirDate) : null), [series]);
-  const endDate = useMemo(() => (series?.AniDB?.EndDate != null ? dayjs(series?.AniDB?.EndDate) : null), [series]);
+  const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
+  const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
   const airDate = useMemo(() => {
     if (!startDate) {
       return 'Unknown';
@@ -52,7 +50,7 @@ const SeriesInfo = () => {
   return (
     <div className="flex w-full max-w-[31.25rem] flex-col gap-y-8">
       <div className="flex w-full grow flex-col gap-y-3 rounded-md border border-panel-border bg-panel-background-transparent p-8">
-        {seriesData.isLoading || seriesOverviewData.isLoading
+        {!seriesQuery.isSuccess || !seriesOverviewData.isSuccess
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={3} spin />
@@ -62,7 +60,7 @@ const SeriesInfo = () => {
             <>
               <div className="flex justify-between capitalize">
                 <div className="font-semibold">Type</div>
-                {series.AniDB?.Type}
+                {series?.AniDB?.Type}
               </div>
               <div className="flex justify-between capitalize">
                 <div className="font-semibold">Source</div>
@@ -82,10 +80,10 @@ const SeriesInfo = () => {
               <div className="flex justify-between capitalize">
                 <div className="font-semibold">Episodes</div>
                 <div>
-                  {series.Sizes.Total.Episodes}
+                  {series?.Sizes.Total.Episodes}
                   &nbsp;Episodes
                   <span className="mx-1">|</span>
-                  {series.Sizes.Total.Specials}
+                  {series?.Sizes.Total.Specials}
                   &nbsp;Specials
                 </div>
               </div>
@@ -116,7 +114,7 @@ const SeriesInfo = () => {
           )}
       </div>
       <div className="flex w-full flex-row justify-around gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
-        {seriesData.isLoading || seriesOverviewData.isLoading
+        {seriesQuery.isLoading || seriesOverviewData.isLoading
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={3} spin />
@@ -153,11 +151,11 @@ const SeriesInfo = () => {
                 </div>
               </div>
 
-              {(series.Sizes.Missing.Episodes !== 0 || series.Sizes.Missing.Specials !== 0) && (
+              {(series?.Sizes.Missing.Episodes !== 0 || series?.Sizes.Missing.Specials !== 0) && (
                 <div className="flex flex-col items-center">
                   <div className="font-semibold ">Missing</div>
                   <div className="flex flex-row gap-x-1">
-                    {series.Sizes.Missing.Episodes !== 0 && (
+                    {series?.Sizes.Missing.Episodes !== 0 && (
                       <>
                         <span>EP:</span>
                         <span>{formatThousand(series.Sizes.Missing.Episodes)}</span>

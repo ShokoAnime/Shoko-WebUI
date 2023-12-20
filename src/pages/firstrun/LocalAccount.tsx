@@ -4,7 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useGetInitDefaultUserQuery, usePostInitDefaultUserMutation } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useSetDefaultUserMutation } from '@/core/react-query/init/mutations';
+import { useDefaultUserQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved, setUser as setUserState } from '@/core/slices/firstrun';
 
 import Footer from './Footer';
@@ -15,8 +16,8 @@ function LocalAccount() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [createUser, createUserResult] = usePostInitDefaultUserMutation();
-  const defaultUser = useGetInitDefaultUserQuery();
+  const { isPending: createUserPending, mutate: createUser } = useSetDefaultUserMutation();
+  const defaultUser = useDefaultUserQuery();
   const [user, setUser] = useState({ Username: 'Default', Password: '' });
   const [userStatus, setUserStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
@@ -26,14 +27,17 @@ function LocalAccount() {
 
   const handleSave = (event?: React.FormEvent) => {
     if (event) event.preventDefault();
-    createUser(user).unwrap().then(() => {
-      setUserStatus({ type: 'success', text: 'Account Creation Successful!' });
-      dispatch(setUserState(user));
-      dispatch(setFirstRunSaved('local-account'));
-      navigate('../anidb-account');
-    }, (error) => {
-      console.error(error);
-      setUserStatus({ type: 'error', text: error.data });
+    createUser(user, {
+      onSuccess: () => {
+        setUserStatus({ type: 'success', text: 'Account Creation Successful!' });
+        dispatch(setUserState(user));
+        dispatch(setFirstRunSaved('local-account'));
+        navigate('../anidb-account');
+      },
+      onError: (error) => {
+        console.error(error);
+        setUserStatus({ type: 'error', text: error.message });
+      },
     });
   };
 
@@ -70,7 +74,7 @@ function LocalAccount() {
       <Footer
         nextDisabled={user.Username === ''}
         saveFunction={handleSave}
-        isFetching={createUserResult.isLoading}
+        isFetching={createUserPending}
         status={userStatus}
       />
     </TransitionDiv>

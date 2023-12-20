@@ -3,12 +3,12 @@ import { useParams } from 'react-router';
 import { mdiChevronRight, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { filter, get, map } from 'lodash';
+import { filter, get, map, toNumber } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetSeriesCastQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
@@ -53,7 +53,7 @@ const SeriesCredits = () => {
   const [mode, setMode] = useState('Character');
   const [search, setSearch] = useState('');
 
-  const castData = useGetSeriesCastQuery({ seriesId: seriesId! }, { skip: !seriesId });
+  const castData = useSeriesCastQuery(toNumber(seriesId!), !!seriesId);
   const cast = castData.data;
 
   if (!seriesId) return null;

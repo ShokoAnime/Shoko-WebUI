@@ -50,10 +50,10 @@ jobs:
           ref: ${{ github.event.inputs.ref }}
           fetch-depth: 0
 
-      - name: Setup Node.js v18
+      - name: Setup Node.js v20
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
 
       - name: Setup pnpm and install dependencies
         uses: pnpm/action-setup@v2

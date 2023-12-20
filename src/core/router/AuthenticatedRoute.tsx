@@ -2,7 +2,7 @@ import React, { type JSX } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, useLocation } from 'react-router';
 
-import { useGetInitStatusQuery } from '@/core/rtkQuery/splitV3Api/initApi';
+import { useServerStatusQuery } from '@/core/react-query/init/queries';
 
 import type { RootState } from '@/core/store';
 
@@ -14,7 +14,7 @@ function AuthenticatedRoute(props: Props) {
   const location = useLocation();
   const from = encodeURIComponent(location.pathname + location.search + location.hash);
   const isAuthenticated = useSelector((state: RootState) => state.apiSession.apikey !== '');
-  const serverStatus = useGetInitStatusQuery();
+  const serverStatus = useServerStatusQuery();
   const serverState = serverStatus.data?.State ?? 2;
 
   return (serverState === 2 && isAuthenticated)

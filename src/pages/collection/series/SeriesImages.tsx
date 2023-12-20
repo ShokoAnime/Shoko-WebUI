@@ -3,14 +3,15 @@ import { useParams } from 'react-router';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, map, split } from 'lodash';
+import { get, map, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
-import { useChangeSeriesImageMutation, useGetSeriesImagesQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
+import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -64,8 +65,8 @@ const SeriesImages = () => {
 
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
-  const imagesData = useGetSeriesImagesQuery({ seriesId: seriesId! }, { skip: !seriesId });
-  const [changeImage] = useChangeSeriesImageMutation();
+  const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
+  const { mutate: changeImage } = useChangeSeriesImageMutation();
   const images = imagesData.data;
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
@@ -106,15 +107,12 @@ const SeriesImages = () => {
             className="rounded-md border border-panel-border px-4 py-3 font-semibold"
             disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
-              changeImage({
-                seriesId,
-                image: selectedImage,
-              })
-                .then(() => {
+              changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
+                onSuccess: () => {
                   setSelectedImage({} as ImageType);
                   toast.success(`Series ${selectedImage.Type} image has been changed.`);
-                })
-                .catch(console.error);
+                },
+              });
             }}
           >
             {`Set As Default ${type.slice(0, -1)}`}

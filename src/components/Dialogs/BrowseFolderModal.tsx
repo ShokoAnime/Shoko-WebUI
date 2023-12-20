@@ -22,10 +22,10 @@ function BrowseFolderModal(props: Props) {
 
   const handleSelect = () => {
     if (typeof props.onSelect === 'function') {
-      props.onSelect(selectedNode.Path);
+      props.onSelect(selectedNode.path);
     }
     dispatch(setStatus(false));
-    dispatch(setSelectedNode({ id: -1, Path: '' }));
+    dispatch(setSelectedNode({ id: -1, path: '' }));
   };
 
   return (

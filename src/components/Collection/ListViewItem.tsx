@@ -16,8 +16,8 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { listItemSize } from '@/components/Collection/CollectionView';
-import { useGetSeriesTagsQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs, formatThousand } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
 import { initialSettings } from '@/pages/settings/SettingsPage';
@@ -61,15 +61,11 @@ type Props = {
 };
 
 const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => {
-  const settingsQuery = useGetSettingsQuery(undefined, { refetchOnMountOrArgChange: false });
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
-  const seriesTags = useGetSeriesTagsQuery({
-    seriesId: item.IDs.ID.toString(),
-    filter: 128,
-    excludeDescriptions: true,
-  }, { skip: !isSeries });
+  const seriesTags = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
 
   const poster = useMainPoster(item);
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes

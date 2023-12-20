@@ -4,10 +4,10 @@ import { useSelector } from 'react-redux';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import {
-  useGetDashboardRecentlyAddedEpisodesQuery,
-  useGetDashboardRecentlyAddedSeriesQuery,
-} from '@/core/rtkQuery/splitV3Api/dashboardApi';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+  useDashboardRecentlyAddedEpisodesQuery,
+  useDashboardRecentlyAddedSeriesQuery,
+} from '@/core/react-query/dashboard/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import DashboardTitleToggle from '@/pages/dashboard/components/DashboardTitleToggle';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 import SeriesDetails from '@/pages/dashboard/components/SeriesDetails';
@@ -18,18 +18,18 @@ import type { RootState } from '@/core/store';
 const RecentlyImported = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const { hideR18Content, recentlyImportedEpisodesCount, recentlyImportedSeriesCount } = useMemo(
     () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
     [settingsQuery],
   );
 
   const [showSeries, setShowSeries] = useState(false);
-  const series = useGetDashboardRecentlyAddedSeriesQuery({
+  const series = useDashboardRecentlyAddedSeriesQuery({
     includeRestricted: !hideR18Content,
     pageSize: recentlyImportedSeriesCount,
   });
-  const episodes = useGetDashboardRecentlyAddedEpisodesQuery({
+  const episodes = useDashboardRecentlyAddedEpisodesQuery({
     includeRestricted: !hideR18Content,
     pageSize: recentlyImportedEpisodesCount,
   });
@@ -38,7 +38,7 @@ const RecentlyImported = () => {
     <ShokoPanel
       title="Recently Imported"
       editMode={layoutEditMode}
-      isFetching={showSeries ? series.isLoading : episodes.isLoading}
+      isFetching={showSeries ? series.isPending : episodes.isPending}
       options={
         <DashboardTitleToggle
           mainTitle="Episodes"

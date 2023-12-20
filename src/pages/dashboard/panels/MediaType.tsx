@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { useGetDashboardSeriesSummaryQuery } from '@/core/rtkQuery/splitV3Api/dashboardApi';
+import { useDashboardSeriesSummaryQuery } from '@/core/react-query/dashboard/queries';
 
 import type { RootState } from '@/core/store';
 
@@ -13,9 +13,9 @@ const names = {
 
 function MediaType() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-  const seriesSummary = useGetDashboardSeriesSummaryQuery();
+  const seriesSummary = useDashboardSeriesSummaryQuery();
 
-  const renderColor = (type) => {
+  const renderColor = (type: string) => {
     switch (type) {
       case 'Series':
         return 'panel-text-primary';
@@ -76,7 +76,7 @@ function MediaType() {
   });
 
   return (
-    <ShokoPanel title="Media Type" isFetching={seriesSummary.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Media Type" isFetching={seriesSummary.isPending} editMode={layoutEditMode}>
       {items}
     </ShokoPanel>
   );

@@ -6,7 +6,7 @@ function TreeView() {
   return (
     <div className="h-[27.75rem] w-full overflow-y-auto overflow-x-hidden">
       <ul>
-        <TreeNode Path="Shoko Server" nodeId={0} level={1} />
+        <TreeNode path="Shoko Server" nodeId={0} level={1} />
       </ul>
     </div>
   );

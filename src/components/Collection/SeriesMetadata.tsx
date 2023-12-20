@@ -3,12 +3,12 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
-import { useDeleteSeriesTvdbLinkMutation } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
 
 const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId: number, site: string }) => {
   const linkId = Array.isArray(id) ? id[0] : id;
 
-  const [disableTvDBTrigger] = useDeleteSeriesTvdbLinkMutation();
+  const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {
     switch (site) {
@@ -32,7 +32,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
   const disableMetadata = () => {
     switch (site) {
       case 'TvDB':
-        disableTvDBTrigger({ seriesId, tvdbShowId: linkId }).catch(() => {});
+        deleteTvdbLink(seriesId);
         break;
       default:
         break;

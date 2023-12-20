@@ -11,12 +11,11 @@ import toast from '@/components/Toast';
 import {
   useCreateImportFolderMutation,
   useDeleteImportFolderMutation,
-  useGetImportFoldersQuery,
   useUpdateImportFolderMutation,
-} from '@/core/rtkQuery/splitV3Api/importFolderApi';
+} from '@/core/react-query/import-folder/mutations';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setStatus as setBrowseStatus } from '@/core/slices/modals/browseFolder';
 import { setStatus } from '@/core/slices/modals/importFolder';
-import { isErrorWithMessage } from '@/core/util';
 
 import BrowseFolderModal from './BrowseFolderModal';
 
@@ -36,12 +35,12 @@ function ImportFolderModal() {
 
   const { ID, edit, status } = useSelector((state: RootState) => state.modals.importFolder);
 
-  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolderQuery = useImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
-  const [updateFolder, updateResult] = useUpdateImportFolderMutation();
-  const [createFolder, createResult] = useCreateImportFolderMutation();
-  const [deleteFolder, deleteResult] = useDeleteImportFolderMutation();
+  const { isPending: isCreatePending, mutate: createFolder } = useCreateImportFolderMutation();
+  const { isPending: isDeletePending, mutate: deleteFolder } = useDeleteImportFolderMutation();
+  const { isPending: isUpdatePending, mutate: updateFolder } = useUpdateImportFolderMutation();
 
   const [importFolder, setImportFolder] = useState(defaultImportFolder);
 
@@ -62,44 +61,35 @@ function ImportFolderModal() {
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
   const handleClose = () => dispatch(setStatus(false));
-  const handleDelete = async () => {
-    try {
-      await deleteFolder({ folderId: ID }).unwrap();
-      toast.success('Import folder deleted!');
-      dispatch(setStatus(false));
-    } catch (err) {
-      if (isErrorWithMessage(err)) {
-        console.error(err.message);
-      }
-    }
+  const handleDelete = () => {
+    deleteFolder({ folderId: ID }, {
+      onSuccess: () => {
+        toast.success('Import folder deleted!');
+        dispatch(setStatus(false));
+      },
+    });
   };
 
   const handleSave = async () => {
     if (edit) {
-      try {
-        await updateFolder(importFolder);
-        toast.success('Import folder edited!');
-        dispatch(setStatus(false));
-      } catch (err) {
-        if (isErrorWithMessage(err)) {
-          console.error(err.message);
-        }
-      }
+      updateFolder(importFolder, {
+        onSuccess: () => {
+          toast.success('Import folder edited!');
+          dispatch(setStatus(false));
+        },
+      });
     } else {
-      try {
-        await createFolder(importFolder);
-        toast.success('Import folder added!');
-        dispatch(setStatus(false));
-      } catch (err) {
-        if (isErrorWithMessage(err)) {
-          console.error(err.message);
-        }
-      }
+      createFolder(importFolder, {
+        onSuccess: () => {
+          toast.success('Import folder added!');
+          dispatch(setStatus(false));
+        },
+      });
     }
   };
 
   const onFolderSelect = (Path: string) => setImportFolder({ ...importFolder, Path });
-  const isLoading = updateResult.isLoading || createResult.isLoading || deleteResult.isLoading;
+  const isLoading = isCreatePending || isDeletePending || isUpdatePending;
 
   return (
     <>

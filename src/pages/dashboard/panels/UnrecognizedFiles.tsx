@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
-import { useGetFilesQuery } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
@@ -29,12 +29,23 @@ const FileItem = ({ file }: { file: FileType }) => {
 };
 
 function UnrecognizedFiles() {
-  const filesQuery = useGetFilesQuery({
+  const filesQuery = useFilesInfiniteQuery({
     pageSize: 20,
-    includeUnrecognized: 'only',
+    include_only: ['Unrecognized'],
     sortOrder: [FileSortCriteriaEnum.FileID * -1],
   });
-  const files = useMemo(() => filesQuery.data ?? { Total: 0, List: [] }, [filesQuery]);
+  const [files, fileCount] = useMemo(
+    () => {
+      if (filesQuery.isSuccess) {
+        return [
+          filesQuery.data.pages.flatMap(page => page.List),
+          filesQuery.data.pages[0].Total,
+        ];
+      }
+      return [[], 0];
+    },
+    [filesQuery.data, filesQuery.isSuccess],
+  );
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
@@ -44,20 +55,20 @@ function UnrecognizedFiles() {
         <div className="flex w-full flex-row justify-between">
           <div>Unrecognized Files</div>
           <div>
-            <span className="text-panel-text-important">{files.Total}</span>
+            <span className="text-panel-text-important">{fileCount}</span>
             &nbsp;
             <span>
-              {files.Total === 1 ? 'File' : 'Files'}
+              {fileCount === 1 ? 'File' : 'Files'}
             </span>
           </div>
         </div>
       }
-      isFetching={filesQuery.isLoading}
+      isFetching={filesQuery.isPending}
       editMode={layoutEditMode}
       contentClassName="gap-y-3"
     >
-      {files.List.map(file => <FileItem file={file} key={file.ID} />)}
-      {files.Total === 0 && (
+      {files.map(file => <FileItem file={file} key={file.ID} />)}
+      {fileCount === 0 && (
         <div className="mt-4 flex justify-center font-semibold" key="no-files">No Unrecognized Files, Good Job!</div>
       )}
     </ShokoPanel>

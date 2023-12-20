@@ -6,7 +6,8 @@ import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { useGetSettingsQuery, usePatchSettingsMutation } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
@@ -31,9 +32,9 @@ function DashboardPage() {
 
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
-  const [patchSettings] = usePatchSettingsMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const {
     combineContinueWatching,
@@ -69,12 +70,13 @@ function DashboardPage() {
   const saveLayout = useCallback(() => {
     const newSettings = JSON.parse(JSON.stringify(settings)); // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
     newSettings.WebUI_Settings.layout.dashboard = currentLayout;
-    patchSettings({ oldSettings: settings, newSettings }).unwrap().then(() => {
-      dispatch(setLayoutEditMode(false));
-      toast.dismiss('layoutEditMode');
-      toast.success('Layout Saved!');
-    }, (error) => {
-      toast.error('', error.data);
+    patchSettings({ oldSettings: settings, newSettings }, {
+      onSuccess: () => {
+        dispatch(setLayoutEditMode(false));
+        toast.dismiss('layoutEditMode');
+        toast.success('Layout Saved!');
+      },
+      onError: error => toast.error('', error.message),
     });
   }, [currentLayout, dispatch, patchSettings, settings]);
 

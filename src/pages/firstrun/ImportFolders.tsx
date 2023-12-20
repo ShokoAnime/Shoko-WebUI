@@ -7,13 +7,13 @@ import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useDeleteImportFolderMutation, useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { useDeleteImportFolderMutation } from '@/core/react-query/import-folder/mutations';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import {
   setEdit as setImportFolderModalEdit,
   setStatus as setImportFolderModalStatus,
 } from '@/core/slices/modals/importFolder';
-import { isErrorWithMessage } from '@/core/util';
 
 import Footer from './Footer';
 
@@ -29,17 +29,12 @@ const Folder = (props: ImportFolderType) => {
   } = props;
 
   const dispatch = useDispatch();
-  const [deleteFolder] = useDeleteImportFolderMutation();
+  const { mutate: deleteFolder } = useDeleteImportFolderMutation();
 
-  const handleDeleteFolder = async (folderId) => {
-    try {
-      await deleteFolder({ folderId });
-      toast.success('Import folder deleted!');
-    } catch (err) {
-      if (isErrorWithMessage(err)) {
-        console.error(err.message);
-      }
-    }
+  const handleDeleteFolder = (folderId: number) => {
+    deleteFolder({ folderId }, {
+      onSuccess: () => toast.success('Import folder deleted!'),
+    });
   };
 
   const flags = useMemo(() => {
@@ -90,7 +85,7 @@ const Folder = (props: ImportFolderType) => {
 function ImportFolders() {
   const dispatch = useDispatch();
 
-  const importFolderQuery = useGetImportFoldersQuery();
+  const importFolderQuery = useImportFoldersQuery();
   const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
 
   return (

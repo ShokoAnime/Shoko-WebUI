@@ -8,8 +8,8 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
-import { usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
-import { useGetSeriesAniDBSearchQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
+import { useRescanFileMutation } from '@/core/react-query/file/mutations';
+import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 
@@ -51,7 +51,7 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
 );
 
 function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
-  const [fileRescanTrigger] = usePostFileRescanMutation();
+  const { mutateAsync: rescanFile } = useRescanFileMutation();
   const [clickedLink, setClickedLink] = useState(false);
   const { ed2kLinks, fileIds, links } = useMemo(() => {
     if (!show) return { ed2kLinks: '', links: [], fileIds: [] };
@@ -70,7 +70,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const [activeStep, setActiveStep] = useState(1);
   const [copyFailed, setCopyFailed] = useState(false);
   const debouncedSearch = useDebounce(searchText, 200);
-  const searchQuery = useGetSeriesAniDBSearchQuery({ query: debouncedSearch }, { skip: !debouncedSearch });
+  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   useEffect(() => {
     setSearchText(commonSeries);
@@ -102,7 +102,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
 
     let failedFiles = 0;
     forEach(fileIds, (fileId) => {
-      fileRescanTrigger(fileId).unwrap().catch((error) => {
+      rescanFile(fileId).catch((error) => {
         failedFiles += 1;
         console.error(error);
       });

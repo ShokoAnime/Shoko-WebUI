@@ -196,7 +196,7 @@ const SelectEpisodeList = (
   };
 
   return (
-    <div className={`${className} h-full`} ref={handleDisplayRef}>
+    <div className={cx(className, 'h-full')} ref={handleDisplayRef}>
       <Listbox disabled={disabled} value={selected} onChange={selectOption}>
         {({ open }) => (
           <div className="relative h-full">

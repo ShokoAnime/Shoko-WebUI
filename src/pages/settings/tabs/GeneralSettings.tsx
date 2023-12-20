@@ -8,8 +8,8 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
-import { useGetInitVersionQuery } from '@/core/rtkQuery/splitV3Api/initApi';
-import { useGetWebuiThemesQuery, useLazyGetWebuiUpdateCheckQuery } from '@/core/rtkQuery/splitV3Api/webuiApi';
+import { useVersionQuery } from '@/core/react-query/init/queries';
+import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { uiVersion } from '@/core/util';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
@@ -86,9 +86,12 @@ function GeneralSettings() {
     WebUI_Settings,
   } = newSettings;
 
-  const [webuiUpdateCheck, webuiUpdateCheckResult] = useLazyGetWebuiUpdateCheckQuery();
-  const version = useGetInitVersionQuery();
-  const themes = useGetWebuiThemesQuery();
+  const checkWebuiUpdateQuery = useWebuiUpdateCheckQuery(
+    { channel: newSettings.WebUI_Settings.updateChannel, force: true },
+    false,
+  );
+  const version = useVersionQuery();
+  const themes = useWebuiThemesQuery();
 
   const currentTheme = useMemo(() => (
     themes.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
@@ -115,14 +118,14 @@ function GeneralSettings() {
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
-            onClick={() => webuiUpdateCheck({ channel: newSettings.WebUI_Settings.updateChannel, force: true })}
+            onClick={() => checkWebuiUpdateQuery.refetch()}
             tooltip="Check for WebUI Update"
           >
             <Icon
               path={mdiRefresh}
               size={1}
               className="text-panel-icon-action"
-              spin={webuiUpdateCheckResult.isFetching}
+              spin={checkWebuiUpdateQuery.isFetching}
             />
           </Button>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { mdiArrowVerticalLock, mdiCogOutline, mdiFilterOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -6,14 +6,11 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
-import { useGetLogsQuery } from '@/core/rtkQuery/logsApi';
-
-import type { LogLineType } from '@/core/types/api/common';
+import { useLogsQuery } from '@/core/react-query/logs/queries';
 
 const LogsPage = () => {
-  const [id] = useState(new Date().getTime());
-  const logsQuery = useGetLogsQuery(id);
-  const logLines: LogLineType[] = logsQuery?.data ?? [];
+  const logsQuery = useLogsQuery();
+  const logLines = useMemo(() => logsQuery.data ?? [], [logsQuery]);
   const [isScrollToBottom, setScrollToBottom] = useState(true);
   const [search, setSearch] = useState('');
 

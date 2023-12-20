@@ -38,7 +38,7 @@ function Footer(props: Props) {
       <div
         className={cx([
           'flex items-center mb-5',
-          status?.type === 'error' ? 'text-panel-text-warning' : 'text-panel-text-important',
+          status?.type === 'error' ? 'text-panel-text-danger' : 'text-panel-text-important',
         ])}
       >
         {status?.text}

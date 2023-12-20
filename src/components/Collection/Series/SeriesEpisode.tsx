@@ -1,16 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiEyeCheckOutline, mdiEyeOffOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
-import {
-  useLazyGetEpisodeFilesQuery,
-  usePostEpisodeHiddenMutation,
-  usePostEpisodeWatchedMutation,
-} from '@/core/rtkQuery/splitV3Api/episodeApi';
+import { useHideEpisodeMutation, useWatchEpisodeMutation } from '@/core/react-query/episode/mutations';
+import { useEpisodeFilesQuery } from '@/core/react-query/episode/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import EpisodeDetails from './EpisodeDetails';
@@ -21,6 +19,7 @@ import type { EpisodeType } from '@/core/types/api/episode';
 type Props = {
   animeId: number;
   episode: EpisodeType;
+  page: number;
 };
 
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
@@ -39,24 +38,18 @@ const StateButton = ({ active, icon, onClick }: { icon: string, active: boolean,
   </Button>
 );
 
-const SeriesEpisode = ({ animeId, episode }: Props) => {
+const SeriesEpisode = ({ animeId, episode, page }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
-  const [isOpen, setIsOpen] = useState(false);
-  const episodeId = get(episode, 'IDs.ID', 0).toString();
+  const [open, toggleOpen] = useToggle(false);
+  const episodeId = get(episode, 'IDs.ID', 0);
 
-  const [getEpisodeFiles, episodeFilesResult] = useLazyGetEpisodeFilesQuery();
-  const [markWatched] = usePostEpisodeWatchedMutation();
-  const [markHidden] = usePostEpisodeHiddenMutation();
-
-  const handleExpand = async () => {
-    if (isOpen) {
-      setIsOpen(false);
-      return;
-    }
-
-    await getEpisodeFiles({ episodeId, includeDataFrom: ['AniDB'], includeMediaInfo: true }, true);
-    setIsOpen(true);
-  };
+  const episodeFilesQuery = useEpisodeFilesQuery(
+    episodeId,
+    { includeDataFrom: ['AniDB'], include: ['AbsolutePaths', 'MediaInfo'] },
+    open,
+  );
+  const { mutate: markWatched } = useWatchEpisodeMutation(page);
+  const { mutate: markHidden } = useHideEpisodeMutation();
 
   return (
     <>
@@ -94,21 +87,21 @@ const SeriesEpisode = ({ animeId, episode }: Props) => {
       {episode.Size !== 0 && (
         <div
           className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
-          onClick={handleExpand}
+          onClick={() => toggleOpen()}
         >
           File Info
           <Icon
-            path={episodeFilesResult.isFetching ? mdiLoading : mdiChevronDown}
+            path={episodeFilesQuery.isFetching ? mdiLoading : mdiChevronDown}
             size={1}
-            rotate={isOpen ? 180 : 0}
+            rotate={open ? 180 : 0}
             className="transition-transform"
-            spin={episodeFilesResult.isFetching}
+            spin={episodeFilesQuery.isFetching}
           />
         </div>
       )}
       <div>
-        <AnimateHeight height={isOpen ? 'auto' : 0}>
-          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesResult.data ?? []} />
+        <AnimateHeight height={open && episodeFilesQuery.isSuccess ? 'auto' : 0}>
+          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} episodeId={episodeId} />
         </AnimateHeight>
       </div>
     </>

@@ -6,7 +6,8 @@ import { get, map } from 'lodash';
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { useDeleteFileMutation, usePostFileRescanMutation } from '@/core/rtkQuery/splitV3Api/fileApi';
+import { useDeleteFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import EpisodeFileInfo from './EpisodeFileInfo';
 
@@ -15,26 +16,28 @@ import type { FileType } from '@/core/types/api/file';
 type Props = {
   animeId: number;
   episodeFiles: FileType[];
+  episodeId: number;
 };
 
-const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
-  const [fileDeleteTrigger] = useDeleteFileMutation();
-  const [fileRescanTrigger] = usePostFileRescanMutation();
+const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
+  const { mutate: deleteFile } = useDeleteFileMutation();
+  const { mutate: rescanFile } = useRescanFileMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFileToDelete, setSelectedFileToDelete] = useState<FileType | null>(null);
-  const selectedFilesToDelete = useMemo(() => (selectedFileToDelete ? [selectedFileToDelete] : []), [
-    selectedFileToDelete,
-  ]);
+  const selectedFilesToDelete = useMemo(
+    () => (selectedFileToDelete ? [selectedFileToDelete] : []),
+    [selectedFileToDelete],
+  );
 
-  const deleteFiles = async () => {
+  const handleDelete = async () => {
     if (!selectedFileToDelete) return;
-    try {
-      // eslint-disable-next-line no-await-in-loop
-      await fileDeleteTrigger({ fileId: selectedFileToDelete.ID, removeFolder: true }).unwrap();
-      toast.success('Deleted file!');
-    } catch (error) {
-      toast.error(`Failed to delete file! ${error}`);
-    }
+    deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
+      onSuccess: () => {
+        toast.success('Deleted file!');
+        invalidateQueries(['episode', 'files', episodeId]);
+      },
+      onError: error => toast.error(`Failed to delete file! ${error}`),
+    });
   };
 
   const closeDeleteModal = () => {
@@ -42,14 +45,11 @@ const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
     setShowDeleteModal(false);
   };
 
-  const rescanFile = async (id: number) => {
-    try {
-      await fileRescanTrigger(id).unwrap();
-      toast.success('Rescanning file!');
-    } catch (error) {
-      toast.error(`Rescan failed for file! ${error}`);
-    }
-  };
+  const handleRescan = (id: number) =>
+    rescanFile(id, {
+      onSuccess: () => toast.success('Rescanning file!'),
+      onError: error => toast.error(`Rescan failed for file! ${error}`),
+    });
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
     return <div className="flex grow items-center justify-center p-8 pt-4 font-semibold">No files found!</div>;
@@ -67,9 +67,7 @@ const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
               <div className="flex grow gap-x-3 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
-                  onClick={async () => {
-                    await rescanFile(selectedFile.ID);
-                  }}
+                  onClick={() => handleRescan(selectedFile.ID)}
                 >
                   <Icon className="text-panel-icon-action" path={mdiRefresh} size={1} />
                   Force Update File Info
@@ -131,7 +129,7 @@ const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
         selectedFiles={selectedFilesToDelete}
         removeFile={closeDeleteModal}
         onClose={closeDeleteModal}
-        onConfirm={deleteFiles}
+        onConfirm={handleDelete}
       />
     </div>
   );

@@ -1,84 +1,58 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Outlet } from 'react-router';
-import { useOutletContext } from 'react-router-dom';
-import { createColumnHelper } from '@tanstack/react-table';
-import { find, get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { useGetImportFoldersQuery } from '@/core/rtkQuery/splitV3Api/importFolderApi';
+import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
-import type { ImportFolderType } from '@/core/types/api/import-folder';
-import type { ColumnDef } from '@tanstack/react-table';
+import type { SeriesType } from '@/core/types/api/series';
 
-type ContextType = {
-  /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-  columns: ColumnDef<FileType, any>[];
+export type UtilityHeaderType<T extends FileType | SeriesType> = {
+  id: string;
+  name: string;
+  className: string;
+  item: (_: T) => React.ReactNode;
 };
 
-const columnHelper = createColumnHelper<FileType>();
+export const criteriaMap = {
+  importFolder: FileSortCriteriaEnum.ImportFolderName,
+  filename: FileSortCriteriaEnum.FileName,
+  crc32: FileSortCriteriaEnum.CRC32,
+  size: FileSortCriteriaEnum.FileSize,
+  created: FileSortCriteriaEnum.CreatedAt,
+  status: null,
+};
+
+export const staticColumns: UtilityHeaderType<FileType>[] = [
+  {
+    id: 'filename',
+    name: 'Filename',
+    className: 'overflow-hidden line-clamp-1 grow basis-0',
+    item: file => file.Locations[0]?.RelativePath.split(/[/\\]/g).pop(),
+  },
+  {
+    id: 'crc32',
+    name: 'CRC32',
+    className: 'w-32',
+    item: file => file.Hashes.CRC32,
+  },
+  {
+    id: 'size',
+    name: 'Size',
+    className: 'w-24',
+    item: file => prettyBytes(file.Size, { binary: true }),
+  },
+  {
+    id: 'created',
+    name: 'Created',
+    className: 'w-60',
+    item: file => dayjs(file.Created).format('MMMM DD YYYY, HH:mm'),
+  },
+];
 
 function UnrecognizedUtility() {
-  const importFolderQuery = useGetImportFoldersQuery();
-
-  const columns = useMemo(() => {
-    const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
-
-    return [
-      columnHelper.accessor(row => get(row, 'Locations.0.ImportFolderID', -1), {
-        header: 'Import Folder',
-        id: 'importfolder',
-        cell:
-          info => (info.getValue() === -1 ? '<Unknown>' : (find(importFolders, { ID: info.getValue() })?.Name ?? '')),
-        meta: {
-          className: 'w-52',
-        },
-      }),
-      columnHelper.accessor(row => get(row, 'Locations.0.RelativePath', '<missing file path>'), {
-        header: 'Filename',
-        id: 'filename',
-        cell: info => <div className="break-all">{info.getValue().split(/[/\\]/g).pop()}</div>,
-        meta: {
-          className: 'w-auto',
-        },
-      }),
-      columnHelper.accessor('Hashes.CRC32', {
-        header: 'CRC32',
-        id: 'crc32',
-        cell: info => info.getValue(),
-        meta: {
-          className: 'w-32',
-        },
-      }),
-      columnHelper.accessor('Size', {
-        id: 'size',
-        cell: info => prettyBytes(info.getValue(), { binary: true }),
-        meta: {
-          className: 'w-32',
-        },
-      }),
-      columnHelper.accessor('Created', {
-        id: 'created',
-        cell: info => dayjs(info.getValue()).format('MMMM DD YYYY, HH:mm'),
-        meta: {
-          className: 'w-64',
-        },
-      }),
-    ];
-  }, [importFolderQuery]);
-
-  return (
-    <Outlet
-      context={{
-        columns,
-      }}
-    />
-  );
-}
-
-export function useUnrecognizedUtilityContext() {
-  return useOutletContext<ContextType>();
+  return <Outlet />;
 }
 
 export default UnrecognizedUtility;

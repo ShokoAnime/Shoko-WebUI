@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
@@ -7,7 +7,8 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
-import { useLazyGetTraktCodeQuery } from '@/core/rtkQuery/splitApi/traktApi';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { dayjs } from '@/core/util';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
@@ -42,7 +43,22 @@ function MetadataSitesSettings() {
 
   const { MovieDb, TraktTv, TvDB } = newSettings;
 
-  const [traktCodeTrigger, traktCodeResult] = useLazyGetTraktCodeQuery();
+  const [enabled, setEnabled] = useState(false);
+  const traktQuery = useTraktCodeQuery(enabled);
+
+  const handleTrigger = () => {
+    setEnabled(true);
+    toast.info(
+      'You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.',
+      undefined,
+      { autoClose: 10000 },
+    );
+
+    setTimeout(() => {
+      invalidateQueries(['trakt-code']);
+      setEnabled(false);
+    }, 600000);
+  };
 
   return (
     <>
@@ -213,7 +229,7 @@ function MetadataSitesSettings() {
             isChecked={TraktTv.Enabled}
             onChange={event => updateSetting('TraktTv', 'Enabled', event.target.checked)}
           />
-          {TraktTv.TokenExpirationDate === '' && traktCodeResult?.data?.usercode && (
+          {TraktTv.TokenExpirationDate === '' && traktQuery?.data?.usercode && (
             <div
               className={cx(
                 'flex justify-between items-center mt',
@@ -222,10 +238,10 @@ function MetadataSitesSettings() {
             >
               <div className="flex">
                 Trakt Code:
-                <span className="ml-1 font-bold">{traktCodeResult?.data?.usercode}</span>
+                <span className="ml-1 font-bold">{traktQuery?.data?.usercode}</span>
               </div>
               <a
-                href={traktCodeResult?.data?.url}
+                href={traktQuery?.data?.url}
                 rel="noopener noreferrer"
                 target="_blank"
                 className="text-panel-text-important hover:underline"
@@ -234,23 +250,17 @@ function MetadataSitesSettings() {
               </a>
             </div>
           )}
-          {TraktTv.TokenExpirationDate === '' && !traktCodeResult?.data?.usercode && (
+          {TraktTv.TokenExpirationDate === '' && !traktQuery?.data?.usercode && (
             <div
               className={cx('flex justify-between items-center', !TraktTv.Enabled && 'pointer-events-none opacity-50')}
             >
               Trakt Code
               <Button
-                onClick={() =>
-                  traktCodeTrigger().then(() =>
-                    toast.info(
-                      'You have approximately 10 minutes to visit the URL provided and enter the code, refresh the page after activation is complete.',
-                      undefined,
-                      { autoClose: 10000 },
-                    ), () => {})}
+                onClick={() => handleTrigger()}
                 className="px-4"
                 buttonType="primary"
               >
-                {traktCodeResult.isFetching ? 'Requesting...' : 'Get Code'}
+                {traktQuery.isFetching ? 'Requesting...' : 'Get Code'}
               </Button>
             </div>
           )}

@@ -1,18 +1,12 @@
 /* global globalThis */
 
-import { get, omit } from 'lodash';
-
-import { externalApi } from './rtkQuery/externalApi';
-import { logsApi } from './rtkQuery/logsApi';
-import { plexApi } from './rtkQuery/plexApi';
-import { splitApi } from './rtkQuery/splitApi';
-import { splitV3Api } from './rtkQuery/splitV3Api';
+import { get } from 'lodash';
 
 import type { RootState } from './store';
 
 const { VITE_APPVERSION } = import.meta.env;
 
-const checkVersion = version => version === VITE_APPVERSION;
+const checkVersion = (version: string) => version === VITE_APPVERSION;
 export const loadState = (): RootState => {
   try {
     const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
@@ -33,17 +27,10 @@ export const loadState = (): RootState => {
 
 export const saveState = (state: RootState) => {
   try {
-    const serializedState = JSON.stringify(omit(state, [
-      externalApi.reducerPath,
-      logsApi.reducerPath,
-      plexApi.reducerPath,
-      splitApi.reducerPath,
-      splitV3Api.reducerPath,
-    ]));
     if (state.apiSession.rememberUser) {
       globalThis.localStorage.setItem('apiSession', JSON.stringify(state.apiSession));
     }
-    globalThis.sessionStorage.setItem('state', serializedState);
+    globalThis.sessionStorage.setItem('state', JSON.stringify(state));
   } catch (err) { // Ignore write errors.
   }
 };

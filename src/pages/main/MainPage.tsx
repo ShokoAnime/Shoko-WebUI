@@ -10,7 +10,7 @@ import ProfileModal from '@/components/Dialogs/ProfileModal';
 import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
-import { useGetSettingsQuery } from '@/core/rtkQuery/splitV3Api/settingsApi';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { initialSettings } from '@/pages/settings/SettingsPage';
 
 function MainPage() {
@@ -18,7 +18,7 @@ function MainPage() {
 
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
-  const settingsQuery = useGetSettingsQuery();
+  const settingsQuery = useSettingsQuery();
   const { notifications, toastPosition } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
 
   const [showSmSidebar, setShowSmSidebar] = useState(false);
