@@ -14,4 +14,5 @@ export const usePlexStatusQuery = (refetchInterval = 0) =>
     queryKey: ['plex', 'status'],
     queryFn: () => axios.get('pin/authenticated'),
     refetchInterval,
+    enabled: refetchInterval !== 0,
   });

@@ -9,4 +9,5 @@ export const useRandomImageMetadataQuery = (imageType: ImageTypeEnum) =>
   useQuery<RandomImageMetadataResultType>({
     queryKey: ['image', 'random', imageType],
     queryFn: () => axios.get(`Image/Random/${imageType}/Metadata`),
+    retry: false,
   });

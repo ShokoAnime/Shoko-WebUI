@@ -36,23 +36,27 @@ export const useWatchEpisodeMutation = (pageNumber: number) =>
     onSuccess: async (_, { episodeId }) => {
       invalidateQueries(['series', 'single']);
 
-      const [[queryKey]] = queryClient.getQueriesData({
-        queryKey: ['series', 'episodes'],
-        type: 'active',
-      });
-
       const newEpisodeData = await queryClient.fetchQuery<EpisodeType>({
         queryKey: ['episode', episodeId],
         queryFn: () => axios.get(`Episode/${episodeId}`),
       });
 
-      queryClient.setQueryData(queryKey, (data: InfiniteData<ListResultType<EpisodeType>>) => {
-        const { pageParams, pages } = data;
-        forEach(
-          pages[pageNumber - 1].List,
-          episode => episode.IDs.ID === episodeId && Object.assign(episode, newEpisodeData),
-        );
-        return { pageParams, pages };
-      });
+      queryClient.setQueriesData(
+        {
+          queryKey: ['series', 'episodes'],
+          type: 'active',
+        },
+        (data: InfiniteData<ListResultType<EpisodeType>>) => {
+          const { pageParams, pages } = data;
+          forEach(pages[pageNumber - 1].List, (episode) => {
+            if (episode.IDs.ID === episodeId) {
+              Object.assign(episode, newEpisodeData);
+              return false;
+            }
+            return true;
+          });
+          return { pageParams, pages };
+        },
+      );
     },
   });

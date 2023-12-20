@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import jsonpatch from 'fast-json-patch';
 
 import { axios } from '@/core/axios';
-import queryClient from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { AniDBLoginRequestType, SettingsPatchRequestType } from '@/core/react-query/settings/types';
 import type { SettingsServerType } from '@/core/types/api/settings';
@@ -31,5 +31,5 @@ export const usePatchSettingsMutation = () =>
       const data = jsonpatch.compare(original, changed);
       return axios.patch('Settings', data, { params });
     },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['settings'] }),
+    onSuccess: () => invalidateQueries(['settings']),
   });

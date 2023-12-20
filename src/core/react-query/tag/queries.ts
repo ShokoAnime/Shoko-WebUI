@@ -9,7 +9,7 @@ import type { TagType } from '@/core/types/api/tags';
 
 export const useAniDBTagsQuery = (params: TagsRequestType) =>
   useQuery<ListResultType<TagType>, unknown, TagType[]>({
-    queryKey: ['anidb-tags', params],
+    queryKey: ['tags', 'anidb', params],
     queryFn: () => axios.get('Tag/AniDB', { params }),
     select: transformListResultSimplified,
   });

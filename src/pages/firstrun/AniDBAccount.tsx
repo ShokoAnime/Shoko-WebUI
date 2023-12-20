@@ -45,7 +45,7 @@ function AniDBAccount() {
       },
       onError: (error) => {
         console.error(error);
-        setAnidbStatus({ type: 'error', text: error.message });
+        setAnidbStatus({ type: 'error', text: 'Failed to log in!' });
       },
     });
   };
