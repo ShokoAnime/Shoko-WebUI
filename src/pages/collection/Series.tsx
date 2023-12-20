@@ -162,7 +162,7 @@ const Series = () => {
         </div>
         <Outlet context={{ scrollRef }} />
         <div
-          className="fixed left-0 top-0 -z-10 h-full w-full opacity-5"
+          className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
           style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
         />
       </div>
