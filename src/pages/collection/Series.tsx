@@ -129,7 +129,9 @@ const Series = () => {
                     </NavLink>
                   </div>
                 </div>
-                <AnidbDescription text={series?.AniDB?.Description ?? ''} />
+                <div className="line-clamp-[7]">
+                  <AnidbDescription text={series?.AniDB?.Description ?? ''} />
+                </div>
               </div>
             </div>
           </div>
