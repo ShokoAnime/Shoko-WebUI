@@ -2,6 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
+import { getSeriesEpisodesQueryKey, getSeriesFilesQueryKey } from '@/core/react-query/series/helpers';
 
 import type {
   SeriesAniDBEpisodesRequestType,
@@ -33,21 +34,21 @@ export const useSeriesQuery = (
   enabled = true,
 ) =>
   useQuery<SeriesDetailsType>({
-    queryKey: ['series', 'single', seriesId, params, 'SeriesAniDB'],
+    queryKey: ['series', 'single', seriesId, params],
     queryFn: () => axios.get(`Series/${seriesId}`, { params }),
     enabled,
   });
 
 export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
   useQuery<SeriesAniDBSearchResult>({
-    queryKey: ['series', 'anidb', anidbId, 'SeriesAniDB'],
+    queryKey: ['series', 'anidb', anidbId],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}`),
     enabled,
   });
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
   useQuery<ListResultType<EpisodeAniDBType>, unknown, EpisodeAniDBType[]>({
-    queryKey: ['series', 'episodes', 'anidb', anidbId, params, 'UtilitiesRefresh'],
+    queryKey: ['series', 'episodes', 'anidb', anidbId, params],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}/Episode`, { params }),
     select: transformListResultSimplified,
     enabled,
@@ -55,7 +56,7 @@ export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDB
 
 export const useSeriesAniDBSearchQuery = (query: string, enabled = true) =>
   useQuery<ListResultType<SeriesAniDBSearchResult>, unknown, SeriesAniDBSearchResult[]>({
-    queryKey: ['series', 'anidb-search', query, 'SeriesSearch'],
+    queryKey: ['series', 'anidb-search', query],
     queryFn: () => axios.get(`Series/AniDB/Search/${encodeURIComponent(query)}`),
     select: transformListResultSimplified,
     enabled,
@@ -72,9 +73,10 @@ export const useSeriesEpisodesInfiniteQuery = (
   seriesId: number,
   params: SeriesEpisodesInfiniteRequestType,
   enabled = true,
+  staleTime = 0,
 ) =>
   useInfiniteQuery<ListResultType<EpisodeType>>({
-    queryKey: ['series', 'episodes', seriesId, params],
+    queryKey: getSeriesEpisodesQueryKey(seriesId, params),
     queryFn: ({ pageParam }) =>
       axios.get(
         `Series/${seriesId}/Episode`,
@@ -91,7 +93,7 @@ export const useSeriesEpisodesInfiniteQuery = (
       return lastPageParam + 1;
     },
     enabled,
-    staleTime: 60000,
+    staleTime,
   });
 
 export const useSeriesFilesQuery = (
@@ -100,7 +102,7 @@ export const useSeriesFilesQuery = (
   enabled = true,
 ) =>
   useQuery<ListResultType<FileType>, unknown, FileType[]>({
-    queryKey: ['series', 'files', seriesId, params, 'UtilitiesRefresh'],
+    queryKey: getSeriesFilesQueryKey(seriesId, params),
     queryFn: () => axios.get(`Series/${seriesId}/File`, { params }),
     select: transformListResultSimplified,
     enabled,
@@ -115,7 +117,7 @@ export const useSeriesGroupQuery = (seriesId: number, topLevel: boolean) =>
 
 export const useSeriesImagesQuery = (seriesId: number, enabled = true) =>
   useQuery<SeriesImagesType>({
-    queryKey: ['series', 'images', seriesId, 'SeriesAniDB'],
+    queryKey: ['series', 'images', seriesId],
     queryFn: () => axios.get(`Series/${seriesId}/Images`),
     enabled,
   });
@@ -136,7 +138,7 @@ export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestTy
 
 export const useSeriesWithLinkedFilesInfiniteQuery = (params: PaginationType) =>
   useInfiniteQuery<ListResultType<SeriesType>>({
-    queryKey: ['series', 'linked-files', params, 'FileMatched', 'UtilitiesRefresh'],
+    queryKey: ['series', 'linked-files', params],
     queryFn: ({ pageParam }) =>
       axios.get(
         'Series/WithManuallyLinkedFiles',
@@ -157,7 +159,7 @@ export const useSeriesWithLinkedFilesInfiniteQuery = (params: PaginationType) =>
 
 export const useSeriesWithoutFilesInfiniteQuery = (params: PaginationType) =>
   useInfiniteQuery<ListResultType<SeriesType>>({
-    queryKey: ['series', 'without-files', params, 'SeriesUpdated', 'UtilitiesRefresh'],
+    queryKey: ['series', 'without-files', params],
     queryFn: ({ pageParam }) =>
       axios.get(
         'Series/WithoutFiles',

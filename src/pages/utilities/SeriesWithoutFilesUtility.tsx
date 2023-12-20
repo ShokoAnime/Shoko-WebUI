@@ -1,7 +1,6 @@
 import React from 'react';
 import { mdiCloseCircleOutline, mdiLoading, mdiMinusCircleOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { forEach } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -10,6 +9,7 @@ import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
@@ -57,8 +57,6 @@ const columns: UtilityHeaderType<SeriesType>[] = [
 const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Record<number, boolean>> }) => {
   const { selectedRows, setSelectedRows } = props;
 
-  const queryClient = useQueryClient();
-
   const { mutateAsync: deleteSeries } = useDeleteSeriesMutation();
 
   const handleDeleteSeries = () => {
@@ -79,9 +77,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
       <MenuButton
         onClick={() => {
           setSelectedRows([]);
-          queryClient.invalidateQueries({
-            queryKey: ['series-without-files'],
-          }).catch(() => {});
+          invalidateQueries(['series-without-files']);
         }}
         icon={mdiRefresh}
         name="Refresh"

@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 import { identity, map, pickBy } from 'lodash';
 
 import { axios } from '@/core/axios';
-import queryClient from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { ChangePasswordRequestType } from '@/core/react-query/user/types';
 import type { UserType } from '@/core/types/api/user';
@@ -16,7 +16,7 @@ export const useChangePasswordMutation = () =>
 export const useDeleteUserMutation = () =>
   useMutation({
     mutationFn: (userId: number) => axios.delete(`User/${userId}`),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user'] }),
+    onSuccess: () => invalidateQueries(['user']),
   });
 
 export const usePutUserMutation = () =>
@@ -29,5 +29,5 @@ export const usePutUserMutation = () =>
           CommunitySites: CommunitySites ? map(pickBy(CommunitySites, identity), (__, key) => key) : null,
         },
       ),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['user'] }),
+    onSuccess: () => invalidateQueries(['user']),
   });

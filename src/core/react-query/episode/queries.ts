@@ -13,7 +13,7 @@ export const useEpisodeFilesQuery = (
   enabled = true,
 ) =>
   useQuery<ListResultType<FileType>, unknown, FileType[]>({
-    queryKey: ['episode', 'files', episodeId, params, 'FileDeleted', 'FileMatched'],
+    queryKey: ['episode', 'files', episodeId, params],
     queryFn: () => axios.get(`Episode/${episodeId}/File`, { params }),
     select: transformListResultSimplified,
     enabled,

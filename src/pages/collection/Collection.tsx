@@ -27,6 +27,7 @@ import {
   useFilteredGroupsInfiniteQuery,
 } from '@/core/react-query/filter/queries';
 import { useGroupQuery } from '@/core/react-query/group/queries';
+import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
@@ -145,6 +146,20 @@ function Collection() {
     },
     isSeries,
   );
+
+  useEffect(() => {
+    if (!isSeries) {
+      queryClient.resetQueries({
+        queryKey: ['filter', 'preview', 'group-series'],
+      }).catch(console.error);
+    }
+  }, [isSeries]);
+
+  useEffect(() => () => {
+    queryClient.resetQueries({
+      queryKey: ['filter', 'preview', 'groups'],
+    }).catch(console.error);
+  }, []);
 
   const isFetching = useMemo(
     () => (isSeries ? seriesQuery.isFetching : groupsQuery.isFetching),

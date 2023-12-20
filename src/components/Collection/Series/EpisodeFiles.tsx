@@ -7,6 +7,7 @@ import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useDeleteFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import EpisodeFileInfo from './EpisodeFileInfo';
 
@@ -15,9 +16,10 @@ import type { FileType } from '@/core/types/api/file';
 type Props = {
   animeId: number;
   episodeFiles: FileType[];
+  episodeId: number;
 };
 
-const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
+const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
   const { mutate: deleteFile } = useDeleteFileMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,7 +32,10 @@ const EpisodeFiles = ({ animeId, episodeFiles }: Props) => {
   const handleDelete = async () => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
-      onSuccess: () => toast.success('Deleted file!'),
+      onSuccess: () => {
+        toast.success('Deleted file!');
+        invalidateQueries(['episode', 'files', episodeId]);
+      },
       onError: error => toast.error(`Failed to delete file! ${error}`),
     });
   };

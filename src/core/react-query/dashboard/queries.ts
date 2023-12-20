@@ -55,6 +55,6 @@ export const useDashboardSeriesSummaryQuery = () =>
 
 export const useDashbordStatsQuery = () =>
   useQuery<DashboardStatsType>({
-    queryKey: ['dashboard', 'stats', 'FileIgnored'],
+    queryKey: ['dashboard', 'stats'],
     queryFn: () => axios.get('Dashboard/Stats'),
   });

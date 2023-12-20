@@ -3,6 +3,7 @@ import { isAxiosError } from 'axios';
 
 import toast from '@/components/Toast';
 
+import type { QueryKey } from '@tanstack/react-query';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 const queryClient = new QueryClient({
@@ -27,13 +28,7 @@ const queryClient = new QueryClient({
   },
 });
 
-export const invalidateTags = (queryKey: string) => {
-  queryClient.invalidateQueries({
-    predicate: query => query.queryKey.includes(queryKey),
-  }).catch(() => {});
-};
-
-export const invalidateQueries = (queryKey: string[]) => {
+export const invalidateQueries = (queryKey: QueryKey) => {
   queryClient.invalidateQueries({ queryKey }).catch(console.error);
 };
 
@@ -41,7 +36,6 @@ export const invalidateOnEvent = (event: string) => {
   switch (event) {
     case 'FileDeleted':
       invalidateQueries(['dashboard']);
-      invalidateQueries(['episode', 'files']);
       invalidateQueries(['import-folder']);
       invalidateQueries(['files']);
       break;
@@ -52,10 +46,10 @@ export const invalidateOnEvent = (event: string) => {
       break;
     case 'FileMatched':
       invalidateQueries(['dashboard']);
-      invalidateQueries(['episode', 'files']);
       invalidateQueries(['import-folder']);
       invalidateQueries(['files']);
       invalidateQueries(['series', 'files']);
+      invalidateQueries(['series', 'linked-files']);
       break;
     default:
   }

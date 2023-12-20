@@ -101,7 +101,7 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
       )}
       <div>
         <AnimateHeight height={open && episodeFilesQuery.isSuccess ? 'auto' : 0}>
-          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} />
+          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} episodeId={episodeId} />
         </AnimateHeight>
       </div>
     </>

@@ -15,7 +15,6 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { every, find, forEach, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
@@ -40,6 +39,7 @@ import {
 } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 import { useRowSelection } from '@/hooks/useRowSelection';
@@ -62,8 +62,6 @@ const Menu = (
     setSelectedRows,
     setSeriesSelectModal,
   } = props;
-
-  const queryClient = useQueryClient();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -149,9 +147,7 @@ const Menu = (
         <MenuButton
           onClick={() => {
             setSelectedRows([]);
-            queryClient.invalidateQueries({
-              queryKey: ['files', { include_only: ['Unrecognized'] }],
-            }).catch(() => {});
+            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
           }}
           icon={mdiRefresh}
           name="Refresh"

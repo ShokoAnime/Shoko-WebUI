@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useQueryClient } from '@tanstack/react-query';
 import { find, forEach } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
@@ -16,6 +15,7 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useIgnoreFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 import { useRowSelection } from '@/hooks/useRowSelection';
@@ -34,8 +34,6 @@ const Menu = (
     selectedRows,
     setSelectedRows,
   } = props;
-
-  const queryClient = useQueryClient();
 
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
 
@@ -59,9 +57,7 @@ const Menu = (
         <MenuButton
           onClick={() => {
             setSelectedRows([]);
-            queryClient.invalidateQueries({
-              queryKey: ['files', { include_only: ['Ignored'] }],
-            }).catch(() => {});
+            invalidateQueries(['files', { include_only: ['Ignored'] }]);
           }}
           icon={mdiRestart}
           name="Refresh"

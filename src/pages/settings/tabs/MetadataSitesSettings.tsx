@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
@@ -8,6 +7,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { dayjs } from '@/core/util';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
@@ -45,7 +45,6 @@ function MetadataSitesSettings() {
 
   const [enabled, setEnabled] = useState(false);
   const traktQuery = useTraktCodeQuery(enabled);
-  const queryClient = useQueryClient();
 
   const handleTrigger = () => {
     setEnabled(true);
@@ -56,7 +55,7 @@ function MetadataSitesSettings() {
     );
 
     setTimeout(() => {
-      queryClient.invalidateQueries({ queryKey: ['trakt-code'] }).catch(console.error);
+      invalidateQueries(['trakt-code']);
       setEnabled(false);
     }, 600000);
   };

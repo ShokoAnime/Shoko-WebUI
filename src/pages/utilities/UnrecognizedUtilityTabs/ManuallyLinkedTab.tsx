@@ -22,7 +22,7 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useDeleteFileLinkMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
-import { invalidateTags } from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { prefetchSeriesEpisodesInfiniteQuery, prefetchSeriesFilesQuery } from '@/core/react-query/series/prefetch';
 import {
   useSeriesEpisodesInfiniteQuery,
@@ -87,6 +87,12 @@ const SelectedFilesContext = createContext<
   SelectedFilesType | undefined
 >(undefined);
 
+const refreshData = () => {
+  invalidateQueries(['series', 'episodes']);
+  invalidateQueries(['series', 'files']);
+  invalidateQueries(['series', 'linked-files']);
+};
+
 const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean>>) =>
   useCallback(
     (fileIds: number[], select = true) => {
@@ -109,6 +115,7 @@ const FilesTable = ({ id, open }: { id: number, open: boolean }) => {
       includeDataFrom: ['AniDB'],
     },
     open,
+    60000,
   );
   const [episodes] = useFlattenListResult(episodesQuery.data);
 
@@ -134,8 +141,8 @@ const Menu = (props: SelectedFilesType) => {
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const refreshData = () => {
-    invalidateTags('UtilitiesRefresh');
+  const handleRefresh = () => {
+    refreshData();
     setSelectedFiles({});
   };
 
@@ -154,7 +161,7 @@ const Menu = (props: SelectedFilesType) => {
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <MenuButton onClick={refreshData} icon={mdiRefresh} name="Refresh" />
+      <MenuButton onClick={handleRefresh} icon={mdiRefresh} name="Refresh" />
       <TransitionDiv className="ml-4 flex grow gap-x-4" show={selectedIds.length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton
@@ -196,7 +203,7 @@ function ManuallyLinkedTab() {
     if (failedFiles) toast.error(`Error unlinking ${failedFiles} files!`);
     if (failedFiles !== fileIds.length) toast.success(`${fileIds.length} files unlinked!`);
 
-    invalidateTags('UtilitiesRefresh');
+    refreshData();
     setSelectedFiles({});
   });
 

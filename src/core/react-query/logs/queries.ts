@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { HttpTransportType, HubConnectionBuilder, JsonHubProtocol, LogLevel } from '@microsoft/signalr';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
+import queryClient from '@/core/react-query/queryClient';
 import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
@@ -15,7 +16,6 @@ const formatTimestamps = (lines: LogLineType[]): LogLineType[] =>
   lines.map<LogLineType>(item => ({ ...item, timeStamp: formatStamp(item.timeStamp) }));
 
 const useLogsSubscription = () => {
-  const queryClient = useQueryClient();
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const useLogsSubscription = () => {
     return () => {
       connectionLog.stop().catch(console.error);
     };
-  }, [apikey, queryClient]);
+  }, [apikey]);
 };
 
 export const useLogsQuery = () => {

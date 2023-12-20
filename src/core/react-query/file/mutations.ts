@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import queryClient from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
   DeleteFileLinkRequestType,
@@ -34,7 +34,7 @@ export const useDeleteFileLinkMutation = () =>
 export const useIgnoreFileMutation = () =>
   useMutation({
     mutationFn: ({ fileId, ignore }: IgnoreFileRequestType) => axios.put(`File/${fileId}/Ignore`, { ignore }),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['files', { include_only: ['Ignored'] }] }),
+    onSuccess: () => invalidateQueries(['files', { include_only: ['Ignored'] }]),
   });
 
 export const useLinkOneFileToManyEpisodesMutation = () =>

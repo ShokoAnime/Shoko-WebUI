@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { invalidateQueries, invalidateTags } from '@/core/react-query/queryClient';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
   ChangeSeriesImageRequestType,
@@ -22,23 +22,22 @@ export const useChangeSeriesImageMutation = () =>
           Source: image.Source,
         },
       ),
-    onSuccess: () => invalidateTags('SeriesAniDB'),
+    onSuccess: () => {
+      invalidateQueries(['series', 'single']);
+      invalidateQueries(['series', 'images']);
+    },
   });
 
 export const useDeleteSeriesMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...data }: DeleteSeriesRequestType) => axios.delete(`Series/${seriesId}`, { data }),
-    onSuccess: () => invalidateTags('SeriesUpdated'),
+    onSuccess: () => invalidateQueries(['series', 'without-files']),
   });
 
 export const useDeleteSeriesTvdbLinkMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TvDB`),
-    onSuccess: () => {
-      invalidateTags('SeriesAniDB');
-      invalidateTags('SeriesUpdated');
-      invalidateQueries(['series', 'episodes']);
-    },
+    onSuccess: () => invalidateQueries(['series', 'episodes']),
   });
 
 export const useRefreshAniDBSeriesMutation = () =>
@@ -50,8 +49,8 @@ export const useRefreshAniDBSeriesMutation = () =>
         { params },
       ),
     onSuccess: () => {
-      invalidateTags('SeriesAniDB');
-      invalidateTags('SeriesSearch');
+      invalidateQueries(['series', 'anidb']);
+      invalidateQueries(['series', 'anidb-search']);
       invalidateQueries(['series', 'episodes']);
     },
   });
@@ -60,35 +59,22 @@ export const useRefreshSeriesAniDBInfoMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...params }: RefreshSeriesAniDBInfoRequestType) =>
       axios.post(`Series/${seriesId}/AniDB/Refresh`, null, { params }),
-    onSuccess: () => {
-      invalidateTags('SeriesAniDB');
-      invalidateQueries(['series', 'episodes']);
-    },
   });
 
 export const useRefreshSeriesTvdbInfoMutatation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...params }: RefreshSeriesTvdbInfoRequestType) =>
       axios.post(`Series/${seriesId}/TvDB/Refresh`, null, { params }),
-    onSuccess: () => invalidateQueries(['series', 'episodes']),
   });
 
 export const useRehashSeriesFilesMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/File/Rehash`),
-    onSuccess: () => {
-      invalidateTags('SeriesAniDB');
-      invalidateQueries(['series', 'episodes']);
-    },
   });
 
 export const useRescanSeriesFilesMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/File/Rescan`),
-    onSuccess: () => {
-      invalidateTags('SeriesAniDB');
-      invalidateQueries(['series', 'episodes']);
-    },
   });
 
 export const useWatchSeriesEpisodesMutation = () =>
@@ -96,7 +82,7 @@ export const useWatchSeriesEpisodesMutation = () =>
     mutationFn: ({ seriesId, ...params }: WatchSeriesEpisodesRequestType) =>
       axios.post(`Series/${seriesId}/Episode/Watched`, params),
     onSuccess: () => {
-      invalidateTags('EpisodeUpdated');
+      invalidateQueries(['series', 'single']);
       invalidateQueries(['series', 'episodes']);
     },
   });
