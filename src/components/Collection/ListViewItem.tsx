@@ -164,7 +164,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
                   <span className="text-sm font-semibold">{renderFileSources(item.Sizes.FileSources)}</span>
                 </div>
               )}
-              {groupExtras && (
+              {(groupExtras || isSeries) && (
                 <>
                   <div className="flex items-center gap-x-2 align-middle">
                     <Icon path={mdiCalendarMonthOutline} size={1} />
