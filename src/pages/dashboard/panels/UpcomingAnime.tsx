@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -7,7 +7,6 @@ import { useDashboardCalendarQuery } from '@/core/react-query/dashboard/queries'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import DashboardTitleToggle from '@/pages/dashboard/components/DashboardTitleToggle';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 
@@ -16,9 +15,7 @@ const UpcomingAnime = () => {
 
   const [showAll, setShowAll] = useState(false);
 
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
-  const { hideR18Content } = settings.WebUI_Settings.dashboard;
+  const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
   const localItems = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
   const items = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });

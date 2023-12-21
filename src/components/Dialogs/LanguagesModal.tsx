@@ -6,7 +6,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -67,12 +66,11 @@ type Props = {
 };
 
 function LanguagesModal({ onClose, type }: Props) {
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const LanguagePreference = useMemo(
     () => (type === 'Episode'
-      ? settings.EpisodeLanguagePreference ?? ['en']
-      : settings.LanguagePreference ?? ['x-jat', 'en']),
+      ? settings.EpisodeLanguagePreference
+      : settings.LanguagePreference),
     [type, settings],
   );
   const { mutate: patchSettings } = usePatchSettingsMutation();
@@ -81,7 +79,6 @@ function LanguagesModal({ onClose, type }: Props) {
 
   const handleSave = useCallback(() => {
     patchSettings({
-      oldSettings: settings,
       newSettings: {
         ...settings,
         [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages,

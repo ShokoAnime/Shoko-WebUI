@@ -41,7 +41,7 @@ const NameTab = ({ seriesId }: Props) => {
 
   useEffect(() => {
     setName(seriesQuery.data?.Name ?? '');
-  }, [seriesQuery]);
+  }, [seriesQuery.data?.Name]);
 
   // useEffect(() => {
   //   if (!search) return;

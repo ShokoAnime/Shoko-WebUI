@@ -20,7 +20,6 @@ import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs, formatThousand } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import AnidbDescription from './AnidbDescription';
 
@@ -61,8 +60,7 @@ type Props = {
 };
 
 const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => {
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
   const seriesTags = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);

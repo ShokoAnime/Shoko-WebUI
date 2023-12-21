@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -11,18 +11,17 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import DashboardTitleToggle from '@/pages/dashboard/components/DashboardTitleToggle';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 import SeriesDetails from '@/pages/dashboard/components/SeriesDetails';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 
 const RecentlyImported = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const settingsQuery = useSettingsQuery();
-  const { hideR18Content, recentlyImportedEpisodesCount, recentlyImportedSeriesCount } = useMemo(
-    () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
-    [settingsQuery],
-  );
+  const {
+    hideR18Content,
+    recentlyImportedEpisodesCount,
+    recentlyImportedSeriesCount,
+  } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
   const [showSeries, setShowSeries] = useState(false);
   const series = useDashboardRecentlyAddedSeriesQuery({

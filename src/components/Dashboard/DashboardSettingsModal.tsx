@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
@@ -10,7 +10,6 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 type Props = {
   onClose: () => void;
@@ -40,12 +39,11 @@ const Title = ({ onClose }: { onClose: () => void }) => {
 const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
 
-  const [newSettings, setNewSettings] = useState(initialSettings);
-  const [activeTab, setActiveTab] = useState('widgets');
-
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
+
+  const [newSettings, setNewSettings] = useState(settings);
+  const [activeTab, setActiveTab] = useState('widgets');
 
   useEffect(() => {
     setNewSettings(settings);
@@ -82,8 +80,14 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
+  const handleSave = async () => {
+    patchSettings({ newSettings }, {
+      onSuccess: () => onClose(),
+    });
+  };
+
   const handleCancel = () => {
-    setNewSettings(initialSettings);
+    setNewSettings(settings);
     onClose();
   };
 
@@ -255,7 +259,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           <div className="flex justify-end gap-x-3 border-t border-panel-border pt-8 font-semibold">
             <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
             <Button
-              onClick={() => patchSettings({ oldSettings: settings, newSettings })}
+              onClick={handleSave}
               buttonType="primary"
               className="px-6 py-2"
             >

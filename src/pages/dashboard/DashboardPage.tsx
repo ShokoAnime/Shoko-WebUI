@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
@@ -9,7 +9,6 @@ import toast from '@/components/Toast';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import CollectionStats from './panels/CollectionStats';
 import ContinueWatching from './panels/ContinueWatching';
@@ -33,7 +32,7 @@ function DashboardPage() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery.data ?? initialSettings, [settingsQuery]);
+  const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const {
@@ -52,17 +51,17 @@ function DashboardPage() {
   } = settings.WebUI_Settings.dashboard;
 
   const [currentLayout, setCurrentLayout] = useState(
-    settings.WebUI_Settings.layout.dashboard ?? initialSettings.WebUI_Settings.layout.dashboard,
+    settings.WebUI_Settings.layout.dashboard,
   );
 
   useEffect(() => {
-    const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
-    if (settingsQuery.isSuccess) setCurrentLayout(layout.dashboard);
+    const { layout: { dashboard } } = settings.WebUI_Settings;
+    if (settingsQuery.isSuccess) setCurrentLayout(dashboard);
   }, [settings, settingsQuery.isSuccess]);
 
   const cancelLayoutChange = useCallback(() => {
-    const layout = settings.WebUI_Settings.layout ?? initialSettings.WebUI_Settings.layout;
-    setCurrentLayout(layout.dashboard);
+    const { layout: { dashboard } } = settings.WebUI_Settings;
+    setCurrentLayout(dashboard);
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
   }, [settings, dispatch]);
@@ -70,7 +69,7 @@ function DashboardPage() {
   const saveLayout = useCallback(() => {
     const newSettings = JSON.parse(JSON.stringify(settings)); // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
     newSettings.WebUI_Settings.layout.dashboard = currentLayout;
-    patchSettings({ oldSettings: settings, newSettings }, {
+    patchSettings({ newSettings }, {
       onSuccess: () => {
         dispatch(setLayoutEditMode(false));
         toast.dismiss('layoutEditMode');
