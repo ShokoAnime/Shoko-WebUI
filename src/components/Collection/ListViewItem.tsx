@@ -164,23 +164,27 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
                   <span className="text-sm font-semibold">{renderFileSources(item.Sizes.FileSources)}</span>
                 </div>
               )}
-              <div className="flex items-center gap-x-2 align-middle">
-                <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span className="text-sm font-semibold">
-                  {airDate.format('MMMM Do, YYYY')}
-                  {!airDate.isSame(endDate) && (
-                    <>
-                      &nbsp;-&nbsp;
-                      {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
-                    </>
+              {groupExtras && (
+                <>
+                  <div className="flex items-center gap-x-2 align-middle">
+                    <Icon path={mdiCalendarMonthOutline} size={1} />
+                    <span className="text-sm font-semibold">
+                      {airDate.format('MMMM Do, YYYY')}
+                      {!airDate.isSame(endDate) && (
+                        <>
+                          &nbsp;-&nbsp;
+                          {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
+                        </>
+                      )}
+                    </span>
+                  </div>
+                  {isSeriesOngoing && (
+                    <div className="flex items-center gap-x-2 align-middle">
+                      <Icon path={mdiTelevisionAmbientLight} size={1} />
+                      <span className="text-sm font-semibold">Ongoing Series</span>
+                    </div>
                   )}
-                </span>
-              </div>
-              {isSeriesOngoing && (
-                <div className="flex items-center gap-x-2 align-middle">
-                  <Icon path={mdiTelevisionAmbientLight} size={1} />
-                  <span className="text-sm font-semibold">Ongoing Series</span>
-                </div>
+                </>
               )}
             </div>
 
