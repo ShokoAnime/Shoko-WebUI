@@ -1,6 +1,8 @@
+import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import queryClient from '@/core/react-query/queryClient';
 
 import type {
   GroupViewRequestType,
@@ -15,12 +17,26 @@ import type {
   WebuiTheme,
 } from '@/core/types/api/webui';
 
-export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) =>
-  useQuery<WebuiGroupExtra[], unknown, WebuiGroupExtra[]>({
+export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) => {
+  const query = useQuery<WebuiGroupExtra[]>({
     queryKey: ['webui', 'group-view', params],
     queryFn: () => axios.post('WebUI/GroupView', params),
     enabled,
   });
+
+  useEffect(() => {
+    if (!query.data) return;
+    queryClient.setQueryData(
+      ['webui', 'group-view', 'all'],
+      (oldData: WebuiGroupExtra[]) => [...oldData, ...query.data],
+    );
+  }, [query.data]);
+
+  return useQuery<WebuiGroupExtra[]>({
+    queryKey: ['webui', 'group-view', 'all'],
+    queryFn: () => [],
+  });
+};
 
 export const useSeriesFileSummaryQuery = (seriesId: number, params: SeriesFileSummaryRequestType, enabled = true) =>
   useQuery<WebuiSeriesFileSummaryType>({
