@@ -118,15 +118,6 @@ function Collection() {
     setSeriesSearch('');
   }, [isSeries]);
 
-  const toggleMode = async () => {
-    const newMode = mode === 'list' ? 'poster' : 'list';
-    // Optimistically update view mode to reduce lag without waiting for settings refetch.
-    setMode(newMode);
-    const newSettings = cloneDeep(settings);
-    newSettings.WebUI_Settings.collection.view = newMode;
-    patchSettings({ oldSettings: settings, newSettings });
-  };
-
   const groupsQuery = useFilteredGroupsInfiniteQuery({
     pageSize: 50,
     randomImages: showRandomPoster,
@@ -194,6 +185,20 @@ function Collection() {
     if (!groupExtrasQuery.isSuccess) return;
     setGroupExtras(immerState => [...immerState, ...groupExtrasQuery.data]);
   }, [groupExtrasQuery.data, groupExtrasQuery.isSuccess, setGroupExtras]);
+
+  const toggleMode = async () => {
+    const newMode = mode === 'list' ? 'poster' : 'list';
+    // Optimistically update view mode to reduce lag without waiting for settings refetch.
+    setMode(newMode);
+    if (newMode === 'list') {
+      // If we invalidate instead of resetting, if we had 5 pages loaded in poster view, it will again load 5 pages
+      // after invalidation even if we are at the top of the page
+      queryClient.resetQueries({ queryKey: ['filter', 'preview', 'groups'] }).catch(console.error);
+    }
+    const newSettings = cloneDeep(settings);
+    newSettings.WebUI_Settings.collection.view = newMode;
+    patchSettings({ oldSettings: settings, newSettings });
+  };
 
   return (
     <>
