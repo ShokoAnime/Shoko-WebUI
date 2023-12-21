@@ -15,10 +15,11 @@ import type {
   WebuiTheme,
 } from '@/core/types/api/webui';
 
-export const useGroupViewQuery = (params: GroupViewRequestType) =>
+export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) =>
   useQuery<WebuiGroupExtra[], unknown, WebuiGroupExtra[]>({
     queryKey: ['webui', 'group-view', params],
     queryFn: () => axios.post('WebUI/GroupView', params),
+    enabled,
   });
 
 export const useSeriesFileSummaryQuery = (seriesId: number, params: SeriesFileSummaryRequestType, enabled = true) =>
