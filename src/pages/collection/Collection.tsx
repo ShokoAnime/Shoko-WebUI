@@ -134,6 +134,7 @@ function Collection() {
     {
       filterCriteria: getFilter(debouncedSeriesSearch),
       randomImages: showRandomPoster,
+      includeDataFrom: ['AniDB'],
     },
     isSeries,
   );
