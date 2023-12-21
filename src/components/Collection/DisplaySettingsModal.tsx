@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { cloneDeep } from 'lodash';
 
@@ -7,7 +7,6 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 type Props = {
   show: boolean;
@@ -17,11 +16,10 @@ type Props = {
 const DisplaySettingsModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
 
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [newSettings, setNewSettings] = useState(initialSettings);
+  const [newSettings, setNewSettings] = useState(settings);
 
   useEffect(() => {
     setNewSettings(settings);
@@ -42,13 +40,13 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
   const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
 
   const handleSave = async () => {
-    patchSettings({ oldSettings: settings, newSettings }, {
+    patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
   };
 
   const handleCancel = () => {
-    setNewSettings(initialSettings);
+    setNewSettings(settings);
     onClose();
   };
 

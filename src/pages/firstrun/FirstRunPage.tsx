@@ -11,7 +11,6 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { SettingsType } from '@/core/types/api/settings';
@@ -51,7 +50,7 @@ function FirstRunPage() {
 
   const version = useVersionQuery();
   const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
   const status = useServerStatusQuery();
@@ -62,7 +61,7 @@ function FirstRunPage() {
     }
   }, [navigate, status, isPersistent]);
 
-  const [newSettings, setNewSettings] = useState(initialSettings);
+  const [newSettings, setNewSettings] = useState(settings);
 
   useEffect(() => {
     setNewSettings(settings);
@@ -74,7 +73,7 @@ function FirstRunPage() {
   };
 
   const saveSettings = async () => {
-    patchSettings({ oldSettings: settings, newSettings, skipValidation: true });
+    patchSettings({ newSettings, skipValidation: true });
   };
 
   const parsedVersion = useMemo(() => {
@@ -136,7 +135,7 @@ function FirstRunPage() {
         <div className="flex grow flex-col items-center justify-center rounded-md border border-panel-border bg-panel-background-transparent p-8">
           <Outlet
             context={{
-              fetching: settingsQuery.isLoading,
+              fetching: settingsQuery.isFetching,
               newSettings,
               setIsPersistent,
               setNewSettings,

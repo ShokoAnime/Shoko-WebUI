@@ -32,7 +32,6 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
@@ -85,11 +84,10 @@ function Collection() {
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
   const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
-  const { showRandomPoster: showRandomPosterGrid } = settings.WebUI_Settings.collection.poster;
-  const { showRandomPoster: showRandomPosterList } = settings.WebUI_Settings.collection.list;
+  const showRandomPosterGrid = settings.WebUI_Settings.collection.poster.showRandomPoster;
+  const showRandomPosterList = settings.WebUI_Settings.collection.list.showRandomPoster;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
@@ -198,7 +196,7 @@ function Collection() {
     }
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
-    patchSettings({ oldSettings: settings, newSettings });
+    patchSettings({ newSettings });
   };
 
   return (

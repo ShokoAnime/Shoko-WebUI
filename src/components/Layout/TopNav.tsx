@@ -38,7 +38,6 @@ import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -89,9 +88,7 @@ function TopNav() {
   const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
 
   const settingsQuery = useSettingsQuery();
-  const webuiSettings = useMemo(() => settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings, [
-    settingsQuery,
-  ]);
+  const webuiSettings = settingsQuery.data.WebUI_Settings;
 
   const checkWebuiUpdate = useWebuiUpdateCheckQuery(
     { channel: webuiSettings.updateChannel, force: false },
