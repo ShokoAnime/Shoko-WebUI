@@ -187,7 +187,7 @@ function Collection() {
       TagFilter: 128,
       TagLimit: 20,
     },
-    lastPageIds.length > 0,
+    viewSetting === 'list' && lastPageIds.length > 0,
   );
 
   useEffect(() => {
