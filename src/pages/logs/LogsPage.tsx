@@ -72,7 +72,7 @@ const LogsPage = () => {
                 <div className="absolute top-0 w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
                   <div
                     className="absolute left-4 w-[95%] space-y-1"
-                    style={{ transform: `translateY(${virtualItems[0].start}px)` }}
+                    style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
                   >
                     {virtualItems.map((virtualRow) => {
                       const row = logLines[virtualRow.index];
