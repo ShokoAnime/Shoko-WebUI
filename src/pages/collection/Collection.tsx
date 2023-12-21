@@ -181,11 +181,14 @@ function Collection() {
 
   // Couldn't find a way to do it in the query itself like we had in RTKQ, so doing it here
   const [groupExtras, setGroupExtras] = useImmer<WebuiGroupExtra[]>([]);
-  const groupExtrasQuery = useGroupViewQuery({
-    GroupIDs: lastPageIds,
-    TagFilter: 128,
-    TagLimit: 20,
-  });
+  const groupExtrasQuery = useGroupViewQuery(
+    {
+      GroupIDs: lastPageIds,
+      TagFilter: 128,
+      TagLimit: 20,
+    },
+    lastPageIds.length > 0,
+  );
 
   useEffect(() => {
     if (!groupExtrasQuery.isSuccess) return;
