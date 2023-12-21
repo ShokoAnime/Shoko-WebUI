@@ -34,7 +34,7 @@ export const posterItemSize = {
 
 export const listItemSize = {
   width: 907,
-  height: 328,
+  height: 319,
   widthAlt: 907,
   gap: 32,
 };
