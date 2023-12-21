@@ -60,7 +60,7 @@ const LogsPage = () => {
 
       <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
         <div
-          className="w-full overflow-y-auto overflow-x-clip rounded-md border-16 border-panel-input bg-panel-input"
+          className="w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
           ref={parentRef}
           style={{ contain: 'strict ' }}
         >
