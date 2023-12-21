@@ -64,6 +64,7 @@ export const useLogsQuery = () => {
   return useQuery<LogLineType[]>({
     queryKey: logsQueryKey,
     queryFn: () => [],
+    initialData: [],
     staleTime: Infinity,
     gcTime: Infinity,
   });

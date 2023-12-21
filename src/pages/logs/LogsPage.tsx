@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiArrowVerticalLock, mdiCogOutline, mdiFilterOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -9,8 +9,7 @@ import Input from '@/components/Input/Input';
 import { useLogsQuery } from '@/core/react-query/logs/queries';
 
 const LogsPage = () => {
-  const logsQuery = useLogsQuery();
-  const logLines = useMemo(() => logsQuery.data ?? [], [logsQuery]);
+  const logLines = useLogsQuery().data;
   const [isScrollToBottom, setScrollToBottom] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -60,39 +59,44 @@ const LogsPage = () => {
       </div>
 
       <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
-        <div className="w-full rounded-md border border-panel-border bg-panel-input py-4 pr-4">
-          <div className="relative h-full grow overflow-y-auto bg-panel-input" ref={parentRef}>
-            {(logsQuery.isLoading || logLines.length === 0)
-              ? (
-                <div className="flex h-full grow items-center justify-center">
-                  <Icon path={mdiLoading} size={4} className="text-panel-text-primary" spin />
+        <div
+          className="w-full overflow-y-auto overflow-x-clip rounded-md border-16 border-panel-input bg-panel-input"
+          ref={parentRef}
+          style={{ contain: 'strict ' }}
+        >
+          {logLines.length === 0
+            ? (
+              <div className="flex h-full items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} size={4} spin />
+              </div>
+            )
+            : (
+              <div
+                className="relative w-full"
+                style={{ height: rowVirtualizer.getTotalSize() }}
+              >
+                <div
+                  className="absolute left-4 top-0 w-[95%]"
+                  style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+                >
+                  {virtualItems.map((virtualRow) => {
+                    const row = logLines[virtualRow.index];
+                    return (
+                      <div
+                        className="mt-2 flex gap-x-8"
+                        key={virtualRow.key}
+                        data-index={virtualRow.index}
+                        ref={rowVirtualizer.measureElement}
+                      >
+                        <div className="w-[11.5rem] shrink-0 opacity-50">{row.timeStamp}</div>
+                        <div className="w-[2.8rem] shrink-0">{row.level}</div>
+                        <div className="break-all">{row.message}</div>
+                      </div>
+                    );
+                  })}
                 </div>
-              )
-              : (
-                <div className="absolute top-0 w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-                  <div
-                    className="absolute left-4 w-[95%] space-y-1"
-                    style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
-                  >
-                    {virtualItems.map((virtualRow) => {
-                      const row = logLines[virtualRow.index];
-                      return (
-                        <div
-                          className="flex gap-x-8"
-                          key={virtualRow.key}
-                          data-index={virtualRow.key}
-                          ref={rowVirtualizer.measureElement}
-                        >
-                          <div className="w-[11.5rem] shrink-0 opacity-50">{row.timeStamp}</div>
-                          <div className="w-[2.8rem] shrink-0">{row.level}</div>
-                          <div>{row.message}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-          </div>
+              </div>
+            )}
         </div>
       </div>
     </div>
