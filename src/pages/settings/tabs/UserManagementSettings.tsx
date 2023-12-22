@@ -42,9 +42,9 @@ function UserManagementSettings() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const currentUser = useCurrentUserQuery();
+  const currentUserQuery = useCurrentUserQuery();
   const usersQuery = useUsersQuery();
-  const users = useMemo(() => usersQuery.data ?? [], [usersQuery]);
+  const users = useMemo(() => usersQuery.data ?? [], [usersQuery.data]);
   const { mutate: editUser } = usePutUserMutation();
   const { mutate: deleteUser } = useDeleteUserMutation();
   const { isPending: isChangePasswordPending, mutate: changePassword } = useChangePasswordMutation();
@@ -60,7 +60,7 @@ function UserManagementSettings() {
   const isPlexAuthenticatedQuery = usePlexStatusQuery(plexPollingInterval);
   const isPlexAuthenticated = isPlexAuthenticatedQuery?.data ?? false;
   const { isPending: isInvalidatePlexTokenPending, mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
-  const tags = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
+  const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
 
   useEffect(() => {
     if (users.length > 0) setSelectedUser(users[0]);
@@ -111,7 +111,7 @@ function UserManagementSettings() {
     }, {
       onSuccess: () => {
         setNewPassword('');
-        if (currentUser.data?.ID === selectedUser.ID && logoutOthers) {
+        if (currentUserQuery.data?.ID === selectedUser.ID && logoutOthers) {
           toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
           setTimeout(() => {
             dispatch(unsetDetails());
@@ -151,7 +151,7 @@ function UserManagementSettings() {
   }, [setSelectedUser]);
 
   const deleteSelectedUser = (user: UserType) => {
-    if (currentUser.data?.ID === user.ID) {
+    if (currentUserQuery.data?.ID === user.ID) {
       toast.error(
         'Woah there buddy!',
         'You just tried to delete yourself from the matrix. That\'s not the way to go about doing it.',
@@ -223,8 +223,8 @@ function UserManagementSettings() {
     if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
       tempUser.RestrictedTags.push(tagId);
       tempUser.RestrictedTags = tempUser.RestrictedTags.sort((tagA, tagB) => {
-        const tagAName = tags.data?.find(tag => tag.ID === tagA)?.Name;
-        const tagBName = tags.data?.find(tag => tag.ID === tagB)?.Name;
+        const tagAName = tagsQuery.data?.find(tag => tag.ID === tagA)?.Name;
+        const tagBName = tagsQuery.data?.find(tag => tag.ID === tagB)?.Name;
         if (tagAName === undefined || tagBName === undefined) return 0;
         return tagAName?.localeCompare(tagBName);
       });
@@ -372,14 +372,14 @@ function UserManagementSettings() {
           onChange={event => setTagSearch(event.target.value)}
         />
         <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
-          {tags.isPending && (
+          {tagsQuery.isPending && (
             <div className="flex h-64 items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} spin size={3} />
             </div>
           )}
-          {tags.isSuccess && (
+          {tagsQuery.isSuccess && (
             <div className="h-64 overflow-y-auto bg-panel-input">
-              {tags.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
+              {tagsQuery.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
                 <div
                   className="mt-2 cursor-pointer first:mt-0"
                   key={`tagData-${tag.ID}`}
@@ -397,7 +397,7 @@ function UserManagementSettings() {
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
                 <div className="mt-2 flex justify-between capitalize first:mt-0" key={`selectedTag-${tag}`}>
-                  {tags.data?.find(
+                  {tagsQuery.data?.find(
                     tagData =>
                       tagData.ID === tag,
                   )?.Name ?? 'Unknown'}

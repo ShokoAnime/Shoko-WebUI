@@ -13,7 +13,7 @@ const NextUp = () => {
 
   const { combineContinueWatching, hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
-  const items = useDashboardNextUpQuery({
+  const nextUpQuery = useDashboardNextUpQuery({
     includeRestricted: !hideR18Content,
     onlyUnwatched: !combineContinueWatching,
     pageSize: 20,
@@ -22,12 +22,12 @@ const NextUp = () => {
   return (
     <ShokoPanel
       title={combineContinueWatching ? 'Continue Watching' : 'Next Up'}
-      isFetching={items.isLoading}
+      isFetching={nextUpQuery.isPending}
       editMode={layoutEditMode}
     >
       <div className="shoko-scrollbar flex">
-        {(items.data?.length ?? 0) > 0
-          ? items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
+        {(nextUpQuery.data?.length ?? 0) > 0
+          ? nextUpQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
           : (
             <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
               <div>You&apos;ve Finished Every Series In Progress.</div>

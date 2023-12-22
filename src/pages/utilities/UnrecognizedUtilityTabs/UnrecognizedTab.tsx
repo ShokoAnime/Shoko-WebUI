@@ -193,7 +193,7 @@ function UnrecognizedTab() {
   const { mutate: avdumpFile } = useAvdumpFileMutation();
 
   const importFolderQuery = useImportFoldersQuery();
-  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery]);
+  const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
 
   const filesQuery = useFilesInfiniteQuery(
     {

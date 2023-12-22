@@ -39,17 +39,17 @@ const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
-  const nextUpEpisodeData = useSeriesNextUpQuery(toNumber(seriesId!), {
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
+  const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
     includeDataFrom: ['AniDB', 'TvDB'],
     includeMissing: true,
   }, !!seriesId);
-  const relatedData = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
-  const similarData = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
+  const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
+  const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
 
-  const nextUpEpisode = useMemo(() => nextUpEpisodeData?.data ?? {} as EpisodeType, [nextUpEpisodeData]);
-  const related = useMemo(() => relatedData?.data ?? [], [relatedData]);
-  const similar = useMemo(() => similarData?.data ?? [], [similarData]);
+  const nextUpEpisode = useMemo(() => nextUpEpisodeQuery?.data ?? {} as EpisodeType, [nextUpEpisodeQuery.data]);
+  const related = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
+  const similar = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
 
   return (
     <>
@@ -59,7 +59,7 @@ const SeriesOverview = () => {
             title="Episode on Deck"
             className="flex w-full max-w-[71.875rem] grow overflow-visible"
             transparent
-            isFetching={nextUpEpisodeData.isFetching}
+            isFetching={nextUpEpisodeQuery.isFetching}
           >
             {get(nextUpEpisode, 'Name', false)
               ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />

@@ -124,7 +124,7 @@ function Collection() {
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(
     () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
-    [groupsQuery],
+    [groupsQuery.data],
   );
 
   const seriesQuery = useFilteredGroupSeries(
@@ -167,7 +167,7 @@ function Collection() {
   useEffect(() => {
     if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
     setTimelineSeries(seriesQuery.data);
-  }, [debouncedSeriesSearch, isSeries, seriesQuery]);
+  }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
   // Couldn't find a way to do it in the query itself like we had in RTKQ, so doing it here
   const [groupExtras, setGroupExtras] = useImmer<WebuiGroupExtra[]>([]);
@@ -250,7 +250,7 @@ function Collection() {
               Filter sidebar
             </div>
           </div>
-          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isLoading} />}
+          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />

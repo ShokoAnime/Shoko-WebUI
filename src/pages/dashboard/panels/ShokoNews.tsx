@@ -37,14 +37,14 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => (
 function ShokoNews() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const items = useShokoNewsQuery();
+  const newsQuery = useShokoNewsQuery();
 
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Shoko News" isFetching={newsQuery.isPending} editMode={layoutEditMode}>
       <div className="flex flex-col gap-y-3">
-        {items.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
+        {newsQuery.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
       </div>
     </ShokoPanel>
   );

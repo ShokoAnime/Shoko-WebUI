@@ -168,7 +168,7 @@ const AnimeSelectPanel = (
       );
     }
     return rows;
-  }, [searchQuery, seriesUpdating, updateSelectedSeries]);
+  }, [searchQuery.data, seriesUpdating, updateSelectedSeries]);
 
   return (
     <div className="flex w-1/2 flex-col gap-y-2">
@@ -245,7 +245,7 @@ function LinkFilesTab() {
     [showDataMap, links],
   );
 
-  const episodes = useMemo(() => anidbEpisodesQuery?.data || [], [anidbEpisodesQuery]);
+  const episodes = useMemo(() => anidbEpisodesQuery?.data || [], [anidbEpisodesQuery.data]);
   const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);

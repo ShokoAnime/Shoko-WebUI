@@ -16,7 +16,7 @@ const RecommendedAnime = () => {
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
-  const items = useRecommendedAnimeQuery({
+  const recommendedAnimeQuery = useRecommendedAnimeQuery({
     includeRestricted: !hideR18Content,
     pageSize: 20,
   });
@@ -47,10 +47,10 @@ const RecommendedAnime = () => {
   );
 
   return (
-    <ShokoPanel title="Recommended Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Recommended Anime" isFetching={recommendedAnimeQuery.isPending} editMode={layoutEditMode}>
       <div className="shoko-scrollbar flex">
-        {(items.data?.length ?? 0) > 0
-          ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
+        {(recommendedAnimeQuery.data?.length ?? 0) > 0
+          ? recommendedAnimeQuery.data?.map(item => renderItem(item.Anime, item.SimilarTo))
           : (
             <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
               <div>No Recommended Anime!</div>

@@ -14,8 +14,8 @@ function AuthenticatedRoute(props: Props) {
   const location = useLocation();
   const from = encodeURIComponent(location.pathname + location.search + location.hash);
   const isAuthenticated = useSelector((state: RootState) => state.apiSession.apikey !== '');
-  const serverStatus = useServerStatusQuery();
-  const serverState = serverStatus.data?.State ?? 2;
+  const serverStatusQuery = useServerStatusQuery();
+  const serverState = serverStatusQuery.data?.State ?? 2;
 
   return (serverState === 2 && isAuthenticated)
     ? props.children

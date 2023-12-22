@@ -63,7 +63,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
   const settings = useSettingsQuery().data;
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
-  const seriesTags = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
+  const tagsQuery = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
 
   const poster = useMainPoster(item);
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
@@ -110,13 +110,13 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
 
   const tags = useMemo(
     () => {
-      let tempTags = (isSeries ? seriesTags?.data : groupExtras?.Tags) ?? [];
+      let tempTags = (isSeries ? tagsQuery?.data : groupExtras?.Tags) ?? [];
       if (!showTopTags) tempTags = tempTags.filter(tag => tag.Source !== 'AniDB');
       if (!showCustomTags) tempTags = tempTags.filter(tag => tag.Source !== 'User');
       tempTags = tempTags.toSorted((tagA, tagB) => tagB.Source.localeCompare(tagA.Source));
       return tempTags.slice(0, 10);
     },
-    [isSeries, groupExtras?.Tags, seriesTags, showCustomTags, showTopTags],
+    [isSeries, groupExtras?.Tags, tagsQuery.data, showCustomTags, showTopTags],
   );
 
   return (

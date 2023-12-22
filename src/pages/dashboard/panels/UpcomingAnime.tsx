@@ -17,14 +17,14 @@ const UpcomingAnime = () => {
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
-  const localItems = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
-  const items = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
+  const calendarQuery = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
+  const calendarAllQuery = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
 
   return (
     <ShokoPanel
       title="Upcoming Anime"
       editMode={layoutEditMode}
-      isFetching={showAll ? items.isLoading : localItems.isLoading}
+      isFetching={showAll ? calendarAllQuery.isPending : calendarQuery.isPending}
       options={
         <DashboardTitleToggle
           mainTitle="My Collection"
@@ -36,8 +36,8 @@ const UpcomingAnime = () => {
     >
       <div className="shoko-scrollbar relative flex">
         <TransitionDiv show={!showAll} className="absolute flex w-full">
-          {(localItems.data?.length ?? 0) > 0
-            ? localItems.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
+          {(calendarQuery.data?.length ?? 0) > 0
+            ? calendarQuery.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
             : (
               <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
                 <div>No Upcoming Anime.</div>
@@ -46,8 +46,8 @@ const UpcomingAnime = () => {
             )}
         </TransitionDiv>
         <TransitionDiv show={showAll} className="absolute flex w-full">
-          {(items.data?.length ?? 0) > 0
-            ? items.data?.map(item => (
+          {(calendarAllQuery.data?.length ?? 0) > 0
+            ? calendarAllQuery.data?.map(item => (
               <EpisodeDetails
                 episode={item}
                 showDate

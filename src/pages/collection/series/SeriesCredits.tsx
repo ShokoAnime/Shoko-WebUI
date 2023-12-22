@@ -53,8 +53,7 @@ const SeriesCredits = () => {
   const [mode, setMode] = useState('Character');
   const [search, setSearch] = useState('');
 
-  const castData = useSeriesCastQuery(toNumber(seriesId!), !!seriesId);
-  const cast = castData.data;
+  const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
 
   if (!seriesId) return null;
 

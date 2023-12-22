@@ -138,7 +138,7 @@ const SeriesFileSummary = () => {
 
   const [groupBy, setGroupBy] = useState('GroupName,FileVersion,FileSource');
   const fileSummaryQuery = useSeriesFileSummaryQuery(toNumber(seriesId!), { groupBy }, !!seriesId);
-  const fileSummary = useMemo(() => fileSummaryQuery.data, [fileSummaryQuery]);
+  const fileSummary = fileSummaryQuery.data;
 
   const summary = useMemo(() => {
     let TotalEpisodeSize = 0;

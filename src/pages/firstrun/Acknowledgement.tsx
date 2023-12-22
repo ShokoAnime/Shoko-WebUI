@@ -10,7 +10,7 @@ import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 function Acknowledgement() {
   const dispatch = useDispatch();
 
-  const status = useServerStatusQuery();
+  const serverStatusQuery = useServerStatusQuery();
 
   const navigate = useNavigate();
 
@@ -51,7 +51,7 @@ function Acknowledgement() {
         onClick={handleNext}
         buttonType="primary"
         className="py-2 font-semibold"
-        disabled={status.data?.State !== 4}
+        disabled={serverStatusQuery.data?.State !== 4}
       >
         Continue
       </Button>

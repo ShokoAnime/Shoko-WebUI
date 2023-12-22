@@ -102,7 +102,7 @@ function SettingsPage() {
       {/*  </div> */}
       {/* )} */}
       <div className="flex min-h-full w-[37.5rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
-        {settingsQuery.isLoading
+        {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} spin size={5} />

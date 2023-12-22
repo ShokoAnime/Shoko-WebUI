@@ -13,13 +13,13 @@ const ContinueWatching = () => {
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
-  const items = useDashboardContinueWatchingQuery({ includeRestricted: !hideR18Content, pageSize: 20 });
+  const continueWatchingQuery = useDashboardContinueWatchingQuery({ includeRestricted: !hideR18Content, pageSize: 20 });
 
   return (
-    <ShokoPanel title="Continue Watching" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Continue Watching" isFetching={continueWatchingQuery.isPending} editMode={layoutEditMode}>
       <div className="shoko-scrollbar flex">
-        {(items.data?.length ?? 0) > 0
-          ? items.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
+        {(continueWatchingQuery.data?.length ?? 0) > 0
+          ? continueWatchingQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
           : (
             <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
               <div>No Episodes In Progress.</div>

@@ -19,7 +19,7 @@ const SeriesInfo = () => {
   const seriesOverviewData = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
   const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
 
   const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
   const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
@@ -114,7 +114,7 @@ const SeriesInfo = () => {
           )}
       </div>
       <div className="flex w-full flex-row justify-around gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
-        {seriesQuery.isLoading || seriesOverviewData.isLoading
+        {seriesQuery.isPending || seriesOverviewData.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={3} spin />

@@ -109,7 +109,7 @@ function ImportFolders() {
     <ShokoPanel
       title="Import Folders"
       options={renderOptions()}
-      isFetching={importFolderQuery.isLoading}
+      isFetching={importFolderQuery.isPending}
       editMode={layoutEditMode}
     >
       {importFolders.length === 0
