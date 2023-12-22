@@ -180,7 +180,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       );
     }
     return itemArray;
-  }, [showModal, activeTab, queueQuery, pageSize, currentCommand, expectedTab]);
+  }, [showModal, activeTab, queueQuery.data, queueQuery.isSuccess, pageSize, currentCommand, expectedTab]);
 
   const handlePageSizeChange = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();

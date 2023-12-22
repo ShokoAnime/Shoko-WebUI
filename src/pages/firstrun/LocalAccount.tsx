@@ -17,13 +17,13 @@ function LocalAccount() {
   const navigate = useNavigate();
 
   const { isPending: createUserPending, mutate: createUser } = useSetDefaultUserMutation();
-  const defaultUser = useDefaultUserQuery();
+  const defaultUserQuery = useDefaultUserQuery();
   const [user, setUser] = useState({ Username: 'Default', Password: '' });
   const [userStatus, setUserStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
   useEffect(() => {
-    setUser(defaultUser.data ?? { Username: 'Default', Password: '' });
-  }, [defaultUser.data]);
+    setUser(defaultUserQuery.data ?? { Username: 'Default', Password: '' });
+  }, [defaultUserQuery.data]);
 
   const handleSave = (event?: React.FormEvent) => {
     if (event) event.preventDefault();

@@ -38,9 +38,9 @@ function LoginPage() {
     seriesId: 0,
   }));
 
-  const version = useVersionQuery();
+  const versionQuery = useVersionQuery();
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
-  const status = useServerStatusQuery(pollingInterval);
+  const serverStatusQuery = useServerStatusQuery(pollingInterval);
   const imageMetadataQuery = useRandomImageMetadataQuery(ImageTypeEnum.Fanart);
 
   const setRedirect = () => {
@@ -62,21 +62,21 @@ function LoginPage() {
   }, [imageMetadataQuery.isSuccess, imageMetadataQuery.data]);
 
   useEffect(() => {
-    if (!status.data) setPollingInterval(500);
-    else if (status.data?.State !== 1) setPollingInterval(0);
+    if (!serverStatusQuery.data) setPollingInterval(500);
+    else if (serverStatusQuery.data?.State !== 1) setPollingInterval(0);
 
-    if (status.data?.State === 2 && apiSession.apikey !== '') {
+    if (serverStatusQuery.data?.State === 2 && apiSession.apikey !== '') {
       navigate(returnTo, { replace: true });
     }
-  }, [status, apiSession, navigate, returnTo]);
+  }, [serverStatusQuery.data, apiSession, navigate, returnTo]);
 
   useEffect(() => {
-    if (!get(version, 'data.Server', false)) return;
-    const versionHash = version?.data?.Server.ReleaseChannel !== 'Stable'
-      ? version?.data?.Server.Commit
-      : version.data.Server.Version;
+    if (!get(versionQuery.data, 'Server', false)) return;
+    const versionHash = versionQuery?.data?.Server.ReleaseChannel !== 'Stable'
+      ? versionQuery?.data?.Server.Commit
+      : versionQuery.data.Server.Version;
     Sentry.setTag('server_version', versionHash);
-  }, [version]);
+  }, [versionQuery.data]);
 
   const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();
@@ -96,18 +96,18 @@ function LoginPage() {
   };
 
   const parsedVersion = useMemo(() => {
-    if (version.isFetching || !version.data) {
+    if (versionQuery.isFetching || !versionQuery.data) {
       return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-text-primary" />;
     }
 
-    if (version.data.Server.ReleaseChannel !== 'Stable') {
-      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${
-        version.data.Server.Commit?.slice(0, 7)
+    if (versionQuery.data.Server.ReleaseChannel !== 'Stable') {
+      return `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${
+        versionQuery.data.Server.Commit?.slice(0, 7)
       })`;
     }
 
-    return version.data.Server.Version;
-  }, [version]);
+    return versionQuery.data.Server.Version;
+  }, [versionQuery.data, versionQuery.isFetching]);
 
   return (
     <>
@@ -135,22 +135,22 @@ function LoginPage() {
               </div>
             </div>
             <div className="flex w-[28rem] flex-col gap-y-4">
-              {!status.data?.State && (
+              {!serverStatusQuery.data?.State && (
                 <div className="flex items-center justify-center">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                 </div>
               )}
-              {status.data?.State === 1 && (
+              {serverStatusQuery.data?.State === 1 && (
                 <div className="flex flex-col items-center justify-center gap-y-2">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
                   <div className="mt-2 text-xl font-semibold">Server is starting. Please wait!</div>
                   <div className="text-lg">
                     <span className="font-semibold">Status:</span>
-                    {status.data?.StartupMessage ?? 'Unknown'}
+                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
                   </div>
                 </div>
               )}
-              {status.data?.State === 2 && (
+              {serverStatusQuery.data?.State === 2 && (
                 <form onSubmit={handleSignIn} className="flex flex-col gap-y-8">
                   <Input
                     autoFocus
@@ -182,23 +182,23 @@ function LoginPage() {
                     className="w-full py-2 font-semibold"
                     submit
                     loading={isLoginPending}
-                    disabled={version.isFetching || username === ''}
+                    disabled={versionQuery.isFetching || username === ''}
                   >
                     Login
                   </Button>
                 </form>
               )}
-              {status.data?.State === 3 && (
+              {serverStatusQuery.data?.State === 3 && (
                 <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
                   <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
                   <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                   Check the error message below
                   <div className="overflow-y-auto break-all text-lg font-semibold">
-                    {status.data?.StartupMessage ?? 'Unknown'}
+                    {serverStatusQuery.data?.StartupMessage ?? 'Unknown'}
                   </div>
                 </div>
               )}
-              {status.data?.State === 4 && (
+              {serverStatusQuery.data?.State === 4 && (
                 <div className="flex flex-col gap-y-8">
                   <div className="flex flex-col gap-y-4">
                     <div>Welcome and thanks for installing Shoko!</div>

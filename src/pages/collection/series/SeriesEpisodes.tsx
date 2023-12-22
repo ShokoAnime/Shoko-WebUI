@@ -53,7 +53,7 @@ const SeriesEpisodes = () => {
 
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
-  const animeId = useMemo(() => seriesQuery?.data?.IDs.AniDB ?? 0, [seriesQuery]);
+  const animeId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
   const rowVirtualizer = useVirtualizer({

@@ -65,9 +65,8 @@ const SeriesImages = () => {
 
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
-  const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
+  const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation();
-  const images = imagesData.data;
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();

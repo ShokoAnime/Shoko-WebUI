@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -8,7 +8,6 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { posterItemSize } from '@/components/Collection/CollectionView';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useMainPoster from '@/hooks/useMainPoster';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
@@ -19,8 +18,7 @@ type Props = {
 };
 
 const PosterViewItem = ({ isSeries = false, item }: Props) => {
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
   const mainPoster = useMainPoster(item);

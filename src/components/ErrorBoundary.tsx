@@ -13,7 +13,7 @@ const ErrorBoundary = () => {
   const navigate = useNavigate();
   const error = useRouteError() as Error; // There is no type definition provided.
 
-  const version = useVersionQuery();
+  const versionQuery = useVersionQuery();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
@@ -73,7 +73,7 @@ const ErrorBoundary = () => {
             Force update to Stable Web UI
           </Button>
 
-          {version.data?.Server.ReleaseChannel !== 'Stable' && (
+          {versionQuery.data?.Server.ReleaseChannel !== 'Stable' && (
             <Button
               onClick={() => handleWebUiUpdate('Dev')}
               className="px-4 py-2 drop-shadow-md"

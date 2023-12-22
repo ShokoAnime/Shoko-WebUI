@@ -20,7 +20,6 @@ import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs, formatThousand } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import AnidbDescription from './AnidbDescription';
 
@@ -61,11 +60,10 @@ type Props = {
 };
 
 const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => {
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
-  const seriesTags = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
+  const tagsQuery = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
 
   const poster = useMainPoster(item);
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
@@ -112,13 +110,13 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
 
   const tags = useMemo(
     () => {
-      let tempTags = (isSeries ? seriesTags?.data : groupExtras?.Tags) ?? [];
+      let tempTags = (isSeries ? tagsQuery?.data : groupExtras?.Tags) ?? [];
       if (!showTopTags) tempTags = tempTags.filter(tag => tag.Source !== 'AniDB');
       if (!showCustomTags) tempTags = tempTags.filter(tag => tag.Source !== 'User');
       tempTags = tempTags.toSorted((tagA, tagB) => tagB.Source.localeCompare(tagA.Source));
       return tempTags.slice(0, 10);
     },
-    [isSeries, groupExtras?.Tags, seriesTags, showCustomTags, showTopTags],
+    [isSeries, groupExtras?.Tags, tagsQuery.data, showCustomTags, showTopTags],
   );
 
   return (
@@ -164,23 +162,27 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
                   <span className="text-sm font-semibold">{renderFileSources(item.Sizes.FileSources)}</span>
                 </div>
               )}
-              <div className="flex items-center gap-x-2 align-middle">
-                <Icon path={mdiCalendarMonthOutline} size={1} />
-                <span className="text-sm font-semibold">
-                  {airDate.format('MMMM Do, YYYY')}
-                  {!airDate.isSame(endDate) && (
-                    <>
-                      &nbsp;-&nbsp;
-                      {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
-                    </>
+              {(groupExtras || isSeries) && (
+                <>
+                  <div className="flex items-center gap-x-2 align-middle">
+                    <Icon path={mdiCalendarMonthOutline} size={1} />
+                    <span className="text-sm font-semibold">
+                      {airDate.format('MMMM Do, YYYY')}
+                      {!airDate.isSame(endDate) && (
+                        <>
+                          &nbsp;-&nbsp;
+                          {endDate.toString() === 'Invalid Date' ? 'Current' : endDate.format('MMMM Do, YYYY')}
+                        </>
+                      )}
+                    </span>
+                  </div>
+                  {isSeriesOngoing && (
+                    <div className="flex items-center gap-x-2 align-middle">
+                      <Icon path={mdiTelevisionAmbientLight} size={1} />
+                      <span className="text-sm font-semibold">Ongoing Series</span>
+                    </div>
                   )}
-                </span>
-              </div>
-              {isSeriesOngoing && (
-                <div className="flex items-center gap-x-2 align-middle">
-                  <Icon path={mdiTelevisionAmbientLight} size={1} />
-                  <span className="text-sm font-semibold">Ongoing Series</span>
-                </div>
+                </>
               )}
             </div>
 

@@ -90,12 +90,12 @@ function GeneralSettings() {
     { channel: newSettings.WebUI_Settings.updateChannel, force: true },
     false,
   );
-  const version = useVersionQuery();
-  const themes = useWebuiThemesQuery();
+  const versionQuery = useVersionQuery();
+  const themesQuery = useWebuiThemesQuery();
 
   const currentTheme = useMemo(() => (
-    themes.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
-  ), [themes, WebUI_Settings.theme]);
+    themesQuery.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
+  ), [themesQuery.data, WebUI_Settings.theme]);
 
   const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
     const { checked, id } = event.target;
@@ -133,28 +133,28 @@ function GeneralSettings() {
           <div className="flex justify-between">
             <span>Server Version</span>
             <div className="flex gap-2">
-              {version.data?.Server.Version}
+              {versionQuery.data?.Server.Version}
               <a
                 className="text-panel-text-primary"
                 target="_blank"
                 href={`https://github.com/ShokoAnime/ShokoServer/compare/${
-                  version.data?.Server.Commit?.slice(0, 7)
+                  versionQuery.data?.Server.Commit?.slice(0, 7)
                 }...master`}
                 rel="noreferrer"
               >
-                {`(${version.data?.Server.Commit?.slice(0, 7)})`}
+                {`(${versionQuery.data?.Server.Commit?.slice(0, 7)})`}
               </a>
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex justify-between">
             <span>Server Channel</span>
-            {version.data?.Server.ReleaseChannel}
+            {versionQuery.data?.Server.ReleaseChannel}
           </div>
           <div className="flex justify-between">
             <span>Web UI Version</span>
             <div className="flex gap-2">
-              {version.data?.WebUI?.Version}
+              {versionQuery.data?.WebUI?.Version}
               <a
                 className="text-panel-text-primary"
                 target="_blank"
@@ -191,7 +191,7 @@ function GeneralSettings() {
               onChange={event => updateSetting('WebUI_Settings', 'theme', event.target.value)}
             >
               <option value="theme-shoko-gray" key="shoko-gray">Shoko Gray (Default)</option>
-              {themes.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
+              {themesQuery.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
             </SelectSmall>
           </div>
           <div className="flex items-center justify-between">

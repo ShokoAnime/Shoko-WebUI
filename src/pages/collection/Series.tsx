@@ -26,7 +26,6 @@ import useMainPoster from '@/hooks/useMainPoster';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
-import type { TagType } from '@/core/types/api/tags';
 
 const SeriesTab = ({ icon, text, to }) => (
   <NavLink
@@ -63,23 +62,24 @@ const Series = () => {
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery]);
-  const imagesData = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
-  const images = useMemo(() => imagesData ?? null, [imagesData]);
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
+  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const mainPoster = useMainPoster(series);
-  const tagsData = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
-  const tags: TagType[] = tagsData?.data ?? [] as TagType[];
+  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
+  const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
   useEffect(() => {
-    const allFanarts: ImageType[] = get(images, 'data.Fanarts', []);
+    if (!imagesQuery.isSuccess) return;
+
+    const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
     const defaultFanart = allFanarts.find(fanart => fanart.Preferred);
     if (defaultFanart) {
       setFanartUri(`/api/v3/Image/${defaultFanart.Source}/${defaultFanart.Type}/${defaultFanart.ID}`);
     }
-  }, [images, imagesData]);
+  }, [imagesQuery.data, imagesQuery.isSuccess]);
 
   if (seriesQuery.isError) {
     navigate('../');

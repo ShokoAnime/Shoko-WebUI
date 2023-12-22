@@ -11,7 +11,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
-import { useImmer } from 'use-immer';
 import { useDebounce, useToggle } from 'usehooks-ts';
 
 import CollectionTitle from '@/components/Collection/CollectionTitle';
@@ -32,11 +31,9 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
-import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
   let finalCondition: FilterCondition | undefined;
@@ -85,11 +82,10 @@ function Collection() {
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
   const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
-  const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
-  const { showRandomPoster: showRandomPosterGrid } = settings.WebUI_Settings.collection.poster;
-  const { showRandomPoster: showRandomPosterList } = settings.WebUI_Settings.collection.list;
+  const showRandomPosterGrid = settings.WebUI_Settings.collection.poster.showRandomPoster;
+  const showRandomPosterList = settings.WebUI_Settings.collection.list.showRandomPoster;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
@@ -118,15 +114,6 @@ function Collection() {
     setSeriesSearch('');
   }, [isSeries]);
 
-  const toggleMode = async () => {
-    const newMode = mode === 'list' ? 'poster' : 'list';
-    // Optimistically update view mode to reduce lag without waiting for settings refetch.
-    setMode(newMode);
-    const newSettings = cloneDeep(settings);
-    newSettings.WebUI_Settings.collection.view = newMode;
-    patchSettings({ oldSettings: settings, newSettings });
-  };
-
   const groupsQuery = useFilteredGroupsInfiniteQuery({
     pageSize: 50,
     randomImages: showRandomPoster,
@@ -135,7 +122,7 @@ function Collection() {
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(
     () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
-    [groupsQuery],
+    [groupsQuery.data],
   );
 
   const seriesQuery = useFilteredGroupSeries(
@@ -143,6 +130,7 @@ function Collection() {
     {
       filterCriteria: getFilter(debouncedSeriesSearch),
       randomImages: showRandomPoster,
+      includeDataFrom: ['AniDB'],
     },
     isSeries,
   );
@@ -177,23 +165,30 @@ function Collection() {
   useEffect(() => {
     if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
     setTimelineSeries(seriesQuery.data);
-  }, [debouncedSeriesSearch, isSeries, seriesQuery]);
+  }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
-  // Couldn't find a way to do it in the query itself like we had in RTKQ, so doing it here
-  const [groupExtras, setGroupExtras] = useImmer<WebuiGroupExtra[]>([]);
-  const groupExtrasQuery = useGroupViewQuery(
+  const groupExtras = useGroupViewQuery(
     {
       GroupIDs: lastPageIds,
       TagFilter: 128,
       TagLimit: 20,
     },
-    lastPageIds.length > 0,
-  );
+    viewSetting === 'list' && lastPageIds.length > 0,
+  ).data;
 
-  useEffect(() => {
-    if (!groupExtrasQuery.isSuccess) return;
-    setGroupExtras(immerState => [...immerState, ...groupExtrasQuery.data]);
-  }, [groupExtrasQuery.data, groupExtrasQuery.isSuccess, setGroupExtras]);
+  const toggleMode = async () => {
+    const newMode = mode === 'list' ? 'poster' : 'list';
+    // Optimistically update view mode to reduce lag without waiting for settings refetch.
+    setMode(newMode);
+    if (newMode === 'list') {
+      // If we invalidate instead of resetting, if we had 5 pages loaded in poster view, it will again load 5 pages
+      // after invalidation even if we are at the top of the page
+      queryClient.resetQueries({ queryKey: ['filter', 'preview', 'groups'] }).catch(console.error);
+    }
+    const newSettings = cloneDeep(settings);
+    newSettings.WebUI_Settings.collection.view = newMode;
+    patchSettings({ newSettings });
+  };
 
   return (
     <>
@@ -226,7 +221,7 @@ function Collection() {
         </div>
         <div className="flex grow">
           <CollectionView
-            groupExtras={groupExtras}
+            groupExtras={groupExtras ?? []}
             fetchNextPage={groupsQuery.fetchNextPage}
             isFetchingNextPage={groupsQuery.isFetchingNextPage}
             isFetching={isFetching}
@@ -246,7 +241,7 @@ function Collection() {
               Filter sidebar
             </div>
           </div>
-          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isLoading} />}
+          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
         </div>
       </div>
       <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />

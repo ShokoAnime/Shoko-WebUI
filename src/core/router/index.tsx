@@ -27,7 +27,7 @@ import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
 import LogsPage from '@/pages/logs/LogsPage';
 import MainPage from '@/pages/main/MainPage';
-import SettingsPage, { initialSettings } from '@/pages/settings/SettingsPage';
+import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
@@ -122,7 +122,7 @@ const Router = () => {
   const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
 
   const settingsQuery = useSettingsQuery(!!apikey);
-  const { theme } = settingsQuery.data?.WebUI_Settings ?? initialSettings.WebUI_Settings;
+  const { theme } = settingsQuery.data.WebUI_Settings;
   const bodyRef = useRef<HTMLDivElement>(null);
   const [bodyVisible, setBodyVisible] = useState(false);
 

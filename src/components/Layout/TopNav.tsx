@@ -38,7 +38,6 @@ import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -89,9 +88,7 @@ function TopNav() {
   const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
 
   const settingsQuery = useSettingsQuery();
-  const webuiSettings = useMemo(() => settingsQuery?.data?.WebUI_Settings ?? initialSettings.WebUI_Settings, [
-    settingsQuery,
-  ]);
+  const webuiSettings = settingsQuery.data.WebUI_Settings;
 
   const checkWebuiUpdate = useWebuiUpdateCheckQuery(
     { channel: webuiSettings.updateChannel, force: false },
@@ -105,7 +102,7 @@ function TopNav() {
 
   const { isPending: isNetworkCheckPending, mutate: checkNetworkConnectivity } = useCheckNetworkConnectivityMutation();
 
-  const currentUser = useCurrentUserQuery();
+  const currentUserQuery = useCurrentUserQuery();
 
   const [showUtilitiesMenu, setShowUtilitiesMenu] = useState(false);
   const [showActionsModal, setShowActionsModal] = useState(false);
@@ -204,11 +201,11 @@ function TopNav() {
             </div>
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
-                {currentUser.data?.Avatar
-                  ? <img src={currentUser.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
-                  : currentUser.data?.Username.charAt(0)}
+                {currentUserQuery.data?.Avatar
+                  ? <img src={currentUserQuery.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
+                  : currentUserQuery.data?.Username.charAt(0)}
               </div>
-              <span className="text-header-text">{currentUser.data?.Username}</span>
+              <span className="text-header-text">{currentUserQuery.data?.Username}</span>
               <Icon path={mdiChevronDown} size={0.6666} />
             </div>
             <NavLink

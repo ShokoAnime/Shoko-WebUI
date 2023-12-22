@@ -11,7 +11,6 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { SettingsType } from '@/core/types/api/settings';
@@ -49,20 +48,30 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
 function FirstRunPage() {
   const navigate = useNavigate();
 
-  const version = useVersionQuery();
+  const versionQuery = useVersionQuery();
   const settingsQuery = useSettingsQuery();
-  const settings = useMemo(() => settingsQuery?.data ?? initialSettings, [settingsQuery]);
+  const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
-  const status = useServerStatusQuery();
+  const serverStatusQuery = useServerStatusQuery();
 
   useEffect(() => {
-    if ((status.isSuccess || status.isError) && !isPersistent && !status.isLoading && status.data?.State !== 4) {
+    if (
+      (serverStatusQuery.isSuccess || serverStatusQuery.isError) && !isPersistent && !serverStatusQuery.isPending
+      && serverStatusQuery.data?.State !== 4
+    ) {
       navigate('../login', { replace: true });
     }
-  }, [navigate, status, isPersistent]);
+  }, [
+    navigate,
+    serverStatusQuery.data,
+    serverStatusQuery.isError,
+    serverStatusQuery.isPending,
+    serverStatusQuery.isSuccess,
+    isPersistent,
+  ]);
 
-  const [newSettings, setNewSettings] = useState(initialSettings);
+  const [newSettings, setNewSettings] = useState(settings);
 
   useEffect(() => {
     setNewSettings(settings);
@@ -74,22 +83,22 @@ function FirstRunPage() {
   };
 
   const saveSettings = async () => {
-    patchSettings({ oldSettings: settings, newSettings, skipValidation: true });
+    patchSettings({ newSettings, skipValidation: true });
   };
 
   const parsedVersion = useMemo(() => {
-    if (version.isFetching || !version.data) {
+    if (versionQuery.isFetching || !versionQuery.data) {
       return <Icon path={mdiLoading} spin size={1} className="ml-2 text-panel-icon-action" />;
     }
 
-    if (version.data.Server.ReleaseChannel !== 'Stable') {
-      return `${version.data.Server.Version}-${version.data.Server.ReleaseChannel} (${
-        version.data.Server.Commit?.slice(0, 7)
+    if (versionQuery.data.Server.ReleaseChannel !== 'Stable') {
+      return `${versionQuery.data.Server.Version}-${versionQuery.data.Server.ReleaseChannel} (${
+        versionQuery.data.Server.Commit?.slice(0, 7)
       })`;
     }
 
-    return version.data.Server.Version;
-  }, [version]);
+    return versionQuery.data.Server.Version;
+  }, [versionQuery.data, versionQuery.isFetching]);
 
   return (
     <div className=" flex w-full justify-center">
@@ -136,7 +145,7 @@ function FirstRunPage() {
         <div className="flex grow flex-col items-center justify-center rounded-md border border-panel-border bg-panel-background-transparent p-8">
           <Outlet
             context={{
-              fetching: settingsQuery.isLoading,
+              fetching: settingsQuery.isFetching,
               newSettings,
               setIsPersistent,
               setNewSettings,

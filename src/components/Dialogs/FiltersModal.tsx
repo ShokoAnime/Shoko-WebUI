@@ -103,7 +103,7 @@ const SidePanel = (
 
 function FiltersModal({ onClose, show }: Props) {
   const filtersQuery = useFiltersQuery(show);
-  const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery]);
+  const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
   const [activeTab, setActiveTab] = useState('Filters');
   const [activeFilter, setActiveFilter] = useState(0);

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -7,7 +7,6 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useRecommendedAnimeQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { SeriesAniDBType } from '@/core/types/api/series';
@@ -15,13 +14,9 @@ import type { SeriesAniDBType } from '@/core/types/api/series';
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const settingsQuery = useSettingsQuery();
-  const { hideR18Content } = useMemo(
-    () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
-    [settingsQuery],
-  );
+  const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
-  const items = useRecommendedAnimeQuery({
+  const recommendedAnimeQuery = useRecommendedAnimeQuery({
     includeRestricted: !hideR18Content,
     pageSize: 20,
   });
@@ -52,10 +47,10 @@ const RecommendedAnime = () => {
   );
 
   return (
-    <ShokoPanel title="Recommended Anime" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Recommended Anime" isFetching={recommendedAnimeQuery.isPending} editMode={layoutEditMode}>
       <div className="shoko-scrollbar flex">
-        {(items.data?.length ?? 0) > 0
-          ? items.data?.map(item => renderItem(item.Anime, item.SimilarTo))
+        {(recommendedAnimeQuery.data?.length ?? 0) > 0
+          ? recommendedAnimeQuery.data?.map(item => renderItem(item.Anime, item.SimilarTo))
           : (
             <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
               <div>No Recommended Anime!</div>

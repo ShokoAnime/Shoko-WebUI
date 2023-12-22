@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useSelector } from 'react-redux';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -7,7 +7,6 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useShokoNewsQuery } from '@/core/react-query/external/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs } from '@/core/util';
-import { initialSettings } from '@/pages/settings/SettingsPage';
 
 import type { RootState } from '@/core/store';
 import type { DashboardNewsType } from '@/core/types/api/dashboard';
@@ -38,18 +37,14 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => (
 function ShokoNews() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const items = useShokoNewsQuery();
+  const newsQuery = useShokoNewsQuery();
 
-  const settingsQuery = useSettingsQuery();
-  const { shokoNewsPostsCount } = useMemo(
-    () => settingsQuery.data?.WebUI_Settings.dashboard ?? initialSettings.WebUI_Settings.dashboard,
-    [settingsQuery],
-  );
+  const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
   return (
-    <ShokoPanel title="Shoko News" isFetching={items.isLoading} editMode={layoutEditMode}>
+    <ShokoPanel title="Shoko News" isFetching={newsQuery.isPending} editMode={layoutEditMode}>
       <div className="flex flex-col gap-y-3">
-        {items.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
+        {newsQuery.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
       </div>
     </ShokoPanel>
   );

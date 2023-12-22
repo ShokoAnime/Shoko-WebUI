@@ -30,12 +30,12 @@ function TreeNode(props: Props) {
   const { isAccessible, level, nodeId, path } = props;
   const isSelected = nodeId === selectedNode.id;
 
-  const drives = useFolderDrivesQuery(nodeId === 0);
-  const folders = useFolderQuery(path, nodeId !== 0 && expanded);
+  const drivesQuery = useFolderDrivesQuery(nodeId === 0);
+  const foldersQuery = useFolderQuery(path, nodeId !== 0 && expanded);
 
   useEffect(() => {
-    if (folders.isError) toast.error(`${folders.error} - Fetching folder ${path} failed.`);
-  }, [path, folders.error, folders.isError]);
+    if (foldersQuery.isError) toast.error(`${foldersQuery.error} - Fetching folder ${path} failed.`);
+  }, [path, foldersQuery.error, foldersQuery.isError]);
 
   const toggleExpanded = (event: React.MouseEvent) => {
     if (!isAccessible) return;
@@ -54,7 +54,7 @@ function TreeNode(props: Props) {
   };
 
   const children: React.ReactNode[] = [];
-  const data = nodeId === 0 ? drives.data! : folders.data!;
+  const data = nodeId === 0 ? drivesQuery.data! : foldersQuery.data!;
   if (expanded) {
     forEach(data, (node: DriveType | FolderType) => {
       if ('IsAccessible' in node && !node.IsAccessible) return;
@@ -96,8 +96,8 @@ function TreeNode(props: Props) {
         <div className="flex gap-x-1">
           <div className="inline-block" onClick={toggleExpanded}>
             <Icon
-              path={(nodeId === 0 && drives.isFetching) || folders.isFetching ? mdiLoading : mdiChevronUp}
-              spin={(nodeId === 0 && drives.isFetching) || folders.isFetching}
+              path={(nodeId === 0 && drivesQuery.isFetching) || foldersQuery.isFetching ? mdiLoading : mdiChevronUp}
+              spin={(nodeId === 0 && drivesQuery.isFetching) || foldersQuery.isFetching}
               size={1}
               rotate={expanded ? 0 : 180}
               className="transition-transform"
