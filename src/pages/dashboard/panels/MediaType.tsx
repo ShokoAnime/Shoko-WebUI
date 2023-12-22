@@ -30,7 +30,7 @@ const getColor = (type: string) => {
 
 const Item = ({ count, countPercentage, item }: { count: number, countPercentage: number, item: string }) => (
   <>
-    <div key={`${item}-name`} className="mt-5 flex first:mt-0">
+    <div className="mt-5 flex first:mt-0">
       <span className="grow">
         {names[item] ?? item}
         &nbsp;-&nbsp;
@@ -42,7 +42,7 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
         %
       </span>
     </div>
-    <div key={`${item}-bar`} className="mt-2 flex rounded-md bg-panel-input">
+    <div className="mt-2 flex rounded-md bg-panel-input">
       {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className={`bg-${getColor(item)} h-4 rounded-md`} style={{ width: `${countPercentage}%` }} />
     </div>
@@ -70,7 +70,7 @@ function MediaType() {
     if (total) {
       countPercentage = (item[1] / total) * 100;
     }
-    items.push(<Item item={item[0]} count={item[1]} countPercentage={countPercentage} />);
+    items.push(<Item key={item[0]} item={item[0]} count={item[1]} countPercentage={countPercentage} />);
   });
 
   return (

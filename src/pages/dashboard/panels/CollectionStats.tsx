@@ -9,9 +9,9 @@ import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
 import type { RootState } from '@/core/store';
 
 const Item = (
-  { key, link, title, value = 0 }: { key: string, title: string, value?: string | number, link?: string },
+  { link, title, value = 0 }: { title: string, value?: string | number, link?: string },
 ) => (
-  <div key={key} className="flex">
+  <div className="flex">
     <div className="mb-1 grow last:mb-0">
       {title}
     </div>
