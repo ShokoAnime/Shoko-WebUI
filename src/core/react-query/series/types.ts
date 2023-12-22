@@ -30,6 +30,9 @@ export type SeriesAniDBEpisodesRequestType = SeriesEpisodesBaseRequestType & Pag
 export type SeriesEpisodesInfiniteRequestType =
   & {
     includeDataFrom?: DataSourceType[];
+    includeFiles?: boolean;
+    includeAbsolutePaths?: boolean;
+    includeMediaInfo?: boolean;
   }
   & SeriesEpisodesBaseRequestType
   & PaginationType;
@@ -67,3 +70,9 @@ export type WatchSeriesEpisodesRequestType = {
   seriesId: number;
   value: boolean;
 } & SeriesEpisodesBaseRequestType;
+
+export type SeriesWithSoftDuplicatesRequestType = {
+  ignoreVariations?: boolean;
+  includeDataFrom?: DataSourceType[];
+  onlyFinishedSeries?: boolean;
+} & PaginationType;

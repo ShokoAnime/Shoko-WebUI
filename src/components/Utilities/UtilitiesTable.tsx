@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
-import { useToggle } from 'usehooks-ts';
+import { useImmer } from 'use-immer';
 
 import useEventCallback from '@/hooks/useEventCallback';
 import { criteriaMap } from '@/pages/utilities/UnrecognizedUtility';
@@ -40,8 +40,10 @@ const Row = (
     columns: UtilityHeaderType<FileType | SeriesType>[];
     handleRowSelect: (event: React.MouseEvent, row: VirtualItem) => void;
     onExpand?: (id: number) => Promise<void>;
+    open: boolean;
     row: FileType | SeriesType;
     selected: boolean;
+    toggleOpen: () => void;
     virtualRow: VirtualItem;
   },
 ) => {
@@ -50,12 +52,13 @@ const Row = (
     columns: tempColumns,
     handleRowSelect,
     onExpand,
+    open,
     row,
     selected,
+    toggleOpen,
     virtualRow,
   } = props;
 
-  const [open, toggleOpen] = useToggle(false);
   const [loading, setLoading] = useState(false);
 
   // TODO: Check if ExpandedNode changes reference on every render, if so this useEventCallback is useless
@@ -255,6 +258,13 @@ const UtilitiesTable = (props: Props) => {
     }
   });
 
+  const [open, setOpen] = useImmer<Record<number, boolean>>({});
+  const toggleOpen = useEventCallback((index: number) => {
+    setOpen((immerState) => {
+      immerState[index] = !immerState[index];
+    });
+  });
+
   return (
     <div className="flex w-full flex-col overflow-y-auto pr-4" ref={parentRef}>
       <div className="sticky top-0 z-[1] bg-panel-background-alt">
@@ -303,9 +313,11 @@ const UtilitiesTable = (props: Props) => {
                     ExpandedNode={ExpandedNode}
                     columns={columns}
                     onExpand={onExpand}
+                    open={open[virtualRow.index]}
                     handleRowSelect={handleSelect}
                     row={row}
                     selected={(row && rowSelection) ? rowSelection[selectRowId(row)] : false}
+                    toggleOpen={() => toggleOpen(virtualRow.index)}
                     virtualRow={virtualRow}
                   />
                 </div>

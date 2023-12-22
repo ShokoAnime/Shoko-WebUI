@@ -9,6 +9,7 @@ import type {
   SeriesNextUpRequestType,
   SeriesRequestType,
   SeriesTagsRequestType,
+  SeriesWithSoftDuplicatesRequestType,
 } from '@/core/react-query/series/types';
 import type { DashboardRequestType, FileRequestType } from '@/core/react-query/types';
 import type { ListResultType, PaginationType } from '@/core/types/api';
@@ -24,6 +25,7 @@ import type {
   SeriesImagesType,
   SeriesRecommendedType,
   SeriesType,
+  SeriesWithSoftDuplicatesType,
 } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
@@ -131,6 +133,27 @@ export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestTy
     queryKey: ['series', 'tags', seriesId, params],
     queryFn: () => axios.get(`Series/${seriesId}/Tags`, { params }),
     enabled,
+  });
+
+export const useSeriesWithSoftDuplicates = (params: SeriesWithSoftDuplicatesRequestType) =>
+  useInfiniteQuery<ListResultType<SeriesWithSoftDuplicatesType>>({
+    queryKey: ['series', 'soft-duplicates', params],
+    queryFn: ({ pageParam }) =>
+      axios.get(
+        'Series/WithSoftDuplicates',
+        {
+          params: {
+            ...params,
+            // It is supposed to infer the type from the initialPageParam property but it doesn't work
+            page: pageParam as number,
+          },
+        },
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam: number) => {
+      if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
+      return lastPageParam + 1;
+    },
   });
 
 export const useSeriesWithLinkedFilesInfiniteQuery = (params: PaginationType) =>
