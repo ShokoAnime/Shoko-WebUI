@@ -17,7 +17,8 @@ const LogsPage = () => {
   const rowVirtualizer = useVirtualizer({
     count: logLines.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 24,
+    estimateSize: () => 32,
+    overscan: 50,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
 
