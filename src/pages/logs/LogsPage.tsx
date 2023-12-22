@@ -23,6 +23,11 @@ const LogsPage = () => {
 
   useEffect(() => {
     if (!isScrollToBottom || logLines.length === 0) return;
+    // Magic code stolen from https://github.com/TanStack/virtual/issues/634
+    // Fixes autoscroll issue in firefox
+    if (parentRef.current) {
+      rowVirtualizer.scrollRect = { height: parentRef.current.clientHeight, width: parentRef.current.clientWidth };
+    }
     rowVirtualizer.scrollToIndex(logLines.length - 1, { align: 'start' }); // 'start' scrolls to end and 'end' scrolls to start. ¯\_(ツ)_/¯
   }, [logLines.length, isScrollToBottom, rowVirtualizer]);
 
