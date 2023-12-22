@@ -11,7 +11,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
-import { useImmer } from 'use-immer';
 import { useDebounce, useToggle } from 'usehooks-ts';
 
 import CollectionTitle from '@/components/Collection/CollectionTitle';
@@ -35,7 +34,6 @@ import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
-import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
   let finalCondition: FilterCondition | undefined;
@@ -169,21 +167,14 @@ function Collection() {
     setTimelineSeries(seriesQuery.data);
   }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
-  // Couldn't find a way to do it in the query itself like we had in RTKQ, so doing it here
-  const [groupExtras, setGroupExtras] = useImmer<WebuiGroupExtra[]>([]);
-  const groupExtrasQuery = useGroupViewQuery(
+  const groupExtras = useGroupViewQuery(
     {
       GroupIDs: lastPageIds,
       TagFilter: 128,
       TagLimit: 20,
     },
     viewSetting === 'list' && lastPageIds.length > 0,
-  );
-
-  useEffect(() => {
-    if (!groupExtrasQuery.isSuccess) return;
-    setGroupExtras(immerState => [...immerState, ...groupExtrasQuery.data]);
-  }, [groupExtrasQuery.data, groupExtrasQuery.isSuccess, setGroupExtras]);
+  ).data;
 
   const toggleMode = async () => {
     const newMode = mode === 'list' ? 'poster' : 'list';
@@ -230,7 +221,7 @@ function Collection() {
         </div>
         <div className="flex grow">
           <CollectionView
-            groupExtras={groupExtras}
+            groupExtras={groupExtras ?? []}
             fetchNextPage={groupsQuery.fetchNextPage}
             isFetchingNextPage={groupsQuery.isFetchingNextPage}
             isFetching={isFetching}

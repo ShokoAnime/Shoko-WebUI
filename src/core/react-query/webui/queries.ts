@@ -32,10 +32,18 @@ export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) 
     );
   }, [query.data]);
 
-  return useQuery<WebuiGroupExtra[]>({
+  const groupViewQuery = useQuery<WebuiGroupExtra[]>({
     queryKey: ['webui', 'group-view', 'all'],
     queryFn: () => [],
+    staleTime: Infinity,
   });
+
+  return {
+    ...groupViewQuery,
+    isSuccess: query.isSuccess,
+    isPending: query.isPending,
+    isFetching: query.isFetching,
+  };
 };
 
 export const useSeriesFileSummaryQuery = (seriesId: number, params: SeriesFileSummaryRequestType, enabled = true) =>
