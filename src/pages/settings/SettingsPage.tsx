@@ -52,7 +52,7 @@ function SettingsPage() {
     setNewSettings(settings);
   }, [dispatch, settings]);
 
-  const unsavedChanges = useMemo(() => isEqual(settings, newSettings), [newSettings, settings]);
+  const unsavedChanges = useMemo(() => !isEqual(settings, newSettings), [newSettings, settings]);
 
   const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
     if (key === 'theme' && typeof value === 'string') {
