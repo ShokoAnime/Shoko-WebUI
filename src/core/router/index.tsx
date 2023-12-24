@@ -33,6 +33,7 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
+import FileSearch from '@/pages/utilities/FileSearch';
 import MultipleFilesUtility from '@/pages/utilities/MultipleFilesUtility';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import UnrecognizedUtility from '@/pages/utilities/UnrecognizedUtility';
@@ -85,6 +86,7 @@ const router = sentryCreateBrowserRouter(
             </Route>
             <Route path="multiple-files" element={<MultipleFilesUtility />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
+            <Route path="file-search" element={<FileSearch />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">
