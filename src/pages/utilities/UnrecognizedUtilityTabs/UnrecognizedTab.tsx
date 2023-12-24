@@ -15,7 +15,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { every, find, forEach, some } from 'lodash';
+import { countBy, every, find, forEach, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
@@ -87,58 +87,63 @@ const Menu = (
   );
 
   const deleteFiles = useEventCallback(() => {
-    setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (row) => {
-      deleteFile({ fileId: row.ID, removeFolder: true }).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+    const promises = selectedRows.map(
+      row => deleteFile({ fileId: row.ID, removeFolder: true }),
+    );
 
-    if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
-    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Error deleting ${failedCount} files!`);
+        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
+        setSelectedRows([]);
+      })
+      .catch(console.error);
   });
 
   const ignoreFiles = useEventCallback(() => {
-    setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (row) => {
-      ignoreFile({ fileId: row.ID, ignore: true }).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+    const promises = selectedRows.map(
+      row => ignoreFile({ fileId: row.ID, ignore: true }),
+    );
 
-    if (failedFiles) toast.error(`Error ignoring ${failedFiles} files!`);
-    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Error ignoring ${failedCount} files!`);
+        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
+        setSelectedRows([]);
+      })
+      .catch(console.error);
   });
 
   const rehashFiles = useEventCallback(() => {
-    setSelectedRows([]);
-    let failedFiles = 0;
+    const promises = selectedRows.map(row => rehashFile(row.ID));
 
-    forEach(selectedRows, (file) => {
-      rehashFile(file.ID).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
-
-    if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Rehash failed for ${failedCount} files!`);
+        if (failedCount !== selectedRows.length) toast.success(`Rehashing ${selectedRows.length} files!`);
+        setSelectedRows([]);
+      })
+      .catch(console.error);
   });
 
   const rescanFiles = useEventCallback(() => {
-    setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (file) => {
-      rescanFile(file.ID).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+    const promises = selectedRows.map(row => rescanFile(row.ID));
 
-    if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
+        if (failedCount !== selectedRows.length) toast.success(`Rescanning ${selectedRows.length} files!`);
+        setSelectedRows([]);
+      })
+      .catch(console.error);
   });
 
   return (

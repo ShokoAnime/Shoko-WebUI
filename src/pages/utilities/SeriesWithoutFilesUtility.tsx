@@ -1,7 +1,7 @@
 import React from 'react';
 import { mdiCloseCircleOutline, mdiLoading, mdiMinusCircleOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { forEach } from 'lodash';
+import { countBy } from 'lodash';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
@@ -60,16 +60,18 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   const { mutateAsync: deleteSeries } = useDeleteSeriesMutation();
 
   const handleDeleteSeries = () => {
-    let failedSeries = 0;
-    forEach(selectedRows, (row) => {
-      deleteSeries({ seriesId: row.IDs.ID, deleteFiles: false }).catch((error) => {
-        failedSeries += 1;
-        console.error(error);
-      });
-    });
+    const promises = selectedRows.map(
+      row => deleteSeries({ seriesId: row.IDs.ID, deleteFiles: false }),
+    );
 
-    if (failedSeries) toast.error(`Error deleting ${failedSeries} series!`);
-    if (failedSeries !== selectedRows.length) toast.success(`${selectedRows.length} series deleted!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Error deleting ${failedCount} series!`);
+        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} series deleted!`);
+      })
+      .catch(console.error);
   };
 
   return (

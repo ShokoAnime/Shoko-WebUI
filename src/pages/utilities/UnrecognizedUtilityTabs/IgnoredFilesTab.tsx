@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { find, forEach } from 'lodash';
+import { countBy, find } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
@@ -37,18 +37,20 @@ const Menu = (
 
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
 
-  const restoreFiles = useEventCallback((_ = false) => {
-    setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (row) => {
-      ignoreFile({ fileId: row.ID, ignore: false }).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+  const restoreFiles = useEventCallback(() => {
+    const promises = selectedRows.map(
+      row => ignoreFile({ fileId: row.ID, ignore: false }),
+    );
 
-    if (failedFiles) toast.error(`Error restoring ${failedFiles} files!`);
-    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files restored!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Error restoring ${failedCount} files!`);
+        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files restored!`);
+        setSelectedRows([]);
+      })
+      .catch(console.error);
   });
 
   return (
@@ -64,7 +66,7 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => restoreFiles(true)} icon={mdiEyeOutline} name="Restore" highlight />
+        <MenuButton onClick={() => restoreFiles()} icon={mdiEyeOutline} name="Restore" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}
