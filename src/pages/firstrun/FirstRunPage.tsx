@@ -155,10 +155,7 @@ function FirstRunPage() {
           />
         </div>
       </div>
-      <div
-        className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
-        style={{ background: 'center / cover no-repeat url(\'/images/OnePiece.png\')' }}
-      />
+      <div className="login-image-default fixed left-0 top-0 -z-10 h-full w-full opacity-20" />
     </div>
   );
 }
