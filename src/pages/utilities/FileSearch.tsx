@@ -7,7 +7,6 @@ import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
-  mdiEyeOffOutline,
   mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
@@ -28,12 +27,7 @@ import TransitionDiv from '@/components/TransitionDiv';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
-import {
-  useDeleteFileMutation,
-  useIgnoreFileMutation,
-  useRehashFileMutation,
-  useRescanFileMutation,
-} from '@/core/react-query/file/mutations';
+import { useDeleteFileMutation, useRehashFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
@@ -65,7 +59,6 @@ const Menu = (
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const { mutateAsync: deleteFile } = useDeleteFileMutation();
-  const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
@@ -97,20 +90,6 @@ const Menu = (
 
     if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
-  });
-
-  const ignoreFiles = useEventCallback(() => {
-    setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (row) => {
-      ignoreFile({ fileId: row.ID, ignore: true }).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
-
-    if (failedFiles) toast.error(`Error ignoring ${failedFiles} files!`);
-    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
   });
 
   const rehashFiles = useEventCallback(() => {
@@ -155,7 +134,6 @@ const Menu = (
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
-        <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
