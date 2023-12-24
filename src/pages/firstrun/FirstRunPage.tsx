@@ -157,7 +157,7 @@ function FirstRunPage() {
       </div>
       <div
         className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
-        style={{ background: 'center / cover no-repeat url(\'/webui/images/OnePiece.png\')' }}
+        style={{ background: 'center / cover no-repeat url(\'/images/OnePiece.png\')' }}
       />
     </div>
   );
