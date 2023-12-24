@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { forEach } from 'lodash';
+import { countBy, forEach, toNumber } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -100,16 +100,16 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const rescanFiles = useEventCallback(() => {
     onClose(true);
 
-    let failedFiles = 0;
-    forEach(fileIds, (fileId) => {
-      rescanFile(fileId).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+    const promises = fileIds.map(fileId => rescanFile(toNumber(fileId)));
 
-    if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-    if (failedFiles !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
+        if (failedCount !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
+      })
+      .catch(console.error);
   });
 
   useLayoutEffect(() => () => {

@@ -8,7 +8,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { toNumber } from 'lodash';
+import { countBy, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useEventCallback } from 'usehooks-ts';
 
@@ -151,18 +151,18 @@ const Menu = (props: SelectedFilesType) => {
     setSelectedFiles({});
   };
 
-  const rescanFiles = () => {
-    let failedFiles = 0;
-    selectedIds.forEach((fileId) => {
-      rescanFile(fileId).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+  const rescanFiles = useEventCallback(() => {
+    const promises = selectedIds.map(fileId => rescanFile(fileId));
 
-    if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-    if (failedFiles !== selectedIds.length) toast.success(`Rescanning ${selectedIds.length} files!`);
-  };
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
+        if (failedCount !== selectedIds.length) toast.success(`Rescanning ${selectedIds.length} files!`);
+      })
+      .catch(console.error);
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -197,19 +197,18 @@ function ManuallyLinkedTab() {
   const unlinkFiles = useEventCallback(() => {
     const fileIds = Object.keys(selectedFiles);
 
-    let failedFiles = 0;
-    fileIds.forEach((fileId) => {
-      unlinkFile(toNumber(fileId)).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
+    const promises = fileIds.map(fileId => unlinkFile(toNumber(fileId)));
 
-    if (failedFiles) toast.error(`Error unlinking ${failedFiles} files!`);
-    if (failedFiles !== fileIds.length) toast.success(`${fileIds.length} files unlinked!`);
-
-    refreshData();
-    setSelectedFiles({});
+    Promise
+      .allSettled(promises)
+      .then((result) => {
+        const failedCount = countBy(result, 'status').rejected;
+        if (failedCount) toast.error(`Error unlinking ${failedCount} files!`);
+        if (failedCount !== fileIds.length) toast.success(`${fileIds.length} files unlinked!`);
+        refreshData();
+        setSelectedFiles({});
+      })
+      .catch(console.error);
   });
 
   const onExpand = async (id: number) => {
