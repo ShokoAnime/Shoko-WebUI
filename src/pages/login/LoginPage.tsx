@@ -268,10 +268,13 @@ function LoginPage() {
           </div>
         </div>
         <div
-          className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
+          className={cx(
+            'fixed left-0 top-0 -z-10 h-full w-full opacity-20',
+            imageUrl === 'default' && 'login-image-default',
+          )}
           style={imageUrl !== '' && imageUrl !== 'default'
             ? { background: `center / cover no-repeat url('${imageUrl}')` }
-            : { background: 'center / cover no-repeat url(\'/webui/images/OnePiece.png\')' }}
+            : {}}
         />
       </div>
     </>
