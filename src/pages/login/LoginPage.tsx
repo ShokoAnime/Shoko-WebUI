@@ -119,12 +119,7 @@ function LoginPage() {
         closeButton={false}
         icon={false}
       />
-      <div
-        className={cx(
-          'flex h-screen w-screen items-center justify-center relative',
-          imageUrl === 'default' && 'login-image-default',
-        )}
-      >
+      <div className="relative flex h-screen w-screen items-center justify-center">
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex flex-row items-center gap-x-16 p-8">
             <div className="flex w-[15.625em] flex-col items-center gap-y-8">
@@ -273,10 +268,10 @@ function LoginPage() {
           </div>
         </div>
         <div
-          className="fixed left-0 top-0 -z-10 h-full w-full opacity-50"
+          className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
           style={imageUrl !== '' && imageUrl !== 'default'
             ? { background: `center / cover no-repeat url('${imageUrl}')` }
-            : {}}
+            : { background: 'center / cover no-repeat url(\'/webui/images/OnePiece.png\')' }}
         />
       </div>
     </>
