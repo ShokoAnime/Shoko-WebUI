@@ -8,6 +8,7 @@ import {
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
   mdiFileQuestionOutline,
+  mdiFileSearchOutline,
   mdiFormatListBulletedSquare,
   mdiGithub,
   mdiHelpCircleOutline,
@@ -324,6 +325,7 @@ function TopNav() {
           <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
             {renderLinkMenuItem('utilities/unrecognized', 'Unrecognized Files', mdiFileQuestionOutline)}
             {renderLinkMenuItem('utilities/series-without-files', 'Series Without Files', mdiFileDocumentAlertOutline)}
+            {renderLinkMenuItem('utilities/file-search', 'Files Search', mdiFileSearchOutline)}
           </div>
         </AnimateHeight>
       </div>
