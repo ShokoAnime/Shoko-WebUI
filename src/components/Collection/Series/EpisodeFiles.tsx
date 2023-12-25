@@ -29,14 +29,14 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
     [selectedFileToDelete],
   );
 
-  const handleDelete = async () => {
+  const handleDelete = () => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
         toast.success('Deleted file!');
         invalidateQueries(['episode', 'files', episodeId]);
       },
-      onError: error => toast.error(`Failed to delete file! ${error}`),
+      onError: error => toast.error(`Failed to delete file! ${error.message}`),
     });
   };
 
@@ -48,7 +48,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
   const handleRescan = (id: number) =>
     rescanFile(id, {
       onSuccess: () => toast.success('Rescanning file!'),
-      onError: error => toast.error(`Rescan failed for file! ${error}`),
+      onError: error => toast.error(`Rescan failed for file! ${error.message}`),
     });
 
   if (!episodeFiles.length || episodeFiles.length < 1) {

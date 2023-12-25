@@ -25,6 +25,7 @@ export type PathMatchRule = {
   parentRegex?: RegExp;
   grandParentRegex?: RegExp;
   transform?(
+    this: void,
     pathDetails: PathDetails,
     match: RegExpExecArray,
     parentMatch: RegExpExecArray | null,

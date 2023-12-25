@@ -54,7 +54,7 @@ const Menu = (
   props: {
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
-    setSeriesSelectModal(show: boolean): void;
+    setSeriesSelectModal(this: void, show: boolean): void;
   },
 ) => {
   const {
@@ -255,7 +255,7 @@ function UnrecognizedTab() {
   );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
-  const handleAvdumpClick = useEventCallback(async () => {
+  const handleAvdumpClick = useEventCallback(() => {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     } else {

@@ -1,7 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import apiSessionReducer from './slices/apiSession';
-import collectionReducer from './slices/collection';
 import fetchingReducer from './slices/fetching';
 import firstrunReducer from './slices/firstrun';
 import mainpageReducer from './slices/mainpage';
@@ -19,7 +18,6 @@ const reducers = combineReducers({
   mainpage: mainpageReducer,
   misc: miscReducer,
   modals: modalsReducer,
-  collection: collectionReducer,
   utilities: utilitiesReducer,
 });
 

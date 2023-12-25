@@ -696,7 +696,7 @@ function LinkFilesTab() {
           </div>
           {!selectedSeries?.ID && (
             <AnimeSelectPanel
-              updateSelectedSeries={updateSelectedSeries}
+              updateSelectedSeries={(item) => { updateSelectedSeries(item); }}
               seriesUpdating={seriesUpdating}
               placeholder={initialSearchName}
             />

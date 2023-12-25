@@ -70,7 +70,7 @@ function ImportFolderModal() {
     });
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (edit) {
       updateFolder(importFolder, {
         onSuccess: () => {

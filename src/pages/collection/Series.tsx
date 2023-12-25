@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
 import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
@@ -27,7 +28,8 @@ import useMainPoster from '@/hooks/useMainPoster';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-const SeriesTab = ({ icon, text, to }) => (
+type SeriesTabProps = (props: { icon: string; text: string; to: string; }) => ReactNode;
+const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
   <NavLink
     to={to}
     className={({ isActive }) =>

@@ -4,8 +4,8 @@ import { forEach } from 'lodash';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/types/signalr';
-import type { PayloadAction } from '@reduxjs/toolkit';
 import type { SliceActions } from '@/core/types/util';
+import type { PayloadAction } from '@reduxjs/toolkit';
 
 type AvDumpSession = {
   fileIDs: number[];

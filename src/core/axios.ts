@@ -26,7 +26,7 @@ export const axiosExternal = axiosDefault.create();
 
 const addApikeyInterceptor = (config: InternalAxiosRequestConfig) => {
   const tempConfig = config;
-  tempConfig.headers.apikey = (store.getState() as RootState).apiSession.apikey;
+  tempConfig.headers.apikey = (store.getState()).apiSession.apikey;
   return tempConfig;
 };
 
