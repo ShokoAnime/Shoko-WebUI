@@ -9,7 +9,7 @@ const { VITE_APPVERSION } = import.meta.env;
 const checkVersion = (version: string) => version === VITE_APPVERSION;
 export const loadState = (): RootState => {
   try {
-    const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
+    const serializedState: unknown = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
     const apiSessionString = globalThis.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
       return checkVersion(get(serializedState, 'apiSession.version', '')) ? serializedState : {} as RootState;

@@ -34,7 +34,10 @@ function TreeNode(props: Props) {
   const foldersQuery = useFolderQuery(path, nodeId !== 0 && expanded);
 
   useEffect(() => {
-    if (foldersQuery.isError) toast.error(`${foldersQuery.error} - Fetching folder ${path} failed.`);
+    if (foldersQuery.isError) {
+      const queryError = foldersQuery.error.toString();
+      toast.error(`${queryError} - Fetching folder ${path} failed.`);
+    }
   }, [path, foldersQuery.error, foldersQuery.isError]);
 
   const toggleExpanded = (event: React.MouseEvent) => {

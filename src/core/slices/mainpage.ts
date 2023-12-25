@@ -71,10 +71,10 @@ const mainpageSlice = createSlice({
     setHttpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
       sliceState.banStatus.http = action.payload;
     },
-    setLayoutEditMode(sliceState, action) {
+    setLayoutEditMode(sliceState, action: PayloadAction<boolean>) {
       sliceState.layoutEditMode = action.payload;
     },
-    setQueueModalOpen(sliceState, action) {
+    setQueueModalOpen(sliceState, action: PayloadAction<boolean>) {
       sliceState.queueModalOpen = action.payload;
     },
     setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailability>) {

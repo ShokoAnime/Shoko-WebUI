@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { remove } from 'lodash';
+import { map, keys, remove } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -111,7 +111,7 @@ function LanguagesModal({ onClose, type }: Props) {
     >
       <div className="w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
         <div className="flex h-80 flex-col gap-y-1.5 overflow-y-auto rounded-md bg-panel-input px-3 py-2">
-          {Object.keys(languageDescription).map(key => (
+          {map(keys(languageDescription), (key: keyof typeof languageDescription) => (
             <Checkbox
               id={key}
               key={key}

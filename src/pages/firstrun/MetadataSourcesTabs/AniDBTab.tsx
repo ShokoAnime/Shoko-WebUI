@@ -37,9 +37,9 @@ function AniDBTab({ setStatus }: Props) {
     MyListStats_UpdateFrequency,
   } = newSettings.AniDb;
 
-  const handleInputChange = (event) => {
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
     const { id } = event.target;
-    const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+    const value = event.target.type === 'checkbox' && 'checked' in event.target ? event.target.checked : event.target.value;
     updateSetting('AniDb', id, value);
   };
 

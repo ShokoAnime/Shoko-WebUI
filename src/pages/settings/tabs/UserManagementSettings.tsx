@@ -200,7 +200,7 @@ function UserManagementSettings() {
       )
       : (
         <Button
-          onClick={() => plexLoginUrlQuery.refetch()}
+          onClick={() => { plexLoginUrlQuery.refetch(); }}
           loading={plexLoginUrlQuery.isFetching}
           loadingSize={0.65}
           buttonType="primary"

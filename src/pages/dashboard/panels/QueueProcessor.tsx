@@ -39,7 +39,7 @@ function QueueProcessor() {
     dispatch(setQueueModalOpen(true));
   });
 
-  const renderItem = (key: string, item: SignalRQueueType) => (
+  const renderItem = (key: keyof typeof icons, item: SignalRQueueType) => (
     <div className="flex flex-col" key={key}>
       <div className="flex justify-between">
         <div className="flex w-56 items-center">

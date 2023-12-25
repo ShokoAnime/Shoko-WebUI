@@ -19,7 +19,7 @@ function StartServer() {
 
   const [pollingInterval, setPollingInterval] = useState(0);
 
-  const { setIsPersistent } = useOutletContext<{ setIsPersistent(value: boolean): void }>();
+  const { setIsPersistent } = useOutletContext<{ setIsPersistent:(value: boolean) => void }>();
   const { mutate: startServer } = useStartServerMutation();
   const { mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);

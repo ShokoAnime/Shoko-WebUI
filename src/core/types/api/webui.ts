@@ -49,18 +49,20 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleCodecs?: string;
   SubtitleLanguages?: string[];
   SubtitleStreamCount?: number;
-  RangeByType: {
-    Other: WebuiSeriesFileSummaryRangeByType;
-    Normal: WebuiSeriesFileSummaryRangeByType;
-    Special: WebuiSeriesFileSummaryRangeByType;
-    Trailer: WebuiSeriesFileSummaryRangeByType;
-    ThemeSong: WebuiSeriesFileSummaryRangeByType;
-    OpeningSong: WebuiSeriesFileSummaryRangeByType;
-    EndingSong: WebuiSeriesFileSummaryRangeByType;
-    Parody: WebuiSeriesFileSummaryRangeByType;
-    Interview: WebuiSeriesFileSummaryRangeByType;
-    Extra: WebuiSeriesFileSummaryRangeByType;
-  };
+  RangeByType: WebuiSeriesFileSummaryGroupRangeByType;
+};
+
+export type WebuiSeriesFileSummaryGroupRangeByType = {
+  Other: WebuiSeriesFileSummaryRangeByType;
+  Normal: WebuiSeriesFileSummaryRangeByType;
+  Special: WebuiSeriesFileSummaryRangeByType;
+  Trailer: WebuiSeriesFileSummaryRangeByType;
+  ThemeSong: WebuiSeriesFileSummaryRangeByType;
+  OpeningSong: WebuiSeriesFileSummaryRangeByType;
+  EndingSong: WebuiSeriesFileSummaryRangeByType;
+  Parody: WebuiSeriesFileSummaryRangeByType;
+  Interview: WebuiSeriesFileSummaryRangeByType;
+  Extra: WebuiSeriesFileSummaryRangeByType;
 };
 
 export type WebuiSeriesFileSummaryRangeByType = {

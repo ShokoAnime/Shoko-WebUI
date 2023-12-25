@@ -10,7 +10,7 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import Input from './Input';
 
-function getOffsetTop(rect, vertical) {
+function getOffsetTop(rect: DOMRect, vertical: string | number) {
   let offset = 0;
 
   if (typeof vertical === 'number') {
@@ -24,7 +24,7 @@ function getOffsetTop(rect, vertical) {
   return offset;
 }
 
-function getOffsetLeft(rect, horizontal) {
+function getOffsetLeft(rect: DOMRect, horizontal: string | number) {
   let offset = 0;
 
   if (typeof horizontal === 'number') {
@@ -97,11 +97,11 @@ const SelectEpisodeList = (
   { className, disabled = false, emptyValue = '', onChange, options, rowIdx, value }: Props,
 ) => {
   const [epFilter, setEpFilter] = useState(0);
-  const [selected, setSelected] = useState(options[0]);
+  const [selected, setSelected] = useState<Option>(options[0]);
   const [portalEl, setPortalEl] = useState<HTMLDivElement | null>(null);
   const [displayNode, setDisplayNode] = React.useState<HTMLDivElement | null>(null);
-  const displayRef = useRef(null);
-  const buttonRef = useRef(null);
+  const displayRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => {
     const modalRoot = document.getElementById('modal-root');
@@ -114,7 +114,7 @@ const SelectEpisodeList = (
     };
   }, []);
 
-  const handleDisplayRef = useCallback((node) => {
+  const handleDisplayRef = useCallback((node: HTMLDivElement | null) => {
     displayRef.current = node;
 
     if (node) {
@@ -126,11 +126,11 @@ const SelectEpisodeList = (
     setSelected(find(options, ['value', value]) ?? {} as Option);
   }, [value, options]);
 
-  const handleEpFilter = (event) => {
+  const handleEpFilter: React.ChangeEventHandler<HTMLInputElement> = (event) => {
     setEpFilter(toInteger(event.target.value));
   };
 
-  const selectOption = (selectedOption) => {
+  const selectOption = (selectedOption: Option) => {
     setSelected(selectedOption);
     onChange(selectedOption?.value ?? 0, selectedOption?.label ?? emptyValue);
   };
@@ -142,7 +142,7 @@ const SelectEpisodeList = (
         <span className="font-semibold text-panel-text-important">{selected.number}</span>
         &nbsp;-&nbsp;
         {selected.label}
-        {selected.type && selected.type !== 'Normal' && (
+        {selected.type && selected.type !== EpisodeTypeEnum.Normal && (
           <span className="mx-2 rounded-md border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
             {selected.type}
           </span>

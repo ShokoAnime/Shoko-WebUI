@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { find, forEach, toNumber } from 'lodash';
+import { find, forEach, get, toNumber } from 'lodash';
 
 import { useRowSelection } from '@/hooks/useRowSelection';
 
@@ -80,7 +80,7 @@ function ManuallyLinkedFilesRow(props: Props) {
         </div>
       </div>
       {files.map((file, index) => {
-        const episode = find(episodes, item => item.IDs.ID === file.SeriesIDs![0].EpisodeIDs[0].ID)!;
+        const episode = find(episodes, item => item.IDs.ID === get(file, 'SeriesIDs.0.EpisodeIDs.0.ID', 0))!;
         const selected = rowSelection[file.ID];
 
         return (

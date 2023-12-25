@@ -45,7 +45,7 @@ const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: s
   </div>
 ));
 
-const isCharacter = item => item.RoleName === 'Seiyuu';
+const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
