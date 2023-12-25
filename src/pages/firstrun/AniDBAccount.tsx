@@ -42,7 +42,7 @@ function AniDBAccount() {
         saveSettings().then(() => {
             dispatch(setFirstRunSaved('anidb-account'));
             navigate('../metadata-sources');
-        });
+        }, () => {});
       },
       onError: (error) => {
         console.error(error);

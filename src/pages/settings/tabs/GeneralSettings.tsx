@@ -124,7 +124,7 @@ function GeneralSettings() {
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
-            onClick={() => { checkWebuiUpdateQuery.refetch(); }}
+            onClick={() => { checkWebuiUpdateQuery.refetch().then(() => {}, () => {}); }}
             tooltip="Check for WebUI Update"
           >
             <Icon

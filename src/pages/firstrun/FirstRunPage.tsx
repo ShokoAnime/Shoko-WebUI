@@ -78,11 +78,11 @@ function FirstRunPage() {
   }, [settings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
-    const tempSettings = { ...(newSettings[type]), [key]: value };
+    const tempSettings: Record<string, string | string[] | boolean> = { ...(newSettings[type] as Record<string, string | string[] | boolean>), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
   };
 
-  const saveSettings = async () => {
+  const saveSettings = () => {
     patchSettings({ newSettings, skipValidation: true });
   };
 

@@ -59,7 +59,7 @@ function SettingsPage() {
       globalThis.localStorage.setItem('theme', value);
     }
 
-    const tempSettings = { ...(newSettings[type]), [key]: value };
+    const tempSettings: Record<string, string | string[] | boolean> = { ...(newSettings[type] as Record<string, string | string[] | boolean>), [key]: value };
     setNewSettings({ ...newSettings, [type]: tempSettings });
 
     if (type === 'WebUI_Settings' && key === 'theme') {

@@ -23,6 +23,7 @@ import UnrecognizedFiles from './panels/UnrecognizedFiles';
 import UpcomingAnime from './panels/UpcomingAnime';
 
 import type { RootState } from '@/core/store';
+import type { SettingsType } from '@/core/types/api/settings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -67,7 +68,7 @@ function DashboardPage() {
   }, [settings, dispatch]);
 
   const saveLayout = useCallback(() => {
-    const newSettings = JSON.parse(JSON.stringify(settings)); // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
+    const newSettings = JSON.parse(JSON.stringify(settings)) as SettingsType; // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
     newSettings.WebUI_Settings.layout.dashboard = currentLayout;
     patchSettings({ newSettings }, {
       onSuccess: () => {

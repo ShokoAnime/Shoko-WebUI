@@ -3,23 +3,28 @@
 import { get } from 'lodash';
 
 import type { RootState } from './store';
+import type { ApiSessionState } from '@/core/types/api';
 
 const { VITE_APPVERSION } = import.meta.env;
 
 const checkVersion = (version: string) => version === VITE_APPVERSION;
+
+const isSerializedState = (data: unknown): data is RootState => checkVersion(get(data, 'apiSession.version', ''));
+const isApiSession = (data: unknown): data is ApiSessionState => checkVersion(get(data, 'version', ''));
+
 export const loadState = (): RootState => {
   try {
     const serializedState: unknown = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
     const apiSessionString = globalThis.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
-      return checkVersion(get(serializedState, 'apiSession.version', '')) ? serializedState : {} as RootState;
+      return isSerializedState(serializedState) ? serializedState : {} as RootState;
     }
-    const apiSession = JSON.parse(apiSessionString);
-    if (!checkVersion(get(apiSession, 'version', ''))) {
+    const apiSession: unknown = JSON.parse(apiSessionString);
+    if (isSerializedState(serializedState) && isApiSession(apiSession)) {
+      return { ...serializedState, apiSession };
+    }
       globalThis.localStorage.clear();
       return {} as RootState;
-    }
-    return { ...serializedState, apiSession };
   } catch (err) {
     return ({} as RootState);
   }
