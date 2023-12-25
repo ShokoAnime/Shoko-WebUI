@@ -164,3 +164,5 @@ export const enum AVDumpEventTypeEnum {
   InstalledAVDump = 'InstalledAVDump',
   InstallException = 'InstallException',
 }
+
+export type QueueConnectedEventType = Record<string, string>;

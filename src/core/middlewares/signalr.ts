@@ -15,7 +15,10 @@ import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilitie
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 import { dayjs } from '@/core/util';
 
-import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability } from '@/core/types/signalr';
+import type store from '@/core/store';
+import type { RootState } from '@/core/store';
+import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability, QueueNameType, QueueConnectedEventType } from '@/core/types/signalr';
+import type { UnknownAction, Middleware } from 'redux';
 
 let lastRetry = dayjs();
 let attempts = 0;
@@ -25,12 +28,12 @@ let connectionEvents: HubConnection;
 
 // Queue Events
 
-const onQueueStateChange = dispatch => (queue, state) => {
+const onQueueStateChange = (dispatch: typeof store.dispatch) => (queue: QueueNameType, state: number) => {
   const newState = Object.assign({}, { [queue]: state });
   dispatch(setQueueStatus(newState));
 };
 
-const onQueueConnected = dispatch => (state) => {
+const onQueueConnected = (dispatch: typeof store.dispatch) => (state: QueueConnectedEventType) => {
   const fixedState = {};
   forEach(state, (item, key) => {
     const letter = key.substr(0, 1);
@@ -48,32 +51,32 @@ const onQueueConnected = dispatch => (state) => {
 
 // AniDB Events
 
-const onAniDBConnected = dispatch => (state: AniDBBanItemType[]) => {
+const onAniDBConnected = (dispatch: typeof store.dispatch) => (state: AniDBBanItemType[]) => {
   dispatch(setUdpBanStatus(state[0]));
   dispatch(setHttpBanStatus(state[1]));
 };
 
-const onAniDBUDPStateUpdate = dispatch => (state: AniDBBanItemType) => {
+const onAniDBUDPStateUpdate = (dispatch: typeof store.dispatch) => (state: AniDBBanItemType) => {
   dispatch(setUdpBanStatus(state));
 };
 
-const onAniDBHttpStateUpdate = dispatch => (state: AniDBBanItemType) => {
+const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniDBBanItemType) => {
   dispatch(setHttpBanStatus(state));
 };
 
 // Network Events
 
-const onNetworkChanged = dispatch => ({ networkAvailability }: { networkAvailability: NetworkAvailability }) => {
+const onNetworkChanged = (dispatch: typeof store.dispatch) => ({ networkAvailability }: { networkAvailability: NetworkAvailability }) => {
   dispatch(setNetworkStatus(networkAvailability));
 };
 
 // AVDump Events
 
-const onAvDumpConnected = dispatch => (state: AVDumpRestoreType[]) => {
+const onAvDumpConnected = (dispatch: typeof store.dispatch) => (state: AVDumpRestoreType[]) => {
   dispatch(restoreAVDumpSessions(state));
 };
 
-const onAvDumpEvent = dispatch => (event: AVDumpEventType) => {
+const onAvDumpEvent = (dispatch: typeof store.dispatch) => (event: AVDumpEventType) => {
   switch (event.type) {
     case AVDumpEventTypeEnum.Started:
     case AVDumpEventTypeEnum.Success:
@@ -90,38 +93,42 @@ const onAvDumpEvent = dispatch => (event: AVDumpEventType) => {
 
 // Shoko Events
 
-const startSignalRConnection = connection =>
+const startSignalRConnection = (connection: HubConnection) =>
   connection.start().then(() => {
     lastRetry = dayjs();
     attempts = 0;
   }).catch(err => console.error('SignalR Connection Error: ', err));
 
-const handleReconnect = (connection) => {
+const handleReconnect = (connection: HubConnection) => {
   if (attempts < 4) attempts += 1;
   const elapsed = dayjs().diff(lastRetry);
   const timeout = round(Math.min(Math.exp(attempts) * 2000, maxTimeout));
   lastRetry = dayjs();
   if (elapsed < timeout) {
     delay(
-      (conn) => {
-        startSignalRConnection(conn);
+      (conn: HubConnection) => {
+        startSignalRConnection(conn)
+          .then(() => {})
+          .catch(() => {});
       },
       timeout,
       connection,
     );
   } else {
-    defer((conn) => {
-      startSignalRConnection(conn);
+    defer((conn: HubConnection) => {
+      startSignalRConnection(conn)
+        .then(() => {})
+        .catch(() => {});
     }, connection);
   }
 };
 
-const signalRMiddleware = ({
+const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
   getState,
 }) =>
   next =>
-    async (action) => {
+    async (action: UnknownAction) => {
       // register signalR after the user logged in
       if (action.type === Events.MAINPAGE_LOAD) {
         if (connectionEvents !== undefined) return next(action);
@@ -170,7 +177,9 @@ const signalRMiddleware = ({
             handleReconnect(connectionEvents);
           }, 5000));
 
-        startSignalRConnection(connectionEvents);
+        startSignalRConnection(connectionEvents)
+          .then(() => {})
+          .catch(() => {});
       } else if (action.type === Events.AUTH_LOGOUT) {
         await connectionEvents?.stop();
       }
