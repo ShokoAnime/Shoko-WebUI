@@ -128,6 +128,8 @@ const Row = (
   );
 };
 
+const isFileSortCriteriaEnum = (type: unknown): type is keyof typeof FileSortCriteriaEnum => typeof type === 'number';
+
 const HeaderItem = (
   props: {
     className: string;
@@ -156,8 +158,9 @@ const HeaderItem = (
   }
 
   const handleSortCriteriaChange = (headerId: string) => {
-    const criteria = criteriaMap[headerId];
-    if (skipSort || !criteria || !setSortCriteria) return;
+    if (skipSort || !isFileSortCriteriaEnum(criteriaMap[headerId])) return;
+    const criteria = criteriaMap[headerId] as FileSortCriteriaEnum;
+    if (!criteria || !setSortCriteria) return;
 
     setSortCriteria((tempCriteria) => {
       if (tempCriteria === criteria) return tempCriteria * -1;
@@ -166,15 +169,16 @@ const HeaderItem = (
   };
 
   const sortIndicator = (headerId: string) => {
-    const criteria = criteriaMap[headerId];
-    if (skipSort || !criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria) return null;
+    if (skipSort || !isFileSortCriteriaEnum(criteriaMap[headerId])) return null;
+    const criteria = criteriaMap[headerId] as number;
+    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria) return null;
 
     return (
       <Icon
         path={mdiMenuUp}
         size={1}
         className="ml-2 inline text-panel-text-primary transition-transform"
-        rotate={sortCriteria === (criteria * -1) ? 180 : 0}
+        rotate={sortCriteria as number === (criteria * -1) ? 180 : 0}
       />
     );
   };
