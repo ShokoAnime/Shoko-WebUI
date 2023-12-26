@@ -254,27 +254,29 @@ const UtilitiesTable = (props: Props) => {
 
   return (
     <div className="flex w-full flex-col overflow-y-auto px-4" ref={parentRef}>
-      <div className="sticky top-0 z-[1] flex rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
-        {columns.map(column => (
-          <HeaderItem
-            key={column.id}
-            id={column.id}
-            name={column.name}
-            setSortCriteria={setSortCriteria}
-            sortCriteria={sortCriteria}
-            skipSort={skipSort}
-            className={column.className}
-          />
-        ))}
-        {ExpandedNode && (
-          <HeaderItem
-            key="placeholder"
-            className="w-10"
-            id="placeholder"
-            name=""
-            skipSort
-          />
-        )}
+      <div className="sticky top-0 z-[1] bg-panel-background-alt">
+        <div className="flex rounded-md border border-panel-border p-4 font-semibold">
+          {columns.map(column => (
+            <HeaderItem
+              key={column.id}
+              id={column.id}
+              name={column.name}
+              setSortCriteria={setSortCriteria}
+              sortCriteria={sortCriteria}
+              skipSort={skipSort}
+              className={column.className}
+            />
+          ))}
+          {ExpandedNode && (
+            <HeaderItem
+              key="placeholder"
+              className="w-10"
+              id="placeholder"
+              name=""
+              skipSort
+            />
+          )}
+        </div>
       </div>
       <div className="relative grow">
         <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
