@@ -145,7 +145,7 @@ function GeneralSettings() {
             <div className="flex gap-2">
               {versionQuery.data?.Server.Version}
               <a
-                className="text-panel-text-primary"
+                className="flex gap-2 text-panel-text-primary"
                 target="_blank"
                 href={`https://github.com/ShokoAnime/ShokoServer/compare/${
                   versionQuery.data?.Server.Commit?.slice(0, 7)
@@ -153,8 +153,8 @@ function GeneralSettings() {
                 rel="noreferrer"
               >
                 {`(${versionQuery.data?.Server.Commit?.slice(0, 7)})`}
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </a>
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex justify-between">
@@ -166,14 +166,14 @@ function GeneralSettings() {
             <div className="flex gap-2">
               {versionQuery.data?.WebUI?.Version}
               <a
-                className="text-panel-text-primary"
+                className="flex gap-x-2 text-panel-text-primary"
                 target="_blank"
                 href={`https://github.com/ShokoAnime/Shoko-WebUI/compare/${UI_VERSION}...master`}
                 rel="noreferrer"
               >
                 {`(${UI_VERSION})`}
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </a>
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </div>
           </div>
           <div className="flex items-center justify-between">
