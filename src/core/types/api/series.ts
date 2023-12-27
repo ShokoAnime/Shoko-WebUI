@@ -93,7 +93,7 @@ export type SeriesAniDBSearchResult = {
   Title: string;
   Titles: SeriesTitleType[];
   ShokoID: number | null;
-  Type: string;
+  Type: SeriesTypeEnum;
   EpisodeCount: number;
 };
 

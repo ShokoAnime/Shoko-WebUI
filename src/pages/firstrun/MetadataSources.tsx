@@ -78,7 +78,13 @@ function MetadataSources() {
       <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
         {renderTabContent()}
       </div>
-      <Footer nextPage="start-server" saveFunction={handleSave} status={status} />
+      <Footer
+        nextPage="start-server"
+        saveFunction={() => {
+          handleSave().then(() => {}, () => {});
+        }}
+        status={status}
+      />
     </TransitionDiv>
   );
 }

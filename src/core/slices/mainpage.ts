@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { NetworkAvailability } from '@/core/types/signalr';
 
 import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/types/signalr';
+import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
@@ -61,7 +62,7 @@ const mainpageSlice = createSlice({
     setFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
     },
-    setQueueStatus(sliceState, action) {
+    setQueueStatus(sliceState, action: PayloadAction<Partial<QueueStatusType>>) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
     setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
@@ -70,10 +71,10 @@ const mainpageSlice = createSlice({
     setHttpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
       sliceState.banStatus.http = action.payload;
     },
-    setLayoutEditMode(sliceState, action) {
+    setLayoutEditMode(sliceState, action: PayloadAction<boolean>) {
       sliceState.layoutEditMode = action.payload;
     },
-    setQueueModalOpen(sliceState, action) {
+    setQueueModalOpen(sliceState, action: PayloadAction<boolean>) {
       sliceState.queueModalOpen = action.payload;
     },
     setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailability>) {
@@ -91,5 +92,7 @@ export const {
   setQueueStatus,
   setUdpBanStatus,
 } = mainpageSlice.actions;
+
+export type MainpageActionTypes = SliceActions<typeof mainpageSlice.actions>;
 
 export default mainpageSlice.reducer;

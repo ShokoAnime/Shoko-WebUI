@@ -37,11 +37,12 @@ function AniDBAccount() {
   const handleTest = (event?: React.FormEvent) => {
     if (event) event.preventDefault();
     testAniDbLogin({ Username, Password }, {
-      onSuccess: async () => {
+      onSuccess: () => {
         setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
-        await saveSettings();
-        dispatch(setFirstRunSaved('anidb-account'));
-        navigate('../metadata-sources');
+        saveSettings().then(() => {
+          dispatch(setFirstRunSaved('anidb-account'));
+          navigate('../metadata-sources');
+        }, () => {});
       },
       onError: (error) => {
         console.error(error);

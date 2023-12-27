@@ -12,6 +12,12 @@ export type QueueStatusType = {
   ImageQueueState: SignalRQueueType;
 };
 
+export const enum QueueNameType {
+  'HasherQueueState' = 'HasherQueueState',
+  'GeneralQueueState' = 'GeneralQueueState',
+  'ImageQueueState' = 'ImageQueueState',
+}
+
 export type AniDBBanItemType = {
   message: string;
   pauseTimeSecs: number;
@@ -158,3 +164,5 @@ export const enum AVDumpEventTypeEnum {
   InstalledAVDump = 'InstalledAVDump',
   InstallException = 'InstallException',
 }
+
+export type QueueConnectedEventType = Record<string, string>;

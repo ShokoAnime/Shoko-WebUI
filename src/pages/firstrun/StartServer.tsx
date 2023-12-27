@@ -13,13 +13,17 @@ import Footer from './Footer';
 
 import type { RootState } from '@/core/store';
 
+type OutletContextType = {
+  setIsPersistent: (value: boolean) => void;
+};
+
 function StartServer() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const [pollingInterval, setPollingInterval] = useState(0);
 
-  const { setIsPersistent } = useOutletContext<{ setIsPersistent(value: boolean): void }>();
+  const { setIsPersistent } = useOutletContext<OutletContextType>();
   const { mutate: startServer } = useStartServerMutation();
   const { mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);

@@ -4,6 +4,7 @@ import type { ChangeEvent } from 'react';
 import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { keys } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -74,6 +75,10 @@ const exclusionMapping = {
   },
 };
 
+function isExclusionKey(id: string): id is keyof typeof exclusionMapping {
+  return id in exclusionMapping;
+}
+
 function GeneralSettings() {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
@@ -98,16 +103,19 @@ function GeneralSettings() {
   ), [themesQuery.data, WebUI_Settings.theme]);
 
   const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!(event.target.id in exclusionMapping)) return;
     const { checked, id } = event.target;
 
-    if (checked) {
-      const tempExclusions = [...AutoGroupSeriesRelationExclusions, exclusionMapping[id].id];
-      setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
-    } else {
-      const tempExclusions = AutoGroupSeriesRelationExclusions.filter(
-        exclusion => exclusion !== exclusionMapping[id].id,
-      );
-      setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
+    if (isExclusionKey(id)) {
+      if (checked) {
+        const tempExclusions = [...AutoGroupSeriesRelationExclusions, exclusionMapping[id].id];
+        setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
+      } else {
+        const tempExclusions = AutoGroupSeriesRelationExclusions.filter(
+          exclusion => exclusion !== exclusionMapping[id].id,
+        );
+        setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
+      }
     }
   };
 
@@ -118,7 +126,9 @@ function GeneralSettings() {
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
-            onClick={() => checkWebuiUpdateQuery.refetch()}
+            onClick={() => {
+              checkWebuiUpdateQuery.refetch().then(() => {}, () => {});
+            }}
             tooltip="Check for WebUI Update"
           >
             <Icon
@@ -315,7 +325,7 @@ function GeneralSettings() {
           />
           Exclude following relations
           <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-input p-4">
-            {Object.keys(exclusionMapping).map(item => (
+            {keys(exclusionMapping).map((item: keyof typeof exclusionMapping) => (
               <Checkbox
                 justify
                 label={exclusionMapping[item].name}

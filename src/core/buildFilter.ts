@@ -1,6 +1,6 @@
 import type { FilterCondition } from '@/core/types/api/filter';
 
-const buildFilter = (filters: FilterCondition[]) => {
+const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   if (filters.length > 1) {
     return {
       Type: 'And',

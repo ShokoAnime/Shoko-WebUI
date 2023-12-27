@@ -80,7 +80,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });

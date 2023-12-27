@@ -19,7 +19,7 @@ type ContextType = {
   fetching: boolean;
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => void;
-  updateSetting: (type: string, key: string, value: string) => void;
+  updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
   saveSettings: () => Promise<void>;
 };
 
@@ -51,7 +51,7 @@ function FirstRunPage() {
   const versionQuery = useVersionQuery();
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
-  const { mutate: patchSettings } = usePatchSettingsMutation();
+  const { mutateAsync: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
   const serverStatusQuery = useServerStatusQuery();
 
@@ -78,12 +78,15 @@ function FirstRunPage() {
   }, [settings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
-    const tempSettings = { ...(newSettings[type]), [key]: value };
+    const tempSettings: Record<string, string | string[] | boolean> = {
+      ...(newSettings[type] as Record<string, string | string[] | boolean>),
+      [key]: value,
+    };
     setNewSettings({ ...newSettings, [type]: tempSettings });
   };
 
   const saveSettings = async () => {
-    patchSettings({ newSettings, skipValidation: true });
+    await patchSettings({ newSettings, skipValidation: true });
   };
 
   const parsedVersion = useMemo(() => {

@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import {
@@ -65,7 +66,8 @@ const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = 
   );
 };
 
-const OptionButton = ({ icon, onClick }) => (
+type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
+const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
   <div
     className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
     onClick={onClick}
@@ -176,7 +178,7 @@ function Collection() {
     viewSetting === 'list' && lastPageIds.length > 0,
   ).data;
 
-  const toggleMode = async () => {
+  const toggleMode = () => {
     const newMode = mode === 'list' ? 'poster' : 'list';
     // Optimistically update view mode to reduce lag without waiting for settings refetch.
     setMode(newMode);

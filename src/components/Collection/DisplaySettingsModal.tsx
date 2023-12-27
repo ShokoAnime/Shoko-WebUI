@@ -39,7 +39,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
   const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
 
-  const handleSave = async () => {
+  const handleSave = () => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });

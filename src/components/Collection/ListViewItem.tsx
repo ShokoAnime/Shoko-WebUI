@@ -27,13 +27,14 @@ import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesSizesFileSourcesType, SeriesType } from '@/core/types/api/series';
 import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
+const typeMap = { Unknown: 'Unk', BluRay: 'BD' };
+const isFileType = (type: string): type is keyof typeof typeMap => type in typeMap;
 const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   const output: string[] = [];
-  const typeMap = { Unknown: 'Unk', BluRay: 'BD' };
 
   Object.entries(sources).forEach(([type, source]) => {
     if (source !== 0) {
-      output.push(typeMap[type] || type);
+      output.push(isFileType(type) ? typeMap[type] : type);
     }
   });
 

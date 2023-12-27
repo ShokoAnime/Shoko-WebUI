@@ -72,7 +72,7 @@ function AniDBSettings() {
 
     setNewSettings({
       ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items as string[],
+      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
     });
   };
 
@@ -83,11 +83,11 @@ function AniDBSettings() {
     remove(items, item => item === language);
     setNewSettings({
       ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items as string[],
+      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
     });
   };
 
-  const testLogin = async () => {
+  const testLogin = () => {
     testAniDbLogin({ Username, Password }, {
       onSuccess: () => toast.success('AniDB Login Successful!'),
       onError: () => toast.error('Incorrect Username/Password!'),

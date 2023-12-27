@@ -484,26 +484,26 @@ function LinkFilesTab() {
     }
 
     await Promise.all([
-      ...map(none, async ({ FileID }) => {
+      ...map(none, ({ FileID }) => {
         if (FileID === 0) return;
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
         toast.warning('Episode linking skipped!', `Path: ${path}`);
       }),
-      ...map(oneToOne, async ({ EpisodeID, FileID }) => {
+      ...map(oneToOne, ({ EpisodeID, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
         linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }, {
           onSuccess: () => toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`),
           onError: () => toast.error('Failed at 1:1 linking!', `Path: ${path}`),
         });
       }),
-      ...map(oneToMany, async ({ EpisodeIDs, FileID }) => {
+      ...map(oneToMany, ({ EpisodeIDs, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
         linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }, {
           onSuccess: () => toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`),
           onError: () => toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`),
         });
       }),
-      ...map(manyToOne, async ({ EpisodeID, FileIDs }) => {
+      ...map(manyToOne, ({ EpisodeID, FileIDs }) => {
         const episode = find(episodes, ['ID', EpisodeID]);
         const episodeDetails = episode
           ? `Episode: ${episode.EpisodeNumber} - ${episode.Title}`
@@ -649,7 +649,9 @@ function LinkFilesTab() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={saveChanges}
+                  onClick={() => {
+                    saveChanges().then(() => {}, () => {});
+                  }}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
@@ -696,7 +698,9 @@ function LinkFilesTab() {
           </div>
           {!selectedSeries?.ID && (
             <AnimeSelectPanel
-              updateSelectedSeries={updateSelectedSeries}
+              updateSelectedSeries={(item) => {
+                updateSelectedSeries(item).then(() => {}, () => {});
+              }}
               seriesUpdating={seriesUpdating}
               placeholder={initialSearchName}
             />

@@ -18,7 +18,7 @@ const EpisodeFileInfo = ({ file }: { file: FileType }) => {
   if (VideoSource) {
     VideoInfo.push(VideoSource);
   }
-  const VideoBitDepth = get(file, 'MediaInfo.Video.0.BitDepth');
+  const VideoBitDepth = get(file, 'MediaInfo.Video.0.BitDepth', '??');
   if (VideoBitDepth) {
     VideoInfo.push(`${VideoBitDepth}-bit`);
   }
@@ -30,8 +30,8 @@ const EpisodeFileInfo = ({ file }: { file: FileType }) => {
   if (VideoResolution) {
     VideoInfo.push(VideoResolution);
   }
-  const VideoWidth = get(file, 'MediaInfo.Video.0.Width');
-  const VideoHeight = get(file, 'MediaInfo.Video.0.Height');
+  const VideoWidth = get(file, 'MediaInfo.Video.0.Width', '??');
+  const VideoHeight = get(file, 'MediaInfo.Video.0.Height', '??');
   if (VideoWidth && VideoHeight) {
     VideoInfo.push(`${VideoWidth}x${VideoHeight}`);
   }

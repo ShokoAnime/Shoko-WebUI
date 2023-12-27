@@ -22,13 +22,16 @@ const colorClass = {
   warning: 'text-panel-text-warning',
 };
 
+const isColorClass = (type: string): type is keyof typeof colorClass => type in colorClass;
+
 function Toast(props: Props) {
   const { closeToast, header, icon, message, toastProps } = props;
+  const color = toastProps && 'type' in toastProps && isColorClass(toastProps.type) ? toastProps?.type : 'info';
 
   return (
     <div className="flex">
       <span>
-        <Icon path={icon} size={1} className={colorClass[toastProps?.type ?? 'info']} />
+        <Icon path={icon} size={1} className={colorClass[color]} />
       </span>
       <div className="ml-4 mr-8 flex grow flex-col">
         <div className="font-semibold">{header}</div>

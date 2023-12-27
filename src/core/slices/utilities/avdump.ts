@@ -4,6 +4,7 @@ import { forEach } from 'lodash';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/types/signalr';
+import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type AvDumpSession = {
@@ -84,5 +85,7 @@ const avdumpSlice = createSlice({
 });
 
 export const { restoreAVDumpSessions, updateAVDumpEvent } = avdumpSlice.actions;
+
+export type AvdumpActionTypes = SliceActions<typeof avdumpSlice.actions>;
 
 export default avdumpSlice.reducer;

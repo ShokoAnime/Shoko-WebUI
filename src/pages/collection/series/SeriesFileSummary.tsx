@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiOpenInNew } from '@mdi/js';
@@ -9,7 +10,7 @@ import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
-import type { WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
+import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
 
 const HeaderFragment = ({ range, title }) => {
   if (!title || !range) return null;
@@ -21,7 +22,8 @@ const HeaderFragment = ({ range, title }) => {
   );
 };
 
-const Header = ({ ranges }) => (
+type HeaderProps = (props: { ranges: WebuiSeriesFileSummaryGroupRangeByType }) => ReactNode;
+const Header: HeaderProps = ({ ranges }) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />

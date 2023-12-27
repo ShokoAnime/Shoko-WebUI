@@ -25,6 +25,7 @@ export type PathMatchRule = {
   parentRegex?: RegExp;
   grandParentRegex?: RegExp;
   transform?(
+    this: void,
     pathDetails: PathDetails,
     match: RegExpExecArray,
     parentMatch: RegExpExecArray | null,
@@ -79,7 +80,7 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       // We accept specials in-between episodes or episode ranges, so we split
       // the range and parse the text as floats.
       let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(s => s)
-        .map(parseFloat) ?? [];
+        .map<number>(parseFloat) ?? new Array<number>();
 
       // Swap episode numbers if they're reversed.
       if (episodeEnd - episodeStart < 0) {

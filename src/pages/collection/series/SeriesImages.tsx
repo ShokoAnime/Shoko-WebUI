@@ -60,6 +60,14 @@ const InfoLine = ({ title, value }) => (
   </div>
 );
 
+const sizeMap = {
+  Posters: 'h-[20.0625rem] w-[13.75rem]',
+  Fanarts: 'h-[16rem] w-[28.29rem]',
+  Banners: 'h-[8rem] w-[43.25rem]',
+};
+
+const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in sizeMap;
+
 const SeriesImages = () => {
   const { seriesId } = useParams();
 
@@ -72,17 +80,12 @@ const SeriesImages = () => {
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
   const filepath = splitPath.join('/');
 
-  const sizeMap = {
-    Posters: 'h-[20.0625rem] w-[13.75rem]',
-    Fanarts: 'h-[16rem] w-[28.29rem]',
-    Banners: 'h-[8rem] w-[43.25rem]',
-  };
-
   const resetSelectedImage = () => {
     setSelectedImage({} as ImageType);
   };
 
   if (!seriesId) return null;
+  if (!isSizeMapType(type)) return null;
 
   return (
     <div className="flex gap-x-8">

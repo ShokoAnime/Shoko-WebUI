@@ -8,7 +8,9 @@ import { loadState, saveState } from './localStorage';
 import signalrMiddleware from './middlewares/signalr';
 import combinedReducer from './reducers';
 
-const rootReducer = (state, action) => {
+import type { UnknownAction } from 'redux';
+
+const rootReducer = (state: ReturnType<typeof combinedReducer>, action: UnknownAction) => {
   if (action.type === Events.STORE_CLEAR_STATE) { // check for action type
     globalThis.localStorage.clear();
     globalThis.sessionStorage.clear();

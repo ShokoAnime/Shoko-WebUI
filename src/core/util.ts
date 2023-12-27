@@ -25,14 +25,14 @@ export function isDebug() {
   return DEV;
 }
 
-export function mergeDeep(...objects) {
+export function mergeDeep(...objects: object[]) {
   return objects.reduce((prev, obj) => {
     Object.keys(obj).forEach((key) => {
-      const pVal = prev[key];
-      const oVal = obj[key];
+      const pVal: unknown = prev[key];
+      const oVal: unknown = obj[key];
 
       if (Array.isArray(pVal) && Array.isArray(oVal)) {
-        prev[key] = Array.from(new Set(pVal.concat(...oVal)));
+        prev[key] = Array.from(new Set(pVal.concat(...oVal as [])));
       } else if (isObject(pVal) && isObject(oVal)) {
         prev[key] = mergeDeep(pVal, oVal);
       } else {

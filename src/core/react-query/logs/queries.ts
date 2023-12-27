@@ -35,20 +35,22 @@ const useLogsSubscription = () => {
 
     connectionLog.on(
       'GetBacklog',
-      (lines: LogLineType[]) =>
+      (lines: LogLineType[]) => {
         queryClient.setQueryData(logsQueryKey, (oldData: LogLineType[] | undefined) => {
           const newData = formatTimestamps(lines);
           return oldData ? [...oldData, ...newData] : newData;
-        }),
+        });
+      },
     );
 
     connectionLog.on(
       'Log',
-      (line: LogLineType) =>
+      (line: LogLineType) => {
         queryClient.setQueryData(logsQueryKey, (oldData: LogLineType[] | undefined) => {
           const newData = { ...line, timeStamp: formatStamp(line.timeStamp) };
           return oldData ? [...oldData, newData] : [newData];
-        }),
+        });
+      },
     );
 
     connectionLog.start().catch(console.error);
