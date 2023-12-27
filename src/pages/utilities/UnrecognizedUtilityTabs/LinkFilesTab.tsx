@@ -23,7 +23,7 @@ import SelectEpisodeList from '@/components/Input/SelectEpisodeList';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import ItemCount from '@/components/Utilities/Common/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import RangeFillModal from '@/components/Utilities/Unrecognized/RangeFillModal';
 import Title from '@/components/Utilities/Unrecognized/Title';

@@ -6,7 +6,7 @@ import { countBy } from 'lodash';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import ItemCount from '@/components/Utilities/Common/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { invalidateQueries } from '@/core/react-query/queryClient';
