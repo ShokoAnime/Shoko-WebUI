@@ -185,7 +185,7 @@ const FileDetails = (props: FileSelectedProps) => {
             </div>
           </a>
         </div>
-        {mediaInfo.Name}
+        <span className="break-words">{mediaInfo.Name}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
@@ -198,49 +198,49 @@ const FileDetails = (props: FileSelectedProps) => {
             </div>
           </Link>
         </div>
-        {seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'Unknown'}
+        <span className="break-words">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'Unknown'}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Episode Name</span>
         </div>
-        {episodeInfo?.Title ?? 'Unknown'}
+        <span className="break-words">{episodeInfo?.Title ?? 'Unknown'}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Location</span>
         </div>
-        {mediaInfo.Location ?? 'Unknown'}
+        <span className="break-words">{mediaInfo.Location ?? 'Unknown'}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Video</span>
         </div>
-        {mediaInfo.VideoInfo.join(' | ')}
+        <span className="break-words">{mediaInfo.VideoInfo.join(' | ')}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Audio</span>
         </div>
-        {mediaInfo.AudioInfo.join(' | ')}
+        <span className="break-words">{mediaInfo.AudioInfo.join(' | ')}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
-        <div className="flex justify-between capitalize">
+        <div className="flex break-after-all justify-between capitalize">
           <span className="font-semibold">Hash</span>
         </div>
-        {mediaInfo.Hashes.ED2K ?? ''}
+        <span className="break-words">{mediaInfo.Hashes.ED2K ?? ''}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">CRC</span>
         </div>
-        {mediaInfo.Hashes.CRC32 ?? ''}
+        <span className="break-words">{mediaInfo.Hashes.CRC32 ?? ''}</span>
       </div>
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">SHA1</span>
         </div>
-        {mediaInfo.Hashes.SHA1 ?? ''}
+        <span className="break-words">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
     </TransitionDiv>
   );
@@ -304,8 +304,8 @@ const FileSearch = () => {
           />
         </div>
       </ShokoPanel>
-      <div className="flex grow justify-between overflow-y-auto">
-        <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-8 md:max-w-[65%] lg:max-w-[75%]">
+      <div className="flex grow justify-between overflow-y-auto" style={{ contain: 'strict' }}>
+        <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-8 lg:max-w-[75%]">
           {fileCount > 0
             ? (
               <UtilitiesTable
@@ -322,7 +322,7 @@ const FileSearch = () => {
             )
             : <div className="flex grow items-center justify-center font-semibold">No series without files!</div>}
         </div>
-        <div className=" ml-8 flex w-full flex-col overflow-y-auto lg:max-w-[25%]">
+        <div className=" ml-8 flex w-full flex-col overflow-y-auto overflow-x-hidden lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
             <div className="flex w-full flex-col rounded-md border border-panel-border bg-panel-background p-8">
               <FilesSummary title="Selected Summary" items={selectedRows} />
