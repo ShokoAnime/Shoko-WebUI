@@ -13,7 +13,9 @@ function TvDBTab() {
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
     const propId = event.target.id.replace('TvDB_', '');
-    const value = event.target.type === 'checkbox' && 'checked' in event.target ? event.target.checked : event.target.value;
+    const value = event.target.type === 'checkbox' && 'checked' in event.target
+      ? event.target.checked
+      : event.target.value;
     updateSetting('TvDB', propId, value);
   };
 

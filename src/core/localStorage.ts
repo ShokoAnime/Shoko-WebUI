@@ -23,8 +23,8 @@ export const loadState = (): RootState => {
     if (isSerializedState(serializedState) && isApiSession(apiSession)) {
       return { ...serializedState, apiSession };
     }
-      globalThis.localStorage.clear();
-      return {} as RootState;
+    globalThis.localStorage.clear();
+    return {} as RootState;
   } catch (err) {
     return ({} as RootState);
   }

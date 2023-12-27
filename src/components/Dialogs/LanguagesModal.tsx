@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { map, keys, remove } from 'lodash';
+import { keys, map, remove } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';

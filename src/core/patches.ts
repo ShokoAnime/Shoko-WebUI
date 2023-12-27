@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+// Feel free to to remove the above lines if you can fix this file without deleting it.
+// oldWebuiSettings's actual type is unknown
 import type { WebUISettingsType } from './types/api/settings';
 
 export const webuiSettingsPatches = {

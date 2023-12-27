@@ -28,7 +28,7 @@ import useMainPoster from '@/hooks/useMainPoster';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-type SeriesTabProps = (props: { icon: string; text: string; to: string; }) => ReactNode;
+type SeriesTabProps = (props: { icon: string, text: string, to: string }) => ReactNode;
 const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
   <NavLink
     to={to}

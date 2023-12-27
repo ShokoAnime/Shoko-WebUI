@@ -51,7 +51,7 @@ function FirstRunPage() {
   const versionQuery = useVersionQuery();
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
-  const { mutate: patchSettings } = usePatchSettingsMutation();
+  const { mutateAsync: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
   const serverStatusQuery = useServerStatusQuery();
 
@@ -78,12 +78,15 @@ function FirstRunPage() {
   }, [settings]);
 
   const updateSetting = (type: string, key: string, value: string) => {
-    const tempSettings: Record<string, string | string[] | boolean> = { ...(newSettings[type] as Record<string, string | string[] | boolean>), [key]: value };
+    const tempSettings: Record<string, string | string[] | boolean> = {
+      ...(newSettings[type] as Record<string, string | string[] | boolean>),
+      [key]: value,
+    };
     setNewSettings({ ...newSettings, [type]: tempSettings });
   };
 
-  const saveSettings = () => {
-    patchSettings({ newSettings, skipValidation: true });
+  const saveSettings = async () => {
+    await patchSettings({ newSettings, skipValidation: true });
   };
 
   const parsedVersion = useMemo(() => {

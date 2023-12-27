@@ -40,8 +40,8 @@ function AniDBAccount() {
       onSuccess: () => {
         setAnidbStatus({ type: 'success', text: 'AniDB Test Successful!' });
         saveSettings().then(() => {
-            dispatch(setFirstRunSaved('anidb-account'));
-            navigate('../metadata-sources');
+          dispatch(setFirstRunSaved('anidb-account'));
+          navigate('../metadata-sources');
         }, () => {});
       },
       onError: (error) => {

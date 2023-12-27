@@ -649,7 +649,9 @@ function LinkFilesTab() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => { saveChanges().then(() => {}, () => {}); }}
+                  onClick={() => {
+                    saveChanges().then(() => {}, () => {});
+                  }}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
@@ -696,7 +698,9 @@ function LinkFilesTab() {
           </div>
           {!selectedSeries?.ID && (
             <AnimeSelectPanel
-              updateSelectedSeries={(item) => { updateSelectedSeries(item).then(() => {}, () => {}); }}
+              updateSelectedSeries={(item) => {
+                updateSelectedSeries(item).then(() => {}, () => {});
+              }}
               seriesUpdating={seriesUpdating}
               placeholder={initialSearchName}
             />

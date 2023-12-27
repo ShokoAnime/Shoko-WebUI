@@ -104,7 +104,10 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         <div>{name}</div>
         <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
       </div>
-      <Button onClick={() => { handleAction(name, functionName); }} className="text-panel-icon-action">
+      <Button
+        onClick={() => handleAction(name, functionName)}
+        className="text-panel-icon-action"
+      >
         <Icon path={mdiPlayCircleOutline} size={1} />
       </Button>
     </TransitionDiv>
@@ -140,7 +143,8 @@ function ActionsModal({ onClose, show }: Props) {
 
         <div className="flex grow p-8 pr-6">
           <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2 ">
-            {isActionTab(activeTab) && actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}
+            {isActionTab(activeTab)
+              && actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}
           </div>
         </div>
       </div>

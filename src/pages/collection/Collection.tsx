@@ -37,7 +37,7 @@ import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
 const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
-  let finalCondition: FilterCondition | FilterCondition[];
+  let finalCondition: FilterCondition | undefined;
   if (query) {
     const searchCondition: FilterCondition = {
       Type: 'StringFuzzyMatches',
@@ -66,7 +66,7 @@ const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = 
   );
 };
 
-type OptionButtonProps = (props: { icon: string; onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
+type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
 const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
   <div
     className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"

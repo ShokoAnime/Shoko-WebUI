@@ -103,7 +103,7 @@ function GeneralSettings() {
   ), [themesQuery.data, WebUI_Settings.theme]);
 
   const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!(event.target.id in exclusionMapping)) { return; }
+    if (!(event.target.id in exclusionMapping)) return;
     const { checked, id } = event.target;
 
     if (isExclusionKey(id)) {
@@ -111,7 +111,9 @@ function GeneralSettings() {
         const tempExclusions = [...AutoGroupSeriesRelationExclusions, exclusionMapping[id].id];
         setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
       } else {
-        const tempExclusions = AutoGroupSeriesRelationExclusions.filter(exclusion => exclusion !== exclusionMapping[id].id);
+        const tempExclusions = AutoGroupSeriesRelationExclusions.filter(
+          exclusion => exclusion !== exclusionMapping[id].id,
+        );
         setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
       }
     }
@@ -124,7 +126,9 @@ function GeneralSettings() {
         <div className="flex justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
-            onClick={() => { checkWebuiUpdateQuery.refetch().then(() => {}, () => {}); }}
+            onClick={() => {
+              checkWebuiUpdateQuery.refetch().then(() => {}, () => {});
+            }}
             tooltip="Check for WebUI Update"
           >
             <Icon
