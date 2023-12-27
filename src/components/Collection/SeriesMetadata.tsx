@@ -17,8 +17,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
       case 'TMDB':
         return `https://www.themoviedb.org/movie/${linkId}`;
       case 'TvDB':
-        // TODO: Figure how to get trakt series link using ID
-        return '#';
+        return `https://thetvdb.com/?tab=series&id=${linkId}`;
       case 'TraktTv':
         // TODO: Figure how to get trakt series link using ID
         return '#';
