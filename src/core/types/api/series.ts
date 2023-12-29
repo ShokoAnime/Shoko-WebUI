@@ -17,8 +17,8 @@ export type SeriesType = {
   AniDB?: SeriesAniDBType;
 };
 
-export type SeriesWithSoftDuplicatesType = {
-  EpisodesWithSoftDuplicates: number;
+export type SeriesWithMultipleReleasesType = {
+  EpisodeCount: number;
 } & SeriesType;
 
 export type SeriesRelationType = {

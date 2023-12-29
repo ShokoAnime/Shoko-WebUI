@@ -7,23 +7,22 @@ import { useToggle } from 'usehooks-ts';
 import EpisodeFileInfo from '@/components/Collection/Series/EpisodeFileInfo';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
-import queryClient from '@/core/react-query/queryClient';
-import { prefetchSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/prefetch';
-import { useSeriesWithSoftDuplicates } from '@/core/react-query/series/queries';
+import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
+import { prefetchSeriesEpisodesWithMultipleReleasesQuery } from '@/core/react-query/release-management/prefetch';
+import { useSeriesWithMultipleReleases } from '@/core/react-query/release-management/queries';
 import { dayjs } from '@/core/util';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
-import type { SeriesWithSoftDuplicatesType } from '@/core/types/api/series';
+import type { SeriesWithMultipleReleasesType } from '@/core/types/api/series';
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
-import type { InfiniteData } from '@tanstack/react-query';
 
-const colmuns: UtilityHeaderType<SeriesWithSoftDuplicatesType>[] = [
+const colmuns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
   {
     id: 'series',
     name: 'Series',
@@ -36,7 +35,7 @@ const colmuns: UtilityHeaderType<SeriesWithSoftDuplicatesType>[] = [
     className: 'w-32',
     item: series => (
       <div>
-        <span className="font-semibold text-panel-text-important">{series.EpisodesWithSoftDuplicates}</span>
+        <span className="font-semibold text-panel-text-important">{series.EpisodeCount}</span>
         &nbsp;Entries
       </div>
     ),
@@ -86,7 +85,7 @@ const FileItem = ({ file }: { file: FileType }) => {
           <option value="variation">Marked as a Variation</option>
         </Select>
       </div>
-      <EpisodeFileInfo file={file} hideExtras />
+      <EpisodeFileInfo file={file} />
     </div>
   );
 };
@@ -120,8 +119,9 @@ const EpisodeItem = ({ episode }: { episode: EpisodeType }) => {
 };
 
 const EpisodeTable = ({ id: seriesId }: { id: number }) => {
-  const episodesResult = queryClient.getQueryData<InfiniteData<ListResultType<EpisodeType>>>(
+  const episodesData = queryClient.getQueryData<ListResultType<EpisodeType>>(
     [
+      'release-management',
       'series',
       'episodes',
       seriesId,
@@ -129,12 +129,11 @@ const EpisodeTable = ({ id: seriesId }: { id: number }) => {
         includeDataFrom: ['AniDB'],
         includeFiles: true,
         includeAbsolutePaths: true,
-        includeMediaInfo: true,
         pageSize: 0,
       },
     ],
   );
-  const [episodes] = useFlattenListResult(episodesResult);
+  const episodes = episodesData?.List ?? [];
 
   return (
     <div className="mt-6 flex flex-col gap-y-2">
@@ -147,7 +146,7 @@ const EpisodeTable = ({ id: seriesId }: { id: number }) => {
 
 const Menu = () => (
   <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-    <MenuButton onClick={() => {}} icon={mdiRefresh} name="Refresh" />
+    <MenuButton onClick={() => invalidateQueries(['release-management', 'series'])} icon={mdiRefresh} name="Refresh" />
     {/* <span className="ml-auto text-panel-text-important"> */}
     {/*   0 &nbsp; */}
     {/* </span> */}
@@ -157,18 +156,17 @@ const Menu = () => (
 );
 
 function MultipleFilesUtility() {
-  const seriesQuery = useSeriesWithSoftDuplicates({ pageSize: 25 });
+  const seriesQuery = useSeriesWithMultipleReleases({ pageSize: 25 });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
   const onExpand = async (id: number) => {
-    await prefetchSeriesEpisodesInfiniteQuery(
+    await prefetchSeriesEpisodesWithMultipleReleasesQuery(
       id,
       {
         includeDataFrom: ['AniDB'],
         includeFiles: true,
         includeAbsolutePaths: true,
         includeMediaInfo: true,
-        pageSize: 0,
       },
     );
   };

@@ -70,9 +70,3 @@ export type WatchSeriesEpisodesRequestType = {
   seriesId: number;
   value: boolean;
 } & SeriesEpisodesBaseRequestType;
-
-export type SeriesWithSoftDuplicatesRequestType = {
-  ignoreVariations?: boolean;
-  includeDataFrom?: DataSourceType[];
-  onlyFinishedSeries?: boolean;
-} & PaginationType;
