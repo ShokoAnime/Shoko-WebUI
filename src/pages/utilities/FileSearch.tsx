@@ -23,8 +23,8 @@ import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
 import TransitionDiv from '@/components/TransitionDiv';
-import FilesSummary from '@/components/Utilities/Common/FilesSummary';
-import ItemCount from '@/components/Utilities/Common/ItemCount';
+import FilesSummary from '@/components/Utilities/FilesSummary';
+import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
@@ -126,7 +126,7 @@ const Menu = (
         <MenuButton
           onClick={() => {
             setSelectedRows([]);
-            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+            invalidateQueries(['files']);
           }}
           icon={mdiRefresh}
           name="Refresh"
@@ -162,13 +162,16 @@ const Menu = (
 
 const FileDetails = (props: FileSelectedProps) => {
   const { fileId } = props;
-  const { data: file } = useFileQuery(fileId, { include: ['XRefs', 'MediaInfo', 'AbsolutePaths'] }, !!fileId);
+  const { data: file } = useFileQuery(fileId, {
+    include: ['XRefs', 'MediaInfo', 'AbsolutePaths'],
+    includeDataFrom: ['AniDB'],
+  }, !!fileId);
   const fileAniDbUrl = `https://anidb.net/file/${file?.AniDB?.ID}`;
   const seriesShokoId = file?.SeriesIDs?.[0]?.SeriesID?.ID ?? 0;
   const seriesAnidbId = file?.SeriesIDs?.[0].SeriesID.AniDB;
-  const episodeId = file?.SeriesIDs?.[0].EpisodeIDs?.[0].ID;
+  const episodeId = file?.SeriesIDs?.[0].EpisodeIDs?.[0]?.ID ?? 0;
   const { data: seriesInfo } = useSeriesAniDBQuery(seriesAnidbId!, !!seriesAnidbId);
-  const { data: episodeInfo } = useEpisodeAniDBQuery(episodeId!, !!episodeId);
+  const { data: episodeInfo } = useEpisodeAniDBQuery(episodeId, !!episodeId);
 
   const mediaInfo = useMediaInfo(file);
 
@@ -177,13 +180,15 @@ const FileDetails = (props: FileSelectedProps) => {
       <div className="mb-4 flex flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">File Name</span>
-          <a href={fileAniDbUrl} target="_blank" rel="noopener noreferrer">
-            <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-              <div className="metadata-link-icon AniDB" />
-              AniDB File
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-            </div>
-          </a>
+          {file?.AniDB?.ID && (
+            <a href={fileAniDbUrl} target="_blank" rel="noopener noreferrer">
+              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+                <div className="metadata-link-icon AniDB" />
+                AniDB File
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
+            </a>
+          )}
         </div>
         <span className="break-words">{mediaInfo.Name}</span>
       </div>

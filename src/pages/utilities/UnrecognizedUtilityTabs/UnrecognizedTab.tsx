@@ -24,7 +24,7 @@ import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import ItemCount from '@/components/Utilities/Common/ItemCount';
+import ItemCount from '@/components/Utilities/ItemCount';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
 import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpSeriesSelectModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
