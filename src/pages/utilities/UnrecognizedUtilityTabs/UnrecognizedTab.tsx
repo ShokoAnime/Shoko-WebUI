@@ -15,7 +15,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy, every, find, forEach, some } from 'lodash';
+import { countBy, every, find, some } from 'lodash';
 import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
@@ -259,10 +259,7 @@ function UnrecognizedTab() {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     } else {
-      forEach(
-        selectedRows,
-        row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID),
-      );
+      selectedRows.forEach(row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID));
     }
   });
 
