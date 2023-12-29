@@ -8,7 +8,7 @@ import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import ItemCount from '@/components/Utilities/Unrecognized/ItemCount';
+import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';

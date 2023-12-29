@@ -5,7 +5,7 @@ import type { PaginationType } from '@/core/types/api';
 
 type XRefsType = {
   SeriesID: SeriesIDsType;
-  EpisodeIDs: EpisodeIDsType;
+  EpisodeIDs: EpisodeIDsType[];
 };
 
 type FileTypeLocation = {
