@@ -45,6 +45,19 @@ export type FilterCondition = {
   SecondParameter?: string;
 };
 
+export type FilterExpression = {
+  Expression: string;
+  Name: string;
+  Description: string;
+  Group: string;
+  Type: string;
+  Left?: string;
+  Right?: string;
+  Parameter?: string;
+  SecondParameter?: string;
+  PossibleParameters?: string[];
+};
+
 type SortingCriteria = {
   Type: SortingType;
   Next?: SortingCriteria;

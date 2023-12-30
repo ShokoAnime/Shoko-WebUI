@@ -17,6 +17,7 @@ import { useDebounce, useToggle } from 'usehooks-ts';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
+import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import Input from '@/components/Input/Input';
@@ -241,9 +242,7 @@ function Collection() {
               (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            <div className="ml-8 line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
-              Filter sidebar
-            </div>
+            <FilterSidebar />
           </div>
           {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
         </div>
