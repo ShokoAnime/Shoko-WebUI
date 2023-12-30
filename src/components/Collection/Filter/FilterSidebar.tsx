@@ -2,17 +2,47 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { filter, keys, map } from 'lodash';
+import { createSelector } from '@reduxjs/toolkit';
+import { filter, keys, map, values } from 'lodash';
 
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
+import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { addFilterCriteria } from '@/core/slices/collection';
+import { addFilterCriteria, resetActiveFilter, setActiveFilter } from '@/core/slices/collection';
+import store from '@/core/store';
 import { useFilterExpressionMain } from '@/hooks/filters';
 
 import type { RootState } from '@/core/store';
+import type { FilterExpression } from '@/core/types/api/filter';
+
+const selectParameter = createSelector(
+  [
+    (state: RootState) => state.collection.filterConditions,
+    (state, param: string) => param,
+  ],
+  (conditions, param) => conditions[param],
+);
+const buildFilterCondition = (currentFilter: FilterExpression) => {
+  if (currentFilter?.Parameter) {
+    const value = selectParameter(store.getState(), currentFilter.Expression);
+    return { Type: currentFilter.Expression, Parameter: value };
+  }
+  return currentFilter;
+};
+const buildFilter = (filters: FilterExpression[]): object => {
+  if (filters.length > 1) {
+    return {
+      Type: 'And',
+      Left: buildFilterCondition(filters[0]),
+      Right: buildFilter(filters.slice(1)),
+    };
+  }
+  return buildFilterCondition(filters[0]);
+};
 
 const FilterSidebar = () => {
+  const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
   const allCriteria = useFilterExpressionMain();
   const [newCriteria, setNewCriteria] = useState('');
   const dispatch = useDispatch();
@@ -30,6 +60,11 @@ const FilterSidebar = () => {
   const addCriteria = () => {
     const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
     dispatch(addFilterCriteria(filterExpression));
+  };
+
+  const applyFilter = () => {
+    const requestData = buildFilter(values(selectedCriteria));
+    dispatch(setActiveFilter(requestData));
   };
 
   return (
@@ -57,6 +92,28 @@ const FilterSidebar = () => {
           return <option key={value} value={value}>{item.Name}</option>;
         })}
       </Select>
+      {activeFilter === null && (
+        <Button
+          buttonType="primary"
+          className="px-4 py-3"
+          onClick={() => {
+            applyFilter();
+          }}
+        >
+          Apply filter
+        </Button>
+      )}
+      {activeFilter !== null && (
+        <Button
+          buttonType="danger"
+          className="px-4 py-3"
+          onClick={() => {
+            dispatch(resetActiveFilter());
+          }}
+        >
+          Reset filter
+        </Button>
+      )}
     </ShokoPanel>
   );
 };
