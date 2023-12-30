@@ -22,7 +22,7 @@ const HeaderFragment = ({ range, title }) => {
 };
 
 type HeaderProps = { ranges: WebuiSeriesFileSummaryGroupRangeByType };
-const Header: ({ ranges }: HeaderProps) => React.JSX.Element = ({ ranges }: HeaderProps) => (
+const Header = ({ ranges }: HeaderProps) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
