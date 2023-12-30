@@ -10,20 +10,16 @@ import {
   mdiImageMultipleOutline,
   mdiInformationOutline,
   mdiLoading,
-  mdiPencilCircleOutline,
   mdiTagTextOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, toNumber } from 'lodash';
 
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import AnidbDescription from '@/components/Collection/AnidbDescription';
-import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
-import SeriesInfo from '@/components/Collection/SeriesInfo';
+import SeriesSidePanel from '@/components/Collection/SeriesSidePanel';
 import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
-import useMainPoster from '@/hooks/useMainPoster';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
@@ -59,14 +55,10 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
   const [fanartUri, setFanartUri] = useState('');
-  const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
-
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
-
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
-  const mainPoster = useMainPoster(series);
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
   const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
@@ -80,8 +72,10 @@ const Series = () => {
     const defaultFanart = allFanarts.find(fanart => fanart.Preferred);
     if (defaultFanart) {
       setFanartUri(`/api/v3/Image/${defaultFanart.Source}/${defaultFanart.Type}/${defaultFanart.ID}`);
+    } else {
+      setFanartUri(`/api/v3/Image/TvDB/Fanart/${allFanarts[0].ID}`);
     }
-  }, [imagesQuery.data, imagesQuery.isSuccess]);
+  }, [imagesQuery.data, imagesQuery.isSuccess, series]);
 
   if (seriesQuery.isError) {
     navigate('../');
@@ -97,21 +91,12 @@ const Series = () => {
   }
 
   return (
-    <>
-      <div className="flex flex-col gap-y-8">
+    <div className="flex gap-x-8">
+      <SeriesSidePanel series={series} />
+      <div className="flex w-full max-w-[85.938rem] flex-col gap-y-8">
         <div className="flex flex-row gap-x-8">
-          <div className="flex w-full max-w-[82.813rem] gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
-            <BackgroundImagePlaceholderDiv
-              image={mainPoster}
-              className="h-[25.75rem] w-[18.188rem] rounded drop-shadow-md"
-            >
-              {(series.AniDB?.Restricted ?? false) && (
-                <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                  18+ Adults Only
-                </div>
-              )}
-            </BackgroundImagePlaceholderDiv>
-            <div className="flex w-full max-w-[56.25rem] grow flex-col gap-y-2">
+          <div className="flex w-full gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+            <div className="flex w-full grow flex-col gap-y-2">
               <div className="flex justify-between">
                 <div className="flex gap-x-2">
                   <Link className="font-semibold text-panel-text-primary" to="/webui/collection">
@@ -139,7 +124,7 @@ const Series = () => {
                     {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
                   </div>
                   <div className="flex flex-wrap gap-2">
-                    {tags.slice(0, 13).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
+                    {tags.slice(0, 9).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
                     <NavLink to="tags">
                       <SeriesTag text="More..." type="All" />
                     </NavLink>
@@ -151,7 +136,6 @@ const Series = () => {
               </div>
             </div>
           </div>
-          <SeriesInfo />
         </div>
         <div className="flex flex-nowrap gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
           <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
@@ -160,13 +144,6 @@ const Series = () => {
           <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
           <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
           <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
-          <div
-            className="ml-auto flex cursor-pointer items-center gap-x-2"
-            onClick={() => setShowEditSeriesModal(true)}
-          >
-            <Icon className="text-panel-icon" path={mdiPencilCircleOutline} size={1} />
-            &nbsp;Edit Series
-          </div>
         </div>
         <Outlet context={{ scrollRef }} />
         <div
@@ -174,12 +151,7 @@ const Series = () => {
           style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
         />
       </div>
-      <EditSeriesModal
-        show={showEditSeriesModal}
-        onClose={() => setShowEditSeriesModal(false)}
-        seriesId={series.IDs.ID}
-      />
-    </>
+    </div>
   );
 };
 

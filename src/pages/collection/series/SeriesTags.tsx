@@ -7,7 +7,6 @@ import { map, toNumber } from 'lodash';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import Input from '@/components/Input/Input';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 
 import type { TagType } from '@/core/types/api/tags';
@@ -45,38 +44,33 @@ const SeriesTags = () => {
   if (!seriesId) return null;
 
   return (
-    <div className="flex gap-x-8">
-      <ShokoPanel
-        title="Search & Filter"
-        className="sticky top-0 h-fit w-[25rem] shrink-0"
-        transparent
-        contentClassName="gap-y-8"
-        fullHeight={false}
-      >
+    <>
+      <div className="flex items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+        <div className="flex w-full text-xl font-semibold">Tag Search</div>
         <Input
           id="search"
-          label="Tag search"
           startIcon={mdiMagnify}
           type="text"
           placeholder="Search..."
           value={search}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
-      </ShokoPanel>
-
-      <div className="flex grow flex-col gap-y-8">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4 text-xl font-semibold">
-          Tags
-          <div>
-            <span className="text-panel-text-important">{tagsQuery.data?.length || 0}</span>
-            &nbsp;Tags Listed
+      </div>
+      <div className="flex gap-x-8">
+        <div className="flex grow flex-col gap-y-8">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4 text-xl font-semibold">
+            Tags
+            <div>
+              <span className="text-panel-text-important">{tagsQuery.data?.length || 0}</span>
+              &nbsp;Tags Listed
+            </div>
+          </div>
+          <div className="grid grid-cols-3 gap-8">
+            {map(tagsQuery.data ?? [], item => <SeriesTag key={item.ID} item={item} />)}
           </div>
         </div>
-        <div className="grid grid-cols-3 gap-8">
-          {map(tagsQuery.data ?? [], item => <SeriesTag key={item.ID} item={item} />)}
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 

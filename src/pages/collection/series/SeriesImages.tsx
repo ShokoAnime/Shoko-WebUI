@@ -7,7 +7,6 @@ import { get, map, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
-import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
@@ -54,16 +53,16 @@ const Heading = React.memo((
 ));
 
 const InfoLine = ({ title, value }) => (
-  <div className="flex flex-col gap-y-1">
+  <div className="flex w-full max-w-[12.5rem] flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
     {value}
   </div>
 );
 
 const sizeMap = {
-  Posters: 'h-[20.0625rem] w-[13.75rem]',
-  Fanarts: 'h-[16rem] w-[28.29rem]',
-  Banners: 'h-[8rem] w-[43.25rem]',
+  Posters: 'h-[20.0625rem] w-[12.75rem]',
+  Fanarts: 'h-[16rem] w-[26.55rem]',
+  Banners: 'h-[8rem] w-[40.3rem]',
 };
 
 const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in sizeMap;
@@ -89,17 +88,23 @@ const SeriesImages = () => {
 
   return (
     <div className="flex gap-x-8">
-      <div className="sticky top-0 flex w-[22.375rem] shrink-0 flex-col gap-y-8">
+      <div className="flex grow flex-col gap-y-8">
+        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
+          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
+          <div className="text-xl font-semibold">
+            <span className="text-panel-text-important">{get(images, type, []).length}</span>
+            &nbsp;
+            {type}
+            &nbsp;Listed
+          </div>
+        </div>
         <ShokoPanel
-          title="Image Options"
-          transparent
-          contentClassName="gap-y-2 pointer-events-none opacity-50"
+          title="Selected Image Info"
+          className="flex w-full flex-row"
+          contentClassName="!flex-row gap-x-8 h-full"
           fullHeight={false}
+          transparent
         >
-          <Checkbox id="random-poster" isChecked={false} onChange={() => {}} label="Random Poster on Load" justify />
-          <Checkbox id="random-fanart" isChecked={false} onChange={() => {}} label="Random Fanart on Load" justify />
-        </ShokoPanel>
-        <ShokoPanel title="Selected Image Info" transparent contentClassName="gap-y-4" fullHeight={false}>
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
           <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
@@ -120,18 +125,6 @@ const SeriesImages = () => {
             {`Set As Default ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
-      </div>
-
-      <div className="flex grow flex-col gap-y-8">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
-          <div className="text-xl font-semibold">
-            <span className="text-panel-text-important">{get(images, type, []).length}</span>
-            &nbsp;
-            {type}
-            &nbsp;Listed
-          </div>
-        </div>
         <div className="flex flex-wrap gap-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
           {map(get(images, type, []), (item: ImageType) => (
             <div
