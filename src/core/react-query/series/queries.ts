@@ -122,7 +122,7 @@ export const useSeriesImagesQuery = (seriesId: number, enabled = true) =>
 export const useSeriesNextUpQuery = (seriesId: number, params: SeriesNextUpRequestType, enabled = true) =>
   useQuery<EpisodeType>({
     queryKey: ['series', 'next-up', seriesId, params],
-    queryFn: () => axios.get(`Series/${seriesId}/NextUpEpisode`),
+    queryFn: () => axios.get(`Series/${seriesId}/NextUpEpisode`, { params }),
     enabled,
   });
 
