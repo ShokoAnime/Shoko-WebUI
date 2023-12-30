@@ -1,10 +1,18 @@
 import React, { useState } from 'react';
 import AnimateHeight from 'react-animate-height';
-import { mdiChevronDown, mdiFileDocumentOutline, mdiLoading, mdiOpenInNew, mdiRefresh } from '@mdi/js';
+import {
+  mdiChevronDown,
+  mdiFileDocumentMultipleOutline,
+  mdiFileDocumentOutline,
+  mdiLoading,
+  mdiOpenInNew,
+  mdiRefresh,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useToggle } from 'usehooks-ts';
 
 import EpisodeFileInfo from '@/components/Collection/Series/EpisodeFileInfo';
+import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
@@ -85,7 +93,7 @@ const FileItem = ({ file }: { file: FileType }) => {
           <option value="variation">Marked as a Variation</option>
         </Select>
       </div>
-      <EpisodeFileInfo file={file} />
+      <EpisodeFileInfo file={file} compact />
     </div>
   );
 };
@@ -129,7 +137,7 @@ const EpisodeTable = ({ id: seriesId }: { id: number }) => {
         includeDataFrom: ['AniDB'],
         includeFiles: true,
         includeAbsolutePaths: true,
-        pageSize: 0,
+        includeMediaInfo: true,
       },
     ],
   );
@@ -176,6 +184,10 @@ function MultipleFilesUtility() {
       <ShokoPanel title="Multiple Files" options={<ItemCount count={seriesCount} series />}>
         <div className="flex items-center gap-x-3">
           <Menu />
+          <Button buttonType="primary" className="flex gap-x-2.5 px-4 py-3 font-semibold">
+            <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
+            Auto-Delete Multiples
+          </Button>
         </div>
       </ShokoPanel>
 
