@@ -1,7 +1,6 @@
 input,
 textarea,
-select
-{
+select {
   background: theme('colors.panel-input');
   border: 1px solid theme('colors.panel-border');
   outline: none;
