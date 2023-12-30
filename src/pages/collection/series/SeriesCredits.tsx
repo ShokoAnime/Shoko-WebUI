@@ -7,7 +7,6 @@ import { filter, get, map, toNumber } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import Input from '@/components/Input/Input';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -58,63 +57,58 @@ const SeriesCredits = () => {
   if (!seriesId) return null;
 
   return (
-    <div className="flex gap-x-8">
-      <ShokoPanel
-        title="Search & Filter"
-        className="sticky top-0 h-fit w-[22.375rem] shrink-0"
-        transparent
-        contentClassName="gap-y-8"
-        fullHeight={false}
-      >
+    <>
+      <div className="flex items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+        <div className="flex w-full text-xl font-semibold">Character Search</div>
         <Input
           id="search"
-          label="Character search"
           startIcon={mdiMagnify}
           type="text"
           placeholder="Search..."
           value={search}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
-      </ShokoPanel>
+      </div>
+      <div className="flex gap-x-8">
+        <div className="flex grow flex-col gap-y-4">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
+            <Heading mode={mode} setMode={setMode} />
+            <div className="text-xl font-semibold">
+              <span className="text-panel-text-important">{cast?.length || 0}</span>
+              &nbsp;Characters Listed
+            </div>
+          </div>
 
-      <div className="flex grow flex-col gap-y-4">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-          <Heading mode={mode} setMode={setMode} />
-          <div className="text-xl font-semibold">
-            <span className="text-panel-text-important">{cast?.length || 0}</span>
-            &nbsp;Characters Listed
+          <div className="grid grid-cols-4 gap-4">
+            {map(
+              filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))),
+              (item, idx) => (
+                <div
+                  key={`${mode}-${idx}`}
+                  className="flex flex-col items-center justify-center gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold"
+                >
+                  <div className="z-10 flex gap-x-2">
+                    {mode === 'Character' && (
+                      <CharacterImage
+                        imageSrc={getThumbnailUrl(item, 'Character')}
+                        className="relative h-[11rem] w-[8rem] rounded-md"
+                      />
+                    )}
+                    <CharacterImage
+                      imageSrc={getThumbnailUrl(item, 'Staff')}
+                      className="relative h-[11rem] w-[8rem] rounded-md"
+                    />
+                  </div>
+                  <div className="text-xl">{item.Character?.Name}</div>
+                  <div className="-mt-2 opacity-65">{item.Staff?.Name}</div>
+                  <div>{item.RoleDetails}</div>
+                </div>
+              ),
+            )}
           </div>
         </div>
-
-        <div className="grid grid-cols-4 gap-4">
-          {map(
-            filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))),
-            (item, idx) => (
-              <div
-                key={`${mode}-${idx}`}
-                className="flex flex-col items-center justify-center gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold"
-              >
-                <div className="z-10 flex gap-x-2">
-                  {mode === 'Character' && (
-                    <CharacterImage
-                      imageSrc={getThumbnailUrl(item, 'Character')}
-                      className="relative h-[11.4375rem] w-[9rem] rounded-md"
-                    />
-                  )}
-                  <CharacterImage
-                    imageSrc={getThumbnailUrl(item, 'Staff')}
-                    className="relative h-[11.4375rem] w-[9rem] rounded-md"
-                  />
-                </div>
-                <div className="text-xl">{item.Character?.Name}</div>
-                <div className="-mt-2 opacity-65">{item.Staff?.Name}</div>
-                <div>{item.RoleDetails}</div>
-              </div>
-            ),
-          )}
-        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -5,22 +5,26 @@ import cx from 'classnames';
 import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import CharacterImage from '@/components/CharacterImage';
 import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
   useRelatedAnimeQuery,
+  useSeriesCastQuery,
   useSeriesNextUpQuery,
   useSeriesQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
+import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { SeriesType } from '@/core/types/api/series';
+import type { SeriesCast, SeriesType } from '@/core/types/api/series';
 
 const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
   const thumbnail = useEpisodeThumbnail(nextUpEpisode);
+
   return (
     <div className="z-10 flex items-center gap-x-8">
       <BackgroundImagePlaceholderDiv
@@ -51,14 +55,21 @@ const SeriesOverview = () => {
   const nextUpEpisode = useMemo(() => nextUpEpisodeQuery?.data ?? {} as EpisodeType, [nextUpEpisodeQuery.data]);
   const related = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
   const similar = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
+  const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
+
+  const getThumbnailUrl = (item: SeriesCast, mode: string) => {
+    const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
+    if (thumbnail === null) return null;
+    return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
+  };
 
   return (
     <>
       <div className="flex gap-x-8">
-        <div className="flex w-full grow flex-row gap-x-8">
+        <div className="flex w-full grow flex-col gap-y-8">
           <ShokoPanel
             title="Episode on Deck"
-            className="flex w-full max-w-[71.875rem] grow overflow-visible"
+            className="flex w-full grow overflow-visible"
             transparent
             isFetching={nextUpEpisodeQuery.isFetching}
           >
@@ -68,17 +79,18 @@ const SeriesOverview = () => {
           </ShokoPanel>
           <ShokoPanel
             title="Metadata Sites"
-            className="flex w-full max-w-[42.188rem] grow-0"
+            className="flex w-full"
             transparent
+            disableOverflow
           >
-            <div className="flex flex-col gap-y-2">
+            <div className="flex gap-x-8">
               {MetadataLinks.map((site) => {
                 const idOrIds = series.IDs[site] as number | number[];
                 if (typeof idOrIds === 'number' || idOrIds.length === 0) {
                   const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
                   return (
                     <div
-                      className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
                       key={`${site}-${id}`}
                     >
                       <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
@@ -87,7 +99,7 @@ const SeriesOverview = () => {
                 }
                 return idOrIds.map(id => (
                   <div
-                    className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
                     key={`${site}-${id}`}
                   >
                     <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
@@ -101,7 +113,7 @@ const SeriesOverview = () => {
 
       {related.length > 0 && (
         <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className={cx('flex gap-x-5', related.length > 7 && ('mb-4'))}>
+          <div className={cx('flex gap-x-5', related.length > 5 && ('mb-4'))}>
             {related.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
@@ -149,7 +161,7 @@ const SeriesOverview = () => {
 
       {similar.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className={cx('shoko-scrollbar flex gap-x-5', similar.length > 7 && ('mb-4'))}>
+          <div className={cx('shoko-scrollbar flex gap-x-5', similar.length > 5 && ('mb-4'))}>
             {similar.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const isDisabled = item.ShokoID === null;
@@ -201,6 +213,32 @@ const SeriesOverview = () => {
           </div>
         </ShokoPanel>
       )}
+      <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
+        <div className="z-10 flex w-full gap-x-8">
+          {cast?.slice(0, 20).map(seiyuu => (
+            seiyuu.RoleName === 'Seiyuu' && (
+              <div key={seiyuu.Character.Name} className="flex flex-col items-center gap-y-4 pb-4">
+                <div className="flex gap-x-4">
+                  <CharacterImage
+                    imageSrc={getThumbnailUrl(seiyuu, 'Character')}
+                    className="relative h-[12rem] w-[9rem] rounded-md"
+                  />
+                  <CharacterImage
+                    imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
+                    className="relative h-[12rem] w-[9rem] rounded-md"
+                  />
+                </div>
+                <div className="flex flex-col items-center">
+                  <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character.Name}</span>
+                  <span className="line-clamp-1 text-ellipsis text-sm font-semibold opacity-65">
+                    {seiyuu.Staff.Name}
+                  </span>
+                </div>
+              </div>
+            )
+          ))}
+        </div>
+      </ShokoPanel>
     </>
   );
 };

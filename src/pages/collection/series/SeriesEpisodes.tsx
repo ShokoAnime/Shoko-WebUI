@@ -87,9 +87,15 @@ const SeriesEpisodes = () => {
   });
 
   return (
-    <div className="flex gap-x-8">
-      <ShokoPanel title="Search & Filter" className="sticky top-0 w-[25rem]" transparent contentClassName="gap-y-8">
+    <>
+      <ShokoPanel
+        title="Search & Filter"
+        className="flex w-full flex-row"
+        contentClassName="!flex-row gap-x-8 h-full"
+        transparent
+      >
         <Input
+          inputClassName="w-full max-w-[15rem]"
           id="search"
           label="Title Search"
           startIcon={mdiMagnify}
@@ -99,6 +105,7 @@ const SeriesEpisodes = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <Select
+          className="w-full max-w-[15rem]"
           id="episodeType"
           label="Episode Type"
           value={episodeFilterType}
@@ -112,6 +119,7 @@ const SeriesEpisodes = () => {
           <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
+          className="w-full max-w-[15rem]"
           id="status"
           label="Availability"
           value={episodeFilterAvailability}
@@ -123,6 +131,7 @@ const SeriesEpisodes = () => {
           <option value="only">Missing</option>
         </Select>
         <Select
+          className="w-full max-w-[15rem]"
           id="watched"
           label="Watched Status"
           value={episodeFilterWatched}
@@ -133,6 +142,7 @@ const SeriesEpisodes = () => {
           <option value="false">Unwatched</option>
         </Select>
         <Select
+          className="w-full max-w-[15rem]"
           id="hidden"
           label="Hidden Status"
           value={episodeFilterHidden}
@@ -143,60 +153,62 @@ const SeriesEpisodes = () => {
           <option value="only">Hidden</option>
         </Select>
       </ShokoPanel>
-      <div className="flex grow flex-col gap-y-4">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-          <div className="text-xl font-semibold">
-            Episodes
-            <span className="px-2">|</span>
-            <span className="pr-2 text-panel-text-important">
-              {isSuccess ? episodeCount : '-'}
-            </span>
-            Entries Listed
+      <div className="flex gap-x-8">
+        <div className="flex grow flex-col gap-y-4">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
+            <div className="text-xl font-semibold">
+              Episodes
+              <span className="px-2">|</span>
+              <span className="pr-2 text-panel-text-important">
+                {isSuccess ? episodeCount : '-'}
+              </span>
+              Entries Listed
+            </div>
+            <div className="flex gap-x-6">
+              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(true)}>
+                <Icon path={mdiEyeCheckOutline} size={1} />
+                Mark Filtered As Watched
+              </Button>
+              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
+                <Icon path={mdiEyeOutline} size={1} />
+                Mark Filtered As Unwatched
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-x-6">
-            <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(true)}>
-              <Icon path={mdiEyeCheckOutline} size={1} />
-              Mark Filtered As Watched
-            </Button>
-            <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
-              <Icon path={mdiEyeOutline} size={1} />
-              Mark Filtered As Unwatched
-            </Button>
-          </div>
-        </div>
-        <div className="grow">
-          <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-            <div
-              className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
-              style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
-            >
-              {virtualItems.map((virtualItem) => {
-                const page = Math.ceil((virtualItem.index + 1) / pageSize);
-                const episode = episodes[virtualItem.index];
+          <div className="grow">
+            <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+              <div
+                className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
+                style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+              >
+                {virtualItems.map((virtualItem) => {
+                  const page = Math.ceil((virtualItem.index + 1) / pageSize);
+                  const episode = episodes[virtualItem.index];
 
-                if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
+                  if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
 
-                return (
-                  <div
-                    key={`${dataUpdatedAt}-${virtualItem.key}`}
-                    className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
-                    data-index={virtualItem.index}
-                  >
-                    {episode
-                      ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
-                      : (
-                        <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
-                          <Icon path={mdiLoading} spin size={3} />
-                        </div>
-                      )}
-                  </div>
-                );
-              })}
+                  return (
+                    <div
+                      key={`${dataUpdatedAt}-${virtualItem.key}`}
+                      className="flex flex-col rounded-md border border-panel-border bg-panel-background-transparent"
+                      data-index={virtualItem.index}
+                    >
+                      {episode
+                        ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
+                        : (
+                          <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
+                            <Icon path={mdiLoading} spin size={3} />
+                          </div>
+                        )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
