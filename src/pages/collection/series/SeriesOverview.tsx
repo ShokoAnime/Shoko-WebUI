@@ -43,6 +43,7 @@ const SeriesOverview = () => {
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
     includeDataFrom: ['AniDB', 'TvDB'],
     includeMissing: true,
+    onlyUnwatched: false,
   }, !!seriesId);
   const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
   const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
