@@ -133,7 +133,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
                 <span>|</span>
                 <span>{formatThousand(series.Sizes.Watched.Specials)}</span>
                 <span>
-                  {series.Sizes.Watched.Specials > 1 || series.Sizes.Local.Episodes === 0 ? 'Specials' : 'Special'}
+                  {series.Sizes.Watched.Specials > 1 || series.Sizes.Local.Specials === 0 ? 'Specials' : 'Special'}
                 </span>
               </>
             )}
