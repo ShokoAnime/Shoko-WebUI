@@ -61,13 +61,14 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
           <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-            <Link to="#" className="h-fit">
+            {/* FIXME: This can't be a <Link> otherwise Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a> happens, BackgroundImagePlaceholderDiv wraps everything in a <Link> internally */}
+            <span className="h-fit">
               <Icon
                 path={mdiPencilCircleOutline}
                 size="2rem"
                 className="text-panel-icon"
               />
-            </Link>
+            </span>
           </div>
           {showGroupIndicator && !isSeries && groupCount > 1 && (
             <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
