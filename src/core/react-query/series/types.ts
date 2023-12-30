@@ -37,6 +37,7 @@ export type SeriesEpisodesInfiniteRequestType =
 export type SeriesNextUpRequestType = {
   includeDataFrom?: DataSourceType[];
   includeMissing?: boolean;
+  onlyUnwatched?: boolean;
 };
 
 export type SeriesTagsRequestType = {
