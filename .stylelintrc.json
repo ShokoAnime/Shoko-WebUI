@@ -1,16 +1,17 @@
 {
   "plugins": [
-    "stylelint-codeguide"
+    "@stylistic/stylelint-plugin"
   ],
   "extends": [
     "stylelint-config-standard",
-    "stylelint-config-tailwindcss"
+    "stylelint-config-tailwindcss",
+    "@stylistic/stylelint-config"
   ],
   "customSyntax": "postcss",
   "rules": {
-    "codeguide/string-quotes": "single",
-    "codeguide/color-hex-case": "lower",
-    "codeguide/indentation": 2,
+    "@stylistic/string-quotes": "single",
+    "@stylistic/color-hex-case": "lower",
+    "@stylistic/indentation": 2,
     "color-function-notation": "legacy",
     "alpha-value-notation": "number",
     "font-family-name-quotes": "always-where-recommended",
@@ -34,7 +35,7 @@
         ]
       }
     ],
-    "codeguide/declaration-block-trailing-semicolon": null,
+    "@stylistic/declaration-block-trailing-semicolon": null,
     "no-descending-specificity": null
   }
 }
