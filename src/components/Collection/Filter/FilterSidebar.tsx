@@ -54,9 +54,13 @@ const mapCriteriaComponent = (criteria: FilterExpression) => {
   return DefaultCriteria;
 };
 
-const FilterSidebar = () => {
+type Props = {
+  show: boolean;
+};
+
+const FilterSidebar = ({ show }: Props) => {
   const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
-  const allCriteria = useFilterExpressionMain();
+  const allCriteria = useFilterExpressionMain(show);
   const [newCriteria, setNewCriteria] = useState('');
   const dispatch = useDispatch();
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
