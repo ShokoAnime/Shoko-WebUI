@@ -28,7 +28,7 @@ module.exports = {
       fontWeight: {
         extralight: 100,
         light: 200,
-        normal: 350,
+        normal: 400,
         medium: 400,
         semibold: 500,
         bold: 600,

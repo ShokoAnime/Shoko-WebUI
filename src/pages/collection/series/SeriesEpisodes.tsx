@@ -91,8 +91,9 @@ const SeriesEpisodes = () => {
       <ShokoPanel
         title="Search & Filter"
         className="flex w-full flex-row"
-        contentClassName="!flex-row gap-x-8 h-full"
+        contentClassName="!flex-row gap-x-8"
         transparent
+        fullHeight={false}
       >
         <Input
           inputClassName="w-full max-w-[15rem]"

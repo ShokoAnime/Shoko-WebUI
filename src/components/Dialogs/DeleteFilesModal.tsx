@@ -65,7 +65,7 @@ function DeleteFilesModal(props: Props) {
     <ModalPanel
       show={showModal}
       onRequestClose={onClose}
-      size="lg"
+      size="md"
       title={<Title fileCount={fileList.length} />}
     >
       <div className="flex flex-col gap-y-4">

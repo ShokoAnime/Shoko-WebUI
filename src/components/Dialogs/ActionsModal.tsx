@@ -122,7 +122,7 @@ function ActionsModal({ onClose, show }: Props) {
       show={show}
       onRequestClose={onClose}
       title="Actions"
-      size="md"
+      size="lg"
       titleLeft
       noPadding
     >

@@ -92,7 +92,6 @@ const Series = () => {
 
   return (
     <div className="flex gap-x-8">
-      <SeriesSidePanel series={series} />
       <div className="flex w-full max-w-[85.938rem] flex-col gap-y-8">
         <div className="flex flex-row gap-x-8">
           <div className="flex w-full gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
@@ -116,7 +115,7 @@ const Series = () => {
                   )}
                 </div>
               </div>
-              <div className="flex flex-col gap-y-8">
+              <div className="flex flex-col gap-y-4">
                 <div className="flex flex-col gap-y-4">
                   <div className="text-4xl font-semibold">{series.Name}</div>
                   <div className="text-xl font-semibold opacity-65">
@@ -151,6 +150,7 @@ const Series = () => {
           style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
         />
       </div>
+      <SeriesSidePanel series={series} />
     </div>
   );
 };
