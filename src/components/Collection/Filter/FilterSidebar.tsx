@@ -2,10 +2,10 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { filter, keys, map, values } from 'lodash';
 
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
+import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -16,20 +16,24 @@ import { useFilterExpressionMain } from '@/hooks/filters';
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
-const selectParameter = createSelector(
-  [
-    (state: RootState) => state.collection.filterConditions,
-    (state, param: string) => param,
-  ],
-  (conditions, param) => conditions[param],
-);
+const buildFilterConditionMultivalue = (conditionValues: string[], type: string): object => {
+  if (conditionValues.length > 1) {
+    return {
+      Type: 'And',
+      Left: { Type: type, Parameter: conditionValues[0] },
+      Right: buildFilterConditionMultivalue(conditionValues.slice(1), type),
+    };
+  }
+  return { Type: type, Parameter: conditionValues[0] };
+};
 const buildFilterCondition = (currentFilter: FilterExpression) => {
   if (currentFilter?.Parameter) {
-    const value = selectParameter(store.getState(), currentFilter.Expression);
-    return { Type: currentFilter.Expression, Parameter: value };
+    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
+    return buildFilterConditionMultivalue(filterValues, currentFilter.Expression);
   }
   return currentFilter;
 };
+
 const buildFilter = (filters: FilterExpression[]): object => {
   if (filters.length > 1) {
     return {
@@ -39,6 +43,13 @@ const buildFilter = (filters: FilterExpression[]): object => {
     };
   }
   return buildFilterCondition(filters[0]);
+};
+
+const mapCriteriaComponent = (criteria: FilterExpression) => {
+  if (criteria.Parameter && criteria.PossibleParameters) {
+    return MultiValueCriteria;
+  }
+  return DefaultCriteria;
 };
 
 const FilterSidebar = () => {
@@ -69,7 +80,10 @@ const FilterSidebar = () => {
 
   return (
     <ShokoPanel title="Filter" className="ml-8 w-full" contentClassName="gap-3">
-      {map(selectedCriteria, item => <DefaultCriteria key={item.Expression} criteria={item} />)}
+      {map(selectedCriteria, (item) => {
+        const CriteriaComponent = mapCriteriaComponent(item);
+        return <CriteriaComponent key={item.Expression} criteria={item} />;
+      })}
       <Select
         id="addCondition"
         label="Select Condition"

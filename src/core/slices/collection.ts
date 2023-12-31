@@ -6,6 +6,7 @@ import type { PayloadAction } from '@reduxjs/toolkit';
 type State = {
   filterCriteria: Record<string, FilterExpression>;
   filterConditions: Record<string, string>;
+  filterValues: Record<string, string[]>;
   activeFilter: object | null;
 };
 
@@ -14,6 +15,7 @@ const collectionSlice = createSlice({
   initialState: {
     filterCriteria: {},
     filterConditions: {},
+    filterValues: {},
     activeFilter: null,
   } as State,
   reducers: {
@@ -23,6 +25,9 @@ const collectionSlice = createSlice({
     },
     addFilterCondition(sliceState, action: PayloadAction<Record<string, string>>) {
       sliceState.filterConditions = { ...sliceState.filterConditions, ...action.payload };
+    },
+    setFilterValues(sliceState, action: PayloadAction<Record<string, string[]>>) {
+      sliceState.filterValues = { ...sliceState.filterValues, ...action.payload };
     },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
       sliceState.activeFilter = action.payload;
@@ -38,6 +43,7 @@ export const {
   addFilterCriteria,
   resetActiveFilter,
   setActiveFilter,
+  setFilterValues,
 } = collectionSlice.actions;
 
 export default collectionSlice.reducer;
