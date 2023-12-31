@@ -31,7 +31,9 @@ const buildFilterCondition = (currentFilter: FilterExpression) => {
     const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
     return buildFilterConditionMultivalue(filterValues, currentFilter.Expression);
   }
-  return currentFilter;
+
+  const value = store.getState().collection.filterConditions[currentFilter.Expression] ?? true;
+  return value ? { Type: currentFilter.Expression } : { Type: 'Not', Left: { Type: currentFilter.Expression } };
 };
 
 const buildFilter = (filters: FilterExpression[]): object => {
