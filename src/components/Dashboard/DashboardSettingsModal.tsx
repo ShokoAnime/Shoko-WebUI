@@ -96,12 +96,12 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       show={show}
       onRequestClose={onClose}
       title={<Title onClose={onClose} />}
-      size="sm"
-      className="w-[45rem]"
+      size="md"
       titleLeft
       noPadding
+      noGap
     >
-      <div className="flex h-[25rem] flex-row gap-y-8">
+      <div className="flex h-[22rem] flex-row gap-y-8">
         <div className="flex w-[14rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
           <div className="flex flex-col gap-y-4">
             <div
@@ -256,17 +256,17 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               </div>
             </div>
           )}
-          <div className="flex justify-end gap-x-3 border-t border-panel-border pt-8 font-semibold">
-            <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
-            <Button
-              onClick={handleSave}
-              buttonType="primary"
-              className="px-6 py-2"
-            >
-              Save
-            </Button>
-          </div>
         </div>
+      </div>
+      <div className="flex justify-end gap-x-3 border-y border-panel-border bg-panel-background-alt p-8 font-semibold">
+        <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button
+          onClick={handleSave}
+          buttonType="primary"
+          className="px-6 py-2"
+        >
+          Save
+        </Button>
       </div>
     </ModalPanel>
   );

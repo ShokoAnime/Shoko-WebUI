@@ -99,6 +99,7 @@ function ImportFolderModal() {
         onAfterOpen={() => getFolderDetails()}
         title={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
         size="sm"
+        titleLeft
       >
         <Input
           id="Name"

@@ -9,6 +9,7 @@ type Props = {
   titleLeft?: boolean;
   size?: 'sm' | 'md' | 'lg';
   noPadding?: boolean;
+  noGap?: boolean;
   className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
@@ -16,7 +17,7 @@ type Props = {
 
 const sizeClass = {
   sm: 'w-[32rem]',
-  md: 'w-[56.25rem]',
+  md: 'w-[45rem]',
   lg: 'w-[62rem]',
 };
 
@@ -24,6 +25,7 @@ function ModalPanel(props: Props) {
   const {
     children,
     className,
+    noGap,
     noPadding,
     onAfterOpen,
     onRequestClose,
@@ -65,7 +67,7 @@ function ModalPanel(props: Props) {
               {title}
             </div>
           )}
-          <div className={cx('flex flex-col gap-y-8', !noPadding && ('px-8 pb-8'))}>
+          <div className={cx('flex flex-col', !noGap && ('gap-y-8'), !noPadding && ('px-8 pb-8'))}>
             {children}
           </div>
         </div>

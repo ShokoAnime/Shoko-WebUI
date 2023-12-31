@@ -82,7 +82,7 @@ input[type='range']:focus::-moz-range-thumb {
 body {
   background-color: theme('colors.panel-background-alt');
   color: theme('colors.panel-text');
-  font-weight: 350;
+  font-weight: 400;
 }
 
 ::-webkit-scrollbar {
