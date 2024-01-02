@@ -1,68 +1,61 @@
 import React, { useMemo } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import Icon from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
 
-import ListViewItem from '@/components/Collection/ListViewItem';
-import PosterViewItem from '@/components/Collection/PosterViewItem';
+import ListViewItem from '@/components/Collection/ListView/ListViewItem';
+import { useGroupViewQuery } from '@/core/react-query/webui/queries';
+
+import { listItemSize } from './constant';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
-import type { WebuiGroupExtra } from '@/core/types/api/webui';
 
 type Props = {
-  groupExtras: WebuiGroupExtra[];
   fetchNextPage: () => Promise<unknown>;
   isFetchingNextPage: boolean;
   isFetching: boolean;
   isSeries: boolean;
   isSidebarOpen: boolean;
   items: CollectionGroupType[] | SeriesType[];
-  mode: string;
   total: number;
 };
 
-export const posterItemSize = {
-  width: 209,
-  height: 363,
-  gap: 16,
-};
-
-export const listItemSize = {
-  width: 907,
-  height: 319,
-  widthAlt: 907,
-  gap: 32,
-};
-
-const CollectionView = (props: Props) => {
+const ListViewContainer = (props: Props) => {
   const {
     fetchNextPage,
-    groupExtras,
     isFetching,
     isFetchingNextPage,
     isSeries,
     isSidebarOpen,
     items,
-    mode,
     total,
   } = props;
 
-  const [itemWidth, itemHeight, itemGap] = useMemo(() => {
-    if (mode === 'poster') return [posterItemSize.width, posterItemSize.height, posterItemSize.gap];
-    return [
-      (isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width,
-      listItemSize.height,
-      listItemSize.gap,
-    ];
-  }, [isSidebarOpen, mode, isSeries]);
+  const lastPageIds = useMemo(
+    () => items.map((x: CollectionGroupType | SeriesType) => x.IDs.ID) ?? [],
+    [items],
+  );
+  const groupExtras = useGroupViewQuery(
+    {
+      GroupIDs: lastPageIds,
+      TagFilter: 128,
+      TagLimit: 20,
+    },
+    lastPageIds.length > 0,
+  ).data;
+
+  const [itemWidth, itemHeight, itemGap] = useMemo(() => [
+    (isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width,
+    listItemSize.height,
+    listItemSize.gap,
+  ], [isSidebarOpen, isSeries]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
-
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 
   const [itemsPerRow, count] = useMemo(() => {
@@ -78,6 +71,7 @@ const CollectionView = (props: Props) => {
     estimateSize: () => itemHeight + itemGap,
     overscan: 2,
   });
+
   const virtualItems = virtualizer.getVirtualItems();
 
   const fetchNextPageDebounced = useMemo(
@@ -93,7 +87,6 @@ const CollectionView = (props: Props) => {
       <div
         className={cx(
           'flex grow rounded-md items-center font-semibold justify-center max-h-screen',
-          mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
         )}
       >
         <div className="flex w-full justify-center" ref={gridContainerRef}>
@@ -107,10 +100,7 @@ const CollectionView = (props: Props) => {
 
   return (
     <div
-      className={cx(
-        'flex grow rounded-md',
-        mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
-      )}
+      className={cx('flex grow rounded-md')}
     >
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
         {/* Each row is considered a virtual item here instead of each group */}
@@ -142,7 +132,12 @@ const CollectionView = (props: Props) => {
                   }}
                 />,
               );
-            } else if (!item) {
+
+              // eslint-disable-next-line no-continue
+              continue;
+            }
+
+            if (!item) {
               if (!isFetchingNextPage) fetchNextPageDebounced();
               children.push(
                 <div
@@ -156,33 +151,24 @@ const CollectionView = (props: Props) => {
                   <Icon path={mdiLoading} spin size={3} />
                 </div>,
               );
-            } else if (mode === 'poster') {
-              children.push(
-                <PosterViewItem item={item} key={`group-${item.IDs.ID}`} isSeries={isSeries} />,
-              );
-            } else {
-              children.push(
-                <ListViewItem
-                  item={item}
-                  groupExtras={!isSeries
-                    ? groupExtras.find(extra => extra.ID === item.IDs.ID)
-                    : undefined}
-                  key={`group-${item.IDs.ID}`}
-                  isSeries={isSeries}
-                  isSidebarOpen={isSidebarOpen}
-                />,
-              );
+              // eslint-disable-next-line no-continue
+              continue;
             }
+
+            children.push(
+              <ListViewItem
+                item={item}
+                groupExtras={groupExtras?.find(extra => extra.ID === item.IDs.ID)}
+                key={`group-${item.IDs.ID}`}
+                isSeries={isSeries}
+                isSidebarOpen={isSidebarOpen}
+              />,
+            );
           }
 
           return (
             <div
-              className={cx(
-                'absolute top-0 left-0 w-full flex items-center justify-center last:pb-0',
-                mode === 'poster'
-                  ? 'gap-x-4 pb-4'
-                  : 'gap-x-8 pb-8',
-              )}
+              className={cx('absolute top-0 left-0 w-full flex items-center justify-center last:pb-0', 'gap-x-8 pb-8')}
               style={{
                 transform: `translateY(${virtualRow.start}px)`,
               }}
@@ -199,4 +185,4 @@ const CollectionView = (props: Props) => {
   );
 };
 
-export default CollectionView;
+export default ListViewContainer;

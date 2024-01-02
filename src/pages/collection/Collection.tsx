@@ -14,8 +14,8 @@ import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounce, useToggle } from 'usehooks-ts';
 
+import CollectionContainerView from '@/components/Collection/CollectionContainer';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
-import CollectionView from '@/components/Collection/CollectionView';
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
@@ -30,7 +30,6 @@ import { useGroupQuery } from '@/core/react-query/group/queries';
 import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import { useFlattenListResult } from '@/hooks/useFlattenListResult';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
@@ -122,10 +121,6 @@ function Collection() {
     filterCriteria: getFilter(debouncedGroupSearch, filterId ? filterQuery.data?.Expression : undefined, false),
   });
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
-  const lastPageIds = useMemo(
-    () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
-    [groupsQuery.data],
-  );
 
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
@@ -169,24 +164,10 @@ function Collection() {
     setTimelineSeries(seriesQuery.data);
   }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
-  const groupExtras = useGroupViewQuery(
-    {
-      GroupIDs: lastPageIds,
-      TagFilter: 128,
-      TagLimit: 20,
-    },
-    viewSetting === 'list' && lastPageIds.length > 0,
-  ).data;
-
   const toggleMode = () => {
     const newMode = mode === 'list' ? 'poster' : 'list';
     // Optimistically update view mode to reduce lag without waiting for settings refetch.
-    setMode(newMode);
-    if (newMode === 'list') {
-      // If we invalidate instead of resetting, if we had 5 pages loaded in poster view, it will again load 5 pages
-      // after invalidation even if we are at the top of the page
-      queryClient.resetQueries({ queryKey: ['filter', 'preview', 'groups'] }).catch(console.error);
-    }
+    setMode(_ => newMode);
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
     patchSettings({ newSettings });
@@ -222,8 +203,7 @@ function Collection() {
           </div>
         </div>
         <div className="flex grow">
-          <CollectionView
-            groupExtras={groupExtras ?? []}
+          <CollectionContainerView
             fetchNextPage={groupsQuery.fetchNextPage}
             isFetchingNextPage={groupsQuery.isFetchingNextPage}
             isFetching={isFetching}
@@ -233,6 +213,7 @@ function Collection() {
             mode={mode}
             total={total}
           />
+
           <div
             className={cx(
               'flex items-start overflow-hidden transition-all',

@@ -5,9 +5,10 @@ import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { posterItemSize } from '@/components/Collection/CollectionView';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useMainPoster from '@/hooks/useMainPoster';
+
+import { posterItemSize } from './constant';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
