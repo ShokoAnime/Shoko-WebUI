@@ -179,6 +179,8 @@ function Collection() {
   ).data;
 
   const toggleMode = () => {
+    if (isFetching) return;
+
     const newMode = mode === 'list' ? 'poster' : 'list';
     // Optimistically update view mode to reduce lag without waiting for settings refetch.
     setMode(newMode);
