@@ -21,7 +21,7 @@ const SeriesSidePanel = ({ series }: SeriesSidePanelProps) => {
   const onClickHandler = () => setShowEditSeriesModal(true);
 
   return (
-    <div className="flex w-full max-w-[28.125rem] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+    <div className="flex w-[28.125rem] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
       <BackgroundImagePlaceholderDiv
         image={mainPoster}
         className="h-[33.125rem] w-[24.063rem] rounded drop-shadow-md"
