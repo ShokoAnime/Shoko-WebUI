@@ -92,7 +92,8 @@ const Series = () => {
 
   return (
     <div className="flex gap-x-8">
-      <div className="flex w-full max-w-[85.938rem] flex-col gap-y-8">
+      {/* I don't know why w-0 helps but it does, don't touch it. Without it, the container grows outside the screen */}
+      <div className="flex w-0 grow flex-col gap-y-8">
         <div className="flex flex-row gap-x-8">
           <div className="flex w-full gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
             <div className="flex w-full grow flex-col gap-y-2">
@@ -145,12 +146,12 @@ const Series = () => {
           <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
         </div>
         <Outlet context={{ scrollRef }} />
-        <div
-          className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
-          style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
-        />
       </div>
       <SeriesSidePanel series={series} />
+      <div
+        className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
+        style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
+      />
     </div>
   );
 };
