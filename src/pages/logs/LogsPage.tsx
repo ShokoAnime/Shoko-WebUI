@@ -66,9 +66,8 @@ const LogsPage = () => {
 
       <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
         <div
-          className="w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
+          className="contain-strict w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
           ref={parentRef}
-          style={{ contain: 'strict' }}
         >
           {logLines.length === 0
             ? (

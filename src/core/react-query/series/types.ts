@@ -48,7 +48,7 @@ export type SeriesTagsRequestType = {
 export type RefreshAniDBSeriesRequestType = {
   anidbID: number;
   force?: boolean;
-  createSeries?: boolean;
+  createSeriesEntry?: boolean;
   immediate?: boolean;
 };
 

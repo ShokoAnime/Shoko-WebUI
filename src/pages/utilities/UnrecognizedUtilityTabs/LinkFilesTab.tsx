@@ -171,7 +171,7 @@ const AnimeSelectPanel = (
   }, [searchQuery.data, seriesUpdating, updateSelectedSeries]);
 
   return (
-    <div className="flex w-1/2 flex-col gap-y-2">
+    <div className="contain-strict flex w-1/2 flex-col gap-y-2">
       <Input
         id="link-search"
         type="text"
@@ -354,7 +354,8 @@ function LinkFilesTab() {
     const doesNotExist = selectedSeries.ShokoID === null;
     if (doesNotExist) {
       try {
-        await refreshSeries({ anidbID: selectedSeries.ID, createSeries: true, immediate: true });
+        await refreshSeries({ anidbID: selectedSeries.ID, createSeriesEntry: true, immediate: true });
+        await seriesAniDBQuery.refetch();
       } catch (_) {
         toast.error('Failed to add series! Unable to create shoko series entry.');
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });

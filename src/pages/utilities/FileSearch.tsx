@@ -309,7 +309,7 @@ const FileSearch = () => {
           />
         </div>
       </ShokoPanel>
-      <div className="flex grow justify-between overflow-y-auto" style={{ contain: 'strict' }}>
+      <div className="contain-strict flex grow justify-between overflow-y-auto">
         <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-8 lg:max-w-[75%]">
           {fileCount > 0
             ? (
