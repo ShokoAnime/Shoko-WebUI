@@ -242,3 +242,7 @@ input:autofill {
 .ReactModal__Overlay--before-close {
   opacity: 0;
 }
+
+.contain-strict {
+  contain: strict;
+}
