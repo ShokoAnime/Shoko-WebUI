@@ -6,6 +6,7 @@ import { filter, keys, map, values } from 'lodash';
 
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
 import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
+import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -48,7 +49,10 @@ const buildFilter = (filters: FilterExpression[]): object => {
 };
 
 const mapCriteriaComponent = (criteria: FilterExpression) => {
-  if (criteria.Parameter && criteria.PossibleParameters) {
+  if (criteria.Expression === 'HasCustomTag' || criteria.Expression === 'HasTag') {
+    return TagCriteria;
+  }
+  if (criteria.PossibleParameters) {
     return MultiValueCriteria;
   }
   return DefaultCriteria;
