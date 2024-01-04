@@ -29,7 +29,7 @@ type Props = {
 };
 const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const dispatch = useDispatch();
-  const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
+  const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true }, show);
   const tags = tagsQuery.data;
   const [search, setSearch] = useState('');
   const selectedValues = useSelector(state => selectFilterValues(state, criteria.Expression));

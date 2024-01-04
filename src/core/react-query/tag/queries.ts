@@ -7,9 +7,10 @@ import type { TagsRequestType } from '@/core/react-query/tag/types';
 import type { ListResultType } from '@/core/types/api';
 import type { TagType } from '@/core/types/api/tags';
 
-export const useAniDBTagsQuery = (params: TagsRequestType) =>
+export const useAniDBTagsQuery = (params: TagsRequestType, enabled = true) =>
   useQuery<ListResultType<TagType>, unknown, TagType[]>({
     queryKey: ['tags', 'anidb', params],
     queryFn: () => axios.get('Tag/AniDB', { params }),
     select: transformListResultSimplified,
+    enabled,
   });
