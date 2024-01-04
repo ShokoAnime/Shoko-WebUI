@@ -46,7 +46,7 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const virtualizer = useVirtualizer({
     count: unusedValues.length,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 20,
+    estimateSize: () => 24,
   });
   const virtualItems = virtualizer.getVirtualItems();
 
@@ -97,23 +97,27 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
       </div>
-      <div
-        ref={scrollRef}
-        style={{ height: virtualizer.getTotalSize() }}
-        className="shoko-scrollbar flex min-h-[15rem] grow flex-col gap-y-1 overflow-y-auto bg-panel-background-alt p-4"
-      >
-        {virtualItems.map((virtualRow) => {
-          const value = unusedValues[virtualRow.index];
-          return (
-            <div
-              onClick={handleSelect(String(value.ID))}
-              className="leading-tight"
-              key={value.ID}
-            >
-              {value.Name}
-            </div>
-          );
-        })}
+      <div className="shoko-scrollbar overflow-y-auto">
+        <div
+          ref={scrollRef}
+          style={{ height: virtualizer.getTotalSize() }}
+          className="shoko-scrollbar relative min-h-[15rem] bg-panel-background-alt p-4"
+        >
+          {virtualItems.map((virtualRow) => {
+            const value = unusedValues[virtualRow.index];
+            return (
+              <div
+                className="absolute left-0 top-0 w-full leading-tight"
+                style={{ transform: `translateY(${virtualRow.start}px)` }}
+                onClick={handleSelect(String(value.ID))}
+                key={value.ID}
+                ref={virtualizer.measureElement}
+              >
+                {value.Name}
+              </div>
+            );
+          })}
+        </div>
       </div>
       <div className="grow">
         <div className="shoko-scrollbar flex grow flex-col gap-x-2 overflow-auto bg-panel-background-alt">
