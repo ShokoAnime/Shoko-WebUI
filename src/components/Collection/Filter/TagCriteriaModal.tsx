@@ -97,28 +97,32 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
       </div>
-      <div className="shoko-scrollbar overflow-y-auto">
-        <div
-          ref={scrollRef}
-          style={{ height: virtualizer.getTotalSize() }}
-          className="shoko-scrollbar relative min-h-[15rem] bg-panel-background-alt p-4"
-        >
-          {virtualItems.map((virtualRow) => {
-            const value = unusedValues[virtualRow.index];
-            return (
-              <div
-                className="absolute left-0 top-0 w-full leading-tight"
-                style={{ transform: `translateY(${virtualRow.start}px)` }}
-                onClick={handleSelect(String(value.ID))}
-                key={value.ID}
-                ref={virtualizer.measureElement}
-              >
-                {value.Name}
-              </div>
-            );
-          })}
+      {/* FIXME: this prevents list from disappearing but breaks the closing animation, find a better way to do this */}
+      {show && (
+        <div className="shoko-scrollbar overflow-y-auto">
+          <div
+            ref={scrollRef}
+            style={{ height: virtualizer.getTotalSize() }}
+            className="shoko-scrollbar relative min-h-[15rem] bg-panel-background-alt p-4"
+          >
+            {virtualItems.map((virtualRow) => {
+              const value = unusedValues[virtualRow.index];
+              return (
+                <div
+                  className="absolute left-0 top-0 w-full leading-tight"
+                  style={{ transform: `translateY(${virtualRow.start}px)` }}
+                  onClick={handleSelect(String(value.ID))}
+                  key={value.ID}
+                  ref={virtualizer.measureElement}
+                  data-index={virtualRow.index}
+                >
+                  {value.Name}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
       <div className="grow">
         <div className="shoko-scrollbar flex grow flex-col gap-x-2 overflow-auto bg-panel-background-alt">
           {map([...selectedValues, ...unsavedValues], value => (
