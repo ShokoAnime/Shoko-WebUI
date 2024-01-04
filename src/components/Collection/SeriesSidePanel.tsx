@@ -22,10 +22,10 @@ const SeriesSidePanel = ({ series }: SeriesSidePanelProps) => {
   const onClickHandler = useEventCallback(() => setShowEditSeriesModal(true));
 
   return (
-    <div className="flex w-[28.125rem] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+    <div className="hidden w-full flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8 lg:order-last lg:flex lg:max-w-[35%] 2xl:max-w-[28.125rem]">
       <BackgroundImagePlaceholderDiv
         image={mainPoster}
-        className="h-[33.125rem] w-[24.063rem] rounded drop-shadow-md"
+        className="aspect-[5/6] rounded drop-shadow-md lg:aspect-[4/6] 2xl:h-[33.125rem] 2xl:w-[24.063rem]"
       >
         {(series.AniDB?.Restricted ?? false) && (
           <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">

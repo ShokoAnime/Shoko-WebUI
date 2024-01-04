@@ -95,7 +95,7 @@ const SeriesEpisodes = () => {
       <ShokoPanel
         title="Search & Filter"
         className="flex w-full flex-row"
-        contentClassName="!flex-row gap-x-8"
+        contentClassName="!flex-row gap-x-8 flex-wrap 2xl:flex-nowrap"
         transparent
         fullHeight={false}
       >
@@ -161,20 +161,28 @@ const SeriesEpisodes = () => {
       <div className="flex gap-x-8">
         <div className="flex grow flex-col gap-y-4">
           <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-            <div className="text-xl font-semibold">
-              Episodes
-              <span className="px-2">|</span>
-              <span className="pr-2 text-panel-text-important">
-                {isSuccess ? episodeCount : '-'}
+            <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
+              <span>Episodes</span>
+              <span className="hidden px-2 2xl:inline">|</span>
+              <span>
+                <span className="pr-2 text-panel-text-important">
+                  {isSuccess ? episodeCount : '-'}
+                </span>
+                Entries Listed
               </span>
-              Entries Listed
             </div>
-            <div className="flex gap-x-6">
-              <Button className="flex gap-x-2 !font-normal" onClick={markWatched}>
+            <div className="flex gap-x-4 xl:gap-x-6">
+              <Button
+                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                onClick={markWatched}
+              >
                 <Icon path={mdiEyeCheckOutline} size={1} />
                 Mark Filtered As Watched
               </Button>
-              <Button className="flex gap-x-2 !font-normal" onClick={markUnwatched}>
+              <Button
+                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                onClick={markUnwatched}
+              >
                 <Icon path={mdiEyeOutline} size={1} />
                 Mark Filtered As Unwatched
               </Button>

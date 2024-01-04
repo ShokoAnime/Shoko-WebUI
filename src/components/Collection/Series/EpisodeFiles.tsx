@@ -70,11 +70,11 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleRescan(selectedFile.ID)}
                 >
-                  <Icon className="text-panel-icon-action" path={mdiRefresh} size={1} />
+                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiRefresh} size={1} />
                   Force Update File Info
                 </div>
                 <div className="flex items-center gap-x-2">
-                  <Icon className="text-panel-icon-action" path={mdiEyeOutline} size={1} />
+                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiEyeOutline} size={1} />
                   {selectedFile.IsVariation ? 'Unmark' : 'Mark'}
                   &nbsp;File as Variation
                 </div>
@@ -109,14 +109,14 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
               <div className="flex text-center">
                 <Button
                   buttonType="danger"
-                  className="flex gap-x-2 px-4 py-3"
+                  className="flex items-center gap-x-2 px-4 py-3"
                   onClick={() => {
                     setShowDeleteModal(true);
                     setSelectedFileToDelete(selectedFile);
                   }}
                 >
                   <Icon path={mdiTrashCanOutline} size={1} />
-                  Delete File
+                  <span className="hidden lg:inline">Delete File</span>
                 </Button>
               </div>
             </div>
