@@ -9,11 +9,11 @@ type Props = {
   buttonTypes?: 'primary' | 'secondary' | 'danger';
   className?: string;
   children: React.ReactNode;
+  content: React.ReactNode | string;
   disabled?: boolean;
   loading?: boolean;
   loadingSize?: number;
   tooltip?: string;
-  text: string;
 };
 
 const buttonTypeClasses = {
@@ -30,10 +30,10 @@ const ButtonDropdown = (props: Props) => {
     buttonTypes,
     children,
     className,
+    content,
     disabled,
     loading,
     loadingSize,
-    text,
     tooltip,
   } = props;
 
@@ -50,7 +50,7 @@ const ButtonDropdown = (props: Props) => {
         title={tooltip}
         className={cx([
           `${className} button rounded font-semibold transition ease-in-out focus:shadow-none focus:outline-none min-w-full`,
-          `${buttonTypeClasses[buttonTypes ?? 'secondary']} border border-panel-border`,
+          buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes ?? 'secondary']} border border-panel-border`,
           loading && 'cursor-default',
           disabled && 'cursor-default opacity-50',
         ])}
@@ -58,29 +58,27 @@ const ButtonDropdown = (props: Props) => {
         disabled={disabled}
       >
         {loading && (
-          <div className="flex justify-center">
+          <div className="flex items-center justify-center">
             <Icon path={mdiLoading} spin size={loadingSize ?? 1} />
           </div>
         )}
 
         {!loading && (
-          <div className="flex flex-row justify-between">
-            <span>{text}</span>
+          <div className="flex flex-row items-center justify-between">
+            <span>{content}</span>
             <Icon path={mdiChevronDown} size={1} />
           </div>
         )}
       </button>
       <div
         className={cx([
-          'flex-col fixed z-10 origin-top-right text-right overflow-hidden',
+          'flex-col fixed z-10 origin-top-right text-right overflow-hidden justify-center w-full',
           open ? 'flex' : 'hidden',
-          buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes ?? 'secondary']} border border-panel-border`,
+          buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes]} border border-panel-border`,
         ])}
         style={{ maxWidth: `${bounds.width}px` }}
       >
-        <div className="py-1" role="none">
-          {children}
-        </div>
+        {children}
       </div>
     </div>
   );

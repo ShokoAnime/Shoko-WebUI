@@ -297,8 +297,8 @@ function UnrecognizedTab() {
               />
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
                 <ButtonDropdown
-                  text="Options"
                   className="px-4 py-2.5"
+                  content="Options"
                 >
                   <Button
                     buttonType="primary"
