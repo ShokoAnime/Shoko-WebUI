@@ -20,6 +20,7 @@ import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
+import ButtonDropdown from '@/components/Input/ButtonDropdown';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
@@ -295,25 +296,30 @@ function UnrecognizedTab() {
                 setSeriesSelectModal={setSeriesSelectModal}
               />
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
-                <Button
-                  buttonType="primary"
-                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                  onClick={() => navigate('link', { state: { selectedRows } })}
+                <ButtonDropdown
+                  text="Options"
+                  className="px-4 py-2.5"
                 >
-                  <Icon path={mdiOpenInNew} size={0.8333} />
-                  Manual Link
-                </Button>
-                <Button
-                  buttonType="primary"
-                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                  onClick={handleAvdumpClick}
-                  disabled={dumpInProgress}
-                >
-                  <Icon path={mdiDumpTruck} size={0.8333} />
-                  {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
-                  {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
-                  {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
-                </Button>
+                  <Button
+                    buttonType="primary"
+                    className="flex gap-x-2.5 px-2 py-3"
+                    onClick={() => navigate('link', { state: { selectedRows } })}
+                  >
+                    <Icon path={mdiOpenInNew} size={0.8333} />
+                    Manual Link
+                  </Button>
+                  <Button
+                    buttonType="primary"
+                    className="flex gap-x-2.5 px-2 py-3"
+                    onClick={handleAvdumpClick}
+                    disabled={dumpInProgress}
+                  >
+                    <Icon path={mdiDumpTruck} size={0.8333} />
+                    {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
+                    {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
+                    {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                  </Button>
+                </ButtonDropdown>
               </TransitionDiv>
             </div>
           </ShokoPanel>
