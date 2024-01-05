@@ -7,6 +7,7 @@ type State = {
   filterCriteria: Record<string, FilterExpression>;
   filterConditions: Record<string, boolean>;
   filterValues: Record<string, string[]>;
+  filterTags: Record<number, boolean>;
   activeFilter: object | null;
 };
 
@@ -16,6 +17,7 @@ const collectionSlice = createSlice({
     filterCriteria: {},
     filterConditions: {},
     filterValues: {},
+    filterTags: {},
     activeFilter: null,
   } as State,
   reducers: {
@@ -39,6 +41,9 @@ const collectionSlice = createSlice({
     setFilterValues(sliceState, action: PayloadAction<Record<string, string[]>>) {
       sliceState.filterValues = { ...sliceState.filterValues, ...action.payload };
     },
+    setFilterTag(sliceState, action: PayloadAction<Record<number, boolean>>) {
+      sliceState.filterTags = { ...sliceState.filterTags, ...action.payload };
+    },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
       sliceState.activeFilter = action.payload;
     },
@@ -54,6 +59,7 @@ export const {
   removeFilterCriteria,
   resetActiveFilter,
   setActiveFilter,
+  setFilterTag,
   setFilterValues,
 } = collectionSlice.actions;
 

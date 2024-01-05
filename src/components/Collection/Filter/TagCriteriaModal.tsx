@@ -1,25 +1,26 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMagnify } from '@mdi/js';
+import { mdiMagnify, mdiPlusCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { filter, map, pull } from 'lodash';
+import cx from 'classnames';
+import { filter, find, map, omit, pickBy, toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
-import { setFilterValues } from '@/core/slices/collection';
+import { setFilterTag } from '@/core/slices/collection';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
-const selectFilterValues = createSelector(
+const selectFilterTags = createSelector(
   [
-    (state: RootState) => state.collection.filterValues,
-    (state, expression: string) => expression,
+    (state: RootState) => state.collection,
   ],
-  (values, expression) => values[expression] ?? [],
+  values => values.filterTags ?? {},
 );
 
 type Props = {
@@ -32,15 +33,21 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true }, show);
   const tags = tagsQuery.data;
   const [search, setSearch] = useState('');
-  const selectedValues = useSelector(state => selectFilterValues(state, criteria.Expression));
-  const [unsavedValues, setUnsavedValues] = useState([] as string[]);
+  // included - true, excluded - false
+  const [selectMode, setSelectMode] = useState<boolean>(true);
+  const selectedValues = useSelector(selectFilterTags);
+  const [unsavedValues, setUnsavedValues] = useState<Record<number, boolean>>({});
   const unusedValues = useMemo(
     () =>
       filter(
         tags,
-        item => selectedValues.indexOf(String(item.ID)) === -1 && unsavedValues.indexOf(String(item.ID)) === -1,
+        item => selectedValues[item.ID] === undefined && unsavedValues[item.ID] === undefined,
       ),
     [tags, selectedValues, unsavedValues],
+  );
+  const combinedSelectedValues = useMemo(
+    () => pickBy({ ...selectedValues, ...unsavedValues }, isExcluded => isExcluded === selectMode),
+    [selectMode, selectedValues, unsavedValues],
   );
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -50,32 +57,32 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   });
   const virtualItems = virtualizer.getVirtualItems();
 
-  const selectValue = (value: string) => {
-    setUnsavedValues([...unsavedValues, value]);
-  };
-
-  const removeValue = (value: string) => {
-    if (unsavedValues.indexOf(value) !== -1) {
-      setUnsavedValues(pull([...unsavedValues], value));
+  const removeValue = (value: number) => {
+    if (unsavedValues[value]) {
+      setUnsavedValues(omit({ ...unsavedValues }, value));
     }
-    if (selectedValues.indexOf(value) !== -1) {
-      dispatch(setFilterValues({ [criteria.Expression]: pull([...selectedValues], value) }));
+    if (selectedValues[value]) {
+      dispatch(setFilterTag(omit({ ...selectedValues }, value)));
     }
   };
 
   const handleCancel = () => {
-    setUnsavedValues([]);
+    setUnsavedValues({});
     onClose();
   };
 
   const handleSave = () => {
-    dispatch(setFilterValues({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
-    setUnsavedValues([]);
+    dispatch(setFilterTag({ ...selectedValues, ...unsavedValues }));
+    setUnsavedValues({});
     onClose();
   };
 
-  const handleSelect = (id: string) => () => {
-    selectValue(id);
+  const selectTag = (id: number, isExcluded: boolean) => () => {
+    setUnsavedValues({ ...unsavedValues, [id]: isExcluded });
+  };
+
+  const handleSetSelectMode = (mode: boolean) => () => {
+    setSelectMode(mode);
   };
 
   return (
@@ -85,9 +92,8 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
       onRequestClose={onClose}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
-      noGap
     >
-      <div className="flex gap-2">
+      <div className="flex flex-col gap-y-4 overflow-y-auto">
         <Input
           id="search"
           startIcon={mdiMagnify}
@@ -96,46 +102,76 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
           value={search}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
-      </div>
-      {/* FIXME: this prevents list from disappearing but breaks the closing animation, find a better way to do this */}
-      {show && (
-        <div className="shoko-scrollbar overflow-y-auto">
-          <div
-            ref={scrollRef}
-            style={{ height: virtualizer.getTotalSize() }}
-            className="shoko-scrollbar relative min-h-[15rem] bg-panel-background-alt p-4"
-          >
-            {virtualItems.map((virtualRow) => {
-              const value = unusedValues[virtualRow.index];
-              return (
-                <div
-                  className="absolute left-0 top-0 w-full leading-tight"
-                  style={{ transform: `translateY(${virtualRow.start}px)` }}
-                  onClick={handleSelect(String(value.ID))}
-                  key={value.ID}
-                  ref={virtualizer.measureElement}
-                  data-index={virtualRow.index}
-                >
-                  {value.Name}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-      <div className="grow">
-        <div className="shoko-scrollbar flex grow flex-col gap-x-2 overflow-auto bg-panel-background-alt">
-          {map([...selectedValues, ...unsavedValues], value => (
+        {/* FIXME: this prevents list from disappearing but breaks the closing animation, find a better way to do this */}
+        {show && (
+          <div className="shoko-scrollbar overflow-y-auto bg-panel-background-alt p-4">
             <div
-              className="p-2"
-              onClick={() => {
-                removeValue(value);
-              }}
-              key={value}
+              ref={scrollRef}
+              style={{ height: virtualizer.getTotalSize() }}
+              className="relative min-h-[15rem]"
             >
-              {value}
+              {virtualItems.map((virtualRow) => {
+                const value = unusedValues[virtualRow.index];
+                return (
+                  <div
+                    className="absolute left-0 top-0 flex w-full justify-between leading-tight"
+                    style={{ transform: `translateY(${virtualRow.start}px)` }}
+                    key={value.ID}
+                    ref={virtualizer.measureElement}
+                    data-index={virtualRow.index}
+                  >
+                    {value.Name}
+                    <div className="flex gap-x-2">
+                      <div onClick={selectTag(value.ID, true)}>
+                        <Icon
+                          className="cursor-pointer text-panel-icon-important"
+                          path={mdiPlusCircleOutline}
+                          size={1}
+                        />
+                      </div>
+                      <div onClick={selectTag(value.ID, false)}>
+                        <Icon className="cursor-pointer text-panel-icon-danger" path={mdiPlusCircleOutline} size={1} />
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
-          ))}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex gap-x-2">
+          <span>Selected Tags</span>
+          <span className="px-2">{'>'}</span>
+          <span
+            className={cx('cursor-pointer', { 'text-panel-text-primary': selectMode })}
+            onClick={handleSetSelectMode(true)}
+          >
+            Included
+          </span>
+          <span>|</span>
+          <span
+            className={cx('cursor-pointer', { 'text-panel-text-primary': !selectMode })}
+            onClick={handleSetSelectMode(false)}
+          >
+            Excluded
+          </span>
+        </div>
+        <div className="min-h-[15rem] grow bg-panel-background-alt p-4">
+          <div className="shoko-scrollbar flex grow flex-col gap-x-2 overflow-auto bg-panel-background-alt">
+            {map(combinedSelectedValues, (isExcluded, tagId) => (
+              <div
+                className="leading-tight"
+                onClick={() => {
+                  removeValue(toNumber(tagId));
+                }}
+                key={tagId}
+              >
+                {find(tags, { ID: toNumber(tagId) })?.Name}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
