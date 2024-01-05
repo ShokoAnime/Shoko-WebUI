@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFolderOpen } from '@mdi/js';
 import { find } from 'lodash';
@@ -60,17 +60,18 @@ function ImportFolderModal() {
   };
 
   const handleBrowse = () => dispatch(setBrowseStatus(true));
-  const handleClose = () => dispatch(setStatus(false));
-  const handleDelete = () => {
+  const handleClose = useCallback(() => dispatch(setStatus(false)), [dispatch]);
+
+  const handleDelete = useCallback(() => {
     deleteFolder({ folderId: ID }, {
       onSuccess: () => {
         toast.success('Import folder deleted!');
         dispatch(setStatus(false));
       },
     });
-  };
+  }, [ID, deleteFolder, dispatch]);
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (edit) {
       updateFolder(importFolder, {
         onSuccess: () => {
@@ -86,7 +87,7 @@ function ImportFolderModal() {
         },
       });
     }
-  };
+  }, [createFolder, dispatch, edit, importFolder, updateFolder]);
 
   const onFolderSelect = (Path: string) => setImportFolder({ ...importFolder, Path });
   const isLoading = isCreatePending || isDeletePending || isUpdatePending;
@@ -95,7 +96,7 @@ function ImportFolderModal() {
     <>
       <ModalPanel
         show={status}
-        onRequestClose={() => handleClose()}
+        onRequestClose={handleClose}
         onAfterOpen={() => getFolderDetails()}
         title={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
         size="sm"

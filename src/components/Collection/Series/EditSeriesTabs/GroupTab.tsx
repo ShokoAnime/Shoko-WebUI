@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 import { useDebounce } from 'usehooks-ts';
@@ -39,7 +39,7 @@ function GroupTab({ seriesId }: Props) {
     if (groupQuery.isSuccess) setName(groupQuery.data.Name);
   }, [groupQuery.isSuccess, groupQuery.data?.Name]);
 
-  const nameInputIcons = useCallback(() => {
+  const getNameInputIcons = () => {
     if (!nameEditable) {
       return [{
         icon: mdiPencilCircleOutline,
@@ -57,7 +57,7 @@ function GroupTab({ seriesId }: Props) {
       className: 'text-panel-text-primary',
       onClick: () => {}, // TODO: Need endpoint to update series
     }];
-  }, [nameEditable]);
+  };
 
   return (
     <div className="flex flex-col">
@@ -68,7 +68,7 @@ function GroupTab({ seriesId }: Props) {
         value={name}
         label="Name"
         className="mb-4"
-        endIcons={nameInputIcons()}
+        endIcons={getNameInputIcons()}
         disabled={!nameEditable}
       />
       <Input

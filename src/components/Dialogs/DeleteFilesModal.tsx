@@ -1,7 +1,6 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -30,10 +29,10 @@ const Title = ({ fileCount }: { fileCount: number }) => (
 function DeleteFilesModal(props: Props) {
   const { onClose, onConfirm, removeFile, selectedFiles, show: showModal } = props;
 
-  const handleConfirm = useEventCallback(() => {
+  const handleConfirm = useCallback(() => {
     onClose();
     onConfirm();
-  });
+  }, [onClose, onConfirm]);
 
   const fileList = useMemo(
     () =>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useEventCallback } from 'usehooks-ts';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { AniDBBanTypeEnum } from '@/core/types/signalr';
@@ -18,21 +17,13 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
 
   const banType = type === 'HTTP' ? AniDBBanTypeEnum.HTTPBan : AniDBBanTypeEnum.UDPBan;
 
-  const handleOpen = useEventCallback(() => {
-    setModalOpen(true);
-  });
-
-  const handleClose = useEventCallback(() => {
-    setModalOpen(false);
-  });
-
   if (banStatus.updateType !== banType || !banStatus.value) {
     return null;
   }
 
   return (
     <>
-      <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold" onClick={handleOpen}>
+      <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold" onClick={() => setModalOpen(true)}>
         <Icon path={mdiInformationOutline} size={1} className="text-topnav-icon-warning" />
         AniDB&nbsp;
         {type}
@@ -40,7 +31,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
       </div>
       <ModalPanel
         show={showModal}
-        onRequestClose={handleClose}
+        onRequestClose={() => setModalOpen(false)}
         size="sm"
         title={`AniDB ${type} Ban Detected`}
       >

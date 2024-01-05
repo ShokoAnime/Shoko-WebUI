@@ -1,5 +1,5 @@
 // This is the least maintainable file in the entire codebase
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   mdiLink,
@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -114,34 +114,28 @@ const AnimeResultRow = (
     updateSelectedSeries(series: SeriesAniDBSearchResult): void;
     data: SeriesAniDBSearchResult;
   },
-) => {
-  const handleOnClick = useEventCallback(() => {
-    updateSelectedSeries(data);
-  });
-
-  return (
-    <div
-      key={data.ID}
-      onClick={handleOnClick}
-      className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
+) => (
+  <div
+    key={data.ID}
+    onClick={() => updateSelectedSeries(data)}
+    className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
+  >
+    <a
+      className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
+      href={`https://anidb.net/anime/${data.ID}`}
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      <a
-        className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
-        href={`https://anidb.net/anime/${data.ID}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {data.ID}
-        <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
-      </a>
-      |
-      <div>{data.Title}</div>
-      <div className="ml-auto">{data.Type}</div>
-      |
-      <div className="w-10 shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
-    </div>
-  );
-};
+      {data.ID}
+      <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
+    </a>
+    |
+    <div>{data.Title}</div>
+    <div className="ml-auto">{data.Type}</div>
+    |
+    <div className="w-10 shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
+  </div>
+);
 
 const AnimeSelectPanel = (
   { placeholder, seriesUpdating, updateSelectedSeries }: {
@@ -264,7 +258,7 @@ function LinkFilesTab() {
     ))
   ), [episodes]);
 
-  const addLink = (FileID: number, EpisodeID = 0, LinkID?: number) =>
+  const addLink = useCallback((FileID: number, EpisodeID = 0, LinkID?: number) =>
     setLinks((linkState) => {
       if (EpisodeID === 0) {
         linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
@@ -277,28 +271,28 @@ function LinkFilesTab() {
         // eslint-disable-next-line no-param-reassign
         linkState[itemIndex].EpisodeID = EpisodeID;
       }
-    });
+    }), [setLinks]);
 
-  const duplicateLink = useEventCallback(() => {
+  const duplicateLink = useCallback(() => {
     addLink(orderedLinks[selectedLink].FileID);
-  });
+  }, [addLink, orderedLinks, selectedLink]);
 
-  const removeLink = useEventCallback(() => {
+  const removeLink = useCallback(() => {
     const { LinkID } = orderedLinks[selectedLink];
     setSelectedLink(-1);
     setLinks((linkState) => {
       const itemIndex = linkState.findLastIndex(link => link.LinkID === LinkID);
       linkState.splice(itemIndex, 1);
     });
-  });
+  }, [orderedLinks, selectedLink, setLinks]);
 
-  const updateSelectedLink = useEventCallback((idx: number) => {
+  const updateSelectedLink = (idx: number) => {
     if (isLinking) return;
     if (selectedLink === idx) setSelectedLink(-1);
     else setSelectedLink(idx);
-  });
+  };
 
-  const updateSelectedSeries = useEventCallback(async (series: SeriesAniDBSearchResult) => {
+  const updateSelectedSeries = async (series: SeriesAniDBSearchResult) => {
     setLinks((linkState) => {
       forEach(linkState, (link) => {
         // eslint-disable-next-line no-param-reassign
@@ -327,26 +321,26 @@ function LinkFilesTab() {
 
     toast.error('Failed to get series data!');
     setSeriesUpdating(false);
-  });
+  };
 
-  const editSelectedSeries = useEventCallback(() => {
+  const editSelectedSeries = useCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
-  });
+  }, []);
 
-  const openRangeFill = useEventCallback(() => {
+  const openRangeFill = useCallback(() => {
     setShowRangeFillModal(true);
-  });
+  }, []);
 
-  const closeRangeFill = useEventCallback(() => {
+  const closeRangeFill = useCallback(() => {
     setShowRangeFillModal(false);
-  });
+  }, []);
 
-  const cancelChanges = useEventCallback(() => {
+  const cancelChanges = useCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
     navigate('../');
-  });
+  }, [navigate]);
 
-  const saveChanges = useEventCallback(async () => {
+  const saveChanges = useCallback(async () => {
     if (isLinking) return;
     setSelectedLink(-1);
     const doesNotExist = selectedSeries.ShokoID === null;
@@ -360,9 +354,13 @@ function LinkFilesTab() {
       }
     }
     setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
-  });
+  }, [isLinking, refreshSeries, selectedSeries.ID, selectedSeries.ShokoID, seriesAniDBQuery]);
 
-  const rangeFill = useEventCallback((rangeStart: string, epType: string) => {
+  const saveChangesHandler = useCallback(() => {
+    saveChanges().then(() => {}, () => {});
+  }, [saveChanges]);
+
+  const rangeFill = (rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
       toast.error('Value is not a positive integer.');
       return;
@@ -380,9 +378,9 @@ function LinkFilesTab() {
       if (!ep) return;
       addLink(link.FileID, ep.value, link.LinkID);
     });
-  });
+  };
 
-  const autoFill = useEventCallback(() => {
+  const autoFill = useCallback(() => {
     if (!episodes.length) return;
     let hasChanged = false;
     let skipped = false;
@@ -443,9 +441,9 @@ function LinkFilesTab() {
         toast.success('Auto matching applied.', 'Be sure to verify before saving!');
       }
     }
-  });
+  }, [episodes, orderedLinks, setLinks, showDataMap]);
 
-  const makeLinks = useEventCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
+  const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
 
     const seriesEpisodesData = await seriesEpisodesQuery.refetch();
@@ -518,7 +516,16 @@ function LinkFilesTab() {
     setLinks([]);
     setSelectedSeries({} as SeriesAniDBSearchResult);
     navigate('../');
-  });
+  }, [
+    deleteSeries,
+    episodes,
+    linkManyFilesToOneEpisode,
+    linkOneFileToManyEpisodes,
+    navigate,
+    seriesEpisodesQuery,
+    setLinks,
+    showDataMap,
+  ]);
 
   useEffect(() => {
     if (links.length === 0) {
@@ -648,9 +655,7 @@ function LinkFilesTab() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => {
-                    saveChanges().then(() => {}, () => {});
-                  }}
+                  onClick={saveChangesHandler}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}

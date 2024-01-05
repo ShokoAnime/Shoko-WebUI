@@ -1,8 +1,8 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, find } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -37,7 +37,7 @@ const Menu = (
 
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
 
-  const restoreFiles = useEventCallback(() => {
+  const restoreFiles = useCallback(() => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: false }),
     );
@@ -51,7 +51,7 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [ignoreFile, selectedRows, setSelectedRows]);
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -66,7 +66,7 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => restoreFiles()} icon={mdiEyeOutline} name="Restore" highlight />
+        <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}

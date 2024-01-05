@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -24,7 +24,6 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import semver from 'semver';
 import { siDiscord } from 'simple-icons';
-import { useEventCallback } from 'usehooks-ts';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
@@ -69,6 +68,23 @@ const MenuItem = (
     {text}
   </NavLink>
 );
+
+const LinkMenuItem = (
+  props: { icon: string, onClick: () => void, path: string, text: string },
+) => {
+  const { icon, onClick, path, text } = props;
+  return (
+    <NavLink
+      to={path}
+      key={path.split('/').pop()}
+      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-topnav-text-primary')}
+      onClick={onClick}
+    >
+      <Icon path={icon} size={0.8333} />
+      {text}
+    </NavLink>
+  );
+};
 
 const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
   <a href={url} target="_blank" rel="noreferrer noopener" aria-label={`Open ${name}`}>
@@ -120,13 +136,13 @@ function TopNav() {
     setShowUtilitiesMenu(false);
   };
 
-  const handleQueueModalOpen = useEventCallback(() => {
+  const handleQueueModalOpen = () => {
     dispatch(setQueueModalOpen(true));
-  });
+  };
 
-  const handleQueueModalClose = useEventCallback(() => {
+  const handleQueueModalClose = () => {
     dispatch(setQueueModalOpen(false));
-  });
+  };
 
   const handleWebUiUpdate = () => {
     const renderToast = () => (
@@ -159,18 +175,6 @@ function TopNav() {
         }),
     });
   };
-
-  const renderLinkMenuItem = useCallback((path: string, text: string, icon: string) => (
-    <NavLink
-      to={path}
-      key={path.split('/').pop()}
-      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-topnav-text-primary')}
-      onClick={closeModalsAndSubmenus}
-    >
-      <Icon path={icon} size={0.8333} />
-      {text}
-    </NavLink>
-  ), []);
 
   const webuiUpdateStatus = useMemo(() => {
     if (isUpdateWebuiPending) return 'Updating...';
@@ -221,11 +225,21 @@ function TopNav() {
         <div className="bg-topnav-background text-topnav-text">
           <div className="mx-auto flex w-full max-w-[120rem] justify-between px-8 py-4">
             <div className="flex gap-x-8">
-              {renderLinkMenuItem('dashboard', 'Dashboard', mdiTabletDashboard)}
+              <LinkMenuItem
+                icon={mdiTabletDashboard}
+                onClick={closeModalsAndSubmenus}
+                path="dashboard"
+                text="Dashboard"
+              />
               <div
                 className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-50 pointer-events-none')}
               >
-                {renderLinkMenuItem('collection', 'Collection', mdiLayersTripleOutline)}
+                <LinkMenuItem
+                  icon={mdiLayersTripleOutline}
+                  onClick={closeModalsAndSubmenus}
+                  path="collection"
+                  text="Collection"
+                />
                 <MenuItem
                   id="utilities"
                   text="Utilities"
@@ -246,7 +260,12 @@ function TopNav() {
                   }}
                   isHighlighted={showActionsModal}
                 />
-                {renderLinkMenuItem('log', 'Log', mdiTextBoxOutline)}
+                <LinkMenuItem
+                  onClick={closeModalsAndSubmenus}
+                  icon={mdiTextBoxOutline}
+                  path="log"
+                  text="Log"
+                />
               </div>
             </div>
             <div className="flex justify-end gap-8">
@@ -323,9 +342,24 @@ function TopNav() {
           className="border-t border-topnav-border bg-topnav-background"
         >
           <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
-            {renderLinkMenuItem('utilities/unrecognized', 'Unrecognized Files', mdiFileQuestionOutline)}
-            {renderLinkMenuItem('utilities/series-without-files', 'Series Without Files', mdiFileDocumentAlertOutline)}
-            {renderLinkMenuItem('utilities/file-search', 'Files Search', mdiFileSearchOutline)}
+            <LinkMenuItem
+              icon={mdiFileQuestionOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/unrecognized"
+              text="Unrecognized Files"
+            />
+            <LinkMenuItem
+              icon={mdiFileDocumentAlertOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/series-without-files"
+              text="Series Without Files"
+            />
+            <LinkMenuItem
+              icon={mdiFileSearchOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/file-search"
+              text="Files Search"
+            />
           </div>
         </AnimateHeight>
       </div>

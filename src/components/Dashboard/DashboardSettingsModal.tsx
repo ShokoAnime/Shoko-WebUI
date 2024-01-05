@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
@@ -19,14 +19,16 @@ type Props = {
 const Title = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
 
+  const handleEdit = useCallback(() => {
+    dispatch(setLayoutEditMode(true));
+    onClose();
+  }, [dispatch, onClose]);
+
   return (
     <div className="flex items-center justify-between text-xl font-semibold">
       Display Settings
       <Button
-        onClick={() => {
-          dispatch(setLayoutEditMode(true));
-          onClose();
-        }}
+        onClick={handleEdit}
         buttonType="primary"
         className="px-2 py-1 text-sm"
       >
@@ -80,16 +82,16 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  };
+  }, [newSettings, onClose, patchSettings]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setNewSettings(settings);
     onClose();
-  };
+  }, [onClose, settings]);
 
   return (
     <ModalPanel

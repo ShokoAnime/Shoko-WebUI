@@ -1,11 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Button from '@/components/Input/Button';
@@ -72,7 +72,7 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const handleMarkWatched = useEventCallback((watched: boolean) => {
+  const handleMarkWatched = useCallback((watched: boolean) => {
     watchEpisode({
       seriesId: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
@@ -84,7 +84,10 @@ const SeriesEpisodes = () => {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
     });
-  });
+  }, [episodeFilterAvailability, episodeFilterHidden, episodeFilterType, episodeFilterWatched, seriesId, watchEpisode]);
+
+  const markWatched = useCallback(() => handleMarkWatched(true), [handleMarkWatched]);
+  const markUnwatched = useCallback(() => handleMarkWatched(false), [handleMarkWatched]);
 
   return (
     <>
@@ -166,11 +169,11 @@ const SeriesEpisodes = () => {
               Entries Listed
             </div>
             <div className="flex gap-x-6">
-              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(true)}>
+              <Button className="flex gap-x-2 !font-normal" onClick={markWatched}>
                 <Icon path={mdiEyeCheckOutline} size={1} />
                 Mark Filtered As Watched
               </Button>
-              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
+              <Button className="flex gap-x-2 !font-normal" onClick={markUnwatched}>
                 <Icon path={mdiEyeOutline} size={1} />
                 Mark Filtered As Unwatched
               </Button>

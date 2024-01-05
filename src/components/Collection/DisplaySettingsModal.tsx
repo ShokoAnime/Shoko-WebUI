@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { cloneDeep } from 'lodash';
 
@@ -39,16 +39,16 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
   const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  };
+  }, [newSettings, onClose, patchSettings]);
 
-  const handleCancel = () => {
+  const handleCancel = useCallback(() => {
     setNewSettings(settings);
     onClose();
-  };
+  }, [onClose, settings]);
 
   return (
     <ModalPanel

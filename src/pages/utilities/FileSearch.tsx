@@ -15,7 +15,7 @@ import {
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -63,23 +63,21 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useEventCallback(() => {
+  const showDeleteConfirmation = useCallback(() => {
     setShowConfirmModal(true);
-  });
+  }, []);
 
-  const cancelDelete = useEventCallback(() => {
+  const cancelDelete = useCallback(() => {
     setShowConfirmModal(false);
-  });
+  }, []);
 
-  const removeFileFromSelection = useEventCallback(
-    (fileId: number) =>
-      setSelectedRows((immerState) => {
-        immerState[fileId] = false;
-        return immerState;
-      }),
-  );
+  const removeFileFromSelection = useCallback((fileId: number) =>
+    setSelectedRows((immerState) => {
+      immerState[fileId] = false;
+      return immerState;
+    }), [setSelectedRows]);
 
-  const deleteFiles = useEventCallback(() => {
+  const deleteFiles = useCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
@@ -91,9 +89,9 @@ const Menu = (
 
     if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
-  });
+  }, [deleteFile, selectedRows, setSelectedRows]);
 
-  const rehashFiles = useEventCallback(() => {
+  const rehashFiles = useCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
 
@@ -105,9 +103,9 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
-  });
+  }, [rehashFile, selectedRows, setSelectedRows]);
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = useCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (file) => {
@@ -118,7 +116,7 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-  });
+  }, [rescanFile, selectedRows, setSelectedRows]);
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -133,8 +131,8 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
@@ -335,10 +333,10 @@ const FileSearch = () => {
                 <div className="flex w-full justify-between">
                   <span className="grow">Selected File</span>
                   <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
-                    <Button buttonType="secondary" onClick={() => onPrevView()}>
+                    <Button buttonType="secondary" onClick={onPrevView}>
                       <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
                     </Button>
-                    <Button buttonType="secondary" onClick={() => onNextView()}>
+                    <Button buttonType="secondary" onClick={onNextView}>
                       <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
                     </Button>
                   </div>

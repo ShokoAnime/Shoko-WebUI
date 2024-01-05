@@ -1,8 +1,8 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, forEach, toNumber } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -97,7 +97,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       });
   };
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = useCallback(() => {
     onClose(true);
 
     const promises = fileIds.map(fileId => rescanFile(toNumber(fileId)));
@@ -110,7 +110,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         if (failedCount !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
       })
       .catch(console.error);
-  });
+  }, [fileIds, onClose, rescanFile]);
 
   useLayoutEffect(() => () => {
     if (show) return;

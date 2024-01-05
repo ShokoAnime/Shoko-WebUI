@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -18,7 +18,7 @@ const SeriesSidePanel = ({ series }: SeriesSidePanelProps) => {
   const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
   const mainPoster = useMainPoster(series);
 
-  const onClickHandler = () => setShowEditSeriesModal(true);
+  const onClickHandler = useCallback(() => setShowEditSeriesModal(true), []);
 
   return (
     <div className="flex w-[28.125rem] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
