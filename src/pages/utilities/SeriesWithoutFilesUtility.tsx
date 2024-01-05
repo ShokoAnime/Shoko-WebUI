@@ -28,12 +28,12 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     item: series => (
       <div className="flex justify-between">
         {series.IDs.AniDB}
-        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
           target="_blank"
           rel="noreferrer noopener"
           className="mr-6 cursor-pointer text-panel-text-primary"
+          aria-label="Open AniDB series page"
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>

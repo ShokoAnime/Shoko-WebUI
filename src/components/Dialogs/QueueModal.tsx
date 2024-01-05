@@ -194,8 +194,8 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       value = Math.floor(value);
     }
 
-    // eslint-disable-next-line no-nested-ternary
-    value = value > 100 ? 100 : value < 0 ? 0 : value;
+    if (value > 100) value = 100;
+    else if (value < 0) value = 0;
 
     setPageSize(value);
   };

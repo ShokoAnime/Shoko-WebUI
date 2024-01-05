@@ -68,8 +68,8 @@ const generateLinkID = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
     lastLinkId = 0;
   }
-  // eslint-disable-next-line no-plusplus
-  return ++lastLinkId;
+  lastLinkId += 1;
+  return lastLinkId;
 };
 
 const parseLinks = (links: ManualLink[]) => {
@@ -261,17 +261,14 @@ function LinkFilesTab() {
 
   const addLink = useEventCallback(
     (FileID: number, EpisodeID = 0, LinkID?: number) =>
-      setLinks((linkState) => {
+      setLinks((immerState) => {
         if (EpisodeID === 0) {
-          linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+          immerState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
         } else {
-          // eslint-disable-next-line no-param-reassign
           const itemIndex = LinkID
-            ? linkState.findIndex(link => link.LinkID === LinkID)
-            : linkState.findIndex(link => link.FileID === FileID);
-          // We are using immer but eslint is stupid
-          // eslint-disable-next-line no-param-reassign
-          linkState[itemIndex].EpisodeID = EpisodeID;
+            ? immerState.findIndex(link => link.LinkID === LinkID)
+            : immerState.findIndex(link => link.FileID === FileID);
+          immerState[itemIndex].EpisodeID = EpisodeID;
         }
       }),
   );
