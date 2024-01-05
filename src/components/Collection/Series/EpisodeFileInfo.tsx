@@ -2,7 +2,7 @@ import React from 'react';
 import { get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import { useMediaInfo } from '@/hooks/useMediaInfo';
+import useMediaInfo from '@/hooks/useMediaInfo';
 
 import type { FileType } from '@/core/types/api/file';
 

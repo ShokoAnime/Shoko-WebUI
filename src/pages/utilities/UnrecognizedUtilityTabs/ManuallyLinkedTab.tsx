@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -25,7 +25,8 @@ import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 import { prefetchSeriesEpisodesInfiniteQuery, prefetchSeriesFilesQuery } from '@/core/react-query/series/prefetch';
 import { useSeriesWithLinkedFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -93,7 +94,7 @@ const refreshData = () => {
 };
 
 const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean>>) =>
-  useCallback(
+  useEventCallback(
     (fileIds: number[], select = true) => {
       setSelectedFiles((immerState) => {
         fileIds.forEach((fileId) => {
@@ -101,7 +102,6 @@ const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean
         });
       });
     },
-    [setSelectedFiles],
   );
 
 const FilesTable = ({ id: seriesId }: { id: number }) => {
@@ -124,7 +124,7 @@ const FilesTable = ({ id: seriesId }: { id: number }) => {
   const [episodes] = useFlattenListResult(episodesResult);
 
   const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext)!;
-  // TODO: Check if ManuallyLinkedFilesRow can be memoized so that the below useCallback is actually useful.
+  // TODO: Check if ManuallyLinkedFilesRow can be memoized so that the below useEventCallback is actually useful.
   const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
 
   return (
@@ -146,12 +146,12 @@ const Menu = (props: SelectedFilesType) => {
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const handleRefresh = useCallback(() => {
+  const handleRefresh = useEventCallback(() => {
     refreshData();
     setSelectedFiles({});
-  }, [setSelectedFiles]);
+  });
 
-  const rescanFiles = useCallback(() => {
+  const rescanFiles = useEventCallback(() => {
     const promises = selectedIds.map(fileId => rescanFile(fileId));
 
     Promise
@@ -162,7 +162,7 @@ const Menu = (props: SelectedFilesType) => {
         if (failedCount !== selectedIds.length) toast.success(`Rescanning ${selectedIds.length} files!`);
       })
       .catch(console.error);
-  }, [rescanFile, selectedIds]);
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -194,7 +194,7 @@ function ManuallyLinkedTab() {
 
   const [selectedFiles, setSelectedFiles] = useImmer<Record<number, boolean>>({});
 
-  const unlinkFiles = useCallback(() => {
+  const unlinkFiles = useEventCallback(() => {
     const fileIds = Object.keys(selectedFiles);
 
     const promises = fileIds.map(fileId => unlinkFile(toNumber(fileId)));
@@ -209,7 +209,7 @@ function ManuallyLinkedTab() {
         setSelectedFiles({});
       })
       .catch(console.error);
-  }, [selectedFiles, setSelectedFiles, unlinkFile]);
+  });
 
   const onExpand = async (id: number) => {
     await prefetchSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] });

@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   mdiCloseCircleOutline,
@@ -16,6 +16,7 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useQueueOperationMutation } from '@/core/react-query/queue/mutations';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { SignalRQueueType } from '@/core/types/signalr';
@@ -26,9 +27,9 @@ const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 const QueueItem = ({ item, queue }: { queue: keyof typeof icons, item: SignalRQueueType }) => {
   const { mutate: queueOperation } = useQueueOperationMutation();
 
-  const handleStart = useCallback(() => queueOperation({ operation: 'Start', queue }), [queue, queueOperation]);
-  const handleStop = useCallback(() => queueOperation({ operation: 'Stop', queue }), [queue, queueOperation]);
-  const handleClear = useCallback(() => queueOperation({ operation: 'Clear', queue }), [queue, queueOperation]);
+  const handleStart = useEventCallback(() => queueOperation({ operation: 'Start', queue }));
+  const handleStop = useEventCallback(() => queueOperation({ operation: 'Stop', queue }));
+  const handleClear = useEventCallback(() => queueOperation({ operation: 'Clear', queue }));
 
   return (
     <div className="flex flex-col">
@@ -72,15 +73,13 @@ const Options = () => {
 
   const { mutate: queueOperation } = useQueueOperationMutation();
 
-  const handleStart = useCallback(() => queueOperation({ operation: 'StartAll' }), [queueOperation]);
-  const handleStop = useCallback(() => queueOperation({ operation: 'StopAll' }), [queueOperation]);
-  const handleClear = useCallback(() => queueOperation({ operation: 'ClearAll' }), [queueOperation]);
+  const handleStart = useEventCallback(() => queueOperation({ operation: 'StartAll' }));
+  const handleStop = useEventCallback(() => queueOperation({ operation: 'StopAll' }));
+  const handleClear = useEventCallback(() => queueOperation({ operation: 'ClearAll' }));
 
   const paused = some(items, item => item?.status === 'Pausing' || item?.status === 'Paused');
 
-  const handleOpenQueueDialog = useCallback(() => {
-    dispatch(setQueueModalOpen(true));
-  }, [dispatch]);
+  const handleOpenQueueDialog = useEventCallback(() => dispatch(setQueueModalOpen(true)));
 
   return (
     <div className="flex gap-x-2">

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -10,6 +10,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const actions = {
   import: {
@@ -92,11 +93,11 @@ const Action = ({ actionKey }: { actionKey: string }) => {
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
 
-  const handleAction = useCallback(() => {
+  const handleAction = useEventCallback(() => {
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
-  }, [functionName, name, runAction]);
+  });
 
   return (
     <TransitionDiv className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">

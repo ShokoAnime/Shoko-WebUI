@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
@@ -9,6 +9,7 @@ import toast from '@/components/Toast';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import CollectionStats from './panels/CollectionStats';
 import ContinueWatching from './panels/ContinueWatching';
@@ -60,14 +61,14 @@ function DashboardPage() {
     if (settingsQuery.isSuccess) setCurrentLayout(dashboard);
   }, [settings, settingsQuery.isSuccess]);
 
-  const cancelLayoutChange = useCallback(() => {
+  const cancelLayoutChange = useEventCallback(() => {
     const { layout: { dashboard } } = settings.WebUI_Settings;
     setCurrentLayout(dashboard);
     dispatch(setLayoutEditMode(false));
     toast.dismiss('layoutEditMode');
-  }, [settings, dispatch]);
+  });
 
-  const saveLayout = useCallback(() => {
+  const saveLayout = useEventCallback(() => {
     const newSettings = JSON.parse(JSON.stringify(settings)) as SettingsType; // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
     newSettings.WebUI_Settings.layout.dashboard = currentLayout;
     patchSettings({ newSettings }, {
@@ -78,7 +79,7 @@ function DashboardPage() {
       },
       onError: error => toast.error('', error.message),
     });
-  }, [currentLayout, dispatch, patchSettings, settings]);
+  });
 
   useEffect(() => {
     if (layoutEditMode) {

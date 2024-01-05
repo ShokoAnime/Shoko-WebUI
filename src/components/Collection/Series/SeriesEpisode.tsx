@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiEyeCheckOutline, mdiEyeOffOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -10,6 +10,7 @@ import Button from '@/components/Input/Button';
 import { useHideEpisodeMutation, useWatchEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { useEpisodeFilesQuery } from '@/core/react-query/episode/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
@@ -51,14 +52,8 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
   const { mutate: markWatched } = useWatchEpisodeMutation(page);
   const { mutate: markHidden } = useHideEpisodeMutation();
 
-  const handleMarkWatched = useCallback(
-    () => markWatched({ episodeId, watched: episode.Watched === null }),
-    [episode.Watched, episodeId, markWatched],
-  );
-  const handleMarkHidden = useCallback(
-    () => markHidden({ episodeId, hidden: !episode.IsHidden }),
-    [episode.IsHidden, episodeId, markHidden],
-  );
+  const handleMarkWatched = useEventCallback(() => markWatched({ episodeId, watched: episode.Watched === null }));
+  const handleMarkHidden = useEventCallback(() => markHidden({ episodeId, hidden: !episode.IsHidden }));
 
   return (
     <>

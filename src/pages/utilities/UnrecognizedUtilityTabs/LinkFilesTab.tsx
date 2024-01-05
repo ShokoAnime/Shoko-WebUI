@@ -1,5 +1,5 @@
 // This is the least maintainable file in the entire codebase
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   mdiLink,
@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -42,6 +42,7 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
@@ -67,8 +68,8 @@ const generateLinkID = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
     lastLinkId = 0;
   }
-  // eslint-disable-next-line no-plusplus
-  return ++lastLinkId;
+  lastLinkId += 1;
+  return lastLinkId;
 };
 
 const parseLinks = (links: ManualLink[]) => {
@@ -258,33 +259,32 @@ function LinkFilesTab() {
     ))
   ), [episodes]);
 
-  const addLink = useCallback((FileID: number, EpisodeID = 0, LinkID?: number) =>
-    setLinks((linkState) => {
-      if (EpisodeID === 0) {
-        linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        const itemIndex = LinkID
-          ? linkState.findIndex(link => link.LinkID === LinkID)
-          : linkState.findIndex(link => link.FileID === FileID);
-        // We are using immer but eslint is stupid
-        // eslint-disable-next-line no-param-reassign
-        linkState[itemIndex].EpisodeID = EpisodeID;
-      }
-    }), [setLinks]);
+  const addLink = useEventCallback(
+    (FileID: number, EpisodeID = 0, LinkID?: number) =>
+      setLinks((immerState) => {
+        if (EpisodeID === 0) {
+          immerState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+        } else {
+          const itemIndex = LinkID
+            ? immerState.findIndex(link => link.LinkID === LinkID)
+            : immerState.findIndex(link => link.FileID === FileID);
+          immerState[itemIndex].EpisodeID = EpisodeID;
+        }
+      }),
+  );
 
-  const duplicateLink = useCallback(() => {
+  const duplicateLink = useEventCallback(() => {
     addLink(orderedLinks[selectedLink].FileID);
-  }, [addLink, orderedLinks, selectedLink]);
+  });
 
-  const removeLink = useCallback(() => {
+  const removeLink = useEventCallback(() => {
     const { LinkID } = orderedLinks[selectedLink];
     setSelectedLink(-1);
     setLinks((linkState) => {
       const itemIndex = linkState.findLastIndex(link => link.LinkID === LinkID);
       linkState.splice(itemIndex, 1);
     });
-  }, [orderedLinks, selectedLink, setLinks]);
+  });
 
   const updateSelectedLink = (idx: number) => {
     if (isLinking) return;
@@ -323,24 +323,24 @@ function LinkFilesTab() {
     setSeriesUpdating(false);
   };
 
-  const editSelectedSeries = useCallback(() => {
+  const editSelectedSeries = useEventCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
-  }, []);
+  });
 
-  const openRangeFill = useCallback(() => {
+  const openRangeFill = useEventCallback(() => {
     setShowRangeFillModal(true);
-  }, []);
+  });
 
-  const closeRangeFill = useCallback(() => {
+  const closeRangeFill = useEventCallback(() => {
     setShowRangeFillModal(false);
-  }, []);
+  });
 
-  const cancelChanges = useCallback(() => {
+  const cancelChanges = useEventCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
     navigate('../');
-  }, [navigate]);
+  });
 
-  const saveChanges = useCallback(async () => {
+  const saveChanges = useEventCallback(async () => {
     if (isLinking) return;
     setSelectedLink(-1);
     const doesNotExist = selectedSeries.ShokoID === null;
@@ -354,11 +354,11 @@ function LinkFilesTab() {
       }
     }
     setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
-  }, [isLinking, refreshSeries, selectedSeries.ID, selectedSeries.ShokoID, seriesAniDBQuery]);
+  });
 
-  const saveChangesHandler = useCallback(() => {
+  const saveChangesHandler = useEventCallback(() => {
     saveChanges().then(() => {}, () => {});
-  }, [saveChanges]);
+  });
 
   const rangeFill = (rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
@@ -380,8 +380,6 @@ function LinkFilesTab() {
     });
   };
 
-  // TODO: This should be useCallback, fix it without breaking it..
-  // links/setLinks is a cyclic dependency in the chain of useCallbacks and useMemos
   const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
     let hasChanged = false;
@@ -445,7 +443,7 @@ function LinkFilesTab() {
     }
   });
 
-  const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
+  const makeLinks = useEventCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
 
     const seriesEpisodesData = await seriesEpisodesQuery.refetch();
@@ -518,16 +516,7 @@ function LinkFilesTab() {
     setLinks([]);
     setSelectedSeries({} as SeriesAniDBSearchResult);
     navigate('../');
-  }, [
-    deleteSeries,
-    episodes,
-    linkManyFilesToOneEpisode,
-    linkOneFileToManyEpisodes,
-    navigate,
-    seriesEpisodesQuery,
-    setLinks,
-    showDataMap,
-  ]);
+  });
 
   useEffect(() => {
     if (links.length === 0) {

@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import copy from 'copy-to-clipboard';
 import dayjs from 'dayjs';
 import advancedFormat from 'dayjs/plugin/advancedFormat';
@@ -6,8 +5,6 @@ import calendar from 'dayjs/plugin/calendar';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { isObject, toNumber } from 'lodash';
-
-import type { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
@@ -32,10 +29,13 @@ export function mergeDeep(...objects: object[]) {
       const oVal: unknown = obj[key];
 
       if (Array.isArray(pVal) && Array.isArray(oVal)) {
+        // eslint-disable-next-line no-param-reassign
         prev[key] = Array.from(new Set(pVal.concat(...oVal as [])));
       } else if (isObject(pVal) && isObject(oVal)) {
+        // eslint-disable-next-line no-param-reassign
         prev[key] = mergeDeep(pVal, oVal);
       } else {
+        // eslint-disable-next-line no-param-reassign
         prev[key] = oVal;
       }
     });
@@ -68,28 +68,3 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
   return (((toNumber(hours) * 3600) + (toNumber(minutes) * 60) + toNumber(seconds)) * 1000)
     + toNumber((durationMs ?? '0').slice(0, 3));
 };
-
-/**
- * Type predicate to narrow an unknown error to `FetchBaseQueryError`
- */
-export function isFetchBaseQueryError(
-  error: unknown,
-): error is FetchBaseQueryError {
-  return typeof error === 'object' && error != null && 'status' in error;
-}
-
-/**
- * Type predicate to narrow an unknown error to an object with a string 'message' property
- */
-export function isErrorWithMessage(
-  error: unknown,
-): error is { message: string } {
-  return (
-    typeof error === 'object'
-    && error != null
-    && 'message' in error
-    && typeof (error as Error).message === 'string'
-  );
-}
-
-export default {};

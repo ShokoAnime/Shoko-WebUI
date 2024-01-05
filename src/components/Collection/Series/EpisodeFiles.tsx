@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiEyeOutline, mdiOpenInNew, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
@@ -8,6 +8,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useDeleteFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import EpisodeFileInfo from './EpisodeFileInfo';
 
@@ -29,7 +30,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
     [selectedFileToDelete],
   );
 
-  const handleDelete = useCallback(() => {
+  const handleDelete = useEventCallback(() => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
@@ -38,12 +39,12 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
       },
       onError: error => toast.error(`Failed to delete file! ${error.message}`),
     });
-  }, [deleteFile, episodeId, selectedFileToDelete]);
+  });
 
-  const closeDeleteModal = useCallback(() => {
+  const closeDeleteModal = useEventCallback(() => {
     setSelectedFileToDelete(null);
     setShowDeleteModal(false);
-  }, []);
+  });
 
   const handleRescan = (id: number) =>
     rescanFile(id, {

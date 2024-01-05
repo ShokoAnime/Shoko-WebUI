@@ -6,7 +6,7 @@ import { useDebounce } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import { useGroupsInfiniteQuery } from '@/core/react-query/group/queries';
 import { useSeriesGroupQuery } from '@/core/react-query/series/queries';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 

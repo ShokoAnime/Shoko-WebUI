@@ -114,6 +114,7 @@ const SelectEpisodeList = (
     };
   }, []);
 
+  // Not entirely sure if should be change to useEventCallback as it's not an event handler, so leaving it.
   const handleDisplayRef = useCallback((node: HTMLDivElement | null) => {
     displayRef.current = node;
 

@@ -1,9 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import { useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId: number, site: string }) => {
   const linkId = Array.isArray(id) ? id[0] : id;
@@ -28,7 +29,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
 
   const canDisable = site === 'TvDB';
 
-  const disableMetadata = useCallback(() => {
+  const disableMetadata = useEventCallback(() => {
     switch (site) {
       case 'TvDB':
         deleteTvdbLink(seriesId);
@@ -36,7 +37,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
       default:
         break;
     }
-  }, [deleteTvdbLink, seriesId, site]);
+  });
 
   return (
     <div key={site} className="flex justify-between">
