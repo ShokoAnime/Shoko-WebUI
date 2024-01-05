@@ -4,7 +4,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { find, forEach, get, toNumber } from 'lodash';
 
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';

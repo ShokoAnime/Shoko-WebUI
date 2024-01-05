@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -41,8 +41,9 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { RootState } from '@/core/store';
@@ -70,24 +71,23 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useCallback(() => {
+  const showDeleteConfirmation = useEventCallback(() => {
     setShowConfirmModal(true);
-  }, []);
+  });
 
-  const cancelDelete = useCallback(() => {
+  const cancelDelete = useEventCallback(() => {
     setShowConfirmModal(false);
-  }, []);
+  });
 
-  const removeFileFromSelection = useCallback(
+  const removeFileFromSelection = useEventCallback(
     (fileId: number) =>
       setSelectedRows((immerState) => {
         immerState[fileId] = false;
         return immerState;
       }),
-    [setSelectedRows],
   );
 
-  const deleteFiles = useCallback(() => {
+  const deleteFiles = useEventCallback(() => {
     const promises = selectedRows.map(
       row => deleteFile({ fileId: row.ID, removeFolder: true }),
     );
@@ -101,9 +101,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [deleteFile, selectedRows, setSelectedRows]);
+  });
 
-  const ignoreFiles = useCallback(() => {
+  const ignoreFiles = useEventCallback(() => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: true }),
     );
@@ -117,9 +117,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [ignoreFile, selectedRows, setSelectedRows]);
+  });
 
-  const rehashFiles = useCallback(() => {
+  const rehashFiles = useEventCallback(() => {
     const promises = selectedRows.map(row => rehashFile(row.ID));
 
     Promise
@@ -131,9 +131,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rehashFile, selectedRows, setSelectedRows]);
+  });
 
-  const rescanFiles = useCallback(() => {
+  const rescanFiles = useEventCallback(() => {
     const promises = selectedRows.map(row => rescanFile(row.ID));
 
     Promise
@@ -145,7 +145,7 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [rescanFile, selectedRows, setSelectedRows]);
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -256,15 +256,15 @@ function UnrecognizedTab() {
   );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
-  const handleAvdumpClick = useCallback(() => {
+  const handleAvdumpClick = useEventCallback(() => {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     } else {
       selectedRows.forEach(row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID));
     }
-  }, [avdumpFile, dumpInProgress, isAvdumpFinished, selectedRows]);
+  });
 
-  const getED2KLinks = useCallback(() => ({
+  const getED2KLinks = useEventCallback(() => ({
     fileIds: selectedRows.map(file => file.ID),
     links: selectedRows.map(
       file =>
@@ -272,7 +272,7 @@ function UnrecognizedTab() {
           file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
         }|${file.Size}|${file.Hashes.ED2K}|/`,
     ),
-  }), [selectedRows]);
+  }));
 
   return (
     <>

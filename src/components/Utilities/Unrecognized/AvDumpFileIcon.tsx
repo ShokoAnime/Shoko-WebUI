@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   mdiDumpTruck,
@@ -15,6 +15,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useAvdumpFileMutation } from '@/core/react-query/file/mutations';
 import { copyToClipboard } from '@/core/util';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
@@ -96,19 +97,19 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     } as const;
   }, [file, dumpSession, truck]);
 
-  const handleDump = useCallback((event: React.MouseEvent) => {
+  const handleDump = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
       avdumpFile(fileId);
     }
-  }, [avdumpFile, fileId, state]);
+  });
 
-  const handleCopy = useCallback((event: React.MouseEvent) => {
+  const handleCopy = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(hash)
       .then(() => toast.success('ED2K hash copied to clipboard!'))
       .catch(() => toast.error('ED2K hash copy failed!'));
-  }, [hash]);
+  });
 
   return (
     <div className="ml-4 flex">

@@ -66,7 +66,7 @@ export const useAudioInfo = <T extends FileType>(file?: T) => {
   return audioInfo;
 };
 
-export const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
+const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
   const videoInfo = useVideoInfo(file);
   const audioInfo = useAudioInfo(file);
   const { fileName, folderPath } = useMemo(() => {
@@ -92,3 +92,5 @@ export const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
     AudioInfo: audioInfo,
   };
 };
+
+export default useMediaInfo;

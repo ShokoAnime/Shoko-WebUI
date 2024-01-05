@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { cloneDeep } from 'lodash';
 
@@ -7,6 +7,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -39,16 +40,16 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
   const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
 
-  const handleSave = useCallback(() => {
+  const handleSave = useEventCallback(() => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  }, [newSettings, onClose, patchSettings]);
+  });
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = useEventCallback(() => {
     setNewSettings(settings);
     onClose();
-  }, [onClose, settings]);
+  });
 
   return (
     <ModalPanel

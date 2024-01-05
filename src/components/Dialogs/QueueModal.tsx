@@ -1,4 +1,4 @@
-import React, { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
   mdiAlertCircleOutline,
@@ -20,6 +20,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useQueueOperationMutation } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { QueueItemType } from '@/core/types/api/queue';
@@ -199,19 +200,16 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     setPageSize(value);
   };
 
-  const handleToggleAllQueues = useCallback(
+  const handleToggleAllQueues = useEventCallback(
     () => queueOperation({ operation: isAllPaused ? 'StartAll' : 'StopAll' }),
-    [isAllPaused, queueOperation],
   );
 
-  const handleToggleQueue = useCallback(
+  const handleToggleQueue = useEventCallback(
     () => queueOperation({ operation: isPaused ? 'Start' : 'Stop', queue: activeTab }),
-    [activeTab, isPaused, queueOperation],
   );
 
-  const handleClearQueue = useCallback(
+  const handleClearQueue = useEventCallback(
     () => queueOperation({ operation: 'Clear', queue: activeTab }),
-    [activeTab, queueOperation],
   );
 
   // We're intentionally not letting RTK invalidate any tags for automagic query

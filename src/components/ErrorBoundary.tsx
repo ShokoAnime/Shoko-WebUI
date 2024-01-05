@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
@@ -7,6 +7,7 @@ import Button from '@/components/Input/Button';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { unsetDetails } from '@/core/slices/apiSession';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const ErrorBoundary = () => {
   const dispatch = useDispatch();
@@ -18,20 +19,20 @@ const ErrorBoundary = () => {
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
-  const handleLogout = useCallback(() => {
+  const handleLogout = useEventCallback(() => {
     dispatch(unsetDetails());
     navigate('/webui/login');
-  }, [dispatch, navigate]);
+  });
 
-  const handleWebUiUpdate = useCallback((channel: 'Stable' | 'Dev') => {
+  const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {
     setUpdateChannel(channel);
     updateWebui(channel, {
       onSuccess: () => handleLogout(),
     });
-  }, [handleLogout, updateWebui]);
+  });
 
-  const handleStableWebUiUpdate = useCallback(() => handleWebUiUpdate('Stable'), [handleWebUiUpdate]);
-  const handleDevWebUiUpdate = useCallback(() => handleWebUiUpdate('Dev'), [handleWebUiUpdate]);
+  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
+  const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
 
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-8">

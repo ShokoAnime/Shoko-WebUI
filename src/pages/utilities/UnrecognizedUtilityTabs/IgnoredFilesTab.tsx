@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, find } from 'lodash';
@@ -17,8 +17,9 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
@@ -37,7 +38,7 @@ const Menu = (
 
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
 
-  const restoreFiles = useCallback(() => {
+  const restoreFiles = useEventCallback(() => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: false }),
     );
@@ -51,7 +52,7 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  }, [ignoreFile, selectedRows, setSelectedRows]);
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">

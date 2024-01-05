@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
@@ -10,6 +10,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   onClose: () => void;
@@ -19,10 +20,10 @@ type Props = {
 const Title = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
 
-  const handleEdit = useCallback(() => {
+  const handleEdit = useEventCallback(() => {
     dispatch(setLayoutEditMode(true));
     onClose();
-  }, [dispatch, onClose]);
+  });
 
   return (
     <div className="flex items-center justify-between text-xl font-semibold">
@@ -82,16 +83,16 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
-  const handleSave = useCallback(() => {
+  const handleSave = useEventCallback(() => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  }, [newSettings, onClose, patchSettings]);
+  });
 
-  const handleCancel = useCallback(() => {
+  const handleCancel = useEventCallback(() => {
     setNewSettings(settings);
     onClose();
-  }, [onClose, settings]);
+  });
 
   return (
     <ModalPanel

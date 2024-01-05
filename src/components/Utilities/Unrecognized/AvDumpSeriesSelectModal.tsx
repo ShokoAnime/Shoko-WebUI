@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, forEach, toNumber } from 'lodash';
@@ -12,6 +12,7 @@ import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -97,7 +98,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       });
   };
 
-  const rescanFiles = useCallback(() => {
+  const rescanFiles = useEventCallback(() => {
     onClose(true);
 
     const promises = fileIds.map(fileId => rescanFile(toNumber(fileId)));
@@ -110,7 +111,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         if (failedCount !== fileIds.length) toast.success(`Rescanning ${fileIds.length} files!`);
       })
       .catch(console.error);
-  }, [fileIds, onClose, rescanFile]);
+  });
 
   useLayoutEffect(() => () => {
     if (show) return;

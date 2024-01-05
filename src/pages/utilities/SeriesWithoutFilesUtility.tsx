@@ -13,8 +13,8 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import type { SeriesType } from '@/core/types/api/series';
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';

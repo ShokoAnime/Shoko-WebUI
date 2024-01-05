@@ -31,7 +31,7 @@ import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';

@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
@@ -15,7 +15,8 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 const pageSize = 26;
 
@@ -72,7 +73,7 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const handleMarkWatched = useCallback((watched: boolean) => {
+  const handleMarkWatched = useEventCallback((watched: boolean) => {
     watchEpisode({
       seriesId: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
@@ -84,10 +85,10 @@ const SeriesEpisodes = () => {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
     });
-  }, [episodeFilterAvailability, episodeFilterHidden, episodeFilterType, episodeFilterWatched, seriesId, watchEpisode]);
+  });
 
-  const markWatched = useCallback(() => handleMarkWatched(true), [handleMarkWatched]);
-  const markUnwatched = useCallback(() => handleMarkWatched(false), [handleMarkWatched]);
+  const markWatched = useEventCallback(() => handleMarkWatched(true));
+  const markUnwatched = useEventCallback(() => handleMarkWatched(false));
 
   return (
     <>

@@ -1,10 +1,11 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import TreeView from '@/components/TreeView/TreeView';
 import { setSelectedNode, setStatus } from '@/core/slices/modals/browseFolder';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
@@ -18,15 +19,15 @@ function BrowseFolderModal(props: Props) {
   const status = useSelector((state: RootState) => state.modals.browseFolder.status);
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
 
-  const handleClose = useCallback(() => dispatch(setStatus(false)), [dispatch]);
+  const handleClose = useEventCallback(() => dispatch(setStatus(false)));
 
-  const handleSelect = useCallback(() => {
+  const handleSelect = useEventCallback(() => {
     if (typeof props.onSelect === 'function') {
       props.onSelect(selectedNode.path);
     }
     dispatch(setStatus(false));
     dispatch(setSelectedNode({ id: -1, path: '' }));
-  }, [dispatch, props, selectedNode.path]);
+  });
 
   return (
     <ModalPanel

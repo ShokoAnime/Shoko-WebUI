@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
@@ -22,6 +22,7 @@ import {
 } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
 import { unsetDetails } from '@/core/slices/apiSession';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UserType } from '@/core/types/api/user';
 
@@ -143,12 +144,12 @@ function UserManagementSettings() {
     });
   };
 
-  const removeAvatar = useCallback(() => {
+  const removeAvatar = useEventCallback(() => {
     // Setting the avatar to an empty string will tell the server to remove the avatar.
     setSelectedUser((immerState) => {
       immerState.Avatar = '';
     });
-  }, [setSelectedUser]);
+  });
 
   const deleteSelectedUser = (user: UserType) => {
     if (currentUserQuery.data?.ID === user.ID) {

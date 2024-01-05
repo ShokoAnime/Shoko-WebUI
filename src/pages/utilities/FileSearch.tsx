@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
@@ -33,9 +33,10 @@ import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/que
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useMediaInfo } from '@/hooks/useMediaInfo';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useMediaInfo from '@/hooks/useMediaInfo';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import { staticColumns } from './UnrecognizedUtility';
 
@@ -63,21 +64,23 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useCallback(() => {
+  const showDeleteConfirmation = useEventCallback(() => {
     setShowConfirmModal(true);
-  }, []);
+  });
 
-  const cancelDelete = useCallback(() => {
+  const cancelDelete = useEventCallback(() => {
     setShowConfirmModal(false);
-  }, []);
+  });
 
-  const removeFileFromSelection = useCallback((fileId: number) =>
-    setSelectedRows((immerState) => {
-      immerState[fileId] = false;
-      return immerState;
-    }), [setSelectedRows]);
+  const removeFileFromSelection = useEventCallback(
+    (fileId: number) =>
+      setSelectedRows((immerState) => {
+        immerState[fileId] = false;
+        return immerState;
+      }),
+  );
 
-  const deleteFiles = useCallback(() => {
+  const deleteFiles = useEventCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (row) => {
@@ -89,9 +92,9 @@ const Menu = (
 
     if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
     if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
-  }, [deleteFile, selectedRows, setSelectedRows]);
+  });
 
-  const rehashFiles = useCallback(() => {
+  const rehashFiles = useEventCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
 
@@ -103,9 +106,9 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rehash failed for ${failedFiles} files!`);
-  }, [rehashFile, selectedRows, setSelectedRows]);
+  });
 
-  const rescanFiles = useCallback(() => {
+  const rescanFiles = useEventCallback(() => {
     setSelectedRows([]);
     let failedFiles = 0;
     forEach(selectedRows, (file) => {
@@ -116,7 +119,7 @@ const Menu = (
     });
 
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
-  }, [rescanFile, selectedRows, setSelectedRows]);
+  });
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -268,21 +271,21 @@ const FileSearch = () => {
 
   const [viewIndex, setViewIndex] = useState(0);
 
-  const onNextView = useCallback(() => {
+  const onNextView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev + 1 >= selectedRows.length) return 0;
 
       return prev + 1;
     });
-  }, [selectedRows]);
+  });
 
-  const onPrevView = useCallback(() => {
+  const onPrevView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev - 1 < 0) return selectedRows.length - 1;
 
       return prev - 1;
     });
-  }, [selectedRows]);
+  });
 
   const selectedId = useMemo(() => selectedRows[viewIndex]?.ID, [selectedRows, viewIndex]);
 
