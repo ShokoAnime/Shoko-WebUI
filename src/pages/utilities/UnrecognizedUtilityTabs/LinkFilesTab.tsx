@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounce, useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -380,7 +380,9 @@ function LinkFilesTab() {
     });
   };
 
-  const autoFill = useCallback(() => {
+  // TODO: This should be useCallback, fix it without breaking it..
+  // links/setLinks is a cyclic dependency in the chain of useCallbacks and useMemos
+  const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
     let hasChanged = false;
     let skipped = false;
@@ -441,7 +443,7 @@ function LinkFilesTab() {
         toast.success('Auto matching applied.', 'Be sure to verify before saving!');
       }
     }
-  }, [episodes, orderedLinks, setLinks, showDataMap]);
+  });
 
   const makeLinks = useCallback(async (seriesId: number, manualLinks: ManualLink[], didNotExist: boolean) => {
     setLoading(state => ({ ...state, isLinkingRunning: true }));
