@@ -129,12 +129,10 @@ const quickActions = {
     functionName: 'RenameAllGroups',
     info: 'Renames any groups without a custom name set based on the current language preference.',
   },
-} as {
-  [key: string]: {
-    name: string;
-    functionName: string;
-    info: string;
-  };
-};
+} as Record<string, {
+  name: string;
+  functionName: string;
+  info: string;
+}>;
 
 export default quickActions;

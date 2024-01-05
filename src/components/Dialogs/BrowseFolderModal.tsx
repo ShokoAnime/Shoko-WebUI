@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import Button from '@/components/Input/Button';
@@ -18,15 +18,15 @@ function BrowseFolderModal(props: Props) {
   const status = useSelector((state: RootState) => state.modals.browseFolder.status);
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
 
-  const handleClose = () => dispatch(setStatus(false));
+  const handleClose = useCallback(() => dispatch(setStatus(false)), [dispatch]);
 
-  const handleSelect = () => {
+  const handleSelect = useCallback(() => {
     if (typeof props.onSelect === 'function') {
       props.onSelect(selectedNode.path);
     }
     dispatch(setStatus(false));
     dispatch(setSelectedNode({ id: -1, path: '' }));
-  };
+  }, [dispatch, props, selectedNode.path]);
 
   return (
     <ModalPanel

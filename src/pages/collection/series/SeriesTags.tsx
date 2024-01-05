@@ -28,7 +28,7 @@ function SeriesTag(props: { item: TagType }) {
         <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1} />
       </div>
       <div className={cx('leading-5', { 'line-clamp-2': !isOpen })}>
-        <AnidbDescription text={item?.Description || 'No description set.'} />
+        <AnidbDescription text={item?.Description ?? 'No description set.'} />
       </div>
     </div>
   );
@@ -61,7 +61,7 @@ const SeriesTags = () => {
           <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4 text-xl font-semibold">
             Tags
             <div>
-              <span className="text-panel-text-important">{tagsQuery.data?.length || 0}</span>
+              <span className="text-panel-text-important">{tagsQuery.data?.length ?? 0}</span>
               &nbsp;Tags Listed
             </div>
           </div>

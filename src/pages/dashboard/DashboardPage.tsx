@@ -86,8 +86,8 @@ function DashboardPage() {
         <div className="flex flex-col">
           Edit Mode Enabled
           <div className="mt-3 flex items-center justify-end gap-x-3 font-semibold">
-            <Button onClick={() => cancelLayoutChange()} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
-            <Button onClick={() => saveLayout()} buttonType="primary" className="px-3 py-1.5">Save</Button>
+            <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
+            <Button onClick={saveLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
           </div>
         </div>
       );

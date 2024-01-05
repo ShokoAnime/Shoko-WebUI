@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, every, find, some } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -70,23 +70,24 @@ const Menu = (
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const showDeleteConfirmation = useEventCallback(() => {
+  const showDeleteConfirmation = useCallback(() => {
     setShowConfirmModal(true);
-  });
+  }, []);
 
-  const cancelDelete = useEventCallback(() => {
+  const cancelDelete = useCallback(() => {
     setShowConfirmModal(false);
-  });
+  }, []);
 
-  const removeFileFromSelection = useEventCallback(
+  const removeFileFromSelection = useCallback(
     (fileId: number) =>
       setSelectedRows((immerState) => {
         immerState[fileId] = false;
         return immerState;
       }),
+    [setSelectedRows],
   );
 
-  const deleteFiles = useEventCallback(() => {
+  const deleteFiles = useCallback(() => {
     const promises = selectedRows.map(
       row => deleteFile({ fileId: row.ID, removeFolder: true }),
     );
@@ -100,9 +101,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [deleteFile, selectedRows, setSelectedRows]);
 
-  const ignoreFiles = useEventCallback(() => {
+  const ignoreFiles = useCallback(() => {
     const promises = selectedRows.map(
       row => ignoreFile({ fileId: row.ID, ignore: true }),
     );
@@ -116,9 +117,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [ignoreFile, selectedRows, setSelectedRows]);
 
-  const rehashFiles = useEventCallback(() => {
+  const rehashFiles = useCallback(() => {
     const promises = selectedRows.map(row => rehashFile(row.ID));
 
     Promise
@@ -130,9 +131,9 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [rehashFile, selectedRows, setSelectedRows]);
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = useCallback(() => {
     const promises = selectedRows.map(row => rescanFile(row.ID));
 
     Promise
@@ -144,7 +145,7 @@ const Menu = (
         setSelectedRows([]);
       })
       .catch(console.error);
-  });
+  }, [rescanFile, selectedRows, setSelectedRows]);
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -159,8 +160,8 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
@@ -255,15 +256,15 @@ function UnrecognizedTab() {
   );
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
-  const handleAvdumpClick = useEventCallback(() => {
+  const handleAvdumpClick = useCallback(() => {
     if (isAvdumpFinished && !dumpInProgress) {
       setSeriesSelectModal(true);
     } else {
       selectedRows.forEach(row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID));
     }
-  });
+  }, [avdumpFile, dumpInProgress, isAvdumpFinished, selectedRows]);
 
-  const getED2KLinks = useEventCallback(() => ({
+  const getED2KLinks = useCallback(() => ({
     fileIds: selectedRows.map(file => file.ID),
     links: selectedRows.map(
       file =>
@@ -271,7 +272,7 @@ function UnrecognizedTab() {
           file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
         }|${file.Size}|${file.Hashes.ED2K}|/`,
     ),
-  }));
+  }), [selectedRows]);
 
   return (
     <>

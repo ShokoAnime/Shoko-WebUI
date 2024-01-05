@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate, useRouteError } from 'react-router-dom';
 
@@ -18,17 +18,20 @@ const ErrorBoundary = () => {
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     dispatch(unsetDetails());
     navigate('/webui/login');
-  };
+  }, [dispatch, navigate]);
 
-  const handleWebUiUpdate = (channel: 'Stable' | 'Dev') => {
+  const handleWebUiUpdate = useCallback((channel: 'Stable' | 'Dev') => {
     setUpdateChannel(channel);
     updateWebui(channel, {
       onSuccess: () => handleLogout(),
     });
-  };
+  }, [handleLogout, updateWebui]);
+
+  const handleStableWebUiUpdate = useCallback(() => handleWebUiUpdate('Stable'), [handleWebUiUpdate]);
+  const handleDevWebUiUpdate = useCallback(() => handleWebUiUpdate('Dev'), [handleWebUiUpdate]);
 
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-8">
@@ -65,7 +68,7 @@ const ErrorBoundary = () => {
         </div>
         <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
           <Button
-            onClick={() => handleWebUiUpdate('Stable')}
+            onClick={handleStableWebUiUpdate}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
             loading={updateChannel === 'Stable' && isUpdateWebuiPending}
@@ -75,7 +78,7 @@ const ErrorBoundary = () => {
 
           {versionQuery.data?.Server.ReleaseChannel !== 'Stable' && (
             <Button
-              onClick={() => handleWebUiUpdate('Dev')}
+              onClick={handleDevWebUiUpdate}
               className="px-4 py-2 drop-shadow-md"
               buttonType="primary"
               loading={updateChannel === 'Dev' && isUpdateWebuiPending}
@@ -85,7 +88,7 @@ const ErrorBoundary = () => {
           )}
 
           <Button
-            onClick={() => handleLogout()}
+            onClick={handleLogout}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
           >

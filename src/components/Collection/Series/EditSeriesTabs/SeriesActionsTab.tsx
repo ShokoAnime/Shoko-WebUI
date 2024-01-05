@@ -1,7 +1,6 @@
 import React from 'react';
 import { mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
@@ -17,15 +16,12 @@ type Props = {
 };
 
 const Action = ({ description, name, onClick }: { name: string, description: string, onClick: () => void }) => (
-  <div
-    className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0"
-    onClick={onClick}
-  >
+  <div className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">
     <div className="flex w-full max-w-[35rem] flex-col gap-y-2">
       <div>{name}</div>
       <div className="text-sm opacity-65">{description}</div>
     </div>
-    <Button onClick={() => {}} className="text-panel-text-primary">
+    <Button onClick={onClick} className="text-panel-text-primary">
       <Icon path={mdiPlayCircleOutline} size={1} />
     </Button>
   </div>
@@ -37,11 +33,11 @@ const SeriesActionsTab = ({ seriesId }: Props) => {
   const { mutate: rehashSeriesFiles } = useRehashSeriesFilesMutation();
   const { mutate: rescanSeriesFiles } = useRescanSeriesFilesMutation();
 
-  const triggerAnidbRefresh = useEventCallback((force: boolean, cacheOnly: boolean) => {
+  const triggerAnidbRefresh = (force: boolean, cacheOnly: boolean) => {
     refreshAnidb({ seriesId, force, cacheOnly }, {
       onSuccess: () => toast.success('AniDB refresh queued!'),
     });
-  });
+  };
 
   return (
     <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-scroll">

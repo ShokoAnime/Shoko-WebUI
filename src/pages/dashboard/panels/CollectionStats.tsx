@@ -28,13 +28,13 @@ function CollectionStats() {
     <Item key="series" title="Series" value={statsQuery.data?.SeriesCount} />,
     <Item key="series-completed" title="Series Completed" value={statsQuery.data?.FinishedSeries} />,
     <Item key="episodes-watched" title="Episodes Watched" value={statsQuery.data?.WatchedEpisodes} />,
-    <Item key="hours-watched" title="Hours Watched" value={`${statsQuery.data?.WatchedHours || 0} H`} />,
+    <Item key="hours-watched" title="Hours Watched" value={`${statsQuery.data?.WatchedHours ?? 0} H`} />,
   ];
   const childrenSecond = [
     <Item
       key="collection-size"
       title="Collection Size"
-      value={`${prettyBytes(statsQuery.data?.FileSize || 0, { binary: true })}`}
+      value={`${prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}`}
     />,
     <Item key="files" title="Files" value={statsQuery.data?.FileCount} />,
     <Item

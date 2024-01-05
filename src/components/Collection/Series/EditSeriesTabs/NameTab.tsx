@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
 
@@ -48,7 +48,7 @@ const NameTab = ({ seriesId }: Props) => {
   //   searchSeries()?.then()?.catch(console.error);
   // }, [search, searchSeries]);
 
-  const renderTitle = useCallback((title: SeriesTitleType) => (
+  const renderTitle = (title: SeriesTitleType) => (
     <div
       className="flex cursor-pointer justify-between"
       key={title.Language}
@@ -57,9 +57,9 @@ const NameTab = ({ seriesId }: Props) => {
       <div>{title.Name}</div>
       {title.Language}
     </div>
-  ), []);
+  );
 
-  const nameInputIcons = useCallback(() => {
+  const getNameInputIcons = () => {
     if (!nameEditable) {
       return [{
         icon: mdiPencilCircleOutline,
@@ -77,7 +77,7 @@ const NameTab = ({ seriesId }: Props) => {
       className: 'text-panel-text-primary',
       onClick: () => {}, // TODO: Need endpoint to update series
     }];
-  }, [nameEditable]);
+  };
 
   return (
     <div className="flex flex-col">
@@ -88,7 +88,7 @@ const NameTab = ({ seriesId }: Props) => {
         value={name}
         label="Name"
         className="mb-4"
-        endIcons={nameInputIcons()}
+        endIcons={getNameInputIcons()}
         disabled={!nameEditable}
       />
       <Input

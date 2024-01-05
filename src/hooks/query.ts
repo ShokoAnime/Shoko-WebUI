@@ -16,24 +16,21 @@ export function useURLSearch<T extends Query<Record<string, unknown>>>(
     return [currentSearch, currentValue];
   });
 
-  const setValueAndModifyHistory = useCallback(
-    (valueOrFn: T | ((previousValue: T) => T), replace: boolean = false): void => {
-      const query = new URLSearchParams();
-      const nextValue = typeof valueOrFn === 'function' ? valueOrFn(value) : valueOrFn;
-      forEach(nextValue, (val, key) => {
-        if (val !== undefined) query.set(key, val);
-      });
-      const queryString = query.toString();
-      let nextTo = location.pathname;
-      if (isHash) {
-        nextTo += location.search + (queryString ? `#?${queryString}` : '');
-      } else {
-        nextTo += (queryString ? `#?${queryString}` : '') + location.hash;
-      }
-      navigate(nextTo, { replace });
-    },
-    [navigate, location, value, isHash],
-  );
+  const setValueAndModifyHistory = (valueOrFn: T | ((previousValue: T) => T), replace = false): void => {
+    const query = new URLSearchParams();
+    const nextValue = typeof valueOrFn === 'function' ? valueOrFn(value) : valueOrFn;
+    forEach(nextValue, (val, key) => {
+      if (val !== undefined) query.set(key, val);
+    });
+    const queryString = query.toString();
+    let nextTo = location.pathname;
+    if (isHash) {
+      nextTo += location.search + (queryString ? `#?${queryString}` : '');
+    } else {
+      nextTo += (queryString ? `#?${queryString}` : '') + location.hash;
+    }
+    navigate(nextTo, { replace });
+  };
 
   useEffect(() => {
     const currentSearch = getQueryString();
@@ -58,14 +55,14 @@ export function useURLParameter(
 export function useURLParameter(
   key: string,
   initialValue: string | null = null,
-  isHash: boolean = false,
+  isHash = false,
 ): [value: string | null, setValue: (value: string | null, replace?: boolean) => void] {
   const [query, setQuery] = useURLSearch(isHash);
-  const currentValue = query[key] || initialValue;
+  const currentValue = query[key] ?? initialValue;
 
-  const setQueryParameter = useCallback((value: string | null, replace: boolean = false) => {
-    setQuery(prev => ({ ...prev, [key]: value === null ? undefined : value }), replace);
-  }, [key, setQuery]);
+  const setQueryParameter = (value: string | null, replace = false) => {
+    setQuery(prev => ({ ...prev, [key]: value ?? undefined }), replace);
+  };
 
   return [currentValue, setQueryParameter];
 }

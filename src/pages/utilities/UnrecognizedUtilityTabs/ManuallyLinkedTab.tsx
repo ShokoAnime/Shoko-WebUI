@@ -10,7 +10,6 @@ import {
 import { Icon } from '@mdi/react';
 import { countBy, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -124,7 +123,8 @@ const FilesTable = ({ id: seriesId }: { id: number }) => {
   );
   const [episodes] = useFlattenListResult(episodesResult);
 
-  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext) as SelectedFilesType;
+  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext)!;
+  // TODO: Check if ManuallyLinkedFilesRow can be memoized so that the below useCallback is actually useful.
   const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
 
   return (
@@ -146,12 +146,12 @@ const Menu = (props: SelectedFilesType) => {
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const handleRefresh = () => {
+  const handleRefresh = useCallback(() => {
     refreshData();
     setSelectedFiles({});
-  };
+  }, [setSelectedFiles]);
 
-  const rescanFiles = useEventCallback(() => {
+  const rescanFiles = useCallback(() => {
     const promises = selectedIds.map(fileId => rescanFile(fileId));
 
     Promise
@@ -162,7 +162,7 @@ const Menu = (props: SelectedFilesType) => {
         if (failedCount !== selectedIds.length) toast.success(`Rescanning ${selectedIds.length} files!`);
       })
       .catch(console.error);
-  });
+  }, [rescanFile, selectedIds]);
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -194,7 +194,7 @@ function ManuallyLinkedTab() {
 
   const [selectedFiles, setSelectedFiles] = useImmer<Record<number, boolean>>({});
 
-  const unlinkFiles = useEventCallback(() => {
+  const unlinkFiles = useCallback(() => {
     const fileIds = Object.keys(selectedFiles);
 
     const promises = fileIds.map(fileId => unlinkFile(toNumber(fileId)));
@@ -209,7 +209,7 @@ function ManuallyLinkedTab() {
         setSelectedFiles({});
       })
       .catch(console.error);
-  });
+  }, [selectedFiles, setSelectedFiles, unlinkFile]);
 
   const onExpand = async (id: number) => {
     await prefetchSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] });

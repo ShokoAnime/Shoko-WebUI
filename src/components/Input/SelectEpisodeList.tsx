@@ -136,7 +136,7 @@ const SelectEpisodeList = (
   };
 
   const renderSelected = () => {
-    if (!selected || !selected.label) return emptyValue;
+    if (!selected?.label) return emptyValue;
     return (
       <>
         <span className="font-semibold text-panel-text-important">{selected.number}</span>

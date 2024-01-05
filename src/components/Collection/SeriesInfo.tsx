@@ -17,8 +17,8 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   const { seriesId } = useParams();
 
   // Series Data;
-  const seriesOverviewData = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
-  const overview = useMemo(() => seriesOverviewData?.data || {} as WebuiSeriesDetailsType, [seriesOverviewData]);
+  const seriesOverviewQuery = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
+  const overview = seriesOverviewQuery?.data ?? {} as WebuiSeriesDetailsType;
   const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
   const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
   const airDate = useMemo(() => {

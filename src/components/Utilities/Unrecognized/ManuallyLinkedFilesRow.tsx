@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -47,7 +47,7 @@ function ManuallyLinkedFilesRow(props: Props) {
   }, [selectedFiles, setRowSelection]);
 
   const [lastRowSelected, setLastRowSelected] = useState<number | null>(null);
-  const handleSelect = useCallback((event: React.MouseEvent, index: number) => {
+  const handleSelect = (event: React.MouseEvent, index: number) => {
     if (event.shiftKey) {
       window?.getSelection()?.removeAllRanges();
       const lrIndex = lastRowSelected ?? index;
@@ -67,7 +67,7 @@ function ManuallyLinkedFilesRow(props: Props) {
       handleRowSelect(id, !rowSelection[id]);
       setLastRowSelected(index);
     }
-  }, [files, handleRowSelect, lastRowSelected, rowSelection, setRowSelection]);
+  };
 
   return (
     <div className="mt-4 flex flex-col">

@@ -137,11 +137,11 @@ function UserManagementSettings() {
     setShowAvatarModal(true);
   };
 
-  const changeAvatar = useCallback((avatar: string) => {
+  const changeAvatar = (avatar: string) => {
     setSelectedUser((immerState) => {
       immerState.Avatar = avatar;
     });
-  }, [setSelectedUser]);
+  };
 
   const removeAvatar = useCallback(() => {
     // Setting the avatar to an empty string will tell the server to remove the avatar.

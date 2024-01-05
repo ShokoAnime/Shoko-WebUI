@@ -7,9 +7,7 @@ import type { SliceActions } from '@/core/types/util';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
-  fetched: {
-    [key: string]: boolean;
-  };
+  fetched: Record<string, boolean>;
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
   networkStatus: NetworkAvailability;

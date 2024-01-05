@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { mdiEyeOutline, mdiOpenInNew, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
@@ -29,7 +29,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
     [selectedFileToDelete],
   );
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
@@ -38,12 +38,12 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
       },
       onError: error => toast.error(`Failed to delete file! ${error.message}`),
     });
-  };
+  }, [deleteFile, episodeId, selectedFileToDelete]);
 
-  const closeDeleteModal = () => {
+  const closeDeleteModal = useCallback(() => {
     setSelectedFileToDelete(null);
     setShowDeleteModal(false);
-  };
+  }, []);
 
   const handleRescan = (id: number) =>
     rescanFile(id, {
@@ -94,7 +94,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
+                      {ReleaseGroupName ?? 'Unknown'}
                       &nbsp; (AniDB)
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>

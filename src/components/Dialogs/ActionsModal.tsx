@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -89,14 +89,14 @@ type Props = {
 const Action = ({ actionKey }: { actionKey: string }) => {
   const { mutate: runAction } = useRunActionMutation();
 
-  const handleAction = (name: string, action: string) => {
-    runAction(action, {
-      onSuccess: () => toast.success(`Running action "${name}"`),
-    });
-  };
-
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
+
+  const handleAction = useCallback(() => {
+    runAction(functionName, {
+      onSuccess: () => toast.success(`Running action "${name}"`),
+    });
+  }, [functionName, name, runAction]);
 
   return (
     <TransitionDiv className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">
@@ -105,7 +105,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
       </div>
       <Button
-        onClick={() => handleAction(name, functionName)}
+        onClick={handleAction}
         className="text-panel-icon-action"
       >
         <Icon path={mdiPlayCircleOutline} size={1} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   mdiCloseCircleOutline,
@@ -10,8 +10,7 @@ import {
   mdiTextBoxOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { forEach } from 'lodash';
-import { useEventCallback } from 'usehooks-ts';
+import { some } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -24,28 +23,20 @@ import type { SignalRQueueType } from '@/core/types/signalr';
 const icons = { hasher: mdiPoundBoxOutline, general: mdiFormatListBulletedSquare, image: mdiImageMultipleOutline };
 const names = { hasher: 'Hasher', general: 'General', image: 'Images' };
 
-function QueueProcessor() {
-  const dispatch = useDispatch();
-  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
-  const items = useSelector((state: RootState) => state.mainpage.queueStatus);
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-
+const QueueItem = ({ item, queue }: { queue: keyof typeof icons, item: SignalRQueueType }) => {
   const { mutate: queueOperation } = useQueueOperationMutation();
-  const handleOperation = useEventCallback(
-    (operation: string, queue?: string) => queueOperation({ operation, queue }),
-  );
 
-  const handleOpenQueueDialog = useEventCallback(() => {
-    dispatch(setQueueModalOpen(true));
-  });
+  const handleStart = useCallback(() => queueOperation({ operation: 'Start', queue }), [queue, queueOperation]);
+  const handleStop = useCallback(() => queueOperation({ operation: 'Stop', queue }), [queue, queueOperation]);
+  const handleClear = useCallback(() => queueOperation({ operation: 'Clear', queue }), [queue, queueOperation]);
 
-  const renderItem = (key: keyof typeof icons, item: SignalRQueueType) => (
-    <div className="flex flex-col" key={key}>
+  return (
+    <div className="flex flex-col">
       <div className="flex justify-between">
         <div className="flex w-56 items-center">
-          <Icon className="mr-4" path={icons[key]} size={1} />
+          <Icon className="mr-4" path={icons[queue]} size={1} />
           <span>
-            {names[key]}
+            {names[queue]}
             &nbsp;-&nbsp;
             {item?.status ?? 'Idle'}
           </span>
@@ -54,16 +45,16 @@ function QueueProcessor() {
         <div className="flex items-center gap-x-2">
           {item?.status === 'Pausing' || item?.status === 'Paused'
             ? (
-              <Button onClick={() => handleOperation('Start', key)} tooltip="Resume">
+              <Button onClick={handleStart} tooltip="Resume">
                 <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
               </Button>
             )
             : (
-              <Button onClick={() => handleOperation('Stop', key)} tooltip="Pause">
+              <Button onClick={handleStop} tooltip="Pause">
                 <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
               </Button>
             )}
-          <Button onClick={() => handleOperation('Clear', key)} tooltip="Clear">
+          <Button onClick={handleClear} tooltip="Clear">
             <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
           </Button>
         </div>
@@ -73,50 +64,61 @@ function QueueProcessor() {
       </div>
     </div>
   );
+};
 
-  const renderOptions = () => {
-    let paused = false;
+const Options = () => {
+  const dispatch = useDispatch();
+  const items = useSelector((state: RootState) => state.mainpage.queueStatus);
 
-    forEach(items, (item) => {
-      paused ||= item?.status === 'Pausing' || item?.status === 'Paused';
-    });
+  const { mutate: queueOperation } = useQueueOperationMutation();
 
-    return (
-      <div className="flex gap-x-2">
-        <Button onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
-          <Icon className="text-panel-icon-action" path={mdiTextBoxOutline} size={1} />
-        </Button>
-        {paused
-          ? (
-            <Button onClick={() => handleOperation('StartAll')} tooltip="Resume All">
-              <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
-            </Button>
-          )
-          : (
-            <Button onClick={() => handleOperation('StopAll')} tooltip="Pause All">
-              <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
-            </Button>
-          )}
-        <Button onClick={() => handleOperation('ClearAll')} tooltip="Clear All">
-          <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
-        </Button>
-      </div>
-    );
-  };
+  const handleStart = useCallback(() => queueOperation({ operation: 'StartAll' }), [queueOperation]);
+  const handleStop = useCallback(() => queueOperation({ operation: 'StopAll' }), [queueOperation]);
+  const handleClear = useCallback(() => queueOperation({ operation: 'ClearAll' }), [queueOperation]);
 
-  const commands: React.ReactNode[] = [];
+  const paused = some(items, item => item?.status === 'Pausing' || item?.status === 'Paused');
 
-  if (items) {
-    commands.push(renderItem('hasher', items.HasherQueueState));
-    commands.push(renderItem('general', items.GeneralQueueState));
-    commands.push(renderItem('image', items.ImageQueueState));
-  }
+  const handleOpenQueueDialog = useCallback(() => {
+    dispatch(setQueueModalOpen(true));
+  }, [dispatch]);
 
   return (
-    <ShokoPanel title="Queue Processor" options={renderOptions()} isFetching={!hasFetched} editMode={layoutEditMode}>
-      <div className="flex h-full flex-col justify-between">
-        {commands}
-      </div>
+    <div className="flex gap-x-2">
+      <Button onClick={handleOpenQueueDialog} tooltip="Open Queue Modal">
+        <Icon className="text-panel-icon-action" path={mdiTextBoxOutline} size={1} />
+      </Button>
+      {paused
+        ? (
+          <Button onClick={handleStart} tooltip="Resume All">
+            <Icon className="text-panel-icon-action" path={mdiPlayCircleOutline} size={1} />
+          </Button>
+        )
+        : (
+          <Button onClick={handleStop} tooltip="Pause All">
+            <Icon className="text-panel-icon-action" path={mdiPauseCircleOutline} size={1} />
+          </Button>
+        )}
+      <Button onClick={handleClear} tooltip="Clear All">
+        <Icon className="text-panel-icon-action" path={mdiCloseCircleOutline} size={1} />
+      </Button>
+    </div>
+  );
+};
+
+function QueueProcessor() {
+  const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
+  const items = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
+  return (
+    <ShokoPanel title="Queue Processor" options={<Options />} isFetching={!hasFetched} editMode={layoutEditMode}>
+      {items && (
+        <div className="flex h-full flex-col justify-between">
+          <QueueItem queue="hasher" item={items.HasherQueueState} />
+          <QueueItem queue="general" item={items.GeneralQueueState} />
+          <QueueItem queue="image" item={items.ImageQueueState} />
+        </div>
+      )}
     </ShokoPanel>
   );
 }

@@ -170,9 +170,7 @@ type LayoutItemType = {
   moved?: boolean;
 };
 
-export type LayoutType = {
-  [breakpoint: string]: LayoutItemType[];
-};
+export type LayoutType = Record<string, LayoutItemType[]>;
 
 export type WebUISettingsType = {
   notifications: boolean;
@@ -180,9 +178,7 @@ export type WebUISettingsType = {
   theme: string;
   toastPosition: 'top-right' | 'bottom-right';
   updateChannel: 'Stable' | 'Dev';
-  layout: {
-    [key: string]: LayoutType;
-  };
+  layout: Record<string, LayoutType>;
   collection: {
     view: 'poster' | 'list';
     poster: {

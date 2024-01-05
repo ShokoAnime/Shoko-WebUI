@@ -19,4 +19,4 @@ const MenuButton = (
   </Button>
 );
 
-export default MenuButton;
+export default React.memo(MenuButton);

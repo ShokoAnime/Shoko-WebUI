@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
-import { useEventCallback, useToggle } from 'usehooks-ts';
+import { useToggle } from 'usehooks-ts';
 
 import { criteriaMap } from '@/pages/utilities/UnrecognizedUtility';
 
@@ -57,7 +57,9 @@ const Row = (
   const [open, toggleOpen] = useToggle(false);
   const [loading, setLoading] = useState(false);
 
-  const handleClick = useEventCallback((event: React.MouseEvent) => {
+  // TODO: Check if ExpandedNode changes reference on every render, if so this callback is useless
+  // If it is useless, so is the useCallback for handleSelect in UtilitiesTable
+  const handleClick = useCallback((event: React.MouseEvent) => {
     if (ExpandedNode) {
       const id = selectRowId(row);
       if (!open && onExpand) {
@@ -71,7 +73,7 @@ const Row = (
       } else toggleOpen();
     }
     handleRowSelect(event, virtualRow);
-  });
+  }, [ExpandedNode, handleRowSelect, onExpand, open, row, toggleOpen, virtualRow]);
 
   const columns = useMemo<UtilityHeaderType<FileType | SeriesType>[]>(() => (ExpandedNode
     ? [

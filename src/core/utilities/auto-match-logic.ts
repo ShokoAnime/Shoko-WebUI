@@ -68,15 +68,19 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
   else if (fileName && DriveLetterRegex.test(fileName)) fileName = null;
   if (!fileName) return null;
 
-  for (let index = 0; index < PathMatchRuleSet.length; index += 1) {
-    // TODO: I couldn't find a dprint setting to make the = go to next line. This needs to be fixed.
-    /* eslint-disable-next-line operator-linebreak */
-    const { defaults = {}, grandParentRegex, name: ruleName, parentRegex, regex, transform = noopTransform } =
-      PathMatchRuleSet[index];
+  for (const rule of PathMatchRuleSet) {
+    const {
+      defaults = {},
+      grandParentRegex,
+      name: ruleName,
+      parentRegex,
+      regex,
+      transform = noopTransform,
+    } = rule;
     const match = fileName ? regex.exec(fileName) : null;
     const parentMatch = parentRegex && parentDir ? parentRegex.exec(parentDir) : null;
     const grandParentMatch = grandParentRegex && grandParentDir ? grandParentRegex.exec(grandParentDir) : null;
-    if (match && match.groups) {
+    if (match?.groups) {
       // We accept specials in-between episodes or episode ranges, so we split
       // the range and parse the text as floats.
       let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(s => s)
@@ -123,13 +127,13 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
       };
 
       // Inherit show name and release group from grand parent or parent.
-      if (grandParentMatch && grandParentMatch.groups && parentMatch && parentMatch.groups) {
+      if (grandParentMatch?.groups && parentMatch?.groups) {
         const releaseGroup = grandParentMatch.groups.releaseGroup || null;
         if (releaseGroup) initialDetails.releaseGroup = releaseGroup;
         showName = grandParentMatch.groups.showName?.trim() || null;
         if (showName && showName) initialDetails.showName = showName;
       }
-      if (parentMatch && parentMatch.groups) {
+      if (parentMatch?.groups) {
         const releaseGroup = parentMatch.groups.releaseGroup || null;
         if (releaseGroup) initialDetails.releaseGroup = releaseGroup;
         showName = parentMatch.groups.showName?.trim() || null;
@@ -161,8 +165,8 @@ export function findMostCommonShowName(showList: (PathDetails | null)[]): string
   }
 
   const showNameMap = reduce(showList, (acc, show) => {
-    if (show && show.showName) {
-      acc.set(show.showName, (acc.get(show.showName) || 0) + 1);
+    if (show?.showName) {
+      acc.set(show.showName, (acc.get(show.showName) ?? 0) + 1);
     }
     return acc;
   }, new Map<string, number>());

@@ -6,7 +6,6 @@ import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
-import ProfileModal from '@/components/Dialogs/ProfileModal';
 import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
@@ -41,9 +40,8 @@ function MainPage() {
       )}
       <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
-        <ProfileModal />
         <TopNav />
-        {isSm && <Header showSidebar={showSmSidebar} setShowSidebar={setShowSmSidebar} />}
+        {isSm && <Header showSidebar={showSmSidebar} toggleSidebar={() => setShowSmSidebar(!showSmSidebar)} />}
         <div className="shoko-scrollbar scroll-gutter grow overflow-y-auto py-8" ref={scrollRef}>
           <div
             className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-8"

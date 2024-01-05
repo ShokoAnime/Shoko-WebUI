@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -28,7 +28,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
 
   const canDisable = site === 'TvDB';
 
-  const disableMetadata = () => {
+  const disableMetadata = useCallback(() => {
     switch (site) {
       case 'TvDB':
         deleteTvdbLink(seriesId);
@@ -36,7 +36,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
       default:
         break;
     }
-  };
+  }, [deleteTvdbLink, seriesId, site]);
 
   return (
     <div key={site} className="flex justify-between">
