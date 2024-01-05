@@ -33,7 +33,7 @@ if (!isDebug()) {
   });
 }
 
-const container = document && document.getElementById('app-root');
+const container = document?.getElementById('app-root');
 
 if (container !== null) {
   const root = createRoot(container);

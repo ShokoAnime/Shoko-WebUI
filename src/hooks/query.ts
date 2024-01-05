@@ -17,7 +17,7 @@ export function useURLSearch<T extends Query<Record<string, unknown>>>(
   });
 
   const setValueAndModifyHistory = useCallback(
-    (valueOrFn: T | ((previousValue: T) => T), replace: boolean = false): void => {
+    (valueOrFn: T | ((previousValue: T) => T), replace = false): void => {
       const query = new URLSearchParams();
       const nextValue = typeof valueOrFn === 'function' ? valueOrFn(value) : valueOrFn;
       forEach(nextValue, (val, key) => {
@@ -58,13 +58,13 @@ export function useURLParameter(
 export function useURLParameter(
   key: string,
   initialValue: string | null = null,
-  isHash: boolean = false,
+  isHash = false,
 ): [value: string | null, setValue: (value: string | null, replace?: boolean) => void] {
   const [query, setQuery] = useURLSearch(isHash);
-  const currentValue = query[key] || initialValue;
+  const currentValue = query[key] ?? initialValue;
 
-  const setQueryParameter = useCallback((value: string | null, replace: boolean = false) => {
-    setQuery(prev => ({ ...prev, [key]: value === null ? undefined : value }), replace);
+  const setQueryParameter = useCallback((value: string | null, replace = false) => {
+    setQuery(prev => ({ ...prev, [key]: value ?? undefined }), replace);
   }, [key, setQuery]);
 
   return [currentValue, setQueryParameter];

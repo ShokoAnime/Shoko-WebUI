@@ -124,7 +124,7 @@ const FilesTable = ({ id: seriesId }: { id: number }) => {
   );
   const [episodes] = useFlattenListResult(episodesResult);
 
-  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext) as SelectedFilesType;
+  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext)!;
   const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
 
   return (

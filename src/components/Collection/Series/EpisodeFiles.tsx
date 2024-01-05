@@ -94,7 +94,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
+                      {ReleaseGroupName ?? 'Unknown'}
                       &nbsp; (AniDB)
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>

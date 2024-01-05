@@ -10,7 +10,7 @@ import type { UserType } from '@/core/types/api/user';
 export const useChangePasswordMutation = () =>
   useMutation({
     mutationFn: ({ userId, ...data }: ChangePasswordRequestType) =>
-      axios.post(`User/${userId || 'Current'}/ChangePassword`, data),
+      axios.post(`User/${userId ?? 'Current'}/ChangePassword`, data),
   });
 
 export const useDeleteUserMutation = () =>

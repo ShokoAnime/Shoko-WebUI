@@ -102,7 +102,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       return null;
     }
     return {
-      ID: current.currentCommandID || 0,
+      ID: current.currentCommandID ?? 0,
       Name: 'UnknownCommandRequest_0',
       Description,
       Type: 'ActiveCommand',

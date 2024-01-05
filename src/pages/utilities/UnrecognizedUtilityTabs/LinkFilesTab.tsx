@@ -245,7 +245,7 @@ function LinkFilesTab() {
     [showDataMap, links],
   );
 
-  const episodes = useMemo(() => anidbEpisodesQuery?.data || [], [anidbEpisodesQuery.data]);
+  const episodes = useMemo(() => anidbEpisodesQuery?.data ?? [], [anidbEpisodesQuery.data]);
   const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);
@@ -264,22 +264,20 @@ function LinkFilesTab() {
     ))
   ), [episodes]);
 
-  const addLink = useEventCallback(
-    (FileID: number, EpisodeID: number = 0, LinkID?: number) =>
-      setLinks((linkState) => {
-        if (EpisodeID === 0) {
-          linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
-        } else {
-          // eslint-disable-next-line no-param-reassign
-          const itemIndex = LinkID
-            ? linkState.findIndex(link => link.LinkID === LinkID)
-            : linkState.findIndex(link => link.FileID === FileID);
-          // We are using immer but eslint is stupid
-          // eslint-disable-next-line no-param-reassign
-          linkState[itemIndex].EpisodeID = EpisodeID;
-        }
-      }),
-  );
+  const addLink = (FileID: number, EpisodeID = 0, LinkID?: number) =>
+    setLinks((linkState) => {
+      if (EpisodeID === 0) {
+        linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+      } else {
+        // eslint-disable-next-line no-param-reassign
+        const itemIndex = LinkID
+          ? linkState.findIndex(link => link.LinkID === LinkID)
+          : linkState.findIndex(link => link.FileID === FileID);
+        // We are using immer but eslint is stupid
+        // eslint-disable-next-line no-param-reassign
+        linkState[itemIndex].EpisodeID = EpisodeID;
+      }
+    });
 
   const duplicateLink = useEventCallback(() => {
     addLink(orderedLinks[selectedLink].FileID);
@@ -469,7 +467,7 @@ function LinkFilesTab() {
     const mappedLinks: ManualLink[] = manualLinks.map(({ EpisodeID, FileID, LinkID }) => ({
       LinkID,
       FileID,
-      EpisodeID: anidbMap.get(EpisodeID) || 0,
+      EpisodeID: anidbMap.get(EpisodeID) ?? 0,
     }));
     const { manyToMany, manyToOne, none, oneToMany, oneToOne } = parseLinks(mappedLinks);
 
