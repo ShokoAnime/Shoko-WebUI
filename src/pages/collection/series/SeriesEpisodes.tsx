@@ -57,10 +57,11 @@ const SeriesEpisodes = () => {
   const animeId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 332, // 332px is the minimum height of a loaded row
+    estimateSize: () => 345, // 332px is the minimum height of a loaded row
     overscan: 5,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -100,7 +101,7 @@ const SeriesEpisodes = () => {
         fullHeight={false}
       >
         <Input
-          inputClassName="w-full max-w-[15rem]"
+          inputClassName="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="search"
           label="Title Search"
           startIcon={mdiMagnify}
@@ -110,7 +111,7 @@ const SeriesEpisodes = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="episodeType"
           label="Episode Type"
           value={episodeFilterType}
@@ -124,7 +125,7 @@ const SeriesEpisodes = () => {
           <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="status"
           label="Availability"
           value={episodeFilterAvailability}
@@ -136,7 +137,7 @@ const SeriesEpisodes = () => {
           <option value="only">Missing</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="watched"
           label="Watched Status"
           value={episodeFilterWatched}
@@ -147,7 +148,7 @@ const SeriesEpisodes = () => {
           <option value="false">Unwatched</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="hidden"
           label="Hidden Status"
           value={episodeFilterHidden}

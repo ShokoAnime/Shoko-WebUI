@@ -60,9 +60,9 @@ const InfoLine = ({ title, value }) => (
 );
 
 const sizeMap = {
-  Posters: 'h-[20.0625rem] w-[12.75rem]',
-  Fanarts: 'h-[16rem] w-[26.55rem]',
-  Banners: 'h-[8rem] w-[40.3rem]',
+  Posters: 'h-[15rem] w-[10rem] 2xl:h-[21rem] 2xl:w-[13rem]',
+  Fanarts: 'h-[11.5rem] w-[22.5rem] 2xl:h-[16rem] 2xl:w-[26.55rem]',
+  Banners: 'h-[8rem] w-[46rem] 2xl:w-[41rem]',
 };
 
 const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in sizeMap;
@@ -101,7 +101,7 @@ const SeriesImages = () => {
         <ShokoPanel
           title="Selected Image Info"
           className="flex w-full flex-row"
-          contentClassName="!flex-row gap-x-8 h-full"
+          contentClassName="flex !flex-row gap-x-2 2xl:gap-x-8 h-full"
           fullHeight={false}
           transparent
         >
@@ -111,7 +111,7 @@ const SeriesImages = () => {
           <InfoLine title="Size" value="-" />
           <Button
             buttonType="primary"
-            className="rounded-md border border-panel-border px-4 py-3 font-semibold"
+            className="rounded-md border border-panel-border p-3 font-semibold"
             disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
               changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
@@ -125,7 +125,7 @@ const SeriesImages = () => {
             {`Set As Default ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
-        <div className="flex flex-wrap gap-4 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+        <div className="flex flex-wrap gap-4 rounded-md border border-panel-border bg-panel-background-transparent p-4">
           {map(get(images, type, []), (item: ImageType) => (
             <div
               onClick={() => {

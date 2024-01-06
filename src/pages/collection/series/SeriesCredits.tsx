@@ -79,7 +79,7 @@ const SeriesCredits = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid grid-cols-3 gap-2 2xl:grid-cols-4 2xl:gap-4">
             {map(
               filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))),
               (item, idx) => (
@@ -91,15 +91,15 @@ const SeriesCredits = () => {
                     {mode === 'Character' && (
                       <CharacterImage
                         imageSrc={getThumbnailUrl(item, 'Character')}
-                        className="relative h-[11rem] w-[8rem] rounded-md"
+                        className="relative h-[8rem] w-[6rem] rounded-md 2xl:h-[11rem] 2xl:w-[8rem]"
                       />
                     )}
                     <CharacterImage
                       imageSrc={getThumbnailUrl(item, 'Staff')}
-                      className="relative h-[11rem] w-[8rem] rounded-md"
+                      className="relative h-[8rem] w-[6rem] rounded-md 2xl:h-[11rem] 2xl:w-[8rem]"
                     />
                   </div>
-                  <div className="text-xl">{item.Character?.Name}</div>
+                  <div className="text-base xl:text-xl">{item.Character?.Name}</div>
                   <div className="-mt-2 opacity-65">{item.Staff?.Name}</div>
                   <div>{item.RoleDetails}</div>
                 </div>
