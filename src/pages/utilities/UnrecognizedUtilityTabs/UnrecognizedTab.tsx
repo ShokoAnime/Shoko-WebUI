@@ -152,6 +152,12 @@ const Menu = (
       .catch(console.error);
   });
 
+  const selectedOptionStyles = useMemo(() => {
+    if (selectedRows.length === 0) return 'hidden';
+    if (isShow) return 'flex xl:hidden';
+    return 'flex';
+  }, [selectedRows, isShow]);
+
   const renderSelectedRowActions = useMemo(() => (
     <>
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
@@ -172,7 +178,7 @@ const Menu = (
     <>
       <div
         className={cx(
-          isShow || selectedRows.length === 0 ? 'flex 2xl:flex' : 'hidden 2xl:flex',
+          isShow || selectedRows.length === 0 ? 'hidden xl:flex' : 'hidden 2xl:flex',
           'box-border h-[3rem] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3',
         )}
       >
@@ -186,11 +192,24 @@ const Menu = (
             name="Refresh"
           />
         </TransitionDiv>
-        <TransitionDiv className="hidden grow gap-x-2 xl:flex 2xl:gap-x-4" show={selectedRows.length !== 0 && isShow}>
+        <TransitionDiv className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4" show={selectedRows.length !== 0 && isShow}>
           {renderSelectedRowActions}
         </TransitionDiv>
       </div>
-      <div className={cx(!isShow && selectedRows.length !== 0 ? 'flex' : 'hidden', '2xl:hidden')}>
+
+      <Button
+        buttonType="secondary"
+        onClick={() => {
+          setSelectedRows([]);
+          invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+        }}
+        className={cx(selectedRows.length !== 0 ? 'hidden' : 'flex', 'p-3 xl:hidden')}
+      >
+        <Icon path={mdiRefresh} size={1} />
+        <span>Refresh</span>
+      </Button>
+
+      <div className={cx(selectedOptionStyles, '2xl:hidden')}>
         <ButtonDropdown className="p-2.5" buttonTypes="secondary" content={<Icon path={mdiCogOutline} size={1} />}>
           {renderSelectedRowActions}
         </ButtonDropdown>
@@ -308,7 +327,7 @@ function UnrecognizedTab() {
                 onChange={e => setSearch(e.target.value)}
                 inputClassName="px-4 py-3"
                 isOverlay
-                overlayClassName="w-[700px] 2xl:w-auto 2xl:grow-0"
+                overlayClassName="w-[25rem] xl:w-[43.75rem] 2xl:w-auto 2xl:grow-0"
                 onToggleOverlay={setIsSearching}
               />
               <Menu
@@ -320,22 +339,24 @@ function UnrecognizedTab() {
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
                 <Button
                   buttonType="primary"
-                  className="flex gap-x-2.5 px-2 py-3"
+                  className="flex flex-row flex-wrap items-center p-1"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
-                  Manual Link
+                  <span>Manual Link</span>
                 </Button>
                 <Button
                   buttonType="primary"
-                  className="flex gap-x-2.5 px-2 py-3"
+                  className="flex flex-row flex-wrap items-center p-1"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
                   <Icon path={mdiDumpTruck} size={0.8333} />
-                  {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
-                  {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
-                  {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                  <span>
+                    {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
+                    {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
+                    {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                  </span>
                 </Button>
               </TransitionDiv>
             </div>

@@ -12,7 +12,7 @@ const ItemCount = ({ count, selected, series = false }: { count: number, selecte
     </span>
     {(selected ?? 0) > 0 && (
       <>
-        <span>|</span>
+        <span>&nbsp;|&nbsp;</span>
         <span>
           <span className="text-panel-text-important">
             {selected ?? 0}

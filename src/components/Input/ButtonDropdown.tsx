@@ -85,7 +85,7 @@ const ButtonDropdown = (props: Props) => {
       </button>
       <div
         className={cx([
-          'flex-col fixed z-10 origin-top-right text-right overflow-hidden justify-center w-fit-content p-2.5',
+          'flex-col fixed z-10 origin-top-right text-right overflow-hidden justify-center w-fit-content p-3 gap-y-2',
           open ? 'flex' : 'hidden',
           buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes]} border border-panel-border`,
         ])}
