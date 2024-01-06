@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   mdiCloseCircleOutline,
+  mdiCogOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
   mdiDumpTruck,
@@ -15,6 +16,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { countBy, every, find, some } from 'lodash';
 import { useDebounce } from 'usehooks-ts';
 
@@ -57,9 +59,11 @@ const Menu = (
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
     setSeriesSelectModal(this: void, show: boolean): void;
+    isShow?: boolean;
   },
 ) => {
   const {
+    isShow,
     selectedRows,
     setSelectedRows,
     setSeriesSelectModal,
@@ -148,37 +152,50 @@ const Menu = (
       .catch(console.error);
   });
 
+  const renderSelectedRowActions = useMemo(() => (
+    <>
+      <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+      <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
+      <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
+      <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
+      <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
+      <MenuButton
+        onClick={() => setSelectedRows([])}
+        icon={mdiCloseCircleOutline}
+        name="Cancel Selection"
+        highlight
+      />
+    </>
+  ), [ignoreFiles, rehashFiles, rescanFiles, setSelectedRows, setSeriesSelectModal, showDeleteConfirmation]);
+
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
-        <MenuButton
-          onClick={() => {
-            setSelectedRows([]);
-            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
-          }}
-          icon={mdiRefresh}
-          name="Refresh"
-        />
-      </TransitionDiv>
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
-        <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
-        <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
-        <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
-        <MenuButton
-          onClick={() => setSelectedRows([])}
-          icon={mdiCloseCircleOutline}
-          name="Cancel Selection"
-          highlight
-        />
-      </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      {selectedRows.length === 1 ? 'File ' : 'Files '}
-      Selected
+    <>
+      <div
+        className={cx(
+          isShow || selectedRows.length === 0 ? 'flex 2xl:flex' : 'hidden 2xl:flex',
+          'box-border h-[3rem] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3',
+        )}
+      >
+        <TransitionDiv className="flex grow gap-x-2 2xl:gap-x-4" show={selectedRows.length === 0}>
+          <MenuButton
+            onClick={() => {
+              setSelectedRows([]);
+              invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+            }}
+            icon={mdiRefresh}
+            name="Refresh"
+          />
+        </TransitionDiv>
+        <TransitionDiv className="hidden grow gap-x-2 xl:flex 2xl:gap-x-4" show={selectedRows.length !== 0 && isShow}>
+          {renderSelectedRowActions}
+        </TransitionDiv>
+      </div>
+      <div className={cx(!isShow && selectedRows.length !== 0 ? 'flex' : 'hidden', '2xl:hidden')}>
+        <ButtonDropdown className="p-2.5" buttonTypes="secondary" content={<Icon path={mdiCogOutline} size={1} />}>
+          {renderSelectedRowActions}
+        </ButtonDropdown>
+      </div>
+
       <DeleteFilesModal
         show={showConfirmModal}
         selectedFiles={selectedRows}
@@ -186,7 +203,7 @@ const Menu = (
         onClose={cancelDelete}
         onConfirm={deleteFiles}
       />
-    </div>
+    </>
   );
 };
 
@@ -196,6 +213,7 @@ function UnrecognizedTab() {
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
   const debouncedSearch = useDebounce(search, 200);
   const { mutate: avdumpFile } = useAvdumpFileMutation();
 
@@ -279,7 +297,7 @@ function UnrecognizedTab() {
     <>
       <div className="flex grow flex-col gap-y-8">
         <div>
-          <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} />}>
+          <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
             <div className="flex items-center gap-x-3">
               <Input
                 type="text"
@@ -289,37 +307,36 @@ function UnrecognizedTab() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 inputClassName="px-4 py-3"
+                isOverlay
+                overlayClassName="w-[700px] 2xl:w-auto 2xl:grow-0"
+                onToggleOverlay={setIsSearching}
               />
               <Menu
                 selectedRows={selectedRows}
                 setSelectedRows={setRowSelection}
                 setSeriesSelectModal={setSeriesSelectModal}
+                isShow={!isSearching}
               />
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
-                <ButtonDropdown
-                  className="px-4 py-2.5"
-                  content="Options"
+                <Button
+                  buttonType="primary"
+                  className="flex gap-x-2.5 px-2 py-3"
+                  onClick={() => navigate('link', { state: { selectedRows } })}
                 >
-                  <Button
-                    buttonType="primary"
-                    className="flex gap-x-2.5 px-2 py-3"
-                    onClick={() => navigate('link', { state: { selectedRows } })}
-                  >
-                    <Icon path={mdiOpenInNew} size={0.8333} />
-                    Manual Link
-                  </Button>
-                  <Button
-                    buttonType="primary"
-                    className="flex gap-x-2.5 px-2 py-3"
-                    onClick={handleAvdumpClick}
-                    disabled={dumpInProgress}
-                  >
-                    <Icon path={mdiDumpTruck} size={0.8333} />
-                    {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
-                    {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
-                    {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
-                  </Button>
-                </ButtonDropdown>
+                  <Icon path={mdiOpenInNew} size={0.8333} />
+                  Manual Link
+                </Button>
+                <Button
+                  buttonType="primary"
+                  className="flex gap-x-2.5 px-2 py-3"
+                  onClick={handleAvdumpClick}
+                  disabled={dumpInProgress}
+                >
+                  <Icon path={mdiDumpTruck} size={0.8333} />
+                  {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
+                  {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
+                  {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
+                </Button>
               </TransitionDiv>
             </div>
           </ShokoPanel>

@@ -1,8 +1,12 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import { mdiCloseCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { useEventCallback } from 'usehooks-ts';
 
 import { BodyVisibleContext } from '@/core/router';
+
+import Button from './Button';
 
 type Props = {
   id: string;
@@ -20,6 +24,9 @@ type Props = {
   endIcons?: { icon: string, className?: string, onClick?: React.MouseEventHandler<HTMLDivElement> }[];
   startIcon?: string;
   inline?: boolean;
+  isOverlay?: boolean;
+  overlayClassName?: string;
+  onToggleOverlay?: (show: boolean) => void;
 };
 
 function Input(props: Props) {
@@ -32,9 +39,12 @@ function Input(props: Props) {
     id,
     inline,
     inputClassName,
+    isOverlay,
     label,
     onChange,
     onKeyUp,
+    onToggleOverlay,
+    overlayClassName,
     placeholder,
     startIcon,
     type,
@@ -50,9 +60,40 @@ function Input(props: Props) {
     }
   }, [autoFocus, bodyVisible]);
 
+  const [isShow, setIsShow] = React.useState(false);
+  const handleOverlayClick = useEventCallback(() => {
+    setIsShow(prev => !prev);
+    onToggleOverlay?.(!isShow);
+  });
+
+  const inputContainerClassName = useMemo(() => {
+    const combier = (input: string) => cx([overlayClassName, input]);
+    if (isOverlay && inline) {
+      if (!isShow) return combier('hidden 2xl:flex flex-row justify-center');
+      return combier('flex flex-row justify-center');
+    }
+    if (isOverlay && !inline) {
+      if (!isShow) return combier('hidden 2xl:inline');
+      return combier('');
+    }
+    if (!isOverlay && inline) {
+      return 'flex flex-row justify-center';
+    }
+
+    return '';
+  }, [isShow, isOverlay, inline, overlayClassName]);
+
   return (
-    <div className={className}>
-      <label htmlFor={id} className={cx({ 'flex flex-row justify-center': inline })}>
+    <div
+      className={cx({
+        className,
+        'flex-row gap-x-2 flex': isOverlay,
+      })}
+    >
+      <label
+        htmlFor={id}
+        className={cx(inputContainerClassName)}
+      >
         {label && (
           <div
             className={cx('font-semibold text-base', {
@@ -85,9 +126,9 @@ function Input(props: Props) {
             disabled={disabled}
             ref={inputRef}
           />
-          {endIcons?.length && (
+          {(endIcons?.length ?? isOverlay) && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
-              {endIcons.map(icon => (
+              {endIcons?.map(icon => (
                 <div
                   key={`input-${icon.icon}`}
                   onClick={icon.onClick}
@@ -95,11 +136,29 @@ function Input(props: Props) {
                 >
                   <Icon path={icon.icon} size={1} />
                 </div>
-              ), [] as React.ReactNode[])}
+              ), [] as React.ReactNode[]) ?? []}
+              {isOverlay && isShow && (
+                <div
+                  key="input-toggler"
+                  onClick={handleOverlayClick}
+                  className={cx('cursor-pointer text-panel-text')}
+                >
+                  <Icon path={mdiCloseCircleOutline} size={1} />
+                </div>
+              )}
             </div>
           )}
         </div>
       </label>
+      {isOverlay && startIcon && !isShow && (
+        <Button
+          buttonType="secondary"
+          className="inline p-2.5 2xl:hidden"
+          onClick={handleOverlayClick}
+        >
+          <Icon path={startIcon} size={1} />
+        </Button>
+      )}
     </div>
   );
 }

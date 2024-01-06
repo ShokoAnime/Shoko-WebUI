@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useMeasure from 'react-use-measure';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -41,7 +41,20 @@ const ButtonDropdown = (props: Props) => {
   const onClick = useEventCallback(() => {
     setOpen(prev => !prev);
   });
-  const [containerRef, bounds] = useMeasure();
+  const [containerRef, containerBounds] = useMeasure();
+  const [menuRef, menuBounds] = useMeasure();
+  const menuShift = useMemo(() => containerBounds.x - (menuBounds.width - (containerBounds.width)), [
+    containerBounds.x,
+    containerBounds.width,
+    menuBounds.width,
+  ]);
+
+  useEffect(() => {
+    window.addEventListener('resize', () => setOpen(_ => false));
+    return () => {
+      window.removeEventListener('resize', () => setOpen(_ => false));
+    };
+  }, [className]);
 
   return (
     <div className="relative inline-block" ref={containerRef}>
@@ -72,11 +85,12 @@ const ButtonDropdown = (props: Props) => {
       </button>
       <div
         className={cx([
-          'flex-col fixed z-10 origin-top-right text-right overflow-hidden justify-center w-full',
+          'flex-col fixed z-10 origin-top-right text-right overflow-hidden justify-center w-fit-content p-2.5',
           open ? 'flex' : 'hidden',
           buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes]} border border-panel-border`,
         ])}
-        style={{ maxWidth: `${bounds.width}px` }}
+        style={{ left: `${menuShift}px` }}
+        ref={menuRef}
       >
         {children}
       </div>

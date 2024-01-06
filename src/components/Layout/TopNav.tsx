@@ -25,6 +25,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import semver from 'semver';
 import { siDiscord } from 'simple-icons';
+import { useEventCallback } from 'usehooks-ts';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
