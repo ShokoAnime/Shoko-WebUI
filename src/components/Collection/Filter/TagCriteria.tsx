@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { forEach } from 'lodash';
 
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
-import { removeFilterCriteria } from '@/core/slices/collection';
+import { removeFilterCriteria, selectFilterTags } from '@/core/slices/collection';
 
-import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
 type Props = {
@@ -16,9 +16,19 @@ type Props = {
 const TagCriteria = ({ criteria }: Props) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
-  const selectedParameter = useSelector(
-    (state: RootState) => state.collection.filterValues[criteria.Expression] ?? [],
-  );
+  const selectedParameter = useSelector(state => selectFilterTags(state, criteria));
+  const [includedValues, excludedValues] = useMemo(() => {
+    const included: string[] = [];
+    const excluded: string[] = [];
+    forEach(selectedParameter, (tag) => {
+      if (tag.isExcluded) {
+        excluded.push(tag.Name);
+      } else {
+        included.push(tag.Name);
+      }
+    });
+    return [included, excluded];
+  }, [selectedParameter]);
 
   const showModalCallback = () => () => {
     setShowModal(true);
@@ -44,7 +54,20 @@ const TagCriteria = ({ criteria }: Props) => {
             </div>
           </div>
         </div>
-        <div className="line-clamp-1 bg-panel-background-alt p-2">{selectedParameter.join(', ')}</div>
+        <div className="line-clamp-1 flex gap-x-2 whitespace-nowrap bg-panel-background-alt p-2">
+          {includedValues && (
+            <div>
+              <span className="text-panel-text-important pr-2">Included:</span>
+              {includedValues.join(', ')}
+            </div>
+          )}
+          {excludedValues && (
+            <div>
+              <span className="text-panel-text-important pr-2">Excluded:</span>
+              {excludedValues.join(', ')}
+            </div>
+          )}
+        </div>
       </div>
       <TagCriteriaModal
         criteria={criteria}

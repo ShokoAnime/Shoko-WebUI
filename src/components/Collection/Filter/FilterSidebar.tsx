@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { filter, keys, map, toPairs, values } from 'lodash';
+import { filter, keys, map, values } from 'lodash';
 
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
 import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
@@ -15,13 +15,15 @@ import store from '@/core/store';
 import { useFilterExpressionMain } from '@/hooks/filters';
 
 import type { RootState } from '@/core/store';
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 
-const buildTagCondition = (condition: [string, boolean], type: string) => {
-  const value = condition[0];
-  return condition[1] ? { Type: type, Parameter: value } : { Type: 'Not', Left: { Type: type, Parameter: value } };
-};
-const buildFilterConditionTag = (conditionValues: [string, boolean][], type: string): object => {
+const buildTagCondition = (
+  condition: FilterTag,
+  type: string,
+) => (condition.isExcluded
+  ? { Type: 'Not', Left: { Type: type, Parameter: condition.Name } }
+  : { Type: type, Parameter: condition.Name });
+const buildFilterConditionTag = (conditionValues: FilterTag[], type: string): object => {
   if (conditionValues.length > 1) {
     return {
       Type: 'And',
@@ -43,8 +45,8 @@ const buildFilterConditionMultivalue = (conditionValues: string[], type: string)
 };
 const buildFilterCondition = (currentFilter: FilterExpression) => {
   if (currentFilter.Expression === 'HasCustomTag' || currentFilter.Expression === 'HasTag') {
-    const tagValues = store.getState().collection.filterTags;
-    return buildFilterConditionTag(toPairs(tagValues), currentFilter.Expression);
+    const tagValues = store.getState().collection.filterTags[currentFilter.Expression];
+    return buildFilterConditionTag(tagValues, currentFilter.Expression);
   }
   if (currentFilter?.PossibleParameters) {
     const filterValues = store.getState().collection.filterValues[currentFilter.Expression];

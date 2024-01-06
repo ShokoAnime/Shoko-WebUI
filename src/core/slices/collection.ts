@@ -1,13 +1,14 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSelector, createSlice } from '@reduxjs/toolkit';
 
-import type { FilterExpression } from '@/core/types/api/filter';
+import type { RootState } from '@/core/store';
+import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
   filterCriteria: Record<string, FilterExpression>;
   filterConditions: Record<string, boolean>;
   filterValues: Record<string, string[]>;
-  filterTags: Record<number, boolean>;
+  filterTags: Record<string, FilterTag[]>;
   activeFilter: object | null;
 };
 
@@ -41,7 +42,7 @@ const collectionSlice = createSlice({
     setFilterValues(sliceState, action: PayloadAction<Record<string, string[]>>) {
       sliceState.filterValues = { ...sliceState.filterValues, ...action.payload };
     },
-    setFilterTag(sliceState, action: PayloadAction<Record<number, boolean>>) {
+    setFilterTag(sliceState, action: PayloadAction<Record<string, FilterTag[]>>) {
       sliceState.filterTags = action.payload;
     },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
@@ -62,5 +63,13 @@ export const {
   setFilterTag,
   setFilterValues,
 } = collectionSlice.actions;
+
+export const selectFilterTags = createSelector(
+  [
+    (state: RootState) => state.collection,
+    (_, criteria: FilterExpression) => criteria.Expression,
+  ],
+  (values, expression) => values.filterTags[expression] ?? [],
+);
 
 export default collectionSlice.reducer;

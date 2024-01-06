@@ -58,6 +58,11 @@ export type FilterExpression = {
   PossibleParameters?: string[];
 };
 
+export type FilterTag = {
+  Name: string;
+  isExcluded: boolean;
+};
+
 type SortingCriteria = {
   Type: SortingType;
   Next?: SortingCriteria;

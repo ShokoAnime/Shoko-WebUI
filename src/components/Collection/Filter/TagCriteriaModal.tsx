@@ -2,26 +2,17 @@ import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiMagnify, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { createSelector } from '@reduxjs/toolkit';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { filter, find, map, omit, pickBy, toNumber } from 'lodash';
+import { filter, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
-import { setFilterTag } from '@/core/slices/collection';
+import { selectFilterTags, setFilterTag } from '@/core/slices/collection';
 
-import type { RootState } from '@/core/store';
-import type { FilterExpression } from '@/core/types/api/filter';
-
-const selectFilterTags = createSelector(
-  [
-    (state: RootState) => state.collection,
-  ],
-  values => values.filterTags ?? {},
-);
+import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 
 type Props = {
   criteria: FilterExpression;
@@ -33,10 +24,10 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true }, show);
   const tags = tagsQuery.data;
   const [search, setSearch] = useState('');
-  // included - true, excluded - false
+  // selectMode: included - true, excluded - false
   const [selectMode, setSelectMode] = useState<boolean>(true);
-  const selectedValues = useSelector(selectFilterTags);
-  const [unsavedValues, setUnsavedValues] = useState<Record<number, boolean>>({});
+  const selectedValues = useSelector(state => selectFilterTags(state, criteria));
+  const [unsavedValues, setUnsavedValues] = useState<FilterTag[]>([]);
   const unusedValues = useMemo(
     () =>
       filter(
@@ -46,7 +37,7 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     [tags, selectedValues, unsavedValues],
   );
   const combinedSelectedValues = useMemo(
-    () => pickBy({ ...selectedValues, ...unsavedValues }, isExcluded => isExcluded === selectMode),
+    () => filter([...selectedValues, ...unsavedValues], tag => tag.isExcluded === !selectMode),
     [selectMode, selectedValues, unsavedValues],
   );
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -57,29 +48,29 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   });
   const virtualItems = virtualizer.getVirtualItems();
 
-  const removeValue = (tagID: string) => () => {
-    const value = toNumber(tagID);
-    if (unsavedValues[value] !== undefined) {
-      setUnsavedValues(omit({ ...unsavedValues }, value));
+  const removeValue = (tagName: string) => () => {
+    if (unsavedValues[tagName] !== undefined) {
+      setUnsavedValues(filter([...unsavedValues], item => item.Name !== tagName));
     }
-    if (selectedValues[value] !== undefined) {
-      dispatch(setFilterTag(omit({ ...selectedValues }, value)));
+    if (selectedValues[tagName] !== undefined) {
+      dispatch(setFilterTag({ [criteria.Expression]: filter([...selectedValues], item => item.Name !== tagName) }));
     }
   };
 
   const handleCancel = () => {
-    setUnsavedValues({});
+    setUnsavedValues([]);
     onClose();
   };
 
   const handleSave = () => {
-    dispatch(setFilterTag({ ...selectedValues, ...unsavedValues }));
-    setUnsavedValues({});
+    dispatch(setFilterTag({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
+    setUnsavedValues([]);
     onClose();
   };
 
-  const selectTag = (id: number, isExcluded: boolean) => () => {
-    setUnsavedValues({ ...unsavedValues, [id]: isExcluded });
+  const selectTag = (name: string, isExcluded: boolean) => () => {
+    const tag = { Name: name, isExcluded };
+    setUnsavedValues([...unsavedValues, tag]);
   };
 
   const handleSetSelectMode = (mode: boolean) => () => {
@@ -123,14 +114,14 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
                   >
                     {value.Name}
                     <div className="flex gap-x-2">
-                      <div onClick={selectTag(value.ID, true)}>
+                      <div onClick={selectTag(value.Name, false)}>
                         <Icon
                           className="cursor-pointer text-panel-icon-important"
                           path={mdiPlusCircleOutline}
                           size={1}
                         />
                       </div>
-                      <div onClick={selectTag(value.ID, false)}>
+                      <div onClick={selectTag(value.Name, true)}>
                         <Icon className="cursor-pointer text-panel-icon-danger" path={mdiPlusCircleOutline} size={1} />
                       </div>
                     </div>
@@ -163,10 +154,10 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
           <div className=" flex grow flex-col gap-x-2 bg-panel-background-alt">
             {map(
               combinedSelectedValues,
-              (isExcluded, tagId) => (
-                <div className="flex justify-between leading-tight" key={tagId}>
-                  {find(tags, { ID: toNumber(tagId) })?.Name}
-                  <div onClick={removeValue(tagId)}>
+              tag => (
+                <div className="flex justify-between leading-tight" key={tag.Name}>
+                  {tag.Name}
+                  <div onClick={removeValue(tag.Name)}>
                     <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
                   </div>
                 </div>
