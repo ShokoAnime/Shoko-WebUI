@@ -42,7 +42,7 @@ const collectionSlice = createSlice({
       sliceState.filterValues = { ...sliceState.filterValues, ...action.payload };
     },
     setFilterTag(sliceState, action: PayloadAction<Record<number, boolean>>) {
-      sliceState.filterTags = { ...sliceState.filterTags, ...action.payload };
+      sliceState.filterTags = action.payload;
     },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
       sliceState.activeFilter = action.payload;

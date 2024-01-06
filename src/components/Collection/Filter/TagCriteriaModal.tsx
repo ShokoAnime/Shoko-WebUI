@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMagnify, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiMagnify, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { createSelector } from '@reduxjs/toolkit';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -57,11 +57,12 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   });
   const virtualItems = virtualizer.getVirtualItems();
 
-  const removeValue = (value: number) => {
-    if (unsavedValues[value]) {
+  const removeValue = (tagID: string) => () => {
+    const value = toNumber(tagID);
+    if (unsavedValues[value] !== undefined) {
       setUnsavedValues(omit({ ...unsavedValues }, value));
     }
-    if (selectedValues[value]) {
+    if (selectedValues[value] !== undefined) {
       dispatch(setFilterTag(omit({ ...selectedValues }, value)));
     }
   };
@@ -158,19 +159,19 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
             Excluded
           </span>
         </div>
-        <div className="min-h-[15rem] grow bg-panel-background-alt p-4">
-          <div className="shoko-scrollbar flex grow flex-col gap-x-2 overflow-auto bg-panel-background-alt">
-            {map(combinedSelectedValues, (isExcluded, tagId) => (
-              <div
-                className="leading-tight"
-                onClick={() => {
-                  removeValue(toNumber(tagId));
-                }}
-                key={tagId}
-              >
-                {find(tags, { ID: toNumber(tagId) })?.Name}
-              </div>
-            ))}
+        <div className="shoko-scrollbar h-[15rem] max-h-[15rem] grow overflow-auto bg-panel-background-alt p-4">
+          <div className=" flex grow flex-col gap-x-2 bg-panel-background-alt">
+            {map(
+              combinedSelectedValues,
+              (isExcluded, tagId) => (
+                <div className="flex justify-between leading-tight" key={tagId}>
+                  {find(tags, { ID: toNumber(tagId) })?.Name}
+                  <div onClick={removeValue(tagId)}>
+                    <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+                  </div>
+                </div>
+              ),
+            )}
           </div>
         </div>
       </div>
