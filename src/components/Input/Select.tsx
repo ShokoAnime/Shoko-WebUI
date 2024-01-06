@@ -23,10 +23,12 @@ function Select(props: Props) {
     value,
   } = props;
 
+  const showTitle = label || options;
+
   return (
     <div className={className ?? ''}>
       <label htmlFor={id}>
-        {(label || options) && (
+        {showTitle && (
           <div className="mb-3 flex items-center justify-between">
             {label && (
               <div className="font-semibold">

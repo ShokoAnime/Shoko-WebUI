@@ -57,13 +57,13 @@ const TagCriteria = ({ criteria }: Props) => {
         <div className="line-clamp-1 flex gap-x-2 whitespace-nowrap bg-panel-background-alt p-2">
           {includedValues && (
             <div>
-              <span className="text-panel-text-important pr-2">Included:</span>
+              <span className="pr-2 text-panel-text-important">Included:</span>
               {includedValues.join(', ')}
             </div>
           )}
           {excludedValues && (
             <div>
-              <span className="text-panel-text-important pr-2">Excluded:</span>
+              <span className="pr-2 text-panel-text-important">Excluded:</span>
               {excludedValues.join(', ')}
             </div>
           )}
