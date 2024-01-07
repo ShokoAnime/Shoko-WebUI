@@ -256,7 +256,7 @@ const UtilitiesTable = (props: Props) => {
   });
 
   return (
-    <div className="flex w-full flex-col overflow-y-auto px-4" ref={parentRef}>
+    <div className="flex w-full flex-col overflow-y-auto pr-4" ref={parentRef}>
       <div className="sticky top-0 z-[1] bg-panel-background-alt">
         <div className="flex rounded-md border border-panel-border p-4 font-semibold">
           {columns.map(column => (
