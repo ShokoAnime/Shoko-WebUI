@@ -7,6 +7,7 @@ import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
+  mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
@@ -266,14 +267,15 @@ const FileDetails = (props: FileSelectedProps) => {
 };
 
 const FileSearch = () => {
+  const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.ImportedAt);
   const [search, setSearch] = useState('');
-  const debounceSearch = useDebounce(search, 250);
-  const { data: fileResults, fetchNextPage, isFetchingNextPage } = useFilesInfiniteQuery({
+  const debouncedSearch = useDebounce(search, 250);
+  const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs'],
-    sortOrder: [-FileSortCriteriaEnum.ImportedAt],
+    sortOrder: debouncedSearch ? [] : [sortCriteria],
     pageSize: 50,
-  }, debounceSearch);
-  const [files, fileCount] = useFlattenListResult<FileType>(fileResults);
+  }, debouncedSearch);
+  const [files, fileCount] = useFlattenListResult<FileType>(filesQuery.data);
 
   const {
     handleRowSelect,
@@ -325,21 +327,31 @@ const FileSearch = () => {
       </ShokoPanel>
       <div className="contain-strict flex grow justify-between gap-x-8 overflow-y-auto">
         <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-8 lg:max-w-[75%]">
-          {fileCount > 0
-            ? (
-              <UtilitiesTable
-                count={fileCount}
-                fetchNextPage={fetchNextPage}
-                handleRowSelect={handleRowSelect}
-                columns={staticColumns}
-                isFetchingNextPage={isFetchingNextPage}
-                rows={files}
-                rowSelection={rowSelection}
-                setSelectedRows={setRowSelection}
-                skipSort={!!debounceSearch}
-              />
-            )
-            : <div className="flex grow items-center justify-center font-semibold">No series without files!</div>}
+          {filesQuery.isPending && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
+
+          {!filesQuery.isPending && fileCount === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">No search results!</div>
+          )}
+
+          {filesQuery.isSuccess && fileCount > 0 && (
+            <UtilitiesTable
+              count={fileCount}
+              fetchNextPage={filesQuery.fetchNextPage}
+              handleRowSelect={handleRowSelect}
+              columns={staticColumns}
+              isFetchingNextPage={filesQuery.isFetchingNextPage}
+              rows={files}
+              rowSelection={rowSelection}
+              setSelectedRows={setRowSelection}
+              skipSort={!!debouncedSearch}
+              setSortCriteria={setSortCriteria}
+              sortCriteria={sortCriteria}
+            />
+          )}
         </div>
         <div className="flex w-full flex-col lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
