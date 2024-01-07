@@ -76,14 +76,16 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <MenuButton
-        onClick={() => {
-          setSelectedRows([]);
-          invalidateQueries(['series-without-files']);
-        }}
-        icon={mdiRefresh}
-        name="Refresh"
-      />
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton
+          onClick={() => {
+            setSelectedRows([]);
+            invalidateQueries(['series-without-files']);
+          }}
+          icon={mdiRefresh}
+          name="Refresh"
+        />
+      </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton

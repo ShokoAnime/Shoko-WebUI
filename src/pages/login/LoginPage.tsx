@@ -2,7 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
-import { mdiCloseCircleOutline, mdiGithub, mdiHelpCircleOutline, mdiLoading } from '@mdi/js';
+import {
+  mdiAlertCircleOutline,
+  mdiCloseCircleOutline,
+  mdiGithub,
+  mdiHelpCircleOutline,
+  mdiLoading,
+  mdiOpenInNew,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import * as Sentry from '@sentry/browser';
 import cx from 'classnames';
@@ -30,6 +37,7 @@ function LoginPage() {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
   const [{ imageUrl, seriesId, seriesName }, setLoginImage] = useState(() => ({
@@ -90,7 +98,11 @@ function LoginPage() {
         rememberUser,
       },
       {
-        onSuccess: () => navigate(returnTo),
+        onSuccess: () => {
+          setLoginError(false);
+          navigate(returnTo);
+        },
+        onError: () => setLoginError(true),
       },
     );
   };
@@ -119,7 +131,15 @@ function LoginPage() {
         closeButton={false}
         icon={false}
       />
-      <div className="relative flex h-screen w-screen items-center justify-center">
+      <div className="relative flex h-screen w-screen flex-col items-center justify-center gap-y-2">
+        {loginError && (
+          <div className="flex w-full max-w-[826px] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
+            <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
+            <div className="font-semibold text-panel-text-danger">
+              Invalid Username or Password. Try again.
+            </div>
+          </div>
+        )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex flex-row items-center gap-x-16 p-8">
             <div className="flex w-[15.625em] flex-col items-center gap-y-8">
@@ -222,19 +242,22 @@ function LoginPage() {
             </div>
           </div>
           <div className="flex w-full flex-row justify-between gap-x-8 border-t-2 border-panel-border px-8 py-4 font-semibold">
-            <div
-              className={cx(
-                'font-semibold truncate max-w-[23rem]',
-                seriesId && 'cursor-pointer',
-              )}
-              onClick={setRedirect}
-            >
-              {/* eslint-disable-next-line no-nested-ternary */}
-              {imageMetadataQuery.isError
-                ? 'One Piece'
-                : imageMetadataQuery.data?.Series === undefined
-                ? 'Series Not Found'
-                : seriesName}
+            <div className="flex gap-x-2">
+              <div
+                className={cx(
+                  'font-semibold truncate max-w-[23rem]',
+                  seriesId && 'cursor-pointer text-panel-text-primary',
+                )}
+                onClick={setRedirect}
+              >
+                {/* eslint-disable-next-line no-nested-ternary */}
+                {imageMetadataQuery.isError
+                  ? 'One Piece'
+                  : imageMetadataQuery.data?.Series === undefined
+                  ? 'Series Not Found'
+                  : seriesName}
+              </div>
+              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
             </div>
             <div className="flex flex-row gap-x-4">
               <a

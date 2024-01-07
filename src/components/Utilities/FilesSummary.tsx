@@ -34,17 +34,19 @@ const FilesSummary = ({ items, title }: Props) => {
   return (
     <>
       <div className="mb-8 flex w-full text-xl font-semibold">{title ?? 'Files Summary'}</div>
-      <div className="flex justify-between capitalize">
-        <span className="font-semibold">Series Count</span>
-        <span>{seriesCount}</span>
-      </div>
-      <div className="flex justify-between capitalize">
-        <span className="font-semibold">Episode Count</span>
-        <span>{episodeCount}</span>
-      </div>
-      <div className="flex justify-between capitalize">
-        <span className="font-semibold">Total Size</span>
-        <span>{prettyBytes(totalSize, { binary: true })}</span>
+      <div className="flex flex-col gap-y-1">
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Series Count</span>
+          <span className="font-semibold text-panel-text-important">{seriesCount}</span>
+        </div>
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Episode Count</span>
+          <span className="font-semibold text-panel-text-important">{episodeCount}</span>
+        </div>
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Total Size</span>
+          <span className="font-semibold text-panel-text-important">{prettyBytes(totalSize, { binary: true })}</span>
+        </div>
       </div>
     </>
   );
