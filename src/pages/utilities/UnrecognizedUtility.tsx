@@ -28,11 +28,10 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
   {
     id: 'filename',
     name: 'Filename',
-    className: 'line-clamp-1 grow basis-0 overflow-hidden break-all',
-    item: (file) => {
-      const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop();
-      return <div title={fileName}>{fileName}</div>;
-    },
+    className: 'line-clamp-2 grow basis-0 overflow-hidden',
+    item: file => (
+      <div title={file.Locations[0]?.RelativePath}>{file.Locations[0]?.RelativePath.split(/[/\\]/g).pop()}</div>
+    ),
   },
   {
     id: 'crc32',
