@@ -245,7 +245,7 @@ function LoginPage() {
             <div className="flex gap-x-2">
               <div
                 className={cx(
-                  'font-semibold truncate max-w-[23rem]',
+                  'flex gap-x-2 items-center font-semibold truncate max-w-[23rem]',
                   seriesId && 'cursor-pointer text-panel-text-primary',
                 )}
                 onClick={setRedirect}
@@ -255,9 +255,13 @@ function LoginPage() {
                   ? 'One Piece'
                   : imageMetadataQuery.data?.Series === undefined
                   ? 'Series Not Found'
-                  : seriesName}
+                  : (
+                    <>
+                      {seriesName}
+                      <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
+                    </>
+                  )}
               </div>
-              <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
             </div>
             <div className="flex flex-row gap-x-4">
               <a
