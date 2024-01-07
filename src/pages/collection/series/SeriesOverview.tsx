@@ -217,7 +217,10 @@ const SeriesOverview = () => {
         <div className="z-10 flex w-full gap-x-8">
           {cast?.slice(0, 20).map(seiyuu => (
             seiyuu.RoleName === 'Seiyuu' && (
-              <div key={seiyuu.Character.Name} className="flex flex-col items-center gap-y-4 pb-4">
+              <div
+                key={`${seiyuu.Character.Name}-${seiyuu.Staff.Name}`}
+                className="flex flex-col items-center gap-y-4 pb-4"
+              >
                 <div className="flex gap-x-4">
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Character')}

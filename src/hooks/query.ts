@@ -1,8 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { forEach } from 'lodash';
-
-import useEventCallback from '@/hooks/useEventCallback';
 
 export type Query<T> = T & Record<string, string | undefined>;
 
@@ -11,7 +9,15 @@ export function useURLSearch<T extends Query<Record<string, unknown>>>(
 ): [value: T, setValue: (value: T | ((previousValue: T) => T), replace?: boolean) => void] {
   const navigate = useNavigate();
   const location = useLocation();
-  const getQueryString = useEventCallback(() => (isHash ? location.hash.slice(1) : location.search));
+  // This doesn't work with useEventCallback. Why? You figure it out.
+  const getQueryString = useCallback(
+    () => (isHash ? location.hash.slice(1) : location.search),
+    [
+      isHash,
+      location.hash,
+      location.search,
+    ],
+  );
   const [[search, value], setSearch] = useState(() => {
     const currentSearch = getQueryString();
     const currentValue = parseQuery<T>(currentSearch);
