@@ -28,7 +28,7 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
   {
     id: 'filename',
     name: 'Filename',
-    className: 'overflow-hidden line-clamp-1 grow basis-0',
+    className: 'line-clamp-1 grow basis-0 overflow-hidden break-all',
     item: file => file.Locations[0]?.RelativePath.split(/[/\\]/g).pop(),
   },
   {
