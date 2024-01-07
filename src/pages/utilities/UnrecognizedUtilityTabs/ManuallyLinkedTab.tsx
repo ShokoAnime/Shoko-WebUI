@@ -41,7 +41,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     id: 'series',
     name: 'Series',
     className: 'line-clamp-1 grow basis-0 overflow-hidden',
-    item: series => series.Name,
+    item: series => <div className={series.Name}>series.Name</div>,
   },
   {
     id: 'id',
