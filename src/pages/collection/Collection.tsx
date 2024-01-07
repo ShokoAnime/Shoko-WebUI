@@ -251,7 +251,7 @@ function Collection() {
               (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            <FilterSidebar show={!isSeries && showFilterSidebar} />
+            <FilterSidebar />
           </div>
           {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
         </div>

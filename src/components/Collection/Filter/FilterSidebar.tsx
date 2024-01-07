@@ -1,18 +1,17 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { type ReactNode, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiPlusCircleOutline } from '@mdi/js';
+import { mdiFilterPlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { filter, keys, map, values } from 'lodash';
+import { map, values } from 'lodash';
 
+import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
 import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
 import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import Button from '@/components/Input/Button';
-import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { addFilterCriteria, resetActiveFilter, setActiveFilter } from '@/core/slices/collection';
+import { resetActiveFilter, setActiveFilter } from '@/core/slices/collection';
 import store from '@/core/store';
-import { useFilterExpressionMain } from '@/hooks/filters';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
@@ -78,64 +77,47 @@ const mapCriteriaComponent = (criteria: FilterExpression) => {
   return DefaultCriteria;
 };
 
-type Props = {
-  show: boolean;
-};
+type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
+const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
+  <div
+    className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
+    onClick={onClick}
+  >
+    <Icon path={icon} size={1} />
+  </div>
+);
 
-const FilterSidebar = ({ show }: Props) => {
+type OptionsProps = {
+  showModal: () => void;
+};
+const Options = ({ showModal }: OptionsProps) => <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />;
+
+const FilterSidebar = () => {
   const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
-  const allCriteria = useFilterExpressionMain(show);
-  const [newCriteria, setNewCriteria] = useState('');
+  const [criteriaModal, setCriteriaModal] = useState(false);
   const dispatch = useDispatch();
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
-  const unusedCriteria = useMemo(() => {
-    const selectedKeys = keys(selectedCriteria);
-    return filter(allCriteria, item => selectedKeys.indexOf(item.Expression) === -1);
-  }, [allCriteria, selectedCriteria]);
-
-  useEffect(() => {
-    if (!allCriteria[0]) return;
-    setNewCriteria(allCriteria[0]?.Expression ?? '');
-  }, [allCriteria]);
-
-  const addCriteria = () => {
-    const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
-    dispatch(addFilterCriteria(filterExpression));
-  };
 
   const applyFilter = () => {
     const requestData = buildFilter(values(selectedCriteria));
     dispatch(setActiveFilter(requestData));
   };
 
+  const showCriteriaModal = (state: boolean) => () => {
+    setCriteriaModal(state);
+  };
+
   return (
-    <ShokoPanel title="Filter" className="ml-8 w-full" contentClassName="gap-3">
+    <ShokoPanel
+      title="Filter"
+      className="ml-8 w-full"
+      contentClassName="gap-3"
+      options={<Options showModal={showCriteriaModal(true)} />}
+    >
       {map(selectedCriteria, (item) => {
         const CriteriaComponent = mapCriteriaComponent(item);
         return <CriteriaComponent key={item.Expression} criteria={item} />;
       })}
-      <Select
-        id="addCondition"
-        label="Select Condition"
-        value={newCriteria}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-          setNewCriteria(event.currentTarget.value);
-        }}
-        options={
-          <div
-            onClick={() => {
-              addCriteria();
-            }}
-          >
-            <Icon className="cursor-pointer text-panel-icon-important" path={mdiPlusCircleOutline} size={1} />
-          </div>
-        }
-      >
-        {map(unusedCriteria, (item) => {
-          const value = item?.Expression;
-          return <option key={value} value={value}>{item.Name}</option>;
-        })}
-      </Select>
       {activeFilter === null && (
         <Button
           buttonType="primary"
@@ -158,6 +140,7 @@ const FilterSidebar = ({ show }: Props) => {
           Reset filter
         </Button>
       )}
+      <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>
   );
 };

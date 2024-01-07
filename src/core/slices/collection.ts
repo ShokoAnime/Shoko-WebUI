@@ -1,4 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
+import { keys } from 'lodash';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
@@ -70,6 +71,18 @@ export const selectFilterTags = createSelector(
     (_, criteria: FilterExpression) => criteria.Expression,
   ],
   (values, expression) => values.filterTags[expression] ?? [],
+);
+
+export const selectActiveCriteria = createSelector(
+  [
+    (state: RootState) => state.collection,
+  ],
+  values => [
+    ...keys(values.filterCriteria),
+    ...keys(values.filterConditions),
+    ...keys(values.filterValues),
+    ...keys(values.filterTags),
+  ],
 );
 
 export default collectionSlice.reducer;

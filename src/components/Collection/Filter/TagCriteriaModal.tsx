@@ -32,9 +32,11 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     () =>
       filter(
         tags,
-        item => selectedValues[item.ID] === undefined && unsavedValues[item.ID] === undefined,
+        item =>
+          selectedValues[item.ID] === undefined && unsavedValues[item.ID] === undefined
+          && (search === '' ? true : item.Name.indexOf(search) !== -1),
       ),
-    [tags, selectedValues, unsavedValues],
+    [tags, search, selectedValues, unsavedValues],
   );
   const combinedSelectedValues = useMemo(
     () => filter([...selectedValues, ...unsavedValues], tag => tag.isExcluded === !selectMode),
