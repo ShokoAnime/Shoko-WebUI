@@ -192,7 +192,7 @@ const FileDetails = (props: FileSelectedProps) => {
             </a>
           )}
         </div>
-        <span className="break-words">{mediaInfo.Name}</span>
+        <span className="break-all">{mediaInfo.Name}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         {seriesInfo !== undefined && (
@@ -207,31 +207,31 @@ const FileDetails = (props: FileSelectedProps) => {
             </Link>
           </div>
         )}
-        <span className="break-words">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'N/A'}</span>
+        <span className="break-all">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'N/A'}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Episode Name</span>
         </div>
-        <span className="break-words">{episodeInfo?.Title ?? 'N/A'}</span>
+        <span className="break-all">{episodeInfo?.Title ?? 'N/A'}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Location</span>
         </div>
-        <span className="break-words">{mediaInfo.Location ?? 'N/A'}</span>
+        <span className="break-all">{mediaInfo.Location ?? 'N/A'}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Size</span>
         </div>
-        <span className="break-words">{prettyBytes(mediaInfo.Size, { binary: true }) ?? 'N/A'}</span>
+        <span className="break-all">{prettyBytes(mediaInfo.Size, { binary: true }) ?? 'N/A'}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Video</span>
         </div>
-        <span className="break-words">
+        <span className="break-all">
           {mediaInfo.VideoInfo.length !== 0 ? mediaInfo.VideoInfo.join(' | ') : 'N/A'}
         </span>
       </div>
@@ -239,7 +239,7 @@ const FileDetails = (props: FileSelectedProps) => {
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Audio</span>
         </div>
-        <span className="break-words">
+        <span className="break-all">
           {mediaInfo.AudioInfo.length !== 0 ? mediaInfo.AudioInfo.join(' | ') : 'N/A'}
         </span>
       </div>
@@ -247,19 +247,19 @@ const FileDetails = (props: FileSelectedProps) => {
         <div className="flex break-after-all justify-between capitalize">
           <span className="font-semibold">Hash</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.ED2K ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">CRC</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.CRC32 ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.CRC32 ?? ''}</span>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">SHA1</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.SHA1 ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
     </TransitionDiv>
   );
