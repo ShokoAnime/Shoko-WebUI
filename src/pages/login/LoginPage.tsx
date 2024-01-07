@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Slide, ToastContainer } from 'react-toastify';
 import {
   mdiAlertCircleOutline,
@@ -25,13 +25,12 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { ImageTypeEnum } from '@/core/types/api/common';
-import { useHashQueryParameter } from '@/hooks/query';
 
 import type { RootState } from '@/core/store';
 
 function LoginPage() {
-  const [returnTo, setReturnTo] = useHashQueryParameter('returnTo', '/webui/');
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const apiSession = useSelector((state: RootState) => state.apiSession);
 
@@ -53,7 +52,7 @@ function LoginPage() {
 
   const setRedirect = () => {
     if (seriesId === 0) return;
-    setReturnTo(`/webui/collection/series/${seriesId}`);
+    setSearchParams(`redirectTo=/webui/collection/series/${seriesId}`, { replace: true });
   };
 
   useEffect(() => {
@@ -74,9 +73,9 @@ function LoginPage() {
     else if (serverStatusQuery.data?.State !== 1) setPollingInterval(0);
 
     if (serverStatusQuery.data?.State === 2 && apiSession.apikey !== '') {
-      navigate(returnTo, { replace: true });
+      navigate(searchParams.get('redirectTo') ?? '/webui', { replace: true });
     }
-  }, [serverStatusQuery.data, apiSession, navigate, returnTo]);
+  }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
 
   useEffect(() => {
     if (!get(versionQuery.data, 'Server', false)) return;
@@ -100,7 +99,7 @@ function LoginPage() {
       {
         onSuccess: () => {
           setLoginError(false);
-          navigate(returnTo);
+          navigate(searchParams.get('redirectTo') ?? '/webui');
         },
         onError: () => setLoginError(true),
       },
