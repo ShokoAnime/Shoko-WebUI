@@ -238,7 +238,7 @@ const SeriesFileSummary = () => {
           <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-8 py-5 text-xl font-semibold">
             Files Breakdown
             <div>
-              <span className="text-panel-text-important">{fileSummary?.Groups.length || 0}</span>
+              <span className="text-panel-text-important">{fileSummary?.Groups.length ?? 0}</span>
               &nbsp;
               {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}
             </div>
@@ -254,7 +254,7 @@ const SeriesFileSummary = () => {
                     {episode.EpisodeNumber}
                   </div>
                   <div className="col-span-4">
-                    {find(episode.Titles, ['Language', 'en'])?.Name || '--'}
+                    {find(episode.Titles, ['Language', 'en'])?.Name ?? '--'}
                     &nbsp;(
                     <a
                       className="inline-flex items-center gap-x-1 text-panel-text-primary"

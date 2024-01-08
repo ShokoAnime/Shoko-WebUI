@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import {
@@ -7,6 +7,7 @@ import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
+  mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
@@ -15,7 +16,8 @@ import {
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { forEach } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import prettyBytes from 'pretty-bytes';
+import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -33,9 +35,10 @@ import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/que
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useMediaInfo } from '@/hooks/useMediaInfo';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useMediaInfo from '@/hooks/useMediaInfo';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import { staticColumns } from './UnrecognizedUtility';
 
@@ -133,8 +136,8 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
@@ -176,8 +179,8 @@ const FileDetails = (props: FileSelectedProps) => {
   const mediaInfo = useMediaInfo(file);
 
   return (
-    <TransitionDiv className="flex flex-col gap-y-2">
-      <div className="mb-4 flex flex-col gap-y-2">
+    <TransitionDiv className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">File Name</span>
           {file?.AniDB?.ID && (
@@ -190,76 +193,89 @@ const FileDetails = (props: FileSelectedProps) => {
             </a>
           )}
         </div>
-        <span className="break-words">{mediaInfo.Name}</span>
+        <span className="break-all">{mediaInfo.Name}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
-        <div className="flex justify-between capitalize">
-          <span className="font-semibold">Series Name</span>
-          <Link to={`/webui/collection/series/${seriesShokoId}`}>
-            <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-              <ShokoIcon className="w-6" />
-              Shoko
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-            </div>
-          </Link>
-        </div>
-        <span className="break-words">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'Unknown'}</span>
+      <div className="flex flex-col gap-y-1">
+        {seriesInfo !== undefined && (
+          <div className="flex justify-between capitalize">
+            <span className="font-semibold">Series Name</span>
+            <Link to={`/webui/collection/series/${seriesShokoId}`}>
+              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+                <ShokoIcon className="w-6" />
+                Shoko
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
+            </Link>
+          </div>
+        )}
+        <span className="break-all">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'N/A'}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Episode Name</span>
         </div>
-        <span className="break-words">{episodeInfo?.Title ?? 'Unknown'}</span>
+        <span className="break-all">{episodeInfo?.Title ?? 'N/A'}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Location</span>
         </div>
-        <span className="break-words">{mediaInfo.Location ?? 'Unknown'}</span>
+        <span className="break-all">{mediaInfo.Location ?? 'N/A'}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Size</span>
+        </div>
+        <span className="break-all">{prettyBytes(mediaInfo.Size, { binary: true }) ?? 'N/A'}</span>
+      </div>
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Video</span>
         </div>
-        <span className="break-words">{mediaInfo.VideoInfo.join(' | ')}</span>
+        <span className="break-all">
+          {mediaInfo.VideoInfo.length !== 0 ? mediaInfo.VideoInfo.join(' | ') : 'N/A'}
+        </span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Audio</span>
         </div>
-        <span className="break-words">{mediaInfo.AudioInfo.join(' | ')}</span>
+        <span className="break-all">
+          {mediaInfo.AudioInfo.length !== 0 ? mediaInfo.AudioInfo.join(' | ') : 'N/A'}
+        </span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex break-after-all justify-between capitalize">
           <span className="font-semibold">Hash</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.ED2K ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">CRC</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.CRC32 ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.CRC32 ?? ''}</span>
       </div>
-      <div className="mb-4 flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">SHA1</span>
         </div>
-        <span className="break-words">{mediaInfo.Hashes.SHA1 ?? ''}</span>
+        <span className="break-all">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
     </TransitionDiv>
   );
 };
 
 const FileSearch = () => {
+  const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.ImportedAt);
   const [search, setSearch] = useState('');
-  const debounceSearch = useDebounce(search, 250);
-  const { data: fileResults, fetchNextPage, isFetchingNextPage } = useFilesInfiniteQuery({
+  const debouncedSearch = useDebounce(search, 250);
+  const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs'],
-    sortOrder: [-FileSortCriteriaEnum.ImportedAt],
+    sortOrder: debouncedSearch ? [] : [sortCriteria],
     pageSize: 50,
-  }, debounceSearch);
-  const [files, fileCount] = useFlattenListResult<FileType>(fileResults);
+  }, debouncedSearch);
+  const [files, fileCount] = useFlattenListResult<FileType>(filesQuery.data);
 
   const {
     handleRowSelect,
@@ -270,21 +286,21 @@ const FileSearch = () => {
 
   const [viewIndex, setViewIndex] = useState(0);
 
-  const onNextView = useCallback(() => {
+  const onNextView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev + 1 >= selectedRows.length) return 0;
 
       return prev + 1;
     });
-  }, [selectedRows]);
+  });
 
-  const onPrevView = useCallback(() => {
+  const onPrevView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev - 1 < 0) return selectedRows.length - 1;
 
       return prev - 1;
     });
-  }, [selectedRows]);
+  });
 
   const selectedId = useMemo(() => selectedRows[viewIndex]?.ID, [selectedRows, viewIndex]);
 
@@ -309,44 +325,56 @@ const FileSearch = () => {
           />
         </div>
       </ShokoPanel>
-      <div className="contain-strict flex grow justify-between overflow-y-auto">
+      <div className="contain-strict flex grow justify-between gap-x-8 overflow-y-auto">
         <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-8 lg:max-w-[75%]">
-          {fileCount > 0
-            ? (
-              <UtilitiesTable
-                count={fileCount}
-                fetchNextPage={fetchNextPage}
-                handleRowSelect={handleRowSelect}
-                columns={staticColumns}
-                isFetchingNextPage={isFetchingNextPage}
-                rows={files}
-                rowSelection={rowSelection}
-                setSelectedRows={setRowSelection}
-                skipSort={!!debounceSearch}
-              />
-            )
-            : <div className="flex grow items-center justify-center font-semibold">No series without files!</div>}
+          {filesQuery.isPending && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
+
+          {!filesQuery.isPending && fileCount === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">No search results!</div>
+          )}
+
+          {filesQuery.isSuccess && fileCount > 0 && (
+            <UtilitiesTable
+              count={fileCount}
+              fetchNextPage={filesQuery.fetchNextPage}
+              handleRowSelect={handleRowSelect}
+              columns={staticColumns}
+              isFetchingNextPage={filesQuery.isFetchingNextPage}
+              rows={files}
+              rowSelection={rowSelection}
+              setSelectedRows={setRowSelection}
+              skipSort={!!debouncedSearch}
+              setSortCriteria={setSortCriteria}
+              sortCriteria={sortCriteria}
+            />
+          )}
         </div>
-        <div className=" ml-8 flex w-full flex-col overflow-y-auto overflow-x-hidden lg:max-w-[25%]">
+        <div className="flex w-full flex-col lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
-            <div className="flex w-full flex-col rounded-md border border-panel-border bg-panel-background p-8">
-              <FilesSummary title="Selected Summary" items={selectedRows} />
-              <div className="my-8 flex w-full text-xl font-semibold">
-                <div className="flex w-full justify-between">
-                  <span className="grow">Selected File</span>
-                  <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
-                    <Button buttonType="secondary" onClick={() => onPrevView()}>
-                      <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
-                    </Button>
-                    <Button buttonType="secondary" onClick={() => onNextView()}>
-                      <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
-                    </Button>
+            <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden rounded-md border border-panel-border bg-panel-background p-8">
+              <div className="flex w-full flex-col overflow-y-auto pr-4">
+                <FilesSummary title="Selected Summary" items={selectedRows} />
+                <div className="my-8 flex w-full text-xl font-semibold">
+                  <div className="flex w-full justify-between">
+                    <span className="grow">Selected File</span>
+                    <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
+                      <Button buttonType="secondary" onClick={onPrevView}>
+                        <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
+                      </Button>
+                      <Button buttonType="secondary" onClick={onNextView}>
+                        <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
+                      </Button>
+                    </div>
                   </div>
                 </div>
+                <FileDetails
+                  fileId={selectedId ?? 0}
+                />
               </div>
-              <FileDetails
-                fileId={selectedId ?? 0}
-              />
             </div>
           )}
           {!selectedRows?.length && (

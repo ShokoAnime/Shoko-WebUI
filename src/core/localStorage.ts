@@ -14,17 +14,17 @@ const isApiSession = (data: unknown): data is ApiSessionState => checkVersion(ge
 
 export const loadState = (): RootState => {
   try {
-    const serializedState: unknown = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}');
+    const serializedState = JSON.parse(globalThis.sessionStorage.getItem('state') ?? '{}') as RootState;
     const apiSessionString = globalThis.localStorage.getItem('apiSession');
     if (apiSessionString === null) {
       return isSerializedState(serializedState) ? serializedState : {} as RootState;
     }
     const apiSession: unknown = JSON.parse(apiSessionString);
-    if (isSerializedState(serializedState) && isApiSession(apiSession)) {
-      return { ...serializedState, apiSession };
+    if (!isApiSession(apiSession)) {
+      globalThis.localStorage.clear();
+      return {} as RootState;
     }
-    globalThis.localStorage.clear();
-    return {} as RootState;
+    return { ...serializedState, apiSession };
   } catch (err) {
     return ({} as RootState);
   }

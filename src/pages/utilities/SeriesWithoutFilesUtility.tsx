@@ -13,8 +13,8 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import type { SeriesType } from '@/core/types/api/series';
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
@@ -28,12 +28,12 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     item: series => (
       <div className="flex justify-between">
         {series.IDs.AniDB}
-        {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
           target="_blank"
           rel="noreferrer noopener"
           className="mr-6 cursor-pointer text-panel-text-primary"
+          aria-label="Open AniDB series page"
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>
@@ -43,8 +43,8 @@ const columns: UtilityHeaderType<SeriesType>[] = [
   {
     id: 'name',
     name: 'Name',
-    className: 'overflow-hidden line-clamp-1 grow basis-0',
-    item: series => series.Name,
+    className: 'line-clamp-2 grow basis-0 overflow-hidden',
+    item: series => <div title={series.Name}>{series.Name}</div>,
   },
   {
     id: 'created',
@@ -76,14 +76,16 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
 
   return (
     <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <MenuButton
-        onClick={() => {
-          setSelectedRows([]);
-          invalidateQueries(['series-without-files']);
-        }}
-        icon={mdiRefresh}
-        name="Refresh"
-      />
+      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+        <MenuButton
+          onClick={() => {
+            setSelectedRows([]);
+            invalidateQueries(['series-without-files']);
+          }}
+          icon={mdiRefresh}
+          name="Refresh"
+        />
+      </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton

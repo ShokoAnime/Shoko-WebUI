@@ -114,6 +114,7 @@ const SelectEpisodeList = (
     };
   }, []);
 
+  // Not entirely sure if should be change to useEventCallback as it's not an event handler, so leaving it.
   const handleDisplayRef = useCallback((node: HTMLDivElement | null) => {
     displayRef.current = node;
 
@@ -136,7 +137,7 @@ const SelectEpisodeList = (
   };
 
   const renderSelected = () => {
-    if (!selected || !selected.label) return emptyValue;
+    if (!selected?.label) return emptyValue;
     return (
       <>
         <span className="font-semibold text-panel-text-important">{selected.number}</span>

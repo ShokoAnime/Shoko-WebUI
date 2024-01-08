@@ -1,10 +1,10 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { find, forEach, get, toNumber } from 'lodash';
 
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -47,7 +47,7 @@ function ManuallyLinkedFilesRow(props: Props) {
   }, [selectedFiles, setRowSelection]);
 
   const [lastRowSelected, setLastRowSelected] = useState<number | null>(null);
-  const handleSelect = useCallback((event: React.MouseEvent, index: number) => {
+  const handleSelect = (event: React.MouseEvent, index: number) => {
     if (event.shiftKey) {
       window?.getSelection()?.removeAllRanges();
       const lrIndex = lastRowSelected ?? index;
@@ -67,7 +67,7 @@ function ManuallyLinkedFilesRow(props: Props) {
       handleRowSelect(id, !rowSelection[id]);
       setLastRowSelected(index);
     }
-  }, [files, handleRowSelect, lastRowSelected, rowSelection, setRowSelection]);
+  };
 
   return (
     <div className="mt-4 flex flex-col">

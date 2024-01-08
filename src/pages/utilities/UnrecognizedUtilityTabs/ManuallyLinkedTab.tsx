@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -10,7 +10,6 @@ import {
 import { Icon } from '@mdi/react';
 import { countBy, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -26,7 +25,8 @@ import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 import { prefetchSeriesEpisodesInfiniteQuery, prefetchSeriesFilesQuery } from '@/core/react-query/series/prefetch';
 import { useSeriesWithLinkedFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -40,8 +40,8 @@ const columns: UtilityHeaderType<SeriesType>[] = [
   {
     id: 'series',
     name: 'Series',
-    className: 'overflow-hidden line-clamp-1 grow basis-0',
-    item: series => series.Name,
+    className: 'line-clamp-2 grow basis-0 overflow-hidden',
+    item: series => <div className={series.Name}>{series.Name}</div>,
   },
   {
     id: 'id',
@@ -94,7 +94,7 @@ const refreshData = () => {
 };
 
 const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean>>) =>
-  useCallback(
+  useEventCallback(
     (fileIds: number[], select = true) => {
       setSelectedFiles((immerState) => {
         fileIds.forEach((fileId) => {
@@ -102,7 +102,6 @@ const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean
         });
       });
     },
-    [setSelectedFiles],
   );
 
 const FilesTable = ({ id: seriesId }: { id: number }) => {
@@ -124,7 +123,8 @@ const FilesTable = ({ id: seriesId }: { id: number }) => {
   );
   const [episodes] = useFlattenListResult(episodesResult);
 
-  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext) as SelectedFilesType;
+  const { selectedFiles, setSelectedFiles } = useContext(SelectedFilesContext)!;
+  // TODO: Check if ManuallyLinkedFilesRow can be memoized so that the below useEventCallback is actually useful.
   const updateSelectedFiles = useUpdateSelectedFiles(setSelectedFiles);
 
   return (
@@ -146,10 +146,10 @@ const Menu = (props: SelectedFilesType) => {
 
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
-  const handleRefresh = () => {
+  const handleRefresh = useEventCallback(() => {
     refreshData();
     setSelectedFiles({});
-  };
+  });
 
   const rescanFiles = useEventCallback(() => {
     const promises = selectedIds.map(fileId => rescanFile(fileId));

@@ -8,6 +8,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useDeleteFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import EpisodeFileInfo from './EpisodeFileInfo';
 
@@ -29,7 +30,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
     [selectedFileToDelete],
   );
 
-  const handleDelete = () => {
+  const handleDelete = useEventCallback(() => {
     if (!selectedFileToDelete) return;
     deleteFile({ fileId: selectedFileToDelete.ID, removeFolder: true }, {
       onSuccess: () => {
@@ -38,12 +39,12 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
       },
       onError: error => toast.error(`Failed to delete file! ${error.message}`),
     });
-  };
+  });
 
-  const closeDeleteModal = () => {
+  const closeDeleteModal = useEventCallback(() => {
     setSelectedFileToDelete(null);
     setShowDeleteModal(false);
-  };
+  });
 
   const handleRescan = (id: number) =>
     rescanFile(id, {
@@ -94,7 +95,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   >
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {ReleaseGroupName === null ? 'Unknown' : ReleaseGroupName}
+                      {ReleaseGroupName ?? 'Unknown'}
                       &nbsp; (AniDB)
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>

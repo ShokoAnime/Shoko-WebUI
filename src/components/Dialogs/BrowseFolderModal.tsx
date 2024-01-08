@@ -5,6 +5,7 @@ import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import TreeView from '@/components/TreeView/TreeView';
 import { setSelectedNode, setStatus } from '@/core/slices/modals/browseFolder';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
@@ -18,15 +19,15 @@ function BrowseFolderModal(props: Props) {
   const status = useSelector((state: RootState) => state.modals.browseFolder.status);
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
 
-  const handleClose = () => dispatch(setStatus(false));
+  const handleClose = useEventCallback(() => dispatch(setStatus(false)));
 
-  const handleSelect = () => {
+  const handleSelect = useEventCallback(() => {
     if (typeof props.onSelect === 'function') {
       props.onSelect(selectedNode.path);
     }
     dispatch(setStatus(false));
     dispatch(setSelectedNode({ id: -1, path: '' }));
-  };
+  });
 
   return (
     <ModalPanel

@@ -12,7 +12,7 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, map, reduce, throttle } from 'lodash';
-import { useEventCallback } from 'usehooks-ts';
+import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -20,6 +20,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useQueueOperationMutation } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { QueueItemType } from '@/core/types/api/queue';
@@ -71,7 +72,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
   const state = useSelector((root: RootState) => root.mainpage.queueStatus);
   const [activeTab, setActiveTab] = useState<QueueName>('hasher');
   const [pageSize, setPageSize] = useState(10);
-  const [showAll, setShowAll] = useState(true);
+  const [showAll, toggleShowAll] = useToggle(true);
   const queueQuery = useQueueItemsQuery(activeTab, { showAll, pageSize }, false);
   const { mutate: queueOperation } = useQueueOperationMutation();
   const [expectedTab, setExpectedTab] = useState<QueueName | null>(null);
@@ -102,7 +103,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       return null;
     }
     return {
-      ID: current.currentCommandID || 0,
+      ID: current.currentCommandID ?? 0,
       Name: 'UnknownCommandRequest_0',
       Description,
       Type: 'ActiveCommand',
@@ -182,7 +183,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
     return itemArray;
   }, [showModal, activeTab, queueQuery.data, queueQuery.isSuccess, pageSize, currentCommand, expectedTab]);
 
-  const handlePageSizeChange = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePageSizeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     let value = parseInt(e.target.value, 10);
     if (Number.isNaN(value)) {
@@ -193,15 +194,11 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       value = Math.floor(value);
     }
 
-    // eslint-disable-next-line no-nested-ternary
-    value = value > 100 ? 100 : value < 0 ? 0 : value;
+    if (value > 100) value = 100;
+    else if (value < 0) value = 0;
 
     setPageSize(value);
-  });
-
-  const handleShowDisabledToggle = useEventCallback(() => {
-    setShowAll(!showAll);
-  });
+  };
 
   const handleToggleAllQueues = useEventCallback(
     () => queueOperation({ operation: isAllPaused ? 'StartAll' : 'StopAll' }),
@@ -251,7 +248,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
         <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
           <MenuButton
             highlight
-            onClick={handleShowDisabledToggle}
+            onClick={toggleShowAll}
             icon={showAll ? mdiCheckboxMarkedCircleOutline : mdiCircleOutline}
             name="Show Disabled Queue Items"
           />

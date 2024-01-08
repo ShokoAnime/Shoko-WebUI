@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, every, find, some } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -41,8 +41,9 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { RootState } from '@/core/store';
@@ -159,8 +160,8 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => rescanFiles()} icon={mdiDatabaseSearchOutline} name="Rescan" />
-        <MenuButton onClick={() => rehashFiles()} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
+        <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
         <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />

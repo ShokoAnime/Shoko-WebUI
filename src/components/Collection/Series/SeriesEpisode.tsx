@@ -10,6 +10,7 @@ import Button from '@/components/Input/Button';
 import { useHideEpisodeMutation, useWatchEpisodeMutation } from '@/core/react-query/episode/mutations';
 import { useEpisodeFilesQuery } from '@/core/react-query/episode/queries';
 import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
@@ -32,11 +33,11 @@ const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
     : null
 );
 
-const StateButton = ({ active, icon, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
+const StateButton = React.memo(({ active, icon, onClick }: { icon: string, active: boolean, onClick: () => void }) => (
   <Button className={active ? 'text-panel-text-important' : 'text-panel-text'} onClick={onClick}>
     <Icon path={icon} size="2rem" />
   </Button>
-);
+));
 
 const SeriesEpisode = ({ animeId, episode, page }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
@@ -50,6 +51,9 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
   );
   const { mutate: markWatched } = useWatchEpisodeMutation(page);
   const { mutate: markHidden } = useHideEpisodeMutation();
+
+  const handleMarkWatched = useEventCallback(() => markWatched({ episodeId, watched: episode.Watched === null }));
+  const handleMarkHidden = useEventCallback(() => markHidden({ episodeId, hidden: !episode.IsHidden }));
 
   return (
     <>
@@ -72,12 +76,12 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
               <StateButton
                 icon={mdiEyeCheckOutline}
                 active={episode.Watched !== null}
-                onClick={() => markWatched({ episodeId, watched: episode.Watched === null })}
+                onClick={handleMarkWatched}
               />
               <StateButton
                 icon={mdiEyeOffOutline}
                 active={episode.IsHidden}
-                onClick={() => markHidden({ episodeId, hidden: !episode.IsHidden })}
+                onClick={handleMarkHidden}
               />
             </div>
           </div>
@@ -87,7 +91,7 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
       {episode.Size !== 0 && (
         <div
           className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
-          onClick={() => toggleOpen()}
+          onClick={toggleOpen}
         >
           File Info
           <Icon

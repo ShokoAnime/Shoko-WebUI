@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, find } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -17,8 +17,9 @@ import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
-import { useRowSelection } from '@/hooks/useRowSelection';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
@@ -66,7 +67,7 @@ const Menu = (
         />
       </TransitionDiv>
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => restoreFiles()} icon={mdiEyeOutline} name="Restore" highlight />
+        <MenuButton onClick={restoreFiles} icon={mdiEyeOutline} name="Restore" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
           icon={mdiCloseCircleOutline}

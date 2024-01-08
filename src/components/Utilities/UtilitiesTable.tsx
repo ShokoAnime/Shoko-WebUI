@@ -1,12 +1,13 @@
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
-import { useEventCallback, useToggle } from 'usehooks-ts';
+import { useToggle } from 'usehooks-ts';
 
+import useEventCallback from '@/hooks/useEventCallback';
 import { criteriaMap } from '@/pages/utilities/UnrecognizedUtility';
 
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
@@ -57,6 +58,8 @@ const Row = (
   const [open, toggleOpen] = useToggle(false);
   const [loading, setLoading] = useState(false);
 
+  // TODO: Check if ExpandedNode changes reference on every render, if so this useEventCallback is useless
+  // If it is useless, so is the useEventCallback for handleSelect in UtilitiesTable
   const handleClick = useEventCallback((event: React.MouseEvent) => {
     if (ExpandedNode) {
       const id = selectRowId(row);
@@ -229,7 +232,7 @@ const UtilitiesTable = (props: Props) => {
   );
 
   const lastRowSelected = useRef<VirtualItem | null>(null);
-  const handleSelect = useCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
+  const handleSelect = useEventCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
     if (!rowSelection || !handleRowSelect || !setSelectedRows) return;
     if (event.shiftKey) {
       window?.getSelection()?.removeAllRanges();
@@ -250,10 +253,10 @@ const UtilitiesTable = (props: Props) => {
       handleRowSelect(id, !rowSelection[id]);
       lastRowSelected.current = virtualRow;
     }
-  }, [handleRowSelect, lastRowSelected, rows, rowSelection, setSelectedRows]);
+  });
 
   return (
-    <div className="flex w-full flex-col overflow-y-auto px-4" ref={parentRef}>
+    <div className="flex w-full flex-col overflow-y-auto pr-4" ref={parentRef}>
       <div className="sticky top-0 z-[1] bg-panel-background-alt">
         <div className="flex rounded-md border border-panel-border p-4 font-semibold">
           {columns.map(column => (

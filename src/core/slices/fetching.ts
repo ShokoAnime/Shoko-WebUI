@@ -4,7 +4,7 @@ const fetchingSlice = createSlice({
   name: 'fetching',
   initialState: {
     settings: true,
-  } as { [key: string]: boolean },
+  } as Record<string, boolean>,
   reducers: {
     startFetching(sliceState, action) {
       return Object.assign({}, sliceState, { [action.payload]: true });

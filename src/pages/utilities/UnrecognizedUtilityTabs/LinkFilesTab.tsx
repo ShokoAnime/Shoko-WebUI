@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -42,6 +42,7 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { formatThousand } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
@@ -67,8 +68,8 @@ const generateLinkID = () => {
   if (lastLinkId === Number.MAX_SAFE_INTEGER) {
     lastLinkId = 0;
   }
-  // eslint-disable-next-line no-plusplus
-  return ++lastLinkId;
+  lastLinkId += 1;
+  return lastLinkId;
 };
 
 const parseLinks = (links: ManualLink[]) => {
@@ -114,34 +115,28 @@ const AnimeResultRow = (
     updateSelectedSeries(series: SeriesAniDBSearchResult): void;
     data: SeriesAniDBSearchResult;
   },
-) => {
-  const handleOnClick = useEventCallback(() => {
-    updateSelectedSeries(data);
-  });
-
-  return (
-    <div
-      key={data.ID}
-      onClick={handleOnClick}
-      className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
+) => (
+  <div
+    key={data.ID}
+    onClick={() => updateSelectedSeries(data)}
+    className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
+  >
+    <a
+      className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
+      href={`https://anidb.net/anime/${data.ID}`}
+      target="_blank"
+      rel="noopener noreferrer"
     >
-      <a
-        className="flex w-20 shrink-0 font-semibold text-panel-text-primary"
-        href={`https://anidb.net/anime/${data.ID}`}
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {data.ID}
-        <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
-      </a>
-      |
-      <div>{data.Title}</div>
-      <div className="ml-auto">{data.Type}</div>
-      |
-      <div className="w-10 shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
-    </div>
-  );
-};
+      {data.ID}
+      <Icon path={mdiOpenInNew} size={0.833} className="ml-auto" />
+    </a>
+    |
+    <div>{data.Title}</div>
+    <div className="ml-auto">{data.Type}</div>
+    |
+    <div className="w-10 shrink-0">{data.EpisodeCount ? formatThousand(data.EpisodeCount) : '-'}</div>
+  </div>
+);
 
 const AnimeSelectPanel = (
   { placeholder, seriesUpdating, updateSelectedSeries }: {
@@ -245,7 +240,7 @@ function LinkFilesTab() {
     [showDataMap, links],
   );
 
-  const episodes = useMemo(() => anidbEpisodesQuery?.data || [], [anidbEpisodesQuery.data]);
+  const episodes = useMemo(() => anidbEpisodesQuery?.data ?? [], [anidbEpisodesQuery.data]);
   const orderedLinks = useMemo(() =>
     orderBy<ManualLink>(links, (item) => {
       const file = find(selectedRows, ['ID', item.FileID]);
@@ -265,18 +260,15 @@ function LinkFilesTab() {
   ), [episodes]);
 
   const addLink = useEventCallback(
-    (FileID: number, EpisodeID: number = 0, LinkID?: number) =>
-      setLinks((linkState) => {
+    (FileID: number, EpisodeID = 0, LinkID?: number) =>
+      setLinks((immerState) => {
         if (EpisodeID === 0) {
-          linkState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
+          immerState.push({ LinkID: generateLinkID(), FileID, EpisodeID: 0 });
         } else {
-          // eslint-disable-next-line no-param-reassign
           const itemIndex = LinkID
-            ? linkState.findIndex(link => link.LinkID === LinkID)
-            : linkState.findIndex(link => link.FileID === FileID);
-          // We are using immer but eslint is stupid
-          // eslint-disable-next-line no-param-reassign
-          linkState[itemIndex].EpisodeID = EpisodeID;
+            ? immerState.findIndex(link => link.LinkID === LinkID)
+            : immerState.findIndex(link => link.FileID === FileID);
+          immerState[itemIndex].EpisodeID = EpisodeID;
         }
       }),
   );
@@ -294,13 +286,13 @@ function LinkFilesTab() {
     });
   });
 
-  const updateSelectedLink = useEventCallback((idx: number) => {
+  const updateSelectedLink = (idx: number) => {
     if (isLinking) return;
     if (selectedLink === idx) setSelectedLink(-1);
     else setSelectedLink(idx);
-  });
+  };
 
-  const updateSelectedSeries = useEventCallback(async (series: SeriesAniDBSearchResult) => {
+  const updateSelectedSeries = async (series: SeriesAniDBSearchResult) => {
     setLinks((linkState) => {
       forEach(linkState, (link) => {
         // eslint-disable-next-line no-param-reassign
@@ -329,7 +321,7 @@ function LinkFilesTab() {
 
     toast.error('Failed to get series data!');
     setSeriesUpdating(false);
-  });
+  };
 
   const editSelectedSeries = useEventCallback(() => {
     setSelectedSeries({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
@@ -364,7 +356,11 @@ function LinkFilesTab() {
     setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
   });
 
-  const rangeFill = useEventCallback((rangeStart: string, epType: string) => {
+  const saveChangesHandler = useEventCallback(() => {
+    saveChanges().then(() => {}, () => {});
+  });
+
+  const rangeFill = (rangeStart: string, epType: string) => {
     if (toInteger(rangeStart) <= 0) {
       toast.error('Value is not a positive integer.');
       return;
@@ -382,7 +378,7 @@ function LinkFilesTab() {
       if (!ep) return;
       addLink(link.FileID, ep.value, link.LinkID);
     });
-  });
+  };
 
   const autoFill = useEventCallback(() => {
     if (!episodes.length) return;
@@ -469,7 +465,7 @@ function LinkFilesTab() {
     const mappedLinks: ManualLink[] = manualLinks.map(({ EpisodeID, FileID, LinkID }) => ({
       LinkID,
       FileID,
-      EpisodeID: anidbMap.get(EpisodeID) || 0,
+      EpisodeID: anidbMap.get(EpisodeID) ?? 0,
     }));
     const { manyToMany, manyToOne, none, oneToMany, oneToOne } = parseLinks(mappedLinks);
 
@@ -650,9 +646,7 @@ function LinkFilesTab() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={() => {
-                    saveChanges().then(() => {}, () => {});
-                  }}
+                  onClick={saveChangesHandler}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}

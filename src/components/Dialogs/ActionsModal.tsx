@@ -10,6 +10,7 @@ import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const actions = {
   import: {
@@ -89,14 +90,14 @@ type Props = {
 const Action = ({ actionKey }: { actionKey: string }) => {
   const { mutate: runAction } = useRunActionMutation();
 
-  const handleAction = (name: string, action: string) => {
-    runAction(action, {
-      onSuccess: () => toast.success(`Running action "${name}"`),
-    });
-  };
-
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
+
+  const handleAction = useEventCallback(() => {
+    runAction(functionName, {
+      onSuccess: () => toast.success(`Running action "${name}"`),
+    });
+  });
 
   return (
     <TransitionDiv className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">
@@ -105,7 +106,7 @@ const Action = ({ actionKey }: { actionKey: string }) => {
         <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
       </div>
       <Button
-        onClick={() => handleAction(name, functionName)}
+        onClick={handleAction}
         className="text-panel-icon-action"
       >
         <Icon path={mdiPlayCircleOutline} size={1} />

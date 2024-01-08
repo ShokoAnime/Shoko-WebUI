@@ -5,7 +5,7 @@ import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
-import { useDebounce, useEventCallback } from 'usehooks-ts';
+import { useDebounce } from 'usehooks-ts';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Button from '@/components/Input/Button';
@@ -15,7 +15,8 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useEventCallback from '@/hooks/useEventCallback';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 const pageSize = 26;
 
@@ -85,6 +86,9 @@ const SeriesEpisodes = () => {
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
     });
   });
+
+  const markWatched = useEventCallback(() => handleMarkWatched(true));
+  const markUnwatched = useEventCallback(() => handleMarkWatched(false));
 
   return (
     <>
@@ -166,11 +170,11 @@ const SeriesEpisodes = () => {
               Entries Listed
             </div>
             <div className="flex gap-x-6">
-              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(true)}>
+              <Button className="flex gap-x-2 !font-normal" onClick={markWatched}>
                 <Icon path={mdiEyeCheckOutline} size={1} />
                 Mark Filtered As Watched
               </Button>
-              <Button className="flex gap-x-2 !font-normal" onClick={() => handleMarkWatched(false)}>
+              <Button className="flex gap-x-2 !font-normal" onClick={markUnwatched}>
                 <Icon path={mdiEyeOutline} size={1} />
                 Mark Filtered As Unwatched
               </Button>

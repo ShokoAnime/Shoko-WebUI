@@ -10,12 +10,12 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useAvdumpFileMutation } from '@/core/react-query/file/mutations';
 import { copyToClipboard } from '@/core/util';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
@@ -104,20 +104,23 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
     }
   });
 
-  const handleCopy = (event: React.MouseEvent) => {
+  const handleCopy = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     copyToClipboard(hash)
       .then(() => toast.success('ED2K hash copied to clipboard!'))
       .catch(() => toast.error('ED2K hash copy failed!'));
-  };
+  });
 
   return (
     <div className="ml-4 flex">
       {state === 'success'
         ? (
-          <div onClick={handleCopy}>
-            <Icon path={path} spin={path === mdiLoading} size={1} className={`${color} cursor-pointer`} title={title} />
-          </div>
+          <Button
+            onClick={handleCopy}
+            className={color}
+          >
+            <Icon path={path} spin={path === mdiLoading} size={1} title={title} />
+          </Button>
         )
         : (
           <Button

@@ -10,6 +10,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   onClose: () => void;
@@ -19,14 +20,16 @@ type Props = {
 const Title = ({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
 
+  const handleEdit = useEventCallback(() => {
+    dispatch(setLayoutEditMode(true));
+    onClose();
+  });
+
   return (
     <div className="flex items-center justify-between text-xl font-semibold">
       Display Settings
       <Button
-        onClick={() => {
-          dispatch(setLayoutEditMode(true));
-          onClose();
-        }}
+        onClick={handleEdit}
         buttonType="primary"
         className="px-2 py-1 text-sm"
       >
@@ -80,16 +83,16 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(tempSettings);
   };
 
-  const handleSave = () => {
+  const handleSave = useEventCallback(() => {
     patchSettings({ newSettings }, {
       onSuccess: () => onClose(),
     });
-  };
+  });
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setNewSettings(settings);
     onClose();
-  };
+  });
 
   return (
     <ModalPanel

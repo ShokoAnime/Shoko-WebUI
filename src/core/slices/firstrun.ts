@@ -9,9 +9,7 @@ export type TestStatusType = {
 };
 
 type State = {
-  saved: {
-    [key: string]: boolean;
-  };
+  saved: Record<string, boolean>;
   user: UserType;
 };
 

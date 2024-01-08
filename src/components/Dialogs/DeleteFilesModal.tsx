@@ -1,10 +1,10 @@
 import React, { useEffect, useMemo } from 'react';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useEventCallback } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FileType } from '@/core/types/api/file';
 

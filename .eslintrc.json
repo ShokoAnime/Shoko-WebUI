@@ -4,8 +4,8 @@
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:tailwindcss/recommended",
-    "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-type-checked",
+    "plugin:@typescript-eslint/stylistic-type-checked",
     "plugin:@tanstack/eslint-plugin-query/recommended"
   ],
   "ignorePatterns": [
@@ -54,6 +54,12 @@
       "as-needed",
       { "requireForBlockBody": true }
     ],
+    "@typescript-eslint/prefer-nullish-coalescing": [
+      "error",
+      {
+        "ignorePrimitives": { "boolean": true }
+      }
+    ],
     "implicit-arrow-linebreak": "off",
     "import/order": [
       "error",
@@ -94,6 +100,7 @@
       "error",
       { "patterns": [{ "group": ["../*"], "message": "Please use @/ instead." }] }
     ],
+    "no-restricted-syntax": "off",
     "object-curly-newline": [
       "error",
       { "ImportDeclaration": { "consistent": true }}

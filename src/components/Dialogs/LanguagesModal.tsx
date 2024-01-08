@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { keys, map, remove } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -6,6 +6,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 export const languageDescription = {
   'x-jat': 'Romaji (x-jat)',
@@ -77,7 +78,7 @@ function LanguagesModal({ onClose, type }: Props) {
 
   const [languages, setLanguages] = useState([] as string[]);
 
-  const handleSave = useCallback(() => {
+  const handleSave = useEventCallback(() => {
     patchSettings({
       newSettings: {
         ...settings,
@@ -86,7 +87,7 @@ function LanguagesModal({ onClose, type }: Props) {
     }, {
       onSuccess: () => onClose(),
     });
-  }, [type, settings, languages, patchSettings, onClose]);
+  });
 
   useEffect(() => {
     if (type !== null) setLanguages(LanguagePreference);

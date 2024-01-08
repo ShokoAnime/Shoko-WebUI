@@ -7,6 +7,7 @@ import Button from '@/components/Input/Button';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { unsetDetails } from '@/core/slices/apiSession';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const ErrorBoundary = () => {
   const dispatch = useDispatch();
@@ -18,17 +19,20 @@ const ErrorBoundary = () => {
 
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
-  const handleLogout = () => {
+  const handleLogout = useEventCallback(() => {
     dispatch(unsetDetails());
     navigate('/webui/login');
-  };
+  });
 
-  const handleWebUiUpdate = (channel: 'Stable' | 'Dev') => {
+  const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {
     setUpdateChannel(channel);
     updateWebui(channel, {
       onSuccess: () => handleLogout(),
     });
-  };
+  });
+
+  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
+  const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
 
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-8">
@@ -65,7 +69,7 @@ const ErrorBoundary = () => {
         </div>
         <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
           <Button
-            onClick={() => handleWebUiUpdate('Stable')}
+            onClick={handleStableWebUiUpdate}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
             loading={updateChannel === 'Stable' && isUpdateWebuiPending}
@@ -75,7 +79,7 @@ const ErrorBoundary = () => {
 
           {versionQuery.data?.Server.ReleaseChannel !== 'Stable' && (
             <Button
-              onClick={() => handleWebUiUpdate('Dev')}
+              onClick={handleDevWebUiUpdate}
               className="px-4 py-2 drop-shadow-md"
               buttonType="primary"
               loading={updateChannel === 'Dev' && isUpdateWebuiPending}
@@ -85,7 +89,7 @@ const ErrorBoundary = () => {
           )}
 
           <Button
-            onClick={() => handleLogout()}
+            onClick={handleLogout}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
           >

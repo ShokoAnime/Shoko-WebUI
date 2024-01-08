@@ -6,6 +6,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import Button from '@/components/Input/Button';
+import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -18,7 +19,7 @@ const SeriesSidePanel = ({ series }: SeriesSidePanelProps) => {
   const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
   const mainPoster = useMainPoster(series);
 
-  const onClickHandler = () => setShowEditSeriesModal(true);
+  const onClickHandler = useEventCallback(() => setShowEditSeriesModal(true));
 
   return (
     <div className="flex w-[28.125rem] flex-col gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
