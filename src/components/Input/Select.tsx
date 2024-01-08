@@ -23,7 +23,7 @@ function Select(props: Props) {
     value,
   } = props;
 
-  const showTitle = label || options;
+  const showTitle = label ?? options ?? false;
 
   return (
     <div className={className ?? ''}>

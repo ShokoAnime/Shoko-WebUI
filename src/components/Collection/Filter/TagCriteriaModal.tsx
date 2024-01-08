@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMagnify, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import { mdiMagnify, mdiMinusCircleOutline, mdiTagOffOutline, mdiTagOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
@@ -119,12 +119,12 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
                       <div onClick={selectTag(value.Name, false)}>
                         <Icon
                           className="cursor-pointer text-panel-icon-important"
-                          path={mdiPlusCircleOutline}
+                          path={mdiTagOutline}
                           size={1}
                         />
                       </div>
                       <div onClick={selectTag(value.Name, true)}>
-                        <Icon className="cursor-pointer text-panel-icon-danger" path={mdiPlusCircleOutline} size={1} />
+                        <Icon className="cursor-pointer text-panel-icon-danger" path={mdiTagOffOutline} size={1} />
                       </div>
                     </div>
                   </div>
