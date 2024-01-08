@@ -8,6 +8,7 @@ import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
 import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
 import TagCriteria from '@/components/Collection/Filter/TagCriteria';
+import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { resetActiveFilter, setActiveFilter } from '@/core/slices/collection';
@@ -32,10 +33,10 @@ const buildFilterConditionTag = (conditionValues: FilterTag[], type: string): ob
   }
   return buildTagCondition(conditionValues[0], type);
 };
-const buildFilterConditionMultivalue = (conditionValues: string[], type: string): object => {
+const buildFilterConditionMultivalue = (conditionValues: string[], type: string, operator = 'And'): object => {
   if (conditionValues.length > 1) {
     return {
-      Type: 'And',
+      Type: operator,
       Left: { Type: type, Parameter: conditionValues[0] },
       Right: buildFilterConditionMultivalue(conditionValues.slice(1), type),
     };
@@ -50,6 +51,10 @@ const buildFilterCondition = (currentFilter: FilterExpression) => {
   if (currentFilter?.PossibleParameters) {
     const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
     return buildFilterConditionMultivalue(filterValues, currentFilter.Expression);
+  }
+  if (currentFilter?.Expression === 'InYear') {
+    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
+    return buildFilterConditionMultivalue(filterValues, currentFilter.Expression, 'Or');
   }
 
   const value = store.getState().collection.filterConditions[currentFilter.Expression] ?? true;
@@ -70,6 +75,9 @@ const buildFilter = (filters: FilterExpression[]): object => {
 const mapCriteriaComponent = (criteria: FilterExpression) => {
   if (criteria.Expression === 'HasCustomTag' || criteria.Expression === 'HasTag') {
     return TagCriteria;
+  }
+  if (criteria.Expression === 'InYear') {
+    return YearCriteria;
   }
   if (criteria.PossibleParameters) {
     return MultiValueCriteria;

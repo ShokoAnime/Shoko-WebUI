@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import { removeFilterCriteria, selectFilterValues } from '@/core/slices/collection';
+
+import YearCriteriaModal from './YearCriteriaModal';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -13,7 +14,7 @@ type Props = {
   criteria: FilterExpression;
 };
 
-const MultiValueCriteria = ({ criteria }: Props) => {
+const YearCriteria = ({ criteria }: Props) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
   const selectedParameter = useSelector(
@@ -44,9 +45,15 @@ const MultiValueCriteria = ({ criteria }: Props) => {
             </div>
           </div>
         </div>
-        <div className="line-clamp-1 bg-panel-background-alt p-2">{selectedParameter.join(', ')}</div>
+        <div className="flex flex-col gap-y-2">
+          <div className="bg-panel-background-alt px-4 py-3">
+            <div className="line-clamp-1">
+              {selectedParameter.join(', ')}
+            </div>
+          </div>
+        </div>
       </div>
-      <MultiValueCriteriaModal
+      <YearCriteriaModal
         criteria={criteria}
         show={showModal}
         onClose={() => {
@@ -57,4 +64,4 @@ const MultiValueCriteria = ({ criteria }: Props) => {
   );
 };
 
-export default MultiValueCriteria;
+export default YearCriteria;

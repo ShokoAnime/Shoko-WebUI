@@ -73,6 +73,14 @@ export const selectFilterTags = createSelector(
   (values, expression) => values.filterTags[expression] ?? [],
 );
 
+export const selectFilterValues = createSelector(
+  [
+    (state: RootState) => state.collection,
+    (_, criteria: FilterExpression) => criteria.Expression,
+  ],
+  (values, expression) => values.filterValues[expression] ?? [],
+);
+
 export const selectActiveCriteria = createSelector(
   [
     (state: RootState) => state.collection,
