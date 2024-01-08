@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { useDebounce } from 'usehooks-ts';
 
@@ -32,7 +33,7 @@ const TabButton = (
 };
 
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => (
-  <div className="flex justify-between font-semibold" key={item.IDs.ID}>
+  <div className="flex justify-between pb-1 pr-4 font-semibold" key={item.IDs.ID}>
     <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
     <span className="text-panel-text-important">{item.Size}</span>
   </div>
@@ -60,43 +61,68 @@ const SidePanel = (
     return [];
   }, [debouncedSearch, subFiltersQuery.data, subFiltersQuery.isSuccess]);
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: filteredList.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 28,
+    overscan: 5,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
+
   if (activeFilter !== filterId) return null;
 
   return (
     <div
-      className={cx('flex flex-col grow gap-y-2 pl-8', { hidden: activeTab !== title || filterId === 0 })}
+      className={cx('flex flex-col grow gap-y-2 pl-8', {
+        hidden: activeTab !== title || filterId === 0,
+      })}
     >
-      <Input
-        type="text"
-        placeholder="Search..."
-        startIcon={mdiMagnify}
-        id="search"
-        value={search}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        inputClassName="px-4 py-3"
-      />
-      <div className="box-border flex h-full flex-col items-center rounded-md border border-panel-border bg-panel-background-alt p-4">
-        <div className="shoko-scrollbar flex max-h-[18rem] w-full grow flex-col gap-y-1 overflow-y-auto bg-panel-background-alt pr-4">
-          {subFiltersQuery.isPending && (
-            <div className="flex grow items-center justify-center">
-              <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
-            </div>
-          )}
-
-          {subFiltersQuery.isSuccess && filteredList.length === 0 && (
-            <div className="text-center">
-              Your search for&nbsp;
-              <span className="font-semibold text-panel-text-important">{search}</span>
-              &nbsp;returned zero results.
-            </div>
-          )}
-
-          {subFiltersQuery.isSuccess && filteredList.length > 0 && (
-            filteredList.filter(item => !item.IsDirectory)
-              .map(item => <Item item={item} key={item.IDs.ID} onClose={onClose} />)
-          )}
+      {!subFiltersQuery.isSuccess && (
+        <div className="flex grow items-center justify-center">
+          <Icon path={mdiLoading} spin size={3} className="text-panel-text-primary" />
         </div>
-      </div>
+      )}
+
+      {subFiltersQuery.isSuccess && (
+        <>
+          <Input
+            type="text"
+            placeholder="Search..."
+            startIcon={mdiMagnify}
+            id="search"
+            value={search}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+            inputClassName="px-4 py-3"
+          />
+          <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt p-4">
+            {filteredList.length === 0 && (
+              <div className="flex grow items-center justify-center">
+                Your search for&nbsp;
+                <span className="font-semibold text-panel-text-important">{search}</span>
+                &nbsp;returned zero results.
+              </div>
+            )}
+
+            {filteredList.length > 0 && (
+              <div className="relative flex w-full grow flex-col overflow-y-auto" ref={scrollRef}>
+                {/* This extra absolute div exists to place the scrollbar 16px from the right edge instead of right on the edge */}
+                <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
+                  <div
+                    className="absolute left-0 top-0 w-full"
+                    style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+                  >
+                    {virtualItems.map((virtualRow) => {
+                      const item = filteredList[virtualRow.index];
+                      return <Item key={item.IDs.ID} item={item} onClose={onClose} />;
+                    })}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 };
@@ -141,11 +167,9 @@ function FiltersModal({ onClose, show }: Props) {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex max-h-[24rem] grow flex-col gap-y-2 overflow-y-auto pl-8">
+          <div className="flex max-h-[24rem] grow flex-col gap-y-1 overflow-y-auto pl-8">
             {filters.filter(item => !item.IsDirectory).map(item => (
-              <div key={item.IDs.ID} className="pr-4">
-                <Item item={item} onClose={onClose} />
-              </div>
+              <Item key={item.IDs.ID} item={item} onClose={onClose} />
             ))}
           </div>
         )}
