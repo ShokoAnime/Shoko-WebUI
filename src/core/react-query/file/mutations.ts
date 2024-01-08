@@ -28,7 +28,17 @@ export const useDeleteFileMutation = () =>
 
 export const useDeleteFileLinkMutation = () =>
   useMutation({
-    mutationFn: (fileId: number) => axios.delete(`File/${fileId}/Link`),
+    mutationFn: (fileId: number) =>
+      axios.delete(
+        `File/${fileId}/Link`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Content-Type is not preserved by axios if data is not set to null.
+          data: null,
+        },
+      ),
   });
 
 export const useIgnoreFileMutation = () =>
