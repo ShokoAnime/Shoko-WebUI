@@ -11,7 +11,7 @@ import type { SeriesType } from '@/core/types/api/series';
 export const useFiltersQuery = (enabled = false) =>
   useQuery<ListResultType<CollectionFilterType>>({
     queryKey: ['filter', 'all'],
-    queryFn: () => axios.get('Filter'),
+    queryFn: () => axios.get('Filter', { params: { pageSize: 0 } }),
     enabled,
   });
 
