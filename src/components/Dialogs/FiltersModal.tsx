@@ -106,7 +106,7 @@ const SidePanel = (
 
             {filteredList.length > 0 && (
               <div className="relative flex w-full grow flex-col overflow-y-auto" ref={scrollRef}>
-                {/* This extra absolute div exists to place the scrollbar 16px from the right edge instead of right on the edge */}
+                {/* This extra absolute div exists to make the height of this container fixed otherwise it overflows for some reason */}
                 <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
                   <div
                     className="absolute left-0 top-0 w-full"
