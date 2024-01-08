@@ -9,4 +9,5 @@ export const useTraktCodeQuery = (enabled = true) =>
     queryKey: ['trakt-code'],
     queryFn: () => axios.get('trakt/code'),
     enabled,
+    refetchOnWindowFocus: false,
   });
