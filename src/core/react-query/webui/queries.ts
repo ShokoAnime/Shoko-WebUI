@@ -68,7 +68,7 @@ export const useWebuiThemesQuery = () =>
 
 export const useWebuiUpdateCheckQuery = (params: WebuiUpdateCheckRequestType, enabled = true) =>
   useQuery<ComponentVersionType>({
-    // The rule is disabled here because the the cache key needs to be same for both force: true and force: false
+    // The rule is disabled here because the query key needs to be same for both force: true and force: false
     // Because when we force check update from settings, it should reflect in TopNav
     // eslint-disable-next-line @tanstack/query/exhaustive-deps
     queryKey: ['webui', 'update-check', params.channel],
