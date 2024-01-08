@@ -14,3 +14,11 @@ export const useAniDBTagsQuery = (params: TagsRequestType, enabled = true) =>
     select: transformListResultSimplified,
     enabled,
   });
+
+export const useUserTagsQuery = (params: TagsRequestType, enabled = true) =>
+  useQuery<ListResultType<TagType>, unknown, TagType[]>({
+    queryKey: ['tags', 'user', params],
+    queryFn: () => axios.get('Tag/User', { params }),
+    select: transformListResultSimplified,
+    enabled,
+  });

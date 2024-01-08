@@ -4,15 +4,16 @@ import { mdiMagnify, mdiMinusCircleOutline, mdiTagOffOutline, mdiTagOutline } fr
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { filter, map } from 'lodash';
+import { filter, findIndex, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
+import { useAniDBTagsQuery, useUserTagsQuery } from '@/core/react-query/tag/queries';
 import { selectFilterTags, setFilterTag } from '@/core/slices/collection';
 
 import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { TagType } from '@/core/types/api/tags';
 
 type Props = {
   criteria: FilterExpression;
@@ -21,8 +22,15 @@ type Props = {
 };
 const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const dispatch = useDispatch();
-  const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true }, show);
-  const tags = tagsQuery.data;
+  const anidbTagsQuery = useAniDBTagsQuery(
+    { pageSize: 0, excludeDescriptions: true },
+    show && criteria.Expression === 'HasTag',
+  );
+  const userTagsQuery = useUserTagsQuery(
+    { pageSize: 0, excludeDescriptions: true },
+    show && criteria.Expression === 'HasCustomTag',
+  );
+  const tags = criteria.Expression === 'HasTag' ? anidbTagsQuery.data : userTagsQuery.data;
   const [search, setSearch] = useState('');
   // selectMode: included - true, excluded - false
   const [selectMode, setSelectMode] = useState<boolean>(true);
@@ -32,8 +40,8 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     () =>
       filter(
         tags,
-        item =>
-          selectedValues[item.ID] === undefined && unsavedValues[item.ID] === undefined
+        (item: TagType) =>
+          findIndex(selectedValues, { Name: item.Name }) === -1 && findIndex(unsavedValues, { Name: item.Name }) === -1
           && (search === '' ? true : item.Name.indexOf(search) !== -1),
       ),
     [tags, search, selectedValues, unsavedValues],
@@ -51,10 +59,10 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const virtualItems = virtualizer.getVirtualItems();
 
   const removeValue = (tagName: string) => () => {
-    if (unsavedValues[tagName] !== undefined) {
+    if (findIndex(unsavedValues, { Name: tagName }) !== -1) {
       setUnsavedValues(filter([...unsavedValues], item => item.Name !== tagName));
     }
-    if (selectedValues[tagName] !== undefined) {
+    if (findIndex(selectedValues, { Name: tagName }) !== -1) {
       dispatch(setFilterTag({ [criteria.Expression]: filter([...selectedValues], item => item.Name !== tagName) }));
     }
   };

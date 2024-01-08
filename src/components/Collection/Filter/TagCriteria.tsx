@@ -9,6 +9,19 @@ import { removeFilterCriteria, selectFilterTags } from '@/core/slices/collection
 
 import type { FilterExpression } from '@/core/types/api/filter';
 
+type TagLineProps = {
+  title: string;
+  values: string[];
+};
+const TagLine = ({ title, values }: TagLineProps) => (
+  <div className="bg-panel-background-alt px-4 py-3">
+    <div className="line-clamp-3">
+      <span className="pr-2 text-panel-text-important">{title}</span>
+      {values.join(', ')}
+    </div>
+  </div>
+);
+
 type Props = {
   criteria: FilterExpression;
 };
@@ -54,19 +67,9 @@ const TagCriteria = ({ criteria }: Props) => {
             </div>
           </div>
         </div>
-        <div className="line-clamp-1 flex gap-x-2 whitespace-nowrap bg-panel-background-alt p-2">
-          {includedValues && (
-            <div>
-              <span className="pr-2 text-panel-text-important">Included:</span>
-              {includedValues.join(', ')}
-            </div>
-          )}
-          {excludedValues && (
-            <div>
-              <span className="pr-2 text-panel-text-important">Excluded:</span>
-              {excludedValues.join(', ')}
-            </div>
-          )}
+        <div className="flex flex-col gap-y-2">
+          {includedValues.length > 0 && <TagLine title="Included:" values={includedValues} />}
+          {excludedValues.length > 0 && <TagLine title="Excluded:" values={excludedValues} />}
         </div>
       </div>
       <TagCriteriaModal
