@@ -177,9 +177,9 @@ function TopNav() {
   };
 
   const webuiUpdateStatus = useMemo(() => {
-    if (isUpdateWebuiPending) return 'Updating...';
-    if (checkWebuiUpdate.isFetching) return 'Checking for update';
-    return 'Update Available';
+    if (isUpdateWebuiPending) return 'Updating WebUI...';
+    if (checkWebuiUpdate.isFetching) return 'Checking for WebUI update';
+    return 'WebUI Update Available';
   }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching]);
 
   return (
@@ -298,7 +298,6 @@ function TopNav() {
                     spin={checkWebuiUpdate.isFetching || isUpdateWebuiPending}
                   />
                   <div className="flex">
-                    Web UI&nbsp;
                     {webuiUpdateStatus}
                   </div>
                 </div>
