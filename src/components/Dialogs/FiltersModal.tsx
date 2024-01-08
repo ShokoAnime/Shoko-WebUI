@@ -141,9 +141,11 @@ function FiltersModal({ onClose, show }: Props) {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex grow flex-col gap-y-2 pl-8">
+          <div className="flex max-h-[24rem] grow flex-col gap-y-2 overflow-y-auto pl-8">
             {filters.filter(item => !item.IsDirectory).map(item => (
-              <Item item={item} key={item.IDs.ID} onClose={onClose} />
+              <div key={item.IDs.ID} className="pr-4">
+                <Item item={item} onClose={onClose} />
+              </div>
             ))}
           </div>
         )}
