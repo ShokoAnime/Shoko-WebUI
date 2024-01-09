@@ -92,13 +92,38 @@ const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, 
   </a>
 );
 
+const QueueCount = () => {
+  const dispatch = useDispatch();
+
+  const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
+  const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
+
+  const handleQueueModalOpen = () => {
+    dispatch(setQueueModalOpen(true));
+  };
+
+  return (
+    <div className="flex items-center gap-x-2">
+      <div
+        className={cx(['cursor-pointer', showQueueModal ? 'text-header-icon-primary' : undefined])}
+        onClick={handleQueueModalOpen}
+        title="Show Queue Modal"
+      >
+        <Icon path={mdiServer} size={0.8333} />
+      </div>
+      <span className="text-header-text-important">
+        {queue.HasherQueueState.queueCount + queue.GeneralQueueState.queueCount + queue.ImageQueueState.queueCount}
+      </span>
+    </div>
+  );
+};
+
 function TopNav() {
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const queueItems = useSelector((state: RootState) => state.mainpage.queueStatus);
   const networkStatus = useSelector((state: RootState) => state.mainpage.networkStatus);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -134,10 +159,6 @@ function TopNav() {
     setShowActionsModal(false);
     setShowDashboardSettingsModal(false);
     setShowUtilitiesMenu(false);
-  };
-
-  const handleQueueModalOpen = () => {
-    dispatch(setQueueModalOpen(true));
   };
 
   const handleQueueModalClose = () => {
@@ -177,9 +198,9 @@ function TopNav() {
   };
 
   const webuiUpdateStatus = useMemo(() => {
-    if (isUpdateWebuiPending) return 'Updating...';
-    if (checkWebuiUpdate.isFetching) return 'Checking for update';
-    return 'Update Available';
+    if (isUpdateWebuiPending) return 'Updating WebUI...';
+    if (checkWebuiUpdate.isFetching) return 'Checking for WebUI update';
+    return 'WebUI Update Available';
   }, [isUpdateWebuiPending, checkWebuiUpdate.isFetching]);
 
   return (
@@ -191,19 +212,7 @@ function TopNav() {
             <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
           </div>
           <div className="flex items-center gap-x-8">
-            <div className="flex items-center gap-x-2">
-              <div
-                className={cx(['cursor-pointer', showQueueModal ? 'text-header-icon-primary' : undefined])}
-                onClick={handleQueueModalOpen}
-                title="Show Queue Modal"
-              >
-                <Icon path={mdiServer} size={0.8333} />
-              </div>
-              <span className="text-header-text-important">
-                {queueItems.HasherQueueState.queueCount + queueItems.GeneralQueueState.queueCount
-                  + queueItems.ImageQueueState.queueCount}
-              </span>
-            </div>
+            <QueueCount />
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
                 {currentUserQuery.data?.Avatar
@@ -298,7 +307,6 @@ function TopNav() {
                     spin={checkWebuiUpdate.isFetching || isUpdateWebuiPending}
                   />
                   <div className="flex">
-                    Web UI&nbsp;
                     {webuiUpdateStatus}
                   </div>
                 </div>

@@ -28,9 +28,9 @@ function Checkbox(
       className={cx([
         justify && 'justify-between',
         `${className}`,
-        'cursor-pointer flex items-center transition ease-in-out',
+        'flex items-center transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
-        disabled && 'opacity-50 cursor-auto',
+        disabled ? 'opacity-50 cursor-auto' : 'cursor-pointer',
       ])}
     >
       <input

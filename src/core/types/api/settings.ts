@@ -99,6 +99,9 @@ export type SettingsTraktType = {
   TokenExpirationDate: string;
   UpdateFrequency: SettingsUpdateFrequencyType;
   SyncFrequency: SettingsUpdateFrequencyType;
+  PIN: string;
+  AuthToken: string;
+  RefreshToken: string;
 };
 
 export type SettingsMoviedbType = {
