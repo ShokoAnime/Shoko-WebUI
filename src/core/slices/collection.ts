@@ -5,6 +5,22 @@ import type { RootState } from '@/core/store';
 import type { FilterExpression, FilterSeason, FilterTag } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+/*
+Sidebar filter
+
+Naming these needs some improvements.
+Uses expressions received from server:
+filterCriteria - when user selects an expression it is copied here, then passed into relevant controls
+
+Values for the condition that user selected, key is criteria.Expression, split by type, technically could be a single array
+filterConditions - DefaultCriteria
+filterConditions - MultiValueCriteria, YearCriteria
+filterTags - TagCriteria
+filterSeasons - SeasonCriteria
+
+activeFilter - actual filter expression is generated from all the values it is put here, if it is null filter is not active
+*/
+
 type State = {
   filterCriteria: Record<string, FilterExpression>;
   filterConditions: Record<string, boolean>;
