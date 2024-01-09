@@ -3,9 +3,11 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { produce } from 'immer';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
+import { initialSettings } from '@/core/react-query/settings/helpers';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
@@ -24,18 +26,76 @@ import UnrecognizedFiles from './panels/UnrecognizedFiles';
 import UpcomingAnime from './panels/UpcomingAnime';
 
 import type { RootState } from '@/core/store';
-import type { SettingsType } from '@/core/types/api/settings';
+import type { LayoutType } from '@/core/types/api/settings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-function DashboardPage() {
-  const dispatch = useDispatch();
+const ResizeHandle = () => (
+  <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
+    <Icon path={mdiMenuDown} size={1.5} className="text-panel-text-primary" rotate={-45} />
+  </div>
+);
 
-  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+const Toast = (
+  { currentLayout, setCurrentLayout }: { currentLayout: LayoutType, setCurrentLayout: (layout: LayoutType) => void },
+) => {
+  const dispatch = useDispatch();
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
+
+  const cancelLayoutChange = useEventCallback(() => {
+    setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
+    dispatch(setLayoutEditMode(false));
+    toast.dismiss('layoutEditMode');
+  });
+
+  const saveLayout = useEventCallback(() => {
+    const newSettings = produce(settings, (draftState) => {
+      draftState.WebUI_Settings.layout.dashboard = currentLayout;
+    });
+    patchSettings({ newSettings }, {
+      onSuccess: () => {
+        dispatch(setLayoutEditMode(false));
+        toast.dismiss('layoutEditMode');
+        toast.success('Layout Saved!');
+      },
+      onError: error => toast.error('', error.message),
+    });
+  });
+
+  const resetLayout = useEventCallback(() => {
+    const newSettings = produce(settings, (draftState) => {
+      draftState.WebUI_Settings.layout.dashboard = initialSettings.WebUI_Settings.layout.dashboard;
+    });
+    patchSettings({ newSettings }, {
+      onSuccess: () => {
+        dispatch(setLayoutEditMode(false));
+        toast.dismiss('layoutEditMode');
+        toast.success('Layout reset to default!');
+      },
+      onError: error => toast.error('', error.message),
+    });
+  });
+
+  return (
+    <div className="flex flex-col gap-y-3">
+      Edit Mode Enabled
+      <div className="flex items-center justify-end gap-x-3 font-semibold">
+        <Button onClick={resetLayout} buttonType="danger" className="px-3 py-1.5">Reset to Default</Button>
+        <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
+        <Button onClick={saveLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
+      </div>
+    </div>
+  );
+};
+
+function DashboardPage() {
+  const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
+
+  const settingsQuery = useSettingsQuery();
+  const settings = settingsQuery.data;
 
   const {
     combineContinueWatching,
@@ -57,63 +117,34 @@ function DashboardPage() {
   );
 
   useEffect(() => {
-    const { layout: { dashboard } } = settings.WebUI_Settings;
-    if (settingsQuery.isSuccess) setCurrentLayout(dashboard);
+    if (settingsQuery.isSuccess) setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
   }, [settings, settingsQuery.isSuccess]);
-
-  const cancelLayoutChange = useEventCallback(() => {
-    const { layout: { dashboard } } = settings.WebUI_Settings;
-    setCurrentLayout(dashboard);
-    dispatch(setLayoutEditMode(false));
-    toast.dismiss('layoutEditMode');
-  });
-
-  const saveLayout = useEventCallback(() => {
-    const newSettings = JSON.parse(JSON.stringify(settings)) as SettingsType; // If the settings object is copied, it's copying the property descriptors and the properties become read-only. Not sure how to bypass except doing this.
-    newSettings.WebUI_Settings.layout.dashboard = currentLayout;
-    patchSettings({ newSettings }, {
-      onSuccess: () => {
-        dispatch(setLayoutEditMode(false));
-        toast.dismiss('layoutEditMode');
-        toast.success('Layout Saved!');
-      },
-      onError: error => toast.error('', error.message),
-    });
-  });
 
   useEffect(() => {
     if (layoutEditMode) {
-      const renderToast = () => (
-        <div className="flex flex-col">
-          Edit Mode Enabled
-          <div className="mt-3 flex items-center justify-end gap-x-3 font-semibold">
-            <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
-            <Button onClick={saveLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
-          </div>
-        </div>
-      );
-
       if (!toast.isActive('layoutEditMode')) {
-        toast.info('', renderToast(), {
-          autoClose: false,
-          draggable: false,
-          closeOnClick: false,
-          toastId: 'layoutEditMode',
-          className: 'max-w-[17rem] ml-auto',
-        });
+        toast.info(
+          '',
+          <Toast currentLayout={currentLayout} setCurrentLayout={setCurrentLayout} />,
+          {
+            autoClose: false,
+            draggable: false,
+            closeOnClick: false,
+            toastId: 'layoutEditMode',
+            className: 'max-w-[27.3rem] ml-auto',
+          },
+        );
       } else {
-        toast.infoUpdate('layoutEditMode', '', renderToast());
+        toast.infoUpdate(
+          'layoutEditMode',
+          '',
+          <Toast currentLayout={currentLayout} setCurrentLayout={setCurrentLayout} />,
+        );
       }
     } else {
       toast.dismiss('layoutEditMode');
     }
-  }, [layoutEditMode, currentLayout, cancelLayoutChange, saveLayout]);
-
-  const renderResizeHandle = () => (
-    <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
-      <Icon path={mdiMenuDown} size={1.5} className="text-panel-text-primary" rotate={-45} />
-    </div>
-  );
+  }, [layoutEditMode, currentLayout]);
 
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));
@@ -138,7 +169,7 @@ function DashboardPage() {
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}
       isResizable={layoutEditMode}
-      resizeHandle={renderResizeHandle()}
+      resizeHandle={<ResizeHandle />}
       containerPadding={[0, 0]}
     >
       {!hideQueueProcessor && (

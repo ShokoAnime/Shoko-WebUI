@@ -94,7 +94,7 @@
     ],
     "no-param-reassign": [
       "error",
-      { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState"] }
+      { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState", "draftState"] }
     ],
     "no-restricted-imports": [
       "error",
