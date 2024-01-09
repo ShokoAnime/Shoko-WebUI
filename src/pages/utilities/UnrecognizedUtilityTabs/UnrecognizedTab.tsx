@@ -338,7 +338,7 @@ function UnrecognizedTab() {
               <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center p-1"
+                  className="flex flex-row flex-wrap items-center px-4 py-3"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
@@ -346,7 +346,7 @@ function UnrecognizedTab() {
                 </Button>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center p-1"
+                  className="flex flex-row flex-wrap items-center px-4 py-3"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
