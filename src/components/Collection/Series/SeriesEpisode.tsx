@@ -2,6 +2,7 @@ import React from 'react';
 import AnimateHeight from 'react-animate-height';
 import { mdiChevronDown, mdiEyeCheckOutline, mdiEyeOffOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { get } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
@@ -18,9 +19,10 @@ import EpisodeFiles from './EpisodeFiles';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
-  animeId: number;
+  animeId?: number;
   episode: EpisodeType;
-  page: number;
+  nextUp?: boolean;
+  page?: number;
 };
 
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
@@ -39,7 +41,7 @@ const StateButton = React.memo(({ active, icon, onClick }: { icon: string, activ
   </Button>
 ));
 
-const SeriesEpisode = ({ animeId, episode, page }: Props) => {
+const SeriesEpisode = ({ animeId, episode, nextUp, page }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
   const [open, toggleOpen] = useToggle(false);
   const episodeId = get(episode, 'IDs.ID', 0);
@@ -49,15 +51,15 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
     { includeDataFrom: ['AniDB'], include: ['AbsolutePaths', 'MediaInfo'] },
     open,
   );
-  const { mutate: markWatched } = useWatchEpisodeMutation(page);
-  const { mutate: markHidden } = useHideEpisodeMutation();
+  const { mutate: markWatched } = useWatchEpisodeMutation(page, nextUp);
+  const { mutate: markHidden } = useHideEpisodeMutation(nextUp);
 
   const handleMarkWatched = useEventCallback(() => markWatched({ episodeId, watched: episode.Watched === null }));
   const handleMarkHidden = useEventCallback(() => markHidden({ episodeId, hidden: !episode.IsHidden }));
 
   return (
     <>
-      <div className="z-10 flex items-center gap-x-8 p-8">
+      <div className={cx('z-10 flex items-center gap-x-8', !nextUp && 'p-8')}>
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
           className="group h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
@@ -88,26 +90,30 @@ const SeriesEpisode = ({ animeId, episode, page }: Props) => {
         </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
-      {episode.Size !== 0 && (
-        <div
-          className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
-          onClick={toggleOpen}
-        >
-          File Info
-          <Icon
-            path={episodeFilesQuery.isFetching ? mdiLoading : mdiChevronDown}
-            size={1}
-            rotate={open ? 180 : 0}
-            className="transition-transform"
-            spin={episodeFilesQuery.isFetching}
-          />
-        </div>
+      {animeId && (
+        <>
+          {episode.Size !== 0 && (
+            <div
+              className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
+              onClick={toggleOpen}
+            >
+              File Info
+              <Icon
+                path={episodeFilesQuery.isFetching ? mdiLoading : mdiChevronDown}
+                size={1}
+                rotate={open ? 180 : 0}
+                className="transition-transform"
+                spin={episodeFilesQuery.isFetching}
+              />
+            </div>
+          )}
+          <div>
+            <AnimateHeight height={open && episodeFilesQuery.isSuccess ? 'auto' : 0}>
+              <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} episodeId={episodeId} />
+            </AnimateHeight>
+          </div>
+        </>
       )}
-      <div>
-        <AnimateHeight height={open && episodeFilesQuery.isSuccess ? 'auto' : 0}>
-          <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} episodeId={episodeId} />
-        </AnimateHeight>
-      </div>
     </>
   );
 };

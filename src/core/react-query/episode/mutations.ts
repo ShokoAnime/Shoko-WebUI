@@ -9,7 +9,7 @@ import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { InfiniteData } from '@tanstack/react-query';
 
-export const useHideEpisodeMutation = () =>
+export const useHideEpisodeMutation = (nextUp = false) =>
   useMutation({
     mutationFn: ({ episodeId, hidden }: HideEpisodeRequestType) =>
       axios.post(
@@ -24,17 +24,30 @@ export const useHideEpisodeMutation = () =>
       ),
     onSuccess: () => {
       invalidateQueries(['series', 'single']);
+
+      if (nextUp) {
+        invalidateQueries(['series', 'next-up']);
+        return;
+      }
+
       invalidateQueries(['series', 'episodes']);
     },
   });
 
-export const useWatchEpisodeMutation = (pageNumber: number) =>
+export const useWatchEpisodeMutation = (pageNumber?: number, nextUp = false) =>
   useMutation({
     mutationKey: ['episode', 'watched'],
     mutationFn: ({ episodeId, watched }: WatchEpisodeRequestType) =>
       axios.post(`Episode/${episodeId}/Watched/${watched}`),
     onSuccess: async (_, { episodeId }) => {
       invalidateQueries(['series', 'single']);
+
+      if (nextUp) {
+        invalidateQueries(['series', 'next-up']);
+        return;
+      }
+
+      if (!pageNumber) return;
 
       const newEpisodeData = await queryClient.fetchQuery<EpisodeType>({
         queryKey: ['episode', episodeId],
