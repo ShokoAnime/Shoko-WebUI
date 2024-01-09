@@ -20,20 +20,6 @@ import {
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
 
-const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
-  const thumbnail = useEpisodeThumbnail(nextUpEpisode);
-
-  return (
-    <div className="z-10 flex items-center gap-x-4 2xl:gap-x-8">
-      <BackgroundImagePlaceholderDiv
-        image={thumbnail}
-        className="h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
-      />
-      <EpisodeDetails episode={nextUpEpisode} />
-    </div>
-  );
-};
-
 // Links
 const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
 
