@@ -6,7 +6,7 @@ import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
-import EpisodeDetails from '@/components/Collection/Series/EpisodeDetails';
+import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
@@ -16,25 +16,10 @@ import {
   useSeriesQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
-import useEpisodeThumbnail from '@/hooks/useEpisodeThumbnail';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
-
-const NextUpEpisode = ({ nextUpEpisode }: { nextUpEpisode: EpisodeType }) => {
-  const thumbnail = useEpisodeThumbnail(nextUpEpisode);
-
-  return (
-    <div className="z-10 flex items-center gap-x-8">
-      <BackgroundImagePlaceholderDiv
-        image={thumbnail}
-        className="h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
-      />
-      <EpisodeDetails episode={nextUpEpisode} />
-    </div>
-  );
-};
 
 // Links
 const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
@@ -74,7 +59,7 @@ const SeriesOverview = () => {
             isFetching={nextUpEpisodeQuery.isFetching}
           >
             {get(nextUpEpisode, 'Name', false)
-              ? <NextUpEpisode nextUpEpisode={nextUpEpisode} />
+              ? <SeriesEpisode episode={nextUpEpisode} nextUp />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
           <ShokoPanel
