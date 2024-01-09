@@ -2,7 +2,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { keys } from 'lodash';
 
 import type { RootState } from '@/core/store';
-import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
+import type { FilterExpression, FilterSeason, FilterTag } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {
@@ -10,6 +10,7 @@ type State = {
   filterConditions: Record<string, boolean>;
   filterValues: Record<string, string[]>;
   filterTags: Record<string, FilterTag[]>;
+  filterSeasons: Record<string, FilterSeason[]>;
   activeFilter: object | null;
 };
 
@@ -20,6 +21,7 @@ const collectionSlice = createSlice({
     filterConditions: {},
     filterValues: {},
     filterTags: {},
+    filterSeasons: {},
     activeFilter: null,
   } as State,
   reducers: {
@@ -46,6 +48,9 @@ const collectionSlice = createSlice({
     setFilterTag(sliceState, action: PayloadAction<Record<string, FilterTag[]>>) {
       sliceState.filterTags = action.payload;
     },
+    setFilterSeason(sliceState, action: PayloadAction<Record<string, FilterSeason[]>>) {
+      sliceState.filterSeasons = action.payload;
+    },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
       sliceState.activeFilter = action.payload;
     },
@@ -61,6 +66,7 @@ export const {
   removeFilterCriteria,
   resetActiveFilter,
   setActiveFilter,
+  setFilterSeason,
   setFilterTag,
   setFilterValues,
 } = collectionSlice.actions;
@@ -71,6 +77,14 @@ export const selectFilterTags = createSelector(
     (_, criteria: FilterExpression) => criteria.Expression,
   ],
   (values, expression) => values.filterTags[expression] ?? [],
+);
+
+export const selectFilterSeasons = createSelector(
+  [
+    (state: RootState) => state.collection,
+    (_, criteria: FilterExpression) => criteria.Expression,
+  ],
+  (values, expression) => values.filterSeasons[expression] ?? [],
 );
 
 export const selectFilterValues = createSelector(

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { filter, map } from 'lodash';
 
@@ -22,6 +22,11 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
     selectedKeys,
   ]);
   const [newCriteria, setNewCriteria] = useState('');
+
+  useEffect(() => {
+    if (!allCriteria[0]) return;
+    setNewCriteria(allCriteria[0]?.Expression ?? '');
+  }, [allCriteria]);
   const handleSave = () => {
     const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
     dispatch(addFilterCriteria(filterExpression));
@@ -50,7 +55,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
           buttonType="primary"
           className="px-6 py-2"
         >
-          Save
+          Add Condition
         </Button>
       </div>
     </ModalPanel>

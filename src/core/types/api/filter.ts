@@ -56,11 +56,17 @@ export type FilterExpression = {
   Parameter?: string;
   SecondParameter?: string;
   PossibleParameters?: string[];
+  PossibleSecondParameters?: string[];
 };
 
 export type FilterTag = {
   Name: string;
   isExcluded: boolean;
+};
+
+export type FilterSeason = {
+  Year: string;
+  Season: string;
 };
 
 type SortingCriteria = {
