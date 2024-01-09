@@ -53,6 +53,7 @@ function Input(props: Props) {
 
   const bodyVisible = useContext(BodyVisibleContext);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [isShow, setIsShow] = React.useState(false);
 
   useEffect(() => {
     if (autoFocus && bodyVisible && inputRef.current) {
@@ -60,7 +61,12 @@ function Input(props: Props) {
     }
   }, [autoFocus, bodyVisible]);
 
-  const [isShow, setIsShow] = React.useState(false);
+  useEffect(() => {
+    if (isOverlay) return;
+    setIsShow(_ => false);
+    onToggleOverlay?.(false);
+  }, [isOverlay, onToggleOverlay]);
+
   const handleOverlayClick = useEventCallback(() => {
     setIsShow(prev => !prev);
     onToggleOverlay?.(!isShow);
@@ -141,7 +147,7 @@ function Input(props: Props) {
                 <div
                   key="input-toggler"
                   onClick={handleOverlayClick}
-                  className={cx('cursor-pointer text-panel-text')}
+                  className={cx('cursor-pointer text-panel-text 2xl:hidden')}
                 >
                   <Icon path={mdiCloseCircleOutline} size={1} />
                 </div>

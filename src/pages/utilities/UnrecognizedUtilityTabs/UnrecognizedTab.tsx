@@ -3,7 +3,6 @@ import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import {
   mdiCloseCircleOutline,
-  mdiCogOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
   mdiDumpTruck,
@@ -210,7 +209,7 @@ const Menu = (
       </Button>
 
       <div className={cx(selectedOptionStyles, '2xl:hidden')}>
-        <ButtonDropdown className="p-2.5" buttonTypes="secondary" content={<Icon path={mdiCogOutline} size={1} />}>
+        <ButtonDropdown className="p-3" buttonTypes="secondary" content={<span>Options</span>}>
           {renderSelectedRowActions}
         </ButtonDropdown>
       </div>
@@ -326,8 +325,8 @@ function UnrecognizedTab() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 inputClassName="px-4 py-3"
-                isOverlay
-                overlayClassName="w-[25rem] xl:w-[43.75rem] 2xl:w-auto 2xl:grow-0"
+                isOverlay={selectedRows.length !== 0}
+                overlayClassName="w-[25rem] xl:w-[43.75rem] max-xl:w-[59.75rem] grow 2xl:w-auto 2xl:grow-0"
                 onToggleOverlay={setIsSearching}
               />
               <Menu
