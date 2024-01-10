@@ -36,7 +36,7 @@ const TagList = (
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <div className="grow overflow-y-auto rounded-md bg-panel-input p-4">
+    <div className="grow rounded-md bg-panel-input p-4">
       <div
         className="relative h-full overflow-y-scroll"
         ref={scrollRef}
@@ -148,7 +148,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
       titleLeft
       fullHeight
     >
-      <div className="flex grow basis-0 flex-col gap-y-4 overflow-y-auto">
+      <div className="flex grow basis-0 flex-col gap-y-4">
         <Input
           id="search"
           startIcon={mdiMagnify}
