@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { filter, map } from 'lodash';
 
@@ -7,6 +7,7 @@ import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
 import { useFilterExpressionMain } from '@/hooks/filters';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -23,37 +24,42 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   ]);
   const [newCriteria, setNewCriteria] = useState('');
 
-  useEffect(() => {
-    if (!allCriteria[0]) return;
-    setNewCriteria(allCriteria[0]?.Expression ?? '');
-  }, [allCriteria]);
-  const handleSave = () => {
+  const handleClose = useEventCallback(() => {
+    setNewCriteria('');
+    onClose();
+  });
+
+  const handleSave = useEventCallback(() => {
     const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
     dispatch(addFilterCriteria(filterExpression));
-    onClose();
-  };
+    handleClose();
+  });
+
+  const changeCriteria = useEventCallback(
+    (event: React.ChangeEvent<HTMLSelectElement>) => setNewCriteria(event.currentTarget.value),
+  );
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} title="Add Condition" titleLeft>
+    <ModalPanel show={show} onRequestClose={onClose} title="Add Condition" titleLeft size="sm">
       <Select
         id="addCondition"
         label="Select Condition"
         value={newCriteria}
-        onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-          setNewCriteria(event.currentTarget.value);
-        }}
+        onChange={changeCriteria}
       >
+        <option value="" disabled>--Select Criteria--</option>
         {map(unusedCriteria, (item) => {
           const value = item?.Expression;
           return <option key={value} value={value}>{item.Name}</option>;
         })}
       </Select>
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+        <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
         <Button
           onClick={handleSave}
           buttonType="primary"
           className="px-6 py-2"
+          disabled={!newCriteria}
         >
           Add Condition
         </Button>
