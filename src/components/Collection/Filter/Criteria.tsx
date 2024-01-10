@@ -42,7 +42,7 @@ const ParameterList = ({ expression, value }: { expression: string, value: strin
   const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, expression));
 
   return (
-    <div className="line-clamp-2">
+    <div className="line-clamp-2 flex justify-between rounded-md border border-panel-border bg-panel-input px-4 py-3">
       <span className="pr-2 text-panel-text-important">{filterMatch === 'Or' ? 'In:' : 'All:'}</span>
       {value}
     </div>
@@ -72,8 +72,6 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
 
   const Modal = useMemo(() => getModalComponent(type), [type]);
 
-  const isParameterString = useMemo(() => typeof transformedParameter === 'string', [transformedParameter]);
-
   return (
     <>
       <div className="flex flex-col">
@@ -82,27 +80,17 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
             {criteria.Name}
           </div>
           <div className="flex gap-x-2">
-            {!isParameterString && (
-              <div onClick={openModal}>
-                <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
-              </div>
-            )}
+            <div onClick={openModal}>
+              <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
+            </div>
             <div onClick={removeCriteria}>
               <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-          {isParameterString
-            ? (
-              <div
-                className="flex cursor-pointer justify-between rounded-md border border-panel-border bg-panel-input px-4 py-3"
-                onClick={openModal}
-              >
-                <ParameterList expression={criteria.Expression} value={transformedParameter as string} />
-                <Icon className="shrink-0 text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
-              </div>
-            )
+          {typeof transformedParameter === 'string'
+            ? <ParameterList expression={criteria.Expression} value={transformedParameter} />
             : transformedParameter}
         </div>
       </div>

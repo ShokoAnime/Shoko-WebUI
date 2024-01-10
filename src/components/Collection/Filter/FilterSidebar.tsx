@@ -101,7 +101,7 @@ const FilterSidebar = () => {
         onClick={resetFilter}
         disabled={!activeFilter}
       >
-        Reset filter
+        Clear filter
       </Button>
       <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>
