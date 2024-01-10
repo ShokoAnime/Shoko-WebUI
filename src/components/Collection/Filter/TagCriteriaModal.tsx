@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { mdiMagnify, mdiMinusCircleOutline, mdiTagOffOutline, mdiTagOutline } from '@mdi/js';
+import { mdiChevronRight, mdiMagnify, mdiMinusCircleOutline, mdiTagOffOutline, mdiTagOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
@@ -20,6 +20,59 @@ type Props = {
   show: boolean;
   onClose: () => void;
 };
+
+const TagList = (
+  { selectTag, unusedValues }: { selectTag: (name: string, select: boolean) => () => void, unusedValues: TagType[] },
+) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: unusedValues.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => 28,
+    overscan: 5,
+  });
+  const virtualItems = virtualizer.getVirtualItems();
+
+  return (
+    <div className="rounded-md bg-panel-input p-4">
+      <div className="relative h-[12.25rem] overflow-y-scroll" ref={scrollRef}>
+        <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
+          <div
+            className="absolute left-0 top-0 w-full"
+            style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+          >
+            {virtualItems.map((virtualRow) => {
+              const item = unusedValues[virtualRow.index];
+              return (
+                <div
+                  key={virtualRow.index}
+                  data-index={virtualRow.index}
+                  ref={virtualizer.measureElement}
+                  className="flex items-center justify-between pb-1 leading-tight"
+                >
+                  {item.Name}
+                  <div className="flex gap-x-2 pr-4">
+                    <div onClick={selectTag(item.Name, false)}>
+                      <Icon
+                        className="cursor-pointer text-panel-icon-important"
+                        path={mdiTagOutline}
+                        size={1}
+                      />
+                    </div>
+                    <div onClick={selectTag(item.Name, true)}>
+                      <Icon className="cursor-pointer text-panel-icon-danger" path={mdiTagOffOutline} size={1} />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const dispatch = useDispatch();
   const anidbTagsQuery = useAniDBTagsQuery(
@@ -50,13 +103,6 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     () => filter([...selectedValues, ...unsavedValues], tag => tag.isExcluded === !selectMode),
     [selectMode, selectedValues, unsavedValues],
   );
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const virtualizer = useVirtualizer({
-    count: unusedValues.length,
-    getScrollElement: () => scrollRef.current,
-    estimateSize: () => 24,
-  });
-  const virtualItems = virtualizer.getVirtualItems();
 
   const removeValue = (tagName: string) => () => {
     if (findIndex(unsavedValues, { Name: tagName }) !== -1) {
@@ -95,7 +141,7 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >
-      <div className="flex flex-col gap-y-4 overflow-y-auto">
+      <div className="flex flex-col gap-y-4">
         <Input
           id="search"
           startIcon={mdiMagnify}
@@ -104,48 +150,12 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
           value={search}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
-        {/* FIXME: this prevents list from disappearing but breaks the closing animation, find a better way to do this */}
-        {show && (
-          <div className="shoko-scrollbar overflow-y-auto bg-panel-background-alt p-4">
-            <div
-              ref={scrollRef}
-              style={{ height: virtualizer.getTotalSize() }}
-              className="relative min-h-[15rem]"
-            >
-              {virtualItems.map((virtualRow) => {
-                const value = unusedValues[virtualRow.index];
-                return (
-                  <div
-                    className="absolute left-0 top-0 flex w-full justify-between leading-tight"
-                    style={{ transform: `translateY(${virtualRow.start}px)` }}
-                    key={value.ID}
-                    ref={virtualizer.measureElement}
-                    data-index={virtualRow.index}
-                  >
-                    {value.Name}
-                    <div className="flex gap-x-2">
-                      <div onClick={selectTag(value.Name, false)}>
-                        <Icon
-                          className="cursor-pointer text-panel-icon-important"
-                          path={mdiTagOutline}
-                          size={1}
-                        />
-                      </div>
-                      <div onClick={selectTag(value.Name, true)}>
-                        <Icon className="cursor-pointer text-panel-icon-danger" path={mdiTagOffOutline} size={1} />
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        <TagList unusedValues={unusedValues} selectTag={selectTag} />
       </div>
       <div className="flex flex-col gap-y-4">
-        <div className="flex gap-x-2">
+        <div className="flex items-center gap-x-2 font-semibold">
           <span>Selected Tags</span>
-          <span className="px-2">{'>'}</span>
+          <Icon path={mdiChevronRight} size={1} />
           <span
             className={cx('cursor-pointer', { 'text-panel-text-primary': selectMode })}
             onClick={handleSetSelectMode(true)}
@@ -160,12 +170,12 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
             Excluded
           </span>
         </div>
-        <div className="shoko-scrollbar h-[15rem] max-h-[15rem] grow overflow-auto bg-panel-background-alt p-4">
-          <div className=" flex grow flex-col gap-x-2 bg-panel-background-alt">
+        <div className="h-[7rem] rounded-md bg-panel-input p-4">
+          <div className="flex h-full flex-col gap-x-2 gap-y-1 overflow-y-scroll">
             {map(
               combinedSelectedValues,
               tag => (
-                <div className="flex justify-between leading-tight" key={tag.Name}>
+                <div className="flex justify-between pr-4 leading-tight" key={tag.Name}>
                   {tag.Name}
                   <div onClick={removeValue(tag.Name)}>
                     <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
