@@ -42,7 +42,7 @@ const ParameterList = ({ expression, value }: { expression: string, value: strin
   const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, expression));
 
   return (
-    <div className="line-clamp-2 flex rounded-md border border-panel-border bg-panel-input px-4 py-3">
+    <div className="line-clamp-2">
       <span className="pr-2 text-panel-text-important">{filterMatch === 'Or' ? 'In:' : 'All:'}</span>
       {value}
     </div>
@@ -90,7 +90,14 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
         </div>
         <div className="flex flex-col gap-y-2">
           {typeof transformedParameter === 'string'
-            ? <ParameterList expression={criteria.Expression} value={transformedParameter} />
+            ? (
+              <div
+                className="flex cursor-pointer rounded-md border border-panel-border bg-panel-input px-4 py-3"
+                onClick={openModal}
+              >
+                <ParameterList expression={criteria.Expression} value={transformedParameter} />
+              </div>
+            )
             : transformedParameter}
         </div>
       </div>
