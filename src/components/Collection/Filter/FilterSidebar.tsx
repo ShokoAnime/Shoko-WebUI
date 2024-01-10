@@ -75,28 +75,28 @@ const FilterSidebar = () => {
         const CriteriaComponent = mapCriteriaComponent(item);
         return <CriteriaComponent key={item.Expression} criteria={item} />;
       })}
-      {activeFilter === null && (
+      <div className="flex gap-x-2">
         <Button
           buttonType="primary"
-          className="px-4 py-3"
+          className="grow px-4 py-3"
           onClick={() => {
             applyFilter();
           }}
         >
           Apply filter
         </Button>
-      )}
-      {activeFilter !== null && (
-        <Button
-          buttonType="danger"
-          className="px-4 py-3"
-          onClick={() => {
-            dispatch(resetActiveFilter());
-          }}
-        >
-          Reset filter
-        </Button>
-      )}
+        {activeFilter !== null && (
+          <Button
+            buttonType="danger"
+            className="grow px-4 py-3"
+            onClick={() => {
+              dispatch(resetActiveFilter());
+            }}
+          >
+            Reset filter
+          </Button>
+        )}
+      </div>
       <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>
   );

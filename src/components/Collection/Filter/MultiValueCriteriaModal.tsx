@@ -4,7 +4,7 @@ import { filter, map, pull } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { setFilterValues } from '@/core/slices/collection';
+import { selectFilterValues, setFilterValues } from '@/core/slices/collection';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -17,7 +17,7 @@ type Props = {
 const MultiValueCriteriaModal = ({ criteria, onClose, show }: Props) => {
   const dispatch = useDispatch();
   const selectedValues = useSelector(
-    (state: RootState) => state.collection.filterValues[criteria.Expression] ?? [],
+    (state: RootState) => selectFilterValues(state, criteria),
   );
   const [unsavedValues, setUnsavedValues] = useState([] as string[]);
   const unusedValues = useMemo(
