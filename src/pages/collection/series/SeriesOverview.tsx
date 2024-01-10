@@ -18,7 +18,6 @@ import {
 } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
-import type { EpisodeType } from '@/core/types/api/episode';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
 
 // Links
@@ -31,13 +30,12 @@ const SeriesOverview = () => {
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
     includeDataFrom: ['AniDB', 'TvDB'],
-    includeMissing: true,
+    includeMissing: false,
     onlyUnwatched: false,
   }, !!seriesId);
   const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
   const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
 
-  const nextUpEpisode = useMemo(() => nextUpEpisodeQuery?.data ?? {} as EpisodeType, [nextUpEpisodeQuery.data]);
   const related = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
   const similar = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
@@ -58,8 +56,8 @@ const SeriesOverview = () => {
             transparent
             isFetching={nextUpEpisodeQuery.isFetching}
           >
-            {get(nextUpEpisode, 'Name', false)
-              ? <SeriesEpisode episode={nextUpEpisode} nextUp />
+            {nextUpEpisodeQuery.isSuccess && nextUpEpisodeQuery.data
+              ? <SeriesEpisode episode={nextUpEpisodeQuery.data} nextUp />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
           <ShokoPanel
