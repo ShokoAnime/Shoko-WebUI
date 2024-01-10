@@ -5,6 +5,7 @@ import { filter, map, pull } from 'lodash';
 import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { selectFilterValues, setFilterValues } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -13,8 +14,9 @@ type Props = {
   criteria: FilterExpression;
   show: boolean;
   onClose: () => void;
+  removeCriteria: () => void;
 };
-const MultiValueCriteriaModal = ({ criteria, onClose, show }: Props) => {
+const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
   const dispatch = useDispatch();
   const selectedValues = useSelector(
     (state: RootState) => selectFilterValues(state, criteria),
@@ -42,19 +44,20 @@ const MultiValueCriteriaModal = ({ criteria, onClose, show }: Props) => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setUnsavedValues([]);
+    if (selectedValues.length === 0) removeCriteria();
     onClose();
-  };
+  });
 
-  const handleSave = () => {
+  const handleSave = useEventCallback(() => {
     dispatch(setFilterValues({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  };
+  });
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} title={`Edit Condition - ${criteria.Name}`} titleLeft>
+    <ModalPanel show={show} onRequestClose={handleCancel} title={`Edit Condition - ${criteria.Name}`} titleLeft>
       <div className="shoko-scrollbar flex max-h-[15rem] flex-col gap-x-2 overflow-auto bg-panel-background-alt">
         {map(unusedValues, value => (
           <div

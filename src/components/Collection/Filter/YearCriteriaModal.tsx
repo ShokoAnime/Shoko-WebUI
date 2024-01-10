@@ -9,6 +9,7 @@ import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { selectFilterValues, setFilterValues } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FilterExpression } from '@/core/types/api/filter';
 
@@ -16,8 +17,9 @@ type Props = {
   criteria: FilterExpression;
   show: boolean;
   onClose: () => void;
+  removeCriteria: () => void;
 };
-const YearCriteriaModal = ({ criteria, onClose, show }: Props) => {
+const YearCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
   const dispatch = useDispatch();
   const [addValue, setAddValue] = useState('');
   const selectedValues = useSelector(state => selectFilterValues(state, criteria));
@@ -37,18 +39,19 @@ const YearCriteriaModal = ({ criteria, onClose, show }: Props) => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setUnsavedValues([]);
+    if (selectedValues.length === 0) removeCriteria();
     onClose();
-  };
+  });
 
-  const handleSave = () => {
+  const handleSave = useEventCallback(() => {
     dispatch(setFilterValues({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  };
+  });
 
-  const handleAddYear = () => {
+  const handleAddYear = useEventCallback(() => {
     const isYear = /^\d{4}$/.test(addValue);
     if (!isYear) {
       toast.error('Value is not a year!');
@@ -59,13 +62,13 @@ const YearCriteriaModal = ({ criteria, onClose, show }: Props) => {
     }
     setUnsavedValues([...unsavedValues, addValue]);
     setAddValue('');
-  };
+  });
 
   return (
     <ModalPanel
       show={show}
       size="sm"
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >

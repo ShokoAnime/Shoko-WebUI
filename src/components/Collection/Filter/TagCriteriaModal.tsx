@@ -11,6 +11,7 @@ import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useAniDBTagsQuery, useUserTagsQuery } from '@/core/react-query/tag/queries';
 import { selectFilterTags, setFilterTag } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 import type { TagType } from '@/core/types/api/tags';
@@ -19,6 +20,7 @@ type Props = {
   criteria: FilterExpression;
   show: boolean;
   onClose: () => void;
+  removeCriteria: () => void;
 };
 
 const TagList = (
@@ -73,7 +75,7 @@ const TagList = (
   );
 };
 
-const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
+const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
   const dispatch = useDispatch();
   const anidbTagsQuery = useAniDBTagsQuery(
     { pageSize: 0, excludeDescriptions: true },
@@ -113,16 +115,17 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setUnsavedValues([]);
+    if (selectedValues.length === 0) removeCriteria();
     onClose();
-  };
+  });
 
-  const handleSave = () => {
+  const handleSave = useEventCallback(() => {
     dispatch(setFilterTag({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  };
+  });
 
   const selectTag = (name: string, isExcluded: boolean) => () => {
     const tag = { Name: name, isExcluded };
@@ -137,7 +140,7 @@ const TagCriteriaModal = ({ criteria, onClose, show }: Props) => {
     <ModalPanel
       show={show}
       size="sm"
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >

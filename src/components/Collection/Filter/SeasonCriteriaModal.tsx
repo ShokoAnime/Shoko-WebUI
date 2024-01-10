@@ -10,6 +10,7 @@ import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { selectFilterSeasons, setFilterSeason } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FilterExpression, FilterSeason } from '@/core/types/api/filter';
 
@@ -17,8 +18,9 @@ type Props = {
   criteria: FilterExpression;
   show: boolean;
   onClose: () => void;
+  removeCriteria: () => void;
 };
-const SeasonCriteriaModal = ({ criteria, onClose, show }: Props) => {
+const SeasonCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) => {
   const dispatch = useDispatch();
   const defaultSeason = criteria.PossibleSecondParameters ? criteria.PossibleSecondParameters[0] : '';
   const [addValue, setAddValue] = useState('');
@@ -40,16 +42,17 @@ const SeasonCriteriaModal = ({ criteria, onClose, show }: Props) => {
     }
   };
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setUnsavedValues([]);
+    if (selectedValues.length === 0) removeCriteria();
     onClose();
-  };
+  });
 
-  const handleSave = () => {
+  const handleSave = useEventCallback(() => {
     dispatch(setFilterSeason({ [criteria.Expression]: [...selectedValues, ...unsavedValues] }));
     setUnsavedValues([]);
     onClose();
-  };
+  });
 
   const handleAddYear = () => {
     const isYear = /^\d{4}$/.test(addValue);
@@ -72,7 +75,7 @@ const SeasonCriteriaModal = ({ criteria, onClose, show }: Props) => {
     <ModalPanel
       show={show}
       size="sm"
-      onRequestClose={onClose}
+      onRequestClose={handleCancel}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >

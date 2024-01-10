@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { useEffectOnce } from 'usehooks-ts';
 
 import { removeFilterCriteria, selectFilterValues } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import YearCriteriaModal from './YearCriteriaModal';
 
@@ -21,13 +23,18 @@ const YearCriteria = ({ criteria }: Props) => {
     (state: RootState) => selectFilterValues(state, criteria),
   );
 
-  const showModalCallback = () => () => {
+  const showModalCallback = useEventCallback(() => {
     setShowModal(true);
-  };
+  });
 
-  const removeCriteria = () => () => {
+  const removeCriteria = useEventCallback(() => {
     dispatch(removeFilterCriteria(criteria));
-  };
+  });
+
+  useEffectOnce(() => {
+    if (selectedParameter.length > 0) return;
+    setShowModal(true);
+  });
 
   return (
     <>
@@ -37,10 +44,10 @@ const YearCriteria = ({ criteria }: Props) => {
             {criteria.Name}
           </div>
           <div className="flex gap-2">
-            <div onClick={showModalCallback()}>
+            <div onClick={showModalCallback}>
               <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
             </div>
-            <div onClick={removeCriteria()}>
+            <div onClick={removeCriteria}>
               <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
             </div>
           </div>
@@ -59,6 +66,7 @@ const YearCriteria = ({ criteria }: Props) => {
         onClose={() => {
           setShowModal(false);
         }}
+        removeCriteria={removeCriteria}
       />
     </>
   );

@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { forEach } from 'lodash';
+import { useEffectOnce } from 'usehooks-ts';
 
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
 import { removeFilterCriteria, selectFilterTags } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FilterExpression } from '@/core/types/api/filter';
 
@@ -43,13 +45,18 @@ const TagCriteria = ({ criteria }: Props) => {
     return [included, excluded];
   }, [selectedParameter]);
 
-  const showModalCallback = () => () => {
+  const showModalCallback = useEventCallback(() => {
     setShowModal(true);
-  };
+  });
 
-  const removeCriteria = () => () => {
+  const removeCriteria = useEventCallback(() => {
     dispatch(removeFilterCriteria(criteria));
-  };
+  });
+
+  useEffectOnce(() => {
+    if (includedValues.length > 0 || excludedValues.length > 0) return;
+    setShowModal(true);
+  });
 
   return (
     <>
@@ -59,10 +66,10 @@ const TagCriteria = ({ criteria }: Props) => {
             {criteria.Name}
           </div>
           <div className="flex gap-2">
-            <div onClick={showModalCallback()}>
+            <div onClick={showModalCallback}>
               <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
             </div>
-            <div onClick={removeCriteria()}>
+            <div onClick={removeCriteria}>
               <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
             </div>
           </div>
@@ -78,6 +85,7 @@ const TagCriteria = ({ criteria }: Props) => {
         onClose={() => {
           setShowModal(false);
         }}
+        removeCriteria={removeCriteria}
       />
     </>
   );
