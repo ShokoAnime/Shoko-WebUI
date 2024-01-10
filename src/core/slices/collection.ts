@@ -54,6 +54,12 @@ const collectionSlice = createSlice({
       if (sliceState.filterValues[Expression] !== undefined) {
         delete sliceState.filterValues[Expression];
       }
+      if (sliceState.filterTags[Expression] !== undefined) {
+        delete sliceState.filterTags[Expression];
+      }
+      if (sliceState.filterSeasons[Expression] !== undefined) {
+        delete sliceState.filterSeasons[Expression];
+      }
     },
     addFilterCondition(sliceState, action: PayloadAction<Record<string, boolean>>) {
       sliceState.filterConditions = { ...sliceState.filterConditions, ...action.payload };
