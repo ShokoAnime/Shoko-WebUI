@@ -1,8 +1,8 @@
-import React, { type ReactNode, useState } from 'react';
+import React, { type ReactNode, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { map, values } from 'lodash';
+import { keys, map, values } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
@@ -13,7 +13,7 @@ import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { buildSidebarFilter } from '@/core/buildFilter';
-import { resetActiveFilter, setActiveFilter } from '@/core/slices/collection';
+import { resetActiveFilter, selectActiveCriteriaWithValues, setActiveFilter } from '@/core/slices/collection';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -54,7 +54,12 @@ const FilterSidebar = () => {
   const [criteriaModal, setCriteriaModal] = useState(false);
   const dispatch = useDispatch();
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
+  const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
+  const hasCriteria = useMemo(() => {
+    const count = keys(selectedCriteria).length;
+    return count > 0 && count === keys(activeCriteriaWithValues).length;
+  }, [activeCriteriaWithValues, selectedCriteria]);
   const applyFilter = () => {
     const requestData = buildSidebarFilter(values(selectedCriteria));
     dispatch(setActiveFilter(requestData));
@@ -77,6 +82,7 @@ const FilterSidebar = () => {
       })}
       <div className="flex gap-x-2">
         <Button
+          disabled={!hasCriteria}
           buttonType="primary"
           className="grow px-4 py-3"
           onClick={() => {

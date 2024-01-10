@@ -1,5 +1,5 @@
 import { createSelector, createSlice } from '@reduxjs/toolkit';
-import { keys } from 'lodash';
+import { filter, keys } from 'lodash';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression, FilterSeason, FilterTag } from '@/core/types/api/filter';
@@ -14,7 +14,7 @@ filterCriteria - when user selects an expression it is copied here, then passed 
 
 Values for the condition that user selected, key is criteria.Expression, split by type, technically could be a single array
 filterConditions - DefaultCriteria
-filterConditions - MultiValueCriteria, YearCriteria
+filterValues - MultiValueCriteria, YearCriteria
 filterTags - TagCriteria
 filterSeasons - SeasonCriteria
 
@@ -115,11 +115,18 @@ export const selectActiveCriteria = createSelector(
   [
     (state: RootState) => state.collection,
   ],
+  values => keys(values.filterCriteria),
+);
+
+export const selectActiveCriteriaWithValues = createSelector(
+  [
+    (state: RootState) => state.collection,
+  ],
   values => [
-    ...keys(values.filterCriteria),
     ...keys(values.filterConditions),
-    ...keys(values.filterValues),
-    ...keys(values.filterTags),
+    ...keys(filter(values.filterValues, item => item.length > 0)),
+    ...keys(filter(values.filterTags, item => item.length > 0)),
+    ...keys(filter(values.filterSeasons, item => item.length > 0)),
   ],
 );
 
