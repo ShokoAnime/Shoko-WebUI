@@ -1,6 +1,5 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { capitalize } from 'lodash';
 
 import Criteria from '@/components/Collection/Filter/Criteria';
 import { selectFilterValues } from '@/core/slices/collection';
@@ -11,6 +10,8 @@ import type { FilterExpression } from '@/core/types/api/filter';
 type Props = {
   criteria: FilterExpression;
 };
+
+const capitalize = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
 
 const MultiValueCriteria = ({ criteria }: Props) => {
   const selectedParameter = useSelector(

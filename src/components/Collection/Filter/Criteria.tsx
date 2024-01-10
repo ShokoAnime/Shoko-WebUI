@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useEffectOnce } from 'usehooks-ts';
@@ -8,9 +8,10 @@ import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCr
 import SeasonCriteriaModal from '@/components/Collection/Filter/SeasonCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
 import YearCriteriaModal from '@/components/Collection/Filter/YearCriteriaModal';
-import { removeFilterCriteria } from '@/core/slices/collection';
+import { removeFilterCriteria, selectFilterMatch } from '@/core/slices/collection';
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
 type ModalType = 'year' | 'season' | 'tag' | 'multivalue';
@@ -37,6 +38,17 @@ const getModalComponent = (type: ModalType) => {
   }
 };
 
+const ParameterList = ({ expression, value }: { expression: string, value: string }) => {
+  const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, expression));
+
+  return (
+    <div className="line-clamp-2">
+      <span className="pr-2 text-panel-text-important">{filterMatch === 'Or' ? 'In:' : 'All:'}</span>
+      {value}
+    </div>
+  );
+};
+
 const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Props) => {
   const dispatch = useDispatch();
   const [showModal, setShowModal] = useState(false);
@@ -60,6 +72,8 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
 
   const Modal = useMemo(() => getModalComponent(type), [type]);
 
+  const isParameterString = useMemo(() => typeof transformedParameter === 'string', [transformedParameter]);
+
   return (
     <>
       <div className="flex flex-col">
@@ -67,21 +81,26 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
           <div className="font-semibold">
             {criteria.Name}
           </div>
-          <div onClick={removeCriteria}>
-            <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+          <div className="flex gap-x-2">
+            {!isParameterString && (
+              <div onClick={openModal}>
+                <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
+              </div>
+            )}
+            <div onClick={removeCriteria}>
+              <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+            </div>
           </div>
         </div>
         <div className="flex flex-col gap-y-2">
-          {(typeof transformedParameter === 'string')
+          {isParameterString
             ? (
               <div
                 className="flex cursor-pointer justify-between rounded-md border border-panel-border bg-panel-input px-4 py-3"
                 onClick={openModal}
               >
-                <div className="line-clamp-1">
-                  {transformedParameter}
-                </div>
-                <Icon className="text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
+                <ParameterList expression={criteria.Expression} value={transformedParameter as string} />
+                <Icon className="shrink-0 text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
               </div>
             )
             : transformedParameter}
