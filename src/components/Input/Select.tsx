@@ -9,6 +9,7 @@ type Props = {
   className?: string;
   children: React.ReactNode;
   label?: string;
+  options?: React.ReactNode;
 };
 
 function Select(props: Props) {
@@ -18,15 +19,23 @@ function Select(props: Props) {
     id,
     label,
     onChange,
+    options,
     value,
   } = props;
+
+  const showTitle = label ?? options ?? false;
 
   return (
     <div className={className ?? ''}>
       <label htmlFor={id}>
-        {label && (
-          <div className="mb-3 font-semibold">
-            {label}
+        {showTitle && (
+          <div className="mb-3 flex items-center justify-between">
+            {label && (
+              <div className="font-semibold">
+                {label}
+              </div>
+            )}
+            {options}
           </div>
         )}
         <div className="relative w-auto">
@@ -34,7 +43,7 @@ function Select(props: Props) {
             id={id}
             value={value}
             onChange={onChange}
-            className="w-full appearance-none rounded border border-panel-border bg-panel-input py-1.5 pl-2 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
+            className="w-full appearance-none rounded border border-panel-border bg-panel-input py-2 pl-2 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
           >
             {children}
           </select>

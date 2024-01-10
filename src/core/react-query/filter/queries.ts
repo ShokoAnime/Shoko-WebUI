@@ -5,7 +5,7 @@ import { axios } from '@/core/axios';
 import type { FilteredGroupSeriesRequestType, FilteredGroupsRequestType } from '@/core/react-query/filter/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
-import type { FilterType } from '@/core/types/api/filter';
+import type { FilterExpression, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
 export const useFiltersQuery = (enabled = false) =>
@@ -26,6 +26,13 @@ export const useSubFiltersQuery = (filterId: number, enabled = false) =>
   useQuery<ListResultType<CollectionFilterType>>({
     queryKey: ['filter', 'sub', filterId],
     queryFn: () => axios.get(`Filter/${filterId}/Filter`, { params: { pageSize: 0 } }),
+    enabled,
+  });
+
+export const useFilterExpressionsQuery = (enabled = true) =>
+  useQuery<FilterExpression[]>({
+    queryKey: ['filter', 'expression', 'all'],
+    queryFn: () => axios.get('Filter/Expressions'),
     enabled,
   });
 

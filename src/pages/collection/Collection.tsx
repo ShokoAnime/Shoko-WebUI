@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import {
   mdiCogOutline,
@@ -17,6 +18,7 @@ import { useDebounce, useToggle } from 'usehooks-ts';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
+import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
 import Input from '@/components/Input/Input';
@@ -33,6 +35,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
+import type { RootState } from '@/core/store';
 import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
@@ -80,6 +83,7 @@ function Collection() {
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
 
+  const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
   const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
@@ -116,10 +120,16 @@ function Collection() {
     setSeriesSearch('');
   }, [isSeries]);
 
+  const groupFilterCondition = useMemo(() => {
+    if (filterId) return filterQuery.data?.Expression;
+    if (activeFilter !== null) return activeFilter as FilterCondition;
+    return undefined;
+  }, [activeFilter, filterId, filterQuery.data?.Expression]);
+
   const groupsQuery = useFilteredGroupsInfiniteQuery({
     pageSize: 50,
     randomImages: showRandomPoster,
-    filterCriteria: getFilter(debouncedGroupSearch, filterId ? filterQuery.data?.Expression : undefined, false),
+    filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, false),
   });
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(
@@ -241,9 +251,7 @@ function Collection() {
               (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
             )}
           >
-            <div className="ml-8 line-clamp-1 flex grow items-center justify-center rounded border border-panel-border bg-panel-background p-8">
-              Filter sidebar
-            </div>
+            <FilterSidebar />
           </div>
           {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
         </div>

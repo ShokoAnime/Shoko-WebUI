@@ -67,7 +67,7 @@ function ModalPanel(props: Props) {
               {title}
             </div>
           )}
-          <div className={cx('flex flex-col', !noGap && ('gap-y-8'), !noPadding && ('px-8 pb-8'))}>
+          <div className={cx('flex flex-col overflow-y-auto', !noGap && ('gap-y-8'), !noPadding && ('px-8 pb-8'))}>
             {children}
           </div>
         </div>
