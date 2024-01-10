@@ -126,13 +126,16 @@ export const selectActiveCriteria = createSelector(
 
 export const selectActiveCriteriaWithValues = createSelector(
   [
-    (state: RootState) => state.collection,
+    (state: RootState) => state.collection.filterConditions,
+    (state: RootState) => state.collection.filterValues,
+    (state: RootState) => state.collection.filterTags,
+    (state: RootState) => state.collection.filterSeasons,
   ],
-  values => [
-    ...keys(filter(values.filterConditions, item => item !== undefined)),
-    ...keys(filter(values.filterValues, item => item.length > 0)),
-    ...keys(filter(values.filterTags, item => item.length > 0)),
-    ...keys(filter(values.filterSeasons, item => item.length > 0)),
+  (filterConditions, filterValues, filterTags, filterSeasons) => [
+    ...keys(filter(filterConditions, item => item !== undefined)),
+    ...keys(filter(filterValues, item => item.length > 0)),
+    ...keys(filter(filterTags, item => item.length > 0)),
+    ...keys(filter(filterSeasons, item => item.length > 0)),
   ],
 );
 

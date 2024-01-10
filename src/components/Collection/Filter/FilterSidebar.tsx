@@ -1,8 +1,8 @@
-import React, { type ReactNode, useMemo, useState } from 'react';
+import React, { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { keys, map, values } from 'lodash';
+import { forEach, keys, map, values } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
@@ -13,7 +13,13 @@ import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { buildSidebarFilter } from '@/core/buildFilter';
-import { resetActiveFilter, selectActiveCriteriaWithValues, setActiveFilter } from '@/core/slices/collection';
+import {
+  removeFilterCriteria,
+  resetActiveFilter,
+  selectActiveCriteriaWithValues,
+  setActiveFilter,
+} from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
@@ -56,18 +62,27 @@ const FilterSidebar = () => {
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
   const activeCriteriaWithValues = useSelector(selectActiveCriteriaWithValues);
 
-  const hasCriteria = useMemo(() => {
-    const count = keys(selectedCriteria).length;
-    return count > 0 && count === keys(activeCriteriaWithValues).length;
-  }, [activeCriteriaWithValues, selectedCriteria]);
-  const applyFilter = () => {
+  const applyFilter = useEventCallback(() => {
     const requestData = buildSidebarFilter(values(selectedCriteria));
     dispatch(setActiveFilter(requestData));
-  };
+  });
 
   const showCriteriaModal = (state: boolean) => () => {
     setCriteriaModal(state);
   };
+
+  const resetFilter = useEventCallback(() => {
+    forEach(selectedCriteria, (criteria) => {
+      dispatch(removeFilterCriteria(criteria));
+    });
+  });
+
+  useEffect(() => {
+    const count = keys(selectedCriteria).length;
+    if (count !== keys(activeCriteriaWithValues).length) return;
+    if (count > 0) applyFilter();
+    else dispatch(resetActiveFilter());
+  }, [activeCriteriaWithValues, applyFilter, dispatch, resetFilter, selectedCriteria]);
 
   return (
     <ShokoPanel
@@ -80,29 +95,14 @@ const FilterSidebar = () => {
         const CriteriaComponent = mapCriteriaComponent(item);
         return <CriteriaComponent key={item.Expression} criteria={item} />;
       })}
-      <div className="flex gap-x-2">
-        <Button
-          disabled={!hasCriteria}
-          buttonType="primary"
-          className="grow px-4 py-3"
-          onClick={() => {
-            applyFilter();
-          }}
-        >
-          Apply filter
-        </Button>
-        {activeFilter !== null && (
-          <Button
-            buttonType="danger"
-            className="grow px-4 py-3"
-            onClick={() => {
-              dispatch(resetActiveFilter());
-            }}
-          >
-            Reset filter
-          </Button>
-        )}
-      </div>
+      <Button
+        buttonType="danger"
+        className="px-4 py-3"
+        onClick={resetFilter}
+        disabled={!activeFilter}
+      >
+        Reset filter
+      </Button>
       <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>
   );
