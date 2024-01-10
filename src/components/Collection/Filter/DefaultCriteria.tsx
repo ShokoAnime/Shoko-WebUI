@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -23,10 +23,19 @@ const DefaultCriteria = ({ criteria }: Props) => {
   const dispatch = useDispatch();
   const selectedCondition = useSelector(
     (state: RootState) => {
-      const value = state.collection.filterConditions[criteria.Expression] ?? true;
-      return value ? '1' : '0';
+      const value: boolean | undefined = state.collection.filterConditions[criteria.Expression];
+      if (value === true || value === false) {
+        return value ? '1' : '0';
+      }
+      return value;
     },
   );
+
+  useEffect(() => {
+    if (selectedCondition === undefined) {
+      dispatch(addFilterCondition({ [criteria.Expression]: true }));
+    }
+  }, [criteria.Expression, dispatch, selectedCondition]);
 
   const changeValue = (event: React.ChangeEvent<HTMLSelectElement>) => {
     dispatch(addFilterCondition({ [criteria.Expression]: event.currentTarget.value === '1' }));
