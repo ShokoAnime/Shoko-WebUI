@@ -72,14 +72,16 @@ const YearCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >
-      <div className="flex gap-x-4 overflow-y-auto">
-        <Input
-          id="year"
-          type="text"
-          placeholder="Year"
-          value={addValue}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddValue(event.target.value)}
-        />
+      <div className="flex gap-x-4">
+        <div className="grow">
+          <Input
+            id="year"
+            type="number"
+            placeholder="Year"
+            value={addValue}
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddValue(event.target.value)}
+          />
+        </div>
         <Button
           onClick={handleAddYear}
           buttonType="primary"
@@ -89,15 +91,15 @@ const YearCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =
         </Button>
       </div>
       <div className="flex flex-col gap-y-4">
-        <div className="flex gap-x-2">
+        <div className="font-semibold">
           Selected Years
         </div>
-        <div className="shoko-scrollbar h-[15rem] max-h-[15rem] grow overflow-auto bg-panel-background-alt p-4">
-          <div className=" flex grow flex-col gap-x-2 bg-panel-background-alt">
+        <div className="flex h-[15rem] grow rounded-md bg-panel-input p-4">
+          <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
             {map(
               combinedSelectedValues,
               year => (
-                <div className="flex justify-between leading-tight" key={year}>
+                <div className="flex justify-between pr-2 leading-tight" key={year}>
                   {year}
                   <div onClick={removeValue(year)}>
                     <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />

@@ -1,13 +1,9 @@
-import React, { useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import { forEach } from 'lodash';
-import { useEffectOnce } from 'usehooks-ts';
 
-import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
-import { removeFilterCriteria, selectFilterTags } from '@/core/slices/collection';
-import useEventCallback from '@/hooks/useEventCallback';
+import Criteria from '@/components/Collection/Filter/Criteria';
+import { selectFilterTags } from '@/core/slices/collection';
 
 import type { FilterExpression } from '@/core/types/api/filter';
 
@@ -16,7 +12,7 @@ type TagLineProps = {
   values: string[];
 };
 const TagLine = ({ title, values }: TagLineProps) => (
-  <div className="bg-panel-background-alt px-4 py-3">
+  <div className="rounded-md border border-panel-border bg-panel-input px-4 py-3">
     <div className="line-clamp-3">
       <span className="pr-2 text-panel-text-important">{title}</span>
       {values.join(', ')}
@@ -24,13 +20,18 @@ const TagLine = ({ title, values }: TagLineProps) => (
   </div>
 );
 
+const Parameter = ({ excludedValues, includedValues }: { includedValues: string[], excludedValues: string[] }) => (
+  <>
+    {includedValues.length > 0 && <TagLine title="Included:" values={includedValues} />}
+    {excludedValues.length > 0 && <TagLine title="Excluded:" values={excludedValues} />}
+  </>
+);
+
 type Props = {
   criteria: FilterExpression;
 };
 
 const TagCriteria = ({ criteria }: Props) => {
-  const dispatch = useDispatch();
-  const [showModal, setShowModal] = useState(false);
   const selectedParameter = useSelector(state => selectFilterTags(state, criteria));
   const [includedValues, excludedValues] = useMemo(() => {
     const included: string[] = [];
@@ -45,49 +46,13 @@ const TagCriteria = ({ criteria }: Props) => {
     return [included, excluded];
   }, [selectedParameter]);
 
-  const showModalCallback = useEventCallback(() => {
-    setShowModal(true);
-  });
-
-  const removeCriteria = useEventCallback(() => {
-    dispatch(removeFilterCriteria(criteria));
-  });
-
-  useEffectOnce(() => {
-    if (includedValues.length > 0 || excludedValues.length > 0) return;
-    setShowModal(true);
-  });
-
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="mb-3 flex items-center justify-between">
-          <div className="font-semibold">
-            {criteria.Name}
-          </div>
-          <div className="flex gap-2">
-            <div onClick={showModalCallback}>
-              <Icon className="cursor-pointer text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
-            </div>
-            <div onClick={removeCriteria}>
-              <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-2">
-          {includedValues.length > 0 && <TagLine title="Included:" values={includedValues} />}
-          {excludedValues.length > 0 && <TagLine title="Excluded:" values={excludedValues} />}
-        </div>
-      </div>
-      <TagCriteriaModal
-        criteria={criteria}
-        show={showModal}
-        onClose={() => {
-          setShowModal(false);
-        }}
-        removeCriteria={removeCriteria}
-      />
-    </>
+    <Criteria
+      criteria={criteria}
+      parameterExists={includedValues.length > 0 || excludedValues.length > 0}
+      transformedParameter={<Parameter includedValues={includedValues} excludedValues={excludedValues} />}
+      type="tag"
+    />
   );
 };
 

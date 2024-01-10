@@ -24,20 +24,20 @@ import useEventCallback from '@/hooks/useEventCallback';
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
-const mapCriteriaComponent = (criteria: FilterExpression) => {
+const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
   if (criteria.Expression === 'HasCustomTag' || criteria.Expression === 'HasTag') {
-    return TagCriteria;
+    return <TagCriteria criteria={criteria} />;
   }
   if (criteria.Expression === 'InYear') {
-    return YearCriteria;
+    return <YearCriteria criteria={criteria} />;
   }
   if (criteria.Expression === 'InSeason') {
-    return SeasonCriteria;
+    return <SeasonCriteria criteria={criteria} />;
   }
   if (criteria.PossibleParameters) {
-    return MultiValueCriteria;
+    return <MultiValueCriteria criteria={criteria} />;
   }
-  return DefaultCriteria;
+  return <DefaultCriteria criteria={criteria} />;
 };
 
 type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
@@ -88,20 +88,20 @@ const FilterSidebar = () => {
     <ShokoPanel
       title="Filter"
       className="ml-8 w-full"
-      contentClassName="gap-3"
+      contentClassName="gap-y-8"
       options={<Options showModal={showCriteriaModal(true)} />}
     >
-      {map(selectedCriteria, (item) => {
-        const CriteriaComponent = mapCriteriaComponent(item);
-        return <CriteriaComponent key={item.Expression} criteria={item} />;
-      })}
+      {map(
+        selectedCriteria,
+        item => <CriteriaComponent key={item.Expression} criteria={item} />,
+      )}
       <Button
         buttonType="danger"
         className="px-4 py-3"
         onClick={resetFilter}
         disabled={!activeFilter}
       >
-        Reset filter
+        Clear filter
       </Button>
       <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>

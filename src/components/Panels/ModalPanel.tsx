@@ -4,6 +4,7 @@ import cx from 'classnames';
 
 type Props = {
   children: React.ReactNode;
+  fullHeight?: boolean;
   show: boolean;
   title?: React.ReactNode;
   titleLeft?: boolean;
@@ -25,6 +26,7 @@ function ModalPanel(props: Props) {
   const {
     children,
     className,
+    fullHeight,
     noGap,
     noPadding,
     onAfterOpen,
@@ -50,9 +52,10 @@ function ModalPanel(props: Props) {
       <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex max-h-[66%] flex-col rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
+            'flex flex-col rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
             sizeClass[size ?? 'md'],
             !noPadding && ('gap-y-8'),
+            fullHeight ? 'h-[66%]' : 'max-h-[66%]',
             className,
           )}
           onClick={e => e.stopPropagation()}
@@ -67,7 +70,13 @@ function ModalPanel(props: Props) {
               {title}
             </div>
           )}
-          <div className={cx('flex flex-col overflow-y-auto', !noGap && ('gap-y-8'), !noPadding && ('px-8 pb-8'))}>
+          <div
+            className={cx(
+              'flex flex-col grow',
+              !noGap && ('gap-y-8'),
+              !noPadding && ('px-8 pb-8'),
+            )}
+          >
             {children}
           </div>
         </div>

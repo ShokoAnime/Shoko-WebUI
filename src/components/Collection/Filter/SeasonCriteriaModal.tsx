@@ -79,27 +79,25 @@ const SeasonCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props)
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
     >
-      <div className="flex gap-x-4 overflow-y-auto">
+      <div className="flex gap-x-4">
         <div className="grow">
           <Input
             id="year"
-            type="text"
+            type="number"
             placeholder="Year"
             value={addValue}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setAddValue(event.target.value)}
           />
         </div>
-        <div className="min-w-[30%] grow">
-          <Select
-            id="season"
-            value={addSeason}
-            onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
-              setAddSeason(event.currentTarget.value);
-            }}
-          >
-            {map(criteria.PossibleSecondParameters, item => <option key={item} value={item}>{item}</option>)}
-          </Select>
-        </div>
+        <Select
+          id="season"
+          value={addSeason}
+          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => {
+            setAddSeason(event.currentTarget.value);
+          }}
+        >
+          {map(criteria.PossibleSecondParameters, item => <option key={item} value={item}>{item}</option>)}
+        </Select>
         <Button
           onClick={handleAddYear}
           buttonType="primary"
@@ -109,15 +107,15 @@ const SeasonCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props)
         </Button>
       </div>
       <div className="flex flex-col gap-y-4">
-        <div className="flex gap-x-2">
-          Selected Years
+        <div className="font-semibold">
+          Selected Seasons
         </div>
-        <div className="shoko-scrollbar h-[15rem] max-h-[15rem] grow overflow-auto bg-panel-background-alt p-4">
-          <div className=" flex grow flex-col gap-x-2 bg-panel-background-alt">
+        <div className="flex h-[15rem] grow rounded-md bg-panel-input p-4">
+          <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
             {map(
               combinedSelectedValues,
               season => (
-                <div className="flex justify-between leading-tight" key={`${season.Season}-${season.Year}`}>
+                <div className="flex justify-between pr-2 leading-tight" key={`${season.Season}-${season.Year}`}>
                   {`${season.Season} ${season.Year}`}
                   <div onClick={removeValue(season)}>
                     <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
