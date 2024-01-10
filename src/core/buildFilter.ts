@@ -44,7 +44,11 @@ const buildSidebarFilterConditionTag = (conditionValues: FilterTag[], type: stri
   }
   return buildTagCondition(conditionValues[0], type);
 };
-const buildSidebarFilterConditionMultivalue = (conditionValues: string[], type: string, operator = 'And'): object => {
+const buildSidebarFilterConditionMultivalue = (
+  conditionValues: string[],
+  type: string,
+  operator: 'Or' | 'And' = 'And',
+): object => {
   if (conditionValues.length > 1) {
     return {
       Type: operator,
@@ -59,17 +63,14 @@ const buildSidebarFilterCondition = (currentFilter: FilterExpression) => {
     const tagValues = store.getState().collection.filterTags[currentFilter.Expression];
     return buildSidebarFilterConditionTag(tagValues, currentFilter.Expression);
   }
-  if (currentFilter?.PossibleParameters) {
-    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
-    return buildSidebarFilterConditionMultivalue(filterValues, currentFilter.Expression);
-  }
-  if (currentFilter?.Expression === 'InYear') {
-    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
-    return buildSidebarFilterConditionMultivalue(filterValues, currentFilter.Expression, 'Or');
-  }
   if (currentFilter?.Expression === 'InSeason') {
     const seasonValues = store.getState().collection.filterSeasons[currentFilter.Expression];
     return buildSidebarFilterConditionSeason(seasonValues, currentFilter.Expression);
+  }
+  if (currentFilter?.PossibleParameters ?? currentFilter?.Parameter === 'Number') {
+    const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
+    const filterMatch = store.getState().collection.filterMatch[currentFilter.Expression] ?? 'Or';
+    return buildSidebarFilterConditionMultivalue(filterValues, currentFilter.Expression, filterMatch);
   }
 
   const value = store.getState().collection.filterConditions[currentFilter.Expression] ?? true;

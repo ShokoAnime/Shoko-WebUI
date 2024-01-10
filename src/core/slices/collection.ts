@@ -27,6 +27,7 @@ type State = {
   filterValues: Record<string, string[]>;
   filterTags: Record<string, FilterTag[]>;
   filterSeasons: Record<string, FilterSeason[]>;
+  filterMatch: Record<string, 'Or' | 'And'>;
   activeFilter: object | null;
 };
 
@@ -38,6 +39,7 @@ const collectionSlice = createSlice({
     filterValues: {},
     filterTags: {},
     filterSeasons: {},
+    filterMatch: {},
     activeFilter: null,
   } as State,
   reducers: {
@@ -60,6 +62,9 @@ const collectionSlice = createSlice({
       if (sliceState.filterSeasons[Expression] !== undefined) {
         delete sliceState.filterSeasons[Expression];
       }
+      if (sliceState.filterMatch[Expression] !== undefined) {
+        delete sliceState.filterMatch[Expression];
+      }
     },
     addFilterCondition(sliceState, action: PayloadAction<Record<string, boolean>>) {
       sliceState.filterConditions = { ...sliceState.filterConditions, ...action.payload };
@@ -72,6 +77,9 @@ const collectionSlice = createSlice({
     },
     setFilterSeason(sliceState, action: PayloadAction<Record<string, FilterSeason[]>>) {
       sliceState.filterSeasons = action.payload;
+    },
+    setFilterMatch(sliceState, action: PayloadAction<Record<string, 'Or' | 'And'>>) {
+      sliceState.filterMatch = { ...sliceState.filterMatch, ...action.payload };
     },
     setActiveFilter(sliceState, action: PayloadAction<object>) {
       sliceState.activeFilter = action.payload;
@@ -88,6 +96,7 @@ export const {
   removeFilterCriteria,
   resetActiveFilter,
   setActiveFilter,
+  setFilterMatch,
   setFilterSeason,
   setFilterTag,
   setFilterValues,
@@ -137,6 +146,14 @@ export const selectActiveCriteriaWithValues = createSelector(
     ...keys(filter(filterTags, item => item.length > 0)),
     ...keys(filter(filterSeasons, item => item.length > 0)),
   ],
+);
+
+export const selectFilterMatch = createSelector(
+  [
+    (state: RootState) => state.collection.filterMatch,
+    (_, expression: string) => expression,
+  ],
+  (filterMatch, expression) => filterMatch[expression] ?? 'Or',
 );
 
 export default collectionSlice.reducer;

@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { filter, map, pull } from 'lodash';
 
 import Button from '@/components/Input/Button';
+import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { selectFilterValues, setFilterValues } from '@/core/slices/collection';
+import { selectFilterMatch, selectFilterValues, setFilterMatch, setFilterValues } from '@/core/slices/collection';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
@@ -30,6 +31,11 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
       ),
     [criteria.PossibleParameters, selectedValues, unsavedValues],
   );
+  const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, criteria.Expression));
+
+  const handleMatchChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    dispatch(setFilterMatch({ [criteria.Expression]: event.target.value as 'Or' | 'And' }));
+  });
 
   const selectValue = (value: string) => {
     setUnsavedValues([...unsavedValues, value]);
@@ -57,33 +63,49 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   });
 
   return (
-    <ModalPanel show={show} onRequestClose={handleCancel} title={`Edit Condition - ${criteria.Name}`} titleLeft>
-      <div className="shoko-scrollbar flex max-h-[15rem] flex-col gap-x-2 overflow-auto bg-panel-background-alt">
-        {map(unusedValues, value => (
-          <div
-            onClick={() => {
-              selectValue(value);
-            }}
-            className="p-2"
-            key={value}
-          >
-            {value}
-          </div>
-        ))}
+    <ModalPanel
+      show={show}
+      onRequestClose={handleCancel}
+      title={`Edit Condition - ${criteria.Name}`}
+      titleLeft
+      fullHeight
+    >
+      <Select id="match" onChange={handleMatchChange} value={filterMatch}>
+        <option value="Or">Match Any</option>
+        <option value="And">Match All</option>
+      </Select>
+      <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+        <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
+          {map(unusedValues, value => (
+            <div
+              onClick={() => {
+                selectValue(value);
+              }}
+              key={value}
+              className="cursor-pointer capitalize"
+            >
+              {value}
+            </div>
+          ))}
+        </div>
       </div>
-      <div>Selected values</div>
-      <div className="shoko-scrollbar flex max-h-[15rem] min-h-[15rem] flex-col gap-x-2 overflow-auto bg-panel-background-alt">
-        {map([...selectedValues, ...unsavedValues], value => (
-          <div
-            className="p-2"
-            onClick={() => {
-              removeValue(value);
-            }}
-            key={value}
-          >
-            {value}
+      <div className="flex grow flex-col gap-y-4">
+        <div className="font-semibold">Selected Values</div>
+        <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+          <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
+            {map([...selectedValues, ...unsavedValues], value => (
+              <div
+                onClick={() => {
+                  removeValue(value);
+                }}
+                key={value}
+                className="cursor-pointer capitalize"
+              >
+                {value}
+              </div>
+            ))}
           </div>
-        ))}
+        </div>
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>

@@ -36,8 +36,11 @@ const TagList = (
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <div className="rounded-md bg-panel-input p-4">
-      <div className="relative h-[12.25rem] overflow-y-scroll" ref={scrollRef}>
+    <div className="grow overflow-y-auto rounded-md bg-panel-input p-4">
+      <div
+        className="relative h-full overflow-y-scroll"
+        ref={scrollRef}
+      >
         <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
           <div
             className="absolute left-0 top-0 w-full"
@@ -143,8 +146,9 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
       onRequestClose={handleCancel}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
+      fullHeight
     >
-      <div className="flex flex-col gap-y-4">
+      <div className="flex grow basis-0 flex-col gap-y-4 overflow-y-auto">
         <Input
           id="search"
           startIcon={mdiMagnify}
@@ -155,7 +159,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
         />
         <TagList unusedValues={unusedValues} selectTag={selectTag} />
       </div>
-      <div className="flex flex-col gap-y-4">
+      <div className="flex grow basis-0 flex-col gap-y-4">
         <div className="flex items-center gap-x-2 font-semibold">
           <span>Selected Tags</span>
           <Icon path={mdiChevronRight} size={1} />
@@ -173,8 +177,8 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
             Excluded
           </span>
         </div>
-        <div className="h-[7rem] rounded-md bg-panel-input p-4">
-          <div className="flex h-full flex-col gap-x-2 gap-y-1 overflow-y-scroll">
+        <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+          <div className="flex w-full flex-col gap-y-1 overflow-y-scroll">
             {map(
               combinedSelectedValues,
               tag => (

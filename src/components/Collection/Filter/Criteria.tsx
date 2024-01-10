@@ -1,0 +1,100 @@
+import React, { useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { useEffectOnce } from 'usehooks-ts';
+
+import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
+import SeasonCriteriaModal from '@/components/Collection/Filter/SeasonCriteriaModal';
+import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
+import YearCriteriaModal from '@/components/Collection/Filter/YearCriteriaModal';
+import { removeFilterCriteria } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
+
+import type { FilterExpression } from '@/core/types/api/filter';
+
+type ModalType = 'year' | 'season' | 'tag' | 'multivalue';
+
+type Props = {
+  criteria: FilterExpression;
+  parameterExists: boolean;
+  transformedParameter: React.ReactNode;
+  type: ModalType;
+};
+
+const getModalComponent = (type: ModalType) => {
+  switch (type) {
+    case 'year':
+      return YearCriteriaModal;
+    case 'season':
+      return SeasonCriteriaModal;
+    case 'tag':
+      return TagCriteriaModal;
+    case 'multivalue':
+      return MultiValueCriteriaModal;
+    default:
+      return YearCriteriaModal;
+  }
+};
+
+const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Props) => {
+  const dispatch = useDispatch();
+  const [showModal, setShowModal] = useState(false);
+
+  const openModal = useEventCallback(() => {
+    setShowModal(true);
+  });
+
+  const closeModal = useEventCallback(() => {
+    setShowModal(false);
+  });
+
+  const removeCriteria = useEventCallback(() => {
+    dispatch(removeFilterCriteria(criteria));
+  });
+
+  useEffectOnce(() => {
+    if (parameterExists) return;
+    setShowModal(true);
+  });
+
+  const Modal = useMemo(() => getModalComponent(type), [type]);
+
+  return (
+    <>
+      <div className="flex flex-col">
+        <div className="mb-3 flex items-center justify-between">
+          <div className="font-semibold">
+            {criteria.Name}
+          </div>
+          <div onClick={removeCriteria}>
+            <Icon className="cursor-pointer text-panel-icon-danger" path={mdiMinusCircleOutline} size={1} />
+          </div>
+        </div>
+        <div className="flex flex-col gap-y-2">
+          {(typeof transformedParameter === 'string')
+            ? (
+              <div
+                className="flex cursor-pointer justify-between rounded-md border border-panel-border bg-panel-input px-4 py-3"
+                onClick={openModal}
+              >
+                <div className="line-clamp-1">
+                  {transformedParameter}
+                </div>
+                <Icon className="text-panel-text-primary" path={mdiCircleEditOutline} size={1} />
+              </div>
+            )
+            : transformedParameter}
+        </div>
+      </div>
+      <Modal
+        criteria={criteria}
+        show={showModal}
+        onClose={closeModal}
+        removeCriteria={removeCriteria}
+      />
+    </>
+  );
+};
+
+export default Criteria;
