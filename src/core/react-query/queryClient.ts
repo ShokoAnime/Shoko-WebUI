@@ -9,6 +9,7 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      refetchOnWindowFocus: false,
       retry: (failureCount, error: AxiosError | Error) => {
         let errorHeader: string;
         let errorMessage: string;
