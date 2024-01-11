@@ -6,6 +6,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import TvdbLanguageSelect from '@/components/Settings/TvdbLanguageSelect';
 import toast from '@/components/Toast';
 import queryClient from '@/core/react-query/queryClient';
 import { initialSettings } from '@/core/react-query/settings/helpers';
@@ -13,32 +14,6 @@ import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
-
-export const tvdbLanguages = [
-  ['en', 'English'],
-  ['sv', 'Swedish'],
-  ['no', 'Norwegian'],
-  ['da', 'Danish'],
-  ['fi', 'Finnish'],
-  ['nl', 'Dutch'],
-  ['de', 'German'],
-  ['it', 'Italian'],
-  ['es', 'Spanish'],
-  ['fr', 'French'],
-  ['pl', 'Polish'],
-  ['hu', 'Hungarian'],
-  ['el', 'Greek'],
-  ['tr', 'Turkish'],
-  ['ru', 'Russian'],
-  ['he', 'Hebrew'],
-  ['ja', 'Japanese'],
-  ['pt', 'Portuguese'],
-  ['cs', 'Czech'],
-  ['sl', 'Slovenian'],
-  ['hr', 'Croatian'],
-  ['ko', 'Korean'],
-  ['zh', 'Chinese'],
-];
 
 const TraktSettings = () => {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
@@ -237,15 +212,11 @@ function MetadataSitesSettings() {
           />
           <div className="flex items-center justify-between">
             <span>Language</span>
-            <SelectSmall
+            <TvdbLanguageSelect
               id="tvdb-language"
               value={TvDB.Language}
               onChange={event => updateSetting('TvDB', 'Language', event.target.value)}
-            >
-              {tvdbLanguages.map(
-                item => <option value={item[0]} key={item[0]}>{item[1]}</option>,
-              )}
-            </SelectSmall>
+            />
           </div>
           <div className="flex items-center justify-between">
             <span>Automatically Update Stats</span>
