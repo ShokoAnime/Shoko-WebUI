@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import useMeasure from 'react-use-measure';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -311,9 +312,24 @@ function UnrecognizedTab() {
     ),
   }));
 
+  const [tabContainerRef, bounds] = useMeasure();
+  const isOverlay = useMemo(
+    () => bounds.width <= 1462 && bounds.width >= 1206 && selectedRows.length !== 0,
+    [bounds.width, selectedRows.length],
+  );
+
+  const searchClassName = useMemo(() => {
+    if (bounds.width < 1206) {
+      if (selectedRows.length === 0) return '!w-[calc(100vw-20rem)]';
+      return '!w-[calc(100vw-40rem)]';
+    }
+    if (isOverlay) return '!w-[calc(100vw-40rem)]';
+    return '';
+  }, [selectedRows.length, bounds, isOverlay]);
+
   return (
     <>
-      <div className="flex grow flex-col gap-y-8">
+      <div className="flex grow flex-col gap-y-8" ref={tabContainerRef}>
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
             <div className="flex items-center gap-x-3">
@@ -324,10 +340,10 @@ function UnrecognizedTab() {
                 id="search"
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                inputClassName="px-4 py-3"
-                isOverlay={selectedRows.length !== 0}
-                overlayClassName="w-[25rem] xl:w-[43.75rem] max-xl:w-[59.75rem] grow 2xl:w-auto 2xl:grow-0"
-                onToggleOverlay={setIsSearching}
+                inputClassName={cx('px-4 py-3', searchClassName)}
+                isOverlay={isOverlay}
+                overlayClassName="grow 2xl:w-auto 2xl:grow-0"
+                onToggleOverlay={show => setIsSearching(_ => show)}
               />
               <Menu
                 selectedRows={selectedRows}
@@ -335,7 +351,7 @@ function UnrecognizedTab() {
                 setSeriesSelectModal={setSeriesSelectModal}
                 isShow={!isSearching}
               />
-              <TransitionDiv show={selectedRows.length !== 0} className="flex h-[50px] gap-x-3">
+              <div className={cx('h-[50px] gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
                   buttonType="primary"
                   className="flex flex-row flex-wrap items-center px-4 py-3"
@@ -357,7 +373,7 @@ function UnrecognizedTab() {
                     {!isAvdumpFinished && !dumpInProgress && 'AVDump Files'}
                   </span>
                 </Button>
-              </TransitionDiv>
+              </div>
             </div>
           </ShokoPanel>
         </div>

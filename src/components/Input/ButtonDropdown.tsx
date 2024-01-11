@@ -43,16 +43,23 @@ const ButtonDropdown = (props: Props) => {
   });
   const [containerRef, containerBounds] = useMeasure();
   const [menuRef, menuBounds] = useMeasure();
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const menuShift = useMemo(() => containerBounds.x - (menuBounds.width - (containerBounds.width)), [
     containerBounds.x,
     containerBounds.width,
     menuBounds.width,
   ]);
 
+  const isOutOfBounds = useMemo(() => containerBounds.right > windowWidth, [windowWidth, containerBounds.right]);
+
   useEffect(() => {
-    window.addEventListener('resize', () => setOpen(_ => false));
+    const resizeEvent = () => {
+      setOpen(_ => false);
+      setWindowWidth(_ => window.innerWidth);
+    };
+    window.addEventListener('resize', resizeEvent);
     return () => {
-      window.removeEventListener('resize', () => setOpen(_ => false));
+      window.removeEventListener('resize', resizeEvent);
     };
   }, [className]);
 
@@ -89,7 +96,7 @@ const ButtonDropdown = (props: Props) => {
           open ? 'flex' : 'hidden',
           buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes]} border border-panel-border`,
         ])}
-        style={{ left: `${menuShift}px` }}
+        style={{ left: isOutOfBounds ? `${menuShift}px` : `${containerBounds.left}px` }}
         ref={menuRef}
       >
         {children}

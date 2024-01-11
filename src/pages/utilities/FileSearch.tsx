@@ -124,8 +124,8 @@ const Menu = (
   });
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+    <div className="box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+      <TransitionDiv className="flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
             setSelectedRows([]);
@@ -135,7 +135,7 @@ const Menu = (
           name="Refresh"
         />
       </TransitionDiv>
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
+      <TransitionDiv className="flex grow gap-x-4" show={selectedRows.length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
@@ -146,12 +146,6 @@ const Menu = (
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      {selectedRows.length === 1 ? 'File ' : 'Files '}
-      Selected
       <DeleteFilesModal
         show={showConfirmModal}
         selectedFiles={selectedRows}
@@ -306,7 +300,7 @@ const FileSearch = () => {
 
   return (
     <div className="flex grow flex-col gap-y-8">
-      <ShokoPanel title="File Search" options={<ItemCount count={fileCount} />}>
+      <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
         <div className="flex items-center gap-x-3">
           <Input
             type="text"
