@@ -30,7 +30,7 @@ import type { LayoutType } from '@/core/types/api/settings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-const ResizeHandle = () => (
+const renderResizeHandle = () => (
   <div className="react-resizable-handle bottom-0 right-0 cursor-nwse-resize">
     <Icon path={mdiMenuDown} size={1.5} className="text-panel-text-primary" rotate={-45} />
   </div>
@@ -169,7 +169,7 @@ function DashboardPage() {
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}
       isResizable={layoutEditMode}
-      resizeHandle={<ResizeHandle />}
+      resizeHandle={renderResizeHandle()}
       containerPadding={[0, 0]}
     >
       {!hideQueueProcessor && (
