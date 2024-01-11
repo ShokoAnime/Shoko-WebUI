@@ -19,15 +19,19 @@ import {
 } from '@/core/react-query/plex/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
 const PlexLinkButton = () => {
+  const settings = useSettingsQuery().data;
+
   const [plexPollingInterval, setPlexPollingInterval] = useState(0);
 
   const loginUrlQuery = usePlexLoginUrlQuery(false);
   const isAuthenticated = usePlexStatusQuery(plexPollingInterval);
   const { isPending: isInvalidateTokenPending, mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const handleLogin = useEventCallback(() => {
     window.open(loginUrlQuery?.data, '_blank');
@@ -41,7 +45,22 @@ const PlexLinkButton = () => {
   });
 
   const invalidateToken = useEventCallback(() => {
-    invalidatePlexToken();
+    invalidatePlexToken(undefined, {
+      onSuccess: () => {
+        // Cleanup libraries and server from settings because server won't do so.
+        const { Plex: plexSettings } = settings;
+        patchSettings({
+          newSettings: {
+            ...settings,
+            Plex: {
+              ...plexSettings,
+              Libraries: [],
+              Server: '',
+            },
+          },
+        });
+      },
+    });
   });
 
   const fetchLoginUrl = useEventCallback(() => {
@@ -102,25 +121,23 @@ const PlexSettings = () => {
 
   const [serverId, setServerId] = useState('');
 
+  const settings = useSettingsQuery().data;
   const isAuthenticated = usePlexStatusQuery().data;
   const serversQuery = usePlexServersQuery(isAuthenticated);
-  const librariesQuery = usePlexLibrariesQuery(isAuthenticated && !!serverId);
+  const librariesQuery = usePlexLibrariesQuery(isAuthenticated && serversQuery.isSuccess && !!serverId);
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
     if (plexSettings.Server) setServerId(plexSettings.Server);
+    else setServerId('');
   }, [plexSettings.Server]);
 
   const handleServerChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     // Optimistic update
     setServerId(event.target.value);
 
-    const tempSettings = produce(newSettings, (draftState) => {
-      draftState.Plex.Server = event.target.value;
-    });
-
     // We need to save it without pressing the save button to reload libraries.
-    patchSettings({ newSettings: tempSettings }, {
+    patchSettings({ newSettings: { ...settings, Plex: { ...plexSettings, Server: event.target.value } } }, {
       onSuccess: () => {
         invalidateQueries(['plex', 'libraries']);
       },
@@ -130,12 +147,12 @@ const PlexSettings = () => {
   const handleLibraryChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const key = toNumber(event.target.id);
 
-    const tempSettings = produce(newSettings, (draftState) => {
-      if (event.target.checked) draftState.Plex.Libraries.push(key);
-      else pull(draftState.Plex.Libraries, key);
+    const libraries = produce(plexSettings.Libraries, (draftState) => {
+      if (event.target.checked) draftState.push(key);
+      else pull(draftState, key);
     });
 
-    setNewSettings(tempSettings);
+    setNewSettings({ ...newSettings, Plex: { ...plexSettings, Libraries: libraries } });
   });
 
   return (
@@ -152,6 +169,7 @@ const PlexSettings = () => {
             id="server"
             value={serverId}
             onChange={handleServerChange}
+            isFetching={isAuthenticated && serversQuery.isPending}
           >
             <option value="" disabled>--Select Server--</option>
             {map(
@@ -159,10 +177,10 @@ const PlexSettings = () => {
               server => <option value={server.ClientIdentifier} key={server.ClientIdentifier}>{server.Name}</option>,
             )}
           </SelectSmall>
-          <AnimateHeight height={isAuthenticated && !!serverId ? 'auto' : 0}>
+          <AnimateHeight height={isAuthenticated && serversQuery.isSuccess && !!serverId ? 'auto' : 0}>
             <div className="my-2 font-semibold">Libraries</div>
             <div className="flex flex-col gap-y-2 rounded-md border border-panel-border bg-panel-input p-4">
-              {librariesQuery.isFetching && (
+              {librariesQuery.isPending && (
                 <div className="flex justify-center text-panel-text-primary">
                   <Icon path={mdiLoading} size={1} spin />
                 </div>

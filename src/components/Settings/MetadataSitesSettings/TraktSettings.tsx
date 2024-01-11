@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
@@ -8,24 +8,28 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import queryClient from '@/core/react-query/queryClient';
 import { initialSettings } from '@/core/react-query/settings/helpers';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
-import { dayjs } from '@/core/util';
+import { copyToClipboard, dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
 
 const TraktSettings = () => {
-  const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
+  const { newSettings, updateSetting } = useSettingsContext();
   const { TraktTv } = newSettings;
 
+  const settings = useSettingsQuery().data;
   const traktQuery = useTraktCodeQuery(false);
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const handleGetCode = useEventCallback(() => {
     traktQuery.refetch().then(
       () => {
         toast.info(
-          'You have approximately 10 minutes to visit the URL provided and enter the code. SAVE YOUR SETTINGS after activation is complete.',
+          'Click on the code to copy it. You have approximately 10 minutes to visit the URL provided and enter the code. SAVE YOUR SETTINGS after activation is complete.',
           undefined,
-          { autoClose: 10000 },
+          { autoClose: 600000, toastId: 'trakt-code' },
         );
 
         setTimeout(() => {
@@ -37,7 +41,26 @@ const TraktSettings = () => {
     ).catch(console.error);
   });
 
-  const handleTraktClear = useEventCallback(() => setNewSettings({ ...newSettings, TraktTv: initialSettings.TraktTv }));
+  const handleTraktClear = useEventCallback(
+    () => patchSettings({ newSettings: { ...settings, TraktTv: initialSettings.TraktTv } }),
+  );
+
+  const handleCopy = useEventCallback(() => {
+    if (!traktQuery.data?.usercode) return;
+    copyToClipboard(traktQuery.data.usercode)
+      .then(() => toast.success('Code copied to clipboard!'))
+      .catch(() => toast.error('Copy copy failed! Please copy it manually'));
+  });
+
+  useEffect(() => {
+    if (TraktTv.TokenExpirationDate === '') return;
+    if (!traktQuery.data?.usercode) return;
+    queryClient.resetQueries({ queryKey: ['trakt-code'] }).catch(console.error);
+  }, [TraktTv.TokenExpirationDate, traktQuery.data?.usercode]);
+
+  useEffect(() => {
+    if (TraktTv.TokenExpirationDate) toast.dismiss('trakt-code');
+  }, [TraktTv.TokenExpirationDate]);
 
   return (
     <div className="flex flex-col gap-y-4">
@@ -50,19 +73,19 @@ const TraktSettings = () => {
           isChecked={TraktTv.Enabled}
           onChange={event => updateSetting('TraktTv', 'Enabled', event.target.checked)}
         />
-        {TraktTv.TokenExpirationDate === '' && traktQuery?.data?.usercode && (
+        {TraktTv.TokenExpirationDate === '' && traktQuery.data?.usercode && (
           <div
             className={cx(
               'flex justify-between items-center mt',
               !TraktTv.Enabled && 'pointer-events-none opacity-50',
             )}
           >
-            <div className="flex">
+            <Button className="flex cursor-pointer" onClick={handleCopy}>
               Trakt Code:
-              <span className="ml-1 font-bold">{traktQuery?.data?.usercode}</span>
-            </div>
+              <span className="ml-1 font-bold">{traktQuery.data?.usercode}</span>
+            </Button>
             <a
-              href={traktQuery?.data?.url}
+              href={traktQuery.data?.url}
               rel="noopener noreferrer"
               target="_blank"
               className="text-panel-text-important hover:underline"
@@ -71,7 +94,7 @@ const TraktSettings = () => {
             </a>
           </div>
         )}
-        {TraktTv.TokenExpirationDate === '' && !traktQuery?.data?.usercode && (
+        {TraktTv.TokenExpirationDate === '' && !traktQuery.data?.usercode && (
           <div
             className={cx('flex justify-between items-center', !TraktTv.Enabled && 'pointer-events-none opacity-50')}
           >

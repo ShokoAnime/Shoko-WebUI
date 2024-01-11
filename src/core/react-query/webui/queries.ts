@@ -74,5 +74,4 @@ export const useWebuiUpdateCheckQuery = (params: WebuiUpdateCheckRequestType, en
     queryKey: ['webui', 'update-check', params.channel],
     queryFn: () => axios.get('WebUI/LatestVersion', { params }),
     enabled,
-    refetchOnWindowFocus: false,
   });

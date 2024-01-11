@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiChevronDown } from '@mdi/js';
+import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 type Props = {
@@ -9,6 +9,7 @@ type Props = {
   className?: string;
   children: React.ReactNode;
   label?: string;
+  isFetching?: boolean;
 };
 
 function SelectSmall(props: Props) {
@@ -16,6 +17,7 @@ function SelectSmall(props: Props) {
     children,
     className,
     id,
+    isFetching,
     label,
     onChange,
     value,
@@ -28,19 +30,23 @@ function SelectSmall(props: Props) {
           {label}
         </div>
       )}
-      <div className="relative w-auto">
-        <select
-          id={id}
-          value={value}
-          onChange={onChange}
-          className="w-full appearance-none rounded border border-panel-border bg-panel-input py-1 pl-3 pr-8 text-sm transition ease-in-out focus:border-panel-text-primary focus:shadow-none focus:outline-none"
-        >
-          {children}
-        </select>
-        <div className="pointer-events-none absolute inset-y-0 right-0 p-1">
-          <Icon path={mdiChevronDown} size={1} />
-        </div>
-      </div>
+      {isFetching
+        ? <Icon path={mdiLoading} size={1} spin className="text-panel-text-primary" />
+        : (
+          <div className="relative w-auto">
+            <select
+              id={id}
+              value={value}
+              onChange={onChange}
+              className="w-full appearance-none rounded border border-panel-border bg-panel-input py-1 pl-3 pr-8 text-sm transition ease-in-out focus:border-panel-text-primary focus:shadow-none focus:outline-none"
+            >
+              {children}
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 p-1">
+              <Icon path={mdiChevronDown} size={1} />
+            </div>
+          </div>
+        )}
     </label>
   );
 }
