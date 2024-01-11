@@ -214,6 +214,9 @@ devDependencies:
   eslint-plugin-react-hooks:
     specifier: ^4.6.0
     version: 4.6.0(eslint@8.56.0)
+  eslint-plugin-react-refresh:
+    specifier: ^0.4.5
+    version: 0.4.5(eslint@8.56.0)
   eslint-plugin-sort-destructure-keys:
     specifier: ^1.5.0
     version: 1.5.0(eslint@8.56.0)
@@ -3257,6 +3260,14 @@ packages:
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0
+    dependencies:
+      eslint: 8.56.0
+    dev: true
+
+  /eslint-plugin-react-refresh@0.4.5(eslint@8.56.0):
+    resolution: {integrity: sha512-D53FYKJa+fDmZMtriODxvhwrO+IOqrxoEo21gMA0sjHdU6dPVH4OhyFip9ypl8HOF5RV5KdTo+rBQLvnY2cO8w==}
+    peerDependencies:
+      eslint: '>=7'
     dependencies:
       eslint: 8.56.0
     dev: true

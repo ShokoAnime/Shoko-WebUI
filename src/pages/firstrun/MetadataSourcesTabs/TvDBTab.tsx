@@ -4,9 +4,9 @@ import cx from 'classnames';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import TvdbLanguageSelect from '@/components/Settings/TvdbLanguageSelect';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useFirstRunSettingsContext } from '@/pages/firstrun/FirstRunPage';
-import { tvdbLanguages } from '@/pages/settings/tabs/MetadataSitesSettings';
 
 function TvDBTab() {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();
@@ -116,11 +116,7 @@ function TvDBTab() {
           onChange={handleInputChange}
           justify
         />
-        <SelectSmall label="Language" id="TvDB_Language" value={Language} onChange={handleInputChange}>
-          {tvdbLanguages.map(
-            item => <option value={item[0]} key={item[0]}>{item[1]}</option>,
-          )}
-        </SelectSmall>
+        <TvdbLanguageSelect label="Language" id="TvDB_Language" value={Language} onChange={handleInputChange} />
         <SelectSmall
           label="Automatically Update Stats"
           id="UpdateFrequency"

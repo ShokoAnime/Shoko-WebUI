@@ -16,7 +16,7 @@
     "browser": true,
     "es6": true
   },
-  "plugins": ["import", "react", "react-hooks", "jsx-a11y", "sort-destructure-keys"],
+  "plugins": ["import", "react", "react-hooks", "jsx-a11y", "sort-destructure-keys", "react-refresh"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -128,6 +128,7 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
+    "react-refresh/only-export-components": "warn",
     "sort-destructure-keys/sort-destructure-keys": 2,
     "no-undef": "error"
   }

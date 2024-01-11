@@ -18,7 +18,7 @@ export const axiosV2 = axiosDefault.create({
 });
 
 export const axiosPlex = axiosDefault.create({
-  baseURL: '/api/plex',
+  baseURL: '/plex',
 });
 
 export const axiosExternal = axiosDefault.create();
