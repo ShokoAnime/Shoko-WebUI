@@ -12,8 +12,6 @@ import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
 import toast from '@/components/Toast';
-import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
-import { usePlexLoginUrlQuery, usePlexStatusQuery } from '@/core/react-query/plex/queries';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import {
   useChangePasswordMutation,
@@ -52,15 +50,10 @@ function UserManagementSettings() {
   const [selectedUser, setSelectedUser] = useImmer(initialUser);
   const [newPassword, setNewPassword] = useState('');
   const [logoutOthers, setLogoutOthers] = useState(false);
-  const [plexPollingInterval, setPlexPollingInterval] = useState(0);
   const [tagSearch, setTagSearch] = useState('');
   const [avatarFile, setAvatarFile] = useState<File>();
   const [showAvatarModal, setShowAvatarModal] = useState(false);
 
-  const plexLoginUrlQuery = usePlexLoginUrlQuery(false);
-  const isPlexAuthenticatedQuery = usePlexStatusQuery(plexPollingInterval);
-  const isPlexAuthenticated = isPlexAuthenticatedQuery?.data ?? false;
-  const { isPending: isInvalidatePlexTokenPending, mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
   const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
 
   useEffect(() => {
@@ -162,65 +155,6 @@ function UserManagementSettings() {
     }
   };
 
-  const handlePlexLogin = () => {
-    window.open(plexLoginUrlQuery?.data, '_blank');
-    setPlexPollingInterval(1000);
-    toast.info('Checking plex login status!', '', {
-      autoClose: false,
-      draggable: false,
-      closeOnClick: false,
-      toastId: 'plex-status',
-    });
-  };
-
-  const renderPlexLink = () => {
-    if (isPlexAuthenticated) {
-      return (
-        <Button
-          onClick={() => invalidatePlexToken()}
-          loading={isInvalidatePlexTokenPending}
-          loadingSize={0.65}
-          buttonType="danger"
-          className="h-8 w-16 text-xs font-semibold"
-        >
-          Unlink
-        </Button>
-      );
-    }
-    return plexLoginUrlQuery?.data
-      ? (
-        <Button
-          onClick={() => handlePlexLogin()}
-          loading={plexPollingInterval !== 0}
-          loadingSize={0.65}
-          buttonType="primary"
-          className="h-8 w-24 text-xs"
-        >
-          Login
-        </Button>
-      )
-      : (
-        <Button
-          onClick={() => {
-            plexLoginUrlQuery.refetch().then(() => {}, () => {});
-          }}
-          loading={plexLoginUrlQuery.isFetching}
-          loadingSize={0.65}
-          buttonType="primary"
-          className="h-8 w-24 text-xs"
-        >
-          Authenticate
-        </Button>
-      );
-  };
-
-  useEffect(() => {
-    if (isPlexAuthenticated) {
-      setPlexPollingInterval(0);
-      toast.dismiss('plex-status');
-    }
-  }, [isPlexAuthenticated]);
-
   const handleTagChange = (tagId: number, selected: boolean) => {
     const tempUser = cloneDeep(selectedUser);
     if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
@@ -271,10 +205,6 @@ function UserManagementSettings() {
               onChange={handleInputChange}
               className="w-32 px-2"
             />
-          </div>
-          <div className="flex h-8 justify-between">
-            <div className="mx-0 my-auto">Plex User Link</div>
-            {renderPlexLink()}
           </div>
           <Checkbox
             justify

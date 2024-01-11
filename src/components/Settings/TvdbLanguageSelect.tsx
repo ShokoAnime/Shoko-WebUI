@@ -30,7 +30,7 @@ const tvdbLanguages = [
 
 type Props = {
   id: string;
-  label?: string;
+  label: string;
   value: string;
   onChange: React.ChangeEventHandler<HTMLSelectElement>;
 };
