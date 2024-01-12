@@ -1,27 +1,15 @@
-import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import {
-  mdiCogOutline,
-  mdiFilterMenuOutline,
-  mdiFilterOutline,
-  mdiFormatListText,
-  mdiMagnify,
-  mdiViewGridOutline,
-} from '@mdi/js';
-import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounce, useToggle } from 'usehooks-ts';
 
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
-import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
-import FiltersModal from '@/components/Dialogs/FiltersModal';
-import Input from '@/components/Input/Input';
+import TitleOptions from '@/components/Collection/TitleOptions';
 import buildFilter from '@/core/buildFilter';
 import {
   useFilterQuery,
@@ -33,6 +21,7 @@ import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { RootState } from '@/core/store';
@@ -69,16 +58,6 @@ const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = 
   );
 };
 
-type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
-const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
-  <div
-    className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
-    onClick={onClick}
-  >
-    <Icon path={icon} size={1} />
-  </div>
-);
-
 function Collection() {
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
@@ -95,8 +74,6 @@ function Collection() {
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
-  const [showFilterModal, setShowFilterModal] = useState(false);
-  const [showDisplaySettingsModal, setShowDisplaySettingsModal] = useState(false);
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const [groupSearch, setGroupSearch] = useState('');
@@ -188,7 +165,7 @@ function Collection() {
     viewSetting === 'list' && lastPageIds.length > 0,
   ).data;
 
-  const toggleMode = () => {
+  const toggleMode = useEventCallback(() => {
     if (isFetching) return;
 
     const newMode = mode === 'list' ? 'poster' : 'list';
@@ -202,63 +179,51 @@ function Collection() {
     const newSettings = cloneDeep(settings);
     newSettings.WebUI_Settings.collection.view = newMode;
     patchSettings({ newSettings });
-  };
+  });
 
   return (
-    <>
-      <div className="flex grow flex-col gap-y-8">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
-          <CollectionTitle
-            // eslint-disable-next-line no-nested-ternary
-            count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
-            filterOrGroup={subsectionName}
-            searchQuery={isSeries ? debouncedSeriesSearch : debouncedGroupSearch}
-          />
-          <div className="flex gap-x-2">
-            <Input
-              id="search"
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              value={isSeries ? seriesSearch : groupSearch}
-              onChange={e => (isSeries ? setSeriesSearch(e.target.value) : setGroupSearch(e.target.value))}
-            />
-            {!isSeries && (
-              <>
-                <OptionButton onClick={() => setShowFilterModal(true)} icon={mdiFilterMenuOutline} />
-                <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} />
-              </>
-            )}
-            <OptionButton onClick={toggleMode} icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline} />
-            <OptionButton onClick={() => setShowDisplaySettingsModal(true)} icon={mdiCogOutline} />
-          </div>
-        </div>
-        <div className="flex grow">
-          <CollectionView
-            groupExtras={groupExtras ?? []}
-            fetchNextPage={groupsQuery.fetchNextPage}
-            isFetchingNextPage={groupsQuery.isFetchingNextPage}
-            isFetching={isFetching}
-            isSeries={isSeries}
-            isSidebarOpen={showFilterSidebar}
-            items={items}
-            mode={mode}
-            total={total}
-          />
-          <div
-            className={cx(
-              'flex items-start overflow-hidden transition-all',
-              (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
-            )}
-          >
-            <FilterSidebar />
-          </div>
-          {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
-        </div>
+    <div className="flex grow flex-col gap-y-8">
+      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
+        <CollectionTitle
+          // eslint-disable-next-line no-nested-ternary
+          count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
+          filterOrGroup={subsectionName}
+          searchQuery={isSeries ? debouncedSeriesSearch : debouncedGroupSearch}
+        />
+        <TitleOptions
+          isSeries={isSeries}
+          groupSearch={groupSearch}
+          mode={mode}
+          seriesSearch={seriesSearch}
+          setGroupSearch={setGroupSearch}
+          setSeriesSearch={setSeriesSearch}
+          toggleFilterSidebar={toggleFilterSidebar}
+          toggleMode={toggleMode}
+        />
       </div>
-      <FiltersModal show={showFilterModal} onClose={() => setShowFilterModal(false)} />
-      <DisplaySettingsModal show={showDisplaySettingsModal} onClose={() => setShowDisplaySettingsModal(false)} />
-    </>
+      <div className="flex grow">
+        <CollectionView
+          groupExtras={groupExtras ?? []}
+          fetchNextPage={groupsQuery.fetchNextPage}
+          isFetchingNextPage={groupsQuery.isFetchingNextPage}
+          isFetching={isFetching}
+          isSeries={isSeries}
+          isSidebarOpen={showFilterSidebar}
+          items={items}
+          mode={mode}
+          total={total}
+        />
+        <div
+          className={cx(
+            'flex items-start overflow-hidden transition-all',
+            (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
+          )}
+        >
+          <FilterSidebar />
+        </div>
+        {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
+      </div>
+    </div>
   );
 }
 
