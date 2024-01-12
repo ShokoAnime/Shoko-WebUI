@@ -95,7 +95,7 @@ const SidePanel = (
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
             inputClassName="px-4 py-3"
           />
-          <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background-alt p-4">
+          <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
             {filteredList.length === 0 && (
               <div className="flex grow items-center justify-center">
                 Your search for&nbsp;
@@ -105,7 +105,7 @@ const SidePanel = (
             )}
 
             {filteredList.length > 0 && (
-              <div className="relative flex w-full grow flex-col overflow-y-auto" ref={scrollRef}>
+              <div className="relative flex w-full grow flex-col overflow-y-auto bg-panel-input" ref={scrollRef}>
                 {/* This extra absolute div exists to make the height of this container fixed otherwise it overflows for some reason */}
                 <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
                   <div
@@ -142,6 +142,7 @@ function FiltersModal({ onClose, show }: Props) {
   return (
     <ModalPanel
       show={show}
+      size="md"
       onRequestClose={onClose}
       title="Filters"
     >

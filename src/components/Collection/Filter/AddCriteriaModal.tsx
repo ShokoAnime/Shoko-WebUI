@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { filter, map } from 'lodash';
+import { filter, map, sortBy } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
@@ -23,6 +23,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
     selectedKeys,
   ]);
   const [newCriteria, setNewCriteria] = useState('');
+  const sortedCriteria = sortBy(unusedCriteria, 'Name');
 
   const handleClose = useEventCallback(() => {
     setNewCriteria('');
@@ -48,7 +49,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
         onChange={changeCriteria}
       >
         <option value="" disabled>--Select Criteria--</option>
-        {map(unusedCriteria, (item) => {
+        {map(sortedCriteria, (item) => {
           const value = item?.Expression;
           return <option key={value} value={value}>{item.Name}</option>;
         })}

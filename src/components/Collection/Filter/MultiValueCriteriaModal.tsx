@@ -65,6 +65,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   return (
     <ModalPanel
       show={show}
+      size="sm"
       onRequestClose={handleCancel}
       title={`Edit Condition - ${criteria.Name}`}
       titleLeft
@@ -75,7 +76,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
         <option value="And">Match All</option>
       </Select>
       <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
-        <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
+        <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
           {map(unusedValues, value => (
             <div
               onClick={() => {
@@ -92,7 +93,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
       <div className="flex grow flex-col gap-y-4">
         <div className="font-semibold">Selected Values</div>
         <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
-          <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
+          <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
             {map([...selectedValues, ...unsavedValues], value => (
               <div
                 onClick={() => {

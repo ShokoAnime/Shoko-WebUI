@@ -38,7 +38,7 @@ const TagList = (
   return (
     <div className="grow rounded-md bg-panel-input p-4">
       <div
-        className="relative h-full overflow-y-scroll"
+        className="relative h-full overflow-y-auto bg-panel-input"
         ref={scrollRef}
       >
         <div className="absolute top-0 w-full" style={{ height: virtualizer.getTotalSize() }}>
@@ -178,7 +178,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
           </span>
         </div>
         <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
-          <div className="flex w-full flex-col gap-y-1 overflow-y-scroll">
+          <div className="flex w-full flex-col gap-y-1 overflow-y-auto bg-panel-input">
             {map(
               combinedSelectedValues,
               tag => (
