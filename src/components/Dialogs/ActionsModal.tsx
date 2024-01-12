@@ -122,9 +122,8 @@ function ActionsModal({ onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      title="Actions"
+      header="Actions"
       size="lg"
-      titleLeft
       noPadding
     >
       <div className="flex h-[23rem]">

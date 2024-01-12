@@ -6,8 +6,8 @@ type Props = {
   children: React.ReactNode;
   fullHeight?: boolean;
   show: boolean;
-  title?: React.ReactNode;
-  titleLeft?: boolean;
+  header?: React.ReactNode;
+  subHeader?: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   noPadding?: boolean;
   noGap?: boolean;
@@ -27,14 +27,14 @@ function ModalPanel(props: Props) {
     children,
     className,
     fullHeight,
+    header,
     noGap,
     noPadding,
     onAfterOpen,
     onRequestClose,
     show,
     size,
-    title,
-    titleLeft,
+    subHeader,
   } = props;
 
   Modal.setAppElement('#app-root');
@@ -60,16 +60,14 @@ function ModalPanel(props: Props) {
           )}
           onClick={e => e.stopPropagation()}
         >
-          {title && (
-            <div
-              className={cx(
-                'border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold rounded-t-md',
-                !titleLeft && ('text-center'),
-              )}
-            >
-              {title}
-            </div>
-          )}
+          <div>
+            {header && (
+              <div className="rounded-t-md border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold">
+                {header}
+                {subHeader && <div className="mt-1 text-base">{subHeader}</div>}
+              </div>
+            )}
+          </div>
           <div
             className={cx(
               'flex flex-col grow',

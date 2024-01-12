@@ -242,7 +242,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       show={showModal}
       onRequestClose={onClose}
       size="lg"
-      title={<Title activeTab={activeTab} count={count} tabs={tabs} />}
+      header={<Title activeTab={activeTab} count={count} tabs={tabs} />}
     >
       <div className="flex gap-x-3">
         <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">

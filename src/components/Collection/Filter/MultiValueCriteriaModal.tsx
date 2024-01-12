@@ -67,8 +67,8 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
       show={show}
       size="sm"
       onRequestClose={handleCancel}
-      title={`Edit Condition - ${criteria.Name}`}
-      titleLeft
+      header={`Edit Condition - ${criteria.Name}`}
+      subHeader={criteria.Description}
       fullHeight
     >
       <Select id="match" onChange={handleMatchChange} value={filterMatch}>

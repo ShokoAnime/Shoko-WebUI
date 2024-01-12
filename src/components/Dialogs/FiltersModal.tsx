@@ -144,7 +144,7 @@ function FiltersModal({ onClose, show }: Props) {
       show={show}
       size="md"
       onRequestClose={onClose}
-      title="Filters"
+      header="Filters"
     >
       <div className="flex">
         <div className="flex min-h-[24rem] min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">

@@ -33,7 +33,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
         show={showModal}
         onRequestClose={() => setModalOpen(false)}
         size="sm"
-        title={`AniDB ${type} Ban Detected`}
+        header={`AniDB ${type} Ban Detected`}
       >
         <div className="flex flex-col gap-y-8">
           <p>

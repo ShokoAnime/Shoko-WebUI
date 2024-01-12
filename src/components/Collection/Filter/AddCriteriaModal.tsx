@@ -40,7 +40,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
   );
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} title="Add Condition" titleLeft size="sm">
+    <ModalPanel show={show} onRequestClose={onClose} header="Add Condition" size="sm">
       <Select
         id="addCondition"
         label="Select Condition"
