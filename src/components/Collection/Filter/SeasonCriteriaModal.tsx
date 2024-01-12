@@ -111,7 +111,7 @@ const SeasonCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props)
           Selected Seasons
         </div>
         <div className="flex h-[15rem] grow rounded-md bg-panel-input p-4">
-          <div className="flex w-full flex-col gap-y-2 overflow-y-auto">
+          <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
             {map(
               combinedSelectedValues,
               season => (

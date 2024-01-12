@@ -17,7 +17,7 @@ type Props = {
 };
 
 const sizeClass = {
-  sm: 'w-[32rem]',
+  sm: 'w-[36rem]',
   md: 'w-[45rem]',
   lg: 'w-[62rem]',
 };

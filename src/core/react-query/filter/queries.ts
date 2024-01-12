@@ -1,6 +1,7 @@
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import { transformFilterExpressions } from '@/core/react-query/filter/helpers';
 
 import type { FilteredGroupSeriesRequestType, FilteredGroupsRequestType } from '@/core/react-query/filter/types';
 import type { ListResultType } from '@/core/types/api';
@@ -33,6 +34,7 @@ export const useFilterExpressionsQuery = (enabled = true) =>
   useQuery<FilterExpression[]>({
     queryKey: ['filter', 'expression', 'all'],
     queryFn: () => axios.get('Filter/Expressions'),
+    select: transformFilterExpressions,
     enabled,
   });
 

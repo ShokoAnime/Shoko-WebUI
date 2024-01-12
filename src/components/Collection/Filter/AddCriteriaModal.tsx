@@ -5,8 +5,8 @@ import { filter, map } from 'lodash';
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
-import { useFilterExpressionMain } from '@/hooks/filters';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
@@ -16,7 +16,7 @@ type Props = {
 
 const AddCriteriaModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
-  const allCriteria = useFilterExpressionMain(show);
+  const allCriteria = useFilterExpressionsQuery(show).data;
   const selectedKeys = useSelector(selectActiveCriteria);
   const unusedCriteria = useMemo(() => filter(allCriteria, item => selectedKeys.indexOf(item.Expression) === -1), [
     allCriteria,
