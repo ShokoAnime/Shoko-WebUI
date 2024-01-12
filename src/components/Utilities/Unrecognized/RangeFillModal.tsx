@@ -25,7 +25,7 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
       show={show}
       size="sm"
       onRequestClose={onClose}
-      title="Range Fill Options"
+      header="Range Fill Options"
     >
       <div className="flex flex-col gap-y-2">
         <SelectSmall label="Type" id="Type" value={epType} onChange={e => setEpType(e.target.value)}>

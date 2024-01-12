@@ -98,9 +98,8 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      title={<Title onClose={onClose} />}
+      header={<Title onClose={onClose} />}
       size="md"
-      titleLeft
       noPadding
       noGap
     >
