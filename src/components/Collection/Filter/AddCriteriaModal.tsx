@@ -1,12 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { filter, map, sortBy } from 'lodash';
+import { filter, map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { useFilterExpressionsQuery } from '@/core/react-query/filter/queries';
 import { addFilterCriteria, selectActiveCriteria } from '@/core/slices/collection';
-import { useFilterExpressionMain } from '@/hooks/filters';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
@@ -16,14 +16,13 @@ type Props = {
 
 const AddCriteriaModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
-  const allCriteria = useFilterExpressionMain(show);
+  const allCriteria = useFilterExpressionsQuery(show).data;
   const selectedKeys = useSelector(selectActiveCriteria);
   const unusedCriteria = useMemo(() => filter(allCriteria, item => selectedKeys.indexOf(item.Expression) === -1), [
     allCriteria,
     selectedKeys,
   ]);
   const [newCriteria, setNewCriteria] = useState('');
-  const sortedCriteria = sortBy(unusedCriteria, 'Name');
 
   const handleClose = useEventCallback(() => {
     setNewCriteria('');
@@ -49,7 +48,7 @@ const AddCriteriaModal = ({ onClose, show }: Props) => {
         onChange={changeCriteria}
       >
         <option value="" disabled>--Select Criteria--</option>
-        {map(sortedCriteria, (item) => {
+        {map(unusedCriteria, (item) => {
           const value = item?.Expression;
           return <option key={value} value={value}>{item.Name}</option>;
         })}
