@@ -22,7 +22,7 @@ import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 import { prefetchSeriesEpisodesWithMultipleReleasesQuery } from '@/core/react-query/release-management/prefetch';
 import { useSeriesWithMultipleReleases } from '@/core/react-query/release-management/queries';
 import { dayjs } from '@/core/util';
-import { useFlattenListResult } from '@/hooks/useFlattenListResult';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -184,7 +184,7 @@ function MultipleFilesUtility() {
       <ShokoPanel title="Multiple Files" options={<ItemCount count={seriesCount} series />}>
         <div className="flex items-center gap-x-3">
           <Menu />
-          <Button buttonType="primary" className="flex gap-x-2.5 px-4 py-3 font-semibold">
+          <Button buttonType="primary" className="flex gap-x-2.5 px-4 py-3 font-semibold" disabled={seriesCount === 0}>
             <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
             Auto-Delete Multiples
           </Button>
