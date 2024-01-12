@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { cloneDeep } from 'lodash';
+import { produce } from 'immer';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -26,19 +26,15 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(settings);
   }, [dispatch, settings]);
 
-  const updatePosterViewSetting = (key: keyof typeof settings.WebUI_Settings.collection.poster, value: boolean) => {
-    const tempSettings = cloneDeep(newSettings);
-    tempSettings.WebUI_Settings.collection.poster[key] = value;
-    setNewSettings(tempSettings);
-  };
-
-  const updateListViewSetting = (key: keyof typeof settings.WebUI_Settings.collection.list, value: boolean) => {
-    const tempSettings = cloneDeep(newSettings);
-    tempSettings.WebUI_Settings.collection.list[key] = value;
-    setNewSettings(tempSettings);
-  };
-
   const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
+
+  const handleSettingChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list', key: string];
+    const tempSettings = produce(newSettings, (draftState) => {
+      draftState.WebUI_Settings.collection[type][key] = event.target.checked;
+    });
+    setNewSettings(tempSettings);
+  });
 
   const handleSave = useEventCallback(() => {
     patchSettings({ newSettings }, {
@@ -65,30 +61,30 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
             <Checkbox
               justify
               label="Total Episodes"
-              id="total-episodes"
+              id="poster-showEpisodeCount"
               isChecked={posterSettings.showEpisodeCount}
-              onChange={event => updatePosterViewSetting('showEpisodeCount', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Group Indicator"
-              id="group-indicator-grid"
+              id="poster-showGroupIndicator"
               isChecked={posterSettings.showGroupIndicator}
-              onChange={event => updatePosterViewSetting('showGroupIndicator', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Unwatched Epsiode Count"
-              id="unwatched-count"
+              id="poster-showUnwatchedCount"
               isChecked={posterSettings.showUnwatchedCount}
-              onChange={event => updatePosterViewSetting('showUnwatchedCount', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Random Posters on Load"
-              id="random-posters-grid"
+              id="poster-showRandomPoster"
               isChecked={posterSettings.showRandomPoster}
-              onChange={event => updatePosterViewSetting('showRandomPoster', event.target.checked)}
+              onChange={handleSettingChange}
             />
           </div>
         </div>
@@ -99,37 +95,37 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
             <Checkbox
               justify
               label="Item Type"
-              id="item-type"
+              id="list-showItemType"
               isChecked={listSettings.showItemType}
-              onChange={event => updateListViewSetting('showItemType', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Group Indicator"
-              id="group-indicator-list"
+              id="list-showGroupIndicator"
               isChecked={listSettings.showGroupIndicator}
-              onChange={event => updateListViewSetting('showGroupIndicator', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Top Tags"
-              id="top-tags"
+              id="list-showTopTags"
               isChecked={listSettings.showTopTags}
-              onChange={event => updateListViewSetting('showTopTags', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Custom Tags"
-              id="custom-tags"
+              id="list-showCustomTags"
               isChecked={listSettings.showCustomTags}
-              onChange={event => updateListViewSetting('showCustomTags', event.target.checked)}
+              onChange={handleSettingChange}
             />
             <Checkbox
               justify
               label="Random Posters on Load"
-              id="random-posters-list"
+              id="list-showRandomPoster"
               isChecked={listSettings.showRandomPoster}
-              onChange={event => updateListViewSetting('showRandomPoster', event.target.checked)}
+              onChange={handleSettingChange}
             />
           </div>
         </div>

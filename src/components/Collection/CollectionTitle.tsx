@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import { Link } from 'react-router-dom';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -10,7 +10,7 @@ type Props = {
   searchQuery: string;
 };
 
-const CollectionTitle = ({ count, filterOrGroup, searchQuery }: Props) => (
+const CollectionTitle = memo(({ count, filterOrGroup, searchQuery }: Props) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
       Entire Collection
@@ -36,6 +36,6 @@ const CollectionTitle = ({ count, filterOrGroup, searchQuery }: Props) => (
       </>
     )}
   </div>
-);
+));
 
 export default CollectionTitle;

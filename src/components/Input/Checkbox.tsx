@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { memo, useState } from 'react';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -17,9 +17,8 @@ type Props = {
   onChange: React.ChangeEventHandler<HTMLInputElement>;
 };
 
-function Checkbox(
-  { className, disabled = false, id, intermediate, isChecked, justify, label, labelRight, onChange }: Props,
-) {
+const Checkbox = memo((props: Props) => {
+  const { className, disabled = false, id, intermediate, isChecked, justify, label, labelRight, onChange } = props;
   const [focused, setFocused] = useState(false);
 
   return (
@@ -73,6 +72,6 @@ function Checkbox(
       )}
     </label>
   );
-}
+});
 
 export default Checkbox;
