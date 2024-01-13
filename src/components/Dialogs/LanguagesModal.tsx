@@ -108,7 +108,7 @@ function LanguagesModal({ onClose, type }: Props) {
     <ModalPanel
       show={type !== null}
       onRequestClose={onClose}
-      title={`${type} Languages`}
+      header={`${type} Languages`}
     >
       <div className="w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
         <div className="flex h-80 flex-col gap-y-1.5 overflow-y-auto rounded-md bg-panel-input px-3 py-2">

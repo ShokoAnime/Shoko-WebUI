@@ -43,7 +43,7 @@ const EditSeriesModal = (props: Props) => {
   const [activeTab, setActiveTab] = useState('actions');
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} title="Edit Series" noPadding titleLeft>
+    <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" noPadding>
       <div className="flex">
         <div className="flex w-[12rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
           {map(tabs, (value, key) => (

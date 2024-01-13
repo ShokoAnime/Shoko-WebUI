@@ -54,7 +54,7 @@ const AvatarEditorModal = (props: Props) => {
       show={show}
       onRequestClose={onClose}
       size="sm"
-      title="Avatar"
+      header="Avatar"
     >
       <AvatarEditor
         image={image}

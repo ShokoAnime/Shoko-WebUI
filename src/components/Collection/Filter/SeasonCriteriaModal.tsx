@@ -76,8 +76,8 @@ const SeasonCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props)
       show={show}
       size="sm"
       onRequestClose={handleCancel}
-      title={`Edit Condition - ${criteria.Name}`}
-      titleLeft
+      header={`Edit Condition - ${criteria.Name}`}
+      subHeader={criteria.Description}
     >
       <div className="flex gap-x-4">
         <div className="grow">

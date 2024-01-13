@@ -144,8 +144,8 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
       show={show}
       size="sm"
       onRequestClose={handleCancel}
-      title={`Edit Condition - ${criteria.Name}`}
-      titleLeft
+      header={`Edit Condition - ${criteria.Name}`}
+      subHeader={criteria.Description}
       fullHeight
     >
       <div className="flex grow basis-0 flex-col gap-y-4">

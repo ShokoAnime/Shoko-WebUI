@@ -51,7 +51,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      title="Display Settings"
+      header="Display Settings"
       size="sm"
     >
       <div className="flex flex-col gap-y-8">

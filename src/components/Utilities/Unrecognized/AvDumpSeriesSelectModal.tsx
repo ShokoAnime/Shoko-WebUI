@@ -125,9 +125,8 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      title={<Title step={1} stepCount={2} count={fileIds.length} />}
+      header={<Title step={1} stepCount={2} count={fileIds.length} />}
       size="sm"
-      titleLeft
       noPadding
     >
       <div className="flex flex-col gap-y-4 p-8">
