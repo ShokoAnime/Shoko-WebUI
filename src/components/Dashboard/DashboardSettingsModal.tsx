@@ -73,7 +73,6 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
 
   const updateSetting = (key: keyof typeof settings.WebUI_Settings.dashboard, value: boolean | number) => {
     const tempSettings = cloneDeep(newSettings);
-
     if (
       key === 'recentlyImportedEpisodesCount' || key === 'recentlyImportedSeriesCount' || key === 'shokoNewsPostsCount'
     ) {
