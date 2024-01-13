@@ -59,11 +59,9 @@ const Menu = (
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
     setSeriesSelectModal(this: void, show: boolean): void;
-    isShow?: boolean;
   },
 ) => {
   const {
-    isShow,
     selectedRows,
     setSelectedRows,
     setSeriesSelectModal,
@@ -152,14 +150,19 @@ const Menu = (
       .catch(console.error);
   });
 
-  const selectedOptionStyles = useMemo(() => {
-    if (selectedRows.length === 0) return 'hidden';
-    if (isShow) return 'flex xl:hidden';
-    return 'flex';
-  }, [selectedRows, isShow]);
-
   const renderSelectedRowActions = useMemo(() => (
     <>
+      {selectedRows.length !== 0
+        && (
+          <MenuButton
+            onClick={() => {
+              setSelectedRows([]);
+              invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+            }}
+            icon={mdiRefresh}
+            name="Refresh"
+          />
+        )}
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
       <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
@@ -172,45 +175,42 @@ const Menu = (
         highlight
       />
     </>
-  ), [ignoreFiles, rehashFiles, rescanFiles, setSelectedRows, setSeriesSelectModal, showDeleteConfirmation]);
+  ), [
+    ignoreFiles,
+    rehashFiles,
+    rescanFiles,
+    setSelectedRows,
+    setSeriesSelectModal,
+    showDeleteConfirmation,
+    selectedRows,
+  ]);
 
   return (
     <>
       <div
         className={cx(
-          isShow || selectedRows.length === 0 ? 'hidden xl:flex' : 'hidden 2xl:flex',
-          'box-border h-[3rem] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3',
+          selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
+          'box-border h-[52px] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
         )}
       >
-        <TransitionDiv className="flex grow gap-x-2 2xl:gap-x-4" show={selectedRows.length === 0}>
-          <MenuButton
-            onClick={() => {
-              setSelectedRows([]);
-              invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
-            }}
-            icon={mdiRefresh}
-            name="Refresh"
-          />
-        </TransitionDiv>
-        <TransitionDiv className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4" show={selectedRows.length !== 0 && isShow}>
+        <MenuButton
+          onClick={() => {
+            setSelectedRows([]);
+            invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+          }}
+          icon={mdiRefresh}
+          name="Refresh"
+        />
+        <TransitionDiv
+          className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4"
+          show={selectedRows.length !== 0}
+        >
           {renderSelectedRowActions}
         </TransitionDiv>
       </div>
 
-      <Button
-        buttonType="secondary"
-        onClick={() => {
-          setSelectedRows([]);
-          invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
-        }}
-        className={cx(selectedRows.length !== 0 ? 'hidden' : 'flex', 'p-3 xl:hidden')}
-      >
-        <Icon path={mdiRefresh} size={1} />
-        <span>Refresh</span>
-      </Button>
-
-      <div className={cx(selectedOptionStyles, '2xl:hidden')}>
-        <ButtonDropdown className="p-3" buttonTypes="secondary" content={<span>Options</span>}>
+      <div className={cx(selectedRows.length !== 0 ? 'flex' : 'hidden', '3xl:hidden')}>
+        <ButtonDropdown buttonTypes="secondary" content={<span>Options</span>}>
           {renderSelectedRowActions}
         </ButtonDropdown>
       </div>
@@ -232,7 +232,6 @@ function UnrecognizedTab() {
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
-  const [isSearching, setIsSearching] = useState(false);
   const debouncedSearch = useDebounce(search, 200);
   const { mutate: avdumpFile } = useAvdumpFileMutation();
 
@@ -313,17 +312,13 @@ function UnrecognizedTab() {
   }));
 
   const [tabContainerRef, bounds] = useMeasure();
-  const isOverlay = useMemo(
-    () => bounds.width <= 1462 && bounds.width >= 1206 && selectedRows.length !== 0,
-    [bounds.width, selectedRows.length],
-  );
+  const isOverlay = bounds.width <= 1365 && bounds.width >= 1206 && selectedRows.length !== 0;
 
   const searchClassName = useMemo(() => {
-    if (bounds.width < 1206) {
-      if (selectedRows.length === 0) return '!w-[calc(100vw-20rem)]';
-      return '!w-[calc(100vw-40rem)]';
+    if (bounds.width < 1547 && selectedRows.length !== 0) {
+      return '!w-[calc(100vw-624px)]';
     }
-    if (isOverlay) return '!w-[calc(100vw-40rem)]';
+    if (isOverlay) return '!w-[calc(100vw-38.4rem)]';
     return '';
   }, [selectedRows.length, bounds, isOverlay]);
 
@@ -341,17 +336,14 @@ function UnrecognizedTab() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 inputClassName={cx('px-4 py-3', searchClassName)}
-                isOverlay={isOverlay}
                 overlayClassName="grow 2xl:w-auto 2xl:grow-0"
-                onToggleOverlay={show => setIsSearching(_ => show)}
               />
               <Menu
                 selectedRows={selectedRows}
                 setSelectedRows={setRowSelection}
                 setSeriesSelectModal={setSeriesSelectModal}
-                isShow={!isSearching}
               />
-              <div className={cx('h-[50px] gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
+              <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
                   buttonType="primary"
                   className="flex flex-row flex-wrap items-center px-4 py-3"

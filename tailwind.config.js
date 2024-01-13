@@ -107,7 +107,10 @@ module.exports = {
       },
       borderWidth: {
         '16': '16px',
-      }
+      },
+      screens: {
+        '3xl': '1630px',
+      },
     },
   },
   variants: {
