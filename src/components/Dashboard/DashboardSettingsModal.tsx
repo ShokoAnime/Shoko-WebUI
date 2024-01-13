@@ -233,7 +233,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                   type="number"
                   value={shokoNewsPostsCount}
                   onChange={event => updateSetting('shokoNewsPostsCount', toNumber(event.target.value))}
-                  className="w-12 px-2 py-0.5 text-center"
+                  className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -241,9 +241,10 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 <InputSmall
                   id="recently-imported-files"
                   type="number"
-                  value={recentlyImportedEpisodesCount}
-                  onChange={event => updateSetting('recentlyImportedEpisodesCount', toNumber(event.target.value))}
-                  className="w-12 px-2 py-0.5 text-center"
+                  value={Math.min(Number(recentlyImportedEpisodesCount), 100)}
+                  onChange={event =>
+                    updateSetting('recentlyImportedEpisodesCount', Math.min(Number(event.target.value), 100))}
+                  className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
               <div className="flex items-center justify-between">
@@ -251,9 +252,10 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 <InputSmall
                   id="recently-imported-series"
                   type="number"
-                  value={recentlyImportedSeriesCount}
-                  onChange={event => updateSetting('recentlyImportedSeriesCount', toNumber(event.target.value))}
-                  className="w-12 px-2 py-0.5 text-center"
+                  value={Math.min(Number(recentlyImportedSeriesCount), 100)}
+                  onChange={event =>
+                    updateSetting('recentlyImportedSeriesCount', Math.min(Number(event.target.value), 100))}
+                  className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
             </div>
