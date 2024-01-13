@@ -65,7 +65,7 @@ const SeriesTags = () => {
               &nbsp;Tags Listed
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-4 2xl:gap-8">
             {map(tagsQuery.data ?? [], item => <SeriesTag key={item.ID} item={item} />)}
           </div>
         </div>

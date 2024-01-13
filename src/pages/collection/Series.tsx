@@ -91,9 +91,8 @@ const Series = () => {
   }
 
   return (
-    <div className="flex gap-x-8">
-      {/* I don't know why w-0 helps but it does, don't touch it. Without it, the container grows outside the screen */}
-      <div className="flex w-0 grow flex-col gap-y-8">
+    <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-2 2xl:gap-x-8">
+      <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-8">
         <div className="flex flex-row gap-x-8">
           <div className="flex w-full gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
             <div className="flex w-full grow flex-col gap-y-2">
@@ -137,7 +136,7 @@ const Series = () => {
             </div>
           </div>
         </div>
-        <div className="flex flex-nowrap gap-x-8 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
+        <div className="flex gap-x-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold lg:gap-x-8">
           <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
           <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
           <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />

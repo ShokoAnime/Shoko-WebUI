@@ -57,10 +57,11 @@ const SeriesEpisodes = () => {
   const animeId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 332, // 332px is the minimum height of a loaded row
+    estimateSize: () => 345, // 332px is the minimum height of a loaded row
     overscan: 5,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
@@ -95,12 +96,12 @@ const SeriesEpisodes = () => {
       <ShokoPanel
         title="Search & Filter"
         className="flex w-full flex-row"
-        contentClassName="!flex-row gap-x-8"
+        contentClassName="!flex-row gap-x-8 flex-wrap 2xl:flex-nowrap"
         transparent
         fullHeight={false}
       >
         <Input
-          inputClassName="w-full max-w-[15rem]"
+          inputClassName="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="search"
           label="Title Search"
           startIcon={mdiMagnify}
@@ -110,7 +111,7 @@ const SeriesEpisodes = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="episodeType"
           label="Episode Type"
           value={episodeFilterType}
@@ -124,7 +125,7 @@ const SeriesEpisodes = () => {
           <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="status"
           label="Availability"
           value={episodeFilterAvailability}
@@ -136,7 +137,7 @@ const SeriesEpisodes = () => {
           <option value="only">Missing</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="watched"
           label="Watched Status"
           value={episodeFilterWatched}
@@ -147,7 +148,7 @@ const SeriesEpisodes = () => {
           <option value="false">Unwatched</option>
         </Select>
         <Select
-          className="w-full max-w-[15rem]"
+          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
           id="hidden"
           label="Hidden Status"
           value={episodeFilterHidden}
@@ -161,20 +162,28 @@ const SeriesEpisodes = () => {
       <div className="flex gap-x-8">
         <div className="flex grow flex-col gap-y-4">
           <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
-            <div className="text-xl font-semibold">
-              Episodes
-              <span className="px-2">|</span>
-              <span className="pr-2 text-panel-text-important">
-                {isSuccess ? episodeCount : '-'}
+            <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
+              <span>Episodes</span>
+              <span className="hidden px-2 2xl:inline">|</span>
+              <span>
+                <span className="pr-2 text-panel-text-important">
+                  {isSuccess ? episodeCount : '-'}
+                </span>
+                Entries Listed
               </span>
-              Entries Listed
             </div>
-            <div className="flex gap-x-6">
-              <Button className="flex gap-x-2 !font-normal" onClick={markWatched}>
+            <div className="flex gap-x-4 xl:gap-x-6">
+              <Button
+                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                onClick={markWatched}
+              >
                 <Icon path={mdiEyeCheckOutline} size={1} />
                 Mark Filtered As Watched
               </Button>
-              <Button className="flex gap-x-2 !font-normal" onClick={markUnwatched}>
+              <Button
+                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                onClick={markUnwatched}
+              >
                 <Icon path={mdiEyeOutline} size={1} />
                 Mark Filtered As Unwatched
               </Button>

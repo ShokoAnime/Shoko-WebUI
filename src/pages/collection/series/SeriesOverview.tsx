@@ -62,11 +62,11 @@ const SeriesOverview = () => {
           </ShokoPanel>
           <ShokoPanel
             title="Metadata Sites"
-            className="flex w-full"
+            className="flex w-full flex-wrap"
             transparent
             disableOverflow
           >
-            <div className="flex gap-x-8">
+            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-8">
               {MetadataLinks.map((site) => {
                 const idOrIds = series.IDs[site] as number | number[];
                 if (typeof idOrIds === 'number' || idOrIds.length === 0) {

@@ -15,7 +15,7 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { forEach } from 'lodash';
+import { forEach, reverse } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useDebounce } from 'usehooks-ts';
 
@@ -24,7 +24,6 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
-import TransitionDiv from '@/components/TransitionDiv';
 import FilesSummary from '@/components/Utilities/FilesSummary';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
@@ -124,8 +123,8 @@ const Menu = (
   });
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+    <div className="box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+      <div className={cx('grow gap-x-4', selectedRows.length === 0 ? 'flex' : 'hidden')}>
         <MenuButton
           onClick={() => {
             setSelectedRows([]);
@@ -134,8 +133,8 @@ const Menu = (
           icon={mdiRefresh}
           name="Refresh"
         />
-      </TransitionDiv>
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
+      </div>
+      <div className={cx('grow gap-x-4', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
@@ -145,13 +144,7 @@ const Menu = (
           name="Cancel Selection"
           highlight
         />
-      </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      {selectedRows.length === 1 ? 'File ' : 'Files '}
-      Selected
+      </div>
       <DeleteFilesModal
         show={showConfirmModal}
         selectedFiles={selectedRows}
@@ -179,7 +172,7 @@ const FileDetails = (props: FileSelectedProps) => {
   const mediaInfo = useMediaInfo(file);
 
   return (
-    <TransitionDiv className="flex flex-col gap-y-4">
+    <div className="flex flex-col gap-y-4">
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">File Name</span>
@@ -262,7 +255,7 @@ const FileDetails = (props: FileSelectedProps) => {
         </div>
         <span className="break-all">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
-    </TransitionDiv>
+    </div>
   );
 };
 
@@ -289,7 +282,6 @@ const FileSearch = () => {
   const onNextView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev + 1 >= selectedRows.length) return 0;
-
       return prev + 1;
     });
   });
@@ -297,16 +289,16 @@ const FileSearch = () => {
   const onPrevView = useEventCallback(() => {
     setViewIndex((prev) => {
       if (prev - 1 < 0) return selectedRows.length - 1;
-
       return prev - 1;
     });
   });
 
-  const selectedId = useMemo(() => selectedRows[viewIndex]?.ID, [selectedRows, viewIndex]);
+  const fileSearchSelectedRows = useMemo(() => reverse(selectedRows), [selectedRows]);
+  const selectedId = useMemo(() => fileSearchSelectedRows[viewIndex]?.ID, [fileSearchSelectedRows, viewIndex]);
 
   return (
     <div className="flex grow flex-col gap-y-8">
-      <ShokoPanel title="File Search" options={<ItemCount count={fileCount} />}>
+      <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
         <div className="flex items-center gap-x-3">
           <Input
             type="text"

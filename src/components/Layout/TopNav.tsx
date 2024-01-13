@@ -15,6 +15,7 @@ import {
   mdiInformationOutline,
   mdiLayersTripleOutline,
   mdiLoading,
+  mdiLogout,
   mdiServer,
   mdiTabletDashboard,
   mdiTextBoxOutline,
@@ -24,6 +25,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import semver from 'semver';
 import { siDiscord } from 'simple-icons';
+import { useEventCallback } from 'usehooks-ts';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
@@ -36,6 +38,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
+import { unsetDetails } from '@/core/slices/apiSession';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
 
@@ -165,6 +168,11 @@ function TopNav() {
     dispatch(setQueueModalOpen(false));
   };
 
+  const handleLogout = useEventCallback(() => {
+    dispatch(unsetDetails());
+    navigate('/webui/login');
+  });
+
   const handleWebUiUpdate = () => {
     const renderToast = () => (
       <div className="flex flex-col gap-y-3">
@@ -229,6 +237,9 @@ function TopNav() {
             >
               <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>
+            <Button onClick={handleLogout} tooltip="Log out">
+              <Icon path={mdiLogout} size={0.8333} />
+            </Button>
           </div>
         </div>
         <div className="bg-topnav-background text-topnav-text">
