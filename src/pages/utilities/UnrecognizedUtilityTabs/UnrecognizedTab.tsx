@@ -152,17 +152,19 @@ const Menu = (
 
   const renderSelectedRowActions = useMemo(() => (
     <>
-      {selectedRows.length !== 0
-        && (
-          <MenuButton
-            onClick={() => {
-              setSelectedRows([]);
-              invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
-            }}
-            icon={mdiRefresh}
-            name="Refresh"
-          />
-        )}
+      <div className="flex 2xl:hidden">
+        {selectedRows.length !== 0
+          && (
+            <MenuButton
+              onClick={() => {
+                setSelectedRows([]);
+                invalidateQueries(['files', { include_only: ['Unrecognized'] }]);
+              }}
+              icon={mdiRefresh}
+              name="Refresh"
+            />
+          )}
+      </div>
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
       <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
@@ -316,11 +318,19 @@ function UnrecognizedTab() {
 
   const searchClassName = useMemo(() => {
     if (bounds.width < 1547 && selectedRows.length !== 0) {
-      return '!w-[calc(100vw-624px)]';
+      if (isAvdumpFinished && !dumpInProgress) {
+        return '!w-[calc(100vw-652px)]';
+      }
+      if (!isAvdumpFinished && dumpInProgress) {
+        return '!w-[calc(100vw-656px)]';
+      }
+      if (!isAvdumpFinished && !dumpInProgress) {
+        return '!w-[calc(100vw-640px)]';
+      }
     }
     if (isOverlay) return '!w-[calc(100vw-38.4rem)]';
     return '';
-  }, [selectedRows.length, bounds, isOverlay]);
+  }, [bounds.width, selectedRows.length, isOverlay, isAvdumpFinished, dumpInProgress]);
 
   return (
     <>
@@ -346,7 +356,7 @@ function UnrecognizedTab() {
               <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center px-4 py-3"
+                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={0.8333} />
@@ -354,7 +364,7 @@ function UnrecognizedTab() {
                 </Button>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center px-4 py-3"
+                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3 "
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
