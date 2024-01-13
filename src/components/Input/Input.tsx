@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import { mdiCloseCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { useEventCallback } from 'usehooks-ts';
 
 import { BodyVisibleContext } from '@/core/router';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import Button from './Button';
 
