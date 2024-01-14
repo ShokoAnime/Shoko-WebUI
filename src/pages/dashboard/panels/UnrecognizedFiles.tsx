@@ -54,13 +54,13 @@ function UnrecognizedFiles() {
       title={
         <div className="flex w-full flex-row justify-between">
           <div>Unrecognized Files</div>
-          <div>
-            <span className="text-panel-text-important">{fileCount}</span>
-            &nbsp;
-            <span>
-              {fileCount === 1 ? 'File' : 'Files'}
-            </span>
-          </div>
+        </div>
+      }
+      options={
+        <div className="text-xl font-semibold">
+          <span className="text-panel-text-important">{fileCount}</span>
+          &nbsp;
+          <span>{fileCount === 1 ? 'File' : 'Files'}</span>
         </div>
       }
       isFetching={filesQuery.isPending}
