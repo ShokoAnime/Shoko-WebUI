@@ -53,7 +53,7 @@ function TvDBTab() {
           onChange={handleInputChange}
           justify
         />
-        <div className={cx('flex justify-between transition-opacity', !AutoFanart && 'pointer-events-none opacity-50')}>
+        <div className={cx('flex justify-between transition-opacity', !AutoFanart && 'pointer-events-none opacity-65')}>
           Max Fanart
           <InputSmall
             id="TvDB_AutoFanartAmount"
@@ -72,7 +72,7 @@ function TvDBTab() {
           className="mt-1"
         />
         <div
-          className={cx('flex justify-between transition-opacity', !AutoPosters && 'pointer-events-none opacity-50')}
+          className={cx('flex justify-between transition-opacity', !AutoPosters && 'pointer-events-none opacity-65')}
         >
           Max Posters
           <InputSmall
@@ -93,7 +93,7 @@ function TvDBTab() {
         <div
           className={cx(
             'flex justify-between transition-opacity',
-            !AutoWideBanners && 'pointer-events-none opacity-50',
+            !AutoWideBanners && 'pointer-events-none opacity-65',
           )}
         >
           Max Wide Banners

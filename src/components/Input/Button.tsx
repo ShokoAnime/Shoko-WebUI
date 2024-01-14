@@ -46,7 +46,7 @@ function Button(props: Props) {
         buttonType !== undefined
         && `${buttonTypeClasses[buttonType]} border border-panel-border`,
         loading && 'cursor-default',
-        disabled && 'opacity-50 cursor-default',
+        disabled && 'opacity-65 cursor-default',
       ])}
       onClick={onClick}
       disabled={disabled}

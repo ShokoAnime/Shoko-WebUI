@@ -163,7 +163,7 @@ const PlexSettings = () => {
           <div className="mx-0 my-auto">Plex Link</div>
           <PlexLinkButton />
         </div>
-        <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-50')}>
+        <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
           <SelectSmall
             label="Server"
             id="server"

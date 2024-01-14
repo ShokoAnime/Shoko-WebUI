@@ -30,7 +30,7 @@ function MetadataSitesSettings() {
           <div
             className={cx(
               'flex justify-between transition-opacity',
-              !MovieDb.AutoFanart && 'pointer-events-none opacity-50',
+              !MovieDb.AutoFanart && 'pointer-events-none opacity-65',
             )}
           >
             Max Fanart
@@ -52,7 +52,7 @@ function MetadataSitesSettings() {
           <div
             className={cx(
               'flex justify-between transition-opacity',
-              !MovieDb.AutoPosters && 'pointer-events-none opacity-50',
+              !MovieDb.AutoPosters && 'pointer-events-none opacity-65',
             )}
           >
             Max Posters
@@ -106,7 +106,7 @@ function MetadataSitesSettings() {
           <div
             className={cx(
               'flex justify-between transition-opacity',
-              !TvDB.AutoFanart && 'pointer-events-none opacity-50',
+              !TvDB.AutoFanart && 'pointer-events-none opacity-65',
             )}
           >
             Max Fanart
@@ -128,7 +128,7 @@ function MetadataSitesSettings() {
           <div
             className={cx(
               'flex justify-between transition-opacity',
-              !TvDB.AutoPosters && 'pointer-events-none opacity-50',
+              !TvDB.AutoPosters && 'pointer-events-none opacity-65',
             )}
           >
             Max Posters
@@ -150,7 +150,7 @@ function MetadataSitesSettings() {
           <div
             className={cx(
               'flex justify-between transition-opacity',
-              !TvDB.AutoWideBanners && 'pointer-events-none opacity-50',
+              !TvDB.AutoWideBanners && 'pointer-events-none opacity-65',
             )}
           >
             Max Wide Banners

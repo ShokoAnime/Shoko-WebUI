@@ -77,7 +77,7 @@ const TraktSettings = () => {
           <div
             className={cx(
               'flex justify-between items-center mt',
-              !TraktTv.Enabled && 'pointer-events-none opacity-50',
+              !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >
             <Button className="flex cursor-pointer" onClick={handleCopy}>
@@ -96,7 +96,7 @@ const TraktSettings = () => {
         )}
         {TraktTv.TokenExpirationDate === '' && !traktQuery.data?.usercode && (
           <div
-            className={cx('flex justify-between items-center', !TraktTv.Enabled && 'pointer-events-none opacity-50')}
+            className={cx('flex justify-between items-center', !TraktTv.Enabled && 'pointer-events-none opacity-65')}
           >
             Trakt Code
             <Button
@@ -110,7 +110,7 @@ const TraktSettings = () => {
         )}
         {TraktTv.TokenExpirationDate !== '' && (
           <div className="flex flex-col gap-y-2">
-            <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-50', 'flex flex-col gap-y-2')}>
+            <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-2')}>
               <div className="flex justify-between">
                 <span>Token valid until</span>
                 {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}

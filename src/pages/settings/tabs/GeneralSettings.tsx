@@ -232,7 +232,7 @@ function GeneralSettings() {
         <div
           className={cx(
             'flex justify-between items-center transition-opacity',
-            !(WebUI_Settings?.notifications ?? true) && 'pointer-events-none opacity-50',
+            !(WebUI_Settings?.notifications ?? true) && 'pointer-events-none opacity-65',
           )}
         >
           <span>Notification Position</span>
@@ -260,7 +260,7 @@ function GeneralSettings() {
         <div
           className={cx(
             'flex flex-col transition-opacity gap-y-2',
-            !LogRotator.Enabled && 'pointer-events-none opacity-50',
+            !LogRotator.Enabled && 'pointer-events-none opacity-65',
           )}
         >
           <Checkbox
@@ -280,7 +280,7 @@ function GeneralSettings() {
           <div
             className={cx(
               'flex justify-between items-center transition-opacity',
-              !LogRotator.Delete && 'pointer-events-none opacity-50',
+              !LogRotator.Delete && 'pointer-events-none opacity-65',
             )}
           >
             <span>Delete Frequency</span>

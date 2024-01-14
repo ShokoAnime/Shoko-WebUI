@@ -203,7 +203,7 @@ function AniDBSettings() {
           <div
             className={cx(
               'flex justify-between items-center transition-opacity',
-              !DownloadRelatedAnime && 'pointer-events-none opacity-50',
+              !DownloadRelatedAnime && 'pointer-events-none opacity-65',
             )}
           >
             Related Depth
