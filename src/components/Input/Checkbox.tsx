@@ -29,7 +29,7 @@ const Checkbox = memo((props: Props) => {
         `${className}`,
         'flex items-center transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
-        disabled ? 'opacity-50 cursor-auto' : 'cursor-pointer',
+        disabled ? 'opacity-65 cursor-auto' : 'cursor-pointer',
       ])}
     >
       <input
@@ -51,17 +51,17 @@ const Checkbox = memo((props: Props) => {
         </span>
       )}
       {!intermediate && isChecked && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
           <Icon className="text-panel-icon-action" path={mdiCheckboxMarkedCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {!intermediate && !isChecked && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
           <Icon className="text-panel-icon-action" path={mdiCheckboxBlankCircleOutline} size={1} />
         </TransitionDiv>
       )}
       {intermediate && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-50" appear={false}>
+        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
           <Icon className="text-panel-icon-action" path={mdiCircleHalfFull} size={1} />
         </TransitionDiv>
       )}

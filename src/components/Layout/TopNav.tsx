@@ -252,7 +252,7 @@ function TopNav() {
                 text="Dashboard"
               />
               <div
-                className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-50 pointer-events-none')}
+                className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-65 pointer-events-none')}
               >
                 <LinkMenuItem
                   icon={mdiLayersTripleOutline}

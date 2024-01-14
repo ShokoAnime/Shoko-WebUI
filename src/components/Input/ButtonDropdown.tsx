@@ -72,7 +72,7 @@ const ButtonDropdown = (props: Props) => {
           `${className} button rounded font-semibold transition ease-in-out focus:shadow-none focus:outline-none min-w-full px-4 py-3`,
           buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes ?? 'secondary']} border border-panel-border`,
           loading && 'cursor-default',
-          disabled && 'cursor-default opacity-50',
+          disabled && 'cursor-default opacity-65',
         ])}
         onClick={onClick}
         disabled={disabled}

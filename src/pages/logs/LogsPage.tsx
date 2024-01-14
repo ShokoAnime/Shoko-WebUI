@@ -93,7 +93,7 @@ const LogsPage = () => {
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}
                       >
-                        <div className="w-[11.5rem] shrink-0 opacity-50">{row.timeStamp}</div>
+                        <div className="w-[11.5rem] shrink-0 opacity-65">{row.timeStamp}</div>
                         <div className="w-[2.8rem] shrink-0">{row.level}</div>
                         <div className="break-all">{row.message}</div>
                       </div>
