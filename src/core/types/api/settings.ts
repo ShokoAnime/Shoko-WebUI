@@ -5,7 +5,8 @@ export type SettingsDatabaseType = {
   Username: string;
   Password: string;
   Schema: string;
-  Hostname: string;
+  Host: string | undefined;
+  Hostname: string | undefined;
   SQLite_DatabaseFile: string;
 };
 
@@ -119,7 +120,7 @@ export type SettingsServerType = {
   GA_OptOutPlzDont: boolean;
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
-  AutoGroupSeriesRelationExclusions: string;
+  AutoGroupSeriesRelationExclusions: string | string[];
   LanguagePreference: Array<string>;
   LanguageUseSynonyms: boolean;
   Import: SettingsImportType;

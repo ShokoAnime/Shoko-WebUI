@@ -10,8 +10,21 @@ import Button from '../../../components/Buttons/Button';
 
 class ActionItems extends React.Component<Props> {
   renderRow = (key: string) => {
-    const { runAction } = this.props;
+    const { runAction, togglePinnedAction } = this.props;
     const action = quickActions[key];
+
+    if (!action) {
+      return (
+        <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
+          <span className="flex line-through">{key}</span>
+          <div className="flex">
+            <Button onClick={() => togglePinnedAction(key)} className="bg-color-danger font-exo text-xs font-bold px-6 py-1">
+              Remove
+            </Button>
+          </div>
+        </div>
+      );
+    }
 
     return (
       <div className="flex justify-between items-center mt-3 first:mt-0" key={key}>
@@ -49,6 +62,9 @@ const mapState = (state: RootState) => ({
 const mapDispatch = {
   runAction: (key: string, data: any) => (
     { type: Events.QUICK_ACTION_RUN, payload: { key, data } }
+  ),
+  togglePinnedAction: (payload: string) => (
+    { type: Events.SETTINGS_TOGGLE_PINNED_ACTION, payload }
   ),
 };
 
