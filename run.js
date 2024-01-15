@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require,no-console,global-require */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
@@ -25,7 +24,14 @@ function run(task) {
   console.log(`Starting '${task}'...`);
   return Promise.resolve().then(() => tasks.get(task)()).then(() => {
     console.log(`Finished '${task}' after ${new Date().getTime() - start.getTime()}ms`);
-  }, err => console.error(err.stack));
+  }, (err) => {
+    if (Array.isArray(err)) {
+      err.forEach(error => console.error(error.stack));
+    } else if (err.hasOwnProperty(stack)) {
+      console.error(err.stack);
+    }
+    return Promise.reject(null); // Returning null here prevents duplicate output
+  });
 }
 
 function getEnvironment() {
@@ -82,6 +88,8 @@ tasks.set('bundle', () => {
     webpack(webpackConfig).run((err, stats) => {
       if (err) {
         reject(err);
+      } else if (stats.hasErrors()) {
+        reject(stats.toJson().errors);
       } else {
         console.log(stats.toString(webpackConfig.stats));
         resolve();
@@ -96,7 +104,8 @@ tasks.set('bundle', () => {
 tasks.set('release', () => {
   const zipFolder = require('zip-a-folder');
 
-  fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
+  if (fs.existsSync('./public/dist/sourcemaps'))
+    fs.rmdirSync('./public/dist/sourcemaps', { recursive: true });
   return zipFolder.zip('./public', process.env.NODE_ENV === 'development' ? './build/latest-unstable.zip' : './build/latest.zip')
     .then(() => { console.log('Release build created!'); });
 });
@@ -125,7 +134,7 @@ tasks.set('start', () => {
   return run('clean').then(() => run('version')).then(() => new Promise((resolve) => {
     const bs = require('browser-sync').create();
     const webpackConfig = require(webpackConfigPath);
-    const proxy = require('http-proxy-middleware');
+    const { createProxyMiddleware } = require('http-proxy-middleware');
 
     const compiler = webpack(webpackConfig);
     // Node.js middleware that compiles application in watch mode with HMR support
@@ -137,7 +146,7 @@ tasks.set('start', () => {
 
     const middleware = [];
     if (config.apiProxyIP) {
-      const proxyMiddleware = proxy(['/api', '/plex', '/signalr'], {
+      const proxyMiddleware = createProxyMiddleware(['/api', '/plex', '/signalr'], {
         target: `http://${config.apiProxyIP}:8111`,
         ws: true,
         logLevel: 'error',
@@ -149,9 +158,9 @@ tasks.set('start', () => {
     middleware.push(require('webpack-hot-middleware')(compiler));
     middleware.push(require('connect-history-api-fallback')());
 
-    compiler.plugin('done', (stats) => {
+    compiler.hooks.done.tap('run', (stats) => {
       // Generate index.html page
-      const bundle = stats.compilation.chunks.find(x => x.name === 'main').files[0];
+      const bundle = Array.from(stats.compilation.chunks).find(x => x.name === 'main').files.values().next().value;
       const template = fs.readFileSync('./templates/index.ejs', 'utf8');
       const render = ejs.compile(template, { filename: './templates/index.ejs' });
       const output = render({ debug: true, bundle: `/dist/${bundle}`, config });
