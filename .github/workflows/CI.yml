@@ -1,24 +1,30 @@
-name: Test PR
-on: pull_request
+name: Test
+on:
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
+    name: Lint check and build test PR
+
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Node.js v14
-        uses: actions/setup-node@v1
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js v18
+        uses: actions/setup-node@v3
         with:
-          node-version: '14'
-      - name: Install dependencies
-        run: yarn install --production=false
+          node-version: 18
+
+      - name: Setup pnpm and install dependencies
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+          run_install: true
+
       - name: Lint
-        run: yarn lint --quiet
+        run: pnpm lint --quiet
+
       - name: Build
-        run: yarn build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: shoko-webui-test
-          path: build/latest.zip
+        run: pnpm build

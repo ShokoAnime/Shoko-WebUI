@@ -58,7 +58,7 @@ const config = {
       debug: isDebug,
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(isDebug ? 'development' : 'production'),
       __DEV__: isDebug,
       'process.env.SENTRY_AUTH_TOKEN': JSON.stringify(process.env.SENTRY_AUTH_TOKEN),
     }),
