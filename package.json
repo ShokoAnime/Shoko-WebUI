@@ -77,7 +77,8 @@
     "redux-saga": "^1.0.1",
     "redux-thunk": "^2.3.0",
     "reselect": "^4.0.0",
-    "tailwindcss": "^1.4.6"
+    "tailwindcss": "^1.4.6",
+    "terser-webpack-plugin": "^5.3.10"
   },
   "devDependencies": {
     "@babel/core": "^7.6.0",
