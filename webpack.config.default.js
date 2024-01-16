@@ -5,7 +5,7 @@ const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
 const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const Version = require('./public/version.json');
@@ -162,7 +162,7 @@ if (!isDebug) {
     },
   };
   if (process.env.SENTRY_AUTH_TOKEN) {
-    config.plugins.push(new SentryWebpackPlugin({
+    config.plugins.push(sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'shoko-anime',
       project: 'shoko-webui',
