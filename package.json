@@ -76,6 +76,7 @@
     "redux-devtools-extension": "^2.13.8",
     "redux-saga": "^1.0.1",
     "redux-thunk": "^2.3.0",
+    "regenerator-runtime": "^0.14.1",
     "reselect": "^4.0.0",
     "tailwindcss": "^1.4.6",
     "terser-webpack-plugin": "^5.3.10"
