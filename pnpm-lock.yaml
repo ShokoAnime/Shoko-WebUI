@@ -8,6 +8,15 @@ dependencies:
   '@babel/runtime':
     specifier: ^7.6.0
     version: 7.23.6
+  '@fontsource/exo-2':
+    specifier: ^5.0.16
+    version: 5.0.16
+  '@fontsource/mulish':
+    specifier: ^5.0.16
+    version: 5.0.16
+  '@fontsource/roboto':
+    specifier: ^5.0.8
+    version: 5.0.8
   '@fortawesome/fontawesome-common-types':
     specifier: 0.2.36
     version: 0.2.36
@@ -104,15 +113,6 @@ dependencies:
   fastclick:
     specifier: ^1.0.6
     version: 1.0.6
-  fontsource-exo-2:
-    specifier: ^3.0.5
-    version: 3.1.6
-  fontsource-muli:
-    specifier: ^3.0.5
-    version: 3.1.5
-  fontsource-roboto:
-    specifier: ^3.0.3
-    version: 3.1.5
   history:
     specifier: ^4.7.2
     version: 4.10.1
@@ -2163,6 +2163,18 @@ packages:
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
     engines: {node: '>=10.0.0'}
     dev: true
+
+  /@fontsource/exo-2@5.0.16:
+    resolution: {integrity: sha512-HpAK4/ISXixjl4mgAI3ru9/nVjsm/XsH1Qkjur//osGJNeDDnjd33e783mGYB3Sozp75ZL89W3Vhbp9PLzX0Dw==}
+    dev: false
+
+  /@fontsource/mulish@5.0.16:
+    resolution: {integrity: sha512-NM1LDZRDBWzK+9iVzgINGHVkGrSHVCJsGAK8PKrnyQ+rt99vYPGz7JOtBkEQZQbP6+Zn0uV+ie3SdETNzBAJtA==}
+    dev: false
+
+  /@fontsource/roboto@5.0.8:
+    resolution: {integrity: sha512-XxPltXs5R31D6UZeLIV1td3wTXU3jzd3f2DLsXI8tytMGBkIsGcc9sIyiupRtA8y73HAhuSCeweOoBqf6DbWCA==}
+    dev: false
 
   /@fortawesome/fontawesome-common-types@0.2.36:
     resolution: {integrity: sha512-a/7BiSgobHAgBWeN7N0w+lAhInrGxksn13uK7231n2m8EDPE3BMCl9NZLTGrj9ZXfCmC6LM0QLqXidIizVQ6yg==}
@@ -7269,21 +7281,6 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
-    dev: false
-
-  /fontsource-exo-2@3.1.6:
-    resolution: {integrity: sha512-d2AHK+I/6FuKwgCmSTh1u+bPw0RScgSIZXtsoAC7NiwLPqwhKA8D/onu2+B1tAeY2JA0jfrvfLy8aQPUOBQ9gA==}
-    deprecated: Package relocated. Please install and migrate to @fontsource/exo-2.
-    dev: false
-
-  /fontsource-muli@3.1.5:
-    resolution: {integrity: sha512-ufTvSj0glRu0L/31JPBDKWNU1uBSlfNAvwGMy+EVoWQFla4/iVIO4LN1c8MuemwlbTj/bmJzS0avq1d2/mb+Rg==}
-    deprecated: Package relocated. Please install and migrate to @fontsource/muli.
-    dev: false
-
-  /fontsource-roboto@3.1.5:
-    resolution: {integrity: sha512-DXSE7/F/6AsKcRJX4VSi3bGrEx0xiaqieeV2W7UH9JFk6tt1U86NoWwy2iNPoUzGtEyQsasilwhTrMJm7wM+Ew==}
-    deprecated: Package relocated. Please install and migrate to @fontsource/roboto.
     dev: false
 
   /for-each@0.3.3:
