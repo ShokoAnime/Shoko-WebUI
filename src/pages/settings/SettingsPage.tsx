@@ -18,19 +18,29 @@ import { setItem as setMiscItem } from '@/core/slices/misc';
 import type { SettingsType } from '@/core/types/api/settings';
 
 const items = [
-  { name: 'General', path: 'general' },
-  { name: 'Import', path: 'import' },
-  { name: 'AniDB', path: 'anidb' },
-  { name: 'Metadata Sites', path: 'metadata-sites' },
+  { name: 'General', path: 'general', useDefaultFooter: true },
+  { name: 'Import', path: 'import', useDefaultFooter: true },
+  { name: 'AniDB', path: 'anidb', useDefaultFooter: true },
+  { name: 'Metadata Sites', path: 'metadata-sites', useDefaultFooter: true },
   // { name: 'Display', path: 'display' },
-  { name: 'User Management', path: 'user-management' },
+  { name: 'User Management', path: 'user-management', useDefaultFooter: false },
   // { name: 'Themes', path: 'themes' },
+  { name: 'Api Keys', path: 'api-keys', useDefaultFooter: false },
 ];
+
+type SettingToast = {
+  show?: boolean;
+  title?: string;
+  icon?: string;
+  message?: string;
+};
 
 type ContextType = {
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => void;
   updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
+  toastOptions: SettingToast;
+  toggleToast: (option: SettingToast) => void;
 };
 
 function SettingsPage() {
@@ -44,6 +54,7 @@ function SettingsPage() {
 
   const [newSettings, setNewSettings] = useState(settings);
   const [showNav, setShowNav] = useState(false);
+  const [toastOptions, setToastOptions] = useState<SettingToast>({});
 
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
@@ -68,6 +79,20 @@ function SettingsPage() {
     if (type === 'WebUI_Settings' && key === 'theme') {
       dispatch(setMiscItem({ webuiPreviewTheme: value }));
     }
+  };
+
+  const isShowFooter = useMemo(() => {
+    const currentPath = pathname.split('/').pop();
+    const item = items.find(x => x.path === currentPath);
+    return item?.useDefaultFooter ?? true;
+  }, [pathname]);
+
+  const settingContext: ContextType = {
+    newSettings,
+    setNewSettings,
+    updateSetting,
+    toastOptions,
+    toggleToast: setToastOptions,
   };
 
   return (
@@ -104,7 +129,7 @@ function SettingsPage() {
       {/*    </div> */}
       {/*  </div> */}
       {/* )} */}
-      <div className="flex min-h-full w-[37.5rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex min-h-full w-[39rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
@@ -114,13 +139,9 @@ function SettingsPage() {
           : (
             <>
               <Outlet
-                context={{
-                  newSettings,
-                  setNewSettings,
-                  updateSetting,
-                }}
+                context={settingContext}
               />
-              {pathname.split('/').pop() !== 'user-management' && (
+              {isShowFooter && (
                 <div className="flex max-w-[34rem] justify-end font-semibold">
                   <Button
                     onClick={() => setNewSettings(settings)}
@@ -145,11 +166,32 @@ function SettingsPage() {
       <div
         className={cx(
           'flex w-96 bg-panel-background-transparent border border-panel-border rounded-md p-8 gap-x-2 font-semibold items-center sticky top-0 transition-opacity h-full',
-          unsavedChanges ? 'opacity-100' : 'opacity-0',
+          unsavedChanges || toastOptions?.show ? 'opacity-100' : 'opacity-0',
         )}
       >
-        <Icon path={mdiInformationOutline} size={1} className="text-panel-text-primary" />
-        Whoa! You Have Unsaved Changes!
+        {unsavedChanges && (
+          <>
+            <Icon path={mdiInformationOutline} size={1} className="text-panel-text-primary" />
+            <span>Whoa! You Have Unsaved Changes!</span>
+          </>
+        )}
+        {toastOptions?.show && (
+          <div className="flex flex-col gap-y-2">
+            <div className="flex flex-row items-center gap-x-2">
+              <Icon
+                path={toastOptions.icon ?? mdiInformationOutline}
+                size={1}
+                className="text-panel-icon-warning"
+              />
+              <span>
+                {toastOptions.title}
+              </span>
+            </div>
+            <span className="pl-8 text-sm font-normal">
+              {toastOptions.message}
+            </span>
+          </div>
+        )}
       </div>
       <div
         className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"

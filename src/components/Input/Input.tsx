@@ -11,7 +11,7 @@ import Button from './Button';
 type Props = {
   id: string;
   label?: string;
-  type: string;
+  type: React.HTMLInputTypeAttribute;
   placeholder?: string;
   value: string | number;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
@@ -91,10 +91,10 @@ function Input(props: Props) {
 
   return (
     <div
-      className={cx({
-        className,
-        'flex-row gap-x-2 flex': isOverlay,
-      })}
+      className={cx([
+        className ?? '',
+        isOverlay && 'flex-row gap-x-2 flex',
+      ])}
     >
       <label
         htmlFor={id}
@@ -118,7 +118,7 @@ function Input(props: Props) {
           )}
           <input
             className={cx([
-              inputClassName,
+              inputClassName ?? '',
               'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
               center && 'text-center',
               startIcon && '!pl-11',
@@ -132,7 +132,7 @@ function Input(props: Props) {
             disabled={disabled}
             ref={inputRef}
           />
-          {(endIcons?.length ?? isOverlay) && (
+          {((endIcons?.length ?? 0) > 0 || isOverlay) && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
               {endIcons?.map(icon => (
                 <div
