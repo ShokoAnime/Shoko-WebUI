@@ -1,3 +1,4 @@
+/* eslint-disable */
 const fs = require('fs');
 const del = require('del');
 const ejs = require('ejs');
@@ -15,6 +16,7 @@ try {
 } catch (ex) {
   webpackConfigPath += '.default';
 }
+
 const config = require(configPath);
 
 const tasks = new Map();

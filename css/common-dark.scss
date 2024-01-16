@@ -16,43 +16,56 @@ $button-color-secondary: #3ad61e63;
     background: $main-background-dark;
     color: $main-text-color;
   }
+
   .panel-block {
     color: $main-text-color;
   }
+
   .table.is-striped tbody tr:not(.is-selected):nth-child(2n) {
     background-color: $main-background-dark-light;
   }
-  .box{
+
+  .box {
     background-color: $box-fill-color;
     color: $main-text-color;
   }
-  .subtitle{
+
+  .subtitle {
     color: $main-text-color;
   }
-  .bp3-button:not([class*=bp3-intent-]){
+
+  .bp3-button:not([class*=bp3-intent-]) {
     color: $main-text-color-alt;
     background-color: $button-color;
   }
-  .bp3-input{
+
+  .bp3-input {
     background-color: $bp3-input-color;
   }
-  .bp3-html-select select{
+
+  .bp3-html-select select {
     background-color: $button-color;
     color: $main-text-color-alt;
   }
-  .bp3-control.bp3-switch input:checked~.bp3-control-indicator{
+
+  .bp3-control.bp3-switch input:checked ~ .bp3-control-indicator {
     background-color: $button-color;
   }
-  .bp3-slider-progress, .bp3-slider-track{
+
+  .bp3-slider-progress,
+  .bp3-slider-track {
     background-color: $button-color;
   }
-  .bp3-control.bp3-switch .bp3-control-indicator:before{
+
+  .bp3-control.bp3-switch .bp3-control-indicator::before {
     background-color: $button-color-secondary;
   }
+
   .bp3-slider-progress.bp3-intent-primary {
     background-color: $button-color-secondary;
   }
-  .bp3-slider-handle{
+
+  .bp3-slider-handle {
     background-color: $button-color-secondary;
     background-image: none;
   }
