@@ -310,7 +310,7 @@ function UnrecognizedTab() {
         `ed2k://|file|${
           file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
         }|${file.Size}|${file.Hashes.ED2K}|/`,
-    ),
+    ).toSorted(),
   }));
 
   const [tabContainerRef, bounds] = useMeasure();
