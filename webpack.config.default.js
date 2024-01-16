@@ -5,7 +5,8 @@ const path = require('path');
 const webpack = require('webpack');
 const AssetsPlugin = require('assets-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const SentryWebpackPlugin = require('@sentry/webpack-plugin');
+const { sentryWebpackPlugin } = require('@sentry/webpack-plugin');
+const ReactRefreshPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const Version = require('./public/version.json');
 
@@ -17,9 +18,9 @@ const useHMR = !!global.HMR; // Hot Module Replacement (HMR)
 const config = {
   context: __dirname,
   entry: [
-    'fontsource-roboto/latin.css',
-    'fontsource-exo-2/latin.css',
-    'fontsource-muli/latin.css',
+    '@fontsource/roboto/latin.css',
+    '@fontsource/exo-2/latin.css',
+    '@fontsource/mulish/latin.css',
     './css/main.scss',
     isDebug ? './src/main-hmr.tsx' : './src/main.tsx',
   ],
@@ -27,15 +28,15 @@ const config = {
   output: {
     path: path.resolve(__dirname, './public/dist'),
     publicPath: isBuilding ? '/webui/dist/' : '/dist/',
-    filename: isDebug ? '[name].js?[hash]' : '[name].[hash].js',
+    filename: isDebug ? '[name].js?[contenthash]' : '[name].[contenthash].js',
     chunkFilename: isDebug ? '[id].js?[chunkhash]' : '[id].[chunkhash].js',
-    sourceMapFilename: 'sourcemaps/[name].[chunkhash].map.js',
+    sourceMapFilename: 'sourcemaps/[file].map[query]',
     sourcePrefix: '  ',
   },
   devServer: {
     hot: true,
   },
-  devtool: 'source-map',
+  devtool: isDebug || process.env.SENTRY_AUTH_TOKEN ? 'source-map' : false,
   resolve: {
     extensions: ['.js', '.jsx', '.ts', '.tsx'],
   },
@@ -52,11 +53,12 @@ const config = {
     optimizationBailout: isVerbose,
   },
   plugins: [
+    new ReactRefreshPlugin(),
     new webpack.LoaderOptionsPlugin({
       debug: isDebug,
     }),
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(global.NODE_ENV),
+      'process.env.NODE_ENV': JSON.stringify(isDebug ? 'development' : 'production'),
       __DEV__: isDebug,
       'process.env.SENTRY_AUTH_TOKEN': JSON.stringify(process.env.SENTRY_AUTH_TOKEN),
     }),
@@ -121,11 +123,11 @@ const config = {
       },
       {
         test: /\.(woff|woff2)$/,
-        loader: 'url-loader?limit=100000&mimetype=application/font-woff',
+        type: 'asset/resource',
       },
       {
         test: /\.(svg|eot|ttf|wav|mp3)$/,
-        use: ['file-loader'],
+        type: 'asset/resource',
       },
     ],
   },
@@ -144,7 +146,7 @@ if (!isDebug) {
           output: {
             comments: false,
           },
-          exclude: [/\.min\.js$/gi], // skip pre-minified libs
+          sourceMap: true,
         },
       }),
     ],
@@ -160,7 +162,7 @@ if (!isDebug) {
     },
   };
   if (process.env.SENTRY_AUTH_TOKEN) {
-    config.plugins.push(new SentryWebpackPlugin({
+    config.plugins.push(sentryWebpackPlugin({
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'shoko-anime',
       project: 'shoko-webui',
@@ -176,10 +178,17 @@ if (!isDebug) {
 }
 
 if (isDebug && useHMR) {
+  config.watchOptions = {
+    ignored: /public/, // because sass-loader causes rebuild loop otherwise
+  };
   config.entry.unshift('webpack-hot-middleware/client');
-  config.plugins.push(new webpack.NamedModulesPlugin());
+  config.entry.unshift('@pmmmwh/react-refresh-webpack-plugin/client/ReactRefreshEntry.js');
   config.plugins.push(new webpack.HotModuleReplacementPlugin());
-  config.plugins.push(new webpack.NoEmitOnErrorsPlugin());
+  config.optimization = {
+    ...config.optimization,
+    emitOnErrors: false,
+    moduleIds: 'named',
+  };
 }
 
 module.exports = config;

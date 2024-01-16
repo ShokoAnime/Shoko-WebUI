@@ -3,7 +3,7 @@
 }
 
 .modal-overlay { // React-Modal Overlay
-  background-color: rgba(0,0,0,0.5);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .import-folder-modal {
@@ -22,7 +22,7 @@
 }
 
 .profile-modal-image {
-  background-image: url('/webui/left-img.jpg');
+  background-image: url('/public/left-img.jpg');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;

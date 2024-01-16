@@ -5,6 +5,7 @@ import history from '../../core/history';
 import Link from '../../components/Link/Link';
 
 type Props = {
+  // eslint-disable-next-line react/no-unused-prop-types
   error?: Error;
   children: any;
 };
