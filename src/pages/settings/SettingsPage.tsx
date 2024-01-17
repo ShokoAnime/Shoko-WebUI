@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Outlet } from 'react-router';
 import { NavLink, useLocation, useOutletContext } from 'react-router-dom';
-import { mdiInformationOutline, mdiLoading } from '@mdi/js';
+import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { isEqual } from 'lodash';
@@ -28,19 +28,10 @@ const items = [
   { name: 'Api Keys', path: 'api-keys', useDefaultFooter: false },
 ];
 
-type SettingToast = {
-  show?: boolean;
-  title?: string;
-  icon?: string;
-  message?: string;
-};
-
 type ContextType = {
   newSettings: SettingsType;
   setNewSettings: (settings: SettingsType) => void;
   updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
-  toastOptions: SettingToast;
-  toggleToast: (option: SettingToast) => void;
 };
 
 function SettingsPage() {
@@ -54,8 +45,6 @@ function SettingsPage() {
 
   const [newSettings, setNewSettings] = useState(settings);
   const [showNav, setShowNav] = useState(false);
-  const [toastOptions, setToastOptions] = useState<SettingToast>({});
-
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
@@ -91,8 +80,6 @@ function SettingsPage() {
     newSettings,
     setNewSettings,
     updateSetting,
-    toastOptions,
-    toggleToast: setToastOptions,
   };
 
   return (
@@ -105,12 +92,14 @@ function SettingsPage() {
         enterTo="translate-x-0"
       >
         <div className="sticky top-8">
-          <div className="mb-8 text-xl opacity-100">Settings</div>
-          <div className="flex flex-col gap-y-4">
+          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+          <div className="flex flex-col items-center gap-y-4">
             {items.map(item => (
               <NavLink
                 to={item.path}
-                className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}
+                className={({ isActive }) => (isActive
+                  ? 'w-full text-center bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover py-4 px-2'
+                  : '')}
                 key={item.path}
               >
                 {item.name}
@@ -163,40 +152,6 @@ function SettingsPage() {
             </>
           )}
       </div>
-      <div
-        className={cx(
-          'flex w-96 bg-panel-background-transparent border border-panel-border rounded-md p-8 gap-x-2 font-semibold items-center sticky top-0 transition-opacity h-full',
-          unsavedChanges || toastOptions?.show ? 'opacity-100' : 'opacity-0',
-        )}
-      >
-        {unsavedChanges && (
-          <>
-            <Icon path={mdiInformationOutline} size={1} className="text-panel-text-primary" />
-            <span>Whoa! You Have Unsaved Changes!</span>
-          </>
-        )}
-        {toastOptions?.show && (
-          <div className="flex flex-col gap-y-2">
-            <div className="flex flex-row items-center gap-x-2">
-              <Icon
-                path={toastOptions.icon ?? mdiInformationOutline}
-                size={1}
-                className="text-panel-icon-warning"
-              />
-              <span>
-                {toastOptions.title}
-              </span>
-            </div>
-            <span className="pl-8 text-sm font-normal">
-              {toastOptions.message}
-            </span>
-          </div>
-        )}
-      </div>
-      <div
-        className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
-        style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
-      />
     </div>
   );
 }
