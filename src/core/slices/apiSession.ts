@@ -17,12 +17,9 @@ const apiSessionSlice = createSlice({
     setDetails(sliceState, action: PayloadAction<ApiSessionState>) {
       return Object.assign({}, sliceState, action.payload);
     },
-    unsetDetails(sliceState) {
-      return Object.assign({}, sliceState, { apikey: '', username: '', rememberUser: false });
-    },
   },
 });
 
-export const { setDetails, unsetDetails } = apiSessionSlice.actions;
+export const { setDetails } = apiSessionSlice.actions;
 
 export default apiSessionSlice.reducer;

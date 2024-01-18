@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { cloneDeep, find, isEqual, remove } from 'lodash';
@@ -12,6 +11,7 @@ import Input from '@/components/Input/Input';
 import InputSmall from '@/components/Input/InputSmall';
 import AvatarEditorModal from '@/components/Settings/AvatarEditorModal';
 import toast from '@/components/Toast';
+import Events from '@/core/events';
 import { useAniDBTagsQuery } from '@/core/react-query/tag/queries';
 import {
   useChangePasswordMutation,
@@ -19,7 +19,6 @@ import {
   usePutUserMutation,
 } from '@/core/react-query/user/mutations';
 import { useCurrentUserQuery, useUsersQuery } from '@/core/react-query/user/queries';
-import { unsetDetails } from '@/core/slices/apiSession';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UserType } from '@/core/types/api/user';
@@ -39,7 +38,6 @@ const initialUser = {
 
 function UserManagementSettings() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const currentUserQuery = useCurrentUserQuery();
   const usersQuery = useUsersQuery();
@@ -108,8 +106,7 @@ function UserManagementSettings() {
         if (currentUserQuery.data?.ID === selectedUser.ID && logoutOthers) {
           toast.success('Password changed successfully!', 'You will be logged out in 5 seconds!', { autoClose: 5000 });
           setTimeout(() => {
-            dispatch(unsetDetails());
-            navigate('/webui/login');
+            dispatch({ type: Events.AUTH_LOGOUT });
           }, 6000);
         } else toast.success('Password changed successfully!');
       },
