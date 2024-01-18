@@ -344,7 +344,7 @@ function UserManagementSettings() {
         </div>
       </div>
 
-      <div className="flex max-w-[34rem] justify-end font-semibold">
+      <div className="flex justify-end font-semibold">
         <Button onClick={() => handleCancel()} buttonType="secondary" className="px-3 py-2">Cancel</Button>
         <Button onClick={() => editUser(selectedUser)} buttonType="primary" className="ml-3 px-3 py-2">Save</Button>
       </div>

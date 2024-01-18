@@ -110,7 +110,7 @@ const ApiKeys = () => {
 
   return (
     <div className="flex flex-col gap-y-4">
-      <div className="mb-4 text-xl font-semibold">Api Keys</div>
+      <div className="mb-4 text-xl font-semibold">API Keys</div>
       <div className="text-lg font-semibold">
         Generate API Key
       </div>

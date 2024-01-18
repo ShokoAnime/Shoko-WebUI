@@ -10,6 +10,7 @@ import cx from 'classnames';
 import { isEqual } from 'lodash';
 
 import Button from '@/components/Input/Button';
+import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -25,7 +26,7 @@ const items = [
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management', useDefaultFooter: false },
   // { name: 'Themes', path: 'themes' },
-  { name: 'Api Keys', path: 'api-keys', useDefaultFooter: false },
+  { name: 'API Keys', path: 'api-keys', useDefaultFooter: false },
 ];
 
 type ContextType = {
@@ -53,6 +54,19 @@ function SettingsPage() {
   }, [dispatch, settings]);
 
   const unsavedChanges = useMemo(() => !isEqual(settings, newSettings), [newSettings, settings]);
+
+  if (unsavedChanges) {
+    toast.info('Unsaved Changes', 'Please save before leaving this page.', {
+      autoClose: 99999999999,
+      toastId: 'save-changes',
+    });
+  } else {
+    toast.dismiss('save-changes');
+  }
+
+  useEffect(() => () => {
+    toast.dismiss('save-changes');
+  }, []);
 
   const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
     if (key === 'theme' && typeof value === 'string') {
@@ -131,7 +145,7 @@ function SettingsPage() {
                 context={settingContext}
               />
               {isShowFooter && (
-                <div className="flex max-w-[34rem] justify-end font-semibold">
+                <div className="flex justify-end font-semibold">
                   <Button
                     onClick={() => setNewSettings(settings)}
                     buttonType="secondary"
