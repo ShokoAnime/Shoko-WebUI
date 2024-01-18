@@ -60,6 +60,7 @@ const ApiKeys = () => {
       if (isCopied) {
         toast.success('Copied', 'API Key has been copied to clipboard!', {
           autoClose: 3000,
+          toastId: 'api-copied',
         });
       }
     });
@@ -84,16 +85,27 @@ const ApiKeys = () => {
   }, [refetch, isRefetch]);
 
   useEffect(() => {
-    if (!generatedSucceed || !createdToken) return;
+    if (!generatedSucceed || !createdToken) return undefined;
     setKeyValue(_ => createdToken);
     setInputDisabled(_ => true);
     setIsRefetch(_ => true);
     toast.success('API Generated', 'API Key has been generated!', {
       autoClose: 3000,
+      toastId: 'api-generated',
     });
     toast.warning('Copy Your API Key!', 'You won\'t be able to copy this key anymore once you leave this page!', {
       autoClose: 99999999999,
+      toastId: 'copy-api-key',
     });
+
+    return () => {
+      if (!toast.isActive('copy-api-key')) return;
+      toast.dismiss('copy-api-key');
+      if (!toast.isActive('api-generated')) return;
+      toast.dismiss('api-generated');
+      if (!toast.isActive('api-copied')) return;
+      toast.dismiss('api-copied');
+    };
   }, [generatedSucceed, generatedFailed, refetch, createdToken]);
 
   return (
