@@ -51,8 +51,16 @@ const ApiKeys = () => {
   } = useCreateApiToken();
 
   const handleCopyToClipboard = useEventCallback(() => {
+    if (!generatedSucceed) return;
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    copy(keyValue);
+    copy(keyValue).then((isCopied) => {
+      if (isCopied) {
+        toast.success('Copied', 'Your API Key has been copied to clipboard!', {
+          autoClose: 3000,
+          closeButton: false,
+        });
+      }
+    });
   });
 
   const onGenerateClick = useEventCallback(() => {

@@ -93,13 +93,13 @@ function SettingsPage() {
       >
         <div className="sticky top-8">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
-          <div className="flex flex-col items-center gap-y-4">
+          <div className="flex flex-col items-center">
             {items.map(item => (
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive
                   ? 'w-full text-center bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover py-4 px-2'
-                  : '')}
+                  : 'w-full text-center py-4 px-2')}
                 key={item.path}
               >
                 {item.name}
