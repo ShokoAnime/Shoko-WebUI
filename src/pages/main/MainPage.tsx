@@ -21,7 +21,7 @@ function MainPage() {
   const [showSmSidebar, setShowSmSidebar] = useState(false);
 
   useEffect(() => {
-    dispatch({ type: Events.MAINPAGE_LOAD });
+    dispatch({ type: Events.MAINPAGE_LOADED });
   }, [dispatch]);
 
   const scrollRef = useRef<HTMLDivElement>(null);

@@ -1,17 +1,16 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useRouteError } from 'react-router-dom';
+import { useRouteError } from 'react-router-dom';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
+import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
-import { unsetDetails } from '@/core/slices/apiSession';
 import useEventCallback from '@/hooks/useEventCallback';
 
 const ErrorBoundary = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const error = useRouteError() as Error; // There is no type definition provided.
 
   const versionQuery = useVersionQuery();
@@ -20,8 +19,7 @@ const ErrorBoundary = () => {
   const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
 
   const handleLogout = useEventCallback(() => {
-    dispatch(unsetDetails());
-    navigate('/webui/login');
+    dispatch({ type: Events.AUTH_LOGOUT });
   });
 
   const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {

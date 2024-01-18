@@ -130,7 +130,7 @@ const signalRMiddleware: Middleware<object, RootState> = ({
   next =>
     async (action: UnknownAction) => {
       // register signalR after the user logged in
-      if (action.type === Events.MAINPAGE_LOAD) {
+      if (action.type === Events.MAINPAGE_LOADED) {
         if (connectionEvents !== undefined) return next(action);
         const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump';
 

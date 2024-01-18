@@ -33,12 +33,12 @@ import QueueModal from '@/components/Dialogs/QueueModal';
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
+import Events from '@/core/events';
 import { useCheckNetworkConnectivityMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { unsetDetails } from '@/core/slices/apiSession';
 import { setQueueModalOpen } from '@/core/slices/mainpage';
 import { NetworkAvailability } from '@/core/types/signalr';
 
@@ -169,8 +169,7 @@ function TopNav() {
   };
 
   const handleLogout = useEventCallback(() => {
-    dispatch(unsetDetails());
-    navigate('/webui/login');
+    dispatch({ type: Events.AUTH_LOGOUT });
   });
 
   const handleWebUiUpdate = () => {
