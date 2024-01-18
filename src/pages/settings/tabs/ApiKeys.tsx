@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
-import { uniqueId } from 'lodash';
+import { sortBy, uniqueId } from 'lodash';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -18,6 +18,9 @@ const UserApiTokens = (prop: { userInfo: AuthToken, onDeleteToken?: () => void }
   const { mutate: deleteToken } = useDeleteApiToken();
   const onDeleteClick = useEventCallback(() => {
     deleteToken(Device);
+    toast.success('API Key Deleted', `API Key ${Device} has been deleted!`, {
+      autoClose: 3000,
+    });
     onDeleteToken?.();
   });
 
@@ -55,9 +58,8 @@ const ApiKeys = () => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
     copy(keyValue).then((isCopied) => {
       if (isCopied) {
-        toast.success('Copied', 'Your API Key has been copied to clipboard!', {
+        toast.success('Copied', 'API Key has been copied to clipboard!', {
           autoClose: 3000,
-          closeButton: false,
         });
       }
     });
@@ -86,13 +88,11 @@ const ApiKeys = () => {
     setKeyValue(_ => createdToken);
     setInputDisabled(_ => true);
     setIsRefetch(_ => true);
-    toast.success('API Generated', 'Your API Key has been generated!', {
+    toast.success('API Generated', 'API Key has been generated!', {
       autoClose: 3000,
-      closeButton: false,
     });
     toast.warning('Copy Your API Key!', 'You won\'t be able to copy this key anymore once you leave this page!', {
-      autoClose: false,
-      closeButton: true,
+      autoClose: 99999999999,
     });
   }, [generatedSucceed, generatedFailed, refetch, createdToken]);
 
@@ -132,7 +132,9 @@ const ApiKeys = () => {
         Issued API Keys
       </div>
       <div className="my-4 flex flex-col gap-y-2">
-        {tokens?.map(token => <UserApiTokens key={uniqueId()} userInfo={token} onDeleteToken={onTokenDelete} />)}
+        {sortBy(tokens, x => x.Username)?.map(token => (
+          <UserApiTokens key={uniqueId()} userInfo={token} onDeleteToken={onTokenDelete} />
+        ))}
       </div>
     </div>
   );

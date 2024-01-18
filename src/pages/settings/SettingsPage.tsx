@@ -118,7 +118,7 @@ function SettingsPage() {
       {/*    </div> */}
       {/*  </div> */}
       {/* )} */}
-      <div className="flex min-h-full w-[39rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex min-h-full w-[41rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
