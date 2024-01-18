@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
+import cx from 'classnames';
 import { uniqueId } from 'lodash';
 import { useCopyToClipboard } from 'usehooks-ts';
 
@@ -103,7 +104,7 @@ const ApiKeys = () => {
               onClick: handleCopyToClipboard,
             }]
             : undefined}
-          className="w-full xl:w-[65%]"
+          className={cx(!generatedSucceed ? 'w-full xl:w-[65%]' : 'w-[100%]')}
           disabled={inputDisabled}
           inputClassName="px-4 py-3"
           onChange={onKeyChange}
@@ -113,7 +114,7 @@ const ApiKeys = () => {
         />
         <Button
           buttonType="primary"
-          className="px-2 font-semibold"
+          className={cx('px-2 font-semibold', generatedSucceed && 'hidden')}
           onClick={onGenerateClick}
         >
           Generate API Key

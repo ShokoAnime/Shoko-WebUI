@@ -36,8 +36,6 @@ export const useDeleteApiToken = () =>
         headers: {
           'Content-Type': 'application/json',
         },
-        params: {
-          apikey: key,
-        },
+        data: key,
       }),
   });
