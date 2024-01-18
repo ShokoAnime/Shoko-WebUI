@@ -1,4 +1,5 @@
 import type { DataSourceType, ImageType, RatingType } from './common';
+import type { FileType } from '@/core/types/api/file';
 
 export type EpisodeType = {
   IDs: EpisodeIDsType;
@@ -10,6 +11,7 @@ export type EpisodeType = {
   AniDB?: EpisodeAniDBType;
   TvDB?: EpisodeTvDBType[];
   IsHidden: boolean;
+  Files?: FileType[];
 };
 
 export type EpisodeIDsType = {

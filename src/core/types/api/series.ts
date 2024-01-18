@@ -17,6 +17,10 @@ export type SeriesType = {
   AniDB?: SeriesAniDBType;
 };
 
+export type SeriesWithMultipleReleasesType = {
+  EpisodeCount: number;
+} & SeriesType;
+
 export type SeriesRelationType = {
   IDs: SeriesRelationIDsType;
   RelatedIDs: SeriesRelationIDsType;

@@ -6,9 +6,9 @@ import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
 import type { FileType } from '@/core/types/api/file';
-import type { SeriesType } from '@/core/types/api/series';
+import type { SeriesType, SeriesWithMultipleReleasesType } from '@/core/types/api/series';
 
-export type UtilityHeaderType<T extends FileType | SeriesType> = {
+export type UtilityHeaderType<T extends FileType | SeriesType | SeriesWithMultipleReleasesType> = {
   id: string;
   name: string;
   className: string;

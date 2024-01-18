@@ -30,6 +30,9 @@ export type SeriesAniDBEpisodesRequestType = SeriesEpisodesBaseRequestType & Pag
 export type SeriesEpisodesInfiniteRequestType =
   & {
     includeDataFrom?: DataSourceType[];
+    includeFiles?: boolean;
+    includeAbsolutePaths?: boolean;
+    includeMediaInfo?: boolean;
   }
   & SeriesEpisodesBaseRequestType
   & PaginationType;
