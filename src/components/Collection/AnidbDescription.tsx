@@ -13,7 +13,7 @@ const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
 const LinkRegex =
   /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
-const AnidbDescription = ({ text }: { text: string }) => {
+const AnidbDescription = React.memo(({ text }: { text: string }) => {
   const modifiedText = useMemo(() => {
     const cleanedText = text
       .replaceAll(CleanMiscLinesRegex, '')
@@ -42,6 +42,6 @@ const AnidbDescription = ({ text }: { text: string }) => {
     return lines.join('');
   }, [text]);
   return <div>{modifiedText}</div>;
-};
+});
 
-export default React.memo(AnidbDescription);
+export default AnidbDescription;

@@ -6,7 +6,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useFirstRunSettingsContext } from '@/pages/firstrun/FirstRunPage';
+import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 

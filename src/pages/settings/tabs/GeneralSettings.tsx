@@ -12,7 +12,7 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { uiVersion } from '@/core/util';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 const UI_VERSION = uiVersion();
 

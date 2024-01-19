@@ -15,7 +15,7 @@ import cx from 'classnames';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { listItemSize } from '@/components/Collection/CollectionView';
+import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { dayjs, formatThousand } from '@/core/util';

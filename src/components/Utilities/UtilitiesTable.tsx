@@ -7,12 +7,12 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
+import { criteriaMap } from '@/components/Utilities/constants';
 import useEventCallback from '@/hooks/useEventCallback';
-import { criteriaMap } from '@/pages/utilities/UnrecognizedUtility';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
-import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
 import type { VirtualItem } from '@tanstack/react-virtual';
 import type { Updater } from 'use-immer';
 

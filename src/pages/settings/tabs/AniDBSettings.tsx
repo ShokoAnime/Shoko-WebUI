@@ -5,7 +5,8 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { remove } from 'lodash';
 
-import LanguagesModal, { languageDescription } from '@/components/Dialogs/LanguagesModal';
+import LanguagesModal from '@/components/Dialogs/LanguagesModal';
+import { languageDescription } from '@/components/Dialogs/constants';
 import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -13,7 +14,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { DropResult } from '@hello-pangea/dnd';
 

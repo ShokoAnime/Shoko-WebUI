@@ -6,7 +6,7 @@ import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
 import TvdbLanguageSelect from '@/components/Settings/TvdbLanguageSelect';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useFirstRunSettingsContext } from '@/pages/firstrun/FirstRunPage';
+import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
 
 function TvDBTab() {
   const { newSettings, updateSetting } = useFirstRunSettingsContext();

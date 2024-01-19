@@ -93,7 +93,7 @@ const SelectOption = (option: Option & { divider: boolean }) => (
   </Listbox.Option>
 );
 
-const SelectEpisodeList = (
+const SelectEpisodeList = React.memo((
   { className, disabled = false, emptyValue = '', onChange, options, rowIdx, value }: Props,
 ) => {
   const [epFilter, setEpFilter] = useState(0);
@@ -221,6 +221,6 @@ const SelectEpisodeList = (
       </Listbox>
     </div>
   );
-};
+});
 
-export default React.memo(SelectEpisodeList);
+export default SelectEpisodeList;
