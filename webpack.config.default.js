@@ -166,7 +166,9 @@ if (!isDebug) {
       authToken: process.env.SENTRY_AUTH_TOKEN,
       org: 'shoko-anime',
       project: 'shoko-webui',
-      release: isDebug ? 'dev' : Version.package,
+      release: {
+        name: isDebug ? 'dev' : Version.package,
+      },
       include: './public/dist',
       urlPrefix: '~/webui/dist/',
       ignore: [],
