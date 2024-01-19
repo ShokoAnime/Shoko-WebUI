@@ -93,7 +93,7 @@
     "tailwindcss": "^3.4.1",
     "tailwindcss-text-fill-stroke": "2.0.0-beta.1",
     "typescript": "5.3.3",
-    "vite": "^5.0.11"
+    "vite": "^5.0.12"
   },
   "scripts": {
     "eslint": "eslint --cache --format=node_modules/eslint-formatter-pretty src",
