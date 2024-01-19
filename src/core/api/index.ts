@@ -79,7 +79,6 @@ function* apiCall(userOptions: ApiCallOptions) {
     }
     return { data: json };
   } catch (ex) {
-    Sentry.captureException(ex);
     return { error: true, message: ex.message };
   }
 }
