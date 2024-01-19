@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useState } from 'react';
-import type { DropResult } from 'react-beautiful-dnd';
 import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -15,6 +14,8 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsContext } from '@/pages/settings/SettingsPage';
+
+import type { DropResult } from '@hello-pangea/dnd';
 
 const UpdateFrequencyValues = () => (
   <>
