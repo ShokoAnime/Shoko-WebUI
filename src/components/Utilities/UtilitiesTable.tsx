@@ -234,24 +234,28 @@ const UtilitiesTable = (props: Props) => {
   const lastRowSelected = useRef<VirtualItem | null>(null);
   const handleSelect = useEventCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
     if (!rowSelection || !handleRowSelect || !setSelectedRows) return;
-    if (event.shiftKey) {
-      window?.getSelection()?.removeAllRanges();
-      const lrIndex = lastRowSelected?.current?.index ?? virtualRow.index;
-      const fromIndex = Math.min(lrIndex, virtualRow.index);
-      const toIndex = Math.max(lrIndex, virtualRow.index);
-      const isSelected = lastRowSelected.current?.index !== undefined
-        ? rowSelection[selectRowId(rows[lastRowSelected.current?.index])]
-        : true;
-      const tempRowSelection: Record<number, boolean> = {};
-      for (let i = fromIndex; i <= toIndex; i += 1) {
-        const id = selectRowId(rows[i]);
-        tempRowSelection[id] = isSelected;
+    try {
+      if (event.shiftKey) {
+        window?.getSelection()?.removeAllRanges();
+        const lrIndex = lastRowSelected?.current?.index ?? virtualRow.index;
+        const fromIndex = Math.min(lrIndex, virtualRow.index);
+        const toIndex = Math.max(lrIndex, virtualRow.index);
+        const isSelected = lastRowSelected.current?.index !== undefined
+          ? rowSelection[selectRowId(rows[lastRowSelected.current?.index])]
+          : true;
+        const tempRowSelection: Record<number, boolean> = {};
+        for (let i = fromIndex; i <= toIndex; i += 1) {
+          const id = selectRowId(rows[i]);
+          tempRowSelection[id] = isSelected;
+        }
+        setSelectedRows(tempRowSelection);
+      } else if (window?.getSelection()?.type !== 'Range') {
+        const id = selectRowId(rows[virtualRow.index]);
+        handleRowSelect(id, !rowSelection[id]);
+        lastRowSelected.current = virtualRow;
       }
-      setSelectedRows(tempRowSelection);
-    } else if (window?.getSelection()?.type !== 'Range') {
-      const id = selectRowId(rows[virtualRow.index]);
-      handleRowSelect(id, !rowSelection[id]);
-      lastRowSelected.current = virtualRow;
+    } catch (error) {
+      console.error(error);
     }
   });
 
