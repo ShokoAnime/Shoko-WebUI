@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Outlet } from 'react-router';
-import { useLocation, useNavigate, useOutletContext } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { siDiscord } from 'simple-icons';
@@ -13,15 +13,6 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 import type { RootState } from '@/core/store';
-import type { SettingsType } from '@/core/types/api/settings';
-
-type ContextType = {
-  fetching: boolean;
-  newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => void;
-  updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
-  saveSettings: () => Promise<void>;
-};
 
 const MenuItem = ({ id, text }: { text: string, id: string }) => {
   const { pathname } = useLocation();
@@ -161,10 +152,6 @@ function FirstRunPage() {
       <div className="login-image-default fixed left-0 top-0 -z-10 h-full w-full opacity-20" />
     </div>
   );
-}
-
-export function useFirstRunSettingsContext() {
-  return useOutletContext<ContextType>();
 }
 
 export default FirstRunPage;

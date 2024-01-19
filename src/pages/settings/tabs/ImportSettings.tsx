@@ -2,7 +2,7 @@ import React from 'react';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 function ImportSettings() {
   const { newSettings, updateSetting } = useSettingsContext();

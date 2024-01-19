@@ -21,7 +21,7 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 const PlexLinkButton = () => {
   const settings = useSettingsQuery().data;

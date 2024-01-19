@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 
-const MenuButton = (
+const MenuButton = React.memo((
   { disabled, highlight = false, icon, name, onClick }: {
     onClick: React.MouseEventHandler<HTMLButtonElement>;
     icon: string;
@@ -17,6 +17,6 @@ const MenuButton = (
     <Icon path={icon} size={0.8333} className={cx({ 'text-panel-text-primary': highlight })} />
     {name}
   </Button>
-);
+));
 
-export default React.memo(MenuButton);
+export default MenuButton;

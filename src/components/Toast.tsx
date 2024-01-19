@@ -24,6 +24,7 @@ const colorClass = {
 
 const isColorClass = (type: string): type is keyof typeof colorClass => type in colorClass;
 
+// eslint-disable-next-line react-refresh/only-export-components
 function Toast(props: Props) {
   const { closeToast, header, icon, message, toastProps } = props;
   const color = toastProps && 'type' in toastProps && isColorClass(toastProps.type) ? toastProps?.type : 'info';

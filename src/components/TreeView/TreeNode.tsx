@@ -19,7 +19,7 @@ type Props = {
   isAccessible?: boolean;
 };
 
-function TreeNode(props: Props) {
+const TreeNode = React.memo((props: Props) => {
   const dispatch = useDispatch();
 
   const selectedNode = useSelector((state: RootState) => state.modals.browseFolder.selectedNode);
@@ -119,6 +119,6 @@ function TreeNode(props: Props) {
       <ul>{children}</ul>
     </li>
   );
-}
+});
 
-export default React.memo(TreeNode);
+export default TreeNode;

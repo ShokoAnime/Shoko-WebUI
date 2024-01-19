@@ -33,6 +33,7 @@ import AvDumpSeriesSelectModal from '@/components/Utilities/Unrecognized/AvDumpS
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { staticColumns } from '@/components/Utilities/constants';
 import {
   useAvdumpFileMutation,
   useDeleteFileMutation,
@@ -47,11 +48,10 @@ import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
-import { staticColumns } from '@/pages/utilities/UnrecognizedUtility';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
-import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
 import type { Updater } from 'use-immer';
 
 const Menu = (

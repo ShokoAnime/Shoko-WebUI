@@ -7,7 +7,7 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
 import TraktSettings from '@/components/Settings/MetadataSitesSettings/TraktSettings';
 import TvdbLanguageSelect from '@/components/Settings/TvdbLanguageSelect';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 function MetadataSitesSettings() {
   const { newSettings, updateSetting } = useSettingsContext();

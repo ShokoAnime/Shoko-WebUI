@@ -13,7 +13,7 @@ type Props = {
   zoomOnHover?: boolean;
 };
 
-function BackgroundImagePlaceholderDiv(props: Props) {
+const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   const {
     children,
     className,
@@ -101,6 +101,6 @@ function BackgroundImagePlaceholderDiv(props: Props) {
       {children}
     </div>
   );
-}
+});
 
-export default React.memo(BackgroundImagePlaceholderDiv);
+export default BackgroundImagePlaceholderDiv;

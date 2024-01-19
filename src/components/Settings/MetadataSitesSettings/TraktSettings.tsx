@@ -13,7 +13,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { copyToClipboard, dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
-import { useSettingsContext } from '@/pages/settings/SettingsPage';
+import useSettingsContext from '@/hooks/useSettingsContext';
 
 const TraktSettings = () => {
   const { newSettings, updateSetting } = useSettingsContext();

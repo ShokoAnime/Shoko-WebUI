@@ -43,7 +43,7 @@ const StateButton = React.memo((
   </Button>
 ));
 
-const SeriesEpisode = ({ animeId, episode, nextUp, page }: Props) => {
+const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
   const [open, toggleOpen] = useToggle(false);
   const episodeId = get(episode, 'IDs.ID', 0);
@@ -117,6 +117,6 @@ const SeriesEpisode = ({ animeId, episode, nextUp, page }: Props) => {
       )}
     </>
   );
-};
+});
 
-export default React.memo(SeriesEpisode);
+export default SeriesEpisode;

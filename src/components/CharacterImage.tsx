@@ -10,7 +10,7 @@ type Props = {
   hidePlaceholderOnHover?: boolean;
 };
 
-function CharacterImage(props: Props) {
+const CharacterImage = React.memo((props: Props) => {
   const {
     children,
     className,
@@ -46,6 +46,6 @@ function CharacterImage(props: Props) {
       {children}
     </div>
   );
-}
+});
 
-export default React.memo(CharacterImage);
+export default CharacterImage;

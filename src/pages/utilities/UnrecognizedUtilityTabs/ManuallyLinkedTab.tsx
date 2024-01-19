@@ -28,11 +28,11 @@ import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
-import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
 import type { InfiniteData } from '@tanstack/react-query';
 import type { Updater } from 'use-immer';
 
