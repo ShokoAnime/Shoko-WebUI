@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
-import { sortBy, uniqueId } from 'lodash';
+import { sortBy } from 'lodash';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -9,19 +9,24 @@ import Input from '@/components/Input/Input';
 import toast from '@/components/Toast';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AuthToken } from '@/core/types/api/authToken';
 
-const UserApiTokens = (prop: { userInfo: AuthToken, onDeleteToken?: () => void }) => {
-  const { onDeleteToken, userInfo: { Device, Username } } = prop;
+const UserApiTokens = (prop: { userInfo: AuthToken }) => {
+  const { userInfo: { Device, Username } } = prop;
   const { mutate: deleteToken } = useDeleteApiToken();
+
   const onDeleteClick = useEventCallback(() => {
-    deleteToken(Device);
-    toast.success('API Key Deleted', `API Key ${Device} has been deleted!`, {
-      autoClose: 3000,
+    deleteToken(Device, {
+      onSuccess: (() => {
+        toast.success('API Key Deleted', `API Key ${Device} has been deleted!`, {
+          autoClose: 3000,
+        });
+        invalidateQueries(['auth', 'apikey']);
+      }),
     });
-    onDeleteToken?.();
   });
 
   return (
@@ -39,7 +44,6 @@ const UserApiTokens = (prop: { userInfo: AuthToken, onDeleteToken?: () => void }
 
 const ApiKeys = () => {
   const [keyValue, setKeyValue] = useState('');
-  const [isRefetch, setIsRefetch] = useState(false); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [inputDisabled, setInputDisabled] = useState(false);
   const [, copy] = useCopyToClipboard();
   const onKeyChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,49 +59,38 @@ const ApiKeys = () => {
 
   const handleCopyToClipboard = useEventCallback(() => {
     if (!generatedSucceed) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     copy(keyValue).then((isCopied) => {
-      if (isCopied) {
-        toast.success('Copied', 'API Key has been copied to clipboard!', {
-          autoClose: 3000,
-          toastId: 'api-copied',
-        });
-      }
-    });
+      if (!isCopied) return;
+      toast.success('Copied', 'API Key has been copied to clipboard!', {
+        autoClose: 3000,
+        toastId: 'api-copied',
+      });
+    }).catch(console.error);
   });
 
   const onGenerateClick = useEventCallback(() => {
-    createApiToken(keyValue);
+    createApiToken(keyValue, {
+      onSuccess: () => {
+        setInputDisabled(_ => true);
+        toast.success('API Generated', 'API Key has been generated!', {
+          autoClose: 3000,
+          toastId: 'api-generated',
+        });
+        toast.warning('Copy Your API Key!', 'You won\'t be able to copy this key anymore once you leave this page!', {
+          autoClose: 99999999999,
+          toastId: 'copy-api-key',
+        });
+        invalidateQueries(['auth', 'apikey']);
+      },
+    });
   });
 
   const { data: tokens, refetch } = useApiKeyQuery();
 
-  const onTokenDelete = useEventCallback(() => {
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    setIsRefetch(_ => true);
-  });
-
-  useEffect(() => {
-    if (!refetch) return;
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    refetch();
-    setIsRefetch(_ => false);
-  }, [refetch, isRefetch]);
-
   useEffect(() => {
     if (!generatedSucceed || !createdToken) return undefined;
-    setKeyValue(_ => createdToken);
-    setInputDisabled(_ => true);
-    setIsRefetch(_ => true);
-    toast.success('API Generated', 'API Key has been generated!', {
-      autoClose: 3000,
-      toastId: 'api-generated',
-    });
-    toast.warning('Copy Your API Key!', 'You won\'t be able to copy this key anymore once you leave this page!', {
-      autoClose: 99999999999,
-      toastId: 'copy-api-key',
-    });
-
+    setKeyValue(createdToken);
+    setInputDisabled(true);
     return () => {
       if (!toast.isActive('copy-api-key')) return;
       toast.dismiss('copy-api-key');
@@ -144,8 +137,8 @@ const ApiKeys = () => {
         Issued API Keys
       </div>
       <div className="my-4 flex flex-col gap-y-2">
-        {sortBy(tokens, x => x.Username)?.map(token => (
-          <UserApiTokens key={uniqueId()} userInfo={token} onDeleteToken={onTokenDelete} />
+        {sortBy(tokens, x => x.UserID)?.map(token => (
+          <UserApiTokens key={`${token.Username}-${token.Device}`} userInfo={token} />
         ))}
       </div>
     </div>

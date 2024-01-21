@@ -19,14 +19,14 @@ import { setItem as setMiscItem } from '@/core/slices/misc';
 import type { SettingsType } from '@/core/types/api/settings';
 
 const items = [
-  { name: 'General', path: 'general', useDefaultFooter: true },
-  { name: 'Import', path: 'import', useDefaultFooter: true },
-  { name: 'AniDB', path: 'anidb', useDefaultFooter: true },
-  { name: 'Metadata Sites', path: 'metadata-sites', useDefaultFooter: true },
+  { name: 'General', path: 'general' },
+  { name: 'Import', path: 'import' },
+  { name: 'AniDB', path: 'anidb' },
+  { name: 'Metadata Sites', path: 'metadata-sites' },
   // { name: 'Display', path: 'display' },
-  { name: 'User Management', path: 'user-management', useDefaultFooter: false },
+  { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
-  { name: 'API Keys', path: 'api-keys', useDefaultFooter: false },
+  { name: 'API Keys', path: 'api-keys' },
 ];
 
 type ContextType = {
@@ -85,9 +85,9 @@ function SettingsPage() {
   };
 
   const isShowFooter = useMemo(() => {
-    const currentPath = pathname.split('/').pop();
-    const item = items.find(x => x.path === currentPath);
-    return item?.useDefaultFooter ?? true;
+    const path = pathname.split('/').pop();
+    if (!path) return true;
+    return !['user-management', 'api-keys'].includes(path);
   }, [pathname]);
 
   const settingContext: ContextType = {

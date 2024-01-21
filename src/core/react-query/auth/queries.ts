@@ -6,6 +6,6 @@ import type { AuthToken } from '@/core/types/api/authToken';
 
 export const useApiKeyQuery = () =>
   useQuery<AuthToken[]>({
-    queryKey: ['auth', 'auth'],
+    queryKey: ['auth', 'apikey'],
     queryFn: () => axiosV2.get('auth'),
   });
