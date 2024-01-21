@@ -11,7 +11,7 @@ if (!isDebug()) {
   Sentry.init({
     dsn: 'https://f607489ccc764d73aeaed81ab2c97c04@o330862.ingest.sentry.io/1851857',
     environment: 'production',
-    release: uiVersion(),
+    release: `shoko-webui@${uiVersion()}`,
     integrations: [
       new Sentry.BrowserTracing({
         routingInstrumentation: Sentry.reactRouterV6Instrumentation(
@@ -27,8 +27,8 @@ if (!isDebug()) {
         blockAllMedia: false,
       }),
     ],
-    tracesSampleRate: 1.0,
-    replaysSessionSampleRate: 0.1,
+    tracesSampleRate: 0.1,
+    replaysSessionSampleRate: 0,
     replaysOnErrorSampleRate: 1.0,
   });
 }

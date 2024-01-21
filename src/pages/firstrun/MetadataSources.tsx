@@ -7,8 +7,8 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
 
-import { useFirstRunSettingsContext } from './FirstRunPage';
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
 import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';

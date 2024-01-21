@@ -24,7 +24,7 @@ const buttonTypeClasses = {
     'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md hover:bg-button-danger-hover',
 };
 
-function Button(props: Props) {
+const Button = React.memo((props: Props) => {
   const {
     buttonType,
     children,
@@ -60,6 +60,6 @@ function Button(props: Props) {
         : children}
     </button>
   );
-}
+});
 
-export default React.memo(Button);
+export default Button;

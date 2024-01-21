@@ -28,6 +28,7 @@ import FilesSummary from '@/components/Utilities/FilesSummary';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
+import { staticColumns } from '@/components/Utilities/constants';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
 import { useDeleteFileMutation, useRehashFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
@@ -38,8 +39,6 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
 import useRowSelection from '@/hooks/useRowSelection';
-
-import { staticColumns } from './UnrecognizedUtility';
 
 import type { FileType } from '@/core/types/api/file';
 import type { Updater } from 'use-immer';

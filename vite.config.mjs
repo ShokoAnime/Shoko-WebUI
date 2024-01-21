@@ -23,7 +23,7 @@ export default defineConfig(async () => {
       org: 'shoko-anime',
       project: 'shoko-webui',
       release: {
-        name: isDebug ? 'dev' : version,
+        name: isDebug ? 'dev' : `shoko-webui@${version}`,
       },
       include: './dist',
       urlPrefix: '~/webui/dist/',

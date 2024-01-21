@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Outlet } from 'react-router';
-import { NavLink, useLocation, useOutletContext } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -16,8 +16,6 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 
-import type { SettingsType } from '@/core/types/api/settings';
-
 const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
@@ -28,12 +26,6 @@ const items = [
   // { name: 'Themes', path: 'themes' },
   { name: 'API Keys', path: 'api-keys' },
 ];
-
-type ContextType = {
-  newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => void;
-  updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
-};
 
 function SettingsPage() {
   const dispatch = useDispatch();
@@ -90,7 +82,7 @@ function SettingsPage() {
     return !['user-management', 'api-keys'].includes(path);
   }, [pathname]);
 
-  const settingContext: ContextType = {
+  const settingContext = {
     newSettings,
     setNewSettings,
     updateSetting,
@@ -168,10 +160,6 @@ function SettingsPage() {
       </div>
     </div>
   );
-}
-
-export function useSettingsContext() {
-  return useOutletContext<ContextType>();
 }
 
 export default SettingsPage;

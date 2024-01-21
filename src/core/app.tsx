@@ -9,14 +9,16 @@ import Router from '@/core/router';
 import store from '@/core/store';
 
 const App = () => (
-  <Provider store={store}>
-    <Sentry.ErrorBoundary>
-      <QueryClientProvider client={queryClient}>
-        <Router />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </Sentry.ErrorBoundary>
-  </Provider>
+  <React.StrictMode>
+    <Provider store={store}>
+      <Sentry.ErrorBoundary>
+        <QueryClientProvider client={queryClient}>
+          <Router />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </Sentry.ErrorBoundary>
+    </Provider>
+  </React.StrictMode>
 );
 
 export default App;

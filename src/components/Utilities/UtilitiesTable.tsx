@@ -7,12 +7,12 @@ import cx from 'classnames';
 import { debounce } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
+import { criteriaMap } from '@/components/Utilities/constants';
 import useEventCallback from '@/hooks/useEventCallback';
-import { criteriaMap } from '@/pages/utilities/UnrecognizedUtility';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
-import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
 import type { VirtualItem } from '@tanstack/react-virtual';
 import type { Updater } from 'use-immer';
 
@@ -234,24 +234,28 @@ const UtilitiesTable = (props: Props) => {
   const lastRowSelected = useRef<VirtualItem | null>(null);
   const handleSelect = useEventCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
     if (!rowSelection || !handleRowSelect || !setSelectedRows) return;
-    if (event.shiftKey) {
-      window?.getSelection()?.removeAllRanges();
-      const lrIndex = lastRowSelected?.current?.index ?? virtualRow.index;
-      const fromIndex = Math.min(lrIndex, virtualRow.index);
-      const toIndex = Math.max(lrIndex, virtualRow.index);
-      const isSelected = lastRowSelected.current?.index !== undefined
-        ? rowSelection[selectRowId(rows[lastRowSelected.current?.index])]
-        : true;
-      const tempRowSelection: Record<number, boolean> = {};
-      for (let i = fromIndex; i <= toIndex; i += 1) {
-        const id = selectRowId(rows[i]);
-        tempRowSelection[id] = isSelected;
+    try {
+      if (event.shiftKey) {
+        window?.getSelection()?.removeAllRanges();
+        const lrIndex = lastRowSelected?.current?.index ?? virtualRow.index;
+        const fromIndex = Math.min(lrIndex, virtualRow.index);
+        const toIndex = Math.max(lrIndex, virtualRow.index);
+        const isSelected = lastRowSelected.current?.index !== undefined
+          ? rowSelection[selectRowId(rows[lastRowSelected.current?.index])]
+          : true;
+        const tempRowSelection: Record<number, boolean> = {};
+        for (let i = fromIndex; i <= toIndex; i += 1) {
+          const id = selectRowId(rows[i]);
+          tempRowSelection[id] = isSelected;
+        }
+        setSelectedRows(tempRowSelection);
+      } else if (window?.getSelection()?.type !== 'Range') {
+        const id = selectRowId(rows[virtualRow.index]);
+        handleRowSelect(id, !rowSelection[id]);
+        lastRowSelected.current = virtualRow;
       }
-      setSelectedRows(tempRowSelection);
-    } else if (window?.getSelection()?.type !== 'Range') {
-      const id = selectRowId(rows[virtualRow.index]);
-      handleRowSelect(id, !rowSelection[id]);
-      lastRowSelected.current = virtualRow;
+    } catch (error) {
+      console.error(error);
     }
   });
 

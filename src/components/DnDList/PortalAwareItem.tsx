@@ -1,7 +1,8 @@
 import React from 'react';
 import type { JSX } from 'react';
-import type { DraggableProvided, DraggableStateSnapshot } from 'react-beautiful-dnd';
 import ReactDOM from 'react-dom';
+
+import type { DraggableProvided, DraggableStateSnapshot } from '@hello-pangea/dnd';
 
 const portal: HTMLElement = document.createElement('div');
 document.body.appendChild(portal);

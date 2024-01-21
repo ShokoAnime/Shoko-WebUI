@@ -1,8 +1,9 @@
 import React from 'react';
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
-import type { DraggableProvided, DraggableStateSnapshot, DropResult, DroppableProvided } from 'react-beautiful-dnd';
+import { DragDropContext, Draggable, Droppable } from '@hello-pangea/dnd';
 
 import PortalAwareItem from './PortalAwareItem';
+
+import type { DraggableProvided, DraggableStateSnapshot, DropResult, DroppableProvided } from '@hello-pangea/dnd';
 
 type Props = {
   onDragEnd: (result: DropResult) => void;

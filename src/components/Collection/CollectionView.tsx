@@ -9,6 +9,7 @@ import { debounce } from 'lodash';
 
 import ListViewItem from '@/components/Collection/ListViewItem';
 import PosterViewItem from '@/components/Collection/PosterViewItem';
+import { listItemSize, posterItemSize } from '@/components/Collection/constants';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
@@ -24,19 +25,6 @@ type Props = {
   items: CollectionGroupType[] | SeriesType[];
   mode: string;
   total: number;
-};
-
-export const posterItemSize = {
-  width: 209,
-  height: 363,
-  gap: 16,
-};
-
-export const listItemSize = {
-  width: 907,
-  height: 319,
-  widthAlt: 907,
-  gap: 32,
 };
 
 const CollectionView = (props: Props) => {

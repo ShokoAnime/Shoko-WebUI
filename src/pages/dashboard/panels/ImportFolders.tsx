@@ -76,7 +76,7 @@ function ImportFolders() {
         </div>
         <div className="mb-1 flex">
           <div className="grow">Location</div>
-          <div>{folder.Path}</div>
+          <div title={folder.Path} className="line-clamp-1 pl-2">{folder.Path}</div>
         </div>
         <div className="mb-1 flex">
           <div className="grow">Type</div>

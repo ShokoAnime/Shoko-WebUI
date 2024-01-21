@@ -16,8 +16,8 @@ import { dayjs } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
 
+import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { SeriesType } from '@/core/types/api/series';
-import type { UtilityHeaderType } from '@/pages/utilities/UnrecognizedUtility';
 import type { Updater } from 'use-immer';
 
 const columns: UtilityHeaderType<SeriesType>[] = [

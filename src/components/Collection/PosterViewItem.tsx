@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { posterItemSize } from '@/components/Collection/CollectionView';
+import { posterItemSize } from '@/components/Collection/constants';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useMainPoster from '@/hooks/useMainPoster';
 
