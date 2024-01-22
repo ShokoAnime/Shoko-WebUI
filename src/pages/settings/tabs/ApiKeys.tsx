@@ -52,7 +52,6 @@ const ApiKeys = () => {
 
   const {
     data: createdToken,
-    isError: generatedFailed,
     isSuccess: generatedSucceed,
     mutate: createApiToken,
   } = useCreateApiToken();
@@ -85,21 +84,24 @@ const ApiKeys = () => {
     });
   });
 
-  const { data: tokens, refetch } = useApiKeyQuery();
+  const { data: tokens } = useApiKeyQuery();
 
   useEffect(() => {
     if (!generatedSucceed || !createdToken) return undefined;
     setKeyValue(createdToken);
     setInputDisabled(true);
     return () => {
-      if (!toast.isActive('copy-api-key')) return;
-      toast.dismiss('copy-api-key');
-      if (!toast.isActive('api-generated')) return;
-      toast.dismiss('api-generated');
-      if (!toast.isActive('api-copied')) return;
-      toast.dismiss('api-copied');
+      if (toast.isActive('copy-api-key')) {
+        toast.dismiss('copy-api-key');
+      }
+      if (toast.isActive('api-generated')) {
+        toast.dismiss('api-generated');
+      }
+      if (toast.isActive('api-copied')) {
+        toast.dismiss('api-copied');
+      }
     };
-  }, [generatedSucceed, generatedFailed, refetch, createdToken]);
+  }, [generatedSucceed, createdToken]);
 
   return (
     <div className="flex flex-col gap-y-4">
