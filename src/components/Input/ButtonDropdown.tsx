@@ -17,12 +17,9 @@ type Props = {
 };
 
 const buttonTypeClasses = {
-  primary:
-    'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover',
-  secondary:
-    'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-md hover:bg-button-secondary-hover',
-  danger:
-    'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md hover:bg-button-danger-hover',
+  primary: 'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md',
+  secondary: 'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-md',
+  danger: 'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md',
 };
 
 const ButtonDropdown = (props: Props) => {
@@ -70,7 +67,10 @@ const ButtonDropdown = (props: Props) => {
         title={tooltip}
         className={cx([
           `${className} button rounded font-semibold transition ease-in-out focus:shadow-none focus:outline-none min-w-full px-4 py-3`,
-          buttonTypes !== undefined && `${buttonTypeClasses[buttonTypes ?? 'secondary']} border border-panel-border`,
+          buttonTypes !== undefined
+          && `${buttonTypeClasses[buttonTypes ?? 'secondary']} hover:bg-button-${
+            buttonTypes ?? 'secondary'
+          }-hover border border-panel-border`,
           loading && 'cursor-default',
           disabled && 'cursor-default opacity-65',
         ])}
