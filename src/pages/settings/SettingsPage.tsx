@@ -4,12 +4,13 @@ import { useDispatch } from 'react-redux';
 import { useMediaQuery } from 'react-responsive';
 import { Outlet } from 'react-router';
 import { NavLink, useLocation } from 'react-router-dom';
-import { mdiInformationOutline, mdiLoading } from '@mdi/js';
+import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { isEqual } from 'lodash';
 
 import Button from '@/components/Input/Button';
+import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -23,6 +24,7 @@ const items = [
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
+  { name: 'API Keys', path: 'api-keys' },
 ];
 
 function SettingsPage() {
@@ -36,7 +38,6 @@ function SettingsPage() {
 
   const [newSettings, setNewSettings] = useState(settings);
   const [showNav, setShowNav] = useState(false);
-
   const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
@@ -45,6 +46,19 @@ function SettingsPage() {
   }, [dispatch, settings]);
 
   const unsavedChanges = useMemo(() => !isEqual(settings, newSettings), [newSettings, settings]);
+
+  if (unsavedChanges) {
+    toast.info('Unsaved Changes', 'Please save before leaving this page.', {
+      autoClose: 99999999999,
+      toastId: 'save-changes',
+    });
+  } else {
+    toast.dismiss('save-changes');
+  }
+
+  useEffect(() => () => {
+    toast.dismiss('save-changes');
+  }, []);
 
   const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
     if (key === 'theme' && typeof value === 'string') {
@@ -62,6 +76,18 @@ function SettingsPage() {
     }
   };
 
+  const isShowFooter = useMemo(() => {
+    const path = pathname.split('/').pop();
+    if (!path) return true;
+    return !['user-management', 'api-keys'].includes(path);
+  }, [pathname]);
+
+  const settingContext = {
+    newSettings,
+    setNewSettings,
+    updateSetting,
+  };
+
   return (
     <div className="flex min-h-full grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
       <TransitionDiv
@@ -72,12 +98,14 @@ function SettingsPage() {
         enterTo="translate-x-0"
       >
         <div className="sticky top-8">
-          <div className="mb-8 text-xl opacity-100">Settings</div>
-          <div className="flex flex-col gap-y-4">
+          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+          <div className="flex flex-col items-center">
             {items.map(item => (
               <NavLink
                 to={item.path}
-                className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}
+                className={({ isActive }) => (isActive
+                  ? 'w-full text-center bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover py-4 px-2'
+                  : 'w-full text-center py-4 px-2')}
                 key={item.path}
               >
                 {item.name}
@@ -96,7 +124,7 @@ function SettingsPage() {
       {/*    </div> */}
       {/*  </div> */}
       {/* )} */}
-      <div className="flex min-h-full w-[37.5rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex min-h-full w-[41rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
@@ -106,14 +134,10 @@ function SettingsPage() {
           : (
             <>
               <Outlet
-                context={{
-                  newSettings,
-                  setNewSettings,
-                  updateSetting,
-                }}
+                context={settingContext}
               />
-              {pathname.split('/').pop() !== 'user-management' && (
-                <div className="flex max-w-[34rem] justify-end font-semibold">
+              {isShowFooter && (
+                <div className="flex justify-end font-semibold">
                   <Button
                     onClick={() => setNewSettings(settings)}
                     buttonType="secondary"
@@ -134,19 +158,6 @@ function SettingsPage() {
             </>
           )}
       </div>
-      <div
-        className={cx(
-          'flex w-96 bg-panel-background-transparent border border-panel-border rounded-md p-8 gap-x-2 font-semibold items-center sticky top-0 transition-opacity h-full',
-          unsavedChanges ? 'opacity-100' : 'opacity-0',
-        )}
-      >
-        <Icon path={mdiInformationOutline} size={1} className="text-panel-text-primary" />
-        Whoa! You Have Unsaved Changes!
-      </div>
-      <div
-        className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
-        style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
-      />
     </div>
   );
 }
