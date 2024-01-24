@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axiosV2 as axios } from '@/core/axios';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 import { setDetails } from '@/core/slices/apiSession';
 import store from '@/core/store';
 
@@ -27,6 +28,9 @@ export const useCreateApiToken = () =>
           'Content-Type': 'application/json',
         },
       }),
+    onSuccess: () => {
+      invalidateQueries(['auth', 'apikey']);
+    },
   });
 
 export const useDeleteApiToken = () =>
@@ -38,4 +42,7 @@ export const useDeleteApiToken = () =>
         },
         data: key,
       }),
+    onSuccess: () => {
+      invalidateQueries(['auth', 'apikey']);
+    },
   });
