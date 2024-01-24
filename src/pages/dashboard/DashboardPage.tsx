@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
+import { useEffectOnce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
@@ -37,19 +38,13 @@ const renderResizeHandle = () => (
 );
 
 const Toast = (
-  { currentLayout, setCurrentLayout }: { currentLayout: LayoutType, setCurrentLayout: (layout: LayoutType) => void },
+  { cancelLayoutChange, currentLayout }: { cancelLayoutChange: () => void, currentLayout: LayoutType },
 ) => {
   const dispatch = useDispatch();
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
-
-  const cancelLayoutChange = useEventCallback(() => {
-    setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
-    dispatch(setLayoutEditMode(false));
-    toast.dismiss('layoutEditMode');
-  });
 
   const saveLayout = useEventCallback(() => {
     const newSettings = produce(settings, (draftState) => {
@@ -92,6 +87,8 @@ const Toast = (
 };
 
 function DashboardPage() {
+  const dispatch = useDispatch();
+
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const settingsQuery = useSettingsQuery();
@@ -120,31 +117,35 @@ function DashboardPage() {
     if (settingsQuery.isSuccess) setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
   }, [settings, settingsQuery.isSuccess]);
 
+  const cancelLayoutChange = useEventCallback(() => {
+    setCurrentLayout(settings.WebUI_Settings.layout.dashboard);
+    dispatch(setLayoutEditMode(false));
+    toast.dismiss('layoutEditMode');
+  });
+
   useEffect(() => {
-    if (layoutEditMode) {
-      if (!toast.isActive('layoutEditMode')) {
-        toast.info(
-          '',
-          <Toast currentLayout={currentLayout} setCurrentLayout={setCurrentLayout} />,
-          {
-            autoClose: false,
-            draggable: false,
-            closeOnClick: false,
-            toastId: 'layoutEditMode',
-            className: 'max-w-[27.3rem] ml-auto',
-          },
-        );
-      } else {
-        toast.infoUpdate(
-          'layoutEditMode',
-          '',
-          <Toast currentLayout={currentLayout} setCurrentLayout={setCurrentLayout} />,
-        );
-      }
-    } else {
+    if (!layoutEditMode) {
       toast.dismiss('layoutEditMode');
+      return;
     }
-  }, [layoutEditMode, currentLayout]);
+
+    toast.info(
+      '',
+      <Toast
+        cancelLayoutChange={cancelLayoutChange}
+        currentLayout={currentLayout}
+      />,
+      {
+        autoClose: false,
+        draggable: false,
+        closeOnClick: false,
+        toastId: 'layoutEditMode',
+        className: 'max-w-[27.3rem] ml-auto',
+      },
+    );
+  }, [layoutEditMode, currentLayout, cancelLayoutChange]);
+
+  useEffectOnce(() => () => cancelLayoutChange());
 
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));

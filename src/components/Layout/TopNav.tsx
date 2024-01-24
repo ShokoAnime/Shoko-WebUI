@@ -3,7 +3,6 @@ import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
 import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
-  mdiChevronDown,
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
@@ -61,7 +60,7 @@ const MenuItem = (
     to={id}
     key={id}
     className={({ isActive }) =>
-      cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-topnav-icon-primary')}
+      cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-topnav-text-primary')}
     onClick={(e) => {
       e.preventDefault();
       onClick();
@@ -158,7 +157,11 @@ function TopNav() {
     [networkStatus],
   );
 
-  const closeModalsAndSubmenus = () => {
+  const closeModalsAndSubmenus = (event?: React.MouseEvent) => {
+    if (layoutEditMode && event) {
+      event.preventDefault();
+      return;
+    }
     setShowActionsModal(false);
     setShowDashboardSettingsModal(false);
     setShowUtilitiesMenu(false);
@@ -227,12 +230,12 @@ function TopNav() {
                   : currentUserQuery.data?.Username.charAt(0)}
               </div>
               <span className="text-header-text">{currentUserQuery.data?.Username}</span>
-              <Icon path={mdiChevronDown} size={0.6666} />
             </div>
             <NavLink
               to="settings"
-              className={({ isActive }) => (isActive ? 'text-header-icon-primary' : '')}
-              onClick={() => closeModalsAndSubmenus()}
+              className={({ isActive }) =>
+                cx({ 'text-header-icon-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
+              onClick={closeModalsAndSubmenus}
             >
               <Icon path={mdiCogOutline} size={0.8333} />
             </NavLink>

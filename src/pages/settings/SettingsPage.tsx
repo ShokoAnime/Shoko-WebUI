@@ -1,17 +1,14 @@
 /* global globalThis */
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useMediaQuery } from 'react-responsive';
 import { Outlet } from 'react-router';
 import { NavLink, useLocation } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import cx from 'classnames';
 import { isEqual } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import TransitionDiv from '@/components/TransitionDiv';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
@@ -32,32 +29,43 @@ function SettingsPage() {
 
   const { pathname } = useLocation();
 
+  const toastId = useRef<number | string>();
+
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const [newSettings, setNewSettings] = useState(settings);
-  const [showNav, setShowNav] = useState(false);
-  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   useEffect(() => {
     dispatch(setMiscItem({ webuiPreviewTheme: null }));
     setNewSettings(settings);
   }, [dispatch, settings]);
 
-  const unsavedChanges = useMemo(() => !isEqual(settings, newSettings), [newSettings, settings]);
+  const unsavedChanges = useMemo(
+    () => {
+      // if Username is null, settings haven't been copied yet into newSettings
+      if (!settingsQuery.isSuccess || !newSettings?.AniDb.Username) return false;
+      return !isEqual(settings, newSettings);
+    },
+    [newSettings, settings, settingsQuery.isSuccess],
+  );
 
-  if (unsavedChanges) {
-    toast.info('Unsaved Changes', 'Please save before leaving this page.', {
-      autoClose: 99999999999,
-      toastId: 'save-changes',
-    });
-  } else {
-    toast.dismiss('save-changes');
-  }
+  useEffect(() => {
+    if (!unsavedChanges) {
+      if (toastId.current) toast.dismiss(toastId.current);
+      return;
+    }
+
+    toastId.current = toast.info(
+      'Unsaved Changes',
+      'Please save before leaving this page.',
+      { autoClose: false },
+    );
+  }, [unsavedChanges]);
 
   useEffect(() => () => {
-    toast.dismiss('save-changes');
+    if (toastId.current) toast.dismiss(toastId.current);
   }, []);
 
   const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
@@ -89,14 +97,8 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-full grow justify-center gap-x-8" onClick={() => setShowNav(false)}>
-      <TransitionDiv
-        className="relative top-0 z-10 flex w-72 flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold"
-        show={!(isSm && !showNav)}
-        enter={cx(isSm ? 'transition-transform' : 'transition-none')}
-        enterFrom="-translate-x-64"
-        enterTo="translate-x-0"
-      >
+    <div className="flex min-h-full grow justify-center gap-x-8">
+      <div className="relative top-0 z-10 flex w-72 flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
         <div className="sticky top-8">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
           <div className="flex flex-col items-center">
@@ -113,17 +115,7 @@ function SettingsPage() {
             ))}
           </div>
         </div>
-      </TransitionDiv>
-      {/* {isSm && ( */}
-      {/*  <div className="flex justify-center mb-8 font-semibold"> */}
-      {/*    Settings */}
-      {/*    <Icon path={mdiChevronRight} size={1} className="mx-1" /> */}
-      {/*    <div className="flex text-panel-text-primary rounded pl-2 border border-panel-text-primary items-center cursor-pointer" onClick={(e) => { e.stopPropagation(); setShowNav(!showNav); }}> */}
-      {/*      {find(items, item => item.path === pathname.split('/').pop())?.name} */}
-      {/*      <Icon path={mdiChevronDown} size={1} /> */}
-      {/*    </div> */}
-      {/*  </div> */}
-      {/* )} */}
+      </div>
       <div className="flex min-h-full w-[41rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
         {settingsQuery.isPending
           ? (
@@ -155,6 +147,10 @@ function SettingsPage() {
                   </Button>
                 </div>
               )}
+              <div
+                className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
+                style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
+              />
             </>
           )}
       </div>
