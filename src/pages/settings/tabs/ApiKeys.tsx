@@ -27,7 +27,7 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
 
   return (
     <div className="flex flex-row items-center justify-between">
-      <div className="flex w-[90%] flex-col gap-y-1">
+      <div className="flex w-[90%] flex-col">
         {token.Device}
       </div>
       <Button buttonType="danger" className="px-2 py-1 text-sm" onClick={onDeleteClick} loading={isPending}>
@@ -92,7 +92,7 @@ const ApiKeys = () => {
 
       <div className="flex flex-col gap-y-4">
         <div className="font-semibold">Generate API Key</div>
-        <div className="flex flex-row justify-between gap-x-2 border-b-2 border-panel-border pb-8">
+        <div className="flex flex-row justify-between gap-x-2 border-b border-panel-border pb-8">
           <Input
             id="key-input"
             endIcons={createdToken

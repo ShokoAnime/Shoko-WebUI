@@ -101,13 +101,13 @@ function SettingsPage() {
       <div className="relative top-0 z-10 flex w-72 flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
         <div className="sticky top-8">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center gap-y-2">
             {items.map(item => (
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive
-                  ? 'w-full text-center bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover py-4 px-2'
-                  : 'w-full text-center py-4 px-2')}
+                  ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-md text-panel-menu-item-text'
+                  : 'w-full text-center py-2 px-2 rounded-md hover:bg-panel-menu-item-background-hover')}
                 key={item.path}
               >
                 {item.name}
