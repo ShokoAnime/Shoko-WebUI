@@ -31,6 +31,9 @@
   --panel-icon-important: #10c469;
   --panel-icon-warning: #f9c851;
   --panel-input: #1e2027;
+  --panel-menu-item-background: #85c3ff1a;
+  --panel-menu-item-background-hover: #bacfe41a;
+  --panel-menu-item-text: #a9d5ff;
   --panel-tags: #3f4762;
   --panel-text: #cfd8e3;
   --panel-text-danger: #ff6c6c;
