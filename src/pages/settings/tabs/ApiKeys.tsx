@@ -54,7 +54,7 @@ const ApiKeys = () => {
 
   const handleCopyToClipboard = useEventCallback(() => {
     if (!isTokenGenerated) return;
-    copy(deviceName).then((isCopied) => {
+    copy(createdToken).then((isCopied) => {
       if (!isCopied) return;
       toast.success('Copied', 'API Key has been copied to clipboard!', {
         autoClose: 3000,
