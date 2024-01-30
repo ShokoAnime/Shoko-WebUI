@@ -17,7 +17,8 @@ export type ChangeSeriesImageRequestType = {
 
 export type DeleteSeriesRequestType = {
   seriesId: number;
-  deleteFiles: boolean;
+  deleteFiles?: boolean;
+  completelyRemove?: boolean;
 };
 
 export type SeriesRequestType = {

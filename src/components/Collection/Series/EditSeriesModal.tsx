@@ -2,8 +2,10 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 import { map } from 'lodash';
 
+import DeleteActionsTab from '@/components/Collection/Series/EditSeriesTabs/DeleteActionsTab';
+import FileActionsTab from '@/components/Collection/Series/EditSeriesTabs/FileActionsTab';
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
-import SeriesActionsTab from '@/components/Collection/Series/EditSeriesTabs/SeriesActionsTab';
+import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
 
 // TODO: Add tabs after implementing back-end endpoint for GroupTab and PersonalStats
@@ -20,13 +22,19 @@ const tabs = {
   // name: 'Name',
   // group: 'Group',
   // stats: 'Personal Stats',
-  actions: 'Series Actions',
+  update_actions: 'Update Actions',
+  file_actions: 'File Actions',
+  delete_actions: 'Delete Actions',
 };
 
 const renderTab = (activeTab: string, seriesId: number) => {
   switch (activeTab) {
-    case 'actions':
-      return <SeriesActionsTab seriesId={seriesId} />;
+    case 'update_actions':
+      return <UpdateActionsTab seriesId={seriesId} />;
+    case 'file_actions':
+      return <FileActionsTab seriesId={seriesId} />;
+    case 'delete_actions':
+      return <DeleteActionsTab seriesId={seriesId} />;
     // case 'group':
     //   return <GroupTab seriesId={seriesId} />;
     // case 'stats':
@@ -40,12 +48,12 @@ const renderTab = (activeTab: string, seriesId: number) => {
 const EditSeriesModal = (props: Props) => {
   const { onClose, seriesId, show } = props;
 
-  const [activeTab, setActiveTab] = useState('actions');
+  const [activeTab, setActiveTab] = useState('update_actions');
 
   return (
     <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" noPadding>
       <div className="flex">
-        <div className="flex w-[12rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
+        <div className="flex w-[12.5rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
           {map(tabs, (value, key) => (
             <div
               className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
