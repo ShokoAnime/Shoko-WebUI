@@ -18,6 +18,7 @@ const items = [
   { name: 'Import', path: 'import' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'Metadata Sites', path: 'metadata-sites' },
+  { name: 'Collection', path: 'collection' },
   // { name: 'Display', path: 'display' },
   { name: 'User Management', path: 'user-management' },
   // { name: 'Themes', path: 'themes' },
