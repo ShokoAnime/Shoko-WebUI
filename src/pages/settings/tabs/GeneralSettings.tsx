@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo } from 'react';
-import type { ChangeEvent } from 'react';
 import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { keys } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -16,76 +14,10 @@ import useSettingsContext from '@/hooks/useSettingsContext';
 
 const UI_VERSION = uiVersion();
 
-const exclusionMapping = {
-  dissimilarTitles: {
-    id: 'AllowDissimilarTitleExclusion',
-    name: 'Dissimilar Titles',
-  },
-  prequel: {
-    id: 'prequel',
-    name: 'Prequel',
-  },
-  sequel: {
-    id: 'sequel',
-    name: 'Sequel',
-  },
-  ova: {
-    id: 'ova',
-    name: 'OVA',
-  },
-  movie: {
-    id: 'movie',
-    name: 'Movie',
-  },
-  sameSetting: {
-    id: 'same setting',
-    name: 'Same Setting',
-  },
-  altSetting: {
-    id: 'alternative setting',
-    name: 'Alternative Setting',
-  },
-  altVersion: {
-    id: 'alternative version',
-    name: 'Alternative Version',
-  },
-  parentStory: {
-    id: 'parent story',
-    name: 'Parent Story',
-  },
-  sideStory: {
-    id: 'side story',
-    name: 'Side Story',
-  },
-  fullStory: {
-    id: 'full story',
-    name: 'Full Story',
-  },
-  summary: {
-    id: 'summary',
-    name: 'Summary',
-  },
-  character: {
-    id: 'character',
-    name: 'Character',
-  },
-  other: {
-    id: 'other',
-    name: 'Other',
-  },
-};
-
-function isExclusionKey(id: string): id is keyof typeof exclusionMapping {
-  return id in exclusionMapping;
-}
-
 function GeneralSettings() {
   const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
 
   const {
-    AutoGroupSeries,
-    AutoGroupSeriesRelationExclusions,
-    AutoGroupSeriesUseScoreAlgorithm,
     LogRotator,
     TraceLog,
     WebUI_Settings,
@@ -101,23 +33,6 @@ function GeneralSettings() {
   const currentTheme = useMemo(() => (
     themesQuery.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
   ), [themesQuery.data, WebUI_Settings.theme]);
-
-  const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (!(event.target.id in exclusionMapping)) return;
-    const { checked, id } = event.target;
-
-    if (isExclusionKey(id)) {
-      if (checked) {
-        const tempExclusions = [...AutoGroupSeriesRelationExclusions, exclusionMapping[id].id];
-        setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
-      } else {
-        const tempExclusions = AutoGroupSeriesRelationExclusions.filter(
-          exclusion => exclusion !== exclusionMapping[id].id,
-        );
-        setNewSettings({ ...newSettings, AutoGroupSeriesRelationExclusions: tempExclusions });
-      }
-    }
-  };
 
   return (
     <>
@@ -302,40 +217,6 @@ function GeneralSettings() {
             isChecked={TraceLog}
             onChange={event => setNewSettings({ ...newSettings, TraceLog: event.target.checked })}
           />
-        </div>
-      </div>
-
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Relation Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
-          <Checkbox
-            justify
-            label="Auto Group Series"
-            id="auto-group-series"
-            isChecked={AutoGroupSeries}
-            onChange={event => setNewSettings({ ...newSettings, AutoGroupSeries: event.target.checked })}
-          />
-          <Checkbox
-            justify
-            label="Determine Main Series Using Relation Weighing"
-            id="auto-group-using-score"
-            isChecked={AutoGroupSeriesUseScoreAlgorithm}
-            onChange={event =>
-              setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
-          />
-          Exclude following relations
-          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-input p-4">
-            {keys(exclusionMapping).map((item: keyof typeof exclusionMapping) => (
-              <Checkbox
-                justify
-                label={exclusionMapping[item].name}
-                id={item}
-                isChecked={AutoGroupSeriesRelationExclusions.includes(exclusionMapping[item].id)}
-                onChange={handleExclusionChange}
-                key={item}
-              />
-            ))}
-          </div>
         </div>
       </div>
     </>

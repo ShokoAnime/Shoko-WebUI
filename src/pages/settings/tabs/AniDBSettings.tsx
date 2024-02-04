@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useState } from 'react';
-import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import React from 'react';
 import cx from 'classnames';
-import { remove } from 'lodash';
 
-import LanguagesModal from '@/components/Dialogs/LanguagesModal';
-import { languageDescription } from '@/components/Dialogs/constants';
-import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
@@ -15,8 +9,6 @@ import SelectSmall from '@/components/Input/SelectSmall';
 import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import useSettingsContext from '@/hooks/useSettingsContext';
-
-import type { DropResult } from '@hello-pangea/dnd';
 
 const UpdateFrequencyValues = () => (
   <>
@@ -30,11 +22,8 @@ const UpdateFrequencyValues = () => (
 );
 
 function AniDBSettings() {
-  const { newSettings, setNewSettings, updateSetting } = useSettingsContext();
-
+  const { newSettings, updateSetting } = useSettingsContext();
   const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
-
-  const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | null>(null);
 
   const {
     AVDumpClientPort,
@@ -60,34 +49,6 @@ function AniDBSettings() {
     Password,
     Username,
   } = newSettings.AniDb;
-
-  const onDragEnd = (result: DropResult, episodePreference = false) => {
-    if (!result.destination || result.destination.index === result.source.index) {
-      return;
-    }
-
-    const items = Array.from(
-      episodePreference ? newSettings.EpisodeLanguagePreference : newSettings.LanguagePreference,
-    );
-    const [removed] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, removed);
-
-    setNewSettings({
-      ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
-    });
-  };
-
-  const removeLanguage = (language: string, episodePreference = false) => {
-    const items = Array.from(
-      episodePreference ? newSettings.EpisodeLanguagePreference : newSettings.LanguagePreference,
-    );
-    remove(items, item => item === language);
-    setNewSettings({
-      ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
-    });
-  };
 
   const testLogin = () => {
     testAniDbLogin({ Username, Password }, {
@@ -345,67 +306,6 @@ function AniDBSettings() {
           </div>
         </div>
       </div>
-
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Language Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
-          <Checkbox
-            label="Also Use Synonyms"
-            id="LanguageUseSynonyms"
-            isChecked={newSettings.LanguageUseSynonyms}
-            onChange={event => setNewSettings({ ...newSettings, LanguageUseSynonyms: event.target.checked })}
-            justify
-          />
-          <div className="flex justify-between">
-            Series Title (Drag to Reorder)
-            <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
-            <DnDList onDragEnd={result => onDragEnd(result)}>
-              {newSettings.LanguagePreference.map(language => (
-                {
-                  key: language,
-                  item: (
-                    <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
-                      {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language)} tooltip="Remove">
-                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
-                      </Button>
-                    </div>
-                  ),
-                }
-              ))}
-            </DnDList>
-          </div>
-          <div className="flex justify-between">
-            Episode Title (Drag to Reorder)
-            <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
-            <DnDList onDragEnd={result => onDragEnd(result, true)}>
-              {newSettings.EpisodeLanguagePreference.map(language => (
-                {
-                  key: language,
-                  item: (
-                    <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
-                      {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language, true)} tooltip="Remove">
-                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
-                      </Button>
-                    </div>
-                  ),
-                }
-              ))}
-            </DnDList>
-          </div>
-        </div>
-      </div>
-
-      <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
     </>
   );
 }

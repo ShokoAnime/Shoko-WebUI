@@ -30,6 +30,7 @@ import MainPage from '@/pages/main/MainPage';
 import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKey from '@/pages/settings/tabs/ApiKeys';
+import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
@@ -110,6 +111,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="import" element={<ImportSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="metadata-sites" element={<MetadataSitesSettings />} />
+            <Route path="collection" element={<CollectionSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKey />} />
           </Route>
