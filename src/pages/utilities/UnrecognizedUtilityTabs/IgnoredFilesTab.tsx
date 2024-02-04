@@ -130,7 +130,7 @@ function IgnoredFilesTab() {
   } = useRowSelection<FileType>(files);
 
   return (
-    <div className="flex grow flex-col gap-y-8">
+    <div className="flex grow flex-col gap-y-6">
       <div>
         <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} />}>
           <div className="flex items-center gap-x-3">
@@ -151,7 +151,7 @@ function IgnoredFilesTab() {
         </ShokoPanel>
       </div>
 
-      <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
         {filesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />

@@ -26,7 +26,7 @@ function PersonalStats() {
   };
 
   return (
-    <div className="flex flex-col gap-y-8">
+    <div className="flex flex-col gap-y-6">
       <div className="flex flex-col gap-y-4">
         <div className="border-b border-panel-border pb-4 font-semibold">Watched State</div>
         <div className="flex flex-col gap-y-2">

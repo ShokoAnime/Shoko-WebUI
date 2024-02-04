@@ -334,7 +334,7 @@ function UnrecognizedTab() {
 
   return (
     <>
-      <div className="flex grow flex-col gap-y-8" ref={tabContainerRef}>
+      <div className="flex grow flex-col gap-y-6" ref={tabContainerRef}>
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
             <div className="flex items-center gap-x-3">
@@ -380,7 +380,7 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+        <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-6">
           {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />

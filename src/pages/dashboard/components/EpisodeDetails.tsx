@@ -35,7 +35,7 @@ const ImageSection: React.FC<
 > = ({ episode, isInCollection, percentage }) => (
   <BackgroundImagePlaceholderDiv
     image={episode.SeriesPoster}
-    className="mb-3 h-80 rounded-lg border border-panel-border drop-shadow-md"
+    className=" h-80 rounded-lg border border-panel-border drop-shadow-md"
     hidePlaceholderOnHover
     zoomOnHover
   >
@@ -50,12 +50,12 @@ const ImageSection: React.FC<
 );
 
 const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: string }> = ({ episode, title }) => (
-  <>
-    <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
+  <div>
+    <p className="truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
       {episode.SeriesTitle}
     </p>
     <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
-  </>
+  </div>
 );
 
 const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string => {
@@ -106,11 +106,14 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   return (
     <div
       key={`episode-${episode.IDs.ID}`}
-      className={cx('mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0', episode.IDs.ShokoSeries && 'group')}
+      className={cx(
+        'mr-4 flex w-56 shrink-0 flex-col justify-center  last:mr-0',
+        episode.IDs.ShokoSeries && 'group',
+      )}
     >
       {episode.IDs.ShokoSeries
         ? (
-          <Link to={`/webui/collection/series/${episode.IDs.ShokoSeries}`}>
+          <Link className="flex flex-col gap-y-3" to={`/webui/collection/series/${episode.IDs.ShokoSeries}`}>
             {content}
           </Link>
         )

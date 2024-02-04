@@ -10,7 +10,7 @@ const EpisodeFileInfo = ({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
   return (
-    <div className="flex flex-col gap-y-8">
+    <div className="flex flex-col gap-y-6">
       <div className="flex flex-col gap-y-4">
         <div className="text-xl font-semibold opacity-65">File Details</div>
         <div className="flex flex-col gap-y-1">

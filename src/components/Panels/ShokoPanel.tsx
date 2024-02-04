@@ -32,14 +32,14 @@ const ShokoPanel = (
 ) => (
   <div
     className={cx(
-      'flex flex-col transition-colors border rounded p-8',
+      'flex flex-col transition-colors border rounded-lg p-6 gap-y-6',
       fullHeight && 'h-full',
       editMode ? 'pointer-events-none border-panel-text-primary' : 'border-panel-border',
       transparent ? 'bg-panel-background-transparent' : 'bg-panel-background',
       className,
     )}
   >
-    <div className="mb-8 flex flex-wrap items-center justify-between">
+    <div className="flex flex-wrap items-center justify-between">
       <span className="flex text-xl font-semibold">{title}</span>
       <div
         className="flex"

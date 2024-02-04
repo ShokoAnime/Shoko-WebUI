@@ -54,7 +54,7 @@ function ModalPanel(props: Props) {
           className={cx(
             'flex flex-col rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
             sizeClass[size ?? 'md'],
-            !noPadding && ('gap-y-8'),
+            !noPadding && ('gap-y-6'),
             fullHeight ? 'h-[66%]' : 'max-h-[66%]',
             className,
           )}
@@ -62,7 +62,7 @@ function ModalPanel(props: Props) {
         >
           <div>
             {header && (
-              <div className="rounded-t-md border-b border-panel-border bg-panel-background-alt p-8 text-xl font-semibold">
+              <div className="rounded-t-md border-b border-panel-border bg-panel-background-alt p-6 text-xl font-semibold">
                 {header}
                 {subHeader && <div className="mt-1 text-base">{subHeader}</div>}
               </div>
@@ -71,8 +71,8 @@ function ModalPanel(props: Props) {
           <div
             className={cx(
               'flex flex-col grow',
-              !noGap && ('gap-y-8'),
-              !noPadding && ('px-8 pb-8'),
+              !noGap && ('gap-y-6'),
+              !noPadding && ('px-6 pb-8'),
             )}
           >
             {children}

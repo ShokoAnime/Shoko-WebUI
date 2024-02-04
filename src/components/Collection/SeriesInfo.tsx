@@ -47,7 +47,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   if (!seriesId) return null;
 
   return (
-    <div className="flex w-full flex-col gap-y-8">
+    <div className="flex w-full flex-col gap-y-6">
       <div className="flex w-full border-b-2 border-panel-border pb-4 text-xl font-semibold">Series Information</div>
       <div className="flex w-full flex-col gap-y-3">
         <div className="flex justify-between capitalize">

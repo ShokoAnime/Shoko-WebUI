@@ -25,6 +25,12 @@ module.exports = {
       fontFamily: {
         'sans': ['Sora', ...defaultTheme.fontFamily.sans],
       },
+      fontSize: {
+        sm: ['14px', '1.4rem'],
+        base: ['16px', '1.6rem'],
+        lg: ['18px', '1.8rem'],
+        xl: ['20px', '2rem'],
+      },
       fontWeight: {
         extralight: 100,
         light: 200,

@@ -88,7 +88,7 @@ const FilterSidebar = () => {
     <ShokoPanel
       title="Filter"
       className="ml-8 w-full"
-      contentClassName="gap-y-8"
+      contentClassName="gap-y-6"
       options={<Options showModal={showCriteriaModal(true)} />}
     >
       {map(

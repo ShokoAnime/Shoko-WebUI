@@ -127,7 +127,7 @@ function ActionsModal({ onClose, show }: Props) {
       noPadding
     >
       <div className="flex h-[23rem]">
-        <div className="flex w-[9.375rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
+        <div className="flex w-[9.375rem] shrink-0 flex-col gap-y-6 border-r border-panel-border p-6 font-semibold">
           <div className="flex flex-col gap-y-4">
             {map(actions, (value, key) => (
               <div
@@ -141,7 +141,7 @@ function ActionsModal({ onClose, show }: Props) {
           </div>
         </div>
 
-        <div className="flex grow p-8 pr-6">
+        <div className="flex grow p-6">
           <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2 ">
             {isActionTab(activeTab)
               && actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}

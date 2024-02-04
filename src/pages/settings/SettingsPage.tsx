@@ -98,9 +98,9 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-full grow justify-center gap-x-8">
-      <div className="relative top-0 z-10 flex w-72 flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
-        <div className="sticky top-8">
+    <div className="flex min-h-full grow justify-center gap-x-6">
+      <div className="relative top-0 z-10 flex w-[350px] flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+        <div className="sticky top-6">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
           <div className="flex flex-col items-center gap-y-2">
             {items.map(item => (
@@ -117,7 +117,7 @@ function SettingsPage() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-full w-[41rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex min-h-full w-[700px] flex-col gap-y-6 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-6">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">

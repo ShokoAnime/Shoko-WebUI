@@ -122,7 +122,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
 
   return (
     <div
-      className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-panel-border bg-panel-background p-8"
+      className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-panel-border bg-panel-background p-6"
       style={{
         width: `${((isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
       }}

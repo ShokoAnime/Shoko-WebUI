@@ -59,13 +59,13 @@ function CollectionStats() {
 
   return (
     <ShokoPanel title="Collection Statistics" isFetching={statsQuery.isPending} editMode={layoutEditMode}>
-      <div className="flex flex-col leading-5">
+      <div className="flex flex-col">
         {childrenFirst}
       </div>
-      <div className="mt-4 flex flex-col leading-5">
+      <div className="mt-4 flex flex-col">
         {childrenSecond}
       </div>
-      <div className="mt-4 flex flex-col leading-5">
+      <div className="mt-4 flex flex-col">
         {childrenThird}
       </div>
     </ShokoPanel>

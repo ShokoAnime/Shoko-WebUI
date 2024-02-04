@@ -103,8 +103,8 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       noPadding
       noGap
     >
-      <div className="flex h-[22rem] flex-row gap-y-8">
-        <div className="flex w-[14rem] shrink-0 flex-col gap-y-8 border-r border-panel-border p-8 font-semibold">
+      <div className="flex h-[22rem] flex-row gap-y-6">
+        <div className="flex w-[14rem] shrink-0 flex-col gap-y-6 border-r border-panel-border p-6 font-semibold">
           <div className="flex flex-col gap-y-4">
             <div
               className={cx('cursor-pointer', activeTab === 'widgets' && 'text-panel-text-primary')}
@@ -123,7 +123,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           </div>
         </div>
 
-        <div className="flex w-full flex-col gap-y-8 p-8">
+        <div className="flex w-full flex-col gap-y-6 p-6">
           {activeTab === 'widgets' && (
             <div className="overflow-y-scroll pr-4">
               <div className="flex flex-col gap-y-2 ">
@@ -262,7 +262,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           )}
         </div>
       </div>
-      <div className="flex justify-end gap-x-3 border-y border-panel-border bg-panel-background-alt p-8 font-semibold">
+      <div className="flex justify-end gap-x-3 border-y border-panel-border bg-panel-background-alt p-6 font-semibold">
         <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
         <Button
           onClick={handleSave}

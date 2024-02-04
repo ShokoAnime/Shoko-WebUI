@@ -58,7 +58,7 @@ const SeriesCredits = () => {
 
   return (
     <>
-      <div className="flex items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex items-center gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6">
         <div className="flex w-full text-xl font-semibold">Character Search</div>
         <Input
           id="search"
@@ -69,9 +69,9 @@ const SeriesCredits = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
       </div>
-      <div className="flex gap-x-8">
+      <div className="flex gap-x-6">
         <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-6 py-4">
             <Heading mode={mode} setMode={setMode} />
             <div className="text-xl font-semibold">
               <span className="text-panel-text-important">{cast?.length ?? 0}</span>
@@ -85,7 +85,7 @@ const SeriesCredits = () => {
               (item, idx) => (
                 <div
                   key={`${mode}-${idx}`}
-                  className="flex flex-col items-center justify-center gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold"
+                  className="flex flex-col items-center justify-center gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-6 font-semibold"
                 >
                   <div className="z-10 flex gap-x-2">
                     {mode === 'Character' && (

@@ -96,7 +96,7 @@ const SeriesEpisodes = () => {
       <ShokoPanel
         title="Search & Filter"
         className="flex w-full flex-row"
-        contentClassName="!flex-row gap-x-8 flex-wrap 2xl:flex-nowrap"
+        contentClassName="!flex-row gap-x-6 flex-wrap 2xl:flex-nowrap"
         transparent
         fullHeight={false}
       >
@@ -159,9 +159,9 @@ const SeriesEpisodes = () => {
           <option value="only">Hidden</option>
         </Select>
       </ShokoPanel>
-      <div className="flex gap-x-8">
+      <div className="flex gap-x-6">
         <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
               <span>Episodes</span>
               <span className="hidden px-2 2xl:inline">|</span>
@@ -210,7 +210,7 @@ const SeriesEpisodes = () => {
                       {episode
                         ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
                         : (
-                          <div className="flex h-[332px] items-center justify-center p-8 text-panel-text-primary">
+                          <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
                             <Icon path={mdiLoading} spin size={3} />
                           </div>
                         )}

@@ -104,7 +104,7 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
   const locationDetails = group.FileLocation ?? '-';
 
   return (
-    <div className="flex flex-col gap-y-8 rounded border border-panel-border bg-panel-background-transparent p-8">
+    <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
       <div className="flex text-xl font-semibold">
         <Header ranges={group.RangeByType} />
       </div>
@@ -175,7 +175,7 @@ const SeriesFileSummary = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex flex-col items-center gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6">
         <div className="flex w-full">
           <div className="flex w-full text-xl font-semibold">Files Overview</div>
           <div className="flex w-full max-w-[17rem] items-center gap-x-4">
@@ -233,9 +233,9 @@ const SeriesFileSummary = () => {
         </div>
       </div>
 
-      <div className="flex gap-x-8">
-        <div className="flex grow flex-col gap-y-8">
-          <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-8 py-5 text-xl font-semibold">
+      <div className="flex gap-x-6">
+        <div className="flex grow flex-col gap-y-6">
+          <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-6 py-5 text-xl font-semibold">
             Files Breakdown
             <div>
               <span className="text-panel-text-important">{fileSummary?.Groups.length ?? 0}</span>

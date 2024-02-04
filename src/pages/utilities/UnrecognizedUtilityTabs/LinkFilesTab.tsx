@@ -659,10 +659,10 @@ function LinkFilesTab() {
           </ShokoPanel>
         </div>
 
-        <div className="mt-8 flex h-full w-full grow gap-x-8 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-8">
+        <div className="mt-8 flex h-full w-full grow gap-x-6 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
           <div
             className={cx(
-              'grid gap-y-2 gap-x-8 auto-rows-min',
+              'grid gap-y-2 gap-x-6 auto-rows-min',
               selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1',
             )}
           >

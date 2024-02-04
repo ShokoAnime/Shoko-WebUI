@@ -33,8 +33,8 @@ const LogsPage = () => {
   }, [logLines.length, virtualItems.length, isScrollToBottom, rowVirtualizer]);
 
   return (
-    <div className="flex grow flex-col gap-y-8">
-      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background px-8 py-4">
+    <div className="flex grow flex-col gap-y-6">
+      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background px-6 py-4">
         <div className="text-xl font-semibold">Logs</div>
         <div className="flex items-center gap-x-4">
           <Input
@@ -64,7 +64,7 @@ const LogsPage = () => {
         </div>
       </div>
 
-      <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
+      <div className="flex grow rounded-md border border-panel-border bg-panel-background p-6">
         <div
           className="contain-strict w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
           ref={parentRef}
@@ -88,7 +88,7 @@ const LogsPage = () => {
                     const row = logLines[virtualRow.index];
                     return (
                       <div
-                        className="mt-2 flex gap-x-8"
+                        className="mt-2 flex gap-x-6"
                         key={virtualRow.key}
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}

@@ -165,7 +165,7 @@ function DashboardPage() {
       breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
       cols={{ lg: 12, md: 10, sm: 6 }}
       rowHeight={0}
-      margin={[32, 32]}
+      margin={[24, 24]}
       className="w-full"
       onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
       isDraggable={layoutEditMode}

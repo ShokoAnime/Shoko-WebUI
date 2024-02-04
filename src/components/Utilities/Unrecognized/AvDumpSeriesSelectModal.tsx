@@ -129,7 +129,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
       size="sm"
       noPadding
     >
-      <div className="flex flex-col gap-y-4 p-8">
+      <div className="flex flex-col gap-y-4 p-6">
         {activeStep === 1 && (
           <>
             <StepDescription>

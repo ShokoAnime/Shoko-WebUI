@@ -17,7 +17,7 @@ function SeriesTag(props: { item: TagType }) {
 
   return (
     <div
-      className="flex max-w-[29.875rem] cursor-pointer flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8"
+      className="flex max-w-[29.875rem] cursor-pointer flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-6"
       onClick={() => {
         setIsOpen(!isOpen);
       }}
@@ -45,7 +45,7 @@ const SeriesTags = () => {
 
   return (
     <>
-      <div className="flex items-center gap-y-8 rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex items-center gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6">
         <div className="flex w-full text-xl font-semibold">Tag Search</div>
         <Input
           id="search"
@@ -56,16 +56,16 @@ const SeriesTags = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
       </div>
-      <div className="flex gap-x-8">
-        <div className="flex grow flex-col gap-y-8">
-          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-8 py-4 text-xl font-semibold">
+      <div className="flex gap-x-6">
+        <div className="flex grow flex-col gap-y-6">
+          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-6 py-4 text-xl font-semibold">
             Tags
             <div>
               <span className="text-panel-text-important">{tagsQuery.data?.length ?? 0}</span>
               &nbsp;Tags Listed
             </div>
           </div>
-          <div className="grid grid-cols-3 gap-4 2xl:gap-8">
+          <div className="grid grid-cols-3 gap-4 2xl:gap-6">
             {map(tagsQuery.data ?? [], item => <SeriesTag key={item.ID} item={item} />)}
           </div>
         </div>

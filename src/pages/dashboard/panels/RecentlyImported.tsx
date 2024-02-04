@@ -47,7 +47,7 @@ const RecentlyImported = () => {
         />
       }
     >
-      <div className="shoko-scrollbar relative flex grow items-center">
+      <div className="shoko-scrollbar relative mb-6 flex grow items-center">
         <TransitionDiv show={!showSeries} className="absolute flex w-full">
           {(recentEpisodesQuery.data?.length ?? 0) > 0
             ? recentEpisodesQuery.data?.map(item => (

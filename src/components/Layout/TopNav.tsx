@@ -216,12 +216,12 @@ function TopNav() {
   return (
     <>
       <div className="z-[100] flex flex-col bg-header-background text-sm font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
-        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-8 py-6">
+        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
           <div className="flex items-center gap-x-2">
             <ShokoIcon className="w-6" />
             <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
           </div>
-          <div className="flex items-center gap-x-8">
+          <div className="flex items-center gap-x-6">
             <QueueCount />
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
@@ -245,8 +245,8 @@ function TopNav() {
           </div>
         </div>
         <div className="bg-topnav-background text-topnav-text">
-          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-8 py-4">
-            <div className="flex gap-x-8">
+          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-6 py-4">
+            <div className="flex gap-x-6">
               <LinkMenuItem
                 icon={mdiTabletDashboard}
                 onClick={closeModalsAndSubmenus}
@@ -254,7 +254,7 @@ function TopNav() {
                 text="Dashboard"
               />
               <div
-                className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-65 pointer-events-none')}
+                className={cx('transition-opacity flex gap-x-6', layoutEditMode && 'opacity-65 pointer-events-none')}
               >
                 <LinkMenuItem
                   icon={mdiLayersTripleOutline}
@@ -290,7 +290,7 @@ function TopNav() {
                 />
               </div>
             </div>
-            <div className="flex justify-end gap-8">
+            <div className="flex justify-end gap-6">
               {pathname === '/webui/dashboard' && (
                 <MenuItem
                   id="dashboard-settings"
@@ -362,7 +362,7 @@ function TopNav() {
           height={showUtilitiesMenu ? 'auto' : 0}
           className="border-t border-topnav-border bg-topnav-background"
         >
-          <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
+          <div className="mx-auto flex w-full max-w-[120rem] gap-x-6 px-6 py-4">
             <LinkMenuItem
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}

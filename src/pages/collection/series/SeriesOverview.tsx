@@ -48,8 +48,8 @@ const SeriesOverview = () => {
 
   return (
     <>
-      <div className="flex gap-x-8">
-        <div className="flex w-full grow flex-col gap-y-8">
+      <div className="flex gap-x-6">
+        <div className="flex w-full grow flex-col gap-y-6">
           <ShokoPanel
             title="Episode on Deck"
             className="flex w-full grow overflow-visible"
@@ -66,7 +66,7 @@ const SeriesOverview = () => {
             transparent
             disableOverflow
           >
-            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-8">
+            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6">
               {MetadataLinks.map((site) => {
                 const idOrIds = series.IDs[site] as number | number[];
                 if (typeof idOrIds === 'number' || idOrIds.length === 0) {
@@ -197,7 +197,7 @@ const SeriesOverview = () => {
         </ShokoPanel>
       )}
       <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
-        <div className="z-10 flex w-full gap-x-8">
+        <div className="z-10 flex w-full gap-x-6">
           {cast?.slice(0, 20).map(seiyuu => (
             seiyuu.RoleName === 'Seiyuu' && (
               <div

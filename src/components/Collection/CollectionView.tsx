@@ -81,7 +81,7 @@ const CollectionView = (props: Props) => {
       <div
         className={cx(
           'flex grow rounded-md items-center font-semibold justify-center max-h-screen',
-          mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
+          mode === 'poster' && 'px-6 py-6 bg-panel-background border-panel-border border',
         )}
       >
         <div className="flex w-full justify-center" ref={gridContainerRef}>
@@ -97,7 +97,7 @@ const CollectionView = (props: Props) => {
     <div
       className={cx(
         'flex grow rounded-md',
-        mode === 'poster' && 'px-8 py-8 bg-panel-background border-panel-border border',
+        mode === 'poster' && 'px-6 py-6 bg-panel-background border-panel-border border',
       )}
     >
       <div className="relative w-full" style={{ height: virtualizer.getTotalSize() }} ref={gridContainerRef}>
@@ -169,7 +169,7 @@ const CollectionView = (props: Props) => {
                 'absolute top-0 left-0 w-full flex items-center justify-center last:pb-0',
                 mode === 'poster'
                   ? 'gap-x-4 pb-4'
-                  : 'gap-x-8 pb-8',
+                  : 'gap-x-6 pb-8',
               )}
               style={{
                 transform: `translateY(${virtualRow.start}px)`,

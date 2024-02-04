@@ -35,7 +35,7 @@ const CharacterImage = React.memo((props: Props) => {
         {!imageLoaded && (
           <div
             className={cx(
-              'w-full h-full flex flex-col justify-center items-center bg-panel-input p-8',
+              'w-full h-full flex flex-col justify-center items-center bg-panel-input p-6',
               hidePlaceholderOnHover && 'group-hover:opacity-0',
             )}
           >

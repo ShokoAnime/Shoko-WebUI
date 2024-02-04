@@ -140,8 +140,8 @@ function LoginPage() {
           </div>
         )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
-          <div className="flex flex-row items-center gap-x-16 p-8">
-            <div className="flex w-[15.625em] flex-col items-center gap-y-8">
+          <div className="flex flex-row items-center gap-x-16 p-6">
+            <div className="flex w-[15.625em] flex-col items-center gap-y-6">
               <ShokoIcon className="w-24" />
               <div className="flex flex-col gap-y-2 text-center font-semibold">
                 <span>Version</span>
@@ -165,7 +165,7 @@ function LoginPage() {
                 </div>
               )}
               {serverStatusQuery.data?.State === 2 && (
-                <form onSubmit={handleSignIn} className="flex flex-col gap-y-8">
+                <form onSubmit={handleSignIn} className="flex flex-col gap-y-6">
                   <Input
                     autoFocus
                     id="username"
@@ -213,7 +213,7 @@ function LoginPage() {
                 </div>
               )}
               {serverStatusQuery.data?.State === 4 && (
-                <div className="flex flex-col gap-y-8">
+                <div className="flex flex-col gap-y-6">
                   <div className="flex flex-col gap-y-4">
                     <div>Welcome and thanks for installing Shoko!</div>
                     <div className="text-justify">
@@ -240,7 +240,7 @@ function LoginPage() {
               )}
             </div>
           </div>
-          <div className="flex w-full flex-row justify-between gap-x-8 border-t-2 border-panel-border px-8 py-4 font-semibold">
+          <div className="flex w-full flex-row justify-between gap-x-6 border-t-2 border-panel-border px-6 py-4 font-semibold">
             <div className="flex gap-x-2">
               <div
                 className={cx(

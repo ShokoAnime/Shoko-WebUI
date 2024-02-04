@@ -61,7 +61,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
 
   return (
     <>
-      <div className={cx('z-10 flex items-center gap-x-8', !nextUp && 'p-8')}>
+      <div className={cx('z-10 flex items-center gap-x-6', !nextUp && 'p-6')}>
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
           className="group h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
@@ -75,7 +75,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
             <div>
               <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} tooltip="Edit" />
             </div>
-            <div className="flex flex-col gap-y-8">
+            <div className="flex flex-col gap-y-6">
               {episode.Size > 0 && (
                 <StateButton
                   icon={mdiEyeCheckOutline}
