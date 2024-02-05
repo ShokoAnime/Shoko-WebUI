@@ -41,6 +41,11 @@
   --panel-text-other: #b981ff;
   --panel-text-primary: #44a3ff;
   --panel-text-warning: #f9c851;
+  --panel-toggle-background: #85c3ff1a;
+  --panel-toggle-background-alt: #282e38;
+  --panel-toggle-background-hover: #bacfe41a;
+  --panel-toggle-text: #a9d5ff;
+  --panel-toggle-text-alt: #cfd8e3;
   --slider-background: #21242b;
   --slider-background-alt: #282e38;
   --slider-color: #44a3ff;

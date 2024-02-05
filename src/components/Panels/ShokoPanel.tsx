@@ -13,7 +13,7 @@ type Props = {
   fullHeight?: boolean;
   disableOverflow?: boolean;
   transparent?: boolean;
-  contentClassName?: string;
+  contentClassName?: string | boolean;
 };
 
 const ShokoPanel = (

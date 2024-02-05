@@ -9,7 +9,7 @@ module.exports = {
     './src/**/*.tsx',
     './index.html',
   ],
-  //Any class that is generated dynamically goes here
+  //Any class that's generated dynamically goes here
   safelist: [
     'bg-panel-text-danger',
     'bg-panel-text-important',
@@ -84,6 +84,11 @@ module.exports = {
         'panel-text-other': 'var(--panel-text-other)',
         'panel-text-primary': 'var(--panel-text-primary)',
         'panel-text-warning': 'var(--panel-text-warning)',
+        'panel-toggle-background': 'var(--panel-toggle-background)',
+        'panel-toggle-background-alt': 'var(--panel-toggle-background-alt)',
+        'panel-toggle-background-hover': 'var(--panel-toggle-background-hover)',
+        'panel-toggle-text': 'var(--panel-toggle-text)',
+        'panel-toggle-text-alt': 'var(--panel-toggle-text-alt)',
         'slider-background': 'var(--slider-background)',
         'slider-background-alt': 'var(--slider-background-alt)',
         'slider-color': 'var(--slider-color)',

@@ -83,6 +83,7 @@ body {
   background-color: theme('colors.panel-background-alt');
   color: theme('colors.panel-text');
   font-weight: 400;
+  line-height: 1.6rem
 }
 
 ::-webkit-scrollbar {

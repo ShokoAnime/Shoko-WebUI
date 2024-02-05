@@ -20,8 +20,8 @@ const DashboardTitleToggle = ({
     <Button
       onClick={() => setSecondaryActive(false)}
       className={cx(
-        'bg-panel-background-alt w-36 rounded-lg mr-2 py-3 px-4',
-        !secondaryActive && 'bg-panel-menu-item-background text-panel-menu-item-text',
+        'bg-panel-toggle-background-alt w-36 text-panel-toggle-text-alt rounded-lg mr-2 py-3 px-4 hover:bg-panel-toggle-background-hover',
+        !secondaryActive && '!bg-panel-toggle-background text-panel-toggle-text',
       )}
     >
       {mainTitle}
@@ -29,8 +29,8 @@ const DashboardTitleToggle = ({
     <Button
       onClick={() => setSecondaryActive(true)}
       className={cx(
-        'bg-panel-background-alt rounded-lg w-36 py-3 px-4',
-        secondaryActive && 'bg-panel-menu-item-background text-panel-menu-item-text',
+        'bg-panel-toggle-background-alt text-panel-toggle-text-alt rounded-lg w-36 py-3 px-4 hover:bg-panel-toggle-background-hover',
+        secondaryActive && '!bg-panel-toggle-background text-panel-toggle-text',
       )}
     >
       {secondaryTitle}

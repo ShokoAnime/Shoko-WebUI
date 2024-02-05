@@ -140,15 +140,15 @@ function LoginPage() {
           </div>
         )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
-          <div className="flex flex-row items-center gap-x-16 p-6">
-            <div className="flex w-[15.625em] flex-col items-center gap-y-6">
-              <ShokoIcon className="w-24" />
-              <div className="flex flex-col gap-y-2 text-center font-semibold">
+          <div className="flex flex-row items-center gap-x-6 p-6">
+            <div className="flex flex-col items-center gap-y-6 px-[4.5rem] py-6">
+              <ShokoIcon className="w-[9.375rem]" />
+              <div className="flex flex-col gap-y-1 text-center font-semibold">
                 <span>Version</span>
                 <span>{parsedVersion}</span>
               </div>
             </div>
-            <div className="flex w-[28rem] flex-col gap-y-4">
+            <div className="flex w-[28rem] flex-col gap-y-6">
               {!serverStatusQuery.data?.State && (
                 <div className="flex items-center justify-center">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
@@ -193,7 +193,7 @@ function LoginPage() {
                   />
                   <Button
                     buttonType="primary"
-                    className="w-full py-2 font-semibold"
+                    className="w-full"
                     submit
                     loading={isLoginPending}
                     disabled={versionQuery.isFetching || username === ''}
@@ -262,7 +262,7 @@ function LoginPage() {
                   )}
               </div>
             </div>
-            <div className="flex flex-row gap-x-4">
+            <div className="flex flex-row gap-x-6">
               <a
                 href="https://discord.gg/vpeHDsg"
                 target="_blank"

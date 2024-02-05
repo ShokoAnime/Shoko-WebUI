@@ -24,10 +24,10 @@ const CalendarConfig = {
 };
 
 const DateSection: React.FC<{ airDate: dayjs.Dayjs, relativeTime: string }> = ({ airDate, relativeTime }) => (
-  <>
+  <div>
     <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
-    <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
-  </>
+    <p className="truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
+  </div>
 );
 
 const ImageSection: React.FC<
@@ -107,7 +107,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
     <div
       key={`episode-${episode.IDs.ID}`}
       className={cx(
-        'mr-4 flex w-56 shrink-0 flex-col justify-center  last:mr-0',
+        'mr-6 flex w-56 shrink-0 flex-col justify-center gap-y-3 last:mr-0',
         episode.IDs.ShokoSeries && 'group',
       )}
     >

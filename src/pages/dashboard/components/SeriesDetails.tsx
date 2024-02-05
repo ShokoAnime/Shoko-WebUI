@@ -13,7 +13,7 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
   return (
     <Link
       key={`series-${series.IDs.ID}`}
-      className="group mr-4 flex w-56 shrink-0 flex-col justify-center gap-y-3 last:mr-0"
+      className="group mr-6 flex w-56 shrink-0 flex-col justify-center gap-y-3 last:mr-0"
       to={`/webui/collection/series/${series.IDs.ID}`}
     >
       <BackgroundImagePlaceholderDiv

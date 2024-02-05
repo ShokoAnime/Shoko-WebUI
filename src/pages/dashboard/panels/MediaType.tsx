@@ -29,8 +29,8 @@ const getColor = (type: string) => {
 };
 
 const Item = ({ count, countPercentage, item }: { count: number, countPercentage: number, item: string }) => (
-  <>
-    <div className="mt-5 flex first:mt-0">
+  <div>
+    <div className="mb-1 flex">
       <span className="grow">
         {names[item] ?? item}
         &nbsp;-&nbsp;
@@ -42,11 +42,11 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
         %
       </span>
     </div>
-    <div className="mt-2 flex rounded-md bg-panel-input">
+    <div className="flex rounded-lg bg-panel-input">
       {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
       <div className={`bg-${getColor(item)} h-4 rounded-md`} style={{ width: `${countPercentage}%` }} />
     </div>
-  </>
+  </div>
 );
 
 function MediaType() {
@@ -75,7 +75,7 @@ function MediaType() {
 
   return (
     <ShokoPanel title="Media Type" isFetching={seriesSummaryQuery.isPending} editMode={layoutEditMode}>
-      {items}
+      <div className="flex grow flex-col justify-between">{items}</div>
     </ShokoPanel>
   );
 }

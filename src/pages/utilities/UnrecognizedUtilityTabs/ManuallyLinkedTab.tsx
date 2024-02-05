@@ -243,7 +243,7 @@ function ManuallyLinkedTab() {
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
                 onClick={unlinkFiles}
               >
-                <Icon path={mdiLinkOff} size={0.8333} />
+                <Icon path={mdiLinkOff} size={1} />
                 Unlink
               </Button>
             </TransitionDiv>

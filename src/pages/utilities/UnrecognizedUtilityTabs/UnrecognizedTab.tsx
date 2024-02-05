@@ -359,7 +359,7 @@ function UnrecognizedTab() {
                   className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
-                  <Icon path={mdiOpenInNew} size={0.8333} />
+                  <Icon path={mdiOpenInNew} size={1} />
                   <span>Manual Link</span>
                 </Button>
                 <Button
@@ -368,7 +368,7 @@ function UnrecognizedTab() {
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
-                  <Icon path={mdiDumpTruck} size={0.8333} />
+                  <Icon path={mdiDumpTruck} size={1} />
                   <span>
                     {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
                     {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}

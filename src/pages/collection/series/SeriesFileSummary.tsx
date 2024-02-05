@@ -263,7 +263,7 @@ const SeriesFileSummary = () => {
                       rel="noopener noreferrer"
                     >
                       {episode.ID}
-                      <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={0.8333} />
+                      <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
                     </a>
                     )
                   </div>

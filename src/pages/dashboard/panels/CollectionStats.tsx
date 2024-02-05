@@ -12,7 +12,7 @@ const Item = (
   { link, title, value = 0 }: { title: string, value?: string | number, link?: string },
 ) => (
   <div className="flex">
-    <div className="mb-1 grow last:mb-0">
+    <div className="grow">
       {title}
     </div>
     {link ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link> : <div>{value}</div>}
@@ -58,14 +58,19 @@ function CollectionStats() {
   ];
 
   return (
-    <ShokoPanel title="Collection Statistics" isFetching={statsQuery.isPending} editMode={layoutEditMode}>
-      <div className="flex flex-col">
+    <ShokoPanel
+      title="Collection Statistics"
+      isFetching={statsQuery.isPending}
+      editMode={layoutEditMode}
+      contentClassName="flex gap-y-6"
+    >
+      <div className="flex flex-col gap-y-1">
         {childrenFirst}
       </div>
-      <div className="mt-4 flex flex-col">
+      <div className="flex flex-col gap-y-1">
         {childrenSecond}
       </div>
-      <div className="mt-4 flex flex-col">
+      <div className="flex flex-col gap-y-1">
         {childrenThird}
       </div>
     </ShokoPanel>
