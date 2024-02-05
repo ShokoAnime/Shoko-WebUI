@@ -122,12 +122,12 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
 
   return (
     <div
-      className="flex h-full shrink-0 grow flex-col content-center gap-y-4 rounded-md border border-panel-border bg-panel-background p-6"
+      className="flex h-full shrink-0 grow flex-col content-center gap-y-3 rounded-md border border-panel-border bg-panel-background p-6"
       style={{
         width: `${((isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
       }}
     >
-      <div className="flex gap-x-4">
+      <div className="flex gap-x-3">
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
             image={poster}
@@ -152,11 +152,11 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
             )}
           </BackgroundImagePlaceholderDiv>
         </Link>
-        <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-3">
           <div className="font-semibold" title={item.Name}>{item.Name}</div>
 
           <div className="flex flex-col gap-y-3">
-            <div className="flex flex-nowrap gap-x-4">
+            <div className="flex flex-nowrap items-center gap-x-3">
               {showItemType && (
                 <div className="flex items-center gap-x-2 align-middle">
                   <Icon path={mdiTelevision} size={1} />
@@ -187,7 +187,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
               )}
             </div>
 
-            <div className="flex flex-nowrap gap-x-4">
+            <div className="flex flex-nowrap items-center gap-x-3">
               <div className="flex items-center gap-x-2 align-middle">
                 <Icon path={mdiFileDocumentMultipleOutline} size={1} />
                 <div className="flex gap-x-2 text-sm font-semibold ">

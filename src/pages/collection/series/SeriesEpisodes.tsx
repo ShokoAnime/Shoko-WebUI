@@ -174,14 +174,14 @@ const SeriesEpisodes = () => {
             </div>
             <div className="flex gap-x-4 xl:gap-x-6">
               <Button
-                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                className="flex items-center gap-x-3 !text-base"
                 onClick={markWatched}
               >
                 <Icon path={mdiEyeCheckOutline} size={1} />
                 Mark Filtered As Watched
               </Button>
               <Button
-                className="flex items-center gap-x-2 !font-normal hover:bg-button-secondary-hover"
+                className="flex items-center gap-x-3 !text-base"
                 onClick={markUnwatched}
               >
                 <Icon path={mdiEyeOutline} size={1} />

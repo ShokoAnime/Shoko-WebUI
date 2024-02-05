@@ -1,7 +1,6 @@
 import React, { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import { forEach, keys, map, values } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
@@ -11,6 +10,7 @@ import SeasonCriteria from '@/components/Collection/Filter/SeasonCriteria';
 import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
+import ButtonIcon from '@/components/Input/ButtonIcon';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { buildSidebarFilter } from '@/core/buildFilter';
 import {
@@ -42,14 +42,8 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
 
 type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
 const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
-  <div
-    className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
-    onClick={onClick}
-  >
-    <Icon path={icon} size={1} />
-  </div>
+  <ButtonIcon icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
 );
-
 type OptionsProps = {
   showModal: () => void;
 };

@@ -49,7 +49,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   return (
     <div className="flex w-full flex-col gap-y-6">
       <div className="flex w-full border-b-2 border-panel-border pb-4 text-xl font-semibold">Series Information</div>
-      <div className="flex w-full flex-col gap-y-3">
+      <div className="flex w-full flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Type</div>
           {series?.AniDB?.Type}
@@ -104,7 +104,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
         </div>
       </div>
       <div className="flex w-full border-b-2 border-panel-border pb-4 text-xl font-semibold">User Stats</div>
-      <div className="flex w-full flex-col gap-y-3">
+      <div className="flex w-full flex-col gap-y-1">
         <div className="flex justify-between">
           <div className="font-semibold ">File Count</div>
           <div className="flex flex-row gap-x-1">

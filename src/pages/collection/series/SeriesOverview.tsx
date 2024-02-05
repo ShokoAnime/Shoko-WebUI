@@ -73,7 +73,7 @@ const SeriesOverview = () => {
                   const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
                   return (
                     <div
-                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
                       key={`${site}-${id}`}
                     >
                       <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
@@ -82,7 +82,7 @@ const SeriesOverview = () => {
                 }
                 return idOrIds.map(id => (
                   <div
-                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
                     key={`${site}-${id}`}
                   >
                     <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
@@ -105,14 +105,16 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
                       className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
-                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-text-important">{itemRelation}</span>
+                    <div>
+                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                      <span className="text-sm text-panel-text-important">{itemRelation}</span>
+                    </div>
                   </div>
                 );
               }
@@ -152,19 +154,21 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
                       className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
                     />
-                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-text-important">
-                      {round(item.UserApproval.Value, 2)}
-                      % (
-                      {item.UserApproval.Votes}
-                      &nbsp;votes)
-                    </span>
+                    <div>
+                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                      <span className="text-sm text-panel-text-important">
+                        {round(item.UserApproval.Value, 2)}
+                        % (
+                        {item.UserApproval.Votes}
+                        &nbsp;votes)
+                      </span>
+                    </div>
                   </div>
                 );
               }
@@ -202,7 +206,7 @@ const SeriesOverview = () => {
             seiyuu.RoleName === 'Seiyuu' && (
               <div
                 key={`${seiyuu.Character.Name}-${seiyuu.Staff.Name}`}
-                className="flex flex-col items-center gap-y-4 pb-4"
+                className="flex flex-col items-center gap-y-3 pb-3"
               >
                 <div className="flex gap-x-4">
                   <CharacterImage

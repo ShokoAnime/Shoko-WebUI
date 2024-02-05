@@ -8,11 +8,11 @@ import {
   mdiMagnify,
   mdiViewGridOutline,
 } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import { useToggle } from 'usehooks-ts';
 
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
+import ButtonIcon from '@/components/Input/ButtonIcon';
 import Input from '@/components/Input/Input';
 
 type Props = {
@@ -28,12 +28,7 @@ type Props = {
 
 const OptionButton = memo(
   ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
-    <div
-      className="cursor-pointer rounded border border-panel-border bg-button-secondary px-5 py-2 drop-shadow-md"
-      onClick={onClick}
-    >
-      <Icon path={icon} size={1} />
-    </div>
+    <ButtonIcon icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
   ),
 );
 

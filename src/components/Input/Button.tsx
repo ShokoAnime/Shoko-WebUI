@@ -3,6 +3,8 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
+
 type Props = {
   buttonType?: string;
   buttonSize?: string;
@@ -14,19 +16,6 @@ type Props = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   submit?: boolean;
   tooltip?: string;
-};
-
-const buttonTypeClasses = {
-  primary:
-    'bg-button-primary text-button-primary-text border border-button-primary-border hover:bg-button-primary-hover',
-  secondary:
-    'bg-button-secondary text-button-secondary-text border border-button-secondary-border hover:bg-button-secondary-hover',
-  danger: 'bg-button-danger text-button-danger-text border border-button-danger-border hover:bg-button-danger-hover',
-};
-
-const buttonSizeClasses = {
-  normal: 'px-4 py-2',
-  small: ' px-4 py-1',
 };
 
 const Button = React.memo(

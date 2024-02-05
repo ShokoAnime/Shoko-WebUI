@@ -80,7 +80,7 @@ const CollectionView = (props: Props) => {
     return (
       <div
         className={cx(
-          'flex grow rounded-md items-center font-semibold justify-center max-h-screen',
+          'flex grow rounded-lg items-center font-semibold justify-center max-h-screen',
           mode === 'poster' && 'px-6 py-6 bg-panel-background border-panel-border border',
         )}
       >
@@ -96,7 +96,7 @@ const CollectionView = (props: Props) => {
   return (
     <div
       className={cx(
-        'flex grow rounded-md',
+        'flex grow rounded-lg',
         mode === 'poster' && 'px-6 py-6 bg-panel-background border-panel-border border',
       )}
     >
@@ -134,7 +134,7 @@ const CollectionView = (props: Props) => {
               if (!isFetchingNextPage) fetchNextPageDebounced();
               children.push(
                 <div
-                  className="flex shrink-0 items-center justify-center rounded-md border border-panel-border text-panel-text-primary"
+                  className="flex shrink-0 items-center justify-center rounded-lg border border-panel-border text-panel-text-primary"
                   key={`loading-${i}`}
                   style={{
                     width: `${itemWidth / 16}rem`,
@@ -168,7 +168,7 @@ const CollectionView = (props: Props) => {
               className={cx(
                 'absolute top-0 left-0 w-full flex items-center justify-center last:pb-0',
                 mode === 'poster'
-                  ? 'gap-x-4 pb-4'
+                  ? 'gap-x-6 pb-4'
                   : 'gap-x-6 pb-8',
               )}
               style={{

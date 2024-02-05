@@ -41,7 +41,7 @@ const ImageSection: React.FC<
   >
     {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />}
     {isInCollection && (
-      <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
         In Collection
       </div>
     )}

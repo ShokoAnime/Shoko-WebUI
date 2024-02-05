@@ -5,7 +5,6 @@ import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import { posterItemSize } from '@/components/Collection/constants';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -46,15 +45,18 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
 
   return (
     <Link to={viewRouteLink()}>
-      <div className="group flex shrink-0 flex-col content-center" style={{ width: `${posterItemSize.width / 16}rem` }}>
+      <div
+        className="group flex shrink-0 flex-col content-center gap-y-3"
+        style={{ width: '12.938rem' }}
+      >
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="mb-3 h-[19.0625rem] rounded-md border border-panel-border drop-shadow-md"
+          className="h-[19rem] rounded-md border border-panel-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >
           {showUnwatchedCount && (
-            <div className="absolute right-0 top-0 flex min-w-[2.5rem] justify-center rounded-bl-md bg-panel-background-overlay p-2 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
+            <div className="absolute right-0 top-0 flex min-w-[2.81rem] justify-center rounded-bl-md bg-panel-background-overlay p-3 font-semibold opacity-100 transition-opacity group-hover:opacity-0">
               {unwatchedCount || (
                 <Icon path={mdiCheckboxMarkedCircleOutline} size={1} className="text-panel-icon-important" />
               )}
@@ -77,16 +79,18 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
         </BackgroundImagePlaceholderDiv>
-        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>{item.Name}</p>
-        {showEpisodeCount && (
-          <p
-            className="mt-1.5 line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
-            title={episodeCount.toString()}
-          >
-            {episodeCount}
-            &nbsp;Episodes
-          </p>
-        )}
+        <div>
+          <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>{item.Name}</p>
+          {showEpisodeCount && (
+            <p
+              className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
+              title={episodeCount.toString()}
+            >
+              {episodeCount}
+              &nbsp;Episodes
+            </p>
+          )}
+        </div>
       </div>
     </Link>
   );

@@ -18,10 +18,10 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 
   return (
     <Link to={`/webui/collection/series/${series.IDs.ID}`}>
-      <div className="flex gap-x-4" key={series.IDs.ID}>
+      <div className="flex gap-x-3" key={series.IDs.ID}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-20 w-[3.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
+          className="h-[6rem] w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
         />
         <div className="flex flex-col font-semibold">
           <div className="flex gap-y-2">
@@ -38,7 +38,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 
 const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: SeriesType[] }) => (
   <div className="flex min-h-full overflow-hidden transition-all">
-    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-6 rounded border border-panel-border bg-panel-background p-6">
+    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background p-6">
       <div className="text-xl font-semibold">Timeline</div>
       {isFetching
         ? (
@@ -47,7 +47,7 @@ const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: 
           </div>
         )
         : (
-          <div className="flex flex-col gap-y-4">
+          <div className="flex flex-col gap-y-3">
             {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
           </div>
         )}
