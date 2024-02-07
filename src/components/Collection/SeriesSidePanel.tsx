@@ -22,7 +22,7 @@ const SeriesSidePanel = ({ series }: SeriesSidePanelProps) => {
   const onClickHandler = useEventCallback(() => setShowEditSeriesModal(true));
 
   return (
-    <div className="hidden w-full flex-col gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6 lg:order-first lg:flex lg:max-w-[35%] 2xl:max-w-[28.125rem]">
+    <div className="hidden w-full flex-col gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6 lg:order-last lg:flex lg:max-w-[35%] 2xl:max-w-[28.125rem]">
       <BackgroundImagePlaceholderDiv
         image={mainPoster}
         className="aspect-[5/6] rounded drop-shadow-md lg:aspect-[4/6]"

@@ -92,7 +92,6 @@ const Series = () => {
 
   return (
     <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-2 2xl:gap-x-6">
-      <SeriesSidePanel series={series} />
       <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6">
         <div className="flex flex-row gap-x-6">
           <div className="flex w-full gap-x-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
@@ -147,6 +146,7 @@ const Series = () => {
         </div>
         <Outlet context={{ scrollRef }} />
       </div>
+      <SeriesSidePanel series={series} />
       <div
         className="fixed left-0 top-0 -z-10 h-full w-full opacity-20"
         style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
