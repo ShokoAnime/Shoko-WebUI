@@ -117,6 +117,7 @@ const Menu = (
         const failedCount = countBy(result, 'status').rejected;
         if (failedCount) toast.error(`Error ignoring ${failedCount} files!`);
         if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files ignored!`);
+        invalidateQueries(['files']);
         setSelectedRows([]);
       })
       .catch(console.error);
