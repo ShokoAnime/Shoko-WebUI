@@ -96,7 +96,6 @@ function IgnoredFilesTab() {
   const filesQuery = useFilesInfiniteQuery(
     {
       pageSize: 50,
-      include: ['Ignored'],
       include_only: ['Ignored'],
       sortOrder: debouncedSearch
         ? []
