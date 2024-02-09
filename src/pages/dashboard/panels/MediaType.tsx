@@ -44,7 +44,7 @@ const Item = ({ count, countPercentage, item }: { count: number, countPercentage
     </div>
     <div className="flex rounded-lg bg-panel-input">
       {/* eslint-disable-next-line tailwindcss/no-custom-classname */}
-      <div className={`bg-${getColor(item)} h-4 rounded-md`} style={{ width: `${countPercentage}%` }} />
+      <div className={`bg-${getColor(item)} h-4 rounded-lg`} style={{ width: `${countPercentage}%` }} />
     </div>
   </div>
 );

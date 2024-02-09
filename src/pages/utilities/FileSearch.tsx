@@ -122,7 +122,7 @@ const Menu = (
   });
 
   return (
-    <div className="box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <div className={cx('grow gap-x-4', selectedRows.length === 0 ? 'flex' : 'hidden')}>
         <MenuButton
           onClick={() => {
@@ -317,7 +317,7 @@ const FileSearch = () => {
         </div>
       </ShokoPanel>
       <div className="contain-strict flex grow justify-between gap-x-6 overflow-y-auto">
-        <div className="flex w-full rounded-md border border-panel-border bg-panel-background p-6 lg:max-w-[75%]">
+        <div className="flex w-full rounded-lg border border-panel-border bg-panel-background p-6 lg:max-w-[75%]">
           {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />
@@ -346,7 +346,7 @@ const FileSearch = () => {
         </div>
         <div className="flex w-full flex-col lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
-            <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden rounded-md border border-panel-border bg-panel-background p-6">
+            <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
               <div className="flex w-full flex-col overflow-y-auto pr-4">
                 <FilesSummary title="Selected Summary" items={selectedRows} />
                 <div className="my-8 flex w-full text-xl font-semibold">
@@ -369,7 +369,7 @@ const FileSearch = () => {
             </div>
           )}
           {!selectedRows?.length && (
-            <div className="flex h-full w-full flex-col rounded-md border border-panel-border bg-panel-background p-6">
+            <div className="flex h-full w-full flex-col rounded-lg border border-panel-border bg-panel-background p-6">
               <div className="flex grow items-center justify-center font-semibold">Select File To Populate</div>
             </div>
           )}

@@ -30,6 +30,7 @@ const Checkbox = memo((props: Props) => {
         'flex items-center transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
         disabled ? 'opacity-65 cursor-auto' : 'cursor-pointer',
+        'h-[2rem]',
       ])}
     >
       <input

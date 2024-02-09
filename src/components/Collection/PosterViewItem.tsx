@@ -51,7 +51,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
       >
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-[19rem] rounded-md border border-panel-border drop-shadow-md"
+          className="h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >

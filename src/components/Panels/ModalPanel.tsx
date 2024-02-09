@@ -17,8 +17,8 @@ type Props = {
 };
 
 const sizeClass = {
-  sm: 'w-[36rem]',
-  md: 'w-[45rem]',
+  sm: 'w-[37.5rem]',
+  md: 'w-[50rem]',
   lg: 'w-[62rem]',
 };
 
@@ -52,7 +52,7 @@ function ModalPanel(props: Props) {
       <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex flex-col rounded-md border border-panel-border bg-panel-background drop-shadow-lg',
+            'flex flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg',
             sizeClass[size ?? 'md'],
             !noPadding && ('gap-y-6'),
             fullHeight ? 'h-[66%]' : 'max-h-[66%]',
@@ -62,7 +62,7 @@ function ModalPanel(props: Props) {
         >
           <div>
             {header && (
-              <div className="rounded-t-md border-b border-panel-border bg-panel-background-alt p-6 text-xl font-semibold">
+              <div className="rounded-t-lg border-b border-panel-border bg-panel-background-alt p-6 text-xl font-semibold">
                 {header}
                 {subHeader && <div className="mt-1 text-base">{subHeader}</div>}
               </div>

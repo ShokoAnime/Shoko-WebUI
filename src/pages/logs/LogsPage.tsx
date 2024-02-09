@@ -34,7 +34,7 @@ const LogsPage = () => {
 
   return (
     <div className="flex grow flex-col gap-y-6">
-      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background px-6 py-4">
+      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background px-6 py-4">
         <div className="text-xl font-semibold">Logs</div>
         <div className="flex items-center gap-x-4">
           <Input
@@ -64,9 +64,9 @@ const LogsPage = () => {
         </div>
       </div>
 
-      <div className="flex grow rounded-md border border-panel-border bg-panel-background p-6">
+      <div className="flex grow rounded-lg border border-panel-border bg-panel-background p-6">
         <div
-          className="contain-strict w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
+          className="contain-strict w-full overflow-y-auto rounded-lg border-16 border-panel-input bg-panel-input"
           ref={parentRef}
         >
           {logLines.length === 0

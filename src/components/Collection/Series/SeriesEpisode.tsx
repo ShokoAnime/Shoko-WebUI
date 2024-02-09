@@ -28,7 +28,7 @@ type Props = {
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
   show
     ? (
-      <div className="flex items-center justify-center rounded-md bg-panel-background-transparent px-3 py-2 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+      <div className="flex items-center justify-center rounded-lg bg-panel-background-transparent px-3 py-2 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
         <Icon path={icon} size={1} />
       </div>
     )
@@ -64,7 +64,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
       <div className={cx('z-10 flex items-center gap-x-6', !nextUp && 'p-6')}>
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
-          className="group h-[13rem] min-w-[22.3125rem] rounded-md border border-panel-border"
+          className="group h-[13rem] min-w-[22.3125rem] rounded-lg border border-panel-border"
           zoomOnHover
         >
           <div className="pointer-events-none absolute right-3 top-3 z-10 transition-opacity group-hover:opacity-0">

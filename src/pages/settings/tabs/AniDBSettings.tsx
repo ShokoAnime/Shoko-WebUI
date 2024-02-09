@@ -65,20 +65,29 @@ function AniDBSettings() {
 
   return (
     <>
-      <div className="text-xl font-semibold">AniDB</div>
-      <div className="mt-0.5 flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">AniDB</div>
+        <div>
+          Configure the information Shoko retrieves from AniDB for the series in your collection, and set your
+          preferences for MyList options and the general updating of AniDB data.
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
+      <div className="mt-0.5 flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="font-semibold">Login Options</div>
+          <div className="items-center font-semibold">Login Options</div>
           <Button
             onClick={() => testLogin()}
             loading={isAnidbLoginPending}
             buttonType="primary"
-            className="px-4"
+            buttonSize="small"
           >
             Test
           </Button>
         </div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+        <div className="flex flex-col gap-y-1">
           <div className="flex justify-between">
             Username
             <InputSmall
@@ -86,7 +95,7 @@ function AniDBSettings() {
               value={Username}
               type="text"
               onChange={event => updateSetting('AniDb', 'Username', event.target.value)}
-              className="w-32 px-3 py-1"
+              className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
@@ -96,7 +105,7 @@ function AniDBSettings() {
               value={Password}
               type="password"
               onChange={event => updateSetting('AniDb', 'Password', event.target.value)}
-              className="w-32 px-3 py-1"
+              className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
@@ -106,7 +115,7 @@ function AniDBSettings() {
               value={ClientPort}
               type="number"
               onChange={event => updateSetting('AniDb', 'ClientPort', event.target.value)}
-              className="w-32 px-3 py-1"
+              className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
@@ -116,7 +125,7 @@ function AniDBSettings() {
               value={AVDumpKey}
               type="password"
               onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)}
-              className="w-32 px-3 py-1"
+              className="w-36 px-3 py-1"
             />
           </div>
           <div className="flex justify-between">
@@ -126,15 +135,17 @@ function AniDBSettings() {
               value={AVDumpClientPort}
               type="number"
               onChange={event => updateSetting('AniDb', 'AVDumpClientPort', event.target.value)}
-              className="w-32 px-3 py-1"
+              className="w-36 px-3 py-1"
             />
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Download Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Download Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Character Images"
@@ -181,9 +192,11 @@ function AniDBSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Mylist Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Mylist Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Add Files"
@@ -251,9 +264,11 @@ function AniDBSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Update Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Update Options</div>
+        <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             <span>Calendar</span>
             <SelectSmall
@@ -306,6 +321,7 @@ function AniDBSettings() {
           </div>
         </div>
       </div>
+      <div className="border-b border-panel-border" />
     </>
   );
 }

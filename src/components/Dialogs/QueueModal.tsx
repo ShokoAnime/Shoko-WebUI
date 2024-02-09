@@ -245,7 +245,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
       header={<Title activeTab={activeTab} count={count} tabs={tabs} />}
     >
       <div className="flex gap-x-3">
-        <div className="flex grow gap-x-2 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+        <div className="flex grow gap-x-2 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
           <MenuButton
             highlight
             onClick={toggleShowAll}
@@ -281,7 +281,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
         </Button>
       </div>
       <div className="flex flex-col">
-        <div className="flex w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+        <div className="flex w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
           <div className="grow">
             <strong>Task</strong>
           </div>
@@ -289,7 +289,7 @@ const QueueModal = ({ onClose, show: showModal }: Props) => {
             <strong>Status</strong>
           </div>
         </div>
-        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
+        <div className="mt-2 w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
           <div className="flex h-64 flex-col overflow-y-auto bg-panel-input">
             {items}
             {isLoading && (

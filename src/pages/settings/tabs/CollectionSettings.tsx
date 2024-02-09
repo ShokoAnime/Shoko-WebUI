@@ -133,11 +133,20 @@ const CollectionSettings = () => {
 
   return (
     <>
-      <div className="text-xl font-semibold">Collection</div>
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">Collection</div>
+        <div>
+          Set your preferred language for the series and episodes in your collection, and determine how Shoko groups
+          related series within your collection.
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
       {/* Language Settings */}
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Language Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Language Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             label="Also Use Synonyms"
             id="LanguageUseSynonyms"
@@ -151,7 +160,7 @@ const CollectionSettings = () => {
               <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
+          <div className="my-2 flex rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result)}>
               {newSettings.LanguagePreference.map(language => (
                 {
@@ -174,13 +183,13 @@ const CollectionSettings = () => {
               <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="flex rounded-md border border-panel-border bg-panel-input p-4">
+          <div className="mt-2 flex rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result, true)}>
               {newSettings.EpisodeLanguagePreference.map(language => (
                 {
                   key: language,
                   item: (
-                    <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
+                    <div className="mt-2 flex items-center justify-between group-first:mt-0">
                       {languageDescription[language]}
                       <Button onClick={() => removeLanguage(language, true)} tooltip="Remove">
                         <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
@@ -195,10 +204,12 @@ const CollectionSettings = () => {
       </div>
       <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
 
+      <div className="border-b border-panel-border" />
+
       {/*   Relation Settings */}
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Relation Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Relation Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Auto Group Series"
@@ -215,7 +226,7 @@ const CollectionSettings = () => {
               setNewSettings({ ...newSettings, AutoGroupSeriesUseScoreAlgorithm: event.target.checked })}
           />
           Exclude following relations
-          <div className="flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-input p-4">
+          <div className="mt-2 flex flex-col gap-y-1.5 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             {keys(exclusionMapping).map((item: keyof typeof exclusionMapping) => (
               <Checkbox
                 justify
@@ -229,6 +240,7 @@ const CollectionSettings = () => {
           </div>
         </div>
       </div>
+      <div className="border-b border-panel-border" />
     </>
   );
 };

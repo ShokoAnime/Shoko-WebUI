@@ -75,7 +75,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
         <option value="Or">Match Any</option>
         <option value="And">Match All</option>
       </Select>
-      <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+      <div className="flex grow basis-0 overflow-y-auto rounded-lg bg-panel-input p-4">
         <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
           {map(unusedValues, value => (
             <div
@@ -92,7 +92,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
       </div>
       <div className="flex grow flex-col gap-y-4">
         <div className="font-semibold">Selected Values</div>
-        <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+        <div className="flex grow basis-0 overflow-y-auto rounded-lg bg-panel-input p-4">
           <div className="flex w-full flex-col gap-y-2 overflow-y-auto bg-panel-input">
             {map([...selectedValues, ...unsavedValues], value => (
               <div

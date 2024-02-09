@@ -17,9 +17,9 @@ type Props = {
 };
 
 const buttonTypeClasses = {
-  primary: 'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md',
-  secondary: 'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-md',
-  danger: 'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md',
+  primary: 'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-lg',
+  secondary: 'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-lg',
+  danger: 'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-lg',
 };
 
 const ButtonDropdown = (props: Props) => {

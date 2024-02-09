@@ -24,7 +24,7 @@ function SelectSmall(props: Props) {
   } = props;
 
   return (
-    <label className={`${className} flex items-center justify-between`} htmlFor={id}>
+    <label className={`${className} flex h-[2rem] items-center justify-between`} htmlFor={id}>
       {label && (
         <div className="flex justify-center">
           {label}

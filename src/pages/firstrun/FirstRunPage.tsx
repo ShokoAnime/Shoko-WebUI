@@ -97,7 +97,7 @@ function FirstRunPage() {
   return (
     <div className=" flex w-full justify-center">
       <div className="flex h-full w-full max-w-[120rem] gap-x-6 p-6">
-        <div className="flex w-[31.25rem] flex-col items-center rounded-md border border-panel-border bg-panel-background-transparent p-6">
+        <div className="flex w-[31.25rem] flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           <div className="flex flex-col items-center gap-y-4">
             <ShokoIcon className="w-32" />
             <div className="flex items-center gap-x-2 font-semibold">
@@ -136,7 +136,7 @@ function FirstRunPage() {
           </div>
         </div>
 
-        <div className="flex grow flex-col items-center justify-center rounded-md border border-panel-border bg-panel-background-transparent p-6">
+        <div className="flex grow flex-col items-center justify-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           <Outlet
             context={{
               fetching: settingsQuery.isFetching,

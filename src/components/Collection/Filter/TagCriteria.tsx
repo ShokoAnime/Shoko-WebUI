@@ -12,7 +12,7 @@ type TagLineProps = {
   values: string[];
 };
 const TagLine = ({ title, values }: TagLineProps) => (
-  <div className="rounded-md border border-panel-border bg-panel-input px-4 py-3">
+  <div className="rounded-lg border border-panel-border bg-panel-input px-4 py-3">
     <div className="line-clamp-3">
       <span className="pr-2 text-panel-text-important">{title}</span>
       {values.join(', ')}

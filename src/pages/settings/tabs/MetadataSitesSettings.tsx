@@ -16,10 +16,19 @@ function MetadataSitesSettings() {
 
   return (
     <>
-      <div className="text-xl font-semibold">Metadata Sites</div>
-      <div className="mt-0.5 flex flex-col gap-y-4">
-        <div className="font-semibold">MovieDB Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">Metadata Sites</div>
+        <div>
+          Customize the information and images that Shoko downloads for the series in your collection, and optionally
+          link your Plex and/or Trakt account to your Shoko account.
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">TMDB Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Download Fanart"
@@ -29,7 +38,7 @@ function MetadataSitesSettings() {
           />
           <div
             className={cx(
-              'flex justify-between transition-opacity',
+              'flex justify-between transition-opacity items-center',
               !MovieDb.AutoFanart && 'pointer-events-none opacity-65',
             )}
           >
@@ -51,7 +60,7 @@ function MetadataSitesSettings() {
           />
           <div
             className={cx(
-              'flex justify-between transition-opacity',
+              'flex justify-between transition-opacity items-center',
               !MovieDb.AutoPosters && 'pointer-events-none opacity-65',
             )}
           >
@@ -67,9 +76,11 @@ function MetadataSitesSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">TVDB Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">TVDB Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Auto Link"
@@ -105,7 +116,7 @@ function MetadataSitesSettings() {
           />
           <div
             className={cx(
-              'flex justify-between transition-opacity',
+              'flex justify-between transition-opacity items-center',
               !TvDB.AutoFanart && 'pointer-events-none opacity-65',
             )}
           >
@@ -127,7 +138,7 @@ function MetadataSitesSettings() {
           />
           <div
             className={cx(
-              'flex justify-between transition-opacity',
+              'flex justify-between transition-opacity items-center',
               !TvDB.AutoPosters && 'pointer-events-none opacity-65',
             )}
           >
@@ -149,7 +160,7 @@ function MetadataSitesSettings() {
           />
           <div
             className={cx(
-              'flex justify-between transition-opacity',
+              'flex justify-between transition-opacity items-center',
               !TvDB.AutoWideBanners && 'pointer-events-none opacity-65',
             )}
           >
@@ -164,10 +175,11 @@ function MetadataSitesSettings() {
           </div>
         </div>
       </div>
-
+      <div className="border-b border-panel-border" />
       <TraktSettings />
-
+      <div className="border-b border-panel-border" />
       <PlexSettings />
+      <div className="border-b border-panel-border" />
     </>
   );
 }

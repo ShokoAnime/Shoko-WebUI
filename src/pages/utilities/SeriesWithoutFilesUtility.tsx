@@ -75,7 +75,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   };
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
@@ -135,7 +135,7 @@ function SeriesWithoutFilesUtility() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-6">
+      <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
         {seriesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />

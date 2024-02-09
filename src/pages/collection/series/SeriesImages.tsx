@@ -89,7 +89,7 @@ const SeriesImages = () => {
   return (
     <div className="flex gap-x-6">
       <div className="flex grow flex-col gap-y-6">
-        <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-6 py-4">
+        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
           <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
           <div className="text-xl font-semibold">
             <span className="text-panel-text-important">{get(images, type, []).length}</span>
@@ -111,7 +111,7 @@ const SeriesImages = () => {
           <InfoLine title="Size" value="-" />
           <Button
             buttonType="primary"
-            className="rounded-md border border-panel-border p-3 font-semibold"
+            className="rounded-lg border border-panel-border p-3 font-semibold"
             disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
               changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
@@ -125,7 +125,7 @@ const SeriesImages = () => {
             {`Set As Default ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
-        <div className="flex flex-wrap gap-4 rounded-md border border-panel-border bg-panel-background-transparent p-4">
+        <div className="flex flex-wrap gap-4 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
           {map(get(images, type, []), (item: ImageType) => (
             <div
               onClick={() => {
@@ -136,7 +136,7 @@ const SeriesImages = () => {
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-md drop-shadow-md border',
+                  'rounded-lg drop-shadow-md border',
                   item === selectedImage ? 'border-panel-text-important border-2 opacity-65' : 'border-panel-border',
                   sizeMap[type],
                 )}

@@ -65,7 +65,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
         return (
           <div className="flex flex-col gap-y-6" key={selectedFile.ID}>
             <div className="flex grow gap-x-2">
-              <div className="flex grow gap-x-3 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+              <div className="flex grow gap-x-3 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleRescan(selectedFile.ID)}

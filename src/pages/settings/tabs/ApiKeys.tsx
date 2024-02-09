@@ -30,7 +30,7 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
       <div className="flex w-[90%] flex-col">
         {token.Device}
       </div>
-      <Button buttonType="danger" className="px-2 py-1 text-sm" onClick={onDeleteClick} loading={isPending}>
+      <Button buttonType="danger" buttonSize="small" onClick={onDeleteClick} loading={isPending}>
         Delete
       </Button>
     </div>
@@ -88,11 +88,19 @@ const ApiKeys = () => {
 
   return (
     <>
-      <div className="text-xl font-semibold">API Keys</div>
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">API Keys</div>
+        <div>
+          Below are all the API keys utilized by Shoko and other programs/plugins. You can create new ones or remove
+          existing ones as needed.
+        </div>
+      </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Generate API Key</div>
-        <div className="flex flex-row justify-between gap-x-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Generate API Key</div>
+        <div className="flex flex-row justify-between gap-x-2">
           <Input
             id="key-input"
             endIcons={createdToken
@@ -104,7 +112,6 @@ const ApiKeys = () => {
               : undefined}
             className={cx(!isTokenGenerated ? 'w-full xl:w-[65%]' : 'w-[100%]')}
             disabled={!!createdToken}
-            inputClassName="px-4 py-3"
             onChange={onDeviceNameChange}
             type="text"
             value={createdToken ?? deviceName}
@@ -112,7 +119,8 @@ const ApiKeys = () => {
           />
           <Button
             buttonType="primary"
-            className={cx('px-2 font-semibold', isTokenGenerated && 'hidden')}
+            buttonSize="normal"
+            className={cx(isTokenGenerated && 'hidden')}
             onClick={handleTokenGeneration}
             disabled={!deviceName || isTokenGenerating}
             loading={isTokenGenerating}
@@ -122,9 +130,11 @@ const ApiKeys = () => {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="font-semibold">Issued API Keys</div>
-        <div className="flex flex-col gap-y-2">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Issued API Keys</div>
+        <div className="flex flex-col gap-y-1">
           {tokens.map(token => <UserApiTokens key={token.Device} token={token} />)}
         </div>
       </div>

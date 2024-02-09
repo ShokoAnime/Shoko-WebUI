@@ -193,6 +193,7 @@ function LoginPage() {
                   />
                   <Button
                     buttonType="primary"
+                    buttonSize="normal"
                     className="w-full"
                     submit
                     loading={isLoginPending}

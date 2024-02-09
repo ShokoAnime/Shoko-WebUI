@@ -44,7 +44,7 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
 const SeriesTag = ({ text, type }: { text: string, type: 'AniDB' | 'User' }) => (
   <div
     className={cx(
-      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-md p-2 whitespace-nowrap capitalize',
+      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
       type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
     )}
   >
@@ -122,7 +122,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
 
   return (
     <div
-      className="flex h-full shrink-0 grow flex-col content-center gap-y-3 rounded-md border border-panel-border bg-panel-background p-6"
+      className="flex h-full shrink-0 grow flex-col content-center gap-y-3 rounded-lg border border-panel-border bg-panel-background p-6"
       style={{
         width: `${((isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width) / 16}rem`,
       }}
@@ -131,7 +131,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
             image={poster}
-            className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-md drop-shadow-md"
+            className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-lg drop-shadow-md"
             hidePlaceholderOnHover
             zoomOnHover
           >

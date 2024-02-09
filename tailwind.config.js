@@ -9,7 +9,7 @@ module.exports = {
     './src/**/*.tsx',
     './index.html',
   ],
-  //Any class that's generated dynamically goes here
+  //Any class that is generated dynamically goes here
   safelist: [
     'bg-panel-text-danger',
     'bg-panel-text-important',
@@ -26,10 +26,10 @@ module.exports = {
         'sans': ['Sora', ...defaultTheme.fontFamily.sans],
       },
       fontSize: {
-        sm: ['14px', '1.4rem'],
-        base: ['16px', '1.6rem'],
-        lg: ['18px', '1.8rem'],
-        xl: ['20px', '2rem'],
+        sm: ['0.875rem', '1.4rem'],
+        base: ['1rem', '1.6rem'],
+        lg: ['1.125rem', '1.8rem'],
+        xl: ['1.251rem', '2rem'],
       },
       fontWeight: {
         extralight: 100,

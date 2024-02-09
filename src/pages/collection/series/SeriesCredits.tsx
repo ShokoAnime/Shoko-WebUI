@@ -58,7 +58,7 @@ const SeriesCredits = () => {
 
   return (
     <>
-      <div className="flex items-center gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6">
+      <div className="flex items-center gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
         <div className="flex w-full text-xl font-semibold">Character Search</div>
         <Input
           id="search"
@@ -71,7 +71,7 @@ const SeriesCredits = () => {
       </div>
       <div className="flex gap-x-6">
         <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <Heading mode={mode} setMode={setMode} />
             <div className="text-xl font-semibold">
               <span className="text-panel-text-important">{cast?.length ?? 0}</span>
@@ -85,18 +85,18 @@ const SeriesCredits = () => {
               (item, idx) => (
                 <div
                   key={`${mode}-${idx}`}
-                  className="flex flex-col items-center justify-center gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-6 font-semibold"
+                  className="flex flex-col items-center justify-center gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold"
                 >
                   <div className="z-10 flex gap-x-2">
                     {mode === 'Character' && (
                       <CharacterImage
                         imageSrc={getThumbnailUrl(item, 'Character')}
-                        className="relative h-[8rem] w-[6rem] rounded-md 2xl:h-[11rem] 2xl:w-[8rem]"
+                        className="relative h-[8rem] w-[6rem] rounded-lg 2xl:h-[11rem] 2xl:w-[8rem]"
                       />
                     )}
                     <CharacterImage
                       imageSrc={getThumbnailUrl(item, 'Staff')}
-                      className="relative h-[8rem] w-[6rem] rounded-md 2xl:h-[11rem] 2xl:w-[8rem]"
+                      className="relative h-[8rem] w-[6rem] rounded-lg 2xl:h-[11rem] 2xl:w-[8rem]"
                     />
                   </div>
                   <div className="text-base xl:text-xl">{item.Character?.Name}</div>

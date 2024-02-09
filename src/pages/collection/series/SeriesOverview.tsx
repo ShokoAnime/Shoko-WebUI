@@ -109,7 +109,7 @@ const SeriesOverview = () => {
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     />
                     <div>
                       <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
@@ -126,7 +126,7 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     hidePlaceholderOnHover
                     zoomOnHover
                   >
@@ -158,7 +158,7 @@ const SeriesOverview = () => {
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     />
                     <div>
                       <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
@@ -180,7 +180,7 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                   >
                     <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                       In Collection
@@ -211,11 +211,11 @@ const SeriesOverview = () => {
                 <div className="flex gap-x-4">
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Character')}
-                    className="relative h-[12rem] w-[9rem] rounded-md"
+                    className="relative h-[12rem] w-[9rem] rounded-lg"
                   />
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
-                    className="relative h-[12rem] w-[9rem] rounded-md"
+                    className="relative h-[12rem] w-[9rem] rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col items-center">

@@ -175,7 +175,7 @@ const SeriesFileSummary = () => {
 
   return (
     <>
-      <div className="flex flex-col items-center gap-y-6 rounded-md border border-panel-border bg-panel-background-transparent p-6">
+      <div className="flex flex-col items-center gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
         <div className="flex w-full">
           <div className="flex w-full text-xl font-semibold">Files Overview</div>
           <div className="flex w-full max-w-[17rem] items-center gap-x-4">

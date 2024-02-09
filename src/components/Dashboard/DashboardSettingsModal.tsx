@@ -31,7 +31,7 @@ const Title = ({ onClose }: { onClose: () => void }) => {
       <Button
         onClick={handleEdit}
         buttonType="primary"
-        className="px-2 py-1 text-sm"
+        buttonSize="normal"
       >
         Enable Edit Mode
       </Button>
@@ -103,18 +103,26 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
       noPadding
       noGap
     >
-      <div className="flex h-[22rem] flex-row gap-y-6">
-        <div className="flex w-[14rem] shrink-0 flex-col gap-y-6 border-r border-panel-border p-6 font-semibold">
-          <div className="flex flex-col gap-y-4">
+      <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+        <div className="flex shrink-0 flex-col gap-y-6 font-semibold">
+          <div className="flex flex-col gap-y-1">
             <div
-              className={cx('cursor-pointer', activeTab === 'widgets' && 'text-panel-text-primary')}
+              className={cx(
+                activeTab === 'widgets'
+                  ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+              )}
               key="widgets"
               onClick={() => setActiveTab('widgets')}
             >
               Available Widgets
             </div>
             <div
-              className={cx('cursor-pointer', activeTab === 'options' && 'text-panel-text-primary')}
+              className={cx(
+                activeTab === 'options'
+                  ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+              )}
               key="options"
               onClick={() => setActiveTab('options')}
             >
@@ -122,8 +130,8 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
             </div>
           </div>
         </div>
-
-        <div className="flex w-full flex-col gap-y-6 p-6">
+        <div className="border-r border-panel-border" />
+        <div className="flex w-full flex-col gap-y-6">
           {activeTab === 'widgets' && (
             <div className="overflow-y-scroll pr-4">
               <div className="flex flex-col gap-y-2 ">
@@ -262,12 +270,12 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
           )}
         </div>
       </div>
-      <div className="flex justify-end gap-x-3 border-y border-panel-border bg-panel-background-alt p-6 font-semibold">
-        <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
+      <div className="flex justify-end gap-x-3 rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6 font-semibold">
+        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">Cancel</Button>
         <Button
           onClick={handleSave}
           buttonType="primary"
-          className="px-6 py-2"
+          buttonSize="normal"
         >
           Save
         </Button>

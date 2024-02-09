@@ -78,7 +78,7 @@ function DeleteFilesModal(props: Props) {
         </p>
       </div>
       <div className="flex flex-row">
-        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-background-alt p-4">
+        <div className="mt-2 w-full rounded-lg border border-panel-border bg-panel-background-alt p-4">
           <div className="flex h-64 flex-col overflow-y-auto bg-panel-background-alt">
             {fileList}
           </div>

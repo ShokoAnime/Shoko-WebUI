@@ -192,7 +192,7 @@ const Menu = (
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
-          'box-border h-[52px] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
+          'box-border h-[52px] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
         )}
       >
         <MenuButton
@@ -356,7 +356,8 @@ function UnrecognizedTab() {
               <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3"
+                  buttonSize="normal"
+                  className="flex flex-row flex-wrap items-center gap-x-2"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
                   <Icon path={mdiOpenInNew} size={1} />
@@ -364,7 +365,8 @@ function UnrecognizedTab() {
                 </Button>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3 "
+                  buttonSize="normal"
+                  className="flex flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
@@ -380,7 +382,7 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-6">
+        <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
           {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />

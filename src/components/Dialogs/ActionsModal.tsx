@@ -1,13 +1,9 @@
 import React, { useMemo, useState } from 'react';
-import { mdiPlayCircleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map } from 'lodash';
 
-import Button from '@/components/Input/Button';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
-import TransitionDiv from '@/components/TransitionDiv';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -87,31 +83,44 @@ type Props = {
   onClose: () => void;
 };
 
-const Action = ({ actionKey }: { actionKey: string }) => {
+const Action = ({ actionKey, length }: { actionKey: string, length: number }) => {
   const { mutate: runAction } = useRunActionMutation();
+  const [hover, setHover] = useState(false);
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
 
   const handleAction = useEventCallback(() => {
+    setHover(true);
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
+    setTimeout(() => {
+      setHover(false);
+    }, 2000);
   });
 
+  const handleMouseEnter = () => {
+    setHover(true);
+  };
+  const handleMouseLeave = () => {
+    setHover(false);
+  };
+
   return (
-    <TransitionDiv className="mr-4 flex flex-row justify-between gap-y-2 border-b border-panel-border pb-4 last:border-0">
-      <div className="flex w-full max-w-[35rem] flex-col gap-y-2">
-        <div>{name}</div>
-        <div className="text-sm opacity-65">{quickActions[actionKey].info}</div>
+    <div
+      className={cx('flex flex-row justify-between gap-y-2 cursor-pointer', length > 5 ? 'mr-4' : '')}
+      onClick={handleAction}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="flex w-full flex-col gap-y-1">
+        <div className="flex justify-between">
+          <div className={cx(hover && ('text-panel-text-primary'))}>{name}</div>
+        </div>
+        <div className="text-sm opacity-65 ">{quickActions[actionKey].info}</div>
       </div>
-      <Button
-        onClick={handleAction}
-        className="text-panel-icon-action"
-      >
-        <Icon path={mdiPlayCircleOutline} size={1} />
-      </Button>
-    </TransitionDiv>
+    </div>
   );
 };
 
@@ -123,15 +132,19 @@ function ActionsModal({ onClose, show }: Props) {
       show={show}
       onRequestClose={onClose}
       header="Actions"
-      size="lg"
+      size="md"
       noPadding
     >
-      <div className="flex h-[23rem]">
-        <div className="flex w-[9.375rem] shrink-0 flex-col gap-y-6 border-r border-panel-border p-6 font-semibold">
-          <div className="flex flex-col gap-y-4">
+      <div className="flex h-[29rem] gap-x-6 p-6">
+        <div className="flex shrink-0 flex-col gap-y-6  font-semibold">
+          <div className="flex flex-col gap-y-1">
             {map(actions, (value, key) => (
               <div
-                className={cx('cursor-pointer', activeTab === key && 'text-panel-text-primary')}
+                className={cx(
+                  activeTab === key
+                    ? 'w-[7.5rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                    : 'w-[7.5rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                )}
                 key={key}
                 onClick={() => setActiveTab(key)}
               >
@@ -140,11 +153,13 @@ function ActionsModal({ onClose, show }: Props) {
             ))}
           </div>
         </div>
-
-        <div className="flex grow p-6">
-          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto pr-2 ">
+        <div className="border-r border-panel-border" />
+        <div className="flex grow">
+          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto">
             {isActionTab(activeTab)
-              && actions[activeTab].data.map((key: string) => <Action actionKey={key} key={key} />)}
+              && actions[activeTab].data.map((key: string) => (
+                <Action actionKey={key} key={key} length={actions[activeTab].data.length} />
+              ))}
           </div>
         </div>
       </div>

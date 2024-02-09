@@ -36,7 +36,7 @@ const TagList = (
   const virtualItems = virtualizer.getVirtualItems();
 
   return (
-    <div className="grow rounded-md bg-panel-input p-4">
+    <div className="grow rounded-lg bg-panel-input p-4">
       <div
         className="relative h-full overflow-y-auto bg-panel-input"
         ref={scrollRef}
@@ -177,7 +177,7 @@ const TagCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Props) =>
             Excluded
           </span>
         </div>
-        <div className="flex grow basis-0 overflow-y-auto rounded-md bg-panel-input p-4">
+        <div className="flex grow basis-0 overflow-y-auto rounded-lg bg-panel-input p-4">
           <div className="flex w-full flex-col gap-y-1 overflow-y-auto bg-panel-input">
             {map(
               combinedSelectedValues,

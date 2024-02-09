@@ -100,7 +100,7 @@ const Row = (
     <div
       className={cx(
         virtualRow.index % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
-        'relative cursor-pointer rounded-md border p-4 text-left transition-colors',
+        'relative cursor-pointer rounded-lg border p-4 text-left transition-colors',
         selected ? 'border-panel-text-primary' : 'border-panel-border',
       )}
       onClick={handleClick}
@@ -262,7 +262,7 @@ const UtilitiesTable = (props: Props) => {
   return (
     <div className="flex w-full flex-col overflow-y-auto pr-4" ref={parentRef}>
       <div className="sticky top-0 z-[1] bg-panel-background-alt">
-        <div className="flex rounded-md border border-panel-border p-4 font-semibold">
+        <div className="flex rounded-lg border border-panel-border p-4 font-semibold">
           {columns.map(column => (
             <HeaderItem
               key={column.id}
@@ -298,7 +298,7 @@ const UtilitiesTable = (props: Props) => {
 
               return (
                 <div
-                  className="mt-2 rounded-md"
+                  className="mt-2 rounded-lg"
                   key={virtualRow.key}
                   data-index={virtualRow.index}
                   ref={virtualizer.measureElement}

@@ -18,7 +18,7 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
     >
       <BackgroundImagePlaceholderDiv
         image={mainPoster}
-        className="h-80 rounded-md border border-panel-border drop-shadow-md"
+        className="h-80 rounded-lg border border-panel-border drop-shadow-md"
         hidePlaceholderOnHover
         zoomOnHover
       >

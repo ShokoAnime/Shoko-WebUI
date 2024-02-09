@@ -169,11 +169,19 @@ function UserManagementSettings() {
 
   return (
     <>
-      <div className="text-xl font-semibold">User Management</div>
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">User Management</div>
+        <div>
+          ConfigureShoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
+          restricted from viewing.
+        </div>
+      </div>
 
-      <div className="flex flex-col">
-        <div className="mb-4 font-semibold">Current Users</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Current Users</div>
+        <div className="flex flex-col gap-y-1">
           {users.map(user => (
             <div className="flex justify-between" key={`user-${user.ID}`}>
               <div>{user.Username}</div>
@@ -190,9 +198,11 @@ function UserManagementSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <div className="mb-4 font-semibold">User Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">User Options</div>
+        <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <div className="mx-0 my-auto">Display Name</div>
             <InputSmall
@@ -200,7 +210,7 @@ function UserManagementSettings() {
               value={selectedUser.Username}
               type="text"
               onChange={handleInputChange}
-              className="w-32 px-2"
+              className="w-36 px-3 py-1"
             />
           </div>
           <Checkbox
@@ -232,7 +242,7 @@ function UserManagementSettings() {
             <div className="flex gap-x-2">
               <label
                 htmlFor="avatar"
-                className="cursor-pointer rounded-md border border-panel-border bg-button-secondary px-3 py-2 text-xs font-semibold drop-shadow-md hover:bg-button-secondary-hover"
+                className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-xs font-semibold drop-shadow-md hover:bg-button-secondary-hover"
               >
                 Pick
                 <input
@@ -244,7 +254,7 @@ function UserManagementSettings() {
                 />
               </label>
               {selectedUser.Avatar && (
-                <Button onClick={removeAvatar} buttonType="danger" className="px-3 py-2 text-xs font-semibold">
+                <Button onClick={removeAvatar} buttonType="danger" buttonSize="small">
                   Remove
                 </Button>
               )}
@@ -253,20 +263,22 @@ function UserManagementSettings() {
         </div>
       </div>
 
+      <div className="border-b border-panel-border" />
+
       <div className="flex flex-col">
         <div className="mb-4 flex h-8 justify-between">
-          <div className="mx-0 my-auto font-semibold">Password</div>
+          <div className="h-[2.149rem] font-semibold">Password</div>
           <Button
             onClick={() => handlePasswordChange()}
             loading={isChangePasswordPending}
             disabled={newPassword === ''}
             buttonType="primary"
-            className="px-3 py-2 text-xs font-semibold"
+            buttonSize="small"
           >
             Change
           </Button>
         </div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+        <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <div className="mx-0 my-auto">New Password</div>
             <InputSmall
@@ -274,7 +286,7 @@ function UserManagementSettings() {
               value={newPassword}
               type="password"
               onChange={event => setNewPassword(event.target.value)}
-              className="w-32 px-2 py-0.5"
+              className="w-36 px-3 py-1"
               autoComplete="new-password"
             />
           </div>
@@ -291,39 +303,44 @@ function UserManagementSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col">
-        <div className="mb-4 font-semibold">Tag Restrictions</div>
-        <Input
-          type="text"
-          placeholder="Search..."
-          startIcon={mdiMagnify}
-          id="search"
-          value={tagSearch}
-          onChange={event => setTagSearch(event.target.value)}
-        />
-        <div className="mt-2 w-full rounded-md border border-panel-border bg-panel-input p-4 capitalize">
-          {tagsQuery.isPending && (
-            <div className="flex h-64 items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} spin size={3} />
-            </div>
-          )}
-          {tagsQuery.isSuccess && (
-            <div className="h-64 overflow-y-auto bg-panel-input">
-              {tagsQuery.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
-                <div
-                  className="mt-2 cursor-pointer first:mt-0"
-                  key={`tagData-${tag.ID}`}
-                  onClick={() => handleTagChange(tag.ID, true)}
-                >
-                  {tag.Name}
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Tag Restrictions</div>
+        <div>
+          <div className="mb-2 font-semibold">Available Tags</div>
+          <Input
+            type="text"
+            placeholder="Search..."
+            startIcon={mdiMagnify}
+            id="search"
+            value={tagSearch}
+            onChange={event => setTagSearch(event.target.value)}
+          />
+          <div className="mt-2 w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
+            {tagsQuery.isPending && (
+              <div className="flex h-64 items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} spin size={3} />
+              </div>
+            )}
+            {tagsQuery.isSuccess && (
+              <div className="h-64 overflow-y-auto bg-panel-input">
+                {tagsQuery.data?.filter(tag => tag.Name.includes(tagSearch)).map(tag => (
+                  <div
+                    className="mt-2 cursor-pointer first:mt-0"
+                    key={`tagData-${tag.ID}`}
+                    onClick={() => handleTagChange(tag.ID, true)}
+                  >
+                    {tag.Name}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </div>
-        <div className="border-b border-panel-border pb-8">
-          <div className="my-4 font-semibold">Selected Tags</div>
-          <div className="flex min-h-[8rem] flex-col rounded-md border border-panel-border bg-panel-input p-4">
+        <div>
+          <div className="mb-2 font-semibold">Selected Tags</div>
+          <div className="flex min-h-[8rem] flex-col rounded-lg border border-panel-border bg-panel-input p-4">
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
                 <div className="mt-2 flex justify-between capitalize first:mt-0" key={`selectedTag-${tag}`}>
@@ -344,9 +361,11 @@ function UserManagementSettings() {
         </div>
       </div>
 
-      <div className="flex justify-end font-semibold">
-        <Button onClick={() => handleCancel()} buttonType="secondary" className="px-3 py-2">Cancel</Button>
-        <Button onClick={() => editUser(selectedUser)} buttonType="primary" className="ml-3 px-3 py-2">Save</Button>
+      <div className="border-b border-panel-border" />
+
+      <div className="flex justify-end gap-x-3 font-semibold">
+        <Button onClick={() => handleCancel()} buttonType="secondary" buttonSize="normal">Cancel</Button>
+        <Button onClick={() => editUser(selectedUser)} buttonType="primary" buttonSize="normal">Save</Button>
       </div>
 
       <AvatarEditorModal

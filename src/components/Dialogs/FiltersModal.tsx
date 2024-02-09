@@ -95,7 +95,7 @@ const SidePanel = (
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
             inputClassName="px-4 py-3"
           />
-          <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
+          <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
             {filteredList.length === 0 && (
               <div className="flex grow items-center justify-center">
                 Your search for&nbsp;

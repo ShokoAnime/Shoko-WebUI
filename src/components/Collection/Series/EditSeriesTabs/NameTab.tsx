@@ -103,7 +103,7 @@ const NameTab = ({ seriesId }: Props) => {
       />
       <div
         className={cx(
-          'mt-1 flex flex-col gap-y-2.5 rounded-md border border-panel-border bg-panel-background-alt p-4 overflow-hidden',
+          'mt-1 flex flex-col gap-y-2.5 rounded-lg border border-panel-border bg-panel-background-alt p-4 overflow-hidden',
           !nameEditable && 'invisible',
         )}
       >

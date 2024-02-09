@@ -18,10 +18,19 @@ function ImportSettings() {
 
   return (
     <>
-      <div className="text-xl font-semibold">Import</div>
-      <div className="mt-0.5 flex flex-col gap-y-4">
-        <div className="font-semibold">Import Options</div>
-        <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">Import</div>
+        <div>
+          Configure how Shoko imports files into your collection, specifying file types and enabling options for
+          renaming and moving them as needed.
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
+      <div className="mt-0.5 flex flex-col gap-y-6">
+        <div className="h-[2.149rem] font-semibold">Import Options</div>
+        <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
             label="Import on start"
@@ -57,7 +66,7 @@ function ImportSettings() {
             isChecked={UseExistingFileWatchedStatus}
             onChange={event => updateSetting('Import', 'UseExistingFileWatchedStatus', event.target.checked)}
           />
-          <div className="flex justify-between">
+          <div className="flex items-center justify-between">
             Video Extensions
             <InputSmall
               id="username"
@@ -69,6 +78,7 @@ function ImportSettings() {
           </div>
         </div>
       </div>
+      <div className="border-b border-panel-border" />
     </>
   );
 }
