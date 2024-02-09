@@ -43,8 +43,9 @@ export const useDeleteFileLinkMutation = () =>
 
 export const useIgnoreFileMutation = () =>
   useMutation({
-    mutationFn: ({ fileId, ignore }: IgnoreFileRequestType) => axios.put(`File/${fileId}/Ignore`, { ignore }),
-    onSuccess: () => invalidateQueries(['files', { include_only: ['Ignored'] }]),
+    mutationFn: ({ fileId, ignore }: IgnoreFileRequestType) =>
+      axios.put(`File/${fileId}/Ignore`, undefined, { params: { value: ignore } }),
+    onSuccess: () => invalidateQueries(['files']),
   });
 
 export const useLinkOneFileToManyEpisodesMutation = () =>

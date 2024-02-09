@@ -152,11 +152,6 @@ body {
 }
 
 /* stylelint-disable-next-line selector-class-pattern */
-.Toastify__progress-bar {
-  height: 10% !important;
-}
-
-/* stylelint-disable-next-line selector-class-pattern */
 .Toastify__progress-bar--success {
   background: theme('colors.panel-text-important') !important;
 }
