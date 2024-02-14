@@ -264,7 +264,7 @@ const FileSearch = () => {
   const debouncedSearch = useDebounce(search, 250);
   const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs'],
-    sortOrder: debouncedSearch ? [] : [sortCriteria],
+    sortOrder: [sortCriteria],
     pageSize: 50,
   }, debouncedSearch);
   const [files, fileCount] = useFlattenListResult<FileType>(filesQuery.data);
@@ -338,7 +338,6 @@ const FileSearch = () => {
               rows={files}
               rowSelection={rowSelection}
               setSelectedRows={setRowSelection}
-              skipSort={!!debouncedSearch}
               setSortCriteria={setSortCriteria}
               sortCriteria={sortCriteria}
             />
