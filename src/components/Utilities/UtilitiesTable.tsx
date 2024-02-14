@@ -23,7 +23,7 @@ type Props = {
   isFetchingNextPage: boolean;
   rows: FileType[] | SeriesType[];
   setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
-  skipSort: boolean;
+  skipSort?: boolean;
   sortCriteria?: FileSortCriteriaEnum;
   handleRowSelect?: (id: number, select: boolean) => void;
   rowSelection?: Record<number, boolean>;
@@ -139,7 +139,7 @@ const HeaderItem = (
     id: string;
     name: string;
     setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
-    skipSort: boolean;
+    skipSort?: boolean;
     sortCriteria?: FileSortCriteriaEnum;
   },
 ) => {

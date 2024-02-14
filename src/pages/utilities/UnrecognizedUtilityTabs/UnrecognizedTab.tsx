@@ -244,9 +244,7 @@ function UnrecognizedTab() {
     {
       pageSize: 50,
       include_only: ['Unrecognized'],
-      sortOrder: debouncedSearch
-        ? []
-        : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+      sortOrder: [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
     },
     debouncedSearch,
   );
@@ -402,7 +400,6 @@ function UnrecognizedTab() {
               rowSelection={rowSelection}
               setSelectedRows={setRowSelection}
               setSortCriteria={setSortCriteria}
-              skipSort={!!debouncedSearch}
               sortCriteria={sortCriteria}
             />
           )}
