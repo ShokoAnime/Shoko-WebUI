@@ -97,9 +97,7 @@ function IgnoredFilesTab() {
     {
       pageSize: 50,
       include_only: ['Ignored'],
-      sortOrder: debouncedSearch
-        ? []
-        : [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+      sortOrder: [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
     },
     debouncedSearch,
   );
@@ -173,7 +171,6 @@ function IgnoredFilesTab() {
             rowSelection={rowSelection}
             setSelectedRows={setRowSelection}
             setSortCriteria={setSortCriteria}
-            skipSort={!!debouncedSearch}
             sortCriteria={sortCriteria}
           />
         )}
