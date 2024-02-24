@@ -34,9 +34,9 @@ const LogsPage = () => {
 
   return (
     <div className="flex grow flex-col gap-y-6">
-      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background px-6 py-4">
+      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
         <div className="text-xl font-semibold">Logs</div>
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-2">
           <Input
             id="search"
             onChange={e => setSearch(e.target.value)}
@@ -47,16 +47,17 @@ const LogsPage = () => {
             className="w-80"
             disabled
           />
-          <Button buttonType="secondary" className="px-5 py-2" disabled>
+          <Button buttonType="secondary" buttonSize="normal" disabled>
             <Icon path={mdiFilterOutline} size={1} />
           </Button>
-          <Button buttonType="secondary" className="px-5 py-2" disabled>
+          <Button buttonType="secondary" buttonSize="normal" disabled>
             <Icon path={mdiCogOutline} size={1} />
           </Button>
           {/* TODO: To be moved into settings modal */}
           <Button
             buttonType="secondary"
-            className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
+            buttonSize="normal"
+            className={cx(isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
           >
             <Icon path={mdiArrowVerticalLock} size={1} />
@@ -93,7 +94,7 @@ const LogsPage = () => {
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}
                       >
-                        <div className="w-[11.5rem] shrink-0 opacity-65">{row.timeStamp}</div>
+                        <div className="w-[10.8rem] shrink-0 opacity-65">{row.timeStamp}</div>
                         <div className="w-[2.8rem] shrink-0">{row.level}</div>
                         <div className="break-all">{row.message}</div>
                       </div>

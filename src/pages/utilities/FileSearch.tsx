@@ -346,9 +346,9 @@ const FileSearch = () => {
         <div className="flex w-full flex-col lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
             <div className="flex h-full w-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
-              <div className="flex w-full flex-col overflow-y-auto pr-4">
+              <div className="flex w-full flex-col gap-y-6 overflow-y-auto pr-4">
                 <FilesSummary title="Selected Summary" items={selectedRows} />
-                <div className="my-8 flex w-full text-xl font-semibold">
+                <div className="flex w-full text-xl font-semibold">
                   <div className="flex w-full justify-between">
                     <span className="grow">Selected File</span>
                     <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>

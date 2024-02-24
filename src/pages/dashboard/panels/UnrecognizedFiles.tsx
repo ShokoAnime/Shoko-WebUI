@@ -12,7 +12,10 @@ import type { RootState } from '@/core/store';
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
   return (
-    <div key={file.ID} className="mr-3 flex items-center rounded-lg p-3 odd:bg-panel-background-alt">
+    <div
+      key={file.ID}
+      className="mr-3 flex items-center border-t border-panel-border p-3 last:border-b odd:bg-panel-background-alt"
+    >
       <div className="flex grow flex-col">
         <span className="opacity-65">
           {createdTime.format('YYYY-MM-DD')}

@@ -16,7 +16,7 @@ type IconButtonProps = {
   buttonSize: SizeType;
 };
 
-const ButtonIcon = ({ buttonSize = 'normal', buttonType = 'secondary', className, icon, onClick }: IconButtonProps) => (
+const IconButton = ({ buttonSize = 'normal', buttonType = 'secondary', className, icon, onClick }: IconButtonProps) => (
   <Button
     className={cx(
       'cursor-pointer rounded-lg',
@@ -30,4 +30,4 @@ const ButtonIcon = ({ buttonSize = 'normal', buttonType = 'secondary', className
   </Button>
 );
 
-export default ButtonIcon;
+export default IconButton;

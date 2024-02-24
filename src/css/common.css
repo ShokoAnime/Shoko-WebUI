@@ -115,14 +115,16 @@ body {
   height: 15%;
 }
 
-.shoko-scrollbar {
-  scrollbar-color: theme('colors.slider-color') theme('colors.slider-background');
-  scrollbar-width: thin;
-}
+@-moz-document url-prefix() {
+  .shoko-scrollbar {
+    scrollbar-color: theme('colors.slider-color') theme('colors.slider-background');
+    scrollbar-width: thin;
+  }
 
-.shoko-scrollbar * .bg-panel-input {
-  scrollbar-color: theme('colors.slider-color-alt') theme('colors.slider-background-alt');
-  scrollbar-width: thin;
+  .shoko-scrollbar * .bg-panel-input {
+    scrollbar-color: theme('colors.slider-color-alt') theme('colors.slider-background-alt');
+    scrollbar-width: thin;
+  }
 }
 
 .scroll-gutter {

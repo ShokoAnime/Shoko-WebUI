@@ -10,7 +10,7 @@ import SeasonCriteria from '@/components/Collection/Filter/SeasonCriteria';
 import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
-import ButtonIcon from '@/components/Input/ButtonIcon';
+import IconButton from '@/components/Input/IconButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { buildSidebarFilter } from '@/core/buildFilter';
 import {
@@ -42,7 +42,7 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
 
 type OptionButtonProps = (props: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => ReactNode;
 const OptionButton: OptionButtonProps = ({ icon, onClick }) => (
-  <ButtonIcon icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
+  <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
 );
 type OptionsProps = {
   showModal: () => void;

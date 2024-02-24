@@ -22,7 +22,7 @@ const buttonTypeClasses = {
   danger: 'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-lg',
 };
 
-const ButtonDropdown = (props: Props) => {
+const DropdownButton = (props: Props) => {
   const {
     buttonTypes,
     children,
@@ -105,4 +105,4 @@ const ButtonDropdown = (props: Props) => {
   );
 };
 
-export default ButtonDropdown;
+export default DropdownButton;

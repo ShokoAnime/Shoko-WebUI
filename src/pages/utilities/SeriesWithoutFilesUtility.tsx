@@ -75,7 +75,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   };
 
   return (
-    <div className="relative box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
@@ -95,11 +95,6 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      Series Selected
     </div>
   );
 };
@@ -118,7 +113,10 @@ function SeriesWithoutFilesUtility() {
   return (
     <div className="flex grow flex-col gap-y-6">
       <div>
-        <ShokoPanel title="Series Without Files" options={<ItemCount count={seriesCount} series />}>
+        <ShokoPanel
+          title="Series Without Files"
+          options={<ItemCount count={seriesCount} selected={selectedRows?.length} />}
+        >
           <div className="flex items-center gap-x-3">
             {/* Endpoint doesn't have search */}
             {/* <Input */}

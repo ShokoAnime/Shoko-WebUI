@@ -64,7 +64,7 @@ const TraktSettings = () => {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="h-[2.149rem] font-semibold">Trakt Options</div>
+      <div className="flex h-[2.149rem] items-center font-semibold">Trakt Options</div>
       <div className="flex flex-col gap-y-2">
         <Checkbox
           justify

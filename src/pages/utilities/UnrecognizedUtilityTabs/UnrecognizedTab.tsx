@@ -22,7 +22,7 @@ import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
-import ButtonDropdown from '@/components/Input/ButtonDropdown';
+import DropdownButton from '@/components/Input/DropdownButton';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
@@ -192,7 +192,7 @@ const Menu = (
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
-          'box-border h-[52px] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
+          'box-border h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
         )}
       >
         <MenuButton
@@ -212,9 +212,9 @@ const Menu = (
       </div>
 
       <div className={cx(selectedRows.length !== 0 ? 'flex' : 'hidden', '3xl:hidden')}>
-        <ButtonDropdown buttonTypes="secondary" content={<span>Options</span>}>
+        <DropdownButton buttonTypes="secondary" content={<span>Options</span>}>
           {renderSelectedRowActions}
-        </ButtonDropdown>
+        </DropdownButton>
       </div>
 
       <DeleteFilesModal
@@ -364,7 +364,7 @@ function UnrecognizedTab() {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  className="flex flex-row flex-wrap items-center gap-x-2"
+                  className="flex h-[3.25rem] flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >

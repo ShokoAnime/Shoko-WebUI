@@ -12,7 +12,7 @@ import { useToggle } from 'usehooks-ts';
 
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
 import FiltersModal from '@/components/Dialogs/FiltersModal';
-import ButtonIcon from '@/components/Input/ButtonIcon';
+import IconButton from '@/components/Input/IconButton';
 import Input from '@/components/Input/Input';
 
 type Props = {
@@ -28,7 +28,7 @@ type Props = {
 
 const OptionButton = memo(
   ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
-    <ButtonIcon icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
+    <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
   ),
 );
 

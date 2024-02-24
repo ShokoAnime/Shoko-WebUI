@@ -144,7 +144,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="h-[2.149rem] font-semibold">Download Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">Download Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -195,7 +195,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="h-[2.149rem] font-semibold">Mylist Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">Mylist Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -267,7 +267,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="h-[2.149rem] font-semibold">Update Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">Update Options</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             <span>Calendar</span>

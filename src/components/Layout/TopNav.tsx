@@ -216,7 +216,7 @@ function TopNav() {
 
   return (
     <>
-      <div className="z-[100] flex flex-col bg-header-background text-sm font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+      <div className="z-[100] flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
           <div className="flex items-center gap-x-3">
             <ShokoIcon className="w-8" />
@@ -363,7 +363,7 @@ function TopNav() {
           height={showUtilitiesMenu ? 'auto' : 0}
           className="border-t border-topnav-border bg-topnav-background"
         >
-          <div className="mx-auto flex w-full max-w-[120rem] gap-x-6 px-6 py-4">
+          <div className="mx-auto flex w-full max-w-[120rem] gap-x-6 px-6 py-4 text-sm">
             <LinkMenuItem
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}

@@ -35,7 +35,7 @@ const NewsRow = ({ item }: { item: DashboardNewsType }) => {
         <p className="font-semibold">{item.title}</p>
         <Icon path={mdiOpenInNew} size={1} />
       </a>
-      <p className="text-sm">{item.content_text}</p>
+      <p className="text-sm opacity-65">{item.content_text}</p>
     </div>
   );
 };

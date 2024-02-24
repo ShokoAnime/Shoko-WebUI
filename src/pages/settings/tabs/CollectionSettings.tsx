@@ -145,7 +145,7 @@ const CollectionSettings = () => {
 
       {/* Language Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="h-[2.149rem] font-semibold">Language Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">Language Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             label="Also Use Synonyms"
@@ -208,7 +208,7 @@ const CollectionSettings = () => {
 
       {/*   Relation Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="h-[2.149rem] font-semibold">Relation Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">Relation Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
