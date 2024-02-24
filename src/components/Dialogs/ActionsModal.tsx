@@ -85,40 +85,31 @@ type Props = {
 
 const Action = ({ actionKey, length }: { actionKey: string, length: number }) => {
   const { mutate: runAction } = useRunActionMutation();
-  const [hover, setHover] = useState(false);
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
 
   const handleAction = useEventCallback(() => {
-    setHover(true);
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
     setTimeout(() => {
-      setHover(false);
     }, 2000);
   });
 
-  const handleMouseEnter = () => {
-    setHover(true);
-  };
-  const handleMouseLeave = () => {
-    setHover(false);
-  };
-
   return (
     <div
-      className={cx('flex flex-row justify-between gap-y-2 cursor-pointer', length > 5 ? 'mr-4' : '')}
+      className={cx(
+        'flex flex-row justify-between gap-y-2 cursor-pointer hover:text-panel-text-primary',
+        length > 5 ? 'mr-4' : '',
+      )}
       onClick={handleAction}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       <div className="flex w-full flex-col gap-y-1">
         <div className="flex justify-between">
-          <div className={cx(hover && ('text-panel-text-primary'))}>{name}</div>
+          <div>{name}</div>
         </div>
-        <div className="text-sm opacity-65 ">{quickActions[actionKey].info}</div>
+        <div className="text-sm text-panel-text opacity-65">{quickActions[actionKey].info}</div>
       </div>
     </div>
   );
