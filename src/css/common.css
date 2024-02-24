@@ -115,6 +115,7 @@ body {
   height: 15%;
 }
 
+/* Fixes Scrollbars breaking on other browsers and only applies the following when using Mozilla. */
 @-moz-document url-prefix() {
   .shoko-scrollbar {
     scrollbar-color: theme('colors.slider-color') theme('colors.slider-background');
