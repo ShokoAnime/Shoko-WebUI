@@ -33,7 +33,7 @@ const FilesSummary = ({ items, title }: Props) => {
 
   return (
     <>
-      <div className="mb-8 flex w-full text-xl font-semibold">{title ?? 'Files Summary'}</div>
+      <div className="flex w-full text-xl font-semibold">{title ?? 'Files Summary'}</div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Series Count</span>

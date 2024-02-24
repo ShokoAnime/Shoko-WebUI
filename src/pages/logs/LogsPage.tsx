@@ -33,10 +33,10 @@ const LogsPage = () => {
   }, [logLines.length, virtualItems.length, isScrollToBottom, rowVirtualizer]);
 
   return (
-    <div className="flex grow flex-col gap-y-8">
-      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background px-8 py-4">
+    <div className="flex grow flex-col gap-y-6">
+      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
         <div className="text-xl font-semibold">Logs</div>
-        <div className="flex items-center gap-x-4">
+        <div className="flex items-center gap-x-2">
           <Input
             id="search"
             onChange={e => setSearch(e.target.value)}
@@ -47,16 +47,17 @@ const LogsPage = () => {
             className="w-80"
             disabled
           />
-          <Button buttonType="secondary" className="px-5 py-2" disabled>
+          <Button buttonType="secondary" buttonSize="normal" disabled>
             <Icon path={mdiFilterOutline} size={1} />
           </Button>
-          <Button buttonType="secondary" className="px-5 py-2" disabled>
+          <Button buttonType="secondary" buttonSize="normal" disabled>
             <Icon path={mdiCogOutline} size={1} />
           </Button>
           {/* TODO: To be moved into settings modal */}
           <Button
             buttonType="secondary"
-            className={cx('px-5 py-2', isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
+            buttonSize="normal"
+            className={cx(isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
           >
             <Icon path={mdiArrowVerticalLock} size={1} />
@@ -64,9 +65,9 @@ const LogsPage = () => {
         </div>
       </div>
 
-      <div className="flex grow rounded-md border border-panel-border bg-panel-background p-8">
+      <div className="flex grow rounded-lg border border-panel-border bg-panel-background p-6">
         <div
-          className="contain-strict w-full overflow-y-auto rounded-md border-16 border-panel-input bg-panel-input"
+          className="contain-strict w-full overflow-y-auto rounded-lg border-16 border-panel-input bg-panel-input"
           ref={parentRef}
         >
           {logLines.length === 0
@@ -88,12 +89,12 @@ const LogsPage = () => {
                     const row = logLines[virtualRow.index];
                     return (
                       <div
-                        className="mt-2 flex gap-x-8"
+                        className="mt-2 flex gap-x-6"
                         key={virtualRow.key}
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}
                       >
-                        <div className="w-[11.5rem] shrink-0 opacity-65">{row.timeStamp}</div>
+                        <div className="w-[10.8rem] shrink-0 opacity-65">{row.timeStamp}</div>
                         <div className="w-[2.8rem] shrink-0">{row.level}</div>
                         <div className="break-all">{row.message}</div>
                       </div>

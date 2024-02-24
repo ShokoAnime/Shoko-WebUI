@@ -48,7 +48,7 @@ function ImportFolders() {
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
 
     return (
-      <div key={folder.ID} className="mt-6 flex flex-col first:mt-0">
+      <div key={folder.ID} className="flex flex-col border-t border-panel-border py-6 first:border-t-0">
         <div className="mb-3 flex items-center justify-between">
           <span className="font-semibold">{folder.Name}</span>
           <div className="flex">
@@ -80,7 +80,7 @@ function ImportFolders() {
         </div>
         <div className="mb-1 flex">
           <div className="grow">Type</div>
-          <div>{flags}</div>
+          <div>{flags !== '' ? flags : 'Not Set - Please Fix'}</div>
         </div>
         <div className="flex">
           <div className="grow">Size</div>
@@ -111,6 +111,7 @@ function ImportFolders() {
       options={renderOptions()}
       isFetching={importFolderQuery.isPending}
       editMode={layoutEditMode}
+      contentClassName={importFolders.length > 2 && ('pr-4')}
     >
       {importFolders.length === 0
         ? <div className="mt-4 flex justify-center font-semibold" key="no-folders">No Import Folders Added!</div>

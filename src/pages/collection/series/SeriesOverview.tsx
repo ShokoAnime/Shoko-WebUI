@@ -48,8 +48,8 @@ const SeriesOverview = () => {
 
   return (
     <>
-      <div className="flex gap-x-8">
-        <div className="flex w-full grow flex-col gap-y-8">
+      <div className="flex gap-x-6">
+        <div className="flex w-full grow flex-col gap-y-6">
           <ShokoPanel
             title="Episode on Deck"
             className="flex w-full grow overflow-visible"
@@ -66,14 +66,14 @@ const SeriesOverview = () => {
             transparent
             disableOverflow
           >
-            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-8">
+            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6">
               {MetadataLinks.map((site) => {
                 const idOrIds = series.IDs[site] as number | number[];
                 if (typeof idOrIds === 'number' || idOrIds.length === 0) {
                   const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
                   return (
                     <div
-                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
                       key={`${site}-${id}`}
                     >
                       <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
@@ -82,7 +82,7 @@ const SeriesOverview = () => {
                 }
                 return idOrIds.map(id => (
                   <div
-                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
                     key={`${site}-${id}`}
                   >
                     <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
@@ -105,14 +105,16 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     />
-                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-text-important">{itemRelation}</span>
+                    <div>
+                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                      <span className="text-sm text-panel-text-important">{itemRelation}</span>
+                    </div>
                   </div>
                 );
               }
@@ -124,11 +126,11 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     hidePlaceholderOnHover
                     zoomOnHover
                   >
-                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                       In Collection
                     </div>
                     <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
@@ -152,19 +154,21 @@ const SeriesOverview = () => {
                 return (
                   <div
                     key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
                   >
                     <BackgroundImagePlaceholderDiv
                       image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     />
-                    <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                    <span className="text-sm text-panel-text-important">
-                      {round(item.UserApproval.Value, 2)}
-                      % (
-                      {item.UserApproval.Votes}
-                      &nbsp;votes)
-                    </span>
+                    <div>
+                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
+                      <span className="text-sm text-panel-text-important">
+                        {round(item.UserApproval.Value, 2)}
+                        % (
+                        {item.UserApproval.Votes}
+                        &nbsp;votes)
+                      </span>
+                    </div>
                   </div>
                 );
               }
@@ -176,9 +180,9 @@ const SeriesOverview = () => {
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-md border border-panel-border drop-shadow-md"
+                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                   >
-                    <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                       In Collection
                     </div>
                     <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
@@ -197,21 +201,21 @@ const SeriesOverview = () => {
         </ShokoPanel>
       )}
       <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
-        <div className="z-10 flex w-full gap-x-8">
+        <div className="z-10 flex w-full gap-x-6">
           {cast?.slice(0, 20).map(seiyuu => (
             seiyuu.RoleName === 'Seiyuu' && (
               <div
                 key={`${seiyuu.Character.Name}-${seiyuu.Staff.Name}`}
-                className="flex flex-col items-center gap-y-4 pb-4"
+                className="flex flex-col items-center gap-y-3 pb-3"
               >
                 <div className="flex gap-x-4">
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Character')}
-                    className="relative h-[12rem] w-[9rem] rounded-md"
+                    className="relative h-[12rem] w-[9rem] rounded-lg"
                   />
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
-                    className="relative h-[12rem] w-[9rem] rounded-md"
+                    className="relative h-[12rem] w-[9rem] rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col items-center">

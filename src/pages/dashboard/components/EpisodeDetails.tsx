@@ -24,10 +24,10 @@ const CalendarConfig = {
 };
 
 const DateSection: React.FC<{ airDate: dayjs.Dayjs, relativeTime: string }> = ({ airDate, relativeTime }) => (
-  <>
+  <div>
     <p className="truncate text-center text-sm font-semibold">{airDate.format('MMMM Do, YYYY')}</p>
-    <p className="mb-2 truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
-  </>
+    <p className="truncate text-center text-sm font-semibold opacity-65">{relativeTime}</p>
+  </div>
 );
 
 const ImageSection: React.FC<
@@ -35,13 +35,13 @@ const ImageSection: React.FC<
 > = ({ episode, isInCollection, percentage }) => (
   <BackgroundImagePlaceholderDiv
     image={episode.SeriesPoster}
-    className="mb-3 h-80 rounded-lg border border-panel-border drop-shadow-md"
+    className=" h-80 rounded-lg border border-panel-border drop-shadow-md"
     hidePlaceholderOnHover
     zoomOnHover
   >
     {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />}
     {isInCollection && (
-      <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
         In Collection
       </div>
     )}
@@ -50,12 +50,12 @@ const ImageSection: React.FC<
 );
 
 const TitleSection: React.FC<{ episode: DashboardEpisodeDetailsType, title: string }> = ({ episode, title }) => (
-  <>
-    <p className="mb-1 truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
+  <div>
+    <p className="truncate text-center text-sm font-semibold" title={episode.SeriesTitle}>
       {episode.SeriesTitle}
     </p>
     <p className="truncate text-center text-sm font-semibold opacity-65" title={title}>{title}</p>
-  </>
+  </div>
 );
 
 const anidbEpisodePrefixes = (type: EpisodeTypeEnum, epNumber: number): string => {
@@ -106,11 +106,14 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
   return (
     <div
       key={`episode-${episode.IDs.ID}`}
-      className={cx('mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0', episode.IDs.ShokoSeries && 'group')}
+      className={cx(
+        'mr-6 flex w-56 shrink-0 flex-col justify-center gap-y-3 last:mr-0',
+        episode.IDs.ShokoSeries && 'group',
+      )}
     >
       {episode.IDs.ShokoSeries
         ? (
-          <Link to={`/webui/collection/series/${episode.IDs.ShokoSeries}`}>
+          <Link className="flex flex-col gap-y-3" to={`/webui/collection/series/${episode.IDs.ShokoSeries}`}>
             {content}
           </Link>
         )

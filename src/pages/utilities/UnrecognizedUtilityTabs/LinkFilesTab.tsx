@@ -176,7 +176,7 @@ const AnimeSelectPanel = (
         inputClassName="!p-4"
         startIcon={mdiMagnify}
       />
-      <div className="flex grow flex-col overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
+      <div className="flex grow flex-col overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
         {searchRows}
       </div>
     </div>
@@ -556,7 +556,7 @@ function LinkFilesTab() {
         <div
           title={path}
           className={cx([
-            'p-4 w-full odd:bg-panel-background-alt even:bg-panel-background border border-panel-border rounded-md leading-5',
+            'p-4 w-full odd:bg-panel-background-alt even:bg-panel-background border border-panel-border rounded-lg leading-5',
             selectedLink === idx && 'border-panel-text-primary',
           ])}
           key={`${link.FileID}-${link.EpisodeID}-${idx}-static`}
@@ -576,7 +576,7 @@ function LinkFilesTab() {
         <div
           title={path}
           className={cx([
-            'flex items-center p-4 w-full border border-panel-border rounded-md col-start-1 cursor-pointer transition-colors leading-5',
+            'flex items-center p-4 w-full border border-panel-border rounded-lg col-start-1 cursor-pointer transition-colors leading-5',
             idx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
             selectedLink === idx && 'border-panel-text-primary',
           ])}
@@ -617,7 +617,7 @@ function LinkFilesTab() {
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
-              <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+              <div className="relative box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div className="flex grow gap-x-4">
                   <MenuButton
                     onClick={duplicateLink}
@@ -659,19 +659,19 @@ function LinkFilesTab() {
           </ShokoPanel>
         </div>
 
-        <div className="mt-8 flex h-full w-full grow gap-x-8 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-8">
+        <div className="mt-8 flex h-full w-full grow gap-x-6 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
           <div
             className={cx(
-              'grid gap-y-2 gap-x-8 auto-rows-min',
+              'grid gap-y-2 gap-x-6 auto-rows-min',
               selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1',
             )}
           >
-            <div className="flex justify-between rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
+            <div className="flex justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
             {selectedSeries?.ID && (
-              <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
+              <div className="flex rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
                 AniDB |&nbsp;
                 <a
                   className="flex cursor-pointer font-semibold text-panel-text-primary"

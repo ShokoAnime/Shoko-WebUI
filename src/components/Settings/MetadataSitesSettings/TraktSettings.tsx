@@ -63,9 +63,9 @@ const TraktSettings = () => {
   }, [TraktTv.TokenExpirationDate]);
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div className="font-semibold">Trakt Options</div>
-      <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
+    <div className="flex flex-col gap-y-6">
+      <div className="flex h-[2.149rem] items-center font-semibold">Trakt Options</div>
+      <div className="flex flex-col gap-y-2">
         <Checkbox
           justify
           label="Enabled"
@@ -102,7 +102,7 @@ const TraktSettings = () => {
             <Button
               onClick={handleGetCode}
               buttonType="primary"
-              className="h-8 min-w-24 text-xs font-semibold"
+              buttonSize="small"
             >
               {traktQuery.isFetching ? 'Requesting...' : 'Get Code'}
             </Button>

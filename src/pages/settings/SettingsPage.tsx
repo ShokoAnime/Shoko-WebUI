@@ -98,17 +98,17 @@ function SettingsPage() {
   };
 
   return (
-    <div className="flex min-h-full grow justify-center gap-x-8">
-      <div className="relative top-0 z-10 flex w-72 flex-col gap-y-4 rounded-md border border-panel-border bg-panel-background-transparent p-8 font-semibold">
-        <div className="sticky top-8">
+    <div className="flex min-h-full grow justify-center gap-x-6">
+      <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+        <div className="sticky top-6">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
           <div className="flex flex-col items-center gap-y-2">
             {items.map(item => (
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive
-                  ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-md text-panel-menu-item-text'
-                  : 'w-full text-center py-2 px-2 rounded-md hover:bg-panel-menu-item-background-hover')}
+                  ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
+                  : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover')}
                 key={item.path}
               >
                 {item.name}
@@ -117,7 +117,7 @@ function SettingsPage() {
           </div>
         </div>
       </div>
-      <div className="flex min-h-full w-[41rem] flex-col gap-y-8 overflow-y-visible rounded-md border border-panel-border bg-panel-background-transparent p-8">
+      <div className="flex min-h-full w-[43.75rem] flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
         {settingsQuery.isPending
           ? (
             <div className="flex grow items-center justify-center text-panel-text-primary">
@@ -130,18 +130,18 @@ function SettingsPage() {
                 context={settingContext}
               />
               {isShowFooter && (
-                <div className="flex justify-end font-semibold">
+                <div className="flex justify-end gap-x-3 font-semibold">
                   <Button
                     onClick={() => setNewSettings(settings)}
                     buttonType="secondary"
-                    className="px-3 py-2"
+                    buttonSize="normal"
                   >
                     Cancel
                   </Button>
                   <Button
                     onClick={() => patchSettings({ newSettings })}
                     buttonType="primary"
-                    className="ml-3 px-3 py-2"
+                    buttonSize="normal"
                     disabled={!unsavedChanges}
                   >
                     Save

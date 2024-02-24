@@ -22,7 +22,7 @@ const RecommendedAnime = () => {
   });
 
   const renderItem = (series: SeriesAniDBType, matches: number) => (
-    <div key={`series-${series.ID}`} className="mr-4 flex w-56 shrink-0 flex-col justify-center last:mr-0">
+    <div key={`series-${series.ID}`} className="mr-6 flex w-56 shrink-0 flex-col justify-center last:mr-0">
       <BackgroundImagePlaceholderDiv
         image={series.Poster}
         className="group mb-2 h-80 rounded border border-panel-border drop-shadow-md"

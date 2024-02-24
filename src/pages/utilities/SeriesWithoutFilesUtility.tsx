@@ -75,7 +75,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   };
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
@@ -95,11 +95,6 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      Series Selected
     </div>
   );
 };
@@ -116,9 +111,12 @@ function SeriesWithoutFilesUtility() {
   } = useRowSelection<SeriesType>(series);
 
   return (
-    <div className="flex grow flex-col gap-y-8">
+    <div className="flex grow flex-col gap-y-6">
       <div>
-        <ShokoPanel title="Series Without Files" options={<ItemCount count={seriesCount} series />}>
+        <ShokoPanel
+          title="Series Without Files"
+          options={<ItemCount count={seriesCount} selected={selectedRows?.length} />}
+        >
           <div className="flex items-center gap-x-3">
             {/* Endpoint doesn't have search */}
             {/* <Input */}
@@ -135,7 +133,7 @@ function SeriesWithoutFilesUtility() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+      <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
         {seriesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />

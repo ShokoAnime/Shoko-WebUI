@@ -54,7 +54,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
       header="Display Settings"
       size="sm"
     >
-      <div className="flex flex-col gap-y-8">
+      <div className="flex flex-col gap-y-6">
         <div className="flex flex-col gap-y-4">
           <div className="border-b border-panel-border pb-4 font-semibold">Poster View Options</div>
           <div className="flex flex-col gap-y-2">

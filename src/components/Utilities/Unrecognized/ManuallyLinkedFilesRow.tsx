@@ -71,7 +71,7 @@ function ManuallyLinkedFilesRow(props: Props) {
 
   return (
     <div className="mt-4 flex flex-col">
-      <div className="flex rounded-md border border-panel-border bg-panel-background-alt p-4 font-semibold">
+      <div className="flex rounded-lg border border-panel-border bg-panel-table-header p-4 font-semibold">
         <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
           Entry
         </div>
@@ -84,13 +84,15 @@ function ManuallyLinkedFilesRow(props: Props) {
         const selected = rowSelection[file.ID];
 
         return (
-          <div className="mt-2 rounded-md" key={file.ID}>
+          <div
+            className={cx(
+              'mt-2 border-panel-border border rounded-lg',
+              selected ? 'bg-panel-background-selected-row' : '',
+            )}
+            key={file.ID}
+          >
             <div
-              className={cx(
-                'bg-panel-background flex relative cursor-pointer rounded-md border p-4 text-left transition-colors',
-                selected ? 'border-panel-text-primary' : 'border-panel-border',
-                'border-panel-border',
-              )}
+              className="relative flex cursor-pointer p-4 text-left transition-colors"
               onClick={event => handleSelect(event, index)}
             >
               <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
@@ -114,7 +116,8 @@ function ManuallyLinkedFilesRow(props: Props) {
                 </div>
               </div>
               <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
-                {file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
+                {file.Locations?.[0].RelativePath.split(/[/\\]/g)
+                  .pop() ?? '<missing file path>'}
               </div>
             </div>
           </div>

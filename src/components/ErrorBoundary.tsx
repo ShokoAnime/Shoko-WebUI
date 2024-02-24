@@ -33,11 +33,11 @@ const ErrorBoundary = () => {
   const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
 
   return (
-    <div className="relative flex grow items-center justify-center overflow-hidden p-8">
-      <div className="z-20 flex h-full max-w-[56.4375rem] flex-col items-center justify-center gap-y-4 overflow-y-auto md:gap-y-8">
+    <div className="relative flex grow items-center justify-center overflow-hidden p-6">
+      <div className="z-20 flex h-full max-w-[56.4375rem] flex-col items-center justify-center gap-y-4 overflow-y-auto md:gap-y-6">
         <div className="text-4xl text-panel-text md:text-7xl">Congratulations!</div>
         <div className="text-2xl text-panel-text md:text-5xl">You Broke The Web UI!</div>
-        <pre className="flex max-h-[25rem] max-w-full flex-col overflow-y-auto whitespace-pre-wrap rounded-lg border border-panel-border bg-panel-input p-4 md:p-8">
+        <pre className="flex max-h-[25rem] max-w-full flex-col overflow-y-auto whitespace-pre-wrap rounded-lg border border-panel-border bg-panel-input p-4 md:p-6">
           The information below is absolutely (maybe) useless!
           <br />
           <br />

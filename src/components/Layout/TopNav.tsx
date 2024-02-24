@@ -16,9 +16,10 @@ import {
   mdiLoading,
   mdiLogout,
   mdiServer,
-  mdiTabletDashboard,
   mdiTextBoxOutline,
   mdiTools,
+  mdiViewDashboardEditOutline,
+  mdiViewDashboardOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -60,13 +61,13 @@ const MenuItem = (
     to={id}
     key={id}
     className={({ isActive }) =>
-      cx('flex items-center gap-x-2', (isActive || isHighlighted) && 'text-topnav-text-primary')}
+      cx('flex items-center gap-x-3', (isActive || isHighlighted) && 'text-topnav-text-primary')}
     onClick={(e) => {
       e.preventDefault();
       onClick();
     }}
   >
-    <Icon path={icon} size={0.8333} />
+    <Icon path={icon} size={1} />
     {text}
   </NavLink>
 );
@@ -79,10 +80,10 @@ const LinkMenuItem = (
     <NavLink
       to={path}
       key={path.split('/').pop()}
-      className={({ isActive }) => cx('flex items-center gap-x-2', isActive && 'text-topnav-text-primary')}
+      className={({ isActive }) => cx('flex items-center gap-x-3', isActive && 'text-topnav-text-primary')}
       onClick={onClick}
     >
-      <Icon path={icon} size={0.8333} />
+      <Icon path={icon} size={1} />
       {text}
     </NavLink>
   );
@@ -90,7 +91,7 @@ const LinkMenuItem = (
 
 const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
   <a href={url} target="_blank" rel="noreferrer noopener" aria-label={`Open ${name}`}>
-    <Icon className="text-topnav-icon" path={icon} size={0.8333} />
+    <Icon className="text-topnav-icon" path={icon} size={1} />
   </a>
 );
 
@@ -111,7 +112,7 @@ const QueueCount = () => {
         onClick={handleQueueModalOpen}
         title="Show Queue Modal"
       >
-        <Icon path={mdiServer} size={0.8333} />
+        <Icon path={mdiServer} size={1} />
       </div>
       <span className="text-header-text-important">
         {queue.HasherQueueState.queueCount + queue.GeneralQueueState.queueCount + queue.ImageQueueState.queueCount}
@@ -215,13 +216,13 @@ function TopNav() {
 
   return (
     <>
-      <div className="z-[100] flex flex-col bg-header-background text-sm font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
-        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-8 py-6">
-          <div className="flex items-center gap-x-2">
-            <ShokoIcon className="w-6" />
+      <div className="z-[100] flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
+          <div className="flex items-center gap-x-3">
+            <ShokoIcon className="w-8" />
             <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
           </div>
-          <div className="flex items-center gap-x-8">
+          <div className="flex items-center gap-x-6">
             <QueueCount />
             <div className="flex items-center gap-x-2">
               <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
@@ -237,24 +238,24 @@ function TopNav() {
                 cx({ 'text-header-icon-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
             >
-              <Icon path={mdiCogOutline} size={0.8333} />
+              <Icon path={mdiCogOutline} size={1} />
             </NavLink>
             <Button onClick={handleLogout} tooltip="Log out">
-              <Icon path={mdiLogout} size={0.8333} />
+              <Icon path={mdiLogout} size={1} />
             </Button>
           </div>
         </div>
         <div className="bg-topnav-background text-topnav-text">
-          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-8 py-4">
-            <div className="flex gap-x-8">
+          <div className="mx-auto flex w-full max-w-[120rem] justify-between px-6 py-4">
+            <div className="flex gap-x-6">
               <LinkMenuItem
-                icon={mdiTabletDashboard}
+                icon={mdiViewDashboardOutline}
                 onClick={closeModalsAndSubmenus}
                 path="dashboard"
                 text="Dashboard"
               />
               <div
-                className={cx('transition-opacity flex gap-x-8', layoutEditMode && 'opacity-65 pointer-events-none')}
+                className={cx('transition-opacity flex gap-x-6', layoutEditMode && 'opacity-65 pointer-events-none')}
               >
                 <LinkMenuItem
                   icon={mdiLayersTripleOutline}
@@ -272,6 +273,12 @@ function TopNav() {
                   }}
                   isHighlighted={showUtilitiesMenu}
                 />
+                <LinkMenuItem
+                  onClick={closeModalsAndSubmenus}
+                  icon={mdiTextBoxOutline}
+                  path="log"
+                  text="Log"
+                />
                 <MenuItem
                   id="actions"
                   text="Actions"
@@ -282,20 +289,14 @@ function TopNav() {
                   }}
                   isHighlighted={showActionsModal}
                 />
-                <LinkMenuItem
-                  onClick={closeModalsAndSubmenus}
-                  icon={mdiTextBoxOutline}
-                  path="log"
-                  text="Log"
-                />
               </div>
             </div>
-            <div className="flex justify-end gap-8">
+            <div className="flex justify-end gap-6">
               {pathname === '/webui/dashboard' && (
                 <MenuItem
                   id="dashboard-settings"
                   text="Dashboard Settings"
-                  icon={mdiTabletDashboard}
+                  icon={mdiViewDashboardEditOutline}
                   onClick={() => {
                     closeModalsAndSubmenus();
                     setShowDashboardSettingsModal(true);
@@ -362,7 +363,7 @@ function TopNav() {
           height={showUtilitiesMenu ? 'auto' : 0}
           className="border-t border-topnav-border bg-topnav-background"
         >
-          <div className="mx-auto flex w-full max-w-[120rem] gap-x-8 px-8 py-4">
+          <div className="mx-auto flex w-full max-w-[120rem] gap-x-6 px-6 py-4 text-sm">
             <LinkMenuItem
               icon={mdiFileQuestionOutline}
               onClick={closeModalsAndSubmenus}

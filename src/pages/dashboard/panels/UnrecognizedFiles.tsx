@@ -12,11 +12,14 @@ import type { RootState } from '@/core/store';
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
   return (
-    <div key={file.ID} className="flex items-center pr-4">
+    <div
+      key={file.ID}
+      className="mr-3 flex items-center border-t border-panel-border p-3 last:border-b odd:bg-panel-background-alt"
+    >
       <div className="flex grow flex-col">
-        <span className="font-semibold">
+        <span className="opacity-65">
           {createdTime.format('YYYY-MM-DD')}
-          &nbsp;/&nbsp;
+          &nbsp;|&nbsp;
           {createdTime.format('HH:mm')}
         </span>
         <span className="max-w-[95%] break-all">
@@ -65,7 +68,6 @@ function UnrecognizedFiles() {
       }
       isFetching={filesQuery.isPending}
       editMode={layoutEditMode}
-      contentClassName="gap-y-3"
     >
       {files.map(file => <FileItem file={file} key={file.ID} />)}
       {fileCount === 0 && (

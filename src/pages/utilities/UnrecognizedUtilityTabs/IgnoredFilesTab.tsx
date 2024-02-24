@@ -55,7 +55,7 @@ const Menu = (
   });
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 ">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {
@@ -75,12 +75,6 @@ const Menu = (
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto font-semibold text-panel-text-important">
-        {selectedRows.length}
-        &nbsp;
-      </span>
-      {selectedRows.length === 1 ? 'File ' : 'Files '}
-      Selected
     </div>
   );
 };
@@ -128,9 +122,9 @@ function IgnoredFilesTab() {
   } = useRowSelection<FileType>(files);
 
   return (
-    <div className="flex grow flex-col gap-y-8">
+    <div className="flex grow flex-col gap-y-6">
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} />}>
+        <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
           <div className="flex items-center gap-x-3">
             <Input
               type="text"
@@ -149,7 +143,7 @@ function IgnoredFilesTab() {
         </ShokoPanel>
       </div>
 
-      <TransitionDiv className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background p-8">
+      <TransitionDiv className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
         {filesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />

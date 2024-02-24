@@ -42,9 +42,9 @@ function MainPage() {
         <ImportFolderModal />
         <TopNav />
         {isSm && <Header showSidebar={showSmSidebar} toggleSidebar={() => setShowSmSidebar(!showSmSidebar)} />}
-        <div className="shoko-scrollbar scroll-gutter grow overflow-y-auto py-8" ref={scrollRef}>
+        <div className="shoko-scrollbar scroll-gutter grow overflow-y-auto py-6" ref={scrollRef}>
           <div
-            className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-8"
+            className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-6"
             onClick={() => setShowSmSidebar(false)}
           >
             <Outlet context={{ scrollRef }} />

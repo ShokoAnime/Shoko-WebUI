@@ -22,8 +22,9 @@
   --logo-secondary: #2c333e;
   --panel-background: #2c333e;
   --panel-background-alt: #282e38;
-  --panel-background-overlay: #1e2027e5;
-  --panel-background-transparent: #2c333ebf;
+  --panel-background-selected-row: #283654;
+  --panel-background-overlay: #282e38e6;
+  --panel-background-transparent: #282e38e6;
   --panel-border: #21242b;
   --panel-icon: #cfd8e3;
   --panel-icon-action: #44a3ff;
@@ -34,6 +35,7 @@
   --panel-menu-item-background: #85c3ff1a;
   --panel-menu-item-background-hover: #bacfe41a;
   --panel-menu-item-text: #a9d5ff;
+  --panel-table-header: #22262f;
   --panel-tags: #3f4762;
   --panel-text: #cfd8e3;
   --panel-text-danger: #ff6c6c;
@@ -41,6 +43,11 @@
   --panel-text-other: #b981ff;
   --panel-text-primary: #44a3ff;
   --panel-text-warning: #f9c851;
+  --panel-toggle-background: #85c3ff1a;
+  --panel-toggle-background-alt: #282e38;
+  --panel-toggle-background-hover: #bacfe41a;
+  --panel-toggle-text: #a9d5ff;
+  --panel-toggle-text-alt: #cfd8e3;
   --slider-background: #21242b;
   --slider-background-alt: #282e38;
   --slider-color: #44a3ff;

@@ -144,7 +144,7 @@ const SelectEpisodeList = React.memo((
         &nbsp;-&nbsp;
         {selected.label}
         {selected.type && selected.type !== EpisodeTypeEnum.Normal && (
-          <span className="mx-2 rounded-md border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
+          <span className="mx-2 rounded-lg border border-panel-border bg-panel-background px-1 py-0.5 text-sm text-panel-text">
             {selected.type}
           </span>
         )}
@@ -176,7 +176,7 @@ const SelectEpisodeList = React.memo((
             placeholder="Input Episode Name or Number..."
           />
         </div>
-        <div className="mt-1 max-h-96 overflow-y-auto rounded-md border border-panel-border bg-panel-input p-4">
+        <div className="mt-1 max-h-96 overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
           {options.map((item, idx) => (
             <React.Fragment key={`listbox-item-${item.value}`}>
               {idx !== 0 && item.type !== options[idx - 1].type && (
@@ -204,7 +204,7 @@ const SelectEpisodeList = React.memo((
             <Listbox.Button
               ref={buttonRef}
               className={cx(
-                'relative w-full h-full border border-panel-border rounded-md pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-text-primary',
+                'relative w-full h-full border border-panel-border rounded-lg pl-2 pr-10 py-2 text-left cursor-default focus:outline-none focus:border-panel-text-primary',
                 rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
               )}
             >

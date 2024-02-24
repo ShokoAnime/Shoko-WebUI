@@ -53,19 +53,19 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
     });
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
-    return <div className="flex grow items-center justify-center p-8 pt-4 font-semibold">No files found!</div>;
+    return <div className="flex grow items-center justify-center p-6 pt-4 font-semibold">No files found!</div>;
   }
 
   return (
-    <div className="flex flex-col gap-y-8 p-8 pt-4">
+    <div className="flex flex-col gap-y-6 p-6 pt-4">
       {map(episodeFiles, (selectedFile) => {
         const ReleaseGroupID = get(selectedFile, 'AniDB.ReleaseGroup.ID', 0);
         const ReleaseGroupName = get(selectedFile, 'AniDB.ReleaseGroup.Name', null);
 
         return (
-          <div className="flex flex-col gap-y-8" key={selectedFile.ID}>
+          <div className="flex flex-col gap-y-6" key={selectedFile.ID}>
             <div className="flex grow gap-x-2">
-              <div className="flex grow gap-x-3 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+              <div className="flex grow gap-x-3 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleRescan(selectedFile.ID)}

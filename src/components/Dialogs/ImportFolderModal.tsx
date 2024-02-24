@@ -101,59 +101,70 @@ function ImportFolderModal() {
         onAfterOpen={() => getFolderDetails()}
         header={edit ? 'Edit Import Folder' : 'Add New Import Folder'}
         size="sm"
+        noPadding
       >
-        <Input
-          id="Name"
-          value={importFolder.Name}
-          label="Name"
-          type="text"
-          placeholder="Folder name"
-          onChange={handleInputChange}
-          className="w-full"
-        />
-        <Input
-          id="Path"
-          value={importFolder.Path}
-          label="Location"
-          type="text"
-          placeholder="Location"
-          onChange={handleInputChange}
-          className="w-full"
-          endIcons={[{ icon: mdiFolderOpen, onClick: handleBrowse }]}
-        />
-        <Select
-          label="Drop Type"
-          id="DropFolderType"
-          value={importFolder.DropFolderType}
-          onChange={handleInputChange}
-          className="w-full"
-        >
-          <option value={0}>None</option>
-          <option value={1}>Source</option>
-          <option value={2}>Destination</option>
-          <option value={3}>Both</option>
-        </Select>
-        <Select
-          label="Watch For New Files"
-          id="WatchForNewFiles"
-          value={importFolder.WatchForNewFiles ? 1 : 0}
-          onChange={handleInputChange}
-          className="w-full"
-        >
-          <option value={0}>No</option>
-          <option value={1}>Yes</option>
-        </Select>
-        <div className="flex justify-end gap-x-3 font-semibold">
-          {edit && <Button onClick={handleDelete} buttonType="danger" className="px-6 py-2">Delete</Button>}
-          <Button onClick={handleClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
-          <Button
-            onClick={handleSave}
-            buttonType="primary"
-            className="px-6 py-2"
-            disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}
-          >
-            Save
-          </Button>
+        <div>
+          <div className="flex flex-col gap-y-6 p-6 ">
+            <Input
+              id="Name"
+              value={importFolder.Name}
+              label="Name"
+              type="text"
+              placeholder="Folder name"
+              onChange={handleInputChange}
+              className="w-full"
+            />
+            <Input
+              id="Path"
+              value={importFolder.Path}
+              label="Location"
+              type="text"
+              placeholder="Location"
+              onChange={handleInputChange}
+              className="w-full"
+              endIcons={[{ icon: mdiFolderOpen, onClick: handleBrowse }]}
+            />
+            <Select
+              label="Drop Type"
+              id="DropFolderType"
+              value={importFolder.DropFolderType}
+              onChange={handleInputChange}
+              className="w-full"
+            >
+              <option value={0}>None</option>
+              <option value={1}>Source</option>
+              <option value={2}>Destination</option>
+              <option value={3}>Both</option>
+            </Select>
+            <Select
+              label="Watch For New Files"
+              id="WatchForNewFiles"
+              value={importFolder.WatchForNewFiles ? 1 : 0}
+              onChange={handleInputChange}
+              className="w-full"
+            >
+              <option value={0}>No</option>
+              <option value={1}>Yes</option>
+            </Select>
+          </div>
+          <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
+            <div className="flex justify-end gap-x-3 font-semibold">
+              {edit && (
+                <Button onClick={handleDelete} buttonType="danger" buttonSize="normal">
+                  Delete
+                </Button>
+              )}
+              <Button onClick={handleClose} buttonType="secondary" buttonSize="normal">Cancel</Button>
+              <Button
+                onClick={handleSave}
+                buttonType="primary"
+                buttonSize="normal"
+                disabled={importFolder.Name === '' || importFolder.Path === '' || isLoading}
+              >
+                Save
+              </Button>
+            </div>
+          </div>
         </div>
       </ModalPanel>
       <BrowseFolderModal onSelect={onFolderSelect} />

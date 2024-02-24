@@ -182,8 +182,8 @@ function Collection() {
   });
 
   return (
-    <div className="flex grow flex-col gap-y-8">
-      <div className="flex items-center justify-between rounded-md border border-panel-border bg-panel-background p-8">
+    <div className="flex grow flex-col gap-y-6">
+      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
         <CollectionTitle
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}

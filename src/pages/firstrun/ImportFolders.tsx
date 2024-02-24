@@ -90,7 +90,7 @@ function ImportFolders() {
 
   return (
     <>
-      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8 overflow-y-auto">
+      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
         <div className="text-xl font-semibold">Import Folders</div>
         <div className="text-justify">
           For Shoko to function correctly, at least one import folder is required. However, you can add as many import
@@ -98,7 +98,7 @@ function ImportFolders() {
           drop destination.
         </div>
         <div className="flex font-semibold">
-          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} buttonType="primary" className="px-8 py-2">
+          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} buttonType="primary" className="px-6 py-2">
             Add Import Folder
           </Button>
         </div>
@@ -108,7 +108,7 @@ function ImportFolders() {
               <div className="font-semibold">
                 Current Import Folders
               </div>
-              <div className="flex max-h-[20rem] flex-col gap-y-8 overflow-y-auto">
+              <div className="flex max-h-[20rem] flex-col gap-y-6 overflow-y-auto">
                 {importFolders.map(folder => <Folder {...folder} key={folder.ID} />)}
               </div>
             </>

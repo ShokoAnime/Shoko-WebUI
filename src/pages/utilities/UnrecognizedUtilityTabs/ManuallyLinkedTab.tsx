@@ -48,7 +48,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     name: 'AniDB ID',
     className: 'w-32',
     item: series => (
-      <div className="flex justify-between">
+      <div className="flex gap-x-2">
         {series.IDs.AniDB}
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
@@ -69,10 +69,10 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     className: 'w-32',
     item: (series) => {
       const count = series.Sizes.FileSources.Unknown;
-      return `${count} ${count === 1 ? 'file' : 'files'}`;
+      return `${count} ${count === 1 ? 'File' : 'Files'}`;
     },
   },
-  // TODO: Either actually use "date linked" here or remove the column
+
   {
     id: 'created',
     name: 'Date Added',
@@ -165,7 +165,7 @@ const Menu = (props: SelectedFilesType) => {
   });
 
   return (
-    <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <MenuButton onClick={handleRefresh} icon={mdiRefresh} name="Refresh" />
       <TransitionDiv className="ml-4 flex grow gap-x-4" show={selectedIds.length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
@@ -176,12 +176,6 @@ const Menu = (props: SelectedFilesType) => {
           highlight
         />
       </TransitionDiv>
-      <span className="ml-auto text-panel-text-important">
-        {selectedIds.length}
-        &nbsp;
-      </span>
-      {selectedIds.length === 1 ? 'File ' : 'Files '}
-      Selected
     </div>
   );
 };
@@ -222,9 +216,17 @@ function ManuallyLinkedTab() {
   );
 
   return (
-    <TransitionDiv className="flex grow flex-col gap-y-8 overflow-y-auto">
+    <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
       <div>
-        <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
+        <ShokoPanel
+          title={<Title />}
+          options={
+            <ItemCount
+              count={seriesCount}
+              selected={Object.values(selectedFiles).filter(value => value).length}
+            />
+          }
+        >
           <div className="flex items-center gap-x-3">
             {/* Endpoint doesn't have search */}
             {/* <Input */}
@@ -237,13 +239,14 @@ function ManuallyLinkedTab() {
             {/*   inputClassName="px-4 py-3" */}
             {/* /> */}
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
-            <TransitionDiv show={Object.keys(selectedFiles).length !== 0} className="flex gap-x-3">
+            <TransitionDiv show={Object.values(selectedFiles).some(value => value)} className="flex gap-x-3">
               <Button
                 buttonType="primary"
+                buttonSize="normal"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
                 onClick={unlinkFiles}
               >
-                <Icon path={mdiLinkOff} size={0.8333} />
+                <Icon path={mdiLinkOff} size={1} />
                 Unlink
               </Button>
             </TransitionDiv>
@@ -251,7 +254,7 @@ function ManuallyLinkedTab() {
         </ShokoPanel>
       </div>
 
-      <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+      <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
         {seriesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
             <Icon path={mdiLoading} size={4} spin />

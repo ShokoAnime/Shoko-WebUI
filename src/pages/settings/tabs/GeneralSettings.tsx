@@ -36,11 +36,23 @@ function GeneralSettings() {
 
   return (
     <>
-      <div className="text-xl font-semibold">General</div>
-      <div className="mt-0.5 flex flex-col gap-y-4 border-b border-panel-border pb-8">
-        <div className="flex justify-between">
+      <div className="flex flex-col gap-y-1">
+        <div className="text-xl font-semibold">General</div>
+        <div>
+          Here you can find settings for version details, theme customization, notification management, and log
+          configurations.
+        </div>
+      </div>
+
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="flex items-center justify-between">
           <div className="font-semibold">Version Information</div>
           <Button
+            buttonType="primary"
+            buttonSize="small"
+            className="flex flex-row flex-wrap items-center gap-x-2"
             onClick={() => {
               checkWebuiUpdateQuery.refetch().then(() => {}, () => {});
             }}
@@ -48,14 +60,14 @@ function GeneralSettings() {
           >
             <Icon
               path={mdiRefresh}
-              size={1}
-              className="text-panel-icon-action"
+              size={0.85}
               spin={checkWebuiUpdateQuery.isFetching}
             />
+            <span>Refresh</span>
           </Button>
         </div>
-        <div className="flex flex-col gap-y-2">
-          <div className="flex justify-between">
+        <div className="flex flex-col gap-y-1">
+          <div className="flex h-[2rem] justify-between">
             <span>Server Version</span>
             <div className="flex gap-2">
               {versionQuery.data?.Server.Version}
@@ -72,11 +84,11 @@ function GeneralSettings() {
               </a>
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="flex h-[2rem] justify-between">
             <span>Server Channel</span>
             {versionQuery.data?.Server.ReleaseChannel}
           </div>
-          <div className="flex justify-between">
+          <div className="flex h-[2rem] justify-between">
             <span>Web UI Version</span>
             <div className="flex gap-2">
               {versionQuery.data?.WebUI?.Version}
@@ -91,7 +103,7 @@ function GeneralSettings() {
               </a>
             </div>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between ">
             <span>Web UI Channel</span>
             <SelectSmall
               id="update-channel"
@@ -105,9 +117,11 @@ function GeneralSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
-        <div className="font-semibold">Theme Options</div>
-        <div className="flex flex-col gap-y-2">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="flex h-[2.149rem] items-center font-semibold">Theme Options</div>
+        <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             Theme
             <SelectSmall
@@ -119,24 +133,26 @@ function GeneralSettings() {
               {themesQuery.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
             </SelectSmall>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex h-[2rem] items-center justify-between">
             <span>Description</span>
             <span className="max-w-xs truncate">{currentTheme?.Description ?? 'The default theme.'}</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex h-[2rem] items-center justify-between">
             <span>Version</span>
             {currentTheme?.Version ?? '1.0.0'}
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex h-[2rem] items-center justify-between">
             <span>Author</span>
             {currentTheme?.Author ?? 'Shoko Staff'}
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="font-semibold">Notification Options</div>
+          <div className="flex h-[2.149rem] items-center font-semibold">Notification Options</div>
           <Checkbox
             label="Enable"
             id="enable-notifications"
@@ -162,9 +178,11 @@ function GeneralSettings() {
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4 border-b border-panel-border pb-8">
+      <div className="border-b border-panel-border" />
+
+      <div className="flex flex-col gap-y-6">
         <div className="flex justify-between">
-          <div className="font-semibold">Log Options</div>
+          <div className="flex h-[2.149rem] items-center font-semibold">Log Options</div>
           <Checkbox
             id="enable-logs"
             label="Enable"
@@ -219,6 +237,7 @@ function GeneralSettings() {
           />
         </div>
       </div>
+      <div className="border-b border-panel-border" />
     </>
   );
 }

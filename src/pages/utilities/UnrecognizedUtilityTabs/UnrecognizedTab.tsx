@@ -22,7 +22,7 @@ import { useDebounce } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
-import ButtonDropdown from '@/components/Input/ButtonDropdown';
+import DropdownButton from '@/components/Input/DropdownButton';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
@@ -192,7 +192,7 @@ const Menu = (
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',
-          'box-border h-[52px] grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
+          'box-border h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 gap-x-4',
         )}
       >
         <MenuButton
@@ -212,9 +212,9 @@ const Menu = (
       </div>
 
       <div className={cx(selectedRows.length !== 0 ? 'flex' : 'hidden', '3xl:hidden')}>
-        <ButtonDropdown buttonTypes="secondary" content={<span>Options</span>}>
+        <DropdownButton buttonTypes="secondary" content={<span>Options</span>}>
           {renderSelectedRowActions}
-        </ButtonDropdown>
+        </DropdownButton>
       </div>
 
       <DeleteFilesModal
@@ -332,7 +332,7 @@ function UnrecognizedTab() {
 
   return (
     <>
-      <div className="flex grow flex-col gap-y-8" ref={tabContainerRef}>
+      <div className="flex grow flex-col gap-y-6" ref={tabContainerRef}>
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
             <div className="flex items-center gap-x-3">
@@ -354,19 +354,21 @@ function UnrecognizedTab() {
               <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3"
+                  buttonSize="normal"
+                  className="flex flex-row flex-wrap items-center gap-x-2"
                   onClick={() => navigate('link', { state: { selectedRows } })}
                 >
-                  <Icon path={mdiOpenInNew} size={0.8333} />
+                  <Icon path={mdiOpenInNew} size={1} />
                   <span>Manual Link</span>
                 </Button>
                 <Button
                   buttonType="primary"
-                  className="flex flex-row flex-wrap items-center gap-x-2 px-4 py-3 "
+                  buttonSize="normal"
+                  className="flex h-[3.25rem] flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >
-                  <Icon path={mdiDumpTruck} size={0.8333} />
+                  <Icon path={mdiDumpTruck} size={1} />
                   <span>
                     {isAvdumpFinished && !dumpInProgress && 'Finish AVDump'}
                     {!isAvdumpFinished && dumpInProgress && 'Dumping Files...'}
@@ -378,7 +380,7 @@ function UnrecognizedTab() {
           </ShokoPanel>
         </div>
 
-        <div className="flex grow overflow-y-auto rounded-md border border-panel-border bg-panel-background px-4 py-8">
+        <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
           {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
               <Icon path={mdiLoading} size={4} spin />

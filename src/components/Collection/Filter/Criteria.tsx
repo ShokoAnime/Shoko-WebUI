@@ -92,7 +92,7 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
           {typeof transformedParameter === 'string'
             ? (
               <div
-                className="flex cursor-pointer rounded-md border border-panel-border bg-panel-input px-4 py-3"
+                className="flex cursor-pointer rounded-lg border border-panel-border bg-panel-input px-4 py-3"
                 onClick={openModal}
               >
                 <ParameterList expression={criteria.Expression} value={transformedParameter} />

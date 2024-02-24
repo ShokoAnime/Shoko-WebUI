@@ -58,7 +58,7 @@ function MetadataSources() {
   };
 
   return (
-    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8 overflow-y-auto">
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
       <div className="text-xl font-semibold">Metadata Sites</div>
       <div className="text-justify">
         Shoko offers support for various community sites that provide additional metadata for the series in your

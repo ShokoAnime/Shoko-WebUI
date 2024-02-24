@@ -94,7 +94,7 @@ function Input(props: Props) {
         {label && (
           <div
             className={cx('font-semibold text-base', {
-              'mb-3': !inline,
+              'mb-2': !inline,
               'flex items-center mr-3 whitespace-nowrap': inline,
             })}
           >
@@ -110,7 +110,7 @@ function Input(props: Props) {
           <input
             className={cx([
               inputClassName ?? '',
-              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
+              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
               center && 'text-center',
               startIcon && '!pl-11',
             ])}

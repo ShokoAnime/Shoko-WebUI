@@ -81,7 +81,7 @@ const PlexLinkButton = () => {
         loading={isInvalidateTokenPending}
         loadingSize={0.65}
         buttonType="danger"
-        className="h-8 w-16 text-xs font-semibold"
+        buttonSize="small"
       >
         Unlink
       </Button>
@@ -95,7 +95,7 @@ const PlexLinkButton = () => {
         loading={plexPollingInterval !== 0}
         loadingSize={0.65}
         buttonType="primary"
-        className="h-8 w-24 text-xs"
+        buttonSize="small"
       >
         Login
       </Button>
@@ -108,7 +108,7 @@ const PlexLinkButton = () => {
       loading={loginUrlQuery.isFetching || isAuthenticated.isFetching}
       loadingSize={0.65}
       buttonType="primary"
-      className="h-8 w-24 text-xs"
+      buttonSize="small"
     >
       Authenticate
     </Button>
@@ -156,13 +156,12 @@ const PlexSettings = () => {
   });
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div className="font-semibold">Plex Options</div>
-      <div className="flex flex-col gap-y-2 border-b border-panel-border pb-8">
-        <div className="flex h-8 justify-between">
-          <div className="mx-0 my-auto">Plex Link</div>
-          <PlexLinkButton />
-        </div>
+    <div className="flex flex-col gap-y-6">
+      <div className="flex justify-between">
+        <div className="flex h-[2.149rem] items-center font-semibold">Plex Options</div>
+        <PlexLinkButton />
+      </div>
+      <div className="flex flex-col gap-y-2">
         <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
           <SelectSmall
             label="Server"
@@ -178,8 +177,8 @@ const PlexSettings = () => {
             )}
           </SelectSmall>
           <AnimateHeight height={isAuthenticated && serversQuery.isSuccess && !!serverId ? 'auto' : 0}>
-            <div className="my-2 font-semibold">Libraries</div>
-            <div className="flex flex-col gap-y-2 rounded-md border border-panel-border bg-panel-input p-4">
+            <div className="mb-2">Available Libraries</div>
+            <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input px-4 py-2">
               {librariesQuery.isPending && (
                 <div className="flex justify-center text-panel-text-primary">
                   <Icon path={mdiLoading} size={1} spin />

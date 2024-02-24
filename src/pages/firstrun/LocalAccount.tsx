@@ -42,7 +42,7 @@ function LocalAccount() {
   };
 
   return (
-    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-8">
+    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6">
       <div className="text-xl font-semibold">Creating Your Account</div>
       <div className="text-justify">
         To use Shoko, you will need to create an account. This account will allow Shoko to manage links to all supported

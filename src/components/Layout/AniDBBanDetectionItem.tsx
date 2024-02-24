@@ -35,7 +35,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
         size="sm"
         header={`AniDB ${type} Ban Detected`}
       >
-        <div className="flex flex-col gap-y-8">
+        <div className="flex flex-col gap-y-6">
           <p>
             It looks like you’ve been&nbsp;
             <span className="font-bold text-panel-text-important">temporarily banned</span>

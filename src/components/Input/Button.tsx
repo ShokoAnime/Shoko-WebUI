@@ -3,8 +3,11 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
+
 type Props = {
   buttonType?: string;
+  buttonSize?: string;
   className?: string;
   children: React.ReactNode;
   disabled?: boolean;
@@ -15,36 +18,28 @@ type Props = {
   tooltip?: string;
 };
 
-const buttonTypeClasses = {
-  primary:
-    'bg-button-primary text-button-primary-text border-2 !border-button-primary-border rounded-md hover:bg-button-primary-hover',
-  secondary:
-    'bg-button-secondary text-button-secondary-text border-2 !border-button-secondary-border rounded-md hover:bg-button-secondary-hover',
-  danger:
-    'bg-button-danger text-button-danger-text border-2 !border-button-danger-border rounded-md hover:bg-button-danger-hover',
-};
-
-const Button = React.memo((props: Props) => {
-  const {
-    buttonType,
-    children,
-    className,
-    disabled,
-    loading,
-    loadingSize,
-    onClick,
-    submit,
-    tooltip,
-  } = props;
-
-  return (
+const Button = React.memo(
+  (
+    {
+      buttonSize = '',
+      buttonType = '',
+      children,
+      className,
+      disabled,
+      loading,
+      loadingSize,
+      onClick,
+      submit,
+      tooltip,
+    }: Props,
+  ) => (
     <button
       type={submit ? 'submit' : 'button'}
       title={tooltip}
       className={cx([
-        `${className} button font-semibold transition ease-in-out rounded focus:shadow-none focus:outline-none`,
-        buttonType !== undefined
-        && `${buttonTypeClasses[buttonType]} border border-panel-border`,
+        `${className} button text-sm font-semibold transition ease-in-out rounded-lg outline-none`,
+        buttonType && `${buttonTypeClasses[buttonType]}`,
+        buttonSize && `${buttonSizeClasses[buttonSize]}`,
         loading && 'cursor-default',
         disabled && 'opacity-65 cursor-default',
       ])}
@@ -59,7 +54,7 @@ const Button = React.memo((props: Props) => {
         )
         : children}
     </button>
-  );
-});
+  ),
+);
 
 export default Button;
