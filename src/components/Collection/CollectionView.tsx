@@ -42,7 +42,6 @@ const CollectionView = (props: Props) => {
     return [
       (isSeries || isSidebarOpen) ? listItemSize.widthAlt : listItemSize.width,
       listItemSize.height,
-      listItemSize.gap,
     ];
   }, [isSidebarOpen, mode, isSeries]);
 
