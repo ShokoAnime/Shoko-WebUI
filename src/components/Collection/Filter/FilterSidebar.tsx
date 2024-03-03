@@ -81,7 +81,7 @@ const FilterSidebar = () => {
   return (
     <ShokoPanel
       title="Filter"
-      className="ml-6 w-full"
+      className="ml-8 w-full"
       contentClassName="gap-y-6"
       options={<Options showModal={showCriteriaModal(true)} />}
     >

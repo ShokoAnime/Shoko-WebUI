@@ -38,7 +38,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 
 const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: SeriesType[] }) => (
   <div className="flex min-h-full overflow-hidden transition-all">
-    <div className="ml-6 flex w-[26.125rem] grow flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background p-6">
+    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background p-6">
       <div className="text-xl font-semibold">Timeline</div>
       {isFetching
         ? (

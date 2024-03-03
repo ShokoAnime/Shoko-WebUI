@@ -47,7 +47,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     <Link to={viewRouteLink()}>
       <div
         className="group flex shrink-0 flex-col content-center gap-y-3"
-        style={{ width: '12.922em' }}
+        style={{ width: '12.938rem' }}
       >
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
@@ -63,6 +63,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
           <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+            {/* FIXME: This can't be a <Link> otherwise Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a> happens, BackgroundImagePlaceholderDiv wraps everything in a <Link> internally */}
             <span className="h-fit">
               <Icon
                 path={mdiPencilCircleOutline}
