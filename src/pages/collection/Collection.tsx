@@ -215,8 +215,10 @@ function Collection() {
         />
         <div
           className={cx(
-            'flex items-start overflow-hidden transition-all',
-            (!isSeries && showFilterSidebar) ? 'w-[26.125rem] opacity-100' : 'w-0 opacity-0',
+            'flex items-start',
+            (!isSeries && showFilterSidebar)
+              ? 'w-[28.84rem] opacity-100 overflow-auto'
+              : 'w-0 opacity-0 overflow-hidden',
           )}
         >
           <FilterSidebar />
