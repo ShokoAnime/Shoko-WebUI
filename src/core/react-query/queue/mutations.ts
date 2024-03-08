@@ -1,11 +1,22 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type { QueueOperationRequestType } from '@/core/react-query/queue/types';
-
-export const useQueueOperationMutation = () =>
+export const useQueueClearMutation = () =>
   useMutation({
-    mutationFn: ({ operation, queue }: QueueOperationRequestType) =>
-      axios.post(queue ? `Queue/${queue}/${operation}` : `Queue/${operation}`),
+    mutationFn: () => axios.post('Queue/Clear'),
+    onSuccess: () => invalidateQueries(['queue', 'items']),
+  });
+
+export const useQueuePauseMutation = () =>
+  useMutation({
+    mutationFn: () => axios.post('Queue/Pause'),
+    onSuccess: () => invalidateQueries(['queue', 'items']),
+  });
+
+export const useQueueResumeMutation = () =>
+  useMutation({
+    mutationFn: () => axios.post('Queue/Resume'),
+    onSuccess: () => invalidateQueries(['queue', 'items']),
   });

@@ -6,18 +6,30 @@ import {
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
-import { debounce, defer, delay, forEach, round } from 'lodash';
+import { debounce, defer, delay, round } from 'lodash';
 
 import Events from '@/core/events';
 import { invalidateOnEvent } from '@/core/react-query/queryClient';
-import { setFetched, setHttpBanStatus, setNetworkStatus, setQueueStatus, setUdpBanStatus } from '@/core/slices/mainpage';
+import {
+  setFetched,
+  setHttpBanStatus,
+  setNetworkStatus,
+  setQueueStatus,
+  setUdpBanStatus,
+} from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 import { dayjs } from '@/core/util';
 
 import type store from '@/core/store';
 import type { RootState } from '@/core/store';
-import type { AVDumpEventType, AVDumpRestoreType, AniDBBanItemType, NetworkAvailability, QueueNameType, QueueConnectedEventType } from '@/core/types/signalr';
+import type {
+  AVDumpEventType,
+  AVDumpRestoreType,
+  AniDBBanItemType,
+  NetworkAvailabilityEnum,
+  QueueStatusType,
+} from '@/core/types/signalr';
 import type { UnknownAction, Middleware } from 'redux';
 
 let lastRetry = dayjs();
@@ -28,24 +40,14 @@ let connectionEvents: HubConnection;
 
 // Queue Events
 
-const onQueueStateChange = (dispatch: typeof store.dispatch) => (queue: QueueNameType, state: number) => {
-  const newState = Object.assign({}, { [queue]: state });
-  dispatch(setQueueStatus(newState));
+const onQueueStateChange = (dispatch: typeof store.dispatch) => (state: QueueStatusType) => {
+  if (!state) return;
+  invalidateOnEvent('QueueStateChanged');
+  dispatch(setQueueStatus(state));
 };
 
-const onQueueConnected = (dispatch: typeof store.dispatch) => (state: QueueConnectedEventType) => {
-  const fixedState = {};
-  forEach(state, (item, key) => {
-    const letter = key.substr(0, 1);
-    const letterUp = letter.toUpperCase();
-    if (letter === letterUp) {
-      fixedState[key] = item;
-      return;
-    }
-    const fixedKey = `${letterUp}${key.substr(1)}`;
-    fixedState[fixedKey] = item;
-  });
-  dispatch(setQueueStatus(fixedState));
+const onQueueConnected = (dispatch: typeof store.dispatch) => (state: QueueStatusType) => {
+  dispatch(setQueueStatus(state));
   dispatch(setFetched('queueStatus'));
 };
 
@@ -66,8 +68,8 @@ const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniD
 
 // Network Events
 
-const onNetworkChanged = (dispatch: typeof store.dispatch) => ({ networkAvailability }: { networkAvailability: NetworkAvailability }) => {
-  dispatch(setNetworkStatus(networkAvailability));
+const onNetworkChanged = (dispatch: typeof store.dispatch) => ({ NetworkAvailability }: { NetworkAvailability: NetworkAvailabilityEnum }) => {
+  dispatch(setNetworkStatus(NetworkAvailability));
 };
 
 // AVDump Events
@@ -77,7 +79,7 @@ const onAvDumpConnected = (dispatch: typeof store.dispatch) => (state: AVDumpRes
 };
 
 const onAvDumpEvent = (dispatch: typeof store.dispatch) => (event: AVDumpEventType) => {
-  switch (event.type) {
+  switch (event.Type) {
     case AVDumpEventTypeEnum.Started:
     case AVDumpEventTypeEnum.Success:
     case AVDumpEventTypeEnum.Failure:

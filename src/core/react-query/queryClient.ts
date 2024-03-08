@@ -61,6 +61,9 @@ export const invalidateOnEvent = (event: string) => {
       invalidateQueries(['series', 'files']);
       invalidateQueries(['series', 'linked-files']);
       break;
+    case 'QueueStateChanged':
+      invalidateQueries(['queue', 'items']);
+      break;
     default:
   }
 };

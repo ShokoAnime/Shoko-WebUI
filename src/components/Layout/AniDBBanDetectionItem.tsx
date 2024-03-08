@@ -17,7 +17,7 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
 
   const banType = type === 'HTTP' ? AniDBBanTypeEnum.HTTPBan : AniDBBanTypeEnum.UDPBan;
 
-  if (banStatus.updateType !== banType || !banStatus.value) {
+  if (banStatus.UpdateType !== banType || !banStatus.Value) {
     return null;
   }
 
