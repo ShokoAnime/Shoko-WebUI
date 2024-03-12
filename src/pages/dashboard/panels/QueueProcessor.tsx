@@ -81,8 +81,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
       <span className="text-sm opacity-65">{item.Title}</span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
-    {item.IsRunning && <Icon path={mdiRefresh} size={1.1} className="text-panel-text-primary" />}
-    <Icon path={mdiRefresh} size={1} className="shrink-0 text-panel-text-primary" />
+    {item.IsRunning && <Icon path={mdiRefresh} size={1} className="shrink-0 text-panel-text-primary" />}
   </div>
 );
 
