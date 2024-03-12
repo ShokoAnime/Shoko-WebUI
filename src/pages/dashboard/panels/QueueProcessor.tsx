@@ -88,7 +88,7 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
 function QueueProcessor() {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-  const queueItemsQuery = useQueueItemsQuery({ pageSize: 100 });
+  const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
 
   return (
     <ShokoPanel
