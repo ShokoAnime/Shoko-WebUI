@@ -29,7 +29,6 @@ import { useEventCallback } from 'usehooks-ts';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
-import QueueModal from '@/components/Dialogs/QueueModal';
 import Button from '@/components/Input/Button';
 import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
@@ -39,8 +38,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { setQueueModalOpen } from '@/core/slices/mainpage';
-import { NetworkAvailability } from '@/core/types/signalr';
+import { NetworkAvailabilityEnum } from '@/core/types/signalr';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -96,26 +94,13 @@ const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, 
 );
 
 const QueueCount = () => {
-  const dispatch = useDispatch();
-
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
-  const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
-
-  const handleQueueModalOpen = () => {
-    dispatch(setQueueModalOpen(true));
-  };
 
   return (
     <div className="flex items-center gap-x-2">
-      <div
-        className={cx(['cursor-pointer', showQueueModal ? 'text-header-icon-primary' : undefined])}
-        onClick={handleQueueModalOpen}
-        title="Show Queue Modal"
-      >
-        <Icon path={mdiServer} size={1} />
-      </div>
+      <Icon path={mdiServer} size={1} />
       <span className="text-header-text-important">
-        {queue.HasherQueueState.queueCount + queue.GeneralQueueState.queueCount + queue.ImageQueueState.queueCount}
+        {queue.TotalCount}
       </span>
     </div>
   );
@@ -130,7 +115,6 @@ function TopNav() {
   const networkStatus = useSelector((state: RootState) => state.mainpage.networkStatus);
   const banStatus = useSelector((state: RootState) => state.mainpage.banStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-  const showQueueModal = useSelector((state: RootState) => state.mainpage.queueModalOpen);
 
   const settingsQuery = useSettingsQuery();
   const webuiSettings = settingsQuery.data.WebUI_Settings;
@@ -154,7 +138,9 @@ function TopNav() {
   const [showDashboardSettingsModal, setShowDashboardSettingsModal] = useState(false);
 
   const isOffline = useMemo(
-    () => !(networkStatus === NetworkAvailability.Internet || networkStatus === NetworkAvailability.PartialInternet),
+    () =>
+      !(networkStatus === NetworkAvailabilityEnum.Internet
+        || networkStatus === NetworkAvailabilityEnum.PartialInternet),
     [networkStatus],
   );
 
@@ -166,10 +152,6 @@ function TopNav() {
     setShowActionsModal(false);
     setShowDashboardSettingsModal(false);
     setShowUtilitiesMenu(false);
-  };
-
-  const handleQueueModalClose = () => {
-    dispatch(setQueueModalOpen(false));
   };
 
   const handleLogout = useEventCallback(() => {
@@ -387,7 +369,6 @@ function TopNav() {
       </div>
       <ActionsModal show={showActionsModal} onClose={() => setShowActionsModal(false)} />
       <DashboardSettingsModal show={showDashboardSettingsModal} onClose={() => setShowDashboardSettingsModal(false)} />
-      <QueueModal show={showQueueModal} onClose={handleQueueModalClose} />
     </>
   );
 }

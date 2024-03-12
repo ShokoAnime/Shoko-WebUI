@@ -1,12 +1,10 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import { useMediaQuery } from 'react-responsive';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
-import Header from '@/components/Layout/Header';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -14,11 +12,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 function MainPage() {
   const dispatch = useDispatch();
 
-  const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
-
   const { notifications, toastPosition } = useSettingsQuery().data.WebUI_Settings;
-
-  const [showSmSidebar, setShowSmSidebar] = useState(false);
 
   useEffect(() => {
     dispatch({ type: Events.MAINPAGE_LOADED });
@@ -41,12 +35,8 @@ function MainPage() {
       <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
         <TopNav />
-        {isSm && <Header showSidebar={showSmSidebar} toggleSidebar={() => setShowSmSidebar(!showSmSidebar)} />}
         <div className="shoko-scrollbar scroll-gutter grow overflow-y-auto py-6" ref={scrollRef}>
-          <div
-            className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-6"
-            onClick={() => setShowSmSidebar(false)}
-          >
+          <div className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-6">
             <Outlet context={{ scrollRef }} />
           </div>
         </div>

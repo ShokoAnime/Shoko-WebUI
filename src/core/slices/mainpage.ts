@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { NetworkAvailability } from '@/core/types/signalr';
+import { NetworkAvailabilityEnum } from '@/core/types/signalr';
 
 import type { AniDBBanItemType, AniDBBanType, QueueStatusType } from '@/core/types/signalr';
 import type { SliceActions } from '@/core/types/util';
@@ -10,8 +10,7 @@ type State = {
   fetched: Record<string, boolean>;
   queueStatus: QueueStatusType;
   banStatus: AniDBBanType;
-  networkStatus: NetworkAvailability;
-  queueModalOpen: boolean;
+  networkStatus: NetworkAvailabilityEnum;
   layoutEditMode: boolean;
 };
 
@@ -20,47 +19,31 @@ const mainpageSlice = createSlice({
   initialState: {
     fetched: {},
     queueStatus: {
-      HasherQueueState: {
-        state: 17,
-        description: 'Idle',
-        currentCommandID: null,
-        status: 'Idle',
-        queueCount: 0,
-      },
-      GeneralQueueState: {
-        state: 17,
-        description: 'Idle',
-        currentCommandID: null,
-        status: 'Idle',
-        queueCount: 0,
-      },
-      ImageQueueState: {
-        state: 17,
-        description: 'Idle',
-        currentCommandID: null,
-        status: 'Idle',
-        queueCount: 0,
-      },
+      Running: true,
+      WaitingCount: 0,
+      BlockedCount: 0,
+      TotalCount: 0,
+      ThreadCount: 1,
+      CurrentlyExecuting: [],
     },
     banStatus: {
       http: {
-        updateType: 2,
-        value: false,
+        UpdateType: 2,
+        Value: false,
       },
       udp: {
-        updateType: 1,
-        value: false,
+        UpdateType: 1,
+        Value: false,
       },
     } as AniDBBanType,
-    networkStatus: NetworkAvailability.Internet,
-    queueModalOpen: false,
+    networkStatus: NetworkAvailabilityEnum.Internet,
     layoutEditMode: false,
   } as State,
   reducers: {
     setFetched(sliceState, action) {
       sliceState.fetched = Object.assign({}, sliceState.fetched, { [action.payload]: true });
     },
-    setQueueStatus(sliceState, action: PayloadAction<Partial<QueueStatusType>>) {
+    setQueueStatus(sliceState, action: PayloadAction<QueueStatusType>) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
     setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
@@ -72,10 +55,7 @@ const mainpageSlice = createSlice({
     setLayoutEditMode(sliceState, action: PayloadAction<boolean>) {
       sliceState.layoutEditMode = action.payload;
     },
-    setQueueModalOpen(sliceState, action: PayloadAction<boolean>) {
-      sliceState.queueModalOpen = action.payload;
-    },
-    setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailability>) {
+    setNetworkStatus(sliceState, action: PayloadAction<NetworkAvailabilityEnum>) {
       sliceState.networkStatus = action.payload;
     },
   },
@@ -86,7 +66,6 @@ export const {
   setHttpBanStatus,
   setLayoutEditMode,
   setNetworkStatus,
-  setQueueModalOpen,
   setQueueStatus,
   setUdpBanStatus,
 } = mainpageSlice.actions;

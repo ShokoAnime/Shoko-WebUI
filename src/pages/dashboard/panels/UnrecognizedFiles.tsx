@@ -14,7 +14,7 @@ const FileItem = ({ file }: { file: FileType }) => {
   return (
     <div
       key={file.ID}
-      className="mr-3 flex items-center border-t border-panel-border p-3 last:border-b odd:bg-panel-background-alt"
+      className="mr-3 flex items-center rounded-md p-3 even:bg-panel-background-alt"
     >
       <div className="flex grow flex-col">
         <span className="opacity-65">

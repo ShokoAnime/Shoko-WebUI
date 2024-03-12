@@ -27,37 +27,37 @@ const avdumpSlice = createSlice({
   reducers: {
     updateAVDumpEvent(sliceState, action: PayloadAction<AVDumpEventType>) {
       const event = action.payload;
-      switch (event.type) {
+      switch (event.Type) {
         case AVDumpEventTypeEnum.Started:
-          sliceState.sessions[event.sessionID] = {
+          sliceState.sessions[event.SessionID] = {
             status: 'Running',
-            fileIDs: event.videoIDs,
-            progress: event.progress,
+            fileIDs: event.VideoIDs,
+            progress: event.Progress,
           };
-          forEach(event.videoIDs, (fileId) => {
-            sliceState.sessionMap[fileId] = event.sessionID;
+          forEach(event.VideoIDs, (fileId) => {
+            sliceState.sessionMap[fileId] = event.SessionID;
           });
           break;
 
         case AVDumpEventTypeEnum.Success:
-          if (sliceState.sessions[event.sessionID]) {
-            const session = sliceState.sessions[event.sessionID];
+          if (sliceState.sessions[event.SessionID]) {
+            const session = sliceState.sessions[event.SessionID];
             session.status = 'Success';
-            session.progress = event.progress;
+            session.progress = event.Progress;
           }
           break;
 
         case AVDumpEventTypeEnum.Failure:
-          if (sliceState.sessions[event.sessionID]) {
-            const session = sliceState.sessions[event.sessionID];
+          if (sliceState.sessions[event.SessionID]) {
+            const session = sliceState.sessions[event.SessionID];
             session.status = 'Failed';
-            session.progress = event.progress;
+            session.progress = event.Progress;
           }
           break;
 
         case AVDumpEventTypeEnum.GenericException:
-          if (sliceState.sessions[event.sessionID]) {
-            const session = sliceState.sessions[event.sessionID];
+          if (sliceState.sessions[event.SessionID]) {
+            const session = sliceState.sessions[event.SessionID];
             session.status = 'Failed';
             session.progress = 100;
           }
@@ -71,13 +71,13 @@ const avdumpSlice = createSlice({
       sliceState.sessionMap = {};
       sliceState.sessions = {};
       forEach(action.payload, (restore) => {
-        sliceState.sessions[restore.sessionID] = {
+        sliceState.sessions[restore.SessionID] = {
           status: 'Running',
-          fileIDs: restore.videoIDs,
-          progress: restore.progress,
+          fileIDs: restore.VideoIDs,
+          progress: restore.Progress,
         };
-        forEach(restore.videoIDs, (fileId) => {
-          sliceState.sessionMap[fileId] = restore.sessionID;
+        forEach(restore.VideoIDs, (fileId) => {
+          sliceState.sessionMap[fileId] = restore.SessionID;
         });
       });
     },

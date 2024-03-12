@@ -1,29 +1,29 @@
-export type SignalRQueueType = {
-  state: number;
-  description: string;
-  status: string;
-  currentCommandID: number | null;
-  queueCount: number;
+export type QueueItemType = {
+  Key: string;
+  Type: string;
+  Description: string;
+  IsRunning: boolean;
+  StartTime?: string;
+  IsBlocked: boolean;
+  Title: string;
+  Details: Record<string, string>;
 };
 
 export type QueueStatusType = {
-  HasherQueueState: SignalRQueueType;
-  GeneralQueueState: SignalRQueueType;
-  ImageQueueState: SignalRQueueType;
+  WaitingCount: number;
+  BlockedCount: number;
+  TotalCount: number;
+  ThreadCount: number;
+  CurrentlyExecuting: QueueItemType[];
+  Running: boolean;
 };
 
-export const enum QueueNameType {
-  'HasherQueueState' = 'HasherQueueState',
-  'GeneralQueueState' = 'GeneralQueueState',
-  'ImageQueueState' = 'ImageQueueState',
-}
-
 export type AniDBBanItemType = {
-  message: string;
-  pauseTimeSecs: number;
-  updateTime: string;
-  updateType: AniDBBanTypeEnum;
-  value: boolean;
+  Message: string;
+  PauseTimeSecs: number;
+  UpdateTime: string;
+  UpdateType: AniDBBanTypeEnum;
+  Value: boolean;
 };
 
 export const enum AniDBBanTypeEnum {
@@ -40,7 +40,7 @@ export type AniDBBanType = {
   udp: AniDBBanItemType;
 };
 
-export const enum NetworkAvailability {
+export const enum NetworkAvailabilityEnum {
   /**
    * Shoko was unable to find any network interfaces.
    */
@@ -68,82 +68,82 @@ export const enum NetworkAvailability {
 }
 
 export type AVDumpRestoreType = {
-  type: AVDumpEventTypeEnum.Restore;
-  sessionID: number;
-  videoIDs: number[];
-  commandID: number | null;
-  progress: number;
-  succeededCreqCount: number;
-  failedCreqCount: number;
-  pendingCreqCount: number;
-  ed2ks: number[];
-  startedAt: string;
+  Type: AVDumpEventTypeEnum.Restore;
+  SessionID: number;
+  VideoIDs: number[];
+  CommandID: number | null;
+  Progress: number;
+  SucceededCreqCount: number;
+  FailedCreqCount: number;
+  PendingCreqCount: number;
+  ED2Ks: number[];
+  StartedAt: string;
 };
 
 export type AVDumpEventType = {
-  type: AVDumpEventTypeEnum.Started;
-  sessionID: number;
-  videoIDs: number[];
-  commandID: number | null;
-  progress: number;
-  succeededCreqCount: number;
-  failedCreqCount: number;
-  pendingCreqCount: number;
-  startedAt: string;
+  Type: AVDumpEventTypeEnum.Started;
+  SessionID: number;
+  VideoIDs: number[];
+  CommandID: number | null;
+  Progress: number;
+  SucceededCreqCount: number;
+  FailedCreqCount: number;
+  PendingCreqCount: number;
+  StartedAt: string;
 } | {
-  type: AVDumpEventTypeEnum.Progress;
-  sessionID: number;
-  progress: number;
+  Type: AVDumpEventTypeEnum.Progress;
+  SessionID: number;
+  Progress: number;
 } | {
-  type: AVDumpEventTypeEnum.CreqUpdate;
-  sessionID: number;
-  succeededCreqCount: number;
-  failedCreqCount: number;
-  pendingCreqCount: number;
+  Type: AVDumpEventTypeEnum.CreqUpdate;
+  SessionID: number;
+  SucceededCreqCount: number;
+  FailedCreqCount: number;
+  PendingCreqCount: number;
 } | {
-  type: AVDumpEventTypeEnum.Message | AVDumpEventTypeEnum.Error | AVDumpEventTypeEnum.ED2KLink;
-  sessionID: number;
-  message: string;
+  Type: AVDumpEventTypeEnum.Message | AVDumpEventTypeEnum.Error | AVDumpEventTypeEnum.ED2KLink;
+  SessionID: number;
+  Message: string;
 } | {
-  type:
+  Type:
     | AVDumpEventTypeEnum.InstalledAVDump
     | AVDumpEventTypeEnum.InstallingAVDump
     | AVDumpEventTypeEnum.InvalidCredentials
     | AVDumpEventTypeEnum.MissingApiKey
     | AVDumpEventTypeEnum.Timeout;
 } | {
-  type: AVDumpEventTypeEnum.InstallException;
-  message: string;
-  exceptionStackTrace: string;
+  Type: AVDumpEventTypeEnum.InstallException;
+  Message: string;
+  ExceptionStackTrace: string;
 } | {
-  type: AVDumpEventTypeEnum.GenericException;
-  sessionID: number;
-  message: string;
-  exceptionStackTrace: string;
-  startedAt: string;
+  Type: AVDumpEventTypeEnum.GenericException;
+  SessionID: number;
+  Message: string;
+  ExceptionStackTrace: string;
+  StartedAt: string;
 } | {
-  type: AVDumpEventTypeEnum.Failure;
-  sessionID: number;
-  videoIDs: number[];
-  commandID: number | null;
-  progress: number;
-  ed2ks: number[];
-  message: string;
-  errorMessage?: string;
-  startedAt: string;
-  endedAt: string;
+  Type: AVDumpEventTypeEnum.Failure;
+  SessionID: number;
+  VideoIDs: number[];
+  CommandID: number | null;
+  Progress: number;
+  ED2Ks: number[];
+  Message: string;
+  ErrorMessage?: string;
+  StartedAt: string;
+  EndedAt: string;
 } | {
-  type: AVDumpEventTypeEnum.Success;
-  sessionID: number;
-  videoIDs: number[];
-  commandID: number | null;
-  progress: number;
-  succeededCreqCount: number;
-  failedCreqCount: number;
-  pendingCreqCount: number;
-  message: string;
-  startedAt: string;
-  endedAt: string;
+  Type: AVDumpEventTypeEnum.Success;
+  SessionID: number;
+  VideoIDs: number[];
+  CommandID: number | null;
+  Progress: number;
+  SucceededCreqCount: number;
+  FailedCreqCount: number;
+  PendingCreqCount: number;
+  Message: string;
+  StartedAt: string;
+  EndedAt: string;
 };
 
 export const enum AVDumpEventTypeEnum {
@@ -164,5 +164,3 @@ export const enum AVDumpEventTypeEnum {
   InstalledAVDump = 'InstalledAVDump',
   InstallException = 'InstallException',
 }
-
-export type QueueConnectedEventType = Record<string, string>;
