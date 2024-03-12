@@ -83,7 +83,7 @@ export const useRescanSeriesFilesMutation = () =>
 export const useWatchSeriesEpisodesMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...params }: WatchSeriesEpisodesRequestType) =>
-      axios.post(`Series/${seriesId}/Episode/Watched`, params),
+      axios.post(`Series/${seriesId}/Episode/Watched`, null, { params }),
     onSuccess: () => {
       invalidateQueries(['series', 'single']);
       invalidateQueries(['series', 'episodes']);
