@@ -27,13 +27,10 @@ function MetadataSources() {
   const renderTabButton = (title: string, key: string) => (
     <Button
       onClick={() => setActiveTab(key)}
-      className={cx([
-        'font-semibold',
-        'drop-shadow-none',
-        '!border-none',
-        '!bg-transparent',
+      className={cx(
+        'font-semibold drop-shadow-none !border-none !bg-transparent text-xl',
         activeTab === key ? 'text-panel-text-primary' : '!text-panel-text',
-      ])}
+      )}
     >
       {title}
     </Button>
