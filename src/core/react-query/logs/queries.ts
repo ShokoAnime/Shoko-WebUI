@@ -13,7 +13,7 @@ const logsQueryKey = ['logs'];
 
 const formatStamp = (date: string) => dayjs(date).format('YYYY-MM-DD HH:mm:ss');
 const formatTimestamps = (lines: LogLineType[]): LogLineType[] =>
-  lines.map<LogLineType>(item => ({ ...item, timeStamp: formatStamp(item.timeStamp) }));
+  lines.map<LogLineType>(item => ({ ...item, TimeStamp: formatStamp(item.TimeStamp) }));
 
 const useLogsSubscription = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
@@ -47,7 +47,7 @@ const useLogsSubscription = () => {
       'Log',
       (line: LogLineType) => {
         queryClient.setQueryData(logsQueryKey, (oldData: LogLineType[] | undefined) => {
-          const newData = { ...line, timeStamp: formatStamp(line.timeStamp) };
+          const newData = { ...line, timeStamp: formatStamp(line.TimeStamp) };
           return oldData ? [...oldData, newData] : [newData];
         });
       },
