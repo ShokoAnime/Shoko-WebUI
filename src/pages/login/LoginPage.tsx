@@ -140,15 +140,15 @@ function LoginPage() {
           </div>
         )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
-          <div className="flex flex-row items-center gap-x-6 p-6">
-            <div className="flex flex-col items-center gap-y-6 px-[4.5rem] py-6">
+          <div className="flex w-[50rem] flex-row items-center gap-x-6 p-6">
+            <div className="flex w-[20rem] flex-col items-center gap-y-6 py-6">
               <ShokoIcon className="w-[9.375rem]" />
               <div className="flex flex-col gap-y-1 text-center font-semibold">
                 <span>Version</span>
                 <span>{parsedVersion}</span>
               </div>
             </div>
-            <div className="flex w-[28rem] flex-col gap-y-6">
+            <div className="flex w-full flex-col gap-y-6">
               {!serverStatusQuery.data?.State && (
                 <div className="flex items-center justify-center">
                   <Icon path={mdiLoading} spin className="text-panel-text-primary" size={4} />
@@ -216,13 +216,12 @@ function LoginPage() {
               {serverStatusQuery.data?.State === 4 && (
                 <div className="flex flex-col gap-y-6">
                   <div className="flex flex-col gap-y-4">
-                    <div>Welcome and thanks for installing Shoko!</div>
-                    <div className="text-justify">
-                      Before Shoko can start managing your anime collection for you, you&apos;ll need to go through
-                      our&nbsp;
-                      <span className="font-bold text-panel-text-important">First Run Wizard</span>
-                      &nbsp;to set everything up. Don&apos;t worry, its extremely easy, straightforward and should only
-                      take you a couple minutes.
+                    <div>Welcome, and thank you for installing Shoko!</div>
+                    <div>
+                      Before Shoko can begin organizing your anime collection, you&apos;ll need to go through the
+                      <span className="font-semibold text-panel-text-important">&nbsp;First Time Setup&nbsp;</span>
+                      process. This step lets you tailor Shoko according to your preferences, and is designed to be
+                      quick and straightforward, requiring only a few minutes of your time.
                     </div>
                     <div>
                       Click&nbsp;
