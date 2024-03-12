@@ -5,6 +5,8 @@ export type QueueItemType = {
   IsRunning: boolean;
   StartTime?: string;
   IsBlocked: boolean;
+  Title: string;
+  Details: Record<string, string>;
 };
 
 export type QueueStatusType = {

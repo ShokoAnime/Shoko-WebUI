@@ -76,9 +76,9 @@ const Title = () => {
 
 const Item = ({ item }: { item: QueueItemType }) => (
   <div className="mr-3 flex items-center justify-between gap-x-2 rounded-md p-3 even:bg-panel-background-alt">
-    <div className="flex flex-col gap-y-1">
-      <span className="text-sm opacity-65">{item.Type}</span>
-      {item.Description}
+    <div className="flex flex-col gap-y-1 break-all">
+      <span className="text-sm opacity-65">{item.Title}</span>
+      {item.Details[Object.keys(item.Details)[0]]}
     </div>
     {item.IsRunning && <Icon path={mdiRefresh} size={1.1} className="text-panel-text-primary" />}
   </div>
@@ -97,7 +97,7 @@ function QueueProcessor() {
       editMode={layoutEditMode}
     >
       {queueItemsQuery.data && queueItemsQuery.data?.Total > 0
-        ? queueItemsQuery.data.List.filter(item => item.Description).map(item => <Item item={item} key={item.Key} />)
+        ? queueItemsQuery.data.List.map(item => <Item item={item} key={item.Key} />)
         : <div className="flex grow items-center justify-center font-semibold">Queue is empty!</div>}
     </ShokoPanel>
   );
