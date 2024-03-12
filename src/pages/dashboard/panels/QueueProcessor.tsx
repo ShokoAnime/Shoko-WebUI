@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { mdiCloseCircleOutline, mdiPauseCircleOutline, mdiPlayCircleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import { map } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -78,7 +79,7 @@ const Item = ({ item }: { item: QueueItemType }) => (
   <div className="mr-3 flex items-center justify-between gap-x-2 rounded-md p-3 even:bg-panel-background-alt">
     <div className="flex flex-col gap-y-1 break-all">
       <span className="text-sm opacity-65">{item.Title}</span>
-      {item.Details[Object.keys(item.Details)[0]]}
+      {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
     {item.IsRunning && <Icon path={mdiRefresh} size={1.1} className="text-panel-text-primary" />}
   </div>
