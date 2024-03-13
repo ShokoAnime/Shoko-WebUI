@@ -14,18 +14,20 @@ type State = {
   layoutEditMode: boolean;
 };
 
+const initialQueueStatus: QueueStatusType = {
+  Running: true,
+  WaitingCount: 0,
+  BlockedCount: 0,
+  TotalCount: 0,
+  ThreadCount: 1,
+  CurrentlyExecuting: [],
+};
+
 const mainpageSlice = createSlice({
   name: 'mainpage',
   initialState: {
     fetched: {},
-    queueStatus: {
-      Running: true,
-      WaitingCount: 0,
-      BlockedCount: 0,
-      TotalCount: 0,
-      ThreadCount: 1,
-      CurrentlyExecuting: [],
-    },
+    queueStatus: initialQueueStatus,
     banStatus: {
       http: {
         UpdateType: 2,
@@ -46,6 +48,9 @@ const mainpageSlice = createSlice({
     setQueueStatus(sliceState, action: PayloadAction<QueueStatusType>) {
       sliceState.queueStatus = Object.assign({}, sliceState.queueStatus, action.payload);
     },
+    resetQueueStatus(sliceState) {
+      sliceState.queueStatus = initialQueueStatus;
+    },
     setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
       sliceState.banStatus.udp = action.payload;
     },
@@ -62,6 +67,7 @@ const mainpageSlice = createSlice({
 });
 
 export const {
+  resetQueueStatus,
   setFetched,
   setHttpBanStatus,
   setLayoutEditMode,
