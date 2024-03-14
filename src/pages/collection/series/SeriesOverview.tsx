@@ -130,9 +130,11 @@ const SeriesOverview = () => {
                     hidePlaceholderOnHover
                     zoomOnHover
                   >
-                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                      In Collection
-                    </div>
+                    {item.ShokoID !== null && (
+                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                        In Collection
+                      </div>
+                    )}
                     <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
                   </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
@@ -182,9 +184,11 @@ const SeriesOverview = () => {
                     image={thumbnail}
                     className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                   >
-                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                      In Collection
-                    </div>
+                    {item.ShokoID !== null && (
+                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                        In Collection
+                      </div>
+                    )}
                     <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
                   </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
