@@ -121,7 +121,7 @@ const SeriesOverview = () => {
               return (
                 <Link
                   key={`image-${thumbnail?.ID}-link`}
-                  to={`/webui/collection/series/${item.ShokoID}`}
+                  to={item.ShokoID ? `/webui/collection/series/${item.ShokoID}` : '#'}
                   className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
                 >
                   <BackgroundImagePlaceholderDiv
@@ -177,7 +177,7 @@ const SeriesOverview = () => {
               return (
                 <Link
                   key={`image-${thumbnail?.ID}-link`}
-                  to={`/webui/collection/series/${item.ShokoID}`}
+                  to={item.ShokoID ? `/webui/collection/series/${item.ShokoID}` : '#'}
                   className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
                 >
                   <BackgroundImagePlaceholderDiv
