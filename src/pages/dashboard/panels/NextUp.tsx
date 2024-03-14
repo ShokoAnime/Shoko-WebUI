@@ -27,7 +27,7 @@ const NextUp = () => {
       editMode={layoutEditMode}
     >
       <div
-        className={cx('shoko-scrollbar flex', nextUpQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+        className={cx('shoko-scrollbar flex', nextUpQuery.data?.length === 0 && ('h-full pb-[3.5rem]'))}
       >
         {(nextUpQuery.data?.length ?? 0) > 0
           ? nextUpQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)

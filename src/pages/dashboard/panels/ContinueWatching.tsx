@@ -19,7 +19,7 @@ const ContinueWatching = () => {
   return (
     <ShokoPanel title="Continue Watching" isFetching={continueWatchingQuery.isPending} editMode={layoutEditMode}>
       <div
-        className={cx('shoko-scrollbar flex', continueWatchingQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+        className={cx('shoko-scrollbar flex', continueWatchingQuery.data?.length === 0 && ('h-full pb-[3.5rem]'))}
       >
         {(continueWatchingQuery.data?.length ?? 0) > 0
           ? continueWatchingQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
