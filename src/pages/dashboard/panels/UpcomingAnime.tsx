@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import cx from 'classnames';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -45,7 +46,10 @@ const UpcomingAnime = () => {
               </div>
             )}
         </TransitionDiv>
-        <TransitionDiv show={showAll} className="absolute flex w-full">
+        <TransitionDiv
+          show={showAll}
+          className={cx('shoko-scrollbar flex', calendarAllQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+        >
           {(calendarAllQuery.data?.length ?? 0) > 0
             ? calendarAllQuery.data?.map(item => (
               <EpisodeDetails

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import cx from 'classnames';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashboardNextUpQuery } from '@/core/react-query/dashboard/queries';
@@ -25,11 +26,13 @@ const NextUp = () => {
       isFetching={nextUpQuery.isPending}
       editMode={layoutEditMode}
     >
-      <div className="shoko-scrollbar flex">
+      <div
+        className={cx('shoko-scrollbar flex', nextUpQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+      >
         {(nextUpQuery.data?.length ?? 0) > 0
           ? nextUpQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
           : (
-            <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
+            <div className="flex w-full flex-col justify-center gap-y-2 text-center">
               <div>You&apos;ve Finished Every Series In Progress.</div>
               <div>Time For A New Series?</div>
             </div>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import cx from 'classnames';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashboardContinueWatchingQuery } from '@/core/react-query/dashboard/queries';
@@ -17,11 +18,13 @@ const ContinueWatching = () => {
 
   return (
     <ShokoPanel title="Continue Watching" isFetching={continueWatchingQuery.isPending} editMode={layoutEditMode}>
-      <div className="shoko-scrollbar flex">
+      <div
+        className={cx('shoko-scrollbar flex', continueWatchingQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+      >
         {(continueWatchingQuery.data?.length ?? 0) > 0
           ? continueWatchingQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
           : (
-            <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
+            <div className="flex h-full w-full grow flex-col items-center justify-center gap-y-2 text-center">
               <div>No Episodes In Progress.</div>
               <div>Stop An Episode During Playback To Populate This Section.</div>
             </div>

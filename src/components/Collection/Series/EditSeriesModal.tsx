@@ -7,7 +7,6 @@ import FileActionsTab from '@/components/Collection/Series/EditSeriesTabs/FileAc
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
-
 // TODO: Add tabs after implementing back-end endpoint for GroupTab and PersonalStats
 // import GroupTab from './EditSeriesTabs/GroupTab';
 // import PersonalStats from './EditSeriesTabs/PersonalStats';
@@ -51,20 +50,27 @@ const EditSeriesModal = (props: Props) => {
   const [activeTab, setActiveTab] = useState('update_actions');
 
   return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" noPadding>
-      <div className="flex">
-        <div className="flex w-[12.5rem] shrink-0 flex-col gap-y-6 border-r border-panel-border p-6 font-semibold">
-          {map(tabs, (value, key) => (
-            <div
-              className={cx('font-semibold cursor-pointer', activeTab === key && 'text-panel-text-primary')}
-              key={key}
-              onClick={() => setActiveTab(key)}
-            >
-              {value}
-            </div>
-          ))}
+    <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
+      <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+        <div className="flex shrink-0 gap-y-6 font-semibold">
+          <div className="flex flex-col gap-y-1">
+            {map(tabs, (value, key) => (
+              <div
+                className={cx(
+                  activeTab === key
+                    ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                )}
+                key={key}
+                onClick={() => setActiveTab(key)}
+              >
+                {value}
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="w-full p-6">
+        <div className="border-r border-panel-border" />
+        <div>
           {renderTab(activeTab, seriesId)}
         </div>
       </div>

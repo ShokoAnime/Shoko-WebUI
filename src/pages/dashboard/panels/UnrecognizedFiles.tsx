@@ -71,7 +71,9 @@ function UnrecognizedFiles() {
     >
       {files.map(file => <FileItem file={file} key={file.ID} />)}
       {fileCount === 0 && (
-        <div className="mt-4 flex justify-center font-semibold" key="no-files">No Unrecognized Files, Good Job!</div>
+        <div className="flex grow items-center justify-center pb-[3.5rem] font-semibold" key="no-files">
+          No Unrecognized Files, Good Job!
+        </div>
       )}
     </ShokoPanel>
   );

@@ -2,6 +2,7 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { mdiEyeArrowRightOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -48,7 +49,9 @@ const RecommendedAnime = () => {
 
   return (
     <ShokoPanel title="Recommended Anime" isFetching={recommendedAnimeQuery.isPending} editMode={layoutEditMode}>
-      <div className="shoko-scrollbar flex">
+      <div
+        className={cx('shoko-scrollbar flex', recommendedAnimeQuery.data?.length === 0 && ('h-[calc(100%-3.5rem)]'))}
+      >
         {(recommendedAnimeQuery.data?.length ?? 0) > 0
           ? recommendedAnimeQuery.data?.map(item => renderItem(item.Anime, item.SimilarTo))
           : (
