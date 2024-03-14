@@ -10,6 +10,7 @@ type Props = {
   className?: string;
   image: ImageType | null;
   hidePlaceholderOnHover?: boolean;
+  overlayOnHover?: boolean;
   zoomOnHover?: boolean;
 };
 
@@ -19,6 +20,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     className,
     hidePlaceholderOnHover,
     image,
+    overlayOnHover,
     zoomOnHover,
   } = props;
   const imageSource = useMemo(() => {
@@ -99,6 +101,9 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         )}
       </div>
       {children}
+      {overlayOnHover && (
+        <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+      )}
     </div>
   );
 });

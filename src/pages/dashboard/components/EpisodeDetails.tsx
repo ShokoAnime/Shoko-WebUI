@@ -35,8 +35,9 @@ const ImageSection: React.FC<
 > = ({ episode, isInCollection, percentage }) => (
   <BackgroundImagePlaceholderDiv
     image={episode.SeriesPoster}
-    className=" h-80 rounded-lg border border-panel-border drop-shadow-md"
+    className="h-80 rounded-lg border border-panel-border drop-shadow-md"
     hidePlaceholderOnHover
+    overlayOnHover
     zoomOnHover
   >
     {percentage && <div className="absolute bottom-0 left-0 h-1 bg-panel-text-primary" style={{ width: percentage }} />}
@@ -45,7 +46,6 @@ const ImageSection: React.FC<
         In Collection
       </div>
     )}
-    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
   </BackgroundImagePlaceholderDiv>
 );
 
