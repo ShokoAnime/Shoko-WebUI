@@ -20,10 +20,9 @@ function SeriesDetails(props: { series: SeriesType }): JSX.Element {
         image={mainPoster}
         className="h-80 rounded-lg border border-panel-border drop-shadow-md"
         hidePlaceholderOnHover
+        overlayOnHover
         zoomOnHover
-      >
-        <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
-      </BackgroundImagePlaceholderDiv>
+      />
       <div>
         <p className="truncate text-center text-sm font-semibold" title={series.Name}>{series.Name}</p>
         <p

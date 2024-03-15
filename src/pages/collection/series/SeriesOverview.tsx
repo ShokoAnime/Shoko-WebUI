@@ -36,8 +36,8 @@ const SeriesOverview = () => {
   const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
   const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
 
-  const related = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
-  const similar = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
+  const relatedAnime = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
+  const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
 
   const getThumbnailUrl = (item: SeriesCast, mode: string) => {
@@ -94,46 +94,33 @@ const SeriesOverview = () => {
         </div>
       </div>
 
-      {related.length > 0 && (
+      {relatedAnime.length > 0 && (
         <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className={cx('flex gap-x-5', related.length > 5 && ('mb-4'))}>
-            {related.map((item) => {
+          <div className={cx('flex gap-x-5', relatedAnime.length > 5 && ('mb-4'))}>
+            {relatedAnime.map((item) => {
               const thumbnail = get(item, 'Poster', null);
               const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
-              const isDisabled = item.ShokoID === null;
-              if (isDisabled) {
-                return (
-                  <div
-                    key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
-                  >
-                    <BackgroundImagePlaceholderDiv
-                      image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
-                    />
-                    <div>
-                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                      <span className="text-sm text-panel-text-important">{itemRelation}</span>
-                    </div>
-                  </div>
-                );
-              }
               return (
                 <Link
-                  key={`image-${thumbnail?.ID}-link`}
+                  key={item.ID}
                   to={`/webui/collection/series/${item.ShokoID}`}
-                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                  className={cx(
+                    'flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold',
+                    !item.ShokoID && 'pointer-events-none',
+                  )}
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
                     className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
                     hidePlaceholderOnHover
+                    overlayOnHover
                     zoomOnHover
                   >
-                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                      In Collection
-                    </div>
-                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                    {item.ShokoID && (
+                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                        In Collection
+                      </div>
+                    )}
                   </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">{itemRelation}</span>
@@ -144,48 +131,32 @@ const SeriesOverview = () => {
         </ShokoPanel>
       )}
 
-      {similar.length > 0 && (
+      {similarAnime.length > 0 && (
         <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className={cx('shoko-scrollbar flex gap-x-5', similar.length > 5 && ('mb-4'))}>
-            {similar.map((item) => {
+          <div className={cx('shoko-scrollbar flex gap-x-5', similarAnime.length > 5 && ('mb-4'))}>
+            {similarAnime.map((item) => {
               const thumbnail = get(item, 'Poster', null);
-              const isDisabled = item.ShokoID === null;
-              if (isDisabled) {
-                return (
-                  <div
-                    key={`image-${thumbnail?.ID}`}
-                    className="flex w-[13.875rem] shrink-0 flex-col gap-y-3 text-center font-semibold"
-                  >
-                    <BackgroundImagePlaceholderDiv
-                      image={thumbnail}
-                      className="h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
-                    />
-                    <div>
-                      <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                      <span className="text-sm text-panel-text-important">
-                        {round(item.UserApproval.Value, 2)}
-                        % (
-                        {item.UserApproval.Votes}
-                        &nbsp;votes)
-                      </span>
-                    </div>
-                  </div>
-                );
-              }
               return (
                 <Link
-                  key={`image-${thumbnail?.ID}-link`}
+                  key={item.ID}
                   to={`/webui/collection/series/${item.ShokoID}`}
-                  className="flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold"
+                  className={cx(
+                    'flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold',
+                    !item.ShokoID && 'pointer-events-none',
+                  )}
                 >
                   <BackgroundImagePlaceholderDiv
                     image={thumbnail}
                     className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
+                    hidePlaceholderOnHover
+                    overlayOnHover
+                    zoomOnHover
                   >
-                    <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                      In Collection
-                    </div>
-                    <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+                    {item.ShokoID && (
+                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                        In Collection
+                      </div>
+                    )}
                   </BackgroundImagePlaceholderDiv>
                   <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
                   <span className="text-sm text-panel-text-important">
