@@ -5,8 +5,8 @@ import {
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
-import { debounce, defer, delay, round } from 'lodash';
 
+import toast from '@/components/Toast';
 import Events from '@/core/events';
 import { invalidateOnEvent } from '@/core/react-query/queryClient';
 import {
@@ -19,7 +19,6 @@ import {
 } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
 import { AVDumpEventTypeEnum } from '@/core/types/signalr';
-import { dayjs } from '@/core/util';
 
 import type store from '@/core/store';
 import type { RootState } from '@/core/store';
@@ -31,10 +30,6 @@ import type {
   QueueStatusType,
 } from '@/core/types/signalr';
 import type { Middleware, UnknownAction } from 'redux';
-
-let lastRetry = dayjs();
-let attempts = 0;
-const maxTimeout = 60000;
 
 let connectionEvents: HubConnection;
 
@@ -99,34 +94,7 @@ const onAvDumpEvent = (dispatch: typeof store.dispatch) => (event: AVDumpEventTy
 // Shoko Events
 
 const startSignalRConnection = (connection: HubConnection) =>
-  connection.start().then(() => {
-    lastRetry = dayjs();
-    attempts = 0;
-  }).catch(err => console.error('SignalR Connection Error: ', err));
-
-const handleReconnect = (connection: HubConnection) => {
-  if (attempts < 4) attempts += 1;
-  const elapsed = dayjs().diff(lastRetry);
-  const timeout = round(Math.min(Math.exp(attempts) * 2000, maxTimeout));
-  lastRetry = dayjs();
-  if (elapsed < timeout) {
-    delay(
-      (conn: HubConnection) => {
-        startSignalRConnection(conn)
-          .then(() => {})
-          .catch(() => {});
-      },
-      timeout,
-      connection,
-    );
-  } else {
-    defer((conn: HubConnection) => {
-      startSignalRConnection(conn)
-        .then(() => {})
-        .catch(() => {});
-    }, connection);
-  }
-};
+  connection.start().catch(err => toast.error('SignalR connection error!', err as string));
 
 const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
@@ -153,7 +121,11 @@ async (action: UnknownAction) => {
     };
 
     // create the connection instance
-    connectionEvents = new HubConnectionBuilder().withUrl(connectionHub, options).withHubProtocol(protocol).build();
+    connectionEvents = new HubConnectionBuilder()
+      .withUrl(connectionHub, options)
+      .withHubProtocol(protocol)
+      .withAutomaticReconnect([5000, 15000, 30000, 60000, 90000])
+      .build();
 
     // event handlers, you can use these to dispatch actions to update your Redux store
     connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
@@ -176,8 +148,27 @@ async (action: UnknownAction) => {
     // connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated);
     // connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated);
 
-    // re-establish the connection if connection dropped
-    connectionEvents.onclose(() => debounce(() => handleReconnect(connectionEvents), 5000));
+    connectionEvents.onreconnecting(
+      () =>
+        toast.error('SignalR connection lost!', 'Trying to reconnect...', {
+          autoClose: 200000,
+          toastId: 'signalr-reconnecting',
+        }),
+    );
+
+    connectionEvents.onreconnected(() => {
+      toast.dismiss('signalr-reconnecting');
+      toast.success('SignalR connection restored!');
+    });
+
+    connectionEvents.onclose(() => {
+      toast.dismiss('signalr-reconnecting');
+      toast.error(
+        'SignalR connection could not be re-established!',
+        'Check if your server is running and refresh the page once it has started',
+        { autoClose: false },
+      );
+    });
 
     startSignalRConnection(connectionEvents)
       .then(() => {})
