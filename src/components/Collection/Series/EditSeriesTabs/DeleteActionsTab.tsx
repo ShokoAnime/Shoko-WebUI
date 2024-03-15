@@ -17,7 +17,7 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
   const navigateToCollection = () => navigate('/webui/collection');
 
   return (
-    <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
+    <div className="flex grow flex-col gap-y-4 overflow-y-auto">
       <Action
         name="Delete Series - Keep Files"
         description="Deletes the series from Shoko but does not delete the files"

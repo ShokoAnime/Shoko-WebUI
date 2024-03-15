@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import cx from 'classnames';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -39,13 +40,16 @@ const UpcomingAnime = () => {
           {(calendarQuery.data?.length ?? 0) > 0
             ? calendarQuery.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
             : (
-              <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
+              <div className="flex w-full flex-col justify-center gap-y-2 text-center">
                 <div>No Upcoming Anime.</div>
                 <div>Start A Currently Airing Series To Populate This Section.</div>
               </div>
             )}
         </TransitionDiv>
-        <TransitionDiv show={showAll} className="absolute flex w-full">
+        <TransitionDiv
+          show={showAll}
+          className={cx('shoko-scrollbar flex', calendarAllQuery.data?.length === 0 && ('h-full pb-[3.5rem]'))}
+        >
           {(calendarAllQuery.data?.length ?? 0) > 0
             ? calendarAllQuery.data?.map(item => (
               <EpisodeDetails
@@ -56,7 +60,7 @@ const UpcomingAnime = () => {
               />
             ))
             : (
-              <div className="mt-4 flex w-full flex-col justify-center gap-y-2 text-center">
+              <div className="flex w-full flex-col justify-center gap-y-2 text-center">
                 <div>No Upcoming Anime.</div>
                 <div>Enable Calendar To Populate This Section</div>
               </div>
