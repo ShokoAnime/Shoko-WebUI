@@ -14,6 +14,9 @@ type Props = {
   className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
+  notCloseOnEsc?: boolean;
+  notCloseOnOverlayClick?: boolean;
+  containerClassName?: string;
 };
 
 const sizeClass = {
@@ -26,10 +29,13 @@ function ModalPanel(props: Props) {
   const {
     children,
     className,
+    containerClassName,
     fullHeight,
     header,
     noGap,
     noPadding,
+    notCloseOnEsc,
+    notCloseOnOverlayClick,
     onAfterOpen,
     onRequestClose,
     show,
@@ -45,11 +51,19 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName="fixed inset-0 bg-black/50 z-[80]"
-      className="mt-10 flex h-full items-center justify-center"
+      className={cx('mt-10 flex h-full items-center justify-center', containerClassName)}
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}
+      shouldCloseOnEsc={notCloseOnEsc !== true}
+      shouldCloseOnOverlayClick={notCloseOnOverlayClick !== true}
     >
-      <div className="flex h-full w-full items-center justify-center" onClick={onRequestClose}>
+      <div
+        className="flex size-full items-center justify-center"
+        onClick={() => {
+          if (notCloseOnOverlayClick) return;
+          onRequestClose?.();
+        }}
+      >
         <div
           className={cx(
             'flex flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg',
