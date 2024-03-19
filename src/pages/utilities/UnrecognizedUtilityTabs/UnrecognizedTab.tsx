@@ -242,7 +242,7 @@ function UnrecognizedTab() {
 
   const filesQuery = useFilesInfiniteQuery(
     {
-      pageSize: 50,
+      pageSize: 200,
       include_only: ['Unrecognized'],
       sortOrder: [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
     },
