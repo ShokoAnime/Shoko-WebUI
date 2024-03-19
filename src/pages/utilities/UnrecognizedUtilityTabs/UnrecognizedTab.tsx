@@ -59,9 +59,11 @@ const Menu = (
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
     setSeriesSelectModal(this: void, show: boolean): void;
+    files: FileType[];
   },
 ) => {
   const {
+    files,
     selectedRows,
     setSelectedRows,
     setSeriesSelectModal,
@@ -123,31 +125,51 @@ const Menu = (
   });
 
   const rehashFiles = useEventCallback(() => {
-    const promises = selectedRows.map(row => rehashFile(row.ID));
+    const fileList = (selectedRows.length === 0 ? files : selectedRows)
+      .map(row => rehashFile(row.ID));
 
-    Promise
-      .allSettled(promises)
-      .then((result) => {
-        const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Rehash failed for ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`Rehashing ${selectedRows.length} files!`);
+    Promise.allSettled(fileList)
+      .then((results) => {
+        const failedCount = countBy(results, 'status').rejected || 0;
+        const successCount = countBy(results, 'status').fulfilled || 0;
+
+        if (failedCount) {
+          toast.error(`Rehash failed for ${failedCount} ${fileList.length > 1 ? 'files' : 'file'}`);
+        }
+        if (successCount) {
+          toast.success(`Successfully rehashed ${successCount} ${fileList.length > 1 ? 'files' : 'file'}!`);
+        }
+
         setSelectedRows([]);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        toast.error('An unexpected error occurred during the rehash process.');
+      });
   });
 
   const rescanFiles = useEventCallback(() => {
-    const promises = selectedRows.map(row => rescanFile(row.ID));
+    const fileList = (selectedRows.length === 0 ? files : selectedRows)
+      .map(row => rescanFile(row.ID));
 
-    Promise
-      .allSettled(promises)
-      .then((result) => {
-        const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Rescan failed for ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`Rescanning ${selectedRows.length} files!`);
+    Promise.allSettled(fileList)
+      .then((results) => {
+        const failedCount = countBy(results, 'status').rejected || 0;
+        const successCount = countBy(results, 'status').fulfilled || 0;
+
+        if (failedCount) {
+          toast.error(`Rescan failed for ${failedCount} ${fileList.length > 1 ? 'files' : 'file'}!`);
+        }
+        if (successCount) {
+          toast.success(`Successfully rescanned ${successCount} ${fileList.length > 1 ? 'files' : 'file'}!`);
+        }
+
         setSelectedRows([]);
       })
-      .catch(console.error);
+      .catch((error) => {
+        console.error(error);
+        toast.error('An unexpected error occurred during the rehash process.');
+      });
   });
 
   const renderSelectedRowActions = useMemo(() => (
@@ -165,8 +187,6 @@ const Menu = (
             />
           )}
       </div>
-      <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
-      <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
       <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
       <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
       <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
@@ -177,15 +197,7 @@ const Menu = (
         highlight
       />
     </>
-  ), [
-    ignoreFiles,
-    rehashFiles,
-    rescanFiles,
-    setSelectedRows,
-    setSeriesSelectModal,
-    showDeleteConfirmation,
-    selectedRows,
-  ]);
+  ), [ignoreFiles, setSelectedRows, setSeriesSelectModal, showDeleteConfirmation, selectedRows]);
 
   return (
     <>
@@ -202,6 +214,16 @@ const Menu = (
           }}
           icon={mdiRefresh}
           name="Refresh"
+        />
+        <MenuButton
+          onClick={rescanFiles}
+          icon={mdiDatabaseSearchOutline}
+          name={`${selectedRows.length === 0 ? 'Recan All' : 'Rescan'}`}
+        />
+        <MenuButton
+          onClick={rehashFiles}
+          icon={mdiDatabaseSyncOutline}
+          name={`${selectedRows.length === 0 ? 'Rehash All' : 'Rehash'}`}
         />
         <TransitionDiv
           className="hidden grow gap-x-2 lg:flex 2xl:gap-x-4"
@@ -350,6 +372,7 @@ function UnrecognizedTab() {
                 selectedRows={selectedRows}
                 setSelectedRows={setRowSelection}
                 setSeriesSelectModal={setSeriesSelectModal}
+                files={files}
               />
               <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button
