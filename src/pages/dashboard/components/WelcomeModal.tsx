@@ -21,9 +21,9 @@ const SuccessNotifyModal = (props: Props) => {
       isOpen={show}
       onRequestClose={onClose}
       shouldCloseOnEsc={false}
-      overlayClassName="fixed inset-0 bg-black/50 z-[80]"
+      overlayClassName="fixed inset-0 bg-black/50 z-[110]"
       shouldCloseOnOverlayClick={false}
-      className="mt-3 flex h-full items-center justify-center"
+      className="flex h-full items-center justify-center"
     >
       <div className="flex h-fit w-full items-center justify-center">
         <div
