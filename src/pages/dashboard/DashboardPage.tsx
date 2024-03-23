@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
@@ -12,6 +13,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setLayoutEditMode } from '@/core/slices/mainpage';
 import useEventCallback from '@/hooks/useEventCallback';
+import WelcomeModal from '@/pages/dashboard/components/WelcomeModal';
 
 import CollectionStats from './panels/CollectionStats';
 import ContinueWatching from './panels/ContinueWatching';
@@ -122,6 +124,16 @@ function DashboardPage() {
     toast.dismiss('layoutEditMode');
   });
 
+  const location = useLocation();
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+
+  useEffect(() => {
+    const locationState = location.state as { firstRun?: boolean } ?? { firstRun: false };
+    if (locationState.firstRun) {
+      setShowWelcomeModal(true);
+    }
+  }, [location]);
+
   useEffect(() => {
     if (!layoutEditMode) {
       toast.dismiss('layoutEditMode');
@@ -159,75 +171,78 @@ function DashboardPage() {
   }
 
   return (
-    <ResponsiveGridLayout
-      layouts={currentLayout}
-      breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
-      cols={{ lg: 12, md: 10, sm: 6 }}
-      rowHeight={0}
-      margin={[24, 24]}
-      className="w-full"
-      onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
-      isDraggable={layoutEditMode}
-      isResizable={layoutEditMode}
-      resizeHandle={renderResizeHandle()}
-      containerPadding={[0, 0]}
-    >
-      {!hideQueueProcessor && (
-        <div key="queueProcessor">
-          <QueueProcessor />
-        </div>
-      )}
-      {!hideUnrecognizedFiles && (
-        <div key="unrecognizedFiles">
-          <UnrecognizedFiles />
-        </div>
-      )}
-      {!hideRecentlyImported && (
-        <div key="recentlyImported">
-          <RecentlyImported />
-        </div>
-      )}
-      {!hideCollectionStats && (
-        <div key="collectionBreakdown">
-          <CollectionStats />
-        </div>
-      )}
-      {!hideMediaType && (
-        <div key="collectionTypeBreakdown">
-          <MediaType />
-        </div>
-      )}
-      {!hideImportFolders && (
-        <div key="importFolders">
-          <ImportFolders />
-        </div>
-      )}
-      {!hideShokoNews && (
-        <div key="shokoNews">
-          <ShokoNews />
-        </div>
-      )}
-      {(!hideContinueWatching && !combineContinueWatching) && (
-        <div key="continueWatching">
-          <ContinueWatching />
-        </div>
-      )}
-      {!hideNextUp && (
-        <div key="nextUp">
-          <NextUp />
-        </div>
-      )}
-      {!hideUpcomingAnime && (
-        <div key="upcomingAnime">
-          <UpcomingAnime />
-        </div>
-      )}
-      {!hideRecommendedAnime && (
-        <div key="recommendedAnime">
-          <RecommendedAnime />
-        </div>
-      )}
-    </ResponsiveGridLayout>
+    <>
+      <ResponsiveGridLayout
+        layouts={currentLayout}
+        breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)
+        cols={{ lg: 12, md: 10, sm: 6 }}
+        rowHeight={0}
+        margin={[24, 24]}
+        className="w-full"
+        onLayoutChange={(_layout, layouts) => setCurrentLayout(layouts)}
+        isDraggable={layoutEditMode}
+        isResizable={layoutEditMode}
+        resizeHandle={renderResizeHandle()}
+        containerPadding={[0, 0]}
+      >
+        {!hideQueueProcessor && (
+          <div key="queueProcessor">
+            <QueueProcessor />
+          </div>
+        )}
+        {!hideUnrecognizedFiles && (
+          <div key="unrecognizedFiles">
+            <UnrecognizedFiles />
+          </div>
+        )}
+        {!hideRecentlyImported && (
+          <div key="recentlyImported">
+            <RecentlyImported />
+          </div>
+        )}
+        {!hideCollectionStats && (
+          <div key="collectionBreakdown">
+            <CollectionStats />
+          </div>
+        )}
+        {!hideMediaType && (
+          <div key="collectionTypeBreakdown">
+            <MediaType />
+          </div>
+        )}
+        {!hideImportFolders && (
+          <div key="importFolders">
+            <ImportFolders />
+          </div>
+        )}
+        {!hideShokoNews && (
+          <div key="shokoNews">
+            <ShokoNews />
+          </div>
+        )}
+        {(!hideContinueWatching && !combineContinueWatching) && (
+          <div key="continueWatching">
+            <ContinueWatching />
+          </div>
+        )}
+        {!hideNextUp && (
+          <div key="nextUp">
+            <NextUp />
+          </div>
+        )}
+        {!hideUpcomingAnime && (
+          <div key="upcomingAnime">
+            <UpcomingAnime />
+          </div>
+        )}
+        {!hideRecommendedAnime && (
+          <div key="recommendedAnime">
+            <RecommendedAnime />
+          </div>
+        )}
+      </ResponsiveGridLayout>
+      <WelcomeModal onClose={() => setShowWelcomeModal(false)} show={showWelcomeModal} />
+    </>
   );
 }
 

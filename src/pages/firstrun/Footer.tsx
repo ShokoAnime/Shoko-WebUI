@@ -50,7 +50,7 @@ function Footer(props: Props) {
         {finish
           ? (
             <Button
-              onClick={() => navigate('/', { replace: true })}
+              onClick={() => navigate('/webui/dashboard', { replace: true, state: { firstRun: true } })}
               buttonType="primary"
               className="w-1/2 px-4 py-2"
               disabled={nextDisabled}
