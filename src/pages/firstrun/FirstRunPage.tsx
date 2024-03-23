@@ -11,7 +11,6 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import SuccessNotifyModal from '@/pages/firstrun/NotifyModal';
 
 import type { RootState } from '@/core/store';
 
@@ -46,13 +45,13 @@ function FirstRunPage() {
   const { mutateAsync: patchSettings } = usePatchSettingsMutation();
   const [isPersistent, setIsPersistent] = useState(false);
   const serverStatusQuery = useServerStatusQuery();
-  const [showDashboardNotify, setShowDashboardNotify] = useState(false);
+
   useEffect(() => {
     if (
       (serverStatusQuery.isSuccess || serverStatusQuery.isError) && !isPersistent && !serverStatusQuery.isPending
       && serverStatusQuery.data?.State !== 4
     ) {
-      setShowDashboardNotify(true);
+      navigate('../login', { replace: true });
     }
   }, [
     navigate,
@@ -151,13 +150,6 @@ function FirstRunPage() {
         </div>
       </div>
       <div className="login-image-default fixed left-0 top-0 -z-10 h-full w-full opacity-20" />
-      <SuccessNotifyModal
-        show={showDashboardNotify}
-        onClose={() => {
-          setShowDashboardNotify(false);
-          navigate('../login', { replace: true });
-        }}
-      />
     </div>
   );
 }
