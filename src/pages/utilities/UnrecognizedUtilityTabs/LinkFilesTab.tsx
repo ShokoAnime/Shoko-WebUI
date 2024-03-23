@@ -15,7 +15,7 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -146,7 +146,7 @@ const AnimeSelectPanel = (
   },
 ) => {
   const [searchText, setSearchText] = useState(placeholder);
-  const debouncedSearch = useDebounce(searchText, 200);
+  const [debouncedSearch] = useDebounceValue(searchText, 200);
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   const searchRows = useMemo(() => {

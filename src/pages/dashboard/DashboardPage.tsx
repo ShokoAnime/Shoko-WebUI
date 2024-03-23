@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { mdiLoading, mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
-import { useEffectOnce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
@@ -145,7 +144,7 @@ function DashboardPage() {
     );
   }, [layoutEditMode, currentLayout, cancelLayoutChange]);
 
-  useEffectOnce(() => () => cancelLayoutChange());
+  useEffect(() => () => cancelLayoutChange(), [cancelLayoutChange]);
 
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));

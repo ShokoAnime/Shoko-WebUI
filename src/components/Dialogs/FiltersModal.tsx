@@ -4,7 +4,7 @@ import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -47,7 +47,7 @@ const SidePanel = (
   const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
 
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   useEffect(() => () => setSearch(''), []);
 

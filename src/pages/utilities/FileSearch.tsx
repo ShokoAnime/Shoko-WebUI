@@ -17,7 +17,7 @@ import Icon from '@mdi/react';
 import cx from 'classnames';
 import { forEach, reverse } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -261,7 +261,7 @@ const FileDetails = (props: FileSelectedProps) => {
 const FileSearch = () => {
   const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.ImportedAt);
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 250);
+  const [debouncedSearch] = useDebounceValue(search, 250);
   const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs'],
     sortOrder: [sortCriteria],

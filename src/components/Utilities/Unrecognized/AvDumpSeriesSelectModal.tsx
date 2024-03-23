@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, forEach, some, toNumber } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -61,7 +61,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const [activeStep, setActiveStep] = useState(1);
   const [copyFailed, setCopyFailed] = useState(false);
 
-  const debouncedSearch = useDebounce(searchText, 200);
+  const [debouncedSearch] = useDebounceValue(searchText, 200);
   const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);

@@ -5,7 +5,7 @@ import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Button from '@/components/Input/Button';
@@ -27,7 +27,7 @@ const SeriesEpisodes = () => {
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(

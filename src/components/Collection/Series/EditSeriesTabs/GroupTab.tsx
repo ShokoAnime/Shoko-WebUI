@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import { useGroupsInfiniteQuery } from '@/core/react-query/group/queries';
@@ -29,7 +29,7 @@ function GroupTab({ seriesId }: Props) {
   const [name, setName] = useState('');
   const [nameEditable, setNameEditable] = useState(false);
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   const groupQuery = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useGroupsInfiniteQuery({ startsWith: debouncedSearch, pageSize: 10 });
