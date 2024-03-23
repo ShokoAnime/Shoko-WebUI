@@ -182,11 +182,11 @@ const SeriesOverview = () => {
                 <div className="flex gap-x-4">
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Character')}
-                    className="relative h-[12rem] w-[9rem] rounded-lg"
+                    className="relative h-48 w-36 rounded-lg"
                   />
                   <CharacterImage
                     imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
-                    className="relative h-[12rem] w-[9rem] rounded-lg"
+                    className="relative h-48 w-36 rounded-lg"
                   />
                 </div>
                 <div className="flex flex-col items-center">

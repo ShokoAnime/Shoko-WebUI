@@ -24,7 +24,7 @@ const ContinueWatching = () => {
         {(continueWatchingQuery.data?.length ?? 0) > 0
           ? continueWatchingQuery.data?.map(item => <EpisodeDetails episode={item} key={item.IDs.ID} />)
           : (
-            <div className="flex h-full w-full grow flex-col items-center justify-center gap-y-2 text-center">
+            <div className="flex size-full grow flex-col items-center justify-center gap-y-2 text-center">
               <div>No Episodes In Progress.</div>
               <div>Stop An Episode During Playback To Populate This Section.</div>
             </div>

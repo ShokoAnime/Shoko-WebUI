@@ -5,7 +5,7 @@ import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import Button from '@/components/Input/Button';
@@ -27,7 +27,7 @@ const SeriesEpisodes = () => {
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
@@ -101,7 +101,7 @@ const SeriesEpisodes = () => {
         fullHeight={false}
       >
         <Input
-          inputClassName="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          inputClassName="w-full max-w-48 2xl:max-w-[15rem]"
           id="search"
           label="Title Search"
           startIcon={mdiMagnify}
@@ -111,7 +111,7 @@ const SeriesEpisodes = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="episodeType"
           label="Episode Type"
           value={episodeFilterType}
@@ -125,7 +125,7 @@ const SeriesEpisodes = () => {
           <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="status"
           label="Availability"
           value={episodeFilterAvailability}
@@ -137,7 +137,7 @@ const SeriesEpisodes = () => {
           <option value="only">Missing</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="watched"
           label="Watched Status"
           value={episodeFilterWatched}
@@ -148,7 +148,7 @@ const SeriesEpisodes = () => {
           <option value="false">Unwatched</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="hidden"
           label="Hidden Status"
           value={episodeFilterHidden}

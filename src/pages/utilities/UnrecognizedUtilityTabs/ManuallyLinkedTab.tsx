@@ -165,7 +165,7 @@ const Menu = (props: SelectedFilesType) => {
   });
 
   return (
-    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <MenuButton onClick={handleRefresh} icon={mdiRefresh} name="Refresh" />
       <TransitionDiv className="ml-4 flex grow gap-x-4" show={selectedIds.length !== 0}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />

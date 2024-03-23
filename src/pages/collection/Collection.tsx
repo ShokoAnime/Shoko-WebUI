@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
-import { useDebounce, useToggle } from 'usehooks-ts';
+import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
@@ -77,10 +77,10 @@ function Collection() {
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const [groupSearch, setGroupSearch] = useState('');
-  const debouncedGroupSearch = useDebounce(groupSearch, 200);
+  const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
 
   const [seriesSearch, setSeriesSearch] = useState('');
-  const debouncedSeriesSearch = useDebounce(seriesSearch, 200);
+  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
   const showRandomPoster = useMemo(
     () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),

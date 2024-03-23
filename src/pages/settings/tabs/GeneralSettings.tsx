@@ -67,7 +67,7 @@ function GeneralSettings() {
           </Button>
         </div>
         <div className="flex flex-col gap-y-1">
-          <div className="flex h-[2rem] justify-between">
+          <div className="flex h-8 justify-between">
             <span>Server Version</span>
             <div className="flex gap-2">
               {versionQuery.data?.Server.Version}
@@ -84,11 +84,11 @@ function GeneralSettings() {
               </a>
             </div>
           </div>
-          <div className="flex h-[2rem] justify-between">
+          <div className="flex h-8 justify-between">
             <span>Server Channel</span>
             {versionQuery.data?.Server.ReleaseChannel}
           </div>
-          <div className="flex h-[2rem] justify-between">
+          <div className="flex h-8 justify-between">
             <span>Web UI Version</span>
             <div className="flex gap-2">
               {versionQuery.data?.WebUI?.Version}
@@ -133,15 +133,15 @@ function GeneralSettings() {
               {themesQuery.data?.map(theme => <option value={`theme-${theme.ID}`} key={theme.ID}>{theme.Name}</option>)}
             </SelectSmall>
           </div>
-          <div className="flex h-[2rem] items-center justify-between">
+          <div className="flex h-8 items-center justify-between">
             <span>Description</span>
             <span className="max-w-xs truncate">{currentTheme?.Description ?? 'The default theme.'}</span>
           </div>
-          <div className="flex h-[2rem] items-center justify-between">
+          <div className="flex h-8 items-center justify-between">
             <span>Version</span>
             {currentTheme?.Version ?? '1.0.0'}
           </div>
-          <div className="flex h-[2rem] items-center justify-between">
+          <div className="flex h-8 items-center justify-between">
             <span>Author</span>
             {currentTheme?.Author ?? 'Shoko Staff'}
           </div>

@@ -90,7 +90,7 @@ const QueueItems = () => { // This is a separate component so that the whole Sho
 
   return queueItemsQuery.data && queueItemsQuery.data?.Total > 0
     ? queueItemsQuery.data.List.map(item => <QueueItem item={item} key={item.Key} />)
-    : <div className="flex grow items-center justify-center pb-[3.5rem] font-semibold">Queue is empty!</div>;
+    : <div className="flex grow items-center justify-center pb-14 font-semibold">Queue is empty!</div>;
 };
 
 function QueueProcessor() {

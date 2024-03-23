@@ -108,7 +108,7 @@ function ImportFolders() {
               <div className="font-semibold">
                 Current Import Folders
               </div>
-              <div className="flex max-h-[20rem] flex-col gap-y-6 overflow-y-auto">
+              <div className="flex max-h-80 flex-col gap-y-6 overflow-y-auto">
                 {importFolders.map(folder => <Folder {...folder} key={folder.ID} />)}
               </div>
             </>

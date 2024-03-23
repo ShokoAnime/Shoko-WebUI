@@ -18,7 +18,7 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { countBy, every, find, some } from 'lodash';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -234,7 +234,7 @@ function UnrecognizedTab() {
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
   const { mutate: avdumpFile } = useAvdumpFileMutation();
 
   const importFolderQuery = useImportFoldersQuery();
@@ -369,7 +369,7 @@ function UnrecognizedTab() {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  className="flex h-[3.25rem] flex-row flex-wrap items-center gap-x-2"
+                  className="flex h-13 flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >

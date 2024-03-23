@@ -71,7 +71,7 @@ function UnrecognizedFiles() {
     >
       {files.map(file => <FileItem file={file} key={file.ID} />)}
       {fileCount === 0 && (
-        <div className="flex grow items-center justify-center pb-[3.5rem] font-semibold" key="no-files">
+        <div className="flex grow items-center justify-center pb-14 font-semibold" key="no-files">
           No Unrecognized Files, Good Job!
         </div>
       )}
