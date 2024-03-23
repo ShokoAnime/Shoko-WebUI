@@ -294,10 +294,15 @@ function UnrecognizedTab() {
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
   const handleAvdumpClick = useEventCallback(() => {
-    if (isAvdumpFinished && !dumpInProgress) {
-      setSeriesSelectModal(true);
-    } else {
-      selectedRows.forEach(row => !row?.AVDump?.LastDumpedAt && !row?.AVDump.Status && avdumpFile(row.ID));
+    setSeriesSelectModal(true);
+
+    if (!isAvdumpFinished || dumpInProgress) {
+      selectedRows
+        .filter((row) => {
+          const { AVDump } = row;
+          return !AVDump?.LastDumpedAt && !AVDump.Status;
+        })
+        .forEach(row => avdumpFile(row.ID));
     }
   });
 
