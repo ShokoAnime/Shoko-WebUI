@@ -163,8 +163,8 @@ const FileDetails = (props: FileSelectedProps) => {
   }, !!fileId);
   const fileAniDbUrl = `https://anidb.net/file/${file?.AniDB?.ID}`;
   const seriesShokoId = file?.SeriesIDs?.[0]?.SeriesID?.ID ?? 0;
-  const seriesAnidbId = file?.SeriesIDs?.[0].SeriesID.AniDB;
-  const episodeId = file?.SeriesIDs?.[0].EpisodeIDs?.[0]?.ID ?? 0;
+  const seriesAnidbId = file?.SeriesIDs?.[0]?.SeriesID?.AniDB;
+  const episodeId = file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.ID ?? 0;
   const { data: seriesInfo } = useSeriesAniDBQuery(seriesAnidbId!, !!seriesAnidbId);
   const { data: episodeInfo } = useEpisodeAniDBQuery(episodeId, !!episodeId);
 
@@ -188,9 +188,9 @@ const FileDetails = (props: FileSelectedProps) => {
         <span className="break-all">{mediaInfo.Name}</span>
       </div>
       <div className="flex flex-col gap-y-1">
-        {seriesInfo !== undefined && (
-          <div className="flex justify-between capitalize">
-            <span className="font-semibold">Series Name</span>
+        <div className="flex justify-between capitalize">
+          <span className="font-semibold">Series Name</span>
+          {seriesInfo !== undefined && (
             <Link to={`/webui/collection/series/${seriesShokoId}`}>
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <ShokoIcon className="w-6" />
@@ -198,8 +198,8 @@ const FileDetails = (props: FileSelectedProps) => {
                 <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </div>
             </Link>
-          </div>
-        )}
+          )}
+        </div>
         <span className="break-all">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'N/A'}</span>
       </div>
       <div className="flex flex-col gap-y-1">
