@@ -1,7 +1,8 @@
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { mdiInformationOutline, mdiLoading, mdiMagnify, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy, forEach, toNumber } from 'lodash';
+import { countBy, forEach, some, toNumber } from 'lodash';
 import { useDebounce } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -13,6 +14,8 @@ import { useSeriesAniDBSearchQuery } from '@/core/react-query/series/queries';
 import { copyToClipboard } from '@/core/util';
 import { detectShow, findMostCommonShowName } from '@/core/utilities/auto-match-logic';
 import useEventCallback from '@/hooks/useEventCallback';
+
+import type { RootState } from '@/core/store';
 
 type Props = {
   show: boolean;
@@ -54,6 +57,16 @@ const StepDescription = ({ children }: { children: React.ReactNode }) => (
 function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   const { mutateAsync: rescanFile } = useRescanFileMutation();
   const [clickedLink, setClickedLink] = useState(false);
+  const [searchText, setSearchText] = useState('');
+  const [activeStep, setActiveStep] = useState(1);
+  const [copyFailed, setCopyFailed] = useState(false);
+
+  const debouncedSearch = useDebounce(searchText, 200);
+  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
+
+  const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
+  const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
+
   const { ed2kLinks, fileIds, links } = useMemo(() => {
     if (!show) return { ed2kLinks: '', links: [], fileIds: [] };
     const { fileIds: tempFileIds, links: tempLinks } = getLinks();
@@ -67,11 +80,6 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     () => findMostCommonShowName(links.map(link => detectShow(link.split('|')[2]))),
     [links],
   );
-  const [searchText, setSearchText] = useState('');
-  const [activeStep, setActiveStep] = useState(1);
-  const [copyFailed, setCopyFailed] = useState(false);
-  const debouncedSearch = useDebounce(searchText, 200);
-  const searchQuery = useSeriesAniDBSearchQuery(debouncedSearch, !!debouncedSearch);
 
   useEffect(() => {
     setSearchText(commonSeries);
@@ -181,8 +189,8 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
         {activeStep === 2 && (
           <>
             <StepDescription>
-              Search for a series using the provided search, then click on a result to add the copied hashes to AniDB,
-              then click on the &apos;Rescan Files&apos; button afterwards.
+              Search for a series using the provided search, then click on a result to add the copied hashes to AniDB.
+              Once all files have been dumped, you&apos;ll be able to click the &apos;Rescan Files &apos; button.
             </StepDescription>
             <div className="flex flex-col gap-y-2">
               <Input
@@ -230,7 +238,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
               <Button
                 buttonType="primary"
                 className="flex items-center justify-center px-4 py-2"
-                disabled={!clickedLink}
+                disabled={!clickedLink || dumpInProgress}
                 onClick={rescanFiles}
               >
                 Rescan Files
