@@ -85,21 +85,26 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
   </div>
 );
 
+const QueueItems = () => { // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
+  const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
+
+  return queueItemsQuery.data && queueItemsQuery.data?.Total > 0
+    ? queueItemsQuery.data.List.map(item => <QueueItem item={item} key={item.Key} />)
+    : <div className="flex grow items-center justify-center pb-[3.5rem] font-semibold">Queue is empty!</div>;
+};
+
 function QueueProcessor() {
   const hasFetched = useSelector((state: RootState) => state.mainpage.fetched.queueStatus);
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
-  const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
 
   return (
     <ShokoPanel
       title={<Title />}
       options={<Options />}
-      isFetching={!hasFetched || queueItemsQuery.isPending}
+      isFetching={!hasFetched}
       editMode={layoutEditMode}
     >
-      {queueItemsQuery.data && queueItemsQuery.data?.Total > 0
-        ? queueItemsQuery.data.List.map(item => <QueueItem item={item} key={item.Key} />)
-        : <div className="flex grow items-center justify-center pb-[3.5rem] font-semibold">Queue is empty!</div>}
+      <QueueItems />
     </ShokoPanel>
   );
 }
