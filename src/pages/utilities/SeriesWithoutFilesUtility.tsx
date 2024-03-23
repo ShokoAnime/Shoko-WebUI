@@ -75,7 +75,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   };
 
   return (
-    <div className="relative box-border flex h-[3.25rem] grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
         <MenuButton
           onClick={() => {

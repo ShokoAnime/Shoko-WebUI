@@ -4,7 +4,7 @@ import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { useDebounce } from 'usehooks-ts';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -47,7 +47,7 @@ const SidePanel = (
   const subFiltersQuery = useSubFiltersQuery(filterId, activeFilter === filterId);
 
   const [search, setSearch] = useState('');
-  const debouncedSearch = useDebounce(search, 200);
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   useEffect(() => () => setSearch(''), []);
 
@@ -147,7 +147,7 @@ function FiltersModal({ onClose, show }: Props) {
       header="Filters"
     >
       <div className="flex">
-        <div className="flex min-h-[24rem] min-w-[8rem] flex-col gap-y-4 border-r-2 border-panel-border">
+        <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
           <TabButton activeTab={activeTab} filterId={0} onTabChange={onTabChange} title="Filters" />
           {filters.filter(item => item.IsDirectory)
             .map(item => (
@@ -168,7 +168,7 @@ function FiltersModal({ onClose, show }: Props) {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex max-h-[24rem] grow flex-col gap-y-1 overflow-y-auto pl-8">
+          <div className="flex max-h-96 grow flex-col gap-y-1 overflow-y-auto pl-8">
             {filters.filter(item => !item.IsDirectory).map(item => (
               <Item key={item.IDs.ID} item={item} onClose={onClose} />
             ))}

@@ -141,7 +141,7 @@ function LoginPage() {
         )}
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex w-[50rem] flex-row items-center gap-x-6 p-6">
-            <div className="flex w-[20rem] flex-col items-center gap-y-6 py-6">
+            <div className="flex w-80 flex-col items-center gap-y-6 py-6">
               <ShokoIcon className="w-[9.375rem]" />
               <div className="flex flex-col gap-y-1 text-center font-semibold">
                 <span>Version</span>
@@ -204,7 +204,7 @@ function LoginPage() {
                 </form>
               )}
               {serverStatusQuery.data?.State === 3 && (
-                <div className="flex max-h-[20rem] flex-col items-center justify-center gap-y-2 pb-2">
+                <div className="flex max-h-80 flex-col items-center justify-center gap-y-2 pb-2">
                   <Icon path={mdiCloseCircleOutline} className="shrink-0 text-panel-text-warning" size={4} />
                   <div className="mt-2 text-xl font-semibold">Server startup failed!</div>
                   Check the error message below

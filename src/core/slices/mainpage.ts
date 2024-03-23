@@ -52,10 +52,14 @@ const mainpageSlice = createSlice({
       sliceState.queueStatus = initialQueueStatus;
     },
     setUdpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
-      sliceState.banStatus.udp = action.payload;
+      if (sliceState.banStatus.udp.Value !== action.payload.Value) {
+        sliceState.banStatus.udp = action.payload;
+      }
     },
     setHttpBanStatus(sliceState, action: PayloadAction<AniDBBanItemType>) {
-      sliceState.banStatus.http = action.payload;
+      if (sliceState.banStatus.http.Value !== action.payload.Value) {
+        sliceState.banStatus.http = action.payload;
+      }
     },
     setLayoutEditMode(sliceState, action: PayloadAction<boolean>) {
       sliceState.layoutEditMode = action.payload;

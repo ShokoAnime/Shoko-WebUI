@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
-import { useCopyToClipboard, useEffectOnce } from 'usehooks-ts';
+import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -80,11 +80,11 @@ const ApiKeys = () => {
 
   const { data: tokens } = useApiKeyQuery();
 
-  useEffectOnce(() => () => {
+  useEffect(() => () => {
     toast.dismiss('copy-api-key');
     toast.dismiss('api-generated');
     toast.dismiss('api-copied');
-  });
+  }, []);
 
   return (
     <>

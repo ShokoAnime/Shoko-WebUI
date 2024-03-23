@@ -21,7 +21,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
       <div className="flex gap-x-3" key={series.IDs.ID}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-[6rem] w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
+          className="h-24 w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
         />
         <div className="flex flex-col font-semibold">
           <div className="flex gap-y-2">

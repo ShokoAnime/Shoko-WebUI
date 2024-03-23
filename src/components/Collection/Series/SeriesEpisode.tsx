@@ -64,7 +64,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
       <div className={cx('z-10 flex items-center gap-x-6', !nextUp && 'p-6')}>
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
-          className="group h-[13rem] min-w-[22.3125rem] rounded-lg border border-panel-border"
+          className="group h-52 min-w-[22.3125rem] rounded-lg border border-panel-border"
           zoomOnHover
         >
           <div className="pointer-events-none absolute right-3 top-3 z-10 transition-opacity group-hover:opacity-0">

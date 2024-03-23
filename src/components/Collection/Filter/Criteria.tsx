@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { useEffectOnce } from 'usehooks-ts';
 
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
 import SeasonCriteriaModal from '@/components/Collection/Filter/SeasonCriteriaModal';
@@ -65,10 +64,10 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
     dispatch(removeFilterCriteria(criteria));
   });
 
-  useEffectOnce(() => {
+  useEffect(() => {
     if (parameterExists) return;
     setShowModal(true);
-  });
+  }, [parameterExists]);
 
   const Modal = useMemo(() => getModalComponent(type), [type]);
 

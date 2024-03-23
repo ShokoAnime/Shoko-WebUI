@@ -30,7 +30,7 @@ const Checkbox = memo((props: Props) => {
         'flex items-center transition ease-in-out',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
         disabled ? 'opacity-65 cursor-auto' : 'cursor-pointer',
-        'h-[2rem]',
+        'h-8',
       ])}
     >
       <input
@@ -38,7 +38,7 @@ const Checkbox = memo((props: Props) => {
         type="checkbox"
         checked={!disabled && isChecked}
         onChange={disabled ? undefined : onChange}
-        className="absolute h-0 w-0 overflow-hidden whitespace-nowrap border-0 p-0"
+        className="absolute size-0 overflow-hidden whitespace-nowrap border-0 p-0"
         style={{
           clip: 'rect(0 0 0 0)',
           clipPath: 'inset(50%)',

@@ -5,6 +5,7 @@ import {
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
+import { throttle } from 'lodash';
 
 import toast from '@/components/Toast';
 import Events from '@/core/events';
@@ -35,14 +36,15 @@ let connectionEvents: HubConnection;
 
 // Queue Events
 
-const onQueueStateChange = (dispatch: typeof store.dispatch) => (state: QueueStatusType) => {
-  invalidateOnEvent('QueueStateChanged');
-  if (!state) {
-    dispatch(resetQueueStatus());
-    return;
-  }
-  dispatch(setQueueStatus(state));
-};
+const onQueueStateChange = (dispatch: typeof store.dispatch) =>
+  throttle((state: QueueStatusType) => {
+    invalidateOnEvent('QueueStateChanged');
+    if (!state) {
+      dispatch(resetQueueStatus());
+      return;
+    }
+    dispatch(setQueueStatus(state));
+  }, 1000);
 
 const onQueueConnected = (dispatch: typeof store.dispatch) => (state: QueueStatusType) => {
   dispatch(setQueueStatus(state));

@@ -32,7 +32,7 @@ function InputSmall(props: Props) {
   return (
     <>
       <input
-        className={`${className} h-[2rem] appearance-none rounded-lg border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
+        className={`${className} h-8 appearance-none rounded-lg border border-panel-border bg-panel-input text-sm transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action`}
         id={id}
         type={type}
         placeholder={placeholder ?? ''}
