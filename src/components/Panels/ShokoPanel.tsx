@@ -55,6 +55,7 @@ const ShokoPanel = (
         disableOverflow === false && 'overflow-y-auto',
         contentClassName,
       )}
+      style={{ overflowAnchor: 'none' }} // To fix scroll jumping around randomly when queue items change
     >
       {isFetching
         ? (
