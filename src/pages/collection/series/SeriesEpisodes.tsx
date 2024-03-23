@@ -101,7 +101,7 @@ const SeriesEpisodes = () => {
         fullHeight={false}
       >
         <Input
-          inputClassName="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          inputClassName="w-full max-w-48 2xl:max-w-[15rem]"
           id="search"
           label="Title Search"
           startIcon={mdiMagnify}
@@ -111,7 +111,7 @@ const SeriesEpisodes = () => {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
         />
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="episodeType"
           label="Episode Type"
           value={episodeFilterType}
@@ -125,7 +125,7 @@ const SeriesEpisodes = () => {
           <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="status"
           label="Availability"
           value={episodeFilterAvailability}
@@ -137,7 +137,7 @@ const SeriesEpisodes = () => {
           <option value="only">Missing</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="watched"
           label="Watched Status"
           value={episodeFilterWatched}
@@ -148,7 +148,7 @@ const SeriesEpisodes = () => {
           <option value="false">Unwatched</option>
         </Select>
         <Select
-          className="w-full max-w-[12rem] 2xl:max-w-[15rem]"
+          className="w-full max-w-48 2xl:max-w-60"
           id="hidden"
           label="Hidden Status"
           value={episodeFilterHidden}

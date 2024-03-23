@@ -29,7 +29,7 @@ const RecommendedAnime = () => {
         className="group mb-2 h-80 rounded border border-panel-border drop-shadow-md"
       >
         <div
-          className="absolute left-0 top-0 flex h-full w-full cursor-pointer flex-col items-center justify-center bg-panel-background-transparent text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100"
+          className="absolute left-0 top-0 flex size-full cursor-pointer flex-col items-center justify-center bg-panel-background-transparent text-sm font-semibold opacity-0 transition-opacity group-hover:opacity-100"
           onClick={() =>
             window.open(`https://anidb.net/anime/${series.ID}`, '_blank')}
         >

@@ -96,7 +96,7 @@ function FirstRunPage() {
 
   return (
     <div className=" flex w-full justify-center">
-      <div className="flex h-full w-full max-w-[120rem] gap-x-6 p-6">
+      <div className="flex size-full max-w-[120rem] gap-x-6 p-6">
         <div className="flex w-[31.25rem] flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           <div className="flex flex-col items-center gap-y-4">
             <ShokoIcon className="w-32" />
@@ -149,7 +149,7 @@ function FirstRunPage() {
           />
         </div>
       </div>
-      <div className="login-image-default fixed left-0 top-0 -z-10 h-full w-full opacity-20" />
+      <div className="login-image-default fixed left-0 top-0 -z-10 size-full opacity-20" />
     </div>
   );
 }

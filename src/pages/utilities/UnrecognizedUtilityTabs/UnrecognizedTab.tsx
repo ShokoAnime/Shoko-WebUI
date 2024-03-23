@@ -369,7 +369,7 @@ function UnrecognizedTab() {
                 <Button
                   buttonType="primary"
                   buttonSize="normal"
-                  className="flex h-[3.25rem] flex-row flex-wrap items-center gap-x-2"
+                  className="flex h-13 flex-row flex-wrap items-center gap-x-2"
                   onClick={handleAvdumpClick}
                   disabled={dumpInProgress}
                 >

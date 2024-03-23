@@ -613,7 +613,7 @@ function LinkFilesTab() {
 
   return (
     <>
-      <TransitionDiv className="flex h-full w-full grow flex-col">
+      <TransitionDiv className="flex size-full grow flex-col">
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
@@ -659,7 +659,7 @@ function LinkFilesTab() {
           </ShokoPanel>
         </div>
 
-        <div className="mt-8 flex h-full w-full grow gap-x-6 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
+        <div className="mt-8 flex size-full grow gap-x-6 overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
           <div
             className={cx(
               'grid gap-y-2 gap-x-6 auto-rows-min',

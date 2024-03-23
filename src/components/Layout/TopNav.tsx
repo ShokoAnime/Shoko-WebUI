@@ -207,9 +207,9 @@ function TopNav() {
           <div className="flex items-center gap-x-6">
             <QueueCount />
             <div className="flex items-center gap-x-2">
-              <div className="mr-1 flex h-8 w-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
+              <div className="mr-1 flex size-8 items-center justify-center rounded-full bg-header-user-background text-xl text-header-user-text">
                 {currentUserQuery.data?.Avatar
-                  ? <img src={currentUserQuery.data?.Avatar} alt="avatar" className="h-8 w-8 rounded-full" />
+                  ? <img src={currentUserQuery.data?.Avatar} alt="avatar" className="size-8 rounded-full" />
                   : currentUserQuery.data?.Username.charAt(0)}
               </div>
               <span className="text-header-text">{currentUserQuery.data?.Username}</span>

@@ -29,7 +29,7 @@ const CharacterImage = React.memo((props: Props) => {
   return (
     <div className={`${className} overflow-hidden`}>
       <div
-        className="group absolute left-0 top-0 z-[-1] flex h-full w-full flex-col text-center"
+        className="group absolute left-0 top-0 z-[-1] flex size-full flex-col text-center"
         style={{ background: imageLoaded ? `50% 0% / cover no-repeat url('${backgroundImage.src}')` : undefined }}
       >
         {!imageLoaded && (

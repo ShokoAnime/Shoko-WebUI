@@ -340,7 +340,7 @@ function UserManagementSettings() {
         </div>
         <div>
           <div className="mb-2 font-semibold">Selected Tags</div>
-          <div className="flex min-h-[8rem] flex-col rounded-lg border border-panel-border bg-panel-input p-4">
+          <div className="flex min-h-32 flex-col rounded-lg border border-panel-border bg-panel-input p-4">
             {selectedUser.RestrictedTags?.length
               ? selectedUser.RestrictedTags?.map(tag => (
                 <div className="mt-2 flex justify-between capitalize first:mt-0" key={`selectedTag-${tag}`}>

@@ -15,7 +15,7 @@ const getDuration = (duration: string) => {
 
 function EpisodeDetails({ episode }: { episode: EpisodeType }) {
   return (
-    <div className="flex max-h-[13rem] grow flex-col gap-y-4 overflow-hidden">
+    <div className="flex max-h-52 grow flex-col gap-y-4 overflow-hidden">
       <div className="flex justify-between font-semibold">
         <div className="opacity-65">
           {episode.AniDB?.Type.replace('Normal', 'Episode').replace('ThemeSong', 'Credit') ?? 'Episode'}

@@ -91,12 +91,12 @@ const SeriesCredits = () => {
                     {mode === 'Character' && (
                       <CharacterImage
                         imageSrc={getThumbnailUrl(item, 'Character')}
-                        className="relative h-[8rem] w-[6rem] rounded-lg 2xl:h-[11rem] 2xl:w-[8rem]"
+                        className="relative h-32 w-24 rounded-lg 2xl:h-44 2xl:w-32"
                       />
                     )}
                     <CharacterImage
                       imageSrc={getThumbnailUrl(item, 'Staff')}
-                      className="relative h-[8rem] w-[6rem] rounded-lg 2xl:h-[11rem] 2xl:w-[8rem]"
+                      className="relative h-32 w-24 rounded-lg 2xl:h-44 2xl:w-32"
                     />
                   </div>
                   <div className="text-base xl:text-xl">{item.Character?.Name}</div>
