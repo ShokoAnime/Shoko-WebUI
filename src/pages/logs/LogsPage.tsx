@@ -10,6 +10,7 @@ import { useLogsQuery } from '@/core/react-query/logs/queries';
 
 const LogsPage = () => {
   const logLines = useLogsQuery().data;
+  // TODO: Turn off scroll to bottom if user scrolls
   const [isScrollToBottom, setScrollToBottom] = useState(true);
   const [search, setSearch] = useState('');
 
@@ -18,7 +19,6 @@ const LogsPage = () => {
     count: logLines.length,
     getScrollElement: () => parentRef.current,
     estimateSize: () => 32,
-    overscan: 50,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
   // Magic code stolen from https://github.com/TanStack/virtual/issues/634
@@ -30,7 +30,7 @@ const LogsPage = () => {
   useEffect(() => {
     if (!isScrollToBottom || logLines.length === 0) return;
     rowVirtualizer.scrollToIndex(logLines.length - 1, { align: 'start' }); // 'start' scrolls to end and 'end' scrolls to start. ¯\_(ツ)_/¯
-  }, [logLines.length, virtualItems.length, isScrollToBottom, rowVirtualizer]);
+  }, [logLines.length, isScrollToBottom, rowVirtualizer]);
 
   return (
     <div className="flex grow flex-col gap-y-6">
