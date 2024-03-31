@@ -88,10 +88,12 @@ jobs:
         with:
           webhook: ${{ secrets.DISCORD_WEBHOOK }}
           nodetail: true
-          title: New WebUI Dev Build!
+          title: "\ufffd Web UI: New Dev Build!"
+          color: 0x44a3ff
           description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
-            Update from the WebUI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
 
-            **Changelog**:
+            Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
+
+            **Changes since last build**:
             ${{ env.CHANGELOG }}
