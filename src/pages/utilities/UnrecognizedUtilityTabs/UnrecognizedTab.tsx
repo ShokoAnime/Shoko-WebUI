@@ -34,8 +34,8 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { staticColumns } from '@/components/Utilities/constants';
+import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import {
-  useAvdumpFileMutation,
   useDeleteFileMutation,
   useIgnoreFileMutation,
   useRehashFileMutation,
@@ -235,7 +235,7 @@ function UnrecognizedTab() {
   const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
-  const { mutate: avdumpFile } = useAvdumpFileMutation();
+  const { mutate: avdumpFiles } = useAvdumpFilesMutation();
 
   const importFolderQuery = useImportFoldersQuery();
   const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
@@ -297,12 +297,15 @@ function UnrecognizedTab() {
     setSeriesSelectModal(true);
 
     if (!isAvdumpFinished || dumpInProgress) {
-      selectedRows
-        .filter((row) => {
-          const { AVDump } = row;
-          return !AVDump?.LastDumpedAt && !AVDump.Status;
-        })
-        .forEach(row => avdumpFile(row.ID));
+      avdumpFiles({
+        Priority: true,
+        FileIDs: selectedRows
+          .filter((row) => {
+            const { AVDump } = row;
+            return !AVDump?.LastDumpedAt && !AVDump.Status;
+          })
+          .map(file => file.ID),
+      });
     }
   });
 

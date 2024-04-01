@@ -10,16 +10,6 @@ import type {
   LinkOneFileToManyEpisodesRequestType,
 } from '@/core/react-query/file/types';
 
-export const useAvdumpFileMutation = () =>
-  useMutation({
-    mutationFn: (fileId: number) =>
-      axios.post(
-        `File/${fileId}/AVDump`,
-        null,
-        { params: { immediate: false } },
-      ),
-  });
-
 export const useDeleteFileMutation = () =>
   useMutation({
     mutationFn: ({ fileId, removeFolder }: DeleteFileLinkRequestType) =>

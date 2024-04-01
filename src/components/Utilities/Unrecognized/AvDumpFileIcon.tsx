@@ -13,7 +13,7 @@ import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { useAvdumpFileMutation } from '@/core/react-query/file/mutations';
+import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { copyToClipboard } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -22,7 +22,7 @@ import type { FileType } from '@/core/types/api/file';
 
 const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boolean }) => {
   const avdumpList = useSelector((state: RootState) => state.utilities.avdump);
-  const { mutate: avdumpFile } = useAvdumpFileMutation();
+  const { mutate: avdumpFiles } = useAvdumpFilesMutation();
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
@@ -100,7 +100,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const handleDump = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     if (state === 'idle' || state === 'failed') {
-      avdumpFile(fileId);
+      avdumpFiles({ FileIDs: [fileId], Priority: true });
     }
   });
 
