@@ -12,6 +12,7 @@ import {
   useQueueResumeMutation,
 } from '@/core/react-query/queue/mutations';
 import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
+import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
@@ -78,7 +79,9 @@ const Title = () => {
 const QueueItem = ({ item }: { item: QueueItemType }) => (
   <div className="mr-3 flex items-center justify-between gap-x-2 rounded-md p-3 even:bg-panel-background-alt">
     <div className="flex flex-col gap-y-1 break-all">
-      <span className="text-sm opacity-65">{item.Title}</span>
+      <span className="text-sm opacity-65">
+        {`${item.Title} | ${dayjs(item.StartTime).format('MMMM DD YYYY, HH:mm')}`}
+      </span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
     {item.IsRunning && <Icon path={mdiLoading} size={1} spin className="shrink-0 text-panel-text-primary" />}

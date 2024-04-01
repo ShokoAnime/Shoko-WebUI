@@ -109,7 +109,7 @@ const Row = (
         ? <Icon path={mdiLoading} size={1} spin className="m-auto text-panel-text-primary" />
         : (
           <>
-            <div className="flex">
+            <div className="flex items-center">
               {columns.map(column => (
                 <div className={cx(column.className, 'px-2')} key={`${column.id}-${selectRowId(row)}`}>
                   {column.item(row)}
