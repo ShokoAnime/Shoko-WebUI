@@ -4,6 +4,7 @@ import Icon from '@mdi/react';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { AniDBBanTypeEnum } from '@/core/types/signalr';
+import { dayjs } from '@/core/util';
 
 import type { AniDBBanItemType } from '@/core/types/signalr';
 
@@ -41,6 +42,10 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
             <span className="font-bold text-panel-text-important">temporarily banned</span>
             &nbsp;for excessive connection attempts. It happens and just means you’ll need to wait a bit for the
             temporary ban to expire.
+          </p>
+          <p>
+            Shoko will automatically check if this ban has expired at&nbsp;
+            {dayjs(banStatus.UpdateTime).add(banStatus.PauseTimeSecs, 's').format('HH:mm [on] dddd, MMMM DD[.]')}
           </p>
           <p>
             Click the link below to learn more and how you can minimize the chances of an AniDB Ban.
