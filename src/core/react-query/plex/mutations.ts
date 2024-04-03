@@ -6,5 +6,5 @@ import queryClient from '@/core/react-query/queryClient';
 export const useInvalidatePlexTokenMutation = () =>
   useMutation({
     mutationFn: () => axios.get('token/invalidate'),
-    onSuccess: () => queryClient.resetQueries({ queryKey: ['plex'] }),
+    onSuccess: () => queryClient.resetQueries({ queryKey: ['plex', 'status'] }),
   });
