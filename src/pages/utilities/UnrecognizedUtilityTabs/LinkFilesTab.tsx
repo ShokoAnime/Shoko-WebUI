@@ -166,7 +166,7 @@ const AnimeSelectPanel = (
   }, [searchQuery.data, seriesUpdating, updateSelectedSeries]);
 
   return (
-    <div className="contain-strict flex w-1/2 flex-col gap-y-2">
+    <div className="flex w-1/2 flex-col gap-y-2 contain-strict">
       <Input
         id="link-search"
         type="text"

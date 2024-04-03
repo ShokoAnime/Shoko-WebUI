@@ -316,7 +316,7 @@ const FileSearch = () => {
           />
         </div>
       </ShokoPanel>
-      <div className="contain-strict flex grow justify-between gap-x-6 overflow-y-auto">
+      <div className="flex grow justify-between gap-x-6 overflow-y-auto contain-strict">
         <div className="flex w-full rounded-lg border border-panel-border bg-panel-background p-6 lg:max-w-[75%]">
           {filesQuery.isPending && (
             <div className="flex grow items-center justify-center text-panel-text-primary">
