@@ -80,7 +80,8 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
   <div className="mr-3 flex items-center justify-between gap-x-2 rounded-md p-3 even:bg-panel-background-alt">
     <div className="flex flex-col gap-y-1 break-all">
       <span className="text-sm opacity-65">
-        {`${item.Title} | ${dayjs(item.StartTime).format('MMMM DD YYYY, HH:mm')}`}
+        {item.Title}
+        {item.StartTime && ` | ${dayjs(item.StartTime).format('MMMM DD YYYY, HH:mm')}`}
       </span>
       {map(item.Details, (value, key) => `${key}: ${value}`).join(', ')}
     </div>
