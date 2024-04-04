@@ -28,17 +28,21 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
     id: 'filename',
     name: 'Filename',
     className: 'line-clamp-2 grow basis-0 overflow-hidden',
-    item: file => (
-      <div className="flex flex-col" title={file.Locations[0]?.RelativePath.match(/[^\\]*$/)?.[0]}>
-        <span className="line-clamp-1 text-sm font-semibold opacity-65">
-          {file.Locations[0]?.RelativePath.match(/^(.*)\\/)?.[1] ?? 'Root Level'}
-        </span>
-        <span className="line-clamp-1">
-          {file.Locations[0]?.RelativePath?.split(/[/\\]/g)
-            .pop()}
-        </span>
-      </div>
-    ),
+    item: (file) => {
+      const path = file.Locations[0]?.RelativePath ?? '';
+      const match = /[/\\](?=[^/\\]*$)/g.exec(path);
+      const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+      return (
+        <div className="flex flex-col" title={path}>
+          <span className="line-clamp-1 text-sm font-semibold opacity-65">
+            {relativePath}
+          </span>
+          <span className="line-clamp-1">
+            {path?.split(/[/\\]/g).pop()}
+          </span>
+        </div>
+      );
+    },
   },
   {
     id: 'crc32',
