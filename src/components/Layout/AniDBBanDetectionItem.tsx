@@ -22,6 +22,8 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
     return null;
   }
 
+  const expiryTime = dayjs(banStatus.UpdateTime).add(banStatus.PauseTimeSecs, 's');
+
   return (
     <>
       <div className="flex cursor-pointer items-center gap-x-2.5 font-semibold" onClick={() => setModalOpen(true)}>
@@ -44,8 +46,11 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
             temporary ban to expire.
           </p>
           <p>
-            Shoko will automatically check if this ban has expired at&nbsp;
-            {dayjs(banStatus.UpdateTime).add(banStatus.PauseTimeSecs, 's').format('HH:mm [on] dddd, MMMM DD[.]')}
+            Shoko will automatically check your ban status on:
+            <br />
+            <span className="font-bold text-panel-text-important">{expiryTime.format('MMMM DD')}</span>
+            &nbsp;at&nbsp;
+            <span className="font-bold text-panel-text-important">{expiryTime.format('h:mm A')}</span>
           </p>
           <p>
             Click the link below to learn more and how you can minimize the chances of an AniDB Ban.
