@@ -125,6 +125,7 @@ export type SettingsLogRotatorType = {
 };
 
 export type SettingsImportType = {
+  AutomaticallyDeleteDuplicatesOnImport: boolean;
   MoveOnImport: boolean;
   RenameOnImport: boolean;
   RenameThenMove: boolean;
