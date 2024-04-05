@@ -8,6 +8,7 @@ function ImportSettings() {
   const { newSettings, updateSetting } = useSettingsContext();
 
   const {
+    AutomaticallyDeleteDuplicatesOnImport,
     MoveOnImport,
     RenameOnImport,
     RenameThenMove,
@@ -58,6 +59,13 @@ function ImportSettings() {
             id="move-after-rename"
             isChecked={RenameThenMove}
             onChange={event => updateSetting('Import', 'RenameThenMove', event.target.checked)}
+          />
+          <Checkbox
+            justify
+            label="Delete duplicates on import"
+            id="delete-duplicates-on-import"
+            isChecked={AutomaticallyDeleteDuplicatesOnImport}
+            onChange={event => updateSetting('Import', 'AutomaticallyDeleteDuplicatesOnImport', event.target.checked)}
           />
           <Checkbox
             justify

@@ -502,6 +502,7 @@ export const initialSettings: SettingsType = {
   LanguagePreference: ['x-jat', 'en'],
   EpisodeLanguagePreference: ['en'],
   Import: {
+    AutomaticallyDeleteDuplicatesOnImport: false,
     MoveOnImport: false,
     RenameOnImport: false,
     RenameThenMove: false,
