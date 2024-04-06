@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRestart } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, find } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
@@ -62,7 +62,7 @@ const Menu = (
             setSelectedRows([]);
             invalidateQueries(['files', { include_only: ['Ignored'] }]);
           }}
-          icon={mdiRestart}
+          icon={mdiRefresh}
           name="Refresh"
         />
       </TransitionDiv>

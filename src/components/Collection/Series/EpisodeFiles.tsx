@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { mdiEyeOutline, mdiOpenInNew, mdiRefresh, mdiTrashCanOutline } from '@mdi/js';
+import { mdiDatabaseSearchOutline, mdiEyeOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
 
@@ -70,7 +70,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleRescan(selectedFile.ID)}
                 >
-                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiRefresh} size={1} />
+                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiDatabaseSearchOutline} size={1} />
                   Force Update File Info
                 </div>
                 <div className="flex items-center gap-x-2">
