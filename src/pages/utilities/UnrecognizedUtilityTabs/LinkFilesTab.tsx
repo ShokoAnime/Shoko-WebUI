@@ -31,10 +31,13 @@ import {
   useLinkManyFilesToOneEpisodeMutation,
   useLinkOneFileToManyEpisodesMutation,
 } from '@/core/react-query/file/mutations';
-import { useDeleteSeriesMutation, useRefreshAniDBSeriesMutation } from '@/core/react-query/series/mutations';
+import {
+  useDeleteSeriesMutation,
+  useGetSeriesAniDBMutation,
+  useRefreshAniDBSeriesMutation,
+} from '@/core/react-query/series/mutations';
 import {
   useSeriesAniDBEpisodesQuery,
-  useSeriesAniDBQuery,
   useSeriesAniDBSearchQuery,
   useSeriesEpisodesInfiniteQuery,
 } from '@/core/react-query/series/queries';
@@ -111,14 +114,16 @@ const parseLinks = (links: ManualLink[]) => {
 };
 
 const AnimeResultRow = (
-  { data, updateSelectedSeries }: {
-    updateSelectedSeries(series: SeriesAniDBSearchResult): void;
+  { changeSelectedSeries, data }: {
+    changeSelectedSeries: (series: SeriesAniDBSearchResult) => Promise<void>;
     data: SeriesAniDBSearchResult;
   },
 ) => (
   <div
     key={data.ID}
-    onClick={() => updateSelectedSeries(data)}
+    onClick={() => {
+      changeSelectedSeries(data).catch(console.error);
+    }}
     className="flex cursor-pointer gap-x-2 gap-y-1 hover:text-panel-text-primary"
   >
     <a
@@ -139,8 +144,8 @@ const AnimeResultRow = (
 );
 
 const AnimeSelectPanel = (
-  { placeholder, seriesUpdating, updateSelectedSeries }: {
-    updateSelectedSeries(series: SeriesAniDBSearchResult): void;
+  { changeSelectedSeries, placeholder, seriesUpdating }: {
+    changeSelectedSeries: (series: SeriesAniDBSearchResult) => Promise<void>;
     seriesUpdating: boolean;
     placeholder: string;
   },
@@ -153,7 +158,7 @@ const AnimeSelectPanel = (
     const rows: React.ReactNode[] = [];
     if (!seriesUpdating) {
       forEach(searchQuery.data, (data) => {
-        rows.push(<AnimeResultRow key={data.ID} data={data} updateSelectedSeries={updateSelectedSeries} />);
+        rows.push(<AnimeResultRow key={data.ID} data={data} changeSelectedSeries={changeSelectedSeries} />);
       });
     } else {
       rows.push(
@@ -163,7 +168,7 @@ const AnimeSelectPanel = (
       );
     }
     return rows;
-  }, [searchQuery.data, seriesUpdating, updateSelectedSeries]);
+  }, [searchQuery.data, seriesUpdating, changeSelectedSeries]);
 
   return (
     <div className="flex w-1/2 flex-col gap-y-2 contain-strict">
@@ -195,7 +200,6 @@ function LinkFilesTab() {
   const [selectedSeries, setSelectedSeries] = useState({ Type: SeriesTypeEnum.Unknown } as SeriesAniDBSearchResult);
   const [seriesUpdating, setSeriesUpdating] = useState(false);
   const [showRangeFillModal, setShowRangeFillModal] = useState(false);
-  const [seriesToFetch, setSeriesToFetch] = useState(0);
   const [links, setLinks] = useImmer<ManualLink[]>(
     () => selectedRows.map(file => ({ LinkID: generateLinkID(), FileID: file.ID, EpisodeID: 0 })),
   );
@@ -205,9 +209,9 @@ function LinkFilesTab() {
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
   const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
-  const seriesAniDBQuery = useSeriesAniDBQuery(seriesToFetch, false);
+  const { mutateAsync: getSeriesAniDBData } = useGetSeriesAniDBMutation();
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
-    selectedSeries?.ShokoID ?? seriesAniDBQuery.data?.ShokoID ?? 0,
+    selectedSeries?.ShokoID ?? 0,
     {
       includeMissing: 'true',
       includeHidden: 'true',
@@ -292,7 +296,7 @@ function LinkFilesTab() {
     else setSelectedLink(idx);
   };
 
-  const updateSelectedSeries = async (series: SeriesAniDBSearchResult) => {
+  const changeSelectedSeries = async (series: SeriesAniDBSearchResult) => {
     setLinks((linkState) => {
       forEach(linkState, (link) => {
         // eslint-disable-next-line no-param-reassign
@@ -306,20 +310,15 @@ function LinkFilesTab() {
     }
 
     setSeriesUpdating(true);
-    setSeriesToFetch(series.ID);
 
-    const refresh = await refreshSeries({ anidbID: series.ID, force: true, immediate: true });
-
-    if (refresh) {
-      const updatedSeriesData = await seriesAniDBQuery.refetch();
-      if (updatedSeriesData.isSuccess) {
-        setSelectedSeries(updatedSeriesData.data);
-        setSeriesUpdating(false);
-        return;
-      }
+    try {
+      await refreshSeries({ anidbID: series.ID, force: true, immediate: true });
+      const seriesData = await getSeriesAniDBData(series.ID);
+      setSelectedSeries(seriesData);
+    } catch (_) {
+      toast.error('Failed to get series data!');
     }
 
-    toast.error('Failed to get series data!');
     setSeriesUpdating(false);
   };
 
@@ -347,17 +346,14 @@ function LinkFilesTab() {
     if (doesNotExist) {
       try {
         await refreshSeries({ anidbID: selectedSeries.ID, createSeriesEntry: true, immediate: true });
-        await seriesAniDBQuery.refetch();
+        const seriesData = await getSeriesAniDBData(selectedSeries.ID);
+        setSelectedSeries(seriesData);
       } catch (_) {
         toast.error('Failed to add series! Unable to create shoko series entry.');
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       }
     }
     setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
-  });
-
-  const saveChangesHandler = useEventCallback(() => {
-    saveChanges().then(() => {}, () => {});
   });
 
   const rangeFill = (rangeStart: string, epType: string) => {
@@ -531,7 +527,7 @@ function LinkFilesTab() {
   }, [selectedSeries.ID, episodes.length, autoFill]);
 
   useEffect(() => {
-    const seriesId = selectedSeries?.ShokoID ?? seriesAniDBQuery.data?.ShokoID;
+    const seriesId = selectedSeries?.ShokoID;
     if (!seriesId || !isLinking || isLinkingRunning) {
       return;
     }
@@ -544,8 +540,6 @@ function LinkFilesTab() {
     makeLinks,
     links,
     selectedSeries.ShokoID,
-    seriesAniDBQuery.data,
-    seriesAniDBQuery.isFetching,
   ]);
 
   const renderStaticFileLinks = () =>
@@ -646,7 +640,9 @@ function LinkFilesTab() {
                   Cancel
                 </Button>
                 <Button
-                  onClick={saveChangesHandler}
+                  onClick={() => {
+                    saveChanges().catch(console.error);
+                  }}
                   buttonType="primary"
                   className="px-4 py-3"
                   disabled={isLinking || selectedSeries.Type === SeriesTypeEnum.Unknown}
@@ -693,9 +689,7 @@ function LinkFilesTab() {
           </div>
           {!selectedSeries?.ID && (
             <AnimeSelectPanel
-              updateSelectedSeries={(item) => {
-                updateSelectedSeries(item).then(() => {}, () => {});
-              }}
+              changeSelectedSeries={changeSelectedSeries}
               seriesUpdating={seriesUpdating}
               placeholder={initialSearchName}
             />

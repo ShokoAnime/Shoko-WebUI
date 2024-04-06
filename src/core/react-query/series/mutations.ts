@@ -11,6 +11,7 @@ import type {
   RefreshSeriesTvdbInfoRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
+import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
 export const useChangeSeriesImageMutation = () =>
   useMutation({
@@ -41,6 +42,12 @@ export const useDeleteSeriesTvdbLinkMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TvDB`),
     onSuccess: () => invalidateQueries(['series', 'episodes']),
+  });
+
+// This is actually a query but we had to declare it as mutation to use it properly as lazy query.
+export const useGetSeriesAniDBMutation = () =>
+  useMutation<SeriesAniDBSearchResult, unknown, number>({
+    mutationFn: (anidbId: number) => axios.get(`Series/AniDB/${anidbId}`),
   });
 
 export const useRefreshAniDBSeriesMutation = () =>
