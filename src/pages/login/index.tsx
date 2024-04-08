@@ -131,16 +131,16 @@ class LoginPage extends React.Component<Props, State> {
                     <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
                   </div>
                 )}
-                {initStatus.State === 1 && (
+                {initStatus?.State === 1 && (
                   <div className="flex flex-col justify-center items-center">
                     <FontAwesomeIcon icon={faCircleNotch} spin className="color-accent-secondary text-5xl" />
                     <div className="mt-8 text-2xl2">Server is starting. Please wait!</div>
                     <div className="mt-2 text-sm">
-                      <span className="font-muli font-semibold">Status: </span>{initStatus.StartupMessage ?? 'Unknown'}
+                      <span className="font-muli font-semibold">Status: </span>{initStatus?.StartupMessage ?? 'Unknown'}
                     </div>
                   </div>
                 )}
-                {initStatus.State === 2 && (
+                {initStatus?.State === 2 && (
                   <div className="flex flex-col">
                     <Input autoFocus id="username" value={username} label="Username" type="text" placeholder="Username" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
                     <Input id="password" value={password} label="Password" type="password" placeholder="Password" onChange={this.handleInputChange} onKeyPress={this.handleKeyPress} className="py-2" />
@@ -150,15 +150,15 @@ class LoginPage extends React.Component<Props, State> {
                     </div>
                   </div>
                 )}
-                {initStatus.State === 3 && (
+                {initStatus?.State === 3 && (
                   <div className="flex flex-col justify-center items-center overflow-y-auto pt-4 pb-2">
                     <FontAwesomeIcon icon={faTimesCircle} className="color-danger text-5xl" />
                     <div className="mt-3 text-2xl2">Server startup failed!</div>
                     Check the error message below
-                    <div className="mt-1 text-xs break-all overflow-y-auto">{initStatus.StartupMessage ?? 'Unknown'}</div>
+                    <div className="mt-1 text-xs break-all overflow-y-auto">{initStatus?.StartupMessage ?? 'Unknown'}</div>
                   </div>
                 )}
-                {initStatus.State === 4 && (
+                {initStatus?.State === 4 && (
                   <div className="flex flex-col flex-grow py-8">
                     <div className="flex flex-col">
                       <div className="font-bold text-xl">First Time? We&apos;ve All Been There</div>
