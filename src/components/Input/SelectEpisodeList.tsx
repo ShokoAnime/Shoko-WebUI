@@ -173,7 +173,7 @@ const SelectEpisodeList = React.memo((
             onChange={handleEpFilter}
             inputClassName="py-4 px-3"
             startIcon={mdiMagnify}
-            placeholder="Input Episode Name or Number..."
+            placeholder="Input Episode Number..."
           />
         </div>
         <div className="mt-1 max-h-96 overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
