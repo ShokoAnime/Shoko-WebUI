@@ -77,11 +77,11 @@ const CollectionSettings = () => {
       name: 'Same Setting',
     },
     altSetting: {
-      id: 'alternate setting',
+      id: 'alternative setting',
       name: 'Alternative Setting',
     },
     altVersion: {
-      id: 'alternate version',
+      id: 'alternative version',
       name: 'Alternative Version',
     },
     parentStory: {
