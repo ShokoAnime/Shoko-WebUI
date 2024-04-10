@@ -257,7 +257,7 @@ function LoginPage() {
                   : (
                     <>
                       <span className="truncate" title={seriesName}>{seriesName}</span>
-                      <Icon className="text-panel-text-primary shrink-0" path={mdiOpenInNew} size={1} />
+                      <Icon className="shrink-0 text-panel-text-primary" path={mdiOpenInNew} size={1} />
                     </>
                   )}
               </div>
