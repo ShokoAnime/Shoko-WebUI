@@ -244,7 +244,7 @@ function LoginPage() {
             <div className="flex gap-x-2">
               <div
                 className={cx(
-                  'flex gap-x-2 items-center font-semibold truncate max-w-[23rem]',
+                  'flex gap-x-2 items-center font-semibold max-w-[23rem]',
                   seriesId && 'cursor-pointer text-panel-text-primary',
                 )}
                 onClick={setRedirect}
@@ -256,8 +256,8 @@ function LoginPage() {
                   ? 'Series Not Found'
                   : (
                     <>
-                      {seriesName}
-                      <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
+                      <span className="truncate" title={seriesName}>{seriesName}</span>
+                      <Icon className="shrink-0 text-panel-text-primary" path={mdiOpenInNew} size={1} />
                     </>
                   )}
               </div>
