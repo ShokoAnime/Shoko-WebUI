@@ -12,6 +12,7 @@ import toast from '@/components/Toast';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
+import useEventCallback from '@/hooks/useEventCallback';
 
 const items = [
   { name: 'General', path: 'general' },
@@ -97,6 +98,23 @@ function SettingsPage() {
     updateSetting,
   };
 
+  const validateAndPatchSettings = useEventCallback(() => {
+    const HttpServerUrl = newSettings.AniDb.HTTPServerUrl;
+
+    if (!/^https?:\/\/\S+:\d+$/.test(HttpServerUrl)) {
+      toast.error(
+        'Invalid HTTP Server URL',
+        <div className="flex flex-col gap-y-4">
+          {'It must be in the following format: {scheme}://{address}:{port}'}
+          <span>eg., http://api.anidb.net:9001</span>
+        </div>,
+      );
+      return;
+    }
+
+    patchSettings({ newSettings });
+  });
+
   return (
     <div className="flex min-h-full grow justify-center gap-x-6">
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
@@ -139,7 +157,7 @@ function SettingsPage() {
                     Cancel
                   </Button>
                   <Button
-                    onClick={() => patchSettings({ newSettings })}
+                    onClick={validateAndPatchSettings}
                     buttonType="primary"
                     buttonSize="normal"
                     disabled={!unsavedChanges}
