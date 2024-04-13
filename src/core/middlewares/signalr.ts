@@ -2,6 +2,7 @@ import {
   HttpTransportType,
   type HubConnection,
   HubConnectionBuilder,
+  HubConnectionState,
   JsonHubProtocol,
   LogLevel,
 } from '@microsoft/signalr';
@@ -106,7 +107,9 @@ next =>
 async (action: UnknownAction) => {
   // register signalR after the user logged in
   if (action.type === Events.MAINPAGE_LOADED) {
-    if (connectionEvents !== undefined) return next(action);
+    if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
+      return next(action);
+    }
     const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump';
 
     const protocol = new JsonHubProtocol();
