@@ -21,7 +21,7 @@ export const loadState = (): RootState => {
     }
     const apiSession: unknown = JSON.parse(apiSessionString);
     if (!isApiSession(apiSession)) {
-      globalThis.localStorage.clear();
+      globalThis.localStorage.removeItem('apiSession');
       return {} as RootState;
     }
     return { ...serializedState, apiSession };

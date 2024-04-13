@@ -12,7 +12,7 @@ import type { UnknownAction } from 'redux';
 
 const rootReducer = (state: ReturnType<typeof combinedReducer>, action: UnknownAction) => {
   if (action.type === Events.AUTH_LOGOUT) { // check for action type
-    globalThis.localStorage.clear();
+    globalThis.localStorage.removeItem('apiSession');
     globalThis.sessionStorage.clear();
     return combinedReducer(undefined, action);
   }
