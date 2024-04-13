@@ -15,7 +15,7 @@ const rootReducer = (state: ReturnType<typeof combinedReducer>, action: UnknownA
     globalThis.localStorage.removeItem('apiSession');
     globalThis.localStorage.removeItem('theme');
 
-    globalThis.sessionStorage.removeItem('state');
+    globalThis.sessionStorage.clear();
     return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
