@@ -14,6 +14,7 @@ type Props = {
   className?: string;
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
+  overlayClassName?: string;
 };
 
 const sizeClass = {
@@ -32,6 +33,7 @@ function ModalPanel(props: Props) {
     noPadding,
     onAfterOpen,
     onRequestClose,
+    overlayClassName,
     show,
     size,
     subHeader,
@@ -44,7 +46,7 @@ function ModalPanel(props: Props) {
   return (
     <Modal
       isOpen={show}
-      overlayClassName="fixed inset-0 bg-black/50 z-[80]"
+      overlayClassName={cx('fixed inset-0 bg-black/50 z-[80]', overlayClassName)}
       className="mt-10 flex h-full items-center justify-center"
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}

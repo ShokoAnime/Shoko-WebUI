@@ -35,6 +35,7 @@ function BrowseFolderModal(props: Props) {
       onRequestClose={() => handleClose()}
       header="Select Import Folder"
       size="sm"
+      overlayClassName="!z-[90]"
     >
       <div className="rounded border border-panel-border bg-panel-input p-4">
         <TreeView />
