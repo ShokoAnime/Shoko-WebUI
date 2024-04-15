@@ -41,7 +41,7 @@ const AnidbDescription = React.memo(({ text }: { text: string }) => {
     LinkRegex.lastIndex = 0;
     return lines.join('');
   }, [text]);
-  return <div className="text-base">{modifiedText}</div>;
+  return <div className="pr-4 text-base">{modifiedText}</div>;
 });
 
 export default AnidbDescription;
