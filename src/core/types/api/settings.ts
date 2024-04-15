@@ -18,6 +18,9 @@ export type SettingsAnidbType = {
   AVDumpKey: string;
   ClientPort: number;
   AVDumpClientPort: number;
+  HTTPServerUrl: string;
+  UDPServerAddress: string;
+  UDPServerPort: number;
 };
 
 export type SettingsAnidbDownloadType = {
