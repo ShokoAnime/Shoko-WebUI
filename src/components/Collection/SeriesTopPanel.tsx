@@ -1,0 +1,96 @@
+import React, { useMemo } from 'react';
+import { useParams } from 'react-router';
+import { NavLink } from 'react-router-dom';
+import { mdiTagTextOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import cx from 'classnames';
+import { toNumber } from 'lodash';
+
+import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import AnidbDescription from '@/components/Collection/AnidbDescription';
+import SeriesInfo from '@/components/Collection/SeriesInfo';
+import SeriesUserStats from '@/components/Collection/SeriesUserStats';
+import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import useMainPoster from '@/hooks/useMainPoster';
+
+import type { SeriesType } from '@/core/types/api/series';
+
+type SeriesSidePanelProps = {
+  series: SeriesType;
+};
+
+const SeriesTag = ({ text, type }) => (
+  <div
+    className={cx(
+      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
+      type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
+    )}
+  >
+    <Icon path={mdiTagTextOutline} size="1.25rem" />
+    <span className="text-panel-text">{text}</span>
+  </div>
+);
+
+const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
+  const mainPoster = useMainPoster(series);
+  const { seriesId } = useParams();
+  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
+  const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
+
+  return (
+    <div className="flex w-full gap-x-6">
+      <BackgroundImagePlaceholderDiv
+        image={mainPoster}
+        className="aspect-[5/6] h-[30.188rem] w-[20.125rem] rounded drop-shadow-md lg:aspect-[4/6]"
+      >
+        {(series.AniDB?.Restricted ?? false) && (
+          <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+            18+ Adults Only
+          </div>
+        )}
+      </BackgroundImagePlaceholderDiv>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex h-[14.623rem] w-[57.5rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+          <div className="flex w-full text-xl font-semibold">
+            Series Description
+          </div>
+          <div className="overflow-y-auto text-base font-normal">
+            <AnidbDescription text={series.AniDB?.Description ?? ''} />
+          </div>
+        </div>
+        <div className="flex w-[57.5rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+          <div className="flex w-full text-xl font-semibold">
+            Series Information
+          </div>
+          <div className="flex justify-between gap-x-[4.5rem] text-base font-normal">
+            <SeriesInfo series={series} />
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-y-4">
+        <div className="flex h-[14.623rem] w-[36.375rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+          <div className="flex w-full text-xl font-semibold">
+            Top 10 Tags
+          </div>
+          <div className="flex flex-wrap gap-3 overflow-y-auto">
+            {tags.slice(0, 10)
+              .map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
+            <NavLink to="tags">
+              <SeriesTag text="More..." type="All" />
+            </NavLink>
+          </div>
+        </div>
+        <div className="flex h-[14.623rem] w-[36.375rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+          <div className="flex w-full text-xl font-semibold">
+            User Stats
+          </div>
+          <div className="flex flex-col flex-wrap gap-3">
+            <SeriesUserStats series={series} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default SeriesTopPanel;
