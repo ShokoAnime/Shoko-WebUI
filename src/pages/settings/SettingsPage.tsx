@@ -98,10 +98,22 @@ function SettingsPage() {
     updateSetting,
   };
 
-  const validateAndPatchSettings = useEventCallback(() => {
-    const HttpServerUrl = newSettings.AniDb.HTTPServerUrl;
+  const isHttpServerUrlValid = () => {
+    try {
+      const HttpServerUrl = new URL(newSettings.AniDb.HTTPServerUrl);
 
-    if (!/^https?:\/\/\S+:\d+$/.test(HttpServerUrl)) {
+      if (!HttpServerUrl.protocol || !HttpServerUrl.port) {
+        return false;
+      }
+
+      return true;
+    } catch (_) {
+      return false;
+    }
+  };
+
+  const validateAndPatchSettings = useEventCallback(() => {
+    if (!isHttpServerUrlValid()) {
       toast.error(
         'Invalid HTTP Server URL',
         <div className="flex flex-col gap-y-4">
@@ -109,6 +121,7 @@ function SettingsPage() {
           <span>eg., http://api.anidb.net:9001</span>
         </div>,
       );
+
       return;
     }
 
