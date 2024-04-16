@@ -98,7 +98,7 @@ function SettingsPage() {
     updateSetting,
   };
 
-  const validateHttpServerUrl = () => {
+  const isHttpServerUrlValid = () => {
     try {
       const HttpServerUrl = new URL(newSettings.AniDb.HTTPServerUrl);
 
@@ -113,7 +113,7 @@ function SettingsPage() {
   };
 
   const validateAndPatchSettings = useEventCallback(() => {
-    if (!validateHttpServerUrl()) {
+    if (!isHttpServerUrlValid()) {
       toast.error(
         'Invalid HTTP Server URL',
         <div className="flex flex-col gap-y-4">
