@@ -51,14 +51,16 @@ export const useGetSeriesAniDBMutation = () =>
   });
 
 export const useRefreshAniDBSeriesMutation = () =>
-  useMutation({
+  useMutation<boolean, unknown, RefreshAniDBSeriesRequestType>({
     mutationFn: ({ anidbID, ...params }: RefreshAniDBSeriesRequestType) =>
       axios.post(
         `Series/AniDB/${anidbID}/Refresh`,
         null,
         { params },
       ),
-    onSuccess: () => {
+    onSuccess: (response) => {
+      if (!response) throw Error(); // Consider 'false' response as error.
+
       invalidateQueries(['series', 'anidb']);
       invalidateQueries(['series', 'anidb-search']);
       invalidateQueries(['series', 'episodes']);
