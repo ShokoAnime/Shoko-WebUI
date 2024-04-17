@@ -102,7 +102,7 @@ function SettingsPage() {
     try {
       const HttpServerUrl = new URL(newSettings.AniDb.HTTPServerUrl);
 
-      if (!HttpServerUrl.protocol || !HttpServerUrl.port) {
+      if (HttpServerUrl.protocol !== 'http:' && HttpServerUrl.protocol !== 'https:') {
         return false;
       }
 
@@ -118,6 +118,12 @@ function SettingsPage() {
         'Invalid HTTP Server URL',
         <div className="flex flex-col gap-y-4">
           {'It must be in the following format: {scheme}://{address}:{port}'}
+          <div>
+            Scheme: `http` or `https`
+            <br />
+            Port: optional
+            <br />
+          </div>
           <span>eg., http://api.anidb.net:9001</span>
         </div>,
       );
