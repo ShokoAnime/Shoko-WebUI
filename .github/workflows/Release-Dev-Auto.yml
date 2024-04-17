@@ -83,18 +83,23 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Notify discord
-        uses: Ilshidur/action-discord@08d9328877d6954120eef2b07abbc79249bb6210
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        with:
-          args: |
-            # 🌐 Web UI: New Dev Build!
+      - name: Get current datetime
+        id: date
+        run: echo "date=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_OUTPUT
 
+      - name: Notify discord
+        uses: tsickert/discord-webhook@v6.0.0
+        with:
+          webhook-url: ${{ secrets.DISCORD_WEBHOOK }}
+          embed-color: 7641851
+          embed-timestamp: ${{ steps.date.outputs.date }}
+          embed-author-name: Web UI | New Daily Build
+          embed-author-icon-url: https://raw.githubusercontent.com/${{ github.repository }}/master/.github/images/webui.png
+          embed-author-url: https://github.com/${{ github.repository }}
+          embed-description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
 
-            Update from the Web UI or click [here](<https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}>) to download!
+            Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
 
             **Changes since last build**:
-
             ${{ env.CHANGELOG }}
