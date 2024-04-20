@@ -129,7 +129,8 @@ const SeriesImages = () => {
           {map(get(images, type, []), (item: ImageType) => (
             <div
               onClick={() => {
-                setSelectedImage(item);
+                if (selectedImage === item) resetSelectedImage();
+                else setSelectedImage(item);
               }}
               key={item?.ID}
             >
