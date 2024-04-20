@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiChevronRight, mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, map, split, toNumber } from 'lodash';
@@ -144,7 +144,14 @@ const SeriesImages = () => {
                   sizeMap[type],
                 )}
                 linkToImage
-              />
+              >
+                {item.Preferred && (
+                  <div className="absolute bottom-3 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                    <Icon path={mdiStarCircleOutline} size={1} />
+                    &nbsp;Series Default
+                  </div>
+                )}
+              </BackgroundImagePlaceholderDiv>
             </div>
           ))}
         </div>
