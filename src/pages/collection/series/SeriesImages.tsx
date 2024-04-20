@@ -143,6 +143,7 @@ const SeriesImages = () => {
                   item === selectedImage ? 'border-panel-text-important border-2 opacity-65' : 'border-panel-border',
                   sizeMap[type],
                 )}
+                linkToImage
               />
             </div>
           ))}
