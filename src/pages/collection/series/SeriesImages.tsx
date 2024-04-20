@@ -55,7 +55,7 @@ const Heading = React.memo((
 const InfoLine = ({ title, value }) => (
   <div className="flex w-full max-w-[12.5rem] flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
-    {value}
+    <span className="line-clamp-1" title={`${value}`}>{value}</span>
   </div>
 );
 
