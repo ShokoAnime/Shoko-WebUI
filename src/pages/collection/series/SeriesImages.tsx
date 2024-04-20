@@ -23,8 +23,8 @@ const Heading = React.memo((
     <div className="flex gap-x-1">
       <span
         onClick={() => {
+          if (type !== 'Posters') onTypeChange();
           setType('Posters');
-          onTypeChange();
         }}
         className={cx(type === 'Posters' && 'text-panel-text-primary')}
       >
@@ -33,6 +33,7 @@ const Heading = React.memo((
       |
       <span
         onClick={() => {
+          if (type !== 'Fanarts') onTypeChange();
           setType('Fanarts');
         }}
         className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
@@ -42,6 +43,7 @@ const Heading = React.memo((
       |
       <span
         onClick={() => {
+          if (type !== 'Banners') onTypeChange();
           setType('Banners');
         }}
         className={cx(type === 'Banners' && 'text-panel-text-primary')}
