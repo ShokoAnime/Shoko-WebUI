@@ -11,17 +11,18 @@ import { criteriaMap } from '@/components/Utilities/constants';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
+import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 import type { VirtualItem } from '@tanstack/react-virtual';
 import type { Updater } from 'use-immer';
 
 type Props = {
-  columns: UtilityHeaderType<FileType | SeriesType>[];
+  columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
   count: number;
   fetchNextPage: () => Promise<unknown>;
   isFetchingNextPage: boolean;
-  rows: FileType[] | SeriesType[];
+  rows: EpisodeType[] | FileType[] | SeriesType[];
   setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
   skipSort?: boolean;
   sortCriteria?: FileSortCriteriaEnum;
@@ -32,15 +33,15 @@ type Props = {
   onExpand?: (id: number) => Promise<void>;
 };
 
-const selectRowId = (target: FileType | SeriesType) => ('ID' in target ? target.ID : target.IDs.ID);
+const selectRowId = (target: EpisodeType | FileType | SeriesType) => ('ID' in target ? target.ID : target.IDs.ID);
 
 const Row = (
   props: {
     ExpandedNode?: React.ComponentType<{ id: number, open: boolean }>;
-    columns: UtilityHeaderType<FileType | SeriesType>[];
+    columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
     handleRowSelect: (event: React.MouseEvent, row: VirtualItem) => void;
     onExpand?: (id: number) => Promise<void>;
-    row: FileType | SeriesType;
+    row: EpisodeType | FileType | SeriesType;
     selected: boolean;
     virtualRow: VirtualItem;
   },
@@ -76,25 +77,28 @@ const Row = (
     handleRowSelect(event, virtualRow);
   });
 
-  const columns = useMemo<UtilityHeaderType<FileType | SeriesType>[]>(() => (ExpandedNode
-    ? [
-      ...tempColumns,
-      {
-        id: 'arrow',
-        name: '',
-        className: 'w-10',
-        item: () => (
-          <Icon
-            path={loading ? mdiLoading : mdiChevronDown}
-            spin={loading}
-            size={1}
-            rotate={open ? 180 : 0}
-            className="text-panel-text-primary transition-transform"
-          />
-        ),
-      },
-    ]
-    : tempColumns), [tempColumns, ExpandedNode, loading, open]);
+  const columns = useMemo<UtilityHeaderType<EpisodeType | FileType | SeriesType>[]>(
+    () => (ExpandedNode
+      ? [
+        ...tempColumns,
+        {
+          id: 'arrow',
+          name: '',
+          className: 'w-10',
+          item: () => (
+            <Icon
+              path={loading ? mdiLoading : mdiChevronDown}
+              spin={loading}
+              size={1}
+              rotate={open ? 180 : 0}
+              className="text-panel-text-primary transition-transform"
+            />
+          ),
+        },
+      ]
+      : tempColumns),
+    [tempColumns, ExpandedNode, loading, open],
+  );
 
   return (
     <div
@@ -233,9 +237,9 @@ const UtilitiesTable = (props: Props) => {
 
   const lastRowSelected = useRef<VirtualItem | null>(null);
   const handleSelect = useEventCallback((event: React.MouseEvent, virtualRow: VirtualItem) => {
-    if (!rowSelection || !handleRowSelect || !setSelectedRows) return;
+    if (!rowSelection || !handleRowSelect) return;
     try {
-      if (event.shiftKey) {
+      if (setSelectedRows && event.shiftKey) {
         window?.getSelection()?.removeAllRanges();
         const lrIndex = lastRowSelected?.current?.index ?? virtualRow.index;
         const fromIndex = Math.min(lrIndex, virtualRow.index);
