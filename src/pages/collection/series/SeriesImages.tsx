@@ -3,7 +3,7 @@ import { useParams } from 'react-router';
 import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, map, split, toNumber } from 'lodash';
+import { cloneDeep, get, map, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
@@ -12,6 +12,8 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 import type { ImageType } from '@/core/types/api/common';
 
@@ -33,6 +35,7 @@ const Heading = React.memo((
               ? 'bg-panel-toggle-background-alt w-28 text-panel-toggle-text-alt rounded-lg mr-2 py-3 px-4 hover:bg-panel-toggle-background-hover'
               : '!bg-panel-toggle-background w-28 text-panel-toggle-text rounded-lg mr-2 py-3 px-4',
           )}
+          key={value}
           onClick={() => {
             if (type !== value) onTypeChange();
             setType(value);
@@ -63,6 +66,10 @@ const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in si
 const SeriesImages = () => {
   const { seriesId } = useParams();
 
+  const initialSettings = useSettingsQuery().data;
+  const [settings, setSettings] = useState(initialSettings);
+  const { isPending, mutate: patchSettings } = usePatchSettingsMutation();
+
   const [type, setType] = useState('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
   const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
@@ -75,6 +82,19 @@ const SeriesImages = () => {
   const resetSelectedImage = () => {
     setSelectedImage({} as ImageType);
   };
+
+  const handleSettingsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked, id } = event.target;
+    const updatedSettings = cloneDeep(settings);
+    updatedSettings.WebUI_Settings.series[id] = checked;
+    setSettings(updatedSettings);
+    patchSettings({ newSettings: updatedSettings });
+  };
+
+  const {
+    showRandomFanart,
+    showRandomPoster,
+  } = settings.WebUI_Settings.series;
 
   if (!seriesId) return null;
   if (!isSizeMapType(type)) return null;
@@ -92,16 +112,18 @@ const SeriesImages = () => {
           <Checkbox
             justify
             label="Random Poster on Load"
-            id="random-poster"
-            isChecked={false}
-            onChange={() => {}}
+            id="showRandomPoster"
+            disabled={isPending}
+            isChecked={showRandomPoster}
+            onChange={handleSettingsChange}
           />
           <Checkbox
             justify
             label="Random Fanart on Load"
-            id="random-fanart"
-            isChecked={false}
-            onChange={() => {}}
+            id="showRandomFanart"
+            disabled={isPending}
+            isChecked={showRandomFanart}
+            onChange={handleSettingsChange}
           />
         </ShokoPanel>
         <ShokoPanel
