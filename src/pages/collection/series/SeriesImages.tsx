@@ -163,7 +163,7 @@ const SeriesImages = () => {
                 zoomOnBoolValue={item === selectedImage}
               >
                 {item.Preferred && (
-                  <div className="absolute bottom-3 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                  <div className="absolute bottom-3 mx-[5%] flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                     <Icon path={mdiStarCircleOutline} size={1} />
                     &nbsp;Series Default
                   </div>
