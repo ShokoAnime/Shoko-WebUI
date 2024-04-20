@@ -140,10 +140,11 @@ const SeriesImages = () => {
                 image={item}
                 className={cx(
                   'rounded-lg drop-shadow-md border',
-                  item === selectedImage ? 'border-panel-text-important border-2 opacity-65' : 'border-panel-border',
+                  item === selectedImage ? 'border-panel-text-important border-2 opacity-85' : 'border-panel-border',
                   sizeMap[type],
                 )}
                 linkToImage
+                zoomOnBoolValue={item === selectedImage}
               >
                 {item.Preferred && (
                   <div className="absolute bottom-3 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
