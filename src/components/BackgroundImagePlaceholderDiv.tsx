@@ -89,7 +89,8 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         className={cx(
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-lg',
           zoomOnHover && 'group-hover:scale-105 transition-transform',
-          zoomOnBoolValue && 'scale-110 transition-transform',
+          typeof zoomOnBoolValue !== 'undefined' && 'transition-transform duration-600',
+          zoomOnBoolValue && 'scale-105',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
       >
@@ -114,7 +115,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       {children}
       {linkToImage && (
         <a
-          className="absolute bottom-3 right-3 z-10 rounded-lg bg-panel-background-transparent p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
+          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-transparent p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
           href={backgroundImage?.src}
           aria-label="Link to image"
           rel="noopener noreferrer"

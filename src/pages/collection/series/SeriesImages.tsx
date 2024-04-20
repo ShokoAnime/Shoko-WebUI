@@ -155,8 +155,10 @@ const SeriesImages = () => {
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-lg drop-shadow-md border',
-                  item === selectedImage ? 'border-panel-text-important border-2 opacity-85' : 'border-panel-border',
+                  'rounded-lg drop-shadow-md transition-transform duration-600 outline',
+                  item === selectedImage
+                    ? 'outline-panel-text-important outline-4 opacity-85'
+                    : 'outline-2 outline-panel-border',
                   sizeMap[type],
                 )}
                 linkToImage

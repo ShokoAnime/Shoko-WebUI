@@ -128,6 +128,11 @@ module.exports = {
         '3xl': '1630px',
       },
     },
+    transitionDuration: {
+      '300': '300ms',
+      '450': '450ms',
+      '600': '650ms',
+    }
   },
   variants: {
     margin: ['first'],
