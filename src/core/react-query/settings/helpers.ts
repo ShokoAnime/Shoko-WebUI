@@ -280,6 +280,10 @@ export const initialSettings: SettingsType = {
         showRandomPoster: false,
       },
     },
+    series: {
+      showRandomFanart: false,
+      showRandomPoster: false,
+    },
     dashboard: {
       hideQueueProcessor: false,
       hideUnrecognizedFiles: false,

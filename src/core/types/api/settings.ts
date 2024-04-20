@@ -217,6 +217,10 @@ export type WebUISettingsType = {
     recentlyImportedEpisodesCount: number;
     recentlyImportedSeriesCount: number;
   };
+  series: {
+    showRandomPoster: boolean;
+    showRandomFanart: boolean;
+  };
 };
 
 export type SettingsType = Omit<SettingsServerType, 'WebUI_Settings'> & {
