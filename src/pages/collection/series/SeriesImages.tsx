@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiChevronRight, mdiStarCircleOutline } from '@mdi/js';
+import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, map, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
@@ -14,48 +15,38 @@ import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
 
+const imageTypeVariations = {
+  posters: 'Posters',
+  fanarts: 'Fanarts',
+  banners: 'Banners',
+};
+
 const Heading = React.memo((
   { onTypeChange, setType, type }: { type: string, setType: (type: string) => void, onTypeChange: () => void },
 ) => (
   <div className="flex cursor-pointer items-center gap-x-2 text-xl font-semibold">
-    Images
-    <Icon path={mdiChevronRight} size={1} />
     <div className="flex gap-x-1">
-      <span
-        onClick={() => {
-          if (type !== 'Posters') onTypeChange();
-          setType('Posters');
-        }}
-        className={cx(type === 'Posters' && 'text-panel-text-primary')}
-      >
-        Posters
-      </span>
-      |
-      <span
-        onClick={() => {
-          if (type !== 'Fanarts') onTypeChange();
-          setType('Fanarts');
-        }}
-        className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
-      >
-        Fanarts
-      </span>
-      |
-      <span
-        onClick={() => {
-          if (type !== 'Banners') onTypeChange();
-          setType('Banners');
-        }}
-        className={cx(type === 'Banners' && 'text-panel-text-primary')}
-      >
-        Banners
-      </span>
+      {map(imageTypeVariations, value => (
+        <Button
+          className={cx(
+            type !== value
+              ? 'bg-panel-toggle-background-alt w-28 text-panel-toggle-text-alt rounded-lg mr-2 py-3 px-4 hover:bg-panel-toggle-background-hover'
+              : '!bg-panel-toggle-background w-28 text-panel-toggle-text rounded-lg mr-2 py-3 px-4',
+          )}
+          onClick={() => {
+            if (type !== value) onTypeChange();
+            setType(value);
+          }}
+        >
+          {value}
+        </Button>
+      ))}
     </div>
   </div>
 ));
 
 const InfoLine = ({ title, value }) => (
-  <div className="flex w-full max-w-[12.5rem] flex-col gap-y-1">
+  <div className="flex w-full flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
     <span className="line-clamp-1" title={`${value}`}>{value}</span>
   </div>
@@ -89,21 +80,34 @@ const SeriesImages = () => {
   if (!isSizeMapType(type)) return null;
 
   return (
-    <div className="flex gap-x-6">
-      <div className="flex grow flex-col gap-y-6">
-        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
-          <div className="text-xl font-semibold">
-            <span className="text-panel-text-important">{get(images, type, []).length}</span>
-            &nbsp;
-            {type}
-            &nbsp;Listed
-          </div>
-        </div>
+    <div className="flex w-full gap-x-6">
+      <div className="flex w-96 shrink-0 flex-col gap-y-6">
+        <ShokoPanel
+          title="Image Options"
+          className="flex w-full flex-col"
+          contentClassName="flex !flex-col gap-y-1 2xl:gap-x-6 h-full"
+          fullHeight={false}
+          transparent
+        >
+          <Checkbox
+            justify
+            label="Random Poster on Load"
+            id="random-poster"
+            isChecked={false}
+            onChange={() => {}}
+          />
+          <Checkbox
+            justify
+            label="Random Fanart on Load"
+            id="random-fanart"
+            isChecked={false}
+            onChange={() => {}}
+          />
+        </ShokoPanel>
         <ShokoPanel
           title="Selected Image Info"
-          className="flex w-full flex-row"
-          contentClassName="flex !flex-row gap-x-2 2xl:gap-x-6 h-full"
+          className="flex w-full flex-col"
+          contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
           fullHeight={false}
           transparent
         >
@@ -124,10 +128,22 @@ const SeriesImages = () => {
               });
             }}
           >
-            {`Set As Default ${type.slice(0, -1)}`}
+            {`Set As Series ${type.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
-        <div className="flex flex-wrap gap-4 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
+      </div>
+      <div className="flex grow flex-col gap-y-6">
+        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="text-xl font-semibold">
+            Images |&nbsp;
+            <span className="text-panel-text-important">{get(images, type, []).length}</span>
+            &nbsp;
+            {type}
+            &nbsp;Listed
+          </div>
+          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
+        </div>
+        <div className="flex flex-wrap gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
           {map(get(images, type, []), (item: ImageType) => (
             <div
               onClick={() => {
