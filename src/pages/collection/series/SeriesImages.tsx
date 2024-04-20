@@ -143,7 +143,7 @@ const SeriesImages = () => {
           </div>
           <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
         </div>
-        <div className="flex flex-wrap gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
+        <div className="flex flex-wrap gap-9 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
           {map(get(images, type, []), (item: ImageType) => (
             <div
               onClick={() => {
