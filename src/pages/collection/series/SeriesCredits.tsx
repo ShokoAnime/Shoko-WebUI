@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiMagnify } from '@mdi/js';
+import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import cx from 'classnames';
-import { filter, get, map, toNumber } from 'lodash';
+import { get, map, toNumber } from 'lodash';
 
 import CharacterImage from '@/components/CharacterImage';
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
@@ -13,7 +15,9 @@ import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
-const getThumbnailUrl = (item: SeriesCast, mode: string) => {
+type ModeType = 'Character' | 'Staff';
+
+const getThumbnailUrl = (item: SeriesCast, mode: ModeType) => {
   const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
   if (thumbnail === null) return null;
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
@@ -24,10 +28,10 @@ const creditTypeVariations = {
   Staff: 'Staff',
 };
 
-const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: string) => void }) => (
+const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode: ModeType) => void }) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     <div className="flex gap-x-1">
-      {map(creditTypeVariations, (value, key) => (
+      {map(creditTypeVariations, (value, key: ModeType) => (
         <Button
           className={cx(
             'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
@@ -47,17 +51,24 @@ const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: s
 
 const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
 
+const getUniqueDescriptions = (castList: SeriesCast[]) => [...new Set(castList.map(c => c.RoleDetails))];
+
 const SeriesCredits = () => {
   const { seriesId } = useParams();
 
-  const [mode, setMode] = useState('Character');
+  const [mode, setMode] = useState<ModeType>('Character');
   const [search, setSearch] = useState('');
 
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
-  const castByType = {
+  const castByType = useMemo(() => ({
     Character: cast?.filter(credit => isCharacter(credit)) ?? [],
     Staff: cast?.filter(credit => !isCharacter(credit)) ?? [],
-  };
+  }), [cast]);
+
+  const uniqueDescriptions = useMemo(() => ({
+    Character: getUniqueDescriptions(castByType.Character),
+    Staff: getUniqueDescriptions(castByType.Staff),
+  }), [castByType]);
 
   if (!seriesId) return null;
 
@@ -71,16 +82,60 @@ const SeriesCredits = () => {
           fullHeight={false}
           transparent
         >
-          <div className="flex flex-col gap-y-2">
-            <div className="flex w-full text-base font-semibold">Character Search</div>
-            <Input
-              id="search"
-              startIcon={mdiMagnify}
-              type="text"
-              placeholder="Search..."
-              value={search}
-              onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-            />
+          <div className="flex flex-col gap-y-6">
+            <div className="flex flex-col gap-y-2">
+              <span className="flex w-full text-base font-semibold">
+                {mode}
+                &nbsp;Search
+              </span>
+              <Input
+                id="search"
+                startIcon={mdiMagnify}
+                type="text"
+                placeholder="Search..."
+                value={search}
+                inputClassName="px-4 py-3"
+                onChange={event => setSearch(event.target.value)}
+              />
+            </div>
+            <div className="flex flex-col gap-y-2">
+              <div className="text-base font-semibold">Roles</div>
+              <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
+                {map(uniqueDescriptions[mode], desc => (
+                  <div className="flex flex-row justify-between" key={desc}>
+                    <div className="text-base">{desc}</div>
+                    <Checkbox
+                      id={desc}
+                      key={desc}
+                      isChecked
+                      onChange={() => {}}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col gap-y-2">
+              <div className="text-base font-semibold">Quick Actions</div>
+              <div className="flex flex-row justify-between">
+                <div>Change Sort | A-Z</div>
+                <button type="button" aria-label="Start action">
+                  <Icon path={mdiPlayCircleOutline} className="pointer-events-auto text-panel-icon-action" size={1} />
+                </button>
+              </div>
+              <div className="flex flex-row justify-between">
+                <div>Download Missing Data</div>
+                <button type="button" aria-label="Start action">
+                  <Icon path={mdiPlayCircleOutline} className="pointer-events-auto text-panel-icon-action" size={1} />
+                </button>
+              </div>
+            </div>
+            <hr className="border border-panel-border" />
+            <div className="flex flex-row gap-x-3">
+              <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
+              <div className="grow text-base font-semibold">
+                Warning! Possible Spoilers
+              </div>
+            </div>
           </div>
         </ShokoPanel>
       </div>
@@ -90,7 +145,7 @@ const SeriesCredits = () => {
             <div className="text-xl font-semibold">
               Credits |&nbsp;
               <span className="text-panel-text-important">
-                {(mode === 'Character' || mode === 'Staff') ? castByType[mode].length : 0}
+                {castByType[mode]?.length ?? 0}
               </span>
               &nbsp;
               {creditTypeVariations[mode]}
@@ -101,7 +156,7 @@ const SeriesCredits = () => {
 
           <div className="grid grid-cols-3 gap-4">
             {map(
-              filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))),
+              castByType[mode],
               (item, idx) => (
                 <div
                   key={`${mode}-${idx}`}
@@ -121,7 +176,7 @@ const SeriesCredits = () => {
                   </div>
                   <div className="grow text-center">
                     <div className="line-clamp-2 text-base leading-8 xl:text-xl">
-                      {mode === 'Character' ? item.Character?.Name : item.Staff?.Name}
+                      {item[mode]?.Name}
                     </div>
                     {mode === 'Character' && <div className="opacity-65">{item.Staff?.Name}</div>}
                     <div className="mt-2 text-sm">{item.RoleDetails}</div>
