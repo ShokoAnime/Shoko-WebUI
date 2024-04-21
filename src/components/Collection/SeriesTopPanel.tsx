@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 import { mdiTagTextOutline } from '@mdi/js';
@@ -10,9 +10,10 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
-import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
-import useMainPoster from '@/hooks/useMainPoster';
+import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
+import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
 type SeriesSidePanelProps = {
@@ -32,15 +33,30 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
-  const mainPoster = useMainPoster(series);
+  const { WebUI_Settings: { collection: { image: showRandomPoster } } } = useSettingsQuery().data;
+  const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
+  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
+
+  useEffect(() => {
+    if (!imagesQuery.isSuccess) return;
+
+    const allPosters: ImageType[] = imagesQuery.data?.Posters ?? [];
+    if (allPosters.length === 0) return;
+
+    if (showRandomPoster) {
+      setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
+      return;
+    }
+    setPoster(allPosters.find(art => art.Preferred) ?? allPosters[0]);
+  }, [imagesQuery.data, imagesQuery.isSuccess, showRandomPoster]);
 
   return (
     <div className="flex w-full gap-x-6">
       <BackgroundImagePlaceholderDiv
-        image={mainPoster}
+        image={poster}
         className="aspect-[5/6] h-[30.188rem] w-[20.125rem] rounded drop-shadow-md lg:aspect-[4/6]"
       >
         {(series.AniDB?.Restricted ?? false) && (
