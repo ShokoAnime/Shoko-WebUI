@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -13,7 +14,7 @@ const columns: UtilityHeaderType<EpisodeType>[] = [
   {
     id: 'episode',
     name: 'Episode Name',
-    className: 'line-clamp-2 grow basis-0 overflow-hidden',
+    className: 'line-clamp-1 grow basis-0 overflow-hidden',
     item: episode => `${episode.AniDB?.EpisodeNumber} - ${episode.Name}`,
   },
   {
@@ -33,9 +34,10 @@ const columns: UtilityHeaderType<EpisodeType>[] = [
 ];
 
 const EpisodeList = ({ seriesId }: { seriesId: number }) => {
+  const navigate = useNavigate();
   const episodesQuery = useSeriesEpisodesWithMultipleReleases(
     seriesId,
-    { includeDataFrom: ['AniDB'], pageSize: 25 },
+    { includeDataFrom: ['AniDB'], includeAbsolutePaths: true, pageSize: 25 },
     seriesId > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
@@ -58,6 +60,9 @@ const EpisodeList = ({ seriesId }: { seriesId: number }) => {
           isFetchingNextPage={episodesQuery.isFetchingNextPage}
           rows={episodes}
           skipSort
+          handleRowSelect={(id, _) =>
+            navigate('episode', { state: { episode: episodes.filter(episode => episode.IDs.ID === id)[0] } })}
+          rowSelection={{}}
         />
       )}
     </div>

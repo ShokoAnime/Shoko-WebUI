@@ -20,10 +20,10 @@ const columns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
   {
     id: 'series',
     name: 'Series (AniDB ID)',
-    className: 'line-clamp-2 grow basis-0 overflow-hidden',
+    className: 'grow basis-0 overflow-hidden',
     item: series => (
       <div title={series.Name} className="flex items-center gap-x-1">
-        {series.Name}
+        <span className="line-clamp-1">{series.Name}</span>
         <div>
           (
           <span className="text-panel-text-primary">{series.IDs.AniDB}</span>
@@ -67,7 +67,7 @@ const Multiples = () => {
   const seriesQuery = useSeriesWithMultipleReleases({ pageSize: 25 });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const [selectedSeries, setSelectedSeries] = useState(17);
+  const [selectedSeries, setSelectedSeries] = useState(0);
 
   return (
     <div className="flex grow flex-col gap-y-6 overflow-y-auto">
