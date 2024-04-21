@@ -3,6 +3,7 @@ import { mdiFileDocumentMultipleOutline, mdiLoading, mdiOpenInNew, mdiRefresh } 
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
+import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 import EpisodeList from '@/components/Utilities/ReleaseManagement/EpisodeList';
@@ -57,23 +58,48 @@ const columns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
   },
 ];
 
-const Menu = () => (
-  <div className="relative box-border flex grow items-center rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
-    <MenuButton onClick={() => invalidateQueries(['release-management', 'series'])} icon={mdiRefresh} name="Refresh" />
-  </div>
-);
-
 const MultiplesUtil = () => {
-  const seriesQuery = useSeriesWithMultipleReleases({ pageSize: 25 });
+  const [selectedSeries, setSelectedSeries] = useState(0);
+  const [ignoreVariations, setIgnoreVariations] = useState(true);
+  const [onlyFinishedSeries, setOnlyFinishedSeries] = useState(true);
+
+  const seriesQuery = useSeriesWithMultipleReleases({ ignoreVariations, onlyFinishedSeries, pageSize: 25 });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
-  const [selectedSeries, setSelectedSeries] = useState(0);
+  const handleCheckboxChange = (type: 'variations' | 'series', checked: boolean) => {
+    setSelectedSeries(0);
+    if (type === 'variations') setIgnoreVariations(checked);
+    if (type === 'series') setOnlyFinishedSeries(checked);
+  };
 
   return (
     <div className="flex grow flex-col gap-y-6 overflow-y-auto">
       <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
         <div className="flex items-center gap-x-3">
-          <Menu />
+          <div className="relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-3">
+            <MenuButton
+              onClick={() => invalidateQueries(['release-management', 'series'])}
+              icon={mdiRefresh}
+              name="Refresh"
+            />
+
+            <Checkbox
+              id="ignore-variations"
+              isChecked={ignoreVariations}
+              onChange={event => handleCheckboxChange('variations', event.target.checked)}
+              label="Ignore Variations"
+              labelRight
+            />
+
+            <Checkbox
+              id="only-finished-series"
+              isChecked={onlyFinishedSeries}
+              onChange={event => handleCheckboxChange('series', event.target.checked)}
+              label="Only Finished Series"
+              labelRight
+            />
+          </div>
+
           <Button buttonType="primary" className="flex gap-x-2.5 px-4 py-3 font-semibold" disabled={seriesCount === 0}>
             <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
             Auto-Delete Multiples
@@ -109,7 +135,7 @@ const MultiplesUtil = () => {
           )}
         </div>
 
-        <EpisodeList seriesId={selectedSeries} />
+        <EpisodeList seriesId={selectedSeries} ignoreVariations={ignoreVariations} />
       </div>
     </div>
   );

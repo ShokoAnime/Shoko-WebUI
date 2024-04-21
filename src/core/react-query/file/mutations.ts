@@ -67,3 +67,9 @@ export const useRescanFileMutation = () =>
     mutationFn: (fileId: number) => axios.post(`File/${fileId}/Rescan`),
     onSuccess: () => invalidateQueries(['episode', 'files']),
   });
+
+export const useMarkVariationMutation = () =>
+  useMutation({
+    mutationFn: ({ fileId, variation }: MarkVariationRequestType) =>
+      axios.put(`File/${fileId}/Variation`, undefined, { params: { value: variation } }),
+  });

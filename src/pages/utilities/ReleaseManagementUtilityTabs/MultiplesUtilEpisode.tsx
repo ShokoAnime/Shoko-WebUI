@@ -2,13 +2,18 @@ import React, { useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { mdiCloseCircleOutline, mdiFileDocumentMultipleOutline, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy, forEach } from 'lodash';
+import { countBy, forEach, map, toNumber } from 'lodash';
 
 import FileInfo from '@/components/FileInfo';
 import Button from '@/components/Input/Button';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import Title from '@/components/Utilities/ReleaseManagement/Title';
+import { useDeleteFileMutation, useMarkVariationMutation } from '@/core/react-query/file/mutations';
+import { invalidateQueries } from '@/core/react-query/queryClient';
+import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
@@ -26,6 +31,11 @@ const MultiplesUtilEpisode = () => {
 
   if (!locationState) navigate('../release-management', { replace: true });
   const { episode } = locationState;
+
+  const { mutateAsync: deleteFile } = useDeleteFileMutation();
+  const { mutateAsync: markVariation } = useMarkVariationMutation();
+
+  const [operationsPending, setOperationsPending] = useState(false);
 
   const [
     fileOptions,
@@ -47,6 +57,27 @@ const MultiplesUtilEpisode = () => {
 
   const optionCounts = useMemo(() => countBy(fileOptions), [fileOptions]);
 
+  const confirmChanges = useEventCallback(() => {
+    setOperationsPending(true);
+
+    const operations = map(fileOptions, (option, id) => {
+      const file = episode.Files!.find(item => item.ID === toNumber(id))!;
+      if (option === 'delete') return deleteFile({ fileId: file.ID, removeFolder: false });
+      if (option === 'variation' && !file.IsVariation) return markVariation({ fileId: file.ID, variation: true });
+      if (option === 'keep' && file.IsVariation) return markVariation({ fileId: file.ID, variation: false });
+      return null;
+    });
+
+    Promise.all(operations)
+      .then(() => toast.success('Successful!'))
+      .catch(() => toast.error('One or more operations failed!'))
+      .finally(() => {
+        setOperationsPending(false);
+        invalidateQueries(['release-management', 'series']);
+        navigate('../release-management', { replace: true });
+      });
+  });
+
   return (
     <div className="flex grow flex-col gap-y-6 overflow-y-auto">
       <ShokoPanel title={<Title />}>
@@ -55,12 +86,17 @@ const MultiplesUtilEpisode = () => {
           <Button
             buttonType="secondary"
             className="flex gap-x-2.5 px-4 py-3 font-semibold"
-            onClick={() => navigate('../release-management')}
+            onClick={() => navigate(-1)}
           >
             <Icon path={mdiCloseCircleOutline} size={0.8333} />
             Cancel
           </Button>
-          <Button buttonType="primary" className="flex gap-x-2.5 px-4 py-3 font-semibold">
+          <Button
+            buttonType="primary"
+            className="flex gap-x-2.5 px-4 py-3 font-semibold"
+            onClick={confirmChanges}
+            loading={operationsPending}
+          >
             <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
             Confirm
           </Button>
@@ -68,7 +104,7 @@ const MultiplesUtilEpisode = () => {
       </ShokoPanel>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
         <div className="flex justify-between rounded-lg border border-panel-border bg-panel-table-header p-4 font-semibold">
-          {`${episode.AniDB?.EpisodeNumber} - ${episode.Name}`}
+          {`${getEpisodePrefix(episode.AniDB?.Type)}${episode.AniDB?.EpisodeNumber} - ${episode.Name}`}
           <div>
             <span className="text-panel-text-important">{optionCounts.keep ?? 0}</span>
             &nbsp;Kept |&nbsp;
@@ -88,14 +124,13 @@ const MultiplesUtilEpisode = () => {
 
             <div className="flex flex-col gap-y-4">
               <Select
-                className="flex items-center"
                 id="mark-variation"
                 value={fileOptions[file.ID]}
                 onChange={event => handleOptionChange(event, file.ID)}
               >
                 <option value="keep">Will be kept</option>
                 <option value="delete">Will be deleted</option>
-                <option value="variation">Marked as a Variation</option>
+                <option value="variation">Marked as Variation</option>
               </Select>
 
               {file.AniDB?.ID && (

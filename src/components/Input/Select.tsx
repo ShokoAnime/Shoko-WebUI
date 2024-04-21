@@ -43,7 +43,7 @@ function Select(props: Props) {
             id={id}
             value={value}
             onChange={onChange}
-            className="w-full appearance-none rounded-lg border border-panel-border bg-panel-input px-4 py-2 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
+            className="w-full appearance-none rounded-lg border border-panel-border bg-panel-input py-2 pl-4 pr-8 transition ease-in-out focus:shadow-none focus:outline-none focus:ring-2 focus:ring-inset focus:ring-panel-icon-action"
           >
             {children}
           </select>

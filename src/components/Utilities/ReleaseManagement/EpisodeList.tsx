@@ -5,6 +5,7 @@ import { Icon } from '@mdi/react';
 
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useSeriesEpisodesWithMultipleReleases } from '@/core/react-query/release-management/queries';
+import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
@@ -15,7 +16,7 @@ const columns: UtilityHeaderType<EpisodeType>[] = [
     id: 'episode',
     name: 'Episode Name',
     className: 'line-clamp-1 grow basis-0 overflow-hidden',
-    item: episode => `${episode.AniDB?.EpisodeNumber} - ${episode.Name}`,
+    item: episode => `${getEpisodePrefix(episode.AniDB?.Type)}${episode.AniDB?.EpisodeNumber} - ${episode.Name}`,
   },
   {
     id: 'file-count',
@@ -33,11 +34,11 @@ const columns: UtilityHeaderType<EpisodeType>[] = [
   },
 ];
 
-const EpisodeList = ({ seriesId }: { seriesId: number }) => {
+const EpisodeList = ({ ignoreVariations, seriesId }: { ignoreVariations: boolean, seriesId: number }) => {
   const navigate = useNavigate();
   const episodesQuery = useSeriesEpisodesWithMultipleReleases(
     seriesId,
-    { includeDataFrom: ['AniDB'], includeAbsolutePaths: true, pageSize: 25 },
+    { ignoreVariations, includeDataFrom: ['AniDB'], includeAbsolutePaths: true, pageSize: 25 },
     seriesId > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
