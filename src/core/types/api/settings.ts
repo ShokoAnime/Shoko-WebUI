@@ -192,14 +192,16 @@ export type WebUISettingsType = {
       showEpisodeCount: boolean;
       showGroupIndicator: boolean;
       showUnwatchedCount: boolean;
-      showRandomPoster: boolean;
     };
     list: {
       showItemType: boolean;
       showGroupIndicator: boolean;
       showTopTags: boolean;
       showCustomTags: boolean;
+    };
+    image: {
       showRandomPoster: boolean;
+      showRandomFanart: boolean;
     };
   };
   dashboard: {
@@ -219,10 +221,6 @@ export type WebUISettingsType = {
     shokoNewsPostsCount: number;
     recentlyImportedEpisodesCount: number;
     recentlyImportedSeriesCount: number;
-  };
-  series: {
-    showRandomPoster: boolean;
-    showRandomFanart: boolean;
   };
 };
 

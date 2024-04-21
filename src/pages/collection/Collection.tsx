@@ -75,8 +75,7 @@ function Collection() {
 
   const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
-  const showRandomPosterGrid = settings.WebUI_Settings.collection.poster.showRandomPoster;
-  const showRandomPosterList = settings.WebUI_Settings.collection.list.showRandomPoster;
+  const { showRandomPoster } = settings.WebUI_Settings.collection.image;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
@@ -88,10 +87,6 @@ function Collection() {
   const [seriesSearch, setSeriesSearch] = useState('');
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
-  const showRandomPoster = useMemo(
-    () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),
-    [mode, showRandomPosterGrid, showRandomPosterList],
-  );
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {

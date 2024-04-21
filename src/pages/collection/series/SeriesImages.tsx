@@ -86,7 +86,7 @@ const SeriesImages = () => {
   const handleSettingsChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, id } = event.target;
     const updatedSettings = cloneDeep(settings);
-    updatedSettings.WebUI_Settings.series[id] = checked;
+    updatedSettings.WebUI_Settings.collection.image[id] = checked;
     setSettings(updatedSettings);
     patchSettings({ newSettings: updatedSettings });
   };
@@ -94,7 +94,7 @@ const SeriesImages = () => {
   const {
     showRandomFanart,
     showRandomPoster,
-  } = settings.WebUI_Settings.series;
+  } = settings.WebUI_Settings.collection.image;
 
   if (!seriesId) return null;
   if (!isSizeMapType(type)) return null;
