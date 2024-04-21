@@ -106,7 +106,7 @@ const SeriesCredits = () => {
                 id="search"
                 startIcon={mdiMagnify}
                 type="text"
-                placeholder="Search..."
+                placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
                 value={search}
                 inputClassName="px-4 py-3"
                 onChange={event => setSearch(event.target.value)}
@@ -120,7 +120,6 @@ const SeriesCredits = () => {
                     <div className="text-base">{desc}</div>
                     <Checkbox
                       id={desc}
-                      key={desc}
                       isChecked
                       onChange={() => {}}
                     />
