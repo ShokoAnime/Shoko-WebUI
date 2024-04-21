@@ -129,16 +129,24 @@ const SeriesCredits = () => {
             </div>
             <div className="flex flex-col gap-y-2">
               <div className="text-base font-semibold">Quick Actions</div>
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-row justify-between has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-65">
                 <div>Change Sort | A-Z</div>
-                <button type="button" aria-label="Start action">
-                  <Icon path={mdiPlayCircleOutline} className="pointer-events-auto text-panel-icon-action" size={1} />
+                <button type="button" className="group" aria-label="Start action" disabled>
+                  <Icon
+                    path={mdiPlayCircleOutline}
+                    className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                    size={1}
+                  />
                 </button>
               </div>
-              <div className="flex flex-row justify-between">
+              <div className="flex flex-row justify-between has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-65">
                 <div>Download Missing Data</div>
-                <button type="button" aria-label="Start action">
-                  <Icon path={mdiPlayCircleOutline} className="pointer-events-auto text-panel-icon-action" size={1} />
+                <button type="button" className="group" aria-label="Start action" disabled>
+                  <Icon
+                    path={mdiPlayCircleOutline}
+                    className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                    size={1}
+                  />
                 </button>
               </div>
             </div>
