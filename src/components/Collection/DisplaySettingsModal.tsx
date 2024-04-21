@@ -26,10 +26,10 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(settings);
   }, [dispatch, settings]);
 
-  const { list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
+  const { image: imageSettings, list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
 
   const handleSettingChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list', key: string];
+    const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list' | 'image', key: string];
     const tempSettings = produce(newSettings, (draftState) => {
       draftState.WebUI_Settings.collection[type][key] = event.target.checked;
     });
@@ -79,13 +79,6 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
               isChecked={posterSettings.showUnwatchedCount}
               onChange={handleSettingChange}
             />
-            <Checkbox
-              justify
-              label="Random Posters on Load"
-              id="poster-showRandomPoster"
-              isChecked={posterSettings.showRandomPoster}
-              onChange={handleSettingChange}
-            />
           </div>
         </div>
 
@@ -120,11 +113,24 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
               isChecked={listSettings.showCustomTags}
               onChange={handleSettingChange}
             />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-y-4">
+          <div className="border-b border-panel-border pb-4 font-semibold">Image Options</div>
+          <div className="flex flex-col gap-2">
             <Checkbox
               justify
               label="Random Posters on Load"
-              id="list-showRandomPoster"
-              isChecked={listSettings.showRandomPoster}
+              id="image-showRandomPoster"
+              isChecked={imageSettings.showRandomPoster}
+              onChange={handleSettingChange}
+            />
+            <Checkbox
+              justify
+              label="Random Fanart on Load"
+              id="image-showRandomFanart"
+              isChecked={imageSettings.showRandomFanart}
               onChange={handleSettingChange}
             />
           </div>

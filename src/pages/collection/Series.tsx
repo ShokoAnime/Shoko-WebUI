@@ -22,6 +22,7 @@ import SeriesTopPanel from '@/components/Collection/SeriesTopPanel';
 import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -46,6 +47,7 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
 
+  const { WebUI_Settings: { collection: { image: showRandomFanart } } } = useSettingsQuery().data;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
@@ -60,16 +62,19 @@ const Series = () => {
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
 
+    const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+
     const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
-    const defaultFanart = allFanarts.find(fanart => fanart.Preferred);
-    if (defaultFanart) {
-      setFanartUri(`/api/v3/Image/${defaultFanart.Source}/${defaultFanart.Type}/${defaultFanart.ID}`);
-    } else {
-      setFanartUri(`/api/v3/Image/TvDB/Fanart/${allFanarts[0].ID}`);
+    if (showRandomFanart) {
+      setFanartUri(getImagePath(allFanarts[Math.floor(Math.random() * allFanarts.length)]));
+      return;
     }
-  }, [imagesQuery.data, imagesQuery.isSuccess, series]);
+
+    setFanartUri(getImagePath(allFanarts.find(fanart => fanart.Preferred) ?? allFanarts[0]));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imagesQuery.data, imagesQuery.isSuccess, series]); // showRandomFanart is explicitly excluded to avoid toggles causing immediate refreshes
 
   if (seriesQuery.isError) {
     navigate('../');

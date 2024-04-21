@@ -12,5 +12,17 @@ export const webuiSettingsPatches = {
     else webuiSettings.updateChannel = 'Stable';
     return { ...webuiSettings, settingsRevision: 5 };
   },
+  6: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    delete webuiSettings.collection.list.showRandomPoster;
+    delete webuiSettings.collection.poster.showRandomPoster;
+    webuiSettings.collection.image = {
+      showRandomPoster:
+        (oldWebuiSettings?.collection?.list?.showRandomPoster || oldWebuiSettings?.collection?.poster?.showRandomPoster)
+          ?? false,
+      showRandomFanart: false,
+    };
+    return { ...webuiSettings, settingsRevision: 6 };
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

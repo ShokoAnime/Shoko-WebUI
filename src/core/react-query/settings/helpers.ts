@@ -270,13 +270,15 @@ export const initialSettings: SettingsType = {
         showEpisodeCount: true,
         showGroupIndicator: true,
         showUnwatchedCount: true,
-        showRandomPoster: false,
       },
       list: {
         showItemType: true,
         showGroupIndicator: true,
         showTopTags: true,
         showCustomTags: true,
+      },
+      image: {
+        showRandomFanart: false,
         showRandomPoster: false,
       },
     },
