@@ -20,7 +20,7 @@ const Menu = () => (
   </div>
 );
 
-const Episode = () => {
+const MultiplesUtilEpisode = () => {
   const navigate = useNavigate();
   const locationState = useLocation()?.state as { episode: EpisodeType };
 
@@ -122,4 +122,4 @@ const Episode = () => {
   );
 };
 
-export default Episode;
+export default MultiplesUtilEpisode;

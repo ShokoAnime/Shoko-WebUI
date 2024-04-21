@@ -37,8 +37,8 @@ import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import FileSearch from '@/pages/utilities/FileSearch';
-import Episode from '@/pages/utilities/ReleaseManagementUtilityTabs/Episode';
-import Multiples from '@/pages/utilities/ReleaseManagementUtilityTabs/Multiples';
+import MultiplesUtil from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtil';
+import MultiplesUtilEpisode from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtilEpisode';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
@@ -86,8 +86,8 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management" element={<Navigate to="multiples" replace />} />
-            <Route path="release-management/multiples" element={<Multiples />} />
-            <Route path="release-management/multiples/episode" element={<Episode />} />
+            <Route path="release-management/multiples" element={<MultiplesUtil />} />
+            <Route path="release-management/multiples/episode" element={<MultiplesUtilEpisode />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
           </Route>

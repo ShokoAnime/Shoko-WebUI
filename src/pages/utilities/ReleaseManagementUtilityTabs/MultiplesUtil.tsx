@@ -63,7 +63,7 @@ const Menu = () => (
   </div>
 );
 
-const Multiples = () => {
+const MultiplesUtil = () => {
   const seriesQuery = useSeriesWithMultipleReleases({ pageSize: 25 });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
@@ -115,4 +115,4 @@ const Multiples = () => {
   );
 };
 
-export default Multiples;
+export default MultiplesUtil;
