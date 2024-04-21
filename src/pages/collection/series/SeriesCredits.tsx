@@ -1,9 +1,10 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
 import { get, map, toNumber } from 'lodash';
+import { useDebounceValue } from 'usehooks-ts';
 
 import CharacterImage from '@/components/CharacterImage';
 import Button from '@/components/Input/Button';
@@ -59,6 +60,10 @@ const SeriesCredits = () => {
   const [mode, setMode] = useState<ModeType>('Character');
   const [search, setSearch] = useState('');
 
+  const [debouncedSearch] = useDebounceValue(() => search.replaceAll(' ', '').toLowerCase(), 200);
+
+  useEffect(() => setSearch(''), [mode]); // Ensure the search filter is empty on mode change
+
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
   const castByType = useMemo(() => ({
     Character: cast?.filter(credit => isCharacter(credit)) ?? [],
@@ -69,6 +74,16 @@ const SeriesCredits = () => {
     Character: getUniqueDescriptions(castByType.Character),
     Staff: getUniqueDescriptions(castByType.Staff),
   }), [castByType]);
+
+  const filteredCast = useMemo(() => (castByType[mode].filter(p => (
+    debouncedSearch === ''
+    || !!(p?.Character?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
+    || !!(p?.Staff?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
+  )).sort((a, b) => {
+    if (a[mode].Name > b[mode].Name) return 1;
+    if (a[mode].Name < b[mode].Name) return -1;
+    return 0;
+  })), [castByType, mode, debouncedSearch]);
 
   if (!seriesId) return null;
 
@@ -85,8 +100,7 @@ const SeriesCredits = () => {
           <div className="flex flex-col gap-y-6">
             <div className="flex flex-col gap-y-2">
               <span className="flex w-full text-base font-semibold">
-                {mode}
-                &nbsp;Search
+                Name
               </span>
               <Input
                 id="search"
@@ -139,13 +153,21 @@ const SeriesCredits = () => {
           </div>
         </ShokoPanel>
       </div>
-      <div className="flex grow gap-6">
-        <div className="flex flex-col gap-y-4">
+      <div className="flex w-full grow gap-6">
+        <div className="flex grow flex-col gap-y-4">
           <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="text-xl font-semibold">
               Credits |&nbsp;
+              {debouncedSearch !== '' && (
+                <>
+                  <span className="text-panel-text-important">
+                    {filteredCast.length}
+                  </span>
+                  &nbsp;of&nbsp;
+                </>
+              )}
               <span className="text-panel-text-important">
-                {castByType[mode]?.length ?? 0}
+                {castByType[mode].length ?? 0}
               </span>
               &nbsp;
               {creditTypeVariations[mode]}
@@ -156,7 +178,7 @@ const SeriesCredits = () => {
 
           <div className="grid grid-cols-3 gap-4">
             {map(
-              castByType[mode],
+              filteredCast,
               (item, idx) => (
                 <div
                   key={`${mode}-${idx}`}
