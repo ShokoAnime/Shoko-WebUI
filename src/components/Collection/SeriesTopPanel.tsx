@@ -32,7 +32,7 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
-  const { WebUI_Settings: { collection: { image } } } = useSettingsQuery().data;
+  const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;
   const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
@@ -45,12 +45,12 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
     const allPosters: ImageType[] = imagesQuery.data?.Posters ?? [];
     if (allPosters.length === 0) return;
 
-    if (image.showRandomPoster) {
+    if (showRandomPoster) {
       setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
       return;
     }
     setPoster(allPosters.find(art => art.Preferred) ?? allPosters[0]);
-  }, [imagesQuery.data, imagesQuery.isSuccess, image.showRandomPoster]);
+  }, [imagesQuery.data, imagesQuery.isSuccess, showRandomPoster]);
 
   return (
     <div className="flex w-full gap-x-6">
