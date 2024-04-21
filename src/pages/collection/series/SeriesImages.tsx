@@ -28,9 +28,10 @@ const Heading = React.memo((
       {map(imageTypeVariations, value => (
         <Button
           className={cx(
+            'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
             type !== value
-              ? 'bg-panel-toggle-background-alt w-28 text-panel-toggle-text-alt rounded-lg mr-2 py-3 px-4 hover:bg-panel-toggle-background-hover'
-              : '!bg-panel-toggle-background w-28 text-panel-toggle-text rounded-lg mr-2 py-3 px-4',
+              ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
+              : '!bg-panel-toggle-background text-panel-toggle-text',
           )}
           key={value}
           onClick={() => {
@@ -95,12 +96,12 @@ const SeriesImages = () => {
           <InfoLine title="Size" value="-" />
           <Button
             buttonType="primary"
-            className="rounded-lg border border-panel-border p-3 font-semibold"
+            className="rounded-lg border border-panel-border p-2 !font-bold"
             disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
               changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
                 onSuccess: () => {
-                  setSelectedImage({} as ImageType);
+                  resetSelectedImage();
                   toast.success(`Series ${selectedImage.Type} image has been changed.`);
                 },
               });
@@ -143,9 +144,9 @@ const SeriesImages = () => {
                 zoomOnBoolValue={item === selectedImage}
               >
                 {item.Preferred && (
-                  <div className="absolute bottom-3 mx-[5%] flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                  <div className="absolute bottom-3 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                     <Icon path={mdiStarCircleOutline} size={1} />
-                    &nbsp;Series Default
+                    Series Default
                   </div>
                 )}
               </BackgroundImagePlaceholderDiv>
