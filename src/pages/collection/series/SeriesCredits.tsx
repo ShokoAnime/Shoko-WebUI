@@ -83,13 +83,13 @@ const SeriesCredits = () => {
     Staff: getUniqueDescriptions(castByType.Staff),
   }), [castByType]);
 
-  const [descriptionFilter, setDescriptionFilter] = useState<string[]>(uniqueDescriptions[mode]);
+  const [descriptionFilter, setDescriptionFilter] = useState<string[]>([]);
 
   const filteredCast = useMemo(() => (castByType[mode].filter(p => (
     (debouncedSearch === ''
       || !!(cleanString(p?.Character?.Name).match(debouncedSearch))
       || !!(cleanString(p?.Staff?.Name).match(debouncedSearch)))
-    && descriptionFilter.includes(p?.RoleDetails)
+    && !descriptionFilter.includes(p?.RoleDetails)
   )).sort((a, b) => {
     if (a[mode].Name > b[mode].Name) return 1;
     if (a[mode].Name < b[mode].Name) return -1;
@@ -98,16 +98,16 @@ const SeriesCredits = () => {
 
   useEffect(() => {
     setSearch('');
-    setDescriptionFilter(uniqueDescriptions[mode]);
-  }, [mode, uniqueDescriptions]);
+    setDescriptionFilter([]);
+  }, [mode]);
 
   const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked: active, id: description } = event.target;
-    if (active && !(descriptionFilter.includes(description))) {
-      setDescriptionFilter([...descriptionFilter, description]);
-    }
-    if (!active && descriptionFilter.includes(description)) {
+    if (active && descriptionFilter.includes(description)) {
       setDescriptionFilter(descriptionFilter.filter(d => d !== description));
+    }
+    if (!active && !descriptionFilter.includes(description)) {
+      setDescriptionFilter([...descriptionFilter, description]);
     }
   };
 
@@ -147,7 +147,7 @@ const SeriesCredits = () => {
                     label={desc}
                     key={desc}
                     id={desc}
-                    isChecked={descriptionFilter.includes(desc)}
+                    isChecked={!descriptionFilter.includes(desc)}
                     onChange={handleFilterChange}
                   />
                 ))}
@@ -203,7 +203,7 @@ const SeriesCredits = () => {
           <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="text-xl font-semibold">
               Credits |&nbsp;
-              {(debouncedSearch !== '' || descriptionFilter.length !== uniqueDescriptions[mode].length) && (
+              {(debouncedSearch !== '' || descriptionFilter.length !== 0) && (
                 <>
                   <span className="text-panel-text-important">
                     {filteredCast.length}
