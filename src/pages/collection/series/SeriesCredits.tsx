@@ -62,8 +62,6 @@ const SeriesCredits = () => {
 
   const [debouncedSearch] = useDebounceValue(() => search.replaceAll(' ', '').toLowerCase(), 200);
 
-  useEffect(() => setSearch(''), [mode]); // Ensure the search filter is empty on mode change
-
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
   const castByType = useMemo(() => ({
     Character: cast?.filter(credit => isCharacter(credit)) ?? [],
@@ -75,15 +73,32 @@ const SeriesCredits = () => {
     Staff: getUniqueDescriptions(castByType.Staff),
   }), [castByType]);
 
+  const [descriptionFilter, setDescriptionFilter] = useState<string[]>(uniqueDescriptions[mode]);
+
   const filteredCast = useMemo(() => (castByType[mode].filter(p => (
     debouncedSearch === ''
     || !!(p?.Character?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
     || !!(p?.Staff?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
-  )).sort((a, b) => {
+  )).filter(p => descriptionFilter.includes(p?.RoleDetails)).sort((a, b) => {
     if (a[mode].Name > b[mode].Name) return 1;
     if (a[mode].Name < b[mode].Name) return -1;
     return 0;
-  })), [castByType, mode, debouncedSearch]);
+  })), [castByType, mode, debouncedSearch, descriptionFilter]);
+
+  useEffect(() => {
+    setSearch('');
+    setDescriptionFilter(uniqueDescriptions[mode]);
+  }, [mode, uniqueDescriptions]);
+
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { checked: active, id: description } = event.target;
+    if (active && !(descriptionFilter.includes(description))) {
+      setDescriptionFilter([...descriptionFilter, description]);
+    }
+    if (!active && descriptionFilter.includes(description)) {
+      setDescriptionFilter(descriptionFilter.filter(d => d !== description));
+    }
+  };
 
   if (!seriesId) return null;
 
@@ -120,8 +135,8 @@ const SeriesCredits = () => {
                     <div className="text-base">{desc}</div>
                     <Checkbox
                       id={desc}
-                      isChecked
-                      onChange={() => {}}
+                      isChecked={descriptionFilter.includes(desc)}
+                      onChange={handleFilterChange}
                     />
                   </div>
                 ))}
@@ -165,7 +180,7 @@ const SeriesCredits = () => {
           <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="text-xl font-semibold">
               Credits |&nbsp;
-              {debouncedSearch !== '' && (
+              {(debouncedSearch !== '' || descriptionFilter.length !== uniqueDescriptions[mode].length) && (
                 <>
                   <span className="text-panel-text-important">
                     {filteredCast.length}
@@ -204,7 +219,7 @@ const SeriesCredits = () => {
                     />
                   </div>
                   <div className="grow text-center">
-                    <div className="line-clamp-2 text-base leading-8 xl:text-xl">
+                    <div className="line-clamp-2 text-base leading-8 xl:text-xl" title={item[mode]?.Name}>
                       {item[mode]?.Name}
                     </div>
                     {mode === 'Character' && <div className="opacity-65">{item.Staff?.Name}</div>}
