@@ -52,6 +52,8 @@ const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode:
 
 const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
 
+const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
+
 const getUniqueDescriptions = (castList: SeriesCast[]) => [...new Set(castList.map(c => c.RoleDetails))];
 
 const SeriesCredits = () => {
@@ -60,7 +62,7 @@ const SeriesCredits = () => {
   const [mode, setMode] = useState<ModeType>('Character');
   const [search, setSearch] = useState('');
 
-  const [debouncedSearch] = useDebounceValue(() => search.replaceAll(' ', '').toLowerCase(), 200);
+  const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
 
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
   const castByType = useMemo(() => ({
@@ -76,10 +78,11 @@ const SeriesCredits = () => {
   const [descriptionFilter, setDescriptionFilter] = useState<string[]>(uniqueDescriptions[mode]);
 
   const filteredCast = useMemo(() => (castByType[mode].filter(p => (
-    debouncedSearch === ''
-    || !!(p?.Character?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
-    || !!(p?.Staff?.Name?.replaceAll(' ', '')?.toLowerCase()?.match(debouncedSearch))
-  )).filter(p => descriptionFilter.includes(p?.RoleDetails)).sort((a, b) => {
+    (debouncedSearch === ''
+      || !!(cleanString(p?.Character?.Name).match(debouncedSearch))
+      || !!(cleanString(p?.Staff?.Name).match(debouncedSearch)))
+    && descriptionFilter.includes(p?.RoleDetails)
+  )).sort((a, b) => {
     if (a[mode].Name > b[mode].Name) return 1;
     if (a[mode].Name < b[mode].Name) return -1;
     return 0;
