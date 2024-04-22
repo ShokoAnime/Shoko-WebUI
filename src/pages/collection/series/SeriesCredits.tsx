@@ -11,6 +11,11 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
+import {
+  useRefreshSeriesAniDBInfoMutation,
+  useRefreshSeriesTvdbInfoMutatation,
+} from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -58,6 +63,9 @@ const getUniqueDescriptions = (castList: SeriesCast[]) => [...new Set(castList.m
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
+
+  const { isPending: pendingRefreshAniDb, mutate: refreshAniDb } = useRefreshSeriesAniDBInfoMutation();
+  const { isPending: pendingRefreshTvDb, mutate: refreshTvDb } = useRefreshSeriesTvdbInfoMutatation();
 
   const [mode, setMode] = useState<ModeType>('Character');
   const [search, setSearch] = useState('');
@@ -134,39 +142,51 @@ const SeriesCredits = () => {
               <div className="text-base font-semibold">Roles</div>
               <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
                 {map(uniqueDescriptions[mode], desc => (
-                  <div className="flex flex-row justify-between" key={desc}>
-                    <div className="text-base">{desc}</div>
-                    <Checkbox
-                      id={desc}
-                      isChecked={descriptionFilter.includes(desc)}
-                      onChange={handleFilterChange}
-                    />
-                  </div>
+                  <Checkbox
+                    justify
+                    label={desc}
+                    key={desc}
+                    id={desc}
+                    isChecked={descriptionFilter.includes(desc)}
+                    onChange={handleFilterChange}
+                  />
                 ))}
               </div>
             </div>
             <div className="flex flex-col gap-y-2">
               <div className="text-base font-semibold">Quick Actions</div>
-              <div className="flex flex-row justify-between has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-65">
-                <div>Change Sort | A-Z</div>
-                <button type="button" className="group" aria-label="Start action" disabled>
-                  <Icon
-                    path={mdiPlayCircleOutline}
-                    className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                    size={1}
-                  />
-                </button>
-              </div>
-              <div className="flex flex-row justify-between has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-65">
-                <div>Download Missing Data</div>
-                <button type="button" className="group" aria-label="Start action" disabled>
-                  <Icon
-                    path={mdiPlayCircleOutline}
-                    className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                    size={1}
-                  />
-                </button>
-              </div>
+              <button
+                type="button"
+                className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+                onClick={() =>
+                  refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
+                    onSuccess: () => toast.success('AniDB refresh queued!'),
+                  })}
+                disabled={pendingRefreshAniDb}
+              >
+                Force refresh: AniDB
+                <Icon
+                  path={mdiPlayCircleOutline}
+                  className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                  size={1}
+                />
+              </button>
+              <button
+                type="button"
+                className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+                onClick={() =>
+                  refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
+                    onSuccess: () => toast.success('TvDB refresh queued!'),
+                  })}
+                disabled={pendingRefreshTvDb}
+              >
+                Force refresh: TVDB
+                <Icon
+                  path={mdiPlayCircleOutline}
+                  className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                  size={1}
+                />
+              </button>
             </div>
             <hr className="border border-panel-border" />
             <div className="flex flex-row gap-x-3">
