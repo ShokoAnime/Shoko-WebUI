@@ -18,18 +18,18 @@ type Props = {
 };
 
 const tabs = {
-  // name: 'Name',
   // group: 'Group',
   // stats: 'Personal Stats',
   update_actions: 'Update Actions',
+  name: 'Name',
   file_actions: 'File Actions',
   delete_actions: 'Delete Actions',
 };
 
 const renderTab = (activeTab: string, seriesId: number) => {
   switch (activeTab) {
-    case 'update_actions':
-      return <UpdateActionsTab seriesId={seriesId} />;
+    case 'name':
+      return <NameTab seriesId={seriesId} />;
     case 'file_actions':
       return <FileActionsTab seriesId={seriesId} />;
     case 'delete_actions':
@@ -38,9 +38,9 @@ const renderTab = (activeTab: string, seriesId: number) => {
     //   return <GroupTab seriesId={seriesId} />;
     // case 'stats':
     //   return <PersonalStats />;
-    case 'name':
+    case 'update_actions':
     default:
-      return <NameTab seriesId={seriesId} />;
+      return <UpdateActionsTab seriesId={seriesId} />;
   }
 };
 
@@ -70,7 +70,7 @@ const EditSeriesModal = (props: Props) => {
           </div>
         </div>
         <div className="border-r border-panel-border" />
-        <div>
+        <div className="grow">
           {renderTab(activeTab, seriesId)}
         </div>
       </div>

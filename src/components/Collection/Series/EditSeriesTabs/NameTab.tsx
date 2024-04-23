@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
-import cx from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
+import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { map } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
+import toast from '@/components/Toast';
+import { useOverrideSeriesTitleMutation } from '@/core/react-query/series/mutations';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
-// import { useLazyGetSeriesInfiniteQuery } from '@/core/rtkQuery/splitV3Api/seriesApi';
 
-import type { SeriesTitleType } from '@/core/types/api/series';
+import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   seriesId: number;
@@ -14,112 +17,91 @@ type Props = {
 
 const NameTab = ({ seriesId }: Props) => {
   const [name, setName] = useState('');
-  const [search, setSearch] = useState('');
-  const [nameEditable, setNameEditable] = useState(false);
+  const [nameEditable, toggleNameEditable] = useToggle(false);
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
+  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
 
-  // TODO: Needs an actual endpoint to get series names instead of getting all series
-  // const [fetchSeries, seriesResults] = useLazyGetSeriesInfiniteQuery();
-  // const getAniDbSeries = useMemo((): SeriesTitleType[] => {
-  //   const pages = seriesResults.data?.pages;
-  //   if (!pages) return [];
-  //
-  //   const keys = Object.keys(pages);
-  //   if (!keys?.length) return [];
-  //
-  //   return pages[1];
-  // }, [seriesResults]);
-
-  // const searchSeries = useMemo(() =>
-  //   debounce(async () => {
-  //     await fetchSeries({
-  //       startsWith: search,
-  //       pageSize: 5,
-  //     });
-  //   }, 250), [search, fetchSeries]);
+  const { mutate: overrideTitle } = useOverrideSeriesTitleMutation();
 
   useEffect(() => {
-    setName(seriesQuery.data?.Name ?? '');
-  }, [seriesQuery.data?.Name]);
+    setName(series.Name ?? '');
+  }, [series.Name]);
 
-  // useEffect(() => {
-  //   if (!search) return;
-  //   searchSeries()?.then()?.catch(console.error);
-  // }, [search, searchSeries]);
-
-  const renderTitle = (title: SeriesTitleType) => (
-    <div
-      className="flex cursor-pointer justify-between"
-      key={title.Language}
-      onClick={() => setName(title.Name)}
-    >
-      <div>{title.Name}</div>
-      {title.Language}
-    </div>
-  );
-
-  const getNameInputIcons = () => {
+  const nameInputIcons = useMemo(() => {
     if (!nameEditable) {
       return [{
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
-        onClick: () => setNameEditable(_ => true),
+        onClick: toggleNameEditable,
       }];
     }
 
-    return [{
-      icon: mdiCloseCircleOutline,
-      className: 'text-red-500',
-      onClick: () => setName(_ => ''),
-    }, {
-      icon: mdiCheckUnderlineCircleOutline,
-      className: 'text-panel-text-primary',
-      onClick: () => {}, // TODO: Need endpoint to update series
-    }];
-  };
+    return [
+      {
+        icon: mdiCloseCircleOutline,
+        className: 'text-red-500',
+        onClick: toggleNameEditable,
+      },
+      {
+        icon: mdiCheckUnderlineCircleOutline,
+        className: 'text-panel-text-primary',
+        onClick: () =>
+          overrideTitle({ seriesId: series.IDs.ID, Title: name }, {
+            onSuccess: () => {
+              toast.success('Name updated successfully!');
+              toggleNameEditable();
+            },
+            onError: () => toast.error('Name could not be updated!'),
+          }),
+      },
+    ];
+  }, [name, nameEditable, overrideTitle, series.IDs.ID, toggleNameEditable]);
 
   return (
-    <div className="flex flex-col">
-      <Input
-        id="name"
-        type="text"
-        onChange={e => setName(e.target.value)}
-        value={name}
-        label="Name"
-        className="mb-4"
-        endIcons={getNameInputIcons()}
-        disabled={!nameEditable}
-      />
-      <Input
-        id="search"
-        type="text"
-        value={search}
-        onChange={e => setSearch(e.target.value)}
-        startIcon={mdiMagnify}
-        placeholder="Name Search..."
-        disabled={!nameEditable}
-        className={cx(!nameEditable && 'invisible')}
-      />
-      <div
-        className={cx(
-          'mt-1 flex flex-col gap-y-2.5 rounded-lg border border-panel-border bg-panel-background-alt p-4 overflow-hidden',
-          !nameEditable && 'invisible',
-        )}
-      >
-        {!search && seriesQuery.data?.AniDB?.Titles.reduce((acc, title) => {
-          if (!search) {
-            acc.push(renderTitle(title));
-            return acc;
-          }
-          if (title.Name.toLowerCase().includes(search.toLowerCase())) {
-            acc.push(renderTitle(title));
-            return acc;
-          }
-          return acc;
-        }, [] as React.ReactNode[])}
-        {/* {search && getAniDbSeries.map(title => renderTitle(title))} */}
-      </div>
+    <div className="flex h-full flex-col">
+      {seriesQuery.isFetching && (
+        <div className="m-auto text-panel-text-primary">
+          <Icon path={mdiLoading} size={3} spin />
+        </div>
+      )}
+
+      {seriesQuery.isError && (
+        <div className="m-auto text-lg font-semibold text-panel-text-danger">
+          Series data could not be loaded!
+        </div>
+      )}
+
+      {seriesQuery.isSuccess && (
+        <>
+          <Input
+            id="name"
+            type="text"
+            onChange={e => setName(e.target.value)}
+            value={name}
+            label="Name"
+            className="mb-4"
+            endIcons={nameInputIcons}
+            disabled={!nameEditable}
+          />
+          {nameEditable && (
+            <div className="flex overflow-y-auto rounded-lg border border-panel-border bg-panel-background-alt p-4">
+              <div className="flex grow flex-col gap-y-2.5 overflow-y-auto pr-4">
+                {map(series.AniDB?.Titles, title => (
+                  <div
+                    className="flex cursor-pointer justify-between"
+                    key={title.Language}
+                    onClick={() => setName(title.Name)}
+                  >
+                    <div>{title.Name}</div>
+                    {title.Language}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

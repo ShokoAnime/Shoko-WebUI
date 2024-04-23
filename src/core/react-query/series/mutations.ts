@@ -50,6 +50,15 @@ export const useGetSeriesAniDBMutation = () =>
     mutationFn: (anidbId: number) => axios.get(`Series/AniDB/${anidbId}`),
   });
 
+export const useOverrideSeriesTitleMutation = () =>
+  useMutation({
+    mutationFn: ({ seriesId, ...data }: { seriesId: number, Title: string }) =>
+      axios.post(`Series/${seriesId}/OverrideTitle`, data),
+    onSuccess: () => {
+      invalidateQueries(['series', 'single']);
+    },
+  });
+
 export const useRefreshAniDBSeriesMutation = () =>
   useMutation<boolean, unknown, RefreshAniDBSeriesRequestType>({
     mutationFn: ({ anidbID, ...params }: RefreshAniDBSeriesRequestType) =>
