@@ -26,20 +26,22 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
 
   const {
     isPending: isRefreshPending,
-    mutateAsync: refreshSeries,
+    mutate: refreshSeries,
     variables: refreshParams,
   } = useRefreshAniDBSeriesMutation();
 
-  const createSeries = async (anidbId: number) => {
-    try {
-      await refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true });
-      toast.success('Series added successfully!');
-      invalidateQueries(['series', 'without-files']);
-      onClose();
-    } catch (error) {
-      console.error(error);
-      toast.error('Failed to add series! Unable to create series entry.');
-    }
+  const createSeries = (anidbId: number) => {
+    refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true }, {
+      onSuccess: () => {
+        toast.success('Series added successfully!');
+        invalidateQueries(['series', 'without-files']);
+        onClose();
+      },
+      onError: (error) => {
+        console.error(error);
+        toast.error('Failed to add series! Unable to create series entry.');
+      },
+    });
   };
 
   return (
@@ -85,9 +87,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
                         isRefreshPending && 'pointer-events-none',
                         isRefreshPending && result.ID !== refreshParams?.anidbID && 'opacity-50',
                       )}
-                      onClick={() => {
-                        createSeries(result.ID).catch(console.error);
-                      }}
+                      onClick={() => createSeries(result.ID)}
                     >
                       <div className="line-clamp-1">{result.Title}</div>
                       {result.ID === refreshParams?.anidbID
