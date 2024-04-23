@@ -17,6 +17,7 @@ import {
   useRefreshSeriesTvdbInfoMutatation,
 } from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
@@ -33,6 +34,30 @@ const creditTypeVariations = {
   Character: 'Characters',
   Staff: 'Staff',
 };
+
+const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: ModeType }) => (
+  <div className="flex w-[29.5rem] flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+    <div className="z-10 flex gap-x-2">
+      {mode === 'Character' && (
+        <CharacterImage
+          imageSrc={getThumbnailUrl(cast, 'Character')}
+          className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
+        />
+      )}
+      <CharacterImage
+        imageSrc={getThumbnailUrl(cast, 'Staff')}
+        className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
+      />
+    </div>
+    <div className="grow text-center">
+      <div className="line-clamp-2 text-base leading-8 xl:text-xl" title={cast[mode]?.Name}>
+        {cast[mode]?.Name}
+      </div>
+      {mode === 'Character' && <div className="opacity-65">{cast.Staff?.Name}</div>}
+      <div className="mt-2 text-sm">{cast.RoleDetails}</div>
+    </div>
+  </div>
+));
 
 const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode: ModeType) => void }) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
@@ -101,7 +126,7 @@ const SeriesCredits = () => {
     setDescriptionFilter([]);
   }, [mode]);
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked: active, id: description } = event.target;
     if (active && descriptionFilter.includes(description)) {
       setDescriptionFilter(descriptionFilter.filter(d => d !== description));
@@ -109,7 +134,7 @@ const SeriesCredits = () => {
     if (!active && !descriptionFilter.includes(description)) {
       setDescriptionFilter([...descriptionFilter, description]);
     }
-  };
+  });
 
   if (!seriesId) return null;
 
@@ -224,32 +249,7 @@ const SeriesCredits = () => {
           <div className="grid grid-cols-3 gap-4">
             {map(
               filteredCast,
-              (item, idx) => (
-                <div
-                  key={`${mode}-${idx}`}
-                  className="flex w-[29.5rem] flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold"
-                >
-                  <div className="z-10 flex gap-x-2">
-                    {mode === 'Character' && (
-                      <CharacterImage
-                        imageSrc={getThumbnailUrl(item, 'Character')}
-                        className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
-                      />
-                    )}
-                    <CharacterImage
-                      imageSrc={getThumbnailUrl(item, 'Staff')}
-                      className="relative h-[7.75rem] w-[6.063rem] rounded-lg"
-                    />
-                  </div>
-                  <div className="grow text-center">
-                    <div className="line-clamp-2 text-base leading-8 xl:text-xl" title={item[mode]?.Name}>
-                      {item[mode]?.Name}
-                    </div>
-                    {mode === 'Character' && <div className="opacity-65">{item.Staff?.Name}</div>}
-                    <div className="mt-2 text-sm">{item.RoleDetails}</div>
-                  </div>
-                </div>
-              ),
+              (item, idx) => <CreditsStaffPanel cast={item} mode={mode} key={`${mode}-${idx}`} />,
             )}
           </div>
         </div>
