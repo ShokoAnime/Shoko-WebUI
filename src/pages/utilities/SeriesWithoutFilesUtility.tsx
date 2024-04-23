@@ -1,12 +1,23 @@
 import React from 'react';
-import { mdiCloseCircleOutline, mdiLoading, mdiMinusCircleOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
+import { Link } from 'react-router-dom';
+import {
+  mdiCloseCircleOutline,
+  mdiLoading,
+  mdiMinusCircleOutline,
+  mdiOpenInNew,
+  mdiPlusCircleOutline,
+  mdiRefresh,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
+import AddSeriesModal from '@/components/Utilities/SeriesWithoutFiles/AddSeriesModal';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { invalidateQueries } from '@/core/react-query/queryClient';
@@ -23,28 +34,43 @@ import type { Updater } from 'use-immer';
 const columns: UtilityHeaderType<SeriesType>[] = [
   {
     id: 'id',
-    name: 'AniDB ID',
+    name: 'Shoko ID',
     className: 'w-32',
     item: series => (
-      <div className="flex justify-between">
-        {series.IDs.AniDB}
-        <a
-          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="mr-6 cursor-pointer text-panel-text-primary"
-          aria-label="Open AniDB series page"
-        >
-          <Icon path={mdiOpenInNew} size={1} />
-        </a>
-      </div>
+      <Link
+        to={`/webui/collection/series/${series.IDs.ID}`}
+        className="flex gap-x-2 text-panel-text-primary"
+      >
+        {series.IDs.ID}
+        <Icon path={mdiOpenInNew} size={1} />
+      </Link>
     ),
   },
   {
     id: 'name',
     name: 'Name',
-    className: 'line-clamp-2 grow basis-0 overflow-hidden',
-    item: series => <div title={series.Name}>{series.Name}</div>,
+    className: 'grow basis-0 overflow-hidden',
+    item: series => (
+      <div title={series.Name} className="line-clamp-2 flex gap-x-1">
+        {series.Name}
+        <a
+          href={`https://anidb.net/anime/${series.IDs.AniDB}`}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="flex gap-x-1 font-semibold"
+          aria-label="Open AniDB series page"
+        >
+          <div>
+            (
+            <span className="text-panel-text-primary">{series.IDs.AniDB}</span>
+            )
+          </div>
+          <div className="text-panel-text-primary">
+            <Icon path={mdiOpenInNew} size={1} />
+          </div>
+        </a>
+      </div>
+    ),
   },
   {
     id: 'created',
@@ -56,6 +82,8 @@ const columns: UtilityHeaderType<SeriesType>[] = [
 
 const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Record<number, boolean>> }) => {
   const { selectedRows, setSelectedRows } = props;
+
+  const [showAddSeriesModal, toggleAddSeriesModal] = useToggle(false);
 
   const { mutateAsync: deleteSeries } = useDeleteSeriesMutation();
 
@@ -75,27 +103,41 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
   };
 
   return (
-    <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
-        <MenuButton
-          onClick={() => {
-            setSelectedRows([]);
-            invalidateQueries(['series-without-files']);
-          }}
-          icon={mdiRefresh}
-          name="Refresh"
-        />
-      </TransitionDiv>
-      <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-        <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
-        <MenuButton
-          onClick={() => setSelectedRows([])}
-          icon={mdiCloseCircleOutline}
-          name="Cancel Selection"
-          highlight
-        />
-      </TransitionDiv>
-    </div>
+    <>
+      <div className="flex items-center gap-x-3">
+        <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+          <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+            <MenuButton
+              onClick={() => {
+                setSelectedRows([]);
+                invalidateQueries(['series', 'without-files']);
+              }}
+              icon={mdiRefresh}
+              name="Refresh"
+            />
+          </TransitionDiv>
+          <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
+            <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
+            <MenuButton
+              onClick={() => setSelectedRows([])}
+              icon={mdiCloseCircleOutline}
+              name="Cancel Selection"
+              highlight
+            />
+          </TransitionDiv>
+        </div>
+        <Button
+          buttonType="primary"
+          buttonSize="normal"
+          className="flex flex-row flex-wrap items-center gap-x-2 py-3"
+          onClick={toggleAddSeriesModal}
+        >
+          <Icon path={mdiPlusCircleOutline} size={1} />
+          Add Series
+        </Button>
+      </div>
+      <AddSeriesModal show={showAddSeriesModal} onClose={toggleAddSeriesModal} />
+    </>
   );
 };
 
@@ -117,19 +159,7 @@ function SeriesWithoutFilesUtility() {
           title="Series Without Files"
           options={<ItemCount count={seriesCount} selected={selectedRows?.length} />}
         >
-          <div className="flex items-center gap-x-3">
-            {/* Endpoint doesn't have search */}
-            {/* <Input */}
-            {/*   type="text" */}
-            {/*   placeholder="Search..." */}
-            {/*   startIcon={mdiMagnify} */}
-            {/*   id="search" */}
-            {/*   value="" */}
-            {/*   onChange={() => {}} */}
-            {/*   inputClassName="px-4 py-3" */}
-            {/* /> */}
-            <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
-          </div>
+          <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
         </ShokoPanel>
       </div>
 
