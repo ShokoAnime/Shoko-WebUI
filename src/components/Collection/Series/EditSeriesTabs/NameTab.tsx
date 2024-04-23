@@ -86,15 +86,15 @@ const NameTab = ({ seriesId }: Props) => {
           />
           {nameEditable && (
             <div className="flex overflow-y-auto rounded-lg border border-panel-border bg-panel-background-alt p-4">
-              <div className="flex grow flex-col gap-y-2.5 overflow-y-auto pr-4">
+              <div className="flex grow flex-col overflow-y-auto pr-4">
                 {map(series.AniDB?.Titles, title => (
                   <div
-                    className="flex cursor-pointer justify-between"
+                    className="flex cursor-pointer justify-between border-b-2 border-panel-border py-2 first:pt-0 last:border-none"
                     key={title.Language}
                     onClick={() => setName(title.Name)}
                   >
                     <div>{title.Name}</div>
-                    {title.Language}
+                    <div className="shrink-0 text-right">{title.Language}</div>
                   </div>
                 ))}
               </div>
