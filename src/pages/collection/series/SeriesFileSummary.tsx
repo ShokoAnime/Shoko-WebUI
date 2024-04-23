@@ -2,14 +2,17 @@ import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { find, forEach, get, map, omit, toNumber } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
-import Select from '@/components/Input/Select';
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
-import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
+import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType, WebuiSeriesFileSummaryMissingEpisodeType } from '@/core/types/api/webui';
+
+type ModeType = 'Series' | 'Missing';
 
 const HeaderFragment = ({ range, title }) => {
   if (!title || !range) return null;
@@ -134,12 +137,120 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
   );
 });
 
+type FileSelectionHeaderProps = {
+  mode: ModeType,
+  setMode: (mode: ModeType) => void,
+  groups: WebuiSeriesFileSummaryGroupType[] | undefined
+};
+const FilesSelectionHeader = React.memo(({ groups, mode, setMode }: FileSelectionHeaderProps) => (
+  <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+    <div className="flex gap-x-2 text-xl font-semibold">
+      {mode}
+      &nbsp;Files |
+      <span className="text-panel-text-important">{groups?.length ?? 0}</span>
+      {groups?.length === 1 ? 'Entry' : 'Entries'}
+    </div>
+    <div className="flex items-center gap-x-1 text-xl font-semibold">
+      {['Series', 'Missing'].map((key: ModeType) => (
+        <Button
+          className={cx(
+            'w-[150px] rounded-lg ml-2 py-3 px-4 !font-normal !text-base',
+            mode !== key
+              ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
+              : '!bg-panel-toggle-background text-panel-toggle-text',
+          )}
+          key={key}
+          onClick={() => setMode(key)}
+        >
+          {key}
+          &nbsp;Files
+        </Button>
+      ))}
+    </div>
+  </div>
+));
+
+type FileOverviewProps = {
+  TotalEpisodeSize: number,
+  SourceByType: {
+    type: string,
+    count: number,
+    source: string,
+  }[];
+  Groups: string,
+};
+const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) => (
+  <ShokoPanel
+    title="Files Overview"
+    className="w-400 shrink-0"
+    contentClassName="gap-y-6 !grow-0"
+    transparent
+  >
+    <div className="flex w-full flex-col gap-y-6">
+      {map(summary.SourceByType, ({ count, source, type }, index) => (
+        <React.Fragment key={`${type}-${index}`}>
+          <div className="flex flex-col gap-y-1">
+            <span className="font-semibold">
+              {type}
+            &nbsp;Count
+            </span>
+            <span className="font-normal">{count}</span>
+          </div>
+          <div className="flex flex-col gap-y-1">
+            <span className="font-semibold">
+              {type}
+            &nbsp;Source
+            </span>
+            <span className="font-normal">{source}</span>
+          </div>
+        </React.Fragment>
+    ))}
+      <div className="flex flex-col gap-y-1">
+        <span className="font-semibold">Total File Size</span>
+        {prettyBytes(summary.TotalEpisodeSize, { binary: true })}
+      </div>
+    </div>
+    <div className="flex w-full">
+      <div className="flex flex-col gap-y-1">
+        <span className="font-semibold">Groups</span>
+        {summary.Groups || 'N/A'}
+      </div>
+    </div>
+  </ShokoPanel>
+));
+
+const Episode = React.memo(({ episode }: { episode: WebuiSeriesFileSummaryMissingEpisodeType }) => (
+  <div className="grid grid-cols-6 gap-x-12" key={episode.ID}>
+    <div>
+      {episode.Type}
+    &nbsp;
+      {episode.EpisodeNumber}
+    </div>
+    <div className="col-span-4">
+      {find(episode.Titles, ['Language', 'en'])?.Name ?? '--'}
+    &nbsp;(
+      <a
+        className="inline-flex items-center gap-x-1 text-panel-text-primary"
+        href={`https://anidb.net/episode/${episode.ID}`}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        {episode.ID}
+        <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
+      </a>
+      )
+    </div>
+    <div>{episode.AirDate}</div>
+  </div>
+));
+
 const SeriesFileSummary = () => {
   const { seriesId } = useParams();
 
-  const [groupBy, setGroupBy] = useState('GroupName,FileVersion,FileSource');
-  const fileSummaryQuery = useSeriesFileSummaryQuery(toNumber(seriesId!), { groupBy }, !!seriesId);
-  const fileSummary = fileSummaryQuery.data;
+  const [mode, setMode] = useState<ModeType>('Series');
+
+  const forceGrouping = { groupBy: 'GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolution,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount' };
+  const fileSummary = useSeriesFileSummaryQuery(toNumber(seriesId!), forceGrouping, !!seriesId).data;
 
   const summary = useMemo(() => {
     let TotalEpisodeSize = 0;
@@ -171,110 +282,31 @@ const SeriesFileSummary = () => {
     };
   }, [fileSummary]);
 
+  const missingEpisodes = useMemo(() => (get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
+    <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
+      {map(fileSummary?.MissingEpisodes, episode => (<Episode episode={episode} />))}
+    </ShokoPanel>
+  )), [fileSummary]);
+
   if (!seriesId) return null;
 
   return (
-    <>
-      <div className="flex flex-col items-center gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-        <div className="flex w-full">
-          <div className="flex w-full text-xl font-semibold">Files Overview</div>
-          <div className="flex w-full max-w-[17rem] items-center gap-x-4">
-            <div className="w-auto">Group By</div>
-            <Select
-              id="episodeType"
-              value={groupBy}
-              onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setGroupBy(event.target.value)}
-            >
-              <option value="">Nothing</option>
-              <option value="GroupName">+ Release Group</option>
-              <option value="GroupName,FileVersion,FileSource">+ File Source</option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation">+ Location</option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion">
-                + Video
-              </option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount">
-                + Audio
-              </option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount">
-                + Subtitles
-              </option>
-            </Select>
-          </div>
-        </div>
-        <div className="flex w-full justify-between">
-          {map(summary.SourceByType, ({ count, source, type }, index) => (
-            <React.Fragment key={`${type}-${index}`}>
-              <div className="flex flex-col gap-y-1">
-                <span className="font-semibold">
-                  {type}
-                  &nbsp;Count
-                </span>
-                {count}
-              </div>
-              <div className="flex flex-col gap-y-1">
-                <span className="font-semibold">
-                  {type}
-                  &nbsp;Source
-                </span>
-                {source}
-              </div>
-            </React.Fragment>
-          ))}
-          <div className="flex flex-col gap-y-1">
-            <span className="font-semibold">Total File Size</span>
-            {prettyBytes(summary.TotalEpisodeSize, { binary: true })}
-          </div>
-        </div>
-        <div className="flex w-full">
-          <div className="flex flex-col gap-y-1">
-            <span className="font-semibold">Groups</span>
-            {summary.Groups || 'N/A'}
-          </div>
-        </div>
-      </div>
+    <div className="flex w-full gap-x-6">
+      <FileOverview summary={summary} />
 
-      <div className="flex gap-x-6">
+      <div className="flex w-full flex-col gap-y-6">
+        <FilesSelectionHeader
+          mode={mode}
+          setMode={setMode}
+          groups={fileSummary?.Groups}
+        />
+
         <div className="flex grow flex-col gap-y-6">
-          <div className="flex items-center justify-between rounded border border-panel-border bg-panel-background-transparent px-6 py-5 text-xl font-semibold">
-            Files Breakdown
-            <div>
-              <span className="text-panel-text-important">{fileSummary?.Groups.length ?? 0}</span>
-              &nbsp;
-              {fileSummary?.Groups.length === 1 ? 'Entry' : 'Entries'}
-            </div>
-          </div>
-          {map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
-          {get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
-            <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
-              {map(fileSummary?.MissingEpisodes, episode => (
-                <div className="grid grid-cols-6 gap-x-12" key={episode.ID}>
-                  <div>
-                    {episode.Type}
-                    &nbsp;
-                    {episode.EpisodeNumber}
-                  </div>
-                  <div className="col-span-4">
-                    {find(episode.Titles, ['Language', 'en'])?.Name ?? '--'}
-                    &nbsp;(
-                    <a
-                      className="inline-flex items-center gap-x-1 text-panel-text-primary"
-                      href={`https://anidb.net/episode/${episode.ID}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {episode.ID}
-                      <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
-                    </a>
-                    )
-                  </div>
-                  <div>{episode.AirDate}</div>
-                </div>
-              ))}
-            </ShokoPanel>
-          )}
+          {mode === 'Series' && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
+          {mode === 'Missing' && missingEpisodes}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
