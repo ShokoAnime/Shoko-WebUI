@@ -115,7 +115,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       {children}
       {linkToImage && (
         <a
-          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-transparent p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
+          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
           href={backgroundImage?.src}
           aria-label="Link to image"
           rel="noopener noreferrer"
@@ -126,7 +126,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         </a>
       )}
       {overlayOnHover && (
-        <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+        <div className="pointer-events-none z-50 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
       )}
     </div>
   );

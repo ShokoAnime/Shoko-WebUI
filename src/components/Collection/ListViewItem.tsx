@@ -135,7 +135,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
             hidePlaceholderOnHover
             zoomOnHover
           >
-            <div className="pointer-events-none z-10 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+            <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
               <Link to="#" className="h-fit">
                 <Icon
                   path={mdiPencilCircleOutline}

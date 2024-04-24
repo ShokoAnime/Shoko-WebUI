@@ -136,7 +136,7 @@ const SeriesImages = () => {
                 className={cx(
                   'rounded-lg drop-shadow-md transition-transform duration-600 outline',
                   item === selectedImage
-                    ? 'outline-panel-text-important outline-4 opacity-85'
+                    ? 'outline-panel-text-important outline-4 '
                     : 'outline-2 outline-panel-border',
                   sizeMap[type],
                 )}
