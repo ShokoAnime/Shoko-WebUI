@@ -9,9 +9,9 @@ import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
-const ErrorBoundary = () => {
+const ErrorBoundary = ({ error }: { error?: Error }) => {
   const dispatch = useDispatch();
-  const error = useRouteError() as Error; // There is no type definition provided.
+  const routeError = useRouteError() as Error;
 
   const versionQuery = useVersionQuery();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
@@ -41,7 +41,7 @@ const ErrorBoundary = () => {
           The information below is absolutely (maybe) useless!
           <br />
           <br />
-          {error.stack}
+          {error?.stack ?? routeError.stack}
         </pre>
         <div className="flex flex-col gap-y-4">
           <div>Lets get you back into the Web UI.</div>
