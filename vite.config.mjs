@@ -28,6 +28,7 @@ export default defineConfig(async () => {
       include: './dist',
       urlPrefix: '~/webui/dist/',
       ignore: [],
+      reactComponentAnnotation: { enabled: true },
     });
   }
 
