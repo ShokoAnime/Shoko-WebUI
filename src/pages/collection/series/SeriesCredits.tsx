@@ -60,23 +60,21 @@ const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: 
 ));
 
 const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode: ModeType) => void }) => (
-  <div className="flex items-center gap-x-2 text-xl font-semibold">
-    <div className="flex gap-x-1">
-      {map(creditTypeVariations, (value, key: ModeType) => (
-        <Button
-          className={cx(
-            'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
-            mode !== key
-              ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
-              : '!bg-panel-toggle-background text-panel-toggle-text',
-          )}
-          key={key}
-          onClick={() => setMode(key)}
-        >
-          {value}
-        </Button>
-      ))}
-    </div>
+  <div className="flex items-center gap-x-1 text-xl font-semibold">
+    {map(creditTypeVariations, (value, key: ModeType) => (
+      <Button
+        className={cx(
+          'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
+          mode !== key
+            ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
+            : '!bg-panel-toggle-background text-panel-toggle-text',
+        )}
+        key={key}
+        onClick={() => setMode(key)}
+      >
+        {value}
+      </Button>
+    ))}
   </div>
 ));
 
@@ -140,118 +138,112 @@ const SeriesCredits = () => {
 
   return (
     <div className="flex w-full gap-x-6">
-      <div className="flex w-400 shrink-0 flex-col gap-y-6">
-        <ShokoPanel
-          title="Search & Filter"
-          className="flex w-full flex-col"
-          contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
-          fullHeight={false}
-          transparent
-        >
-          <div className="flex flex-col gap-y-6">
-            <div className="flex flex-col gap-y-2">
-              <span className="flex w-full text-base font-semibold">
-                Name
-              </span>
-              <Input
-                id="search"
-                startIcon={mdiMagnify}
-                type="text"
-                placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
-                value={search}
-                inputClassName="px-4 py-3"
-                onChange={event => setSearch(event.target.value)}
+      <ShokoPanel
+        title="Search & Filter"
+        className="w-400 shrink-0"
+        contentClassName="gap-y-6"
+        transparent
+      >
+        <div className="flex flex-col gap-y-2">
+          <span className="flex w-full text-base font-semibold">
+            Name
+          </span>
+          <Input
+            id="search"
+            startIcon={mdiMagnify}
+            type="text"
+            placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
+            value={search}
+            inputClassName="px-4 py-3"
+            onChange={event => setSearch(event.target.value)}
+          />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <div className="text-base font-semibold">Roles</div>
+          <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
+            {map(uniqueDescriptions[mode], desc => (
+              <Checkbox
+                justify
+                label={desc}
+                key={desc}
+                id={desc}
+                isChecked={!descriptionFilter.includes(desc)}
+                onChange={handleFilterChange}
               />
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <div className="text-base font-semibold">Roles</div>
-              <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
-                {map(uniqueDescriptions[mode], desc => (
-                  <Checkbox
-                    justify
-                    label={desc}
-                    key={desc}
-                    id={desc}
-                    isChecked={!descriptionFilter.includes(desc)}
-                    onChange={handleFilterChange}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="flex flex-col gap-y-2">
-              <div className="text-base font-semibold">Quick Actions</div>
-              <button
-                type="button"
-                className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-                onClick={() =>
-                  refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
-                    onSuccess: () => toast.success('AniDB refresh queued!'),
-                  })}
-                disabled={pendingRefreshAniDb}
-              >
-                Force refresh: AniDB
-                <Icon
-                  path={mdiPlayCircleOutline}
-                  className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                  size={1}
-                />
-              </button>
-              <button
-                type="button"
-                className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-                onClick={() =>
-                  refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
-                    onSuccess: () => toast.success('TvDB refresh queued!'),
-                  })}
-                disabled={pendingRefreshTvDb}
-              >
-                Force refresh: TVDB
-                <Icon
-                  path={mdiPlayCircleOutline}
-                  className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                  size={1}
-                />
-              </button>
-            </div>
-            <hr className="border border-panel-border" />
-            <div className="flex flex-row gap-x-3">
-              <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
-              <div className="grow text-base font-semibold">
-                Warning! Possible Spoilers
-              </div>
-            </div>
+            ))}
           </div>
-        </ShokoPanel>
-      </div>
-      <div className="flex w-full grow gap-6">
-        <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-            <div className="text-xl font-semibold">
-              Credits |&nbsp;
-              {(debouncedSearch !== '' || descriptionFilter.length !== 0) && (
-                <>
-                  <span className="text-panel-text-important">
-                    {filteredCast.length}
-                  </span>
-                  &nbsp;of&nbsp;
-                </>
-              )}
-              <span className="text-panel-text-important">
-                {castByType[mode].length ?? 0}
-              </span>
-              &nbsp;
-              {creditTypeVariations[mode]}
-              &nbsp;Listed
-            </div>
-            <Heading mode={mode} setMode={setMode} />
+        </div>
+        <div className="flex flex-col gap-y-2">
+          <div className="text-base font-semibold">Quick Actions</div>
+          <button
+            type="button"
+            className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+            onClick={() =>
+              refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
+                onSuccess: () => toast.success('AniDB refresh queued!'),
+              })}
+            disabled={pendingRefreshAniDb}
+          >
+            Force refresh: AniDB
+            <Icon
+              path={mdiPlayCircleOutline}
+              className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+              size={1}
+            />
+          </button>
+          <button
+            type="button"
+            className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+            onClick={() =>
+              refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
+                onSuccess: () => toast.success('TvDB refresh queued!'),
+              })}
+            disabled={pendingRefreshTvDb}
+          >
+            Force refresh: TVDB
+            <Icon
+              path={mdiPlayCircleOutline}
+              className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+              size={1}
+            />
+          </button>
+        </div>
+        <hr className="border border-panel-border" />
+        <div className="flex flex-row gap-x-3">
+          <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
+          <div className="grow text-base font-semibold">
+            Warning! Possible Spoilers
           </div>
+        </div>
+      </ShokoPanel>
 
-          <div className="grid grid-cols-3 gap-4">
-            {map(
-              filteredCast,
-              (item, idx) => <CreditsStaffPanel cast={item} mode={mode} key={`${mode}-${idx}`} />,
+      <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
+        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="text-xl font-semibold">
+            Credits |&nbsp;
+            {(debouncedSearch !== '' || descriptionFilter.length !== 0) && (
+              <>
+                <span className="text-panel-text-important">
+                  {filteredCast.length}
+                </span>
+                &nbsp;of&nbsp;
+              </>
             )}
+            <span className="text-panel-text-important">
+              {castByType[mode].length ?? 0}
+            </span>
+            &nbsp;
+            {creditTypeVariations[mode]}
+            &nbsp;Listed
           </div>
+          <Heading mode={mode} setMode={setMode} />
+        </div>
+
+        <div className="grid grid-cols-3 gap-4">
+          {map(
+            filteredCast,
+            (item, idx) => <CreditsStaffPanel cast={item} mode={mode} key={`${mode}-${idx}`} />,
+          )}
         </div>
       </div>
     </div>
