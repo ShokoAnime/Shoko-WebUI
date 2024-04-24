@@ -158,7 +158,7 @@ const SeriesOverview = () => {
               )}
           </ShokoPanel>
           <ShokoPanel
-            title="Next Up"
+            title="Episode On Deck"
             className="flex w-full grow overflow-visible"
             transparent
             isFetching={nextUpEpisodeQuery.isFetching}

@@ -71,7 +71,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
             <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
             <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
           </div>
-          <div className="pointer-events-none z-10 flex h-full justify-between bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          <div className="pointer-events-none z-10 flex h-full justify-between bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             <div>
               <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} tooltip="Edit" />
             </div>

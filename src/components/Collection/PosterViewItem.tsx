@@ -62,7 +62,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
               )}
             </div>
           )}
-          <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+          <div className="pointer-events-none z-50 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
             {/* FIXME: This can't be a <Link> otherwise Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a> happens, BackgroundImagePlaceholderDiv wraps everything in a <Link> internally */}
             <span className="h-fit">
               <Icon

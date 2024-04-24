@@ -67,6 +67,7 @@ module.exports = {
         'panel-background-alt': 'var(--panel-background-alt)',
         'panel-background-selected-row': 'var(--panel-background-selected-row)',
         'panel-background-overlay': 'var(--panel-background-overlay)',
+        'panel-background-poster-overlay': 'var(--panel-background-poster-overlay)',
         'panel-background-transparent': 'var(--panel-background-transparent)',
         'panel-border': 'var(--panel-border)',
         'panel-icon': 'var(--panel-icon)',
