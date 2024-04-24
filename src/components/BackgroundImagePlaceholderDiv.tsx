@@ -12,7 +12,6 @@ type Props = {
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
   zoomOnHover?: boolean;
-  zoomOnBoolValue?: boolean;
   linkToImage?: boolean;
 };
 
@@ -24,7 +23,6 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     image,
     linkToImage,
     overlayOnHover,
-    zoomOnBoolValue,
     zoomOnHover,
   } = props;
   const imageSource = useMemo(() => {
@@ -88,9 +86,8 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       <div
         className={cx(
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-lg',
-          zoomOnHover && 'group-hover:scale-105 transition-transform',
-          typeof zoomOnBoolValue !== 'undefined' && 'transition-transform duration-600',
-          zoomOnBoolValue && 'scale-105',
+          typeof zoomOnHover === 'boolean' && 'transition-transform duration-600',
+          zoomOnHover && 'group-hover:scale-105',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
       >

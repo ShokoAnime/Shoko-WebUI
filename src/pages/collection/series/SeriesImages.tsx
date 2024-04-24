@@ -134,14 +134,14 @@ const SeriesImages = () => {
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-lg drop-shadow-md transition-transform duration-600 outline',
+                  'rounded-lg drop-shadow-md transition-transform outline',
                   item === selectedImage
-                    ? 'outline-panel-text-important outline-4 '
+                    ? 'outline-panel-text-important outline-4'
                     : 'outline-2 outline-panel-border',
                   sizeMap[type],
                 )}
                 linkToImage
-                zoomOnBoolValue={item === selectedImage}
+                zoomOnHover
               >
                 {item.Preferred && (
                   <div className="absolute bottom-3 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
