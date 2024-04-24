@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
+import { mdiEarth, mdiOpenInNew } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, round, toNumber } from 'lodash';
 
@@ -8,6 +10,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import CharacterImage from '@/components/CharacterImage';
 import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
   useRelatedAnimeQuery,
@@ -36,6 +39,8 @@ const SeriesOverview = () => {
   const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
   const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
 
+  const [currentTab, setCurrentTab] = useState<string>('metadata');
+
   const relatedAnime = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
@@ -49,9 +54,113 @@ const SeriesOverview = () => {
   return (
     <>
       <div className="flex gap-x-6">
-        <div className="flex w-full grow flex-col gap-y-6">
+        <div className="flex w-full gap-x-6">
           <ShokoPanel
-            title="Episode on Deck"
+            title="Metadata Sites"
+            className="flex w-full max-w-[600px]"
+            transparent
+            disableOverflow
+            options={
+              <div className="flex gap-x-2">
+                <Button
+                  className={cx(
+                    'w-[9.6rem] rounded-lg py-3 px-4 !font-normal !text-base',
+                    currentTab === 'metadata'
+                      ? '!bg-panel-toggle-background text-panel-toggle-text'
+                      : 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
+                  )}
+                  key="metadata"
+                  onClick={() => {
+                    setCurrentTab('metadata');
+                  }}
+                >
+                  Metadata Sites
+                </Button>
+                <Button
+                  className={cx(
+                    'w-[9.6rem] rounded-lg py-3 px-4 !font-normal !text-base',
+                    currentTab === 'links'
+                      ? '!bg-panel-toggle-background text-panel-toggle-text'
+                      : 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
+                  )}
+                  key="links"
+                  onClick={() => {
+                    setCurrentTab('links');
+                  }}
+                >
+                  Series Links
+                </Button>
+              </div>
+            }
+          >
+            {currentTab === 'metadata'
+              ? (
+                <div
+                  className={cx(
+                    'flex h-[250px] flex-col gap-3 overflow-y-auto  lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                    MetadataLinks.length > 4 ? 'pr-4' : '',
+                  )}
+                >
+                  {MetadataLinks.map((site) => {
+                    const idOrIds = series.IDs[site] as number | number[];
+                    if (typeof idOrIds === 'number' || idOrIds.length === 0) {
+                      const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
+                      return (
+                        <div
+                          className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3"
+                          key={`${site} + ${id}`}
+                        >
+                          <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
+                        </div>
+                      );
+                    }
+                    return idOrIds.map(id => (
+                      <div
+                        className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3"
+                        key={`${site} + ${id}`}
+                      >
+                        <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
+                      </div>
+                    ));
+                  })}
+                </div>
+              )
+              : (
+                <div
+                  className={cx(
+                    'flex h-[250px] flex-col gap-3 overflow-y-auto',
+                    series.Links.length > 4 ? 'pr-4' : '',
+                  )}
+                >
+                  {series.Links.map(link => (
+                    <div
+                      key={link.URL}
+                      className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal hover:bg-panel-toggle-background-hover"
+                    >
+                      <Icon
+                        path={mdiEarth}
+                        size={1}
+                      />
+                      <a
+                        className=" text-panel-text-primary"
+                        href={link.URL}
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        {link.Name}
+                      </a>
+                      <Icon
+                        className="text-panel-icon-action"
+                        path={mdiOpenInNew}
+                        size={1}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
+          </ShokoPanel>
+          <ShokoPanel
+            title="Next Up"
             className="flex w-full grow overflow-visible"
             transparent
             isFetching={nextUpEpisodeQuery.isFetching}
@@ -59,37 +168,6 @@ const SeriesOverview = () => {
             {nextUpEpisodeQuery.isSuccess && nextUpEpisodeQuery.data
               ? <SeriesEpisode episode={nextUpEpisodeQuery.data} nextUp />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
-          </ShokoPanel>
-          <ShokoPanel
-            title="Metadata Sites"
-            className="flex w-full flex-wrap"
-            transparent
-            disableOverflow
-          >
-            <div className="flex flex-wrap gap-2 lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6">
-              {MetadataLinks.map((site) => {
-                const idOrIds = series.IDs[site] as number | number[];
-                if (typeof idOrIds === 'number' || idOrIds.length === 0) {
-                  const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
-                  return (
-                    <div
-                      className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
-                      key={`${site}-${id}`}
-                    >
-                      <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
-                    </div>
-                  );
-                }
-                return idOrIds.map(id => (
-                  <div
-                    className="w-full max-w-[18.75rem] rounded border border-panel-border bg-panel-background px-4 py-3"
-                    key={`${site}-${id}`}
-                  >
-                    <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
-                  </div>
-                ));
-              })}
-            </div>
           </ShokoPanel>
         </div>
       </div>
@@ -176,7 +254,7 @@ const SeriesOverview = () => {
           {cast?.slice(0, 20).map(seiyuu => (
             seiyuu.RoleName === 'Seiyuu' && (
               <div
-                key={`${seiyuu.Character.Name}-${seiyuu.Staff.Name}`}
+                key={`${seiyuu.Character.Name}-${Math.random() * (cast.length + seiyuu.Character.Name.length)}`}
                 className="flex flex-col items-center gap-y-3 pb-3"
               >
                 <div className="flex gap-x-4">

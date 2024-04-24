@@ -85,7 +85,7 @@ const SeriesImages = () => {
       <div className="flex w-400 shrink-0 flex-col gap-y-6">
         <ShokoPanel
           title="Selected Image Info"
-          className="flex w-full flex-col"
+          className="flex w-full grow flex-col"
           contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
           fullHeight={false}
           transparent
@@ -96,7 +96,7 @@ const SeriesImages = () => {
           <InfoLine title="Size" value="-" />
           <Button
             buttonType="primary"
-            className="rounded-lg border border-panel-border p-2 !font-bold"
+            buttonSize="normal"
             disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
             onClick={() => {
               changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {

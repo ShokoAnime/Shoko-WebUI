@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { NavLink } from 'react-router-dom';
 import { mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -23,7 +22,7 @@ type SeriesSidePanelProps = {
 const SeriesTag = ({ text, type }) => (
   <div
     className={cx(
-      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
+      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize',
       type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
     )}
   >
@@ -33,7 +32,7 @@ const SeriesTag = ({ text, type }) => (
 );
 
 const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
-  const { WebUI_Settings: { collection: { image: showRandomPoster } } } = useSettingsQuery().data;
+  const { WebUI_Settings: { collection: { image } } } = useSettingsQuery().data;
   const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
@@ -46,18 +45,18 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
     const allPosters: ImageType[] = imagesQuery.data?.Posters ?? [];
     if (allPosters.length === 0) return;
 
-    if (showRandomPoster) {
+    if (image.showRandomPoster) {
       setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
       return;
     }
     setPoster(allPosters.find(art => art.Preferred) ?? allPosters[0]);
-  }, [imagesQuery.data, imagesQuery.isSuccess, showRandomPoster]);
+  }, [imagesQuery.data, imagesQuery.isSuccess, image.showRandomPoster]);
 
   return (
     <div className="flex w-full gap-x-6">
       <BackgroundImagePlaceholderDiv
         image={poster}
-        className="aspect-[5/6] h-[30.188rem] w-[20.125rem] rounded drop-shadow-md lg:aspect-[4/6]"
+        className="aspect-[5/6] h-[32.1rem] min-w-[22rem] rounded drop-shadow-md lg:aspect-[4/6]"
       >
         {(series.AniDB?.Restricted ?? false) && (
           <div className="absolute bottom-0 left-0 flex w-full justify-center bg-panel-background-overlay py-1.5 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
@@ -65,8 +64,8 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
           </div>
         )}
       </BackgroundImagePlaceholderDiv>
-      <div className="flex flex-col gap-y-4">
-        <div className="flex h-[14.623rem] w-[57.5rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+      <div className="flex w-full min-w-[900px] flex-col gap-y-6">
+        <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             Series Description
           </div>
@@ -74,7 +73,7 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
             <AnidbDescription text={series.AniDB?.Description ?? ''} />
           </div>
         </div>
-        <div className="flex w-[57.5rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+        <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             Series Information
           </div>
@@ -83,20 +82,17 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-y-4">
-        <div className="flex h-[14.623rem] w-[36.375rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+      <div className="flex w-full flex-col gap-y-6">
+        <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             Top 10 Tags
           </div>
           <div className="flex flex-wrap gap-3 overflow-y-auto">
             {tags.slice(0, 10)
               .map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
-            <NavLink to="tags">
-              <SeriesTag text="More..." type="All" />
-            </NavLink>
           </div>
         </div>
-        <div className="flex h-[14.623rem] w-[36.375rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+        <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             User Stats
           </div>
