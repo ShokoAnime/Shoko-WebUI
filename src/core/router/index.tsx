@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
 import SeriesCredits from '@/pages/collection/series/SeriesCredits';
@@ -55,7 +56,7 @@ const router = sentryCreateBrowserRouter(
     <Route path="/" errorElement={<ErrorBoundary />}>
       <Route index element={<Navigate to="/webui" replace />} />
       <Route path="index.html" element={<Navigate to="/webui" replace />} />
-      <Route path="webui">
+      <Route path="webui" element={<SentryErrorBoundaryWrapper />}>
         <Route path="index.html" element={<Navigate to="/webui" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
