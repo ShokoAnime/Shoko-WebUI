@@ -133,28 +133,26 @@ const SeriesOverview = () => {
                   )}
                 >
                   {series.Links.map(link => (
-                    <div
+                    <a
+                      className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal text-panel-icon-action hover:bg-panel-toggle-background-hover"
                       key={link.URL}
-                      className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal hover:bg-panel-toggle-background-hover"
+                      href={link.URL}
+                      rel="noopener noreferrer"
+                      target="_blank"
                     >
                       <Icon
+                        className="text-panel-icon"
                         path={mdiEarth}
                         size={1}
                       />
-                      <a
-                        className=" text-panel-text-primary"
-                        href={link.URL}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        {link.Name}
-                      </a>
+
+                      {link.Name}
                       <Icon
                         className="text-panel-icon-action"
                         path={mdiOpenInNew}
                         size={1}
                       />
-                    </div>
+                    </a>
                   ))}
                 </div>
               )}
