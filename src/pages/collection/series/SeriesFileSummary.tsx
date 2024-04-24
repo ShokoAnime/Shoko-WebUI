@@ -189,13 +189,13 @@ const SeriesFileSummary = () => {
               <option value="GroupName">+ Release Group</option>
               <option value="GroupName,FileVersion,FileSource">+ File Source</option>
               <option value="GroupName,FileVersion,FileSource,FileLocation">+ Location</option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion">
+              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolution">
                 + Video
               </option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount">
+              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolution,AudioCodecs,AudioLanguages,AudioStreamCount">
                 + Audio
               </option>
-              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolutuion,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount">
+              <option value="GroupName,FileVersion,FileSource,FileLocation,VideoCodecs,VideoBitDepth,VideoResolution,AudioCodecs,AudioLanguages,AudioStreamCount,SubtitleCodecs,SubtitleLanguages,SubtitleStreamCount">
                 + Subtitles
               </option>
             </Select>
