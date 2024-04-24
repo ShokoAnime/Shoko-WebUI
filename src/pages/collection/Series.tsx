@@ -47,7 +47,7 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
 
-  const { WebUI_Settings: { collection: { image: showRandomFanart } } } = useSettingsQuery().data;
+  const { WebUI_Settings: { collection: { image } } } = useSettingsQuery().data;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
@@ -67,7 +67,7 @@ const Series = () => {
     const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
-    if (showRandomFanart) {
+    if (image.showRandomFanart) {
       setFanartUri(getImagePath(allFanarts[Math.floor(Math.random() * allFanarts.length)]));
       return;
     }
@@ -91,7 +91,7 @@ const Series = () => {
 
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="mb-6 flex flex-col items-center gap-y-3">
+      <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6" />
         <div className="flex flex-row gap-x-4">
           <Link className="font-semibold text-panel-text-primary" to="/webui/collection">

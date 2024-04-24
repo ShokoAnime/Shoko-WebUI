@@ -53,11 +53,13 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
       onRequestClose={onClose}
       header="Display Settings"
       size="sm"
+      noPadding
+      noGap
     >
-      <div className="flex flex-col gap-y-6">
-        <div className="flex flex-col gap-y-4">
-          <div className="border-b border-panel-border pb-4 font-semibold">Poster View Options</div>
-          <div className="flex flex-col gap-y-2">
+      <div className="flex flex-col gap-y-6 p-6">
+        <div className="flex flex-col gap-y-6">
+          <div className="font-semibold">Poster View Options</div>
+          <div className="flex flex-col gap-y-1">
             <Checkbox
               justify
               label="Total Episodes"
@@ -82,9 +84,11 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-y-4">
-          <div className="border-b border-panel-border pb-4 font-semibold">List View Options</div>
-          <div className="flex flex-col gap-2">
+        <div className="border-b border-panel-border" />
+
+        <div className="flex flex-col gap-y-6">
+          <div className="font-semibold">List View Options</div>
+          <div className="flex flex-col gap-1">
             <Checkbox
               justify
               label="Item Type"
@@ -116,9 +120,11 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
           </div>
         </div>
 
-        <div className="flex flex-col gap-y-4">
-          <div className="border-b border-panel-border pb-4 font-semibold">Image Options</div>
-          <div className="flex flex-col gap-2">
+        <div className="border-b border-panel-border" />
+
+        <div className="flex flex-col gap-y-6">
+          <div className="font-semibold">Image Options</div>
+          <div className="flex flex-col gap-1">
             <Checkbox
               justify
               label="Random Posters on Load"
@@ -135,7 +141,9 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
             />
           </div>
         </div>
+      </div>
 
+      <div className="rounded-b-lg border-t border-panel-border bg-panel-background-alt p-6">
         <div className="flex justify-end gap-x-3 font-semibold">
           <Button onClick={handleCancel} buttonType="secondary" className="px-6 py-2">Cancel</Button>
           <Button
