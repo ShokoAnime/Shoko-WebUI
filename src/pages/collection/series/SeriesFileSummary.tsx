@@ -10,7 +10,7 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
-import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType, WebuiSeriesFileSummaryMissingEpisodeType } from '@/core/types/api/webui';
+import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType, WebuiSeriesFileSummaryMissingEpisodeType, WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
 
@@ -140,15 +140,25 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
 type FileSelectionHeaderProps = {
   mode: ModeType,
   setMode: (mode: ModeType) => void,
-  groups: WebuiSeriesFileSummaryGroupType[] | undefined
+  fileSummary?: WebuiSeriesFileSummaryType,
 };
-const FilesSelectionHeader = React.memo(({ groups, mode, setMode }: FileSelectionHeaderProps) => (
+const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
   <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
     <div className="flex gap-x-2 text-xl font-semibold">
       {mode}
       &nbsp;Files |
-      <span className="text-panel-text-important">{groups?.length ?? 0}</span>
-      {groups?.length === 1 ? 'Entry' : 'Entries'}
+      {mode === 'Series' && (
+        <>
+          <span className="text-panel-text-important">{fileSummary?.Groups.length ?? 0}</span>
+          {fileSummary?.Groups?.length === 1 ? 'Entry' : 'Entries'}
+        </>
+      )}
+      {mode === 'Missing' && (
+        <>
+          <span className="text-panel-text-important">{fileSummary?.MissingEpisodes.length ?? 0}</span>
+          {fileSummary?.MissingEpisodes?.length === 1 ? 'Entry' : 'Entries'}
+        </>
+      )}
     </div>
     <div className="flex items-center gap-x-1 text-xl font-semibold">
       {['Series', 'Missing'].map((key: ModeType) => (
@@ -219,28 +229,63 @@ const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) =>
   </ShokoPanel>
 ));
 
-const Episode = React.memo(({ episode }: { episode: WebuiSeriesFileSummaryMissingEpisodeType }) => (
-  <div className="grid grid-cols-6 gap-x-12" key={episode.ID}>
-    <div>
+const MissingEpisodeRow = React.memo(({ episode, rowId }: { episode: WebuiSeriesFileSummaryMissingEpisodeType, rowId: number }) => (
+  <div className={cx(
+      'flex p-4 gap-16 rounded-lg border text-left transition-colors border-panel-border items-center',
+      rowId % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
+    )}
+  >
+    <div className="w-[12.5rem]">
       {episode.Type}
-    &nbsp;
-      {episode.EpisodeNumber}
+      &nbsp;
+      {episode.EpisodeNumber.toString().padStart(2, '0')}
     </div>
-    <div className="col-span-4">
+    <div className="flex w-[46.875rem] flex-row">
       {find(episode.Titles, ['Language', 'en'])?.Name ?? '--'}
-    &nbsp;(
+      &nbsp;
       <a
-        className="inline-flex items-center gap-x-1 text-panel-text-primary"
+        className="inline-flex items-center gap-0 text-panel-text-primary"
         href={`https://anidb.net/episode/${episode.ID}`}
         target="_blank"
         rel="noopener noreferrer"
       >
+        <span className="text-panel-text">(</span>
         {episode.ID}
+        <span className="text-panel-text">)</span>
+        &nbsp;
         <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
       </a>
-      )
     </div>
-    <div>{episode.AirDate}</div>
+    <div className="w-[139px]">
+      {episode.AirDate}
+    </div>
+  </div>
+));
+
+const MissingEpisodes = React.memo(({ fileSummary }: { fileSummary?: WebuiSeriesFileSummaryType }) => (
+  <div className="flex h-full flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
+    <div className="flex size-full flex-col overflow-y-auto pr-4">
+      <div className="sticky top-0 z-[1] bg-panel-background-alt">
+        <div className="mb-1 flex gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
+          <div className="w-[12.5rem] px-2">
+            Type
+          </div>
+          <div className="w-[46.875rem] px-2">
+            Title
+          </div>
+          <div className="w-[139px] px-2">
+            Airing Date
+          </div>
+        </div>
+      </div>
+      <div className="relative grow">
+        <div className="absolute top-0 w-full">
+          <div className="absolute left-0 top-0 flex w-full flex-col gap-y-1">
+            {fileSummary?.MissingEpisodes?.map((episode, rowId) => (<MissingEpisodeRow episode={episode} key={episode.ID} rowId={rowId} />))}
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 ));
 
@@ -282,12 +327,6 @@ const SeriesFileSummary = () => {
     };
   }, [fileSummary]);
 
-  const missingEpisodes = useMemo(() => (get(fileSummary, 'MissingEpisodes.length', 0) > 0 && (
-    <ShokoPanel title="Missing Files" transparent contentClassName="gap-y-4">
-      {map(fileSummary?.MissingEpisodes, episode => (<Episode episode={episode} />))}
-    </ShokoPanel>
-  )), [fileSummary]);
-
   if (!seriesId) return null;
 
   return (
@@ -298,12 +337,12 @@ const SeriesFileSummary = () => {
         <FilesSelectionHeader
           mode={mode}
           setMode={setMode}
-          groups={fileSummary?.Groups}
+          fileSummary={fileSummary}
         />
 
         <div className="flex grow flex-col gap-y-6">
           {mode === 'Series' && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
-          {mode === 'Missing' && missingEpisodes}
+          {mode === 'Missing' && <MissingEpisodes fileSummary={fileSummary} />}
         </div>
       </div>
     </div>
