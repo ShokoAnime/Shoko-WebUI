@@ -192,39 +192,36 @@ type FileOverviewProps = {
 const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) => (
   <ShokoPanel
     title="Files Overview"
-    className="w-400 shrink-0"
-    contentClassName="gap-y-6 !grow-0"
+    className="sticky top-0 w-400 shrink-0 grow"
+    contentClassName="gap-y-6"
     transparent
+    fullHeight={false}
   >
-    <div className="flex w-full flex-col gap-y-6">
-      {map(summary.SourceByType, ({ count, source, type }, index) => (
-        <React.Fragment key={`${type}-${index}`}>
-          <div className="flex flex-col gap-y-1">
-            <span className="font-semibold">
-              {type}
-            &nbsp;Count
-            </span>
-            <span className="font-normal">{count}</span>
-          </div>
-          <div className="flex flex-col gap-y-1">
-            <span className="font-semibold">
-              {type}
-            &nbsp;Source
-            </span>
-            <span className="font-normal">{source}</span>
-          </div>
-        </React.Fragment>
+    {map(summary.SourceByType, ({ count, source, type }, index) => (
+      <React.Fragment key={`${type}-${index}`}>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">
+            {type}
+          &nbsp;Count
+          </span>
+          <span className="font-normal">{count}</span>
+        </div>
+        <div className="flex flex-col gap-y-1">
+          <span className="font-semibold">
+            {type}
+          &nbsp;Source
+          </span>
+          <span className="font-normal">{source}</span>
+        </div>
+      </React.Fragment>
     ))}
-      <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">Total File Size</span>
-        {prettyBytes(summary.TotalEpisodeSize, { binary: true })}
-      </div>
+    <div className="flex flex-col gap-y-1">
+      <span className="font-semibold">Total File Size</span>
+      {prettyBytes(summary.TotalEpisodeSize, { binary: true })}
     </div>
-    <div className="flex w-full">
-      <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">Groups</span>
-        {summary.Groups || 'N/A'}
-      </div>
+    <div className="flex flex-col gap-y-1">
+      <span className="font-semibold">Groups</span>
+      {summary.Groups || 'N/A'}
     </div>
   </ShokoPanel>
 ));
@@ -263,28 +260,22 @@ const MissingEpisodeRow = React.memo(({ episode, rowId }: { episode: WebuiSeries
 ));
 
 const MissingEpisodes = React.memo(({ fileSummary }: { fileSummary?: WebuiSeriesFileSummaryType }) => (
-  <div className="flex h-full flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
-    <div className="flex size-full flex-col overflow-y-auto pr-4">
-      <div className="sticky top-0 z-[1] bg-panel-background-alt">
-        <div className="mb-1 flex gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
-          <div className="w-[12.5rem] px-2">
-            Type
-          </div>
-          <div className="w-[46.875rem] px-2">
-            Title
-          </div>
-          <div className="w-[139px] px-2">
-            Airing Date
-          </div>
+  <div className="flex max-h-[72vh] flex-col rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
+    <div className="sticky top-0 z-[1] flex bg-panel-background-alt">
+      <div className="mb-1 flex grow items-center gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
+        <div className="w-[12.5rem] text-left">
+          Type
+        </div>
+        <div className="w-[46.875rem] text-left">
+          Title
+        </div>
+        <div className="w-[139px] text-left">
+          Airing Date
         </div>
       </div>
-      <div className="relative grow">
-        <div className="absolute top-0 w-full">
-          <div className="absolute left-0 top-0 flex w-full flex-col gap-y-1">
-            {fileSummary?.MissingEpisodes?.map((episode, rowId) => (<MissingEpisodeRow episode={episode} key={episode.ID} rowId={rowId} />))}
-          </div>
-        </div>
-      </div>
+    </div>
+    <div className="flex w-full grow-0 flex-col gap-y-1 overflow-auto overscroll-contain">
+      {fileSummary?.MissingEpisodes?.map((episode, rowId) => (<MissingEpisodeRow episode={episode} key={episode.ID} rowId={rowId} />))}
     </div>
   </div>
 ));
@@ -340,7 +331,7 @@ const SeriesFileSummary = () => {
           fileSummary={fileSummary}
         />
 
-        <div className="flex grow flex-col gap-y-6">
+        <div className="flex flex-col gap-y-6">
           {mode === 'Series' && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
           {mode === 'Missing' && <MissingEpisodes fileSummary={fileSummary} />}
         </div>
