@@ -12,7 +12,12 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType, WebuiSeriesFileSummaryMissingEpisodeType, WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
+import type {
+  WebuiSeriesFileSummaryGroupRangeByType,
+  WebuiSeriesFileSummaryGroupType,
+  WebuiSeriesFileSummaryMissingEpisodeType,
+  WebuiSeriesFileSummaryType,
+} from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
 
@@ -140,9 +145,9 @@ const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroup
 });
 
 type FileSelectionHeaderProps = {
-  mode: ModeType,
-  setMode: (mode: ModeType) => void,
-  fileSummary?: WebuiSeriesFileSummaryType,
+  mode: ModeType;
+  setMode: (mode: ModeType) => void;
+  fileSummary?: WebuiSeriesFileSummaryType;
 };
 const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
   <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
@@ -183,13 +188,13 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
 ));
 
 type FileOverviewProps = {
-  TotalEpisodeSize: number,
+  TotalEpisodeSize: number;
   SourceByType: {
-    type: string,
-    count: number,
-    source: string,
+    type: string;
+    count: number;
+    source: string;
   }[];
-  Groups: string,
+  Groups: string;
 };
 const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) => (
   <ShokoPanel
@@ -204,14 +209,14 @@ const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) =>
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">
             {type}
-          &nbsp;Count
+            &nbsp;Count
           </span>
           <span className="font-normal">{count}</span>
         </div>
         <div className="flex flex-col gap-y-1">
           <span className="font-semibold">
             {type}
-          &nbsp;Source
+            &nbsp;Source
           </span>
           <span className="font-normal">{source}</span>
         </div>
@@ -237,8 +242,8 @@ const groupFilterMap = {
   VideoResolution: 'Resolution',
 };
 type GroupFilterPanelProps = {
-  filter: string[],
-  onFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void,
+  filter: string[];
+  onFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPanelProps) => (
   <ShokoPanel
@@ -256,12 +261,15 @@ const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPane
         isChecked={filter.includes(k)}
         onChange={onFilterChange}
       />
-      ))}
+    ))}
   </ShokoPanel>
 ));
 
-const MissingEpisodeRow = React.memo(({ episode, rowId }: { episode: WebuiSeriesFileSummaryMissingEpisodeType, rowId: number }) => (
-  <div className={cx(
+const MissingEpisodeRow = React.memo((
+  { episode, rowId }: { episode: WebuiSeriesFileSummaryMissingEpisodeType, rowId: number },
+) => (
+  <div
+    className={cx(
       'flex p-4 gap-16 rounded-lg border text-left transition-colors border-panel-border items-center',
       rowId % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
     )}
@@ -294,31 +302,33 @@ const MissingEpisodeRow = React.memo(({ episode, rowId }: { episode: WebuiSeries
 ));
 
 const MissingEpisodes = React.memo(({ missingEps }: { missingEps?: WebuiSeriesFileSummaryMissingEpisodeType[] }) => (
-  missingEps?.length === 0 || typeof missingEps === 'undefined' ? (
-    <div className="flex h-full flex-col justify-center rounded-lg border border-panel-border bg-panel-background-transparent p-6 text-center font-semibold transition-colors">
-      <div>You have no missing episodes or specials. Well done!</div>
-    </div>
-  )
-  : (
-    <div className="flex max-h-[72vh] flex-col rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
-      <div className="sticky top-0 z-[1] flex bg-panel-background-alt">
-        <div className="mb-1 flex grow items-center gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
-          <div className="w-[12.5rem] text-left">
-            Type
-          </div>
-          <div className="w-[46.875rem] text-left">
-            Title
-          </div>
-          <div className="w-[139px] text-left">
-            Airing Date
+  missingEps?.length === 0 || typeof missingEps === 'undefined'
+    ? (
+      <div className="flex h-full flex-col justify-center rounded-lg border border-panel-border bg-panel-background-transparent p-6 text-center font-semibold transition-colors">
+        <div>You have no missing episodes or specials. Well done!</div>
+      </div>
+    )
+    : (
+      <div className="flex max-h-[72vh] flex-col rounded-lg border border-panel-border bg-panel-background-transparent p-6 transition-colors">
+        <div className="sticky top-0 z-[1] flex bg-panel-background-alt">
+          <div className="mb-1 flex grow items-center gap-16 rounded-lg border border-panel-border bg-panel-table-header p-4 text-left font-semibold transition-colors">
+            <div className="w-[12.5rem] text-left">
+              Type
+            </div>
+            <div className="w-[46.875rem] text-left">
+              Title
+            </div>
+            <div className="w-[139px] text-left">
+              Airing Date
+            </div>
           </div>
         </div>
+        <div className="flex w-full grow-0 flex-col gap-y-1 overflow-auto overscroll-contain">
+          {missingEps?.map((episode, rowId) => <MissingEpisodeRow episode={episode} key={episode.ID} rowId={rowId} />)}
+        </div>
       </div>
-      <div className="flex w-full grow-0 flex-col gap-y-1 overflow-auto overscroll-contain">
-        {missingEps?.map((episode, rowId) => (<MissingEpisodeRow episode={episode} key={episode.ID} rowId={rowId} />))}
-      </div>
-    </div>
-  )));
+    )
+));
 
 const SeriesFileSummary = () => {
   const { seriesId } = useParams();
@@ -334,11 +344,19 @@ const SeriesFileSummary = () => {
     if (option === 'VideoResolution') optionArr.push('VideoBitDepth');
     if (active && !filter.includes(option)) setFilter([...filter, ...optionArr]);
     if (!active && filter.includes(option)) {
-      setFilter(filter.filter(k => ((option === 'VideoResolution') ? !(k === 'VideoResolution' || k === 'VideoBitDepth') : (k !== option))));
+      setFilter(
+        filter.filter(
+          k => ((option === 'VideoResolution') ? !(k === 'VideoResolution' || k === 'VideoBitDepth') : (k !== option)),
+        ),
+      );
     }
   });
 
-  const { data: fileSummary, isLoading } = useSeriesFileSummaryQuery(toNumber(seriesId!), { groupBy: filter.join(',') }, !!seriesId);
+  const { data: fileSummary, isLoading } = useSeriesFileSummaryQuery(
+    toNumber(seriesId!),
+    { groupBy: filter.join(',') },
+    !!seriesId,
+  );
 
   const summary = useMemo(() => {
     let TotalEpisodeSize = 0;
@@ -392,7 +410,8 @@ const SeriesFileSummary = () => {
               <Icon path={mdiLoading} spin size={3} />
             </div>
           )}
-          {mode === 'Series' && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
+          {mode === 'Series'
+            && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
           {mode === 'Missing' && <MissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
         </div>
       </div>
