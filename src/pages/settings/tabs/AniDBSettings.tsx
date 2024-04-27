@@ -26,16 +26,15 @@ function AniDBSettings() {
   const { isPending: isAnidbLoginPending, mutate: testAniDbLogin } = useAniDBTestLoginMutation();
 
   const {
-    AVDumpClientPort,
     AVDumpKey,
     Anime_UpdateFrequency,
     Calendar_UpdateFrequency,
-    ClientPort,
     DownloadCharacters,
     DownloadCreators,
     DownloadRelatedAnime,
     DownloadReleaseGroups,
     File_UpdateFrequency,
+    HTTPServerUrl,
     MaxRelationDepth,
     MyList_AddFiles,
     MyList_DeleteType,
@@ -109,16 +108,6 @@ function AniDBSettings() {
             />
           </div>
           <div className="flex justify-between">
-            Port
-            <InputSmall
-              id="port"
-              value={ClientPort}
-              type="number"
-              onChange={event => updateSetting('AniDb', 'ClientPort', event.target.value)}
-              className="w-36 px-3 py-1"
-            />
-          </div>
-          <div className="flex justify-between">
             AVDump Key
             <InputSmall
               id="avdump-key"
@@ -129,13 +118,13 @@ function AniDBSettings() {
             />
           </div>
           <div className="flex justify-between">
-            AVDump Port
+            HTTP Server URL
             <InputSmall
-              id="avdump-port"
-              value={AVDumpClientPort}
-              type="number"
-              onChange={event => updateSetting('AniDb', 'AVDumpClientPort', event.target.value)}
-              className="w-36 px-3 py-1"
+              id="http-server-url"
+              value={HTTPServerUrl}
+              type="text"
+              onChange={event => updateSetting('AniDb', 'HTTPServerUrl', event.target.value)}
+              className="w-60 px-3 py-1"
             />
           </div>
         </div>

@@ -97,7 +97,10 @@ const onAvDumpEvent = (dispatch: typeof store.dispatch) => (event: AVDumpEventTy
 // Shoko Events
 
 const startSignalRConnection = (connection: HubConnection) =>
-  connection.start().catch(err => toast.error('SignalR connection error!', err as string));
+  connection.start().catch((error: Error) => {
+    console.error(error);
+    toast.error('SignalR connection error!', error.toString());
+  });
 
 const signalRMiddleware: Middleware<object, RootState> = ({
   dispatch,
