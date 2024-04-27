@@ -47,7 +47,7 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
 
-  const { WebUI_Settings: { collection: { image } } } = useSettingsQuery().data;
+  const { WebUI_Settings: { collection: { image: { showRandomFanart } } } } = useSettingsQuery().data;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
@@ -67,7 +67,7 @@ const Series = () => {
     const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
-    if (image.showRandomFanart) {
+    if (showRandomFanart) {
       setFanartUri(getImagePath(allFanarts[Math.floor(Math.random() * allFanarts.length)]));
       return;
     }
