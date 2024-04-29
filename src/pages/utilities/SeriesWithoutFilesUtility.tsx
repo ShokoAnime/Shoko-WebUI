@@ -59,6 +59,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
           rel="noreferrer noopener"
           className="flex gap-x-1 font-semibold"
           aria-label="Open AniDB series page"
+          onClick={e => e.stopPropagation()}
         >
           <div>
             (
