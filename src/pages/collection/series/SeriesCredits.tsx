@@ -138,84 +138,88 @@ const SeriesCredits = () => {
 
   return (
     <div className="flex w-full gap-x-6">
-      <ShokoPanel
-        title="Search & Filter"
-        className="w-400 shrink-0"
-        contentClassName="gap-y-6"
-        transparent
-      >
-        <div className="flex flex-col gap-y-2">
-          <span className="flex w-full text-base font-semibold">
-            Name
-          </span>
-          <Input
-            id="search"
-            startIcon={mdiMagnify}
-            type="text"
-            placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
-            value={search}
-            inputClassName="px-4 py-3"
-            onChange={event => setSearch(event.target.value)}
-          />
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <div className="text-base font-semibold">Roles</div>
-          <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
-            {map(uniqueDescriptions[mode], desc => (
-              <Checkbox
-                justify
-                label={desc}
-                key={desc}
-                id={desc}
-                isChecked={!descriptionFilter.includes(desc)}
-                onChange={handleFilterChange}
+      <div className="flex flex-col gap-y-6">
+        <ShokoPanel
+          title="Search & Filter"
+          className="w-400"
+          contentClassName="gap-y-6"
+          sticky
+          transparent
+          fullHeight={false}
+        >
+          <div className="flex flex-col gap-y-2">
+            <span className="flex w-full text-base font-semibold">
+              Name
+            </span>
+            <Input
+              id="search"
+              startIcon={mdiMagnify}
+              type="text"
+              placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
+              value={search}
+              inputClassName="px-4 py-3"
+              onChange={event => setSearch(event.target.value)}
+            />
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <div className="text-base font-semibold">Roles</div>
+            <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
+              {map(uniqueDescriptions[mode], desc => (
+                <Checkbox
+                  justify
+                  label={desc}
+                  key={desc}
+                  id={desc}
+                  isChecked={!descriptionFilter.includes(desc)}
+                  onChange={handleFilterChange}
+                />
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <div className="text-base font-semibold">Quick Actions</div>
+            <button
+              type="button"
+              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+              onClick={() =>
+                refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
+                  onSuccess: () => toast.success('AniDB refresh queued!'),
+                })}
+              disabled={pendingRefreshAniDb}
+            >
+              Force refresh: AniDB
+              <Icon
+                path={mdiPlayCircleOutline}
+                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                size={1}
               />
-            ))}
+            </button>
+            <button
+              type="button"
+              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+              onClick={() =>
+                refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
+                  onSuccess: () => toast.success('TvDB refresh queued!'),
+                })}
+              disabled={pendingRefreshTvDb}
+            >
+              Force refresh: TVDB
+              <Icon
+                path={mdiPlayCircleOutline}
+                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                size={1}
+              />
+            </button>
           </div>
-        </div>
-        <div className="flex flex-col gap-y-2">
-          <div className="text-base font-semibold">Quick Actions</div>
-          <button
-            type="button"
-            className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-            onClick={() =>
-              refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
-                onSuccess: () => toast.success('AniDB refresh queued!'),
-              })}
-            disabled={pendingRefreshAniDb}
-          >
-            Force refresh: AniDB
-            <Icon
-              path={mdiPlayCircleOutline}
-              className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-              size={1}
-            />
-          </button>
-          <button
-            type="button"
-            className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-            onClick={() =>
-              refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
-                onSuccess: () => toast.success('TvDB refresh queued!'),
-              })}
-            disabled={pendingRefreshTvDb}
-          >
-            Force refresh: TVDB
-            <Icon
-              path={mdiPlayCircleOutline}
-              className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-              size={1}
-            />
-          </button>
-        </div>
-        <hr className="border border-panel-border" />
-        <div className="flex flex-row gap-x-3">
-          <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
-          <div className="grow text-base font-semibold">
-            Warning! Possible Spoilers
+          <hr className="border border-panel-border" />
+          <div className="flex flex-row gap-x-3">
+            <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
+            <div className="grow text-base font-semibold">
+              Warning! Possible Spoilers
+            </div>
           </div>
-        </div>
-      </ShokoPanel>
+        </ShokoPanel>
+      </div>
 
       <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
         <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
