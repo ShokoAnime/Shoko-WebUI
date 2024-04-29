@@ -14,6 +14,7 @@ type Props = {
   disableOverflow?: boolean;
   transparent?: boolean;
   contentClassName?: string | boolean;
+  sticky?: boolean;
 };
 
 const ShokoPanel = (
@@ -26,6 +27,7 @@ const ShokoPanel = (
     fullHeight = true,
     isFetching,
     options,
+    sticky,
     title,
     transparent = false,
   }: Props,
@@ -36,6 +38,7 @@ const ShokoPanel = (
       fullHeight && 'h-full',
       editMode ? 'pointer-events-none border-panel-text-primary' : 'border-panel-border',
       transparent ? 'bg-panel-background-transparent' : 'bg-panel-background',
+      sticky && 'sticky',
       className,
     )}
   >
