@@ -20,6 +20,111 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 const pageSize = 26;
 
+type SearchAndFilterPanelProps = {
+  episodeFilterType: string;
+  episodeFilterAvailability: string;
+  episodeFilterWatched: string;
+  episodeFilterHidden: string;
+  search: string;
+  onFilterChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+};
+const SearchAndFilterPanel = React.memo(
+  (
+    {
+      episodeFilterAvailability,
+      episodeFilterHidden,
+      episodeFilterType,
+      episodeFilterWatched,
+      onFilterChange,
+      onSearchChange,
+      search,
+    }: SearchAndFilterPanelProps,
+  ) => {
+    const searchInput = useMemo(() => (
+      <Input
+        inputClassName=""
+        id="search"
+        label="Title Search"
+        startIcon={mdiMagnify}
+        type="text"
+        placeholder="Search..."
+        value={search}
+        onChange={onSearchChange}
+      />
+    ), [onSearchChange, search]);
+    const episodeType = useMemo(() => (
+      <Select
+        id="episodeType"
+        label="Episode Type"
+        value={episodeFilterType}
+        onChange={onFilterChange}
+      >
+        <option value="">All</option>
+        <option value="Normal">Normal</option>
+        <option value="Special">Specials</option>
+        <option value="Other">Others</option>
+        <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
+        <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
+      </Select>
+    ), [episodeFilterType, onFilterChange]);
+    const availability = useMemo(() => (
+      <Select
+        id="status"
+        label="Availability"
+        value={episodeFilterAvailability}
+        onChange={onFilterChange}
+      >
+        <option value="true">All</option>
+        <option value="false">Available</option>
+        <option value="only">Missing</option>
+      </Select>
+    ), [episodeFilterAvailability, onFilterChange]);
+    const watched = useMemo(() => (
+      <Select
+        id="watched"
+        label="Watched Status"
+        value={episodeFilterWatched}
+        onChange={onFilterChange}
+      >
+        <option value="true">All</option>
+        <option value="only">Watched</option>
+        <option value="false">Unwatched</option>
+      </Select>
+    ), [episodeFilterWatched, onFilterChange]);
+    const hidden = useMemo(() => (
+      <Select
+        id="hidden"
+        label="Hidden Status"
+        value={episodeFilterHidden}
+        onChange={onFilterChange}
+      >
+        <option value="true">All</option>
+        <option value="false">Not Hidden</option>
+        <option value="only">Hidden</option>
+      </Select>
+    ), [episodeFilterHidden, onFilterChange]);
+    return (
+      <div className="flex flex-col gap-y-6">
+        <ShokoPanel
+          title="Search & Filter"
+          className="top-0 w-400 shrink-0 grow-0"
+          contentClassName="gap-y-6"
+          fullHeight={false}
+          sticky
+          transparent
+        >
+          {searchInput}
+          {episodeType}
+          {availability}
+          {watched}
+          {hidden}
+        </ShokoPanel>
+      </div>
+    );
+  },
+);
+
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
@@ -28,6 +133,30 @@ const SeriesEpisodes = () => {
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
+
+  const onSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  });
+
+  const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    const { id: eventType, value } = event.target;
+    switch (eventType) {
+      case 'episodeType':
+        setEpisodeFilterType(value);
+        break;
+      case 'status':
+        setEpisodeFilterAvailability(value);
+        break;
+      case 'watched':
+        setEpisodeFilterWatched(value);
+        break;
+      case 'hidden':
+        setEpisodeFilterHidden(value);
+        break;
+      default:
+        break;
+    }
+  });
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
@@ -93,74 +222,17 @@ const SeriesEpisodes = () => {
   const markUnwatched = useEventCallback(() => handleMarkWatched(false));
 
   return (
-    <>
-      <ShokoPanel
-        title="Search & Filter"
-        className="flex w-full flex-row"
-        contentClassName="!flex-row gap-x-6 flex-wrap 2xl:flex-nowrap"
-        transparent
-        fullHeight={false}
-      >
-        <Input
-          inputClassName="w-full max-w-48 2xl:max-w-[15rem]"
-          id="search"
-          label="Title Search"
-          startIcon={mdiMagnify}
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
-        />
-        <Select
-          className="w-full max-w-48 2xl:max-w-60"
-          id="episodeType"
-          label="Episode Type"
-          value={episodeFilterType}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterType(event.currentTarget.value)}
-        >
-          <option value="">All</option>
-          <option value="Normal">Normal</option>
-          <option value="Special">Specials</option>
-          <option value="Other">Others</option>
-          <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
-          <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
-        </Select>
-        <Select
-          className="w-full max-w-48 2xl:max-w-60"
-          id="status"
-          label="Availability"
-          value={episodeFilterAvailability}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
-            setEpisodeFilterAvailability(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="false">Available</option>
-          <option value="only">Missing</option>
-        </Select>
-        <Select
-          className="w-full max-w-48 2xl:max-w-60"
-          id="watched"
-          label="Watched Status"
-          value={episodeFilterWatched}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterWatched(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="only">Watched</option>
-          <option value="false">Unwatched</option>
-        </Select>
-        <Select
-          className="w-full max-w-48 2xl:max-w-60"
-          id="hidden"
-          label="Hidden Status"
-          value={episodeFilterHidden}
-          onChange={(event: React.ChangeEvent<HTMLSelectElement>) => setEpisodeFilterHidden(event.currentTarget.value)}
-        >
-          <option value="true">All</option>
-          <option value="false">Not Hidden</option>
-          <option value="only">Hidden</option>
-        </Select>
-      </ShokoPanel>
-      <div className="flex gap-x-6">
+    <div className="flex w-full gap-x-6">
+      <SearchAndFilterPanel
+        onSearchChange={onSearchChange}
+        onFilterChange={onFilterChange}
+        search={search}
+        episodeFilterType={episodeFilterType}
+        episodeFilterAvailability={episodeFilterAvailability}
+        episodeFilterWatched={episodeFilterWatched}
+        episodeFilterHidden={episodeFilterHidden}
+      />
+      <div className="flex grow gap-y-6">
         <div className="flex grow flex-col gap-y-4">
           <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
@@ -230,7 +302,7 @@ const SeriesEpisodes = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
