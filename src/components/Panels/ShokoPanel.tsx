@@ -38,7 +38,7 @@ const ShokoPanel = (
       fullHeight && 'h-full',
       editMode ? 'pointer-events-none border-panel-text-primary' : 'border-panel-border',
       transparent ? 'bg-panel-background-transparent' : 'bg-panel-background',
-      sticky && 'sticky',
+      sticky && 'sticky top-0',
       className,
     )}
   >

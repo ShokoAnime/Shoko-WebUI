@@ -199,7 +199,7 @@ type FileOverviewProps = {
 const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) => (
   <ShokoPanel
     title="Files Overview"
-    className="top-0 w-400 shrink-0 grow"
+    className="w-400 shrink-0 grow"
     contentClassName="gap-y-6"
     transparent
     sticky
