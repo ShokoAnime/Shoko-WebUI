@@ -38,8 +38,8 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     if (!startDate) {
       return 'Unknown';
     }
-    if (endDate?.isAfter(dayjs())) {
-      return 'Ongoing';
+    if (endDate === null || endDate.isAfter(dayjs())) {
+      return 'Currently Airing';
     }
     return 'Finished';
   }, [startDate, endDate]);
