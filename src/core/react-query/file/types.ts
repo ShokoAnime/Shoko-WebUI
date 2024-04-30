@@ -17,3 +17,8 @@ export type LinkManyFilesToOneEpisodeRequestType = {
   episodeID: number;
   fileIDs: number[];
 };
+
+export type MarkVariationRequestType = {
+  fileId: number;
+  variation: boolean;
+};

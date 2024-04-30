@@ -8,6 +8,7 @@ import type {
   IgnoreFileRequestType,
   LinkManyFilesToOneEpisodeRequestType,
   LinkOneFileToManyEpisodesRequestType,
+  MarkVariationRequestType,
 } from '@/core/react-query/file/types';
 
 export const useDeleteFileMutation = () =>
@@ -49,6 +50,13 @@ export const useLinkManyFilesToOneEpisodeMutation = () =>
     mutationFn: (data: LinkManyFilesToOneEpisodeRequestType) => axios.post('File/Link', data),
   });
 
+export const useMarkVariationMutation = () =>
+  useMutation({
+    mutationFn: ({ fileId, variation }: MarkVariationRequestType) =>
+      axios.put(`File/${fileId}/Variation`, undefined, { params: { value: variation } }),
+    onSuccess: () => invalidateQueries(['episode', 'files']),
+  });
+
 export const useRehashFileMutation = () =>
   useMutation({
     mutationFn: (fileId: number) => axios.post(`File/${fileId}/Rehash`),
@@ -57,4 +65,5 @@ export const useRehashFileMutation = () =>
 export const useRescanFileMutation = () =>
   useMutation({
     mutationFn: (fileId: number) => axios.post(`File/${fileId}/Rescan`),
+    onSuccess: () => invalidateQueries(['episode', 'files']),
   });
