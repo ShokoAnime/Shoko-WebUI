@@ -166,7 +166,7 @@ async (action: UnknownAction) => {
 
     connectionEvents.onreconnected(() => {
       toast.dismiss('signalr-reconnecting');
-      toast.success('SignalR connection restored!');
+      toast.success('SignalR connection restored!', undefined, { toastId: 'signalr-connected' });
     });
 
     connectionEvents.onclose(() => {
@@ -174,7 +174,7 @@ async (action: UnknownAction) => {
       toast.error(
         'SignalR connection could not be re-established!',
         'Check if your server is running and refresh the page once it has started',
-        { autoClose: false },
+        { autoClose: false, toastId: 'signalr-disconnected' },
       );
     });
 
