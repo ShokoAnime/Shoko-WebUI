@@ -1,17 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
-import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading, mdiMagnify } from '@mdi/js';
+import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
-import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
+import EpisodeSearchAndFilterPanel from '@/components/Collection/Episode/EpisodeSearchAndFilterPanel';
+import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import Button from '@/components/Input/Button';
-import Input from '@/components/Input/Input';
-import Select from '@/components/Input/Select';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
@@ -19,111 +17,6 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 const pageSize = 26;
-
-type SearchAndFilterPanelProps = {
-  episodeFilterType: string;
-  episodeFilterAvailability: string;
-  episodeFilterWatched: string;
-  episodeFilterHidden: string;
-  search: string;
-  onFilterChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
-const SearchAndFilterPanel = React.memo(
-  (
-    {
-      episodeFilterAvailability,
-      episodeFilterHidden,
-      episodeFilterType,
-      episodeFilterWatched,
-      onFilterChange,
-      onSearchChange,
-      search,
-    }: SearchAndFilterPanelProps,
-  ) => {
-    const searchInput = useMemo(() => (
-      <Input
-        inputClassName=""
-        id="search"
-        label="Title Search"
-        startIcon={mdiMagnify}
-        type="text"
-        placeholder="Search..."
-        value={search}
-        onChange={onSearchChange}
-      />
-    ), [onSearchChange, search]);
-    const episodeType = useMemo(() => (
-      <Select
-        id="episodeType"
-        label="Episode Type"
-        value={episodeFilterType}
-        onChange={onFilterChange}
-      >
-        <option value="">All</option>
-        <option value="Normal">Normal</option>
-        <option value="Special">Specials</option>
-        <option value="Other">Others</option>
-        <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
-        <option value="Unknown,Trailer,Parody,Interview,Extra">Misc.</option>
-      </Select>
-    ), [episodeFilterType, onFilterChange]);
-    const availability = useMemo(() => (
-      <Select
-        id="status"
-        label="Availability"
-        value={episodeFilterAvailability}
-        onChange={onFilterChange}
-      >
-        <option value="true">All</option>
-        <option value="false">Available</option>
-        <option value="only">Missing</option>
-      </Select>
-    ), [episodeFilterAvailability, onFilterChange]);
-    const watched = useMemo(() => (
-      <Select
-        id="watched"
-        label="Watched Status"
-        value={episodeFilterWatched}
-        onChange={onFilterChange}
-      >
-        <option value="true">All</option>
-        <option value="only">Watched</option>
-        <option value="false">Unwatched</option>
-      </Select>
-    ), [episodeFilterWatched, onFilterChange]);
-    const hidden = useMemo(() => (
-      <Select
-        id="hidden"
-        label="Hidden Status"
-        value={episodeFilterHidden}
-        onChange={onFilterChange}
-      >
-        <option value="true">All</option>
-        <option value="false">Not Hidden</option>
-        <option value="only">Hidden</option>
-      </Select>
-    ), [episodeFilterHidden, onFilterChange]);
-    return (
-      <div className="flex flex-col gap-y-6">
-        <ShokoPanel
-          title="Search & Filter"
-          className="w-400"
-          contentClassName="gap-y-6"
-          fullHeight={false}
-          sticky
-          transparent
-        >
-          {searchInput}
-          {episodeType}
-          {availability}
-          {watched}
-          {hidden}
-        </ShokoPanel>
-      </div>
-    );
-  },
-);
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
@@ -222,7 +115,7 @@ const SeriesEpisodes = () => {
 
   return (
     <div className="flex w-full gap-x-6">
-      <SearchAndFilterPanel
+      <EpisodeSearchAndFilterPanel
         onSearchChange={onSearchChange}
         onFilterChange={onFilterChange}
         search={search}
@@ -280,7 +173,7 @@ const SeriesEpisodes = () => {
                       data-index={virtualItem.index}
                     >
                       {episode
-                        ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
+                        ? <EpisodeSummary animeId={animeId} episode={episode} page={page} />
                         : (
                           <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
                             <Icon path={mdiLoading} spin size={3} />
