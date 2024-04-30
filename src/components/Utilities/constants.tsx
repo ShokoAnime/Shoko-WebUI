@@ -15,6 +15,8 @@ export type UtilityHeaderType<T extends EpisodeType | FileType | SeriesType | Se
   item: (_: T) => React.ReactNode;
 };
 
+export type MultipleFileOptionsType = Record<number, 'keep' | 'variation' | 'delete'>;
+
 export const criteriaMap = {
   importFolder: FileSortCriteriaEnum.ImportFolderName,
   filename: FileSortCriteriaEnum.FileName,
