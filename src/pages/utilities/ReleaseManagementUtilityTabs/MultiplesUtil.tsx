@@ -112,17 +112,17 @@ const MultiplesUtil = () => {
             />
           </div>
 
-          {!selectedEpisode && (
-            <Button
-              buttonType="primary"
-              className="flex gap-x-2.5 px-4 py-3 font-semibold"
-              // disabled={seriesCount === 0}
-              disabled
-            >
-              <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
-              Auto-Delete Multiples
-            </Button>
-          )}
+          {/* TODO: Add support for auto-delete */}
+          {/* {!selectedEpisode && ( */}
+          {/*   <Button */}
+          {/*     buttonType="primary" */}
+          {/*     className="flex gap-x-2.5 px-4 py-3 font-semibold" */}
+          {/*     disabled={seriesCount === 0} */}
+          {/*   > */}
+          {/*     <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} /> */}
+          {/*     Auto-Delete Multiples */}
+          {/*   </Button> */}
+          {/* )} */}
 
           {selectedEpisode && (
             <div className="flex items-center justify-end gap-x-3">
