@@ -4,6 +4,7 @@ import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
+import FileInfo from '@/components/FileInfo';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import {
@@ -13,8 +14,6 @@ import {
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import useEventCallback from '@/hooks/useEventCallback';
-
-import EpisodeFileInfo from './EpisodeFileInfo';
 
 import type { FileType } from '@/core/types/api/file';
 
@@ -140,7 +139,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
               </div>
             </div>
 
-            <EpisodeFileInfo file={selectedFile} />
+            <FileInfo file={selectedFile} />
           </div>
         );
       })}

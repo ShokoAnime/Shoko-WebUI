@@ -7,6 +7,7 @@ import cx from 'classnames';
 import { find, toInteger } from 'lodash';
 
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
 
 import Input from './Input';
 
@@ -56,24 +57,6 @@ type Props = {
   rowIdx: number;
 };
 
-const getPrefix = (type: EpisodeTypeEnum) => {
-  switch (type) {
-    case EpisodeTypeEnum.Special:
-      return 'S';
-    case EpisodeTypeEnum.ThemeSong:
-      return 'C';
-    case EpisodeTypeEnum.Trailer:
-      return 'T';
-    case EpisodeTypeEnum.Other:
-      return 'O';
-    case EpisodeTypeEnum.Parody:
-      return 'P';
-    case EpisodeTypeEnum.Normal:
-    default:
-      return '';
-  }
-};
-
 const SelectOption = (option: Option & { divider: boolean }) => (
   <Listbox.Option
     value={option}
@@ -83,7 +66,7 @@ const SelectOption = (option: Option & { divider: boolean }) => (
     <div className="flex items-center justify-between">
       <span className="flex grow truncate font-normal">
         <div className="w-10 shrink-0 text-panel-text-important">
-          {getPrefix(option.type) + option.number}
+          {getEpisodePrefix(option.type) + option.number}
         </div>
         |
         <div className="ml-2">{option.label}</div>

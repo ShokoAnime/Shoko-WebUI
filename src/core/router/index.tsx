@@ -37,9 +37,8 @@ import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import FileSearch from '@/pages/utilities/FileSearch';
-import MultipleFilesUtility from '@/pages/utilities/MultipleFilesUtility';
+import MultiplesUtil from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtil';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
-import UnrecognizedUtility from '@/pages/utilities/UnrecognizedUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
 import ManuallyLinkedTab from '@/pages/utilities/UnrecognizedUtilityTabs/ManuallyLinkedTab';
@@ -80,14 +79,13 @@ const router = sentryCreateBrowserRouter(
           <Route path="dashboard" element={<DashboardPage />} />
           <Route path="utilities">
             <Route index element={<Navigate to="unrecognized" replace />} />
-            <Route path="unrecognized" element={<UnrecognizedUtility />}>
-              <Route index element={<Navigate to="files" replace />} />
-              <Route path="files" element={<UnrecognizedTab />} />
-              <Route path="files/link" element={<LinkFilesTab />} />
-              <Route path="manually-linked-files" element={<ManuallyLinkedTab />} />
-              <Route path="ignored-files" element={<IgnoredFilesTab />} />
-            </Route>
-            <Route path="multiple-files" element={<MultipleFilesUtility />} />
+            <Route path="unrecognized" element={<Navigate to="files" replace />} />
+            <Route path="unrecognized/files" element={<UnrecognizedTab />} />
+            <Route path="unrecognized/files/link" element={<LinkFilesTab />} />
+            <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
+            <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
+            <Route path="release-management" element={<Navigate to="multiples" replace />} />
+            <Route path="release-management/multiples" element={<MultiplesUtil />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
           </Route>

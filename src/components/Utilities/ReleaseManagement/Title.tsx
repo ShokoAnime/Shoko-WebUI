@@ -4,20 +4,18 @@ import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 const TabButton = ({ id, name }: { id: string, name: string }) => (
-  <NavLink to={`../unrecognized/${id}`} className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}>
+  <NavLink to={`../release-management/${id}`} className={({ isActive }) => (isActive ? 'text-panel-text-primary' : '')}>
     {name}
   </NavLink>
 );
 
 const Title = () => (
   <div className="flex items-center gap-x-2 font-semibold">
-    Unrecognized Files
+    Release Management
     <Icon path={mdiChevronRight} size={1} />
-    <TabButton id="files" name="Unrecognized" />
-    <div>|</div>
-    <TabButton id="manually-linked-files" name="Manually Linked" />
-    <div>|</div>
-    <TabButton id="ignored-files" name="Ignored" />
+    <TabButton id="multiples" name="Multiples" />
+    {/* <div>|</div> */}
+    {/* <TabButton id="duplicates" name="Duplicates" /> */}
   </div>
 );
 

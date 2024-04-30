@@ -6,6 +6,7 @@ import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
+  mdiFileDocumentMultipleOutline,
   mdiFileQuestionOutline,
   mdiFileSearchOutline,
   mdiFormatListBulletedSquare,
@@ -351,6 +352,12 @@ function TopNav() {
               onClick={closeModalsAndSubmenus}
               path="utilities/unrecognized"
               text="Unrecognized Files"
+            />
+            <LinkMenuItem
+              icon={mdiFileDocumentMultipleOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/release-management"
+              text="Release Management"
             />
             <LinkMenuItem
               icon={mdiFileDocumentAlertOutline}

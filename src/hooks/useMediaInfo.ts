@@ -46,7 +46,7 @@ export const useAudioInfo = <T extends FileType>(file?: T) => {
 
     const info: string[] = [];
     const AudioFormat = file?.MediaInfo?.Audio?.[0]?.Format.Name;
-    const AudioLanguages = map(file?.MediaInfo?.Audio, item => item.LanguageCode);
+    const AudioLanguages = map(file?.MediaInfo?.Audio, item => item.LanguageCode).filter(item => !!item);
 
     if (AudioFormat) {
       info.push(AudioFormat);
@@ -56,7 +56,7 @@ export const useAudioInfo = <T extends FileType>(file?: T) => {
       info.push(`${AudioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${AudioLanguages.join(',')})`);
     }
 
-    const SubtitleLanguages = map(file?.MediaInfo?.Subtitles, item => item.LanguageCode);
+    const SubtitleLanguages = map(file?.MediaInfo?.Subtitles, item => item.LanguageCode).filter(item => !!item);
     if (SubtitleLanguages && SubtitleLanguages.length > 0) {
       info.push(`${SubtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${SubtitleLanguages.join(',')})`);
     }
@@ -81,7 +81,9 @@ const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
     Name: fileName ?? '',
     Location: folderPath ?? '',
     Size: file?.Size ?? 0,
-    Group: `${file?.AniDB?.ReleaseGroup?.Name ?? ''} | v${file?.AniDB?.Version ?? ''}`,
+    Group: `${file?.AniDB?.ReleaseGroup?.Name ?? 'Unknown'}${
+      file?.AniDB?.Version ? (` | v${file?.AniDB?.Version}`) : ''
+    }`,
     Hashes: {
       ED2K: file?.Hashes?.ED2K ?? '',
       SHA1: file?.Hashes?.SHA1 ?? '',
@@ -90,6 +92,7 @@ const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
     },
     VideoInfo: videoInfo,
     AudioInfo: audioInfo,
+    Chapters: file?.AniDB?.Chaptered ?? false,
   };
 };
 
