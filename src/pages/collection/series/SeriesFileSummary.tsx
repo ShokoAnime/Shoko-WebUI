@@ -10,6 +10,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
+import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type {
@@ -296,8 +297,8 @@ const MissingEpisodeRow = React.memo((
         <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
       </a>
     </div>
-    <div className="w-[139px]">
-      {episode.AirDate}
+    <div>
+      {dayjs(episode.AirDate).format('MMMM DD YYYY')}
     </div>
   </div>
 ));
