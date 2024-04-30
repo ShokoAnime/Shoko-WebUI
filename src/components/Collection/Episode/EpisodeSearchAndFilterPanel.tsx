@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
-import { mdiMagnify } from '@mdi/js';
+import { mdiInformationOutline, mdiMagnify } from '@mdi/js';
+import Icon from '@mdi/react';
 
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
@@ -11,6 +12,8 @@ type Props = {
   episodeFilterWatched: string;
   episodeFilterHidden: string;
   search: string;
+  hasUnaired: boolean;
+  hasMissing: boolean;
   onFilterChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
@@ -20,6 +23,8 @@ const EpisodeSearchAndFilterPanel = ({
   episodeFilterHidden,
   episodeFilterType,
   episodeFilterWatched,
+  hasMissing,
+  hasUnaired,
   onFilterChange,
   onSearchChange,
   search,
@@ -28,7 +33,7 @@ const EpisodeSearchAndFilterPanel = ({
     <Input
       inputClassName=""
       id="search"
-      label="Title Search"
+      label="Episode Search"
       startIcon={mdiMagnify}
       type="text"
       placeholder="Search..."
@@ -39,12 +44,12 @@ const EpisodeSearchAndFilterPanel = ({
   const episodeType = useMemo(() => (
     <Select
       id="episodeType"
-      label="Episode Type"
+      label="Type"
       value={episodeFilterType}
       onChange={onFilterChange}
     >
       <option value="">All</option>
-      <option value="Normal">Normal</option>
+      <option value="Normal">Episodes</option>
       <option value="Special">Specials</option>
       <option value="Other">Others</option>
       <option value="ThemeSong,OpeningSong,EndingSong">Credits</option>
@@ -54,19 +59,19 @@ const EpisodeSearchAndFilterPanel = ({
   const availability = useMemo(() => (
     <Select
       id="status"
-      label="Availability"
+      label="Episode Status"
       value={episodeFilterAvailability}
       onChange={onFilterChange}
     >
-      <option value="true">All</option>
-      <option value="false">Available</option>
-      <option value="only">Missing</option>
+      <option value="true">All Episodes</option>
+      <option value="false">Available Episodes</option>
+      <option value="only">Missing Episodes</option>
     </Select>
   ), [episodeFilterAvailability, onFilterChange]);
   const watched = useMemo(() => (
     <Select
       id="watched"
-      label="Watched Status"
+      label="Watched State"
       value={episodeFilterWatched}
       onChange={onFilterChange}
     >
@@ -82,9 +87,9 @@ const EpisodeSearchAndFilterPanel = ({
       value={episodeFilterHidden}
       onChange={onFilterChange}
     >
-      <option value="true">All</option>
-      <option value="false">Not Hidden</option>
-      <option value="only">Hidden</option>
+      <option value="true">Show Hidden Entries</option>
+      <option value="false">Hide Hidden Entries</option>
+      <option value="only">Show Only Hidden Entries</option>
     </Select>
   ), [episodeFilterHidden, onFilterChange]);
   return (
@@ -102,6 +107,25 @@ const EpisodeSearchAndFilterPanel = ({
         {availability}
         {watched}
         {hidden}
+        {(hasUnaired || hasMissing) && <hr className="border border-panel-border" />}
+        <div className="flex flex-col gap-y-3">
+          {hasUnaired && (
+            <div className="flex flex-row gap-x-3">
+              <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
+              <div className="grow text-base font-semibold">
+                Series has Unaired Episodes
+              </div>
+            </div>
+          )}
+          {hasMissing && (
+            <div className="flex flex-row gap-x-3">
+              <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
+              <div className="grow text-base font-semibold">
+                Series has Missing Episodes
+              </div>
+            </div>
+          )}
+        </div>
       </ShokoPanel>
     </div>
   );

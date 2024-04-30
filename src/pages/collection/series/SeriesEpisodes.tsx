@@ -13,6 +13,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
@@ -65,6 +66,14 @@ const SeriesEpisodes = () => {
     },
     !!seriesId,
   );
+  const { data: seriesEpisodeFixed } = useSeriesEpisodesInfiniteQuery(toNumber(seriesId!), {
+    type: 'Normal',
+    includeMissing: 'true',
+    includeHidden: 'false',
+    includeDataFrom: ['AniDB'],
+    pageSize: 0,
+  }, !!seriesId);
+  const [fixedEpisodes] = useFlattenListResult(seriesEpisodeFixed);
   const {
     data,
     dataUpdatedAt,
@@ -73,6 +82,18 @@ const SeriesEpisodes = () => {
     isSuccess,
   } = seriesEpisodesQuery;
   const [episodes, episodeCount] = useFlattenListResult(data);
+
+  const unairedEpisodes = useMemo(
+    () => fixedEpisodes.filter(({ AniDB: episode }) => episode?.AirDate && dayjs(episode.AirDate).isAfter(dayjs())),
+    [fixedEpisodes],
+  );
+  const hasUnairedEpisodes = useMemo(() => unairedEpisodes.length > 0, [unairedEpisodes]);
+
+  const hasMissingEpisodes = useMemo(() =>
+    fixedEpisodes
+      .some(({ IDs: { ID: epID }, Size: epSize }) => (
+        epSize === 0 && !unairedEpisodes.find(({ IDs: { ID } }) => ID === epID)
+      )), [fixedEpisodes, unairedEpisodes]);
 
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
@@ -124,6 +145,8 @@ const SeriesEpisodes = () => {
         episodeFilterAvailability={episodeFilterAvailability}
         episodeFilterWatched={episodeFilterWatched}
         episodeFilterHidden={episodeFilterHidden}
+        hasUnaired={hasUnairedEpisodes}
+        hasMissing={hasMissingEpisodes}
       />
       <div className="flex grow gap-y-6">
         <div className="flex grow flex-col gap-y-4">
