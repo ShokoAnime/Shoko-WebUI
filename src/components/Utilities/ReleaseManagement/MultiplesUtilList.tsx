@@ -7,13 +7,14 @@ import {
   useSeriesEpisodesWithMultipleReleases,
   useSeriesWithMultipleReleases,
 } from '@/core/react-query/release-management/queries';
+import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { SeriesWithMultipleReleasesType } from '@/core/types/api/series';
 
-const columns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
+const seriesColumns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
   {
     id: 'series',
     name: 'Series (AniDB ID)',
@@ -32,6 +33,7 @@ const columns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
           rel="noreferrer noopener"
           className="cursor-pointer text-panel-text-primary"
           aria-label="Open AniDB series page"
+          onClick={e => e.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>
@@ -48,6 +50,53 @@ const columns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
         <>
           <span className="text-panel-text-important">{count}</span>
           {count === 1 ? ' Entry' : ' Entries'}
+        </>
+      );
+    },
+  },
+];
+
+const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
+  {
+    id: 'episode',
+    name: 'Episode Name',
+    className: 'line-clamp-1 grow basis-0 overflow-hidden',
+    item: episode => (
+      <div title={episode.Name} className="flex items-center gap-x-1">
+        <span className="line-clamp-1">
+          {getEpisodePrefix(episode.AniDB?.Type)}
+          {episode.AniDB?.EpisodeNumber}
+          &nbsp;-&nbsp;
+          {episode.Name}
+        </span>
+        <div>
+          (
+          <span className="text-panel-text-primary">{episode.IDs.AniDB}</span>
+          )
+        </div>
+        <a
+          href={`https://anidb.net/episode/${episode.IDs.AniDB}`}
+          target="_blank"
+          rel="noreferrer noopener"
+          className="cursor-pointer text-panel-text-primary"
+          aria-label="Open AniDB episode page"
+          onClick={e => e.stopPropagation()}
+        >
+          <Icon path={mdiOpenInNew} size={1} />
+        </a>
+      </div>
+    ),
+  },
+  {
+    id: 'file-count',
+    name: 'File Count',
+    className: 'w-28',
+    item: (episode) => {
+      const count = episode.Files?.length ?? 0;
+      return (
+        <>
+          <span className="text-panel-text-important">{count}</span>
+          {count === 1 ? ' File' : ' Files'}
         </>
       );
     },
@@ -100,7 +149,7 @@ const MultiplesUtilList = ({ ignoreVariations, onlyFinishedSeries, setSelectedEp
 
         {seriesQuery.isSuccess && seriesCount > 0 && (
           <UtilitiesTable
-            columns={columns}
+            columns={seriesColumns}
             count={seriesCount}
             fetchNextPage={seriesQuery.fetchNextPage}
             isFetchingNextPage={seriesQuery.isFetchingNextPage}
@@ -123,7 +172,7 @@ const MultiplesUtilList = ({ ignoreVariations, onlyFinishedSeries, setSelectedEp
 
         {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount > 0 && (
           <UtilitiesTable
-            columns={columns}
+            columns={episodeColumns}
             count={episodeCount}
             fetchNextPage={episodesQuery.fetchNextPage}
             isFetchingNextPage={episodesQuery.isFetchingNextPage}
