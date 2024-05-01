@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { mdiCloseCircleOutline, mdiFileDocumentMultipleOutline, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { forEach, map, toNumber } from 'lodash';
+import { map, toNumber } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -28,6 +28,7 @@ const MultiplesUtil = () => {
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
   const [operationsPending, setOperationsPending] = useState(false);
+  const [fileOptions, setFileOptions] = useState<MultipleFileOptionsType>({});
 
   const { mutateAsync: deleteFile } = useDeleteFileMutation();
   const { mutateAsync: markVariation } = useMarkVariationMutation();
@@ -36,19 +37,6 @@ const MultiplesUtil = () => {
     if (type === 'variations') toggleIgnoreVariations();
     if (type === 'series') toggleOnlyFinishedSeries();
   };
-
-  const [fileOptions, setFileOptions] = useState<MultipleFileOptionsType>(
-    () => {
-      const options: MultipleFileOptionsType = {};
-      if (!selectedEpisode) return options;
-
-      forEach(selectedEpisode.Files, (file) => {
-        if (file.IsVariation) options[file.ID] = 'variation';
-        else options[file.ID] = 'keep';
-      });
-      return options;
-    },
-  );
 
   const confirmChanges = useEventCallback(() => {
     setOperationsPending(true);
@@ -72,12 +60,6 @@ const MultiplesUtil = () => {
         setSelectedEpisode(undefined);
       });
   });
-
-  const handleFileOptionChange = (fileId: number, value: 'keep' | 'variation' | 'delete') => {
-    setFileOptions(options => (
-      { ...options, [fileId]: value }
-    ));
-  };
 
   return (
     <div className="flex grow flex-col gap-y-6 overflow-y-auto">
@@ -164,8 +146,7 @@ const MultiplesUtil = () => {
         >
           <MultiplesUtilEpisode
             episode={selectedEpisode}
-            fileOptions={fileOptions}
-            handleOptionChange={handleFileOptionChange}
+            setFileOptions={setFileOptions}
           />
         </TransitionDiv>
       </div>
