@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { countBy } from 'lodash';
+import { countBy, forEach } from 'lodash';
 
 import FileInfo from '@/components/FileInfo';
 import Select from '@/components/Input/Select';
@@ -12,14 +12,36 @@ import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
   episode: EpisodeType | undefined;
-  fileOptions: MultipleFileOptionsType;
-  handleOptionChange: (fileId: number, value: 'keep' | 'variation' | 'delete') => void;
+  setFileOptions: (options: MultipleFileOptionsType) => void;
 };
 
-const MultiplesUtilEpisode = ({ episode, fileOptions, handleOptionChange }: Props) => {
-  const optionCounts = useMemo(() => countBy(fileOptions), [fileOptions]);
+const MultiplesUtilEpisode = ({ episode, setFileOptions }: Props) => {
+  const [options, setOptions] = useState<MultipleFileOptionsType>(
+    () => {
+      const tempOptions: MultipleFileOptionsType = {};
+      if (!episode) return tempOptions;
+
+      forEach(episode.Files, (file) => {
+        if (file.IsVariation) tempOptions[file.ID] = 'variation';
+        else tempOptions[file.ID] = 'keep';
+      });
+      return tempOptions;
+    },
+  );
+
+  const optionCounts = useMemo(() => countBy(options), [options]);
+
+  useEffect(() => {
+    setFileOptions(options);
+  }, [options, setFileOptions]);
 
   if (!episode) return null;
+
+  const handleOptionChange = (fileId: number, value: 'keep' | 'variation' | 'delete') => {
+    setOptions(tempOptions => (
+      { ...tempOptions, [fileId]: value }
+    ));
+  };
 
   return (
     <>
@@ -45,7 +67,7 @@ const MultiplesUtilEpisode = ({ episode, fileOptions, handleOptionChange }: Prop
           <div className="flex flex-col gap-y-4">
             <Select
               id="mark-variation"
-              value={fileOptions[file.ID]}
+              value={options[file.ID]}
               onChange={event => handleOptionChange(file.ID, event.target.value as 'keep' | 'variation' | 'delete')}
             >
               <option value="keep">Will be kept</option>
