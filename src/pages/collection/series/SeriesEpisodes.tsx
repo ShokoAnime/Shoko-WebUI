@@ -81,6 +81,7 @@ const SeriesEpisodes = () => {
       includeHidden: episodeFilterHidden,
       type: episodeFilterType,
       includeWatched: episodeFilterWatched,
+      search: debouncedSearch,
       value: watched,
     }, {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
