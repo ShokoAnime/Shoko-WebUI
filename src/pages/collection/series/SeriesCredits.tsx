@@ -222,7 +222,7 @@ const SeriesCredits = () => {
       </div>
 
       <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
-        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+        <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
           <div className="text-xl font-semibold">
             Credits |&nbsp;
             {(debouncedSearch !== '' || descriptionFilter.length !== 0) && (

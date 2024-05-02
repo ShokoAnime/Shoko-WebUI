@@ -151,7 +151,7 @@ type FileSelectionHeaderProps = {
   fileSummary?: WebuiSeriesFileSummaryType;
 };
 const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
-  <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+  <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
     <div className="flex gap-x-2 text-xl font-semibold">
       {mode}
       &nbsp;Files |

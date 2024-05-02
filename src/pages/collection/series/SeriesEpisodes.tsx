@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
-import { mdiEyeCheckOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
+import { mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
@@ -9,6 +9,7 @@ import { useDebounceValue } from 'usehooks-ts';
 
 import EpisodeSearchAndFilterPanel from '@/components/Collection/Episode/EpisodeSearchAndFilterPanel';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
+import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
@@ -25,6 +26,7 @@ const SeriesEpisodes = () => {
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
+  const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
@@ -117,7 +119,7 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const handleMarkWatched = useEventCallback((watched: boolean) => {
+  const handleMarkWatched = useEventCallback((watched: boolean, useFiltered: boolean) => {
     watchEpisode({
       seriesId: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
@@ -126,14 +128,20 @@ const SeriesEpisodes = () => {
       includeWatched: episodeFilterWatched,
       search: debouncedSearch,
       value: watched,
+      search: useFiltered ? search : undefined,
     }, {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
     });
   });
 
-  const markWatched = useEventCallback(() => handleMarkWatched(true));
-  const markUnwatched = useEventCallback(() => handleMarkWatched(false));
+  const markSeriesWatched = useEventCallback(() => handleMarkWatched(true, false));
+  const markSeriesUnwatched = useEventCallback(() => handleMarkWatched(false, false));
+
+  const markFilteredWatched = useEventCallback(() => handleMarkWatched(true, true));
+  const markFilteredUnwatched = useEventCallback(() => handleMarkWatched(false, true));
+
+  const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
 
   return (
     <div className="flex w-full gap-x-6">
@@ -150,7 +158,7 @@ const SeriesEpisodes = () => {
       />
       <div className="flex grow gap-y-6">
         <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
             <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
               <span>Episodes</span>
               <span className="hidden px-2 2xl:inline">|</span>
@@ -161,20 +169,10 @@ const SeriesEpisodes = () => {
                 Entries Listed
               </span>
             </div>
-            <div className="flex gap-x-4 xl:gap-x-6">
-              <Button
-                className="flex items-center gap-x-3 !text-base"
-                onClick={markWatched}
-              >
-                <Icon path={mdiEyeCheckOutline} size={1} />
-                Mark Filtered As Watched
-              </Button>
-              <Button
-                className="flex items-center gap-x-3 !text-base"
-                onClick={markUnwatched}
-              >
+            <div>
+              <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
                 <Icon path={mdiEyeOutline} size={1} />
-                Mark Filtered As Unwatched
+                Options
               </Button>
             </div>
           </div>
@@ -211,6 +209,14 @@ const SeriesEpisodes = () => {
           </div>
         </div>
       </div>
+      <EpisodeWatchModal
+        show={showOptionsModal}
+        onRequestClose={() => setShowOptionsModal(false)}
+        markSeriesUnwatched={markSeriesWatched}
+        markSeriesWatched={markSeriesUnwatched}
+        markFilteredWatched={markFilteredWatched}
+        markFilteredUnwatched={markFilteredUnwatched}
+      />
     </div>
   );
 };
