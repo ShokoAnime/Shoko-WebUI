@@ -54,7 +54,7 @@ const SeriesEpisodes = () => {
     }
   });
 
-  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
+  const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId).data;
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
     toNumber(seriesId!),
     {
@@ -68,14 +68,6 @@ const SeriesEpisodes = () => {
     },
     !!seriesId,
   );
-  const { data: seriesEpisodeFixed } = useSeriesEpisodesInfiniteQuery(toNumber(seriesId!), {
-    type: 'Normal',
-    includeMissing: 'true',
-    includeHidden: 'false',
-    includeDataFrom: ['AniDB'],
-    pageSize: 0,
-  }, !!seriesId);
-  const [fixedEpisodes] = useFlattenListResult(seriesEpisodeFixed);
   const {
     data,
     dataUpdatedAt,
@@ -85,21 +77,25 @@ const SeriesEpisodes = () => {
   } = seriesEpisodesQuery;
   const [episodes, episodeCount] = useFlattenListResult(data);
 
-  const unairedEpisodes = useMemo(
-    () => fixedEpisodes.filter(({ AniDB: episode }) => episode?.AirDate && dayjs(episode.AirDate).isAfter(dayjs())),
-    [fixedEpisodes],
-  );
-  const hasUnairedEpisodes = useMemo(() => unairedEpisodes.length > 0, [unairedEpisodes]);
-
-  const hasMissingEpisodes = useMemo(() =>
-    fixedEpisodes
-      .some(({ IDs: { ID: epID }, Size: epSize }) => (
-        epSize === 0 && !unairedEpisodes.find(({ IDs: { ID } }) => ID === epID)
-      )), [fixedEpisodes, unairedEpisodes]);
-
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
-  const animeId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
+  const animeId = useMemo(() => seriesQueryData?.IDs.AniDB ?? 0, [seriesQueryData]);
+
+  const hasMissingEpisodes = useMemo(() => ((seriesQueryData?.Sizes.Missing.Episodes ?? 0) > 0), [seriesQueryData]);
+
+  const startDate = useMemo(
+    () => (seriesQueryData?.AniDB?.AirDate != null ? dayjs(seriesQueryData?.AniDB?.AirDate) : null),
+    [seriesQueryData],
+  );
+  const endDate = useMemo(
+    () => (seriesQueryData?.AniDB?.EndDate != null ? dayjs(seriesQueryData?.AniDB?.EndDate) : null),
+    [seriesQueryData],
+  );
+  const hasUnairedEpisodes = useMemo(() => {
+    if (!startDate) return false;
+    if (endDate === null || endDate.isAfter(dayjs())) return true;
+    return false;
+  }, [startDate, endDate]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
