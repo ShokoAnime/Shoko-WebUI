@@ -5,6 +5,16 @@ import { map } from 'lodash';
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import ModalPanel from '@/components/Panels/ModalPanel';
 
+type SeriesEpisodesTabProps = {
+  markSeriesWatched: () => void;
+  markSeriesUnwatched: () => void;
+};
+
+type FilteredEpisodesTabProps = {
+  markFilteredWatched: () => void;
+  markFilteredUnwatched: () => void;
+};
+
 type Props =
   & {
     show: boolean;
@@ -18,10 +28,6 @@ const tabs = {
   series_episodes: 'All Episodes',
 };
 
-type SeriesEpisodesTabProps = {
-  markSeriesWatched: () => void;
-  markSeriesUnwatched: () => void;
-};
 const SeriesEpisodesTab = React.memo(({ markSeriesUnwatched, markSeriesWatched }: SeriesEpisodesTabProps) => (
   <>
     <Action
@@ -37,10 +43,6 @@ const SeriesEpisodesTab = React.memo(({ markSeriesUnwatched, markSeriesWatched }
   </>
 ));
 
-type FilteredEpisodesTabProps = {
-  markFilteredWatched: () => void;
-  markFilteredUnwatched: () => void;
-};
 const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (
   <>
     <Action
