@@ -1,4 +1,9 @@
-export type DeleteFileLinkRequestType = {
+export type DeleteFilesRequestType = {
+  fileIds: number[];
+  removeFolder: boolean;
+};
+
+export type DeleteFileRequestType = {
   fileId: number;
   removeFolder: boolean;
 };

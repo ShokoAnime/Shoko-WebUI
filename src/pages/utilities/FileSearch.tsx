@@ -30,7 +30,11 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { staticColumns } from '@/components/Utilities/constants';
 import { useEpisodeAniDBQuery } from '@/core/react-query/episode/queries';
-import { useDeleteFileMutation, useRehashFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
+import {
+  useDeleteFilesMutation,
+  useRehashFileMutation,
+  useRescanFileMutation,
+} from '@/core/react-query/file/mutations';
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
@@ -60,7 +64,7 @@ const Menu = (
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const { mutateAsync: deleteFile } = useDeleteFileMutation();
+  const { mutate: deleteFiles } = useDeleteFilesMutation();
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
 
@@ -80,18 +84,18 @@ const Menu = (
       }),
   );
 
-  const deleteFiles = useEventCallback(() => {
+  const handleDelete = useEventCallback(() => {
+    deleteFiles(
+      {
+        fileIds: selectedRows.map(row => row.ID),
+        removeFolder: true,
+      },
+      {
+        onSuccess: () => toast.success(`${selectedRows.length} files deleted!`),
+        onError: () => toast.error('Files could not be deleted!'),
+      },
+    );
     setSelectedRows([]);
-    let failedFiles = 0;
-    forEach(selectedRows, (row) => {
-      deleteFile({ fileId: row.ID, removeFolder: true }).catch((error) => {
-        failedFiles += 1;
-        console.error(error);
-      });
-    });
-
-    if (failedFiles) toast.error(`Error deleting ${failedFiles} files!`);
-    if (failedFiles !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
   });
 
   const rehashFiles = useEventCallback(() => {
@@ -149,7 +153,7 @@ const Menu = (
         selectedFiles={selectedRows}
         removeFile={removeFileFromSelection}
         onClose={cancelDelete}
-        onConfirm={deleteFiles}
+        onConfirm={handleDelete}
       />
     </div>
   );
