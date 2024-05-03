@@ -153,7 +153,8 @@ async (action: UnknownAction) => {
     connectionEvents.on('ShokoEvent:FileDeleted', () => invalidateOnEvent('FileDeleted'));
     connectionEvents.on('ShokoEvent:FileHashed', () => invalidateOnEvent('FileHashed'));
     connectionEvents.on('ShokoEvent:FileMatched', () => invalidateOnEvent('FileMatched'));
-    // connectionEvents.on('ShokoEvent:SeriesUpdated', onSeriesUpdated);
+    connectionEvents.on('ShokoEvent:FileMoved', () => invalidateOnEvent('FileMoved'));
+    connectionEvents.on('ShokoEvent:SeriesUpdated', () => invalidateOnEvent('SeriesUpdated'));
     // connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated);
 
     connectionEvents.onreconnecting(

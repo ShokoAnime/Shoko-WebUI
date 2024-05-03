@@ -45,6 +45,7 @@ export const invalidateQueries = (queryKey: QueryKey) => {
 export const invalidateOnEvent = (event: string) => {
   switch (event) {
     case 'FileDeleted':
+    case 'FileMoved':
       invalidateQueries(['dashboard']);
       invalidateQueries(['import-folder']);
       invalidateQueries(['files']);
@@ -60,6 +61,9 @@ export const invalidateOnEvent = (event: string) => {
       invalidateQueries(['files']);
       invalidateQueries(['series', 'files']);
       invalidateQueries(['series', 'linked-files']);
+      break;
+    case 'SeriesUpdated':
+      invalidateQueries(['dashboard']);
       break;
     case 'QueueStateChanged':
       invalidateQueries(['queue', 'items']);
