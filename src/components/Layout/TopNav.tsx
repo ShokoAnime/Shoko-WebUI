@@ -39,7 +39,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { NetworkAvailabilityEnum } from '@/core/types/signalr';
+import { NetworkAvailabilityEnum } from '@/core/signalr/types';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 

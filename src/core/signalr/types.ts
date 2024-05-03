@@ -164,3 +164,8 @@ export const enum AVDumpEventTypeEnum {
   InstalledAVDump = 'InstalledAVDump',
   InstallException = 'InstallException',
 }
+
+export type SeriesUpdateEventType = {
+  ShokoGroupIDs: number[];
+  ShokoSeriesIDs: number[];
+};

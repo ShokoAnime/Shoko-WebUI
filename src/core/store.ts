@@ -5,8 +5,8 @@ import { throttle } from 'lodash';
 
 import Events from './events';
 import { loadState, saveState } from './localStorage';
-import signalrMiddleware from './middlewares/signalr';
 import combinedReducer from './reducers';
+import signalrMiddleware from './signalr/signalr';
 
 import type { UnknownAction } from 'redux';
 

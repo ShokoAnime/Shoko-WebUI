@@ -54,7 +54,7 @@ const SeriesEpisodes = () => {
 
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
-  const animeId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
+  const anidbSeriesId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
@@ -209,7 +209,14 @@ const SeriesEpisodes = () => {
                       data-index={virtualItem.index}
                     >
                       {episode
-                        ? <SeriesEpisode animeId={animeId} episode={episode} page={page} />
+                        ? (
+                          <SeriesEpisode
+                            anidbSeriesId={anidbSeriesId}
+                            episode={episode}
+                            page={page}
+                            seriesId={toNumber(seriesId)}
+                          />
+                        )
                         : (
                           <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
                             <Icon path={mdiLoading} spin size={3} />

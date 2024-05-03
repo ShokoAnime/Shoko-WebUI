@@ -6,7 +6,7 @@ import type { FileRequestType } from '@/core/react-query/types';
 
 export const prefetchSeriesFilesQuery = async (seriesId: number, params: FileRequestType) => {
   await queryClient.prefetchQuery({
-    queryKey: ['series', 'files', seriesId, params],
+    queryKey: ['series', seriesId, 'files', params],
     queryFn: () => axios.get(`Series/${seriesId}/File`, { params }),
     staleTime: 60000,
   });
@@ -17,7 +17,7 @@ export const prefetchSeriesEpisodesInfiniteQuery = async (
   params: SeriesEpisodesInfiniteRequestType,
 ) => {
   await queryClient.prefetchInfiniteQuery({
-    queryKey: ['series', 'episodes', seriesId, params],
+    queryKey: ['series', seriesId, 'episodes', params],
     queryFn: ({ pageParam }) =>
       axios.get(
         `Series/${seriesId}/Episode`,

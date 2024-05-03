@@ -33,7 +33,7 @@ export const useSeriesQuery = (
   enabled = true,
 ) =>
   useQuery<SeriesDetailsType>({
-    queryKey: ['series', 'single', seriesId, params],
+    queryKey: ['series', seriesId, 'data', params],
     queryFn: () => axios.get(`Series/${seriesId}`, { params }),
     enabled,
   });
@@ -47,7 +47,7 @@ export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
   useQuery<ListResultType<EpisodeAniDBType>, unknown, EpisodeAniDBType[]>({
-    queryKey: ['series', 'episodes', 'anidb', anidbId, params],
+    queryKey: ['series', 'anidb', anidbId, 'episodes', params],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}/Episode`, { params }),
     select: transformListResultSimplified,
     enabled,
@@ -63,7 +63,7 @@ export const useSeriesAniDBSearchQuery = (query: string, enabled = true) =>
 
 export const useSeriesCastQuery = (seriesId: number, enabled = true) =>
   useQuery<SeriesCast[]>({
-    queryKey: ['series', 'cast', seriesId],
+    queryKey: ['series', seriesId, 'cast'],
     queryFn: () => axios.get(`Series/${seriesId}/Cast`),
     enabled,
   });
@@ -74,7 +74,7 @@ export const useSeriesEpisodesInfiniteQuery = (
   enabled = true,
 ) =>
   useInfiniteQuery<ListResultType<EpisodeType>>({
-    queryKey: ['series', 'episodes', seriesId, params],
+    queryKey: ['series', seriesId, 'episodes', params],
     queryFn: ({ pageParam }) =>
       axios.get(
         `Series/${seriesId}/Episode`,
@@ -100,7 +100,7 @@ export const useSeriesFilesQuery = (
   enabled = true,
 ) =>
   useQuery<ListResultType<FileType>, unknown, FileType[]>({
-    queryKey: ['series', 'files', seriesId, params],
+    queryKey: ['series', seriesId, 'files', params],
     queryFn: () => axios.get(`Series/${seriesId}/File`, { params }),
     select: transformListResultSimplified,
     enabled,
@@ -108,27 +108,27 @@ export const useSeriesFilesQuery = (
 
 export const useSeriesGroupQuery = (seriesId: number, topLevel: boolean) =>
   useQuery<CollectionGroupType>({
-    queryKey: ['series', 'group', seriesId, topLevel],
+    queryKey: ['series', seriesId, 'group', topLevel],
     queryFn: () => axios.get(`Series/${seriesId}/Group`, { params: { topLevel } }),
   });
 
 export const useSeriesImagesQuery = (seriesId: number, enabled = true) =>
   useQuery<SeriesImagesType>({
-    queryKey: ['series', 'images', seriesId],
+    queryKey: ['series', seriesId, 'images'],
     queryFn: () => axios.get(`Series/${seriesId}/Images`),
     enabled,
   });
 
 export const useSeriesNextUpQuery = (seriesId: number, params: SeriesNextUpRequestType, enabled = true) =>
   useQuery<EpisodeType>({
-    queryKey: ['series', 'next-up', seriesId, params],
+    queryKey: ['series', seriesId, 'next-up', params],
     queryFn: () => axios.get(`Series/${seriesId}/NextUpEpisode`, { params }),
     enabled,
   });
 
 export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestType, enabled = true) =>
   useQuery<TagType[]>({
-    queryKey: ['series', 'tags', seriesId, params],
+    queryKey: ['series', seriesId, 'tags', params],
     queryFn: () => axios.get(`Series/${seriesId}/Tags`, { params }),
     enabled,
   });
@@ -177,21 +177,21 @@ export const useSeriesWithoutFilesInfiniteQuery = (params: PaginationType) =>
 
 export const useRecommendedAnimeQuery = (params: DashboardRequestType) =>
   useQuery<ListResultType<SeriesRecommendedType>, unknown, SeriesRecommendedType[]>({
-    queryKey: ['series', 'recommended-anime', params],
+    queryKey: ['series', 'recommended', params],
     queryFn: () => axios.get('Series/AniDB/RecommendedForYou', { params }),
     select: transformListResultSimplified,
   });
 
 export const useRelatedAnimeQuery = (seriesId: number, enabled = true) =>
   useQuery<SeriesAniDBRelatedType[]>({
-    queryKey: ['series', 'related', seriesId],
+    queryKey: ['series', seriesId, 'related'],
     queryFn: () => axios.get(`Series/${seriesId}/AniDB/Related`),
     enabled,
   });
 
 export const useSimilarAnimeQuery = (seriesId: number, enabled = true) =>
   useQuery<SeriesAniDBSimilarType[]>({
-    queryKey: ['series', 'similar', seriesId],
+    queryKey: ['series', seriesId, 'similar'],
     queryFn: () => axios.get(`Series/${seriesId}/AniDB/Similar`),
     enabled,
   });
