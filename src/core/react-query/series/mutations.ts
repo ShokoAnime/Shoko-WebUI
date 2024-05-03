@@ -23,9 +23,9 @@ export const useChangeSeriesImageMutation = () =>
           Source: image.Source,
         },
       ),
-    onSuccess: () => {
-      invalidateQueries(['series', 'single']);
-      invalidateQueries(['series', 'images']);
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+      invalidateQueries(['series', seriesId, 'images']);
     },
   });
 
@@ -41,7 +41,7 @@ export const useDeleteSeriesMutation = () =>
 export const useDeleteSeriesTvdbLinkMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TvDB`),
-    onSuccess: () => invalidateQueries(['series', 'episodes']),
+    onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId, 'episodes']),
   });
 
 // This is actually a query but we had to declare it as mutation to use it properly as lazy query.
@@ -54,8 +54,8 @@ export const useOverrideSeriesTitleMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...data }: { seriesId: number, Title: string }) =>
       axios.post(`Series/${seriesId}/OverrideTitle`, data),
-    onSuccess: () => {
-      invalidateQueries(['series', 'single']);
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
     },
   });
 
@@ -67,12 +67,10 @@ export const useRefreshAniDBSeriesMutation = () =>
         null,
         { params },
       ),
-    onSuccess: (response) => {
+    onSuccess: (response, { anidbID }) => {
       if (!response) throw Error(); // Consider 'false' response as error.
 
-      invalidateQueries(['series', 'anidb']);
-      invalidateQueries(['series', 'anidb-search']);
-      invalidateQueries(['series', 'episodes']);
+      invalidateQueries(['series', 'anidb', anidbID]);
     },
   });
 
@@ -102,8 +100,8 @@ export const useWatchSeriesEpisodesMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...params }: WatchSeriesEpisodesRequestType) =>
       axios.post(`Series/${seriesId}/Episode/Watched`, null, { params }),
-    onSuccess: () => {
-      invalidateQueries(['series', 'single']);
-      invalidateQueries(['series', 'episodes']);
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+      invalidateQueries(['series', seriesId, 'episodes']);
     },
   });

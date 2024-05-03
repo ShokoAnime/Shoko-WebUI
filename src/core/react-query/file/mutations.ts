@@ -4,16 +4,22 @@ import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
-  DeleteFileLinkRequestType,
+  DeleteFileRequestType,
+  DeleteFilesRequestType,
   IgnoreFileRequestType,
   LinkManyFilesToOneEpisodeRequestType,
   LinkOneFileToManyEpisodesRequestType,
   MarkVariationRequestType,
 } from '@/core/react-query/file/types';
 
+export const useDeleteFilesMutation = () =>
+  useMutation({
+    mutationFn: (data: DeleteFilesRequestType) => axios.delete('File', { data }),
+  });
+
 export const useDeleteFileMutation = () =>
   useMutation({
-    mutationFn: ({ fileId, removeFolder }: DeleteFileLinkRequestType) =>
+    mutationFn: ({ fileId, removeFolder }: DeleteFileRequestType) =>
       axios.delete(`File/${fileId}`, { data: { removeFolder } }),
   });
 

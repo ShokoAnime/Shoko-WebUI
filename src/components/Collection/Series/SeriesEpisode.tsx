@@ -19,10 +19,11 @@ import EpisodeFiles from './EpisodeFiles';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
-  animeId?: number;
+  anidbSeriesId?: number;
   episode: EpisodeType;
   nextUp?: boolean;
   page?: number;
+  seriesId: number;
 };
 
 const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
@@ -43,7 +44,7 @@ const StateButton = React.memo((
   </Button>
 ));
 
-const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => {
+const SeriesEpisode = React.memo(({ anidbSeriesId, episode, nextUp, page, seriesId }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
   const [open, toggleOpen] = useToggle(false);
   const episodeId = get(episode, 'IDs.ID', 0);
@@ -53,8 +54,8 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
     { includeDataFrom: ['AniDB'], include: ['AbsolutePaths', 'MediaInfo'] },
     open,
   );
-  const { mutate: markWatched } = useWatchEpisodeMutation(page, nextUp);
-  const { mutate: markHidden } = useHideEpisodeMutation(nextUp);
+  const { mutate: markWatched } = useWatchEpisodeMutation(seriesId, page, nextUp);
+  const { mutate: markHidden } = useHideEpisodeMutation(seriesId, nextUp);
 
   const handleMarkWatched = useEventCallback(() => markWatched({ episodeId, watched: episode.Watched === null }));
   const handleMarkHidden = useEventCallback(() => markHidden({ episodeId, hidden: !episode.IsHidden }));
@@ -95,7 +96,7 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
         </BackgroundImagePlaceholderDiv>
         <EpisodeDetails episode={episode} />
       </div>
-      {animeId && episode.Size > 0 && (
+      {!nextUp && anidbSeriesId && episode.Size > 0 && (
         <>
           <div
             className="flex cursor-pointer justify-center gap-x-4 border-t-2 border-panel-border py-4 font-semibold"
@@ -111,7 +112,11 @@ const SeriesEpisode = React.memo(({ animeId, episode, nextUp, page }: Props) => 
             />
           </div>
           <AnimateHeight height={open && episodeFilesQuery.isSuccess ? 'auto' : 0}>
-            <EpisodeFiles animeId={animeId} episodeFiles={episodeFilesQuery.data ?? []} episodeId={episodeId} />
+            <EpisodeFiles
+              anidbSeriesId={anidbSeriesId}
+              episodeFiles={episodeFilesQuery.data ?? []}
+              episodeId={episodeId}
+            />
           </AnimateHeight>
         </>
       )}

@@ -10,7 +10,8 @@ import { throttle } from 'lodash';
 
 import toast from '@/components/Toast';
 import Events from '@/core/events';
-import { invalidateOnEvent } from '@/core/react-query/queryClient';
+import { handleEvent } from '@/core/signalr/eventHandlers';
+import { AVDumpEventTypeEnum } from '@/core/signalr/types';
 import {
   resetQueueStatus,
   setFetched,
@@ -20,17 +21,16 @@ import {
   setUdpBanStatus,
 } from '@/core/slices/mainpage';
 import { restoreAVDumpSessions, updateAVDumpEvent } from '@/core/slices/utilities/avdump';
-import { AVDumpEventTypeEnum } from '@/core/types/signalr';
 
-import type store from '@/core/store';
-import type { RootState } from '@/core/store';
 import type {
   AVDumpEventType,
   AVDumpRestoreType,
   AniDBBanItemType,
   NetworkAvailabilityEnum,
   QueueStatusType,
-} from '@/core/types/signalr';
+} from '@/core/signalr/types';
+import type store from '@/core/store';
+import type { RootState } from '@/core/store';
 import type { Middleware, UnknownAction } from 'redux';
 
 let connectionEvents: HubConnection;
@@ -39,7 +39,7 @@ let connectionEvents: HubConnection;
 
 const onQueueStateChange = (dispatch: typeof store.dispatch) =>
   throttle((state: QueueStatusType) => {
-    invalidateOnEvent('QueueStateChanged');
+    handleEvent('QueueStateChanged');
     if (!state) {
       dispatch(resetQueueStatus());
       return;
@@ -149,13 +149,11 @@ async (action: UnknownAction) => {
     connectionEvents.on('AVDump:OnConnected', onAvDumpConnected(dispatch));
     connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
 
-    // connectionEvents.on('ShokoEvent:FileDetected', onFileDetected(dispatch)); // Not needed for now
-    connectionEvents.on('ShokoEvent:FileDeleted', () => invalidateOnEvent('FileDeleted'));
-    connectionEvents.on('ShokoEvent:FileHashed', () => invalidateOnEvent('FileHashed'));
-    connectionEvents.on('ShokoEvent:FileMatched', () => invalidateOnEvent('FileMatched'));
-    connectionEvents.on('ShokoEvent:FileMoved', () => invalidateOnEvent('FileMoved'));
-    connectionEvents.on('ShokoEvent:SeriesUpdated', () => invalidateOnEvent('SeriesUpdated'));
-    // connectionEvents.on('ShokoEvent:EpisodeUpdated', onEpisodeUpdated);
+    connectionEvents.on('ShokoEvent:FileDeleted', () => handleEvent('FileDeleted'));
+    connectionEvents.on('ShokoEvent:FileMatched', () => handleEvent('FileMatched'));
+    connectionEvents.on('ShokoEvent:FileMoved', () => handleEvent('FileMoved'));
+    connectionEvents.on('ShokoEvent:FileRenamed', () => handleEvent('FileRenamed'));
+    connectionEvents.on('ShokoEvent:SeriesUpdated', () => handleEvent('SeriesUpdated'));
 
     connectionEvents.onreconnecting(
       () =>

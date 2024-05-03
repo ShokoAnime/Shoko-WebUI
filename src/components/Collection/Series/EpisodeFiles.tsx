@@ -18,12 +18,12 @@ import useEventCallback from '@/hooks/useEventCallback';
 import type { FileType } from '@/core/types/api/file';
 
 type Props = {
-  animeId: number;
+  anidbSeriesId: number;
   episodeFiles: FileType[];
   episodeId: number;
 };
 
-const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
+const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
   const { mutate: deleteFile } = useDeleteFileMutation();
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
@@ -107,7 +107,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                 )}
                 {ReleaseGroupID > 0 && (
                   <a
-                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${animeId}`}
+                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${anidbSeriesId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >

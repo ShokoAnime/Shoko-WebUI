@@ -29,7 +29,7 @@ export const useFilesInfiniteQuery = (params: FileRequestType, searchQuery?: str
 
 export const useFileQuery = (fileId: number, params: FileRequestType, enabled = true) =>
   useQuery<FileType>({
-    queryKey: ['file', 'single', fileId, params],
+    queryKey: ['file', fileId, params],
     queryFn: () => axios.get(`File/${fileId}`, { params }),
     enabled,
   });

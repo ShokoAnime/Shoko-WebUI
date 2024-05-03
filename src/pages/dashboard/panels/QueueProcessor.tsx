@@ -15,8 +15,8 @@ import { useQueueItemsQuery } from '@/core/react-query/queue/queries';
 import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { QueueItemType } from '@/core/signalr/types';
 import type { RootState } from '@/core/store';
-import type { QueueItemType } from '@/core/types/signalr';
 
 const Options = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);

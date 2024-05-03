@@ -9,6 +9,7 @@ import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
+      staleTime: 1000, // To prevent duplicate requests from same page
       refetchOnWindowFocus: false,
       retry: (failureCount, error: AxiosError | Error) => {
         let errorHeader: string;
@@ -40,36 +41,6 @@ const queryClient = new QueryClient({
 
 export const invalidateQueries = (queryKey: QueryKey) => {
   queryClient.invalidateQueries({ queryKey }).catch(console.error);
-};
-
-export const invalidateOnEvent = (event: string) => {
-  switch (event) {
-    case 'FileDeleted':
-    case 'FileMoved':
-      invalidateQueries(['dashboard']);
-      invalidateQueries(['import-folder']);
-      invalidateQueries(['files']);
-      break;
-    case 'FileHashed':
-      invalidateQueries(['dashboard', 'stats']);
-      invalidateQueries(['import-folder']);
-      invalidateQueries(['files']);
-      break;
-    case 'FileMatched':
-      invalidateQueries(['dashboard']);
-      invalidateQueries(['import-folder']);
-      invalidateQueries(['files']);
-      invalidateQueries(['series', 'files']);
-      invalidateQueries(['series', 'linked-files']);
-      break;
-    case 'SeriesUpdated':
-      invalidateQueries(['dashboard']);
-      break;
-    case 'QueueStateChanged':
-      invalidateQueries(['queue', 'items']);
-      break;
-    default:
-  }
 };
 
 export default queryClient;
