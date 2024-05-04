@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
-import { mdiEyeOutline, mdiLoading } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { debounce, toNumber } from 'lodash';
@@ -144,6 +144,8 @@ const SeriesEpisodes = () => {
   const markFilteredWatched = useEventCallback(() => handleMarkWatched(true));
   const markFilteredUnwatched = useEventCallback(() => handleMarkWatched(false));
 
+  const resetSelection = useEventCallback(() => setSelectedEpisodes(new Set()));
+
   const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
 
   return (
@@ -170,9 +172,24 @@ const SeriesEpisodes = () => {
                   {isSuccess ? episodeCount : '-'}
                 </span>
                 Entries Listed
+                {selectedEpisodes.size > 0 && (
+                  <>
+                    &nbsp;|&nbsp;
+                    <span className="text-panel-text-important">
+                      {selectedEpisodes.size}
+                    </span>
+                    &nbsp;Entries Selected
+                  </>
+                )}
               </span>
             </div>
-            <div>
+            <div className="flex flex-row gap-x-2">
+              {selectedEpisodes.size > 0 && (
+                <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
+                  <Icon path={mdiCloseCircleOutline} size={1} />
+                  Cancel Selection
+                </Button>
+              )}
               <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
                 <Icon path={mdiEyeOutline} size={1} />
                 Options
