@@ -98,7 +98,7 @@ const EpisodeSummary = React.memo(({ animeId, episode, nextUp, onSelectionChange
             </div>
             <div className="flex w-12 flex-col">
               {(!!episode.Watched || !!episode.IsHidden) && (
-                <div className="flex flex-col gap-3 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-3 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+                <div className="flex flex-col gap-3 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-3 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
                   <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
                   <StateIcon icon={mdiEyeOffOutline} show={!!episode.IsHidden} />
                 </div>
