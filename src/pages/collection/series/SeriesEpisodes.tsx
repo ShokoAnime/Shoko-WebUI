@@ -115,7 +115,7 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const handleMarkWatched = useEventCallback((watched: boolean, useFiltered: boolean) => {
+  const handleMarkWatched = useEventCallback((watched: boolean) => {
     watchEpisode({
       seriesId: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
@@ -123,18 +123,15 @@ const SeriesEpisodes = () => {
       type: episodeFilterType,
       includeWatched: episodeFilterWatched,
       value: watched,
-      search: useFiltered ? debouncedSearch : undefined,
+      search: debouncedSearch,
     }, {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
     });
   });
 
-  const markSeriesWatched = useEventCallback(() => handleMarkWatched(true, false));
-  const markSeriesUnwatched = useEventCallback(() => handleMarkWatched(false, false));
-
-  const markFilteredWatched = useEventCallback(() => handleMarkWatched(true, true));
-  const markFilteredUnwatched = useEventCallback(() => handleMarkWatched(false, true));
+  const markFilteredWatched = useEventCallback(() => handleMarkWatched(true));
+  const markFilteredUnwatched = useEventCallback(() => handleMarkWatched(false));
 
   const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
 
@@ -207,8 +204,6 @@ const SeriesEpisodes = () => {
       <EpisodeWatchModal
         show={showOptionsModal}
         onRequestClose={() => setShowOptionsModal(false)}
-        markSeriesUnwatched={markSeriesWatched}
-        markSeriesWatched={markSeriesUnwatched}
         markFilteredWatched={markFilteredWatched}
         markFilteredUnwatched={markFilteredUnwatched}
       />
