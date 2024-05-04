@@ -1,6 +1,13 @@
 import React from 'react';
 import AnimateHeight from 'react-animate-height';
-import { mdiChevronDown, mdiEyeCheckOutline, mdiEyeOffOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
+import {
+  mdiCheckboxBlankCircleOutline,
+  mdiCheckboxMarkedCircleOutline,
+  mdiChevronDown,
+  mdiEyeCheckOutline,
+  mdiEyeOffOutline,
+  mdiLoading,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get } from 'lodash';
@@ -23,27 +30,43 @@ type Props = {
   episode: EpisodeType;
   nextUp?: boolean;
   page?: number;
+  selected?: boolean;
+  onSelectionChange?: () => void;
 };
 
-const StateIcon = ({ icon, show }: { icon: string, show: boolean }) => (
-  show
-    ? (
-      <div className="flex items-center justify-center rounded-lg bg-panel-background-transparent px-3 py-2 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
-        <Icon path={icon} size={1} />
-      </div>
-    )
-    : null
+const StateIcon = ({ className, icon, show }: { icon: string, show: boolean, className?: string }) => (
+  show ? <Icon path={icon} className={className} size={1} /> : null
 );
 
 const StateButton = React.memo((
   { active, icon, onClick, tooltip }: { icon: string, active: boolean, onClick: () => void, tooltip: string },
 ) => (
   <Button className={active ? 'text-panel-text-important' : 'text-panel-text'} onClick={onClick} tooltip={tooltip}>
-    <Icon path={icon} size="2rem" />
+    <Icon path={icon} size={1} />
   </Button>
 ));
 
-const EpisodeSummary = React.memo(({ animeId, episode, nextUp, page }: Props) => {
+const SelectedStateButton = React.memo((
+  { onClick, selected, show }: { selected?: boolean, show?: boolean, onClick?: () => void },
+) => (
+  show
+    ? (
+      <Button
+        onClick={onClick ?? (() => {})}
+        className="p-3 text-panel-text"
+        tooltip={selected ? 'Unselect' : 'Select'}
+      >
+        <Icon
+          path={selected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+          className="text-panel-icon-action"
+          size={1}
+        />
+      </Button>
+    )
+    : null
+));
+
+const EpisodeSummary = React.memo(({ animeId, episode, nextUp, onSelectionChange, page, selected }: Props) => {
   const thumbnail = useEpisodeThumbnail(episode);
   const [open, toggleOpen] = useToggle(false);
   const episodeId = get(episode, 'IDs.ID', 0);
@@ -64,32 +87,49 @@ const EpisodeSummary = React.memo(({ animeId, episode, nextUp, page }: Props) =>
       <div className={cx('z-10 flex items-center gap-x-6', !nextUp && 'p-6')}>
         <BackgroundImagePlaceholderDiv
           image={thumbnail}
-          className="group h-[16.25rem] min-w-[28.75rem] rounded-lg border border-panel-border"
+          className="group flex h-[16.25rem] min-w-[28.75rem] rounded-lg border border-panel-border"
           zoomOnHover
         >
-          <div className="pointer-events-none absolute right-3 top-3 z-10 transition-opacity group-hover:opacity-0">
-            <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
-            <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
-          </div>
-          <div className="pointer-events-none z-10 flex h-full justify-between bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-            <div>
-              <StateButton icon={mdiPencilCircleOutline} active={false} onClick={() => {}} tooltip="Edit" />
+          <div className="absolute flex w-full flex-row justify-between rounded-lg transition-opacity group-hover:opacity-0">
+            <div className="flex w-12 flex-col">
+              <div className="rounded-br-lg bg-panel-background-transparent">
+                <SelectedStateButton selected={selected} show={selected} onClick={onSelectionChange} />
+              </div>
             </div>
-            <div className="flex flex-col gap-y-6">
-              {episode.Size > 0 && (
-                <StateButton
-                  icon={mdiEyeCheckOutline}
-                  active={!!episode.Watched}
-                  onClick={handleMarkWatched}
-                  tooltip={`Mark ${episode.Watched ? 'Unwatched' : 'Watched'}`}
-                />
+            <div className="flex w-12 flex-col">
+              {(!!episode.Watched || !!episode.IsHidden) && (
+                <div className="flex flex-col gap-3 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-3 text-panel-text-important shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+                  <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
+                  <StateIcon icon={mdiEyeOffOutline} show={!!episode.IsHidden} />
+                </div>
               )}
-              <StateButton
-                icon={mdiEyeOffOutline}
-                active={episode.IsHidden}
-                onClick={handleMarkHidden}
-                tooltip={episode.IsHidden ? 'Unhide Episode' : 'Hide Episode'}
+            </div>
+          </div>
+          <div className="absolute z-10 flex size-full flex-row justify-between rounded-lg bg-panel-background-poster-overlay opacity-0 transition-opacity group-hover:opacity-100">
+            <div className="flex w-12 flex-col">
+              <SelectedStateButton
+                selected={selected}
+                show={typeof selected !== 'undefined'}
+                onClick={onSelectionChange}
               />
+            </div>
+            <div className="flex w-12 flex-col">
+              <div className="flex flex-col gap-3 p-3 text-panel-text-important">
+                {episode.Size > 0 && (
+                  <StateButton
+                    icon={mdiEyeCheckOutline}
+                    active={!!episode.Watched}
+                    onClick={handleMarkWatched}
+                    tooltip={`Mark ${episode.Watched ? 'Watched' : 'Unwatched'}`}
+                  />
+                )}
+                <StateButton
+                  icon={mdiEyeOffOutline}
+                  active={episode.IsHidden}
+                  onClick={handleMarkHidden}
+                  tooltip={`${episode.IsHidden ? 'Hide' : 'Unhide'} Episode`}
+                />
+              </div>
             </div>
           </div>
         </BackgroundImagePlaceholderDiv>

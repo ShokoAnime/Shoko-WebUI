@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useOutletContext } from 'react-router-dom';
 import { mdiEyeOutline, mdiLoading } from '@mdi/js';
@@ -27,13 +27,13 @@ const SeriesEpisodes = () => {
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
   const [showOptionsModal, setShowOptionsModal] = useState(false);
+  const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
   const onSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   });
-
   const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
     switch (eventType) {
@@ -53,6 +53,17 @@ const SeriesEpisodes = () => {
         break;
     }
   });
+  const onSelectionChange = useEventCallback((episodeId: number) => {
+    setSelectedEpisodes((prevState) => {
+      const selectionList = new Set(prevState);
+      if (!selectionList.delete(episodeId)) selectionList.add(episodeId);
+      return selectionList;
+    });
+  });
+
+  useEffect(() => {
+    setSelectedEpisodes(new Set());
+  }, [episodeFilterType, episodeFilterAvailability, episodeFilterWatched, episodeFilterHidden, debouncedSearch]);
 
   const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId).data;
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
@@ -187,7 +198,15 @@ const SeriesEpisodes = () => {
                       data-index={virtualItem.index}
                     >
                       {episode
-                        ? <EpisodeSummary animeId={anidbSeriesId} episode={episode} page={page} />
+                        ? (
+                          <EpisodeSummary
+                            selected={selectedEpisodes.has(episode.IDs.ID)}
+                            onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
+                            animeId={anidbSeriesId}
+                            episode={episode}
+                            page={page}
+                          />
+                        )
                         : (
                           <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
                             <Icon path={mdiLoading} spin size={3} />
