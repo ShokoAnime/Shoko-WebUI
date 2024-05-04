@@ -92,7 +92,10 @@ const SeriesEpisodes = () => {
 
   const animeId = useMemo(() => seriesQueryData?.IDs.AniDB ?? 0, [seriesQueryData]);
 
-  const hasMissingEpisodes = useMemo(() => ((seriesQueryData?.Sizes.Missing.Episodes ?? 0) > 0), [seriesQueryData]);
+  const hasMissingEpisodes = useMemo(
+    () => ((seriesQueryData?.Sizes.Missing.Episodes ?? 0) > 0),
+    [seriesQueryData?.Sizes],
+  );
 
   const startDate = useMemo(
     () => (seriesQueryData?.AniDB?.AirDate != null ? dayjs(seriesQueryData?.AniDB?.AirDate) : null),
@@ -102,11 +105,10 @@ const SeriesEpisodes = () => {
     () => (seriesQueryData?.AniDB?.EndDate != null ? dayjs(seriesQueryData?.AniDB?.EndDate) : null),
     [seriesQueryData],
   );
-  const hasUnairedEpisodes = useMemo(() => {
-    if (!startDate) return false;
-    if (endDate === null || endDate.isAfter(dayjs())) return true;
-    return false;
-  }, [startDate, endDate]);
+  const hasUnairedEpisodes = useMemo(
+    () => (!!startDate && (endDate === null || endDate.isAfter(dayjs()))),
+    [startDate, endDate],
+  );
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
@@ -161,78 +163,76 @@ const SeriesEpisodes = () => {
         hasUnaired={hasUnairedEpisodes}
         hasMissing={hasMissingEpisodes}
       />
-      <div className="flex grow gap-y-6">
-        <div className="flex grow flex-col gap-y-4">
-          <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-            <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
-              <span>Episodes</span>
-              <span className="hidden px-2 2xl:inline">|</span>
-              <span>
-                <span className="pr-2 text-panel-text-important">
-                  {isSuccess ? episodeCount : '-'}
-                </span>
-                Entries Listed
-                {selectedEpisodes.size > 0 && (
-                  <>
-                    &nbsp;|&nbsp;
-                    <span className="text-panel-text-important">
-                      {selectedEpisodes.size}
-                    </span>
-                    &nbsp;Entries Selected
-                  </>
-                )}
+      <div className="flex grow flex-col gap-y-4">
+        <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
+            <span>Episodes</span>
+            <span className="hidden px-2 2xl:inline">|</span>
+            <span>
+              <span className="pr-2 text-panel-text-important">
+                {isSuccess ? episodeCount : '-'}
               </span>
-            </div>
-            <div className="flex flex-row gap-x-2">
+              Entries Listed
               {selectedEpisodes.size > 0 && (
-                <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
-                  <Icon path={mdiCloseCircleOutline} size={1} />
-                  Cancel Selection
-                </Button>
+                <>
+                  &nbsp;|&nbsp;
+                  <span className="text-panel-text-important">
+                    {selectedEpisodes.size}
+                  </span>
+                  &nbsp;Entries Selected
+                </>
               )}
-              <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
-                <Icon path={mdiEyeOutline} size={1} />
-                Options
-              </Button>
-            </div>
+            </span>
           </div>
-          <div className="grow">
-            <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-              <div
-                className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
-                style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
-              >
-                {virtualItems.map((virtualItem) => {
-                  const page = Math.ceil((virtualItem.index + 1) / pageSize);
-                  const episode = episodes[virtualItem.index];
+          <div className="flex flex-row gap-x-2">
+            {selectedEpisodes.size > 0 && (
+              <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
+                <Icon path={mdiCloseCircleOutline} size={1} />
+                Cancel Selection
+              </Button>
+            )}
+            <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
+              <Icon path={mdiEyeOutline} size={1} />
+              Options
+            </Button>
+          </div>
+        </div>
+        <div className="grow">
+          <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+            <div
+              className="absolute left-0 top-0 flex w-full flex-col gap-y-4 pb-8"
+              style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}
+            >
+              {virtualItems.map((virtualItem) => {
+                const page = Math.ceil((virtualItem.index + 1) / pageSize);
+                const episode = episodes[virtualItem.index];
 
-                  if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
+                if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
 
-                  return (
-                    <div
-                      key={`${dataUpdatedAt}-${virtualItem.key}`}
-                      className="flex flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
-                      data-index={virtualItem.index}
-                    >
-                      {episode
-                        ? (
-                          <EpisodeSummary
-                            selected={selectedEpisodes.has(episode.IDs.ID)}
-                            onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
-                            animeId={animeId}
-                            episode={episode}
-                            page={page}
-                          />
-                        )
-                        : (
-                          <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
-                            <Icon path={mdiLoading} spin size={3} />
-                          </div>
-                        )}
-                    </div>
-                  );
-                })}
-              </div>
+                return (
+                  <div
+                    key={`${dataUpdatedAt}-${virtualItem.key}`}
+                    className="flex flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
+                    data-index={virtualItem.index}
+                  >
+                    {episode
+                      ? (
+                        <EpisodeSummary
+                          selected={selectedEpisodes.has(episode.IDs.ID)}
+                          onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
+                          animeId={animeId}
+                          episode={episode}
+                          page={page}
+                        />
+                      )
+                      : (
+                        <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
+                          <Icon path={mdiLoading} spin size={3} />
+                        </div>
+                      )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
