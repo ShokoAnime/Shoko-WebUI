@@ -24,7 +24,9 @@ if (!isDebug()) {
         maskAllText: true,
         blockAllMedia: false,
       }),
-      Sentry.captureConsoleIntegration(),
+      Sentry.captureConsoleIntegration({
+        levels: ['error'],
+      }),
     ],
     tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
