@@ -27,7 +27,7 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          className="mt-20 !w-[29.5rem]"
+          className="mt-32 !w-[29.5rem]"
           closeButton={false}
           icon={false}
         />
