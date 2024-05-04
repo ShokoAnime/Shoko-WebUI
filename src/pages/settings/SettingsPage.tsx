@@ -62,7 +62,7 @@ function SettingsPage() {
     toastId.current = toast.info(
       'Unsaved Changes',
       'Please save before leaving this page.',
-      { autoClose: false, style: { marginBottom: '5rem' } },
+      { autoClose: false, position: 'top-right' },
     );
   }, [unsavedChanges]);
 
