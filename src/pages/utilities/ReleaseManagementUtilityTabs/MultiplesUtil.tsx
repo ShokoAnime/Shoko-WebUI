@@ -45,6 +45,7 @@ const MultiplesUtil = () => {
       if (!selectedEpisode) return null;
 
       const file = selectedEpisode.Files!.find(item => item.ID === toNumber(id))!;
+      if (!file) return null;
       if (option === 'delete') return deleteFile({ fileId: file.ID, removeFolder: false });
       if (option === 'variation' && !file.IsVariation) return markVariation({ fileId: file.ID, variation: true });
       if (option === 'keep' && file.IsVariation) return markVariation({ fileId: file.ID, variation: false });
