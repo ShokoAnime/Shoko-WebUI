@@ -5,11 +5,6 @@ import { map } from 'lodash';
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import ModalPanel from '@/components/Panels/ModalPanel';
 
-type SeriesEpisodesTabProps = {
-  markSeriesWatched: () => void;
-  markSeriesUnwatched: () => void;
-};
-
 type FilteredEpisodesTabProps = {
   markFilteredWatched: () => void;
   markFilteredUnwatched: () => void;
@@ -20,39 +15,22 @@ type Props =
     show: boolean;
     onRequestClose: () => void;
   }
-  & SeriesEpisodesTabProps
   & FilteredEpisodesTabProps;
 
 const tabs = {
-  filtered_episodes: 'Selected Episodes',
-  series_episodes: 'All Episodes',
+  filtered_episodes: 'Filtered Episodes',
 };
-
-const SeriesEpisodesTab = React.memo(({ markSeriesUnwatched, markSeriesWatched }: SeriesEpisodesTabProps) => (
-  <>
-    <Action
-      name="Mark as watched"
-      description="Mark all the episodes in this series as watched."
-      onClick={markSeriesWatched}
-    />
-    <Action
-      name="Mark as unwatched"
-      description="Mark all the episodes in this series as unwatched."
-      onClick={markSeriesUnwatched}
-    />
-  </>
-));
 
 const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (
   <>
     <Action
       name="Mark as watched"
-      description="Mark all the episodes in this filtered selection as watched."
+      description="Mark as watched episodes matching the current search & filter options."
       onClick={markFilteredWatched}
     />
     <Action
       name="Mark as unwatched"
-      description="Mark all the episodes in this filtered selection as unwatched."
+      description="Mark as unwatched episodes matching the current search & filter options."
       onClick={markFilteredUnwatched}
     />
   </>
@@ -60,14 +38,10 @@ const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWat
 
 const renderTab = (
   activeTab: string,
-  markSeriesWatched: () => void,
-  markSeriesUnwatched: () => void,
   markFilteredWatched: () => void,
   markFilteredUnwatched: () => void,
 ) => {
   switch (activeTab) {
-    case 'series_episodes':
-      return <SeriesEpisodesTab markSeriesUnwatched={markSeriesWatched} markSeriesWatched={markSeriesUnwatched} />;
     case 'filtered_episodes':
     default:
       return (
@@ -77,9 +51,9 @@ const renderTab = (
 };
 
 const EpisodeWatchModal = (
-  { markFilteredUnwatched, markFilteredWatched, markSeriesUnwatched, markSeriesWatched, onRequestClose, show }: Props,
+  { markFilteredUnwatched, markFilteredWatched, onRequestClose, show }: Props,
 ) => {
-  const [activeTab, setActiveTab] = useState('series_episodes');
+  const [activeTab, setActiveTab] = useState('filtered_episodes');
 
   return (
     <ModalPanel
@@ -111,7 +85,7 @@ const EpisodeWatchModal = (
         <div className="border-r border-panel-border" />
         <div className="grow">
           <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
-            {renderTab(activeTab, markSeriesWatched, markSeriesUnwatched, markFilteredWatched, markFilteredUnwatched)}
+            {renderTab(activeTab, markFilteredWatched, markFilteredUnwatched)}
           </div>
         </div>
       </div>
