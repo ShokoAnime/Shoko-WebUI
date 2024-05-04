@@ -11,9 +11,7 @@ import {
   mdiOpenInNew,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import * as Sentry from '@sentry/browser';
 import cx from 'classnames';
-import { get } from 'lodash';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { siDiscord } from 'simple-icons';
 
@@ -76,14 +74,6 @@ function LoginPage() {
       navigate(searchParams.get('redirectTo') ?? '/webui', { replace: true });
     }
   }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
-
-  useEffect(() => {
-    if (!get(versionQuery.data, 'Server', false)) return;
-    const versionHash = versionQuery?.data?.Server.ReleaseChannel !== 'Stable'
-      ? versionQuery?.data?.Server.Commit
-      : versionQuery.data.Server.Version;
-    Sentry.setTag('server_version', versionHash);
-  }, [versionQuery.data]);
 
   const handleSignIn = (event: React.FormEvent) => {
     event.preventDefault();

@@ -13,19 +13,18 @@ if (!isDebug()) {
     environment: 'production',
     release: `shoko-webui@${uiVersion()}`,
     integrations: [
-      new Sentry.BrowserTracing({
-        routingInstrumentation: Sentry.reactRouterV6Instrumentation(
-          React.useEffect,
-          useLocation,
-          useNavigationType,
-          createRoutesFromChildren,
-          matchRoutes,
-        ),
+      Sentry.reactRouterV6BrowserTracingIntegration({
+        useEffect: React.useEffect,
+        useLocation,
+        useNavigationType,
+        createRoutesFromChildren,
+        matchRoutes,
       }),
-      new Sentry.Replay({
+      Sentry.replayIntegration({
         maskAllText: true,
         blockAllMedia: false,
       }),
+      Sentry.captureConsoleIntegration(),
     ],
     tracesSampleRate: 0.1,
     replaysSessionSampleRate: 0,
