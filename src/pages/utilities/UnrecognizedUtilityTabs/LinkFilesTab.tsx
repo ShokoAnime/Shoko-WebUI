@@ -190,7 +190,7 @@ const AnimeSelectPanel = (
 
 function LinkFilesTab() {
   const navigate = useNavigate();
-  const { selectedRows } = useLocation().state as { selectedRows: FileType[] };
+  const { selectedRows } = (useLocation().state ?? []) as { selectedRows: FileType[] };
   const [{ createdNewSeries, isLinking, isLinkingRunning }, setLoading] = useState({
     isLinking: false,
     isLinkingRunning: false,
