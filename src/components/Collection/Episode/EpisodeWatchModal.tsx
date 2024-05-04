@@ -19,18 +19,19 @@ type Props =
 
 const tabs = {
   filtered_episodes: 'Filtered Episodes',
+  selected_episodes: 'Selected Episodes',
 };
 
 const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (
   <>
     <Action
       name="Mark as watched"
-      description="Mark as watched episodes matching the current search & filter options."
+      description="Mark the filtered episodes as watched."
       onClick={markFilteredWatched}
     />
     <Action
       name="Mark as unwatched"
-      description="Mark as unwatched episodes matching the current search & filter options."
+      description="Mark the filtered episodes as unwatched."
       onClick={markFilteredUnwatched}
     />
   </>
@@ -42,6 +43,8 @@ const renderTab = (
   markFilteredUnwatched: () => void,
 ) => {
   switch (activeTab) {
+    case 'selected_episodes':
+      return <>Not yet implemented!</>;
     case 'filtered_episodes':
     default:
       return (
