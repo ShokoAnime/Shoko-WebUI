@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiChevronDown, mdiChevronUp, mdiLoading, mdiMagnify } from '@mdi/js';
+import { mdiLoading, mdiMagnify, mdiOpenInNew, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import cx from 'classnames';
 import { toNumber } from 'lodash';
-import { useDebounceValue } from 'usehooks-ts';
+import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
+import ModalPanel from '@/components/Panels/ModalPanel';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -17,28 +17,31 @@ import type { TagType } from '@/core/types/api/tags';
 
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
-function SeriesTag(props: { item: TagType }) {
-  const { item } = props;
-  const [isOpen, setIsOpen] = useState(false);
+const SeriesTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
+  const emitTag = useEventCallback(() => onTagExpand(tag));
 
   return (
     <div
-      className="flex max-w-[29.875rem] cursor-pointer flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6"
-      onClick={() => {
-        setIsOpen(!isOpen);
-      }}
+      className="flex h-[9.75rem] max-w-[29.875rem] cursor-pointer flex-col gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6"
+      onClick={emitTag}
     >
-      <div className="flex justify-between text-xl font-semibold capitalize">
-        {item.Name}
-        &nbsp;
-        <Icon path={isOpen ? mdiChevronUp : mdiChevronDown} size={1} />
+      <div className="flex flex-row items-center">
+        <div className="line-clamp-2 grow text-xl font-semibold capitalize">
+          {tag.Name}
+        </div>
+        <div>
+          <Icon
+            path={mdiTagTextOutline}
+            size={1}
+            className={tag.Source === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action'}
+            title={`${tag.Source} Tag`}
+          />
+        </div>
       </div>
-      <div className={cx('leading-5', { 'line-clamp-2': !isOpen })}>
-        <AnidbDescription text={item?.Description ?? 'No description set.'} />
-      </div>
+      <AnidbDescription className="line-clamp-2" text={tag.Description ?? ''} />
     </div>
   );
-}
+});
 
 type SearchAndFilterPanelProps = {
   search: string;
@@ -95,7 +98,7 @@ const SearchAndFilterPanel = React.memo(
           className="w-full"
           contentClassName="gap-y-6"
           fullHeight={false}
-          // sticky
+          sticky
           transparent
         >
           {searchInput}
@@ -113,9 +116,57 @@ const SearchAndFilterPanel = React.memo(
   },
 );
 
+const TagModal = React.memo(({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
+  const header = (
+    <div className="flex w-full justify-between capitalize">
+      <div>
+        Tag |&nbsp;
+        {tag?.Name}
+      </div>
+      {tag?.Source === 'AniDB' && (
+        <a
+          href={`https://anidb.net/tag/${tag.ID}`}
+          className=" flex items-center gap-x-2 text-base text-panel-icon-action"
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          <div className="metadata-link-icon AniDB" />
+          AniDB (
+          {tag?.ID}
+          )
+          <Icon path={mdiOpenInNew} size={1} />
+        </a>
+      )}
+    </div>
+  );
+
+  return (
+    <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
+      <AnidbDescription text={tag?.Description ?? ''} className="line-clamp-[10] opacity-65" />
+      <div className="flex flex-col gap-2">
+        <div className="text-base font-bold">
+          Series With Tag |&nbsp;
+          <span className="text-panel-text-important">
+            ?
+          </span>
+          &nbsp;Series
+        </div>
+        <div className="w-full rounded-lg bg-panel-input p-6">
+          <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
+            <div>Not yet implemented!</div>
+            <div>Not yet implemented!</div>
+          </div>
+        </div>
+      </div>
+    </ModalPanel>
+  );
+});
+
 const SeriesTags = () => {
   const { seriesId } = useParams();
 
+  const [selectedTag, setSelectedTag] = useState<TagType>();
+  const [showTagModal, toggleShowTagModal] = useToggle(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
   const [showSpoilers, setShowSpoilers] = useState(false);
@@ -178,6 +229,12 @@ const SeriesTags = () => {
     [isSuccess, tagsQueryData?.length],
   );
 
+  const onTagSelection = useEventCallback((tag: TagType) => {
+    setSelectedTag(tag);
+    toggleShowTagModal();
+  });
+  const clearTagSelection = useEventCallback(() => toggleShowTagModal());
+
   if (!seriesId) return null;
 
   return (
@@ -199,11 +256,14 @@ const SeriesTags = () => {
             )
             : (
               <div className="grid grid-cols-3 gap-4 2xl:gap-6">
-                {filteredTags?.map(item => <SeriesTag key={`${item.Source}-${item.ID}`} item={item} />)}
+                {filteredTags?.map(tag => (
+                  <SeriesTag key={`${tag.Source}-${tag.ID}`} tag={tag} onTagExpand={onTagSelection} />
+                ))}
               </div>
             )}
         </div>
       </div>
+      <TagModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
     </div>
   );
 };
