@@ -10,6 +10,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
+import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type {
@@ -150,7 +151,7 @@ type FileSelectionHeaderProps = {
   fileSummary?: WebuiSeriesFileSummaryType;
 };
 const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSelectionHeaderProps) => (
-  <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+  <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
     <div className="flex gap-x-2 text-xl font-semibold">
       {mode}
       &nbsp;Files |
@@ -199,9 +200,10 @@ type FileOverviewProps = {
 const FileOverview = React.memo(({ summary }: { summary: FileOverviewProps }) => (
   <ShokoPanel
     title="Files Overview"
-    className="sticky top-0 w-400 shrink-0 grow"
+    className="w-400 shrink-0 grow"
     contentClassName="gap-y-6"
     transparent
+    sticky
     fullHeight={false}
   >
     {map(summary.SourceByType, ({ count, source, type }, index) => (
@@ -295,8 +297,8 @@ const MissingEpisodeRow = React.memo((
         <Icon className="text-panel-text-primary" path={mdiOpenInNew} size={1} />
       </a>
     </div>
-    <div className="w-[139px]">
-      {episode.AirDate}
+    <div>
+      {dayjs(episode.AirDate).format('MMMM DD YYYY')}
     </div>
   </div>
 ));

@@ -8,7 +8,7 @@ import { get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
-import SeriesEpisode from '@/components/Collection/Series/SeriesEpisode';
+import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -164,7 +164,7 @@ const SeriesOverview = () => {
             isFetching={nextUpEpisodeQuery.isFetching}
           >
             {nextUpEpisodeQuery.isSuccess && nextUpEpisodeQuery.data
-              ? <SeriesEpisode episode={nextUpEpisodeQuery.data} nextUp />
+              ? <EpisodeSummary episode={nextUpEpisodeQuery.data} nextUp />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
         </div>

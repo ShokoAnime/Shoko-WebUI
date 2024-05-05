@@ -85,10 +85,11 @@ const SeriesImages = () => {
       <div className="flex w-400 shrink-0 flex-col gap-y-6">
         <ShokoPanel
           title="Selected Image Info"
-          className="flex w-full grow flex-col"
+          className="w-full"
           contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
           fullHeight={false}
           transparent
+          sticky
         >
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
