@@ -29,7 +29,7 @@ module.exports = {
         sm: ['0.875rem', '1.4rem'],
         base: ['1rem', '1.6rem'],
         lg: ['1.125rem', '1.8rem'],
-        xl: ['1.251rem', '2rem'],
+        xl: ['1.25rem', '2rem'],
       },
       fontWeight: {
         extralight: 100,
