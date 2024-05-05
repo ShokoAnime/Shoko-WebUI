@@ -206,7 +206,7 @@ const SeriesTags = () => {
     ) => (
       !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
       && ((debouncedSearch === '')
-        || [cleanString(Name), cleanString(Description)].some(str => str.match(debouncedSearch)))
+        || [Name, Description].some(str => clean string(str).match(debouncedSearch)))
     ))),
     [debouncedSearch, showSpoilers, tagSourceFilter, tagsQueryData],
   );
