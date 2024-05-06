@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiLoading, mdiMagnify, mdiOpenInNew, mdiTagTextOutline } from '@mdi/js';
+import { mdiLoading, mdiMagnify, mdiOpenInNew, mdiPlayCircleOutline, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -64,7 +64,7 @@ const SearchAndFilterPanel = React.memo(
     ), [handleInputChange, search]);
     const tagSources = useMemo(() => (
       <div className="flex flex-col gap-y-2">
-        <div className="text-base font-semibold">Tag Source</div>
+        <div className="text-base font-bold">Tag Source</div>
         <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
           {['AniDB', 'User'].map((tagSource: TagType['Source']) => (
             <Checkbox
@@ -81,7 +81,7 @@ const SearchAndFilterPanel = React.memo(
     ), [handleInputChange, tagSourceFilter]);
     const spoilers = useMemo(() => (
       <div className="flex flex-col gap-x-2">
-        <div className="text-base font-semibold">Display</div>
+        <div className="text-base font-bold">Display</div>
         <Checkbox
           id="show-spoilers"
           label="Show Spoiler Tags"
@@ -104,11 +104,32 @@ const SearchAndFilterPanel = React.memo(
           {searchInput}
           {tagSources}
           {spoilers}
-          <div className="flex flex-col gap-x-2">
-            <div className="text-base font-semibold">Quick Actions</div>
-            Change Sort | A-Z (&gt;)
-            <br />
-            Download Missing Data (&gt;)
+          <div className="flex flex-col gap-2">
+            <div className="text-base font-bold">Quick Actions</div>
+            <button
+              type="button"
+              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+              onClick={() => {}}
+            >
+              Change Sort | A-Z
+              <Icon
+                path={mdiPlayCircleOutline}
+                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                size={1}
+              />
+            </button>
+            <button
+              type="button"
+              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
+              onClick={() => {}}
+            >
+              Download Missing Data | A-Z
+              <Icon
+                path={mdiPlayCircleOutline}
+                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
+                size={1}
+              />
+            </button>
           </div>
         </ShokoPanel>
       </div>
@@ -206,7 +227,7 @@ const SeriesTags = () => {
     ) => (
       !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
       && ((debouncedSearch === '')
-        || [Name, Description].some(str => clean string(str).match(debouncedSearch)))
+        || [Name, Description].some(str => cleanString(str).match(debouncedSearch)))
     ))),
     [debouncedSearch, showSpoilers, tagSourceFilter, tagsQueryData],
   );
