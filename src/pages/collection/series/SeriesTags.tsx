@@ -48,7 +48,7 @@ const SeriesTags = () => {
   const [showTagModal, toggleShowTagModal] = useToggle(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
-  const [showSpoilers, setShowSpoilers] = useState(false);
+  const [showSpoilers, toggleShowSpoilers] = useToggle();
   const [tagSourceFilter, setTagSourceFilter] = useState<Set<string>>(new Set());
   const [sort, toggleSort] = useToggle(false);
 
@@ -71,7 +71,7 @@ const SeriesTags = () => {
         });
         break;
       case 'show-spoilers':
-        setShowSpoilers(checked);
+        toggleShowSpoilers();
         break;
       default:
         break;
@@ -107,6 +107,14 @@ const SeriesTags = () => {
           <span>Tags</span>
           <span className="hidden px-2 2xl:inline">|</span>
           <span>
+            {(debouncedSearch !== '' || tagSourceFilter.size > 0 || showSpoilers) && (
+              <>
+                <span className="pr-2 text-panel-text-important">
+                  {filteredTags?.length}
+                </span>
+                of&nbsp;
+              </>
+            )}
             <span className="pr-2 text-panel-text-important">
               {isSuccess ? tagsQueryData.length : '-'}
             </span>
@@ -115,7 +123,7 @@ const SeriesTags = () => {
         </div>
       </div>
     ),
-    [isSuccess, tagsQueryData?.length],
+    [debouncedSearch, filteredTags?.length, isSuccess, showSpoilers, tagSourceFilter.size, tagsQueryData?.length],
   );
 
   const onTagSelection = useEventCallback((tag: TagType) => {
@@ -129,6 +137,7 @@ const SeriesTags = () => {
   return (
     <div className="flex w-full gap-x-6">
       <TagsSearchAndFilterPanel
+        seriesId={toNumber(seriesId)}
         search={search}
         tagSourceFilter={tagSourceFilter}
         showSpoilers={showSpoilers}
