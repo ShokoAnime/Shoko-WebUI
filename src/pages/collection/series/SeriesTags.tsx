@@ -1,15 +1,13 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiLoading, mdiMagnify, mdiOpenInNew, mdiPlayCircleOutline, mdiTagTextOutline } from '@mdi/js';
+import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
-import Checkbox from '@/components/Input/Checkbox';
-import Input from '@/components/Input/Input';
-import ModalPanel from '@/components/Panels/ModalPanel';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
+import TagDetailsModal from '@/components/Collection/Tags/TagDetailsModal';
+import TagsSearchAndFilterPanel from '@/components/Collection/Tags/TagsSearchAndFilterPanel';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -43,146 +41,6 @@ const SeriesTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
   );
 });
 
-type SearchAndFilterPanelProps = {
-  search: string;
-  tagSourceFilter: Set<string>;
-  showSpoilers: boolean;
-  handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
-const SearchAndFilterPanel = React.memo(
-  ({ handleInputChange, search, showSpoilers, tagSourceFilter }: SearchAndFilterPanelProps) => {
-    const searchInput = useMemo(() => (
-      <Input
-        id="search"
-        label="Tag Search"
-        startIcon={mdiMagnify}
-        type="text"
-        placeholder="Search..."
-        value={search}
-        onChange={handleInputChange}
-      />
-    ), [handleInputChange, search]);
-    const tagSources = useMemo(() => (
-      <div className="flex flex-col gap-y-2">
-        <div className="text-base font-bold">Tag Source</div>
-        <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
-          {['AniDB', 'User'].map((tagSource: TagType['Source']) => (
-            <Checkbox
-              justify
-              label={tagSource}
-              key={tagSource}
-              id={tagSource}
-              isChecked={!tagSourceFilter.has(tagSource)}
-              onChange={handleInputChange}
-            />
-          ))}
-        </div>
-      </div>
-    ), [handleInputChange, tagSourceFilter]);
-    const spoilers = useMemo(() => (
-      <div className="flex flex-col gap-x-2">
-        <div className="text-base font-bold">Display</div>
-        <Checkbox
-          id="show-spoilers"
-          label="Show Spoiler Tags"
-          isChecked={showSpoilers}
-          onChange={handleInputChange}
-          justify
-        />
-      </div>
-    ), [handleInputChange, showSpoilers]);
-    return (
-      <div className="flex w-400 shrink-0 flex-col gap-y-6">
-        <ShokoPanel
-          title="Search & Filter"
-          className="w-full"
-          contentClassName="gap-y-6"
-          fullHeight={false}
-          sticky
-          transparent
-        >
-          {searchInput}
-          {tagSources}
-          {spoilers}
-          <div className="flex flex-col gap-2">
-            <div className="text-base font-bold">Quick Actions</div>
-            <button
-              type="button"
-              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-              onClick={() => {}}
-            >
-              Change Sort | A-Z
-              <Icon
-                path={mdiPlayCircleOutline}
-                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                size={1}
-              />
-            </button>
-            <button
-              type="button"
-              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-              onClick={() => {}}
-            >
-              Download Missing Data | A-Z
-              <Icon
-                path={mdiPlayCircleOutline}
-                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                size={1}
-              />
-            </button>
-          </div>
-        </ShokoPanel>
-      </div>
-    );
-  },
-);
-
-const TagModal = React.memo(({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
-  const header = (
-    <div className="flex w-full justify-between capitalize">
-      <div>
-        Tag |&nbsp;
-        {tag?.Name}
-      </div>
-      {tag?.Source === 'AniDB' && (
-        <a
-          href={`https://anidb.net/tag/${tag.ID}`}
-          className=" flex items-center gap-x-2 text-base text-panel-icon-action"
-          rel="noopener noreferrer"
-          target="_blank"
-        >
-          <div className="metadata-link-icon AniDB" />
-          AniDB (
-          {tag?.ID}
-          )
-          <Icon path={mdiOpenInNew} size={1} />
-        </a>
-      )}
-    </div>
-  );
-
-  return (
-    <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
-      <AnidbDescription text={tag?.Description ?? ''} className="line-clamp-[10] opacity-65" />
-      <div className="flex flex-col gap-2">
-        <div className="text-base font-bold">
-          Series With Tag |&nbsp;
-          <span className="text-panel-text-important">
-            ?
-          </span>
-          &nbsp;Series
-        </div>
-        <div className="w-full rounded-lg bg-panel-input p-6">
-          <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
-            <div>Not yet implemented!</div>
-            <div>Not yet implemented!</div>
-          </div>
-        </div>
-      </div>
-    </ModalPanel>
-  );
-});
-
 const SeriesTags = () => {
   const { seriesId } = useParams();
 
@@ -192,6 +50,7 @@ const SeriesTags = () => {
   const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
   const [showSpoilers, setShowSpoilers] = useState(false);
   const [tagSourceFilter, setTagSourceFilter] = useState<Set<string>>(new Set());
+  const [sort, toggleSort] = useToggle(false);
 
   const handleInputChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const { checked, id: eventType, value } = event.target;
@@ -228,8 +87,17 @@ const SeriesTags = () => {
       !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
       && ((debouncedSearch === '')
         || [Name, Description].some(str => cleanString(str).match(debouncedSearch)))
-    ))),
-    [debouncedSearch, showSpoilers, tagSourceFilter, tagsQueryData],
+    )).sort((a, b) => {
+      if (sort) {
+        const aName = a.Name.toLowerCase();
+        const bName = b.Name.toLowerCase();
+        if (aName > bName) return 1;
+        if (aName < bName) return -1;
+        return 0;
+      }
+      return 0;
+    })),
+    [sort, debouncedSearch, showSpoilers, tagSourceFilter, tagsQueryData],
   );
 
   const header = useMemo(
@@ -260,11 +128,13 @@ const SeriesTags = () => {
 
   return (
     <div className="flex w-full gap-x-6">
-      <SearchAndFilterPanel
+      <TagsSearchAndFilterPanel
         search={search}
         tagSourceFilter={tagSourceFilter}
         showSpoilers={showSpoilers}
+        sort={sort}
         handleInputChange={handleInputChange}
+        toggleSort={toggleSort}
       />
       <div className="flex w-full flex-col gap-y-6">
         {header}
@@ -284,7 +154,7 @@ const SeriesTags = () => {
             )}
         </div>
       </div>
-      <TagModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
+      <TagDetailsModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
     </div>
   );
 };
