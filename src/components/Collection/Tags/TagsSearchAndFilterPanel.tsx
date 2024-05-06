@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useEventCallback } from 'usehooks-ts';
 
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
+import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
 
 import type { TagType } from '@/core/types/api/tags';
 
@@ -12,12 +15,20 @@ type Props = {
   search: string;
   tagSourceFilter: Set<string>;
   showSpoilers: boolean;
+  seriesId: number;
   handleInputChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   toggleSort: () => void;
   sort: boolean;
 };
 const TagsSearchAndFilterPanel = React.memo(
-  ({ handleInputChange, search, showSpoilers, sort, tagSourceFilter, toggleSort }: Props) => {
+  ({ handleInputChange, search, seriesId, showSpoilers, sort, tagSourceFilter, toggleSort }: Props) => {
+    const { isPending: anidbRefreshPending, mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
+    const refreshAnidbCallback = useEventCallback(() => {
+      refreshAnidb({ seriesId, force: true }, {
+        onSuccess: () => toast.success('AniDB refresh queued!'),
+      });
+    });
+
     const searchInput = useMemo(() => (
       <Input
         id="search"
@@ -73,20 +84,21 @@ const TagsSearchAndFilterPanel = React.memo(
         />
       </button>
     ), [sort, toggleSort]);
-    const downloadMissingData = useMemo(() => (
+    const forceRefreshAnidbData = useMemo(() => (
       <button
         type="button"
         className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-        onClick={() => {}}
+        onClick={refreshAnidbCallback}
+        disabled={anidbRefreshPending}
       >
-        Download Missing Data | A-Z
+        Force refresh: AniDB
         <Icon
           path={mdiPlayCircleOutline}
           className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
           size={1}
         />
       </button>
-    ), []);
+    ), [anidbRefreshPending, refreshAnidbCallback]);
     return (
       <div className="flex w-400 shrink-0 flex-col gap-y-6">
         <ShokoPanel
@@ -103,7 +115,7 @@ const TagsSearchAndFilterPanel = React.memo(
           <div className="flex flex-col gap-2">
             <div className="text-base font-bold">Quick Actions</div>
             {sortAction}
-            {downloadMissingData}
+            {forceRefreshAnidbData}
           </div>
         </ShokoPanel>
       </div>
