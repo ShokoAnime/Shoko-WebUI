@@ -110,7 +110,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         )}
       </div>
       {children}
-      {linkToImage && (
+      {linkToImage && !imageError && (
         <a
           className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
           href={backgroundImage?.src}

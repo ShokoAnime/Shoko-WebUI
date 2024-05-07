@@ -87,7 +87,7 @@ const EpisodeSearchAndFilterPanel = ({
       value={episodeFilterHidden}
       onChange={onFilterChange}
     >
-      <option value="true">Show Hidden Entries</option>
+      <option value="true">Show All Entries</option>
       <option value="false">Hide Hidden Entries</option>
       <option value="only">Show Only Hidden Entries</option>
     </Select>

@@ -93,15 +93,15 @@ const Series = () => {
     <div className="flex flex-col gap-y-6">
       <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6" />
-        <div className="flex flex-row gap-x-4">
-          <Link className="font-semibold text-panel-text-primary" to="/webui/collection">
+        <div className="flex flex-row items-center gap-x-4">
+          <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
             Entire Collection
           </Link>
           <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
           {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
             <>
               <Link
-                className="font-semibold text-panel-text-primary"
+                className="text-xl font-semibold text-panel-text-primary"
                 to={`/webui/collection/group/${series.IDs.ParentGroup}`}
               >
                 {groupQuery.data.Name}

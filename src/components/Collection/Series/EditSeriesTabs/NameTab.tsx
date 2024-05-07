@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiLoading, mdiPencilCircleOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
+import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { map } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
@@ -29,7 +28,7 @@ const NameTab = ({ seriesId }: Props) => {
   }, [series.Name]);
 
   const nameInputIcons = useMemo(() => {
-    if (!nameEditable) {
+    if (!nameEditable || seriesQuery.isFetching) {
       return [{
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
@@ -40,8 +39,11 @@ const NameTab = ({ seriesId }: Props) => {
     return [
       {
         icon: mdiCloseCircleOutline,
-        className: 'text-red-500',
-        onClick: toggleNameEditable,
+        className: 'text-panel-text-danger',
+        onClick: () => {
+          setName(series.Name);
+          toggleNameEditable();
+        },
       },
       {
         icon: mdiCheckUnderlineCircleOutline,
@@ -56,51 +58,41 @@ const NameTab = ({ seriesId }: Props) => {
           }),
       },
     ];
-  }, [name, nameEditable, overrideTitle, series.IDs.ID, toggleNameEditable]);
+  }, [name, nameEditable, overrideTitle, series.IDs.ID, series.Name, seriesQuery.isFetching, toggleNameEditable]);
 
   return (
     <div className="flex h-full flex-col">
-      {seriesQuery.isFetching && (
-        <div className="m-auto text-panel-text-primary">
-          <Icon path={mdiLoading} size={3} spin />
-        </div>
-      )}
-
       {seriesQuery.isError && (
         <div className="m-auto text-lg font-semibold text-panel-text-danger">
           Series data could not be loaded!
         </div>
       )}
 
-      {seriesQuery.isSuccess && (
-        <>
-          <Input
-            id="name"
-            type="text"
-            onChange={e => setName(e.target.value)}
-            value={name}
-            label="Name"
-            className="mb-4"
-            endIcons={nameInputIcons}
-            disabled={!nameEditable}
-          />
-          {nameEditable && (
-            <div className="flex overflow-y-auto rounded-lg border border-panel-border bg-panel-background-alt p-4">
-              <div className="flex grow flex-col overflow-y-auto pr-4">
-                {map(series.AniDB?.Titles, title => (
-                  <div
-                    className="flex cursor-pointer justify-between border-b-2 border-panel-border py-2 first:pt-0 last:border-none"
-                    key={title.Language}
-                    onClick={() => setName(title.Name)}
-                  >
-                    <div>{title.Name}</div>
-                    <div className="shrink-0 text-right">{title.Language}</div>
-                  </div>
-                ))}
+      <Input
+        id="name"
+        type="text"
+        onChange={e => setName(e.target.value)}
+        value={name}
+        label="Name"
+        className="mb-4"
+        endIcons={nameInputIcons}
+        disabled={!nameEditable}
+      />
+      {nameEditable && (
+        <div className="flex cursor-pointer overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
+          <div className="flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
+            {map(series.AniDB?.Titles, title => (
+              <div
+                className="flex justify-between last:border-none hover:text-panel-text-primary"
+                key={title.Name + title.Language}
+                onClick={() => setName(title.Name)}
+              >
+                <div>{title.Name}</div>
+                <div className="shrink-0 text-right uppercase">{title.Language}</div>
               </div>
-            </div>
-          )}
-        </>
+            ))}
+          </div>
+        </div>
       )}
     </div>
   );
