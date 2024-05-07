@@ -51,6 +51,7 @@ export const useSeriesFileSummaryQuery = (seriesId: number, params: SeriesFileSu
     queryKey: ['webui', 'series-file-summary', seriesId, params],
     queryFn: () => axios.get(`WebUI/Series/${seriesId}/FileSummary`, { params }),
     enabled,
+    placeholderData: prevData => prevData,
   });
 
 export const useSeriesOverviewQuery = (seriesId: number, enabled = true) =>
