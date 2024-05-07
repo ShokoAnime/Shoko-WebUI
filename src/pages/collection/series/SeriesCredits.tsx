@@ -87,9 +87,7 @@ const getUniqueDescriptions = (castList: SeriesCast[]) => [...new Set(castList.m
 
 const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], mode: ModeType }) => {
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
-  const cardSize = { x: 466.5, y: 174 };
-
-  const getLaneOffset = (lane: number) => ((cardSize.x * lane) + (lane > 0 ? 24 * lane : 0));
+  const cardSize = { x: 466.5, y: 174, gap: 24 };
 
   const rowVirtualizer = useVirtualizer({
     count: castArray.length,
@@ -97,7 +95,7 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
     estimateSize: () => cardSize.y,
     overscan: 30, // Greater than the norm as lanes aren't taken into account
     lanes: 3,
-    gap: 24,
+    gap: cardSize.gap,
   });
 
   return (
@@ -107,7 +105,7 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
           key={virtualRow.key}
           className="absolute top-0"
           style={{
-            left: getLaneOffset(virtualRow.lane),
+            left: virtualRow.lane * (cardSize.x + cardSize.gap),
             width: cardSize.x,
             height: cardSize.y,
             transform: `translateY(${virtualRow.start}px)`,
