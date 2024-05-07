@@ -172,9 +172,9 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
       {['Series', 'Missing'].map((key: ModeType) => (
         <Button
           className={cx(
-            'w-[150px] rounded-lg ml-2 py-3 px-4 !font-normal !text-base',
+            'w-[150px] rounded-lg ml-2 py-3 px-4 !font-normal',
             mode !== key
-              ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
+              ? 'bg-panel-toggle-background-alt text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
               : '!bg-panel-toggle-background text-panel-toggle-text',
           )}
           key={key}

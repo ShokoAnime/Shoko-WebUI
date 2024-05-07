@@ -18,12 +18,12 @@ type Props = {
 };
 
 const tabs = {
-  // group: 'Group',
-  // stats: 'Personal Stats',
-  update_actions: 'Update Actions',
   name: 'Name',
+  update_actions: 'Update Actions',
   file_actions: 'File Actions',
   delete_actions: 'Delete Actions',
+  // group: 'Group',
+  // stats: 'Personal Stats',
 };
 
 const renderTab = (activeTab: string, seriesId: number) => {
