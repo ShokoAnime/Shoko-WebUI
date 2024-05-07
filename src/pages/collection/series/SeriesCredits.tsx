@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useOutletContext, useParams } from 'react-router';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { get, map, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
@@ -36,7 +37,7 @@ const creditTypeVariations = {
 };
 
 const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: ModeType }) => (
-  <div className="flex w-[29.5rem] flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+  <div className="flex w-full flex-row items-center gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
     <div className="z-10 flex gap-x-2">
       {mode === 'Character' && (
         <CharacterImage
@@ -83,6 +84,41 @@ const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
 const getUniqueDescriptions = (castList: SeriesCast[]) => [...new Set(castList.map(c => c.RoleDetails))];
+
+const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], mode: ModeType }) => {
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const cardSize = { x: 466.5, y: 174 };
+
+  const getLaneOffset = (lane: number) => ((cardSize.x * lane) + (lane > 0 ? 24 * lane : 0));
+
+  const rowVirtualizer = useVirtualizer({
+    count: castArray.length,
+    getScrollElement: () => scrollRef.current,
+    estimateSize: () => cardSize.y,
+    overscan: 30, // Greater than the norm as lanes aren't taken into account
+    lanes: 3,
+    gap: 24,
+  });
+
+  return (
+    <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+      {rowVirtualizer.getVirtualItems().map(virtualRow => (
+        <div
+          key={virtualRow.key}
+          className="absolute top-0"
+          style={{
+            left: getLaneOffset(virtualRow.lane),
+            width: cardSize.x,
+            height: cardSize.y,
+            transform: `translateY(${virtualRow.start}px)`,
+          }}
+        >
+          <CreditsStaffPanel cast={castArray[virtualRow.index]} mode={mode} />
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
@@ -241,13 +277,7 @@ const SeriesCredits = () => {
           </div>
           <Heading mode={mode} setMode={setMode} />
         </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          {map(
-            filteredCast,
-            (item, idx) => <CreditsStaffPanel cast={item} mode={mode} key={`${mode}-${idx}`} />,
-          )}
-        </div>
+        <StaffPanelVirtualizer castArray={filteredCast} mode={mode} />
       </div>
     </div>
   );
