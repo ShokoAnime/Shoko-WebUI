@@ -22,6 +22,11 @@ const invalidateImportFolders = debounce(
 // Should we add a debounce here? It seems to work fine without it
 const invalidateQueueItems = () => invalidateQueries(['queue', 'items']);
 
+const invalidateReleaseManagement = debounce(
+  () => invalidateQueries(['release-management']),
+  5000,
+);
+
 const invalidateSeries = debounce(
   (seriesId: number, groupIds: number[]) => {
     invalidateQueries(['series', seriesId]);
@@ -39,6 +44,7 @@ export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
       invalidateDashboard();
       invalidateFiles();
       invalidateImportFolders();
+      invalidateReleaseManagement();
       break;
     case 'FileMoved':
       invalidateFiles();

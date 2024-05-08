@@ -1,6 +1,7 @@
 import type { CollectionFilterType } from './collection';
 import type { ImageType, RatingType } from './common';
 import type { SeriesTitleType } from './series';
+import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 import type { TagType } from '@/core/types/api/tags';
 
 export type WebuiGroupExtra = {
@@ -50,6 +51,14 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleLanguages?: string[];
   SubtitleStreamCount?: number;
   RangeByType: WebuiSeriesFileSummaryGroupRangeByType;
+  Episodes?: {
+    ED2K: string;
+    EpisodeID: number;
+    FileID: number;
+    Number: number;
+    Size: number;
+    Type: EpisodeTypeEnum;
+  }[];
 };
 
 export type WebuiSeriesFileSummaryGroupRangeByType = {
