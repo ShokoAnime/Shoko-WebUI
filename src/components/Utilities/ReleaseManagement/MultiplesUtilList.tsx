@@ -107,10 +107,13 @@ type Props = {
   ignoreVariations: boolean;
   onlyFinishedSeries: boolean;
   setSelectedEpisode: (episode: EpisodeType) => void;
+  setSelectedSeriesId: (id: number) => void;
   setSeriesCount: (count: number) => void;
 };
 
-const MultiplesUtilList = ({ ignoreVariations, onlyFinishedSeries, setSelectedEpisode, setSeriesCount }: Props) => {
+const MultiplesUtilList = (
+  { ignoreVariations, onlyFinishedSeries, setSelectedEpisode, setSelectedSeriesId, setSeriesCount }: Props,
+) => {
   const [selectedSeries, setSelectedSeries] = useState(0);
 
   const seriesQuery = useSeriesWithMultipleReleases({ ignoreVariations, onlyFinishedSeries, pageSize: 25 });
@@ -124,8 +127,9 @@ const MultiplesUtilList = ({ ignoreVariations, onlyFinishedSeries, setSelectedEp
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
 
   useEffect(() => {
+    setSelectedSeriesId(selectedSeries);
     setSeriesCount(seriesCount);
-  }, [seriesCount, setSeriesCount]);
+  }, [selectedSeries, seriesCount, setSelectedSeriesId, setSeriesCount]);
 
   // Reset series selection if query data changes
   useEffect(() => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { mdiCloseCircleOutline, mdiFileDocumentMultipleOutline, mdiRefresh } from '@mdi/js';
+import { mdiCloseCircleOutline, mdiFileDocumentMultipleOutline, mdiRefresh, mdiSelectMultiple } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map, toNumber } from 'lodash';
@@ -13,6 +13,7 @@ import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MultiplesUtilEpisode from '@/components/Utilities/ReleaseManagement/MultiplesUtilEpisode';
 import MultiplesUtilList from '@/components/Utilities/ReleaseManagement/MultiplesUtilList';
+import QuickSelectModal from '@/components/Utilities/ReleaseManagement/QuickSelectModal';
 import Title from '@/components/Utilities/ReleaseManagement/Title';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import { useDeleteFileMutation, useMarkVariationMutation } from '@/core/react-query/file/mutations';
@@ -26,9 +27,11 @@ const MultiplesUtil = () => {
   const [ignoreVariations, toggleIgnoreVariations] = useToggle(true);
   const [onlyFinishedSeries, toggleOnlyFinishedSeries] = useToggle(true);
   const [seriesCount, setSeriesCount] = useState(0);
+  const [selectedSeries, setSelectedSeries] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
   const [operationsPending, setOperationsPending] = useState(false);
   const [fileOptions, setFileOptions] = useState<MultipleFileOptionsType>({});
+  const [showQuickSelectModal, toggleShowQuickSelectModal] = useToggle(false);
 
   const { mutateAsync: deleteFile } = useDeleteFileMutation();
   const { mutateAsync: markVariation } = useMarkVariationMutation();
@@ -107,6 +110,16 @@ const MultiplesUtil = () => {
           {/*   </Button> */}
           {/* )} */}
 
+          <Button
+            buttonType="secondary"
+            className="flex gap-x-2.5 px-4 py-3 font-semibold"
+            disabled={!selectedSeries}
+            onClick={toggleShowQuickSelectModal}
+          >
+            <Icon path={mdiSelectMultiple} size={0.8333} />
+            Quick Select
+          </Button>
+
           {selectedEpisode && (
             <div className="flex items-center justify-end gap-x-3">
               <Button
@@ -137,6 +150,7 @@ const MultiplesUtil = () => {
             ignoreVariations={ignoreVariations}
             onlyFinishedSeries={onlyFinishedSeries}
             setSelectedEpisode={setSelectedEpisode}
+            setSelectedSeriesId={setSelectedSeries}
             setSeriesCount={setSeriesCount}
           />
         </TransitionDiv>
@@ -151,6 +165,12 @@ const MultiplesUtil = () => {
           />
         </TransitionDiv>
       </div>
+
+      <QuickSelectModal
+        show={showQuickSelectModal}
+        onClose={toggleShowQuickSelectModal}
+        seriesId={selectedSeries}
+      />
     </div>
   );
 };
