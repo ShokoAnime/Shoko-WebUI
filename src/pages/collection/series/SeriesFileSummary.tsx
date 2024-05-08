@@ -42,6 +42,16 @@ const Header = ({ fetchingState, ranges }: HeaderProps) => (
   </div>
 );
 
+const SummaryGroupRow = ({ label, value }: { label: string, value: string }) => (
+  <div className="flex gap-x-12">
+    <div className="w-20 shrink-0 font-semibold">
+      {label}
+    </div>
+    <div className="max-w-[33rem] break-words">
+      {value}
+    </div>
+  </div>
+);
 const SummaryGroup = React.memo(
   ({ fetchingState, group }: { group: WebuiSeriesFileSummaryGroupType, fetchingState: boolean }) => {
     const sizes = useMemo(() => {
@@ -123,26 +133,16 @@ const SummaryGroup = React.memo(
         <div className="flex text-xl font-semibold">
           <Header ranges={group.RangeByType} fetchingState={fetchingState} />
         </div>
-        <div className="flex">
-          <div className="flex grow flex-col gap-y-4 font-semibold">
-            <span>Group</span>
-            <span>Video</span>
-            <span>Location</span>
+        <div className="flex gap-x-[4.5rem]">
+          <div className="flex flex-col gap-y-2">
+            <SummaryGroupRow label="Group" value={groupDetails} />
+            <SummaryGroupRow label="Video" value={videoDetails} />
+            <SummaryGroupRow label="Location" value={locationDetails} />
           </div>
-          <div className="flex max-w-[60%] grow-[2] flex-col gap-y-4">
-            <span>{groupDetails}</span>
-            <span>{videoDetails}</span>
-            <span>{locationDetails}</span>
-          </div>
-          <div className="flex grow flex-col gap-y-4 font-semibold">
-            <span>Total</span>
-            <span>Audio</span>
-            <span>Subtitles</span>
-          </div>
-          <div className="flex max-w-[60%] grow-[2] flex-col gap-y-4">
-            <span>{sizes}</span>
-            <span>{audioDetails}</span>
-            <span>{subtitleDetails}</span>
+          <div className="flex flex-col gap-y-2">
+            <SummaryGroupRow label="Total" value={sizes} />
+            <SummaryGroupRow label="Audio" value={audioDetails} />
+            <SummaryGroupRow label="Subtitles" value={subtitleDetails} />
           </div>
         </div>
       </div>
