@@ -38,7 +38,7 @@ const Header = ({ fetchingState, ranges }: HeaderProps) => (
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
     {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
-    {fetchingState && <Icon path={mdiLoading} spin size={1.5} />}
+    {fetchingState && <Icon path={mdiLoading} spin size="2rem" />}
   </div>
 );
 
@@ -249,7 +249,7 @@ const groupFilterMap = {
   VideoResolution: 'Resolution',
 };
 type GroupFilterPanelProps = {
-  filter: string[];
+  filter: Set<string>;
   onFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPanelProps) => (
@@ -265,7 +265,7 @@ const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPane
         label={groupFilterMap[k]}
         id={k}
         key={k}
-        isChecked={filter.includes(k)}
+        isChecked={filter.has(k)}
         onChange={onFilterChange}
       />
     ))}
@@ -341,27 +341,22 @@ const SeriesFileSummary = () => {
   const { seriesId } = useParams();
 
   const [mode, setMode] = useState<ModeType>('Series');
-  const [filter, setFilter] = useState<string[]>([...Object.keys(groupFilterMap), 'VideoBitDepth']);
+  const [filter, setFilter] = useState<Set<string>>(new Set(Object.keys(groupFilterMap)));
 
-  useEffect(() => setFilter([...Object.keys(groupFilterMap), 'VideoBitDepth']), [mode]);
+  useEffect(() => setFilter(new Set(Object.keys(groupFilterMap))), [mode]);
 
   const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked: active, id: option } = event.target;
-    const optionArr = [option];
-    if (option === 'VideoResolution') optionArr.push('VideoBitDepth');
-    if (active && !filter.includes(option)) setFilter([...filter, ...optionArr]);
-    if (!active && filter.includes(option)) {
-      setFilter(
-        filter.filter(
-          k => ((option === 'VideoResolution') ? !(k === 'VideoResolution' || k === 'VideoBitDepth') : (k !== option)),
-        ),
-      );
-    }
+    setFilter((prevState) => {
+      const { id: filterOption } = event.target;
+      const newState = new Set(prevState);
+      if (!newState.delete(filterOption)) newState.add(filterOption);
+      return newState;
+    });
   });
 
   const { data: fileSummary, isFetching, isLoading } = useSeriesFileSummaryQuery(
     toNumber(seriesId!),
-    { groupBy: filter.join(',') },
+    { groupBy: [...filter].join(',') },
     !!seriesId,
   );
 
