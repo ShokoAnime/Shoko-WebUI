@@ -33,7 +33,11 @@ const TabButton = (
 };
 
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => (
-  <div className="flex justify-between pb-1 pr-4 font-semibold" key={item.IDs.ID}>
+  <div
+    // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
+    className={cx('flex justify-between pb-1 pr-4 font-semibold', item.Size === 0 && 'pointer-events-none opacity-65')}
+    key={item.IDs.ID}
+  >
     <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
     <span className="text-panel-text-important">{item.Size}</span>
   </div>

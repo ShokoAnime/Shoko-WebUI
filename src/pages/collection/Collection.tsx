@@ -25,10 +25,15 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { RootState } from '@/core/store';
-import type { FilterCondition, FilterType } from '@/core/types/api/filter';
+import type { FilterCondition, FilterType, SortingCriteria } from '@/core/types/api/filter';
 import type { SeriesType } from '@/core/types/api/series';
 
-const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = true): FilterType => {
+const getFilter = (
+  query: string,
+  filterCondition?: FilterCondition,
+  sortingCriteria?: SortingCriteria,
+  isSeries = true,
+): FilterType => {
   let finalCondition: FilterCondition | undefined;
   if (query) {
     const searchCondition: FilterCondition = {
@@ -53,6 +58,7 @@ const getFilter = (query: string, filterCondition?: FilterCondition, isSeries = 
       ? {
         ApplyAtSeriesLevel: isSeries,
         Expression: finalCondition,
+        Sorting: sortingCriteria ?? { Type: 'Name', IsInverted: false },
       }
       : {}
   );
@@ -103,11 +109,14 @@ function Collection() {
     return undefined;
   }, [activeFilter, filterId, filterQuery.data?.Expression]);
 
-  const groupsQuery = useFilteredGroupsInfiniteQuery({
-    pageSize: 50,
-    randomImages: showRandomPoster,
-    filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, false),
-  });
+  const groupsQuery = useFilteredGroupsInfiniteQuery(
+    {
+      pageSize: 50,
+      randomImages: showRandomPoster,
+      filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
+    },
+    !filterId || (!!filterId && filterQuery.isSuccess),
+  );
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(
     () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
@@ -117,7 +126,7 @@ function Collection() {
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
     {
-      filterCriteria: getFilter(debouncedSeriesSearch),
+      filterCriteria: getFilter(debouncedSeriesSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB'],
     },
