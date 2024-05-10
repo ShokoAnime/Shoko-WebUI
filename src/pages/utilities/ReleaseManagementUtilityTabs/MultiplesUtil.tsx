@@ -25,7 +25,7 @@ import type { EpisodeType } from '@/core/types/api/episode';
 
 const MultiplesUtil = () => {
   const [ignoreVariations, toggleIgnoreVariations] = useToggle(true);
-  const [onlyFinishedSeries, toggleOnlyFinishedSeries] = useToggle(true);
+  const [onlyFinishedSeries, toggleOnlyFinishedSeries] = useToggle(false);
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
@@ -110,15 +110,17 @@ const MultiplesUtil = () => {
           {/*   </Button> */}
           {/* )} */}
 
-          <Button
-            buttonType="secondary"
-            className="flex gap-x-2.5 px-4 py-3 font-semibold"
-            disabled={!selectedSeries}
-            onClick={toggleShowQuickSelectModal}
-          >
-            <Icon path={mdiSelectMultiple} size={0.8333} />
-            Quick Select
-          </Button>
+          {!selectedEpisode && (
+            <Button
+              buttonType="secondary"
+              className="flex gap-x-2.5 px-4 py-3 font-semibold"
+              disabled={!selectedSeries}
+              onClick={toggleShowQuickSelectModal}
+            >
+              <Icon path={mdiSelectMultiple} size={0.8333} />
+              Quick Select
+            </Button>
+          )}
 
           {selectedEpisode && (
             <div className="flex items-center justify-end gap-x-3">

@@ -20,7 +20,7 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
-      groupBy: 'GroupName,FileSource,VideoResolution,AudioLanguages,SubtitleLanguages',
+      groupBy: 'GroupName,FileSource,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
       includeEpisodeDetails: true,
     },
     show,
@@ -73,8 +73,20 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
           (group, index) => (
             <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
               <div className="flex flex-col gap-y-2">
-                <div className="font-semibold">{group.GroupName}</div>
-                <div className="flex opacity-65">
+                <div className="font-semibold">
+                  {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
+                  &nbsp;-&nbsp;
+                  {group.Episodes?.length}
+                  &nbsp;Episodes
+                  {group.RangeByType.Normal && (
+                    <>
+                      &nbsp;(
+                      {group.RangeByType.Normal.Range}
+                      )
+                    </>
+                  )}
+                </div>
+                <div className="flex flex-wrap text-sm opacity-65">
                   {group.FileSource}
                   &nbsp;|&nbsp;
                   {group.VideoResolution}
@@ -82,10 +94,14 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                     <>
                       &nbsp;|&nbsp;
                       <div>
-                        {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
-                        Audio (
-                        {group.AudioLanguages.join(', ')}
-                        )
+                        {group.AudioLanguages.length === 0 ? 'No Audio' : (
+                          <>
+                            {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
+                            Audio (
+                            {group.AudioLanguages.join(', ')}
+                            )
+                          </>
+                        )}
                       </div>
                     </>
                   )}
@@ -93,11 +109,21 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                     <>
                       &nbsp;|&nbsp;
                       <div>
-                        {group.SubtitleLanguages.length ? 'Multi ' : 'Single '}
-                        Subs (
-                        {group.SubtitleLanguages.join(', ')}
-                        )
+                        {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
+                          <>
+                            {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
+                            Subs (
+                            {group.SubtitleLanguages.join(', ')}
+                            )
+                          </>
+                        )}
                       </div>
+                    </>
+                  )}
+                  {group.VideoHasChapters && (
+                    <>
+                      &nbsp;|&nbsp;
+                      <div>Chaptered</div>
                     </>
                   )}
                 </div>
