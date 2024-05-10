@@ -10,4 +10,5 @@ export const useShokoNewsQuery = () =>
     queryKey: ['shoko-news'],
     queryFn: () => axios.get('https://shokoanime.com/jsonfeed/index.json'),
     select: transformShokoNews,
+    retry: 1,
   });
