@@ -50,6 +50,7 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleCodecs?: string;
   SubtitleLanguages?: string[];
   SubtitleStreamCount?: number;
+  VideoHasChapters?: boolean;
   RangeByType: WebuiSeriesFileSummaryGroupRangeByType;
   Episodes?: {
     ED2K: string;
