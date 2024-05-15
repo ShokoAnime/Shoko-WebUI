@@ -131,7 +131,7 @@ const SidePanel = (
   );
 };
 
-function FiltersModal({ onClose, show }: Props) {
+function FilterPresetsModal({ onClose, show }: Props) {
   const filtersQuery = useFiltersQuery(show);
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
@@ -148,7 +148,7 @@ function FiltersModal({ onClose, show }: Props) {
       show={show}
       size="md"
       onRequestClose={onClose}
-      header="Filters"
+      header="Filter Presets"
     >
       <div className="flex">
         <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
@@ -199,4 +199,4 @@ function FiltersModal({ onClose, show }: Props) {
   );
 }
 
-export default FiltersModal;
+export default FilterPresetsModal;

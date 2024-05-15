@@ -35,7 +35,6 @@ const Button = React.memo(
   ) => (
     <button
       type={submit ? 'submit' : 'button'}
-      title={tooltip}
       className={cx([
         `${className} button text-sm font-semibold transition ease-in-out rounded-lg outline-none`,
         buttonType && `${buttonTypeClasses[buttonType]}`,
@@ -45,6 +44,9 @@ const Button = React.memo(
       ])}
       onClick={onClick}
       disabled={disabled}
+      data-tooltip-id="tooltip"
+      data-tooltip-content={tooltip}
+      data-tooltip-place="top"
     >
       {loading
         ? (

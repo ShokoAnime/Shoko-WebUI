@@ -20,7 +20,7 @@ const seriesColumns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
     name: 'Series (AniDB ID)',
     className: 'grow basis-0 overflow-hidden',
     item: series => (
-      <div title={series.Name} className="flex items-center gap-x-1">
+      <div className="flex items-center gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         <span className="line-clamp-1">{series.Name}</span>
         <div>
           (
@@ -33,7 +33,8 @@ const seriesColumns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
           rel="noreferrer noopener"
           className="cursor-pointer text-panel-text-primary"
           aria-label="Open AniDB series page"
-          onClick={e => e.stopPropagation()}
+          onClick={e =>
+            e.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>
@@ -62,7 +63,11 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
     name: 'Episode Name',
     className: 'line-clamp-1 grow basis-0 overflow-hidden',
     item: episode => (
-      <div title={episode.Name} className="flex items-center gap-x-1">
+      <div
+        className="flex items-center gap-x-1"
+        data-tooltip-id="tooltip"
+        data-tooltip-content={episode.Name}
+      >
         <span className="line-clamp-1">
           {getEpisodePrefix(episode.AniDB?.Type)}
           {episode.AniDB?.EpisodeNumber}
