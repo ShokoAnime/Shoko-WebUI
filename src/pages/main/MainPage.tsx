@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { Tooltip } from 'react-tooltip';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import TopNav from '@/components/Layout/TopNav';
@@ -32,6 +33,12 @@ function MainPage() {
           icon={false}
         />
       )}
+      <Tooltip
+        id="tooltip"
+        render={({ content }) => content}
+        place="top-start"
+        className="z-[10000]"
+      />
       <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
         <TopNav />

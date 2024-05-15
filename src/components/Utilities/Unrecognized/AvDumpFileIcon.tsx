@@ -126,6 +126,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
           <Button
             onClick={handleDump}
             className={cx((state !== 'idle' && state !== 'failed') && 'cursor-default pointer-events-none')}
+            tooltip="Dump File"
           >
             <Icon path={path} spin={path === mdiLoading} size={1} className={color} title={title} />
           </Button>

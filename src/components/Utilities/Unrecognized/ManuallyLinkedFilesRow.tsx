@@ -82,6 +82,7 @@ function ManuallyLinkedFilesRow(props: Props) {
       {files.map((file, index) => {
         const episode = find(episodes, item => item.IDs.ID === get(file, 'SeriesIDs.0.EpisodeIDs.0.ID', 0))!;
         const selected = rowSelection[file.ID];
+        const fileName = file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
 
         return (
           <div
@@ -96,7 +97,7 @@ function ManuallyLinkedFilesRow(props: Props) {
               onClick={event => handleSelect(event, index)}
             >
               <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
-                <div className="flex">
+                <div className="flex" data-tooltip-id="tooltip" data-tooltip-content={episode?.Name}>
                   {`${
                     episodePrefixMap[episode?.AniDB?.Type ?? ''] ?? ''
                   } ${episode?.AniDB?.EpisodeNumber} - ${episode?.Name}`}
@@ -115,9 +116,12 @@ function ManuallyLinkedFilesRow(props: Props) {
                   </a>
                 </div>
               </div>
-              <div className="line-clamp-1 w-1/2 overflow-hidden px-2">
-                {file.Locations?.[0].RelativePath.split(/[/\\]/g)
-                  .pop() ?? '<missing file path>'}
+              <div
+                className="line-clamp-1 w-1/2 overflow-hidden px-2"
+                data-tooltip-id="tooltip"
+                data-tooltip-content={fileName}
+              >
+                {fileName}
               </div>
             </div>
           </div>

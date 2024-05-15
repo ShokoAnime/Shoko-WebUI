@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { mdiArrowVerticalLock, mdiCogOutline, mdiFilterOutline, mdiLoading, mdiMagnify } from '@mdi/js';
+import { mdiArrowVerticalLock, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
@@ -66,17 +66,19 @@ const LogsPage = () => {
             className="w-80"
             disabled
           />
-          <Button buttonType="secondary" buttonSize="normal" disabled>
-            <Icon path={mdiFilterOutline} size={1} />
-          </Button>
-          <Button buttonType="secondary" buttonSize="normal" disabled>
-            <Icon path={mdiCogOutline} size={1} />
-          </Button>
+          {/* TODO: Disabled until functionality is implemented */}
+          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Filter"> */}
+          {/*   <Icon path={mdiFilterOutline} size={1} /> */}
+          {/* </Button> */}
+          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Settings"> */}
+          {/*   <Icon path={mdiCogOutline} size={1} /> */}
+          {/* </Button> */}
           <Button
             buttonType="secondary"
             buttonSize="normal"
             className={cx(scrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
+            tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
           >
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>

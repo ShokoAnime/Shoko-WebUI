@@ -89,7 +89,14 @@ const LinkMenuItem = (
 };
 
 const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
-  <a href={url} target="_blank" rel="noreferrer noopener" aria-label={`Open ${name}`}>
+  <a
+    href={url}
+    target="_blank"
+    rel="noreferrer noopener"
+    aria-label={`Open ${name}`}
+    data-tooltip-id="tooltip"
+    data-tooltip-content={name}
+  >
     <Icon className="text-topnav-icon" path={icon} size={1} />
   </a>
 );
@@ -98,7 +105,11 @@ const QueueCount = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
 
   return (
-    <div className="flex items-center gap-x-2">
+    <div
+      className="flex items-center gap-x-2"
+      data-tooltip-id="tooltip"
+      data-tooltip-content={`Queue Count: ${queue.TotalCount}`}
+    >
       <Icon path={mdiServer} size={1} />
       <span className="text-header-text-important">
         {queue.TotalCount}
@@ -220,6 +231,8 @@ function TopNav() {
               className={({ isActive }) =>
                 cx({ 'text-header-icon-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Settings"
             >
               <Icon path={mdiCogOutline} size={1} />
             </NavLink>

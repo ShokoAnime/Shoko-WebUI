@@ -11,19 +11,24 @@ import type { RootState } from '@/core/store';
 
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
+  const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
   return (
     <div
       key={file.ID}
       className="mr-3 flex items-center rounded-md p-3 even:bg-panel-background-alt"
     >
-      <div className="flex grow flex-col">
+      <div
+        className="flex grow flex-col"
+        data-tooltip-id="tooltip"
+        data-tooltip-content={fileName}
+      >
         <span className="opacity-65">
           {createdTime.format('YYYY-MM-DD')}
           &nbsp;|&nbsp;
           {createdTime.format('HH:mm')}
         </span>
         <span className="max-w-[95%] break-all">
-          {file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>'}
+          {fileName}
         </span>
       </div>
       <AVDumpFileIcon truck file={file} />
