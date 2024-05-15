@@ -233,6 +233,7 @@ function TopNav() {
               onClick={closeModalsAndSubmenus}
               data-tooltip-id="tooltip"
               data-tooltip-content="Settings"
+              data-tooltip-place="bottom"
             >
               <Icon path={mdiCogOutline} size={1} />
             </NavLink>
