@@ -14,24 +14,30 @@ const FileTypeSummary = ({ sources, type }: FileTypeSummaryProps) => {
   const formattedType = (type === EpisodeTypeEnum.Normal) ? 'Episode' : type;
   const typeCount = sources.reduce((prev, curr) => (prev + curr.Count), 0);
   const sourceMap = sources.map(({ Count, Type }) => (`${Type} (${Count})`));
-  const formattedSources = sourceMap.length > 0 ? sourceMap.join(', ') : 'N/A';
   return (
-    <>
-      <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">
-          {formattedType}
-          &nbsp;Count
-        </span>
-        <span className="font-normal">{typeCount}</span>
-      </div>
-      <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">
-          {formattedType}
-          &nbsp;Source
-        </span>
-        <span className="font-normal">{formattedSources}</span>
-      </div>
-    </>
+    <div className="flex flex-col gap-y-1">
+      <span className="font-bold">
+        {formattedType}
+        s&nbsp;
+        {sourceMap.length > 1
+          && (
+            <span className="opacity-65">
+              (
+              {typeCount}
+              )
+            </span>
+          )}
+      </span>
+      <span className="font-normal">
+        {sourceMap.map((source, index) => (
+          // eslint-disable-next-line react/no-array-index-key -- will not change between renders
+          <React.Fragment key={index}>
+            {source}
+            <br />
+          </React.Fragment>
+        ))}
+      </span>
+    </div>
   );
 };
 
@@ -60,11 +66,11 @@ const FileOverview = ({ overview }: Props) => {
     >
       {fileTypeSummaries}
       <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">Total File Size</span>
+        <span className="font-bold">Total File Size</span>
         {prettyBytes(overview?.TotalFileSize ?? 0, { binary: true })}
       </div>
       <div className="flex flex-col gap-y-1">
-        <span className="font-semibold">Groups</span>
+        <span className="font-bold">Groups</span>
         {releaseGroups}
       </div>
     </ShokoPanel>
