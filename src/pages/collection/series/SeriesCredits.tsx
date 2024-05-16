@@ -4,7 +4,7 @@ import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js
 import Icon from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { get, map, toNumber } from 'lodash';
+import { map, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import CharacterImage from '@/components/CharacterImage';
@@ -20,13 +20,12 @@ import {
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
 type ModeType = 'Character' | 'Staff';
 
 const getThumbnailUrl = (item: SeriesCast, mode: ModeType) => {
-  const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
+  const thumbnail = item[mode].Image ?? null;
   if (thumbnail === null) return null;
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
 };
