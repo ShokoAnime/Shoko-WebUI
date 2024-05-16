@@ -1,5 +1,7 @@
 import type { CollectionFilterType } from './collection';
 import type { ImageType, RatingType } from './common';
+import type { EpisodeTypeEnum } from './episode';
+import type { FileSourceEnum } from './file';
 import type { SeriesTitleType } from './series';
 import type { TagType } from '@/core/types/api/tags';
 
@@ -28,6 +30,7 @@ export type WebuiSeriesDetailsType = {
 };
 
 export type WebuiSeriesFileSummaryType = {
+  Overview: WebuiSeriesFileSummaryOverview;
   Groups: WebuiSeriesFileSummaryGroupType[];
   MissingEpisodes: WebuiSeriesFileSummaryMissingEpisodeType[];
 };
@@ -85,6 +88,22 @@ export type WebuiSeriesFileSummaryMissingEpisodeType = {
     Votes: number;
     Type: string;
   };
+};
+
+export type WebuiSeriesFileSummaryOverview = {
+  SourcesByType: WebuiSeriesFileSummarySourcesByType[];
+  TotalFileSize: number;
+  ReleaseGroups: string[];
+};
+
+export type WebuiSeriesFileSummarySourcesByType = {
+  Type: EpisodeTypeEnum;
+  Sources: WebuiSeriesFileSummarySourceCount[];
+};
+
+export type WebuiSeriesFileSummarySourceCount = {
+  Type: FileSourceEnum;
+  Count: number;
 };
 
 export type WebuiTheme = {
