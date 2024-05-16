@@ -3,6 +3,7 @@ import { mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { forEach, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
+import { useDebounceValue } from 'usehooks-ts';
 
 import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
 
@@ -75,6 +76,8 @@ const Group = ({ fetchingState, group }: GroupProps) => {
     )).join(' | ');
   }, [group]);
 
+  const [fetchState] = useDebounceValue(fetchingState, 500);
+
   const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
     group,
   ]);
@@ -130,7 +133,7 @@ const Group = ({ fetchingState, group }: GroupProps) => {
   return (
     <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
       <div className="flex text-xl font-semibold">
-        <Header ranges={group.RangeByType} fetchingState={fetchingState} />
+        <Header ranges={group.RangeByType} fetchingState={fetchState} />
       </div>
       <div className="flex gap-x-[4.5rem]">
         <div className="flex flex-col gap-y-2">
