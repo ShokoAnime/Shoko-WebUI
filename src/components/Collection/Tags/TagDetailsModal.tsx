@@ -34,7 +34,9 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
   return (
     <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
       <AnidbDescription text={tag?.Description ?? ''} className="line-clamp-[10] opacity-65" />
-      <div className="flex flex-col gap-2">
+      {/* TODO: Implement the list of series for the tag when the serer supports this with a new endpoint */}
+      {
+        /* <div className="flex flex-col gap-2">
         <div className="text-base font-bold">
           Series With Tag |&nbsp;
           <span className="text-panel-text-important">
@@ -48,7 +50,8 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
             <div>Not yet implemented!</div>
           </div>
         </div>
-      </div>
+      </div> */
+      }
     </ModalPanel>
   );
 });
