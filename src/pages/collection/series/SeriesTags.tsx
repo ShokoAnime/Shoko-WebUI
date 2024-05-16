@@ -32,7 +32,10 @@ const SeriesTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
             path={mdiTagTextOutline}
             size={1}
             className={tag.Source === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action'}
+            // TODO: Remove title attribute after rebase to upstream/master
+            data-tooltip-id="tooltip"
             title={`${tag.Source} Tag`}
+            data-tooltip-content={`${tag.Source} Tag`}
           />
         </div>
       </div>
