@@ -10,6 +10,17 @@ type Props = {
   hidePlaceholderOnHover?: boolean;
 };
 
+const LoadingElement = React.memo(({ hidePlaceholderOnHover }: { hidePlaceholderOnHover?: boolean }) => (
+  <div
+    className={cx(
+      'w-full h-full flex flex-col justify-center items-center bg-panel-input p-6',
+      hidePlaceholderOnHover && 'group-hover:opacity-0',
+    )}
+  >
+    <Icon path={mdiAccountTieOutline} size={10} className="opacity-65" />
+  </div>
+));
+
 const CharacterImage = React.memo((props: Props) => {
   const {
     children,
@@ -21,29 +32,26 @@ const CharacterImage = React.memo((props: Props) => {
   const [imageLoaded, setImageLoaded] = useState(false);
 
   const backgroundImage = new Image();
-  if (imageSrc !== undefined && imageSrc !== null) {
+  if (typeof imageSrc === 'string') {
     backgroundImage.onload = () => setImageLoaded(true);
     backgroundImage.src = imageSrc;
   }
 
   return (
     <div className={`${className} overflow-hidden`}>
-      <div
-        className="group absolute left-0 top-0 z-[-1] flex size-full flex-col text-center"
-        style={{ background: imageLoaded ? `50% 0% / cover no-repeat url('${backgroundImage.src}')` : undefined }}
-      >
-        {!imageLoaded && (
-          <div
-            className={cx(
-              'w-full h-full flex flex-col justify-center items-center bg-panel-input p-6',
-              hidePlaceholderOnHover && 'group-hover:opacity-0',
-            )}
-          >
-            <Icon path={mdiAccountTieOutline} size={10} className="opacity-65" />
-          </div>
+      {imageSrc === null
+        ? <LoadingElement hidePlaceholderOnHover={hidePlaceholderOnHover} />
+        : (
+          <>
+            <div
+              className="group absolute left-0 top-0 z-[-1] flex size-full flex-col text-center"
+              style={{ background: imageLoaded ? `50% 0% / cover no-repeat url('${backgroundImage.src}')` : undefined }}
+            >
+              {!imageLoaded && <LoadingElement hidePlaceholderOnHover={hidePlaceholderOnHover} />}
+            </div>
+            {children}
+          </>
         )}
-      </div>
-      {children}
     </div>
   );
 });
