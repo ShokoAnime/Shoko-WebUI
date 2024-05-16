@@ -43,7 +43,10 @@ const StateButton = React.memo((
   <Button
     className={cx('self-center', active ? 'text-panel-text-important' : 'text-panel-text')}
     onClick={onClick}
+    // TODO: Remove `tooltip` attribute after rebase to upstream/master
     tooltip={tooltip}
+    data-tooltip-content={tooltip}
+    data-tooltip-id="tooltip"
   >
     <Icon path={icon} size={1.2} />
   </Button>
@@ -63,7 +66,10 @@ const SelectedStateButton = React.memo((
         <Button
           onClick={onClick ?? (() => {})}
           className="text-panel-text"
+          // TODO: Remove `tooltip` attribute after rebase to upstream/master
           tooltip={selected ? 'Unselect' : 'Select'}
+          data-tooltip-content={selected ? 'Unselect' : 'Select'}
+          data-tooltip-id="tooltip"
         >
           <Icon
             path={selected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
