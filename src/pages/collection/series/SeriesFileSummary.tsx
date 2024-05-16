@@ -32,118 +32,123 @@ const HeaderFragment = ({ range, title }) => {
   );
 };
 
-type HeaderProps = { ranges: WebuiSeriesFileSummaryGroupRangeByType };
-const Header = ({ ranges }: HeaderProps) => (
+type HeaderProps = { ranges: WebuiSeriesFileSummaryGroupRangeByType, fetchingState: boolean };
+const Header = ({ fetchingState, ranges }: HeaderProps) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
     {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
+    {fetchingState && <Icon path={mdiLoading} spin size="2rem" />}
   </div>
 );
 
-const SummaryGroup = React.memo(({ group }: { group: WebuiSeriesFileSummaryGroupType }) => {
-  const sizes = useMemo(() => {
-    const sizeMap: Record<string, { size: number, count: number }> = {};
-    forEach(group.RangeByType, (item, key) => {
-      let idx = 'Other';
-      if (key === 'Normal') {
-        idx = item.Count > 1 ? 'Episodes' : 'Episode';
-      } else if (key === 'Special') {
-        idx = item.Count > 1 ? 'Specials' : 'Special';
-      }
-
-      if (!sizeMap[idx]) {
-        sizeMap[idx] = { size: 0, count: 0 };
-      }
-      sizeMap[idx].size += item.FileSize;
-      sizeMap[idx].count += item.Count;
-    });
-
-    return map(sizeMap, (size, name) => (
-      `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
-    )).join(' | ');
-  }, [group]);
-
-  const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [group]);
-  const videoDetails = useMemo(() => {
-    const conditions: string[] = [];
-    if (group.FileSource) {
-      conditions.push(group.FileSource.replace('BluRay', 'Blu-Ray'));
-    }
-    if (group.FileVersion) {
-      conditions.push(`v${group.FileVersion}`);
-    }
-    if (group.VideoBitDepth) {
-      conditions.push(`${group.VideoBitDepth}-bit`);
-    }
-    if (group.VideoResolution) {
-      conditions.push(`${group.VideoResolution} (${group.VideoWidth}x${group.VideoHeight})`);
-    }
-    if (group.VideoCodecs) {
-      conditions.push(group.VideoCodecs);
-    }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
-  const audioDetails = useMemo(() => {
-    const conditions: string[] = [];
-    if (group.AudioCodecs) {
-      conditions.push(group.AudioCodecs.toUpperCase());
-    }
-    if (group.AudioLanguages) {
-      if (group.AudioStreamCount !== undefined) {
-        conditions.push(`Multi Audio (${group.AudioLanguages.join(', ')})`);
-      } else {
-        conditions.push(group.AudioLanguages.join(', '));
-      }
-    }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
-  const subtitleDetails = useMemo(() => {
-    const conditions: string[] = [];
-    if (group.SubtitleCodecs) {
-      conditions.push(group.SubtitleCodecs.toUpperCase());
-    }
-    if (group.SubtitleLanguages) {
-      if (group.SubtitleStreamCount !== undefined) {
-        conditions.push(`Multi Audio (${group.SubtitleLanguages.join(', ')})`);
-      } else {
-        conditions.push(group.SubtitleLanguages.join(', '));
-      }
-    }
-    return conditions.length ? conditions.join(' | ') : '-';
-  }, [group]);
-  const locationDetails = group.FileLocation ?? '-';
-
-  return (
-    <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
-      <div className="flex text-xl font-semibold">
-        <Header ranges={group.RangeByType} />
-      </div>
-      <div className="flex">
-        <div className="flex grow flex-col gap-y-4 font-semibold">
-          <span>Group</span>
-          <span>Video</span>
-          <span>Location</span>
-        </div>
-        <div className="flex grow-[2] flex-col gap-y-4">
-          <span>{groupDetails}</span>
-          <span>{videoDetails}</span>
-          <span>{locationDetails}</span>
-        </div>
-        <div className="flex grow flex-col gap-y-4 font-semibold">
-          <span>Total</span>
-          <span>Audio</span>
-          <span>Subtitles</span>
-        </div>
-        <div className="flex grow-[2] flex-col gap-y-4">
-          <span>{sizes}</span>
-          <span>{audioDetails}</span>
-          <span>{subtitleDetails}</span>
-        </div>
-      </div>
+const SummaryGroupRow = ({ label, value }: { label: string, value: string }) => (
+  <div className="flex gap-x-12">
+    <div className="w-20 shrink-0 font-semibold">
+      {label}
     </div>
-  );
-});
+    <div className="max-w-[33rem] break-words">
+      {value}
+    </div>
+  </div>
+);
+const SummaryGroup = React.memo(
+  ({ fetchingState, group }: { group: WebuiSeriesFileSummaryGroupType, fetchingState: boolean }) => {
+    const sizes = useMemo(() => {
+      const sizeMap: Record<string, { size: number, count: number }> = {};
+      forEach(group.RangeByType, (item, key) => {
+        let idx = 'Other';
+        if (key === 'Normal') {
+          idx = item.Count > 1 ? 'Episodes' : 'Episode';
+        } else if (key === 'Special') {
+          idx = item.Count > 1 ? 'Specials' : 'Special';
+        }
+
+        if (!sizeMap[idx]) {
+          sizeMap[idx] = { size: 0, count: 0 };
+        }
+        sizeMap[idx].size += item.FileSize;
+        sizeMap[idx].count += item.Count;
+      });
+
+      return map(sizeMap, (size, name) => (
+        `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
+      )).join(' | ');
+    }, [group]);
+
+    const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
+      group,
+    ]);
+    const videoDetails = useMemo(() => {
+      const conditions: string[] = [];
+      if (group.FileSource) {
+        conditions.push(group.FileSource.replace('BluRay', 'Blu-Ray'));
+      }
+      if (group.FileVersion) {
+        conditions.push(`v${group.FileVersion}`);
+      }
+      if (group.VideoBitDepth) {
+        conditions.push(`${group.VideoBitDepth}-bit`);
+      }
+      if (group.VideoResolution) {
+        conditions.push(`${group.VideoResolution} (${group.VideoWidth}x${group.VideoHeight})`);
+      }
+      if (group.VideoCodecs) {
+        conditions.push(group.VideoCodecs);
+      }
+      return conditions.length ? conditions.join(' | ') : '-';
+    }, [group]);
+    const audioDetails = useMemo(() => {
+      const conditions: string[] = [];
+      if (group.AudioCodecs) {
+        conditions.push(group.AudioCodecs.toUpperCase());
+      }
+      if (group.AudioLanguages) {
+        if (group.AudioStreamCount !== undefined) {
+          conditions.push(`Multi Audio (${group.AudioLanguages.join(', ')})`);
+        } else {
+          conditions.push(group.AudioLanguages.join(', '));
+        }
+      }
+      return conditions.length ? conditions.join(' | ') : '-';
+    }, [group]);
+    const subtitleDetails = useMemo(() => {
+      const conditions: string[] = [];
+      if (group.SubtitleCodecs) {
+        conditions.push(group.SubtitleCodecs.toUpperCase());
+      }
+      if (group.SubtitleLanguages) {
+        if (group.SubtitleStreamCount !== undefined) {
+          conditions.push(`Multi Audio (${group.SubtitleLanguages.join(', ')})`);
+        } else {
+          conditions.push(group.SubtitleLanguages.join(', '));
+        }
+      }
+      return conditions.length ? conditions.join(' | ') : '-';
+    }, [group]);
+    const locationDetails = group.FileLocation ?? '-';
+
+    return (
+      <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
+        <div className="flex text-xl font-semibold">
+          <Header ranges={group.RangeByType} fetchingState={fetchingState} />
+        </div>
+        <div className="flex gap-x-[4.5rem]">
+          <div className="flex flex-col gap-y-2">
+            <SummaryGroupRow label="Group" value={groupDetails} />
+            <SummaryGroupRow label="Video" value={videoDetails} />
+            <SummaryGroupRow label="Location" value={locationDetails} />
+          </div>
+          <div className="flex flex-col gap-y-2">
+            <SummaryGroupRow label="Total" value={sizes} />
+            <SummaryGroupRow label="Audio" value={audioDetails} />
+            <SummaryGroupRow label="Subtitles" value={subtitleDetails} />
+          </div>
+        </div>
+      </div>
+    );
+  },
+);
 
 type FileSelectionHeaderProps = {
   mode: ModeType;
@@ -244,7 +249,7 @@ const groupFilterMap = {
   VideoResolution: 'Resolution',
 };
 type GroupFilterPanelProps = {
-  filter: string[];
+  filter: Set<string>;
   onFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPanelProps) => (
@@ -260,7 +265,7 @@ const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPane
         label={groupFilterMap[k]}
         id={k}
         key={k}
-        isChecked={filter.includes(k)}
+        isChecked={filter.has(k)}
         onChange={onFilterChange}
       />
     ))}
@@ -336,27 +341,22 @@ const SeriesFileSummary = () => {
   const { seriesId } = useParams();
 
   const [mode, setMode] = useState<ModeType>('Series');
-  const [filter, setFilter] = useState<string[]>([...Object.keys(groupFilterMap), 'VideoBitDepth']);
+  const [filter, setFilter] = useState<Set<string>>(new Set(Object.keys(groupFilterMap)));
 
-  useEffect(() => setFilter([...Object.keys(groupFilterMap), 'VideoBitDepth']), [mode]);
+  useEffect(() => setFilter(new Set(Object.keys(groupFilterMap))), [mode]);
 
   const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const { checked: active, id: option } = event.target;
-    const optionArr = [option];
-    if (option === 'VideoResolution') optionArr.push('VideoBitDepth');
-    if (active && !filter.includes(option)) setFilter([...filter, ...optionArr]);
-    if (!active && filter.includes(option)) {
-      setFilter(
-        filter.filter(
-          k => ((option === 'VideoResolution') ? !(k === 'VideoResolution' || k === 'VideoBitDepth') : (k !== option)),
-        ),
-      );
-    }
+    setFilter((prevState) => {
+      const { id: filterOption } = event.target;
+      const newState = new Set(prevState);
+      if (!newState.delete(filterOption)) newState.add(filterOption);
+      return newState;
+    });
   });
 
-  const { data: fileSummary, isLoading } = useSeriesFileSummaryQuery(
+  const { data: fileSummary, isFetching, isLoading } = useSeriesFileSummaryQuery(
     toNumber(seriesId!),
-    { groupBy: filter.join(',') },
+    { groupBy: [...filter].join(',') },
     !!seriesId,
   );
 
@@ -413,7 +413,10 @@ const SeriesFileSummary = () => {
             </div>
           )}
           {mode === 'Series'
-            && map(fileSummary?.Groups, (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} />)}
+            && map(
+              fileSummary?.Groups,
+              (range, idx) => <SummaryGroup key={`group-${idx}`} group={range} fetchingState={isFetching} />,
+            )}
           {mode === 'Missing' && <MissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
         </div>
       </div>
