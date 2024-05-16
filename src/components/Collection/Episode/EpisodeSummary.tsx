@@ -40,27 +40,38 @@ const StateIcon = ({ className, icon, show }: { icon: string, show: boolean, cla
 const StateButton = React.memo((
   { active, icon, onClick, tooltip }: { icon: string, active: boolean, onClick: () => void, tooltip: string },
 ) => (
-  <Button className={active ? 'text-panel-text-important' : 'text-panel-text'} onClick={onClick} tooltip={tooltip}>
+  <Button
+    className={cx('self-center', active ? 'text-panel-text-important' : 'text-panel-text')}
+    onClick={onClick}
+    tooltip={tooltip}
+  >
     <Icon path={icon} size={1.2} />
   </Button>
 ));
 
 const SelectedStateButton = React.memo((
-  { onClick, selected, show }: { selected?: boolean, show?: boolean, onClick?: () => void },
+  { onClick, selected, shadow, show }: { selected?: boolean, show?: boolean, shadow?: boolean, onClick?: () => void },
 ) => (
   show
     ? (
-      <Button
-        onClick={onClick ?? (() => {})}
-        className="p-3 text-panel-text"
-        tooltip={selected ? 'Unselect' : 'Select'}
+      <div
+        className={cx(
+          'flex flex-col items-center gap-y-6 rounded-br-lg rounded-tl-lg p-4',
+          shadow && 'shadow-[0_4px_4px_rgba(0,0,0,0.25)]',
+        )}
       >
-        <Icon
-          path={selected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
-          className="text-panel-icon-action"
-          size={1.2}
-        />
-      </Button>
+        <Button
+          onClick={onClick ?? (() => {})}
+          className="text-panel-text"
+          tooltip={selected ? 'Unselect' : 'Select'}
+        >
+          <Icon
+            path={selected ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+            className="text-panel-icon-action"
+            size={1.2}
+          />
+        </Button>
+      </div>
     )
     : null
 ));
@@ -92,12 +103,12 @@ const EpisodeSummary = React.memo(({ animeId, episode, nextUp, onSelectionChange
           <div className="absolute flex w-full flex-row justify-between rounded-lg transition-opacity group-hover:opacity-0">
             <div className="flex w-14 flex-col">
               <div className="rounded-br-lg bg-panel-background-transparent">
-                <SelectedStateButton selected={selected} show={selected} onClick={onSelectionChange} />
+                <SelectedStateButton selected={selected} show={selected} shadow onClick={onSelectionChange} />
               </div>
             </div>
             <div className="flex w-14 flex-col">
               {(!!episode.Watched || episode.IsHidden) && (
-                <div className="flex flex-col gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+                <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
                   <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
                   <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
                 </div>
