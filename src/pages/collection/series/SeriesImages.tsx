@@ -54,9 +54,9 @@ const InfoLine = ({ title, value }) => (
 );
 
 const sizeMap = {
-  Posters: 'h-[15rem] w-[10rem] 2xl:h-[21rem] 2xl:w-[13.313rem]',
-  Fanarts: 'h-[11.5rem] w-[22.5rem] 2xl:h-[16rem] 2xl:w-[28.125rem]',
-  Banners: 'h-[8rem] w-[46rem] 2xl:w-[42.938rem]',
+  Posters: 'h-[15rem] w-[10rem] 2xl:h-[21rem] 2xl:w-[13.2rem]',
+  Fanarts: 'h-[11.5rem] w-[22.5rem] 2xl:h-[16rem] 2xl:w-[27.75rem]',
+  Banners: 'h-[8rem] w-[46rem] 2xl:w-[42.60rem]',
 };
 
 const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in sizeMap;
