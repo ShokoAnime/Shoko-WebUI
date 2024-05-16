@@ -41,7 +41,6 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(() => new Image());
 
   useEffect(() => {
-    setBackgroundImage(null);
     if (!imageSource) {
       setImageError(
         imageSource === null
