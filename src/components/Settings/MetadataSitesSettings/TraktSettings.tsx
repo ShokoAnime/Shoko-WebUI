@@ -29,7 +29,7 @@ const TraktSettings = () => {
         toast.info(
           'Click on the code to copy it. You have approximately 10 minutes to visit the URL provided and enter the code. SAVE YOUR SETTINGS after activation is complete.',
           undefined,
-          { autoClose: 600000, toastId: 'trakt-code' },
+          { autoClose: 600000, toastId: 'trakt-code', position: 'top-right' },
         );
 
         setTimeout(() => {

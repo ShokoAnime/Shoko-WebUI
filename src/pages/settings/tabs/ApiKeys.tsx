@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
+import { map } from 'lodash';
 import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
@@ -135,7 +136,7 @@ const ApiKeys = () => {
       <div className="flex flex-col gap-y-6">
         <div className="flex h-[2.149rem] items-center font-semibold">Issued API Keys</div>
         <div className="flex flex-col gap-y-1">
-          {tokens.map(token => <UserApiTokens key={token.Device} token={token} />)}
+          {map(tokens, token => <UserApiTokens key={token.Device} token={token} />)}
         </div>
       </div>
     </>

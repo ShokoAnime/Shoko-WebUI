@@ -11,5 +11,4 @@ export const useApiKeyQuery = () =>
     queryFn: () => axiosV2.get('auth'),
     // Because we cannot delete other users' keys just using the device name even if we are an admin, we are only showing current user's keys
     select: transformApiKeys,
-    initialData: [],
   });
