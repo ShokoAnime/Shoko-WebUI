@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -9,10 +9,7 @@ import FileMissingEpisodes from '@/components/Collection/Files/FilesMissingEpiso
 import FileOverview from '@/components/Collection/Files/FilesOverview';
 import FilesSummaryGroups from '@/components/Collection/Files/FilesSummaryGroup';
 import Button from '@/components/Input/Button';
-import Checkbox from '@/components/Input/Checkbox';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
@@ -62,58 +59,14 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
   </div>
 ));
 
-const groupFilterMap = {
-  GroupName: 'Release Group',
-  FileVersion: 'Video Version',
-  FileLocation: 'Location',
-  AudioLanguages: 'Audio Language',
-  SubtitleLanguages: 'Subtitle Language',
-  VideoResolution: 'Resolution',
-};
-type GroupFilterPanelProps = {
-  filter: Set<string>;
-  onFilterChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-};
-const GroupFilterPanel = React.memo(({ filter, onFilterChange }: GroupFilterPanelProps) => (
-  <ShokoPanel
-    title="Grouping Options"
-    contentClassName="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6"
-    transparent
-    fullHeight={false}
-  >
-    {Object.keys(groupFilterMap).map((k: keyof typeof groupFilterMap) => (
-      <Checkbox
-        justify
-        label={groupFilterMap[k]}
-        id={k}
-        key={k}
-        isChecked={filter.has(k)}
-        onChange={onFilterChange}
-      />
-    ))}
-  </ShokoPanel>
-));
-
 const SeriesFileSummary = () => {
   const { seriesId } = useParams();
 
   const [mode, setMode] = useState<ModeType>('Series');
-  const [filter, setFilter] = useState<Set<string>>(new Set(Object.keys(groupFilterMap)));
-
-  useEffect(() => setFilter(new Set(Object.keys(groupFilterMap))), [mode]);
-
-  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter((prevState) => {
-      const { id: filterOption } = event.target;
-      const newState = new Set(prevState);
-      if (!newState.delete(filterOption)) newState.add(filterOption);
-      return newState;
-    });
-  });
 
   const { data: fileSummary, isFetching, isLoading } = useSeriesFileSummaryQuery(
     toNumber(seriesId!),
-    { groupBy: [...filter].join(',') },
+    { groupBy: 'GroupName,FileVersion,FileLocation,AudioLanguages,SubtitleLanguages,VideoResolution' },
     !!seriesId,
   );
 
@@ -122,7 +75,6 @@ const SeriesFileSummary = () => {
   return (
     <div className="flex w-full gap-x-6">
       <div className="flex flex-col gap-y-6">
-        {mode === 'Series' && <GroupFilterPanel filter={filter} onFilterChange={handleFilterChange} />}
         <FileOverview overview={fileSummary?.Overview} />
       </div>
 
