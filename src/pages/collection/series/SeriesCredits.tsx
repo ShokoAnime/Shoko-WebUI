@@ -3,14 +3,13 @@ import { useOutletContext, useParams } from 'react-router';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import cx from 'classnames';
 import { map, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import CharacterImage from '@/components/CharacterImage';
-import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import {
@@ -59,25 +58,6 @@ const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: 
   </div>
 ));
 
-const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode: ModeType) => void }) => (
-  <div className="flex items-center gap-x-1 text-xl font-semibold">
-    {map(creditTypeVariations, (value, key: ModeType) => (
-      <Button
-        className={cx(
-          'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
-          mode !== key
-            ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
-            : '!bg-panel-toggle-background text-panel-toggle-text',
-        )}
-        key={key}
-        onClick={() => setMode(key)}
-      >
-        {value}
-      </Button>
-    ))}
-  </div>
-));
-
 const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
 
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
@@ -117,13 +97,22 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
   );
 };
 
+const states: { label?: string, value: ModeType }[] = [
+  { label: 'Characters', value: 'Character' },
+  { value: 'Staff' },
+];
+
 const SeriesCredits = () => {
   const { seriesId } = useParams();
 
   const { isPending: pendingRefreshAniDb, mutate: refreshAniDb } = useRefreshSeriesAniDBInfoMutation();
   const { isPending: pendingRefreshTvDb, mutate: refreshTvDb } = useRefreshSeriesTvdbInfoMutatation();
 
-  const [mode, setMode] = useState<ModeType>('Character');
+  const [mode, setMode] = useState<ModeType>(states[0].value);
+  const handleModeChange = useEventCallback((newMode: ModeType) => {
+    setMode(newMode);
+  });
+
   const [search, setSearch] = useState('');
 
   const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
@@ -272,7 +261,7 @@ const SeriesCredits = () => {
             {creditTypeVariations[mode]}
             &nbsp;Listed
           </div>
-          <Heading mode={mode} setMode={setMode} />
+          <MultiStateButton activeState={mode} states={states} onStateChange={handleModeChange} />
         </div>
         <StaffPanelVirtualizer castArray={filteredCast} mode={mode} />
       </div>
