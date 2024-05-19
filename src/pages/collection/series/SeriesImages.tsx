@@ -7,44 +7,21 @@ import { get, map, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 
-const imageTypeVariations = {
-  posters: 'Posters',
-  fanarts: 'Fanarts',
-  banners: 'Banners',
-};
-
-const Heading = React.memo((
-  { onTypeChange, setType, type }: { type: string, setType: (type: string) => void, onTypeChange: () => void },
-) => (
-  <div className="flex cursor-pointer items-center gap-x-2 text-xl font-semibold">
-    <div className="flex gap-x-1">
-      {map(imageTypeVariations, value => (
-        <Button
-          className={cx(
-            'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
-            type !== value
-              ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
-              : '!bg-panel-toggle-background text-panel-toggle-text',
-          )}
-          key={value}
-          onClick={() => {
-            if (type !== value) onTypeChange();
-            setType(value);
-          }}
-        >
-          {value}
-        </Button>
-      ))}
-    </div>
-  </div>
-));
+type ImageTabType = 'Posters' | 'Fanarts' | 'Banners';
+const tabStates = [
+  { value: 'Posters' },
+  { value: 'Fanarts' },
+  { value: 'Banners' },
+];
 
 const InfoLine = ({ title, value }) => (
   <div className="flex w-full flex-col gap-y-1">
@@ -64,7 +41,7 @@ const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in si
 const SeriesImages = () => {
   const { seriesId } = useParams();
 
-  const [type, setType] = useState('Posters');
+  const [type, setType] = useState<ImageTabType>('Posters');
   const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
   const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation();
@@ -76,6 +53,13 @@ const SeriesImages = () => {
   const resetSelectedImage = () => {
     setSelectedImage({} as ImageType);
   };
+
+  const handleTabChange = useEventCallback((newType: ImageTabType) => {
+    setType((prevType) => {
+      if (newType !== prevType) resetSelectedImage();
+      return newType;
+    });
+  });
 
   if (!seriesId) return null;
   if (!isSizeMapType(type)) return null;
@@ -121,7 +105,7 @@ const SeriesImages = () => {
             {type}
             &nbsp;Listed
           </div>
-          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
+          <MultiStateButton activeState={type} onStateChange={handleTabChange} states={tabStates} />
         </div>
         <div className="flex flex-wrap gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
           {map(get(images, type, []), (item: ImageType) => (

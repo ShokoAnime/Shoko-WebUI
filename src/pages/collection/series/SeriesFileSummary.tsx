@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import { useParams } from 'react-router';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import FileMissingEpisodes from '@/components/Collection/Files/FilesMissingEpisodes';
 import FileOverview from '@/components/Collection/Files/FilesOverview';
 import FilesSummaryGroups from '@/components/Collection/Files/FilesSummaryGroup';
-import Button from '@/components/Input/Button';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
 import type { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
+const tabStates: { label: string, value: ModeType }[] = [
+  { label: 'Series Files', value: 'Series' },
+  { label: 'Missing Files', value: 'Missing' },
+];
 
 type FileSelectionHeaderProps = {
   mode: ModeType;
@@ -39,23 +42,7 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
           </>
         )}
     </div>
-    <div className="flex items-center gap-x-1 text-xl font-semibold">
-      {['Series', 'Missing'].map((key: ModeType) => (
-        <Button
-          className={cx(
-            'w-[150px] rounded-lg ml-2 py-3 px-4 !font-normal',
-            mode !== key
-              ? 'bg-panel-toggle-background-alt text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
-              : '!bg-panel-toggle-background text-panel-toggle-text',
-          )}
-          key={key}
-          onClick={() => setMode(key)}
-        >
-          {key}
-          &nbsp;Files
-        </Button>
-      ))}
-    </div>
+    <MultiStateButton activeState={mode} states={tabStates} onStateChange={setMode} />
   </div>
 ));
 

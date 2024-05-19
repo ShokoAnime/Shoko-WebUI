@@ -10,7 +10,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
-import Button from '@/components/Input/Button';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import {
   useRelatedAnimeQuery,
@@ -19,6 +19,7 @@ import {
   useSeriesQuery,
   useSimilarAnimeQuery,
 } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
@@ -39,7 +40,15 @@ const SeriesOverview = () => {
   const relatedAnimeQuery = useRelatedAnimeQuery(toNumber(seriesId!), !!seriesId);
   const similarAnimeQuery = useSimilarAnimeQuery(toNumber(seriesId!), !!seriesId);
 
-  const [currentTab, setCurrentTab] = useState<string>('metadata');
+  const tabStates = [
+    { label: 'Metadata Sites', value: 'metadata' },
+    { label: 'Series Links', value: 'links' },
+  ];
+  const [currentTab, setCurrentTab] = useState<string>(tabStates[0].value);
+
+  const handleTabStateChange = useEventCallback((newState: string) => {
+    setCurrentTab(newState);
+  });
 
   const relatedAnime = useMemo(() => relatedAnimeQuery?.data ?? [], [relatedAnimeQuery.data]);
   const similarAnime = useMemo(() => similarAnimeQuery?.data ?? [], [similarAnimeQuery.data]);
@@ -61,36 +70,7 @@ const SeriesOverview = () => {
             transparent
             disableOverflow
             options={
-              <div className="flex gap-x-2">
-                <Button
-                  className={cx(
-                    'w-[9.6rem] rounded-lg py-3 px-4 !font-normal !text-base',
-                    currentTab === 'metadata'
-                      ? '!bg-panel-toggle-background text-panel-toggle-text'
-                      : 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
-                  )}
-                  key="metadata"
-                  onClick={() => {
-                    setCurrentTab('metadata');
-                  }}
-                >
-                  Metadata Sites
-                </Button>
-                <Button
-                  className={cx(
-                    'w-[9.6rem] rounded-lg py-3 px-4 !font-normal !text-base',
-                    currentTab === 'links'
-                      ? '!bg-panel-toggle-background text-panel-toggle-text'
-                      : 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
-                  )}
-                  key="links"
-                  onClick={() => {
-                    setCurrentTab('links');
-                  }}
-                >
-                  Series Links
-                </Button>
-              </div>
+              <MultiStateButton states={tabStates} activeState={currentTab} onStateChange={handleTabStateChange} />
             }
           >
             {currentTab === 'metadata'
