@@ -19,7 +19,7 @@ type Props =
 
 const tabs = {
   filtered_episodes: 'Filtered Episodes',
-  selected_episodes: 'Selected Episodes',
+  // selected_episodes: 'Selected Episodes',
 };
 
 const FilteredEpisodesTab = React.memo(({ markFilteredUnwatched, markFilteredWatched }: FilteredEpisodesTabProps) => (

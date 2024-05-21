@@ -3,14 +3,13 @@ import { useOutletContext, useParams } from 'react-router';
 import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import cx from 'classnames';
-import { get, map, toNumber } from 'lodash';
+import { map, toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import CharacterImage from '@/components/CharacterImage';
-import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import {
@@ -20,13 +19,12 @@ import {
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
 type ModeType = 'Character' | 'Staff';
 
 const getThumbnailUrl = (item: SeriesCast, mode: ModeType) => {
-  const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
+  const thumbnail = item[mode].Image ?? null;
   if (thumbnail === null) return null;
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
 };
@@ -57,25 +55,6 @@ const CreditsStaffPanel = React.memo(({ cast, mode }: { cast: SeriesCast, mode: 
       {mode === 'Character' && <div className="opacity-65">{cast.Staff?.Name}</div>}
       <div className="mt-2 text-sm">{cast.RoleDetails}</div>
     </div>
-  </div>
-));
-
-const Heading = React.memo(({ mode, setMode }: { mode: ModeType, setMode: (mode: ModeType) => void }) => (
-  <div className="flex items-center gap-x-1 text-xl font-semibold">
-    {map(creditTypeVariations, (value, key: ModeType) => (
-      <Button
-        className={cx(
-          'w-[7.5rem] rounded-lg mr-2 py-3 px-4 !font-normal !text-base',
-          mode !== key
-            ? 'bg-panel-background text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover'
-            : '!bg-panel-toggle-background text-panel-toggle-text',
-        )}
-        key={key}
-        onClick={() => setMode(key)}
-      >
-        {value}
-      </Button>
-    ))}
   </div>
 ));
 
@@ -118,13 +97,22 @@ const StaffPanelVirtualizer = ({ castArray, mode }: { castArray: SeriesCast[], m
   );
 };
 
+const states: { label?: string, value: ModeType }[] = [
+  { label: 'Characters', value: 'Character' },
+  { value: 'Staff' },
+];
+
 const SeriesCredits = () => {
   const { seriesId } = useParams();
 
   const { isPending: pendingRefreshAniDb, mutate: refreshAniDb } = useRefreshSeriesAniDBInfoMutation();
   const { isPending: pendingRefreshTvDb, mutate: refreshTvDb } = useRefreshSeriesTvdbInfoMutatation();
 
-  const [mode, setMode] = useState<ModeType>('Character');
+  const [mode, setMode] = useState<ModeType>(states[0].value);
+  const handleModeChange = useEventCallback((newMode: ModeType) => {
+    setMode(newMode);
+  });
+
   const [search, setSearch] = useState('');
 
   const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
@@ -273,7 +261,7 @@ const SeriesCredits = () => {
             {creditTypeVariations[mode]}
             &nbsp;Listed
           </div>
-          <Heading mode={mode} setMode={setMode} />
+          <MultiStateButton activeState={mode} states={states} onStateChange={handleModeChange} />
         </div>
         <StaffPanelVirtualizer castArray={filteredCast} mode={mode} />
       </div>
