@@ -220,7 +220,8 @@ const SeriesEpisodes = () => {
                         <EpisodeSummary
                           selected={selectedEpisodes.has(episode.IDs.ID)}
                           onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
-                          animeId={anidbSeriesId}
+                          seriesId={toNumber(seriesId)}
+                          anidbSeriesId={anidbSeriesId}
                           episode={episode}
                           page={page}
                         />
