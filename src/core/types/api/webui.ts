@@ -3,8 +3,7 @@ import type { ImageType, RatingType } from './common';
 import type { EpisodeTypeEnum } from './episode';
 import type { FileSourceEnum } from './file';
 import type { SeriesTitleType } from './series';
-import type { EpisodeTypeEnum } from '@/core/types/api/episode';
-import type { TagType } from '@/core/types/api/tags';
+import type { TagType } from './tags';
 
 export type WebuiGroupExtra = {
   ID: number;
