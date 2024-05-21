@@ -32,9 +32,10 @@ function TransitionDiv(props: Props) {
       leave={enter ?? 'transition-opacity'}
       leaveFrom={enterTo ?? 'opacity-100'}
       leaveTo={enterFrom ?? 'opacity-0'}
-      className={className}
     >
-      {children}
+      <div className={className}>
+        {children}
+      </div>
     </Transition>
   );
 }
