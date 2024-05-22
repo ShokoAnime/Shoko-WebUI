@@ -212,73 +212,76 @@ function ManuallyLinkedTab() {
   );
 
   return (
-    <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
-      <div>
-        <ShokoPanel
-          title={<Title />}
-          options={
-            <ItemCount
-              count={seriesCount}
-              selected={Object.values(selectedFiles).filter(value => value).length}
-            />
-          }
-        >
-          <div className="flex items-center gap-x-3">
-            {/* Endpoint doesn't have search */}
-            {/* <Input */}
-            {/*   type="text" */}
-            {/*   placeholder="Search..." */}
-            {/*   startIcon={mdiMagnify} */}
-            {/*   id="search" */}
-            {/*   value="" */}
-            {/*   onChange={(e) => {}} */}
-            {/*   inputClassName="px-4 py-3" */}
-            {/* /> */}
-            <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
-            <TransitionDiv show={Object.values(selectedFiles).some(value => value)} className="flex gap-x-3">
-              <Button
-                buttonType="primary"
-                buttonSize="normal"
-                className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                onClick={unlinkFiles}
-              >
-                <Icon path={mdiLinkOff} size={1} />
-                Unlink
-              </Button>
-            </TransitionDiv>
-          </div>
-        </ShokoPanel>
-      </div>
+    <>
+      <title>Manually Linked Files - Shoko</title>
+      <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
+        <div>
+          <ShokoPanel
+            title={<Title />}
+            options={
+              <ItemCount
+                count={seriesCount}
+                selected={Object.values(selectedFiles).filter(value => value).length}
+              />
+            }
+          >
+            <div className="flex items-center gap-x-3">
+              {/* Endpoint doesn't have search */}
+              {/* <Input */}
+              {/*   type="text" */}
+              {/*   placeholder="Search..." */}
+              {/*   startIcon={mdiMagnify} */}
+              {/*   id="search" */}
+              {/*   value="" */}
+              {/*   onChange={(e) => {}} */}
+              {/*   inputClassName="px-4 py-3" */}
+              {/* /> */}
+              <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
+              <TransitionDiv show={Object.values(selectedFiles).some(value => value)} className="flex gap-x-3">
+                <Button
+                  buttonType="primary"
+                  buttonSize="normal"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                  onClick={unlinkFiles}
+                >
+                  <Icon path={mdiLinkOff} size={1} />
+                  Unlink
+                </Button>
+              </TransitionDiv>
+            </div>
+          </ShokoPanel>
+        </div>
 
-      <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
-        {seriesQuery.isPending && (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
+        <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
+          {seriesQuery.isPending && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
 
-        {!seriesQuery.isPending && seriesCount === 0 && (
-          <div className="flex grow items-center justify-center font-semibold">
-            No manually linked files!
-          </div>
-        )}
+          {!seriesQuery.isPending && seriesCount === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">
+              No manually linked files!
+            </div>
+          )}
 
-        {seriesQuery.isSuccess && seriesCount > 0 && (
-          <SelectedFilesContext.Provider value={selectedFilesContextValue}>
-            <UtilitiesTable
-              ExpandedNode={FilesTable}
-              columns={columns}
-              count={seriesCount}
-              fetchNextPage={seriesQuery.fetchNextPage}
-              isFetchingNextPage={seriesQuery.isFetchingNextPage}
-              onExpand={onExpand}
-              rows={series}
-              skipSort
-            />
-          </SelectedFilesContext.Provider>
-        )}
-      </div>
-    </TransitionDiv>
+          {seriesQuery.isSuccess && seriesCount > 0 && (
+            <SelectedFilesContext value={selectedFilesContextValue}>
+              <UtilitiesTable
+                ExpandedNode={FilesTable}
+                columns={columns}
+                count={seriesCount}
+                fetchNextPage={seriesQuery.fetchNextPage}
+                isFetchingNextPage={seriesQuery.isFetchingNextPage}
+                onExpand={onExpand}
+                rows={series}
+                skipSort
+              />
+            </SelectedFilesContext>
+          )}
+        </div>
+      </TransitionDiv>
+    </>
   );
 }
 

@@ -55,7 +55,7 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
   const [fanartUri, setFanartUri] = useState('');
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement | null> }>();
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
@@ -91,67 +91,70 @@ const Series = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-2 2xl:gap-x-6">
-      <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6">
-        <div className="flex flex-row gap-x-6">
-          <div className="flex w-full gap-x-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-            <div className="flex w-full grow flex-col gap-y-3">
-              <div className="flex justify-between">
-                <div className="flex gap-x-2">
-                  <Link className="font-semibold text-panel-text-primary" to="/webui/collection">
-                    Entire Collection
-                  </Link>
-                  <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                  {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
-                    <>
-                      <Link
-                        className="font-semibold text-panel-text-primary"
-                        to={`/webui/collection/group/${series.IDs.ParentGroup}`}
-                      >
-                        {groupQuery.data.Name}
-                      </Link>
-                      <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                    </>
-                  )}
+    <>
+      <title>{`${series.Name} - Shoko`}</title>
+      <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-2 2xl:gap-x-6">
+        <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6">
+          <div className="flex flex-row gap-x-6">
+            <div className="flex w-full gap-x-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+              <div className="flex w-full grow flex-col gap-y-3">
+                <div className="flex justify-between">
+                  <div className="flex gap-x-2">
+                    <Link className="font-semibold text-panel-text-primary" to="/webui/collection">
+                      Entire Collection
+                    </Link>
+                    <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+                    {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
+                      <>
+                        <Link
+                          className="font-semibold text-panel-text-primary"
+                          to={`/webui/collection/group/${series.IDs.ParentGroup}`}
+                        >
+                          {groupQuery.data.Name}
+                        </Link>
+                        <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+                      </>
+                    )}
+                  </div>
                 </div>
-              </div>
-              <div className="flex flex-col gap-y-3">
                 <div className="flex flex-col gap-y-3">
-                  <div className="text-4xl font-semibold">{series.Name}</div>
-                  <div className="text-xl font-semibold opacity-65">
-                    Original Title:&nbsp;
-                    {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
+                  <div className="flex flex-col gap-y-3">
+                    <div className="text-4xl font-semibold">{series.Name}</div>
+                    <div className="text-xl font-semibold opacity-65">
+                      Original Title:&nbsp;
+                      {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {tags.slice(0, 9).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
+                      <NavLink to="tags">
+                        <SeriesTag text="More..." type="All" />
+                      </NavLink>
+                    </div>
                   </div>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.slice(0, 9).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
-                    <NavLink to="tags">
-                      <SeriesTag text="More..." type="All" />
-                    </NavLink>
+                  <div className="line-clamp-[7]">
+                    <AnidbDescription text={series.AniDB?.Description ?? ''} />
                   </div>
-                </div>
-                <div className="line-clamp-[7]">
-                  <AnidbDescription text={series.AniDB?.Description ?? ''} />
                 </div>
               </div>
             </div>
           </div>
+          <div className="flex gap-x-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+            <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
+            <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
+            <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
+            <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
+            <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
+            <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
+          </div>
+          <Outlet context={{ scrollRef }} />
         </div>
-        <div className="flex gap-x-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
-          <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
-          <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
-          <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
-          <SeriesTab to="images" icon={mdiImageMultipleOutline} text="Images" />
-          <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
-          <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
-        </div>
-        <Outlet context={{ scrollRef }} />
+        <SeriesSidePanel series={series} />
+        <div
+          className="fixed left-0 top-0 -z-10 size-full opacity-20"
+          style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
+        />
       </div>
-      <SeriesSidePanel series={series} />
-      <div
-        className="fixed left-0 top-0 -z-10 size-full opacity-20"
-        style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
-      />
-    </div>
+    </>
   );
 };
 

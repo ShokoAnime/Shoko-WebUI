@@ -148,9 +148,9 @@ const Router = () => {
 
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
-      <BodyVisibleContext.Provider value={bodyVisible}>
+      <BodyVisibleContext value={bodyVisible}>
         <RouterProvider router={router} />
-      </BodyVisibleContext.Provider>
+      </BodyVisibleContext>
     </div>
   );
 };

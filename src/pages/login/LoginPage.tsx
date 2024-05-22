@@ -112,6 +112,7 @@ function LoginPage() {
 
   return (
     <>
+      <title>Login - Shoko</title>
       <ToastContainer
         position="bottom-right"
         autoClose={4000}

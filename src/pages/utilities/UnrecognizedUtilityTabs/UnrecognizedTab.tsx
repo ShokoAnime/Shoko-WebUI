@@ -187,6 +187,7 @@ const Menu = (
 
   return (
     <>
+      <title>Unrecognized Files - Shoko</title>
       <div
         className={cx(
           selectedRows.length !== 0 ? 'hidden 3xl:flex' : 'inline-flex',

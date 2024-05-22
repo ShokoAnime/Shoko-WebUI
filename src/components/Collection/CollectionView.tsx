@@ -49,7 +49,7 @@ const CollectionView = (props: Props) => {
     ];
   }, [isSidebarOpen, mode, isSeries]);
 
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement | null> }>();
 
   const [gridContainerRef, gridContainerBounds] = useMeasure();
 

@@ -106,6 +106,7 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
 
   return (
     <>
+      <title>Series Without Files - Shoko</title>
       <div className="flex items-center gap-x-3">
         <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
           <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>

@@ -31,7 +31,7 @@ function SettingsPage() {
 
   const { pathname } = useLocation();
 
-  const toastId = useRef<number | string>();
+  const toastId = useRef<number | string>(undefined);
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
@@ -135,64 +135,67 @@ function SettingsPage() {
   });
 
   return (
-    <div className="flex min-h-full grow justify-center gap-x-6">
-      <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
-        <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
-          <div className="flex flex-col items-center gap-y-2">
-            {items.map(item => (
-              <NavLink
-                to={item.path}
-                className={({ isActive }) => (isActive
-                  ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
-                  : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover')}
-                key={item.path}
-              >
-                {item.name}
-              </NavLink>
-            ))}
+    <>
+      <title>Settings - Shoko</title>
+      <div className="flex min-h-full grow justify-center gap-x-6">
+        <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+          <div className="sticky top-6">
+            <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+            <div className="flex flex-col items-center gap-y-2">
+              {items.map(item => (
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) => (isActive
+                    ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
+                    : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover')}
+                  key={item.path}
+                >
+                  {item.name}
+                </NavLink>
+              ))}
+            </div>
           </div>
         </div>
+        <div className="flex min-h-full w-[43.75rem] flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+          {settingsQuery.isPending
+            ? (
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} spin size={5} />
+              </div>
+            )
+            : (
+              <>
+                <Outlet
+                  context={settingContext}
+                />
+                {isShowFooter && (
+                  <div className="flex justify-end gap-x-3 font-semibold">
+                    <Button
+                      onClick={() => setNewSettings(settings)}
+                      buttonType="secondary"
+                      buttonSize="normal"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={validateAndPatchSettings}
+                      buttonType="primary"
+                      buttonSize="normal"
+                      disabled={!unsavedChanges}
+                    >
+                      Save
+                    </Button>
+                  </div>
+                )}
+                <div
+                  className="fixed left-0 top-0 -z-10 size-full opacity-20"
+                  style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
+                />
+              </>
+            )}
+        </div>
       </div>
-      <div className="flex min-h-full w-[43.75rem] flex-col gap-y-6 overflow-y-visible rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-        {settingsQuery.isPending
-          ? (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} spin size={5} />
-            </div>
-          )
-          : (
-            <>
-              <Outlet
-                context={settingContext}
-              />
-              {isShowFooter && (
-                <div className="flex justify-end gap-x-3 font-semibold">
-                  <Button
-                    onClick={() => setNewSettings(settings)}
-                    buttonType="secondary"
-                    buttonSize="normal"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={validateAndPatchSettings}
-                    buttonType="primary"
-                    buttonSize="normal"
-                    disabled={!unsavedChanges}
-                  >
-                    Save
-                  </Button>
-                </div>
-              )}
-              <div
-                className="fixed left-0 top-0 -z-10 size-full opacity-20"
-                style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
-              />
-            </>
-          )}
-      </div>
-    </div>
+    </>
   );
 }
 

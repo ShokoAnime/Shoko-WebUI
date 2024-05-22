@@ -66,114 +66,117 @@ const MultiplesUtil = () => {
   });
 
   return (
-    <div className="flex grow flex-col gap-y-6 overflow-y-auto">
-      <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
-        <div className="flex items-center gap-x-3">
-          <div
-            className={cx(
-              'relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 transition-opacity',
-              selectedEpisode && 'pointer-events-none opacity-65',
-            )}
-          >
-            <MenuButton
-              onClick={() => invalidateQueries(['release-management', 'series'])}
-              icon={mdiRefresh}
-              name="Refresh"
-            />
-
-            <Checkbox
-              id="ignore-variations"
-              isChecked={ignoreVariations}
-              onChange={() => handleCheckboxChange('variations')}
-              label="Ignore Variations"
-              labelRight
-            />
-
-            <Checkbox
-              id="only-finished-series"
-              isChecked={onlyFinishedSeries}
-              onChange={() => handleCheckboxChange('series')}
-              label="Only Finished Series"
-              labelRight
-            />
-          </div>
-
-          {/* TODO: Add support for auto-delete */}
-          {/* {!selectedEpisode && ( */}
-          {/*   <Button */}
-          {/*     buttonType="primary" */}
-          {/*     className="flex gap-x-2.5 px-4 py-3 font-semibold" */}
-          {/*     disabled={seriesCount === 0} */}
-          {/*   > */}
-          {/*     <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} /> */}
-          {/*     Auto-Delete Multiples */}
-          {/*   </Button> */}
-          {/* )} */}
-
-          {!selectedEpisode && (
-            <Button
-              buttonType="secondary"
-              className="flex gap-x-2.5 px-4 py-3 font-semibold"
-              disabled={!selectedSeries}
-              onClick={toggleShowQuickSelectModal}
+    <>
+      <title>Release Management - Shoko</title>
+      <div className="flex grow flex-col gap-y-6 overflow-y-auto">
+        <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
+          <div className="flex items-center gap-x-3">
+            <div
+              className={cx(
+                'relative box-border flex grow items-center gap-x-4 rounded-md border border-panel-border bg-panel-background-alt px-4 py-2 transition-opacity',
+                selectedEpisode && 'pointer-events-none opacity-65',
+              )}
             >
-              <Icon path={mdiSelectMultiple} size={0.8333} />
-              Quick Select
-            </Button>
-          )}
+              <MenuButton
+                onClick={() => invalidateQueries(['release-management', 'series'])}
+                icon={mdiRefresh}
+                name="Refresh"
+              />
 
-          {selectedEpisode && (
-            <div className="flex items-center justify-end gap-x-3">
+              <Checkbox
+                id="ignore-variations"
+                isChecked={ignoreVariations}
+                onChange={() => handleCheckboxChange('variations')}
+                label="Ignore Variations"
+                labelRight
+              />
+
+              <Checkbox
+                id="only-finished-series"
+                isChecked={onlyFinishedSeries}
+                onChange={() => handleCheckboxChange('series')}
+                label="Only Finished Series"
+                labelRight
+              />
+            </div>
+
+            {/* TODO: Add support for auto-delete */}
+            {/* {!selectedEpisode && ( */}
+            {/*   <Button */}
+            {/*     buttonType="primary" */}
+            {/*     className="flex gap-x-2.5 px-4 py-3 font-semibold" */}
+            {/*     disabled={seriesCount === 0} */}
+            {/*   > */}
+            {/*     <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} /> */}
+            {/*     Auto-Delete Multiples */}
+            {/*   </Button> */}
+            {/* )} */}
+
+            {!selectedEpisode && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                onClick={() => setSelectedEpisode(undefined)}
+                disabled={!selectedSeries}
+                onClick={toggleShowQuickSelectModal}
               >
-                <Icon path={mdiCloseCircleOutline} size={0.8333} />
-                Cancel
+                <Icon path={mdiSelectMultiple} size={0.8333} />
+                Quick Select
               </Button>
-              <Button
-                buttonType="primary"
-                className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                onClick={confirmChanges}
-                loading={operationsPending}
-              >
-                <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
-                Confirm
-              </Button>
-            </div>
-          )}
+            )}
+
+            {selectedEpisode && (
+              <div className="flex items-center justify-end gap-x-3">
+                <Button
+                  buttonType="secondary"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                  onClick={() => setSelectedEpisode(undefined)}
+                >
+                  <Icon path={mdiCloseCircleOutline} size={0.8333} />
+                  Cancel
+                </Button>
+                <Button
+                  buttonType="primary"
+                  className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                  onClick={confirmChanges}
+                  loading={operationsPending}
+                >
+                  <Icon path={mdiFileDocumentMultipleOutline} size={0.8333} />
+                  Confirm
+                </Button>
+              </div>
+            )}
+          </div>
+        </ShokoPanel>
+
+        <div className="relative flex grow">
+          <TransitionDiv show={!selectedEpisode} className="absolute flex size-full gap-x-3">
+            <MultiplesUtilList
+              ignoreVariations={ignoreVariations}
+              onlyFinishedSeries={onlyFinishedSeries}
+              setSelectedEpisode={setSelectedEpisode}
+              setSelectedSeriesId={setSelectedSeries}
+              setSeriesCount={setSeriesCount}
+            />
+          </TransitionDiv>
+
+          <TransitionDiv
+            show={!!selectedEpisode}
+            className="absolute flex size-full flex-col gap-y-6 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6"
+          >
+            <MultiplesUtilEpisode
+              episode={selectedEpisode}
+              setFileOptions={setFileOptions}
+            />
+          </TransitionDiv>
         </div>
-      </ShokoPanel>
 
-      <div className="relative flex grow">
-        <TransitionDiv show={!selectedEpisode} className="absolute flex size-full gap-x-3">
-          <MultiplesUtilList
-            ignoreVariations={ignoreVariations}
-            onlyFinishedSeries={onlyFinishedSeries}
-            setSelectedEpisode={setSelectedEpisode}
-            setSelectedSeriesId={setSelectedSeries}
-            setSeriesCount={setSeriesCount}
-          />
-        </TransitionDiv>
-
-        <TransitionDiv
-          show={!!selectedEpisode}
-          className="absolute flex size-full flex-col gap-y-6 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6"
-        >
-          <MultiplesUtilEpisode
-            episode={selectedEpisode}
-            setFileOptions={setFileOptions}
-          />
-        </TransitionDiv>
+        <QuickSelectModal
+          show={showQuickSelectModal}
+          onClose={toggleShowQuickSelectModal}
+          seriesId={selectedSeries}
+        />
       </div>
-
-      <QuickSelectModal
-        show={showQuickSelectModal}
-        onClose={toggleShowQuickSelectModal}
-        seriesId={selectedSeries}
-      />
-    </div>
+    </>
   );
 };
 

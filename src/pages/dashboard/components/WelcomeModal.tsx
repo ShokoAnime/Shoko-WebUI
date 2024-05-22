@@ -17,6 +17,8 @@ const SuccessNotifyModal = (props: Props) => {
   Modal.setAppElement('#app-root');
 
   return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     <Modal
       isOpen={show}
       onRequestClose={onClose}

@@ -56,6 +56,8 @@ const AvatarEditorModal = (props: Props) => {
       size="sm"
       header="Avatar"
     >
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-expect-error */}
       <AvatarEditor
         image={image}
         width={256}

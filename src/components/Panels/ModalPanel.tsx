@@ -44,6 +44,8 @@ function ModalPanel(props: Props) {
   // const isSm = useMediaQuery({ minWidth: 0, maxWidth: 767 });
 
   return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
     <Modal
       isOpen={show}
       overlayClassName={cx('fixed inset-0 bg-black/50 z-[80]', overlayClassName)}

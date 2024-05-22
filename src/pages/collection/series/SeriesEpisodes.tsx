@@ -56,7 +56,7 @@ const SeriesEpisodes = () => {
 
   const anidbSeriesId = useMemo(() => seriesQuery.data?.IDs.AniDB ?? 0, [seriesQuery.data]);
 
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement | null> }>();
 
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
