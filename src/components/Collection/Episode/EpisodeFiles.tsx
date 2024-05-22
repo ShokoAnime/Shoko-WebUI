@@ -138,7 +138,6 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
                 </Button>
               </div>
             </div>
-
             <FileInfo file={selectedFile} />
           </div>
         );

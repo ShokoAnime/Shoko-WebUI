@@ -11,7 +11,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex flex-col gap-y-4">
-        {!compact && <div className="text-xl font-semibold opacity-65">File Details</div>}
+        <div className="text-xl font-semibold opacity-65">File Details</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">File Name</div>
