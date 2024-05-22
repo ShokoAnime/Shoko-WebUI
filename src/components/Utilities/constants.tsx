@@ -4,15 +4,18 @@ import prettyBytes from 'pretty-bytes';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
 
+import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
-import type { SeriesType } from '@/core/types/api/series';
+import type { SeriesType, SeriesWithMultipleReleasesType } from '@/core/types/api/series';
 
-export type UtilityHeaderType<T extends FileType | SeriesType> = {
+export type UtilityHeaderType<T extends EpisodeType | FileType | SeriesType | SeriesWithMultipleReleasesType> = {
   id: string;
   name: string;
   className: string;
   item: (_: T) => React.ReactNode;
 };
+
+export type MultipleFileOptionsType = Record<number, 'keep' | 'variation' | 'delete'>;
 
 export const criteriaMap = {
   importFolder: FileSortCriteriaEnum.ImportFolderName,
@@ -33,7 +36,7 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
       const match = /[/\\](?=[^/\\]*$)/g.exec(path);
       const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
       return (
-        <div className="flex flex-col" title={path}>
+        <div className="flex flex-col" data-tooltip-id="tooltip" data-tooltip-content={path}>
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
             {relativePath}
           </span>

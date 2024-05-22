@@ -33,7 +33,11 @@ const TabButton = (
 };
 
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => (
-  <div className="flex justify-between pb-1 pr-4 font-semibold" key={item.IDs.ID}>
+  <div
+    // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
+    className={cx('flex justify-between pb-1 pr-4 font-semibold', item.Size === 0 && 'pointer-events-none opacity-65')}
+    key={item.IDs.ID}
+  >
     <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
     <span className="text-panel-text-important">{item.Size}</span>
   </div>
@@ -127,7 +131,7 @@ const SidePanel = (
   );
 };
 
-function FiltersModal({ onClose, show }: Props) {
+function FilterPresetsModal({ onClose, show }: Props) {
   const filtersQuery = useFiltersQuery(show);
   const filters = useMemo(() => filtersQuery.data?.List ?? [], [filtersQuery.data]);
 
@@ -144,7 +148,7 @@ function FiltersModal({ onClose, show }: Props) {
       show={show}
       size="md"
       onRequestClose={onClose}
-      header="Filters"
+      header="Filter Presets"
     >
       <div className="flex">
         <div className="flex min-h-96 min-w-32 flex-col gap-y-4 border-r-2 border-panel-border">
@@ -195,4 +199,4 @@ function FiltersModal({ onClose, show }: Props) {
   );
 }
 
-export default FiltersModal;
+export default FilterPresetsModal;

@@ -45,27 +45,27 @@ jobs:
         if: ${{ steps.regex-match1.outputs.match == '' && steps.regex-match2.outputs.match == '' }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: ${{ github.event.inputs.ref }}
           fetch-depth: 0
 
       - name: Setup Node.js v20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Setup pnpm and install dependencies
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
           run_install: true
 
       - name: Lint
         run: pnpm lint --quiet
 
       - name: Update version in package.json
-        run: npm version ${{ github.event.inputs.version }} --no-git-tag-version
+        run: pnpm version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: Build
         run: pnpm build
@@ -77,20 +77,12 @@ jobs:
           echo -e "## What's Changed\n" >> changelog.txt
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
 
-#      - name: Commit package.json
-#        uses: stefanzweifel/git-auto-commit-action@v4
-#        with:
-#          branch: master
-#          commit_message: Bump version in package.json to ${{ github.event.inputs.version }}
-#          file_pattern: package.json
-#          skip_fetch: true
-
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/index*.js.map"
         working-directory: ./dist
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ./build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip
           tag_name: v${{ github.event.inputs.version }}

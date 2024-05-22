@@ -103,6 +103,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
                             rel="noopener noreferrer"
                             className="text-panel-text-primary"
                             aria-label="Open AniDB series page"
+                            onClick={e => e.stopPropagation()}
                           >
                             <Icon path={mdiOpenInNew} size={0.833} />
                           </a>

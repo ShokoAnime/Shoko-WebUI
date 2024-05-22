@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { mdiArrowVerticalLock, mdiCogOutline, mdiFilterOutline, mdiLoading, mdiMagnify } from '@mdi/js';
+import React, { useEffect, useRef, useState } from 'react';
+import { mdiArrowVerticalLock, mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
+import { throttle } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
@@ -10,27 +11,45 @@ import { useLogsQuery } from '@/core/react-query/logs/queries';
 
 const LogsPage = () => {
   const logLines = useLogsQuery().data;
-  // TODO: Turn off scroll to bottom if user scrolls
-  const [isScrollToBottom, setScrollToBottom] = useState(true);
+  const [scrollToBottom, setScrollToBottom] = useState(true);
   const [search, setSearch] = useState('');
 
   const parentRef = React.useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
     count: logLines.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 32,
+    estimateSize: () => 34,
   });
   const virtualItems = rowVirtualizer.getVirtualItems();
   // Magic code stolen from https://github.com/TanStack/virtual/issues/634
   // Fixes autoscroll issue in firefox
+  // and now apparently chrome too
   if (parentRef.current) {
     rowVirtualizer.scrollRect = { height: parentRef.current.clientHeight, width: parentRef.current.clientWidth };
   }
 
   useEffect(() => {
-    if (!isScrollToBottom || logLines.length === 0) return;
-    rowVirtualizer.scrollToIndex(logLines.length - 1, { align: 'start' }); // 'start' scrolls to end and 'end' scrolls to start. ¯\_(ツ)_/¯
-  }, [logLines.length, isScrollToBottom, rowVirtualizer]);
+    if (!rowVirtualizer || !scrollToBottom || logLines.length === 0) return;
+    rowVirtualizer.scrollToIndex(logLines.length - 1);
+  }, [logLines, scrollToBottom, rowVirtualizer]);
+
+  // Taken from ChatGPT...
+  // Disables auto scroll when user scrolls up
+  const checkScrollDirection = useRef(
+    throttle(() => {
+      if (!parentRef.current) return;
+      const currentScroll = parentRef.current.scrollTop;
+
+      setTimeout(() => {
+        if (parentRef.current && parentRef.current.scrollTop < currentScroll) setScrollToBottom(false);
+      }, 50);
+    }, 1000),
+  ).current;
+
+  // This exists because the value of scrollToBottom won't change inside checkScrollDirection
+  const handleScroll = () => {
+    if (scrollToBottom) checkScrollDirection();
+  };
 
   return (
     <div className="flex grow flex-col gap-y-6">
@@ -47,18 +66,19 @@ const LogsPage = () => {
             className="w-80"
             disabled
           />
-          <Button buttonType="secondary" buttonSize="normal" disabled>
-            <Icon path={mdiFilterOutline} size={1} />
-          </Button>
-          <Button buttonType="secondary" buttonSize="normal" disabled>
-            <Icon path={mdiCogOutline} size={1} />
-          </Button>
-          {/* TODO: To be moved into settings modal */}
+          {/* TODO: Disabled until functionality is implemented */}
+          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Filter"> */}
+          {/*   <Icon path={mdiFilterOutline} size={1} /> */}
+          {/* </Button> */}
+          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Settings"> */}
+          {/*   <Icon path={mdiCogOutline} size={1} /> */}
+          {/* </Button> */}
           <Button
             buttonType="secondary"
             buttonSize="normal"
-            className={cx(isScrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
+            className={cx(scrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
+            tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
           >
             <Icon path={mdiArrowVerticalLock} size={1} />
           </Button>
@@ -69,6 +89,7 @@ const LogsPage = () => {
         <div
           className="w-full overflow-y-auto rounded-lg border-16 border-panel-input bg-panel-input contain-strict"
           ref={parentRef}
+          onScroll={handleScroll}
         >
           {logLines.length === 0
             ? (
@@ -89,7 +110,7 @@ const LogsPage = () => {
                     const row = logLines[virtualRow.index];
                     return (
                       <div
-                        className="mt-2 flex gap-x-6"
+                        className="flex gap-x-6 pt-2"
                         key={virtualRow.key}
                         data-index={virtualRow.index}
                         ref={rowVirtualizer.measureElement}

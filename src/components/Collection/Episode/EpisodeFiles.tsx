@@ -1,27 +1,31 @@
 import React, { useMemo, useState } from 'react';
-import { mdiDatabaseSearchOutline, mdiEyeOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
+import { mdiDatabaseSearchOutline, mdiFileDocumentMultipleOutline, mdiOpenInNew, mdiTrashCanOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
+import FileInfo from '@/components/FileInfo';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { useDeleteFileMutation, useRescanFileMutation } from '@/core/react-query/file/mutations';
+import {
+  useDeleteFileMutation,
+  useMarkVariationMutation,
+  useRescanFileMutation,
+} from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import useEventCallback from '@/hooks/useEventCallback';
-
-import EpisodeFileInfo from './EpisodeFileInfo';
 
 import type { FileType } from '@/core/types/api/file';
 
 type Props = {
-  animeId: number;
+  anidbSeriesId: number;
   episodeFiles: FileType[];
   episodeId: number;
 };
 
-const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
+const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
   const { mutate: deleteFile } = useDeleteFileMutation();
+  const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFileToDelete, setSelectedFileToDelete] = useState<FileType | null>(null);
@@ -52,6 +56,13 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
       onError: error => toast.error(`Rescan failed for file! ${error.message}`),
     });
 
+  const handleMarkVariation = (fileId: number, variation: boolean) =>
+    markFileAsVariation({ fileId, variation }, {
+      onSuccess: () => toast.success(`${variation ? 'Marked' : 'Unmarked'} file as variation!`),
+      onError: error =>
+        toast.error(`${variation ? 'Marking' : 'Unmarking'} file as variation failed! ${error.message}`),
+    });
+
   if (!episodeFiles.length || episodeFiles.length < 1) {
     return <div className="flex grow items-center justify-center p-6 pt-4 font-semibold">No files found!</div>;
   }
@@ -65,7 +76,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
         return (
           <div className="flex flex-col gap-y-6" key={selectedFile.ID}>
             <div className="flex grow gap-x-2">
-              <div className="flex grow gap-x-3 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+              <div className="flex grow gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
                   onClick={() => handleRescan(selectedFile.ID)}
@@ -73,8 +84,15 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                   <Icon className="hidden text-panel-icon-action lg:inline" path={mdiDatabaseSearchOutline} size={1} />
                   Force Update File Info
                 </div>
-                <div className="flex items-center gap-x-2">
-                  <Icon className="hidden text-panel-icon-action lg:inline" path={mdiEyeOutline} size={1} />
+                <div
+                  className="flex cursor-pointer items-center gap-x-2"
+                  onClick={() => handleMarkVariation(selectedFile.ID, !selectedFile.IsVariation)}
+                >
+                  <Icon
+                    className="hidden text-panel-icon-action lg:inline"
+                    path={mdiFileDocumentMultipleOutline}
+                    size={1}
+                  />
                   {selectedFile.IsVariation ? 'Unmark' : 'Mark'}
                   &nbsp;File as Variation
                 </div>
@@ -89,7 +107,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                 )}
                 {ReleaseGroupID > 0 && (
                   <a
-                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${animeId}`}
+                    href={`https://anidb.net/group/${ReleaseGroupID}/anime/${anidbSeriesId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -120,8 +138,7 @@ const EpisodeFiles = ({ animeId, episodeFiles, episodeId }: Props) => {
                 </Button>
               </div>
             </div>
-
-            <EpisodeFileInfo file={selectedFile} />
+            <FileInfo file={selectedFile} />
           </div>
         );
       })}

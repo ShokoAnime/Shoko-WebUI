@@ -6,6 +6,7 @@ import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
+  mdiFileDocumentMultipleOutline,
   mdiFileQuestionOutline,
   mdiFileSearchOutline,
   mdiFormatListBulletedSquare,
@@ -38,7 +39,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
-import { NetworkAvailabilityEnum } from '@/core/types/signalr';
+import { NetworkAvailabilityEnum } from '@/core/signalr/types';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -88,7 +89,14 @@ const LinkMenuItem = (
 };
 
 const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
-  <a href={url} target="_blank" rel="noreferrer noopener" aria-label={`Open ${name}`}>
+  <a
+    href={url}
+    target="_blank"
+    rel="noreferrer noopener"
+    aria-label={`Open ${name}`}
+    data-tooltip-id="tooltip"
+    data-tooltip-content={name}
+  >
     <Icon className="text-topnav-icon" path={icon} size={1} />
   </a>
 );
@@ -97,7 +105,11 @@ const QueueCount = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
 
   return (
-    <div className="flex items-center gap-x-2">
+    <div
+      className="flex items-center gap-x-2"
+      data-tooltip-id="tooltip"
+      data-tooltip-content={`Queue Count: ${queue.TotalCount}`}
+    >
       <Icon path={mdiServer} size={1} />
       <span className="text-header-text-important">
         {queue.TotalCount}
@@ -219,6 +231,9 @@ function TopNav() {
               className={({ isActive }) =>
                 cx({ 'text-header-icon-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
+              data-tooltip-id="tooltip"
+              data-tooltip-content="Settings"
+              data-tooltip-place="bottom"
             >
               <Icon path={mdiCogOutline} size={1} />
             </NavLink>
@@ -351,6 +366,12 @@ function TopNav() {
               onClick={closeModalsAndSubmenus}
               path="utilities/unrecognized"
               text="Unrecognized Files"
+            />
+            <LinkMenuItem
+              icon={mdiFileDocumentMultipleOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/release-management"
+              text="Release Management"
             />
             <LinkMenuItem
               icon={mdiFileDocumentAlertOutline}

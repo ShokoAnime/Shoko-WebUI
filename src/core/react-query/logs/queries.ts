@@ -47,7 +47,7 @@ const useLogsSubscription = () => {
       'Log',
       (line: LogLineType) => {
         queryClient.setQueryData(logsQueryKey, (oldData: LogLineType[] | undefined) => {
-          const newData = { ...line, timeStamp: formatStamp(line.TimeStamp) };
+          const newData = { ...line, TimeStamp: formatStamp(line.TimeStamp) };
           return oldData ? [...oldData, newData] : [newData];
         });
       },

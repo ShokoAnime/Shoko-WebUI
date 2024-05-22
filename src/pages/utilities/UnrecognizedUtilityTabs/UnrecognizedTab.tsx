@@ -36,7 +36,7 @@ import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { staticColumns } from '@/components/Utilities/constants';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import {
-  useDeleteFileMutation,
+  useDeleteFilesMutation,
   useIgnoreFileMutation,
   useRehashFileMutation,
   useRescanFileMutation,
@@ -69,7 +69,7 @@ const Menu = (
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-  const { mutateAsync: deleteFile } = useDeleteFileMutation();
+  const { mutate: deleteFiles } = useDeleteFilesMutation();
   const { mutateAsync: ignoreFile } = useIgnoreFileMutation();
   const { mutateAsync: rehashFile } = useRehashFileMutation();
   const { mutateAsync: rescanFile } = useRescanFileMutation();
@@ -90,20 +90,18 @@ const Menu = (
       }),
   );
 
-  const deleteFiles = useEventCallback(() => {
-    const promises = selectedRows.map(
-      row => deleteFile({ fileId: row.ID, removeFolder: true }),
+  const handleDelete = useEventCallback(() => {
+    deleteFiles(
+      {
+        fileIds: selectedRows.map(row => row.ID),
+        removeFolder: true,
+      },
+      {
+        onSuccess: () => toast.success(`${selectedRows.length} files deleted!`),
+        onError: () => toast.error('Files could not be deleted!'),
+      },
     );
-
-    Promise
-      .allSettled(promises)
-      .then((result) => {
-        const failedCount = countBy(result, 'status').rejected;
-        if (failedCount) toast.error(`Error deleting ${failedCount} files!`);
-        if (failedCount !== selectedRows.length) toast.success(`${selectedRows.length} files deleted!`);
-        setSelectedRows([]);
-      })
-      .catch(console.error);
+    setSelectedRows([]);
   });
 
   const ignoreFiles = useEventCallback(() => {
@@ -222,7 +220,7 @@ const Menu = (
         selectedFiles={selectedRows}
         removeFile={removeFileFromSelection}
         onClose={cancelDelete}
-        onConfirm={deleteFiles}
+        onConfirm={handleDelete}
       />
     </>
   );

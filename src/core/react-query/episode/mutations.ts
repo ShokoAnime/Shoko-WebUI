@@ -9,7 +9,7 @@ import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { InfiniteData } from '@tanstack/react-query';
 
-export const useHideEpisodeMutation = (nextUp = false) =>
+export const useHideEpisodeMutation = (seriesId: number, nextUp = false) =>
   useMutation({
     mutationFn: ({ episodeId, hidden }: HideEpisodeRequestType) =>
       axios.post(
@@ -23,27 +23,27 @@ export const useHideEpisodeMutation = (nextUp = false) =>
         },
       ),
     onSuccess: () => {
-      invalidateQueries(['series', 'single']);
+      invalidateQueries(['series', seriesId, 'data']);
 
       if (nextUp) {
-        invalidateQueries(['series', 'next-up']);
+        invalidateQueries(['series', seriesId, 'next-up']);
         return;
       }
 
-      invalidateQueries(['series', 'episodes']);
+      invalidateQueries(['series', seriesId, 'episodes']);
     },
   });
 
-export const useWatchEpisodeMutation = (pageNumber?: number, nextUp = false) =>
+export const useWatchEpisodeMutation = (seriesId: number, pageNumber?: number, nextUp = false) =>
   useMutation({
     mutationKey: ['episode', 'watched'],
     mutationFn: ({ episodeId, watched }: WatchEpisodeRequestType) =>
       axios.post(`Episode/${episodeId}/Watched/${watched}`),
     onSuccess: async (_, { episodeId }) => {
-      invalidateQueries(['series', 'single']);
+      invalidateQueries(['series', seriesId, 'data']);
 
       if (nextUp) {
-        invalidateQueries(['series', 'next-up']);
+        invalidateQueries(['series', seriesId, 'next-up']);
         return;
       }
 
@@ -56,7 +56,7 @@ export const useWatchEpisodeMutation = (pageNumber?: number, nextUp = false) =>
 
       queryClient.setQueriesData(
         {
-          queryKey: ['series', 'episodes'],
+          queryKey: ['series', seriesId, 'episodes'],
           type: 'active',
         },
         (data: InfiniteData<ListResultType<EpisodeType>>) => {

@@ -3,7 +3,7 @@ import type { ImageType, RatingType } from './common';
 import type { EpisodeTypeEnum } from './episode';
 import type { FileSourceEnum } from './file';
 import type { SeriesTitleType } from './series';
-import type { TagType } from '@/core/types/api/tags';
+import type { TagType } from './tags';
 
 export type WebuiGroupExtra = {
   ID: number;
@@ -52,7 +52,16 @@ export type WebuiSeriesFileSummaryGroupType = {
   SubtitleCodecs?: string;
   SubtitleLanguages?: string[];
   SubtitleStreamCount?: number;
+  VideoHasChapters?: boolean;
   RangeByType: WebuiSeriesFileSummaryGroupRangeByType;
+  Episodes?: {
+    ED2K: string;
+    EpisodeID: number;
+    FileID: number;
+    Number: number;
+    Size: number;
+    Type: EpisodeTypeEnum;
+  }[];
 };
 
 export type WebuiSeriesFileSummaryGroupRangeByType = {

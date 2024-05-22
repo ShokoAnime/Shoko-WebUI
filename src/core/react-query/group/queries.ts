@@ -8,14 +8,14 @@ import type { CollectionGroupType } from '@/core/types/api/collection';
 
 export const useGroupQuery = (groupId: number, enabled = true) =>
   useQuery<CollectionGroupType>({
-    queryKey: ['group', 'single', groupId],
+    queryKey: ['group', groupId],
     queryFn: () => axios.get(`Group/${groupId}`),
     enabled,
   });
 
 export const useGroupsInfiniteQuery = (params: GroupsInfiniteRequestType) =>
   useInfiniteQuery<ListResultType<CollectionGroupType>>({
-    queryKey: ['group', 'all', params],
+    queryKey: ['groups', params],
     queryFn: ({ pageParam }) =>
       axios.get(
         'Group',

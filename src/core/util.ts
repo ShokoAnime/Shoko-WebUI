@@ -4,6 +4,7 @@ import advancedFormat from 'dayjs/plugin/advancedFormat';
 import calendar from 'dayjs/plugin/calendar';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
+import { enableMapSet } from 'immer';
 import { isObject, toNumber } from 'lodash';
 
 dayjs.extend(advancedFormat);
@@ -11,6 +12,9 @@ dayjs.extend(calendar);
 dayjs.extend(durationPlugin);
 
 export { default as dayjs } from 'dayjs';
+
+// Enables immer plugin to support Map and Set
+enableMapSet();
 
 const { DEV, VITE_APPVERSION, VITE_GITHASH } = import.meta.env;
 

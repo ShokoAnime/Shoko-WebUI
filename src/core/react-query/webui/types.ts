@@ -7,6 +7,7 @@ export type GroupViewRequestType = {
 
 export type SeriesFileSummaryRequestType = {
   groupBy?: string;
+  includeEpisodeDetails?: boolean;
 };
 
 export type WebuiUpdateCheckRequestType = {

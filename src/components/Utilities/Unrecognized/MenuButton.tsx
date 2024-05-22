@@ -13,7 +13,11 @@ const MenuButton = React.memo((
     disabled?: boolean;
   },
 ) => (
-  <Button onClick={onClick} className="flex items-center gap-x-2 text-panel-text" disabled={disabled}>
+  <Button
+    onClick={onClick}
+    className="flex items-center gap-x-2 !text-base !font-normal text-panel-text"
+    disabled={disabled}
+  >
     <Icon path={icon} size={1} className={cx({ 'text-panel-text-primary': highlight })} />
     {name}
   </Button>

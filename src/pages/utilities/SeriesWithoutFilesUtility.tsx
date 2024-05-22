@@ -51,7 +51,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     name: 'Name',
     className: 'grow basis-0 overflow-hidden',
     item: series => (
-      <div title={series.Name} className="line-clamp-2 flex gap-x-1">
+      <div className="line-clamp-2 flex gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         {series.Name}
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
@@ -59,6 +59,8 @@ const columns: UtilityHeaderType<SeriesType>[] = [
           rel="noreferrer noopener"
           className="flex gap-x-1 font-semibold"
           aria-label="Open AniDB series page"
+          onClick={e =>
+            e.stopPropagation()}
         >
           <div>
             (

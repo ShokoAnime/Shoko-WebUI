@@ -1,12 +1,11 @@
 import React from 'react';
-import { get } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 
 import useMediaInfo from '@/hooks/useMediaInfo';
 
 import type { FileType } from '@/core/types/api/file';
 
-const EpisodeFileInfo = ({ file }: { file: FileType }) => {
+const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
   return (
@@ -28,9 +27,7 @@ const EpisodeFileInfo = ({ file }: { file: FileType }) => {
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Group</div>
-            {get(file, 'AniDB.ReleaseGroup.Name', '')}
-            &nbsp;| v
-            {get(file, 'AniDB.Version', '')}
+            {mediaInfo.Group}
           </div>
           <div className="flex">
             <div className="min-w-[9.375rem] font-semibold">Video</div>
@@ -40,32 +37,44 @@ const EpisodeFileInfo = ({ file }: { file: FileType }) => {
             <div className="min-w-[9.375rem] font-semibold">Audio</div>
             {mediaInfo.AudioInfo.join(' | ')}
           </div>
+          <div className="flex">
+            <div className="min-w-[9.375rem] font-semibold">Chapters</div>
+            {mediaInfo.Chapters ? 'Yes' : 'No'}
+          </div>
+          {compact && (
+            <div className="flex">
+              <div className="min-w-[9.375rem] font-semibold">CRC</div>
+              {mediaInfo.Hashes.CRC32 ?? ''}
+            </div>
+          )}
         </div>
       </div>
 
-      <div className="flex flex-col gap-y-4">
-        <div className="text-xl font-semibold opacity-65">File Hashes</div>
-        <div className="flex flex-col gap-y-1">
-          <div className="flex">
-            <div className="min-w-[9.375rem] font-semibold">Hash</div>
-            {mediaInfo.Hashes.ED2K ?? ''}
-          </div>
-          <div className="flex">
-            <div className="min-w-[9.375rem] font-semibold">CRC</div>
-            {mediaInfo.Hashes.CRC32 ?? ''}
-          </div>
-          <div className="flex">
-            <div className="min-w-[9.375rem] font-semibold">SHA1</div>
-            {mediaInfo.Hashes.SHA1 ?? ''}
-          </div>
-          <div className="flex">
-            <div className="min-w-[9.375rem] font-semibold">MD5</div>
-            {mediaInfo.Hashes.MD5 ?? ''}
+      {!compact && (
+        <div className="flex flex-col gap-y-4">
+          <div className="text-xl font-semibold opacity-65">File Hashes</div>
+          <div className="flex flex-col gap-y-1">
+            <div className="flex">
+              <div className="min-w-[9.375rem] font-semibold">Hash</div>
+              {mediaInfo.Hashes.ED2K ?? ''}
+            </div>
+            <div className="flex">
+              <div className="min-w-[9.375rem] font-semibold">CRC</div>
+              {mediaInfo.Hashes.CRC32 ?? ''}
+            </div>
+            <div className="flex">
+              <div className="min-w-[9.375rem] font-semibold">SHA1</div>
+              {mediaInfo.Hashes.SHA1 ?? ''}
+            </div>
+            <div className="flex">
+              <div className="min-w-[9.375rem] font-semibold">MD5</div>
+              {mediaInfo.Hashes.MD5 ?? ''}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
 
-export default EpisodeFileInfo;
+export default FileInfo;

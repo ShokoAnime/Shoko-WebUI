@@ -90,7 +90,7 @@ const SeriesEpisodes = () => {
 
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
-  const animeId = useMemo(() => seriesQueryData?.IDs.AniDB ?? 0, [seriesQueryData]);
+  const anidbSeriesId = useMemo(() => seriesQueryData?.IDs.AniDB ?? 0, [seriesQueryData]);
 
   const hasMissingEpisodes = useMemo(
     () => ((seriesQueryData?.Sizes.Missing.Episodes ?? 0) > 0),
@@ -136,7 +136,7 @@ const SeriesEpisodes = () => {
       type: episodeFilterType,
       includeWatched: episodeFilterWatched,
       value: watched,
-      search,
+      search: debouncedSearch,
     }, {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
@@ -220,7 +220,8 @@ const SeriesEpisodes = () => {
                         <EpisodeSummary
                           selected={selectedEpisodes.has(episode.IDs.ID)}
                           onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
-                          animeId={animeId}
+                          seriesId={toNumber(seriesId)}
+                          anidbSeriesId={anidbSeriesId}
                           episode={episode}
                           page={page}
                         />

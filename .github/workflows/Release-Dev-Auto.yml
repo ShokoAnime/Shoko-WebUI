@@ -11,26 +11,26 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
       - name: Setup Node.js v20
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
 
       - name: Setup pnpm and install dependencies
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
           run_install: true
 
       - name: Lint
         run: pnpm lint --quiet
 
       - name: Determine bump type
-        uses: zwaldowski/match-label-action@v4
+        uses: zwaldowski/match-label-action@v5
         id: bump
         with:
           allowed: premajor,preminor,prepatch
@@ -46,7 +46,7 @@ jobs:
           preid: 'dev'
 
       - name: Update version in package.json
-        run: npm version ${{ steps.semver.outputs.version_tag }} --no-git-tag-version
+        run: pnpm version ${{ steps.semver.outputs.version_tag }} --no-git-tag-version
 
       - name: Build
         run: pnpm build
@@ -60,20 +60,12 @@ jobs:
           cat changelog.txt >> $GITHUB_ENV
           echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
 
-#      - name: Commit package.json
-#        uses: stefanzweifel/git-auto-commit-action@v4
-#        with:
-#          branch: master
-#          commit_message: Bump version in package.json to ${{ steps.semver.outputs.version_tag }}
-#          file_pattern: package.json
-#          skip_fetch: true
-
       - name: Create build.zip
         run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/index*.js.map"
         working-directory: ./dist
 
       - name: Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: ./build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip
           tag_name: v${{ steps.semver.outputs.version_tag }}

@@ -65,7 +65,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
                 <Button disabled>
                   <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
                 </Button>
-                <Button disabled={!canDisable} onClick={disableMetadata}>
+                <Button disabled={!canDisable} onClick={disableMetadata} tooltip="Remove link">
                   <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
                 </Button>
               </>

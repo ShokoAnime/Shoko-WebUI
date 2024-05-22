@@ -69,7 +69,7 @@ export type FilterSeason = {
   Season: string;
 };
 
-type SortingCriteria = {
+export type SortingCriteria = {
   Type: SortingType;
   Next?: SortingCriteria;
   IsInverted: boolean;
@@ -82,5 +82,5 @@ export type FilterType = {
   IsHidden?: boolean;
   ApplyAtSeriesLevel?: boolean;
   Expression?: FilterCondition;
-  SortingCriteria?: SortingCriteria;
+  Sorting?: SortingCriteria;
 };

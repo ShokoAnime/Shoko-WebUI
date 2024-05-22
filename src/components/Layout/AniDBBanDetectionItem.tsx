@@ -3,10 +3,10 @@ import { mdiInformationOutline, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { AniDBBanTypeEnum } from '@/core/types/signalr';
+import { AniDBBanTypeEnum } from '@/core/signalr/types';
 import { dayjs } from '@/core/util';
 
-import type { AniDBBanItemType } from '@/core/types/signalr';
+import type { AniDBBanItemType } from '@/core/signalr/types';
 
 type Props = {
   type: 'HTTP' | 'UDP';

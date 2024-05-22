@@ -1,4 +1,9 @@
-export type DeleteFileLinkRequestType = {
+export type DeleteFilesRequestType = {
+  fileIds: number[];
+  removeFolder: boolean;
+};
+
+export type DeleteFileRequestType = {
   fileId: number;
   removeFolder: boolean;
 };
@@ -16,4 +21,9 @@ export type LinkOneFileToManyEpisodesRequestType = {
 export type LinkManyFilesToOneEpisodeRequestType = {
   episodeID: number;
   fileIDs: number[];
+};
+
+export type MarkVariationRequestType = {
+  fileId: number;
+  variation: boolean;
 };

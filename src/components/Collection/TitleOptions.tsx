@@ -11,7 +11,7 @@ import {
 import { useToggle } from 'usehooks-ts';
 
 import DisplaySettingsModal from '@/components/Collection/DisplaySettingsModal';
-import FiltersModal from '@/components/Dialogs/FiltersModal';
+import FilterPresetsModal from '@/components/Dialogs/FilterPresetsModal';
 import IconButton from '@/components/Input/IconButton';
 import Input from '@/components/Input/Input';
 
@@ -27,9 +27,9 @@ type Props = {
 };
 
 const OptionButton = memo(
-  ({ icon, onClick }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement> }) => (
-    <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} />
-  ),
+  (
+    { icon, onClick, tooltip }: { icon: string, onClick: React.MouseEventHandler<HTMLDivElement>, tooltip?: string },
+  ) => <IconButton icon={icon} buttonType="secondary" buttonSize="normal" onClick={onClick} tooltip={tooltip} />,
 );
 
 const TitleOptions = (props: Props) => {
@@ -60,14 +60,18 @@ const TitleOptions = (props: Props) => {
         />
         {!isSeries && (
           <>
-            <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} />
-            <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} />
+            <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />
+            <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
           </>
         )}
-        <OptionButton onClick={toggleMode} icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline} />
-        <OptionButton onClick={toggleDisplaySettingsModal} icon={mdiCogOutline} />
+        <OptionButton
+          onClick={toggleMode}
+          icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline}
+          tooltip={`Switch to ${mode === 'poster' ? 'list' : 'poster'} mode`}
+        />
+        <OptionButton onClick={toggleDisplaySettingsModal} icon={mdiCogOutline} tooltip="Display Settings" />
       </div>
-      <FiltersModal show={showFilterModal} onClose={toggleFilterModal} />
+      <FilterPresetsModal show={showFilterModal} onClose={toggleFilterModal} />
       <DisplaySettingsModal show={showDisplaySettingsModal} onClose={toggleDisplaySettingsModal} />
     </>
   );

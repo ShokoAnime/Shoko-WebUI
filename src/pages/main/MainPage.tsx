@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
+import { Tooltip } from 'react-tooltip';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import TopNav from '@/components/Layout/TopNav';
@@ -27,11 +28,17 @@ function MainPage() {
           position={toastPosition}
           autoClose={4000}
           transition={Slide}
-          className="mt-20 !w-[29.5rem]"
+          className="mt-32 !w-[29.5rem]"
           closeButton={false}
           icon={false}
         />
       )}
+      <Tooltip
+        id="tooltip"
+        render={({ content }) => content}
+        place="top-start"
+        className="z-[10000]"
+      />
       <div className="flex grow flex-col overflow-x-clip">
         <ImportFolderModal />
         <TopNav />

@@ -4,15 +4,22 @@ import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
-  DeleteFileLinkRequestType,
+  DeleteFileRequestType,
+  DeleteFilesRequestType,
   IgnoreFileRequestType,
   LinkManyFilesToOneEpisodeRequestType,
   LinkOneFileToManyEpisodesRequestType,
+  MarkVariationRequestType,
 } from '@/core/react-query/file/types';
+
+export const useDeleteFilesMutation = () =>
+  useMutation({
+    mutationFn: (data: DeleteFilesRequestType) => axios.delete('File', { data }),
+  });
 
 export const useDeleteFileMutation = () =>
   useMutation({
-    mutationFn: ({ fileId, removeFolder }: DeleteFileLinkRequestType) =>
+    mutationFn: ({ fileId, removeFolder }: DeleteFileRequestType) =>
       axios.delete(`File/${fileId}`, { data: { removeFolder } }),
   });
 
@@ -49,6 +56,13 @@ export const useLinkManyFilesToOneEpisodeMutation = () =>
     mutationFn: (data: LinkManyFilesToOneEpisodeRequestType) => axios.post('File/Link', data),
   });
 
+export const useMarkVariationMutation = () =>
+  useMutation({
+    mutationFn: ({ fileId, variation }: MarkVariationRequestType) =>
+      axios.put(`File/${fileId}/Variation`, undefined, { params: { value: variation } }),
+    onSuccess: () => invalidateQueries(['episode', 'files']),
+  });
+
 export const useRehashFileMutation = () =>
   useMutation({
     mutationFn: (fileId: number) => axios.post(`File/${fileId}/Rehash`),
@@ -57,4 +71,5 @@ export const useRehashFileMutation = () =>
 export const useRescanFileMutation = () =>
   useMutation({
     mutationFn: (fileId: number) => axios.post(`File/${fileId}/Rescan`),
+    onSuccess: () => invalidateQueries(['episode', 'files']),
   });

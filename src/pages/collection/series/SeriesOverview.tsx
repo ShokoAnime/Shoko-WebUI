@@ -144,7 +144,7 @@ const SeriesOverview = () => {
             isFetching={nextUpEpisodeQuery.isFetching}
           >
             {nextUpEpisodeQuery.isSuccess && nextUpEpisodeQuery.data
-              ? <EpisodeSummary episode={nextUpEpisodeQuery.data} nextUp />
+              ? <EpisodeSummary seriesId={toNumber(seriesId)} episode={nextUpEpisodeQuery.data} nextUp />
               : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
           </ShokoPanel>
         </div>

@@ -14,9 +14,12 @@ type IconButtonProps = {
   onClick: React.MouseEventHandler<HTMLDivElement | HTMLButtonElement>;
   buttonType: ButtonType;
   buttonSize: SizeType;
+  tooltip?: string;
 };
 
-const IconButton = ({ buttonSize = 'normal', buttonType = 'secondary', className, icon, onClick }: IconButtonProps) => (
+const IconButton = (
+  { buttonSize = 'normal', buttonType = 'secondary', className, icon, onClick, tooltip }: IconButtonProps,
+) => (
   <Button
     className={cx(
       'cursor-pointer rounded-lg',
@@ -25,6 +28,7 @@ const IconButton = ({ buttonSize = 'normal', buttonType = 'secondary', className
       buttonSizeClasses[buttonSize],
     )}
     onClick={onClick}
+    tooltip={tooltip}
   >
     <Icon path={icon} size={1} />
   </Button>

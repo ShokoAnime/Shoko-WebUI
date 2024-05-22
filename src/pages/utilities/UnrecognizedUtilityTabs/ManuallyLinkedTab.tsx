@@ -41,7 +41,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     id: 'series',
     name: 'Series',
     className: 'line-clamp-2 grow basis-0 overflow-hidden',
-    item: series => <div className={series.Name}>{series.Name}</div>,
+    item: series => <div data-tooltip-id="tooltip" data-tooltip-content={series.Name}>{series.Name}</div>,
   },
   {
     id: 'id',
@@ -87,11 +87,7 @@ const SelectedFilesContext = createContext<
   SelectedFilesType | undefined
 >(undefined);
 
-const refreshData = () => {
-  invalidateQueries(['series', 'episodes']);
-  invalidateQueries(['series', 'files']);
-  invalidateQueries(['series', 'linked-files']);
-};
+const refreshData = () => invalidateQueries(['series']);
 
 const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean>>) =>
   useEventCallback(
@@ -107,13 +103,13 @@ const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean
 const FilesTable = ({ id: seriesId }: { id: number }) => {
   // We are prefetching the query before opening this "dropdown", so just fetching from cache instead.
   const files = queryClient.getQueryData<ListResultType<FileType>>(
-    ['series', 'files', seriesId, { include: ['XRefs'], include_only: ['ManualLinks'] }],
+    ['series', seriesId, 'files', { include: ['XRefs'], include_only: ['ManualLinks'] }],
   );
   const episodesResult = queryClient.getQueryData<InfiniteData<ListResultType<EpisodeType>>>(
     [
       'series',
-      'episodes',
       seriesId,
+      'episodes',
       {
         pageSize: 0,
         includeMissing: 'true',

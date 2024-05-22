@@ -67,7 +67,7 @@ const Checkbox = memo((props: Props) => {
         </TransitionDiv>
       )}
       {labelRight && (
-        <span className="ml-2 flex items-center font-semibold">
+        <span className="ml-2 flex items-center">
           {label}
         </span>
       )}

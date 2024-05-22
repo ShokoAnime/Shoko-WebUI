@@ -14,6 +14,15 @@ import { setEdit, setStatus } from '@/core/slices/modals/importFolder';
 import type { RootState } from '@/core/store';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
 
+const Options = ({ onClick }: { onClick: () => void }) => (
+  <Button
+    onClick={onClick}
+    tooltip="Add Folder"
+  >
+    <Icon className="text-panel-icon-action" path={mdiFolderPlusOutline} size={1} />
+  </Button>
+);
+
 function ImportFolders() {
   const dispatch = useDispatch();
 
@@ -95,20 +104,10 @@ function ImportFolders() {
     );
   };
 
-  const renderOptions = () => (
-    <div
-      className="cursor-pointer"
-      onClick={() => setImportFolderModalStatus(true)}
-      title="Add Folder"
-    >
-      <Icon className="text-panel-icon-action" path={mdiFolderPlusOutline} size={1} horizontal vertical rotate={180} />
-    </div>
-  );
-
   return (
     <ShokoPanel
       title="Import Folders"
-      options={renderOptions()}
+      options={<Options onClick={() => setImportFolderModalStatus(true)} />}
       isFetching={importFolderQuery.isPending}
       editMode={layoutEditMode}
       contentClassName={importFolders.length > 2 && ('pr-4')}

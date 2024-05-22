@@ -28,7 +28,6 @@ import UnrecognizedFiles from './panels/UnrecognizedFiles';
 import UpcomingAnime from './panels/UpcomingAnime';
 
 import type { RootState } from '@/core/store';
-import type { LayoutType } from '@/core/types/api/settings';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -38,42 +37,11 @@ const renderResizeHandle = () => (
   </div>
 );
 
-const Toast = (
-  { cancelLayoutChange, currentLayout }: { cancelLayoutChange: () => void, currentLayout: LayoutType },
+const Toast = React.memo((
+  { cancelLayoutChange, saveLayout }: { cancelLayoutChange: () => void, saveLayout: (reset?: boolean) => void },
 ) => {
-  const dispatch = useDispatch();
-
-  const settingsQuery = useSettingsQuery();
-  const settings = settingsQuery.data;
-  const { mutate: patchSettings } = usePatchSettingsMutation();
-
-  const saveLayout = useEventCallback(() => {
-    const newSettings = produce(settings, (draftState) => {
-      draftState.WebUI_Settings.layout.dashboard = currentLayout;
-    });
-    patchSettings({ newSettings }, {
-      onSuccess: () => {
-        dispatch(setLayoutEditMode(false));
-        toast.dismiss('layoutEditMode');
-        toast.success('Layout Saved!');
-      },
-      onError: error => toast.error('', error.message),
-    });
-  });
-
-  const resetLayout = useEventCallback(() => {
-    const newSettings = produce(settings, (draftState) => {
-      draftState.WebUI_Settings.layout.dashboard = initialSettings.WebUI_Settings.layout.dashboard;
-    });
-    patchSettings({ newSettings }, {
-      onSuccess: () => {
-        dispatch(setLayoutEditMode(false));
-        toast.dismiss('layoutEditMode');
-        toast.success('Layout reset to default!');
-      },
-      onError: error => toast.error('', error.message),
-    });
-  });
+  const resetLayout = useEventCallback(() => saveLayout(true));
+  const saveNewLayout = useEventCallback(() => saveLayout());
 
   return (
     <div className="flex flex-col gap-y-3">
@@ -81,11 +49,11 @@ const Toast = (
       <div className="flex items-center justify-end gap-x-3 font-semibold">
         <Button onClick={resetLayout} buttonType="danger" className="px-3 py-1.5">Reset to Default</Button>
         <Button onClick={cancelLayoutChange} buttonType="secondary" className="px-3 py-1.5">Cancel</Button>
-        <Button onClick={saveLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
+        <Button onClick={saveNewLayout} buttonType="primary" className="px-3 py-1.5">Save</Button>
       </div>
     </div>
   );
-};
+});
 
 function DashboardPage() {
   const dispatch = useDispatch();
@@ -94,6 +62,8 @@ function DashboardPage() {
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
+
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
   const {
     combineContinueWatching,
@@ -124,6 +94,22 @@ function DashboardPage() {
     toast.dismiss('layoutEditMode');
   });
 
+  const saveLayout = useEventCallback((reset = false) => {
+    const newSettings = produce(settings, (draftState) => {
+      draftState.WebUI_Settings.layout.dashboard = reset
+        ? initialSettings.WebUI_Settings.layout.dashboard
+        : currentLayout;
+    });
+    patchSettings({ newSettings }, {
+      onSuccess: () => {
+        dispatch(setLayoutEditMode(false));
+        toast.dismiss('layoutEditMode');
+        toast.success(reset ? 'Layout reset to default!' : 'Layout Saved!');
+      },
+      onError: error => toast.error('', error.message),
+    });
+  });
+
   const location = useLocation();
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
@@ -144,7 +130,7 @@ function DashboardPage() {
       '',
       <Toast
         cancelLayoutChange={cancelLayoutChange}
-        currentLayout={currentLayout}
+        saveLayout={saveLayout}
       />,
       {
         autoClose: false,
@@ -154,7 +140,7 @@ function DashboardPage() {
         className: 'max-w-[27.3rem] ml-auto',
       },
     );
-  }, [layoutEditMode, currentLayout, cancelLayoutChange]);
+  }, [cancelLayoutChange, layoutEditMode, saveLayout]);
 
   useEffect(() => () => cancelLayoutChange(), [cancelLayoutChange]);
 
@@ -162,7 +148,10 @@ function DashboardPage() {
     window.dispatchEvent(new Event('resize'));
   }, [currentLayout]);
 
-  if (!settingsQuery.isSuccess) {
+  // settingsQuery.isSuccess is always true due to the existence of initialData
+  // settingsQuery.isStale will be true before the first actual fetch and it will never be true for fetched data
+  // This is kind of a hack but it works
+  if (settingsQuery.isStale) {
     return (
       <div className="flex grow items-center justify-center text-panel-text-primary">
         <Icon path={mdiLoading} size={4} spin />

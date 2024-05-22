@@ -43,7 +43,12 @@ function CollectionStats() {
       value={statsQuery.data?.UnrecognizedFiles}
       link="/webui/utilities/unrecognized"
     />,
-    <Item key="multiple-files" title="Duplicate Episodes" value={statsQuery.data?.EpisodesWithMultipleFiles} />,
+    <Item
+      key="multiple-files"
+      title="Duplicate Episodes"
+      value={statsQuery.data?.EpisodesWithMultipleFiles}
+      link="/webui/utilities/release-management"
+    />,
     <Item key="duplicate-files" title="Duplicate Hashes" value={statsQuery.data?.FilesWithDuplicateLocations} />,
   ];
 
