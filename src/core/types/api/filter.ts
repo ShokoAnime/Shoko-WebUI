@@ -11,7 +11,9 @@ type ExpressionType =
   | 'StringFuzzyMatches'
   | 'StringNotEquals'
   | 'StringRegexMatches'
-  | 'StringStartsWith';
+  | 'StringStartsWith'
+  | 'HasTag'
+  | 'HasCustomTag';
 
 type SortingType =
   | 'AddedDate'

@@ -12,3 +12,7 @@ export type FilteredGroupSeriesRequestType = {
   filterCriteria: FilterType;
   includeDataFrom?: DataSourceType[];
 };
+
+export type FilteredSeriesRequestType = FilteredGroupsRequestType & {
+  includeMissing?: boolean;
+};
