@@ -48,7 +48,7 @@ const SelectOption = ({ option }: { option: Option }) => (
 const SelectButton = ({ open, rowIdx, selected }: { open: boolean, rowIdx: number, selected: Option }) => (
   <ListboxButton
     className={cx(
-      'relative w-full h-full border border-panel-border rounded-lg px-4 py-2 text-left focus:outline-none focus:border-panel-text-primary transition-colors',
+      'relative w-full h-full border border-panel-border rounded-lg px-4 py-2 text-left focus:outline-none focus:border-panel-text-primary data-[open]:border-panel-text-primary transition-colors',
       rowIdx % 2 === 0 ? 'bg-panel-background' : 'bg-panel-background-alt',
     )}
   >
@@ -106,8 +106,12 @@ const SelectEpisodeList = React.memo((
             leaveTo="opacity-0"
           >
             <ListboxOptions
-              anchor="bottom"
-              className="z-[110] mt-1 w-[var(--button-width)] origin-top bg-panel-background transition"
+              anchor={{
+                to: 'bottom',
+                padding: '1rem',
+                gap: '0.25rem',
+              }}
+              className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-none"
             >
               <Input
                 className="grow"
@@ -120,7 +124,8 @@ const SelectEpisodeList = React.memo((
                 placeholder="Input Episode Number..."
               />
 
-              <div className="mt-1 max-h-96 overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
+              {/* 4rem below is to account for height of the input component */}
+              <div className="mt-1 h-[calc(var(--anchor-max-height)-4rem)] overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-4">
                 {options.map((item, idx) => (
                   <React.Fragment key={`listbox-item-${item.value}`}>
                     {idx !== 0 && item.type !== options[idx - 1].type && (
