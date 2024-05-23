@@ -139,7 +139,7 @@ const EpisodeSummary = React.memo(
                     icon={mdiEyeOffOutline}
                     active={episode.IsHidden}
                     onClick={handleMarkHidden}
-                    tooltip={`${episode.IsHidden ? 'Hide' : 'Unhide'} Episode`}
+                    tooltip={`${episode.IsHidden ? 'Unhide' : 'Hide'} Episode`}
                   />
                 </div>
               </div>
