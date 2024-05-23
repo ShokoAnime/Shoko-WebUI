@@ -107,7 +107,7 @@ const SelectEpisodeList = React.memo((
           >
             <ListboxOptions
               anchor="bottom"
-              className="mt-1 w-[var(--button-width)] origin-top bg-panel-background transition"
+              className="z-[110] mt-1 w-[var(--button-width)] origin-top bg-panel-background transition"
             >
               <Input
                 className="grow"
