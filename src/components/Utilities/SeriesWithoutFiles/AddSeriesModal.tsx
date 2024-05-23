@@ -31,7 +31,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
   } = useRefreshAniDBSeriesMutation();
 
   const createSeries = (anidbId: number) => {
-    refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true }, {
+    refreshSeries({ anidbID: anidbId, immediate: true, createSeriesEntry: true, force: true }, {
       onSuccess: () => {
         toast.success('Series added successfully!');
         invalidateQueries(['series', 'without-files']);
