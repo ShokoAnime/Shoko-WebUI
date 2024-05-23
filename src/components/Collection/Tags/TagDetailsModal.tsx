@@ -20,10 +20,6 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
           Parameter: tag?.Name ?? '',
           Type: tag?.Source === 'User' ? 'HasCustomTag' : 'HasTag',
         },
-        Sorting: {
-          IsInverted: false,
-          Type: 'Name',
-        },
       },
     },
     show,
