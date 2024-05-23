@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 
@@ -74,9 +75,22 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
           <div className="w-full rounded-lg bg-panel-input p-6">
             <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
               {seriesData?.map(series => (
-                <div key={series.IDs.ID}>
-                  {series.Name}
-                </div>
+                <Link
+                  to={`/webui/collection/series/${series.IDs.ID}/overview`}
+                  target="_blank"
+                  key={series.IDs.ID}
+                  className="flex justify-between pr-3 align-middle"
+                >
+                  <span
+                    className="line-clamp-1"
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content={series.Name}
+                    data-tooltip-delay-show={500}
+                  >
+                    {series.Name}
+                  </span>
+                  <Icon path={mdiOpenInNew} size={1} className="shrink-0" />
+                </Link>
               ))}
             </div>
           </div>
