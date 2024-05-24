@@ -19,8 +19,10 @@ const invalidateImportFolders = debounce(
   1000,
 );
 
-// Should we add a debounce here? It seems to work fine without it
-const invalidateQueueItems = () => invalidateQueries(['queue', 'items']);
+const invalidateQueueItems = debounce(
+  () => invalidateQueries(['queue', 'items']),
+  500,
+);
 
 const invalidateReleaseManagement = debounce(
   () => invalidateQueries(['release-management']),
