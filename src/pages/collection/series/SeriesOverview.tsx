@@ -229,30 +229,28 @@ const SeriesOverview = () => {
       )}
       <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
-          {cast?.slice(0, 20).map(seiyuu => (
-            seiyuu.RoleName === 'Seiyuu' && (
-              <div
-                key={`${seiyuu.Character.Name}-${Math.random() * (cast.length + seiyuu.Character.Name.length)}`}
-                className="flex flex-col items-center gap-y-3 pb-3"
-              >
-                <div className="flex gap-x-4">
-                  <CharacterImage
-                    imageSrc={getThumbnailUrl(seiyuu, 'Character')}
-                    className="relative h-48 w-36 rounded-lg"
-                  />
-                  <CharacterImage
-                    imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
-                    className="relative h-48 w-36 rounded-lg"
-                  />
-                </div>
-                <div className="flex flex-col items-center">
-                  <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character.Name}</span>
-                  <span className="line-clamp-1 text-ellipsis text-sm font-semibold opacity-65">
-                    {seiyuu.Staff.Name}
-                  </span>
-                </div>
+          {cast?.filter(credit => credit.RoleName === 'Seiyuu').slice(0, 20).map(seiyuu => (
+            <div
+              key={`${seiyuu.Character.Name}-${Math.random() * (cast.length + seiyuu.Character.Name.length)}`}
+              className="flex flex-col items-center gap-y-3 pb-3"
+            >
+              <div className="flex gap-x-4">
+                <CharacterImage
+                  imageSrc={getThumbnailUrl(seiyuu, 'Character')}
+                  className="relative h-48 w-36 rounded-lg"
+                />
+                <CharacterImage
+                  imageSrc={getThumbnailUrl(seiyuu, 'Staff')}
+                  className="relative h-48 w-36 rounded-lg"
+                />
               </div>
-            )
+              <div className="flex flex-col items-center">
+                <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character.Name}</span>
+                <span className="line-clamp-1 text-ellipsis text-sm font-semibold opacity-65">
+                  {seiyuu.Staff.Name}
+                </span>
+              </div>
+            </div>
           ))}
         </div>
       </ShokoPanel>
