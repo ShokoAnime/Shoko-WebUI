@@ -73,8 +73,8 @@ const Series = () => {
     }
 
     setFanartUri(getImagePath(allFanarts.find(fanart => fanart.Preferred) ?? allFanarts[0]));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imagesQuery.data, imagesQuery.isSuccess, series]); // showRandomFanart is explicitly excluded to avoid toggles causing immediate refreshes
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- showRandomFanart is explicitly excluded to avoid toggles causing immediate refreshes
+  }, [imagesQuery.data, imagesQuery.isSuccess, series]);
 
   if (seriesQuery.isError) {
     navigate('../');
