@@ -166,7 +166,10 @@ function GroupTab({ seriesId }: Props) {
 
   const moveToNewGroup = useEventCallback(() => moveToNewGroupMutation({ seriesId }));
   const moveToExistingGroup = useEventCallback(({ groupId }: { groupId: number }) => {
-    moveToExistingGroupMutation({ seriesId, groupId });
+    const currentGroupId = seriesGroup?.IDs?.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup;
+    if (currentGroupId && currentGroupId !== groupId) {
+      moveToExistingGroupMutation({ seriesId, groupId });
+    }
   });
   const renameGroup = useEventCallback(({ groupId, newName }: { groupId: number, newName: string }) => {
     renameGroupMutation(
