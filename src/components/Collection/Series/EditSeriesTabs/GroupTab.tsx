@@ -76,7 +76,7 @@ const EditableNameComponent = React.memo(
           icon: mdiPencilCircleOutline,
           className: 'text-panel-text-primary',
           onClick: () => setEditingName(true),
-          tooltip: 'Edit group',
+          tooltip: 'Edit group name',
         },
       ]
       : [
@@ -104,10 +104,10 @@ const EditableNameComponent = React.memo(
         type="text"
         value={modifiableName}
         onChange={updateInput}
-        label="Name"
-        className="mb-4"
         endIcons={endIcons}
         disabled={!editingName}
+        inputClassName="pr-[4.5rem] truncate"
+        className="mb-6"
       />
     );
   },
@@ -186,12 +186,12 @@ function GroupTab({ seriesId }: Props) {
 
   const QueryStatusElement = useMemo(() => {
     if (groupsQuery.isLoading) {
-      return <span className="self-center">Loading...</span>;
+      return <span className="my-auto self-center">Loading...</span>;
     }
     if (groupsQuery.isError) {
-      return <span className="self-center">Error, please refresh!</span>;
+      return <span className="my-auto self-center">Error, please refresh!</span>;
     }
-    return <span className="self-center">No Results!</span>;
+    return <span className="my-auto self-center">No Results!</span>;
   }, [groupsQuery.isError, groupsQuery.isLoading]);
 
   const GroupSearchComponent = useMemo(() => (
@@ -203,9 +203,8 @@ function GroupTab({ seriesId }: Props) {
         onChange={updateSearch}
         startIcon={mdiMagnify}
         placeholder="Group Search..."
-        label="Move Series to Group"
       />
-      <div className="mt-2 flex select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
+      <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
         <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-3">
           {groups.length === 0
             ? QueryStatusElement
