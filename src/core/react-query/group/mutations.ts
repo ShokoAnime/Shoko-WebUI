@@ -10,20 +10,19 @@ import type {
 } from '@/core/react-query/group/types';
 
 /**
- * This all needs much more work on query invalidation.
+ * This file probably needs more work on query invalidation.
  * Currently, it's naïve and only invalidates the current series query.
- * It should probably invalidate the cache for the before/after state of any series belonging to impacted groups.
+ * It should probably also invalidate the cache for:
+ *  * Any series belonging to the "original" groups of a series.
  */
 
 export const usePatchGroupMutation = () =>
   useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars -- seriesId is used later for query invalidation
-    mutationFn: ({ groupId, operations, seriesId }: PatchGroupRequestType) =>
-      axios.patch(
-        `Group/${groupId}`,
-        operations,
-      ),
-    onSuccess: (_, { seriesId }) => invalidateQueries(['series', seriesId]),
+    mutationFn: ({ groupId, operations }: PatchGroupRequestType) => axios.patch(`Group/${groupId}`, operations),
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+      invalidateQueries(['series', seriesId, 'group']);
+    },
   });
 
 export const useCreateGroupMutation = () =>
@@ -36,12 +35,18 @@ export const useCreateGroupMutation = () =>
           SeriesIDs: [seriesId],
         },
       ),
-    onSuccess: (_, { seriesId }) => invalidateQueries(['series', seriesId]),
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+      invalidateQueries(['series', seriesId, 'group']);
+    },
   });
 
 export const useMoveGroupMutation = () =>
   useMutation({
     mutationFn: ({ groupId, seriesId }: MoveSeriesGroupRequestType) =>
       axios.patch(`Series/${seriesId}/Move/${groupId}`),
-    onSuccess: (_, { seriesId }) => invalidateQueries(['series', seriesId]),
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+      invalidateQueries(['series', seriesId, 'group']);
+    },
   });
