@@ -1,11 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiMagnify, mdiPencilCircleOutline } from '@mdi/js';
-import cx from 'classnames';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  mdiCheckUnderlineCircleOutline,
+  mdiCloseCircleOutline,
+  mdiFolderMoveOutline,
+  mdiFolderPlusOutline,
+  mdiMagnify,
+  mdiPencilCircleOutline,
+} from '@mdi/js';
+import Icon from '@mdi/react';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
+import {
+  useCreateGroupMutation,
+  useMoveGroupMutation,
+  usePatchGroupMutation,
+} from '@/core/react-query/group/mutations';
 import { useGroupsInfiniteQuery } from '@/core/react-query/group/queries';
 import { useSeriesGroupQuery } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -14,82 +27,190 @@ type Props = {
   seriesId: number;
 };
 
-const Title = ({ group }: { group: CollectionGroupType }) => (
-  <div
-    className="flex cursor-pointer justify-between"
-    key={group.IDs.MainSeries}
-    onClick={() => {}}
-  >
-    <div>{group.Name}</div>
-    {group.IDs.MainSeries}
-  </div>
+type EndIcon = {
+  icon: string;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  tooltip?: string;
+};
+
+type EditableNameComponentProps = {
+  name: string;
+  groupId: number;
+  moveToNewGroup: () => void;
+  renameGroup: ({ groupId, newName }: { groupId: number, newName: string }) => void;
+};
+const EditableNameComponent = React.memo(
+  ({ groupId, moveToNewGroup, name, renameGroup }: EditableNameComponentProps) => {
+    const [editingName, setEditingName] = useState(false);
+    const [modifiableName, setModifiableName] = useState(name);
+
+    useEffect(() => {
+      setModifiableName(name);
+    }, [name]);
+
+    const cancelEditing = useEventCallback(() => {
+      setModifiableName(() => {
+        setEditingName(false);
+        return name;
+      });
+    });
+
+    const saveName = useEventCallback(() => {
+      if (modifiableName !== name) {
+        renameGroup({ groupId, newName: modifiableName });
+      }
+      setEditingName(false);
+    });
+
+    const endIcons: EndIcon[] = (!editingName)
+      ? [
+        {
+          icon: mdiFolderPlusOutline,
+          className: 'text-panel-text-primary',
+          onClick: moveToNewGroup,
+          tooltip: 'Move to new group',
+        },
+        {
+          icon: mdiPencilCircleOutline,
+          className: 'text-panel-text-primary',
+          onClick: () => setEditingName(true),
+          tooltip: 'Edit group',
+        },
+      ]
+      : [
+        {
+          icon: mdiCloseCircleOutline,
+          className: 'text-red-500',
+          onClick: cancelEditing,
+          tooltip: 'Cancel',
+        },
+        {
+          icon: mdiCheckUnderlineCircleOutline,
+          className: 'text-panel-text-primary',
+          onClick: saveName,
+          tooltip: 'Rename group',
+        },
+      ];
+
+    const updateInput = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+      setModifiableName(event.target.value);
+    });
+
+    return (
+      <Input
+        id="group-name"
+        type="text"
+        value={modifiableName}
+        onChange={updateInput}
+        label="Name"
+        className="mb-4"
+        endIcons={endIcons}
+        disabled={!editingName}
+      />
+    );
+  },
 );
 
+const ExistingGroup = React.memo((
+  { group, moveToGroup }: { group: CollectionGroupType, moveToGroup: ({ groupId }: { groupId: number }) => void },
+) => (
+  <div className="flex w-full justify-between">
+    <div
+      className="line-clamp-1"
+      data-tooltip-id="tooltip"
+      data-tooltip-content={group.Name}
+      data-tooltip-delay-show={500}
+    >
+      {group.Name}
+    </div>
+    <div
+      className="cursor-pointer text-panel-icon-action"
+      onClick={() => moveToGroup({ groupId: group.IDs.ParentGroup ?? group.IDs.TopLevelGroup })}
+      data-tooltip-id="tooltip"
+      data-tooltip-content="Move to group"
+      data-tooltip-place="top"
+    >
+      <Icon path={mdiFolderMoveOutline} size={1} />
+    </div>
+  </div>
+));
+
 function GroupTab({ seriesId }: Props) {
-  const [name, setName] = useState('');
-  const [nameEditable, setNameEditable] = useState(false);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
-  const groupQuery = useSeriesGroupQuery(seriesId, false);
+  const updateSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value));
+
+  const { data: seriesGroup, isSuccess: isSeriesGroupSuccess } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useGroupsInfiniteQuery({ startsWith: debouncedSearch, pageSize: 10 });
   const [groups] = useFlattenListResult(groupsQuery.data);
 
-  useEffect(() => {
-    if (groupQuery.isSuccess) setName(groupQuery.data.Name);
-  }, [groupQuery.isSuccess, groupQuery.data?.Name]);
+  const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
+  const { mutate: moveToExistingGroupMutation } = useMoveGroupMutation();
+  const { mutate: renameGroupMutation } = usePatchGroupMutation();
 
-  const getNameInputIcons = () => {
-    if (!nameEditable) {
-      return [{
-        icon: mdiPencilCircleOutline,
-        className: 'text-panel-text-primary',
-        onClick: () => setNameEditable(_ => true),
-      }];
+  const moveToNewGroup = useEventCallback(() => moveToNewGroupMutation({ seriesId }));
+  const moveToExistingGroup = useEventCallback(({ groupId }: { groupId: number }) => {
+    moveToExistingGroupMutation({ seriesId, groupId });
+  });
+  const renameGroup = useEventCallback(({ groupId, newName }: { groupId: number, newName: string }) => {
+    renameGroupMutation(
+      {
+        seriesId,
+        groupId,
+        operations: [
+          { op: 'replace', path: 'Name', value: newName },
+          { op: 'replace', path: 'HasCustomName', value: 'true' },
+        ],
+      },
+    );
+  });
+
+  const QueryStatusElement = useMemo(() => {
+    if (groupsQuery.isLoading) {
+      return <span className="self-center">Loading...</span>;
     }
+    if (groupsQuery.isError) {
+      return <span className="self-center">Error, please refresh!</span>;
+    }
+    return <span className="self-center">No Results!</span>;
+  }, [groupsQuery.isError, groupsQuery.isLoading]);
 
-    return [{
-      icon: mdiCloseCircleOutline,
-      className: 'text-red-500',
-      onClick: () => setName(_ => ''),
-    }, {
-      icon: mdiCheckUnderlineCircleOutline,
-      className: 'text-panel-text-primary',
-      onClick: () => {}, // TODO: Need endpoint to update series
-    }];
-  };
-
-  return (
-    <div className="flex flex-col">
-      <Input
-        id="name"
-        type="text"
-        onChange={e => setName(e.target.value)}
-        value={name}
-        label="Name"
-        className="mb-4"
-        endIcons={getNameInputIcons()}
-        disabled={!nameEditable}
-      />
+  const GroupSearchComponent = useMemo(() => (
+    <>
       <Input
         id="search"
         type="text"
         value={search}
-        onChange={e => setSearch(e.target.value)}
+        onChange={updateSearch}
         startIcon={mdiMagnify}
-        placeholder="Name Search..."
-        disabled={!nameEditable}
-        className={cx(!nameEditable && 'invisible')}
+        placeholder="Group Search..."
+        label="Move Series to Group"
       />
-      <div
-        className={cx(
-          'mt-1 flex flex-col gap-y-2.5 rounded-lg border border-panel-border bg-panel-background-alt p-4',
-          !nameEditable && 'invisible',
-        )}
-      >
-        {!debouncedSearch && groupQuery.isSuccess && <Title group={groupQuery.data} />}
-        {debouncedSearch && groupsQuery.isSuccess && groups.map(group => <Title key={group.IDs.ID} group={group} />)}
+      <div className="mt-2 flex select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
+        <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-3">
+          {groups.length === 0
+            ? QueryStatusElement
+            : groups.map(group => (
+              <ExistingGroup key={group.IDs.TopLevelGroup} group={group} moveToGroup={moveToExistingGroup} />
+            ))}
+        </div>
       </div>
+    </>
+  ), [QueryStatusElement, groups, moveToExistingGroup, search, updateSearch]);
+
+  return (
+    <div className="flex h-full flex-col">
+      {isSeriesGroupSuccess && (
+        <EditableNameComponent
+          groupId={seriesGroup.IDs.ParentGroup ?? seriesGroup.IDs.TopLevelGroup}
+          name={seriesGroup.Name}
+          moveToNewGroup={moveToNewGroup}
+          renameGroup={renameGroup}
+        />
+      )}
+      {GroupSearchComponent}
     </div>
   );
 }

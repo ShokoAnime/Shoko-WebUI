@@ -4,12 +4,13 @@ import { map } from 'lodash';
 
 import DeleteActionsTab from '@/components/Collection/Series/EditSeriesTabs/DeleteActionsTab';
 import FileActionsTab from '@/components/Collection/Series/EditSeriesTabs/FileActionsTab';
+import GroupTab from '@/components/Collection/Series/EditSeriesTabs/GroupTab';
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
-// TODO: Add tabs after implementing back-end endpoint for GroupTab and PersonalStats
-// import GroupTab from './EditSeriesTabs/GroupTab';
-// import PersonalStats from './EditSeriesTabs/PersonalStats';
+
+// TODO: Add tabs after implementing back-end endpoint for PersonalStats
+// import PersonalStats from '@/components/Collection/Series/EditSeriesTabs/PersonalStats';
 
 type Props = {
   show: boolean;
@@ -22,7 +23,7 @@ const tabs = {
   update_actions: 'Update Actions',
   file_actions: 'File Actions',
   delete_actions: 'Delete Actions',
-  // group: 'Group',
+  group: 'Group',
   // stats: 'Personal Stats',
 };
 
@@ -34,8 +35,8 @@ const renderTab = (activeTab: string, seriesId: number) => {
       return <FileActionsTab seriesId={seriesId} />;
     case 'delete_actions':
       return <DeleteActionsTab seriesId={seriesId} />;
-    // case 'group':
-    //   return <GroupTab seriesId={seriesId} />;
+    case 'group':
+      return <GroupTab seriesId={seriesId} />;
     // case 'stats':
     //   return <PersonalStats />;
     case 'update_actions':
