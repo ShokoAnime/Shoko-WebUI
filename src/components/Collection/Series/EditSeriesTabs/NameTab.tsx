@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
+import cx from 'classnames';
 import { map } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
@@ -75,6 +76,7 @@ const NameTab = ({ seriesId }: Props) => {
         value={name}
         label="Name"
         className="mb-4"
+        inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[4.5rem]' : 'pr-10', 'truncate')}
         endIcons={nameInputIcons}
         disabled={!nameEditable}
       />
