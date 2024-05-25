@@ -11,17 +11,18 @@ import Icon from '@mdi/react';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
+import { useFilteredGroupsInfiniteQuery } from '@/core/react-query/filter/queries';
 import {
   useCreateGroupMutation,
   useMoveGroupMutation,
   usePatchGroupMutation,
 } from '@/core/react-query/group/mutations';
-import { useGroupsInfiniteQuery } from '@/core/react-query/group/queries';
 import { useSeriesGroupQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { FilterType } from '@/core/types/api/filter';
 
 type Props = {
   seriesId: number;
@@ -136,6 +137,16 @@ const ExistingGroup = React.memo((
   </div>
 ));
 
+const getFilter = (query: string): FilterType => ((query === '') ? {} : {
+  ApplyAtSeriesLevel: true,
+  Expression: {
+    Type: 'AnyContains',
+    Left: { Type: 'NamesSelector' },
+    Parameter: query,
+  },
+  Sorting: { Type: 'Name', IsInverted: false },
+});
+
 function GroupTab({ seriesId }: Props) {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
@@ -143,7 +154,10 @@ function GroupTab({ seriesId }: Props) {
   const updateSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value));
 
   const { data: seriesGroup, isSuccess: isSeriesGroupSuccess } = useSeriesGroupQuery(seriesId, false);
-  const groupsQuery = useGroupsInfiniteQuery({ startsWith: debouncedSearch, pageSize: 10 });
+  const groupsQuery = useFilteredGroupsInfiniteQuery({
+    filterCriteria: getFilter(debouncedSearch),
+    pageSize: 10,
+  });
   const [groups] = useFlattenListResult(groupsQuery.data);
 
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
