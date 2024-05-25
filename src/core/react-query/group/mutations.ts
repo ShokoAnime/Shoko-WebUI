@@ -1,5 +1,6 @@
 import { useMutation } from '@tanstack/react-query';
 
+import toast from '@/components/Toast';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
@@ -22,6 +23,7 @@ export const usePatchGroupMutation = () =>
     onSuccess: (_, { seriesId }) => {
       invalidateQueries(['series', seriesId, 'data']);
       invalidateQueries(['series', seriesId, 'group']);
+      toast.success('Group updated!');
     },
   });
 
@@ -38,6 +40,7 @@ export const useCreateGroupMutation = () =>
     onSuccess: (_, { seriesId }) => {
       invalidateQueries(['series', seriesId, 'data']);
       invalidateQueries(['series', seriesId, 'group']);
+      toast.success('Created new group!');
     },
   });
 
@@ -48,5 +51,6 @@ export const useMoveGroupMutation = () =>
     onSuccess: (_, { seriesId }) => {
       invalidateQueries(['series', seriesId, 'data']);
       invalidateQueries(['series', seriesId, 'group']);
+      toast.success('Moved series into new group!');
     },
   });
