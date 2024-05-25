@@ -1,15 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { mdiCheckUnderlineCircleOutline, mdiCloseCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import cx from 'classnames';
-import { map } from 'lodash';
 import { useToggle } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import toast from '@/components/Toast';
 import { useOverrideSeriesTitleMutation } from '@/core/react-query/series/mutations';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
-
-import type { SeriesType } from '@/core/types/api/series';
 
 type Props = {
   seriesId: number;
@@ -19,17 +16,16 @@ const NameTab = ({ seriesId }: Props) => {
   const [name, setName] = useState('');
   const [nameEditable, toggleNameEditable] = useToggle(false);
 
-  const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
+  const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 
   const { mutate: overrideTitle } = useOverrideSeriesTitleMutation();
 
   useEffect(() => {
-    setName(series.Name ?? '');
-  }, [series.Name]);
+    setName(seriesData?.Name ?? '');
+  }, [seriesData?.Name]);
 
   const nameInputIcons = useMemo(() => {
-    if (!nameEditable || seriesQuery.isFetching) {
+    if (!nameEditable || isFetching) {
       return [{
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
@@ -37,12 +33,14 @@ const NameTab = ({ seriesId }: Props) => {
       }];
     }
 
+    if (!isSuccess) return [];
+
     return [
       {
         icon: mdiCloseCircleOutline,
         className: 'text-panel-text-danger',
         onClick: () => {
-          setName(series.Name);
+          setName(seriesData.Name ?? '');
           toggleNameEditable();
         },
       },
@@ -50,7 +48,7 @@ const NameTab = ({ seriesId }: Props) => {
         icon: mdiCheckUnderlineCircleOutline,
         className: 'text-panel-text-primary',
         onClick: () =>
-          overrideTitle({ seriesId: series.IDs.ID, Title: name }, {
+          overrideTitle({ seriesId: seriesData.IDs.ID, Title: name }, {
             onSuccess: () => {
               toast.success('Name updated successfully!');
               toggleNameEditable();
@@ -59,11 +57,20 @@ const NameTab = ({ seriesId }: Props) => {
           }),
       },
     ];
-  }, [name, nameEditable, overrideTitle, series.IDs.ID, series.Name, seriesQuery.isFetching, toggleNameEditable]);
+  }, [
+    isFetching,
+    isSuccess,
+    name,
+    nameEditable,
+    overrideTitle,
+    seriesData?.IDs.ID,
+    seriesData?.Name,
+    toggleNameEditable,
+  ]);
 
   return (
     <div className="flex h-full flex-col">
-      {seriesQuery.isError && (
+      {isError && (
         <div className="m-auto text-lg font-semibold text-panel-text-danger">
           Series data could not be loaded!
         </div>
@@ -74,6 +81,7 @@ const NameTab = ({ seriesId }: Props) => {
         type="text"
         onChange={e => setName(e.target.value)}
         value={name}
+        placeholder="Loading..."
         label="Name"
         className="mb-4"
         inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[4.5rem]' : 'pr-10', 'truncate')}
@@ -83,7 +91,7 @@ const NameTab = ({ seriesId }: Props) => {
       {nameEditable && (
         <div className="flex cursor-pointer overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
           <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
-            {map(series.AniDB?.Titles, title => (
+            {seriesData?.AniDB?.Titles.map(title => (
               <div
                 className="flex justify-between last:border-none hover:text-panel-text-primary"
                 key={title.Name + title.Language}

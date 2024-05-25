@@ -6,6 +6,7 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -14,9 +15,10 @@ import type { SeriesType } from '@/core/types/api/series';
 type Props = {
   item: CollectionGroupType | SeriesType;
   isSeries?: boolean;
+  setEditSeriesModalId: (seriesId: number) => void;
 };
 
-const PosterViewItem = ({ isSeries = false, item }: Props) => {
+const PosterViewItem = ({ isSeries = false, item, setEditSeriesModalId }: Props) => {
   const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
@@ -43,6 +45,12 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     return link;
   };
 
+  const editSeriesModalCallback = useEventCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    setEditSeriesModalId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID);
+  });
+
   return (
     <Link to={viewRouteLink()}>
       <div
@@ -62,15 +70,19 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
               )}
             </div>
           )}
-          <div className="pointer-events-none z-50 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-            {/* FIXME: This can't be a <Link> otherwise Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a> happens, BackgroundImagePlaceholderDiv wraps everything in a <Link> internally */}
-            <span className="h-fit">
-              <Icon
-                path={mdiPencilCircleOutline}
-                size="2rem"
-                className="text-panel-icon"
-              />
-            </span>
+          <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
+            {(isSeries || item.Size === 1) && (
+              <div
+                className="pointer-events-auto h-fit"
+                onClick={editSeriesModalCallback}
+              >
+                <Icon
+                  path={mdiPencilCircleOutline}
+                  size="2rem"
+                  className="text-panel-icon"
+                />
+              </div>
+            )}
           </div>
           {showGroupIndicator && !isSeries && groupCount > 1 && (
             <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">

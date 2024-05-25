@@ -15,7 +15,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 type Props = {
   show: boolean;
   onClose: () => void;
-  seriesId: number;
+  seriesId?: number;
 };
 
 const tabs = {
@@ -50,33 +50,35 @@ const EditSeriesModal = (props: Props) => {
 
   const [activeTab, setActiveTab] = useState('update_actions');
 
-  return (
-    <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
-      <div className="flex h-[22rem] flex-row gap-x-6 p-6">
-        <div className="flex shrink-0 gap-y-6 font-semibold">
-          <div className="flex flex-col gap-y-1">
-            {map(tabs, (value, key) => (
-              <div
-                className={cx(
-                  activeTab === key
-                    ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
-                )}
-                key={key}
-                onClick={() => setActiveTab(key)}
-              >
-                {value}
-              </div>
-            ))}
+  return (!seriesId)
+    ? null
+    : (
+      <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
+        <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+          <div className="flex shrink-0 gap-y-6 font-semibold">
+            <div className="flex flex-col gap-y-1">
+              {map(tabs, (value, key) => (
+                <div
+                  className={cx(
+                    activeTab === key
+                      ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                      : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                  )}
+                  key={key}
+                  onClick={() => setActiveTab(key)}
+                >
+                  {value}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="border-r border-panel-border" />
+          <div className="grow">
+            {renderTab(activeTab, seriesId)}
           </div>
         </div>
-        <div className="border-r border-panel-border" />
-        <div className="grow">
-          {renderTab(activeTab, seriesId)}
-        </div>
-      </div>
-    </ModalPanel>
-  );
+      </ModalPanel>
+    );
 };
 
 export default EditSeriesModal;
