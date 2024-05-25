@@ -156,7 +156,7 @@ function GroupTab({ seriesId }: Props) {
   const { data: seriesGroup, isSuccess: isSeriesGroupSuccess } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useFilteredGroupsInfiniteQuery({
     filterCriteria: getFilter(debouncedSearch),
-    pageSize: 10,
+    pageSize: 50,
   });
   const [groups] = useFlattenListResult(groupsQuery.data);
 
