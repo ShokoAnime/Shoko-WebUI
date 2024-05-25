@@ -588,7 +588,6 @@ function LinkFilesTab() {
             <SelectEpisodeList
               rowIdx={idx}
               options={episodeOptions}
-              emptyValue="Select episode"
               value={link.EpisodeID}
               disabled={isLinking}
               onChange={value => addLink(link.FileID, value, link.LinkID)}
@@ -597,7 +596,7 @@ function LinkFilesTab() {
         );
       } else if (idx === 0) {
         result.push(
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center" key="no-episodes">
             No episodes exist!
           </div>,
         );

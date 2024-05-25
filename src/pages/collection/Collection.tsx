@@ -36,13 +36,27 @@ const getFilter = (
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
   if (query) {
-    const searchCondition: FilterCondition = {
-      Type: 'StringFuzzyMatches',
+    let searchCondition: FilterCondition = {
+      Type: 'AnyContains',
       Left: {
-        Type: 'NameSelector',
+        Type: 'NamesSelector',
       },
       Parameter: query,
     };
+
+    if (Number.isFinite(toNumber(query))) {
+      searchCondition = {
+        Type: 'Or',
+        Left: searchCondition,
+        Right: {
+          Type: 'AnyEquals',
+          Left: {
+            Type: 'AniDBIDsSelector',
+          },
+          Parameter: query,
+        },
+      };
+    }
 
     if (filterCondition) {
       finalCondition = buildFilter([searchCondition, filterCondition]);
