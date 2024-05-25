@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useRouteError } from 'react-router-dom';
+import { useNavigate, useRouteError } from 'react-router-dom';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
@@ -9,9 +9,17 @@ import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
+type RouteError = {
+  data: string;
+  status: number;
+  statusText: string;
+  error: Error;
+};
+
 const ErrorBoundary = ({ error }: { error?: Error }) => {
   const dispatch = useDispatch();
-  const routeError = useRouteError() as Error;
+  const routeError = useRouteError() as RouteError;
+  const navigate = useNavigate();
 
   const versionQuery = useVersionQuery();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
@@ -41,59 +49,73 @@ const ErrorBoundary = ({ error }: { error?: Error }) => {
           The information below is absolutely (maybe) useless!
           <br />
           <br />
-          {error?.stack ?? routeError.stack}
+          {error?.stack ?? routeError.data}
         </pre>
-        <div className="flex flex-col gap-y-4">
-          <div>Lets get you back into the Web UI.</div>
-          <div>
-            If you are seeing this page after updating, select&nbsp;
-            <span className="font-semibold text-panel-text-important">Force Update to Stable Web UI</span>
-            , otherwise select&nbsp;
-            <span className="font-semibold text-panel-text-important">Logout of Web UI</span>
-            &nbsp;to clear local storage.
-          </div>
-          <div>
-            Still need help? Hop on our&nbsp;
-            <a
-              href="https://discord.gg/vpeHDsg"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold text-panel-text-primary"
-            >
-              Discord
-            </a>
-            &nbsp;server and provide the above error.
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
-          <Button
-            onClick={handleStableWebUiUpdate}
-            className="px-4 py-2 drop-shadow-md"
-            buttonType="primary"
-            loading={updateChannel === 'Stable' && isUpdateWebuiPending}
-          >
-            Force update to Stable Web UI
-          </Button>
-
-          {versionQuery.data?.Server.ReleaseChannel !== 'Stable' && (
+        {routeError?.status === 404
+          ? (
             <Button
-              onClick={handleDevWebUiUpdate}
+              onClick={() => navigate('/webui', { replace: true })}
               className="px-4 py-2 drop-shadow-md"
               buttonType="primary"
-              loading={updateChannel === 'Dev' && isUpdateWebuiPending}
             >
-              Force update to Dev Web UI
+              Go back home
             </Button>
-          )}
+          )
+          : (
+            <>
+              <div className="flex flex-col gap-y-4">
+                <div>Lets get you back into the Web UI.</div>
+                <div>
+                  If you are seeing this page after updating, select&nbsp;
+                  <span className="font-semibold text-panel-text-important">Force Update to Stable Web UI</span>
+                  , otherwise select&nbsp;
+                  <span className="font-semibold text-panel-text-important">Logout of Web UI</span>
+                  &nbsp;to clear local storage.
+                </div>
+                <div>
+                  Still need help? Hop on our&nbsp;
+                  <a
+                    href="https://discord.gg/vpeHDsg"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="font-semibold text-panel-text-primary"
+                  >
+                    Discord
+                  </a>
+                  &nbsp;server and provide the above error.
+                </div>
+              </div>
+              <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
+                <Button
+                  onClick={handleStableWebUiUpdate}
+                  className="px-4 py-2 drop-shadow-md"
+                  buttonType="primary"
+                  loading={updateChannel === 'Stable' && isUpdateWebuiPending}
+                >
+                  Force update to Stable Web UI
+                </Button>
 
-          <Button
-            onClick={handleLogout}
-            className="px-4 py-2 drop-shadow-md"
-            buttonType="primary"
-          >
-            Logout of Web UI
-          </Button>
-        </div>
+                {versionQuery.data?.Server.ReleaseChannel !== 'Stable' && (
+                  <Button
+                    onClick={handleDevWebUiUpdate}
+                    className="px-4 py-2 drop-shadow-md"
+                    buttonType="primary"
+                    loading={updateChannel === 'Dev' && isUpdateWebuiPending}
+                  >
+                    Force update to Dev Web UI
+                  </Button>
+                )}
+
+                <Button
+                  onClick={handleLogout}
+                  className="px-4 py-2 drop-shadow-md"
+                  buttonType="primary"
+                >
+                  Logout of Web UI
+                </Button>
+              </div>
+            </>
+          )}
       </div>
 
       <img
