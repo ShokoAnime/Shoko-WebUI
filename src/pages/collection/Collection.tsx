@@ -8,6 +8,7 @@ import { useDebounceValue, useToggle } from 'usehooks-ts';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
+import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import TitleOptions from '@/components/Collection/TitleOptions';
 import buildFilter from '@/core/buildFilter';
@@ -36,13 +37,27 @@ const getFilter = (
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
   if (query) {
-    const searchCondition: FilterCondition = {
-      Type: 'StringFuzzyMatches',
+    let searchCondition: FilterCondition = {
+      Type: 'AnyContains',
       Left: {
-        Type: 'NameSelector',
+        Type: 'NamesSelector',
       },
       Parameter: query,
     };
+
+    if (Number.isFinite(toNumber(query))) {
+      searchCondition = {
+        Type: 'Or',
+        Left: searchCondition,
+        Right: {
+          Type: 'AnyEquals',
+          Left: {
+            Type: 'AniDBIDsSelector',
+          },
+          Parameter: query,
+        },
+      };
+    }
 
     if (filterCondition) {
       finalCondition = buildFilter([searchCondition, filterCondition]);
@@ -86,6 +101,15 @@ function Collection() {
 
   const [seriesSearch, setSeriesSearch] = useState('');
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
+
+  const [showEditSeriesModal, toggleEditSeriesModal] = useToggle(false);
+  const [editSeriesModalId, setEditSeriesModalId] = useState<number>();
+  const openEditModalWithSeriesId = useEventCallback((seriesId: number) => {
+    setEditSeriesModalId(() => {
+      toggleEditSeriesModal();
+      return seriesId;
+    });
+  });
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
@@ -216,6 +240,7 @@ function Collection() {
           items={items}
           mode={mode}
           total={total}
+          setEditSeriesModalId={openEditModalWithSeriesId}
         />
         <div
           className={cx(
@@ -229,6 +254,11 @@ function Collection() {
         </div>
         {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
       </div>
+      <EditSeriesModal
+        show={showEditSeriesModal}
+        onClose={toggleEditSeriesModal}
+        seriesId={editSeriesModalId}
+      />
     </div>
   );
 }

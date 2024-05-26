@@ -1,13 +1,35 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/queries';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { TagType } from '@/core/types/api/tags';
 
 const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
+  const { data: seriesDataList, fetchNextPage, isFetchingNextPage, isSuccess } = useFilteredSeriesInfiniteQuery(
+    {
+      pageSize: 50,
+      filterCriteria: {
+        ApplyAtSeriesLevel: true,
+        Expression: {
+          Parameter: tag?.Name ?? '',
+          Type: tag?.Source === 'User' ? 'HasCustomTag' : 'HasTag',
+        },
+      },
+    },
+    show,
+  );
+  const [seriesData, seriesCount] = useFlattenListResult(seriesDataList);
+
+  if (!isFetchingNextPage && seriesData.length !== seriesCount) {
+    fetchNextPage().catch(() => {});
+  }
+
   const header = (
     <div className="flex w-full justify-between capitalize">
       <div>
@@ -37,24 +59,39 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
         text={tag?.Description ?? ''}
         className="shoko-scrollbar max-h-62.5 overflow-y-auto pr-4 opacity-65"
       />
-      {/* TODO: Implement the list of series for the tag when the serer supports this with a new endpoint */}
-      {
-        /* <div className="flex flex-col gap-2">
-        <div className="text-base font-bold">
-          Series With Tag |&nbsp;
-          <span className="text-panel-text-important">
-            ?
-          </span>
-          &nbsp;Series
-        </div>
-        <div className="w-full rounded-lg bg-panel-input p-6">
-          <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
-            <div>Not yet implemented!</div>
-            <div>Not yet implemented!</div>
+      {isSuccess && seriesCount > 0 && (
+        <div className="flex flex-col gap-2">
+          <div className="text-base font-bold">
+            Series With Tag |&nbsp;
+            <span className="text-panel-text-important">
+              {seriesCount}
+            </span>
+            &nbsp;Series
+          </div>
+          <div className="w-full rounded-lg bg-panel-input p-6">
+            <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
+              {seriesData?.map(series => (
+                <Link
+                  to={`/webui/collection/series/${series.IDs.ID}/overview`}
+                  target="_blank"
+                  key={series.IDs.ID}
+                  className="flex justify-between pr-3 align-middle"
+                >
+                  <span
+                    className="line-clamp-1"
+                    data-tooltip-id="tooltip"
+                    data-tooltip-content={series.Name}
+                    data-tooltip-delay-show={500}
+                  >
+                    {series.Name}
+                  </span>
+                  <Icon path={mdiOpenInNew} size={1} className="shrink-0" />
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-      </div> */
-      }
+      )}
     </ModalPanel>
   );
 });

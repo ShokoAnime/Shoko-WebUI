@@ -1,8 +1,16 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { BodyVisibleContext } from '@/core/router';
+
+type EndIcon = {
+  icon: string;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  tooltip?: string;
+};
 
 type Props = {
   id: string;
@@ -17,12 +25,18 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   center?: boolean;
-  endIcons?: { icon: string, className?: string, onClick?: React.MouseEventHandler<HTMLDivElement> }[];
+  endIcons?: EndIcon[];
   startIcon?: string;
   inline?: boolean;
   isOverlay?: boolean;
   overlayClassName?: string;
   onToggleOverlay?: (show: boolean) => void;
+};
+
+type TooltipAttributes = {
+  'data-tooltip-id': string;
+  'data-tooltip-content': string;
+  'data-tooltip-place': PlacesType;
 };
 
 function Input(props: Props) {
@@ -125,15 +139,26 @@ function Input(props: Props) {
           />
           {endIcons?.length && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
-              {endIcons?.map(icon => (
-                <div
-                  key={`input-${icon.icon}`}
-                  onClick={icon.onClick}
-                  className={cx('cursor-pointer text-panel-text', icon.className)}
-                >
-                  <Icon path={icon.icon} size={1} />
-                </div>
-              ), [] as React.ReactNode[]) ?? []}
+              {endIcons.map((icon) => {
+                let tooltipAttributes: TooltipAttributes | null = null;
+                if (icon.tooltip) {
+                  tooltipAttributes = {
+                    'data-tooltip-id': 'tooltip',
+                    'data-tooltip-content': icon.tooltip,
+                    'data-tooltip-place': 'top',
+                  };
+                }
+                return (
+                  <div
+                    key={`input-${icon.icon}`}
+                    onClick={icon.onClick}
+                    className={cx('cursor-pointer text-panel-text', icon.className)}
+                    {...tooltipAttributes}
+                  >
+                    <Icon path={icon.icon} size={1} />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

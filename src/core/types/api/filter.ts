@@ -2,16 +2,26 @@ type ExpressionType =
   | 'And'
   | 'Not'
   | 'Or'
+  | 'AniDBIDsSelector'
+  | 'AllContains'
+  | 'AllRegexMatches'
+  | 'AnyContains'
+  | 'AnyEquals'
+  | 'AnyFuzzyMatches'
+  | 'AnyRegexMatches'
   | 'HasUnwatchedEpisodes'
   | 'HasWatchedEpisodes'
   | 'NameSelector'
+  | 'NamesSelector'
   | 'StringContains'
   | 'StringEndsWith'
   | 'StringEquals'
   | 'StringFuzzyMatches'
   | 'StringNotEquals'
   | 'StringRegexMatches'
-  | 'StringStartsWith';
+  | 'StringStartsWith'
+  | 'HasTag'
+  | 'HasCustomTag';
 
 type SortingType =
   | 'AddedDate'
