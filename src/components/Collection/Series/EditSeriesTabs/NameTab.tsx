@@ -30,6 +30,7 @@ const NameTab = ({ seriesId }: Props) => {
         icon: mdiPencilCircleOutline,
         className: 'text-panel-text-primary',
         onClick: toggleNameEditable,
+        tooltip: 'Edit name',
       }];
     }
 
@@ -43,6 +44,7 @@ const NameTab = ({ seriesId }: Props) => {
           setName(seriesData.Name ?? '');
           toggleNameEditable();
         },
+        tooltip: 'Cancel',
       },
       {
         icon: mdiCheckUnderlineCircleOutline,
@@ -55,6 +57,7 @@ const NameTab = ({ seriesId }: Props) => {
             },
             onError: () => toast.error('Name could not be updated!'),
           }),
+        tooltip: 'Save name',
       },
     ];
   }, [
@@ -81,10 +84,10 @@ const NameTab = ({ seriesId }: Props) => {
         type="text"
         onChange={e => setName(e.target.value)}
         value={name}
-        placeholder="Loading..."
+        placeholder={isFetching ? 'Loading...' : undefined}
         label="Name"
         className="mb-4"
-        inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[4.5rem]' : 'pr-10', 'truncate')}
+        inputClassName={cx(nameInputIcons.length > 1 ? 'pr-[5rem]' : 'pr-12', 'truncate')}
         endIcons={nameInputIcons}
         disabled={!nameEditable}
       />

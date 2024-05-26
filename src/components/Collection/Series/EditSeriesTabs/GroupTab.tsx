@@ -1,11 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
+  mdiArrowRightThinCircleOutline,
   mdiCheckUnderlineCircleOutline,
   mdiCloseCircleOutline,
-  mdiFolderMoveOutline,
-  mdiFolderPlusOutline,
   mdiMagnify,
   mdiPencilCircleOutline,
+  mdiPlusCircleOutline,
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useDebounceValue } from 'usehooks-ts';
@@ -38,11 +38,12 @@ type EndIcon = {
 type EditableNameComponentProps = {
   name: string;
   groupId: number;
+  loading: boolean;
   moveToNewGroup: () => void;
   renameGroup: ({ groupId, newName }: { groupId: number, newName: string }) => void;
 };
 const EditableNameComponent = React.memo(
-  ({ groupId, moveToNewGroup, name, renameGroup }: EditableNameComponentProps) => {
+  ({ groupId, loading, moveToNewGroup, name, renameGroup }: EditableNameComponentProps) => {
     const [editingName, setEditingName] = useState(false);
     const [modifiableName, setModifiableName] = useState(name);
 
@@ -67,10 +68,10 @@ const EditableNameComponent = React.memo(
     const endIcons: EndIcon[] = (!editingName)
       ? [
         {
-          icon: mdiFolderPlusOutline,
+          icon: mdiPlusCircleOutline,
           className: 'text-panel-text-primary',
           onClick: moveToNewGroup,
-          tooltip: 'Move to new group',
+          tooltip: 'Create and move to new group',
         },
         {
           icon: mdiPencilCircleOutline,
@@ -106,8 +107,10 @@ const EditableNameComponent = React.memo(
         onChange={updateInput}
         endIcons={endIcons}
         disabled={!editingName}
-        inputClassName="pr-[4.5rem] truncate"
-        className="mb-6"
+        placeholder={loading ? 'Loading...' : undefined}
+        label="Name"
+        inputClassName="pr-28 truncate"
+        className="mb-4"
       />
     );
   },
@@ -126,13 +129,13 @@ const ExistingGroup = React.memo((
       {group.Name}
     </div>
     <div
-      className="cursor-pointer text-panel-icon-action"
+      className="cursor-pointer pl-8 text-panel-icon-action"
       onClick={() => moveToGroup({ groupId: group.IDs.ParentGroup ?? group.IDs.TopLevelGroup })}
       data-tooltip-id="tooltip"
-      data-tooltip-content="Move to group"
+      data-tooltip-content="Move to existing group"
       data-tooltip-place="top"
     >
-      <Icon path={mdiFolderMoveOutline} size={1} />
+      <Icon path={mdiArrowRightThinCircleOutline} size={1} />
     </div>
   </div>
 ));
@@ -153,7 +156,7 @@ function GroupTab({ seriesId }: Props) {
 
   const updateSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value));
 
-  const { data: seriesGroup, isSuccess: isSeriesGroupSuccess } = useSeriesGroupQuery(seriesId, false);
+  const { data: seriesGroup, isFetching } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useFilteredGroupsInfiniteQuery({
     filterCriteria: getFilter(debouncedSearch),
     pageSize: 50,
@@ -203,6 +206,7 @@ function GroupTab({ seriesId }: Props) {
         onChange={updateSearch}
         startIcon={mdiMagnify}
         placeholder="Group Search..."
+        label="Move to group"
       />
       <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
         <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-3">
@@ -218,14 +222,13 @@ function GroupTab({ seriesId }: Props) {
 
   return (
     <div className="flex h-full flex-col">
-      {isSeriesGroupSuccess && (
-        <EditableNameComponent
-          groupId={seriesGroup.IDs.ParentGroup ?? seriesGroup.IDs.TopLevelGroup}
-          name={seriesGroup.Name}
-          moveToNewGroup={moveToNewGroup}
-          renameGroup={renameGroup}
-        />
-      )}
+      <EditableNameComponent
+        groupId={seriesGroup?.IDs.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup ?? 0}
+        loading={isFetching}
+        name={seriesGroup?.Name ?? ''}
+        moveToNewGroup={moveToNewGroup}
+        renameGroup={renameGroup}
+      />
       {GroupSearchComponent}
     </div>
   );

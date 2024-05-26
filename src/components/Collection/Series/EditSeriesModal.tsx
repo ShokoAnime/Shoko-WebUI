@@ -20,10 +20,10 @@ type Props = {
 
 const tabs = {
   name: 'Name',
+  group: 'Group',
   update_actions: 'Update Actions',
   file_actions: 'File Actions',
   delete_actions: 'Delete Actions',
-  group: 'Group',
   // stats: 'Personal Stats',
 };
 
@@ -48,13 +48,13 @@ const renderTab = (activeTab: string, seriesId: number) => {
 const EditSeriesModal = (props: Props) => {
   const { onClose, seriesId, show } = props;
 
-  const [activeTab, setActiveTab] = useState('update_actions');
+  const [activeTab, setActiveTab] = useState('name');
 
   return (!seriesId)
     ? null
     : (
       <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
-        <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+        <div className="flex h-[26rem] flex-row gap-x-6 p-6">
           <div className="flex shrink-0 gap-y-6 font-semibold">
             <div className="flex flex-col gap-y-1">
               {map(tabs, (value, key) => (
