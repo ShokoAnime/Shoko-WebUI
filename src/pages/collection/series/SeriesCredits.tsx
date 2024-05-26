@@ -1,15 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiInformationOutline, mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
-import Icon from '@mdi/react';
-import { map, toNumber } from 'lodash';
+import { toNumber } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
+import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
 import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';
-import Checkbox from '@/components/Input/Checkbox';
-import Input from '@/components/Input/Input';
 import MultiStateButton from '@/components/Input/MultiStateButton';
-import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import {
   useRefreshSeriesAniDBInfoMutation,
@@ -34,18 +30,31 @@ const modeStates: { label?: string, value: CreditsModeType }[] = [
 const SeriesCredits = () => {
   const { seriesId } = useParams();
 
-  const { isPending: pendingRefreshAniDb, mutate: refreshAniDb } = useRefreshSeriesAniDBInfoMutation();
-  const { isPending: pendingRefreshTvDb, mutate: refreshTvDb } = useRefreshSeriesTvdbInfoMutatation();
+  const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation();
+  const { isPending: pendingRefreshTvDb, mutate: refreshTvDbMutation } = useRefreshSeriesTvdbInfoMutatation();
+
+  const refreshAniDb = useEventCallback(() => {
+    refreshAniDbMutation({ seriesId: toNumber(seriesId), force: true }, {
+      onSuccess: () => toast.success('AniDB refresh queued!'),
+    });
+  });
+
+  const refreshTvDb = useEventCallback(() => {
+    refreshTvDbMutation({ seriesId: toNumber(seriesId), force: true }, {
+      onSuccess: () => toast.success('TvDB refresh queued!'),
+    });
+  });
 
   const [mode, setMode] = useState<CreditsModeType>(modeStates[0].value);
 
   const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
+  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(() => cleanString(search), 10);
 
   const [roleFilter, setRoleFilter] = useState<Set<string>>(new Set());
 
   const handleModeChange = useEventCallback((newMode: CreditsModeType) => {
     setMode(() => {
+      setDebouncedSearch('');
       setSearch('');
       setRoleFilter(new Set());
       return newMode;
@@ -59,6 +68,10 @@ const SeriesCredits = () => {
       if (!newState.delete(description)) newState.add(description);
       return newState;
     });
+  });
+
+  const handleSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
   });
 
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
@@ -87,86 +100,18 @@ const SeriesCredits = () => {
   return (
     <div className="flex w-full gap-x-6">
       <div className="flex flex-col gap-y-6">
-        <ShokoPanel
-          title="Search & Filter"
-          className="w-400"
-          contentClassName="gap-y-6"
-          sticky
-          transparent
-          fullHeight={false}
-        >
-          <div className="flex flex-col gap-y-2">
-            <span className="flex w-full text-base font-semibold">
-              Name
-            </span>
-            <Input
-              id="search"
-              startIcon={mdiMagnify}
-              type="text"
-              placeholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
-              value={search}
-              inputClassName="px-4 py-3"
-              onChange={event => setSearch(event.target.value)}
-            />
-          </div>
-          <div className="flex flex-col gap-y-2">
-            <div className="text-base font-semibold">Roles</div>
-            <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input p-6">
-              {map(uniqueRoles[mode], desc => (
-                <Checkbox
-                  justify
-                  label={desc}
-                  key={desc}
-                  id={desc}
-                  isChecked={!roleFilter.has(desc)}
-                  onChange={handleFilterChange}
-                />
-              ))}
-            </div>
-          </div>
-          <div className="flex flex-col gap-y-2">
-            <div className="text-base font-semibold">Quick Actions</div>
-            <button
-              type="button"
-              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-              onClick={() =>
-                refreshAniDb({ seriesId: toNumber(seriesId), force: true }, {
-                  onSuccess: () => toast.success('AniDB refresh queued!'),
-                })}
-              disabled={pendingRefreshAniDb}
-            >
-              Force refresh: AniDB
-              <Icon
-                path={mdiPlayCircleOutline}
-                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                size={1}
-              />
-            </button>
-            <button
-              type="button"
-              className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-              onClick={() =>
-                refreshTvDb({ seriesId: toNumber(seriesId), force: true }, {
-                  onSuccess: () => toast.success('TvDB refresh queued!'),
-                })}
-              disabled={pendingRefreshTvDb}
-            >
-              Force refresh: TVDB
-              <Icon
-                path={mdiPlayCircleOutline}
-                className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-                size={1}
-              />
-            </button>
-          </div>
-          <hr className="border border-panel-border" />
-          <div className="flex flex-row gap-x-3">
-            <Icon path={mdiInformationOutline} className="text-panel-icon-warning" size={1} />
-            <div className="grow text-base font-semibold">
-              Warning! Possible Spoilers
-            </div>
-          </div>
-        </ShokoPanel>
+        <CreditsSearchAndFilterPanel
+          inputPlaceholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
+          search={search}
+          roleFilter={roleFilter}
+          uniqueRoles={uniqueRoles[mode]}
+          handleSearchChange={handleSearchChange}
+          handleFilterChange={handleFilterChange}
+          refreshAniDbAction={refreshAniDb}
+          refreshTvDbAction={refreshTvDb}
+          aniDbRefreshing={pendingRefreshAniDb}
+          tvDbRefreshing={pendingRefreshTvDb}
+        />
       </div>
 
       <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
