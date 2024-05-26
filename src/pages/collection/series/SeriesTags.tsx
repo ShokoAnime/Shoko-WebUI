@@ -15,8 +15,9 @@ import type { TagType } from '@/core/types/api/tags';
 
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
-const SeriesTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
+const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand: (tag: TagType) => void }) => {
   const emitTag = useEventCallback(() => onTagExpand(tag));
+  const tagDescription = tag.Description?.trim() ? tag.Description : 'Tag Description Not Available.';
 
   return (
     <div
@@ -37,7 +38,10 @@ const SeriesTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
           />
         </div>
       </div>
-      <AnidbDescription className="line-clamp-2" text={tag.Description ?? ''} />
+      <AnidbDescription
+        className="line-clamp-2"
+        text={tagDescription}
+      />
     </div>
   );
 });
@@ -48,7 +52,7 @@ const SeriesTags = () => {
   const [selectedTag, setSelectedTag] = useState<TagType>();
   const [showTagModal, toggleShowTagModal] = useToggle(false);
   const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(() => cleanString(search), 200);
+  const [debouncedSearch] = useDebounceValue(cleanString(search), 200);
   const [showSpoilers, toggleShowSpoilers] = useToggle();
   const [tagSourceFilter, setTagSourceFilter] = useState<Set<string>>(new Set());
   const [sort, toggleSort] = useToggle(false);
@@ -82,23 +86,15 @@ const SeriesTags = () => {
   const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(toNumber(seriesId!), {}, !!seriesId);
 
   const filteredTags = useMemo(
-    () => (tagsQueryData?.filter((
-      { Description, IsSpoiler, Name, Source },
-    ) => (
-      !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
-      && ((debouncedSearch === '')
-        || [Name, Description].some(str => cleanString(str).match(debouncedSearch)))
-    )).sort((a, b) => {
-      if (sort) {
-        const aName = a.Name.toLowerCase();
-        const bName = b.Name.toLowerCase();
-        if (aName > bName) return 1;
-        if (aName < bName) return -1;
-        return 0;
-      }
-      return 0;
-    })),
-    [sort, debouncedSearch, showSpoilers, tagSourceFilter, tagsQueryData],
+    () =>
+      tagsQueryData?.filter((
+        { Description, IsSpoiler, Name, Source },
+      ) => (
+        !(tagSourceFilter.has(Source) || (IsSpoiler && !showSpoilers))
+        && ((debouncedSearch === '')
+          || [Name, Description].some(str => cleanString(str).match(debouncedSearch)))
+      )).sort((a, b) => (sort ? a.Name.localeCompare(b.Name) : 0)),
+    [debouncedSearch, showSpoilers, sort, tagSourceFilter, tagsQueryData],
   );
 
   const header = useMemo(
@@ -131,7 +127,7 @@ const SeriesTags = () => {
     setSelectedTag(tag);
     toggleShowTagModal();
   });
-  const clearTagSelection = useEventCallback(() => toggleShowTagModal());
+  const clearTagSelection = useEventCallback(toggleShowTagModal);
 
   if (!seriesId) return null;
 
@@ -158,7 +154,7 @@ const SeriesTags = () => {
             : (
               <div className="grid grid-cols-3 gap-4 2xl:gap-6">
                 {filteredTags?.map(tag => (
-                  <SeriesTag key={`${tag.Source}-${tag.ID}`} tag={tag} onTagExpand={onTagSelection} />
+                  <SingleTag key={`${tag.Source}-${tag.ID}`} tag={tag} onTagExpand={onTagSelection} />
                 ))}
               </div>
             )}

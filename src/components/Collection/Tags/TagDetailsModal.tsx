@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
+import cx from 'classnames';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -56,7 +57,7 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
   return (
     <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
       <AnidbDescription
-        text={tag?.Description ?? ''}
+        text={tag?.Description?.trim() ? tag.Description : 'Tag Description Not Available.'}
         className="shoko-scrollbar max-h-62.5 overflow-y-auto pr-4 opacity-65"
       />
       {isSuccess && seriesCount > 0 && (
@@ -69,13 +70,15 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
             &nbsp;Series
           </div>
           <div className="w-full rounded-lg bg-panel-input p-6">
-            <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto">
+            <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto bg-panel-input">
               {seriesData?.map(series => (
                 <Link
-                  to={`/webui/collection/series/${series.IDs.ID}/overview`}
-                  target="_blank"
+                  to={`/webui/collection/series/${series.IDs.ID}`}
                   key={series.IDs.ID}
-                  className="flex justify-between pr-3 align-middle"
+                  className={cx(
+                    'flex justify-between align-middle hover:text-panel-text-primary',
+                    seriesData.length > 6 && ('pr-4'),
+                  )}
                 >
                   <span
                     className="line-clamp-1"
