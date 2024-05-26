@@ -8,6 +8,7 @@ import {
   mdiPlusCircleOutline,
 } from '@mdi/js';
 import Icon from '@mdi/react';
+import cx from 'classnames';
 import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
@@ -109,7 +110,7 @@ const EditableNameComponent = React.memo(
         disabled={!editingName}
         placeholder={loading ? 'Loading...' : undefined}
         label="Name"
-        inputClassName="pr-28 truncate"
+        inputClassName="pr-[4.5rem] truncate"
         className="mb-4"
       />
     );
@@ -129,7 +130,7 @@ const ExistingGroup = React.memo((
       {group.Name}
     </div>
     <div
-      className="cursor-pointer pl-8 text-panel-icon-action"
+      className="cursor-pointer text-panel-icon-action"
       onClick={() => moveToGroup({ groupId: group.IDs.ParentGroup ?? group.IDs.TopLevelGroup })}
       data-tooltip-id="tooltip"
       data-tooltip-content="Move to existing group"
@@ -161,7 +162,7 @@ function GroupTab({ seriesId }: Props) {
     filterCriteria: getFilter(debouncedSearch),
     pageSize: 50,
   });
-  const [groups] = useFlattenListResult(groupsQuery.data);
+  const [groups, groupsResultSize] = useFlattenListResult(groupsQuery.data);
 
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
   const { mutate: moveToExistingGroupMutation } = useMoveGroupMutation();
@@ -208,8 +209,13 @@ function GroupTab({ seriesId }: Props) {
         placeholder="Group Search..."
         label="Move to group"
       />
-      <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
-        <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-3">
+      <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6 pr-3">
+        <div
+          className={cx(
+            'shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
+            groupsResultSize > 4 && 'pr-3',
+          )}
+        >
           {groups.length === 0
             ? QueryStatusElement
             : groups.map(group => (
@@ -218,7 +224,7 @@ function GroupTab({ seriesId }: Props) {
         </div>
       </div>
     </>
-  ), [QueryStatusElement, groups, moveToExistingGroup, search, updateSearch]);
+  ), [QueryStatusElement, groups, groupsResultSize, moveToExistingGroup, search, updateSearch]);
 
   return (
     <div className="flex h-full flex-col">
