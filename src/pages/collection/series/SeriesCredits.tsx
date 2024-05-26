@@ -1,7 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { toNumber } from 'lodash';
-import { useDebounceValue } from 'usehooks-ts';
 
 import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
 import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';
@@ -48,13 +47,11 @@ const SeriesCredits = () => {
   const [mode, setMode] = useState<CreditsModeType>(modeStates[0].value);
 
   const [search, setSearch] = useState('');
-  const [debouncedSearch, setDebouncedSearch] = useDebounceValue(() => cleanString(search), 10);
 
   const [roleFilter, setRoleFilter] = useState<Set<string>>(new Set());
 
   const handleModeChange = useEventCallback((newMode: CreditsModeType) => {
     setMode(() => {
-      setDebouncedSearch('');
       setSearch('');
       setRoleFilter(new Set());
       return newMode;
@@ -86,14 +83,14 @@ const SeriesCredits = () => {
   }), [castByType]);
 
   const filteredCast = useMemo(() => (castByType[mode].filter(p => (
-    (debouncedSearch === ''
-      || !!([p?.Character?.Name, p?.Staff?.Name].some(name => cleanString(name).match(debouncedSearch))))
+    (search === ''
+      || !!([p?.Character?.Name, p?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
     && !roleFilter.has(p?.RoleDetails)
   )).sort((a, b) => {
     if (a[mode].Name > b[mode].Name) return 1;
     if (a[mode].Name < b[mode].Name) return -1;
     return 0;
-  })), [castByType, mode, debouncedSearch, roleFilter]);
+  })), [castByType, mode, search, roleFilter]);
 
   if (!seriesId) return null;
 
@@ -118,7 +115,7 @@ const SeriesCredits = () => {
         <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
           <div className="text-xl font-semibold">
             Credits |&nbsp;
-            {(debouncedSearch !== '' || roleFilter.size > 0) && (
+            {(search !== '' || roleFilter.size > 0) && (
               <>
                 <span className="text-panel-text-important">
                   {filteredCast.length}
