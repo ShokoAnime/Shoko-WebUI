@@ -51,7 +51,7 @@ const SeriesFileSummary = () => {
 
   const [mode, setMode] = useState<ModeType>('Series');
 
-  const { data: fileSummary, isFetching, isLoading } = useSeriesFileSummaryQuery(
+  const { data: fileSummary, isLoading } = useSeriesFileSummaryQuery(
     toNumber(seriesId!),
     { groupBy: 'GroupName,FileVersion,FileLocation,AudioLanguages,SubtitleLanguages,VideoResolution' },
     !!seriesId,
@@ -79,7 +79,7 @@ const SeriesFileSummary = () => {
             </div>
           )}
           {mode === 'Series'
-            ? <FilesSummaryGroups groups={fileSummary?.Groups} fetchingState={isFetching} />
+            ? <FilesSummaryGroups groups={fileSummary?.Groups} />
             : <FileMissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
         </div>
       </div>

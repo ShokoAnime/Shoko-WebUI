@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react';
-import { mdiLoading } from '@mdi/js';
-import Icon from '@mdi/react';
 import { forEach, map, omit } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useDebounceValue } from 'usehooks-ts';
 
 import type { WebuiSeriesFileSummaryGroupRangeByType, WebuiSeriesFileSummaryGroupType } from '@/core/types/api/webui';
 
@@ -23,14 +20,12 @@ const HeaderFragment = ({ range, title }: HeaderFragmentProps) => {
 
 type HeaderProps = {
   ranges: WebuiSeriesFileSummaryGroupRangeByType;
-  fetchingState: boolean;
 };
-const Header = ({ fetchingState, ranges }: HeaderProps) => (
+const Header = ({ ranges }: HeaderProps) => (
   <div className="flex gap-x-2">
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Episodes' : 'Episode'} range={ranges?.Normal?.Range} />
     <HeaderFragment title={ranges?.Normal?.Range.length > 2 ? 'Specials' : 'Special'} range={ranges?.Special?.Range} />
     {map(omit(ranges, ['Normal', 'Special']), (item, key) => <HeaderFragment title={key} range={item.Range} />)}
-    {fetchingState && <Icon path={mdiLoading} spin size="2rem" />}
   </div>
 );
 
@@ -51,9 +46,8 @@ const Row = ({ label, value }: RowProps) => (
 
 type GroupProps = {
   group: WebuiSeriesFileSummaryGroupType;
-  fetchingState: boolean;
 };
-const Group = ({ fetchingState, group }: GroupProps) => {
+const Group = ({ group }: GroupProps) => {
   const sizes = useMemo(() => {
     const sizeMap: Record<string, { size: number, count: number }> = {};
     forEach(group.RangeByType, (item, key) => {
@@ -75,8 +69,6 @@ const Group = ({ fetchingState, group }: GroupProps) => {
       `${size.count} ${name} (${prettyBytes(size.size, { binary: true })})`
     )).join(' | ');
   }, [group]);
-
-  const [fetchState] = useDebounceValue(fetchingState, 500);
 
   const groupDetails = useMemo(() => (group.GroupName ? `${group.GroupName} (${group.GroupNameShort})` : '-'), [
     group,
@@ -133,7 +125,7 @@ const Group = ({ fetchingState, group }: GroupProps) => {
   return (
     <div className="flex flex-col gap-y-6 rounded border border-panel-border bg-panel-background-transparent p-6">
       <div className="flex text-xl font-semibold">
-        <Header ranges={group.RangeByType} fetchingState={fetchState} />
+        <Header ranges={group.RangeByType} />
       </div>
       <div className="flex gap-x-[4.5rem]">
         <div className="flex flex-col gap-y-2">
@@ -153,11 +145,10 @@ const Group = ({ fetchingState, group }: GroupProps) => {
 
 type Props = {
   groups?: WebuiSeriesFileSummaryGroupType[];
-  fetchingState: boolean;
 };
-const FilesSummaryGroups = ({ fetchingState, groups = [] }: Props) => (
+const FilesSummaryGroups = ({ groups = [] }: Props) => (
   // eslint-disable-next-line react/no-array-index-key
-  groups.map((group, index) => <Group key={index} group={group} fetchingState={fetchingState} />)
+  groups.map((group, index) => <Group key={index} group={group} />)
 );
 
 export default FilesSummaryGroups;
