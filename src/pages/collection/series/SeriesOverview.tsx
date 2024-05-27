@@ -66,7 +66,7 @@ const SeriesOverview = () => {
         <div className="flex w-full gap-x-6">
           <ShokoPanel
             title="Metadata Sites"
-            className="flex w-full max-w-[600px]"
+            className="flex w-full max-w-[37.5rem]"
             transparent
             disableOverflow
             options={
@@ -77,7 +77,7 @@ const SeriesOverview = () => {
               ? (
                 <div
                   className={cx(
-                    'flex h-[250px] flex-col gap-3 overflow-y-auto  lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto  lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
                     MetadataLinks.length > 4 ? 'pr-4' : '',
                   )}
                 >
@@ -108,7 +108,7 @@ const SeriesOverview = () => {
               : (
                 <div
                   className={cx(
-                    'flex h-[250px] flex-col gap-3 overflow-y-auto',
+                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto',
                     series.Links.length > 4 ? 'pr-4' : '',
                   )}
                 >

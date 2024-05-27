@@ -227,7 +227,7 @@ const SeriesEpisodes = () => {
                         />
                       )
                       : (
-                        <div className="flex h-[332px] items-center justify-center p-6 text-panel-text-primary">
+                        <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
                           <Icon path={mdiLoading} spin size={3} />
                         </div>
                       )}

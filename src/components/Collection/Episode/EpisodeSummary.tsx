@@ -59,7 +59,7 @@ const SelectedStateButton = React.memo((
       <div
         className={cx(
           'flex flex-col items-center gap-y-6 rounded-br-lg rounded-tl-lg p-4',
-          shadow && 'shadow-[0_4px_4px_rgba(0,0,0,0.25)]',
+          shadow && 'shadow-md',
         )}
       >
         <Button
@@ -111,7 +111,7 @@ const EpisodeSummary = React.memo(
               </div>
               <div className="flex w-14 flex-col">
                 {(!!episode.Watched || episode.IsHidden) && (
-                  <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-4 shadow-[0_4px_4px_rgba(0,0,0,0.25)]">
+                  <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-4 shadow-md">
                     <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
                     <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
                   </div>
