@@ -6,12 +6,16 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
 
+// TODO: FIX INVALIDATIONS
+
 /**
  * This file probably needs more work on query invalidation.
  * Currently, it's naïve and only invalidates the current series query.
  * It should probably also invalidate the cache for:
  *  * Any series belonging to the "original" groups of a series.
  */
+
+// Also the server isn't sending SeriesUpdated events for the group changes
 
 export const usePatchGroupMutation = () =>
   useMutation({
