@@ -39,7 +39,7 @@ type TooltipAttributes = {
   'data-tooltip-place': PlacesType;
 };
 
-function Input(props: Props) {
+const Input = React.memo((props: Props) => {
   const {
     autoFocus,
     center,
@@ -165,6 +165,6 @@ function Input(props: Props) {
       </label>
     </div>
   );
-}
+});
 
 export default Input;

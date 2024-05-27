@@ -12,7 +12,7 @@ type Props = {
   options?: React.ReactNode;
 };
 
-function Select(props: Props) {
+const Select = React.memo((props: Props) => {
   const {
     children,
     className,
@@ -54,6 +54,6 @@ function Select(props: Props) {
       </label>
     </div>
   );
-}
+});
 
 export default Select;
