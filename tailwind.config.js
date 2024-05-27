@@ -20,6 +20,9 @@ module.exports = {
   theme: {
     transitionDuration: {
       DEFAULT: '300ms',
+      '300': '300ms',
+      '450': '450ms',
+      '600': '650ms',
     },
     extend: {
       fontFamily: {
@@ -122,6 +125,9 @@ module.exports = {
       dropShadow: {
         'md': '0px 4px 4px rgba(0, 0, 0, 0.25)',
       },
+      boxShadow: {
+        'md': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      },
       borderWidth: {
         '16': '16px',
       },
@@ -129,11 +135,6 @@ module.exports = {
         '3xl': '1630px',
       },
     },
-    transitionDuration: {
-      '300': '300ms',
-      '450': '450ms',
-      '600': '650ms',
-    }
   },
   variants: {
     margin: ['first'],

@@ -117,7 +117,7 @@ const SeriesImages = () => {
             <div
               onClick={() => handleSelectionChange(item)}
               key={item?.ID}
-              className="flex items-center justify-between"
+              className="group flex cursor-pointer items-center justify-between"
             >
               <BackgroundImagePlaceholderDiv
                 image={item}

@@ -168,7 +168,7 @@ function GroupTab({ seriesId }: Props) {
   const { mutate: moveToExistingGroupMutation } = useMoveGroupMutation();
   const { mutate: renameGroupMutation } = usePatchGroupMutation();
 
-  const moveToNewGroup = useEventCallback(() => moveToNewGroupMutation({ seriesId }));
+  const moveToNewGroup = useEventCallback(() => moveToNewGroupMutation(seriesId));
   const moveToExistingGroup = useEventCallback(({ groupId }: { groupId: number }) => {
     const currentGroupId = seriesGroup?.IDs?.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup;
     if (currentGroupId && currentGroupId !== groupId) {

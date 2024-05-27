@@ -12,11 +12,11 @@ type Props = {
 };
 
 const MultiStateButton = ({ activeState, alternateColor, className, onStateChange, states }: Props) => (
-  <div className={typeof className === 'string' ? className : 'flex gap-x-2'}>
+  <div className={className ?? 'flex gap-x-2'}>
     {states.map(option => (
       <Button
         className={cx(
-          'w-[9.6rem] rounded-lg py-3 px-4 !font-medium !text-sm',
+          'w-40 rounded-lg py-3 px-4 font-medium text-sm',
           activeState === option.value && '!bg-panel-toggle-background text-panel-toggle-text',
           activeState !== option.value && 'text-panel-toggle-text-alt hover:bg-panel-toggle-background-hover',
           activeState !== option.value && !alternateColor ? 'bg-panel-background' : 'bg-panel-toggle-background-alt',

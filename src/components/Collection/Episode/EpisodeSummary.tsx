@@ -6,6 +6,7 @@ import {
   mdiChevronDown,
   mdiEyeCheckOutline,
   mdiEyeOffOutline,
+  mdiLoading,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -155,7 +156,7 @@ const EpisodeSummary = React.memo(
             >
               File Info
               <Icon
-                path={mdiChevronDown}
+                path={episodeFilesQuery.isFetching ? mdiLoading : mdiChevronDown}
                 size={1}
                 rotate={open ? 180 : 0}
                 className="transition-transform"

@@ -12,8 +12,8 @@ import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 
 import type { RootState } from '@/core/store';
 
-type TabStateTypes = 'collection_only' | 'all';
-const tabStates: { label?: string, value: TabStateTypes }[] = [
+type TabType = 'collection_only' | 'all';
+const tabStates: { label?: string, value: TabType }[] = [
   { label: 'My Collection', value: 'collection_only' },
   { label: 'All', value: 'all' },
 ];
@@ -21,8 +21,8 @@ const tabStates: { label?: string, value: TabStateTypes }[] = [
 const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [currentTab, setCurrentTab] = useState<TabStateTypes>(tabStates[0].value);
-  const handleTabChange = useEventCallback((newTab: TabStateTypes) => setCurrentTab(newTab));
+  const [currentTab, setCurrentTab] = useState<TabType>(tabStates[0].value);
+  const handleTabChange = useEventCallback((newTab: TabType) => setCurrentTab(newTab));
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 

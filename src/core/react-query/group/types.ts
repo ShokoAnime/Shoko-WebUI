@@ -8,10 +8,6 @@ export type GroupsInfiniteRequestType = {
   includeEmpty?: boolean;
 } & PaginationType;
 
-export type CreateGroupRequestType = {
-  seriesId: number;
-};
-
 export type PatchGroupRequestType = {
   groupId: number;
   seriesId: number;

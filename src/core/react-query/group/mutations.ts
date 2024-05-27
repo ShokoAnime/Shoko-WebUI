@@ -4,11 +4,7 @@ import toast from '@/components/Toast';
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type {
-  CreateGroupRequestType,
-  MoveSeriesGroupRequestType,
-  PatchGroupRequestType,
-} from '@/core/react-query/group/types';
+import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
 
 /**
  * This file probably needs more work on query invalidation.
@@ -29,7 +25,7 @@ export const usePatchGroupMutation = () =>
 
 export const useCreateGroupMutation = () =>
   useMutation({
-    mutationFn: ({ seriesId }: CreateGroupRequestType) =>
+    mutationFn: (seriesId: number) =>
       axios.post(
         'Group',
         {
@@ -37,7 +33,7 @@ export const useCreateGroupMutation = () =>
           SeriesIDs: [seriesId],
         },
       ),
-    onSuccess: (_, { seriesId }) => {
+    onSuccess: (_, seriesId) => {
       invalidateQueries(['series', seriesId, 'data']);
       invalidateQueries(['series', seriesId, 'group']);
       toast.success('Created new group!');

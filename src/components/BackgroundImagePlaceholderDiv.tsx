@@ -41,6 +41,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(() => new Image());
 
   useEffect(() => {
+    setBackgroundImage(null);
     if (!imageSource) {
       setImageError(
         imageSource === null
@@ -75,18 +76,11 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   }, [imageSource]);
 
   return (
-    <div
-      className={cx(
-        className,
-        linkToImage && 'group',
-        'relative overflow-hidden',
-      )}
-    >
+    <div className={cx(className, 'relative overflow-hidden')}>
       <div
         className={cx(
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-lg',
-          typeof zoomOnHover === 'boolean' && 'transition-transform duration-600',
-          zoomOnHover && 'group-hover:scale-105',
+          zoomOnHover && 'group-hover:scale-105 transition-transform duration-600',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
       >
@@ -109,10 +103,10 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         )}
       </div>
       {children}
-      {linkToImage && !imageError && (
+      {linkToImage && !imageError && backgroundImage?.src && (
         <a
-          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-[0_4px_4px_rgba(0,0,0,0.25)] transition group-hover:opacity-100"
-          href={backgroundImage?.src}
+          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+          href={backgroundImage.src}
           aria-label="Link to image"
           rel="noopener noreferrer"
           target="_blank"

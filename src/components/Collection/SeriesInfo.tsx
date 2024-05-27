@@ -38,7 +38,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     if (!startDate) {
       return 'Unknown';
     }
-    if (endDate === null || endDate.isAfter(dayjs())) {
+    if (!endDate || endDate.isAfter(dayjs())) {
       return 'Currently Airing';
     }
     return 'Finished';
