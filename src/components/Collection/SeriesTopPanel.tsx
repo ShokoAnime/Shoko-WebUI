@@ -64,7 +64,7 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
           </div>
         )}
       </BackgroundImagePlaceholderDiv>
-      <div className="flex w-full min-w-[900px] flex-col gap-y-6">
+      <div className="flex w-full min-w-[56.25rem] flex-col gap-y-6">
         <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             Series Description

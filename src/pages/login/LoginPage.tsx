@@ -122,7 +122,7 @@ function LoginPage() {
       />
       <div className="relative flex h-screen w-screen flex-col items-center justify-center gap-y-2">
         {loginError && (
-          <div className="flex w-full max-w-[826px] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
+          <div className="flex w-full max-w-[51.625rem] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
             <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
             <div className="font-semibold text-panel-text-danger">
               Invalid Username or Password. Try again.

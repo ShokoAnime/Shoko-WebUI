@@ -65,7 +65,7 @@ const FileMissingEpisodes = ({ missingEps = [] }: Props) => (
             <div className="w-[46.875rem] text-left">
               Title
             </div>
-            <div className="w-[139px] text-left">
+            <div className="w-[8.75rem] text-left">
               Airing Date
             </div>
           </div>
