@@ -102,6 +102,7 @@ function Collection() {
   const [seriesSearch, setSeriesSearch] = useState('');
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
+  // TODO: Use redux for this instead of prop drilling
   const [showEditSeriesModal, toggleEditSeriesModal] = useToggle(false);
   const [editSeriesModalId, setEditSeriesModalId] = useState<number>();
   const openEditModalWithSeriesId = useEventCallback((seriesId: number) => {

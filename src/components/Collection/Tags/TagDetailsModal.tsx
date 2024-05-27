@@ -31,6 +31,8 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
     fetchNextPage().catch(() => {});
   }
 
+  // TODO: Virtualize rows
+
   const header = (
     <div className="flex w-full justify-between capitalize">
       <div>
