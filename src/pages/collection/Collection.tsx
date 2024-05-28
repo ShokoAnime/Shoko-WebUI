@@ -8,6 +8,7 @@ import { useDebounceValue, useToggle } from 'usehooks-ts';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
+import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import TitleOptions from '@/components/Collection/TitleOptions';
 import buildFilter from '@/core/buildFilter';
@@ -89,8 +90,7 @@ function Collection() {
 
   const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
-  const showRandomPosterGrid = settings.WebUI_Settings.collection.poster.showRandomPoster;
-  const showRandomPosterList = settings.WebUI_Settings.collection.list.showRandomPoster;
+  const { showRandomPoster } = settings.WebUI_Settings.collection.image;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
@@ -102,10 +102,16 @@ function Collection() {
   const [seriesSearch, setSeriesSearch] = useState('');
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
-  const showRandomPoster = useMemo(
-    () => (mode === 'poster' ? showRandomPosterGrid : showRandomPosterList),
-    [mode, showRandomPosterGrid, showRandomPosterList],
-  );
+  // TODO: Use redux for this instead of prop drilling
+  const [showEditSeriesModal, toggleEditSeriesModal] = useToggle(false);
+  const [editSeriesModalId, setEditSeriesModalId] = useState<number>();
+  const openEditModalWithSeriesId = useEventCallback((seriesId: number) => {
+    setEditSeriesModalId(() => {
+      toggleEditSeriesModal();
+      return seriesId;
+    });
+  });
+
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
@@ -235,6 +241,7 @@ function Collection() {
           items={items}
           mode={mode}
           total={total}
+          setEditSeriesModalId={openEditModalWithSeriesId}
         />
         <div
           className={cx(
@@ -248,6 +255,11 @@ function Collection() {
         </div>
         {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
       </div>
+      <EditSeriesModal
+        show={showEditSeriesModal}
+        onClose={toggleEditSeriesModal}
+        seriesId={editSeriesModalId}
+      />
     </div>
   );
 }

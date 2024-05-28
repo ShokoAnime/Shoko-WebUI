@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { mdiInformationOutline, mdiLoading } from '@mdi/js';
+import { mdiInformationOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -12,6 +12,7 @@ type Props = {
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
   zoomOnHover?: boolean;
+  linkToImage?: boolean;
 };
 
 const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
@@ -20,6 +21,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     className,
     hidePlaceholderOnHover,
     image,
+    linkToImage,
     overlayOnHover,
     zoomOnHover,
   } = props;
@@ -74,11 +76,11 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   }, [imageSource]);
 
   return (
-    <div className={`${className} relative overflow-hidden`}>
+    <div className={cx(className, 'relative overflow-hidden')}>
       <div
         className={cx(
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-lg',
-          zoomOnHover && 'group-hover:scale-105 transition-transform',
+          zoomOnHover && 'group-hover:scale-105 transition-transform duration-600',
         )}
         style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
       >
@@ -101,8 +103,20 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
         )}
       </div>
       {children}
+      {linkToImage && !imageError && backgroundImage?.src && (
+        <a
+          className="absolute bottom-2 right-2 z-10 rounded-lg bg-panel-background-overlay p-2 opacity-0 shadow-md transition-opacity group-hover:opacity-100"
+          href={backgroundImage.src}
+          aria-label="Link to image"
+          rel="noopener noreferrer"
+          target="_blank"
+          onClick={e => e.stopPropagation()}
+        >
+          <Icon path={mdiOpenInNew} size={1} />
+        </a>
+      )}
       {overlayOnHover && (
-        <div className="pointer-events-none z-50 flex h-full bg-panel-background-transparent p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
+        <div className="pointer-events-none z-50 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100" />
       )}
     </div>
   );

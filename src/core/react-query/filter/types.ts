@@ -12,3 +12,9 @@ export type FilteredGroupSeriesRequestType = {
   filterCriteria: FilterType;
   includeDataFrom?: DataSourceType[];
 };
+
+export type FilteredSeriesRequestType = {
+  randomImages?: boolean;
+  filterCriteria: FilterType;
+  includeMissing?: boolean;
+} & PaginationType;

@@ -36,7 +36,7 @@ const SuccessNotifyModal = (props: Props) => {
             </div>
           </div>
           <div className="flex grow flex-col gap-y-6">
-            <div className="flex flex-col gap-y-[24px] p-[24px]">
+            <div className="flex flex-col gap-y-6 p-6">
               <p>
                 {`Congratulations, Shoko appears to be up and running smoothly, assuming the setup was done correctly. Now is
                 the perfect opportunity to familiarize yourself with the Web UI's various features. Below, we've included some

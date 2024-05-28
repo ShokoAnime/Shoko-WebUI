@@ -1,8 +1,16 @@
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { BodyVisibleContext } from '@/core/router';
+
+type EndIcon = {
+  icon: string;
+  className?: string;
+  onClick?: React.MouseEventHandler<HTMLDivElement>;
+  tooltip?: string;
+};
 
 type Props = {
   id: string;
@@ -17,7 +25,7 @@ type Props = {
   autoFocus?: boolean;
   disabled?: boolean;
   center?: boolean;
-  endIcons?: { icon: string, className?: string, onClick?: React.MouseEventHandler<HTMLDivElement> }[];
+  endIcons?: EndIcon[];
   startIcon?: string;
   inline?: boolean;
   isOverlay?: boolean;
@@ -25,7 +33,13 @@ type Props = {
   onToggleOverlay?: (show: boolean) => void;
 };
 
-function Input(props: Props) {
+type TooltipAttributes = {
+  'data-tooltip-id': string;
+  'data-tooltip-content': string;
+  'data-tooltip-place': PlacesType;
+};
+
+const Input = React.memo((props: Props) => {
   const {
     autoFocus,
     center,
@@ -110,7 +124,7 @@ function Input(props: Props) {
           <input
             className={cx([
               inputClassName ?? '',
-              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-3 py-2 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
+              'appearance-none bg-panel-input w-full focus:shadow-none focus:outline-none px-4 py-3 rounded-lg transition ease-in-out border border-panel-border focus:ring-2 focus:ring-panel-icon-action focus:ring-inset',
               center && 'text-center',
               startIcon && '!pl-11',
             ])}
@@ -125,21 +139,32 @@ function Input(props: Props) {
           />
           {endIcons?.length && (
             <div className="absolute right-3 top-1/2 flex -translate-y-1/2 flex-row gap-x-2">
-              {endIcons?.map(icon => (
-                <div
-                  key={`input-${icon.icon}`}
-                  onClick={icon.onClick}
-                  className={cx('cursor-pointer text-panel-text', icon.className)}
-                >
-                  <Icon path={icon.icon} size={1} />
-                </div>
-              ), [] as React.ReactNode[]) ?? []}
+              {endIcons.map((icon) => {
+                let tooltipAttributes: TooltipAttributes | null = null;
+                if (icon.tooltip) {
+                  tooltipAttributes = {
+                    'data-tooltip-id': 'tooltip',
+                    'data-tooltip-content': icon.tooltip,
+                    'data-tooltip-place': 'top',
+                  };
+                }
+                return (
+                  <div
+                    key={`input-${icon.icon}`}
+                    onClick={icon.onClick}
+                    className={cx('cursor-pointer text-panel-text', icon.className)}
+                    {...tooltipAttributes}
+                  >
+                    <Icon path={icon.icon} size={1} />
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
       </label>
     </div>
   );
-}
+});
 
 export default Input;

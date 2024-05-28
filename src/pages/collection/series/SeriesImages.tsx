@@ -1,77 +1,48 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiChevronRight } from '@mdi/js';
+import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, map, split, toNumber } from 'lodash';
+import { split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 
-const Heading = React.memo((
-  { onTypeChange, setType, type }: { type: string, setType: (type: string) => void, onTypeChange: () => void },
-) => (
-  <div className="flex cursor-pointer items-center gap-x-2 text-xl font-semibold">
-    Images
-    <Icon path={mdiChevronRight} size={1} />
-    <div className="flex gap-x-1">
-      <span
-        onClick={() => {
-          setType('Posters');
-          onTypeChange();
-        }}
-        className={cx(type === 'Posters' && 'text-panel-text-primary')}
-      >
-        Posters
-      </span>
-      |
-      <span
-        onClick={() => {
-          setType('Fanarts');
-        }}
-        className={cx(type === 'Fanarts' && 'text-panel-text-primary')}
-      >
-        Fanarts
-      </span>
-      |
-      <span
-        onClick={() => {
-          setType('Banners');
-        }}
-        className={cx(type === 'Banners' && 'text-panel-text-primary')}
-      >
-        Banners
-      </span>
-    </div>
-  </div>
-));
+type ImageTabType = 'Posters' | 'Fanarts' | 'Banners';
+const tabStates = [
+  { value: 'Posters' },
+  { value: 'Fanarts' },
+  { value: 'Banners' },
+];
 
 const InfoLine = ({ title, value }) => (
-  <div className="flex w-full max-w-[12.5rem] flex-col gap-y-1">
+  <div className="flex w-full flex-col gap-y-1">
     <span className="font-semibold text-panel-text">{title}</span>
-    {value}
+    <span className="line-clamp-1" title={`${value}`}>{value}</span>
   </div>
 );
 
 const sizeMap = {
-  Posters: 'h-[15rem] w-[10rem] 2xl:h-[21rem] 2xl:w-[13rem]',
-  Fanarts: 'h-[11.5rem] w-[22.5rem] 2xl:h-[16rem] 2xl:w-[26.55rem]',
-  Banners: 'h-[8rem] w-[46rem] 2xl:w-[41rem]',
+  Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
+  Fanarts: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
+  Banners: { image: 'h-[8rem]', grid: 'grid-cols-2' },
 };
 
-const isSizeMapType = (type: string): type is keyof typeof sizeMap => type in sizeMap;
+const nullImage = {} as ImageType;
 
 const SeriesImages = () => {
   const { seriesId } = useParams();
 
-  const [type, setType] = useState('Posters');
-  const [selectedImage, setSelectedImage] = useState<ImageType>({} as ImageType);
+  const [tabType, setTabType] = useState<ImageTabType>('Posters');
+  const [selectedImage, setSelectedImage] = useState<ImageType>(nullImage);
   const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation();
 
@@ -79,31 +50,30 @@ const SeriesImages = () => {
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
   const filepath = splitPath.join('/');
 
-  const resetSelectedImage = () => {
-    setSelectedImage({} as ImageType);
+  const handleSelectionChange = (item: ImageType) => {
+    setSelectedImage(old => ((old === item) ? nullImage : item));
   };
+  const resetSelectedImage = () => setSelectedImage(nullImage);
+
+  const handleTabChange = useEventCallback((newType: ImageTabType) => {
+    setTabType((prevType) => {
+      if (newType !== prevType) resetSelectedImage();
+      return newType;
+    });
+  });
 
   if (!seriesId) return null;
-  if (!isSizeMapType(type)) return null;
 
   return (
-    <div className="flex gap-x-6">
-      <div className="flex grow flex-col gap-y-6">
-        <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-          <Heading type={type} setType={setType} onTypeChange={resetSelectedImage} />
-          <div className="text-xl font-semibold">
-            <span className="text-panel-text-important">{get(images, type, []).length}</span>
-            &nbsp;
-            {type}
-            &nbsp;Listed
-          </div>
-        </div>
+    <div className="flex w-full gap-x-6">
+      <div className="flex w-400 shrink-0 flex-col gap-y-6">
         <ShokoPanel
           title="Selected Image Info"
-          className="flex w-full flex-row"
-          contentClassName="flex !flex-row gap-x-2 2xl:gap-x-6 h-full"
+          className="w-full"
+          contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
           fullHeight={false}
           transparent
+          sticky
         >
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
@@ -111,36 +81,63 @@ const SeriesImages = () => {
           <InfoLine title="Size" value="-" />
           <Button
             buttonType="primary"
-            className="rounded-lg border border-panel-border p-3 font-semibold"
-            disabled={!Object.keys(selectedImage).length || selectedImage.Preferred}
+            buttonSize="normal"
+            disabled={selectedImage === nullImage || selectedImage.Preferred}
             onClick={() => {
               changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
                 onSuccess: () => {
-                  setSelectedImage({} as ImageType);
+                  resetSelectedImage();
                   toast.success(`Series ${selectedImage.Type} image has been changed.`);
                 },
               });
             }}
           >
-            {`Set As Default ${type.slice(0, -1)}`}
+            {`Set As Series ${tabType.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
-        <div className="flex flex-wrap gap-4 rounded-lg border border-panel-border bg-panel-background-transparent p-4">
-          {map(get(images, type, []), (item: ImageType) => (
+      </div>
+      <div className="flex grow flex-col gap-y-6">
+        <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent p-6">
+          <div className="text-xl font-semibold">
+            Images |&nbsp;
+            <span className="text-panel-text-important">{images?.[tabType]?.length ?? '-'}</span>
+            &nbsp;
+            {tabType}
+            &nbsp;Listed
+          </div>
+          <MultiStateButton activeState={tabType} onStateChange={handleTabChange} states={tabStates} />
+        </div>
+        <div
+          className={cx(
+            sizeMap[tabType].grid,
+            'grid gap-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6',
+          )}
+        >
+          {images?.[tabType].map(item => (
             <div
-              onClick={() => {
-                setSelectedImage(item);
-              }}
+              onClick={() => handleSelectionChange(item)}
               key={item?.ID}
+              className="group flex cursor-pointer items-center justify-between"
             >
               <BackgroundImagePlaceholderDiv
                 image={item}
                 className={cx(
-                  'rounded-lg drop-shadow-md border',
-                  item === selectedImage ? 'border-panel-text-important border-2 opacity-65' : 'border-panel-border',
-                  sizeMap[type],
+                  'rounded-lg drop-shadow-md transition-transform outline grow',
+                  item === selectedImage
+                    ? 'outline-panel-text-important outline-4'
+                    : 'outline-2 outline-panel-border',
+                  sizeMap[tabType].image,
                 )}
-              />
+                linkToImage
+                zoomOnHover
+              >
+                {item.Preferred && (
+                  <div className="absolute bottom-2 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
+                    <Icon path={mdiStarCircleOutline} size={1} />
+                    Series Default
+                  </div>
+                )}
+              </BackgroundImagePlaceholderDiv>
             </div>
           ))}
         </div>

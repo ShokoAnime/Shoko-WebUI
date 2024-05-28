@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
-import { convertTimeSpanToMs, dayjs, formatThousand } from '@/core/util';
+import { convertTimeSpanToMs, dayjs } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
@@ -38,8 +38,8 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     if (!startDate) {
       return 'Unknown';
     }
-    if (endDate?.isAfter(dayjs())) {
-      return 'Ongoing';
+    if (!endDate || endDate.isAfter(dayjs())) {
+      return 'Currently Airing';
     }
     return 'Finished';
   }, [startDate, endDate]);
@@ -47,9 +47,8 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   if (!seriesId) return null;
 
   return (
-    <div className="flex w-full flex-col gap-y-6">
-      <div className="flex w-full border-b-2 border-panel-border pb-4 text-xl font-semibold">Series Information</div>
-      <div className="flex w-full flex-col gap-y-1">
+    <>
+      <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Type</div>
           {series?.AniDB?.Type}
@@ -69,6 +68,8 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
           {/* TODO: Check if there are more status types */}
           {status}
         </div>
+      </div>
+      <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Episodes</div>
           <div>
@@ -103,81 +104,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
           <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
         </div>
       </div>
-      <div className="flex w-full border-b-2 border-panel-border pb-4 text-xl font-semibold">User Stats</div>
-      <div className="flex w-full flex-col gap-y-1">
-        <div className="flex justify-between">
-          <div className="font-semibold ">File Count</div>
-          <div className="flex flex-row gap-x-1">
-            <span>{formatThousand(series.Sizes.Local.Episodes)}</span>
-            <span>{series.Sizes.Local.Episodes > 1 || series.Sizes.Local.Episodes === 0 ? 'Episodes' : 'Episode'}</span>
-            {series.Sizes.Local.Specials !== 0 && (
-              <>
-                <span>|</span>
-                <span>{formatThousand(series.Sizes.Local.Specials)}</span>
-                <span>
-                  {series.Sizes.Local.Specials > 1 || series.Sizes.Local.Specials === 0 ? 'Specials' : 'Special'}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-        <div className="flex justify-between">
-          <div className="font-semibold ">Watched</div>
-          <div className="flex flex-row gap-x-1">
-            <span>{formatThousand(series.Sizes.Watched.Episodes)}</span>
-            <span>
-              {series.Sizes.Watched.Episodes > 1 || series.Sizes.Watched.Episodes === 0 ? 'Episodes' : 'Episode'}
-            </span>
-            {(series.Sizes.Total.Specials !== 0 && series.Sizes.Watched.Specials !== 0) && (
-              <>
-                <span>|</span>
-                <span>{formatThousand(series.Sizes.Watched.Specials)}</span>
-                <span>
-                  {series.Sizes.Watched.Specials > 1 || series.Sizes.Local.Specials === 0 ? 'Specials' : 'Special'}
-                </span>
-              </>
-            )}
-          </div>
-        </div>
-
-        <div className="flex justify-between">
-          <div className="font-semibold ">Missing</div>
-          {(series?.Sizes.Missing.Episodes !== 0 || series?.Sizes.Missing.Specials !== 0)
-            ? (
-              <div className="flex flex-row gap-x-1">
-                {series?.Sizes.Missing.Episodes !== 0 && (
-                  <>
-                    <span>{formatThousand(series.Sizes.Missing.Episodes)}</span>
-                    <span>
-                      {series.Sizes.Missing.Episodes > 1 || series.Sizes.Missing.Episodes === 0
-                        ? 'Episodes'
-                        : 'Episode'}
-                    </span>
-                  </>
-                )}
-                {series.Sizes.Missing.Episodes !== 0 && series.Sizes.Missing.Specials !== 0 && <span>|</span>}
-                {series.Sizes.Missing.Specials !== 0 && (
-                  <>
-                    <span>{formatThousand(series.Sizes.Missing.Specials)}</span>
-                    <span>
-                      {series.Sizes.Missing.Specials > 1 || series.Sizes.Missing.Episodes === 0
-                        ? 'Specials'
-                        : 'Special'}
-                    </span>
-                  </>
-                )}
-              </div>
-            )
-            : <div>None, Nice Work!</div>}
-        </div>
-        <div className="flex justify-between">
-          <div className="font-semibold ">Series Rating</div>
-          <div className="flex flex-row gap-x-1">
-            N/A (Not Implemented Yet)
-          </div>
-        </div>
-      </div>
-    </div>
+    </>
   );
 };
 

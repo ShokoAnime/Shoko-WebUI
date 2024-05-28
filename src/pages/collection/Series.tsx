@@ -10,16 +10,20 @@ import {
   mdiImageMultipleOutline,
   mdiInformationOutline,
   mdiLoading,
+  mdiPencilCircleOutline,
   mdiTagTextOutline,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { get, toNumber } from 'lodash';
 
-import AnidbDescription from '@/components/Collection/AnidbDescription';
-import SeriesSidePanel from '@/components/Collection/SeriesSidePanel';
+import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
+import SeriesTopPanel from '@/components/Collection/SeriesTopPanel';
+import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
-import { useSeriesImagesQuery, useSeriesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
+import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
@@ -30,7 +34,7 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
     to={to}
     className={({ isActive }) =>
       cx(
-        'flex items-center gap-x-2',
+        'flex items-center gap-x-3',
         isActive && 'text-panel-text-primary',
       )}
   >
@@ -39,43 +43,37 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
   </NavLink>
 );
 
-const SeriesTag = ({ text, type }) => (
-  <div
-    className={cx(
-      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
-      type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
-    )}
-  >
-    <Icon path={mdiTagTextOutline} size="1rem" />
-    <span className="text-panel-text">{text}</span>
-  </div>
-);
-
 const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
-  const [fanartUri, setFanartUri] = useState('');
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+
+  const { showRandomFanart } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
-  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
-  const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
+
+  const [fanartUri, setFanartUri] = useState('');
+  const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
+  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+
+  const onClickHandler = useEventCallback(() => setShowEditSeriesModal(true));
 
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
 
+    const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+
     const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
-    const defaultFanart = allFanarts.find(fanart => fanart.Preferred);
-    if (defaultFanart) {
-      setFanartUri(`/api/v3/Image/${defaultFanart.Source}/${defaultFanart.Type}/${defaultFanart.ID}`);
-    } else {
-      setFanartUri(`/api/v3/Image/TvDB/Fanart/${allFanarts[0].ID}`);
+    if (showRandomFanart) {
+      setFanartUri(getImagePath(allFanarts[Math.floor(Math.random() * allFanarts.length)]));
+      return;
     }
-  }, [imagesQuery.data, imagesQuery.isSuccess, series]);
+
+    setFanartUri(getImagePath(allFanarts.find(fanart => fanart.Preferred) ?? allFanarts[0]));
+  }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomFanart]);
 
   if (seriesQuery.isError) {
     navigate('../');
@@ -91,52 +89,40 @@ const Series = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-4 lg:flex-row lg:gap-x-2 2xl:gap-x-6">
-      <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6">
-        <div className="flex flex-row gap-x-6">
-          <div className="flex w-full gap-x-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-            <div className="flex w-full grow flex-col gap-y-3">
-              <div className="flex justify-between">
-                <div className="flex gap-x-2">
-                  <Link className="font-semibold text-panel-text-primary" to="/webui/collection">
-                    Entire Collection
-                  </Link>
-                  <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                  {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
-                    <>
-                      <Link
-                        className="font-semibold text-panel-text-primary"
-                        to={`/webui/collection/group/${series.IDs.ParentGroup}`}
-                      >
-                        {groupQuery.data.Name}
-                      </Link>
-                      <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
-                    </>
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-col gap-y-3">
-                <div className="flex flex-col gap-y-3">
-                  <div className="text-4xl font-semibold">{series.Name}</div>
-                  <div className="text-xl font-semibold opacity-65">
-                    Original Title:&nbsp;
-                    {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.slice(0, 9).map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
-                    <NavLink to="tags">
-                      <SeriesTag text="More..." type="All" />
-                    </NavLink>
-                  </div>
-                </div>
-                <div className="line-clamp-[7]">
-                  <AnidbDescription text={series.AniDB?.Description ?? ''} />
-                </div>
-              </div>
-            </div>
-          </div>
+    <div className="flex flex-col gap-y-6">
+      <div className="my-6 flex flex-col items-center gap-y-3">
+        <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6" />
+        <div className="flex flex-row items-center gap-x-4">
+          <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
+            Entire Collection
+          </Link>
+          <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+          {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
+            <>
+              <Link
+                className="text-xl font-semibold text-panel-text-primary"
+                to={`/webui/collection/group/${series.IDs.ParentGroup}`}
+              >
+                {groupQuery.data.Name}
+              </Link>
+              <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+            </>
+          )}
         </div>
-        <div className="flex gap-x-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
+        <div className="text-4xl font-semibold">{series.Name}</div>
+        <div className="flex gap-x-3 text-xl font-semibold opacity-65">
+          <span>
+            {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
+          </span>
+          <span>|</span>
+          <span>
+            {series.AniDB?.Titles.find(title => title.Language === 'ja')?.Name}
+          </span>
+        </div>
+      </div>
+      <SeriesTopPanel series={series} />
+      <div className="flex justify-between rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
+        <div className="flex gap-x-10">
           <SeriesTab to="overview" icon={mdiInformationOutline} text="Overview" />
           <SeriesTab to="episodes" icon={mdiFilmstrip} text="Episodes" />
           <SeriesTab to="credits" icon={mdiAccountGroupOutline} text="Credits" />
@@ -144,11 +130,23 @@ const Series = () => {
           <SeriesTab to="tags" icon={mdiTagTextOutline} text="Tags" />
           <SeriesTab to="files" icon={mdiFileDocumentMultipleOutline} text="Files" />
         </div>
-        <Outlet context={{ scrollRef }} />
+        <div>
+          <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={onClickHandler}>
+            <Icon path={mdiPencilCircleOutline} size={1} />
+            Edit Series
+          </Button>
+        </div>
       </div>
-      <SeriesSidePanel series={series} />
+
+      <EditSeriesModal
+        show={showEditSeriesModal}
+        onClose={() => setShowEditSeriesModal(false)}
+        seriesId={series.IDs.ID}
+      />
+
+      <Outlet context={{ scrollRef }} />
       <div
-        className="fixed left-0 top-0 -z-10 size-full opacity-20"
+        className="fixed left-0 top-0 -z-10 size-full opacity-5"
         style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
       />
     </div>

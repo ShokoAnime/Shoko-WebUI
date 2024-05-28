@@ -20,6 +20,9 @@ module.exports = {
   theme: {
     transitionDuration: {
       DEFAULT: '300ms',
+      '300': '300ms',
+      '450': '450ms',
+      '600': '650ms',
     },
     extend: {
       fontFamily: {
@@ -29,7 +32,7 @@ module.exports = {
         sm: ['0.875rem', '1.4rem'],
         base: ['1rem', '1.6rem'],
         lg: ['1.125rem', '1.8rem'],
-        xl: ['1.251rem', '2rem'],
+        xl: ['1.25rem', '2rem'],
       },
       fontWeight: {
         extralight: 100,
@@ -67,6 +70,7 @@ module.exports = {
         'panel-background-alt': 'var(--panel-background-alt)',
         'panel-background-selected-row': 'var(--panel-background-selected-row)',
         'panel-background-overlay': 'var(--panel-background-overlay)',
+        'panel-background-poster-overlay': 'var(--panel-background-poster-overlay)',
         'panel-background-transparent': 'var(--panel-background-transparent)',
         'panel-border': 'var(--panel-border)',
         'panel-icon': 'var(--panel-icon)',
@@ -119,6 +123,9 @@ module.exports = {
         '85': '.85',
       },
       dropShadow: {
+        'md': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      },
+      boxShadow: {
         'md': '0px 4px 4px rgba(0, 0, 0, 0.25)',
       },
       borderWidth: {

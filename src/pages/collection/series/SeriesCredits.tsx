@@ -1,114 +1,140 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { mdiChevronRight, mdiMagnify } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import cx from 'classnames';
-import { filter, get, map, toNumber } from 'lodash';
+import { toNumber } from 'lodash';
 
-import CharacterImage from '@/components/CharacterImage';
-import Input from '@/components/Input/Input';
+import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
+import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';
+import MultiStateButton from '@/components/Input/MultiStateButton';
+import toast from '@/components/Toast';
+import {
+  useRefreshSeriesAniDBInfoMutation,
+  useRefreshSeriesTvdbInfoMutatation,
+} from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
-import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
-const getThumbnailUrl = (item: SeriesCast, mode: string) => {
-  const thumbnail = get<SeriesCast, string, ImageType | null>(item, `${mode}.Image`, null);
-  if (thumbnail === null) return null;
-  return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
-};
+export type CreditsModeType = 'Character' | 'Staff';
 
-const Heading = React.memo(({ mode, setMode }: { mode: string, setMode: (mode: string) => void }) => (
-  <div className="flex items-center gap-x-2 text-xl font-semibold">
-    Credits
-    <Icon path={mdiChevronRight} size={1} />
-    <div className="flex gap-x-1">
-      <span
-        onClick={() => {
-          setMode('Character');
-        }}
-        className={cx(mode === 'Character' && 'text-panel-text-primary', 'cursor-pointer')}
-      >
-        Characters
-      </span>
-      |
-      <span
-        onClick={() => {
-          setMode('Staff');
-        }}
-        className={cx(mode === 'Staff' && 'text-panel-text-primary', 'cursor-pointer')}
-      >
-        Staff
-      </span>
-    </div>
-  </div>
-));
+const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
-const isCharacter = (item: SeriesCast) => item.RoleName === 'Seiyuu';
+const getUniqueRoles = (castList: SeriesCast[]) => [...new Set(castList.map(c => c.RoleDetails))];
+
+const modeStates: { label?: string, value: CreditsModeType }[] = [
+  { label: 'Characters', value: 'Character' },
+  { value: 'Staff' },
+];
 
 const SeriesCredits = () => {
   const { seriesId } = useParams();
 
-  const [mode, setMode] = useState('Character');
+  const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation();
+  const { isPending: pendingRefreshTvDb, mutate: refreshTvDbMutation } = useRefreshSeriesTvdbInfoMutatation();
+
+  const refreshAniDb = useEventCallback(() => {
+    refreshAniDbMutation({ seriesId: toNumber(seriesId), force: true }, {
+      onSuccess: () => toast.success('AniDB refresh queued!'),
+    });
+  });
+
+  const refreshTvDb = useEventCallback(() => {
+    refreshTvDbMutation({ seriesId: toNumber(seriesId), force: true }, {
+      onSuccess: () => toast.success('TvDB refresh queued!'),
+    });
+  });
+
+  const [mode, setMode] = useState<CreditsModeType>(modeStates[0].value);
+
   const [search, setSearch] = useState('');
 
+  const [roleFilter, setRoleFilter] = useState<Set<string>>(new Set());
+
+  const handleModeChange = useEventCallback((newMode: CreditsModeType) => {
+    setMode(() => {
+      setSearch('');
+      setRoleFilter(new Set());
+      return newMode;
+    });
+  });
+
+  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id: description } = event.target;
+    setRoleFilter((prevState) => {
+      const newState = new Set(prevState);
+      if (!newState.delete(description)) newState.add(description);
+      return newState;
+    });
+  });
+
+  const handleSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  });
+
   const cast = useSeriesCastQuery(toNumber(seriesId!), !!seriesId).data;
+  const castByType = useMemo(() => ({
+    Character: cast?.filter(credit => credit.RoleName === 'Seiyuu') ?? [],
+    Staff: cast?.filter(credit => credit.RoleName !== 'Seiyuu') ?? [],
+  }), [cast]);
+
+  const uniqueRoles = useMemo(() => ({
+    Character: getUniqueRoles(castByType.Character),
+    Staff: getUniqueRoles(castByType.Staff),
+  }), [castByType]);
+
+  const filteredCast = useMemo(() => (castByType[mode].filter(p => (
+    (search === ''
+      || !!([p?.Character?.Name, p?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
+    && !roleFilter.has(p?.RoleDetails)
+  )).sort((a, b) => {
+    if (a[mode].Name > b[mode].Name) return 1;
+    if (a[mode].Name < b[mode].Name) return -1;
+    return 0;
+  })), [castByType, mode, search, roleFilter]);
 
   if (!seriesId) return null;
 
   return (
-    <>
-      <div className="flex items-center gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6">
-        <div className="flex w-full text-xl font-semibold">Character Search</div>
-        <Input
-          id="search"
-          startIcon={mdiMagnify}
-          type="text"
-          placeholder="Search..."
-          value={search}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value)}
+    <div className="flex w-full gap-x-6">
+      <div className="flex flex-col gap-y-6">
+        <CreditsSearchAndFilterPanel
+          inputPlaceholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
+          search={search}
+          roleFilter={roleFilter}
+          uniqueRoles={uniqueRoles[mode]}
+          handleSearchChange={handleSearchChange}
+          handleFilterChange={handleFilterChange}
+          refreshAniDbAction={refreshAniDb}
+          refreshTvDbAction={refreshTvDb}
+          aniDbRefreshing={pendingRefreshAniDb}
+          tvDbRefreshing={pendingRefreshTvDb}
         />
       </div>
-      <div className="flex gap-x-6">
-        <div className="flex grow flex-col gap-y-4">
-          <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-            <Heading mode={mode} setMode={setMode} />
-            <div className="text-xl font-semibold">
-              <span className="text-panel-text-important">{cast?.length ?? 0}</span>
-              &nbsp;Characters Listed
-            </div>
-          </div>
 
-          <div className="grid grid-cols-3 gap-2 2xl:grid-cols-4 2xl:gap-4">
-            {map(
-              filter(cast, value => (mode === 'Character' ? isCharacter(value) : !isCharacter(value))),
-              (item, idx) => (
-                <div
-                  key={`${mode}-${idx}`}
-                  className="flex flex-col items-center justify-center gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold"
-                >
-                  <div className="z-10 flex gap-x-2">
-                    {mode === 'Character' && (
-                      <CharacterImage
-                        imageSrc={getThumbnailUrl(item, 'Character')}
-                        className="relative h-32 w-24 rounded-lg 2xl:h-44 2xl:w-32"
-                      />
-                    )}
-                    <CharacterImage
-                      imageSrc={getThumbnailUrl(item, 'Staff')}
-                      className="relative h-32 w-24 rounded-lg 2xl:h-44 2xl:w-32"
-                    />
-                  </div>
-                  <div className="text-base xl:text-xl">{item.Character?.Name}</div>
-                  <div className="-mt-2 opacity-65">{item.Staff?.Name}</div>
-                  <div>{item.RoleDetails}</div>
-                </div>
-              ),
+      <div className="flex w-full grow flex-col gap-x-6 gap-y-4">
+        <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+          <div className="text-xl font-semibold">
+            Credits |&nbsp;
+            {(search !== '' || roleFilter.size > 0) && (
+              <>
+                <span className="text-panel-text-important">
+                  {filteredCast.length}
+                </span>
+                &nbsp;of&nbsp;
+              </>
             )}
+            <span className="text-panel-text-important">
+              {castByType[mode].length ?? 0}
+            </span>
+            &nbsp;
+            {mode === 'Character' ? 'Characters' : mode}
+            &nbsp;Listed
           </div>
+          <MultiStateButton activeState={mode} states={modeStates} onStateChange={handleModeChange} />
         </div>
+        <StaffPanelVirtualizer castArray={filteredCast} mode={mode} />
       </div>
-    </>
+    </div>
   );
 };
 

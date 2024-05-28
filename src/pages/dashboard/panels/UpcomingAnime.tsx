@@ -2,19 +2,27 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import cx from 'classnames';
 
+import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useDashboardCalendarQuery } from '@/core/react-query/dashboard/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import DashboardTitleToggle from '@/pages/dashboard/components/DashboardTitleToggle';
+import useEventCallback from '@/hooks/useEventCallback';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 
 import type { RootState } from '@/core/store';
 
+type TabType = 'collection_only' | 'all';
+const tabStates: { label?: string, value: TabType }[] = [
+  { label: 'My Collection', value: 'collection_only' },
+  { label: 'All', value: 'all' },
+];
+
 const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [showAll, setShowAll] = useState(false);
+  const [currentTab, setCurrentTab] = useState<TabType>(tabStates[0].value);
+  const handleTabChange = useEventCallback((newTab: TabType) => setCurrentTab(newTab));
 
   const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
 
@@ -25,18 +33,13 @@ const UpcomingAnime = () => {
     <ShokoPanel
       title="Upcoming Anime"
       editMode={layoutEditMode}
-      isFetching={showAll ? calendarAllQuery.isPending : calendarQuery.isPending}
+      isFetching={currentTab === 'all' ? calendarAllQuery.isPending : calendarQuery.isPending}
       options={
-        <DashboardTitleToggle
-          mainTitle="My Collection"
-          secondaryTitle="All"
-          secondaryActive={showAll}
-          setSecondaryActive={setShowAll}
-        />
+        <MultiStateButton activeState={currentTab} states={tabStates} onStateChange={handleTabChange} alternateColor />
       }
     >
       <div className="shoko-scrollbar relative flex">
-        <TransitionDiv show={!showAll} className="absolute flex w-full">
+        <TransitionDiv show={currentTab !== 'all'} className="absolute flex w-full">
           {(calendarQuery.data?.length ?? 0) > 0
             ? calendarQuery.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
             : (
@@ -47,7 +50,7 @@ const UpcomingAnime = () => {
             )}
         </TransitionDiv>
         <TransitionDiv
-          show={showAll}
+          show={currentTab === 'all'}
           className={cx('shoko-scrollbar flex', calendarAllQuery.data?.length === 0 && ('h-full pb-[3.5rem]'))}
         >
           {(calendarAllQuery.data?.length ?? 0) > 0

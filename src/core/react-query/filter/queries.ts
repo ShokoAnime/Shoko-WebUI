@@ -3,7 +3,11 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { transformFilterExpressions } from '@/core/react-query/filter/helpers';
 
-import type { FilteredGroupSeriesRequestType, FilteredGroupsRequestType } from '@/core/react-query/filter/types';
+import type {
+  FilteredGroupSeriesRequestType,
+  FilteredGroupsRequestType,
+  FilteredSeriesRequestType,
+} from '@/core/react-query/filter/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionFilterType, CollectionGroupType } from '@/core/types/api/collection';
 import type { FilterExpression, FilterType } from '@/core/types/api/filter';
@@ -38,6 +42,31 @@ export const useFilterExpressionsQuery = (enabled = true) =>
     enabled,
   });
 
+export const useFilteredSeriesInfiniteQuery = (
+  { filterCriteria, ...params }: FilteredSeriesRequestType,
+  enabled = true,
+) =>
+  useInfiniteQuery<ListResultType<SeriesType>>({
+    queryKey: ['filter', 'preview', 'series', filterCriteria, params],
+    queryFn: ({ pageParam }) =>
+      axios.post(
+        'Filter/Preview/Series',
+        filterCriteria,
+        {
+          params: {
+            ...params,
+            page: pageParam,
+          },
+        },
+      ),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage, _, lastPageParam: number) => {
+      if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
+      return lastPageParam + 1;
+    },
+    enabled,
+  });
+
 export const useFilteredGroupsInfiniteQuery = (
   { filterCriteria, ...params }: FilteredGroupsRequestType,
   enabled = true,
@@ -51,8 +80,7 @@ export const useFilteredGroupsInfiniteQuery = (
         {
           params: {
             ...params,
-            // It is supposed to infer the type from the initialPageParam property but it doesn't work
-            page: pageParam as number,
+            page: pageParam,
           },
         },
       ),
