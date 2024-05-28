@@ -19,6 +19,7 @@ type Props =
 
 const tabs = {
   filtered_episodes: 'Filtered Episodes',
+  // TODO: Add support for selected episodes
   // selected_episodes: 'Selected Episodes',
 };
 

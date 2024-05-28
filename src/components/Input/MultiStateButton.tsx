@@ -11,7 +11,7 @@ type Props = {
   onStateChange: (state: string) => void;
 };
 
-const MultiStateButton = ({ activeState, alternateColor, className, onStateChange, states }: Props) => (
+const MultiStateButton = React.memo(({ activeState, alternateColor, className, onStateChange, states }: Props) => (
   <div className={className ?? 'flex gap-x-2'}>
     {states.map(option => (
       <Button
@@ -28,6 +28,6 @@ const MultiStateButton = ({ activeState, alternateColor, className, onStateChang
       </Button>
     ))}
   </div>
-);
+));
 
 export default MultiStateButton;

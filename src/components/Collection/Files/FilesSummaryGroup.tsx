@@ -146,9 +146,9 @@ const Group = ({ group }: GroupProps) => {
 type Props = {
   groups?: WebuiSeriesFileSummaryGroupType[];
 };
-const FilesSummaryGroups = ({ groups = [] }: Props) => (
+const FilesSummaryGroups = React.memo(({ groups = [] }: Props) => (
   // eslint-disable-next-line react/no-array-index-key
   groups.map((group, index) => <Group key={index} group={group} />)
-);
+));
 
 export default FilesSummaryGroups;

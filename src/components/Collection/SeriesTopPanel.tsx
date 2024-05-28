@@ -31,7 +31,7 @@ const SeriesTag = ({ text, type }) => (
   </div>
 );
 
-const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
+const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
   const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;
   const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
@@ -103,6 +103,6 @@ const SeriesTopPanel = ({ series }: SeriesSidePanelProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default SeriesTopPanel;

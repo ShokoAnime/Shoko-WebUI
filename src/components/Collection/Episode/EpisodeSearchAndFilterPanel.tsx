@@ -18,7 +18,7 @@ type Props = {
   onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-const EpisodeSearchAndFilterPanel = ({
+const EpisodeSearchAndFilterPanel = React.memo(({
   episodeFilterAvailability,
   episodeFilterHidden,
   episodeFilterType,
@@ -117,6 +117,6 @@ const EpisodeSearchAndFilterPanel = ({
       </div>
     </ShokoPanel>
   </div>
-);
+));
 
 export default EpisodeSearchAndFilterPanel;

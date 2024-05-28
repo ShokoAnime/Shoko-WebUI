@@ -8,7 +8,7 @@ type SeriesInfoProps = {
   series: SeriesType;
 };
 
-const SeriesUserStats = ({ series }: SeriesInfoProps) => (
+const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
   <div className="flex flex-col gap-y-2">
     <div className="flex justify-between">
       <div className="font-semibold">File Count</div>
@@ -82,6 +82,6 @@ const SeriesUserStats = ({ series }: SeriesInfoProps) => (
       </div>
     </div>
   </div>
-);
+));
 
 export default SeriesUserStats;
