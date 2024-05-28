@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -8,15 +9,13 @@ import GroupTab from '@/components/Collection/Series/EditSeriesTabs/GroupTab';
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { setStatus } from '@/core/slices/modals/editSeries';
+import useEventCallback from '@/hooks/useEventCallback';
+
+import type { RootState } from '@/core/store';
 
 // TODO: Add tabs after implementing back-end endpoint for PersonalStats
 // import PersonalStats from '@/components/Collection/Series/EditSeriesTabs/PersonalStats';
-
-type Props = {
-  show: boolean;
-  onClose: () => void;
-  seriesId?: number;
-};
 
 const tabs = {
   name: 'Name',
@@ -45,12 +44,19 @@ const renderTab = (activeTab: string, seriesId: number) => {
   }
 };
 
-const EditSeriesModal = (props: Props) => {
-  const { onClose, seriesId, show } = props;
+const EditSeriesModal = () => {
+  const dispatch = useDispatch();
+
+  const onClose = useEventCallback(() => {
+    dispatch(setStatus(false));
+  });
+
+  const show = useSelector((state: RootState) => state.modals.editSeries.status);
+  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
 
   const [activeTab, setActiveTab] = useState('name');
 
-  return (!seriesId)
+  return (seriesId === -1)
     ? null
     : (
       <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>

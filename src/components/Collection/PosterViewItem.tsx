@@ -1,4 +1,5 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -6,6 +7,7 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { setSeriesId, setStatus } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -15,10 +17,9 @@ import type { SeriesType } from '@/core/types/api/series';
 type Props = {
   item: CollectionGroupType | SeriesType;
   isSeries?: boolean;
-  setEditSeriesModalId: (seriesId: number) => void;
 };
 
-const PosterViewItem = ({ isSeries = false, item, setEditSeriesModalId }: Props) => {
+const PosterViewItem = ({ isSeries = false, item }: Props) => {
   const settings = useSettingsQuery().data;
   const { showEpisodeCount, showGroupIndicator, showUnwatchedCount } = settings.WebUI_Settings.collection.poster;
 
@@ -45,10 +46,13 @@ const PosterViewItem = ({ isSeries = false, item, setEditSeriesModalId }: Props)
     return link;
   };
 
+  const dispatch = useDispatch();
+
   const editSeriesModalCallback = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    setEditSeriesModalId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID);
+    dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
+    dispatch(setStatus(true));
   });
 
   return (

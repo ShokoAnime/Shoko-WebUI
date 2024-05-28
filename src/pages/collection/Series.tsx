@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Outlet, useParams } from 'react-router';
 import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
 import {
@@ -23,6 +24,7 @@ import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { setSeriesId, setStatus } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -54,10 +56,15 @@ const Series = () => {
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
   const [fanartUri, setFanartUri] = useState('');
-  const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
+
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
-  const onClickHandler = useEventCallback(() => setShowEditSeriesModal(true));
+  const dispatch = useDispatch();
+
+  const onClickHandler = useEventCallback(() => {
+    dispatch(setSeriesId(toNumber(seriesId) ?? -1));
+    dispatch(setStatus(true));
+  });
 
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
@@ -137,11 +144,7 @@ const Series = () => {
         </div>
       </div>
 
-      <EditSeriesModal
-        show={showEditSeriesModal}
-        onClose={() => setShowEditSeriesModal(false)}
-        seriesId={series.IDs.ID}
-      />
+      <EditSeriesModal />
 
       <Outlet context={{ scrollRef }} />
       <div
