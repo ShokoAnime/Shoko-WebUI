@@ -20,7 +20,8 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
-      groupBy: 'GroupName,FileSource,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
+      groupBy:
+        'GroupName,FileSource,FileVersion,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
       includeEpisodeDetails: true,
     },
     show,
@@ -85,9 +86,13 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
                       )
                     </>
                   )}
+                  &nbsp;-&nbsp;
+                  {`v${group.FileVersion}`}
                 </div>
                 <div className="flex flex-wrap text-sm opacity-65">
                   {group.FileSource}
+                  &nbsp;|&nbsp;
+                  {group.VideoCodecs?.toUpperCase()}
                   &nbsp;|&nbsp;
                   {group.VideoResolution}
                   {group.AudioLanguages && (

@@ -1,99 +1,82 @@
 import { useMemo } from 'react';
-import { get, map, toNumber } from 'lodash';
+import { map, toNumber } from 'lodash';
 
 import type { FileType } from '@/core/types/api/file';
 import type { FileInfo } from '@/core/types/models/file';
 
-export const useVideoInfo = <T extends FileType>(file?: T) => {
-  const videoInfo: string[] = useMemo(() => {
-    if (!file) return [];
+const getVideoInfo = (file: FileType) => {
+  const videoInfo = file.MediaInfo?.Video?.[0];
+  if (!videoInfo) return [];
 
-    const info: string[] = [];
-    const VideoSource = get(file, 'AniDB.Source');
-    if (VideoSource) {
-      info.push(VideoSource);
-    }
+  const info = [
+    videoInfo.Codec.Simplified.toUpperCase(),
+    videoInfo.Resolution,
+  ];
 
-    const VideoBitDepth = file?.MediaInfo?.Video?.[0]?.BitDepth;
-    if (VideoBitDepth) {
-      info.push(`${VideoBitDepth}-bit`);
-    }
+  const VideoBitDepth = file.MediaInfo?.Video?.[0]?.BitDepth;
+  if (VideoBitDepth) {
+    info.push(`${VideoBitDepth}-bit`);
+  }
 
-    const VideoBitRate = file?.MediaInfo?.Video?.[0]?.BitRate;
-    if (VideoBitRate) {
-      info.push(`${Math.round(toNumber(VideoBitRate) / 1024)} kb/s`);
-    }
+  if (videoInfo.BitRate) {
+    info.push(`${Math.round(toNumber(videoInfo.BitRate) / 1024)} kb/s`);
+  }
 
-    const VideoResolution = file?.MediaInfo?.Video?.[0]?.Resolution;
-    if (VideoResolution) {
-      info.push(VideoResolution);
-    }
+  if (videoInfo.Width && videoInfo.Height) {
+    info.push(`${videoInfo.Width}x${videoInfo.Height}`);
+  }
 
-    const VideoWidth = file?.MediaInfo?.Video?.[0]?.Width;
-    const VideoHeight = file?.MediaInfo?.Video?.[0]?.Height;
-    if (VideoWidth && VideoHeight) {
-      info.push(`${VideoWidth}x${VideoHeight}`);
-    }
-
-    return info;
-  }, [file]);
-  return videoInfo;
+  return info;
 };
 
-export const useAudioInfo = <T extends FileType>(file?: T) => {
-  const audioInfo: string[] = useMemo(() => {
-    if (!file) return [];
+const getAudioInfo = (file: FileType) => {
+  const info: string[] = [];
 
-    const info: string[] = [];
-    const AudioFormat = file?.MediaInfo?.Audio?.[0]?.Format.Name;
-    const AudioLanguages = map(file?.MediaInfo?.Audio, item => item.LanguageCode).filter(item => !!item);
+  if (file.MediaInfo?.Audio?.[0]?.Format?.Name) {
+    info.push(file.MediaInfo.Audio[0].Format.Name);
+  }
 
-    if (AudioFormat) {
-      info.push(AudioFormat);
-    }
+  const audioLanguages = map(file.MediaInfo?.Audio, item => item.LanguageCode).filter(item => !!item);
+  if (audioLanguages && audioLanguages.length > 0) {
+    info.push(`${audioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${audioLanguages.join(', ')})`);
+  }
 
-    if (AudioLanguages && AudioLanguages.length > 0) {
-      info.push(`${AudioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${AudioLanguages.join(',')})`);
-    }
+  const subtitleLanguages = map(file.MediaInfo?.Subtitles, item => item.LanguageCode).filter(item => !!item);
+  if (subtitleLanguages && subtitleLanguages.length > 0) {
+    info.push(`${subtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${subtitleLanguages.join(',')})`);
+  }
 
-    const SubtitleLanguages = map(file?.MediaInfo?.Subtitles, item => item.LanguageCode).filter(item => !!item);
-    if (SubtitleLanguages && SubtitleLanguages.length > 0) {
-      info.push(`${SubtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${SubtitleLanguages.join(',')})`);
-    }
-
-    return info;
-  }, [file]);
-  return audioInfo;
+  return info;
 };
 
-const useMediaInfo = <T extends FileType>(file?: T): FileInfo => {
-  const videoInfo = useVideoInfo(file);
-  const audioInfo = useAudioInfo(file);
-  const { fileName, folderPath } = useMemo(() => {
-    const absolutePath = file?.Locations?.[0]?.AbsolutePath ?? '??';
+const useMediaInfo = (file: FileType): FileInfo =>
+  useMemo(() => {
+    const videoInfo = getVideoInfo(file);
+    const audioInfo = getAudioInfo(file);
+
+    const absolutePath = file.Locations?.[0]?.AbsolutePath ?? '??';
+    const fileName = absolutePath.split(/[/\\]+/).pop();
+    const folderPath = absolutePath.slice(0, absolutePath.replaceAll('\\', '/').lastIndexOf('/') + 1);
+
+    const groupInfo = [file.AniDB?.ReleaseGroup?.Name ?? 'Unknown'];
+    if (file.AniDB?.Source) groupInfo.push(file.AniDB.Source);
+    if (file.AniDB?.Version) groupInfo.push(`v${file.AniDB.Version}`);
+
     return {
-      fileName: absolutePath.split(/[/\\]+/).pop(),
-      folderPath: absolutePath.slice(0, absolutePath.replaceAll('\\', '/').lastIndexOf('/') + 1),
+      Name: fileName ?? '',
+      Location: folderPath ?? '',
+      Size: file.Size ?? 0,
+      Group: groupInfo.join(' | '),
+      Hashes: {
+        ED2K: file.Hashes?.ED2K ?? '',
+        SHA1: file.Hashes?.SHA1 ?? '',
+        CRC32: file.Hashes?.CRC32 ?? '',
+        MD5: file.Hashes?.MD5 ?? '',
+      },
+      VideoInfo: videoInfo,
+      AudioInfo: audioInfo,
+      Chapters: file.AniDB?.Chaptered ?? false,
     };
   }, [file]);
-
-  return {
-    Name: fileName ?? '',
-    Location: folderPath ?? '',
-    Size: file?.Size ?? 0,
-    Group: `${file?.AniDB?.ReleaseGroup?.Name ?? 'Unknown'}${
-      file?.AniDB?.Version ? (` | v${file?.AniDB?.Version}`) : ''
-    }`,
-    Hashes: {
-      ED2K: file?.Hashes?.ED2K ?? '',
-      SHA1: file?.Hashes?.SHA1 ?? '',
-      CRC32: file?.Hashes?.CRC32 ?? '',
-      MD5: file?.Hashes?.MD5 ?? '',
-    },
-    VideoInfo: videoInfo,
-    AudioInfo: audioInfo,
-    Chapters: file?.AniDB?.Chaptered ?? false,
-  };
-};
 
 export default useMediaInfo;
