@@ -30,16 +30,13 @@ const getVideoInfo = (file: FileType) => {
 };
 
 const getAudioInfo = (file: FileType) => {
-  const audioInfo = file.MediaInfo?.Audio;
-  if (!audioInfo) return [];
-
   const info: string[] = [];
 
-  if (audioInfo[0]?.Format?.Name) {
-    info.push(audioInfo[0]?.Format?.Name);
+  if (file.MediaInfo?.Audio?.[0]?.Format?.Name) {
+    info.push(file.MediaInfo.Audio[0].Format.Name);
   }
 
-  const audioLanguages = map(audioInfo, item => item.LanguageCode).filter(item => !!item);
+  const audioLanguages = map(file.MediaInfo?.Audio, item => item.LanguageCode).filter(item => !!item);
   if (audioLanguages && audioLanguages.length > 0) {
     info.push(`${audioLanguages.length > 1 ? 'Multi Audio' : 'Audio'} (${audioLanguages.join(', ')})`);
   }
