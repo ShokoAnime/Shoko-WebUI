@@ -15,7 +15,7 @@ import {
 } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { forEach, reverse } from 'lodash';
+import { forEach, get, reverse } from 'lodash';
 import prettyBytes from 'pretty-bytes';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -37,7 +37,7 @@ import {
 } from '@/core/react-query/file/mutations';
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { useSeriesAniDBQuery } from '@/core/react-query/series/queries';
+import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -46,10 +46,6 @@ import useRowSelection from '@/hooks/useRowSelection';
 
 import type { FileType } from '@/core/types/api/file';
 import type { Updater } from 'use-immer';
-
-type FileSelectedProps = {
-  fileId: number;
-};
 
 const Menu = (
   props: {
@@ -159,59 +155,11 @@ const Menu = (
   );
 };
 
-const FileDetails = (props: FileSelectedProps) => {
-  const { fileId } = props;
-  const { data: file } = useFileQuery(fileId, {
-    include: ['XRefs', 'MediaInfo', 'AbsolutePaths'],
-    includeDataFrom: ['AniDB'],
-  }, !!fileId);
-  const fileAniDbUrl = `https://anidb.net/file/${file?.AniDB?.ID}`;
-  const seriesShokoId = file?.SeriesIDs?.[0]?.SeriesID?.ID ?? 0;
-  const seriesAnidbId = file?.SeriesIDs?.[0]?.SeriesID?.AniDB;
-  const episodeId = file?.SeriesIDs?.[0]?.EpisodeIDs?.[0]?.ID ?? 0;
-  const { data: seriesInfo } = useSeriesAniDBQuery(seriesAnidbId!, !!seriesAnidbId);
-  const { data: episodeInfo } = useEpisodeAniDBQuery(episodeId, !!episodeId);
-
+const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
 
   return (
-    <div className="flex flex-col gap-y-4">
-      <div className="flex flex-col gap-y-1">
-        <div className="flex justify-between capitalize">
-          <span className="font-semibold">File Name</span>
-          {file?.AniDB?.ID && (
-            <a href={fileAniDbUrl} target="_blank" rel="noopener noreferrer">
-              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                <div className="metadata-link-icon AniDB" />
-                AniDB File
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </div>
-            </a>
-          )}
-        </div>
-        <span className="break-all">{mediaInfo.Name}</span>
-      </div>
-      <div className="flex flex-col gap-y-1">
-        <div className="flex justify-between capitalize">
-          <span className="font-semibold">Series Name</span>
-          {seriesInfo !== undefined && (
-            <Link to={`/webui/collection/series/${seriesShokoId}`}>
-              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                <ShokoIcon className="w-6" />
-                Shoko
-                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-              </div>
-            </Link>
-          )}
-        </div>
-        <span className="break-all">{seriesInfo?.Titles.find(x => x.Type === 'Main')?.Name ?? 'N/A'}</span>
-      </div>
-      <div className="flex flex-col gap-y-1">
-        <div className="flex justify-between capitalize">
-          <span className="font-semibold">Episode Name</span>
-        </div>
-        <span className="break-all">{episodeInfo?.Title ?? 'N/A'}</span>
-      </div>
+    <>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">
           <span className="font-semibold">Location</span>
@@ -258,9 +206,104 @@ const FileDetails = (props: FileSelectedProps) => {
         </div>
         <span className="break-all">{mediaInfo.Hashes.SHA1 ?? ''}</span>
       </div>
+    </>
+  );
+});
+
+const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
+  const { data: file, isPending: fileQueryIsPending } = useFileQuery(
+    fileId,
+    {
+      include: ['XRefs', 'MediaInfo', 'AbsolutePaths'],
+      includeDataFrom: ['AniDB'],
+    },
+  );
+
+  const seriesId: number = get(file, 'SeriesIDs[0].SeriesID.ID', 0);
+  const { data: seriesInfo, isPending: seriesQueryIsPending } = useSeriesQuery(
+    seriesId,
+    {},
+    !!seriesId,
+  );
+
+  const episodeId: number = get(file, 'SeriesIDs[0].EpisodeIDs[0].ID', 0);
+  const { data: episodeInfo, isPending: episodeQueryIsPending } = useEpisodeAniDBQuery(
+    episodeId,
+    !!episodeId,
+  );
+
+  const isPending = useMemo(
+    () => fileQueryIsPending || seriesQueryIsPending || episodeQueryIsPending,
+    [
+      fileQueryIsPending,
+      seriesQueryIsPending,
+      episodeQueryIsPending,
+    ],
+  );
+
+  if (isPending) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={3} spin />
+      </div>
+    );
+  }
+
+  if (!file) {
+    return (
+      <div className="text-panel-text-danger">
+        Error fetching file data!
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-y-4">
+      <div className="flex flex-col gap-y-1">
+        <div className="flex justify-between">
+          <span className="font-semibold">File Name</span>
+          {file.AniDB?.ID && (
+            <a href={`https://anidb.net/file/${file.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
+              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+                <div className="metadata-link-icon AniDB" />
+                AniDB File
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
+            </a>
+          )}
+        </div>
+        <span className="break-all">{file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop()}</span>
+      </div>
+
+      {seriesInfo && (
+        <div className="flex flex-col gap-y-1">
+          <div className="flex justify-between">
+            <span className="font-semibold">Series Name</span>
+            <Link to={`/webui/collection/series/${seriesId}`}>
+              <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+                <ShokoIcon className="w-6" />
+                Shoko
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </div>
+            </Link>
+          </div>
+          <span className="break-all">{seriesInfo.Name}</span>
+        </div>
+      )}
+
+      {episodeInfo && (
+        <div className="flex flex-col gap-y-1">
+          <div className="flex justify-between capitalize">
+            <span className="font-semibold">Episode Name</span>
+          </div>
+          <span className="break-all">{episodeInfo.Title}</span>
+        </div>
+      )}
+
+      <MediaInfoDetails file={file} />
     </div>
   );
-};
+});
 
 const FileSearch = () => {
   const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.ImportedAt);
@@ -350,7 +393,7 @@ const FileSearch = () => {
         <div className="flex w-full flex-col lg:max-w-[25%]">
           {selectedRows?.length > 0 && (
             <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
-              <div className="flex w-full flex-col gap-y-6 overflow-y-auto pr-4">
+              <div className="flex w-full grow flex-col gap-y-6 overflow-y-auto pr-4">
                 <FilesSummary title="Selected Summary" items={selectedRows} />
                 <div className="flex w-full text-xl font-semibold">
                   <div className="flex w-full justify-between">
@@ -365,9 +408,7 @@ const FileSearch = () => {
                     </div>
                   </div>
                 </div>
-                <FileDetails
-                  fileId={selectedId ?? 0}
-                />
+                <FileDetails fileId={selectedId} />
               </div>
             </div>
           )}
