@@ -11,6 +11,7 @@ export type FilteredGroupSeriesRequestType = {
   randomImages?: boolean;
   filterCriteria: FilterType;
   includeDataFrom?: DataSourceType[];
+  recursive?: boolean;
 };
 
 export type FilteredSeriesRequestType = {

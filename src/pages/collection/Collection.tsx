@@ -149,6 +149,7 @@ function Collection() {
       filterCriteria: getFilter(debouncedSeriesSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB'],
+      recursive: true,
     },
     isSeries,
   );
