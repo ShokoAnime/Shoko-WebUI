@@ -64,7 +64,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
           </div>
         )}
       </BackgroundImagePlaceholderDiv>
-      <div className="flex w-full min-w-[56.25rem] flex-col gap-y-6">
+      <div className="flex w-full max-w-[56.25rem] flex-col gap-y-6">
         <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
           <div className="flex w-full text-xl font-semibold">
             Series Description
@@ -77,7 +77,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
           <div className="flex w-full text-xl font-semibold">
             Series Information
           </div>
-          <div className="flex justify-between gap-x-[4.5rem] text-base font-normal">
+          <div className="grid h-32 grid-cols-1 gap-x-[4.5rem] gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
             <SeriesInfo series={series} />
           </div>
         </div>
