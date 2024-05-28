@@ -91,7 +91,6 @@ const Series = () => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="my-6 flex flex-col items-center gap-y-3">
-        <div className="flex w-full flex-col gap-y-2 lg:max-w-[65%] lg:gap-y-4 2xl:max-w-[85.938rem] 2xl:gap-y-6" />
         <div className="flex flex-row items-center gap-x-4">
           <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
             Entire Collection
