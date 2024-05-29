@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -8,15 +9,13 @@ import GroupTab from '@/components/Collection/Series/EditSeriesTabs/GroupTab';
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
+import useEventCallback from '@/hooks/useEventCallback';
+
+import type { RootState } from '@/core/store';
 
 // TODO: Add tabs after implementing back-end endpoint for PersonalStats
 // import PersonalStats from '@/components/Collection/Series/EditSeriesTabs/PersonalStats';
-
-type Props = {
-  show: boolean;
-  onClose: () => void;
-  seriesId?: number;
-};
 
 const tabs = {
   name: 'Name',
@@ -27,7 +26,8 @@ const tabs = {
   // stats: 'Personal Stats',
 };
 
-const renderTab = (activeTab: string, seriesId: number) => {
+const renderTab = (activeTab: string, seriesId = -1) => {
+  if (seriesId === -1) return null;
   switch (activeTab) {
     case 'name':
       return <NameTab seriesId={seriesId} />;
@@ -45,40 +45,44 @@ const renderTab = (activeTab: string, seriesId: number) => {
   }
 };
 
-const EditSeriesModal = (props: Props) => {
-  const { onClose, seriesId, show } = props;
+const EditSeriesModal = () => {
+  const dispatch = useDispatch();
+
+  const onClose = useEventCallback(() => {
+    dispatch(setSeriesId(-1));
+  });
+
+  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
 
   const [activeTab, setActiveTab] = useState('name');
 
-  return (!seriesId)
-    ? null
-    : (
-      <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
-        <div className="flex h-[26rem] flex-row gap-x-6 p-6">
-          <div className="flex shrink-0 gap-y-6 font-semibold">
-            <div className="flex flex-col gap-y-1">
-              {map(tabs, (value, key) => (
-                <div
-                  className={cx(
-                    activeTab === key
-                      ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                      : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
-                  )}
-                  key={key}
-                  onClick={() => setActiveTab(key)}
-                >
-                  {value}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="border-r border-panel-border" />
-          <div className="grow">
-            {renderTab(activeTab, seriesId)}
+  return (
+    <ModalPanel show={seriesId !== -1} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
+      <div className="flex h-[26rem] flex-row gap-x-6 p-6">
+        <div className="flex shrink-0 gap-y-6 font-semibold">
+          <div className="flex flex-col gap-y-1">
+            {map(tabs, (value, key) => (
+              <div
+                className={cx(
+                  activeTab === key
+                    ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
+                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                )}
+                key={key}
+                onClick={() => setActiveTab(key)}
+              >
+                {value}
+              </div>
+            ))}
           </div>
         </div>
-      </ModalPanel>
-    );
+        <div className="border-r border-panel-border" />
+        <div className="grow">
+          {renderTab(activeTab, seriesId)}
+        </div>
+      </div>
+    </ModalPanel>
+  );
 };
 
 export default EditSeriesModal;

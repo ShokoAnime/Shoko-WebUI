@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   mdiAlertCircleOutline,
@@ -18,6 +19,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -59,10 +61,9 @@ type Props = {
   isSeries?: boolean;
   groupExtras?: WebuiGroupExtra;
   isSidebarOpen: boolean;
-  setEditSeriesModalId: (seriesId: number) => void;
 };
 
-const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item, setEditSeriesModalId }: Props) => {
+const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => {
   const settings = useSettingsQuery().data;
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
@@ -122,10 +123,12 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item, setEditSerie
     [isSeries, groupExtras?.Tags, tagsQuery.data, showCustomTags, showTopTags],
   );
 
+  const dispatch = useDispatch();
+
   const editSeriesModalCallback = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    setEditSeriesModalId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID);
+    dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
   });
 
   return (

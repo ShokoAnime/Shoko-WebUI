@@ -25,7 +25,6 @@ type Props = {
   items: CollectionGroupType[] | SeriesType[];
   mode: string;
   total: number;
-  setEditSeriesModalId: (seriesId: number) => void;
 };
 
 const CollectionView = (props: Props) => {
@@ -38,7 +37,6 @@ const CollectionView = (props: Props) => {
     isSidebarOpen,
     items,
     mode,
-    setEditSeriesModalId,
     total,
   } = props;
 
@@ -152,7 +150,6 @@ const CollectionView = (props: Props) => {
                   key={`group-${item.IDs.ID}`}
                   item={item}
                   isSeries={isSeries}
-                  setEditSeriesModalId={setEditSeriesModalId}
                 />,
               );
             } else {
@@ -165,7 +162,6 @@ const CollectionView = (props: Props) => {
                   key={`group-${item.IDs.ID}`}
                   isSeries={isSeries}
                   isSidebarOpen={isSidebarOpen}
-                  setEditSeriesModalId={setEditSeriesModalId}
                 />,
               );
             }

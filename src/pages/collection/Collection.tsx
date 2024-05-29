@@ -102,16 +102,6 @@ function Collection() {
   const [seriesSearch, setSeriesSearch] = useState('');
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
-  // TODO: Use redux for this instead of prop drilling
-  const [showEditSeriesModal, toggleEditSeriesModal] = useToggle(false);
-  const [editSeriesModalId, setEditSeriesModalId] = useState<number>();
-  const openEditModalWithSeriesId = useEventCallback((seriesId: number) => {
-    setEditSeriesModalId(() => {
-      toggleEditSeriesModal();
-      return seriesId;
-    });
-  });
-
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
@@ -242,7 +232,6 @@ function Collection() {
           items={items}
           mode={mode}
           total={total}
-          setEditSeriesModalId={openEditModalWithSeriesId}
         />
         <div
           className={cx(
@@ -256,11 +245,7 @@ function Collection() {
         </div>
         {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
       </div>
-      <EditSeriesModal
-        show={showEditSeriesModal}
-        onClose={toggleEditSeriesModal}
-        seriesId={editSeriesModalId}
-      />
+      <EditSeriesModal />
     </div>
   );
 }
