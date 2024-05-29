@@ -202,6 +202,7 @@ export type WebUISettingsType = {
     image: {
       showRandomPoster: boolean;
       showRandomFanart: boolean;
+      useThumbnailFallback: boolean;
     };
   };
   dashboard: {
