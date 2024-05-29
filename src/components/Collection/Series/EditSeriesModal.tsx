@@ -9,7 +9,7 @@ import GroupTab from '@/components/Collection/Series/EditSeriesTabs/GroupTab';
 import NameTab from '@/components/Collection/Series/EditSeriesTabs/NameTab';
 import UpdateActionsTab from '@/components/Collection/Series/EditSeriesTabs/UpdateActionsTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
-import { setStatus } from '@/core/slices/modals/editSeries';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
@@ -48,10 +48,9 @@ const EditSeriesModal = () => {
   const dispatch = useDispatch();
 
   const onClose = useEventCallback(() => {
-    dispatch(setStatus(false));
+    dispatch(setSeriesId(-1));
   });
 
-  const show = useSelector((state: RootState) => state.modals.editSeries.status);
   const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
 
   const [activeTab, setActiveTab] = useState('name');
@@ -59,7 +58,7 @@ const EditSeriesModal = () => {
   return (seriesId === -1)
     ? null
     : (
-      <ModalPanel show={show} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
+      <ModalPanel show={seriesId !== -1} onRequestClose={onClose} header="Edit Series" size="md" noPadding noGap>
         <div className="flex h-[26rem] flex-row gap-x-6 p-6">
           <div className="flex shrink-0 gap-y-6 font-semibold">
             <div className="flex flex-col gap-y-1">

@@ -24,7 +24,7 @@ import Button from '@/components/Input/Button';
 import { useGroupQuery } from '@/core/react-query/group/queries';
 import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setSeriesId, setStatus } from '@/core/slices/modals/editSeries';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
@@ -63,7 +63,6 @@ const Series = () => {
 
   const onClickHandler = useEventCallback(() => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
-    dispatch(setStatus(true));
   });
 
   useEffect(() => {

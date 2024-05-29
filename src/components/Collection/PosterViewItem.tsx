@@ -7,7 +7,7 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setSeriesId, setStatus } from '@/core/slices/modals/editSeries';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -52,7 +52,6 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     event.stopPropagation();
     event.preventDefault();
     dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
-    dispatch(setStatus(true));
   });
 
   return (

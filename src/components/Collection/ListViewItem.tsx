@@ -19,7 +19,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setSeriesId, setStatus } from '@/core/slices/modals/editSeries';
+import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -129,7 +129,6 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
     event.stopPropagation();
     event.preventDefault();
     dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
-    dispatch(setStatus(true));
   });
 
   return (
