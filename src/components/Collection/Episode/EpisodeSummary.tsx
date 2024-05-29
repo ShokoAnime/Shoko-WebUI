@@ -1,5 +1,6 @@
 import React from 'react';
 import AnimateHeight from 'react-animate-height';
+import { useOutletContext } from 'react-router-dom';
 import {
   mdiCheckboxBlankCircleOutline,
   mdiCheckboxMarkedCircleOutline,
@@ -23,6 +24,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 import EpisodeDetails from './EpisodeDetails';
 import EpisodeFiles from './EpisodeFiles';
 
+import type { SeriesContextType } from '@/components/Collection/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
@@ -80,7 +82,8 @@ const SelectedStateButton = React.memo((
 
 const EpisodeSummary = React.memo(
   ({ anidbSeriesId, episode, nextUp, onSelectionChange, page, selected, seriesId }: Props) => {
-    const thumbnail = useEpisodeThumbnail(episode);
+    const { fanart } = useOutletContext<SeriesContextType>();
+    const thumbnail = useEpisodeThumbnail(episode, fanart);
     const [open, toggleOpen] = useToggle(false);
     const episodeId = get(episode, 'IDs.ID', 0);
 

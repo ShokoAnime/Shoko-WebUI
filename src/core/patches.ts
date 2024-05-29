@@ -24,5 +24,10 @@ export const webuiSettingsPatches = {
     };
     return { ...webuiSettings, settingsRevision: 6 };
   },
+  7: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    webuiSettings.collection.image.useThumbnailFallback = false;
+    return { ...webuiSettings, settingsRevision: 7 };
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

@@ -1,3 +1,7 @@
+import type React from 'react';
+
+import type { ImageType } from '@/core/types/api/common';
+
 export const posterItemSize = {
   width: 209,
   height: 363,
@@ -9,4 +13,9 @@ export const listItemSize = {
   height: 319,
   widthAlt: 907,
   gap: 32,
+};
+
+export type SeriesContextType = {
+  fanart?: ImageType;
+  scrollRef: React.RefObject<HTMLDivElement>;
 };
