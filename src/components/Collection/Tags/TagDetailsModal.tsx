@@ -41,7 +41,6 @@ const SeriesVirtualizer = (
   const virtualizer = useVirtualizer({
     count: dataSize,
     getScrollElement: () => scrollRef.current,
-    getItemKey: idx => (data[idx]?.IDs.ID ?? idx),
     estimateSize: () => (25.6), // Standard line height
     gap: 8,
     overscan: 12,
@@ -50,11 +49,11 @@ const SeriesVirtualizer = (
   return (
     <div className="shoko-scrollbar max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
       <div className="relative" style={{ height: virtualizer.getTotalSize() }}>
-        {virtualizer.getVirtualItems().map(({ index, key, size, start }) => {
+        {virtualizer.getVirtualItems().map(({ index, size, start }) => {
           const series = data?.[index] ?? fetchNext();
           return (
             <div
-              key={key}
+              key={index}
               className="absolute left-0 top-0 w-full"
               style={{ height: size, transform: `translateY(${start}px)` }}
             >
