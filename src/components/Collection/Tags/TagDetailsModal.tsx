@@ -1,9 +1,10 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { mdiOpenInNew } from '@mdi/js';
+import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
+import { debounce } from 'lodash';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -33,29 +34,36 @@ const SeriesLink = React.memo(({ extraPadding, series }: { series: SeriesType, e
   </Link>
 ));
 
-const SeriesVirtualizer = ({ data }: { data: SeriesType[] }) => {
+const SeriesVirtualizer = (
+  { data, dataSize, fetchNext }: { data: SeriesType[], dataSize: number, fetchNext: () => void },
+) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
-    count: data.length,
+    count: dataSize,
     getScrollElement: () => scrollRef.current,
-    getItemKey: idx => data[idx].IDs.ID,
+    getItemKey: idx => (data[idx]?.IDs.ID ?? idx),
     estimateSize: () => (25.6), // Standard line height
     gap: 8,
-    overscan: 3,
+    overscan: 12,
   });
 
   return (
     <div className="shoko-scrollbar max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
       <div className="relative" style={{ height: virtualizer.getTotalSize() }}>
-        {virtualizer.getVirtualItems().map(({ index, key, size, start }) => (
-          <div
-            key={key}
-            className="absolute left-0 top-0 w-full"
-            style={{ height: size, transform: `translateY(${start}px)` }}
-          >
-            <SeriesLink series={data[index]} extraPadding={data.length > 6} />
-          </div>
-        ))}
+        {virtualizer.getVirtualItems().map(({ index, key, size, start }) => {
+          const series = data?.[index] ?? fetchNext();
+          return (
+            <div
+              key={key}
+              className="absolute left-0 top-0 w-full"
+              style={{ height: size, transform: `translateY(${start}px)` }}
+            >
+              {series
+                ? <SeriesLink series={series} extraPadding={data.length > 6} />
+                : <Icon path={mdiLoading} spin className="mx-auto" size={`${size}px`} />}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -64,7 +72,7 @@ const SeriesVirtualizer = ({ data }: { data: SeriesType[] }) => {
 const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
   const { data: seriesDataList, fetchNextPage, isFetchingNextPage, isSuccess } = useFilteredSeriesInfiniteQuery(
     {
-      pageSize: 50,
+      pageSize: 25,
       filterCriteria: {
         ApplyAtSeriesLevel: true,
         Expression: {
@@ -77,9 +85,12 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
   );
   const [seriesData, seriesCount] = useFlattenListResult(seriesDataList);
 
-  if (!isFetchingNextPage && seriesData.length !== seriesCount) {
-    fetchNextPage().catch(() => {});
-  }
+  const fetchNextDebounced = useMemo(() =>
+    debounce(() => {
+      if (!isFetchingNextPage && seriesData.length !== seriesCount) {
+        fetchNextPage().catch(() => {});
+      }
+    }, 50), [fetchNextPage, isFetchingNextPage, seriesCount, seriesData.length]);
 
   const header = (
     <div className="flex w-full justify-between capitalize">
@@ -120,7 +131,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
             &nbsp;Series
           </div>
           <div className="grow rounded-lg bg-panel-input p-6">
-            <SeriesVirtualizer data={seriesData} />
+            <SeriesVirtualizer data={seriesData} fetchNext={fetchNextDebounced} dataSize={seriesCount} />
           </div>
         </div>
       )}
