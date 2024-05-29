@@ -280,6 +280,7 @@ export const initialSettings: SettingsType = {
       image: {
         showRandomFanart: false,
         showRandomPoster: false,
+        useThumbnailFallback: false,
       },
     },
     dashboard: {

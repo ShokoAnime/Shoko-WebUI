@@ -57,7 +57,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
       noGap
     >
       <div className="flex flex-col gap-y-6 p-6">
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-4">
           <div className="font-semibold">Poster View Options</div>
           <div className="flex flex-col gap-y-1">
             <Checkbox
@@ -86,7 +86,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
         <div className="border-b border-panel-border" />
 
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-4">
           <div className="font-semibold">List View Options</div>
           <div className="flex flex-col gap-1">
             <Checkbox
@@ -122,7 +122,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
 
         <div className="border-b border-panel-border" />
 
-        <div className="flex flex-col gap-y-6">
+        <div className="flex flex-col gap-y-4">
           <div className="font-semibold">Image Options</div>
           <div className="flex flex-col gap-1">
             <Checkbox
@@ -137,6 +137,13 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
               label="Random Fanart on Load"
               id="image-showRandomFanart"
               isChecked={imageSettings.showRandomFanart}
+              onChange={handleSettingChange}
+            />
+            <Checkbox
+              justify
+              label="Show fanart if thumbnail is missing"
+              id="image-useThumbnailFallback"
+              isChecked={imageSettings.useThumbnailFallback}
               onChange={handleSettingChange}
             />
           </div>

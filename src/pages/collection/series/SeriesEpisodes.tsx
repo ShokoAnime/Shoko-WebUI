@@ -18,6 +18,8 @@ import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
+import type { SeriesContextType } from '@/components/Collection/constants';
+
 const pageSize = 26;
 
 const SeriesEpisodes = () => {
@@ -110,7 +112,7 @@ const SeriesEpisodes = () => {
     [startDate, endDate],
   );
 
-  const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
+  const { scrollRef } = useOutletContext<SeriesContextType>();
 
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,

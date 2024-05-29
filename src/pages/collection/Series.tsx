@@ -1,4 +1,3 @@
-import type { ReactNode } from 'react';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, useParams } from 'react-router';
 import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
@@ -25,10 +24,11 @@ import { useSeriesImagesQuery, useSeriesQuery } from '@/core/react-query/series/
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-type SeriesTabProps = (props: { icon: string, text: string, to: string }) => ReactNode;
+type SeriesTabProps = (props: { icon: string, text: string, to: string }) => React.ReactNode;
 const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
   <NavLink
     to={to}
@@ -43,6 +43,8 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
   </NavLink>
 );
 
+const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+
 const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
@@ -53,7 +55,7 @@ const Series = () => {
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
-  const [fanartUri, setFanartUri] = useState('');
+  const [fanart, setFanart] = useState<ImageType>();
   const [showEditSeriesModal, setShowEditSeriesModal] = useState(false);
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
@@ -62,17 +64,15 @@ const Series = () => {
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
 
-    const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
-
     const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
     if (showRandomFanart) {
-      setFanartUri(getImagePath(allFanarts[Math.floor(Math.random() * allFanarts.length)]));
+      setFanart(allFanarts[Math.floor(Math.random() * allFanarts.length)]);
       return;
     }
 
-    setFanartUri(getImagePath(allFanarts.find(fanart => fanart.Preferred) ?? allFanarts[0]));
+    setFanart(allFanarts.find(image => image.Preferred) ?? allFanarts[0]);
   }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomFanart]);
 
   if (seriesQuery.isError) {
@@ -143,10 +143,11 @@ const Series = () => {
         seriesId={series.IDs.ID}
       />
 
-      <Outlet context={{ scrollRef }} />
+      <Outlet context={{ fanart, scrollRef } satisfies SeriesContextType} />
+
       <div
         className="fixed left-0 top-0 -z-10 size-full opacity-5"
-        style={{ background: fanartUri !== '' ? `center / cover no-repeat url('${fanartUri}')` : undefined }}
+        style={{ background: fanart ? `center / cover no-repeat url('${getImagePath(fanart)}')` : undefined }}
       />
     </div>
   );
