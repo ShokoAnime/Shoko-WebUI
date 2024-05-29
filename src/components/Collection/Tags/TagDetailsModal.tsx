@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { mdiOpenInNew } from '@mdi/js';
 import Icon from '@mdi/react';
+import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 
 import AnidbDescription from '@/components/Collection/AnidbDescription';
@@ -9,9 +10,58 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/queries';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
+import type { SeriesType } from '@/core/types/api/series';
 import type { TagType } from '@/core/types/api/tags';
 
-const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
+const SeriesLink = React.memo(({ extraPadding, series }: { series: SeriesType, extraPadding: boolean }) => (
+  <Link
+    to={`/webui/collection/series/${series.IDs.ID}`}
+    className={cx(
+      'flex justify-between align-middle hover:text-panel-text-primary',
+      extraPadding && ('pr-4'),
+    )}
+  >
+    <span
+      className="line-clamp-1"
+      data-tooltip-id="tooltip"
+      data-tooltip-content={series.Name}
+      data-tooltip-delay-show={500}
+    >
+      {series.Name}
+    </span>
+    <Icon path={mdiOpenInNew} size={1} className="shrink-0" />
+  </Link>
+));
+
+const SeriesVirtualizer = ({ data }: { data: SeriesType[] }) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const virtualizer = useVirtualizer({
+    count: data.length,
+    getScrollElement: () => scrollRef.current,
+    getItemKey: idx => data[idx].IDs.ID,
+    estimateSize: () => (25.6), // Standard line height
+    gap: 8,
+    overscan: 3,
+  });
+
+  return (
+    <div className="shoko-scrollbar max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
+      <div className="relative" style={{ height: virtualizer.getTotalSize() }}>
+        {virtualizer.getVirtualItems().map(({ index, key, size, start }) => (
+          <div
+            key={key}
+            className="absolute left-0 top-0 w-full"
+            style={{ height: size, transform: `translateY(${start}px)` }}
+          >
+            <SeriesLink series={data[index]} extraPadding={data.length > 6} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType, onClose: () => void }) => {
   const { data: seriesDataList, fetchNextPage, isFetchingNextPage, isSuccess } = useFilteredSeriesInfiniteQuery(
     {
       pageSize: 50,
@@ -30,8 +80,6 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
   if (!isFetchingNextPage && seriesData.length !== seriesCount) {
     fetchNextPage().catch(() => {});
   }
-
-  // TODO: Virtualize rows
 
   const header = (
     <div className="flex w-full justify-between capitalize">
@@ -71,34 +119,13 @@ const TagDetailsModal = React.memo(({ onClose, show, tag }: { show: boolean, tag
             </span>
             &nbsp;Series
           </div>
-          <div className="w-full rounded-lg bg-panel-input p-6">
-            <div className="shoko-scrollbar flex max-h-[12.5rem] flex-col gap-y-2 overflow-y-auto bg-panel-input">
-              {seriesData?.map(series => (
-                <Link
-                  to={`/webui/collection/series/${series.IDs.ID}`}
-                  key={series.IDs.ID}
-                  className={cx(
-                    'flex justify-between align-middle hover:text-panel-text-primary',
-                    seriesData.length > 6 && ('pr-4'),
-                  )}
-                >
-                  <span
-                    className="line-clamp-1"
-                    data-tooltip-id="tooltip"
-                    data-tooltip-content={series.Name}
-                    data-tooltip-delay-show={500}
-                  >
-                    {series.Name}
-                  </span>
-                  <Icon path={mdiOpenInNew} size={1} className="shrink-0" />
-                </Link>
-              ))}
-            </div>
+          <div className="grow rounded-lg bg-panel-input p-6">
+            <SeriesVirtualizer data={seriesData} />
           </div>
         </div>
       )}
     </ModalPanel>
   );
-});
+};
 
 export default TagDetailsModal;
