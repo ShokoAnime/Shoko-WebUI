@@ -33,14 +33,14 @@ const getFilter = (
   query: string,
   filterCondition?: FilterCondition,
   sortingCriteria?: SortingCriteria,
-  isSeries = true,
+  isSeriesSearch = true,
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
   if (query) {
     let searchCondition: FilterCondition = {
-      Type: 'AnyContains',
+      Type: isSeriesSearch ? 'StringContains' : 'AnyContains',
       Left: {
-        Type: 'NamesSelector',
+        Type: isSeriesSearch ? 'NameSelector' : 'NamesSelector',
       },
       Parameter: query,
     };
@@ -71,7 +71,7 @@ const getFilter = (
   return (
     finalCondition
       ? {
-        ApplyAtSeriesLevel: isSeries,
+        ApplyAtSeriesLevel: isSeriesSearch,
         Expression: finalCondition,
         Sorting: sortingCriteria ?? { Type: 'Name', IsInverted: false },
       }
