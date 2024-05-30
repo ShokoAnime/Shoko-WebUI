@@ -1,8 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   mdiArrowRightThinCircleOutline,
   mdiCheckUnderlineCircleOutline,
   mdiCloseCircleOutline,
+  mdiLoading,
   mdiMagnify,
   mdiPencilCircleOutline,
   mdiPlusCircleOutline,
@@ -142,10 +143,10 @@ const ExistingGroup = React.memo((
 ));
 
 const getFilter = (query: string): FilterType => ((query === '') ? {} : {
-  ApplyAtSeriesLevel: true,
+  ApplyAtSeriesLevel: false,
   Expression: {
-    Type: 'AnyContains',
-    Left: { Type: 'NamesSelector' },
+    Type: 'StringContains',
+    Left: { Type: 'NameSelector' },
     Parameter: query,
   },
   Sorting: { Type: 'Name', IsInverted: false },
@@ -188,18 +189,15 @@ function GroupTab({ seriesId }: Props) {
     );
   });
 
-  const QueryStatusElement = useMemo(() => {
-    if (groupsQuery.isLoading) {
-      return <span className="my-auto self-center">Loading...</span>;
-    }
-    if (groupsQuery.isError) {
-      return <span className="my-auto self-center">Error, please refresh!</span>;
-    }
-    return <span className="my-auto self-center">No Results!</span>;
-  }, [groupsQuery.isError, groupsQuery.isLoading]);
-
-  const GroupSearchComponent = useMemo(() => (
-    <>
+  return (
+    <div className="flex h-full flex-col">
+      <EditableNameComponent
+        groupId={seriesGroup?.IDs.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup ?? 0}
+        loading={isFetching}
+        name={seriesGroup?.Name ?? ''}
+        moveToNewGroup={moveToNewGroup}
+        renameGroup={renameGroup}
+      />
       <Input
         id="search"
         type="text"
@@ -216,26 +214,23 @@ function GroupTab({ seriesId }: Props) {
             groupsResultSize > 4 && 'pr-4',
           )}
         >
-          {groups.length === 0
-            ? QueryStatusElement
-            : groups.map(group => (
+          {groupsQuery.isPending && (
+            <Icon path={mdiLoading} size={3} className="my-auto self-center text-panel-text-primary" spin />
+          )}
+
+          {groupsQuery.isError && (
+            <span className="my-auto self-center text-panel-text-danger">Error, please refresh!</span>
+          )}
+
+          {groupsQuery.isSuccess && groups.length === 0 && <span className="my-auto self-center">No Results!</span>}
+
+          {groupsQuery.isSuccess && groups.length > 0 && (
+            groups.map(group => (
               <ExistingGroup key={group.IDs.TopLevelGroup} group={group} moveToGroup={moveToExistingGroup} />
-            ))}
+            ))
+          )}
         </div>
       </div>
-    </>
-  ), [QueryStatusElement, groups, groupsResultSize, moveToExistingGroup, search, updateSearch]);
-
-  return (
-    <div className="flex h-full flex-col">
-      <EditableNameComponent
-        groupId={seriesGroup?.IDs.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup ?? 0}
-        loading={isFetching}
-        name={seriesGroup?.Name ?? ''}
-        moveToNewGroup={moveToNewGroup}
-        renameGroup={renameGroup}
-      />
-      {GroupSearchComponent}
     </div>
   );
 }
