@@ -42,6 +42,7 @@ const invalidateSeries = debounce(
 export const handleEvent = (event: string, data?: SeriesUpdateEventType) => {
   switch (event) {
     case 'FileDeleted':
+    case 'FileHashed':
     case 'FileMatched':
       invalidateDashboard();
       invalidateFiles();

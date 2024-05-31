@@ -151,6 +151,7 @@ async (action: UnknownAction) => {
       connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
 
       connectionEvents.on('ShokoEvent:FileDeleted', () => handleEvent('FileDeleted'));
+      connectionEvents.on('ShokoEvent:FileHashed', () => handleEvent('FileHashed'));
       connectionEvents.on('ShokoEvent:FileMatched', () => handleEvent('FileMatched'));
       connectionEvents.on('ShokoEvent:FileMoved', () => handleEvent('FileMoved'));
       connectionEvents.on('ShokoEvent:FileRenamed', () => handleEvent('FileRenamed'));
