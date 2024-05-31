@@ -14,19 +14,23 @@ export const webuiSettingsPatches = {
   },
   6: (oldWebuiSettings) => {
     const webuiSettings = oldWebuiSettings;
-    delete webuiSettings.collection.list.showRandomPoster;
-    delete webuiSettings.collection.poster.showRandomPoster;
-    webuiSettings.collection.image = {
-      showRandomPoster:
-        (oldWebuiSettings?.collection?.list?.showRandomPoster || oldWebuiSettings?.collection?.poster?.showRandomPoster)
+    if (webuiSettings?.collection) {
+      delete webuiSettings.collection.list.showRandomPoster;
+      delete webuiSettings.collection.poster.showRandomPoster;
+      webuiSettings.collection.image = {
+        showRandomPoster: (oldWebuiSettings?.collection?.list?.showRandomPoster
+          || oldWebuiSettings?.collection?.poster?.showRandomPoster)
           ?? false,
-      showRandomFanart: false,
-    };
+        showRandomFanart: false,
+      };
+    }
     return { ...webuiSettings, settingsRevision: 6 };
   },
   7: (oldWebuiSettings) => {
     const webuiSettings = oldWebuiSettings;
-    webuiSettings.collection.image.useThumbnailFallback = false;
+    if (webuiSettings?.collection?.image) {
+      webuiSettings.collection.image.useThumbnailFallback = false;
+    }
     return { ...webuiSettings, settingsRevision: 7 };
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
