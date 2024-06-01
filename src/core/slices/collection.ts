@@ -2,7 +2,7 @@ import { createSelector, createSlice } from '@reduxjs/toolkit';
 import { filter, keys } from 'lodash';
 
 import type { RootState } from '@/core/store';
-import type { FilterExpression, FilterSeason, FilterTag } from '@/core/types/api/filter';
+import type { FilterExpression, FilterTag } from '@/core/types/api/filter';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 /*
@@ -14,9 +14,8 @@ filterCriteria - when user selects an expression it is copied here, then passed 
 
 Values for the condition that user selected, key is criteria.Expression, split by type, technically could be a single array
 filterConditions - DefaultCriteria
-filterValues - MultiValueCriteria, YearCriteria
+filterValues - MultiValueCriteria
 filterTags - TagCriteria
-filterSeasons - SeasonCriteria
 
 activeFilter - actual filter expression is generated from all the values it is put here, if it is null filter is not active
 */
@@ -26,7 +25,6 @@ type State = {
   filterConditions: Record<string, boolean>;
   filterValues: Record<string, string[]>;
   filterTags: Record<string, FilterTag[]>;
-  filterSeasons: Record<string, FilterSeason[]>;
   filterMatch: Record<string, 'Or' | 'And'>;
   activeFilter: object | null;
 };
@@ -38,7 +36,6 @@ const collectionSlice = createSlice({
     filterConditions: {},
     filterValues: {},
     filterTags: {},
-    filterSeasons: {},
     filterMatch: {},
     activeFilter: null,
   } as State,
@@ -59,9 +56,6 @@ const collectionSlice = createSlice({
       if (sliceState.filterTags[Expression] !== undefined) {
         delete sliceState.filterTags[Expression];
       }
-      if (sliceState.filterSeasons[Expression] !== undefined) {
-        delete sliceState.filterSeasons[Expression];
-      }
       if (sliceState.filterMatch[Expression] !== undefined) {
         delete sliceState.filterMatch[Expression];
       }
@@ -74,9 +68,6 @@ const collectionSlice = createSlice({
     },
     setFilterTag(sliceState, action: PayloadAction<Record<string, FilterTag[]>>) {
       sliceState.filterTags = action.payload;
-    },
-    setFilterSeason(sliceState, action: PayloadAction<Record<string, FilterSeason[]>>) {
-      sliceState.filterSeasons = action.payload;
     },
     setFilterMatch(sliceState, action: PayloadAction<Record<string, 'Or' | 'And'>>) {
       sliceState.filterMatch = { ...sliceState.filterMatch, ...action.payload };
@@ -97,7 +88,6 @@ export const {
   resetActiveFilter,
   setActiveFilter,
   setFilterMatch,
-  setFilterSeason,
   setFilterTag,
   setFilterValues,
 } = collectionSlice.actions;
@@ -108,14 +98,6 @@ export const selectFilterTags = createSelector(
     (_, criteria: FilterExpression) => criteria.Expression,
   ],
   (values, expression) => values.filterTags[expression] ?? [],
-);
-
-export const selectFilterSeasons = createSelector(
-  [
-    (state: RootState) => state.collection,
-    (_, criteria: FilterExpression) => criteria.Expression,
-  ],
-  (values, expression) => values.filterSeasons[expression] ?? [],
 );
 
 export const selectFilterValues = createSelector(
@@ -138,13 +120,11 @@ export const selectActiveCriteriaWithValues = createSelector(
     (state: RootState) => state.collection.filterConditions,
     (state: RootState) => state.collection.filterValues,
     (state: RootState) => state.collection.filterTags,
-    (state: RootState) => state.collection.filterSeasons,
   ],
-  (filterConditions, filterValues, filterTags, filterSeasons) => [
+  (filterConditions, filterValues, filterTags) => [
     ...keys(filter(filterConditions, item => item !== undefined)),
     ...keys(filter(filterValues, item => item.length > 0)),
     ...keys(filter(filterTags, item => item.length > 0)),
-    ...keys(filter(filterSeasons, item => item.length > 0)),
   ],
 );
 

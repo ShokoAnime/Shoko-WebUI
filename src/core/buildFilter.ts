@@ -1,6 +1,6 @@
 import store from '@/core/store';
 
-import type { FilterCondition, FilterExpression, FilterSeason, FilterTag } from '@/core/types/api/filter';
+import type { FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
 
 const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   if (filters.length > 1) {
@@ -13,21 +13,6 @@ const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   return filters[0];
 };
 
-const buildSeasonCondition = (
-  condition: FilterSeason,
-  type: string,
-) => ({ Type: type, Parameter: condition.Year, SecondParameter: condition.Season });
-
-const buildSidebarFilterConditionSeason = (conditionValues: FilterSeason[], type: string): object => {
-  if (conditionValues.length > 1) {
-    return {
-      Type: 'Or',
-      Left: buildSeasonCondition(conditionValues[0], type),
-      Right: buildSidebarFilterConditionSeason(conditionValues.slice(1), type),
-    };
-  }
-  return buildSeasonCondition(conditionValues[0], type);
-};
 const buildTagCondition = (
   condition: FilterTag,
   type: string,
@@ -58,14 +43,35 @@ const buildSidebarFilterConditionMultivalue = (
   }
   return { Type: type, Parameter: conditionValues[0] };
 };
+
+const buildSidebarFilterConditionMultivaluePair = (
+  conditionValues: string[][],
+  type: string,
+  operator: 'Or' | 'And' = 'And',
+): object => {
+  if (conditionValues.length > 1) {
+    return {
+      Type: operator,
+      Left: { Type: type, Parameter: conditionValues[0][0], SecondParameter: conditionValues[0][1] },
+      Right: buildSidebarFilterConditionMultivaluePair(conditionValues.slice(1), type),
+    };
+  }
+  return { Type: type, Parameter: conditionValues[0][0], SecondParameter: conditionValues[0][1] };
+};
+
 const buildSidebarFilterCondition = (currentFilter: FilterExpression) => {
   if (currentFilter.Expression === 'HasCustomTag' || currentFilter.Expression === 'HasTag') {
     const tagValues = store.getState().collection.filterTags[currentFilter.Expression];
     return buildSidebarFilterConditionTag(tagValues, currentFilter.Expression);
   }
-  if (currentFilter?.Expression === 'InSeason') {
-    const seasonValues = store.getState().collection.filterSeasons[currentFilter.Expression];
-    return buildSidebarFilterConditionSeason(seasonValues, currentFilter.Expression);
+  if (currentFilter?.PossibleParameterPairs) {
+    // TODO: Using ': ' as a delimiter, but this might need to be changed in the future.
+    // Currently only In Season expression has possible parameter pairs.
+    const filterValues = store.getState().collection.filterValues[currentFilter.Expression].map(
+      value => value.split(': '),
+    );
+    const filterMatch = store.getState().collection.filterMatch[currentFilter.Expression] ?? 'Or';
+    return buildSidebarFilterConditionMultivaluePair(filterValues, currentFilter.Expression, filterMatch);
   }
   if (currentFilter?.PossibleParameters ?? currentFilter?.Parameter === 'Number') {
     const filterValues = store.getState().collection.filterValues[currentFilter.Expression];
