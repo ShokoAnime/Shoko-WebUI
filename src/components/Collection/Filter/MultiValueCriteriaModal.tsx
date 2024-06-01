@@ -25,7 +25,7 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   const [unsavedValues, setUnsavedValues] = useState([] as string[]);
   const unusedValues = useMemo(
     () => {
-      // TODO: See delimited TODO in buildFilter.ts
+      // TODO: See delimiter TODO in buildFilter.ts
       const possibleValues = criteria.PossibleParameters
         ?? criteria.PossibleParameterPairs?.map(value => value.join(': '));
 
