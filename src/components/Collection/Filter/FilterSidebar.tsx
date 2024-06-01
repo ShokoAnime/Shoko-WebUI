@@ -6,9 +6,7 @@ import { forEach, keys, map, values } from 'lodash';
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
 import MultiValueCriteria from '@/components/Collection/Filter/MultiValueCriteria';
-import SeasonCriteria from '@/components/Collection/Filter/SeasonCriteria';
 import TagCriteria from '@/components/Collection/Filter/TagCriteria';
-import YearCriteria from '@/components/Collection/Filter/YearCriteria';
 import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -28,13 +26,7 @@ const CriteriaComponent = ({ criteria }: { criteria: FilterExpression }) => {
   if (criteria.Expression === 'HasCustomTag' || criteria.Expression === 'HasTag') {
     return <TagCriteria criteria={criteria} />;
   }
-  if (criteria.Expression === 'InYear') {
-    return <YearCriteria criteria={criteria} />;
-  }
-  if (criteria.Expression === 'InSeason') {
-    return <SeasonCriteria criteria={criteria} />;
-  }
-  if (criteria.PossibleParameters) {
+  if (criteria.PossibleParameters ?? criteria.PossibleParameterPairs) {
     return <MultiValueCriteria criteria={criteria} />;
   }
   return <DefaultCriteria criteria={criteria} />;

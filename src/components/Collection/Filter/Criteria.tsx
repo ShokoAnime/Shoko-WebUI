@@ -4,16 +4,14 @@ import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import MultiValueCriteriaModal from '@/components/Collection/Filter/MultiValueCriteriaModal';
-import SeasonCriteriaModal from '@/components/Collection/Filter/SeasonCriteriaModal';
 import TagCriteriaModal from '@/components/Collection/Filter/TagCriteriaModal';
-import YearCriteriaModal from '@/components/Collection/Filter/YearCriteriaModal';
 import { removeFilterCriteria, selectFilterMatch } from '@/core/slices/collection';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 import type { FilterExpression } from '@/core/types/api/filter';
 
-type ModalType = 'year' | 'season' | 'tag' | 'multivalue';
+type ModalType = 'tag' | 'multivalue';
 
 type Props = {
   criteria: FilterExpression;
@@ -24,16 +22,11 @@ type Props = {
 
 const getModalComponent = (type: ModalType) => {
   switch (type) {
-    case 'year':
-      return YearCriteriaModal;
-    case 'season':
-      return SeasonCriteriaModal;
-    case 'tag':
-      return TagCriteriaModal;
     case 'multivalue':
       return MultiValueCriteriaModal;
+    case 'tag':
     default:
-      return YearCriteriaModal;
+      return TagCriteriaModal;
   }
 };
 

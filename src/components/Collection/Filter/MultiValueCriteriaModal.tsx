@@ -24,12 +24,17 @@ const MultiValueCriteriaModal = ({ criteria, onClose, removeCriteria, show }: Pr
   );
   const [unsavedValues, setUnsavedValues] = useState([] as string[]);
   const unusedValues = useMemo(
-    () =>
-      filter(
-        criteria.PossibleParameters,
+    () => {
+      // TODO: See delimited TODO in buildFilter.ts
+      const possibleValues = criteria.PossibleParameters
+        ?? criteria.PossibleParameterPairs?.map(value => value.join(': '));
+
+      return filter(
+        possibleValues,
         item => selectedValues.indexOf(item) === -1 && unsavedValues.indexOf(item) === -1,
-      ),
-    [criteria.PossibleParameters, selectedValues, unsavedValues],
+      );
+    },
+    [criteria.PossibleParameters, criteria.PossibleParameterPairs, selectedValues, unsavedValues],
   );
   const filterMatch = useSelector((state: RootState) => selectFilterMatch(state, criteria.Expression));
 
