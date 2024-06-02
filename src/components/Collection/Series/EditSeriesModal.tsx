@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
@@ -51,6 +51,8 @@ const EditSeriesModal = () => {
   const onClose = useEventCallback(() => {
     dispatch(setSeriesId(-1));
   });
+
+  useEffect(() => onClose, [onClose]);
 
   const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
 
