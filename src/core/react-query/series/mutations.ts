@@ -31,7 +31,7 @@ export const useChangeSeriesImageMutation = () =>
 
 export const useDeleteSeriesMutation = () =>
   useMutation({
-    mutationFn: ({ seriesId, ...data }: DeleteSeriesRequestType) => axios.delete(`Series/${seriesId}`, { data }),
+    mutationFn: ({ seriesId, ...params }: DeleteSeriesRequestType) => axios.delete(`Series/${seriesId}`, { params }),
     onSuccess: () => {
       invalidateQueries(['filter']);
       invalidateQueries(['series', 'without-files']);
