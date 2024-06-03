@@ -114,7 +114,7 @@ const EpisodeSummary = React.memo(
               </div>
               <div className="flex w-14 flex-col">
                 {(!!episode.Watched || episode.IsHidden) && (
-                  <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-transparent p-4 shadow-md">
+                  <div className="flex flex-col items-center gap-y-6 rounded-bl-lg rounded-tr-lg bg-panel-background-overlay p-4 text-panel-text-important shadow-md">
                     <StateIcon icon={mdiEyeCheckOutline} show={!!episode.Watched} />
                     <StateIcon icon={mdiEyeOffOutline} show={episode.IsHidden} />
                   </div>
