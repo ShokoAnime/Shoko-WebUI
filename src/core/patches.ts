@@ -18,7 +18,7 @@ export const webuiSettingsPatches = {
     delete webuiSettings.collection.poster.showRandomPoster;
     webuiSettings.collection.image = {
       showRandomPoster:
-        (oldWebuiSettings?.collection?.list?.showRandomPoster || oldWebuiSettings?.collection?.poster?.showRandomPoster)
+        (oldWebuiSettings.collection.list.showRandomPoster || oldWebuiSettings.collection.poster.showRandomPoster)
           ?? false,
       showRandomFanart: false,
     };
