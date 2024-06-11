@@ -44,7 +44,7 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
     });
   });
 
-  const handleSave = useEventCallback(() => {
+  const handleConfirm = useEventCallback(() => {
     const fileIds = map(
       [...groupsToDelete],
       groupIndex =>
@@ -147,12 +147,12 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
       <div className="mt-4 flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-6 py-2">Cancel</Button>
         <Button
-          onClick={handleSave}
+          onClick={handleConfirm}
           buttonType="primary"
           className="px-6 py-2"
           loading={isDeleting}
         >
-          Save
+          Confirm
         </Button>
       </div>
     </ModalPanel>
