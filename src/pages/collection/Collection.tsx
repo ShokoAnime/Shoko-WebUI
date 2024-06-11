@@ -8,6 +8,7 @@ import { useDebounceValue, useToggle } from 'usehooks-ts';
 import CollectionTitle from '@/components/Collection/CollectionTitle';
 import CollectionView from '@/components/Collection/CollectionView';
 import FilterSidebar from '@/components/Collection/Filter/FilterSidebar';
+import EditGroupModal from '@/components/Collection/Group/EditGroupModal';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import TitleOptions from '@/components/Collection/TitleOptions';
@@ -246,6 +247,7 @@ function Collection() {
         {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
       </div>
       <EditSeriesModal />
+      <EditGroupModal />
     </div>
   );
 }
