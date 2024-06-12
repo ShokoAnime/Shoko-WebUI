@@ -2,7 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
-import type { GroupsInfiniteRequestType } from '@/core/react-query/group/types';
+import type { GroupSeriesRequestType, GroupsInfiniteRequestType } from '@/core/react-query/group/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
@@ -34,9 +34,10 @@ export const useGroupsInfiniteQuery = (params: GroupsInfiniteRequestType) =>
     },
   });
 
-export const useGroupSeriesQuery = (groupId: number, enabled = true) =>
+export const useGroupSeriesQuery = ({ enabled = true, groupId, sorted = false }: GroupSeriesRequestType) =>
   useQuery<SeriesType[]>({
     queryKey: ['group-series', groupId],
     queryFn: () => axios.get(`Group/${groupId}/Series`),
+    select: data => (sorted ? data.sort((a, b) => (a.IDs.ID > b.IDs.ID ? 1 : -1)) : data),
     enabled,
   });

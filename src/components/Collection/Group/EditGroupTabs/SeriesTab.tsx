@@ -25,7 +25,7 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
     isError: seriesError,
     isPending: seriesPending,
     isSuccess: seriesSuccess,
-  } = useGroupSeriesQuery(groupId);
+  } = useGroupSeriesQuery({ groupId, sorted: true });
 
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
   const { mutate: setGroupMainSeriesMutation } = usePatchGroupMutation();
