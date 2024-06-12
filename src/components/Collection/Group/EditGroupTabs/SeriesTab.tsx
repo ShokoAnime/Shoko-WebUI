@@ -57,7 +57,12 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
-        <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
+        <div
+          className={cx(
+            'shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
+            (seriesSuccess && seriesData.length > 9) && 'pr-4',
+          )}
+        >
           {(seriesPending || groupPending) && (
             <Icon
               path={mdiLoading}
