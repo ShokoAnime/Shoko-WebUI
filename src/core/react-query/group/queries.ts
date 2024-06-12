@@ -5,6 +5,7 @@ import { axios } from '@/core/axios';
 import type { GroupsInfiniteRequestType } from '@/core/react-query/group/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { SeriesType } from '@/core/types/api/series';
 
 export const useGroupQuery = (groupId: number, enabled = true) =>
   useQuery<CollectionGroupType>({
@@ -31,4 +32,11 @@ export const useGroupsInfiniteQuery = (params: GroupsInfiniteRequestType) =>
       if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
       return lastPageParam + 1;
     },
+  });
+
+export const useGroupSeriesQuery = (groupId: number, enabled = true) =>
+  useQuery<SeriesType[]>({
+    queryKey: ['group-series', groupId],
+    queryFn: () => axios.get(`Group/${groupId}/Series`),
+    enabled,
   });

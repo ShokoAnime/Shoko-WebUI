@@ -19,6 +19,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -131,6 +132,12 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
     dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
   });
 
+  const editGroupModalCallback = useEventCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
+  });
+
   return (
     <div
       className="flex h-full shrink-0 grow flex-col content-center gap-y-3 rounded-lg border border-panel-border bg-panel-background p-6"
@@ -147,18 +154,16 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
             zoomOnHover
           >
             <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-              {(isSeries || item.Size === 1) && (
-                <div
-                  className="pointer-events-auto h-fit"
-                  onClick={editSeriesModalCallback}
-                >
-                  <Icon
-                    path={mdiPencilCircleOutline}
-                    size="2rem"
-                    className="text-panel-icon"
-                  />
-                </div>
-              )}
+              <div
+                className="pointer-events-auto h-fit"
+                onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
+              >
+                <Icon
+                  path={mdiPencilCircleOutline}
+                  size="2rem"
+                  className="text-panel-icon"
+                />
+              </div>
             </div>
             {showGroupIndicator && groupCount > 1 && (
               <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">

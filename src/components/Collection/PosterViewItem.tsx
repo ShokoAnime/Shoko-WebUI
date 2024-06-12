@@ -7,6 +7,7 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -54,6 +55,12 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
   });
 
+  const editGroupModalCallback = useEventCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
+    dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
+  });
+
   return (
     <Link to={viewRouteLink()}>
       <div
@@ -74,18 +81,16 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-            {(isSeries || item.Size === 1) && (
-              <div
-                className="pointer-events-auto h-fit"
-                onClick={editSeriesModalCallback}
-              >
-                <Icon
-                  path={mdiPencilCircleOutline}
-                  size="2rem"
-                  className="text-panel-icon"
-                />
-              </div>
-            )}
+            <div
+              className="pointer-events-auto h-fit"
+              onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
+            >
+              <Icon
+                path={mdiPencilCircleOutline}
+                size="2rem"
+                className="text-panel-icon"
+              />
+            </div>
           </div>
           {showGroupIndicator && !isSeries && groupCount > 1 && (
             <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">

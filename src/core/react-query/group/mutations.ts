@@ -14,6 +14,12 @@ import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/r
  * It should probably also invalidate the cache for:
  *  * Any series belonging to the "original" groups of a series.
  */
+const defaultInvalidations = (seriesId: number) => {
+  invalidateQueries(['series', seriesId, 'data']);
+  invalidateQueries(['series', seriesId, 'group']);
+  // TODO: Specifically fix this next invalidation to be less aggressive
+  invalidateQueries(['filter', 'preview']);
+};
 
 // Also the server isn't sending SeriesUpdated events for the group changes
 
@@ -21,8 +27,7 @@ export const usePatchGroupMutation = () =>
   useMutation({
     mutationFn: ({ groupId, operations }: PatchGroupRequestType) => axios.patch(`Group/${groupId}`, operations),
     onSuccess: (_, { seriesId }) => {
-      invalidateQueries(['series', seriesId, 'data']);
-      invalidateQueries(['series', seriesId, 'group']);
+      defaultInvalidations(seriesId);
       toast.success('Group updated!');
     },
   });
@@ -38,8 +43,7 @@ export const useCreateGroupMutation = () =>
         },
       ),
     onSuccess: (_, seriesId) => {
-      invalidateQueries(['series', seriesId, 'data']);
-      invalidateQueries(['series', seriesId, 'group']);
+      defaultInvalidations(seriesId);
       toast.success('Created new group!');
     },
   });
@@ -49,8 +53,7 @@ export const useMoveGroupMutation = () =>
     mutationFn: ({ groupId, seriesId }: MoveSeriesGroupRequestType) =>
       axios.patch(`Series/${seriesId}/Move/${groupId}`),
     onSuccess: (_, { seriesId }) => {
-      invalidateQueries(['series', seriesId, 'data']);
-      invalidateQueries(['series', seriesId, 'group']);
+      defaultInvalidations(seriesId);
       toast.success('Moved series into new group!');
     },
   });
