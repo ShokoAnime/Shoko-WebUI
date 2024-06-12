@@ -103,7 +103,7 @@ const useUpdateSelectedFiles = (setSelectedFiles: Updater<Record<number, boolean
 const FilesTable = ({ id: seriesId }: { id: number }) => {
   // We are prefetching the query before opening this "dropdown", so just fetching from cache instead.
   const files = queryClient.getQueryData<ListResultType<FileType>>(
-    ['series', seriesId, 'files', { include: ['XRefs'], include_only: ['ManualLinks'] }],
+    ['series', seriesId, 'files', { pageSize: 0, include: ['XRefs'], include_only: ['ManualLinks'] }],
   );
   const episodesResult = queryClient.getQueryData<InfiniteData<ListResultType<EpisodeType>>>(
     [
