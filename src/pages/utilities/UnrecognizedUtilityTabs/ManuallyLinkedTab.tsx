@@ -202,7 +202,7 @@ function ManuallyLinkedTab() {
   });
 
   const onExpand = async (id: number) => {
-    await prefetchSeriesFilesQuery(id, { include: ['XRefs'], include_only: ['ManualLinks'] });
+    await prefetchSeriesFilesQuery(id, { pageSize: 0, include: ['XRefs'], include_only: ['ManualLinks'] });
     await prefetchSeriesEpisodesInfiniteQuery(id, { pageSize: 0, includeMissing: 'true', includeDataFrom: ['AniDB'] });
   };
 
