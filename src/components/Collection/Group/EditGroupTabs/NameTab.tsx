@@ -12,7 +12,7 @@ type Props = {
   groupId: number;
 };
 
-const NameTab = ({ groupId }: Props) => {
+const NameTab = React.memo(({ groupId }: Props) => {
   const {
     data: groupData,
     isError: groupError,
@@ -133,6 +133,6 @@ const NameTab = ({ groupId }: Props) => {
       )}
     </div>
   );
-};
+});
 
 export default NameTab;
