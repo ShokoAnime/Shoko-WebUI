@@ -24,7 +24,7 @@ const NameTab = React.memo(({ groupId }: Props) => {
     isError: seriesError,
     isFetching: seriesFetching,
     isSuccess: seriesSuccess,
-  } = useGroupSeriesQuery({ groupId });
+  } = useGroupSeriesQuery(groupId);
 
   const [groupName, setGroupName] = useState(groupData?.Name ?? '');
   useEffect(() => {

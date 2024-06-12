@@ -18,9 +18,3 @@ export type MoveSeriesGroupRequestType = {
   seriesId: number;
   groupId: number;
 };
-
-export type GroupSeriesRequestType = {
-  groupId: number;
-  enabled?: boolean;
-  sorted?: boolean;
-};

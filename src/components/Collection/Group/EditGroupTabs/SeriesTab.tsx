@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { mdiArrowRightThinCircleOutline, mdiLoading, mdiStarCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
@@ -25,7 +25,9 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
     isError: seriesError,
     isPending: seriesPending,
     isSuccess: seriesSuccess,
-  } = useGroupSeriesQuery({ groupId, sorted: true });
+  } = useGroupSeriesQuery(groupId);
+
+  const sortedSeriesData = useMemo(() => seriesData?.sort((a, b) => (a.IDs.ID > b.IDs.ID ? 1 : -1)), [seriesData]);
 
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
   const { mutate: setGroupMainSeriesMutation } = usePatchGroupMutation();
@@ -74,7 +76,7 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
           {(seriesError || groupError) && (
             <span className="my-auto self-center text-panel-text-danger">Error, please refresh!</span>
           )}
-          {(seriesSuccess && groupSuccess) && seriesData.map((series) => {
+          {(seriesSuccess && groupSuccess) && sortedSeriesData?.map((series) => {
             const isMainSeries = series.IDs.ID === groupData?.IDs.MainSeries;
 
             const baseTooltipAttribs = {
