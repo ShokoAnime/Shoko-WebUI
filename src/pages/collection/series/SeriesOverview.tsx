@@ -145,7 +145,11 @@ const SeriesOverview = () => {
           >
             {nextUpEpisodeQuery.isSuccess && nextUpEpisodeQuery.data
               ? <EpisodeSummary seriesId={toNumber(seriesId)} episode={nextUpEpisodeQuery.data} nextUp />
-              : <div className="flex grow items-center justify-center font-semibold">No Episode Data Available!</div>}
+              : (
+                <div className="flex grow items-center justify-center font-semibold">
+                  All available episodes have already been watched
+                </div>
+              )}
           </ShokoPanel>
         </div>
       </div>
