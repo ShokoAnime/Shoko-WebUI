@@ -135,7 +135,7 @@ const Row = (
   );
 };
 
-const isFileSortCriteriaEnum = (type: unknown): type is keyof typeof FileSortCriteriaEnum => typeof type === 'number';
+const isCriteriaMapKey = (type: string): type is keyof typeof criteriaMap => type in criteriaMap;
 
 const HeaderItem = (
   props: {
@@ -165,20 +165,17 @@ const HeaderItem = (
   }
 
   const handleSortCriteriaChange = (headerId: string) => {
-    if (skipSort || !isFileSortCriteriaEnum(criteriaMap[headerId])) return;
-    const criteria = criteriaMap[headerId] as FileSortCriteriaEnum;
+    if (skipSort || !isCriteriaMapKey(headerId)) return;
+    const criteria = criteriaMap[headerId];
     if (!criteria || !setSortCriteria) return;
 
-    setSortCriteria((tempCriteria) => {
-      if (tempCriteria === criteria) return tempCriteria * -1;
-      return criteria;
-    });
+    setSortCriteria(prevCriteria => ((prevCriteria === criteria) ? -criteria : criteria));
   };
 
   const sortIndicator = (headerId: string) => {
-    if (skipSort || !isFileSortCriteriaEnum(criteriaMap[headerId])) return null;
-    const criteria = criteriaMap[headerId] as number;
-    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria) return null;
+    if (skipSort || !isCriteriaMapKey(headerId)) return null;
+    const criteria = criteriaMap[headerId];
+    if (!criteria || !sortCriteria || Math.abs(sortCriteria) !== criteria as number) return null;
 
     return (
       <Icon
