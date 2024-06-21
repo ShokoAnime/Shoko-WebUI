@@ -89,7 +89,7 @@ function ImportFolders() {
         </div>
         <div className="mb-1 flex">
           <div className="grow">Type</div>
-          <div>{flags !== '' ? flags : 'Not Set - Please Fix'}</div>
+          <div>{flags !== '' ? flags : 'None'}</div>
         </div>
         <div className="flex">
           <div className="grow">Size</div>
