@@ -136,7 +136,7 @@ const EpisodeSummary = React.memo(
                       icon={mdiEyeCheckOutline}
                       active={!!episode.Watched}
                       onClick={handleMarkWatched}
-                      tooltip={`Mark ${episode.Watched ? 'Watched' : 'Unwatched'}`}
+                      tooltip={`Mark ${episode.Watched ? 'Unwatched' : 'Watched'}`}
                     />
                   )}
                   <StateButton
