@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet, useParams } from 'react-router';
 import { Link, NavLink, useNavigate, useOutletContext } from 'react-router-dom';
+import useMeasure from 'react-use-measure';
 import {
   mdiAccountGroupOutline,
   mdiChevronRight,
@@ -80,6 +81,8 @@ const Series = () => {
     setFanart(allFanarts.find(image => image.Preferred) ?? allFanarts[0]);
   }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomFanart]);
 
+  const [containerRef, containerBounds] = useMeasure();
+
   if (seriesQuery.isError) {
     navigate('../');
     return null;
@@ -94,7 +97,7 @@ const Series = () => {
   }
 
   return (
-    <div className="flex flex-col gap-y-6">
+    <div className="flex flex-col gap-y-6" ref={containerRef}>
       <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex flex-row items-center gap-x-4">
           <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
@@ -147,8 +150,13 @@ const Series = () => {
       <Outlet context={{ fanart, scrollRef } satisfies SeriesContextType} />
 
       <div
-        className="fixed left-0 top-0 -z-10 size-full opacity-5"
-        style={{ background: fanart ? `center / cover no-repeat url('${getImagePath(fanart)}')` : undefined }}
+        className="fixed left-0 top-0 -z-10 w-full bg-cover bg-center opacity-5"
+        // If this height feels like a hack, you figure out how to fix it
+        // 48px accounts for the top and bottom padding of the container
+        style={{
+          backgroundImage: fanart ? `url('${getImagePath(fanart)}')` : undefined,
+          height: containerBounds.height + 48,
+        }}
       />
     </div>
   );

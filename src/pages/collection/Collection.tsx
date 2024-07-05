@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -84,6 +85,11 @@ function Collection() {
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
 
+  const [searchParams, setSearchParams] = useSearchParams();
+  const search = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
+  const setSearch = (query: string) => setSearchParams(query ? { q: query } : {});
+  const [debouncedSearch] = useDebounceValue(search, 200);
+
   const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
@@ -97,12 +103,6 @@ function Collection() {
   const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
-  const [groupSearch, setGroupSearch] = useState('');
-  const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
-
-  const [seriesSearch, setSeriesSearch] = useState('');
-  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
-
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
   useEffect(() => {
@@ -110,8 +110,9 @@ function Collection() {
   }, [viewSetting]);
 
   useEffect(() => {
-    setGroupSearch('');
-    setSeriesSearch('');
+    setSearch('');
+    // Shouldn't be emptied on every render
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- for setSearch
   }, [isSeries]);
 
   const groupFilterCondition = useMemo(() => {
@@ -124,9 +125,9 @@ function Collection() {
     {
       pageSize: 50,
       randomImages: showRandomPoster,
-      filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
+      filterCriteria: getFilter(debouncedSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
     },
-    !filterId || (!!filterId && filterQuery.isSuccess),
+    !isSeries && (!filterId || (!!filterId && filterQuery.isSuccess)),
   );
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(
@@ -137,7 +138,7 @@ function Collection() {
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
     {
-      filterCriteria: getFilter(debouncedSeriesSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
+      filterCriteria: getFilter(debouncedSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB'],
       recursive: true,
@@ -173,9 +174,9 @@ function Collection() {
   );
 
   useEffect(() => {
-    if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
+    if (!isSeries || debouncedSearch || !seriesQuery.isSuccess) return;
     setTimelineSeries(seriesQuery.data);
-  }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
+  }, [debouncedSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
   const groupExtras = useGroupViewQuery(
     {
@@ -209,15 +210,15 @@ function Collection() {
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
           filterOrGroup={subsectionName}
-          searchQuery={isSeries ? debouncedSeriesSearch : debouncedGroupSearch}
+          searchQuery={debouncedSearch}
         />
         <TitleOptions
           isSeries={isSeries}
-          groupSearch={groupSearch}
+          groupSearch={search}
           mode={mode}
-          seriesSearch={seriesSearch}
-          setGroupSearch={setGroupSearch}
-          setSeriesSearch={setSeriesSearch}
+          seriesSearch={search}
+          setGroupSearch={setSearch}
+          setSeriesSearch={setSearch}
           toggleFilterSidebar={toggleFilterSidebar}
           toggleMode={toggleMode}
         />
