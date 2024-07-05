@@ -3,6 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { NavLink, useLocation } from 'react-router-dom';
+import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { isEqual } from 'lodash';
@@ -134,8 +135,10 @@ function SettingsPage() {
     patchSettings({ newSettings });
   });
 
+  const [containerRef, containerBounds] = useMeasure();
+
   return (
-    <div className="flex min-h-full grow justify-center gap-x-6">
+    <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
           <div className="mb-8 text-center text-xl opacity-100">Settings</div>
@@ -185,13 +188,15 @@ function SettingsPage() {
                   </Button>
                 </div>
               )}
-              <div
-                className="fixed left-0 top-0 -z-10 size-full opacity-20"
-                style={{ background: 'center / cover no-repeat url(/api/v3/Image/Random/Fanart)' }}
-              />
             </>
           )}
       </div>
+      <div
+        className="fixed left-0 top-0 -z-10 w-full bg-cover bg-center opacity-20"
+        // If this height feels like a hack, you figure out how to fix it
+        // 48px accounts for the top and bottom padding of the container
+        style={{ backgroundImage: 'url(/api/v3/Image/Random/Fanart)', height: containerBounds.height + 48 }}
+      />
     </div>
   );
 }
