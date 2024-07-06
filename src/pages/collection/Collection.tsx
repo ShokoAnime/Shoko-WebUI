@@ -26,6 +26,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useUpdateEffect from '@/hooks/useUpdateEffect';
 
 import type { RootState } from '@/core/store';
 import type { FilterCondition, FilterType, SortingCriteria } from '@/core/types/api/filter';
@@ -109,10 +110,8 @@ function Collection() {
     setMode(viewSetting);
   }, [viewSetting]);
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     setSearch('');
-    // Shouldn't be emptied on every render
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- for setSearch
   }, [isSeries]);
 
   const groupFilterCondition = useMemo(() => {
