@@ -20,8 +20,7 @@ type Props = {
   groupSearch: string;
   mode: string;
   seriesSearch: string;
-  setGroupSearch: Dispatch<SetStateAction<string>>;
-  setSeriesSearch: Dispatch<SetStateAction<string>>;
+  setSearch: Dispatch<SetStateAction<string>>;
   toggleFilterSidebar: () => void;
   toggleMode: () => void;
 };
@@ -38,8 +37,7 @@ const TitleOptions = (props: Props) => {
     isSeries,
     mode,
     seriesSearch,
-    setGroupSearch,
-    setSeriesSearch,
+    setSearch,
     toggleFilterSidebar,
     toggleMode,
   } = props;
@@ -56,7 +54,7 @@ const TitleOptions = (props: Props) => {
           placeholder="Search..."
           startIcon={mdiMagnify}
           value={isSeries ? seriesSearch : groupSearch}
-          onChange={e => (isSeries ? setSeriesSearch(e.target.value) : setGroupSearch(e.target.value))}
+          onChange={e => setSearch(e.target.value)}
         />
         {!isSeries && (
           <>
