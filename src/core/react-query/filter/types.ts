@@ -5,6 +5,7 @@ import type { FilterType } from '@/core/types/api/filter';
 export type FilteredGroupsRequestType = {
   randomImages?: boolean;
   filterCriteria: FilterType;
+  includeEmpty?: boolean;
 } & PaginationType;
 
 export type FilteredGroupSeriesRequestType = {
@@ -12,6 +13,7 @@ export type FilteredGroupSeriesRequestType = {
   filterCriteria: FilterType;
   includeDataFrom?: DataSourceType[];
   recursive?: boolean;
+  includeMissing?: boolean;
 };
 
 export type FilteredSeriesRequestType = {

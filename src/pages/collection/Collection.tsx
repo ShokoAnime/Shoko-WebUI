@@ -26,7 +26,6 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useUpdateEffect from '@/hooks/useUpdateEffect';
 
 import type { RootState } from '@/core/store';
 import type { FilterCondition, FilterType, SortingCriteria } from '@/core/types/api/filter';
@@ -87,9 +86,17 @@ function Collection() {
   const isSeries = useMemo(() => !!groupId, [groupId]);
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const search = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
-  const setSearch = (query: string) => setSearchParams(query ? { q: query } : {});
-  const [debouncedSearch] = useDebounceValue(search, 200);
+  const groupSearch = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
+  const seriesSearch = useMemo(() => searchParams.get('qs') ?? '', [searchParams]);
+  const setSearch = (query: string) => {
+    if (!query) {
+      setSearchParams({}, { replace: true });
+      return;
+    }
+    setSearchParams({ [isSeries ? 'qs' : 'q']: query }, { replace: true });
+  };
+  const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
+  const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
   const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId);
@@ -110,10 +117,6 @@ function Collection() {
     setMode(viewSetting);
   }, [viewSetting]);
 
-  useUpdateEffect(() => {
-    setSearch('');
-  }, [isSeries]);
-
   const groupFilterCondition = useMemo(() => {
     if (filterId) return filterQuery.data?.Expression;
     if (activeFilter !== null) return activeFilter as FilterCondition;
@@ -124,7 +127,7 @@ function Collection() {
     {
       pageSize: 50,
       randomImages: showRandomPoster,
-      filterCriteria: getFilter(debouncedSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
+      filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
     },
     !isSeries && (!filterId || (!!filterId && filterQuery.isSuccess)),
   );
@@ -137,27 +140,14 @@ function Collection() {
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
     {
-      filterCriteria: getFilter(debouncedSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
+      filterCriteria: getFilter(debouncedSeriesSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB'],
       recursive: true,
+      includeMissing: true,
     },
     isSeries,
   );
-
-  useEffect(() => {
-    if (!isSeries) {
-      queryClient.resetQueries({
-        queryKey: ['filter', 'preview', 'group-series'],
-      }).catch(console.error);
-    }
-  }, [isSeries]);
-
-  useEffect(() => () => {
-    queryClient.resetQueries({
-      queryKey: ['filter', 'preview', 'groups'],
-    }).catch(console.error);
-  }, []);
 
   const isFetching = useMemo(
     () => (isSeries ? seriesQuery.isFetching : groupsQuery.isFetching),
@@ -173,9 +163,9 @@ function Collection() {
   );
 
   useEffect(() => {
-    if (!isSeries || debouncedSearch || !seriesQuery.isSuccess) return;
+    if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
     setTimelineSeries(seriesQuery.data);
-  }, [debouncedSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
+  }, [debouncedSeriesSearch, isSeries, seriesQuery.data, seriesQuery.isSuccess]);
 
   const groupExtras = useGroupViewQuery(
     {
@@ -209,15 +199,14 @@ function Collection() {
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
           filterOrGroup={subsectionName}
-          searchQuery={debouncedSearch}
+          searchQuery={isSeries ? seriesSearch : groupSearch}
         />
         <TitleOptions
           isSeries={isSeries}
-          groupSearch={search}
+          groupSearch={groupSearch}
           mode={mode}
-          seriesSearch={search}
-          setGroupSearch={setSearch}
-          setSeriesSearch={setSearch}
+          seriesSearch={seriesSearch}
+          setSearch={setSearch}
           toggleFilterSidebar={toggleFilterSidebar}
           toggleMode={toggleMode}
         />
