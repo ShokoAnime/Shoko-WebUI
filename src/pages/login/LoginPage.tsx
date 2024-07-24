@@ -110,6 +110,14 @@ function LoginPage() {
     return versionQuery.data.Server.Version;
   }, [versionQuery.data, versionQuery.isFetching]);
 
+  useEffect(() => {
+    if (
+      versionQuery?.data?.Server?.ReleaseDate === undefined && versionQuery?.data?.Server?.ReleaseChannel === 'Stable'
+    ) {
+      navigate('/webui/unsupported');
+    }
+  }, [navigate, versionQuery.data]);
+
   return (
     <>
       <ToastContainer

@@ -36,6 +36,7 @@ import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
+import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
 import MultiplesUtil from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtil';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
@@ -68,6 +69,7 @@ const router = sentryCreateBrowserRouter(
           <Route path="import-folders" element={<ImportFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
         </Route>
+        <Route path="unsupported" element={<UnsupportedPage />} />
         <Route
           element={
             <AuthenticatedRoute>
