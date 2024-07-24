@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
@@ -11,14 +11,11 @@ const UnsupportedPage = () => {
   const dispatch = useDispatch();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
 
-  const [updateChannel, setUpdateChannel] = useState<'Stable' | 'Dev'>('Stable');
-
   const handleLogout = useEventCallback(() => {
     dispatch({ type: Events.AUTH_LOGOUT });
   });
 
   const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {
-    setUpdateChannel(channel);
     updateWebui(channel, {
       onSuccess: () => handleLogout(),
     });
@@ -60,7 +57,7 @@ const UnsupportedPage = () => {
             onClick={handleStableWebUiUpdate}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
-            loading={updateChannel === 'Stable' && isUpdateWebuiPending}
+            loading={isUpdateWebuiPending}
           >
             Force update to Stable Web UI
           </Button>
