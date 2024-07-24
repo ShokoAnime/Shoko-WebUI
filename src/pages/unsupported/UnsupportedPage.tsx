@@ -21,8 +21,6 @@ const UnsupportedPage = () => {
     });
   });
 
-  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate());
-
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-6">
       <div className="z-20 flex h-full max-w-[56.4375rem] flex-col items-center justify-center gap-y-4 overflow-y-auto md:gap-y-6">
@@ -54,7 +52,7 @@ const UnsupportedPage = () => {
         </div>
         <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
           <Button
-            onClick={handleStableWebUiUpdate}
+            onClick={handleWebUiUpdate}
             className="px-4 py-2 drop-shadow-md"
             buttonType="primary"
             loading={isUpdateWebuiPending}
