@@ -15,13 +15,13 @@ const UnsupportedPage = () => {
     dispatch({ type: Events.AUTH_LOGOUT });
   });
 
-  const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {
-    updateWebui(channel, {
+  const handleWebUiUpdate = useEventCallback(() => {
+    updateWebui('Stable', {
       onSuccess: () => handleLogout(),
     });
   });
 
-  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
+  const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate());
 
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-6">
