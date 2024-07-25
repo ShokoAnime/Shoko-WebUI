@@ -516,7 +516,7 @@ function LinkFilesTab() {
 
   useEffect(() => {
     if (links.length === 0) {
-      navigate('../', { replace: true });
+      navigate('/webui/Utilities/Unrecognized', { replace: true });
     }
   }, [links, navigate]);
 
