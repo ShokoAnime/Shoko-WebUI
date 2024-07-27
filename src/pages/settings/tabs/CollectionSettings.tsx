@@ -185,7 +185,7 @@ const CollectionSettings = () => {
           </div>
           <div className="mt-2 flex rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result, true)}>
-              {newSettings.EpisodeLanguagePreference.map(language => (
+              {newSettings.EpisodeLanguagePreference?.map(language => (
                 {
                   key: language,
                   item: (
