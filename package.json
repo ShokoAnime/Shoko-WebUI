@@ -115,5 +115,8 @@
       "eslint --cache --format=node_modules/eslint-formatter-pretty"
     ],
     "*.css": "stylelint"
+  },
+  "volta": {
+    "node": "20.16.0"
   }
 }

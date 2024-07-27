@@ -192,10 +192,13 @@ function SettingsPage() {
           )}
       </div>
       <div
-        className="fixed left-0 top-0 -z-10 w-full bg-cover bg-center opacity-20"
+        className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-20"
         // If this height feels like a hack, you figure out how to fix it
-        // 48px accounts for the top and bottom padding of the container
-        style={{ backgroundImage: 'url(/api/v3/Image/Random/Fanart)', height: containerBounds.height + 48 }}
+        // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
+        style={{
+          backgroundImage: 'url(/api/v3/Image/Random/Fanart)',
+          height: `calc(${containerBounds.height}px + 3rem)`,
+        }}
       />
     </div>
   );

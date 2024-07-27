@@ -190,7 +190,7 @@ const AnimeSelectPanel = (
 
 function LinkFilesTab() {
   const navigate = useNavigate();
-  const { selectedRows } = (useLocation().state ?? []) as { selectedRows: FileType[] };
+  const { selectedRows } = (useLocation().state ?? { selectedRows: [] }) as { selectedRows: FileType[] };
   const [{ createdNewSeries, isLinking, isLinkingRunning }, setLoading] = useState({
     isLinking: false,
     isLinkingRunning: false,
@@ -516,7 +516,7 @@ function LinkFilesTab() {
 
   useEffect(() => {
     if (links.length === 0) {
-      navigate('../', { replace: true });
+      navigate('/webui/Utilities/Unrecognized', { replace: true });
     }
   }, [links, navigate]);
 
