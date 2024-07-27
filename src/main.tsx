@@ -21,6 +21,7 @@ if (!isDebug()) {
         matchRoutes,
       }),
       Sentry.replayIntegration({
+        networkDetailAllowUrls: ['/api/v3/Init/Version'],
         maskAllText: true,
         blockAllMedia: false,
       }),
