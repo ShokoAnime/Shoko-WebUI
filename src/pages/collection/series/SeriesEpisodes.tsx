@@ -83,7 +83,6 @@ const SeriesEpisodes = () => {
   );
   const {
     data,
-    dataUpdatedAt,
     fetchNextPage,
     isFetchingNextPage,
     isSuccess,
@@ -213,7 +212,7 @@ const SeriesEpisodes = () => {
 
                 return (
                   <div
-                    key={`${dataUpdatedAt}-${virtualItem.key}`}
+                    key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
                     className="flex flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
                     data-index={virtualItem.index}
                   >
