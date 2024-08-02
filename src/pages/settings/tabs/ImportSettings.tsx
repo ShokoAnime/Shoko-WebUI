@@ -9,13 +9,15 @@ function ImportSettings() {
 
   const {
     AutomaticallyDeleteDuplicatesOnImport,
-    MoveOnImport,
-    RenameOnImport,
-    RenameThenMove,
     RunOnStart,
     UseExistingFileWatchedStatus,
     VideoExtensions,
   } = newSettings.Import;
+
+  const {
+    MoveOnImport,
+    RenameOnImport,
+  } = newSettings.Plugins;
 
   return (
     <>
@@ -44,22 +46,22 @@ function ImportSettings() {
             label="Rename on import"
             id="rename-on-import"
             isChecked={RenameOnImport}
-            onChange={event => updateSetting('Import', 'RenameOnImport', event.target.checked)}
+            onChange={event => updateSetting('Plugins', 'RenameOnImport', event.target.checked)}
           />
           <Checkbox
             justify
             label="Move on import"
             id="move-on-import"
             isChecked={MoveOnImport}
-            onChange={event => updateSetting('Import', 'MoveOnImport', event.target.checked)}
+            onChange={event => updateSetting('Plugins', 'MoveOnImport', event.target.checked)}
           />
-          <Checkbox
-            justify
-            label="Move after rename"
-            id="move-after-rename"
-            isChecked={RenameThenMove}
-            onChange={event => updateSetting('Import', 'RenameThenMove', event.target.checked)}
-          />
+          {/* <Checkbox */}
+          {/*   justify */}
+          {/*   label="Move after rename" */}
+          {/*   id="move-after-rename" */}
+          {/*   isChecked={RenameThenMove} */}
+          {/*   onChange={event => updateSetting('Import', 'RenameThenMove', event.target.checked)} */}
+          {/* /> */}
           <Checkbox
             justify
             label="Delete duplicates on import"

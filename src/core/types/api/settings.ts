@@ -363,12 +363,20 @@ export type SettingsLogRotatorType = {
 
 export type SettingsImportType = {
   AutomaticallyDeleteDuplicatesOnImport: boolean;
-  MoveOnImport: boolean;
-  RenameOnImport: boolean;
-  RenameThenMove: boolean;
   RunOnStart: boolean;
   UseExistingFileWatchedStatus: boolean;
   VideoExtensions: string[];
+};
+
+export type PluginSettingsType = {
+  EnabledPlugins: Record<string, boolean>;
+  Priority: number[];
+  Renamer: {
+    DefaultRenamer: string | null;
+    EnabledRenamers: Record<string, boolean>;
+  };
+  MoveOnImport: boolean;
+  RenameOnImport: boolean;
 };
 
 export type SettingsServerType = {
@@ -393,6 +401,7 @@ export type SettingsServerType = {
   Import: SettingsImportType;
   LoadImageMetadata: boolean;
   TraceLog: boolean;
+  Plugins: PluginSettingsType;
 };
 
 type LayoutItemType = {
