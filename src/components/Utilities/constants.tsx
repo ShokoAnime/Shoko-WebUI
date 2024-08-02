@@ -36,7 +36,12 @@ export const staticColumns: UtilityHeaderType<FileType>[] = [
       const match = /[/\\](?=[^/\\]*$)/g.exec(path);
       const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
       return (
-        <div className="flex flex-col" data-tooltip-id="tooltip" data-tooltip-content={path}>
+        <div
+          className="flex flex-col"
+          data-tooltip-id="tooltip"
+          data-tooltip-content={path}
+          data-tooltip-delay-show={500}
+        >
           <span className="line-clamp-1 text-sm font-semibold opacity-65">
             {relativePath}
           </span>

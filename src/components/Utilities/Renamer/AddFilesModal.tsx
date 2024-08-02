@@ -1,0 +1,165 @@
+import React, { useState } from 'react';
+import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
+import { Icon } from '@mdi/react';
+import { toNumber } from 'lodash';
+import { useDebounceValue } from 'usehooks-ts';
+
+import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
+import InputSmall from '@/components/Input/InputSmall';
+import ModalPanel from '@/components/Panels/ModalPanel';
+import AddFilesSeriesList from '@/components/Utilities/Renamer/AddFilesSeriesList';
+import { axios } from '@/core/axios';
+import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/queries';
+import queryClient from '@/core/react-query/queryClient';
+import { addFiles } from '@/core/slices/utilities/renamer';
+import store from '@/core/store';
+import { FileSortCriteriaEnum } from '@/core/types/api/file';
+import useFlattenListResult from '@/hooks/useFlattenListResult';
+
+import type { ListResultType } from '@/core/types/api';
+import type { FileType } from '@/core/types/api/file';
+import type { FilterCondition, FilterType } from '@/core/types/api/filter';
+
+type Props = {
+  show: boolean;
+  onClose(): void;
+};
+
+const addEntireCollection = () => {
+  queryClient.fetchQuery<ListResultType<FileType>>(
+    {
+      queryKey: ['files', 'entire-collection'],
+      queryFn: () => axios.get('File', { params: { pageSize: 0 } }),
+    },
+  )
+    .then(result => store.dispatch(addFiles(result.List)))
+    .catch(console.error);
+};
+
+const addRecentlyHashedFiles = (pageSize: number) => {
+  queryClient.fetchQuery<ListResultType<FileType>>(
+    {
+      queryKey: ['files', 'recently-hashed', pageSize],
+      queryFn: () => axios.get('File', { params: { pageSize, sortOrder: [-FileSortCriteriaEnum.CreatedAt] } }),
+    },
+  )
+    .then(result => store.dispatch(addFiles(result.List)))
+    .catch(console.error);
+};
+
+const getSearchFilter = (query: string, isSeries: boolean): FilterType => {
+  if (!query) return {};
+
+  let searchCondition: FilterCondition = {
+    Type: 'StringContains',
+    Left: {
+      Type: 'NameSelector',
+    },
+    Parameter: query,
+  };
+
+  if (Number.isFinite(toNumber(query))) {
+    searchCondition = {
+      Type: 'Or',
+      Left: searchCondition,
+      Right: {
+        Type: 'AnyEquals',
+        Left: {
+          Type: 'AniDBIDsSelector',
+        },
+        Parameter: query,
+      },
+    };
+  }
+
+  return {
+    ApplyAtSeriesLevel: isSeries,
+    Expression: searchCondition,
+    Sorting: { Type: 'Name', IsInverted: false },
+  };
+};
+
+const AddFilesModal = ({ onClose, show }: Props) => {
+  const [pageSize, setPageSize] = useState(10);
+
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounceValue(search, 200);
+
+  const seriesQuery = useFilteredSeriesInfiniteQuery(
+    {
+      pageSize: 50,
+      filterCriteria: getSearchFilter(debouncedSearch, true),
+    },
+    show,
+  );
+  const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
+
+  return (
+    <ModalPanel
+      show={show}
+      onRequestClose={onClose}
+      header="Add Files"
+      size="sm"
+      noGap
+    >
+      <div className="flex flex-col gap-y-8">
+        <div className="flex flex-col gap-y-4">
+          <div className="font-semibold">One Click Options</div>
+          <div className="border-b border-panel-border" />
+          <div className="flex flex-col gap-y-2">
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Entire Collection</div>
+              <Button
+                onClick={addEntireCollection}
+              >
+                <Icon path={mdiPlayCircleOutline} size={1} className="text-panel-text-primary" />
+              </Button>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="text-sm font-semibold">Recently Hashed Files</div>
+              <div className="flex items-center gap-x-2">
+                <InputSmall
+                  id="pageSize"
+                  type="number"
+                  value={pageSize}
+                  onChange={e => setPageSize(toNumber(e.target.value))}
+                  className="w-12 text-center"
+                />
+                <Button
+                  onClick={() => addRecentlyHashedFiles(pageSize)}
+                >
+                  <Icon path={mdiPlayCircleOutline} size={1} className="text-panel-text-primary" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-y-4">
+          <div className="font-semibold">Select Series</div>
+          <div className="border-b border-panel-border" />
+          <div className="flex flex-col gap-y-4">
+            <Input
+              id="search"
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+            />
+            <AddFilesSeriesList
+              series={series}
+              seriesCount={seriesCount}
+              isPending={seriesQuery.isPending}
+              isFetchingNextPage={seriesQuery.isFetchingNextPage}
+              fetchNextPage={seriesQuery.fetchNextPage}
+            />
+          </div>
+        </div>
+      </div>
+    </ModalPanel>
+  );
+};
+
+export default AddFilesModal;

@@ -39,6 +39,7 @@ import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
 import MultiplesUtil from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtil';
+import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
 import LinkFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
@@ -90,6 +91,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="release-management/multiples" element={<MultiplesUtil />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
+            <Route path="renamer" element={<Renamer />} />
           </Route>
           <Route path="log" element={<LogsPage />} />
           <Route path="collection">

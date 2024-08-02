@@ -1,5 +1,6 @@
 import React, { useMemo, useRef, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
+import { useSelector } from 'react-redux';
 import { mdiChevronDown, mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -11,6 +12,7 @@ import { criteriaMap } from '@/components/Utilities/constants';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
+import type { RootState } from '@/core/store';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileSortCriteriaEnum, FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
@@ -20,8 +22,8 @@ import type { Updater } from 'use-immer';
 type Props = {
   columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
   count: number;
-  fetchNextPage: () => Promise<unknown>;
-  isFetchingNextPage: boolean;
+  fetchNextPage?: (index?: number) => Promise<unknown>;
+  isFetchingNextPage?: boolean;
   rows: EpisodeType[] | FileType[] | SeriesType[];
   setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
   skipSort?: boolean;
@@ -31,6 +33,7 @@ type Props = {
   setSelectedRows?: Updater<Record<number, boolean>>;
   ExpandedNode?: React.ComponentType<{ id: number, open: boolean }>;
   onExpand?: (id: number) => Promise<void>;
+  isRenamer?: boolean;
 };
 
 const selectRowId = (target: EpisodeType | FileType | SeriesType) => ('ID' in target ? target.ID : target.IDs.ID);
@@ -206,6 +209,7 @@ const UtilitiesTable = (props: Props) => {
     fetchNextPage,
     handleRowSelect,
     isFetchingNextPage,
+    isRenamer,
     onExpand,
     rowSelection,
     rows,
@@ -214,6 +218,7 @@ const UtilitiesTable = (props: Props) => {
     skipSort,
     sortCriteria,
   } = props;
+  const renamerPreviews = useSelector((state: RootState) => state.utilities.renamer.renameResults);
 
   const parentRef = useRef<HTMLDivElement>(null);
   const virtualizer = useVirtualizer({
@@ -225,10 +230,22 @@ const UtilitiesTable = (props: Props) => {
   const virtualItems = virtualizer.getVirtualItems();
 
   const fetchNextPageDebounced = useMemo(
-    () =>
-      debounce(() => {
+    () => {
+      if (!fetchNextPage) return () => {};
+      return debounce(() => {
         fetchNextPage().catch(() => {});
-      }, 50),
+      }, 50);
+    },
+    [fetchNextPage],
+  );
+
+  const fetchPageDebounced = useMemo(
+    () => {
+      if (!fetchNextPage) return () => {};
+      return debounce((itemIndex: number) => {
+        fetchNextPage(itemIndex).catch(() => {});
+      }, 50);
+    },
     [fetchNextPage],
   );
 
@@ -261,7 +278,7 @@ const UtilitiesTable = (props: Props) => {
   });
 
   return (
-    <div className="flex w-full flex-col overflow-y-auto pr-4" ref={parentRef}>
+    <div className="flex w-full grow flex-col overflow-y-auto pr-4" ref={parentRef}>
       <div className="sticky top-0 z-[1] bg-panel-background-alt">
         <div className="flex rounded-lg border border-panel-border bg-panel-table-header p-4 font-semibold">
           {columns.map(column => (
@@ -296,6 +313,9 @@ const UtilitiesTable = (props: Props) => {
               const row = rows[virtualRow.index];
 
               if (!row && !isFetchingNextPage) fetchNextPageDebounced();
+              if (isRenamer && !renamerPreviews[(row as FileType).ID] && !isFetchingNextPage) {
+                fetchPageDebounced(virtualRow.index);
+              }
 
               return (
                 <div

@@ -406,14 +406,21 @@ export const initialSettings: SettingsType = {
   AutoGroupSeriesRelationExclusions: [],
   Import: {
     AutomaticallyDeleteDuplicatesOnImport: false,
-    MoveOnImport: false,
-    RenameOnImport: false,
-    RenameThenMove: false,
     RunOnStart: false,
     UseExistingFileWatchedStatus: false,
     VideoExtensions: [],
   },
   TraceLog: false,
+  Plugins: {
+    EnabledPlugins: {},
+    Priority: [],
+    Renamer: {
+      DefaultRenamer: null,
+      EnabledRenamers: {},
+    },
+    MoveOnImport: false,
+    RenameOnImport: false,
+  },
 };
 
 export const transformSettings = (response: SettingsServerType) => {
