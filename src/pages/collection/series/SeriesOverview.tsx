@@ -88,24 +88,18 @@ const SeriesOverview = () => {
                       const tmdbIds = idOrIds as { Movie: number[], Show: number[] };
 
                       if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
-                        return (
-                          <div
-                            className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
-                            key={site}
-                          >
-                            <SeriesMetadata site={site} seriesId={series.IDs.ID} />
-                          </div>
-                        );
+                        return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
                       }
 
-                      return flatMap(tmdbIds, (ids, type) =>
+                      return flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
                         ids.map(id => (
-                          <div
-                            className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                          <SeriesMetadata
                             key={`${site}-${type}-${id}`}
-                          >
-                            <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
-                          </div>
+                            site={site}
+                            id={id}
+                            seriesId={series.IDs.ID}
+                            type={type}
+                          />
                         )));
                     }
 
@@ -114,12 +108,7 @@ const SeriesOverview = () => {
                     if (linkIds.length === 0) linkIds = [0];
 
                     return linkIds.map(id => (
-                      <div
-                        className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3"
-                        key={`${site}-${id}`}
-                      >
-                        <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
-                      </div>
+                      <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
                     ));
                   })}
                 </div>

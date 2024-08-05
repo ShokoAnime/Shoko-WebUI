@@ -51,43 +51,45 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
   });
 
   return (
-    <div key={site} className="flex justify-between">
-      <div className="flex gap-x-4">
-        <div className={`metadata-link-icon ${site}`} />
-        {id
-          ? (
-            <a
-              href={siteLink}
-              className="flex gap-x-2 font-semibold text-panel-text-primary"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {`${site} (${type ? type[0].toLowerCase() : ''}${id})`}
-              <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
-            </a>
-          )
-          : 'Series Not Linked'}
-      </div>
-      {site !== 'AniDB' && (
-        <div className="flex gap-x-2">
+    <div className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3">
+      <div className="flex justify-between">
+        <div className="flex gap-x-4">
+          <div className={`metadata-link-icon ${site}`} />
           {id
             ? (
-              <>
-                <Button disabled>
-                  <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
-                </Button>
-                <Button disabled={!canRemoveLink} onClick={removeLink} tooltip="Remove link">
-                  <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
-                </Button>
-              </>
+              <a
+                href={siteLink}
+                className="flex gap-x-2 font-semibold text-panel-text-primary"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {`${site} (${type ? type[0].toLowerCase() : ''}${id})`}
+                <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+              </a>
             )
-            : (
-              <Button disabled>
-                <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-              </Button>
-            )}
+            : 'Series Not Linked'}
         </div>
-      )}
+        {site !== 'AniDB' && (
+          <div className="flex gap-x-2">
+            {id
+              ? (
+                <>
+                  <Button disabled>
+                    <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
+                  </Button>
+                  <Button disabled={!canRemoveLink} onClick={removeLink} tooltip="Remove link">
+                    <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
+                  </Button>
+                </>
+              )
+              : (
+                <Button disabled>
+                  <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
+                </Button>
+              )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
