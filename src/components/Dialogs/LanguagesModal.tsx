@@ -10,16 +10,23 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
-  type: 'Series' | 'Episode' | null;
+  type: 'Series' | 'Episode' | 'Description' | null;
   onClose: () => void;
 };
 
 function LanguagesModal({ onClose, type }: Props) {
   const settings = useSettingsQuery().data;
   const LanguagePreference = useMemo(
-    () => (type === 'Episode'
-      ? settings.EpisodeLanguagePreference
-      : settings.LanguagePreference),
+    () => {
+      switch (type) {
+        case 'Episode':
+          return settings.Language.EpisodeTitleLanguageOrder;
+        case 'Description':
+          return settings.Language.DescriptionLanguageOrder;
+        default:
+          return settings.Language.SeriesTitleLanguageOrder;
+      }
+    },
     [type, settings],
   );
   const { mutate: patchSettings } = usePatchSettingsMutation();
@@ -30,7 +37,21 @@ function LanguagesModal({ onClose, type }: Props) {
     patchSettings({
       newSettings: {
         ...settings,
-        [type === 'Episode' ? 'EpisodeLanguagePreference' : 'LanguagePreference']: languages,
+        Language: {
+          ...settings.Language,
+          [
+            (() => {
+              switch (type) {
+                case 'Episode':
+                  return 'EpisodeTitleLanguageOrder';
+                case 'Description':
+                  return 'DescriptionLanguageOrder';
+                default:
+                  return 'SeriesTitleLanguageOrder';
+              }
+            })()
+          ]: languages,
+        },
       },
     }, {
       onSuccess: () => onClose(),

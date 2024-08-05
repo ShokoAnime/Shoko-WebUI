@@ -25,7 +25,7 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'];
+const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'] as const;
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
@@ -82,7 +82,34 @@ const SeriesOverview = () => {
                   )}
                 >
                   {MetadataLinks.map((site) => {
-                    const idOrIds = series.IDs[site] as number | number[];
+                    const idOrIds = series.IDs[site] as number | number[] | Record<string, number[]>;
+                    if (typeof idOrIds === 'object' && idOrIds !== null && !(idOrIds instanceof Array)) {
+                      if (Object.entries(idOrIds).reduce((total, [, { length: count }]) => total + count, 0) === 0) {
+                        return [
+                          <div
+                            className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                            key={`${site}-Show-null`}
+                          >
+                            <SeriesMetadata site={site} seriesId={series.IDs.ID} />
+                          </div>,
+                        ];
+                      }
+                      return Object.entries(idOrIds).flatMap(([subType, ids]) =>
+                        ids.map(id => (
+                          <div
+                            className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
+                            key={`${site}-${subType}-${id}`}
+                          >
+                            <SeriesMetadata
+                              site={site}
+                              id={id}
+                              type={subType as 'Movie' | 'Show'}
+                              seriesId={series.IDs.ID}
+                            />
+                          </div>
+                        )),
+                      );
+                    }
                     if (typeof idOrIds === 'number' || idOrIds.length === 0) {
                       const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
                       return (

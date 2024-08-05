@@ -6,17 +6,30 @@ import Button from '@/components/Input/Button';
 import { useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
-const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId: number, site: string }) => {
-  const linkId = Array.isArray(id) ? id[0] : id;
+const MetadataLink = (
+  { id, seriesId, site, type }: {
+    id?: number | number[] | null;
+    seriesId: number;
+    site: 'AniDB' | 'TMDB' | 'TvDB' | 'TraktTv';
+    type?: 'Movie' | 'Show';
+  },
+) => {
+  const linkId = Array.isArray(id) ? id[0] || null : id ?? null;
 
   const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {
+    if (!linkId) return '#';
     switch (site) {
       case 'AniDB':
         return `https://anidb.net/anime/${linkId}`;
       case 'TMDB':
-        return `https://www.themoviedb.org/movie/${linkId}`;
+        switch (type) {
+          case 'Show':
+            return `https://www.themoviedb.org/tv/${linkId}`;
+          default:
+            return `https://www.themoviedb.org/movie/${linkId}`;
+        }
       case 'TvDB':
         return `https://thetvdb.com/?tab=series&id=${linkId}`;
       case 'TraktTv':
@@ -25,14 +38,23 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
       default:
         return '#';
     }
-  }, [linkId, site]);
+  }, [linkId, site, type]);
 
-  const canDisable = site === 'TvDB';
+  const canDisable = site === 'TvDB' || site === 'TMDB';
 
   const disableMetadata = useEventCallback(() => {
+    if (!linkId) return;
     switch (site) {
       case 'TvDB':
         deleteTvdbLink(seriesId);
+        break;
+      case 'TMDB':
+        switch (type) {
+          case 'Show':
+            break;
+          default:
+            break;
+        }
         break;
       default:
         break;
@@ -51,7 +73,7 @@ const MetadataLink = ({ id, seriesId, site }: { id: number | number[], seriesId:
               rel="noopener noreferrer"
               target="_blank"
             >
-              {site}
+              {`${site} (${type ? type[0].toLowerCase() : ''}${linkId})`}
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )

@@ -47,14 +47,14 @@ function TvDBTab() {
       <div className="border-b-2 border-panel-border pb-4 font-semibold">Download Options</div>
       <div className="flex flex-col gap-y-2">
         <Checkbox
-          label="Fanart"
+          label="Backdrops"
           id="TvDB_AutoFanart"
           isChecked={AutoFanart}
           onChange={handleInputChange}
           justify
         />
         <div className={cx('flex justify-between transition-opacity', !AutoFanart && 'pointer-events-none opacity-65')}>
-          Max Fanart
+          Max Backdrops
           <InputSmall
             id="TvDB_AutoFanartAmount"
             value={AutoFanartAmount}
