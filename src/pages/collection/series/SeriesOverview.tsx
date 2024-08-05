@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, round, toNumber } from 'lodash';
+import { flatMap, get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
@@ -82,49 +82,41 @@ const SeriesOverview = () => {
                   )}
                 >
                   {MetadataLinks.map((site) => {
-                    const idOrIds = series.IDs[site] as number | number[] | Record<string, number[]>;
-                    if (typeof idOrIds === 'object' && idOrIds !== null && !(idOrIds instanceof Array)) {
-                      if (Object.entries(idOrIds).reduce((total, [, { length: count }]) => total + count, 0) === 0) {
-                        return [
+                    const idOrIds = series.IDs[site];
+
+                    if (site === 'TMDB') {
+                      const tmdbIds = idOrIds as { Movie: number[], Show: number[] };
+
+                      if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
+                        return (
                           <div
                             className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
-                            key={`${site}-Show-null`}
+                            key={site}
                           >
                             <SeriesMetadata site={site} seriesId={series.IDs.ID} />
-                          </div>,
-                        ];
+                          </div>
+                        );
                       }
-                      return Object.entries(idOrIds).flatMap(([subType, ids]) =>
+
+                      return flatMap(tmdbIds, (ids, type) =>
                         ids.map(id => (
                           <div
                             className="rounded border border-panel-border bg-panel-background-alt px-4 py-3"
-                            key={`${site}-${subType}-${id}`}
+                            key={`${site}-${type}-${id}`}
                           >
-                            <SeriesMetadata
-                              site={site}
-                              id={id}
-                              type={subType as 'Movie' | 'Show'}
-                              seriesId={series.IDs.ID}
-                            />
+                            <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
                           </div>
-                        )),
-                      );
+                        )));
                     }
-                    if (typeof idOrIds === 'number' || idOrIds.length === 0) {
-                      const id = typeof idOrIds === 'number' ? idOrIds : idOrIds[0] || 0;
-                      return (
-                        <div
-                          className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3"
-                          key={`${site} + ${id}`}
-                        >
-                          <SeriesMetadata site={site} id={idOrIds} seriesId={series.IDs.ID} />
-                        </div>
-                      );
-                    }
-                    return idOrIds.map(id => (
+
+                    // Site is not TMDB, so it's either a single ID or an array of IDs
+                    let linkIds = (typeof idOrIds === 'number' ? [idOrIds] : idOrIds) as number[];
+                    if (linkIds.length === 0) linkIds = [0];
+
+                    return linkIds.map(id => (
                       <div
                         className="w-full rounded-lg border border-panel-border bg-panel-background px-4 py-3"
-                        key={`${site} + ${id}`}
+                        key={`${site}-${id}`}
                       >
                         <SeriesMetadata site={site} id={id} seriesId={series.IDs.ID} />
                       </div>

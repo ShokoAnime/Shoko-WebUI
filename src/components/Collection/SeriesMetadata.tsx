@@ -3,58 +3,47 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
-import { useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
+import { useDeleteSeriesTmdbLinkMutation, useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
-const MetadataLink = (
-  { id, seriesId, site, type }: {
-    id?: number | number[] | null;
-    seriesId: number;
-    site: 'AniDB' | 'TMDB' | 'TvDB' | 'TraktTv';
-    type?: 'Movie' | 'Show';
-  },
-) => {
-  const linkId = Array.isArray(id) ? id[0] || null : id ?? null;
+type Props = {
+  id?: number;
+  seriesId: number;
+  site: 'AniDB' | 'TMDB' | 'TvDB' | 'TraktTv';
+  type?: 'Movie' | 'Show';
+};
 
+const MetadataLink = ({ id, seriesId, site, type }: Props) => {
+  const { mutate: deleteTmdbLink } = useDeleteSeriesTmdbLinkMutation(type ?? 'Movie');
   const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {
-    if (!linkId) return '#';
+    if (!id) return '#';
     switch (site) {
       case 'AniDB':
-        return `https://anidb.net/anime/${linkId}`;
+        return `https://anidb.net/anime/${id}`;
       case 'TMDB':
-        switch (type) {
-          case 'Show':
-            return `https://www.themoviedb.org/tv/${linkId}`;
-          default:
-            return `https://www.themoviedb.org/movie/${linkId}`;
-        }
+        return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
       case 'TvDB':
-        return `https://thetvdb.com/?tab=series&id=${linkId}`;
+        return `https://thetvdb.com/?tab=series&id=${id}`;
       case 'TraktTv':
         // TODO: Figure how to get trakt series link using ID
         return '#';
       default:
         return '#';
     }
-  }, [linkId, site, type]);
+  }, [id, site, type]);
 
-  const canDisable = site === 'TvDB' || site === 'TMDB';
+  const canRemoveLink = useMemo(() => site === 'TvDB' || site === 'TMDB', [site]);
 
-  const disableMetadata = useEventCallback(() => {
-    if (!linkId) return;
+  const removeLink = useEventCallback(() => {
+    if (!id) return;
     switch (site) {
       case 'TvDB':
         deleteTvdbLink(seriesId);
         break;
       case 'TMDB':
-        switch (type) {
-          case 'Show':
-            break;
-          default:
-            break;
-        }
+        deleteTmdbLink(seriesId);
         break;
       default:
         break;
@@ -65,7 +54,7 @@ const MetadataLink = (
     <div key={site} className="flex justify-between">
       <div className="flex gap-x-4">
         <div className={`metadata-link-icon ${site}`} />
-        {linkId
+        {id
           ? (
             <a
               href={siteLink}
@@ -73,7 +62,7 @@ const MetadataLink = (
               rel="noopener noreferrer"
               target="_blank"
             >
-              {`${site} (${type ? type[0].toLowerCase() : ''}${linkId})`}
+              {`${site} (${type ? type[0].toLowerCase() : ''}${id})`}
               <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
             </a>
           )
@@ -81,13 +70,13 @@ const MetadataLink = (
       </div>
       {site !== 'AniDB' && (
         <div className="flex gap-x-2">
-          {linkId
+          {id
             ? (
               <>
                 <Button disabled>
                   <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
                 </Button>
-                <Button disabled={!canDisable} onClick={disableMetadata} tooltip="Remove link">
+                <Button disabled={!canRemoveLink} onClick={removeLink} tooltip="Remove link">
                   <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
                 </Button>
               </>

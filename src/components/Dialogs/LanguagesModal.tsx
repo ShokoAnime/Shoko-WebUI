@@ -34,27 +34,23 @@ function LanguagesModal({ onClose, type }: Props) {
   const [languages, setLanguages] = useState([] as string[]);
 
   const handleSave = useEventCallback(() => {
+    let preferenceType = 'SeriesTitleLanguageOrder';
+    if (type === 'Episode') {
+      preferenceType = 'EpisodeTitleLanguageOrder';
+    } else if (type === 'Description') {
+      preferenceType = 'DescriptionLanguageOrder';
+    }
+
     patchSettings({
       newSettings: {
         ...settings,
         Language: {
           ...settings.Language,
-          [
-            (() => {
-              switch (type) {
-                case 'Episode':
-                  return 'EpisodeTitleLanguageOrder';
-                case 'Description':
-                  return 'DescriptionLanguageOrder';
-                default:
-                  return 'SeriesTitleLanguageOrder';
-              }
-            })()
-          ]: languages,
+          [preferenceType]: languages,
         },
       },
     }, {
-      onSuccess: () => onClose(),
+      onSuccess: onClose,
     });
   });
 

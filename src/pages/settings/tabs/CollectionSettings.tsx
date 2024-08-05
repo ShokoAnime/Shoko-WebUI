@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { type ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, remove } from 'lodash';
@@ -13,6 +13,17 @@ import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { DropResult } from '@hello-pangea/dnd';
 
+const getLanguageOrderName = (type: 'Series' | 'Episode' | 'Description') => {
+  switch (type) {
+    case 'Episode':
+      return 'EpisodeTitleLanguageOrder';
+    case 'Description':
+      return 'DescriptionLanguageOrder';
+    default:
+      return 'SeriesTitleLanguageOrder';
+  }
+};
+
 const CollectionSettings = () => {
   const { newSettings, setNewSettings } = useSettingsContext();
   const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | 'Description' | null>(null);
@@ -21,6 +32,7 @@ const CollectionSettings = () => {
     AutoGroupSeries,
     AutoGroupSeriesRelationExclusions,
     AutoGroupSeriesUseScoreAlgorithm,
+    Language,
   } = newSettings;
 
   const onDragEnd = (result: DropResult, type: 'Series' | 'Episode' | 'Description') => {
@@ -28,71 +40,27 @@ const CollectionSettings = () => {
       return;
     }
 
-    const items = Array.from(
-      (() => {
-        switch (type) {
-          case 'Episode':
-            return newSettings.Language.EpisodeTitleLanguageOrder;
-          case 'Description':
-            return newSettings.Language.DescriptionLanguageOrder;
-          default:
-            return newSettings.Language.SeriesTitleLanguageOrder;
-        }
-      })()
-    );
+    const items = Array.from(Language[getLanguageOrderName(type)]);
     const [removed] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, removed);
 
     setNewSettings({
       ...newSettings,
       Language: {
-        ...newSettings.Language,
-        [
-          (() => {
-            switch (type) {
-              case 'Episode':
-                return 'EpisodeTitleLanguageOrder';
-              case 'Description':
-                return 'DescriptionLanguageOrder';
-              default:
-                return 'SeriesTitleLanguageOrder';
-            }
-          })()
-        ]: items,
+        ...Language,
+        [getLanguageOrderName(type)]: items,
       },
     });
   };
 
   const removeLanguage = (language: string, type: 'Series' | 'Episode' | 'Description') => {
-    const items = Array.from(
-      (() => {
-        switch (type) {
-          case 'Episode':
-            return newSettings.Language.EpisodeTitleLanguageOrder;
-          case 'Description':
-            return newSettings.Language.DescriptionLanguageOrder;
-          default:
-            return newSettings.Language.SeriesTitleLanguageOrder;
-        }
-      })()
-    );
+    const items = Array.from(Language[getLanguageOrderName(type)]);
     remove(items, item => item === language);
     setNewSettings({
       ...newSettings,
       Language: {
-        ...newSettings.Language,
-        [
-          (() => {
-            switch (type) {
-              case 'Episode':
-                return 'EpisodeTitleLanguageOrder';
-              case 'Description':
-                return 'DescriptionLanguageOrder';
-              default:
-                return 'SeriesTitleLanguageOrder';
-            }
-          })()
-        ]: items,
+        ...Language,
+        [getLanguageOrderName(type)]: items,
       },
     });
   };
@@ -160,7 +128,7 @@ const CollectionSettings = () => {
     return id in exclusionMapping;
   }
 
-  const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleExclusionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!(event.target.id in exclusionMapping)) return;
     const { checked, id } = event.target;
 
@@ -196,11 +164,11 @@ const CollectionSettings = () => {
           <Checkbox
             label="Also Use Synonyms"
             id="LanguageUseSynonyms"
-            isChecked={newSettings.Language.UseSynonyms}
+            isChecked={Language.UseSynonyms}
             onChange={event =>
               setNewSettings({
                 ...newSettings,
-                Language: { ...newSettings.Language, UseSynonyms: event.target.checked },
+                Language: { ...Language, UseSynonyms: event.target.checked },
               })}
             justify
           />
@@ -212,7 +180,7 @@ const CollectionSettings = () => {
           </div>
           <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
-              {newSettings.Language.SeriesTitleLanguageOrder.map(language => (
+              {Language.SeriesTitleLanguageOrder.map(language => (
                 {
                   key: language,
                   item: (
@@ -235,7 +203,7 @@ const CollectionSettings = () => {
           </div>
           <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result, 'Episode')}>
-              {newSettings.Language.EpisodeTitleLanguageOrder.map(language => (
+              {Language.EpisodeTitleLanguageOrder.map(language => (
                 {
                   key: language,
                   item: (
@@ -258,7 +226,7 @@ const CollectionSettings = () => {
           </div>
           <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
             <DnDList onDragEnd={result => onDragEnd(result, 'Description')}>
-              {newSettings.Language.DescriptionLanguageOrder.map(language => (
+              {Language.DescriptionLanguageOrder.map(language => (
                 {
                   key: language,
                   item: (

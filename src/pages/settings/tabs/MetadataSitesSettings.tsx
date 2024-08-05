@@ -187,7 +187,7 @@ function MetadataSitesSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">TvDB Options</div>
+        <div className="flex h-[2.149rem] items-center font-semibold">TVDB Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify

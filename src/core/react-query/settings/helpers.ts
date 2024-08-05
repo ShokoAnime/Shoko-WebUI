@@ -1,13 +1,10 @@
 import semver from 'semver';
 
 import { webuiSettingsPatches } from '@/core/patches';
-import {
-  LanguageSource,
-  type SettingsServerType,
-  type SettingsType,
-  type WebUISettingsType,
-} from '@/core/types/api/settings';
+import { LanguageSource } from '@/core/types/api/settings';
 import { uiVersion } from '@/core/util';
+
+import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
 
 const initialLayout = {
   dashboard: {
