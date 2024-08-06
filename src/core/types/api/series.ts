@@ -103,19 +103,6 @@ export type SeriesAniDBSearchResult = {
   EpisodeCount: number;
 };
 
-export type SeriesTvDBType = {
-  ID: number;
-  AirDate: string | null;
-  EndDate: string | null;
-  Title: string;
-  Description: string;
-  Season: number | null;
-  Posters: ImageType[];
-  Fanarts: ImageType[];
-  Banners: ImageType[];
-  Rating: RatingType;
-};
-
 export type SeriesTitleType = {
   Name: string;
   Language: string;
@@ -216,5 +203,5 @@ export type SeriesCast = {
 export type SeriesImagesType = {
   Posters: ImageType[];
   Banners: ImageType[];
-  Fanarts: ImageType[];
+  Backdrops: ImageType[];
 };

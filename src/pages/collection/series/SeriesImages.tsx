@@ -16,10 +16,10 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 
-type ImageTabType = 'Posters' | 'Fanarts' | 'Banners';
+type ImageTabType = 'Posters' | 'Backdrops' | 'Banners';
 const tabStates = [
   { value: 'Posters' },
-  { value: 'Fanarts' },
+  { value: 'Backdrops' },
   { value: 'Banners' },
 ];
 
@@ -32,7 +32,7 @@ const InfoLine = ({ title, value }) => (
 
 const sizeMap = {
   Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
-  Fanarts: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
+  Backdrops: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
   Banners: { image: 'h-[8rem]', grid: 'grid-cols-2' },
 };
 

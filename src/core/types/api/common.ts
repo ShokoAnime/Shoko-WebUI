@@ -20,7 +20,7 @@ export type ImageType = {
 
 export type ImagesType = {
   Posters: ImageType[];
-  Fanarts: ImageType[];
+  Backdrops: ImageType[];
   Banners: ImageType[];
 };
 
@@ -35,7 +35,7 @@ export const enum ImageTypeEnum {
   Poster = 'Poster',
   Banner = 'Banner',
   Thumb = 'Thumb',
-  Fanart = 'Fanart',
+  Backdrop = 'Backdrop',
   Character = 'Character',
   Staff = 'Staff',
   Static = 'Static',

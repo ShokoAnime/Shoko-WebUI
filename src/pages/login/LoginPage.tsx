@@ -46,7 +46,7 @@ function LoginPage() {
   const versionQuery = useVersionQuery();
   const { isPending: isLoginPending, mutate: login } = useLoginMutation();
   const serverStatusQuery = useServerStatusQuery(pollingInterval);
-  const imageMetadataQuery = useRandomImageMetadataQuery(ImageTypeEnum.Fanart);
+  const imageMetadataQuery = useRandomImageMetadataQuery(ImageTypeEnum.Backdrop);
 
   const setRedirect = () => {
     if (seriesId === 0) return;
