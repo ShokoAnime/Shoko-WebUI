@@ -179,21 +179,25 @@ const CollectionSettings = () => {
             </Button>
           </div>
           <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
-              {Language.SeriesTitleLanguageOrder.map(language => (
-                {
-                  key: language,
-                  item: (
-                    <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
-                      {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
-                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
-                      </Button>
-                    </div>
-                  ),
-                }
-              ))}
-            </DnDList>
+            {Language.SeriesTitleLanguageOrder.length > 0
+              ? (
+                <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
+                  {Language.SeriesTitleLanguageOrder.map(language => (
+                    {
+                      key: language,
+                      item: (
+                        <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
+                          {languageDescription[language]}
+                          <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
+                            <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
+                          </Button>
+                        </div>
+                      ),
+                    }
+                  ))}
+                </DnDList>
+              )
+              : <div>Title preference not set. Fallback to main title.</div>}
           </div>
           <div className="mt-2 flex justify-between">
             Episode Title (Drag to Reorder)
