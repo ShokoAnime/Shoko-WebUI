@@ -70,7 +70,7 @@ const Series = () => {
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
 
-    const allFanarts: ImageType[] = get(imagesQuery.data, 'Fanarts', []);
+    const allFanarts: ImageType[] = get(imagesQuery.data, 'Backdrops', []);
     if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
 
     if (showRandomFanart) {

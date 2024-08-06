@@ -196,7 +196,7 @@ function SettingsPage() {
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
         style={{
-          backgroundImage: 'url(/api/v3/Image/Random/Fanart)',
+          backgroundImage: 'url(/api/v3/Image/Random/Backdrop)',
           height: `calc(${containerBounds.height}px + 3rem)`,
         }}
       />
