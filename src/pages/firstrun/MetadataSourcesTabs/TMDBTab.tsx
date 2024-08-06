@@ -98,8 +98,8 @@ function TMDBTab() {
         </div>
         <Checkbox
           justify
-          label="TMDB_AutoDownloadPosters"
-          id="download-posters-tmdb"
+          label="Download Posters"
+          id="TMDB_AutoDownloadPosters"
           isChecked={AutoDownloadPosters}
           onChange={handleInputChange}
         />
