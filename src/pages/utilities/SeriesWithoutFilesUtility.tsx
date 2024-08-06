@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   mdiCloseCircleOutline,
   mdiLoading,
+  mdiMagnify,
   mdiMinusCircleOutline,
   mdiOpenInNew,
   mdiPlusCircleOutline,
@@ -10,9 +11,10 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy } from 'lodash';
-import { useToggle } from 'usehooks-ts';
+import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -106,45 +108,46 @@ const Menu = (props: { selectedRows: SeriesType[], setSelectedRows: Updater<Reco
 
   return (
     <>
-      <div className="flex items-center gap-x-3">
-        <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
-          <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
-            <MenuButton
-              onClick={() => {
-                setSelectedRows([]);
-                invalidateQueries(['series', 'without-files']);
-              }}
-              icon={mdiRefresh}
-              name="Refresh"
-            />
-          </TransitionDiv>
-          <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
-            <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
-            <MenuButton
-              onClick={() => setSelectedRows([])}
-              icon={mdiCloseCircleOutline}
-              name="Cancel Selection"
-              highlight
-            />
-          </TransitionDiv>
-        </div>
-        <Button
-          buttonType="primary"
-          buttonSize="normal"
-          className="flex flex-row flex-wrap items-center gap-x-2 py-3"
-          onClick={toggleAddSeriesModal}
-        >
-          <Icon path={mdiPlusCircleOutline} size={1} />
-          Add Series
-        </Button>
+      <div className="relative box-border flex h-13 grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+        <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length === 0}>
+          <MenuButton
+            onClick={() => {
+              setSelectedRows([]);
+              invalidateQueries(['series', 'without-files']);
+            }}
+            icon={mdiRefresh}
+            name="Refresh"
+          />
+        </TransitionDiv>
+        <TransitionDiv className="absolute flex grow gap-x-4" show={selectedRows.length !== 0}>
+          <MenuButton onClick={() => handleDeleteSeries()} icon={mdiMinusCircleOutline} name="Delete" highlight />
+          <MenuButton
+            onClick={() => setSelectedRows([])}
+            icon={mdiCloseCircleOutline}
+            name="Cancel Selection"
+            highlight
+          />
+        </TransitionDiv>
       </div>
+      <Button
+        buttonType="primary"
+        buttonSize="normal"
+        className="flex flex-row flex-wrap items-center gap-x-2 py-3"
+        onClick={toggleAddSeriesModal}
+      >
+        <Icon path={mdiPlusCircleOutline} size={1} />
+        Add Series
+      </Button>
       <AddSeriesModal show={showAddSeriesModal} onClose={toggleAddSeriesModal} />
     </>
   );
 };
 
 function SeriesWithoutFilesUtility() {
-  const seriesQuery = useSeriesWithoutFilesInfiniteQuery({ pageSize: 25 });
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounceValue(search, 200);
+
+  const seriesQuery = useSeriesWithoutFilesInfiniteQuery({ pageSize: 25, search: debouncedSearch });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
   const {
@@ -159,9 +162,20 @@ function SeriesWithoutFilesUtility() {
       <div>
         <ShokoPanel
           title="Series Without Files"
-          options={<ItemCount count={seriesCount} selected={selectedRows?.length} />}
+          options={<ItemCount count={seriesCount} selected={selectedRows?.length} series />}
         >
-          <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
+          <div className="flex items-center gap-x-3">
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              inputClassName="px-4 py-3"
+            />
+            <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
+          </div>
         </ShokoPanel>
       </div>
 

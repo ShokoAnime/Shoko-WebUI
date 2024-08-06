@@ -351,9 +351,7 @@ const FileSearch = () => {
             placeholder="Search..."
             startIcon={mdiMagnify}
             id="search"
-            onChange={({ target: { value } }) => {
-              setSearch(_ => value);
-            }}
+            onChange={e => setSearch(e.target.value)}
             value={search}
             inputClassName="px-4 py-3"
           />

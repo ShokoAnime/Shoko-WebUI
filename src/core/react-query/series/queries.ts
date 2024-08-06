@@ -9,9 +9,11 @@ import type {
   SeriesNextUpRequestType,
   SeriesRequestType,
   SeriesTagsRequestType,
+  SeriesWithLinkedFilesRequestType,
+  SeriesWithoutFilesRequestType,
 } from '@/core/react-query/series/types';
 import type { DashboardRequestType, FileRequestType } from '@/core/react-query/types';
-import type { ListResultType, PaginationType } from '@/core/types/api';
+import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
@@ -133,7 +135,7 @@ export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestTy
     enabled,
   });
 
-export const useSeriesWithLinkedFilesInfiniteQuery = (params: PaginationType) =>
+export const useSeriesWithLinkedFilesInfiniteQuery = (params: SeriesWithLinkedFilesRequestType) =>
   useInfiniteQuery<ListResultType<SeriesType>>({
     queryKey: ['series', 'linked-files', params],
     queryFn: ({ pageParam }) =>
@@ -154,7 +156,7 @@ export const useSeriesWithLinkedFilesInfiniteQuery = (params: PaginationType) =>
     },
   });
 
-export const useSeriesWithoutFilesInfiniteQuery = (params: PaginationType) =>
+export const useSeriesWithoutFilesInfiniteQuery = (params: SeriesWithoutFilesRequestType) =>
   useInfiniteQuery<ListResultType<SeriesType>>({
     queryKey: ['series', 'without-files', params],
     queryFn: ({ pageParam }) =>

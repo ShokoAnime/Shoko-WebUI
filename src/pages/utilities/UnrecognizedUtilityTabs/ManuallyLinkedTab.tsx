@@ -1,17 +1,20 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiLinkOff,
   mdiLoading,
+  mdiMagnify,
   mdiOpenInNew,
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
+import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -177,7 +180,10 @@ const Menu = (props: SelectedFilesType) => {
 };
 
 function ManuallyLinkedTab() {
-  const seriesQuery = useSeriesWithLinkedFilesInfiniteQuery({ pageSize: 25 });
+  const [search, setSearch] = useState('');
+  const [debouncedSearch] = useDebounceValue(search, 200);
+
+  const seriesQuery = useSeriesWithLinkedFilesInfiniteQuery({ pageSize: 25, search: debouncedSearch });
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
   const { mutateAsync: unlinkFile } = useDeleteFileLinkMutation();
@@ -220,20 +226,20 @@ function ManuallyLinkedTab() {
             <ItemCount
               count={seriesCount}
               selected={Object.values(selectedFiles).filter(value => value).length}
+              series
             />
           }
         >
           <div className="flex items-center gap-x-3">
-            {/* Endpoint doesn't have search */}
-            {/* <Input */}
-            {/*   type="text" */}
-            {/*   placeholder="Search..." */}
-            {/*   startIcon={mdiMagnify} */}
-            {/*   id="search" */}
-            {/*   value="" */}
-            {/*   onChange={(e) => {}} */}
-            {/*   inputClassName="px-4 py-3" */}
-            {/* /> */}
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={search}
+              onChange={e => setSearch(e.target.value)}
+              inputClassName="px-4 py-3"
+            />
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />
             <TransitionDiv show={Object.values(selectedFiles).some(value => value)} className="flex gap-x-3">
               <Button

@@ -49,6 +49,13 @@ export type SeriesTagsRequestType = {
   excludeDescriptions?: boolean;
 };
 
+export type SeriesWithLinkedFilesRequestType = {
+  search?: string;
+  fuzzy?: boolean;
+} & PaginationType;
+
+export type SeriesWithoutFilesRequestType = SeriesWithLinkedFilesRequestType;
+
 export type RefreshAniDBSeriesRequestType = {
   anidbID: number;
   force?: boolean;
