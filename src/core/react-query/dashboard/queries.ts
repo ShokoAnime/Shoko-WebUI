@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformSeriesSummary } from '@/core/react-query/dashboard/helpers';
+import { transformListResultSimplified } from '@/core/react-query/helpers';
 
 import type {
   DashboardCalendarRequestType,
@@ -9,6 +10,7 @@ import type {
   DashboardNextUpRequestType,
 } from '@/core/react-query/dashboard/types';
 import type { DashboardRequestType } from '@/core/react-query/types';
+import type { ListResultType } from '@/core/types/api';
 import type {
   DashboardEpisodeDetailsType,
   DashboardSeriesSummaryType,
@@ -23,27 +25,31 @@ export const useDashboardCalendarQuery = (params: DashboardCalendarRequestType) 
   });
 
 export const useDashboardContinueWatchingQuery = (params: DashboardContinueWatchingRequestType) =>
-  useQuery<DashboardEpisodeDetailsType[]>({
+  useQuery<ListResultType<DashboardEpisodeDetailsType>, unknown, DashboardEpisodeDetailsType[]>({
     queryKey: ['dashboard', 'continue-watching', params],
     queryFn: () => axios.get('Dashboard/ContinueWatchingEpisodes', { params }),
+    select: transformListResultSimplified,
   });
 
 export const useDashboardNextUpQuery = (params: DashboardNextUpRequestType) =>
-  useQuery<DashboardEpisodeDetailsType[]>({
+  useQuery<ListResultType<DashboardEpisodeDetailsType>, unknown, DashboardEpisodeDetailsType[]>({
     queryKey: ['dashboard', 'next-up', params],
     queryFn: () => axios.get('Dashboard/NextUpEpisodes', { params }),
+    select: transformListResultSimplified,
   });
 
 export const useDashboardRecentlyAddedEpisodesQuery = (params: DashboardRequestType) =>
-  useQuery<DashboardEpisodeDetailsType[]>({
+  useQuery<ListResultType<DashboardEpisodeDetailsType>, unknown, DashboardEpisodeDetailsType[]>({
     queryKey: ['dashboard', 'recently-added-episodes', params],
     queryFn: () => axios.get('Dashboard/RecentlyAddedEpisodes', { params }),
+    select: transformListResultSimplified,
   });
 
 export const useDashboardRecentlyAddedSeriesQuery = (params: DashboardRequestType) =>
-  useQuery<SeriesType[]>({
+  useQuery<ListResultType<SeriesType>, unknown, SeriesType[]>({
     queryKey: ['dashboard', 'recently-added-series', params],
     queryFn: () => axios.get('Dashboard/RecentlyAddedSeries', { params }),
+    select: transformListResultSimplified,
   });
 
 export const useDashboardSeriesSummaryQuery = () =>

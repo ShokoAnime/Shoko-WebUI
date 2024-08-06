@@ -1,6 +1,7 @@
 import semver from 'semver';
 
 import { webuiSettingsPatches } from '@/core/patches';
+import { LanguageSource } from '@/core/types/api/settings';
 import { uiVersion } from '@/core/util';
 
 import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
@@ -351,11 +352,33 @@ export const initialSettings: SettingsType = {
     UpdateFrequency: 1,
     Language: 'en',
   },
-  MovieDb: {
-    AutoFanart: false,
-    AutoFanartAmount: 0,
-    AutoPosters: false,
-    AutoPostersAmount: 0,
+  TMDB: {
+    AutoLink: false,
+    AutoLinkRestricted: false,
+    AutoDownloadCrewAndCast: false,
+    AutoDownloadCollections: false,
+    AutoDownloadAlternateOrdering: false,
+    AutoDownloadBackdrops: true,
+    MaxAutoBackdrops: 10,
+    AutoDownloadPosters: true,
+    MaxAutoPosters: 10,
+    AutoDownloadLogos: true,
+    MaxAutoLogos: 10,
+    AutoDownloadThumbnails: true,
+    MaxAutoThumbnails: 10,
+    AutoDownloadStaffImages: true,
+    MaxAutoStaffImages: 10,
+    AutoDownloadStudioImages: true,
+    UserApiKey: null,
+  },
+  Language: {
+    UseSynonyms: false,
+    SeriesTitleLanguageOrder: [],
+    SeriesTitleSourceOrder: [LanguageSource.AniDB, LanguageSource.TMDB],
+    EpisodeTitleLanguageOrder: ['en'],
+    EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],
+    DescriptionLanguageOrder: ['en'],
+    DescriptionSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],
   },
   TraktTv: {
     Enabled: false,
@@ -381,9 +404,6 @@ export const initialSettings: SettingsType = {
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
   AutoGroupSeriesRelationExclusions: [],
-  LanguageUseSynonyms: false,
-  LanguagePreference: ['x-jat', 'en'],
-  EpisodeLanguagePreference: ['en'],
   Import: {
     AutomaticallyDeleteDuplicatesOnImport: false,
     MoveOnImport: false,

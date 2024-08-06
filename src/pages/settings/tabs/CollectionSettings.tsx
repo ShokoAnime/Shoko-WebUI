@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { type ChangeEvent, useState } from 'react';
+import React, { useState } from 'react';
 import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, remove } from 'lodash';
@@ -13,41 +13,55 @@ import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { DropResult } from '@hello-pangea/dnd';
 
+const getLanguageOrderName = (type: 'Series' | 'Episode' | 'Description') => {
+  switch (type) {
+    case 'Episode':
+      return 'EpisodeTitleLanguageOrder';
+    case 'Description':
+      return 'DescriptionLanguageOrder';
+    default:
+      return 'SeriesTitleLanguageOrder';
+  }
+};
+
 const CollectionSettings = () => {
   const { newSettings, setNewSettings } = useSettingsContext();
-  const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | null>(null);
+  const [showLanguagesModal, setShowLanguagesModal] = useState<'Series' | 'Episode' | 'Description' | null>(null);
 
   const {
     AutoGroupSeries,
     AutoGroupSeriesRelationExclusions,
     AutoGroupSeriesUseScoreAlgorithm,
+    Language,
   } = newSettings;
 
-  const onDragEnd = (result: DropResult, episodePreference = false) => {
+  const onDragEnd = (result: DropResult, type: 'Series' | 'Episode' | 'Description') => {
     if (!result.destination || result.destination.index === result.source.index) {
       return;
     }
 
-    const items = Array.from(
-      episodePreference ? newSettings.EpisodeLanguagePreference : newSettings.LanguagePreference,
-    );
+    const items = Array.from(Language[getLanguageOrderName(type)]);
     const [removed] = items.splice(result.source.index, 1);
     items.splice(result.destination.index, 0, removed);
 
     setNewSettings({
       ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
+      Language: {
+        ...Language,
+        [getLanguageOrderName(type)]: items,
+      },
     });
   };
 
-  const removeLanguage = (language: string, episodePreference = false) => {
-    const items = Array.from(
-      episodePreference ? newSettings.EpisodeLanguagePreference : newSettings.LanguagePreference,
-    );
+  const removeLanguage = (language: string, type: 'Series' | 'Episode' | 'Description') => {
+    const items = Array.from(Language[getLanguageOrderName(type)]);
     remove(items, item => item === language);
     setNewSettings({
       ...newSettings,
-      [episodePreference ? 'EpisodeLanguagePreference' : 'LanguagePreference']: items,
+      Language: {
+        ...Language,
+        [getLanguageOrderName(type)]: items,
+      },
     });
   };
 
@@ -114,7 +128,7 @@ const CollectionSettings = () => {
     return id in exclusionMapping;
   }
 
-  const handleExclusionChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleExclusionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!(event.target.id in exclusionMapping)) return;
     const { checked, id } = event.target;
 
@@ -150,25 +164,29 @@ const CollectionSettings = () => {
           <Checkbox
             label="Also Use Synonyms"
             id="LanguageUseSynonyms"
-            isChecked={newSettings.LanguageUseSynonyms}
-            onChange={event => setNewSettings({ ...newSettings, LanguageUseSynonyms: event.target.checked })}
+            isChecked={Language.UseSynonyms}
+            onChange={event =>
+              setNewSettings({
+                ...newSettings,
+                Language: { ...Language, UseSynonyms: event.target.checked },
+              })}
             justify
           />
-          <div className="flex justify-between">
+          <div className="my-2 flex justify-between">
             Series Title (Drag to Reorder)
             <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
               <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="my-2 flex rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={result => onDragEnd(result)}>
-              {newSettings.LanguagePreference.map(language => (
+          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+            <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
+              {Language.SeriesTitleLanguageOrder.map(language => (
                 {
                   key: language,
                   item: (
                     <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
                       {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language)} tooltip="Remove">
+                      <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
                         <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                       </Button>
                     </div>
@@ -177,21 +195,44 @@ const CollectionSettings = () => {
               ))}
             </DnDList>
           </div>
-          <div className="flex justify-between">
+          <div className="mt-2 flex justify-between">
             Episode Title (Drag to Reorder)
             <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
               <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
             </Button>
           </div>
-          <div className="mt-2 flex rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={result => onDragEnd(result, true)}>
-              {newSettings.EpisodeLanguagePreference?.map(language => (
+          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+            <DnDList onDragEnd={result => onDragEnd(result, 'Episode')}>
+              {Language.EpisodeTitleLanguageOrder.map(language => (
                 {
                   key: language,
                   item: (
                     <div className="mt-2 flex items-center justify-between group-first:mt-0">
                       {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language, true)} tooltip="Remove">
+                      <Button onClick={() => removeLanguage(language, 'Episode')} tooltip="Remove">
+                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
+                      </Button>
+                    </div>
+                  ),
+                }
+              ))}
+            </DnDList>
+          </div>
+          <div className="mt-2 flex justify-between">
+            Descriptions (Drag to Reorder)
+            <Button onClick={() => setShowLanguagesModal('Description')} tooltip="Add Language">
+              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
+            </Button>
+          </div>
+          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+            <DnDList onDragEnd={result => onDragEnd(result, 'Description')}>
+              {Language.DescriptionLanguageOrder.map(language => (
+                {
+                  key: language,
+                  item: (
+                    <div className="mt-2 flex items-center justify-between group-first:mt-0">
+                      {languageDescription[language]}
+                      <Button onClick={() => removeLanguage(language, 'Description')} tooltip="Remove">
                         <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                       </Button>
                     </div>

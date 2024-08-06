@@ -107,11 +107,224 @@ export type SettingsTraktType = {
   RefreshToken: string;
 };
 
-export type SettingsMoviedbType = {
-  AutoFanart: boolean;
-  AutoFanartAmount: number;
-  AutoPosters: boolean;
-  AutoPostersAmount: number;
+export type SettingsTMDBType = {
+  /**
+   * Automagically link AniDB anime to TMDB shows and movies.
+   *
+   * @default false
+   */
+  AutoLink: boolean;
+
+  /**
+   * Automagically link restricted AniDB anime to TMDB shows and movies.
+   * {@link AutoLink} also needs to be set for this setting to take
+   * effect.
+   *
+   * @default false
+   */
+  AutoLinkRestricted: boolean;
+
+  /**
+   * Automagically download crew and cast for movies and tv shows in the
+   * local collection.
+   *
+   * @default false
+   */
+  AutoDownloadCrewAndCast: boolean;
+
+  /**
+   * Automagically download collections for movies and tv shows in the local
+   * collection.
+   *
+   * @default false
+   */
+  AutoDownloadCollections: boolean;
+
+  /**
+   * Automagically download episode groups to use with alternate ordering
+   * for tv shows.
+   *
+   * @default false
+   */
+  AutoDownloadAlternateOrdering: boolean;
+
+  /**
+   * Automagically download backdrops for TMDB entities that supports
+   * backdrops up to {@link MaxAutoBackdrops} images per entity.
+   *
+   * @default true
+   */
+  AutoDownloadBackdrops: boolean;
+
+  /**
+   * The maximum number of backdrops to download for each TMDB entity that
+   * supports backdrops.
+   *
+   * @remarks
+   *
+   * Set to `0` to disable the limit.
+   *
+   * @default 10
+   * @min 0
+   * @max 30
+   */
+  MaxAutoBackdrops: number;
+
+  /**
+   * Automagically download posters for TMDB entities that supports
+   * posters up to {@link MaxAutoPosters} images per entity.
+   *
+   * @default true
+   */
+  AutoDownloadPosters: boolean;
+
+  /**
+   * The maximum number of posters to download for each TMDB entity that
+   * supports posters.
+   *
+   * @remarks
+   *
+   * Set to `0` to disable the limit.
+   *
+   * @default 10
+   * @min 0
+   * @max 30
+   */
+  MaxAutoPosters: number;
+
+  /**
+   * Automagically download logos for TMDB entities that supports
+   * logos up to {@link MaxAutoLogos} images per entity.
+   * @default true
+   */
+  AutoDownloadLogos: boolean;
+
+  /**
+   * The maximum number of logos to download for each TMDB entity that
+   * supports logos.
+   *
+   * @remarks
+   *
+   * Set to `0` to disable the limit.
+   *
+   * @default 10
+   * @min 0
+   * @max 30
+   */
+  MaxAutoLogos: number;
+
+  /**
+   * Automagically download thumbnail images for TMDB entities that supports
+   * thumbnails.
+   *
+   * @default true
+   */
+  AutoDownloadThumbnails: boolean;
+
+  /**
+   * The maximum number of thumbnail images to download for each TMDB entity
+   * that supports thumbnail images.
+   *
+   * @remarks
+   *
+   * Set to `0` to disable the limit.
+   *
+   * @default 10
+   * @min 0
+   * @max 30
+   */
+  MaxAutoThumbnails: number;
+
+  /**
+   * Automagically download staff member and voice-actor images.
+   * @default true
+   */
+  AutoDownloadStaffImages: boolean;
+
+  /**
+   * The maximum number of staff member and voice-actor images to download
+   * for each TMDB entity that supports staff member and voice-actor images.
+   *
+   * @remarks
+   *
+   * Set to `0` to disable the limit.
+   *
+   * @default 10
+   * @min 0
+   * @max 30
+   */
+  MaxAutoStaffImages: number;
+
+  /**
+   * Automagically download studio and company images.
+   *
+   * @default true
+   */
+  AutoDownloadStudioImages: boolean;
+
+  /**
+   * Optional. User provided TMDB API key to use.
+   *
+   * @default null
+   */
+  UserApiKey: string | null;
+};
+
+export const enum LanguageSource {
+  AniDB = 'AniDB',
+  TMDB = 'TMDB',
+  TvDB = 'TvDB',
+}
+
+export type SettingsLanguageType = {
+  /**
+   * Use synonyms when selecting the preferred language from AniDB.
+   *
+   * @default false
+   */
+  UseSynonyms: boolean;
+
+  /**
+   * Series / group title language preference order.
+   *
+   * @default []
+   */
+  SeriesTitleLanguageOrder: string[];
+
+  /**
+   * Series / group title source preference order.
+   *
+   * @default [LanguageSource.AniDB, LanguageSource.TMDB]
+   */
+  SeriesTitleSourceOrder: LanguageSource[];
+
+  /**
+   * Episode / season title language preference order.
+   *
+   * @default ["en"]
+   */
+  EpisodeTitleLanguageOrder: string[];
+
+  /**
+   * Episode / season title source preference order.
+   *
+   * @default [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB]
+   */
+  EpisodeTitleSourceOrder: LanguageSource[];
+
+  /**
+   * Description language preference order.
+   *
+   * @default ["en"]
+   */
+  DescriptionLanguageOrder: string[];
+
+  /**
+   * Description source preference order.
+   *
+   * @default [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB]
+   */
+  DescriptionSourceOrder: LanguageSource[];
 };
 
 export type SettingsPlexType = {
@@ -148,7 +361,8 @@ export type SettingsServerType = {
     & SettingsAnidbMylistType
     & SettingsAnidbUpdateType;
   TvDB: SettingsTvdbDownloadType & SettingsTvdbPrefsType;
-  MovieDb: SettingsMoviedbType;
+  TMDB: SettingsTMDBType;
+  Language: SettingsLanguageType;
   TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
   LogRotator: SettingsLogRotatorType;
@@ -156,9 +370,6 @@ export type SettingsServerType = {
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
-  LanguageUseSynonyms: boolean;
-  LanguagePreference: string[];
-  EpisodeLanguagePreference: string[];
   Import: SettingsImportType;
   TraceLog: boolean;
 };

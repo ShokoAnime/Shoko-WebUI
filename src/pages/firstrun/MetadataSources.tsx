@@ -11,7 +11,7 @@ import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
-import MovieDBTab from './MetadataSourcesTabs/MovieDBTab';
+import MovieDBTab from './MetadataSourcesTabs/TMDBTab';
 import TvDBTab from './MetadataSourcesTabs/TvDBTab';
 
 import type { TestStatusType } from '@/core/slices/firstrun';

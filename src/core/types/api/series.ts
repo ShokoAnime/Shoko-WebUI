@@ -44,10 +44,12 @@ export type SeriesIDsType = {
   TopLevelGroup: number;
   AniDB: number;
   TvDB: number[];
-  TMDB: number[];
   MAL: number[];
   TraktTv: number[];
-  AniList: number[];
+  TMDB: {
+    Movie: number[];
+    Show: number[];
+  };
 };
 
 export type SeriesAniDBType = {
