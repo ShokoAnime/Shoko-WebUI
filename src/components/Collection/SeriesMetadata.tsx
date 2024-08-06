@@ -3,7 +3,7 @@ import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCir
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
-import { useDeleteSeriesTmdbLinkMutation, useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
+import { useDeleteSeriesTvdbLinkMutation, useDeleteTmdbLinkMutation } from '@/core/react-query/series/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
@@ -14,7 +14,7 @@ type Props = {
 };
 
 const MetadataLink = ({ id, seriesId, site, type }: Props) => {
-  const { mutate: deleteTmdbLink } = useDeleteSeriesTmdbLinkMutation(type ?? 'Movie');
+  const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(type ?? 'Movie');
   const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {

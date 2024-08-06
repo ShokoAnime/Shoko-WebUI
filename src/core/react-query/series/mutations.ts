@@ -44,7 +44,7 @@ export const useDeleteSeriesTvdbLinkMutation = () =>
     onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId, 'episodes']),
   });
 
-export const useDeleteSeriesTmdbLinkMutation = (linkType: 'Movie' | 'Show') =>
+export const useDeleteTmdbLinkMutation = (linkType: 'Movie' | 'Show') =>
   useMutation({
     mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TMDB/${linkType}`),
     onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId]),
