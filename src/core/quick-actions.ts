@@ -56,12 +56,12 @@ const quickActions = {
     name: 'Run Import',
     functionName: 'RunImport',
     info:
-      'Scans for new files in Shoko folders, computes their hashes, and searches AniDB and TvDB for metadata and images.',
+      'This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (tvdb, trakt, tmdb, etc), and downloads missing images.',
   },
   'import-new-files': {
     name: 'Import New Files',
     functionName: 'ImportNewFiles',
-    info: 'Scans import folders and imports only the new files identified within the import folder.',
+    info: 'Queues a task to import only new files found in the import folder',
   },
   'avdump-mismatched-files': {
     name: 'AVDump Mismatched Files',
@@ -99,10 +99,25 @@ const quickActions = {
     functionName: 'ValidateAllImages',
     info: 'Identifies any invalid images and re-downloads them.',
   },
-  'update-all-moviedb-info': {
-    name: 'Update All MovieDB Info',
-    functionName: 'UpdateAllMovieDBInfo',
-    info: 'Updates information for all movie-related entries in your collection.',
+  'update-all-tmdb-movies': {
+    name: 'Update All TMDB Movies',
+    functionName: 'UpdateAllTmdbMovies',
+    info: 'Updates all TMDB Movies in the local database.',
+  },
+  'update-all-tmdb-shows': {
+    name: 'Update All TMDB Shows',
+    functionName: 'UpdateAllTmdbShows',
+    info: 'Updates all TMDB Shows in the local database.',
+  },
+  'delete-ununsed-tmdb-movies': {
+    name: 'Delete Unused TMDB Movies',
+    functionName: 'PurgeAllUnusedTmdbMovies',
+    info: 'Delete all unused TMDB Movies that are not linked to any AniDB anime.',
+  },
+  'delete-ununsed-tmdb-shows': {
+    name: 'Delete Unused TMDB Shows',
+    functionName: 'PurgeAllUnusedTmdbShows',
+    info: 'Delete all unused TMDB Shows that are not linked to any AniDB anime.',
   },
   'plex-sync-all': {
     name: 'Sync Plex Watch Status',

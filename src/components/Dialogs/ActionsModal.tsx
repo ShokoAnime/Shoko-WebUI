@@ -46,7 +46,10 @@ const actions = {
   moviedb: {
     title: 'TMDB',
     data: [
-      'update-all-moviedb-info',
+      'update-all-tmdb-shows',
+      'delete-ununsed-tmdb-shows',
+      'update-all-tmdb-movies',
+      'delete-ununsed-tmdb-movies',
     ],
   },
   shoko: {
