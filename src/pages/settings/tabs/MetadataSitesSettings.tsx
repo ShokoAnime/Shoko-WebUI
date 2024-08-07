@@ -80,9 +80,9 @@ function MetadataSitesSettings() {
             Max Backdrops
             <InputSmall
               id="max-backdrops-tmdb"
-              value={TMDB.MaxAutoPosters}
+              value={TMDB.MaxAutoBackdrops}
               type="text"
-              onChange={event => updateSetting('TMDB', 'MaxAutoPosters', event.target.value)}
+              onChange={event => updateSetting('TMDB', 'MaxAutoBackdrops', event.target.value)}
               className="w-12 px-3 py-1"
             />
           </div>
