@@ -392,6 +392,7 @@ export type SettingsServerType = {
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
   Import: SettingsImportType;
+  LoadImageMetadata: boolean;
   TraceLog: boolean;
 };
 

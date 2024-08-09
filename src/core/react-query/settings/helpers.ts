@@ -415,6 +415,7 @@ export const initialSettings: SettingsType = {
     UseExistingFileWatchedStatus: false,
     VideoExtensions: [],
   },
+  LoadImageMetadata: false,
   TraceLog: false,
 };
 
