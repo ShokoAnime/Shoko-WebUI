@@ -355,6 +355,8 @@ export const initialSettings: SettingsType = {
   TMDB: {
     AutoLink: false,
     AutoLinkRestricted: false,
+    DownloadAllTitles: false,
+    DownloadAllOverviews: false,
     AutoDownloadCrewAndCast: false,
     AutoDownloadCollections: false,
     AutoDownloadAlternateOrdering: false,
@@ -413,6 +415,7 @@ export const initialSettings: SettingsType = {
     UseExistingFileWatchedStatus: false,
     VideoExtensions: [],
   },
+  LoadImageMetadata: false,
   TraceLog: false,
 };
 

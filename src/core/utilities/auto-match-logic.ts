@@ -140,10 +140,10 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
         if (showName && showName) initialDetails.showName = showName;
       }
 
-      // Transform the details if the rule has a trasformer/validator.
+      // Transform the details if the rule has a transformer/validator.
       const finalDetails = transform(initialDetails, match, parentMatch, grandParentMatch);
 
-      // Since the transformer also can return null (to invalidte the match)
+      // Since the transformer also can return null (to invalidate the match)
       // then we need to check the transformed details before returning.
       if (finalDetails) {
         return finalDetails;

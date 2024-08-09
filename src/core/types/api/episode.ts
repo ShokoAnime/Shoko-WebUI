@@ -4,6 +4,7 @@ import type { FileType } from '@/core/types/api/file';
 export type EpisodeType = {
   IDs: EpisodeIDsType;
   Name: string;
+  Description: string;
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;

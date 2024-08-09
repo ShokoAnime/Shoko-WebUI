@@ -45,6 +45,20 @@ function MetadataSitesSettings() {
           />
           <Checkbox
             justify
+            label="Download All Titles"
+            id="download-all-titles-tmdb"
+            isChecked={TMDB.DownloadAllTitles}
+            onChange={event => updateSetting('TMDB', 'DownloadAllTitles', event.target.checked)}
+          />
+          <Checkbox
+            justify
+            label="Download All Overviews"
+            id="download-all-overviews-tmdb"
+            isChecked={TMDB.DownloadAllOverviews}
+            onChange={event => updateSetting('TMDB', 'DownloadAllOverviews', event.target.checked)}
+          />
+          <Checkbox
+            justify
             label="Download Crew And Cast"
             id="crew-and-cast-tmdb"
             isChecked={TMDB.AutoDownloadCrewAndCast}

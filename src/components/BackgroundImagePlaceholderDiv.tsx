@@ -3,6 +3,8 @@ import { mdiInformationOutline, mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
+
 import type { ImageType } from '@/core/types/api/common';
 
 type Props = {
@@ -25,17 +27,18 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     overlayOnHover,
     zoomOnHover,
   } = props;
+  const settings = useSettingsQuery().data;
   const imageSource = useMemo(() => {
     if (!image) {
       return undefined;
     }
 
-    if (!image.RelativeFilepath) {
+    if (!settings.LoadImageMetadata && !image.RelativeFilepath) {
       return null;
     }
 
     return `/api/v3/Image/${image.Source}/${image.Type}/${image.ID}`;
-  }, [image]);
+  }, [image, settings.LoadImageMetadata]);
 
   const [imageError, setImageError] = useState<string | null>(null);
   const [backgroundImage, setBackgroundImage] = useState<HTMLImageElement | null>(() => new Image());
