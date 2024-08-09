@@ -125,6 +125,27 @@ export type SettingsTMDBType = {
   AutoLinkRestricted: boolean;
 
   /**
+   * Indicates that all titles should be stored locally for the TMDB entity,
+   * otherwise it will use
+   * {@link LanguageSettings.SeriesTitleLanguageOrder} or
+   * {@link LanguageSettings.EpisodeTitleLanguageOrder} depending
+   * on the entity type to determine which titles to store locally.
+   *
+   * @default false
+   */
+  DownloadAllTitles: boolean;
+
+  /**
+   * Indicates that all overviews should be stored locally for the TMDB
+   * entity, otherwise it will use
+   * {@link LanguageSettings.DescriptionLanguageOrder} to determine
+   * which overviews should be stored locally.
+   *
+   * @default false
+   */
+  DownloadAllOverviews: boolean;
+
+  /**
    * Automagically download crew and cast for movies and tv shows in the
    * local collection.
    *

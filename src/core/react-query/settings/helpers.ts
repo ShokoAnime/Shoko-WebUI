@@ -355,6 +355,8 @@ export const initialSettings: SettingsType = {
   TMDB: {
     AutoLink: false,
     AutoLinkRestricted: false,
+    DownloadAllTitles: false,
+    DownloadAllOverviews: false,
     AutoDownloadCrewAndCast: false,
     AutoDownloadCollections: false,
     AutoDownloadAlternateOrdering: false,
