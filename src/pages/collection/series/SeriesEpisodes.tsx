@@ -75,7 +75,7 @@ const SeriesEpisodes = () => {
       includeHidden: episodeFilterHidden,
       type: episodeFilterType,
       includeWatched: episodeFilterWatched,
-      includeDataFrom: ['AniDB', 'TvDB'],
+      includeDataFrom: ['AniDB'],
       search: debouncedSearch,
       pageSize,
     },

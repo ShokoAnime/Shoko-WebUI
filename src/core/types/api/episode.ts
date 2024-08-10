@@ -1,16 +1,16 @@
-import type { DataSourceType, ImageType, RatingType } from './common';
+import type { DataSourceType, EpisodeImagesType, RatingType } from './common';
 import type { FileType } from '@/core/types/api/file';
 
 export type EpisodeType = {
   IDs: EpisodeIDsType;
   Name: string;
   Description: string;
+  Images: EpisodeImagesType;
   Duration: string;
   ResumePosition: string | null;
   Watched: string | null;
   Size: number;
   AniDB?: EpisodeAniDBType;
-  TvDB?: EpisodeTvDBType[];
   IsHidden: boolean;
   Files?: FileType[];
 };
@@ -52,21 +52,6 @@ export type EpisodeAniDBType = {
   Titles: EpisodeTitleType[];
   Description: string;
   Rating: RatingType;
-};
-
-export type EpisodeTvDBType = {
-  ID: number;
-  Season: number;
-  Number: number;
-  AbsoluteNumber: number | null;
-  Title: string;
-  Description: string;
-  AirDate: string | null;
-  AirsAfterSeason: number | null;
-  AirsBeforeSeason: number | null;
-  AirsBeforeEpisode: number | null;
-  Rating: RatingType | null;
-  Thumbnail: ImageType;
 };
 
 export type EpisodeFilesQueryType = {

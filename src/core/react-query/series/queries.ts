@@ -15,6 +15,7 @@ import type {
 import type { DashboardRequestType, FileRequestType } from '@/core/react-query/types';
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
+import type { ImagesType } from '@/core/types/api/common';
 import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
@@ -23,7 +24,6 @@ import type {
   SeriesAniDBSimilarType,
   SeriesCast,
   SeriesDetailsType,
-  SeriesImagesType,
   SeriesRecommendedType,
   SeriesType,
 } from '@/core/types/api/series';
@@ -115,7 +115,7 @@ export const useSeriesGroupQuery = (seriesId: number, topLevel: boolean) =>
   });
 
 export const useSeriesImagesQuery = (seriesId: number, enabled = true) =>
-  useQuery<SeriesImagesType>({
+  useQuery<ImagesType>({
     queryKey: ['series', seriesId, 'images'],
     queryFn: () => axios.get(`Series/${seriesId}/Images`),
     enabled,

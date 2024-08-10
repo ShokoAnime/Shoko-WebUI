@@ -11,10 +11,10 @@ function useEpisodeThumbnail(
 ): ImageType | null {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
-    if (episode.TvDB?.[0]?.Thumbnail) return episode.TvDB[0].Thumbnail;
+    if (episode.Images.Thumbnails.length) return episode.Images.Thumbnails[0];
     if (useThumbnailFallback && backdrop) return backdrop;
     return null;
-  }, [episode.TvDB, backdrop, useThumbnailFallback]);
+  }, [episode.Images.Thumbnails, backdrop, useThumbnailFallback]);
 }
 
 export default useEpisodeThumbnail;

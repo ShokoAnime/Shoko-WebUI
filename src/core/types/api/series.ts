@@ -199,9 +199,3 @@ export type SeriesCast = {
   RoleName: string;
   RoleDetails: string;
 };
-
-export type SeriesImagesType = {
-  Posters: ImageType[];
-  Banners: ImageType[];
-  Backdrops: ImageType[];
-};

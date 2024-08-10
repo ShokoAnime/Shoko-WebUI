@@ -16,11 +16,12 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 
-type ImageTabType = 'Posters' | 'Backdrops' | 'Banners';
+type ImageTabType = 'Posters' | 'Backdrops' | 'Banners' | 'Logos';
 const tabStates = [
   { value: 'Posters' },
   { value: 'Backdrops' },
   { value: 'Banners' },
+  { value: 'Logos' },
 ];
 
 const InfoLine = ({ title, value }) => (
@@ -34,6 +35,7 @@ const sizeMap = {
   Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
   Backdrops: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
   Banners: { image: 'h-[8rem]', grid: 'grid-cols-2' },
+  Logos: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' }, // someone plz fix the sizes
 };
 
 const nullImage = {} as ImageType;
