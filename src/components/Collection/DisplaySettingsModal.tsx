@@ -11,7 +11,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
-  onClose(): void;
+  onClose: () => void;
 };
 
 const DisplaySettingsModal = ({ onClose, show }: Props) => {
@@ -134,14 +134,14 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
             />
             <Checkbox
               justify
-              label="Random Fanart on Load"
-              id="image-showRandomFanart"
-              isChecked={imageSettings.showRandomFanart}
+              label="Random Backdrop on Load"
+              id="image-showRandomBackdrop"
+              isChecked={imageSettings.showRandomBackdrop}
               onChange={handleSettingChange}
             />
             <Checkbox
               justify
-              label="Show fanart if thumbnail is missing"
+              label="Show Backdrop if Thumbnail is missing"
               id="image-useThumbnailFallback"
               isChecked={imageSettings.useThumbnailFallback}
               onChange={handleSettingChange}

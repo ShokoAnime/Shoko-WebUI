@@ -7,14 +7,14 @@ import type { EpisodeType } from '@/core/types/api/episode';
 
 function useEpisodeThumbnail(
   episode: EpisodeType,
-  fanart: ImageType | undefined,
+  backdrop: ImageType | undefined,
 ): ImageType | null {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
     if (episode.TvDB?.[0]?.Thumbnail) return episode.TvDB[0].Thumbnail;
-    if (useThumbnailFallback && fanart) return fanart;
+    if (useThumbnailFallback && backdrop) return backdrop;
     return null;
-  }, [episode.TvDB, fanart, useThumbnailFallback]);
+  }, [episode.TvDB, backdrop, useThumbnailFallback]);
 }
 
 export default useEpisodeThumbnail;

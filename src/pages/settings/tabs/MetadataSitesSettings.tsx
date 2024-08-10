@@ -232,7 +232,7 @@ function MetadataSitesSettings() {
           <Checkbox
             justify
             label="Download Backdrops"
-            id="download-tvdb-fanart"
+            id="download-tvdb-backdrop"
             isChecked={TvDB.AutoFanart}
             onChange={event => updateSetting('TvDB', 'AutoFanart', event.target.checked)}
           />
@@ -244,7 +244,7 @@ function MetadataSitesSettings() {
           >
             Max Backdrops
             <InputSmall
-              id="max-tvdb-fanart"
+              id="max-tvdb-backdrop"
               value={TvDB.AutoFanartAmount}
               type="text"
               onChange={event => updateSetting('TvDB', 'AutoFanartAmount', event.target.value)}

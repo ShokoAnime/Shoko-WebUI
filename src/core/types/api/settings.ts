@@ -434,7 +434,7 @@ export type WebUISettingsType = {
     };
     image: {
       showRandomPoster: boolean;
-      showRandomFanart: boolean;
+      showRandomBackdrop: boolean;
       useThumbnailFallback: boolean;
     };
   };

@@ -52,13 +52,13 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
 
-  const { showRandomFanart } = useSettingsQuery().data.WebUI_Settings.collection.image;
+  const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
-  const [fanart, setFanart] = useState<ImageType>();
+  const [backdrop, setBackdrop] = useState<ImageType>();
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const dispatch = useDispatch();
@@ -70,16 +70,16 @@ const Series = () => {
   useEffect(() => {
     if (!imagesQuery.isSuccess) return;
 
-    const allFanarts: ImageType[] = get(imagesQuery.data, 'Backdrops', []);
-    if (!Array.isArray(allFanarts) || allFanarts.length === 0) return;
+    const allBackdrops: ImageType[] = get(imagesQuery.data, 'Backdrops', []);
+    if (!Array.isArray(allBackdrops) || allBackdrops.length === 0) return;
 
-    if (showRandomFanart) {
-      setFanart(allFanarts[Math.floor(Math.random() * allFanarts.length)]);
+    if (showRandomBackdrop) {
+      setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)]);
       return;
     }
 
-    setFanart(allFanarts.find(image => image.Preferred) ?? allFanarts[0]);
-  }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomFanart]);
+    setBackdrop(allBackdrops.find(image => image.Preferred) ?? allBackdrops[0]);
+  }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomBackdrop]);
 
   const [containerRef, containerBounds] = useMeasure();
 
@@ -147,14 +147,14 @@ const Series = () => {
 
       <EditSeriesModal />
 
-      <Outlet context={{ fanart, scrollRef } satisfies SeriesContextType} />
+      <Outlet context={{ backdrop, scrollRef } satisfies SeriesContextType} />
 
       <div
         className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-5"
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
         style={{
-          backgroundImage: fanart ? `url('${getImagePath(fanart)}')` : undefined,
+          backgroundImage: backdrop ? `url('${getImagePath(backdrop)}')` : undefined,
           height: `calc(${containerBounds.height}px + 3rem)`,
         }}
       />

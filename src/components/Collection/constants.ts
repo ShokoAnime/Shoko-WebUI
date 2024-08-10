@@ -16,6 +16,6 @@ export const listItemSize = {
 };
 
 export type SeriesContextType = {
-  fanart?: ImageType;
+  backdrop?: ImageType;
   scrollRef: React.RefObject<HTMLDivElement>;
 };
