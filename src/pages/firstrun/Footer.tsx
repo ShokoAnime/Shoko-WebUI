@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
+import { useRunActionMutation } from '@/core/react-query/action/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
@@ -19,11 +21,18 @@ type Props = {
 function Footer(props: Props) {
   const navigate = useNavigate();
 
-  const handleNext = () => {
+  const { mutate: runAction } = useRunActionMutation();
+
+  const handleNext = useEventCallback(() => {
     const { nextPage, saveFunction } = props;
     if (saveFunction) saveFunction();
     if (nextPage) navigate(`../${nextPage}`);
-  };
+  });
+
+  const handleFinish = useEventCallback(() => {
+    runAction('RunImport');
+    navigate('/webui/dashboard', { replace: true, state: { firstRun: true } });
+  });
 
   const {
     finish,
@@ -50,7 +59,7 @@ function Footer(props: Props) {
         {finish
           ? (
             <Button
-              onClick={() => navigate('/webui/dashboard', { replace: true, state: { firstRun: true } })}
+              onClick={handleFinish}
               buttonType="primary"
               className="w-1/2 px-4 py-2"
               disabled={nextDisabled}
