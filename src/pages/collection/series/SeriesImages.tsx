@@ -35,7 +35,7 @@ const sizeMap = {
   Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
   Backdrops: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
   Banners: { image: 'h-[8rem]', grid: 'grid-cols-2' },
-  Logos: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' }, // someone plz fix the sizes
+  Logos: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-4' },
 };
 
 const nullImage = {} as ImageType;
@@ -123,6 +123,7 @@ const SeriesImages = () => {
             >
               <BackgroundImagePlaceholderDiv
                 image={item}
+                contain={tabType === 'Logos'}
                 className={cx(
                   'rounded-lg drop-shadow-md transition-transform outline grow',
                   item === selectedImage
