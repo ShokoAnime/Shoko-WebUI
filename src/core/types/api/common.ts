@@ -22,6 +22,11 @@ export type ImagesType = {
   Posters: ImageType[];
   Backdrops: ImageType[];
   Banners: ImageType[];
+  Logos: ImageType[];
+};
+
+export type EpisodeImagesType = ImagesType & {
+  Thumbnails: ImageType[];
 };
 
 export const enum ImageSourceEnum {

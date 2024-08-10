@@ -10,6 +10,7 @@ import type { ImageType } from '@/core/types/api/common';
 type Props = {
   children?: React.ReactNode;
   className?: string;
+  contain?: boolean;
   image: ImageType | null;
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
@@ -21,12 +22,14 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
   const {
     children,
     className,
+    contain,
     hidePlaceholderOnHover,
     image,
     linkToImage,
     overlayOnHover,
     zoomOnHover,
   } = props;
+  const fit = contain ? 'contain' : 'cover';
   const settings = useSettingsQuery().data;
   const imageSource = useMemo(() => {
     if (!image) {
@@ -85,7 +88,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
           'absolute w-full h-full flex flex-col top-0 left-0 text-center z-[-1] rounded-lg',
           zoomOnHover && 'group-hover:scale-105 transition-transform duration-600',
         )}
-        style={{ background: backgroundImage ? `center / cover no-repeat url('${backgroundImage.src}')` : undefined }}
+        style={{ background: backgroundImage ? `center / ${fit} no-repeat url('${backgroundImage.src}')` : undefined }}
       >
         {imageError && (
           <div

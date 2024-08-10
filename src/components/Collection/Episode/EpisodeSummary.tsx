@@ -82,8 +82,8 @@ const SelectedStateButton = React.memo((
 
 const EpisodeSummary = React.memo(
   ({ anidbSeriesId, episode, nextUp, onSelectionChange, page, selected, seriesId }: Props) => {
-    const { fanart } = useOutletContext<SeriesContextType>();
-    const thumbnail = useEpisodeThumbnail(episode, fanart);
+    const { backdrop } = useOutletContext<SeriesContextType>();
+    const thumbnail = useEpisodeThumbnail(episode, backdrop);
     const [open, toggleOpen] = useToggle(false);
     const episodeId = get(episode, 'IDs.ID', 0);
 

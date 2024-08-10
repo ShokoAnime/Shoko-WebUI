@@ -279,7 +279,7 @@ export const initialSettings: SettingsType = {
         showCustomTags: true,
       },
       image: {
-        showRandomFanart: false,
+        showRandomBackdrop: false,
         showRandomPoster: false,
         useThumbnailFallback: false,
       },

@@ -16,11 +16,12 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 
-type ImageTabType = 'Posters' | 'Backdrops' | 'Banners';
+type ImageTabType = 'Posters' | 'Backdrops' | 'Banners' | 'Logos';
 const tabStates = [
   { value: 'Posters' },
   { value: 'Backdrops' },
   { value: 'Banners' },
+  { value: 'Logos' },
 ];
 
 const InfoLine = ({ title, value }) => (
@@ -34,6 +35,7 @@ const sizeMap = {
   Posters: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-6' },
   Backdrops: { image: 'h-[clamp(11.5rem,_12vw,_16rem)]', grid: 'grid-cols-3' },
   Banners: { image: 'h-[8rem]', grid: 'grid-cols-2' },
+  Logos: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-4' },
 };
 
 const nullImage = {} as ImageType;
@@ -92,7 +94,7 @@ const SeriesImages = () => {
               });
             }}
           >
-            {`Set As Series ${tabType.slice(0, -1)}`}
+            {`Set As Preferred ${tabType.slice(0, -1)}`}
           </Button>
         </ShokoPanel>
       </div>
@@ -121,6 +123,7 @@ const SeriesImages = () => {
             >
               <BackgroundImagePlaceholderDiv
                 image={item}
+                contain={tabType === 'Logos'}
                 className={cx(
                   'rounded-lg drop-shadow-md transition-transform outline grow',
                   item === selectedImage
@@ -134,7 +137,7 @@ const SeriesImages = () => {
                 {item.Preferred && (
                   <div className="absolute bottom-2 mx-[5%] flex w-[90%] justify-center gap-2.5 rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
                     <Icon path={mdiStarCircleOutline} size={1} />
-                    Series Default
+                    Preferred
                   </div>
                 )}
               </BackgroundImagePlaceholderDiv>
