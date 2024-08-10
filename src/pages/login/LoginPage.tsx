@@ -23,8 +23,12 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { ImageTypeEnum } from '@/core/types/api/common';
+import { dayjs } from '@/core/util';
 
 import type { RootState } from '@/core/store';
+
+// This is the release date because that's all we have
+const mininumSupportedServerDate = dayjs('2024-08-04T17:46:27Z');
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -111,9 +115,16 @@ function LoginPage() {
   }, [versionQuery.data, versionQuery.isFetching]);
 
   useEffect(() => {
-    if (
-      versionQuery?.data?.Server?.ReleaseDate === undefined && versionQuery?.data?.Server?.ReleaseChannel === 'Stable'
-    ) {
+    if (!versionQuery.data) return;
+
+    const serverData = versionQuery.data.Server;
+
+    let isServerSupported = true;
+
+    if (!serverData.ReleaseDate && serverData.ReleaseChannel === 'Stable') isServerSupported = false;
+    if (dayjs(serverData.ReleaseDate).isBefore(mininumSupportedServerDate)) isServerSupported = false;
+
+    if (!isServerSupported) {
       navigate('/webui/unsupported');
     }
   }, [navigate, versionQuery.data]);

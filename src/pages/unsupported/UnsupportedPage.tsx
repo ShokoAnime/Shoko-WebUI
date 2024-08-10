@@ -4,12 +4,15 @@ import { useDispatch } from 'react-redux';
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
 import Events from '@/core/events';
+import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
 const UnsupportedPage = () => {
   const dispatch = useDispatch();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();
+
+  const versionQuery = useVersionQuery();
 
   const handleLogout = useEventCallback(() => {
     dispatch({ type: Events.AUTH_LOGOUT });
@@ -32,8 +35,13 @@ const UnsupportedPage = () => {
             Shoko Server you have installed.
           </div>
           <div>
-            Select the&nbsp;
-            <span className="font-semibold text-panel-text-important">Force Update to Stable Web UI</span>
+            If you are using the daily version of Shoko Server, you should update your server to the latest daily. If
+            you do not want to update your server, find the daily Web UI version which works and manually downgrade to
+            it.
+          </div>
+          <div>
+            If you are running the stable version of Shoko Server, select the&nbsp;
+            <span className="font-semibold text-panel-text-important">Force Update to Stable Web UI&nbsp;</span>
             button to have Shoko download the latest stable version of the Web UI which will work with your version of
             Shoko Server.
           </div>
@@ -49,6 +57,16 @@ const UnsupportedPage = () => {
             </a>
             &nbsp;server and provide the above error.
           </div>
+          {versionQuery.data && (
+            <div>
+              Server Version:&nbsp;
+              {versionQuery.data.Server.Version}
+              {versionQuery.data.Server.Commit && `-${versionQuery.data.Server.Commit?.slice(0, 7)}`}
+              <br />
+              Web UI Version:&nbsp;
+              {versionQuery.data.WebUI?.Version}
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-y-2 md:flex-row md:gap-x-4">
           <Button
