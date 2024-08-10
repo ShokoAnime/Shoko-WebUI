@@ -387,7 +387,6 @@ export type SettingsServerType = {
   TraktTv: SettingsTraktType;
   Plex: SettingsPlexType;
   LogRotator: SettingsLogRotatorType;
-  GA_OptOutPlzDont: boolean;
   AutoGroupSeries: boolean;
   AutoGroupSeriesUseScoreAlgorithm: boolean;
   AutoGroupSeriesRelationExclusions: string[];
