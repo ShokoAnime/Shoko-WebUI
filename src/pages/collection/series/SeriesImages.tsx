@@ -80,7 +80,12 @@ const SeriesImages = () => {
           <InfoLine title="Filename" value={filename} />
           <InfoLine title="Location" value={filepath} />
           <InfoLine title="Source" value={selectedImage?.Source ?? '-'} />
-          <InfoLine title="Size" value="-" />
+          <InfoLine
+            title="Size"
+            value={selectedImage?.Width && selectedImage?.Height
+              ? `${selectedImage.Width} x ${selectedImage.Height}`
+              : '-'}
+          />
           <Button
             buttonType="primary"
             buttonSize="normal"
