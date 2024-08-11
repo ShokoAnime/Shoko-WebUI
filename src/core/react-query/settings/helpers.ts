@@ -402,7 +402,6 @@ export const initialSettings: SettingsType = {
     Delete: false,
     Delete_Days: '0',
   },
-  GA_OptOutPlzDont: false,
   AutoGroupSeries: false,
   AutoGroupSeriesUseScoreAlgorithm: false,
   AutoGroupSeriesRelationExclusions: [],
