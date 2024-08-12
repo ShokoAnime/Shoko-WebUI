@@ -12,6 +12,11 @@ import type {
   MarkVariationRequestType,
 } from '@/core/react-query/file/types';
 
+export const useAddFileToMyListMutation = () =>
+  useMutation({
+    mutationFn: (fileId: number) => axios.post(`File/${fileId}/AddToMyList`),
+  });
+
 export const useDeleteFilesMutation = () =>
   useMutation({
     mutationFn: (data: DeleteFilesRequestType) => axios.delete('File', { data }),
