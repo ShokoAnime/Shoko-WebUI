@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import {
   mdiChevronLeft,
   mdiChevronRight,
@@ -24,6 +23,7 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ShokoIcon from '@/components/ShokoIcon';
+import toast from '@/components/Toast';
 import FilesSummary from '@/components/Utilities/FilesSummary';
 import ItemCount from '@/components/Utilities/ItemCount';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
