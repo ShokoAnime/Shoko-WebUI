@@ -85,6 +85,7 @@ const SeriesEpisodes = () => {
     data,
     fetchNextPage,
     isFetchingNextPage,
+    isPending,
     isSuccess,
   } = seriesEpisodesQuery;
   const [episodes, episodeCount] = useFlattenListResult(data);
@@ -200,41 +201,49 @@ const SeriesEpisodes = () => {
           </div>
         </div>
         <div className="grow">
-          <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-            {virtualItems.map((virtualItem) => {
-              const page = Math.ceil((virtualItem.index + 1) / pageSize);
-              const episode = episodes[virtualItem.index];
+          {isPending
+            ? (
+              <div className="flex h-full items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} spin size={4} />
+              </div>
+            )
+            : (
+              <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+                {virtualItems.map((virtualItem) => {
+                  const page = Math.ceil((virtualItem.index + 1) / pageSize);
+                  const episode = episodes[virtualItem.index];
 
-              if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
+                  if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
 
-              return (
-                <div
-                  key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
-                  className="absolute left-0 top-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
-                  data-index={virtualItem.index}
-                  style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
-                  ref={rowVirtualizer.measureElement}
-                >
-                  {episode
-                    ? (
-                      <EpisodeSummary
-                        selected={selectedEpisodes.has(episode.IDs.ID)}
-                        onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
-                        seriesId={toNumber(seriesId)}
-                        anidbSeriesId={anidbSeriesId}
-                        episode={episode}
-                        page={page}
-                      />
-                    )
-                    : (
-                      <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
-                        <Icon path={mdiLoading} spin size={3} />
-                      </div>
-                    )}
-                </div>
-              );
-            })}
-          </div>
+                  return (
+                    <div
+                      key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
+                      className="absolute left-0 top-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
+                      data-index={virtualItem.index}
+                      style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
+                      ref={rowVirtualizer.measureElement}
+                    >
+                      {episode
+                        ? (
+                          <EpisodeSummary
+                            selected={selectedEpisodes.has(episode.IDs.ID)}
+                            onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
+                            seriesId={toNumber(seriesId)}
+                            anidbSeriesId={anidbSeriesId}
+                            episode={episode}
+                            page={page}
+                          />
+                        )
+                        : (
+                          <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
+                            <Icon path={mdiLoading} spin size={3} />
+                          </div>
+                        )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
         </div>
       </div>
       <EpisodeWatchModal
