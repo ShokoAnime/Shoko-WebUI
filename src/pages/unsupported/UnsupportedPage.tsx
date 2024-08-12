@@ -63,7 +63,7 @@ const UnsupportedPage = () => {
               Server Version:&nbsp;
               {versionQuery.data.Server.Version}
               <br />
-              Supported Server Version:&nbsp;
+              Minimum Supported Server Version:&nbsp;
               {minimumSupportedServerVersion}
               <br />
               Web UI Version:&nbsp;
