@@ -153,7 +153,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
               seriesCount={seriesCount}
               isPending={seriesQuery.isPending}
               isFetchingNextPage={seriesQuery.isFetchingNextPage}
-              fetchNextPage={seriesQuery.fetchNextPage}
+              fetchNextPage={() => seriesQuery.fetchNextPage()}
             />
           </div>
         </div>
