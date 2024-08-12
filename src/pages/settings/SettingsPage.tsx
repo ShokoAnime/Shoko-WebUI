@@ -15,6 +15,8 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
+
 const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
@@ -71,12 +73,12 @@ function SettingsPage() {
     if (toastId.current) toast.dismiss(toastId.current);
   }, []);
 
-  const updateSetting = (type: string, key: string, value: string | string[] | boolean) => {
+  const updateSetting = (type: string, key: string, value: string | string[] | boolean | PluginRenamerSettingsType) => {
     if (key === 'theme' && typeof value === 'string') {
       globalThis.localStorage.setItem('theme', value);
     }
 
-    const tempSettings: Record<string, string | string[] | boolean> = {
+    const tempSettings: Record<string, string | string[] | boolean | PluginRenamerSettingsType> = {
       ...(newSettings[type] as Record<string, string | string[] | boolean>),
       [key]: value,
     };

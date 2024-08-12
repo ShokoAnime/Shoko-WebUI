@@ -368,15 +368,17 @@ export type SettingsImportType = {
   VideoExtensions: string[];
 };
 
-export type PluginSettingsType = {
-  EnabledPlugins: Record<string, boolean>;
-  Priority: number[];
-  Renamer: {
-    DefaultRenamer: string | null;
-    EnabledRenamers: Record<string, boolean>;
-  };
+export type PluginRenamerSettingsType = {
+  EnabledRenamers: Record<string, boolean>;
   MoveOnImport: boolean;
   RenameOnImport: boolean;
+  DefaultRenamer: string | null;
+};
+
+export type PluginSettingsType = {
+  EnabledPlugins: Record<string, boolean>;
+  Priority: string[];
+  Renamer: PluginRenamerSettingsType;
 };
 
 export type SettingsServerType = {
