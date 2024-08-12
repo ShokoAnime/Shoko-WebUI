@@ -23,7 +23,7 @@ type SeriesSidePanelProps = {
 const SeriesTag = ({ text, type }) => (
   <div
     className={cx(
-      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize',
+      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize h-fit',
       type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
     )}
   >
