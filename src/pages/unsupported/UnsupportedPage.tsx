@@ -6,6 +6,7 @@ import Button from '@/components/Input/Button';
 import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
+import { minimumSupportedServerVersion } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 const UnsupportedPage = () => {
@@ -61,7 +62,9 @@ const UnsupportedPage = () => {
             <div>
               Server Version:&nbsp;
               {versionQuery.data.Server.Version}
-              {versionQuery.data.Server.Commit && `-${versionQuery.data.Server.Commit?.slice(0, 7)}`}
+              <br />
+              Supported Server Version:&nbsp;
+              {minimumSupportedServerVersion}
               <br />
               Web UI Version:&nbsp;
               {versionQuery.data.WebUI?.Version}
