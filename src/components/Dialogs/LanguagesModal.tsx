@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { keys, map, remove } from 'lodash';
 
-import { languageDescription } from '@/components/Dialogs/constants';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
-import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { useSettingsQuery, useSupportedLanguagesQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
@@ -16,6 +17,10 @@ type Props = {
 
 function LanguagesModal({ onClose, type }: Props) {
   const settings = useSettingsQuery().data;
+
+  const languagesQuery = useSupportedLanguagesQuery();
+  const languageDescription = useMemo(() => languagesQuery.data ?? {}, [languagesQuery.data]);
+
   const LanguagePreference = useMemo(
     () => {
       switch (type) {
@@ -75,20 +80,24 @@ function LanguagesModal({ onClose, type }: Props) {
       onRequestClose={onClose}
       header={`${type} Languages`}
     >
-      <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
-        <div className="flex h-80 flex-col gap-y-1.5 overflow-y-auto rounded-lg bg-panel-input px-3 py-2">
-          {map(keys(languageDescription), (key: keyof typeof languageDescription) => (
-            <Checkbox
-              id={key}
-              key={key}
-              isChecked={languages.includes(key)}
-              onChange={handleInputChange}
-              label={languageDescription[key]}
-              justify
-            />
-          ))}
+      {!languagesQuery.isPending
+        && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
+      {Object.keys(languageDescription).length > 0 && (
+        <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
+          <div className="flex h-80 flex-col gap-y-1.5 overflow-y-auto rounded-lg bg-panel-input px-3 py-2">
+            {map(keys(languageDescription), (key: keyof typeof languageDescription) => (
+              <Checkbox
+                id={key}
+                key={key}
+                isChecked={languages.includes(key)}
+                onChange={handleInputChange}
+                label={languageDescription[key]}
+                justify
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={onClose} buttonType="secondary" className="px-5 py-2">Discard</Button>
         <Button onClick={handleSave} buttonType="primary" className="px-5 py-2" disabled={languages.length === 0}>
