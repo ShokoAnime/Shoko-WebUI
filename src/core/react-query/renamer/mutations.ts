@@ -29,6 +29,12 @@ export const useRenamerRelocateMutation = () =>
     onSuccess: updateResults,
   });
 
+export const useRenamerDeleteConfigMutation = () =>
+  useMutation({
+    mutationFn: (configName: string) => axios.delete(`Renamer/Config/${configName}`),
+    onSuccess: () => invalidateQueries(['renamer']),
+  });
+
 export const useRenamerSaveConfigMutation = () =>
   useMutation({
     mutationFn: (config: RenamerConfigResponseType) => axios.put(`Renamer/Config/${config.Name}`, config),

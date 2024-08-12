@@ -14,7 +14,8 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { find, isEqual, map } from 'lodash';
+import { produce } from 'immer';
+import { filter, find, isEqual, map } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useToggle } from 'usehooks-ts';
 
@@ -22,6 +23,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import AddFilesModal from '@/components/Utilities/Renamer/AddFilesModal';
 import ConfigModal from '@/components/Utilities/Renamer/ConfigModal';
 import RenamerScript from '@/components/Utilities/Renamer/RenamerScript';
@@ -30,11 +32,13 @@ import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import {
+  useRenamerDeleteConfigMutation,
   useRenamerPreviewMutation,
   useRenamerRelocateMutation,
   useRenamerSaveConfigMutation,
 } from '@/core/react-query/renamer/mutations';
 import { useRenamerByConfigQuery, useRenamerConfigsQuery } from '@/core/react-query/renamer/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -227,6 +231,8 @@ const Renamer = () => {
   const { isPending: relocatePending, mutate: relocateFiles } = useRenamerRelocateMutation();
   const { isPending: previewPending, mutateAsync: previewRename } = useRenamerPreviewMutation();
   const { isPending: savePending, mutate: saveConfig } = useRenamerSaveConfigMutation();
+  const { isPending: deletePending, mutate: deleteConfig } = useRenamerDeleteConfigMutation();
+  const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
   const [moveFiles, toggleMoveFiles] = useToggle(true);
   const [showSettings, toggleSettings] = useToggle(false);
@@ -291,6 +297,23 @@ const Renamer = () => {
     });
   });
 
+  const handleDeleteConfig = useEventCallback(() => {
+    if (!newConfig || !renamer) return;
+    deleteConfig(selectedConfig.Name);
+  });
+
+  const handleSetAsDefault = useEventCallback(() => {
+    const newSettings = produce(settings, (draftState) => {
+      draftState.Plugins.Renamer.DefaultRenamer = selectedConfig.Name;
+    });
+    patchSettings({ newSettings }, {
+      onSuccess: () => {
+        toast.success(`"${selectedConfig.Name}" set as default renamer!`);
+      },
+      onError: error => toast.error('', error.message),
+    });
+  });
+
   const openConfigModal = useEventCallback((rename: boolean) => {
     setConfigModelRename(rename);
     toggleConfigModal();
@@ -319,6 +342,15 @@ const Renamer = () => {
       getStatusColumn(renameResults),
     ];
   }, [importFolderQuery?.data, renameResults]);
+
+  const renamerSettingsExist = useMemo(
+    () =>
+      filter(
+        renamer?.Settings,
+        model => model.SettingType !== 'Code',
+      ).length > 0,
+    [renamer],
+  );
 
   return (
     <div className="flex grow flex-col gap-y-3">
@@ -372,7 +404,7 @@ const Renamer = () => {
           {renamerConfigsQuery.isSuccess && (
             <>
               <div className="flex w-1/3 flex-col gap-y-6">
-                <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={false}>
+                <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={!renamerSettingsExist}>
                   <Select
                     label="Config"
                     id="renamer-config"
@@ -393,9 +425,21 @@ const Renamer = () => {
                   </Select>
                   <div className="flex justify-end gap-x-3 font-semibold">
                     <Button
-                      onClick={() => {}}
+                      onClick={handleSetAsDefault}
                       buttonType="secondary"
                       buttonSize="normal"
+                      loading={settingsPatchPending}
+                      disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
+                        || settingsPatchPending}
+                    >
+                      Set as default
+                    </Button>
+                    <Button
+                      onClick={handleDeleteConfig}
+                      buttonType="secondary"
+                      buttonSize="normal"
+                      loading={deletePending}
+                      disabled={deletePending}
                     >
                       Delete
                     </Button>
@@ -418,6 +462,7 @@ const Renamer = () => {
                       buttonType="primary"
                       buttonSize="normal"
                       loading={savePending}
+                      disabled={savePending}
                     >
                       Save
                     </Button>
@@ -430,17 +475,19 @@ const Renamer = () => {
                   </div>
                 </ShokoPanel>
 
-                <ShokoPanel title="Selected Renamer Config">
-                  {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
-                  {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
-                  {newConfig && renamer?.Settings && showSettings && (
-                    <RenamerSettings
-                      newConfig={newConfig}
-                      setNewConfig={setNewConfig}
-                      settingsModel={renamer.Settings}
-                    />
-                  )}
-                </ShokoPanel>
+                {renamerSettingsExist && (
+                  <ShokoPanel title="Selected Renamer Config">
+                    {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
+                    {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
+                    {newConfig && renamer?.Settings && showSettings && (
+                      <RenamerSettings
+                        newConfig={newConfig}
+                        setNewConfig={setNewConfig}
+                        settingsModel={renamer.Settings}
+                      />
+                    )}
+                  </ShokoPanel>
+                )}
               </div>
 
               <ShokoPanel title="Selected Renamer Script" className="w-2/3" disableOverflow>
