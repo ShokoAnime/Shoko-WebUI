@@ -431,6 +431,9 @@ const Renamer = () => {
                       loading={settingsPatchPending}
                       disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
                         || settingsPatchPending}
+                      tooltip={selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer
+                        ? 'Already set as default!'
+                        : ''}
                     >
                       Set as default
                     </Button>
@@ -462,7 +465,8 @@ const Renamer = () => {
                       buttonType="primary"
                       buttonSize="normal"
                       loading={savePending}
-                      disabled={savePending}
+                      disabled={savePending || !renamer?.DefaultSettings}
+                      tooltip={!renamer?.DefaultSettings ? 'Renamer does not have any settings to save.' : ''}
                     >
                       Save
                     </Button>
