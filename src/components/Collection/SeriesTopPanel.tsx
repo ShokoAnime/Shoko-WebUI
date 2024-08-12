@@ -9,6 +9,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import AnidbDescription from '@/components/Collection/AnidbDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
@@ -52,6 +53,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
     setPoster(allPosters.find(art => art.Preferred) ?? allPosters[0]);
   }, [imagesQuery.data, imagesQuery.isSuccess, showRandomPoster]);
 
+  // TODO: try to make this a grid for better responsiveness... but we'll have v3 soon so maybe not right now.
   return (
     <div className="flex w-full gap-x-6">
       <BackgroundImagePlaceholderDiv
@@ -65,41 +67,45 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
         )}
       </BackgroundImagePlaceholderDiv>
       <div className="flex w-full max-w-[56.25rem] flex-col gap-y-6">
-        <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
-          <div className="flex w-full text-xl font-semibold">
-            Series Description
-          </div>
-          <div className="overflow-y-auto text-base font-normal">
-            <AnidbDescription text={series.AniDB?.Description ?? ''} />
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
-          <div className="flex w-full text-xl font-semibold">
-            Series Information
-          </div>
+        <ShokoPanel
+          title="Series Description"
+          className="!h-[16.5rem]"
+          contentClassName="contain-strict"
+          transparent
+        >
+          <AnidbDescription text={series.AniDB?.Description ?? ''} />
+        </ShokoPanel>
+
+        <ShokoPanel
+          title="Series Information"
+          className="!h-[14.5rem]"
+          transparent
+        >
           <div className="grid h-32 grid-cols-1 gap-x-[4.5rem] gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
             <SeriesInfo series={series} />
           </div>
-        </div>
+        </ShokoPanel>
       </div>
       <div className="flex w-full flex-col gap-y-6">
-        <div className="flex h-[16.25rem] flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
-          <div className="flex w-full text-xl font-semibold">
-            Top 10 Tags
-          </div>
-          <div className="flex flex-wrap gap-3 overflow-y-auto">
-            {tags.slice(0, 10)
-              .map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
-          </div>
-        </div>
-        <div className="flex flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold lg:gap-x-6">
-          <div className="flex w-full text-xl font-semibold">
-            User Stats
-          </div>
-          <div className="flex flex-col flex-wrap gap-3">
-            <SeriesUserStats series={series} />
-          </div>
-        </div>
+        <ShokoPanel
+          title="Top 10 Tags"
+          className="!h-[16.5rem]"
+          contentClassName="!flex-row flex-wrap gap-3 contain-strict"
+          isFetching={tagsQuery.isFetching}
+          transparent
+        >
+          {tags.slice(0, 10)
+            .map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
+        </ShokoPanel>
+
+        <ShokoPanel
+          title="User Stats"
+          className="!h-[14.5rem]"
+          contentClassName="flex-wrap gap-3"
+          transparent
+        >
+          <SeriesUserStats series={series} />
+        </ShokoPanel>
       </div>
     </div>
   );
