@@ -6,6 +6,7 @@ import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
 import { isObject, toNumber } from 'lodash';
+import semver from 'semver';
 
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
@@ -25,6 +26,19 @@ export function uiVersion() {
 export function isDebug() {
   return DEV;
 }
+
+export const minimumSupportedServerVersion = '4.2.2.13';
+
+export const parseServerVersion = (version: string) => {
+  const semverVersion = semver.coerce(version)?.raw;
+  const prereleaseVersion = version.split('.').pop();
+
+  if (!semverVersion || !prereleaseVersion) return null;
+
+  return `${semverVersion}-dev.${prereleaseVersion}`;
+};
+
+export const getParsedSupportedServerVersion = () => parseServerVersion(minimumSupportedServerVersion)!;
 
 export function mergeDeep(...objects: object[]) {
   return objects.reduce((prev, obj) => {

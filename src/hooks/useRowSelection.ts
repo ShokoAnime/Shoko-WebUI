@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
@@ -32,6 +32,10 @@ const useRowSelection = <T extends FileType | SeriesType>(items: T[]) => {
       return immerState;
     });
   });
+
+  useEffect(() => {
+    if (items.length === 0) setRowSelection({});
+  }, [items.length, setRowSelection]);
 
   return { handleRowSelect, rowSelection, setRowSelection, selectedRows };
 };

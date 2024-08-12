@@ -6,6 +6,7 @@ import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
   mdiFileDocumentAlertOutline,
+  mdiFileDocumentEditOutline,
   mdiFileDocumentMultipleOutline,
   mdiFileQuestionOutline,
   mdiFileSearchOutline,
@@ -384,6 +385,12 @@ function TopNav() {
               onClick={closeModalsAndSubmenus}
               path="utilities/file-search"
               text="Files Search"
+            />
+            <LinkMenuItem
+              icon={mdiFileDocumentEditOutline}
+              onClick={closeModalsAndSubmenus}
+              path="utilities/renamer"
+              text="File Rename"
             />
           </div>
         </AnimateHeight>

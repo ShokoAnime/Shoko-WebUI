@@ -275,7 +275,7 @@ function ManuallyLinkedTab() {
               ExpandedNode={FilesTable}
               columns={columns}
               count={seriesCount}
-              fetchNextPage={seriesQuery.fetchNextPage}
+              fetchNextPage={() => seriesQuery.fetchNextPage()}
               isFetchingNextPage={seriesQuery.isFetchingNextPage}
               onExpand={onExpand}
               rows={series}
