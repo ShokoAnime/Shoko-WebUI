@@ -4,6 +4,7 @@ import { webuiSettingsPatches } from '@/core/patches';
 import { LanguageSource } from '@/core/types/api/settings';
 import { uiVersion } from '@/core/util';
 
+import type { SupportedLanguagesResponseType } from '@/core/react-query/settings/types';
 import type { SettingsServerType, SettingsType, WebUISettingsType } from '@/core/types/api/settings';
 
 const initialLayout = {
@@ -447,4 +448,24 @@ export const transformSettings = (response: SettingsServerType) => {
   return { ...response, WebUI_Settings: webuiSettings } as SettingsType;
   // For Dev Only
   // return { ...response, WebUI_Settings: initialSettings.WebUI_Settings } as SettingsType;
+};
+
+export const transformSupportedLanguages = (response: SupportedLanguagesResponseType): Record<string, string> => {
+  const languages = response.reduce(
+    (result, language) => (
+      {
+        ...result,
+        [language.Alpha2]: `${language.Name} (${language.Alpha2})`,
+      }
+    ),
+    {} as Record<string, string>,
+  );
+
+  const mainLanguage = languages['x-main'];
+  delete languages['x-main'];
+
+  return {
+    'x-main': mainLanguage,
+    ...languages,
+  };
 };

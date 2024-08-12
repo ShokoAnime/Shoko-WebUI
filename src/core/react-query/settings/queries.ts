@@ -1,8 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
-import { initialSettings, transformSettings } from '@/core/react-query/settings/helpers';
+import { initialSettings, transformSettings, transformSupportedLanguages } from '@/core/react-query/settings/helpers';
 
+import type { SupportedLanguagesResponseType } from '@/core/react-query/settings/types';
 import type { SettingsServerType, SettingsType } from '@/core/types/api/settings';
 
 export const useSettingsQuery = (enabled = true) =>
@@ -24,4 +25,13 @@ export const useSettingsQuery = (enabled = true) =>
     // So setting initialDataUpdatedAt to 0 and staleTime to something effectively infinite
     initialDataUpdatedAt: 0,
     enabled,
+  });
+
+export const useSupportedLanguagesQuery = () =>
+  useQuery<SupportedLanguagesResponseType, unknown, Record<string, string>>({
+    queryKey: ['settings', 'supported-languages'],
+    queryFn: () => axios.get('Settings/SupportedLanguages'),
+    select: transformSupportedLanguages,
+    // This won't change while the server is running
+    staleTime: Infinity,
   });

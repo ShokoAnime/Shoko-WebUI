@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useState } from 'react';
-import { mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
+import React, { useMemo, useState } from 'react';
+import { mdiLoading, mdiMinusCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { keys, remove } from 'lodash';
 
 import LanguagesModal from '@/components/Dialogs/LanguagesModal';
-import { languageDescription } from '@/components/Dialogs/constants';
 import DnDList from '@/components/DnDList/DnDList';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
+import { useSupportedLanguagesQuery } from '@/core/react-query/settings/queries';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 import type { DropResult } from '@hello-pangea/dnd';
@@ -34,6 +34,9 @@ const CollectionSettings = () => {
     AutoGroupSeriesUseScoreAlgorithm,
     Language,
   } = newSettings;
+
+  const languagesQuery = useSupportedLanguagesQuery();
+  const languageDescription = useMemo(() => languagesQuery.data ?? {}, [languagesQuery.data]);
 
   const onDragEnd = (result: DropResult, type: 'Series' | 'Episode' | 'Description') => {
     if (!result.destination || result.destination.index === result.source.index) {
@@ -160,35 +163,64 @@ const CollectionSettings = () => {
       {/* Language Settings */}
       <div className="flex flex-col gap-y-6">
         <div className="flex h-[2.149rem] items-center font-semibold">Language Options</div>
-        <div className="flex flex-col gap-y-1">
-          <Checkbox
-            label="Also Use Synonyms"
-            id="LanguageUseSynonyms"
-            isChecked={Language.UseSynonyms}
-            onChange={event =>
-              setNewSettings({
-                ...newSettings,
-                Language: { ...Language, UseSynonyms: event.target.checked },
-              })}
-            justify
-          />
-          <div className="my-2 flex justify-between">
-            Series Title (Drag to Reorder)
-            <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          </div>
-          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            {Language.SeriesTitleLanguageOrder.length > 0
-              ? (
-                <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
-                  {Language.SeriesTitleLanguageOrder.map(language => (
+        {languagesQuery.isPending
+          && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
+        {Object.keys(languageDescription).length > 0 && (
+          <>
+            <div className="flex flex-col gap-y-1">
+              <Checkbox
+                label="Also Use Synonyms"
+                id="LanguageUseSynonyms"
+                isChecked={Language.UseSynonyms}
+                onChange={event =>
+                  setNewSettings({
+                    ...newSettings,
+                    Language: { ...Language, UseSynonyms: event.target.checked },
+                  })}
+                justify
+              />
+              <div className="my-2 flex justify-between">
+                Series Title (Drag to Reorder)
+                <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
+                  <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
+                </Button>
+              </div>
+              <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+                {Language.SeriesTitleLanguageOrder.length > 0
+                  ? (
+                    <DnDList onDragEnd={result => onDragEnd(result, 'Series')}>
+                      {Language.SeriesTitleLanguageOrder.map(language => (
+                        {
+                          key: language,
+                          item: (
+                            <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
+                              {languageDescription[language]}
+                              <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
+                                <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
+                              </Button>
+                            </div>
+                          ),
+                        }
+                      ))}
+                    </DnDList>
+                  )
+                  : <div>Title preference not set. Fallback to main title.</div>}
+              </div>
+              <div className="mt-2 flex justify-between">
+                Episode Title (Drag to Reorder)
+                <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
+                  <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
+                </Button>
+              </div>
+              <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+                <DnDList onDragEnd={result => onDragEnd(result, 'Episode')}>
+                  {Language.EpisodeTitleLanguageOrder.map(language => (
                     {
                       key: language,
                       item: (
-                        <div className="mt-2.5 flex items-center justify-between group-first:mt-0">
+                        <div className="mt-2 flex items-center justify-between group-first:mt-0">
                           {languageDescription[language]}
-                          <Button onClick={() => removeLanguage(language, 'Series')} tooltip="Remove">
+                          <Button onClick={() => removeLanguage(language, 'Episode')} tooltip="Remove">
                             <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
                           </Button>
                         </div>
@@ -196,58 +228,35 @@ const CollectionSettings = () => {
                     }
                   ))}
                 </DnDList>
-              )
-              : <div>Title preference not set. Fallback to main title.</div>}
-          </div>
-          <div className="mt-2 flex justify-between">
-            Episode Title (Drag to Reorder)
-            <Button onClick={() => setShowLanguagesModal('Episode')} tooltip="Add Language">
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          </div>
-          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={result => onDragEnd(result, 'Episode')}>
-              {Language.EpisodeTitleLanguageOrder.map(language => (
-                {
-                  key: language,
-                  item: (
-                    <div className="mt-2 flex items-center justify-between group-first:mt-0">
-                      {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language, 'Episode')} tooltip="Remove">
-                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
-                      </Button>
-                    </div>
-                  ),
-                }
-              ))}
-            </DnDList>
-          </div>
-          <div className="mt-2 flex justify-between">
-            Descriptions (Drag to Reorder)
-            <Button onClick={() => setShowLanguagesModal('Description')} tooltip="Add Language">
-              <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
-            </Button>
-          </div>
-          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={result => onDragEnd(result, 'Description')}>
-              {Language.DescriptionLanguageOrder.map(language => (
-                {
-                  key: language,
-                  item: (
-                    <div className="mt-2 flex items-center justify-between group-first:mt-0">
-                      {languageDescription[language]}
-                      <Button onClick={() => removeLanguage(language, 'Description')} tooltip="Remove">
-                        <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
-                      </Button>
-                    </div>
-                  ),
-                }
-              ))}
-            </DnDList>
-          </div>
-        </div>
+              </div>
+              <div className="mt-2 flex justify-between">
+                Descriptions (Drag to Reorder)
+                <Button onClick={() => setShowLanguagesModal('Description')} tooltip="Add Language">
+                  <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
+                </Button>
+              </div>
+              <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+                <DnDList onDragEnd={result => onDragEnd(result, 'Description')}>
+                  {Language.DescriptionLanguageOrder.map(language => (
+                    {
+                      key: language,
+                      item: (
+                        <div className="mt-2 flex items-center justify-between group-first:mt-0">
+                          {languageDescription[language]}
+                          <Button onClick={() => removeLanguage(language, 'Description')} tooltip="Remove">
+                            <Icon className="text-panel-icon-action" path={mdiMinusCircleOutline} size={1} />
+                          </Button>
+                        </div>
+                      ),
+                    }
+                  ))}
+                </DnDList>
+              </div>
+            </div>
+            <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
+          </>
+        )}
       </div>
-      <LanguagesModal type={showLanguagesModal} onClose={() => setShowLanguagesModal(null)} />
 
       <div className="border-b border-panel-border" />
 
