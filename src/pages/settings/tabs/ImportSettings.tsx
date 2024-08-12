@@ -1,7 +1,9 @@
 import React from 'react';
+import { produce } from 'immer';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
+import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 function ImportSettings() {
@@ -17,7 +19,15 @@ function ImportSettings() {
   const {
     MoveOnImport,
     RenameOnImport,
-  } = newSettings.Plugins;
+  } = newSettings.Plugins.Renamer;
+
+  const handleRenamerSettingChange = useEventCallback((type: 'MoveOnImport' | 'RenameOnImport', value: boolean) => {
+    const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
+      ...settings,
+      [type]: value,
+    }));
+    updateSetting('Plugins', 'Renamer', renamerSettings);
+  });
 
   return (
     <>
@@ -46,22 +56,15 @@ function ImportSettings() {
             label="Rename on import"
             id="rename-on-import"
             isChecked={RenameOnImport}
-            onChange={event => updateSetting('Plugins', 'RenameOnImport', event.target.checked)}
+            onChange={event => handleRenamerSettingChange('RenameOnImport', event.target.checked)}
           />
           <Checkbox
             justify
             label="Move on import"
             id="move-on-import"
             isChecked={MoveOnImport}
-            onChange={event => updateSetting('Plugins', 'MoveOnImport', event.target.checked)}
+            onChange={event => handleRenamerSettingChange('MoveOnImport', event.target.checked)}
           />
-          {/* <Checkbox */}
-          {/*   justify */}
-          {/*   label="Move after rename" */}
-          {/*   id="move-after-rename" */}
-          {/*   isChecked={RenameThenMove} */}
-          {/*   onChange={event => updateSetting('Import', 'RenameThenMove', event.target.checked)} */}
-          {/* /> */}
           <Checkbox
             justify
             label="Delete duplicates on import"

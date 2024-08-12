@@ -418,11 +418,11 @@ export const initialSettings: SettingsType = {
     EnabledPlugins: {},
     Priority: [],
     Renamer: {
-      DefaultRenamer: null,
       EnabledRenamers: {},
+      MoveOnImport: false,
+      RenameOnImport: false,
+      DefaultRenamer: null,
     },
-    MoveOnImport: false,
-    RenameOnImport: false,
   },
 };
 
