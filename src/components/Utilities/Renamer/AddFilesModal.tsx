@@ -37,11 +37,14 @@ const addEntireCollection = () => {
     .catch(console.error);
 };
 
-const addRecentlyHashedFiles = (pageSize: number) => {
+const addRecentlyImportedFiles = (pageSize: number) => {
   queryClient.fetchQuery<ListResultType<FileType>>(
     {
       queryKey: ['files', 'recently-hashed', pageSize],
-      queryFn: () => axios.get('File', { params: { pageSize, sortOrder: [-FileSortCriteriaEnum.CreatedAt] } }),
+      queryFn: () =>
+        axios.get('File', {
+          params: { pageSize, exclude: ['Unrecognized'], sortOrder: [-FileSortCriteriaEnum.CreatedAt] },
+        }),
     },
   )
     .then(result => store.dispatch(addFiles(result.List)))
@@ -117,7 +120,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
               </Button>
             </div>
             <div className="flex items-center justify-between">
-              <div className="text-sm font-semibold">Recently Hashed Files</div>
+              <div className="text-sm font-semibold">Recently Imported Files</div>
               <div className="flex items-center gap-x-2">
                 <InputSmall
                   id="pageSize"
@@ -127,7 +130,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
                   className="w-12 text-center"
                 />
                 <Button
-                  onClick={() => addRecentlyHashedFiles(pageSize)}
+                  onClick={() => addRecentlyImportedFiles(pageSize)}
                 >
                   <Icon path={mdiPlayCircleOutline} size={1} className="text-panel-text-primary" />
                 </Button>
