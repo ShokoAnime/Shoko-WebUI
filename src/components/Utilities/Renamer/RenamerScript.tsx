@@ -26,7 +26,13 @@ const RenamerScript = ({ newConfig, setNewConfig, settingsModel }: Props) => {
     });
   });
 
-  if (!settingName) return null;
+  if (!settingName) {
+    return (
+      <div className="flex size-full grow flex-col items-center justify-center gap-y-2 text-center">
+        This renamer does not have any script to edit!
+      </div>
+    );
+  }
 
   return (
     <Editor
