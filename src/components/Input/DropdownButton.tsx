@@ -3,7 +3,8 @@ import useMeasure from 'react-use-measure';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import cx from 'classnames';
-import { useEventCallback } from 'usehooks-ts';
+
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   buttonTypes?: 'primary' | 'secondary' | 'danger';

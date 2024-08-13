@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import cx from 'classnames';
-import { cloneDeep, toNumber } from 'lodash';
+import { produce } from 'immer';
+import { toNumber } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -17,7 +18,7 @@ type Props = {
   show: boolean;
 };
 
-const Title = ({ onClose }: { onClose: () => void }) => {
+const Title = React.memo(({ onClose }: { onClose: () => void }) => {
   const dispatch = useDispatch();
 
   const handleEdit = useEventCallback(() => {
@@ -37,7 +38,7 @@ const Title = ({ onClose }: { onClose: () => void }) => {
       </Button>
     </div>
   );
-};
+});
 
 const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const dispatch = useDispatch();
@@ -71,15 +72,10 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     shokoNewsPostsCount,
   } = newSettings.WebUI_Settings.dashboard;
 
-  const updateSetting = (key: keyof typeof settings.WebUI_Settings.dashboard, value: boolean | number) => {
-    const tempSettings = cloneDeep(newSettings);
-    if (
-      key === 'recentlyImportedEpisodesCount' || key === 'recentlyImportedSeriesCount' || key === 'shokoNewsPostsCount'
-    ) {
-      tempSettings.WebUI_Settings.dashboard[key] = value as number;
-    } else {
-      tempSettings.WebUI_Settings.dashboard[key] = value as boolean;
-    }
+  const updateSetting = (key: string, value: boolean | number) => {
+    const tempSettings = produce(newSettings, (draftState) => {
+      draftState.WebUI_Settings.dashboard[key] = value;
+    });
     setNewSettings(tempSettings);
   };
 
@@ -92,6 +88,13 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
   const handleCancel = useEventCallback(() => {
     setNewSettings(settings);
     onClose();
+  });
+
+  const handleUpdate = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    updateSetting(
+      event.target.id,
+      event.target.type === 'checkbox' ? event.target.checked : Math.min(toNumber(event.target.value), 100),
+    );
   });
 
   return (
@@ -138,81 +141,81 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 <Checkbox
                   justify
                   label="Hide Queue Processor"
-                  id="hide-queue-processor"
+                  id="hideQueueProcessor"
                   isChecked={hideQueueProcessor}
-                  onChange={event => updateSetting('hideQueueProcessor', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Unrecognized Files"
-                  id="hide-unrecognized-files"
+                  id="hideUnrecognizedFiles"
                   isChecked={hideUnrecognizedFiles}
-                  onChange={event => updateSetting('hideUnrecognizedFiles', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Recently Imported"
-                  id="hide-recently-imported"
+                  id="hideRecentlyImported"
                   isChecked={hideRecentlyImported}
-                  onChange={event => updateSetting('hideRecentlyImported', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Collection Statistics"
-                  id="hide-collection-stats"
+                  id="hideCollectionStats"
                   isChecked={hideCollectionStats}
-                  onChange={event => updateSetting('hideCollectionStats', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Media Type"
-                  id="hide-media-type"
+                  id="hideMediaType"
                   isChecked={hideMediaType}
-                  onChange={event => updateSetting('hideMediaType', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Import Folders"
-                  id="hide-import-folders"
+                  id="hideImportFolders"
                   isChecked={hideImportFolders}
-                  onChange={event => updateSetting('hideImportFolders', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Shoko News"
-                  id="hide-shoko-news"
+                  id="hideShokoNews"
                   isChecked={hideShokoNews}
-                  onChange={event => updateSetting('hideShokoNews', event.target.checked)}
-                />
-                <Checkbox
-                  justify
-                  label="Hide Continue Watching"
-                  id="hide-continue-watching"
-                  isChecked={hideContinueWatching}
-                  disabled={combineContinueWatching && true}
-                  onChange={event => updateSetting('hideContinueWatching', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Next Up"
-                  id="hide-next-up"
+                  id="hideNextUp"
                   isChecked={hideNextUp}
-                  disabled={combineContinueWatching && true}
-                  onChange={event => updateSetting('hideNextUp', event.target.checked)}
+                  onChange={handleUpdate}
                 />
+                {!combineContinueWatching && (
+                  <Checkbox
+                    justify
+                    label="Hide Continue Watching"
+                    id="hideContinueWatching"
+                    isChecked={hideContinueWatching}
+                    onChange={handleUpdate}
+                  />
+                )}
                 <Checkbox
                   justify
                   label="Hide Upcoming Anime"
-                  id="hide-upcoming-anime"
+                  id="hideUpcomingAnime"
                   isChecked={hideUpcomingAnime}
-                  onChange={event => updateSetting('hideUpcomingAnime', event.target.checked)}
+                  onChange={handleUpdate}
                 />
                 <Checkbox
                   justify
                   label="Hide Recommended Anime"
-                  id="hide-recommended-anime"
+                  id="hideRecommendedAnime"
                   isChecked={hideRecommendedAnime}
-                  onChange={event => updateSetting('hideRecommendedAnime', event.target.checked)}
+                  onChange={handleUpdate}
                 />
               </div>
             </div>
@@ -223,46 +226,44 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               <Checkbox
                 justify
                 label="Combine Continue Watching & Next Up"
-                id="combine-continue-watching"
+                id="combineContinueWatching"
                 isChecked={combineContinueWatching}
-                onChange={event => updateSetting('combineContinueWatching', event.target.checked)}
+                onChange={handleUpdate}
               />
               <Checkbox
                 justify
                 label="Hide R18 Content"
-                id="hide-r18-content"
+                id="hideR18Content"
                 isChecked={hideR18Content}
-                onChange={event => updateSetting('hideR18Content', event.target.checked)}
+                onChange={handleUpdate}
               />
               <div className="flex items-center justify-between">
                 Shoko News Posts
                 <InputSmall
-                  id="shoko-news-posts"
+                  id="shokoNewsPostsCount"
                   type="number"
                   value={shokoNewsPostsCount}
-                  onChange={event => updateSetting('shokoNewsPostsCount', toNumber(event.target.value))}
+                  onChange={handleUpdate}
                   className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
               <div className="flex items-center justify-between">
                 Recently Imported Episodes
                 <InputSmall
-                  id="recently-imported-files"
+                  id="recentlyImportedEpisodesCount"
                   type="number"
-                  value={Math.min(Number(recentlyImportedEpisodesCount), 100)}
-                  onChange={event =>
-                    updateSetting('recentlyImportedEpisodesCount', Math.min(Number(event.target.value), 100))}
+                  value={recentlyImportedEpisodesCount}
+                  onChange={handleUpdate}
                   className="w-14 px-2 py-0.5 text-center"
                 />
               </div>
               <div className="flex items-center justify-between">
                 Recently Imported Series
                 <InputSmall
-                  id="recently-imported-series"
+                  id="recentlyImportedSeriesCount"
                   type="number"
-                  value={Math.min(Number(recentlyImportedSeriesCount), 100)}
-                  onChange={event =>
-                    updateSetting('recentlyImportedSeriesCount', Math.min(Number(event.target.value), 100))}
+                  value={recentlyImportedSeriesCount}
+                  onChange={handleUpdate}
                   className="w-14 px-2 py-0.5 text-center"
                 />
               </div>

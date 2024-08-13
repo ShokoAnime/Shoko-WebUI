@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
-import { NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
@@ -27,7 +27,6 @@ import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import semver from 'semver';
 import { siDiscord } from 'simple-icons';
-import { useEventCallback } from 'usehooks-ts';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
@@ -41,6 +40,7 @@ import { useCurrentUserQuery } from '@/core/react-query/user/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -48,7 +48,7 @@ import type { RootState } from '@/core/store';
 
 const { DEV, VITE_APPVERSION } = import.meta.env;
 
-const MenuItem = (
+const MenuItem = React.memo((
   { icon, id, isHighlighted, onClick, text }: {
     id: string;
     text: string;
@@ -56,23 +56,27 @@ const MenuItem = (
     onClick: () => void;
     isHighlighted: boolean;
   },
-) => (
-  <NavLink
-    to={id}
-    key={id}
-    className={({ isActive }) =>
-      cx('flex items-center gap-x-3', (isActive || isHighlighted) && 'text-topnav-text-primary')}
-    onClick={(e) => {
-      e.preventDefault();
-      onClick();
-    }}
-  >
-    <Icon path={icon} size={1} />
-    {text}
-  </NavLink>
-);
+) => {
+  const handleClick = useEventCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    onClick();
+  });
 
-const LinkMenuItem = (
+  return (
+    <NavLink
+      to={id}
+      key={id}
+      className={({ isActive }) =>
+        cx('flex items-center gap-x-3', (isActive || isHighlighted) && 'text-topnav-text-primary')}
+      onClick={handleClick}
+    >
+      <Icon path={icon} size={1} />
+      {text}
+    </NavLink>
+  );
+});
+
+const LinkMenuItem = React.memo((
   props: { icon: string, onClick: () => void, path: string, text: string },
 ) => {
   const { icon, onClick, path, text } = props;
@@ -87,9 +91,9 @@ const LinkMenuItem = (
       {text}
     </NavLink>
   );
-};
+});
 
-const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, icon: string }) => (
+const ExternalLinkMenuItem = React.memo(({ icon, name, url }: { url: string, name: string, icon: string }) => (
   <a
     href={url}
     target="_blank"
@@ -100,7 +104,7 @@ const ExternalLinkMenuItem = ({ icon, name, url }: { url: string, name: string, 
   >
     <Icon className="text-topnav-icon" path={icon} size={1} />
   </a>
-);
+));
 
 const QueueCount = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
@@ -157,15 +161,15 @@ function TopNav() {
     [networkStatus],
   );
 
-  const closeModalsAndSubmenus = (event?: React.MouseEvent) => {
+  const closeModalsAndSubmenus = useEventCallback((event?: React.MouseEvent, id?: string) => {
     if (layoutEditMode && event) {
       event.preventDefault();
       return;
     }
     setShowActionsModal(false);
     setShowDashboardSettingsModal(false);
-    setShowUtilitiesMenu(false);
-  };
+    if (id !== 'utilities') setShowUtilitiesMenu(false);
+  });
 
   const handleLogout = useEventCallback(() => {
     dispatch({ type: Events.AUTH_LOGOUT });
@@ -211,12 +215,17 @@ function TopNav() {
 
   return (
     <>
-      <div className="z-[100] flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)]">
+      <div
+        className={cx(
+          'z-[100] flex flex-col bg-header-background font-semibold text-header-text drop-shadow-[0_2px_2px_rgba(0,0,0,0.25)] transition-opacity',
+          layoutEditMode && 'opacity-65 pointer-events-none',
+        )}
+      >
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
-          <div className="flex items-center gap-x-3">
+          <Link to="/webui/dashboard" className="flex items-center gap-x-3">
             <ShokoIcon className="w-8" />
             <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
-          </div>
+          </Link>
           <div className="flex items-center gap-x-6">
             <QueueCount />
             <div className="flex items-center gap-x-2">
@@ -252,42 +261,39 @@ function TopNav() {
                 path="dashboard"
                 text="Dashboard"
               />
-              <div
-                className={cx('transition-opacity flex gap-x-6', layoutEditMode && 'opacity-65 pointer-events-none')}
-              >
-                <LinkMenuItem
-                  icon={mdiLayersTripleOutline}
-                  onClick={closeModalsAndSubmenus}
-                  path="collection"
-                  text="Collection"
-                />
-                <MenuItem
-                  id="utilities"
-                  text="Utilities"
-                  icon={mdiTools}
-                  onClick={() => {
-                    closeModalsAndSubmenus();
-                    setShowUtilitiesMenu(prev => !prev);
-                  }}
-                  isHighlighted={showUtilitiesMenu}
-                />
-                <LinkMenuItem
-                  onClick={closeModalsAndSubmenus}
-                  icon={mdiTextBoxOutline}
-                  path="log"
-                  text="Log"
-                />
-                <MenuItem
-                  id="actions"
-                  text="Actions"
-                  icon={mdiFormatListBulletedSquare}
-                  onClick={() => {
-                    closeModalsAndSubmenus();
-                    setShowActionsModal(true);
-                  }}
-                  isHighlighted={showActionsModal}
-                />
-              </div>
+
+              <LinkMenuItem
+                icon={mdiLayersTripleOutline}
+                onClick={closeModalsAndSubmenus}
+                path="collection"
+                text="Collection"
+              />
+              <MenuItem
+                id="utilities"
+                text="Utilities"
+                icon={mdiTools}
+                onClick={() => {
+                  closeModalsAndSubmenus(undefined, 'utilities');
+                  setShowUtilitiesMenu(prev => !prev);
+                }}
+                isHighlighted={showUtilitiesMenu}
+              />
+              <LinkMenuItem
+                onClick={closeModalsAndSubmenus}
+                icon={mdiTextBoxOutline}
+                path="log"
+                text="Log"
+              />
+              <MenuItem
+                id="actions"
+                text="Actions"
+                icon={mdiFormatListBulletedSquare}
+                onClick={() => {
+                  closeModalsAndSubmenus();
+                  setShowActionsModal(true);
+                }}
+                isHighlighted={showActionsModal}
+              />
             </div>
             <div className="flex justify-end gap-6">
               {pathname === '/webui/dashboard' && (
