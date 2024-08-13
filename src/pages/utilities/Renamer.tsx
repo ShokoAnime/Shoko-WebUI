@@ -17,7 +17,7 @@ import { Icon } from '@mdi/react';
 import { produce } from 'immer';
 import { filter, find, isEqual, map } from 'lodash';
 import { useImmer } from 'use-immer';
-import { useToggle } from 'usehooks-ts';
+import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -220,6 +220,8 @@ const Renamer = () => {
     selectedConfig,
     setSelectedConfig,
   ] = useState<RenamerConfigType>({ RenamerID: '', Name: '' });
+  // Used as temp variable to set the selected config after renaming or creating a new config
+  const [altSelectedConfig, setAltSelectedConfig] = useState<string>();
 
   const [
     newConfig,
@@ -277,6 +279,11 @@ const Renamer = () => {
   });
 
   const changeSelectedConfig = useEventCallback((configName: string) => {
+    if (configName === '') {
+      setSelectedConfig({ RenamerID: '', Name: '' });
+      return;
+    }
+
     if (!renamerConfigsQuery.isSuccess || !renamerConfigsQuery.data[0]) return;
     const tempConfig = renamerConfigsQuery.data.find(
       config => config.Name === configName,
@@ -286,7 +293,33 @@ const Renamer = () => {
 
     setSelectedConfig(tempConfig);
     setNewConfig(tempConfig.Settings);
+    setAltSelectedConfig(undefined);
   });
+
+  // Handle the below 4 hooks with care. These are used for auto-updating previews on changes.
+  const [debouncedConfig] = useDebounceValue(JSON.stringify(newConfig), 500);
+  const [initialCleared, setInitialCleared] = useState(false);
+  const [previewedConfig, setPreviewedConfig] = useState('');
+  useEffect(() => {
+    if (!selectedConfig.Name || !debouncedConfig) return;
+
+    // To skip the effect the first time we set the selected config on initial render
+    if (!initialCleared && previewedConfig !== selectedConfig.Name) {
+      setPreviewedConfig(selectedConfig.Name);
+      return;
+    }
+
+    // To avoid clearing of rename results as it's already cleared from the other useEffect
+    if (!initialCleared) {
+      setInitialCleared(true);
+      return;
+    }
+
+    dispatch(clearRenameResults());
+    // previewedConfig is used to skip the effect on initial render, adding it to deps would cause the effect to run
+    // an extra time
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedConfig, dispatch, initialCleared, selectedConfig.Name]);
 
   const handleSaveConfig = useEventCallback(() => {
     if (!newConfig || !renamer) return;
@@ -299,7 +332,11 @@ const Renamer = () => {
 
   const handleDeleteConfig = useEventCallback(() => {
     if (!newConfig || !renamer) return;
-    deleteConfig(selectedConfig.Name);
+    deleteConfig(selectedConfig.Name, {
+      onSuccess: () => toast.success(`"${selectedConfig.Name}" deleted successfully!`),
+      onError: () => toast.error(`"${selectedConfig.Name}" could not be deleted!`),
+    });
+    changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
   });
 
   const handleSetAsDefault = useEventCallback(() => {
@@ -324,7 +361,10 @@ const Renamer = () => {
   }, [dispatch, moveFiles]);
 
   useEffect(() => {
-    changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
+    if (!renamerConfigsQuery.data) return;
+    changeSelectedConfig(altSelectedConfig ?? (settings.Plugins.Renamer.DefaultRenamer ?? 'Default'));
+    // This should not run when altSelectedConfig changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [changeSelectedConfig, renamerConfigsQuery.data, settings]);
 
   const {
@@ -439,10 +479,13 @@ const Renamer = () => {
                     </Button>
                     <Button
                       onClick={handleDeleteConfig}
-                      buttonType="secondary"
+                      buttonType="danger"
                       buttonSize="normal"
                       loading={deletePending}
-                      disabled={deletePending}
+                      disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer) || deletePending}
+                      tooltip={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
+                        ? 'Cannot delete default config!'
+                        : ''}
                     >
                       Delete
                     </Button>
@@ -475,6 +518,8 @@ const Renamer = () => {
                       onClose={toggleConfigModal}
                       rename={configModelRename}
                       config={selectedConfig}
+                      changeAltSelectedConfig={setAltSelectedConfig}
+                      changeSelectedConfig={changeSelectedConfig}
                     />
                   </div>
                 </ShokoPanel>

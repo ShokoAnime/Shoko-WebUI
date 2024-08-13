@@ -5,6 +5,7 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import toast from '@/components/Toast';
 import { useRenamerNewConfigMutation, useRenamerPatchConfigMutation } from '@/core/react-query/renamer/mutations';
 import { useRenamerConfigsQuery, useRenamersQuery } from '@/core/react-query/renamer/queries';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -13,12 +14,23 @@ import type { RenamerConfigType } from '@/core/react-query/renamer/types';
 
 type Props = {
   config: RenamerConfigType;
-  onClose(): void;
+  onClose: () => void;
   rename: boolean;
   show: boolean;
+  changeAltSelectedConfig: (configName: string) => void;
+  changeSelectedConfig: (configName: string) => void;
 };
 
-const ConfigModal = ({ config, onClose, rename, show }: Props) => {
+const ConfigModal = (props: Props) => {
+  const {
+    changeAltSelectedConfig,
+    changeSelectedConfig,
+    config,
+    onClose,
+    rename,
+    show,
+  } = props;
+
   const renamers = useRenamersQuery(show && !rename).data;
   const renamerConfigs = useRenamerConfigsQuery(show && !rename).data;
 
@@ -35,34 +47,43 @@ const ConfigModal = ({ config, onClose, rename, show }: Props) => {
     }
   }, [config.Name, config.RenamerID, rename, renamers]);
 
-  const { isPending: isNewConfigPending, mutate: newConfig } = useRenamerNewConfigMutation();
-  const { isPending: isPatchConfigPending, mutate: patchConfig } = useRenamerPatchConfigMutation();
+  const { isPending: isNewConfigPending, mutateAsync: newConfig } = useRenamerNewConfigMutation();
+  const { isPending: isPatchConfigPending, mutateAsync: patchConfig } = useRenamerPatchConfigMutation();
+
+  const handleSaveAsync = async () => {
+    changeSelectedConfig('');
+
+    try {
+      if (rename) {
+        await patchConfig(
+          {
+            configName: config.Name,
+            operations: [{ op: 'replace', path: 'Name', value: configName }],
+          },
+        );
+      } else {
+        const defaultSettings = renamers?.find(renamer => renamer.RenamerID === selectedRenamer)?.DefaultSettings;
+
+        await newConfig(
+          {
+            Name: configName,
+            RenamerID: selectedRenamer,
+            Settings: defaultSettings,
+          },
+        );
+      }
+    } catch (error) {
+      changeSelectedConfig(config.Name);
+      toast.error(`Error while ${rename ? 'renaming' : 'creating'} config!`);
+      return;
+    }
+
+    changeAltSelectedConfig(configName);
+    onClose();
+  };
 
   const handleSave = useEventCallback(() => {
-    if (rename) {
-      patchConfig(
-        {
-          configName: config.Name,
-          operations: [{ op: 'replace', path: 'Name', value: configName }],
-        },
-        {
-          onSuccess: onClose,
-        },
-      );
-    } else {
-      const defaultSettings = renamers?.find(renamer => renamer.RenamerID === selectedRenamer)?.DefaultSettings;
-
-      newConfig(
-        {
-          Name: configName,
-          RenamerID: selectedRenamer,
-          Settings: defaultSettings,
-        },
-        {
-          onSuccess: onClose,
-        },
-      );
-    }
+    handleSaveAsync().catch(console.error);
   });
 
   const configExists = useMemo(
@@ -119,7 +140,7 @@ const ConfigModal = ({ config, onClose, rename, show }: Props) => {
           className="px-6 py-2"
           loading={isPatchConfigPending || isNewConfigPending}
           disabled={!configName || selectedRenamer === 'na' || configExists}
-          tooltip={configExists ? 'Config with the same name already exists!' : ''}
+          tooltip={configExists ? 'Another config with the same name already exists!' : ''}
         >
           Save
         </Button>
