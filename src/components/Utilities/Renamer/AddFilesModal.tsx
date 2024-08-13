@@ -40,7 +40,7 @@ const addEntireCollection = () => {
 const addRecentlyImportedFiles = (pageSize: number) => {
   queryClient.fetchQuery<ListResultType<FileType>>(
     {
-      queryKey: ['files', 'recently-hashed', pageSize],
+      queryKey: ['files', 'recently-imported', pageSize],
       queryFn: () =>
         axios.get('File', {
           params: { pageSize, exclude: ['Unrecognized'], sortOrder: [-FileSortCriteriaEnum.CreatedAt] },
