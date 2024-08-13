@@ -1,11 +1,11 @@
 import * as React from 'react';
+import cx from 'classnames';
 
-const SVGComponent = props => (
+const SVGComponent = React.memo(({ className }: { className?: string }) => (
   <svg
-    className="size-20"
+    className={cx('size-20', className)}
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 400 400"
-    {...props}
   >
     <g fillRule="evenodd">
       <path
@@ -18,6 +18,6 @@ const SVGComponent = props => (
       />
     </g>
   </svg>
-);
+));
 
 export default SVGComponent;

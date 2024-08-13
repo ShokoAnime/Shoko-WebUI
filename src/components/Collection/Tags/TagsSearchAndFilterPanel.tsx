@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
 import { mdiMagnify, mdiPlayCircleOutline } from '@mdi/js';
 import Icon from '@mdi/react';
-import { useEventCallback } from 'usehooks-ts';
 
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { TagType } from '@/core/types/api/tags';
 

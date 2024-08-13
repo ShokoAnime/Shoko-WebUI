@@ -14,7 +14,7 @@ type Props = {
   suffixes?: React.ReactNode;
 };
 
-function InputSmall(props: Props) {
+const InputSmall = React.memo((props: Props) => {
   const {
     autoComplete,
     autoFocus,
@@ -47,6 +47,6 @@ function InputSmall(props: Props) {
       {suffixes}
     </>
   );
-}
+});
 
 export default InputSmall;
