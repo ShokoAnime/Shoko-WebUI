@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { find } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useRenamerNewConfigMutation, useRenamerPatchConfigMutation } from '@/core/react-query/renamer/mutations';
-import { useRenamersQuery } from '@/core/react-query/renamer/queries';
+import { useRenamerConfigsQuery, useRenamersQuery } from '@/core/react-query/renamer/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RenamerConfigType } from '@/core/react-query/renamer/types';
@@ -19,6 +20,7 @@ type Props = {
 
 const ConfigModal = ({ config, onClose, rename, show }: Props) => {
   const renamers = useRenamersQuery(show && !rename).data;
+  const renamerConfigs = useRenamerConfigsQuery(show && !rename).data;
 
   const [configName, setConfigName] = useState('');
   const [selectedRenamer, setSelectedRenamer] = useState('na');
@@ -62,6 +64,11 @@ const ConfigModal = ({ config, onClose, rename, show }: Props) => {
       );
     }
   });
+
+  const configExists = useMemo(
+    () => !!find(renamerConfigs, item => item.Name === configName),
+    [configName, renamerConfigs],
+  );
 
   return (
     <ModalPanel
@@ -111,7 +118,8 @@ const ConfigModal = ({ config, onClose, rename, show }: Props) => {
           buttonType="primary"
           className="px-6 py-2"
           loading={isPatchConfigPending || isNewConfigPending}
-          disabled={!configName || selectedRenamer === 'na'}
+          disabled={!configName || selectedRenamer === 'na' || configExists}
+          tooltip={configExists ? 'Config with the same name already exists!' : ''}
         >
           Save
         </Button>
