@@ -296,30 +296,28 @@ const Renamer = () => {
     setAltSelectedConfig(undefined);
   });
 
-  // Handle the below 4 hooks with care. These are used for auto-updating previews on changes.
-  const [debouncedConfig] = useDebounceValue(JSON.stringify(newConfig), 500);
-  const [initialCleared, setInitialCleared] = useState(false);
-  const [previewedConfig, setPreviewedConfig] = useState('');
+  // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
+  // We combine them here because there is a delay in when the name changes and the config changes
+  // Effect should only be triggered once even if both values change
+  const [debouncedConfig] = useDebounceValue(
+    newConfig ? `${selectedConfig.Name}-${JSON.stringify(newConfig)}` : undefined,
+    500,
+  );
+  const [initialClear, setInitialClear] = useState(true);
   useEffect(() => {
-    if (!selectedConfig.Name || !debouncedConfig) return;
+    if (!debouncedConfig) return;
 
-    // To skip the effect the first time we set the selected config on initial render
-    if (!initialCleared && previewedConfig !== selectedConfig.Name) {
-      setPreviewedConfig(selectedConfig.Name);
-      return;
-    }
-
-    // To avoid clearing of rename results as it's already cleared from the other useEffect
-    if (!initialCleared) {
-      setInitialCleared(true);
+    // To avoid clearing of rename results on render as it's already cleared from the other useEffect
+    if (initialClear) {
+      setInitialClear(false);
       return;
     }
 
     dispatch(clearRenameResults());
-    // previewedConfig is used to skip the effect on initial render, adding it to deps would cause the effect to run
+    // initialClear is used to skip the effect on initial render, adding it to deps would cause the effect to run
     // an extra time
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedConfig, dispatch, initialCleared, selectedConfig.Name]);
+  }, [debouncedConfig, dispatch]);
 
   const handleSaveConfig = useEventCallback(() => {
     if (!newConfig || !renamer) return;
