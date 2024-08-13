@@ -138,27 +138,34 @@ const getResultColumn = (
 } as UtilityHeaderType<FileType>);
 
 const getStatusIcon = (result?: RenamerResultType) => {
-  if (!result) {
-    return <Icon path={mdiHelpCircleOutline} size={1} />;
+  let icon = mdiHelpCircleOutline;
+  let className = '';
+  let tooltip = '';
+
+  if (result?.ErrorMessage) {
+    icon = mdiCloseCircleOutline;
+    className = 'text-panel-text-danger';
+    tooltip = 'Rename/preview failed!';
+  } else if (result?.IsSuccess && result?.IsPreview) {
+    icon = mdiAlertCircleOutline;
+    className = 'text-panel-text-warning';
+    tooltip = 'Rename pending!';
+  } else if (result?.IsSuccess) {
+    icon = mdiCheckCircleOutline;
+    className = 'text-panel-text-important';
+    tooltip = 'Rename successful!';
   }
 
-  if (result.ErrorMessage) {
-    return <Icon path={mdiCloseCircleOutline} size={1} className="text-panel-text-danger" />;
-  }
-
-  if (result.IsSuccess && result.IsPreview && !result.AbsolutePath) {
-    return <Icon path={mdiCheckCircleOutline} size={1} className="text-panel-text-important" />;
-  }
-
-  if (result.IsSuccess && result.IsPreview) {
-    return <Icon path={mdiAlertCircleOutline} size={1} className="text-panel-text-warning" />;
-  }
-
-  if (result.IsSuccess) {
-    return <Icon path={mdiCheckCircleOutline} size={1} className="text-panel-text-important" />;
-  }
-
-  return <Icon path={mdiHelpCircleOutline} size={1} />;
+  return (
+    <Icon
+      path={icon}
+      size={1}
+      className={className}
+      data-tooltip-id="tooltip"
+      data-tooltip-content={tooltip}
+      data-tooltip-delay-show={0}
+    />
+  );
 };
 
 const getStatusColumn = (renameResults: Record<number, RenamerResultType>) => ({
