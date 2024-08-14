@@ -1,11 +1,16 @@
-import React from 'react';
-import { Editor } from '@monaco-editor/react';
+import React, { Suspense, lazy } from 'react';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 import { findKey } from 'lodash';
 
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/react-query/renamer/types';
 import type { Updater } from 'use-immer';
+
+const RenamerEditor = lazy(
+  () => import('@/components/Utilities/Renamer/RenamerEditor'),
+);
 
 type Props = {
   newConfig: Record<string, RenamerConfigSettingsType>;
@@ -35,12 +40,19 @@ const RenamerScript = ({ newConfig, setNewConfig, settingsModel }: Props) => {
   }
 
   return (
-    <Editor
-      defaultLanguage={settingsModel[settingName].Language?.toLowerCase() ?? 'plaintext'}
-      value={newConfig[settingName].Value as string}
-      onChange={updateScript}
-      theme="vs-dark"
-    />
+    <Suspense
+      fallback={
+        <div className="flex grow items-center justify-center text-panel-text-primary">
+          <Icon path={mdiLoading} spin size={3} />
+        </div>
+      }
+    >
+      <RenamerEditor
+        defaultLanguage={settingsModel[settingName].Language?.toLowerCase() ?? 'plaintext'}
+        value={newConfig[settingName].Value as string}
+        onChange={updateScript}
+      />
+    </Suspense>
   );
 };
 

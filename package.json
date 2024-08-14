@@ -30,6 +30,7 @@
     "format-thousands": "^2.0.0",
     "immer": "^10.1.1",
     "lodash": "^4.17.21",
+    "monaco-editor": "^0.50.0",
     "pretty-bytes": "^6.1.1",
     "react": "^18.3.1",
     "react-animate-height": "^3.2.3",
@@ -95,7 +96,8 @@
     "tailwindcss": "^3.4.3",
     "tailwindcss-text-fill-stroke": "2.0.0-beta.1",
     "typescript": "5.4.5",
-    "vite": "^5.2.11"
+    "vite": "^5.2.11",
+    "vite-plugin-webpackchunkname": "^1.0.3"
   },
   "scripts": {
     "eslint": "eslint --cache --format=node_modules/eslint-formatter-pretty src",

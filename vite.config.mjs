@@ -6,6 +6,7 @@ import pkg from './package.json';
 import { defineConfig } from 'vite';
 import { sentryVitePlugin } from '@sentry/vite-plugin';
 import react from '@vitejs/plugin-react';
+import { manualChunksPlugin } from 'vite-plugin-webpackchunkname'
 
 export default defineConfig(async () => {
   const isDebug = process.env.NODE_ENV !== 'production';
@@ -47,7 +48,7 @@ export default defineConfig(async () => {
       sourcemap: true,
       chunkSizeWarningLimit: 2000
     },
-    plugins: [react(), sentryPlugin],
+    plugins: [react(), sentryPlugin, manualChunksPlugin()],
     base: "/webui/"
   };
 });
