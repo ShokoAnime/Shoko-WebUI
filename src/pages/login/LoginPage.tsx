@@ -40,7 +40,7 @@ function LoginPage() {
   const [rememberUser, setRememberUser] = useState(false);
   const [pollingInterval, setPollingInterval] = useState(500);
   const [{ imageUrl, seriesId, seriesName }, setLoginImage] = useState(() => ({
-    imageUrl: 'default',
+    imageUrl: '',
     seriesName: '',
     seriesId: 0,
   }));
@@ -56,6 +56,7 @@ function LoginPage() {
   };
 
   useEffect(() => {
+    if (imageMetadataQuery.isPending) return;
     if (!imageMetadataQuery.isSuccess || !imageMetadataQuery.data.Type) {
       setLoginImage({ imageUrl: 'default', seriesName: 'One Piece', seriesId: 0 });
       return;
@@ -66,7 +67,7 @@ function LoginPage() {
       seriesName: Series?.Name ?? '',
       seriesId: Series?.ID ?? 0,
     });
-  }, [imageMetadataQuery.isSuccess, imageMetadataQuery.data]);
+  }, [imageMetadataQuery.isSuccess, imageMetadataQuery.isPending, imageMetadataQuery.data]);
 
   useEffect(() => {
     if (!serverStatusQuery.data) setPollingInterval(500);
