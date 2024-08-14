@@ -16,7 +16,7 @@ type RouteError = {
   error: Error;
 };
 
-const ErrorBoundary = ({ error }: { error?: Error }) => {
+const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () => void }) => {
   const dispatch = useDispatch();
   const routeError = useRouteError() as RouteError;
   const navigate = useNavigate();
@@ -28,6 +28,7 @@ const ErrorBoundary = ({ error }: { error?: Error }) => {
 
   const handleLogout = useEventCallback(() => {
     dispatch({ type: Events.AUTH_LOGOUT });
+    if (resetError) resetError();
   });
 
   const handleWebUiUpdate = useEventCallback((channel: 'Stable' | 'Dev') => {

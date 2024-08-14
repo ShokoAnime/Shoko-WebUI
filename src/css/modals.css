@@ -1,20 +1,3 @@
-.profile-modal {
-  width: 42rem;
-}
-
-.profile-modal-image {
-  background-image: url('/images/OnePiece.png');
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: cover;
-  width: 22rem;
-}
-
-.profile-modal-image-alpha {
-  color: theme('colors.panel-background');
-  background-color: theme('colors.panel-background-transparent');
-}
-
 .modal-transition-left {
   transition: transform 300ms ease-in-out;
   transform: translateX(-30rem);

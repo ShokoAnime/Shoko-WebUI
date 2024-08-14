@@ -18,7 +18,9 @@ const SentryErrorBoundaryWrapper = () => {
   }, [versionQuery.data]);
 
   return (
-    <Sentry.ErrorBoundary fallback={({ error }) => <ErrorBoundary error={error as Error} />}>
+    <Sentry.ErrorBoundary
+      fallback={({ error, resetError }) => <ErrorBoundary error={error as Error} resetError={resetError} />}
+    >
       <Outlet />
     </Sentry.ErrorBoundary>
   );

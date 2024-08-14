@@ -1,11 +1,13 @@
 import React, { useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   mdiChevronLeft,
   mdiChevronRight,
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
+  mdiFileDocumentEditOutline,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
@@ -38,6 +40,7 @@ import {
 import { useFileQuery, useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
+import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -57,6 +60,9 @@ const Menu = (
     selectedRows,
     setSelectedRows,
   } = props;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -121,6 +127,11 @@ const Menu = (
     if (failedFiles) toast.error(`Rescan failed for ${failedFiles} files!`);
   });
 
+  const handleRename = useEventCallback(() => {
+    dispatch(addFiles(selectedRows));
+    navigate('/webui/utilities/renamer');
+  });
+
   return (
     <div className="box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
       <div className={cx('grow gap-x-4', selectedRows.length === 0 ? 'flex' : 'hidden')}>
@@ -136,6 +147,7 @@ const Menu = (
       <div className={cx('grow gap-x-4', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
         <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
         <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
+        <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
         <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
         <MenuButton
           onClick={() => setSelectedRows([])}
