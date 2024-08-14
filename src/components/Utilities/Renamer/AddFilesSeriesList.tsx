@@ -26,7 +26,7 @@ const addSeriesFiles = (seriesId: number) => {
   queryClient.fetchQuery<ListResultType<FileType>>(
     {
       queryKey: ['series', seriesId, 'files'],
-      queryFn: () => axios.get(`Series/${seriesId}/File`),
+      queryFn: () => axios.get(`Series/${seriesId}/File`, { params: { pageSize: 0 } }),
     },
   )
     .then(result => store.dispatch(addFiles(result.List)))
