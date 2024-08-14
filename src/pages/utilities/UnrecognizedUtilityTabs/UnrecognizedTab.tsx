@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import useMeasure from 'react-use-measure';
 import {
@@ -8,6 +8,7 @@ import {
   mdiDatabaseSyncOutline,
   mdiDumpTruck,
   mdiEyeOffOutline,
+  mdiFileDocumentEditOutline,
   mdiFileDocumentOutline,
   mdiLoading,
   mdiMagnify,
@@ -44,6 +45,7 @@ import {
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -66,6 +68,9 @@ const Menu = (
     setSelectedRows,
     setSeriesSelectModal,
   } = props;
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -148,6 +153,11 @@ const Menu = (
       .catch(console.error);
   });
 
+  const handleRename = useEventCallback(() => {
+    dispatch(addFiles(selectedRows));
+    navigate('/webui/utilities/renamer');
+  });
+
   const renderSelectedRowActions = useMemo(() => (
     <>
       <div className="flex 2xl:hidden">
@@ -166,6 +176,7 @@ const Menu = (
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
       <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
+      <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
       <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
       <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
       <MenuButton
@@ -176,6 +187,7 @@ const Menu = (
       />
     </>
   ), [
+    handleRename,
     ignoreFiles,
     rehashFiles,
     rescanFiles,
