@@ -1,56 +1,33 @@
 import React from 'react';
-import {
-  mdiCogOutline,
-  mdiFormatListBulletedSquare,
-  mdiLayersTripleOutline,
-  mdiTabletDashboard,
-  mdiTextBoxOutline,
-  mdiTools,
-} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-const iconMap = {
-  dashboard: mdiTabletDashboard,
-  collection: mdiLayersTripleOutline,
-  utilities: mdiTools,
-  actions: mdiFormatListBulletedSquare,
-  log: mdiTextBoxOutline,
-  settings: mdiCogOutline,
-};
-
-enum IconType {
-  dashboard = 'dashboard',
-  collection = 'collection',
-  utilities = 'utilities',
-  actions = 'actions',
-  log = 'log',
-  settings = 'settings',
-}
+import useEventCallback from '@/hooks/useEventCallback';
 
 export type MenuItemProps = {
-  icon: IconType;
-  label: string;
-  className?: string;
-  onClick: React.MouseEventHandler<HTMLDivElement>;
+  id: string;
+  text: string;
+  icon: string;
+  onClick: () => void;
+  isHighlighted: boolean;
 };
 
-function MenuItem(props: MenuItemProps) {
-  const {
-    className,
-    icon,
-    label,
-    onClick,
-  } = props;
+const MenuItem = React.memo(({ icon, id, isHighlighted, onClick, text }: MenuItemProps) => {
+  const handleClick = useEventCallback((event: React.MouseEvent) => {
+    event.preventDefault();
+    onClick();
+  });
 
   return (
-    <div className={cx(className, 'text-lg flex items-center')} onClick={onClick}>
-      <div className="flex w-5 content-center justify-center">
-        <Icon path={iconMap[icon]} size={1} horizontal vertical rotate={180} />
-      </div>
-      <div className="pl-4 font-semibold">{label}</div>
+    <div
+      key={id}
+      className={cx('flex items-center gap-x-3 cursor-pointer', isHighlighted && 'text-topnav-text-primary')}
+      onClick={handleClick}
+    >
+      <Icon path={icon} size={1} />
+      {text}
     </div>
   );
-}
+});
 
 export default MenuItem;

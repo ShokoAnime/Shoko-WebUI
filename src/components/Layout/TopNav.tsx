@@ -25,12 +25,16 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
+import { startsWith } from 'lodash';
 import semver from 'semver';
 import { siDiscord } from 'simple-icons';
 
 import DashboardSettingsModal from '@/components/Dashboard/DashboardSettingsModal';
 import ActionsModal from '@/components/Dialogs/ActionsModal';
 import Button from '@/components/Input/Button';
+import { ExternalLinkMenuItem } from '@/components/Layout/ExternalLinkMenuItem';
+import { LinkMenuItem } from '@/components/Layout/LinkMenuItem';
+import MenuItem from '@/components/Layout/MenuItem';
 import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
 import Events from '@/core/events';
@@ -47,64 +51,6 @@ import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 import type { RootState } from '@/core/store';
 
 const { DEV, VITE_APPVERSION } = import.meta.env;
-
-const MenuItem = React.memo((
-  { icon, id, isHighlighted, onClick, text }: {
-    id: string;
-    text: string;
-    icon: string;
-    onClick: () => void;
-    isHighlighted: boolean;
-  },
-) => {
-  const handleClick = useEventCallback((event: React.MouseEvent) => {
-    event.preventDefault();
-    onClick();
-  });
-
-  return (
-    <NavLink
-      to={id}
-      key={id}
-      className={({ isActive }) =>
-        cx('flex items-center gap-x-3', (isActive || isHighlighted) && 'text-topnav-text-primary')}
-      onClick={handleClick}
-    >
-      <Icon path={icon} size={1} />
-      {text}
-    </NavLink>
-  );
-});
-
-const LinkMenuItem = React.memo((
-  props: { icon: string, onClick: () => void, path: string, text: string },
-) => {
-  const { icon, onClick, path, text } = props;
-  return (
-    <NavLink
-      to={path}
-      key={path.split('/').pop()}
-      className={({ isActive }) => cx('flex items-center gap-x-3', isActive && 'text-topnav-text-primary')}
-      onClick={onClick}
-    >
-      <Icon path={icon} size={1} />
-      {text}
-    </NavLink>
-  );
-});
-
-const ExternalLinkMenuItem = React.memo(({ icon, name, url }: { url: string, name: string, icon: string }) => (
-  <a
-    href={url}
-    target="_blank"
-    rel="noreferrer noopener"
-    aria-label={`Open ${name}`}
-    data-tooltip-id="tooltip"
-    data-tooltip-content={name}
-  >
-    <Icon className="text-topnav-icon" path={icon} size={1} />
-  </a>
-));
 
 const QueueCount = () => {
   const queue = useSelector((state: RootState) => state.mainpage.queueStatus);
@@ -276,7 +222,7 @@ function TopNav() {
                   closeModalsAndSubmenus(undefined, 'utilities');
                   setShowUtilitiesMenu(prev => !prev);
                 }}
-                isHighlighted={showUtilitiesMenu}
+                isHighlighted={showUtilitiesMenu || startsWith(pathname, '/webui/utilities/')}
               />
               <LinkMenuItem
                 onClick={closeModalsAndSubmenus}
