@@ -1,5 +1,6 @@
 import React from 'react';
 
+import SeriesRating from '@/components/Collection/Series/SeriesRating';
 import { formatThousand } from '@/core/util';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -75,11 +76,12 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
         : <div>None, Nice Work!</div>}
     </div>
 
-    <div className="flex justify-between">
-      <div className="font-semibold ">Series Rating</div>
-      <div className="flex flex-row gap-x-1 font-normal">
-        N/A (Not Implemented Yet)
+    <div className="flex items-center justify-between">
+      <div className="font-semibold ">
+        Series Rating&nbsp;
+        {series.UserRating.Type === 'Temporary' && '(Temp)'}
       </div>
+      <SeriesRating seriesId={series.IDs.ID} ratingValue={series.UserRating.Value ?? 0} />
     </div>
   </div>
 ));

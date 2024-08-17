@@ -102,6 +102,15 @@ export const useRescanSeriesFilesMutation = () =>
     mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/File/Rescan`),
   });
 
+export const useVoteSeriesMutation = () =>
+  useMutation({
+    mutationFn: ({ rating, seriesId }: { seriesId: number, rating: number }) =>
+      axios.post(`Series/${seriesId}/Vote`, { Value: rating, MaxValue: 10 }),
+    onSuccess: (_, { seriesId }) => {
+      invalidateQueries(['series', seriesId, 'data']);
+    },
+  });
+
 export const useWatchSeriesEpisodesMutation = () =>
   useMutation({
     mutationFn: ({ seriesId, ...params }: WatchSeriesEpisodesRequestType) =>
