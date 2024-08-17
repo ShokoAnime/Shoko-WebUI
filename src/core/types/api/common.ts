@@ -51,7 +51,7 @@ export type RatingType = {
   MaxValue: number;
   Source: string;
   Votes: number;
-  Type: string | null;
+  Type: 'Permanent' | 'Temporary';
 };
 
 export type FilterType = {
