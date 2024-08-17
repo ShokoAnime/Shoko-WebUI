@@ -79,9 +79,9 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
     <div className="flex items-center justify-between">
       <div className="font-semibold ">
         Series Rating&nbsp;
-        {series.UserRating.Type === 'Temporary' && '(Temp)'}
+        {series.UserRating?.Type === 'Temporary' && '(Temp)'}
       </div>
-      <SeriesRating seriesId={series.IDs.ID} ratingValue={series.UserRating.Value ?? 0} />
+      <SeriesRating seriesId={series.IDs.ID} ratingValue={series.UserRating?.Value ?? 0} />
     </div>
   </div>
 ));
