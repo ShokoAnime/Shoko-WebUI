@@ -36,7 +36,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
   const [hoveredStar, setHoveredStar] = useState(ratingValue);
 
   const handleVote = useEventCallback((event: React.MouseEvent<HTMLDivElement>) => {
-    voteSeries({ seriesId, rating: toNumber(event.currentTarget.id) }, {
+    voteSeries({ seriesId, rating: toNumber(event.currentTarget.id) + 1 }, {
       onSuccess: () => toast.success('Voted!'),
       onError: () => toast.error('Failed to vote!'),
     });
