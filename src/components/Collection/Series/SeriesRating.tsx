@@ -57,7 +57,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
           // eslint-disable-next-line react/no-array-index-key
           key={`star-${index}`}
           index={index.toString()}
-          hovered={hoveredStar >= index}
+          hovered={hoveredStar > index}
           handleHover={handleHover}
           handleVote={handleVote}
         />
