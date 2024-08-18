@@ -33,7 +33,7 @@ const StarIcon = React.memo(({ handleHover, handleVote, hovered, index }: StarIc
 const SeriesRating = ({ ratingValue, seriesId }: Props) => {
   const { mutate: voteSeries } = useVoteSeriesMutation();
 
-  const [hoveredStar, setHoveredStar] = useState(ratingValue);
+  const [hoveredStar, setHoveredStar] = useState(ratingValue - 1);
 
   const handleVote = useEventCallback((event: React.MouseEvent<HTMLDivElement>) => {
     voteSeries({ seriesId, rating: toNumber(event.currentTarget.id) + 1 }, {
@@ -43,7 +43,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
   });
 
   const handleClear = useEventCallback(() => {
-    setHoveredStar(ratingValue);
+    setHoveredStar(ratingValue - 1);
   });
 
   const handleHover = useEventCallback((event: React.MouseEvent<HTMLDivElement>) => {
@@ -57,7 +57,7 @@ const SeriesRating = ({ ratingValue, seriesId }: Props) => {
           // eslint-disable-next-line react/no-array-index-key
           key={`star-${index}`}
           index={index.toString()}
-          hovered={hoveredStar > index}
+          hovered={hoveredStar >= index}
           handleHover={handleHover}
           handleVote={handleVote}
         />
