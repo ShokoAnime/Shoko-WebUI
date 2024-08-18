@@ -250,28 +250,3 @@ input:autofill {
 .contain-strict {
   contain: strict;
 }
-
-/* For Removing Shoko Logo Colors from the Tailwind Config */
-.logo-outline {
-  fill: var(--logo-outline);
-}
-
-.logo-skin {
-  fill: var(--logo-skin);
-}
-
-.logo-face-shadow {
-  fill: var(--logo-face-shadow);
-}
-
-.logo-eye-ref1 {
-  fill: var(--logo-eye-ref1);
-}
-
-.logo-eye-ref2 {
-  fill: var(--logo-eye-ref2);
-}
-
-.logo-eye-ref3 {
-  fill: var(--logo-eye-ref3);
-}
