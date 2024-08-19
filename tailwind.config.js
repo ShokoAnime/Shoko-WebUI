@@ -64,8 +64,6 @@ module.exports = {
         'header-text-important': 'var(--header-text-important)',
         'header-user-background': 'var(--header-user-background)',
         'header-user-text': 'var(--header-user-text)',
-        'logo-primary': 'var(--logo-primary)',
-        'logo-secondary': 'var(--logo-secondary)',
         'panel-background': 'var(--panel-background)',
         'panel-background-alt': 'var(--panel-background-alt)',
         'panel-background-selected-row': 'var(--panel-background-selected-row)',
