@@ -169,7 +169,7 @@ function TopNav() {
       >
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
           <Link to="/webui/dashboard" className="flex items-center gap-x-3">
-            <ShokoIcon className="w-23" />
+            <ShokoIcon className="w-24" />
             <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
           </Link>
           <div className="flex items-center gap-x-6">
