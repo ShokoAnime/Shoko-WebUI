@@ -2,7 +2,7 @@ import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { updateResults } from '@/core/react-query/renamer/helpers';
+import { updateApiErrors, updateResults } from '@/core/react-query/renamer/helpers';
 
 import type {
   RenamerConfigResponseType,
@@ -16,6 +16,7 @@ export const useRenamerPreviewMutation = () =>
   useMutation<RenamerResultType[], unknown, RenamerPreviewRequestType>({
     mutationFn: ({ move, rename, ...body }) => axios.post('Renamer/Preview', body, { params: { move, rename } }),
     onSuccess: updateResults,
+    onError: updateApiErrors,
   });
 
 export const useRenamerRelocateMutation = () =>
@@ -27,6 +28,7 @@ export const useRenamerRelocateMutation = () =>
         params: { deleteEmptyDirectories, move, rename },
       }),
     onSuccess: updateResults,
+    onError: updateApiErrors,
   });
 
 export const useRenamerDeleteConfigMutation = () =>

@@ -21,6 +21,8 @@ export type RenamerSettingsType = {
   Description?: string;
   Language?: CodeLanguageType;
   SettingType: SettingTypeType;
+  MinimumValue?: number;
+  MaximumValue?: number;
 };
 
 type CodeLanguageType =
@@ -76,7 +78,7 @@ export type RenamerResultType = {
   AbsolutePath?: string;
 };
 
-type RenamerRelocateBaseRequestType = {
+export type RenamerRelocateBaseRequestType = {
   move?: boolean;
   rename?: boolean;
   FileIDs: number[];

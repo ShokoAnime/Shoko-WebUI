@@ -1,5 +1,7 @@
 import React from 'react';
 
+import useEventCallback from '@/hooks/useEventCallback';
+
 type Props = {
   id: string;
   type: string;
@@ -12,6 +14,8 @@ type Props = {
   disabled?: boolean;
   autoComplete?: string;
   suffixes?: React.ReactNode;
+  min?: number;
+  max?: number;
 };
 
 const InputSmall = React.memo((props: Props) => {
@@ -21,6 +25,8 @@ const InputSmall = React.memo((props: Props) => {
     className,
     disabled,
     id,
+    max,
+    min,
     onChange,
     onKeyUp,
     placeholder,
@@ -28,6 +34,22 @@ const InputSmall = React.memo((props: Props) => {
     type,
     value,
   } = props;
+
+  const handleChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    if (type === 'number' && max && event.target.valueAsNumber > max) {
+      onChange({
+        ...event,
+        target: {
+          ...event.target,
+          value: max.toString(),
+          valueAsNumber: max,
+        },
+      });
+      return;
+    }
+
+    onChange(event);
+  });
 
   return (
     <>
@@ -37,11 +59,13 @@ const InputSmall = React.memo((props: Props) => {
         type={type}
         placeholder={placeholder ?? ''}
         value={value}
-        onChange={onChange}
+        onChange={handleChange}
         onKeyUp={onKeyUp}
         autoFocus={autoFocus}
         disabled={disabled}
         autoComplete={autoComplete ?? 'on'}
+        min={min}
+        max={max}
       />
 
       {suffixes}

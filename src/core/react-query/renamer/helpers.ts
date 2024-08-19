@@ -5,6 +5,7 @@ import type {
   RenamerConfigResponseType,
   RenamerConfigSettingsType,
   RenamerConfigType,
+  RenamerRelocateBaseRequestType,
   RenamerResponseType,
   RenamerResultType,
   RenamerSettingsType,
@@ -27,6 +28,23 @@ export const updateResults = (response: RenamerResultType[]) => {
   // If one of them is a preview, then all are previews
   // It is not possible to have mixed previews and final results
   if (!response[0].IsPreview) store.dispatch(updateFiles(response));
+};
+
+export const updateApiErrors = (_: Error, args: RenamerRelocateBaseRequestType) => {
+  const mappedResults = args.FileIDs.reduce(
+    (result, fileId) => (
+      {
+        ...result,
+        [fileId]: {
+          FileID: fileId,
+          ErrorMessage: 'Error! Check server logs for more details.',
+        } as RenamerResultType,
+      }
+    ),
+    {} as Record<number, RenamerResultType>,
+  );
+
+  store.dispatch(addRenameResults(mappedResults));
 };
 
 export const transformRenamerConfigs = (response: RenamerConfigResponseType[]): RenamerConfigType[] =>

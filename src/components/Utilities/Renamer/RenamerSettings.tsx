@@ -2,6 +2,8 @@ import React from 'react';
 import { filter, map } from 'lodash';
 
 import Checkbox from '@/components/Input/Checkbox';
+import InputSmall from '@/components/Input/InputSmall';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/react-query/renamer/types';
 import type { Updater } from 'use-immer';
@@ -18,19 +20,41 @@ type SettingProps = {
   updateSetting: (name: string, value: string | number | boolean) => void;
 };
 
-const Setting = ({ currentValue, settingModel, updateSetting }: SettingProps) => {
+const Setting = React.memo(({ currentValue, settingModel, updateSetting }: SettingProps) => {
+  const handleChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.type === 'checkbox') {
+      updateSetting(settingModel.Name, event.target.checked);
+      return;
+    }
+
+    const value = ['Integer', 'Decimal'].includes(settingModel.SettingType)
+      ? event.target.valueAsNumber
+      : event.target.value;
+    updateSetting(settingModel.Name, value);
+  });
+
   if (currentValue === undefined) return null;
 
   switch (settingModel.SettingType) {
     case 'Text':
-      return <div>TEXT</div>;
     case 'LargeText':
-      return <div>TEXT AREA</div>;
+      return (
+        <div className="flex justify-between">
+          {settingModel.Name}
+          <InputSmall
+            value={currentValue as string}
+            onChange={handleChange}
+            id={settingModel.Name}
+            type="text"
+            className="w-64 px-2"
+          />
+        </div>
+      );
     case 'Boolean':
       return (
         <Checkbox
-          isChecked={currentValue as unknown as boolean}
-          onChange={event => updateSetting(settingModel.Name, event.target.checked)}
+          isChecked={currentValue as boolean}
+          onChange={handleChange}
           id={settingModel.Name}
           label={settingModel.Name}
           justify
@@ -38,11 +62,24 @@ const Setting = ({ currentValue, settingModel, updateSetting }: SettingProps) =>
       );
     case 'Integer':
     case 'Decimal':
-      return <div>INTEGER</div>;
+      return (
+        <div className="flex justify-between">
+          {settingModel.Name}
+          <InputSmall
+            value={currentValue as number}
+            onChange={handleChange}
+            id={settingModel.Name}
+            type="number"
+            className="w-16 px-2 text-center"
+            min={settingModel.MinimumValue}
+            max={settingModel.MaximumValue}
+          />
+        </div>
+      );
     default:
       return null;
   }
-};
+});
 
 const RenamerSettings = ({ newConfig, setNewConfig, settingsModel }: Props) => {
   const updateSetting = (name: string, value: string | number | boolean) => {
