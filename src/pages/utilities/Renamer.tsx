@@ -15,7 +15,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
-import { filter, find, isEqual, map } from 'lodash';
+import { chunk, filter, find, isEqual, map } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
@@ -397,6 +397,19 @@ const Renamer = () => {
     [renamer],
   );
 
+  const handleRename = useEventCallback(() => {
+    // Split the files into chunks of 1000 to avoid API errors
+    chunk(addedFiles, 1000).forEach((files) => {
+      relocateFiles({
+        configName: selectedConfig.Name,
+        move: moveFiles,
+        rename: true,
+        deleteEmptyDirectories: true,
+        FileIDs: files.map(file => file.ID),
+      });
+    });
+  });
+
   return (
     <div className="flex grow flex-col gap-y-3">
       <ShokoPanel title="File Rename">
@@ -424,14 +437,7 @@ const Renamer = () => {
               buttonType="primary"
               buttonSize="normal"
               className="flex h-13 flex-wrap items-center gap-x-2"
-              onClick={() =>
-                relocateFiles({
-                  configName: selectedConfig.Name,
-                  move: moveFiles,
-                  rename: true,
-                  deleteEmptyDirectories: true,
-                  FileIDs: addedFiles.map(file => file.ID),
-                })}
+              onClick={handleRename}
               loading={relocatePending}
               disabled={configEdited}
               tooltip={configEdited ? 'Config has been edited, please save before relocating files' : ''}
