@@ -192,14 +192,14 @@ function TopNav() {
               data-tooltip-place="bottom"
             >
               <Icon
-                className="hover:text-header-icon-primary"
+                className="transition-colors hover:text-header-icon-primary"
                 path={mdiCogOutline}
                 size={1}
               />
             </NavLink>
             <Button onClick={handleLogout}>
               <Icon
-                className="hover:text-header-icon-primary"
+                className="transition-colors hover:text-header-icon-primary"
                 data-tooltip-id="tooltip"
                 data-tooltip-content="Log out"
                 data-tooltip-place="bottom"

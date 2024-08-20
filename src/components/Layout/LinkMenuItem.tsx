@@ -23,7 +23,10 @@ const LinkMenuItem = React.memo((props: LinkMenuItemProps) => {
       key={path.split('/')
         .pop()}
       className={({ isActive }) =>
-        cx('flex items-center gap-x-3 hover:text-topnav-text-primary', isActive && 'text-topnav-text-primary')}
+        cx(
+          'flex items-center gap-x-3 transition-colors hover:text-topnav-text-primary',
+          isActive && 'text-topnav-text-primary',
+        )}
       onClick={onClick}
     >
       <Icon path={icon} size={1} />

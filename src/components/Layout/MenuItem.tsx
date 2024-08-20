@@ -14,7 +14,7 @@ const MenuItem = React.memo(({ icon, id, isHighlighted, onClick, text }: MenuIte
   <div
     key={id}
     className={cx(
-      'flex items-center gap-x-3 cursor-pointer hover:text-topnav-text-primary',
+      'flex items-center gap-x-3 cursor-pointer transition-colors hover:text-topnav-text-primary',
       isHighlighted && 'text-topnav-text-primary',
     )}
     onClick={onClick}
