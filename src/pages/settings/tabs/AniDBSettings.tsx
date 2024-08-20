@@ -13,8 +13,6 @@ import useSettingsContext from '@/hooks/useSettingsContext';
 const UpdateFrequencyValues = () => (
   <>
     <option value={1}>Never</option>
-    <option value={8}>Every Hour</option>
-    <option value={7}>Every 3 Hours</option>
     <option value={2}>Every 6 Hours</option>
     <option value={3}>Every 12 Hours</option>
     <option value={4}>Every 24 Hours</option>
