@@ -46,8 +46,8 @@ export type SettingsAnidbMylistType = {
   MyList_StorageState: MyListStorageState;
 };
 
-// Never = 1, HoursSix = 2, HoursTwelve = 3, Daily = 4, WeekOne = 5, MonthOne = 6, HoursThree = 7, HoursOne = 8
-export type SettingsUpdateFrequencyType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
+// Never = 1, HoursSix = 2, HoursTwelve = 3, Daily = 4, WeekOne = 5, MonthOne = 6
+export type SettingsUpdateFrequencyType = 1 | 2 | 3 | 4 | 5 | 6;
 
 export type SettingsAnidbUpdateType = {
   Calendar_UpdateFrequency: SettingsUpdateFrequencyType;
