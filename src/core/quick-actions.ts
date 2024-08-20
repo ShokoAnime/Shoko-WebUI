@@ -5,7 +5,7 @@ const quickActions = {
     info: 'Sync Series & Episode Votes from Shoko to AniDB.',
   },
   'sync-mylist': {
-    name: 'Sync AniDB MyList',
+    name: 'OVERWRITE AniDB MyList',
     functionName: 'SyncMyList',
     info:
       'Syncs all Series & Episode watch state data from Shoko to AniDB. THIS IS A ONE-WAY ACTION AND WILL OVERWRITE ALL ANIDB DATA!',
