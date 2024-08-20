@@ -6,7 +6,7 @@ module.exports = {
       require('tailwindcss-text-fill-stroke'),
   ],
   content: [
-    './src/**/*.tsx',
+    './src/**/*.{tsx,ts}',
     './index.html',
   ],
   //Any class that is generated dynamically goes here
