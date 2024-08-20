@@ -14,6 +14,7 @@ import {
   mdiRefresh,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { produce } from 'immer';
 import { chunk, filter, find, isEqual, map } from 'lodash';
 import { useImmer } from 'use-immer';
@@ -180,14 +181,19 @@ const getStatusColumn = (renameResults: Record<number, RenamerResultType>) => ({
 } as UtilityHeaderType<FileType>);
 
 const Menu = React.memo((
-  props: { moveFiles: boolean, toggleMoveFiles: () => void, selectedRows: FileType[] },
+  props: { disable: boolean, moveFiles: boolean, toggleMoveFiles: () => void, selectedRows: FileType[] },
 ) => {
-  const { moveFiles, selectedRows, toggleMoveFiles } = props;
+  const { disable, moveFiles, selectedRows, toggleMoveFiles } = props;
 
   const dispatch = useDispatch();
 
   return (
-    <div className="flex h-13 grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+    <div
+      className={cx(
+        'flex h-13 grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3 transition-opacity',
+        disable ? 'opacity-65 pointer-events-none' : '',
+      )}
+    >
       <MenuButton
         onClick={() => dispatch(clearRenameResults())}
         icon={mdiRefresh}
@@ -197,6 +203,7 @@ const Menu = React.memo((
         onClick={() => dispatch(removeFiles(selectedRows.map(row => row.ID)))}
         icon={mdiMinusCircleOutline}
         name="Remove"
+        disabled={!disable && selectedRows.length === 0}
       />
       <MenuButton
         onClick={() => dispatch(clearFiles())}
@@ -227,8 +234,6 @@ const Renamer = () => {
     selectedConfig,
     setSelectedConfig,
   ] = useState<RenamerConfigType>({ RenamerID: '', Name: '' });
-  // Used as temp variable to set the selected config after renaming or creating a new config
-  const [altSelectedConfig, setAltSelectedConfig] = useState<string>();
 
   const [
     newConfig,
@@ -300,7 +305,6 @@ const Renamer = () => {
 
     setSelectedConfig(tempConfig);
     setNewConfig(tempConfig.Settings);
-    setAltSelectedConfig(undefined);
   });
 
   // Handle the below 3 hooks with care. These are used for auto-updating previews on changes.
@@ -366,11 +370,9 @@ const Renamer = () => {
   }, [dispatch, moveFiles]);
 
   useEffect(() => {
-    if (!renamerConfigsQuery.data) return;
-    changeSelectedConfig(altSelectedConfig ?? (settings.Plugins.Renamer.DefaultRenamer ?? 'Default'));
-    // This should not run when altSelectedConfig changes
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [changeSelectedConfig, renamerConfigsQuery.data, settings]);
+    if (!renamerConfigsQuery.isSuccess) return;
+    changeSelectedConfig(settings.Plugins.Renamer.DefaultRenamer ?? 'Default');
+  }, [changeSelectedConfig, renamerConfigsQuery.isSuccess, settings]);
 
   const {
     handleRowSelect,
@@ -414,7 +416,12 @@ const Renamer = () => {
     <div className="flex grow flex-col gap-y-3">
       <ShokoPanel title="File Rename">
         <div className="flex items-center gap-x-3">
-          <Menu selectedRows={selectedRows} moveFiles={moveFiles} toggleMoveFiles={toggleMoveFiles} />
+          <Menu
+            selectedRows={selectedRows}
+            moveFiles={moveFiles}
+            toggleMoveFiles={toggleMoveFiles}
+            disable={relocatePending}
+          />
           <div className="flex gap-x-3">
             <Button
               buttonType="secondary"
@@ -430,6 +437,7 @@ const Renamer = () => {
               buttonSize="normal"
               className="flex h-13 items-center"
               onClick={toggleAddFilesModal}
+              disabled={relocatePending}
             >
               Add Files
             </Button>
@@ -439,7 +447,7 @@ const Renamer = () => {
               className="flex h-13 flex-wrap items-center gap-x-2"
               onClick={handleRename}
               loading={relocatePending}
-              disabled={configEdited}
+              disabled={configEdited || relocatePending || addedFiles.length === 0}
               tooltip={configEdited ? 'Config has been edited, please save before relocating files' : ''}
             >
               <Icon path={mdiFileDocumentEditOutline} size={1} />
@@ -451,7 +459,7 @@ const Renamer = () => {
       </ShokoPanel>
 
       <AnimateHeight height={showSettings ? 'auto' : 0}>
-        <div className="my-3 flex !h-[32rem] gap-x-6">
+        <div className={cx('my-3 flex !h-[32rem] gap-x-6', relocatePending && 'opacity-65 pointer-events-none')}>
           {renamerConfigsQuery.isSuccess && (
             <>
               <div className="flex w-1/3 flex-col gap-y-6">
@@ -529,7 +537,6 @@ const Renamer = () => {
                       onClose={toggleConfigModal}
                       rename={configModelRename}
                       config={selectedConfig}
-                      changeAltSelectedConfig={setAltSelectedConfig}
                       changeSelectedConfig={changeSelectedConfig}
                     />
                   </div>

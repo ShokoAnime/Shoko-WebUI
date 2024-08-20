@@ -1,3 +1,5 @@
+import type { Operation } from 'fast-json-patch';
+
 type RenamerBaseType = {
   RenamerID: string;
   Version?: string;
@@ -91,4 +93,9 @@ export type RenamerPreviewRequestType = RenamerRelocateBaseRequestType & {
 export type RenamerRelocateRequestType = RenamerRelocateBaseRequestType & {
   configName: string;
   deleteEmptyDirectories?: boolean;
+};
+
+export type RenamerPatchRequestType = {
+  configName: string;
+  operations: Operation[];
 };

@@ -17,13 +17,11 @@ type Props = {
   onClose: () => void;
   rename: boolean;
   show: boolean;
-  changeAltSelectedConfig: (configName: string) => void;
   changeSelectedConfig: (configName: string) => void;
 };
 
 const ConfigModal = (props: Props) => {
   const {
-    changeAltSelectedConfig,
     changeSelectedConfig,
     config,
     onClose,
@@ -38,6 +36,8 @@ const ConfigModal = (props: Props) => {
   const [selectedRenamer, setSelectedRenamer] = useState('na');
 
   useEffect(() => {
+    if (config.Name === '') return;
+
     if (rename) {
       setConfigName(config.Name);
       setSelectedRenamer(config.RenamerID);
@@ -58,7 +58,7 @@ const ConfigModal = (props: Props) => {
         await patchConfig(
           {
             configName: config.Name,
-            operations: [{ op: 'replace', path: 'Name', value: configName }],
+            operations: [{ op: 'replace', path: '/Name', value: configName }],
           },
         );
       } else {
@@ -78,7 +78,7 @@ const ConfigModal = (props: Props) => {
       return;
     }
 
-    changeAltSelectedConfig(configName);
+    changeSelectedConfig(configName);
     onClose();
   };
 
@@ -118,8 +118,8 @@ const ConfigModal = (props: Props) => {
         )}
 
         {rename && (
-          <option key={config.RenamerID} value={config.RenamerID}>
-            {config.RenamerID}
+          <option key={selectedRenamer} value={selectedRenamer}>
+            {selectedRenamer}
           </option>
         )}
       </Select>
