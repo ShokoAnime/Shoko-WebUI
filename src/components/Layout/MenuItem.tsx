@@ -13,7 +13,10 @@ export type MenuItemProps = {
 const MenuItem = React.memo(({ icon, id, isHighlighted, onClick, text }: MenuItemProps) => (
   <div
     key={id}
-    className={cx('flex items-center gap-x-3 cursor-pointer', isHighlighted && 'text-topnav-text-primary')}
+    className={cx(
+      'flex items-center gap-x-3 cursor-pointer hover:text-topnav-text-primary',
+      isHighlighted && 'text-topnav-text-primary',
+    )}
     onClick={onClick}
   >
     <Icon path={icon} size={1} />

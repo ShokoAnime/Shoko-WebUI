@@ -170,7 +170,7 @@ function TopNav() {
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
           <Link to="/webui/dashboard" className="flex items-center gap-x-3">
             <ShokoIcon className="w-20" />
-            <span className="mt-1 text-xl font-semibold text-header-text">Shoko</span>
+            <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>
           </Link>
           <div className="flex items-center gap-x-6">
             <QueueCount />
@@ -191,10 +191,21 @@ function TopNav() {
               data-tooltip-content="Settings"
               data-tooltip-place="bottom"
             >
-              <Icon path={mdiCogOutline} size={1} />
+              <Icon
+                className="hover:text-header-icon-primary"
+                path={mdiCogOutline}
+                size={1}
+              />
             </NavLink>
-            <Button onClick={handleLogout} tooltip="Log out">
-              <Icon path={mdiLogout} size={1} />
+            <Button onClick={handleLogout}>
+              <Icon
+                className="hover:text-header-icon-primary"
+                data-tooltip-id="tooltip"
+                data-tooltip-content="Log out"
+                data-tooltip-place="bottom"
+                path={mdiLogout}
+                size={1}
+              />
             </Button>
           </div>
         </div>

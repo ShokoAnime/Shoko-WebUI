@@ -20,7 +20,7 @@ const ExternalLinkMenuItem = React.memo(({
     data-tooltip-id="tooltip"
     data-tooltip-content={name}
   >
-    <Icon className="text-topnav-icon" path={icon} size={1} />
+    <Icon className="text-topnav-icon hover:text-topnav-icon-primary" path={icon} size={1} />
   </a>
 ));
 
