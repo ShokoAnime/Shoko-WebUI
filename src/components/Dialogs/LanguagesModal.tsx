@@ -80,7 +80,7 @@ function LanguagesModal({ onClose, type }: Props) {
       onRequestClose={onClose}
       header={`${type} Languages`}
     >
-      {!languagesQuery.isPending
+      {languagesQuery.isPending
         && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
       {Object.keys(languageDescription).length > 0 && (
         <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
