@@ -45,6 +45,8 @@ function AniDBSettings() {
     MyList_StorageState,
     MyList_UpdateFrequency,
     MyListStats_UpdateFrequency,
+    Notification_HandleMovedFiles,
+    Notification_UpdateFrequency,
     Password,
     Username,
   } = newSettings.AniDb;
@@ -308,6 +310,23 @@ function AniDBSettings() {
               <UpdateFrequencyValues />
             </SelectSmall>
           </div>
+          <div className="flex items-center justify-between">
+            <span>Notifications</span>
+            <SelectSmall
+              id="  notifications"
+              value={Notification_UpdateFrequency}
+              onChange={event => updateSetting('AniDb', 'Notification_UpdateFrequency', event.target.value)}
+            >
+              <UpdateFrequencyValues />
+            </SelectSmall>
+          </div>
+          <Checkbox
+            justify
+            label="Handle Moved Files"
+            id="handle-moved-files"
+            isChecked={Notification_HandleMovedFiles}
+            onChange={event => updateSetting('AniDb', 'Notification_HandleMovedFiles', event.target.checked)}
+          />
         </div>
       </div>
       <div className="border-b border-panel-border" />

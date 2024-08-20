@@ -23,10 +23,12 @@ const actions = {
     data: [
       'download-missing-anidb-data',
       'sync-votes',
-      'sync-mylist',
       'add-all-manually-linked-files-to-mylist',
       'update-all-anidb-info',
       'update-anidb-calendar',
+      'get-anidb-notifications',
+      'process-moved-files',
+      'sync-mylist',
     ],
   },
   trakt: {
