@@ -55,6 +55,8 @@ export type SettingsAnidbUpdateType = {
   MyList_UpdateFrequency: SettingsUpdateFrequencyType;
   MyListStats_UpdateFrequency: SettingsUpdateFrequencyType;
   File_UpdateFrequency: SettingsUpdateFrequencyType;
+  Notification_UpdateFrequency: SettingsUpdateFrequencyType;
+  Notification_HandleMovedFiles: boolean;
 };
 
 export type SettingsTvdbDownloadType = {

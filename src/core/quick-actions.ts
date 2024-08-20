@@ -31,6 +31,16 @@ const quickActions = {
     functionName: 'UpdateAllAniDBInfo',
     info: 'Update all Series information with the latest data from AniDB.',
   },
+  'get-anidb-notifications': {
+    name: 'Get AniDB Notifications',
+    functionName: 'GetAniDBNotifications',
+    info: 'Fetch unread notifications and messages from AniDB',
+  },
+  'process-moved-files': {
+    name: 'Process Moved Files',
+    functionName: 'RefreshAniDBMovedFiles',
+    info: 'Process file moved messages from AniDB. This will force an update on the affected files.',
+  },
   'sync-trakt': {
     name: 'Sync Trakt Collection',
     functionName: 'SyncTrakt',
