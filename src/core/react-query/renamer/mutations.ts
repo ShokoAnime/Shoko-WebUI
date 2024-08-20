@@ -1,16 +1,18 @@
 import { useMutation } from '@tanstack/react-query';
+import { applyPatch } from 'fast-json-patch';
 
 import { axios } from '@/core/axios';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 import { updateApiErrors, updateResults } from '@/core/react-query/renamer/helpers';
 
 import type {
   RenamerConfigResponseType,
+  RenamerConfigType,
+  RenamerPatchRequestType,
   RenamerPreviewRequestType,
   RenamerRelocateRequestType,
   RenamerResultType,
 } from '@/core/react-query/renamer/types';
-import type { Operation } from 'fast-json-patch';
 
 export const useRenamerPreviewMutation = () =>
   useMutation<RenamerResultType[], unknown, RenamerPreviewRequestType>({
@@ -44,9 +46,20 @@ export const useRenamerSaveConfigMutation = () =>
   });
 
 export const useRenamerPatchConfigMutation = () =>
-  useMutation({
-    mutationFn: ({ configName, operations }: { configName: string, operations: Operation[] }) =>
-      axios.patch(`Renamer/Config/${configName}`, operations),
+  useMutation<RenamerConfigType, unknown, RenamerPatchRequestType>({
+    mutationFn: ({ configName, operations }) => axios.patch(`Renamer/Config/${configName}`, operations),
+    onMutate: ({ configName, operations }) => {
+      const data = queryClient.getQueryData<RenamerConfigType[]>(['renamer', 'config'])?.slice();
+      if (!data) return;
+
+      const configIndex = data.findIndex(config => config.Name === configName);
+      data[configIndex] = applyPatch(data[configIndex], operations).newDocument;
+
+      // Side effects are not triggered if it's not set to [] first
+      // There is someting wrong with how tanstack query's structural sharing works
+      queryClient.setQueryData(['renamer', 'config'], []);
+      queryClient.setQueryData(['renamer', 'config'], data);
+    },
     onSuccess: () => {
       invalidateQueries(['renamer']);
       invalidateQueries(['settings']);
@@ -54,7 +67,13 @@ export const useRenamerPatchConfigMutation = () =>
   });
 
 export const useRenamerNewConfigMutation = () =>
-  useMutation({
-    mutationFn: (config: RenamerConfigResponseType) => axios.post('Renamer/Config', config),
+  useMutation<unknown, unknown, RenamerConfigResponseType>({
+    mutationFn: config => axios.post('Renamer/Config', config),
+    onMutate: (config) => {
+      queryClient.setQueryData(
+        ['renamer', 'config'],
+        (data: RenamerConfigType[]) => [...data, config],
+      );
+    },
     onSuccess: () => invalidateQueries(['renamer']),
   });
