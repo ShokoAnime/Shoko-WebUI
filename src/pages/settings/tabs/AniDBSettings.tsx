@@ -313,7 +313,7 @@ function AniDBSettings() {
           <div className="flex items-center justify-between">
             <span>Notifications</span>
             <SelectSmall
-              id="  notifications"
+              id="notifications"
               value={Notification_UpdateFrequency}
               onChange={event => updateSetting('AniDb', 'Notification_UpdateFrequency', event.target.value)}
             >
