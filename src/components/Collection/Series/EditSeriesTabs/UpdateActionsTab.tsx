@@ -4,7 +4,9 @@ import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
 import {
   useRefreshSeriesAniDBInfoMutation,
+  useRefreshSeriesTMDBInfoMutation,
   useRefreshSeriesTvdbInfoMutatation,
+  useUpdateSeriesTMDBImagesMutation,
 } from '@/core/react-query/series/mutations';
 
 type Props = {
@@ -14,6 +16,8 @@ type Props = {
 const UpdateActionsTab = ({ seriesId }: Props) => {
   const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
   const { mutate: refreshTvdb } = useRefreshSeriesTvdbInfoMutatation();
+  const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation();
+  const { mutate: updateTmdbImages } = useUpdateSeriesTMDBImagesMutation();
 
   const triggerAnidbRefresh = (force: boolean, cacheOnly: boolean) => {
     refreshAnidb({ seriesId, force, cacheOnly }, {
@@ -29,6 +33,22 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
         onClick={() =>
           refreshTvdb({ seriesId }, {
             onSuccess: () => toast.success('TvDB refresh queued!'),
+          })}
+      />
+      <Action
+        name="Update TMDB Info"
+        description="Gets the latest series information from TMDB."
+        onClick={() =>
+          refreshTmdb(seriesId, {
+            onSuccess: () => toast.success('TMDB refresh queued!'),
+          })}
+      />
+      <Action
+        name="Update TMDB Images - Force"
+        description="Forces a complete redownload of images from TMDB."
+        onClick={() =>
+          updateTmdbImages({ seriesId, force: true }, {
+            onSuccess: () => toast.success('TMDB image download queued!'),
           })}
       />
       <Action

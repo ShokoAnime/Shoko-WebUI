@@ -120,3 +120,21 @@ export const useWatchSeriesEpisodesMutation = () =>
       invalidateQueries(['series', seriesId, 'episodes']);
     },
   });
+
+export const useRefreshSeriesTMDBInfoMutation = () =>
+  useMutation({
+    mutationFn: (seriesId: number) =>
+      Promise.all([
+        axios.post(`Series/${seriesId}/TMDB/Show/Action/Refresh`),
+        axios.post(`Series/${seriesId}/TMDB/Movie/Action/Refresh`),
+      ]),
+  });
+
+export const useUpdateSeriesTMDBImagesMutation = () =>
+  useMutation({
+    mutationFn: ({ force = false, seriesId }: { seriesId: number, force: boolean }) =>
+      Promise.all([
+        axios.post(`Series/${seriesId}/TMDB/Show/Action/DownloadImages`, { force }),
+        axios.post(`Series/${seriesId}/TMDB/Movie/Action/DownloadImages`, { force }),
+      ]),
+  });
