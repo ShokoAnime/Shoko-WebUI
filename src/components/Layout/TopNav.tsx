@@ -197,12 +197,13 @@ function TopNav() {
                 size={1}
               />
             </NavLink>
-            <Button onClick={handleLogout}>
+            <Button
+              onClick={handleLogout}
+              tooltip="Log out"
+              place="bottom"
+            >
               <Icon
                 className="transition-colors hover:text-header-icon-primary"
-                data-tooltip-id="tooltip"
-                data-tooltip-content="Log out"
-                data-tooltip-place="bottom"
                 path={mdiLogout}
                 size={1}
               />

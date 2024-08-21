@@ -37,7 +37,7 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
     to={to}
     className={({ isActive }) =>
       cx(
-        'flex items-center gap-x-3',
+        'flex items-center gap-x-3 transition-colors hover:text-panel-text-primary',
         isActive && 'text-panel-text-primary',
       )}
   >

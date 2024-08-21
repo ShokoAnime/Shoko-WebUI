@@ -1,4 +1,5 @@
 import React from 'react';
+import type { PlacesType } from 'react-tooltip';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -14,6 +15,7 @@ type Props = {
   loading?: boolean;
   loadingSize?: number;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
+  place?: PlacesType;
   submit?: boolean;
   tooltip?: string;
 };
@@ -29,6 +31,7 @@ const Button = React.memo(
       loading,
       loadingSize,
       onClick,
+      place,
       submit,
       tooltip,
     }: Props,
@@ -46,7 +49,7 @@ const Button = React.memo(
       disabled={disabled}
       data-tooltip-id="tooltip"
       data-tooltip-content={tooltip}
-      data-tooltip-place="top"
+      data-tooltip-place={place ?? 'top'}
     >
       {loading
         ? (
