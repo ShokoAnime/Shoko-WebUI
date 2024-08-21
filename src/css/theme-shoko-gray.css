@@ -18,18 +18,6 @@
   --header-text-important: #10c469;
   --header-user-background: #44a3ff;
   --header-user-text: #010f1c;
-  --logo-outline: #000;
-  --logo-skin: #fdf5e8;
-  --logo-face-shadow: #fe514d;
-  --logo-eye-ref1: #e3e4d6;
-  --logo-eye-ref2: #e8c8bb;
-  --logo-eye-ref3: #ffc2b2;
-  --logo-hair-gradient1: #c33144;
-  --logo-hair-gradient2: #6b8cdb;
-  --logo-hair-gradient3: #79f0f8;
-  --logo-eye-gradient1: #ae303b;
-  --logo-eye-gradient2: #ec4050;
-  --logo-eye-gradient3: #fd877d;
   --panel-background: #2c333e;
   --panel-background-alt: #282e38;
   --panel-background-selected-row: #283654;
@@ -71,4 +59,16 @@
   --topnav-icon-warning: #f9c851;
   --topnav-text: #cfd8e3;
   --topnav-text-primary: #44a3ff;
+  --logo-outline: #000;
+  --logo-skin: #fdf5e8;
+  --logo-face-shadow: #fe514d;
+  --logo-eye-ref1: #e3e4d6;
+  --logo-eye-ref2: #e8c8bb;
+  --logo-eye-ref3: #ffc2b2;
+  --logo-eye-gradient1: #ae303b;
+  --logo-eye-gradient2: #ec4050;
+  --logo-eye-gradient3: #fd877d;
+  --logo-hair-gradient1: #c33144;
+  --logo-hair-gradient2: #6b8cdb;
+  --logo-hair-gradient3: #79f0f8;
 }
