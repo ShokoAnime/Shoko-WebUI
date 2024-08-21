@@ -15,9 +15,9 @@ type Props = {
   loading?: boolean;
   loadingSize?: number;
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
-  place?: PlacesType;
   submit?: boolean;
   tooltip?: string;
+  tooltipPlace?: PlacesType;
 };
 
 const Button = React.memo(
@@ -31,9 +31,9 @@ const Button = React.memo(
       loading,
       loadingSize,
       onClick,
-      place,
       submit,
       tooltip,
+      tooltipPlace,
     }: Props,
   ) => (
     <button
@@ -49,7 +49,7 @@ const Button = React.memo(
       disabled={disabled}
       data-tooltip-id="tooltip"
       data-tooltip-content={tooltip}
-      data-tooltip-place={place ?? 'top'}
+      data-tooltip-place={tooltipPlace ?? 'top'}
     >
       {loading
         ? (

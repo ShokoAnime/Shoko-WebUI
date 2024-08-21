@@ -200,7 +200,7 @@ function TopNav() {
             <Button
               onClick={handleLogout}
               tooltip="Log out"
-              place="bottom"
+              tooltipPlace="bottom"
             >
               <Icon
                 className="transition-colors hover:text-header-icon-primary"
