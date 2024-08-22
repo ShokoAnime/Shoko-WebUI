@@ -13,7 +13,6 @@ import EditGroupModal from '@/components/Collection/Group/EditGroupModal';
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import TimelineSidebar from '@/components/Collection/TimelineSidebar';
 import TitleOptions from '@/components/Collection/TitleOptions';
-import buildFilter from '@/core/buildFilter';
 import {
   useFilterQuery,
   useFilteredGroupSeries,
@@ -24,6 +23,7 @@ import queryClient from '@/core/react-query/queryClient';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useGroupViewQuery } from '@/core/react-query/webui/queries';
+import { buildFilter } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 

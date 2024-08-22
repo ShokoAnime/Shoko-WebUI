@@ -6,8 +6,9 @@ import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
-import { setActiveFilter, setFilterValues } from '@/core/slices/collection';
+import { resetFilter, setFilterValues } from '@/core/slices/collection';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
+import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SeriesType } from '@/core/types/api/series';
@@ -53,10 +54,12 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
 
   const handleSeasonFilter = useEventCallback(() => {
     if (!overview.FirstAirSeason) return;
+    dispatch(resetFilter());
     const [season, year] = overview.FirstAirSeason.split(' ');
-    dispatch(setFilterValues({ InSeason: [`${year}: ${season}`] }));
-    dispatch(setActiveFilter({ Type: 'InSeason', Parameter: year, SecondParameter: season }));
-    navigate('/webui/collection');
+    addFilterCriteriaToStore('InSeason').then(() => {
+      dispatch(setFilterValues({ InSeason: [`${year}: ${season}`] }));
+      navigate('/webui/collection');
+    }).catch(console.error);
   });
 
   if (!seriesId) return null;

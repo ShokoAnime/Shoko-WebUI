@@ -1,7 +1,7 @@
 import React, { type ReactNode, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { mdiFilterPlusOutline } from '@mdi/js';
-import { forEach, keys, map, values } from 'lodash';
+import { keys, map, values } from 'lodash';
 
 import AddCriteriaModal from '@/components/Collection/Filter/AddCriteriaModal';
 import DefaultCriteria from '@/components/Collection/Filter/DefaultCriteria';
@@ -10,13 +10,13 @@ import TagCriteria from '@/components/Collection/Filter/TagCriteria';
 import Button from '@/components/Input/Button';
 import IconButton from '@/components/Input/IconButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import { buildSidebarFilter } from '@/core/buildFilter';
 import {
-  removeFilterCriteria,
   resetActiveFilter,
+  resetFilter,
   selectActiveCriteriaWithValues,
   setActiveFilter,
 } from '@/core/slices/collection';
+import { buildSidebarFilter } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
@@ -42,7 +42,6 @@ type OptionsProps = {
 const Options = ({ showModal }: OptionsProps) => <OptionButton onClick={showModal} icon={mdiFilterPlusOutline} />;
 
 const FilterSidebar = () => {
-  const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
   const [criteriaModal, setCriteriaModal] = useState(false);
   const dispatch = useDispatch();
   const selectedCriteria = useSelector((state: RootState) => state.collection.filterCriteria);
@@ -57,10 +56,8 @@ const FilterSidebar = () => {
     setCriteriaModal(state);
   };
 
-  const resetFilter = useEventCallback(() => {
-    forEach(selectedCriteria, (criteria) => {
-      dispatch(removeFilterCriteria(criteria));
-    });
+  const handleResetFilter = useEventCallback(() => {
+    dispatch(resetFilter());
   });
 
   useEffect(() => {
@@ -68,7 +65,7 @@ const FilterSidebar = () => {
     if (count !== keys(activeCriteriaWithValues).length) return;
     if (count > 0) applyFilter();
     else dispatch(resetActiveFilter());
-  }, [activeCriteriaWithValues, applyFilter, dispatch, resetFilter, selectedCriteria]);
+  }, [activeCriteriaWithValues, applyFilter, dispatch, selectedCriteria]);
 
   return (
     <ShokoPanel
@@ -84,8 +81,7 @@ const FilterSidebar = () => {
       <Button
         buttonType="danger"
         className="px-4 py-3"
-        onClick={resetFilter}
-        disabled={!activeFilter}
+        onClick={handleResetFilter}
       >
         Clear filter
       </Button>

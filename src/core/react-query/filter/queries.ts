@@ -40,6 +40,7 @@ export const useFilterExpressionsQuery = (enabled = true) =>
     queryFn: () => axios.get('Filter/Expressions'),
     select: transformFilterExpressions,
     enabled,
+    staleTime: Infinity, // This query does not return different results each time, so we can cache it forever.
   });
 
 export const useFilteredSeriesInfiniteQuery = (

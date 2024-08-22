@@ -29,16 +29,18 @@ type State = {
   activeFilter: object | null;
 };
 
+const initialState = {
+  filterCriteria: {},
+  filterConditions: {},
+  filterValues: {},
+  filterTags: {},
+  filterMatch: {},
+  activeFilter: null,
+} as State;
+
 const collectionSlice = createSlice({
   name: 'collection',
-  initialState: {
-    filterCriteria: {},
-    filterConditions: {},
-    filterValues: {},
-    filterTags: {},
-    filterMatch: {},
-    activeFilter: null,
-  } as State,
+  initialState,
   reducers: {
     addFilterCriteria(sliceState, action: PayloadAction<FilterExpression>) {
       const expression = action.payload;
@@ -59,6 +61,9 @@ const collectionSlice = createSlice({
       if (sliceState.filterMatch[Expression] !== undefined) {
         delete sliceState.filterMatch[Expression];
       }
+    },
+    resetFilter() {
+      return initialState;
     },
     addFilterCondition(sliceState, action: PayloadAction<Record<string, boolean>>) {
       sliceState.filterConditions = { ...sliceState.filterConditions, ...action.payload };
@@ -86,6 +91,7 @@ export const {
   addFilterCriteria,
   removeFilterCriteria,
   resetActiveFilter,
+  resetFilter,
   setActiveFilter,
   setFilterMatch,
   setFilterTag,
