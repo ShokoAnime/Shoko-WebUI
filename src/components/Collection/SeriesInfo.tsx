@@ -26,12 +26,12 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
       return 'Unknown';
     }
     if (endDate) {
-      if (startDate.format('MMM DD, YYYY') === endDate.format('MMM DD, YYYY')) {
-        return startDate.format('MMM DD, YYYY');
+      if (startDate.format('MMM DD/YY') === endDate.format('MMM DD/YY')) {
+        return startDate.format('MMM DD/YY');
       }
-      return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
+      return `${startDate.format('MMM DD/YY')} - ${endDate.format('MMM DD/YY')}`;
     }
-    return `${startDate.format('MMM DD, YYYY')} - Ongoing`;
+    return `${startDate.format('MMM DD/YY')} - Ongoing`;
   }, [startDate, endDate]);
 
   const status = useMemo(() => {
@@ -51,57 +51,85 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
       <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Type</div>
-          {series?.AniDB?.Type}
+          <div className="truncate">
+            &nbsp;
+            {series?.AniDB?.Type}
+          </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Source</div>
-          {overview.SourceMaterial}
+          <div className="truncate">
+            &nbsp;
+            {overview.SourceMaterial}
+          </div>
         </div>
         <div className="flex justify-between capitalize">
-          <div className="font-semibold">Air Date</div>
-          <div>
+          <div className="font-semibold">Airdate</div>
+          <div className="truncate">
+            &nbsp;
             {airDate}
           </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Status</div>
           {/* TODO: Check if there are more status types */}
-          {status}
+          <div className="truncate">
+            &nbsp;
+            {status}
+          </div>
         </div>
       </div>
       <div className="flex w-full flex-col gap-y-2">
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Episodes</div>
-          <div>
+          <div className="truncate">
+            &nbsp;
             {series?.Sizes.Total.Episodes}
-            &nbsp;Episodes
+            &nbsp;
+            {series?.Sizes.Total.Episodes > 1
+              ? 'Eps'
+              : 'Ep'}
             <span className="mx-1">|</span>
             {series?.Sizes.Total.Specials}
-            &nbsp;Specials
+            &nbsp;
+            {series?.Sizes.Total.Episodes > 1
+              ? 'Sps'
+              : 'Sp'}
           </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Length</div>
-          {overview.RuntimeLength
-            ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Minutes/Episode`
-            : '--'}
+          <div className="truncate">
+            &nbsp;
+            {overview.RuntimeLength
+              ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Min/Ep`
+              : '--'}
+          </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Season</div>
-          {overview?.FirstAirSeason
-            ? (
-              <Link
-                className="font-semibold text-panel-text-primary"
-                to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
-              >
-                {overview.FirstAirSeason.Name}
-              </Link>
-            )
-            : '--'}
+          <div className="truncate">
+            &nbsp;
+            {overview?.FirstAirSeason
+              ? (
+                <Link
+                  className="font-semibold text-panel-text-primary"
+                  to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
+                >
+                  {overview.FirstAirSeason.Name}
+                </Link>
+              )
+              : '--'}
+          </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Studio</div>
-          <div>{overview?.Studios?.[0] ? overview?.Studios?.[0].Name : 'Studio Not Listed'}</div>
+          <div className="truncate">
+            &nbsp;
+            {overview?.Studios?.[0]
+              ? overview?.Studios?.[0].Name
+              : 'Studio Not Listed'}
+          </div>
         </div>
       </div>
     </>

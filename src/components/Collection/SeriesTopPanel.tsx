@@ -81,7 +81,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
           className="!h-[14.5rem]"
           transparent
         >
-          <div className="grid h-32 grid-cols-1 gap-x-[4.5rem] gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
+          <div className="shoko-scrollbar grid h-32 grid-cols-1 gap-x-12 gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
             <SeriesInfo series={series} />
           </div>
         </ShokoPanel>
