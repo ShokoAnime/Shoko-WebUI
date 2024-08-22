@@ -10,7 +10,6 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
-import { useCopyToClipboard } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import FileInfo from '@/components/FileInfo';
@@ -23,6 +22,7 @@ import {
   useRescanFileMutation,
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import { copyToClipboard } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { FileType } from '@/core/types/api/file';
@@ -38,7 +38,6 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
   const { mutate: deleteFile } = useDeleteFileMutation();
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
-  const [, copy] = useCopyToClipboard();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFileToDelete, setSelectedFileToDelete] = useState<FileType | null>(null);
   const selectedFilesToDelete = useMemo(
@@ -81,13 +80,8 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
         toast.error(`${variation ? 'Marking' : 'Unmarking'} file as variation failed! ${error.message}`),
     });
 
-  const handleCopyToClipboard = (id: string) => () => {
-    copy(id).then((isCopied) => {
-      if (!isCopied) return;
-      toast.success('ShokoID has been copied to clipboard!');
-    }).catch((error) => {
-      toast.error(`Failed! ${error}`);
-    });
+  const handleCopyToClipboard = (id: string) => {
+    copyToClipboard(id, 'ShokoID').catch(console.error);
   };
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
@@ -137,7 +131,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
                 </div>
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
-                  onClick={handleCopyToClipboard(file.ID.toString())}
+                  onClick={() => handleCopyToClipboard(file.ID.toString())}
                 >
                   <Icon
                     className="hidden text-panel-icon-action lg:inline"

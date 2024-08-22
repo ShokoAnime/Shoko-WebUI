@@ -47,9 +47,7 @@ const TraktSettings = () => {
 
   const handleCopy = useEventCallback(() => {
     if (!traktQuery.data?.usercode) return;
-    copyToClipboard(traktQuery.data.usercode)
-      .then(() => toast.success('Code copied to clipboard!'))
-      .catch(() => toast.error('Copy copy failed! Please copy it manually'));
+    copyToClipboard(traktQuery.data.usercode, 'Trakt Code').catch(console.error);
   });
 
   useEffect(() => {
