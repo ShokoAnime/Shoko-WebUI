@@ -1,4 +1,3 @@
-import type { CollectionFilterType } from './collection';
 import type { ImageType, RatingType } from './common';
 import type { EpisodeTypeEnum } from './episode';
 import type { FileSourceEnum } from './file';
@@ -22,7 +21,7 @@ export type WebuiSeriesRolePerson = {
 };
 
 export type WebuiSeriesDetailsType = {
-  FirstAirSeason: CollectionFilterType;
+  FirstAirSeason: string;
   Studios: WebuiSeriesRolePerson[];
   Producers: WebuiSeriesRolePerson[];
   SourceMaterial: string | null;

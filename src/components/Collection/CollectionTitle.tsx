@@ -6,11 +6,12 @@ import cx from 'classnames';
 
 type Props = {
   count: number;
+  filterActive: boolean;
   filterOrGroup?: string;
   searchQuery: string;
 };
 
-const CollectionTitle = memo(({ count, filterOrGroup, searchQuery }: Props) => (
+const CollectionTitle = memo(({ count, filterActive, filterOrGroup, searchQuery }: Props) => (
   <div className="flex items-center gap-x-2 text-xl font-semibold">
     <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
       Entire Collection
@@ -19,6 +20,12 @@ const CollectionTitle = memo(({ count, filterOrGroup, searchQuery }: Props) => (
       <>
         <Icon path={mdiChevronRight} size={1} />
         {filterOrGroup}
+      </>
+    )}
+    {!filterOrGroup && filterActive && (
+      <>
+        <Icon path={mdiChevronRight} size={1} />
+        Filtered
       </>
     )}
     {searchQuery && (

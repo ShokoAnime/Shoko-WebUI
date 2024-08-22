@@ -1,10 +1,14 @@
 import React, { useMemo } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
+import { setActiveFilter, setFilterValues } from '@/core/slices/collection';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SeriesType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
@@ -15,6 +19,9 @@ type SeriesInfoProps = {
 
 const SeriesInfo = ({ series }: SeriesInfoProps) => {
   const { seriesId } = useParams();
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Series Data;
   const seriesOverviewQuery = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
@@ -43,6 +50,14 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     }
     return 'Finished';
   }, [startDate, endDate]);
+
+  const handleSeasonFilter = useEventCallback(() => {
+    if (!overview.FirstAirSeason) return;
+    const [season, year] = overview.FirstAirSeason.split(' ');
+    dispatch(setFilterValues({ InSeason: [`${year}: ${season}`] }));
+    dispatch(setActiveFilter({ Type: 'InSeason', Parameter: year, SecondParameter: season }));
+    navigate('/webui/collection');
+  });
 
   if (!seriesId) return null;
 
@@ -102,24 +117,21 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
           <div className="truncate">
             &nbsp;
             {overview.RuntimeLength
-              ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Min/Ep`
+              ? `${dayjs.duration(convertTimeSpanToMs(overview.RuntimeLength)).asMinutes()} Mins/Episode`
               : '--'}
           </div>
         </div>
         <div className="flex justify-between capitalize">
           <div className="font-semibold">Season</div>
-          <div className="truncate">
+          <div
+            className={cx(
+              'truncate',
+              overview.FirstAirSeason && 'cursor-pointer font-semibold text-panel-text-primary',
+            )}
+            onClick={handleSeasonFilter}
+          >
             &nbsp;
-            {overview?.FirstAirSeason
-              ? (
-                <Link
-                  className="font-semibold text-panel-text-primary"
-                  to={`/webui/collection/filter/${overview.FirstAirSeason.IDs.ID}`}
-                >
-                  {overview.FirstAirSeason.Name}
-                </Link>
-              )
-              : '--'}
+            {overview?.FirstAirSeason ?? '--'}
           </div>
         </div>
         <div className="flex justify-between capitalize">

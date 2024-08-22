@@ -199,6 +199,7 @@ function Collection() {
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
           filterOrGroup={subsectionName}
+          filterActive={!!groupFilterCondition}
           searchQuery={isSeries ? seriesSearch : groupSearch}
         />
         <TitleOptions
