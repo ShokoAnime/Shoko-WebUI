@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -14,6 +15,7 @@ type Props = {
 };
 
 const MetadataLink = ({ id, seriesId, site, type }: Props) => {
+  const navigate = useNavigate();
   const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(type ?? 'Movie');
   const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
@@ -34,7 +36,13 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
     }
   }, [id, site, type]);
 
-  const canRemoveLink = useMemo(() => site === 'TvDB' || site === 'TMDB', [site]);
+  const canEditLink = useMemo(() => site === 'TMDB', [site]);
+  const canRemoveLink = useMemo(() => ['TMDB', 'TvDB'].includes(site), [site]);
+
+  const editLink = useEventCallback(() => {
+    if (!id || !type) return;
+    navigate(`../tmdb-linking/${type[0].toLowerCase()}${id}`);
+  });
 
   const removeLink = useEventCallback(() => {
     if (!id) return;
@@ -74,7 +82,7 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
             {id
               ? (
                 <>
-                  <Button disabled>
+                  <Button disabled={!canEditLink} onClick={editLink} tooltip="Edit link">
                     <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
                   </Button>
                   <Button disabled={!canRemoveLink} onClick={removeLink} tooltip="Remove link">

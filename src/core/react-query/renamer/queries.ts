@@ -3,12 +3,8 @@ import { useQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 import { transformRenamer, transformRenamerConfigs } from '@/core/react-query/renamer/helpers';
 
-import type {
-  RenamerConfigResponseType,
-  RenamerConfigType,
-  RenamerResponseType,
-  RenamerType,
-} from '@/core/react-query/renamer/types';
+import type { RenamerConfigResponseType, RenamerResponseType } from '@/core/react-query/renamer/types';
+import type { RenamerConfigType, RenamerType } from '@/core/types/api/renamer';
 
 export const useRenamersQuery = (enabled = true) =>
   useQuery<RenamerResponseType[]>({

@@ -14,6 +14,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -24,7 +25,7 @@ const pageSize = 26;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
-  const [episodeFilterType, setEpisodeFilterType] = useState('Normal');
+  const [episodeFilterType, setEpisodeFilterType] = useState(EpisodeTypeEnum.Normal);
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
   const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
@@ -40,7 +41,7 @@ const SeriesEpisodes = () => {
     const { id: eventType, value } = event.target;
     switch (eventType) {
       case 'episodeType':
-        setEpisodeFilterType(value);
+        setEpisodeFilterType(value as EpisodeTypeEnum);
         break;
       case 'status':
         setEpisodeFilterAvailability(value);
@@ -73,7 +74,7 @@ const SeriesEpisodes = () => {
     {
       includeMissing: episodeFilterAvailability,
       includeHidden: episodeFilterHidden,
-      type: episodeFilterType,
+      type: [episodeFilterType],
       includeWatched: episodeFilterWatched,
       includeDataFrom: ['AniDB'],
       search: debouncedSearch,
@@ -136,7 +137,7 @@ const SeriesEpisodes = () => {
       seriesId: toNumber(seriesId),
       includeMissing: episodeFilterAvailability,
       includeHidden: episodeFilterHidden,
-      type: episodeFilterType,
+      type: [episodeFilterType],
       includeWatched: episodeFilterWatched,
       value: watched,
       search: debouncedSearch,

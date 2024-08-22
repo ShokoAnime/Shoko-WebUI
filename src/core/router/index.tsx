@@ -16,6 +16,7 @@ import SeriesFileSummary from '@/pages/collection/series/SeriesFileSummary';
 import SeriesImages from '@/pages/collection/series/SeriesImages';
 import SeriesOverview from '@/pages/collection/series/SeriesOverview';
 import SeriesTags from '@/pages/collection/series/SeriesTags';
+import SeriesTmdbLinking from '@/pages/collection/series/SeriesTmdbLinking';
 import DashboardPage from '@/pages/dashboard/DashboardPage';
 import Acknowledgement from '@/pages/firstrun/Acknowledgement';
 import AniDBAccount from '@/pages/firstrun/AniDBAccount';
@@ -98,6 +99,7 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Collection />} />
             <Route path="filter/:filterId" element={<Collection />} />
             <Route path="group/:groupId" element={<Collection />} />
+            <Route path="series/:seriesId/tmdb-linking/:tmdbId" element={<SeriesTmdbLinking />} />
             <Route path="series/:seriesId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />

@@ -162,7 +162,7 @@ function SeriesWithoutFilesUtility() {
       <div>
         <ShokoPanel
           title="Series Without Files"
-          options={<ItemCount count={seriesCount} selected={selectedRows?.length} series />}
+          options={<ItemCount count={seriesCount} selected={selectedRows?.length} suffix="Series" />}
         >
           <div className="flex items-center gap-x-3">
             <Input

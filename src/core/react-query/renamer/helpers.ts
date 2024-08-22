@@ -3,14 +3,16 @@ import store from '@/core/store';
 
 import type {
   RenamerConfigResponseType,
-  RenamerConfigSettingsType,
-  RenamerConfigType,
   RenamerRelocateBaseRequestType,
   RenamerResponseType,
+} from '@/core/react-query/renamer/types';
+import type {
+  RenamerConfigSettingsType,
+  RenamerConfigType,
   RenamerResultType,
   RenamerSettingsType,
   RenamerType,
-} from '@/core/react-query/renamer/types';
+} from '@/core/types/api/renamer';
 
 export const updateResults = (response: RenamerResultType[]) => {
   const mappedResults = response.reduce(

@@ -1,11 +1,12 @@
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType, ImageType } from '@/core/types/api/common';
+import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 type SeriesEpisodesBaseRequestType = {
   includeMissing?: string;
   includeHidden?: string;
   includeWatched?: string;
-  type?: string;
+  type?: EpisodeTypeEnum[];
   search?: string;
   fuzzy?: boolean;
 };

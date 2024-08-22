@@ -7,7 +7,7 @@ import {
   useSeriesEpisodesWithMultipleReleases,
   useSeriesWithMultipleReleases,
 } from '@/core/react-query/release-management/queries';
-import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';

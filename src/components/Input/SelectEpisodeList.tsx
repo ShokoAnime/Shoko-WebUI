@@ -6,7 +6,7 @@ import cx from 'classnames';
 import { find, toInteger } from 'lodash';
 
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
-import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import Input from './Input';
