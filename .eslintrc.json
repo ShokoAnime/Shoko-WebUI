@@ -98,7 +98,15 @@
     ],
     "no-restricted-imports": [
       "error",
-      { "patterns": [{ "group": ["../*"], "message": "Please use @/ instead." }] }
+      {
+        "patterns": [
+          { "group": ["../*"], "message": "Please use @/ instead." },
+          { "group": ["usehooks-ts"], "importNames": ["useCopyToClipboard"], "message": "Please use copyToClipboard from @/core/util instead." }
+        ],
+        "paths": [
+          { "name": "usehooks-ts", "importNames": ["useEventCallback"], "message": "Please use @/hooks/useEventCallback instead." }
+        ]
+      }
     ],
     "no-restricted-syntax": "off",
     "object-curly-newline": [

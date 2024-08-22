@@ -2,13 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { mdiClipboardTextOutline } from '@mdi/js';
 import cx from 'classnames';
 import { map } from 'lodash';
-import { useCopyToClipboard } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import toast from '@/components/Toast';
 import { useCreateApiToken, useDeleteApiToken } from '@/core/react-query/auth/mutations';
 import { useApiKeyQuery } from '@/core/react-query/auth/queries';
+import { copyToClipboard } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { AuthToken } from '@/core/types/api/authToken';
@@ -40,7 +40,6 @@ const UserApiTokens = ({ token }: { token: AuthToken }) => {
 
 const ApiKeys = () => {
   const [deviceName, setDeviceName] = useState('');
-  const [, copy] = useCopyToClipboard();
 
   const onDeviceNameChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setDeviceName(event.target.value);
@@ -55,19 +54,28 @@ const ApiKeys = () => {
 
   const handleCopyToClipboard = useEventCallback(() => {
     if (!isTokenGenerated) return;
-    copy(createdToken).then((isCopied) => {
-      if (!isCopied) return;
-      toast.success('Copied', 'API Key has been copied to clipboard!', {
-        autoClose: 3000,
-        toastId: 'api-copied',
+    copyToClipboard(createdToken)
+      .then(
+        () =>
+          toast.success(
+            'API Key has been copied to clipboard!',
+            undefined,
+            {
+              autoClose: 3000,
+              toastId: 'api-copied',
+            },
+          ),
+      )
+      .catch((error) => {
+        console.error(error);
+        toast.error('API Key copy failed!');
       });
-    }).catch(console.error);
   });
 
   const handleTokenGeneration = useEventCallback(() => {
     createApiToken(deviceName, {
       onSuccess: () => {
-        toast.success('API Generated', 'API Key has been generated!', {
+        toast.success('API Key has been generated!', undefined, {
           autoClose: 3000,
           toastId: 'api-generated',
         });

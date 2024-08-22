@@ -8,6 +8,8 @@ import { enableMapSet } from 'immer';
 import { isObject, toNumber } from 'lodash';
 import semver from 'semver';
 
+import toast from '@/components/Toast';
+
 dayjs.extend(advancedFormat);
 dayjs.extend(calendar);
 dayjs.extend(durationPlugin);
@@ -64,16 +66,17 @@ export function mergeDeep(...objects: object[]) {
 
 export const formatThousand = (n: number) => formatThousands(n, ',');
 
-export const copyToClipboard = async (text: string) => {
+export const copyToClipboard = async (text: string, entityName?: string) => {
   try {
     if (navigator?.clipboard) {
       await navigator.clipboard.writeText(text);
-      return true;
+    } else {
+      copy(text);
     }
-    return copy(text);
+    if (entityName) toast.success(`${entityName} has been copied to clipboard!`);
   } catch (error) {
-    console.error(error);
-    return false;
+    if (entityName) toast.error(`${entityName} copy failed!`);
+    throw error;
   }
 };
 

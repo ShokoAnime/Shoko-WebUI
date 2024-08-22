@@ -12,7 +12,6 @@ import Icon from '@mdi/react';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { copyToClipboard } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -106,9 +105,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
 
   const handleCopy = useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
-    copyToClipboard(hash)
-      .then(() => toast.success('ED2K hash copied to clipboard!'))
-      .catch(() => toast.error('ED2K hash copy failed!'));
+    copyToClipboard(hash, 'ED2K hash').catch(console.error);
   });
 
   return (

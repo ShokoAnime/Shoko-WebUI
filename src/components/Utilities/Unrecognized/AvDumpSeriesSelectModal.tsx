@@ -95,13 +95,10 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
   };
 
   const handleCopy = () => {
-    copyToClipboard(ed2kLinks)
-      .then(() => {
-        toast.success('ED2K hashes copied to clipboard!');
-        setActiveStep(s => s + 1);
-      })
-      .catch(() => {
-        toast.error('ED2K hashes copy failed!');
+    copyToClipboard(ed2kLinks, 'ED2K hashes')
+      .then(() => setActiveStep(s => s + 1))
+      .catch((error) => {
+        console.error(error);
         setCopyFailed(true);
       });
   };
