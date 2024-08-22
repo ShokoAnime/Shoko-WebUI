@@ -13,7 +13,7 @@ import {
   useTmdbEpisodeXRefsInfiniteQuery,
   useTmdbMovieXrefsQuery,
   useTmdbShowOrMovieQuery,
-} from '@/core/react-query/series/tmdb/queries';
+} from '@/core/react-query/tmdb/queries';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 

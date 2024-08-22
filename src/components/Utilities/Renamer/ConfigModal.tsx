@@ -10,7 +10,7 @@ import { useRenamerNewConfigMutation, useRenamerPatchConfigMutation } from '@/co
 import { useRenamerConfigsQuery, useRenamersQuery } from '@/core/react-query/renamer/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { RenamerConfigType } from '@/core/react-query/renamer/types';
+import type { RenamerConfigType } from '@/core/types/api/renamer';
 
 type Props = {
   config: RenamerConfigType;

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import type { RenamerResultType } from '@/core/react-query/renamer/types';
 import type { FileType } from '@/core/types/api/file';
+import type { RenamerResultType } from '@/core/types/api/renamer';
 import type { PayloadAction } from '@reduxjs/toolkit';
 
 type State = {

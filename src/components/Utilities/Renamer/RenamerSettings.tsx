@@ -5,7 +5,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/react-query/renamer/types';
+import type { RenamerConfigSettingsType, RenamerSettingsType } from '@/core/types/api/renamer';
 import type { Updater } from 'use-immer';
 
 type Props = {

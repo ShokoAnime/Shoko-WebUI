@@ -46,10 +46,10 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
-import type { RenamerConfigSettingsType, RenamerConfigType, RenamerResultType } from '@/core/react-query/renamer/types';
 import type { RootState } from '@/core/store';
 import type { FileType } from '@/core/types/api/file';
 import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { RenamerConfigSettingsType, RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
 
 const getFileColumn = (importFolders: ImportFolderType[]) => ({
   id: 'filename',

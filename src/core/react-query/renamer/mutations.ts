@@ -7,12 +7,11 @@ import { updateApiErrors, updateResults } from '@/core/react-query/renamer/helpe
 
 import type {
   RenamerConfigResponseType,
-  RenamerConfigType,
   RenamerPatchRequestType,
   RenamerPreviewRequestType,
   RenamerRelocateRequestType,
-  RenamerResultType,
 } from '@/core/react-query/renamer/types';
+import type { RenamerConfigType, RenamerResultType } from '@/core/types/api/renamer';
 
 export const useRenamerPreviewMutation = () =>
   useMutation<RenamerResultType[], unknown, RenamerPreviewRequestType>({

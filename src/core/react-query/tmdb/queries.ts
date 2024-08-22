@@ -2,7 +2,7 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 
-import type { TmdbEpisodeXRefRequestType } from '@/core/react-query/series/tmdb/types';
+import type { TmdbEpisodeXRefRequestType } from '@/core/react-query/tmdb/types';
 import type { ListResultType, PaginationType } from '@/core/types/api';
 import type { TmdbBaseItemType, TmdbEpisodeType, TmdbEpisodeXRefType, TmdbMovieXRefType } from '@/core/types/api/tmdb';
 
