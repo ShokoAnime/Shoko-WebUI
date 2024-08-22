@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  mdiContentCopy,
   mdiDatabaseSearchOutline,
   mdiFileDocumentMultipleOutline,
   mdiLoading,
@@ -9,6 +10,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { get, map } from 'lodash';
+import { useCopyToClipboard } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import FileInfo from '@/components/FileInfo';
@@ -36,6 +38,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
   const { mutate: deleteFile } = useDeleteFileMutation();
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
+  const [, copy] = useCopyToClipboard();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedFileToDelete, setSelectedFileToDelete] = useState<FileType | null>(null);
   const selectedFilesToDelete = useMemo(
@@ -78,6 +81,15 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
         toast.error(`${variation ? 'Marking' : 'Unmarking'} file as variation failed! ${error.message}`),
     });
 
+  const handleCopyToClipboard = (id: string) => () => {
+    copy(id).then((isCopied) => {
+      if (!isCopied) return;
+      toast.success('ShokoID has been copied to clipboard!');
+    }).catch((error) => {
+      toast.error(`Failed! ${error}`);
+    });
+  };
+
   if (!episodeFiles.length || episodeFiles.length < 1) {
     return <div className="flex grow items-center justify-center p-6 pt-4 font-semibold">No files found!</div>;
   }
@@ -97,7 +109,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
                   onClick={() => handleRescan(file.ID)}
                 >
                   <Icon className="hidden text-panel-icon-action lg:inline" path={mdiDatabaseSearchOutline} size={1} />
-                  Force Update File Info
+                  Force Update Info
                 </div>
                 <div
                   className="flex cursor-pointer items-center gap-x-2"
@@ -121,13 +133,24 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
                     size={1}
                   />
                   {file.IsVariation ? 'Unmark' : 'Mark'}
-                  &nbsp;File as Variation
+                  &nbsp;as Variation
+                </div>
+                <div
+                  className="flex cursor-pointer items-center gap-x-2"
+                  onClick={handleCopyToClipboard(file.ID.toString())}
+                >
+                  <Icon
+                    className="hidden text-panel-icon-action lg:inline"
+                    path={mdiContentCopy}
+                    size={1}
+                  />
+                  Copy ShokoID
                 </div>
                 {file.AniDB && (
                   <a href={`https://anidb.net/file/${file.AniDB.ID}`} target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
-                      {`${file.AniDB.ID} (AniDB)`}
+                      AniDB
                       <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
                     </div>
                   </a>
