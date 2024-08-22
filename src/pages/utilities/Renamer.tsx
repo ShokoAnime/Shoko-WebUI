@@ -138,7 +138,7 @@ const getResultColumn = (
   },
 } as UtilityHeaderType<FileType>);
 
-const getStatusIcon = (result?: RenamerResultType) => {
+const getStatusIcon = (result?: RenamerResultType, noChange = false) => {
   let icon = mdiHelpCircleOutline;
   let className = '';
   let tooltip = '';
@@ -147,6 +147,10 @@ const getStatusIcon = (result?: RenamerResultType) => {
     icon = mdiCloseCircleOutline;
     className = 'text-panel-text-danger';
     tooltip = 'Rename/preview failed!';
+  } else if (noChange) {
+    icon = mdiCheckCircleOutline;
+    className = 'text-panel-text-important';
+    tooltip = 'No change!';
   } else if (result?.IsSuccess && result?.IsPreview) {
     icon = mdiAlertCircleOutline;
     className = 'text-panel-text-warning';
@@ -169,15 +173,44 @@ const getStatusIcon = (result?: RenamerResultType) => {
   );
 };
 
-const getStatusColumn = (renameResults: Record<number, RenamerResultType>) => ({
+const getStatusColumn = (
+  renameResults: Record<number, RenamerResultType>,
+  importFolders: ImportFolderType[],
+  moveFiles: boolean,
+) => ({
   id: 'status',
   name: 'Status',
   className: 'w-16',
-  item: file => (
-    <div className="flex justify-center">
-      {getStatusIcon(renameResults[file.ID])}
-    </div>
-  ),
+  item: (file) => {
+    const result = renameResults[file.ID];
+    let noChange = false;
+
+    if (result) {
+      const path = file.Locations[0]?.RelativePath ?? '';
+      const match = /[/\\](?=[^/\\]*$)/g.exec(path);
+      const relativePath = match ? path?.substring(0, match.index) : 'Root Level';
+      const importFolder = find(
+        importFolders,
+        { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
+      )?.Name ?? '<Unknown>';
+
+      const newPath = result.RelativePath ?? '';
+      const newRelativePath = match ? newPath?.substring(0, match.index) : 'Root Level';
+      const newImportFolder = find(
+        importFolders,
+        { ID: result.ImportFolderID ?? -1 },
+      )?.Name ?? '<Unknown>';
+
+      noChange = (path === newPath) && (!moveFiles
+        || (importFolder === newImportFolder && relativePath === newRelativePath));
+    }
+
+    return (
+      <div className="flex justify-center">
+        {getStatusIcon(result, noChange)}
+      </div>
+    );
+  },
 } as UtilityHeaderType<FileType>);
 
 const Menu = React.memo((
@@ -386,9 +419,9 @@ const Renamer = () => {
     return [
       getFileColumn(importFolders),
       getResultColumn(renameResults, importFolders),
-      getStatusColumn(renameResults),
+      getStatusColumn(renameResults, importFolders, moveFiles),
     ];
-  }, [importFolderQuery?.data, renameResults]);
+  }, [importFolderQuery?.data, moveFiles, renameResults]);
 
   const renamerSettingsExist = useMemo(
     () =>
