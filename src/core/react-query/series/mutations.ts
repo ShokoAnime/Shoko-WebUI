@@ -125,8 +125,8 @@ export const useRefreshSeriesTMDBInfoMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) =>
       Promise.all([
-        axios.post(`Series/${seriesId}/TMDB/Show/Action/Refresh`),
-        axios.post(`Series/${seriesId}/TMDB/Movie/Action/Refresh`),
+        axios.post(`Series/${seriesId}/TMDB/Show/Action/Refresh`, {}),
+        axios.post(`Series/${seriesId}/TMDB/Movie/Action/Refresh`, {}),
       ]),
   });
 
