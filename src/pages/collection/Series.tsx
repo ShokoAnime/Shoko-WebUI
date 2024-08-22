@@ -65,9 +65,10 @@ const Series = () => {
 
   const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
   const mainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
-  const originalTitle = series.AniDB?.Titles.find(title => title.Language === languageMapping[mainTitle?.Language]);
-  const mainTitleCheck = mainTitle?.Name !== series.Name ? mainTitle?.Name : null;
-  const originalTitleCheck = originalTitle?.Name !== series.Name ? originalTitle?.Name : null;
+  const mainTitleLanguage = mainTitle?.Language ?? '';
+  const originalTitle = series.AniDB?.Titles.find(title => title.Language === languageMapping[mainTitleLanguage]);
+  const mainTitleCheck = mainTitle?.Name !== series.Name ? <span>{mainTitle?.Name}</span> : null;
+  const originalTitleCheck = originalTitle?.Name !== series.Name ? <span>{originalTitle?.Name}</span> : null;
 
   const onClickHandler = useEventCallback(() => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
@@ -124,13 +125,11 @@ const Series = () => {
         </div>
         <div className="text-4xl font-semibold">{series.Name}</div>
         <div className="flex gap-x-3 text-xl font-semibold opacity-65">
-          <span>{mainTitleCheck}</span>
-          <span>
-            {mainTitleCheck && originalTitleCheck
-              ? '|'
-              : null}
-          </span>
-          <span>{originalTitleCheck}</span>
+          {mainTitleCheck}
+          {mainTitleCheck && originalTitleCheck
+            ? <span>|</span>
+            : null}
+          {originalTitleCheck}
         </div>
       </div>
       <SeriesTopPanel series={series} />
