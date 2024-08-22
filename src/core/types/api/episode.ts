@@ -1,5 +1,6 @@
 import type { DataSourceType, EpisodeImagesType, RatingType } from './common';
 import type { FileType } from '@/core/types/api/file';
+import type { TmdbEpisodeType, TmdbMovieType } from '@/core/types/api/tmdb';
 
 export type EpisodeType = {
   IDs: EpisodeIDsType;
@@ -10,7 +11,11 @@ export type EpisodeType = {
   ResumePosition: string | null;
   Watched: string | null;
   Size: number;
-  AniDB?: EpisodeAniDBType;
+  AniDB?: AniDBEpisodeType;
+  TMDB?: {
+    Episodes: TmdbEpisodeType[];
+    Movies: TmdbMovieType[];
+  };
   IsHidden: boolean;
   Files?: FileType[];
 };
@@ -43,7 +48,7 @@ export const enum EpisodeTypeEnum {
   Extra = 'Extra',
 }
 
-export type EpisodeAniDBType = {
+export type AniDBEpisodeType = {
   ID: number;
   Type: EpisodeTypeEnum;
   EpisodeNumber: number;
@@ -60,3 +65,12 @@ export type EpisodeFilesQueryType = {
   isManuallyLinked?: boolean;
   includeMediaInfo?: boolean;
 };
+
+export enum MatchRatingType {
+  UserVerified = 'UserVerified',
+  DateAndTitleMatches = 'DateAndTitleMatches',
+  DateMatches = 'DateMatches',
+  TitleMatches = 'TitleMatches',
+  FirstAvailable = 'FirstAvailable',
+  None = 'None',
+}

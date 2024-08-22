@@ -16,7 +16,7 @@ import type { DashboardRequestType, FileRequestType } from '@/core/react-query/t
 import type { ListResultType } from '@/core/types/api';
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { ImagesType } from '@/core/types/api/common';
-import type { EpisodeAniDBType, EpisodeType } from '@/core/types/api/episode';
+import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
   SeriesAniDBRelatedType,
@@ -48,7 +48,7 @@ export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
   });
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
-  useQuery<ListResultType<EpisodeAniDBType>, unknown, EpisodeAniDBType[]>({
+  useQuery<ListResultType<AniDBEpisodeType>, unknown, AniDBEpisodeType[]>({
     queryKey: ['series', 'anidb', anidbId, 'episodes', params],
     queryFn: () => axios.get(`Series/AniDB/${anidbId}/Episode`, { params }),
     select: transformListResultSimplified,

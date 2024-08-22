@@ -67,7 +67,7 @@ const MultiplesUtil = () => {
 
   return (
     <div className="flex grow flex-col gap-y-6 overflow-y-auto">
-      <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} series />}>
+      <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
         <div className="flex items-center gap-x-3">
           <div
             className={cx(

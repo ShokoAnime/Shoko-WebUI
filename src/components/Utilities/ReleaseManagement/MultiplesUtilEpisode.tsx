@@ -5,7 +5,7 @@ import { countBy, forEach } from 'lodash';
 
 import FileInfo from '@/components/FileInfo';
 import Select from '@/components/Input/Select';
-import getEpisodePrefix from '@/core/utilities/getEpisodePrefix';
+import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { MultipleFileOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';

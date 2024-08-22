@@ -226,7 +226,7 @@ function ManuallyLinkedTab() {
             <ItemCount
               count={seriesCount}
               selected={Object.values(selectedFiles).filter(value => value).length}
-              series
+              suffix="Series"
             />
           }
         >

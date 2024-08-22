@@ -1,14 +1,14 @@
 import React from 'react';
 
-const ItemCount = ({ count, selected, series = false }: { count: number, selected?: number, series?: boolean }) => (
+const ItemCount = ({ count, selected, suffix }: { count: number, selected?: number, suffix?: string }) => (
   <div className="text-lg font-semibold">
     <span>
       <span className="text-panel-text-important">
         {count}
         &nbsp;
       </span>
-      {series && 'Series'}
-      {!series && (count === 1 ? 'File' : 'Files')}
+      {suffix && suffix}
+      {!suffix && (count === 1 ? 'File' : 'Files')}
     </span>
     {(selected ?? 0) > 0 && (
       <>
@@ -18,7 +18,7 @@ const ItemCount = ({ count, selected, series = false }: { count: number, selecte
             {selected ?? 0}
             &nbsp;
           </span>
-          {series && 'Series'}
+          {suffix && suffix}
           Selected
         </span>
       </>
