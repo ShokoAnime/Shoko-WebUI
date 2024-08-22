@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -12,6 +14,9 @@ import SeriesUserStats from '@/components/Collection/SeriesUserStats';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { resetFilter, setFilterTag } from '@/core/slices/collection';
+import { addFilterCriteriaToStore } from '@/core/utilities/filter';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
@@ -20,17 +25,30 @@ type SeriesSidePanelProps = {
   series: SeriesType;
 };
 
-const SeriesTag = ({ text, type }) => (
-  <div
-    className={cx(
-      'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize h-fit',
-      type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
-    )}
-  >
-    <Icon path={mdiTagTextOutline} size="1.25rem" />
-    <span className="text-panel-text">{text}</span>
-  </div>
-);
+const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleClick = useEventCallback(() => {
+    dispatch(resetFilter());
+    addFilterCriteriaToStore('HasTag').then(() => {
+      dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
+      navigate('/webui/collection');
+    }).catch(console.error);
+  });
+
+  return (
+    <div
+      className={cx(
+        'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize h-fit cursor-pointer',
+        type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
+      )}
+      onClick={handleClick}
+    >
+      <Icon path={mdiTagTextOutline} size="1.25rem" />
+      <span className="text-panel-text">{text}</span>
+    </div>
+  );
+});
 
 const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
   const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;

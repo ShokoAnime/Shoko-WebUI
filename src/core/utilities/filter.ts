@@ -1,8 +1,14 @@
+import { filter } from 'lodash';
+
+import { axios } from '@/core/axios';
+import { transformFilterExpressions } from '@/core/react-query/filter/helpers';
+import queryClient from '@/core/react-query/queryClient';
+import { addFilterCriteria } from '@/core/slices/collection';
 import store from '@/core/store';
 
 import type { FilterCondition, FilterExpression, FilterTag } from '@/core/types/api/filter';
 
-const buildFilter = (filters: FilterCondition[]): FilterCondition => {
+export const buildFilter = (filters: FilterCondition[]): FilterCondition => {
   if (filters.length > 1) {
     return {
       Type: 'And',
@@ -94,4 +100,16 @@ export const buildSidebarFilter = (filters: FilterExpression[]): object => {
   return buildSidebarFilterCondition(filters[0]);
 };
 
-export default buildFilter;
+export const addFilterCriteriaToStore = async (newCriteria: string) => {
+  const allCriteria = transformFilterExpressions(
+    await queryClient.fetchQuery<FilterExpression[]>(
+      {
+        queryKey: ['filter', 'expression', 'all'],
+        queryFn: () => axios.get('Filter/Expressions'),
+        staleTime: Infinity,
+      },
+    ),
+  );
+  const filterExpression = filter(allCriteria, { Expression: newCriteria })[0];
+  store.dispatch(addFilterCriteria(filterExpression));
+};

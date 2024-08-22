@@ -33,13 +33,14 @@ const renderTab = (activeTab: string, groupId: number) => {
 const EditGroupModal = () => {
   const dispatch = useDispatch();
 
+  const groupId = useSelector((state: RootState) => state.modals.editGroup.groupId);
+
   const onClose = useEventCallback(() => {
+    if (groupId === -1) return;
     dispatch(setGroupId(-1));
   });
 
   useEffect(() => onClose, [onClose]);
-
-  const groupId = useSelector((state: RootState) => state.modals.editGroup.groupId);
 
   const [activeTab, setActiveTab] = useState<keyof typeof tabs>('name');
 

@@ -48,13 +48,14 @@ const renderTab = (activeTab: string, seriesId = -1) => {
 const EditSeriesModal = () => {
   const dispatch = useDispatch();
 
+  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
+
   const onClose = useEventCallback(() => {
+    if (seriesId === -1) return;
     dispatch(setSeriesId(-1));
   });
 
   useEffect(() => onClose, [onClose]);
-
-  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
 
   const [activeTab, setActiveTab] = useState('name');
 
