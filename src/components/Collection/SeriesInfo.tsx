@@ -26,12 +26,12 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
       return 'Unknown';
     }
     if (endDate) {
-      if (startDate.format('MMM DD/YY') === endDate.format('MMM DD/YY')) {
-        return startDate.format('MMM DD/YY');
+      if (startDate.format('MMM DD, YYYY') === endDate.format('MMM DD, YYYY')) {
+        return startDate.format('MMM DD, YYYY');
       }
-      return `${startDate.format('MMM DD/YY')} - ${endDate.format('MMM DD/YY')}`;
+      return `${startDate.format('MMM DD, YYYY')} - ${endDate.format('MMM DD, YYYY')}`;
     }
-    return `${startDate.format('MMM DD/YY')} - Ongoing`;
+    return `${startDate.format('MMM DD, YYYY')} - Ongoing`;
   }, [startDate, endDate]);
 
   const status = useMemo(() => {
@@ -87,14 +87,14 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
             {series?.Sizes.Total.Episodes}
             &nbsp;
             {series?.Sizes.Total.Episodes > 1
-              ? 'Eps'
-              : 'Ep'}
+              ? 'Episodes'
+              : 'Episode'}
             <span className="mx-1">|</span>
             {series?.Sizes.Total.Specials}
             &nbsp;
             {series?.Sizes.Total.Episodes > 1
-              ? 'Sps'
-              : 'Sp'}
+              ? 'Specials'
+              : 'Special'}
           </div>
         </div>
         <div className="flex justify-between capitalize">
