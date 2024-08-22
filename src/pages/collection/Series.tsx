@@ -47,6 +47,7 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
 );
 
 const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
 
 const Series = () => {
   const navigate = useNavigate();
@@ -63,10 +64,14 @@ const Series = () => {
 
   const dispatch = useDispatch();
 
-  const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
-  const mainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
-  const mainTitleLanguage = mainTitle?.Language ?? '';
-  const originalTitle = series.AniDB?.Titles.find(title => title.Language === languageMapping[mainTitleLanguage]);
+  const [mainTitle, originalTitle] = useMemo(() => {
+    const tempMainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
+    return [
+      tempMainTitle,
+      series.AniDB?.Titles.find(title => title.Language === languageMapping[tempMainTitle?.Language ?? '']),
+    ];
+  }, [series]);
+
   const mainTitleCheck = mainTitle?.Name !== series.Name ? <span>{mainTitle?.Name}</span> : null;
   const originalTitleCheck = originalTitle?.Name !== series.Name ? <span>{originalTitle?.Name}</span> : null;
 
@@ -126,9 +131,7 @@ const Series = () => {
         <div className="text-4xl font-semibold">{series.Name}</div>
         <div className="flex gap-x-3 text-xl font-semibold opacity-65">
           {mainTitleCheck}
-          {mainTitleCheck && originalTitleCheck
-            ? <span>|</span>
-            : null}
+          {mainTitleCheck && originalTitleCheck && <span>|</span>}
           {originalTitleCheck}
         </div>
       </div>
