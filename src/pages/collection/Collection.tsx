@@ -67,7 +67,7 @@ const getFilter = (
     } else {
       finalCondition = buildFilter([searchCondition]);
     }
-  } else if (cleanFilterConditions.length) {
+  } else if (cleanFilterConditions.length > 0) {
     finalCondition = buildFilter(cleanFilterConditions);
   }
 
