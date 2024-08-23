@@ -35,7 +35,7 @@ export default defineConfig(async () => {
 
   return {
     server: {
-      open: "/webui/",
+      open: '/webui/',
       port: 3000,
       proxy,
     },
@@ -49,7 +49,7 @@ export default defineConfig(async () => {
       chunkSizeWarningLimit: 2000
     },
     plugins: [react(), sentryPlugin, manualChunksPlugin()],
-    base: "/webui/"
+    base: '/webui/'
   };
 });
 
@@ -59,9 +59,9 @@ async function setupEnv(isDebug) {
 
   process.env.VITE_GITHASH = gitHash;
   process.env.VITE_APPVERSION = appVersion;
-  process.env.VITE_MIN_SERVER_VERSION = pkg.config["min-server-requirement"];
+  process.env.VITE_MIN_SERVER_VERSION = pkg.config['min-server-requirement'];
 
-  const output = JSON.stringify({ git: gitHash, package: appVersion, debug: isDebug, "min-server-requirement": pkg.config["min-server-requirement"] }, null, '  ');
+  const output = JSON.stringify({ git: gitHash, package: appVersion, debug: isDebug, 'min-server-requirement': pkg.config['min-server-requirement'] }, null, '  ');
   await writeFile('./public/version.json', output, 'utf8');
 
   return appVersion;
