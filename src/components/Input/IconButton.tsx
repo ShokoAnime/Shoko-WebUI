@@ -9,7 +9,6 @@ import type { ButtonType, SizeType } from '@/components/Input/Button.utils';
 
 type IconButtonProps = {
   icon: string;
-  disabled?: boolean;
   className?: string;
   onClick: React.MouseEventHandler<HTMLDivElement | HTMLButtonElement>;
   buttonType: ButtonType;
@@ -18,7 +17,7 @@ type IconButtonProps = {
 };
 
 const IconButton = (
-  { buttonSize = 'normal', buttonType = 'secondary', className, disabled, icon, onClick, tooltip }: IconButtonProps,
+  { buttonSize = 'normal', buttonType = 'secondary', className, icon, onClick, tooltip }: IconButtonProps,
 ) => (
   <Button
     className={cx(
@@ -29,7 +28,6 @@ const IconButton = (
     )}
     onClick={onClick}
     tooltip={tooltip}
-    disabled={disabled}
   >
     <Icon path={icon} size={1} />
   </Button>
