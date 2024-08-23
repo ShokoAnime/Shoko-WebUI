@@ -224,7 +224,7 @@ function Collection() {
           isFetchingNextPage={groupsQuery.isFetchingNextPage}
           isFetching={isFetching}
           isSeries={isSeries}
-          isSidebarOpen={!filterId && showFilterSidebar}
+          isSidebarOpen={showFilterSidebar}
           items={items}
           mode={mode}
           total={total}
@@ -232,7 +232,7 @@ function Collection() {
         <div
           className={cx(
             'flex items-start transition-all',
-            (!isSeries && !filterId && showFilterSidebar)
+            (!isSeries && showFilterSidebar)
               ? 'w-[28.84rem] opacity-100 overflow-auto '
               : 'w-0 opacity-0 overflow-hidden ',
           )}
