@@ -48,6 +48,8 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
 
 const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
 
+const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
+
 const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
@@ -62,6 +64,17 @@ const Series = () => {
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const dispatch = useDispatch();
+
+  const [mainTitle, originalTitle] = useMemo(() => {
+    const tempMainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
+    const tempOriginalTitle = series.AniDB?.Titles.find(
+      title => title.Language === languageMapping[tempMainTitle?.Language ?? ''],
+    );
+    return [
+      (tempMainTitle && tempMainTitle.Name !== series.Name) ? <span>{tempMainTitle.Name}</span> : null,
+      (tempOriginalTitle && tempOriginalTitle.Name !== series.Name) ? <span>{tempOriginalTitle.Name}</span> : null,
+    ];
+  }, [series]);
 
   const onClickHandler = useEventCallback(() => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
@@ -118,13 +131,9 @@ const Series = () => {
         </div>
         <div className="text-4xl font-semibold">{series.Name}</div>
         <div className="flex gap-x-3 text-xl font-semibold opacity-65">
-          <span>
-            {series.AniDB?.Titles.find(title => title.Type === 'Main')?.Name}
-          </span>
-          <span>|</span>
-          <span>
-            {series.AniDB?.Titles.find(title => title.Language === 'ja')?.Name}
-          </span>
+          {mainTitle}
+          {mainTitle && originalTitle && <span>|</span>}
+          {originalTitle}
         </div>
       </div>
       <SeriesTopPanel series={series} />

@@ -110,7 +110,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
             <span className="mx-1">|</span>
             {series?.Sizes.Total.Specials}
             &nbsp;
-            {series?.Sizes.Total.Episodes > 1
+            {series?.Sizes.Total.Specials > 1
               ? 'Specials'
               : 'Special'}
           </div>
