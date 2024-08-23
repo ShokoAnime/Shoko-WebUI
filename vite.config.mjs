@@ -59,8 +59,9 @@ async function setupEnv(isDebug) {
 
   process.env.VITE_GITHASH = gitHash;
   process.env.VITE_APPVERSION = appVersion;
+  process.env.VITE_MIN_SERVER_VERSION = pkg.config["min-server-requirement"];
 
-  const output = JSON.stringify({ git: gitHash, package: appVersion, debug: isDebug }, null, '  ');
+  const output = JSON.stringify({ git: gitHash, package: appVersion, debug: isDebug, "min-server-requirement": pkg.config["min-server-requirement"] }, null, '  ');
   await writeFile('./public/version.json', output, 'utf8');
 
   return appVersion;

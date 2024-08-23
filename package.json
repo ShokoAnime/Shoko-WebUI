@@ -1,6 +1,9 @@
 {
   "name": "shoko-webui",
   "version": "2.1.0-dev.0",
+  "config": {
+    "min-server-requirement": "4.2.2.72"
+  },
   "private": true,
   "sideEffects": false,
   "engines": {

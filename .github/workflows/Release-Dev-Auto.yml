@@ -53,7 +53,13 @@ jobs:
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
 
-      - name: Create changelog
+      - name: Find Minimum Server Version
+        run: |
+          echo -e 'MIN_SERVER_REQUIREMENT=' >> $GITHUB_ENV
+          cat package.json | jq -r '.config."min-server-requirement"' | tr -d '\n' >> $GITHUB_ENV
+          echo -e '\n' >> $GITHUB_ENV
+
+      - name: Create Changelog
         run: |
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
           echo 'CHANGELOG<<CHANGELOG_END' >> $GITHUB_ENV
@@ -71,7 +77,14 @@ jobs:
           tag_name: v${{ steps.semver.outputs.version_tag }}
           prerelease: true
           fail_on_unmatched_files: true
-          body_path: ./changelog.txt
+          body: |
+            **Version**: `${{ steps.semver.outputs.version_tag }}`
+            **Minimum Server Version Required**: `${{ env.MIN_SERVER_REQUIREMENT }}`
+
+            Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
+
+            **Changes since last build**:
+            ${{ env.CHANGELOG }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -90,6 +103,7 @@ jobs:
           embed-author-url: https://github.com/${{ github.repository }}
           embed-description: |
             **Version**: `${{ steps.semver.outputs.version_tag }}`
+            **Minimum Server Version Required**: `${{ env.MIN_SERVER_REQUIREMENT }}`
 
             Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
 
