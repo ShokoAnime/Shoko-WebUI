@@ -68,7 +68,7 @@ const Series = () => {
   const [mainTitle, originalTitle] = useMemo(() => {
     const tempMainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
     const tempOriginalTitle = series.AniDB?.Titles.find(
-      title => title.Language === languageMapping[tempMainTitle?.Language ?? ''],
+      title => title.Language === languageMapping[tempMainTitle?.Language ?? ''] && title.Type === 'Official',
     );
     return [
       (tempMainTitle && tempMainTitle.Name !== series.Name) ? <span>{tempMainTitle.Name}</span> : null,
@@ -114,9 +114,9 @@ const Series = () => {
       <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex flex-row items-center gap-x-4">
           <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
-            Entire Collection
+            Collection
           </Link>
-          <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+          <Icon className="flex-none text-panel-icon" path={mdiChevronRight} size={1} />
           {groupQuery.isSuccess && groupQuery.data.Size > 1 && (
             <>
               <Link
@@ -125,11 +125,11 @@ const Series = () => {
               >
                 {groupQuery.data.Name}
               </Link>
-              <Icon className="text-panel-icon" path={mdiChevronRight} size={1} />
+              <Icon className="flex-none text-panel-icon" path={mdiChevronRight} size={1} />
             </>
           )}
         </div>
-        <div className="text-4xl font-semibold">{series.Name}</div>
+        <div className="text-center text-4xl font-semibold">{series.Name}</div>
         <div className="flex gap-x-3 text-xl font-semibold opacity-65">
           {mainTitle}
           {mainTitle && originalTitle && <span>|</span>}
