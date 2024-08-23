@@ -1,6 +1,5 @@
 import React from 'react';
 import type { Dispatch, SetStateAction } from 'react';
-import { useParams } from 'react-router';
 import {
   mdiCogOutline,
   mdiFilterMenuOutline,
@@ -28,15 +27,13 @@ type Props = {
 
 const OptionButton = React.memo(
   (
-    { disabled, icon, onClick, tooltip }: {
-      disabled?: boolean;
+    { icon, onClick, tooltip }: {
       icon: string;
       onClick: React.MouseEventHandler<HTMLDivElement>;
       tooltip?: string;
     },
   ) => (
     <IconButton
-      disabled={disabled}
       icon={icon}
       buttonType="secondary"
       buttonSize="normal"
@@ -57,8 +54,6 @@ const TitleOptions = (props: Props) => {
     toggleMode,
   } = props;
 
-  const { filterId } = useParams();
-
   const [showFilterModal, toggleFilterModal] = useToggle(false);
   const [showDisplaySettingsModal, toggleDisplaySettingsModal] = useToggle(false);
 
@@ -76,12 +71,7 @@ const TitleOptions = (props: Props) => {
         {!isSeries && (
           <>
             <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />
-            <OptionButton
-              onClick={toggleFilterSidebar}
-              icon={mdiFilterOutline}
-              tooltip={!filterId ? 'Filter' : ''}
-              disabled={!!filterId}
-            />
+            <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
           </>
         )}
         <OptionButton

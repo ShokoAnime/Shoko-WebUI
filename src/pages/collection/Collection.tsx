@@ -33,11 +33,12 @@ import type { SeriesType } from '@/core/types/api/series';
 
 const getFilter = (
   query: string,
-  filterCondition?: FilterCondition,
+  filterConditions: (FilterCondition | undefined)[],
   sortingCriteria?: SortingCriteria,
   isSeriesSearch = true,
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
+  const cleanFilterConditions = filterConditions.filter(condition => !!condition) as FilterCondition[];
   if (query) {
     let searchCondition: FilterCondition = {
       Type: isSeriesSearch ? 'StringContains' : 'AnyContains',
@@ -61,13 +62,13 @@ const getFilter = (
       };
     }
 
-    if (filterCondition) {
-      finalCondition = buildFilter([searchCondition, filterCondition]);
+    if (cleanFilterConditions.length > 0) {
+      finalCondition = buildFilter([searchCondition, ...cleanFilterConditions]);
     } else {
       finalCondition = buildFilter([searchCondition]);
     }
-  } else if (filterCondition) {
-    finalCondition = buildFilter([filterCondition]);
+  } else if (cleanFilterConditions.length) {
+    finalCondition = buildFilter(cleanFilterConditions);
   }
 
   return (
@@ -98,7 +99,7 @@ function Collection() {
   const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
-  const activeFilter = useSelector((state: RootState) => state.collection.activeFilter);
+  const activeFilter = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
   const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
@@ -117,17 +118,16 @@ function Collection() {
     setMode(viewSetting);
   }, [viewSetting]);
 
-  const groupFilterCondition = useMemo(() => {
-    if (filterId) return filterQuery.data?.Expression;
-    if (activeFilter !== null) return activeFilter as FilterCondition;
-    return undefined;
-  }, [activeFilter, filterId, filterQuery.data?.Expression]);
-
   const groupsQuery = useFilteredGroupsInfiniteQuery(
     {
       pageSize: 50,
       randomImages: showRandomPoster,
-      filterCriteria: getFilter(debouncedGroupSearch, groupFilterCondition, filterQuery.data?.Sorting, false),
+      filterCriteria: getFilter(
+        debouncedGroupSearch,
+        [activeFilter, filterQuery.data?.Expression],
+        filterQuery.data?.Sorting,
+        false,
+      ),
     },
     !isSeries && (!filterId || (!!filterId && filterQuery.isSuccess)),
   );
@@ -140,7 +140,12 @@ function Collection() {
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
     {
-      filterCriteria: getFilter(debouncedSeriesSearch, groupFilterCondition, filterQuery.data?.Sorting, true),
+      filterCriteria: getFilter(
+        debouncedSeriesSearch,
+        [activeFilter, filterQuery.data?.Expression],
+        filterQuery.data?.Sorting,
+        true,
+      ),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB'],
       recursive: true,
@@ -199,7 +204,7 @@ function Collection() {
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
           filterOrGroup={subsectionName}
-          filterActive={!!groupFilterCondition}
+          filterActive={!!activeFilter}
           searchQuery={isSeries ? seriesSearch : groupSearch}
         />
         <TitleOptions
@@ -219,7 +224,7 @@ function Collection() {
           isFetchingNextPage={groupsQuery.isFetchingNextPage}
           isFetching={isFetching}
           isSeries={isSeries}
-          isSidebarOpen={showFilterSidebar}
+          isSidebarOpen={!filterId && showFilterSidebar}
           items={items}
           mode={mode}
           total={total}
@@ -227,7 +232,7 @@ function Collection() {
         <div
           className={cx(
             'flex items-start transition-all',
-            (!isSeries && showFilterSidebar)
+            (!isSeries && !filterId && showFilterSidebar)
               ? 'w-[28.84rem] opacity-100 overflow-auto '
               : 'w-0 opacity-0 overflow-hidden ',
           )}
