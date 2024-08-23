@@ -47,6 +47,7 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
 );
 
 const getImagePath = ({ ID, Source, Type }: ImageType) => `/api/v3/Image/${Source}/${Type}/${ID}`;
+
 const languageMapping = { 'x-jat': 'ja', 'x-kot': 'ko', 'x-zht': 'zh-hans' };
 
 const Series = () => {
@@ -66,14 +67,14 @@ const Series = () => {
 
   const [mainTitle, originalTitle] = useMemo(() => {
     const tempMainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
+    const tempOriginalTitle = series.AniDB?.Titles.find(
+      title => title.Language === languageMapping[tempMainTitle?.Language ?? ''],
+    );
     return [
-      tempMainTitle,
-      series.AniDB?.Titles.find(title => title.Language === languageMapping[tempMainTitle?.Language ?? '']),
+      (tempMainTitle && tempMainTitle.Name !== series.Name) ? <span>{tempMainTitle.Name}</span> : null,
+      (tempOriginalTitle && tempOriginalTitle.Name !== series.Name) ? <span>{tempOriginalTitle.Name}</span> : null,
     ];
   }, [series]);
-
-  const mainTitleCheck = mainTitle?.Name !== series.Name ? <span>{mainTitle?.Name}</span> : null;
-  const originalTitleCheck = originalTitle?.Name !== series.Name ? <span>{originalTitle?.Name}</span> : null;
 
   const onClickHandler = useEventCallback(() => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
@@ -130,9 +131,9 @@ const Series = () => {
         </div>
         <div className="text-4xl font-semibold">{series.Name}</div>
         <div className="flex gap-x-3 text-xl font-semibold opacity-65">
-          {mainTitleCheck}
-          {mainTitleCheck && originalTitleCheck && <span>|</span>}
-          {originalTitleCheck}
+          {mainTitle}
+          {mainTitle && originalTitle && <span>|</span>}
+          {originalTitle}
         </div>
       </div>
       <SeriesTopPanel series={series} />
