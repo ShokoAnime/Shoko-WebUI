@@ -50,6 +50,7 @@ const SeriesTmdbLinking = () => {
     toNumber(seriesId!),
     {
       includeDataFrom: ['AniDB', 'TMDB'],
+      includeMissing: 'true',
       type: [EpisodeTypeEnum.Normal, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
       pageSize: 50,
     },
