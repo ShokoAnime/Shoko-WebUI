@@ -81,7 +81,7 @@ jobs:
             **Version**: `${{ steps.semver.outputs.version_tag }}`
             **Minimum Server Version Required**: `${{ env.MIN_SERVER_REQUIREMENT }}`
 
-            Update from the Web UI or click [here](https://github.com/${{ github.repository }}/releases/tag/v${{ steps.semver.outputs.version_tag }}) to download!
+            Update from the Web UI or download it from this release!
 
             **Changes since last build**:
             ${{ env.CHANGELOG }}
