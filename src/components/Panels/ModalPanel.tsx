@@ -47,17 +47,17 @@ function ModalPanel(props: Props) {
     <Modal
       isOpen={show}
       overlayClassName={cx('fixed inset-0 bg-black/50 z-[80]', overlayClassName)}
-      className="mt-10 flex h-full items-center justify-center"
+      className="mt-20 flex h-full items-center justify-center"
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}
     >
       <div className="flex size-full items-center justify-center" onClick={onRequestClose}>
         <div
           className={cx(
-            'flex flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg',
+            'flex flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg shoko-scrollbar overflow-y-auto',
             sizeClass[size ?? 'md'],
             !noPadding && ('gap-y-6'),
-            fullHeight ? 'h-[66%]' : 'max-h-[66%]',
+            fullHeight ? 'h-[75%]' : 'max-h-[75%]',
             className,
           )}
           onClick={e => e.stopPropagation()}

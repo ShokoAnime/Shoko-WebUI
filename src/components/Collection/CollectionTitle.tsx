@@ -12,33 +12,38 @@ type Props = {
 };
 
 const CollectionTitle = memo(({ count, filterActive, filterOrGroup, searchQuery }: Props) => (
-  <div className="flex items-center gap-x-2 text-xl font-semibold">
+  <div className="flex items-center min-w-0 gap-x-2 text-xl font-semibold">
     <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
-      Entire Collection
+      Collection
     </Link>
     {filterOrGroup && (
       <>
-        <Icon path={mdiChevronRight} size={1} />
-        {filterOrGroup}
+        <Icon className="flex-none" path={mdiChevronRight} size={1} />
+        <span className="truncate">
+          {filterOrGroup}
+        </span>
       </>
     )}
     {!filterOrGroup && filterActive && (
       <>
-        <Icon path={mdiChevronRight} size={1} />
+        <Icon className="flex-none" path={mdiChevronRight} size={1} />
         Filtered
       </>
     )}
     {searchQuery && (
       <>
-        <Icon path={mdiChevronRight} size={1} />
-        Search Results
+        <Icon className="flex-none" path={mdiChevronRight} size={1} />
+        <span className="flex-none">
+          Search Results
+        </span>
       </>
     )}
     {count >= 0 && (
       <>
         <span>|</span>
-        <span className="text-panel-text-important">
+        <span className="flex-none text-panel-text-important">
           {`${count} Items`}
+          &nbsp;
         </span>
       </>
     )}
