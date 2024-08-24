@@ -78,7 +78,7 @@ jobs:
           git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"* %B" > changelog.txt
 
       - name: Create build.zip
-        run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/index*.js.map"
+        run: zip -r ../build/Shoko-WebUI-v${{ github.event.inputs.version }}.zip ./* -x "**/*.js.map"
         working-directory: ./dist
 
       - name: Create Release

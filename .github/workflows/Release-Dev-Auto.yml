@@ -61,7 +61,7 @@ jobs:
           echo -e '\nCHANGELOG_END' >> $GITHUB_ENV
 
       - name: Create build.zip
-        run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/index*.js.map"
+        run: zip -r ../build/Shoko-WebUI-v${{ steps.semver.outputs.version_tag }}.zip ./* -x "**/*.js.map"
         working-directory: ./dist
 
       - name: Create Release
