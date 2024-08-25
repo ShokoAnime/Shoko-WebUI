@@ -281,7 +281,7 @@ const Renamer = () => {
   const { isPending: deletePending, mutate: deleteConfig } = useRenamerDeleteConfigMutation();
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
-  const [moveFiles, toggleMoveFiles] = useToggle(true);
+  const [moveFiles, toggleMoveFiles] = useToggle(settings.Plugins.Renamer.MoveOnImport);
   const [showSettings, toggleSettings] = useToggle(false);
   const [showAddFilesModal, toggleAddFilesModal] = useToggle(false);
   const [showConfigModal, toggleConfigModal] = useToggle(false);
