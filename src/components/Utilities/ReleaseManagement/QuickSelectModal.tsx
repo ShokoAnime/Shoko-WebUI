@@ -72,7 +72,13 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
         map(
           fileSummary?.Groups,
           (group, index) => (
-            <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
+            <div
+              key={`group-${index}`}
+              className="flex items-center justify-between gap-x-3"
+              data-tooltip-id="tooltip"
+              data-tooltip-content={group.FileLocation ? `Location: ${group.FileLocation}` : ''}
+              data-tooltip-place="top"
+            >
               <div className="flex flex-col gap-y-2">
                 <div className="font-semibold">
                   {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
