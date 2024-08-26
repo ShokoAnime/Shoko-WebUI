@@ -38,7 +38,7 @@ const getFilter = (
   isSeriesSearch = true,
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
-  const cleanFilterConditions = filterConditions.filter(condition => !!condition) as FilterCondition[];
+  const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
     let searchCondition: FilterCondition = {
       Type: isSeriesSearch ? 'StringContains' : 'AnyContains',

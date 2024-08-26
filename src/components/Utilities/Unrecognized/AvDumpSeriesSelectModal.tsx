@@ -19,8 +19,8 @@ import type { RootState } from '@/core/store';
 
 type Props = {
   show: boolean;
-  onClose(refresh?: boolean): void;
-  getLinks(): { fileIds: number[], links: string[] };
+  onClose: (refresh?: boolean) => void;
+  getLinks: () => { fileIds: number[], links: string[] };
 };
 
 const Title = ({ count, step, stepCount }: { count: number, step: number, stepCount: number }) => (
