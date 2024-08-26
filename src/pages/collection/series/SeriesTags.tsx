@@ -83,7 +83,11 @@ const SeriesTags = () => {
     }
   });
 
-  const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(toNumber(seriesId!), {}, !!seriesId);
+  const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(
+    toNumber(seriesId!),
+    { filter: 1 },
+    !!seriesId,
+  );
 
   const filteredTags = useMemo(
     () =>

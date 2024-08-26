@@ -54,7 +54,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
   const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;
   const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
-  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true }, !!seriesId);
+  const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true, filter: 1 }, !!seriesId);
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
 
