@@ -68,7 +68,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
   const settings = useSettingsQuery().data;
   const { showCustomTags, showGroupIndicator, showItemType, showTopTags } = settings.WebUI_Settings.collection.list;
 
-  const tagsQuery = useSeriesTagsQuery(item.IDs.ID, { filter: 128, excludeDescriptions: true }, isSeries);
+  const tagsQuery = useSeriesTagsQuery(item.IDs.ID, { filter: 1, excludeDescriptions: true }, isSeries);
 
   const poster = useMainPoster(item);
   const missingEpisodesCount = item.Sizes.Total.Episodes + item.Sizes.Total.Specials - item.Sizes.Local.Episodes
