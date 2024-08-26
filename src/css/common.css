@@ -108,6 +108,7 @@ body {
 }
 
 /* Fixes Scrollbars breaking on other browsers and only applies the following when using Mozilla. */
+/* stylelint-disable-next-line at-rule-no-vendor-prefix */
 @-moz-document url-prefix() {
   .shoko-scrollbar {
     scrollbar-color: theme('colors.slider-color') theme('colors.slider-background');
