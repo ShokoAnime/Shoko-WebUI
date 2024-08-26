@@ -108,7 +108,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
         <ShokoPanel
           title="Top 10 Tags"
           className="!h-[16.5rem]"
-          contentClassName="!flex-row flex-wrap gap-3 contain-strict"
+          contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
         >
