@@ -21,7 +21,7 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
     seriesId,
     {
       groupBy:
-        'GroupName,FileSource,FileVersion,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
+        'GroupName,FileLocation,FileSource,FileVersion,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
       includeEpisodeDetails: true,
     },
     show,
