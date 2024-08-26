@@ -8,7 +8,7 @@ import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
-import AnidbDescription from '@/components/Collection/AnidbDescription';
+import CleanDescription from '@/components/Collection/CleanDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -91,7 +91,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
           contentClassName="contain-strict"
           transparent
         >
-          <AnidbDescription text={series.AniDB?.Description ?? ''} />
+          <CleanDescription text={series.Description ?? ''} />
         </ShokoPanel>
 
         <ShokoPanel
@@ -108,7 +108,7 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
         <ShokoPanel
           title="Top 10 Tags"
           className="!h-[16.5rem]"
-          contentClassName="!flex-row flex-wrap gap-3 contain-strict"
+          contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
         >

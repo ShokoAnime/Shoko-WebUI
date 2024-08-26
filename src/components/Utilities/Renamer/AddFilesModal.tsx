@@ -23,7 +23,7 @@ import type { FilterCondition, FilterType } from '@/core/types/api/filter';
 
 type Props = {
   show: boolean;
-  onClose(): void;
+  onClose: () => void;
 };
 
 const addEntireCollection = () => {

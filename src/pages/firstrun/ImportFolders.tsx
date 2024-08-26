@@ -109,7 +109,7 @@ function ImportFolders() {
                 Current Import Folders
               </div>
               <div className="flex max-h-80 flex-col gap-y-6 overflow-y-auto">
-                {importFolders.map(folder => <Folder {...folder} key={folder.ID} />)}
+                {importFolders.map(folder => <Folder key={folder.ID} {...folder} />)}
               </div>
             </>
           )

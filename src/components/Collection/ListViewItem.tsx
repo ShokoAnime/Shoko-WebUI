@@ -25,7 +25,7 @@ import { dayjs, formatThousand } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
-import AnidbDescription from './AnidbDescription';
+import CleanDescription from './CleanDescription';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesSizesFileSourcesType, SeriesType } from '@/core/types/api/series';
@@ -80,7 +80,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
       const tempEndDate = dayjs(series?.EndDate);
       return [
         dayjs(series?.AirDate),
-        series?.Description,
+        item.Description,
         tempEndDate,
         0,
         series?.EndDate ? tempEndDate.isAfter(dayjs()) : true,
@@ -275,7 +275,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
           </div>
 
           <div className="line-clamp-4 text-sm">
-            <AnidbDescription text={description ?? ''} />
+            <CleanDescription text={description ?? ''} />
           </div>
         </div>
       </div>

@@ -1,7 +1,9 @@
-import { useMutation } from '@tanstack/react-query';
+import { type InfiniteData, useMutation } from '@tanstack/react-query';
+import { produce } from 'immer';
+import { findIndex, forEach } from 'lodash';
 
 import { axios } from '@/core/axios';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
   DeleteFileRequestType,
@@ -11,6 +13,8 @@ import type {
   LinkOneFileToManyEpisodesRequestType,
   MarkVariationRequestType,
 } from '@/core/react-query/file/types';
+import type { ListResultType } from '@/core/types/api';
+import type { EpisodeType } from '@/core/types/api/episode';
 
 export const useAddFileToMyListMutation = () =>
   useMutation({
@@ -22,10 +26,31 @@ export const useDeleteFilesMutation = () =>
     mutationFn: (data: DeleteFilesRequestType) => axios.delete('File', { data }),
   });
 
-export const useDeleteFileMutation = () =>
+export const useDeleteFileMutation = (seriesId?: number, episodeId?: number) =>
   useMutation({
     mutationFn: ({ fileId, removeFolder }: DeleteFileRequestType) =>
       axios.delete(`File/${fileId}`, { data: { removeFolder } }),
+    onSuccess: () => {
+      if (!seriesId || !episodeId) return;
+
+      queryClient.setQueriesData(
+        {
+          queryKey: ['series', seriesId, 'episodes'],
+          type: 'active',
+        },
+        (data: InfiniteData<ListResultType<EpisodeType>>) =>
+          produce(data, (draftState) => {
+            forEach(draftState.pages, (draftState2) => {
+              const index = findIndex(draftState2.List, { IDs: { ID: episodeId } });
+              if (index === -1) return true;
+              draftState2.List[index].Size -= 1;
+              // Returning false will stop the loop.
+              return false;
+            });
+            return draftState;
+          }),
+      );
+    },
   });
 
 export const useDeleteFileLinkMutation = () =>

@@ -6,7 +6,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
 
-import AnidbDescription from '@/components/Collection/AnidbDescription';
+import CleanDescription from '@/components/Collection/CleanDescription';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFilteredSeriesInfiniteQuery } from '@/core/react-query/filter/queries';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
@@ -117,7 +117,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
 
   return (
     <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
-      <AnidbDescription
+      <CleanDescription
         text={tag?.Description?.trim() ? tag.Description : 'Tag Description Not Available.'}
         className="shoko-scrollbar max-h-62.5 overflow-y-auto pr-4 opacity-65"
       />

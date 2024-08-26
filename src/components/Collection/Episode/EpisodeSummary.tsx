@@ -171,6 +171,7 @@ const EpisodeSummary = React.memo(
                 anidbSeriesId={anidbSeriesId}
                 episodeFiles={episodeFilesQuery.data ?? []}
                 episodeId={episodeId}
+                seriesId={seriesId}
               />
             </AnimateHeight>
           </>
