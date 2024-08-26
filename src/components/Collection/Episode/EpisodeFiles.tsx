@@ -31,11 +31,12 @@ type Props = {
   anidbSeriesId: number;
   episodeFiles: FileType[];
   episodeId: number;
+  seriesId: number;
 };
 
-const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId }: Props) => {
+const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Props) => {
   const { isPending: isAddMyListPending, mutate: addFileToMyList } = useAddFileToMyListMutation();
-  const { mutate: deleteFile } = useDeleteFileMutation();
+  const { mutate: deleteFile } = useDeleteFileMutation(seriesId, episodeId);
   const { mutate: markFileAsVariation } = useMarkVariationMutation();
   const { mutate: rescanFile } = useRescanFileMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
