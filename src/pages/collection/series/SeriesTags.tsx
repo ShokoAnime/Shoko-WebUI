@@ -5,7 +5,7 @@ import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
-import AnidbDescription from '@/components/Collection/AnidbDescription';
+import CleanDescription from '@/components/Collection/CleanDescription';
 import TagDetailsModal from '@/components/Collection/Tags/TagDetailsModal';
 import TagsSearchAndFilterPanel from '@/components/Collection/Tags/TagsSearchAndFilterPanel';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
@@ -38,7 +38,7 @@ const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
           />
         </div>
       </div>
-      <AnidbDescription
+      <CleanDescription
         className="line-clamp-2"
         text={tagDescription}
       />

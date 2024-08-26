@@ -14,6 +14,7 @@ export type SeriesType = {
   Links: SeriesLinkType[];
   Created: string;
   Updated: string;
+  Description: string;
   AniDB?: SeriesAniDBType;
 };
 
