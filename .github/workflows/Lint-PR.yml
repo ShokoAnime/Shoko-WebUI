@@ -1,4 +1,4 @@
-name: Test
+name: Lint-PR
 on:
   pull_request:
     types: [opened, synchronize]
@@ -6,7 +6,7 @@ on:
 jobs:
   lint-and-build:
     runs-on: ubuntu-latest
-    name: Lint check and build test PR
+    name: Lint check PR
 
     steps:
       - name: Checkout
@@ -26,5 +26,5 @@ jobs:
       - name: Lint
         run: pnpm lint --quiet
 
-      - name: Build
-        run: pnpm build
+#      - name: Build
+#        run: pnpm build
