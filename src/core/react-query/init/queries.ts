@@ -8,6 +8,7 @@ export const useVersionQuery = () =>
   useQuery<VersionType>({
     queryKey: ['init', 'version'],
     queryFn: () => axios.get('Init/Version'),
+    staleTime: Infinity,
   });
 
 export const useDefaultUserQuery = () =>
