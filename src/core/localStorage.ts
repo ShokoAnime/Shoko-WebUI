@@ -26,6 +26,7 @@ export const loadState = (): RootState => {
     }
     return { ...serializedState, apiSession };
   } catch (err) {
+    console.error('Error in loading state. Resetting!');
     return ({} as RootState);
   }
 };
@@ -37,5 +38,6 @@ export const saveState = (state: RootState) => {
     }
     globalThis.sessionStorage.setItem('state', JSON.stringify(state));
   } catch (err) { // Ignore write errors.
+    console.error('Error in saving state');
   }
 };
