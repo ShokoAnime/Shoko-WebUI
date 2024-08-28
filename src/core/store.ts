@@ -1,10 +1,9 @@
-/* global globalThis */
 import { configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query/react';
 import { throttle } from 'lodash';
 
 import Events from './events';
-import { loadState, saveState } from './localStorage';
+import { clearApiSession, clearSessionStorage, loadState, saveState } from './localStorage';
 import combinedReducer from './reducers';
 import signalrMiddleware from './signalr/signalr';
 
@@ -12,8 +11,8 @@ import type { UnknownAction } from 'redux';
 
 const rootReducer = (state: ReturnType<typeof combinedReducer>, action: UnknownAction) => {
   if (action.type === Events.AUTH_LOGOUT) { // check for action type
-    globalThis.localStorage.removeItem('apiSession');
-    globalThis.sessionStorage.clear();
+    clearApiSession();
+    clearSessionStorage();
     return combinedReducer(undefined, action);
   }
   return combinedReducer(state, action);
