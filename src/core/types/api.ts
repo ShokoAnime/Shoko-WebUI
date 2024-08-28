@@ -2,6 +2,7 @@ export type ApiSessionState = {
   apikey: string;
   username: string;
   rememberUser: boolean;
+  version: string;
 };
 
 export type GlobalAlertType = {
