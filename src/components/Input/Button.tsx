@@ -39,11 +39,11 @@ const Button = React.memo(
     <button
       type={submit ? 'submit' : 'button'}
       className={cx([
-        `${className} button text-sm font-semibold transition ease-in-out rounded-lg outline-none`,
+        className,
+        'relative button text-sm font-semibold transition ease-in-out rounded-lg outline-none',
         buttonType && `${buttonTypeClasses[buttonType]}`,
         buttonSize && `${buttonSizeClasses[buttonSize]}`,
-        loading && 'cursor-default',
-        disabled && 'opacity-65 cursor-default',
+        (loading || disabled) && 'opacity-65 cursor-default',
       ])}
       onClick={onClick}
       disabled={disabled}
@@ -51,13 +51,12 @@ const Button = React.memo(
       data-tooltip-content={tooltip}
       data-tooltip-place={tooltipPlace ?? 'top'}
     >
-      {loading
-        ? (
-          <div className="flex justify-center">
-            <Icon path={mdiLoading} spin size={loadingSize ?? 1} />
-          </div>
-        )
-        : children}
+      {children}
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Icon path={mdiLoading} spin size={loadingSize ?? 1} />
+        </div>
+      )}
     </button>
   ),
 );

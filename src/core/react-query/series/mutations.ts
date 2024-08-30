@@ -44,12 +44,6 @@ export const useDeleteSeriesTvdbLinkMutation = () =>
     onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId, 'episodes']),
   });
 
-export const useDeleteTmdbLinkMutation = (linkType: 'Movie' | 'Show') =>
-  useMutation({
-    mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TMDB/${linkType}`),
-    onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId]),
-  });
-
 // This is actually a query but we had to declare it as mutation to use it properly as lazy query.
 export const useGetSeriesAniDBMutation = () =>
   useMutation<SeriesAniDBSearchResult, unknown, number>({
