@@ -5,6 +5,8 @@ const RemoveSummaryRegex = /\b(Sour?ce|Note|Summ?ary):([^\r\n]+|$)/mg;
 
 const RemoveWrittenByRegex = /^\u2014 ([^\r\n]+|$)/mg;
 
+const RemoveBBCodeRegex = /\[i\].*\[\/i\]/sg;
+
 const MultiSpacesRegex = /\s{2,}/g;
 
 const CleanMiscLinesRegex = /^(\*|--|~) /sg;
@@ -21,6 +23,7 @@ const CleanDescription = React.memo(({ className, text }: { text: string, classN
       .replaceAll(CleanMiscLinesRegex, '')
       .replaceAll(RemoveSummaryRegex, '')
       .replaceAll(RemoveWrittenByRegex, '')
+      .replaceAll(RemoveBBCodeRegex, '')
       .replaceAll(CleanMultiEmptyLinesRegex, '\n')
       .replaceAll(MultiSpacesRegex, ' ');
 
