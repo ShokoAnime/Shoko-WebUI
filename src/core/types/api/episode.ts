@@ -24,6 +24,10 @@ export type EpisodeIDsType = {
   ID: number;
   AniDB: number;
   TvDB: number[];
+  TMDB: {
+    Episode: number[];
+    Movie: number[];
+  };
   ParentSeries: number;
 };
 
