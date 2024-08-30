@@ -31,7 +31,7 @@ const SearchResultRow = React.memo(({ linkType, result, selectLink }: SearchResu
     <div className="flex items-center gap-x-4">
       <a
         className="flex w-24 cursor-pointer items-center justify-between font-semibold text-panel-text-primary"
-        href={`https://www.themoviedb.org/${linkType}/${result.ID}`}
+        href={`https://www.themoviedb.org/${linkType === 'Show' ? 'tv' : 'movie'}/${result.ID}`}
         target="_blank"
         rel="noopener noreferrer"
       >
