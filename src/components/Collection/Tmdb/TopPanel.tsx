@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 import { countBy } from 'lodash';
 
 import Button from '@/components/Input/Button';
@@ -9,21 +10,35 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 
 import type { MatchRatingType } from '@/core/types/api/episode';
-import type { TmdbXrefType } from '@/core/types/api/tmdb';
+import type { TmdbEpisodeXRefType } from '@/core/types/api/tmdb';
 
-const TopPanel = (props: { seriesId: string, xrefs: TmdbXrefType[], xrefsCount: number }) => {
-  const { seriesId, xrefs, xrefsCount } = props;
+type Props = {
+  createInProgress: boolean;
+  disableCreateLink: boolean;
+  handleCreateLink: () => void;
+  seriesId: number;
+  xrefs?: TmdbEpisodeXRefType[];
+  xrefsCount: number;
+};
+
+const TopPanel = (props: Props) => {
+  const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
   const navigate = useNavigate();
 
   const matchRatingCounts = useMemo(
-    () => countBy(xrefs, 'Rating'),
+    () => (xrefs ? countBy(xrefs, 'Rating') : {}),
     [xrefs],
   ) as Record<MatchRatingType, number>;
 
   return (
     <ShokoPanel title="Metadata Linking" options={<ItemCount count={xrefsCount} suffix="Entries" />}>
       <div className="flex items-center gap-x-3">
-        <div className="flex grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
+        <div
+          className={cx(
+            'flex grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3',
+            !xrefs && 'opacity-50 pointer-events-none',
+          )}
+        >
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
               {matchRatingCounts.DateAndTitleMatches ?? 0}
@@ -61,10 +76,13 @@ const TopPanel = (props: { seriesId: string, xrefs: TmdbXrefType[], xrefsCount: 
           buttonType="primary"
           buttonSize="normal"
           className="flex flex-row flex-wrap items-center gap-x-2 py-3"
-          onClick={() => {}}
+          onClick={handleCreateLink}
+          disabled={disableCreateLink}
+          tooltip={disableCreateLink ? 'No links to save!' : ''}
+          loading={createInProgress}
         >
           <Icon path={mdiLinkPlus} size={1} />
-          Create Links
+          Save Links
         </Button>
       </div>
     </ShokoPanel>

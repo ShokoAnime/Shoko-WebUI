@@ -1,21 +1,32 @@
+import { useEffect } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import queryClient from '@/core/react-query/queryClient';
 
-import type { TmdbEpisodeXRefRequestType } from '@/core/react-query/tmdb/types';
+import type { TmdbBulkRequestType, TmdbEpisodeXRefRequestType } from '@/core/react-query/tmdb/types';
 import type { ListResultType, PaginationType } from '@/core/types/api';
-import type { TmdbBaseItemType, TmdbEpisodeType, TmdbEpisodeXRefType, TmdbMovieXRefType } from '@/core/types/api/tmdb';
+import type {
+  TmdbAutoSearchResultType,
+  TmdbBaseItemType,
+  TmdbEpisodeType,
+  TmdbEpisodeXRefType,
+  TmdbMovieType,
+  TmdbMovieXRefType,
+  TmdbSearchResultType,
+} from '@/core/types/api/tmdb';
 
 export const useTmdbEpisodeXRefsInfiniteQuery = (
   seriesId: number,
+  isNewLink: boolean,
   params: TmdbEpisodeXRefRequestType,
   enabled = true,
 ) =>
   useInfiniteQuery<ListResultType<TmdbEpisodeXRefType>>({
-    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', params],
+    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params],
     queryFn: ({ pageParam }) =>
       axios.get(
-        `Series/${seriesId}/TMDB/Show/CrossReferences/Episode`,
+        `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
         {
           params: {
             ...params,
@@ -54,9 +65,64 @@ export const useTmdbShowEpisodesQuery = (showId: number, params: PaginationType,
     enabled,
   });
 
-export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'tv' | 'movie', enabled = true) =>
+export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', enabled = true) =>
   useQuery<TmdbBaseItemType>({
-    queryKey: ['series', 'tmdb', 'show', type, tmdbId],
-    queryFn: () => axios.get(`Tmdb/${type === 'tv' ? 'Show' : 'Movie'}/${tmdbId}`),
+    queryKey: ['series', 'tmdb', 'show', tmdbId, type],
+    queryFn: () => axios.get(`Tmdb/${type}/${tmdbId}`),
     enabled,
+  });
+
+export const useTmdbSearchQuery = (
+  type: 'Show' | 'Movie',
+  query: string,
+  params: PaginationType,
+) =>
+  useQuery<ListResultType<TmdbSearchResultType>>({
+    queryKey: ['series', 'tmdb', 'search', type, query, params],
+    queryFn: () => axios.get(`Tmdb/${type}/Online/Search`, { params: { ...params, query } }),
+    enabled: query.length > 0,
+  });
+
+export const useTmdbAutoSearchQuery = (seriesId: number, enabled = true) =>
+  useQuery<TmdbAutoSearchResultType[]>({
+    queryKey: ['series', seriesId, 'tmdb', 'auto-search'],
+    queryFn: () => axios.get(`Series/${seriesId}/TMDB/Action/AutoSearch`),
+    enabled,
+  });
+
+export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = true) => {
+  const query = useQuery<TmdbEpisodeType[]>({
+    queryKey: ['series', 'tmdb', 'episode', 'bulk', data],
+    queryFn: () => axios.post('Tmdb/Episode/Bulk', data),
+    enabled: enabled && data.IDs.length > 0,
+  });
+
+  useEffect(() => {
+    if (!query.data) return;
+    queryClient.setQueryData(
+      ['series', 'tmdb', 'episode', 'bulk', 'all'],
+      (oldData: TmdbEpisodeType[]) => [...oldData, ...query.data],
+    );
+  }, [query.data]);
+
+  const bulkEpisodesQuery = useQuery<TmdbEpisodeType[]>({
+    queryKey: ['series', 'tmdb', 'episode', 'bulk', 'all'],
+    queryFn: () => [],
+    initialData: [],
+    staleTime: Infinity,
+  });
+
+  return {
+    ...bulkEpisodesQuery,
+    isSuccess: query.isSuccess,
+    isPending: query.isPending,
+    isFetching: query.isFetching,
+  };
+};
+
+export const useTmdbBulkMoviesQuery = (data: TmdbBulkRequestType, enabled = true) =>
+  useQuery<TmdbMovieType[]>({
+    queryKey: ['series', 'tmdb', 'movie', 'bulk', data],
+    queryFn: () => axios.post('Tmdb/Movie/Bulk', data),
+    enabled: enabled && data.IDs.length > 0,
   });

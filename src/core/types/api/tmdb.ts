@@ -22,11 +22,10 @@ export type TmdbShowType = TmdbBaseItemType;
 
 export type TmdbXrefType = {
   AnidbAnimeID: number;
-  AnidbEpisodeID?: number;
+  AnidbEpisodeID: number;
 };
 
 export type TmdbEpisodeXRefType = {
-  AnidbEpisodeID: number;
   TmdbShowID: number;
   TmdbEpisodeID?: number;
   Index: number;
@@ -36,3 +35,14 @@ export type TmdbEpisodeXRefType = {
 export type TmdbMovieXRefType = {
   TmdbMovieID: number;
 } & TmdbXrefType;
+
+export type TmdbSearchResultType = {
+  ID: number;
+  Title: string;
+};
+
+export type TmdbAutoSearchResultType = {
+  IsMovie: boolean;
+  Show: TmdbSearchResultType;
+  Movie: TmdbSearchResultType;
+};

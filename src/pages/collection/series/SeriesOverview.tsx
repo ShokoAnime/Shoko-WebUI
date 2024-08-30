@@ -25,7 +25,7 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast, SeriesType } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB', 'TvDB', 'TraktTv'] as const;
+const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv', 'TvDB'] as const;
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
@@ -77,7 +77,8 @@ const SeriesOverview = () => {
               ? (
                 <div
                   className={cx(
-                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto  lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                    // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
                     MetadataLinks.length > 4 ? 'pr-4' : '',
                   )}
                 >
@@ -111,6 +112,10 @@ const SeriesOverview = () => {
                       <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
                     ));
                   })}
+
+                  {/* Show row to add TMDB link if a link already exists */}
+                  {(series.IDs.TMDB.Show.length !== 0
+                    || series.IDs.TMDB.Movie.length !== 0) && <SeriesMetadata site="TMDB" seriesId={series.IDs.ID} />}
                 </div>
               )
               : (
