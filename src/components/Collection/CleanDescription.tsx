@@ -3,6 +3,8 @@ import React, { useMemo } from 'react';
 // The question marks are there because people can't spell…
 const RemoveSummaryRegex = /\b(Sour?ce|Note|Summ?ary):([^\r\n]+|$)/mg;
 
+const RemoveWrittenByRegex = /^\u2014 ([^\r\n]+|$)/mg;
+
 const MultiSpacesRegex = /\s{2,}/g;
 
 const CleanMiscLinesRegex = /^(\*|--|~) /sg;
@@ -18,6 +20,7 @@ const CleanDescription = React.memo(({ className, text }: { text: string, classN
     const cleanedText = text
       .replaceAll(CleanMiscLinesRegex, '')
       .replaceAll(RemoveSummaryRegex, '')
+      .replaceAll(RemoveWrittenByRegex, '')
       .replaceAll(CleanMultiEmptyLinesRegex, '\n')
       .replaceAll(MultiSpacesRegex, ' ');
 
