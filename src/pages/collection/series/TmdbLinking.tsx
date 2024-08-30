@@ -97,7 +97,7 @@ const TmdbLinking = () => {
       return episodeXrefs
         .filter(xref => lastPageAnidbIds.includes(xref.AnidbEpisodeID))
         .map(xref => xref.TmdbEpisodeID)
-        .filter(tmdbEpisodeId => tmdbEpisodeId !== undefined);
+        .filter(tmdbEpisodeId => !!tmdbEpisodeId) as number[];
     },
     [episodeXrefs, episodesQuery.data, type],
   );
