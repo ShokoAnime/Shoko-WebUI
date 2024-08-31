@@ -32,3 +32,8 @@ export type TmdbDeleteLinkRequestType = {
   EpisodeID?: number;
   Purge?: boolean;
 };
+
+export type TmdbSearchRequestType = {
+  includeRestricted?: boolean;
+  year?: number;
+} & PaginationType;

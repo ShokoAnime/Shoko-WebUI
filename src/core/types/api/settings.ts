@@ -450,7 +450,7 @@ export type WebUISettingsType = {
       useThumbnailFallback: boolean;
     };
     tmdb: {
-      allowRestricted: boolean;
+      includeRestricted: boolean;
     };
   };
   dashboard: {

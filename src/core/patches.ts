@@ -37,7 +37,7 @@ export const webuiSettingsPatches = {
   },
   9: (oldWebuiSettings) => {
     const webuiSettings = oldWebuiSettings;
-    webuiSettings.collection.tmdb.allowRestricted = false;
+    webuiSettings.collection.tmdb.includeRestricted = false;
     return { ...webuiSettings, settingsRevision: 9 };
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

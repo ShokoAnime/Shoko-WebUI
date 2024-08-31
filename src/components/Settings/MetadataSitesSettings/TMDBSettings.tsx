@@ -32,7 +32,7 @@ const TMDBSettings = React.memo((props: Props) => {
     MaxAutoThumbnails,
   } = newSettings.TMDB;
 
-  const { allowRestricted } = newSettings.WebUI_Settings.collection.tmdb;
+  const { includeRestricted } = newSettings.WebUI_Settings.collection.tmdb;
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement> = useEventCallback((event) => {
     const propId = event.target.id.replace('TMDB_', '');
@@ -40,10 +40,10 @@ const TMDBSettings = React.memo((props: Props) => {
     updateSetting('TMDB', propId, value);
   });
 
-  const handleAllowRestrictedChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleIncludeRestrictedChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.checked;
     setNewSettings(produce(newSettings, (draftState) => {
-      draftState.WebUI_Settings.collection.tmdb.allowRestricted = value;
+      draftState.WebUI_Settings.collection.tmdb.includeRestricted = value;
     }));
   });
 
@@ -65,10 +65,10 @@ const TMDBSettings = React.memo((props: Props) => {
       />
       <Checkbox
         justify
-        label="Allow Restricted in Search"
-        id="allow-restricted-tmdb"
-        isChecked={allowRestricted}
-        onChange={handleAllowRestrictedChange}
+        label="Include Restricted in Search"
+        id="include-restricted-tmdb"
+        isChecked={includeRestricted}
+        onChange={handleIncludeRestrictedChange}
       />
       <Checkbox
         justify

@@ -10,6 +10,7 @@ import { useDebounceValue } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import toast from '@/components/Toast';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -55,10 +56,11 @@ const TmdbLinkSelectPanel = () => {
   const [, setSearchParams] = useSearchParams();
 
   const [linkType, setLinkType] = useState<'Show' | 'Movie'>('Show');
-
   const [selectedId, setSelectedId] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
+
+  const { includeRestricted } = useSettingsQuery().data.WebUI_Settings.collection.tmdb;
 
   const autoSearchQuery = useTmdbAutoSearchQuery(toNumber(seriesId), debouncedSearch === '' && !!seriesId);
   const autoSearchResults = useMemo(() => {
@@ -69,7 +71,10 @@ const TmdbLinkSelectPanel = () => {
       .map(result => result[linkType]);
   }, [autoSearchQuery.data, linkType]);
 
-  const searchQuery = useTmdbSearchQuery(linkType, debouncedSearch, { pageSize: 25 });
+  const searchQuery = useTmdbSearchQuery(linkType, debouncedSearch, {
+    includeRestricted,
+    pageSize: 25,
+  });
   const { isPending: refreshPending, mutate: refreshData } = useTmdbRefreshMutation(linkType);
 
   const noResults = useMemo(() => {

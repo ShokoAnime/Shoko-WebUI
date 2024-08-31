@@ -285,7 +285,7 @@ export const initialSettings: SettingsType = {
         useThumbnailFallback: false,
       },
       tmdb: {
-        allowRestricted: false,
+        includeRestricted: false,
       },
     },
     dashboard: {

@@ -5,7 +5,11 @@ import { toNumber } from 'lodash';
 import { axios } from '@/core/axios';
 import queryClient from '@/core/react-query/queryClient';
 
-import type { TmdbBulkRequestType, TmdbEpisodeXRefRequestType } from '@/core/react-query/tmdb/types';
+import type {
+  TmdbBulkRequestType,
+  TmdbEpisodeXRefRequestType,
+  TmdbSearchRequestType,
+} from '@/core/react-query/tmdb/types';
 import type { ListResultType, PaginationType } from '@/core/types/api';
 import type {
   TmdbAutoSearchResultType,
@@ -76,7 +80,7 @@ export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', 
 export const useTmdbSearchQuery = (
   type: 'Show' | 'Movie',
   query: string,
-  params: PaginationType,
+  params: TmdbSearchRequestType,
 ) =>
   useQuery<TmdbSearchResultType[]>({
     queryKey: ['series', 'tmdb', 'search', type, query, params],
