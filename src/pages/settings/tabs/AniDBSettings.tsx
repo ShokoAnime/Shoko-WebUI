@@ -113,7 +113,7 @@ function AniDBSettings() {
             AVDump Key
             <InputSmall
               id="avdump-key"
-              value={AVDumpKey}
+              value={AVDumpKey ?? ''}
               type="password"
               onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)}
               className="w-36 px-3 py-1"
