@@ -449,6 +449,9 @@ export type WebUISettingsType = {
       showRandomBackdrop: boolean;
       useThumbnailFallback: boolean;
     };
+    tmdb: {
+      allowRestricted: boolean;
+    };
   };
   dashboard: {
     hideQueueProcessor: boolean;

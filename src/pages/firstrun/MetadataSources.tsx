@@ -12,7 +12,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
-import MovieDBTab from './MetadataSourcesTabs/TMDBTab';
+import TMDBTab from './MetadataSourcesTabs/TMDBTab';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
@@ -46,7 +46,7 @@ const TabContent = React.memo(({ setStatus, tab }: { setStatus: (status: TestSta
     case 'anidb':
       return <AniDBTab setStatus={setStatus} />;
     case 'moviedb':
-      return <MovieDBTab />;
+      return <TMDBTab />;
     default:
       return <AniDBTab setStatus={setStatus} />;
   }

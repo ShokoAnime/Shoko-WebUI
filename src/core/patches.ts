@@ -35,5 +35,10 @@ export const webuiSettingsPatches = {
     delete webuiSettings.collection.image.showRandomFanart;
     return { ...webuiSettings, settingsRevision: 8 };
   },
+  9: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    webuiSettings.collection.tmdb.allowRestricted = false;
+    return { ...webuiSettings, settingsRevision: 9 };
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;

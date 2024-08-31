@@ -284,6 +284,9 @@ export const initialSettings: SettingsType = {
         showRandomPoster: false,
         useThumbnailFallback: false,
       },
+      tmdb: {
+        allowRestricted: false,
+      },
     },
     dashboard: {
       hideQueueProcessor: false,
