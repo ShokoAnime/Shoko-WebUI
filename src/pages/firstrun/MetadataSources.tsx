@@ -8,13 +8,49 @@ import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
 import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import Footer from './Footer';
 import AniDBTab from './MetadataSourcesTabs/AniDBTab';
 import MovieDBTab from './MetadataSourcesTabs/TMDBTab';
-import TvDBTab from './MetadataSourcesTabs/TvDBTab';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
+
+const TabButton = React.memo((
+  { active, setActiveTab, tabKey, title }: {
+    active: boolean;
+    setActiveTab: (tab: string) => void;
+    tabKey: string;
+    title: string;
+  },
+) => {
+  const handleClick = useEventCallback(() => {
+    setActiveTab(tabKey);
+  });
+
+  return (
+    <Button
+      onClick={handleClick}
+      className={cx(
+        'font-semibold drop-shadow-none !border-none !bg-transparent text-xl',
+        active ? 'text-panel-text-primary' : '!text-panel-text',
+      )}
+    >
+      {title}
+    </Button>
+  );
+});
+
+const TabContent = React.memo(({ setStatus, tab }: { setStatus: (status: TestStatusType) => void, tab: string }) => {
+  switch (tab) {
+    case 'anidb':
+      return <AniDBTab setStatus={setStatus} />;
+    case 'moviedb':
+      return <MovieDBTab />;
+    default:
+      return <AniDBTab setStatus={setStatus} />;
+  }
+});
 
 function MetadataSources() {
   const { saveSettings } = useFirstRunSettingsContext();
@@ -24,35 +60,11 @@ function MetadataSources() {
   const [activeTab, setActiveTab] = useState('anidb');
   const [status, setStatus] = useState<TestStatusType>({ type: 'success', text: '' });
 
-  const renderTabButton = (title: string, key: string) => (
-    <Button
-      onClick={() => setActiveTab(key)}
-      className={cx(
-        'font-semibold drop-shadow-none !border-none !bg-transparent text-xl',
-        activeTab === key ? 'text-panel-text-primary' : '!text-panel-text',
-      )}
-    >
-      {title}
-    </Button>
-  );
-
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'anidb':
-        return <AniDBTab setStatus={setStatus} />;
-      case 'tvdb':
-        return <TvDBTab />;
-      case 'moviedb':
-        return <MovieDBTab />;
-      default:
-        return <AniDBTab setStatus={setStatus} />;
-    }
-  };
-
-  const handleSave = async () => {
-    await saveSettings();
-    dispatch(setFirstRunSaved('metadata-sources'));
-  };
+  const handleSave = useEventCallback(() => {
+    saveSettings()
+      .then(() => dispatch(setFirstRunSaved('metadata-sources')))
+      .catch(console.error);
+  });
 
   return (
     <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
@@ -65,21 +77,26 @@ function MetadataSources() {
       <div className="flex items-center gap-x-2 pb-3 text-xl font-semibold">
         <div>Recently Imported</div>
         <Icon path={mdiChevronRight} size={1} />
-        {renderTabButton('AniDB', 'anidb')}
+        <TabButton
+          active={activeTab === 'anidb'}
+          setActiveTab={setActiveTab}
+          tabKey="anidb"
+          title="AniDB"
+        />
         |
-        {renderTabButton('TMDB', 'moviedb')}
-        |
-        {renderTabButton('TVDB', 'tvdb')}
-        {/* TODO: Add plex and trakt settings. Currently they only work after the setup is completed. */}
+        <TabButton
+          active={activeTab === 'moviedb'}
+          setActiveTab={setActiveTab}
+          tabKey="moviedb"
+          title="TMDB"
+        />
       </div>
       <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
-        {renderTabContent()}
+        <TabContent setStatus={setStatus} tab={activeTab} />
       </div>
       <Footer
         nextPage="start-server"
-        saveFunction={() => {
-          handleSave().then(() => {}, () => {});
-        }}
+        saveFunction={handleSave}
         status={status}
       />
     </TransitionDiv>

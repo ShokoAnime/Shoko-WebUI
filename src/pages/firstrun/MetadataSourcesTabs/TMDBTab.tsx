@@ -22,8 +22,6 @@ function TMDBTab() {
     AutoDownloadThumbnails,
     AutoLink,
     AutoLinkRestricted,
-    DownloadAllOverviews,
-    DownloadAllTitles,
     MaxAutoBackdrops,
     MaxAutoLogos,
     MaxAutoPosters,
@@ -53,20 +51,6 @@ function TMDBTab() {
           label="Auto Link Restricted"
           id="TMDB_AutoLinkRestricted"
           isChecked={AutoLinkRestricted}
-          onChange={handleInputChange}
-        />
-        <Checkbox
-          justify
-          label="Download All Titles"
-          id="TMDB_DownloadAllTitles"
-          isChecked={DownloadAllTitles}
-          onChange={handleInputChange}
-        />
-        <Checkbox
-          justify
-          label="Download All Overviews"
-          id="TMDB_DownloadAllOverviews"
-          isChecked={DownloadAllOverviews}
           onChange={handleInputChange}
         />
         <Checkbox
