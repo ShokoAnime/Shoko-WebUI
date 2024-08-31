@@ -3,16 +3,14 @@ import cx from 'classnames';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
-import SelectSmall from '@/components/Input/SelectSmall';
 import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
 import TraktSettings from '@/components/Settings/MetadataSitesSettings/TraktSettings';
-import TvdbLanguageSelect from '@/components/Settings/TvdbLanguageSelect';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 function MetadataSitesSettings() {
   const { newSettings, updateSetting } = useSettingsContext();
 
-  const { TMDB, TvDB } = newSettings;
+  const { TMDB } = newSettings;
 
   return (
     <>
@@ -184,105 +182,6 @@ function MetadataSitesSettings() {
         </div>
       </div>
 
-      <div className="border-b border-panel-border" />
-
-      <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">TVDB Options</div>
-        <div className="flex flex-col gap-y-1">
-          <Checkbox
-            justify
-            label="Auto Link"
-            id="autolink-tvdb"
-            isChecked={TvDB.AutoLink}
-            onChange={event => updateSetting('TvDB', 'AutoLink', event.target.checked)}
-          />
-          <TvdbLanguageSelect
-            label="Language"
-            id="tvdb-language"
-            value={TvDB.Language}
-            onChange={event => updateSetting('TvDB', 'Language', event.target.value)}
-          />
-          <SelectSmall
-            label="Automatically Update Stats"
-            id="update-tvdb-stats"
-            value={TvDB.UpdateFrequency}
-            onChange={event => updateSetting('TvDB', 'UpdateFrequency', event.target.value)}
-          >
-            <option value={1}>Never</option>
-            <option value={2}>Every 6 Hours</option>
-            <option value={3}>Every 12 Hours</option>
-            <option value={4}>Every 24 Hours</option>
-            <option value={5}>Once a Week</option>
-            <option value={6}>Once a Month</option>
-          </SelectSmall>
-          <Checkbox
-            justify
-            label="Download Backdrops"
-            id="download-tvdb-backdrop"
-            isChecked={TvDB.AutoFanart}
-            onChange={event => updateSetting('TvDB', 'AutoFanart', event.target.checked)}
-          />
-          <div
-            className={cx(
-              'flex justify-between transition-opacity items-center',
-              !TvDB.AutoFanart && 'pointer-events-none opacity-65',
-            )}
-          >
-            Max Backdrops
-            <InputSmall
-              id="max-tvdb-backdrop"
-              value={TvDB.AutoFanartAmount}
-              type="text"
-              onChange={event => updateSetting('TvDB', 'AutoFanartAmount', event.target.value)}
-              className="w-12 px-3 py-1"
-            />
-          </div>
-          <Checkbox
-            justify
-            label="Download Posters"
-            id="download-tvdb-posters"
-            isChecked={TvDB.AutoPosters}
-            onChange={event => updateSetting('TvDB', 'AutoPosters', event.target.checked)}
-          />
-          <div
-            className={cx(
-              'flex justify-between transition-opacity items-center',
-              !TvDB.AutoPosters && 'pointer-events-none opacity-65',
-            )}
-          >
-            Max Posters
-            <InputSmall
-              id="max-tvdb-posters"
-              value={TvDB.AutoPostersAmount}
-              type="text"
-              onChange={event => updateSetting('TvDB', 'AutoPostersAmount', event.target.value)}
-              className="w-12 px-3 py-1"
-            />
-          </div>
-          <Checkbox
-            justify
-            label="Download Wide Banners"
-            id="download-tvdb-banners"
-            isChecked={TvDB.AutoWideBanners}
-            onChange={event => updateSetting('TvDB', 'AutoWideBanners', event.target.checked)}
-          />
-          <div
-            className={cx(
-              'flex justify-between transition-opacity items-center',
-              !TvDB.AutoWideBanners && 'pointer-events-none opacity-65',
-            )}
-          >
-            Max Wide Banners
-            <InputSmall
-              id="max-tvdb-banners"
-              value={TvDB.AutoWideBannersAmount}
-              type="text"
-              onChange={event => updateSetting('TvDB', 'AutoWideBannersAmount', event.target.value)}
-              className="w-12 px-3 py-1"
-            />
-          </div>
-        </div>
-      </div>
       <div className="border-b border-panel-border" />
       <TraktSettings />
       <div className="border-b border-panel-border" />
