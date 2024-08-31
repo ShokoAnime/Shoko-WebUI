@@ -180,7 +180,7 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Current Users</div>
+        <div className="flex items-center font-semibold">Current Users</div>
         <div className="flex flex-col gap-y-1">
           {users.map(user => (
             <div className="flex justify-between" key={`user-${user.ID}`}>
@@ -201,7 +201,7 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">User Options</div>
+        <div className="flex items-center font-semibold">User Options</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <div className="mx-0 my-auto">Display Name</div>
@@ -267,7 +267,7 @@ function UserManagementSettings() {
 
       <div className="flex flex-col">
         <div className="mb-4 flex h-8 justify-between">
-          <div className="flex h-[2.149rem] items-center font-semibold">Password</div>
+          <div className="flex items-center font-semibold">Password</div>
           <Button
             onClick={() => handlePasswordChange()}
             loading={isChangePasswordPending}
@@ -306,7 +306,7 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Tag Restrictions</div>
+        <div className="flex items-center font-semibold">Tag Restrictions</div>
         <div>
           <div className="mb-2 font-semibold">Available Tags</div>
           <Input

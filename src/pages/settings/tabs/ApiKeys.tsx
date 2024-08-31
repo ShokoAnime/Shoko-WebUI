@@ -108,7 +108,7 @@ const ApiKeys = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Generate API Key</div>
+        <div className="flex items-center font-semibold">Generate API Key</div>
         <div className="flex flex-row justify-between gap-x-2">
           <Input
             id="key-input"
@@ -142,7 +142,7 @@ const ApiKeys = () => {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Issued API Keys</div>
+        <div className="flex items-center font-semibold">Issued API Keys</div>
         <div className="flex flex-col gap-y-1">
           {map(tokens, token => <UserApiTokens key={token.Device} token={token} />)}
         </div>

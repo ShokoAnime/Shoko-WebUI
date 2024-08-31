@@ -381,7 +381,7 @@ export const initialSettings: SettingsType = {
   },
   Language: {
     UseSynonyms: false,
-    SeriesTitleLanguageOrder: [],
+    SeriesTitleLanguageOrder: ['x-main'],
     SeriesTitleSourceOrder: [LanguageSource.AniDB, LanguageSource.TMDB],
     EpisodeTitleLanguageOrder: ['en'],
     EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],

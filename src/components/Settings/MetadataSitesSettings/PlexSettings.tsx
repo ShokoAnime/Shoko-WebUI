@@ -158,7 +158,7 @@ const PlexSettings = () => {
   return (
     <div className="flex flex-col gap-y-6">
       <div className="flex justify-between">
-        <div className="flex h-[2.149rem] items-center font-semibold">Plex Options</div>
+        <div className="flex items-center font-semibold">Plex Options</div>
         <PlexLinkButton />
       </div>
       <div className="flex flex-col gap-y-2">

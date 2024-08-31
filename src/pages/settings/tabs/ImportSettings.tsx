@@ -42,7 +42,7 @@ function ImportSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="mt-0.5 flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Import Options</div>
+        <div className="flex items-center font-semibold">Import Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
