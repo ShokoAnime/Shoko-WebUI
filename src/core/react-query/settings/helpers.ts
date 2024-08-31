@@ -347,17 +347,6 @@ export const initialSettings: SettingsType = {
     Notification_UpdateFrequency: 1,
     Notification_HandleMovedFiles: false,
   },
-  TvDB: {
-    AutoLink: false,
-    AutoFanart: false,
-    AutoFanartAmount: 0,
-    AutoWideBanners: false,
-    AutoWideBannersAmount: 0,
-    AutoPosters: false,
-    AutoPostersAmount: 0,
-    UpdateFrequency: 1,
-    Language: 'en',
-  },
   TMDB: {
     AutoLink: false,
     AutoLinkRestricted: false,
