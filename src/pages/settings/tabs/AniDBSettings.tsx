@@ -113,7 +113,7 @@ function AniDBSettings() {
             AVDump Key
             <InputSmall
               id="avdump-key"
-              value={AVDumpKey}
+              value={AVDumpKey ?? ''}
               type="password"
               onChange={event => updateSetting('AniDb', 'AVDumpKey', event.target.value)}
               className="w-36 px-3 py-1"
@@ -135,7 +135,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Download Options</div>
+        <div className="flex items-center font-semibold">Download Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -186,7 +186,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Mylist Options</div>
+        <div className="flex items-center font-semibold">Mylist Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify
@@ -258,7 +258,7 @@ function AniDBSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Update Options</div>
+        <div className="flex items-center font-semibold">Update Options</div>
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             <span>Calendar</span>

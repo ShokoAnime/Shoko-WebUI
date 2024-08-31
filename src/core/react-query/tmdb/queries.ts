@@ -1,10 +1,15 @@
 import { useEffect } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import { toNumber } from 'lodash';
 
 import { axios } from '@/core/axios';
 import queryClient from '@/core/react-query/queryClient';
 
-import type { TmdbBulkRequestType, TmdbEpisodeXRefRequestType } from '@/core/react-query/tmdb/types';
+import type {
+  TmdbBulkRequestType,
+  TmdbEpisodeXRefRequestType,
+  TmdbSearchRequestType,
+} from '@/core/react-query/tmdb/types';
 import type { ListResultType, PaginationType } from '@/core/types/api';
 import type {
   TmdbAutoSearchResultType,
@@ -75,11 +80,29 @@ export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', 
 export const useTmdbSearchQuery = (
   type: 'Show' | 'Movie',
   query: string,
-  params: PaginationType,
+  params: TmdbSearchRequestType,
 ) =>
-  useQuery<ListResultType<TmdbSearchResultType>>({
+  useQuery<TmdbSearchResultType[]>({
     queryKey: ['series', 'tmdb', 'search', type, query, params],
-    queryFn: () => axios.get(`Tmdb/${type}/Online/Search`, { params: { ...params, query } }),
+    queryFn: async () => {
+      const finalData: TmdbSearchResultType[] = [];
+
+      if (toNumber(query) !== 0) {
+        try {
+          const idLookupData: TmdbSearchResultType = await axios.get(`Tmdb/${type}/Online/${query}`);
+          finalData.push(idLookupData);
+        } catch (e) {
+          // Ignore, show/movie not found on TMDB with provided ID
+        }
+      }
+
+      const searchData: ListResultType<TmdbSearchResultType> = await axios.get(`Tmdb/${type}/Online/Search`, {
+        params: { ...params, query },
+      });
+      finalData.push(...searchData.List);
+
+      return finalData;
+    },
     enabled: query.length > 0,
   });
 

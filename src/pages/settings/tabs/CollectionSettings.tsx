@@ -162,7 +162,7 @@ const CollectionSettings = () => {
 
       {/* Language Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Language Options</div>
+        <div className="flex items-center font-semibold">Language Options</div>
         {languagesQuery.isPending
           && <Icon path={mdiLoading} spin size={3} className="mx-auto text-panel-text-primary" />}
         {Object.keys(languageDescription).length > 0 && (
@@ -179,7 +179,7 @@ const CollectionSettings = () => {
                   })}
                 justify
               />
-              <div className="my-2 flex justify-between">
+              <div className="mt-2 flex justify-between">
                 Series Title (Drag to Reorder)
                 <Button onClick={() => setShowLanguagesModal('Series')} tooltip="Add Language">
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
@@ -262,7 +262,7 @@ const CollectionSettings = () => {
 
       {/*   Relation Settings */}
       <div className="flex flex-col gap-y-6">
-        <div className="flex h-[2.149rem] items-center font-semibold">Relation Options</div>
+        <div className="flex items-center font-semibold">Relation Options</div>
         <div className="flex flex-col gap-y-1">
           <Checkbox
             justify

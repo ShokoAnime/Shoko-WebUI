@@ -23,7 +23,6 @@ import type {
   SeriesAniDBSearchResult,
   SeriesAniDBSimilarType,
   SeriesCast,
-  SeriesDetailsType,
   SeriesRecommendedType,
   SeriesType,
 } from '@/core/types/api/series';
@@ -34,7 +33,7 @@ export const useSeriesQuery = (
   params: SeriesRequestType,
   enabled = true,
 ) =>
-  useQuery<SeriesDetailsType>({
+  useQuery<SeriesType>({
     queryKey: ['series', seriesId, 'data', params],
     queryFn: () => axios.get(`Series/${seriesId}`, { params }),
     enabled,

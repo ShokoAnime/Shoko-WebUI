@@ -59,46 +59,6 @@ export type SettingsAnidbUpdateType = {
   Notification_HandleMovedFiles: boolean;
 };
 
-export type SettingsTvdbDownloadType = {
-  AutoFanart: boolean;
-  AutoPosters: boolean;
-  AutoWideBanners: boolean;
-  AutoLink: boolean;
-};
-
-export type SettingsTvdbLanguageType =
-  | 'zh'
-  | 'en'
-  | 'sv'
-  | 'no'
-  | 'da'
-  | 'fi'
-  | 'nl'
-  | 'de'
-  | 'it'
-  | 'es'
-  | 'fr'
-  | 'pl'
-  | 'hu'
-  | 'el'
-  | 'tr'
-  | 'ru'
-  | 'he'
-  | 'ja'
-  | 'pt'
-  | 'cs'
-  | 'sl'
-  | 'hr'
-  | 'ko';
-
-export type SettingsTvdbPrefsType = {
-  AutoFanartAmount: number;
-  AutoPostersAmount: number;
-  AutoWideBannersAmount: number;
-  Language: SettingsTvdbLanguageType;
-  UpdateFrequency: SettingsUpdateFrequencyType;
-};
-
 export type SettingsTraktType = {
   Enabled: boolean;
   TokenExpirationDate: string;
@@ -393,7 +353,6 @@ export type SettingsServerType = {
     & SettingsAnidbDownloadType
     & SettingsAnidbMylistType
     & SettingsAnidbUpdateType;
-  TvDB: SettingsTvdbDownloadType & SettingsTvdbPrefsType;
   TMDB: SettingsTMDBType;
   Language: SettingsLanguageType;
   TraktTv: SettingsTraktType;
@@ -448,6 +407,9 @@ export type WebUISettingsType = {
       showRandomPoster: boolean;
       showRandomBackdrop: boolean;
       useThumbnailFallback: boolean;
+    };
+    tmdb: {
+      includeRestricted: boolean;
     };
   };
   dashboard: {

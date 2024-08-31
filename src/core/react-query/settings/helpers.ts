@@ -284,6 +284,9 @@ export const initialSettings: SettingsType = {
         showRandomPoster: false,
         useThumbnailFallback: false,
       },
+      tmdb: {
+        includeRestricted: false,
+      },
     },
     dashboard: {
       hideQueueProcessor: false,
@@ -344,17 +347,6 @@ export const initialSettings: SettingsType = {
     Notification_UpdateFrequency: 1,
     Notification_HandleMovedFiles: false,
   },
-  TvDB: {
-    AutoLink: false,
-    AutoFanart: false,
-    AutoFanartAmount: 0,
-    AutoWideBanners: false,
-    AutoWideBannersAmount: 0,
-    AutoPosters: false,
-    AutoPostersAmount: 0,
-    UpdateFrequency: 1,
-    Language: 'en',
-  },
   TMDB: {
     AutoLink: false,
     AutoLinkRestricted: false,
@@ -378,7 +370,7 @@ export const initialSettings: SettingsType = {
   },
   Language: {
     UseSynonyms: false,
-    SeriesTitleLanguageOrder: [],
+    SeriesTitleLanguageOrder: ['x-main'],
     SeriesTitleSourceOrder: [LanguageSource.AniDB, LanguageSource.TMDB],
     EpisodeTitleLanguageOrder: ['en'],
     EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],

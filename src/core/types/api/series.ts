@@ -1,8 +1,5 @@
 import type { ImageType, ImagesType, RatingType } from './common';
-
-export type SeriesDetailsType = SeriesType & {
-  AniDB?: SeriesAniDBType;
-};
+import type { TmdbMovieType, TmdbShowType } from '@/core/types/api/tmdb';
 
 export type SeriesType = {
   IDs: SeriesIDsType;
@@ -15,7 +12,11 @@ export type SeriesType = {
   Created: string;
   Updated: string;
   Description: string;
-  AniDB?: SeriesAniDBType;
+  AniDB?: AniDBSeriesType;
+  TMDB?: {
+    Movies: TmdbMovieType[];
+    Shows: TmdbShowType[];
+  };
 };
 
 export type SeriesWithMultipleReleasesType = {
@@ -53,7 +54,7 @@ export type SeriesIDsType = {
   };
 };
 
-export type SeriesAniDBType = {
+export type AniDBSeriesType = {
   ID: number;
   Type: SeriesTypeEnum;
   Restricted: boolean;
@@ -91,7 +92,7 @@ export const enum SeriesRelationTypeEnum {
 }
 
 export type SeriesAniDBRecommendedForYou = {
-  Anime: SeriesAniDBType;
+  Anime: AniDBSeriesType;
   SimilarTo: number;
 };
 
@@ -154,7 +155,7 @@ export type SeriesSizesReducedEpisodeCountsType = {
 };
 
 export type SeriesRecommendedType = {
-  Anime: SeriesAniDBType;
+  Anime: AniDBSeriesType;
   SimilarTo: number;
 };
 

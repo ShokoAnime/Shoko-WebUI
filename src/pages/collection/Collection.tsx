@@ -147,7 +147,7 @@ function Collection() {
         true,
       ),
       randomImages: showRandomPoster,
-      includeDataFrom: ['AniDB'],
+      includeDataFrom: ['AniDB', 'TMDB'],
       recursive: true,
       includeMissing: true,
     },

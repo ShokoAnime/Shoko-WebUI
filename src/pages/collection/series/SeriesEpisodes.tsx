@@ -68,7 +68,7 @@ const SeriesEpisodes = () => {
     setSelectedEpisodes(new Set());
   }, [episodeFilterType, episodeFilterAvailability, episodeFilterWatched, episodeFilterHidden, debouncedSearch]);
 
-  const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB'] }, !!seriesId).data;
+  const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId).data;
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
     toNumber(seriesId!),
     {

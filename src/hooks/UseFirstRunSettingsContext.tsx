@@ -1,11 +1,9 @@
 import { useOutletContext } from 'react-router-dom';
 
-import type { SettingsType } from '@/core/types/api/settings';
+import type { SettingsContextType } from '@/core/types/context';
 
-type ContextType = {
+type ContextType = SettingsContextType & {
   fetching: boolean;
-  newSettings: SettingsType;
-  setNewSettings: (settings: SettingsType) => void;
   updateSetting: (type: string, key: string, value: string | string[] | boolean) => void;
   saveSettings: () => Promise<void>;
 };
