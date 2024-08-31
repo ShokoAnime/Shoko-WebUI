@@ -74,7 +74,7 @@ const TmdbLinkSelectPanel = () => {
 
   const noResults = useMemo(() => {
     if (debouncedSearch === '') return autoSearchResults.length === 0;
-    return searchQuery.data?.List.length === 0;
+    return searchQuery.data?.length === 0;
   }, [autoSearchResults, debouncedSearch, searchQuery.data]);
 
   const isPending = useMemo(
@@ -163,7 +163,7 @@ const TmdbLinkSelectPanel = () => {
               />
             ))}
 
-            {debouncedSearch && searchQuery.data?.List.map(result => (
+            {debouncedSearch && searchQuery.data?.map(result => (
               <SearchResultRow
                 key={result.ID}
                 result={result}
