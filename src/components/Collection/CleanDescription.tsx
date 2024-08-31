@@ -4,9 +4,9 @@ import cx from 'classnames';
 // The question marks are there because people can't spell…
 const RemoveSummaryRegex = /\b(Sour?ce|Note|Summ?ary):([^\r\n]+|$)/mg;
 
-const RemoveBasedOnWrittenByRegex = /^(\*|\u2014) ([^\r\n]+|$)/mg;
+const RemoveBasedOnWrittenByRegex = /^(\*|\u2014) (based on|written by) ([^\r\n]+|$)/img;
 
-const RemoveBBCodeRegex = /\[i\].*\[\/i\]/sg;
+const RemoveBBCodeRegex = /\[i\](.*?)\[\/i\]/sg;
 
 const MultiSpacesRegex = /\s{2,}/g;
 
