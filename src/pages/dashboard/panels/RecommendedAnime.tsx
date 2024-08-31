@@ -10,7 +10,7 @@ import { useRecommendedAnimeQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 import type { RootState } from '@/core/store';
-import type { SeriesAniDBType } from '@/core/types/api/series';
+import type { AniDBSeriesType } from '@/core/types/api/series';
 
 const RecommendedAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
@@ -22,7 +22,7 @@ const RecommendedAnime = () => {
     pageSize: 20,
   });
 
-  const renderItem = (series: SeriesAniDBType, matches: number) => (
+  const renderItem = (series: AniDBSeriesType, matches: number) => (
     <div key={`series-${series.ID}`} className="mr-6 flex w-56 shrink-0 flex-col justify-center last:mr-0">
       <BackgroundImagePlaceholderDiv
         image={series.Poster}

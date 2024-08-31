@@ -21,10 +21,6 @@ import useEventCallback from '@/hooks/useEventCallback';
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
 
-type SeriesSidePanelProps = {
-  series: SeriesType;
-};
-
 const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -50,7 +46,7 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   );
 });
 
-const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
+const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
   const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;
   const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
@@ -91,7 +87,10 @@ const SeriesTopPanel = React.memo(({ series }: SeriesSidePanelProps) => {
           contentClassName="contain-strict"
           transparent
         >
-          <CleanDescription text={series.Description ?? ''} />
+          <CleanDescription
+            text={series.Description ?? ''}
+            altText={series.TMDB?.Shows[0]?.Overview ?? series.TMDB?.Movies[0]?.Overview ?? ''}
+          />
         </ShokoPanel>
 
         <ShokoPanel
