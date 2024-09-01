@@ -15,7 +15,7 @@ import TmdbLinkSelectPanel from '@/components/Collection/Tmdb/TmdbLinkSelectPane
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
-import { invalidateQueries } from '@/core/react-query/queryClient';
+import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
 import {
   useDeleteTmdbLinkMutation,
@@ -184,7 +184,8 @@ const TmdbLinking = () => {
         });
       }
 
-      invalidateQueries(['series', seriesId]);
+      resetQueries(['series', seriesId, 'tmdb']);
+      setLinkOverrides({});
       toast.success('Links saved!');
     } catch (error) {
       toast.error('Failed to save links!');
@@ -215,7 +216,8 @@ const TmdbLinking = () => {
       );
       await Promise.all(newLinkMutations);
 
-      invalidateQueries(['series', seriesId]);
+      resetQueries(['series', seriesId, 'tmdb']);
+      setLinkOverrides({});
       toast.success('Links saved!');
     } catch (error) {
       console.error(error);
