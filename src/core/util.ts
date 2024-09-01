@@ -29,7 +29,7 @@ export function isDebug() {
   return DEV;
 }
 
-export const minimumSupportedServerVersion = '4.2.2.110';
+export const minimumSupportedServerVersion = '4.2.2.112';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
@@ -89,3 +89,5 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
   return (((toNumber(hours) * 3600) + (toNumber(minutes) * 60) + toNumber(seconds)) * 1000)
     + toNumber((durationMs ?? '0').slice(0, 3));
 };
+
+export const padNumber = (num: number | string, size = 2) => num.toString().padStart(size, '0');

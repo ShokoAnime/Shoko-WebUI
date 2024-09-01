@@ -20,6 +20,7 @@ type Props = {
   value: string | number;
   onChange: React.ChangeEventHandler<HTMLInputElement>;
   onKeyUp?: React.KeyboardEventHandler<HTMLInputElement>;
+  onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
   className?: string;
   inputClassName?: string;
   autoFocus?: boolean;
@@ -52,6 +53,7 @@ const Input = React.memo((props: Props) => {
     isOverlay,
     label,
     onChange,
+    onKeyDown,
     onKeyUp,
     onToggleOverlay,
     overlayClassName,
@@ -134,6 +136,7 @@ const Input = React.memo((props: Props) => {
             value={value}
             onChange={onChange}
             onKeyUp={onKeyUp}
+            onKeyDown={onKeyDown}
             disabled={disabled}
             ref={inputRef}
           />

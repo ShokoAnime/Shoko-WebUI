@@ -43,4 +43,8 @@ export const invalidateQueries = (queryKey: QueryKey) => {
   queryClient.invalidateQueries({ queryKey }).catch(console.error);
 };
 
+export const resetQueries = (queryKey: QueryKey) => {
+  queryClient.resetQueries({ queryKey }).catch(console.error);
+};
+
 export default queryClient;
