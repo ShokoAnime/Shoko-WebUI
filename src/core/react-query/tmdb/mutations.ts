@@ -12,8 +12,11 @@ import type {
 
 export const useTmdbRefreshMutation = (type: 'Show' | 'Movie') =>
   useMutation({
-    mutationFn: ({ tmdbId, ...data }: TmdbRefreshRequestType) =>
-      axios.post(`Tmdb/${type}/${tmdbId}/Action/Refresh`, data),
+    mutationFn: ({ SkipIfExists = false, tmdbId, ...data }: TmdbRefreshRequestType) =>
+      axios.post(`Tmdb/${type}/${tmdbId}/Action/Refresh`, {
+        ...data,
+        [type === 'Show' ? 'QuickRefresh' : 'SkipIfExists']: SkipIfExists,
+      }),
   });
 
 export const useTmdbAddLinkMutation = (seriesId: number, type: 'Show' | 'Movie') =>

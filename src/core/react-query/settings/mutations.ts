@@ -14,7 +14,7 @@ export const useAniDBTestLoginMutation = () =>
 
 export const useCheckNetworkConnectivityMutation = () =>
   useMutation({
-    mutationFn: () => axios.post('Settings/Connectivity'),
+    mutationFn: () => axios.post('Init/Connectivity'),
   });
 
 export const usePatchSettingsMutation = () =>
