@@ -135,6 +135,7 @@ const EpisodeSelect = React.memo((props: Props) => {
             type="text"
             value={searchText}
             onChange={e => setSearchText(e.target.value)}
+            onKeyDown={e => e.stopPropagation()}
             placeholder="Enter Episode Title or Season/Episode Number..."
             inputClassName="!p-4"
             startIcon={mdiMagnify}
@@ -142,7 +143,7 @@ const EpisodeSelect = React.memo((props: Props) => {
 
           <div className="mt-2 rounded-lg bg-panel-input p-4">
             <div
-              className="max-h-80 w-full flex-col overflow-y-auto"
+              className="h-80 w-full flex-col overflow-y-auto"
               ref={setScrollElement}
             >
               <div
