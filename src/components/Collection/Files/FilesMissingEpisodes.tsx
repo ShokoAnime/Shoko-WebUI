@@ -3,7 +3,7 @@ import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { dayjs } from '@/core/util';
+import { dayjs, padNumber } from '@/core/util';
 
 import type { WebuiSeriesFileSummaryMissingEpisodeType } from '@/core/types/api/webui';
 
@@ -21,7 +21,7 @@ const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
     <div className="w-[12.5rem]">
       {episode.Type}
       &nbsp;
-      {episode.EpisodeNumber.toString().padStart(2, '0')}
+      {padNumber(episode.EpisodeNumber)}
     </div>
     <div className="flex w-[46.875rem] flex-row">
       {episode.Titles.find(e => e.Language === 'en')?.Name ?? '--'}

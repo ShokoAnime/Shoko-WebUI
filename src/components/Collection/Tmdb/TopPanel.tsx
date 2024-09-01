@@ -10,15 +10,15 @@ import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 
 import type { MatchRatingType } from '@/core/types/api/episode';
-import type { TmdbEpisodeXRefType } from '@/core/types/api/tmdb';
+import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 type Props = {
   createInProgress: boolean;
   disableCreateLink: boolean;
   handleCreateLink: () => void;
   seriesId: number;
-  xrefs?: TmdbEpisodeXRefType[];
-  xrefsCount: number;
+  xrefs?: TmdbEpisodeXrefType[];
+  xrefsCount?: number;
 };
 
 const TopPanel = (props: Props) => {
@@ -31,7 +31,7 @@ const TopPanel = (props: Props) => {
   ) as Record<MatchRatingType, number>;
 
   return (
-    <ShokoPanel title="Metadata Linking" options={<ItemCount count={xrefsCount} suffix="Entries" />}>
+    <ShokoPanel title="Metadata Linking" options={<ItemCount count={xrefsCount ?? 0} suffix="Entries" />}>
       <div className="flex items-center gap-x-3">
         <div
           className={cx(

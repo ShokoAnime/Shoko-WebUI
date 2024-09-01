@@ -1,6 +1,6 @@
 import type { PaginationType } from '@/core/types/api';
 
-export type TmdbEpisodeXRefRequestType = {
+export type TmdbEpisodeXrefRequestType = {
   tmdbShowID?: number;
 } & PaginationType;
 
@@ -23,7 +23,7 @@ export type TmdbAddLinkRequestType = {
   Refresh?: boolean;
 };
 
-export type TmdbAddAutoCrossReferencesRequestType = {
+export type TmdbAddAutoXrefsRequestType = {
   tmdbShowID: number;
 };
 
@@ -36,4 +36,19 @@ export type TmdbDeleteLinkRequestType = {
 export type TmdbSearchRequestType = {
   includeRestricted?: boolean;
   year?: number;
+} & PaginationType;
+
+type TmdbEpisodeXrefMappingRequestType = {
+  AniDBID: number;
+  TmdbID: number;
+  Replace?: boolean;
+};
+
+export type TmdbEditEpisodeXrefsRequestType = {
+  ResetAll?: boolean;
+  Mapping: TmdbEpisodeXrefMappingRequestType[];
+};
+
+export type TmdbShowEpisodesRequestType = {
+  search?: string;
 } & PaginationType;

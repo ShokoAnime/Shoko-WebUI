@@ -3,9 +3,10 @@ import { useMutation } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 
 import type {
-  TmdbAddAutoCrossReferencesRequestType,
+  TmdbAddAutoXrefsRequestType,
   TmdbAddLinkRequestType,
   TmdbDeleteLinkRequestType,
+  TmdbEditEpisodeXrefsRequestType,
   TmdbRefreshRequestType,
 } from '@/core/react-query/tmdb/types';
 
@@ -20,9 +21,15 @@ export const useTmdbAddLinkMutation = (seriesId: number, type: 'Show' | 'Movie')
     mutationFn: (data: TmdbAddLinkRequestType) => axios.post(`Series/${seriesId}/TMDB/${type}`, data),
   });
 
-export const useTmdbAddAutoCrossReferencesMutation = (seriesId: number) =>
+export const useTmdbEditEpisodeXrefsMutation = (seriesId: number) =>
   useMutation({
-    mutationFn: (data: TmdbAddAutoCrossReferencesRequestType) =>
+    mutationFn: (data: TmdbEditEpisodeXrefsRequestType) =>
+      axios.post(`Series/${seriesId}/TMDB/Show/CrossReferences/Episode`, data),
+  });
+
+export const useTmdbAddAutoXrefsMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: (data: TmdbAddAutoXrefsRequestType) =>
       axios.post(`Series/${seriesId}/TMDB/Show/CrossReferences/Episode/Auto`, data),
   });
 

@@ -89,3 +89,5 @@ export const convertTimeSpanToMs = (timeSpan: string) => {
   return (((toNumber(hours) * 3600) + (toNumber(minutes) * 60) + toNumber(seconds)) * 1000)
     + toNumber((durationMs ?? '0').slice(0, 3));
 };
+
+export const padNumber = (num: number | string, size = 2) => num.toString().padStart(size, '0');

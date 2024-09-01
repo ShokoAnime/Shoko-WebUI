@@ -7,54 +7,45 @@ import queryClient from '@/core/react-query/queryClient';
 
 import type {
   TmdbBulkRequestType,
-  TmdbEpisodeXRefRequestType,
+  TmdbEpisodeXrefRequestType,
   TmdbSearchRequestType,
+  TmdbShowEpisodesRequestType,
 } from '@/core/react-query/tmdb/types';
-import type { ListResultType, PaginationType } from '@/core/types/api';
+import type { ListResultType } from '@/core/types/api';
 import type {
   TmdbAutoSearchResultType,
   TmdbBaseItemType,
   TmdbEpisodeType,
-  TmdbEpisodeXRefType,
+  TmdbEpisodeXrefType,
   TmdbMovieType,
-  TmdbMovieXRefType,
+  TmdbMovieXrefType,
   TmdbSearchResultType,
 } from '@/core/types/api/tmdb';
 
-export const useTmdbEpisodeXRefsInfiniteQuery = (
+export const useTmdbEpisodeXrefsQuery = (
   seriesId: number,
   isNewLink: boolean,
-  params: TmdbEpisodeXRefRequestType,
+  params: TmdbEpisodeXrefRequestType,
   enabled = true,
 ) =>
-  useInfiniteQuery<ListResultType<TmdbEpisodeXRefType>>({
+  useQuery<ListResultType<TmdbEpisodeXrefType>>({
     queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params],
-    queryFn: ({ pageParam }) =>
+    queryFn: () =>
       axios.get(
         `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
-        {
-          params: {
-            ...params,
-            page: pageParam as number,
-          },
-        },
+        { params },
       ),
-    initialPageParam: 1,
-    getNextPageParam: (lastPage, _, lastPageParam: number) => {
-      if (!params.pageSize || lastPage.Total / params.pageSize <= lastPageParam) return undefined;
-      return lastPageParam + 1;
-    },
     enabled,
   });
 
 export const useTmdbMovieXrefsQuery = (seriesId: number, enabled = true) =>
-  useQuery<TmdbMovieXRefType[]>({
+  useQuery<TmdbMovieXrefType[]>({
     queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'movie'],
     queryFn: () => axios.get(`Series/${seriesId}/TMDB/Movie/CrossReferences`),
     enabled,
   });
 
-export const useTmdbShowEpisodesQuery = (showId: number, params: PaginationType, enabled = true) =>
+export const useTmdbShowEpisodesQuery = (showId: number, params: TmdbShowEpisodesRequestType, enabled = true) =>
   useInfiniteQuery<ListResultType<TmdbEpisodeType>>({
     queryKey: ['series', 'tmdb', 'episodes', showId, params],
     queryFn: ({ pageParam }) =>
