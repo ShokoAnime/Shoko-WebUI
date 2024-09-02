@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
 import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
@@ -49,6 +49,8 @@ const TmdbLinking = () => {
 
   const seriesQuery = useSeriesQuery(seriesId, {}, !!seriesId);
 
+  const [createInProgress, setCreateInProgress] = useState(false);
+
   const isNewLink = useMemo(() => {
     if (tmdbId === 0 || !type || !seriesQuery.data) return false;
     return !seriesQuery.data.IDs.TMDB[type].includes(tmdbId);
@@ -70,7 +72,7 @@ const TmdbLinking = () => {
     seriesId,
     isNewLink,
     { tmdbShowID: tmdbId, pageSize: 0 },
-    !!seriesId && type === 'Show' && !!seriesQuery.data,
+    !createInProgress && !!seriesId && type === 'Show' && !!seriesQuery.data,
   );
   const episodeXrefs = useMemo(() => episodeXrefsQuery.data?.List, [episodeXrefsQuery.data]);
 
@@ -127,10 +129,6 @@ const TmdbLinking = () => {
     setLinkOverrides,
   ] = useImmer<Record<number, number>>({});
 
-  useEffect(() => {
-    setLinkOverrides({});
-  }, [episodes, setLinkOverrides]);
-
   const finalXrefs = useMemo<Record<number, number>>(
     () => {
       const tempXrefs: Record<number, number> = {};
@@ -159,8 +157,6 @@ const TmdbLinking = () => {
   const { mutateAsync: editEpisodeLinks } = useTmdbEditEpisodeXrefsMutation(seriesId);
   const { mutateAsync: deleteLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Show');
   const { mutateAsync: createAutoLinks } = useTmdbAddAutoXrefsMutation(seriesId);
-
-  const [createInProgress, setCreateInProgress] = useState(false);
 
   const createLinks = useEventCallback(async () => {
     setCreateInProgress(true);
