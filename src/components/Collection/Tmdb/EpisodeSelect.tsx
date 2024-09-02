@@ -97,20 +97,20 @@ const EpisodeSelect = React.memo((props: Props) => {
       >
         {({ open }) => (
           <>
-            <div className="w-8">
+            <div className="w-8 shrink-0">
               {/* eslint-disable-next-line no-nested-ternary */}
               {tmdbEpisode?.SeasonNumber != null
                 ? (tmdbEpisode.SeasonNumber === 0 ? 'SP' : `S${padNumber(tmdbEpisode.SeasonNumber)}`)
                 : 'XX'}
             </div>
-            <div className="w-8">
+            <div className="w-8 shrink-0">
               {tmdbEpisode?.EpisodeNumber ? padNumber(tmdbEpisode.EpisodeNumber) : 'XX'}
             </div>
             <div className="line-clamp-1 grow text-left">
               {tmdbEpisode?.Title ?? 'Entry Not Linked'}
             </div>
 
-            <Icon path={mdiChevronDown} size={1} className="transition-transform" rotate={open ? 180 : 0} />
+            <Icon path={mdiChevronDown} size={1} className="shrink-0 transition-transform" rotate={open ? 180 : 0} />
           </>
         )}
       </ListboxButton>
