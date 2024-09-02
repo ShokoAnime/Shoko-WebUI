@@ -92,16 +92,20 @@ const SeriesOverview = () => {
                         return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
                       }
 
-                      return flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
-                        ids.map(id => (
-                          <SeriesMetadata
-                            key={`${site}-${type}-${id}`}
-                            site={site}
-                            id={id}
-                            seriesId={series.IDs.ID}
-                            type={type}
-                          />
-                        )));
+                      return [
+                        ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
+                          ids.map(id => (
+                            <SeriesMetadata
+                              key={`${site}-${type}-${id}`}
+                              site={site}
+                              id={id}
+                              seriesId={series.IDs.ID}
+                              type={type}
+                            />
+                          ))),
+                        /* Show row to add new TMDB links */
+                        <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,
+                      ];
                     }
 
                     // Site is not TMDB, so it's either a single ID or an array of IDs
@@ -112,10 +116,6 @@ const SeriesOverview = () => {
                       <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
                     ));
                   })}
-
-                  {/* Show row to add TMDB link if a link already exists */}
-                  {(series.IDs.TMDB.Show.length !== 0
-                    || series.IDs.TMDB.Movie.length !== 0) && <SeriesMetadata site="TMDB" seriesId={series.IDs.ID} />}
                 </div>
               )
               : (
