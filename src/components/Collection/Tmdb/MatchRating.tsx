@@ -8,8 +8,9 @@ const getAbbreviation = (rating?: MatchRatingType) => {
     case MatchRatingType.DateAndTitleMatches:
       return 'DT';
     case MatchRatingType.DateMatches:
+      return 'D';
     case MatchRatingType.TitleMatches:
-      return 'D/T';
+      return 'T';
     case MatchRatingType.UserVerified:
       return 'UO';
     case MatchRatingType.FirstAvailable:
