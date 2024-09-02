@@ -64,8 +64,8 @@ export const useTmdbShowEpisodesQuery = (showId: number, params: TmdbShowEpisode
 
 export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', enabled = true) =>
   useQuery<TmdbBaseItemType>({
-    queryKey: ['series', 'tmdb', 'show', tmdbId, type],
-    queryFn: () => axios.get(`Tmdb/${type}/${tmdbId}`),
+    queryKey: ['series', 'tmdb', enabled ? type.toLowerCase() : 'unknown', tmdbId],
+    queryFn: () => axios.get(type === 'Movie' ? `Tmdb/Movie/Online/${tmdbId}` : `Tmdb/Show/${tmdbId}`),
     enabled,
   });
 
@@ -135,9 +135,9 @@ export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = tr
   };
 };
 
-export const useTmdbBulkMoviesQuery = (data: TmdbBulkRequestType, enabled = true) =>
+export const useTmdbBulkMoviesOnlineQuery = (data: TmdbBulkRequestType, enabled = true) =>
   useQuery<TmdbMovieType[]>({
     queryKey: ['series', 'tmdb', 'movie', 'bulk', data],
-    queryFn: () => axios.post('Tmdb/Movie/Bulk', data),
+    queryFn: () => axios.post('Tmdb/Movie/Online/Bulk', data),
     enabled: enabled && data.IDs.length > 0,
   });
