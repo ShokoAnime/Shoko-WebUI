@@ -59,6 +59,7 @@ export const useTmdbShowEpisodesQuery = (showId: number, params: TmdbShowEpisode
       return lastPageParam + 1;
     },
     enabled,
+    staleTime: Infinity,
   });
 
 export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', enabled = true) =>
