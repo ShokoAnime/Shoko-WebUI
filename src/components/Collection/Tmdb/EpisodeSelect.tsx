@@ -128,7 +128,7 @@ const EpisodeSelect = React.memo((props: Props) => {
             padding: '1rem',
             gap: '0.5rem',
           }}
-          className="w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-none"
+          className="z-[110] w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-none"
         >
           <Input
             id="episode-search"
