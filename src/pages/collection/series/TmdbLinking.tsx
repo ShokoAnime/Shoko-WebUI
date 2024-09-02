@@ -184,7 +184,7 @@ const TmdbLinking = () => {
         });
       }
 
-      resetQueries(['series', seriesId, 'tmdb']);
+      resetQueries(['series', seriesId]);
       setLinkOverrides({});
       toast.success('Links saved!');
     } catch (error) {
@@ -216,7 +216,7 @@ const TmdbLinking = () => {
       );
       await Promise.all(newLinkMutations);
 
-      resetQueries(['series', seriesId, 'tmdb']);
+      resetQueries(['series', seriesId]);
       setLinkOverrides({});
       toast.success('Links saved!');
     } catch (error) {
