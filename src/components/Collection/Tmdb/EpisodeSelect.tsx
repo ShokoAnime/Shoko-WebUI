@@ -40,16 +40,21 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (!initialTmdbEpisode) return;
-    setTmdbEpisode(initialTmdbEpisode);
-  }, [initialTmdbEpisode]);
+    if (override === 0) {
+      setTmdbEpisode(undefined);
+      return;
+    }
 
-  useEffect(() => {
-    if (!override) return;
-    const episodeOverride = episodes.find(episode => episode.ID === override);
-    if (!episodeOverride) return;
-    setTmdbEpisode(episodeOverride);
-  }, [episodes, override]);
+    if (override) {
+      const episodeOverride = episodes.find(episode => episode.ID === override);
+      if (episodeOverride) {
+        setTmdbEpisode(episodeOverride);
+        return;
+      }
+    }
+
+    setTmdbEpisode(initialTmdbEpisode);
+  }, [episodes, initialTmdbEpisode, override]);
 
   const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
     if (!newSelectedEpisode) {
