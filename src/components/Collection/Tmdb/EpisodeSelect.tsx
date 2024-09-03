@@ -133,65 +133,73 @@ const EpisodeSelect = React.memo((props: Props) => {
               className="h-80 w-full flex-col overflow-y-auto"
               ref={setScrollElement}
             >
-              <div
-                className="relative w-full"
-                style={{ height: rowVirtualizer.getTotalSize() }}
-              >
-                {virtualItems.map((virtualItem) => {
-                  const { index, key, start } = virtualItem;
+              {episodesQuery.isPending && (
+                <div className="flex size-full items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} spin size={3} />
+                </div>
+              )}
 
-                  const episode = index === 0 ? undefined : episodes[index - 1];
+              {!episodesQuery.isPending && (
+                <div
+                  className="relative w-full"
+                  style={{ height: rowVirtualizer.getTotalSize() }}
+                >
+                  {virtualItems.map((virtualItem) => {
+                    const { index, key, start } = virtualItem;
 
-                  if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
+                    const episode = index === 0 ? undefined : episodes[index - 1];
 
-                  if (index !== 0 && !episode) {
+                    if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
+
+                    if (index !== 0 && !episode) {
+                      return (
+                        <div
+                          key={`loading-${key}`}
+                          className="absolute left-0 top-0 w-full"
+                          style={{
+                            transform: `translateY(${start ?? 0}px)`,
+                          }}
+                          ref={rowVirtualizer.measureElement}
+                          data-index={index}
+                        >
+                          <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
+                        </div>
+                      );
+                    }
+
                     return (
-                      <div
-                        key={`loading-${key}`}
-                        className="absolute left-0 top-0 w-full"
+                      <ListboxOption
+                        key={episode?.ID ?? 'entry-not-linked'}
+                        value={episode}
+                        className={cx(
+                          'absolute left-0 top-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
+                          'hover:text-panel-text-primary data-[selected]:text-panel-text-primary group',
+                        )}
                         style={{
                           transform: `translateY(${start ?? 0}px)`,
                         }}
                         ref={rowVirtualizer.measureElement}
                         data-index={index}
                       >
-                        <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
-                      </div>
+                        <div className="w-24 text-panel-text-important group-data-[selected]:text-panel-text-primary">
+                          {!episode && 'XX'}
+
+                          {episode && (episode.SeasonNumber === 0
+                            ? `Special ${padNumber(episode.EpisodeNumber)}`
+                            : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
+                        </div>
+                        |
+                        <div className="ml-4 line-clamp-1 grow basis-0">
+                          {episode?.Title ?? 'Do Not Link Entry'}
+                        </div>
+                        <div className="pr-4">
+                          {episode?.AiredAt ?? ''}
+                        </div>
+                      </ListboxOption>
                     );
-                  }
-
-                  return (
-                    <ListboxOption
-                      key={episode?.ID ?? 'entry-not-linked'}
-                      value={episode}
-                      className={cx(
-                        'absolute left-0 top-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
-                        'hover:text-panel-text-primary data-[selected]:text-panel-text-primary group',
-                      )}
-                      style={{
-                        transform: `translateY(${start ?? 0}px)`,
-                      }}
-                      ref={rowVirtualizer.measureElement}
-                      data-index={index}
-                    >
-                      <div className="w-24 text-panel-text-important group-data-[selected]:text-panel-text-primary">
-                        {!episode && 'XX'}
-
-                        {episode && (episode.SeasonNumber === 0
-                          ? `Special ${padNumber(episode.EpisodeNumber)}`
-                          : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
-                      </div>
-                      |
-                      <div className="ml-4 line-clamp-1 grow basis-0">
-                        {episode?.Title ?? 'Do Not Link Entry'}
-                      </div>
-                      <div className="pr-4">
-                        {episode?.AiredAt ?? ''}
-                      </div>
-                    </ListboxOption>
-                  );
-                })}
-              </div>
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </ListboxOptions>
