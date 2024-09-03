@@ -132,10 +132,12 @@ function Collection() {
     !isSeries && (!filterId || (!!filterId && filterQuery.isSuccess)),
   );
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
-  const lastPageIds = useMemo(
-    () => groupsQuery.data?.pages.toReversed()[0].List.map(group => group.IDs.ID) ?? [],
-    [groupsQuery.data],
-  );
+  const lastPageIds = useMemo(() => {
+    const lastPage = groupsQuery.data?.pages.at(-1);
+    if (!lastPage) return [];
+
+    return lastPage.List.map(group => group.IDs.ID);
+  }, [groupsQuery.data]);
 
   const seriesQuery = useFilteredGroupSeries(
     toNumber(groupId!),
