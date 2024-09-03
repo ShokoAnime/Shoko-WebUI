@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, filter, forEach, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -35,7 +35,6 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TmdbEpisodeXrefMappingRequestType } from '@/core/react-query/tmdb/types';
-import type { EpisodeType } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 const TmdbLinking = () => {
@@ -377,12 +376,14 @@ const TmdbLinking = () => {
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.map((virtualItem) => {
-                const episode: EpisodeType | undefined = episodes[virtualItem.index];
+                const episode = get(episodes, virtualItem.index, undefined);
                 const isOdd = virtualItem.index % 2 === 1;
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
-                const overrides = linkOverrides[episode?.IDs.AniDB] ?? finalEpisodeXrefs?.[episode?.IDs.AniDB] ?? [0];
+                const overrides = episode
+                  ? (linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0])
+                  : [0];
 
                 return (
                   <div
