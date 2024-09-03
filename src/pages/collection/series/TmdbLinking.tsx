@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -281,7 +281,7 @@ const TmdbLinking = () => {
       return Object.keys(linkOverrides).length === 0;
     }
 
-    const allEmptyLinks = some(
+    const allEmptyLinks = every(
       linkOverrides,
       (overrides) => {
         if (overrides[0] !== -1) return false;

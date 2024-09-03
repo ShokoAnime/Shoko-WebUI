@@ -29,8 +29,8 @@ const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: Ma
         'bg-panel-text-warning': rating === MatchRatingType.DateMatches || rating === MatchRatingType.TitleMatches,
         'bg-panel-text-primary': rating === MatchRatingType.UserVerified,
         'bg-panel-text-danger': rating === MatchRatingType.FirstAvailable,
-        'bg-panel-background': !rating && !isOdd,
-        'bg-panel-background-alt': !rating && isOdd,
+        'bg-panel-background': (!rating ?? rating === MatchRatingType.None) && !isOdd,
+        'bg-panel-background-alt': (!rating ?? rating === MatchRatingType.None) && isOdd,
       },
     )}
   >
