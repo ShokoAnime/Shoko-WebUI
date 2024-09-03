@@ -114,17 +114,17 @@ const CollectionView = (props: Props) => {
           const toIndex = fromIndex + itemsPerRow;
 
           // Here, i will be the actual index of the group in group list
-          for (let i = fromIndex; i < toIndex; i += 1) {
-            const item = items[i];
+          for (let index = fromIndex; index < toIndex; index += 1) {
+            const item = items[index];
 
             // Placeholder to solve formatting issues.
             // Used to fill the empty "slots" in the last row
-            const isPlaceholder = i > total - 1;
+            const isPlaceholder = index > total - 1;
 
             if (isPlaceholder) {
               children.push(
                 <div
-                  key={`placeholder-${i}`}
+                  key={`placeholder-${index}`}
                   style={{
                     width: `${itemWidth / 16}rem`,
                   }}
@@ -135,7 +135,7 @@ const CollectionView = (props: Props) => {
               children.push(
                 <div
                   className="flex shrink-0 items-center justify-center rounded-lg border border-panel-border text-panel-text-primary"
-                  key={`loading-${i}`}
+                  key={`loading-${index}`}
                   style={{
                     width: `${itemWidth / 16}rem`,
                     height: `${itemHeight / 16}rem`,

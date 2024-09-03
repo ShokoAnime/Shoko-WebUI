@@ -501,7 +501,7 @@ const Renamer = () => {
                     label="Config"
                     id="renamer-config"
                     value={selectedConfig.Name}
-                    onChange={e => changeSelectedConfig(e.target.value)}
+                    onChange={event => changeSelectedConfig(event.target.value)}
                   >
                     {renamerConfigsQuery.data.map(renamerConfig => (
                       <option key={renamerConfig.Name} value={renamerConfig.Name}>

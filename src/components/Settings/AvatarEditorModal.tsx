@@ -75,7 +75,7 @@ const AvatarEditorModal = (props: Props) => {
           max="2"
           step="0.01"
           value={scale}
-          onChange={e => setScale(Number(e.target.value))}
+          onChange={event => setScale(Number(event.target.value))}
           className="grow"
         />
         <Icon path={mdiImagePlusOutline} size={1.2} />

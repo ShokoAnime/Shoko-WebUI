@@ -126,7 +126,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
                   id="pageSize"
                   type="number"
                   value={pageSize}
-                  onChange={e => setPageSize(toNumber(e.target.value))}
+                  onChange={event => setPageSize(toNumber(event.target.value))}
                   className="w-12 text-center"
                 />
                 <Button
@@ -149,7 +149,7 @@ const AddFilesModal = ({ onClose, show }: Props) => {
               placeholder="Search..."
               startIcon={mdiMagnify}
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={event => setSearch(event.target.value)}
             />
             <AddFilesSeriesList
               series={series}

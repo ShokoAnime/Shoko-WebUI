@@ -66,7 +66,7 @@ const TitleOptions = (props: Props) => {
           placeholder="Search..."
           startIcon={mdiMagnify}
           value={isSeries ? seriesSearch : groupSearch}
-          onChange={e => setSearch(e.target.value)}
+          onChange={event => setSearch(event.target.value)}
         />
         {!isSeries && (
           <>

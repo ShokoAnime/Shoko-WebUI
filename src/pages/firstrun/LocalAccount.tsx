@@ -55,7 +55,7 @@ function LocalAccount() {
           label="Username"
           type="text"
           placeholder="Username"
-          onChange={e => setUser({ ...user, Username: e.target.value })}
+          onChange={event => setUser({ ...user, Username: event.target.value })}
         />
         <Input
           id="Password"
@@ -63,7 +63,7 @@ function LocalAccount() {
           label="Password"
           type="password"
           placeholder="Password"
-          onChange={e => setUser({ ...user, Password: e.target.value })}
+          onChange={event => setUser({ ...user, Password: event.target.value })}
           className="mt-9"
         />
         {/* TODO: Add functionality for setting avatar */}

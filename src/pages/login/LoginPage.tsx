@@ -184,7 +184,7 @@ function LoginPage() {
                     label="Username"
                     type="text"
                     placeholder="Username"
-                    onChange={e => setUsername(e.target.value)}
+                    onChange={event => setUsername(event.target.value)}
                   />
                   <Input
                     id="password"
@@ -192,13 +192,13 @@ function LoginPage() {
                     label="Password"
                     type="password"
                     placeholder="Password"
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={event => setPassword(event.target.value)}
                   />
                   <Checkbox
                     id="rememberUser"
                     label="Remember Me"
                     isChecked={rememberUser}
-                    onChange={e => setRememberUser(e.target.checked)}
+                    onChange={event => setRememberUser(event.target.checked)}
                     className="font-semibold"
                     labelRight
                   />

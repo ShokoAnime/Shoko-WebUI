@@ -82,7 +82,7 @@ const NameTab = ({ seriesId }: Props) => {
       <Input
         id="name"
         type="text"
-        onChange={e => setName(e.target.value)}
+        onChange={event => setName(event.target.value)}
         value={name}
         placeholder={isFetching ? 'Loading...' : undefined}
         label="Name"

@@ -61,7 +61,7 @@ function MediaType() {
     seriesSummaryArray.push([key, item ?? 0]);
   });
 
-  seriesSummaryArray.sort((a, b) => (a[1] < b[1] ? 1 : -1));
+  seriesSummaryArray.sort((summaryA, summaryB) => (summaryA[1] < summaryB[1] ? 1 : -1));
 
   const items: React.ReactNode[] = [];
 

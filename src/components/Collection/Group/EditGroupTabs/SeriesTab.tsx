@@ -27,7 +27,10 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
     isSuccess: seriesSuccess,
   } = useGroupSeriesQuery(groupId);
 
-  const sortedSeriesData = useMemo(() => seriesData?.sort((a, b) => (a.IDs.ID > b.IDs.ID ? 1 : -1)), [seriesData]);
+  const sortedSeriesData = useMemo(
+    () => seriesData?.sort((seriesA, seriesB) => (seriesA.IDs.ID > seriesB.IDs.ID ? 1 : -1)),
+    [seriesData],
+  );
 
   const { mutate: moveToNewGroupMutation } = useCreateGroupMutation();
   const { mutate: setGroupMainSeriesMutation } = usePatchGroupMutation();

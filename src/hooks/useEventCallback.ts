@@ -6,10 +6,10 @@ import { useLayoutEffect, useMemo, useRef } from 'react';
 // Typed same as useCallback
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-const useEventCallback = <T extends Function>(fn: T): T => {
-  const ref = useRef<T>(fn);
+const useEventCallback = <T extends Function>(func: T): T => {
+  const ref = useRef<T>(func);
   useLayoutEffect(() => {
-    ref.current = fn;
+    ref.current = func;
   });
   // @ts-expect-error if you can figure out how to type it, go ahead
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

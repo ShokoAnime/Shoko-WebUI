@@ -59,7 +59,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
           rel="noreferrer noopener"
           className="mr-6 cursor-pointer text-panel-text-primary"
           aria-label="Open AniDB series page"
-          onClick={e => e.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>
@@ -237,7 +237,7 @@ function ManuallyLinkedTab() {
               startIcon={mdiMagnify}
               id="search"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={event => setSearch(event.target.value)}
               inputClassName="px-4 py-3"
             />
             <Menu selectedFiles={selectedFiles} setSelectedFiles={setSelectedFiles} />

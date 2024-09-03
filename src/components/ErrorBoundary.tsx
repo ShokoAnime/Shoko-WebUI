@@ -41,8 +41,7 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
   const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
   const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
 
-  // eslint-disable-next-line no-console
-  console.log(error, routeError);
+  console.error(error, routeError);
 
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-6">

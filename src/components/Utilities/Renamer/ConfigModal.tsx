@@ -102,7 +102,7 @@ const ConfigModal = (props: Props) => {
         label="Renamer"
         id="renamer"
         value={selectedRenamer}
-        onChange={e => setSelectedRenamer(e.target.value)}
+        onChange={event => setSelectedRenamer(event.target.value)}
         disabled={rename}
       >
         {renamers?.map(renamer => (
@@ -129,7 +129,7 @@ const ConfigModal = (props: Props) => {
         type="text"
         label="Config Name"
         value={configName}
-        onChange={e => setConfigName(e.target.value)}
+        onChange={event => setConfigName(event.target.value)}
       />
 
       <div className="flex justify-end gap-x-3 font-semibold">

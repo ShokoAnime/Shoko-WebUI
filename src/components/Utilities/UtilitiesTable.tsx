@@ -126,7 +126,7 @@ const Row = (
             {ExpandedNode && (
               <AnimateHeight
                 height={open ? 'auto' : 0}
-                onClick={e => e.stopPropagation()}
+                onClick={event => event.stopPropagation()}
                 className="cursor-default"
               >
                 <ExpandedNode id={selectRowId(row)} open={open} />
@@ -262,8 +262,8 @@ const UtilitiesTable = (props: Props) => {
           ? rowSelection[selectRowId(rows[lastRowSelected.current?.index])]
           : true;
         const tempRowSelection: Record<number, boolean> = {};
-        for (let i = fromIndex; i <= toIndex; i += 1) {
-          const id = selectRowId(rows[i]);
+        for (let index = fromIndex; index <= toIndex; index += 1) {
+          const id = selectRowId(rows[index]);
           tempRowSelection[id] = isSelected;
         }
         setSelectedRows(tempRowSelection);

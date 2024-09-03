@@ -64,7 +64,7 @@ export function mergeDeep(...objects: object[]) {
   }, {});
 }
 
-export const formatThousand = (n: number) => formatThousands(n, ',');
+export const formatThousand = (num: number) => formatThousands(num, ',');
 
 export const copyToClipboard = async (text: string, entityName?: string) => {
   try {

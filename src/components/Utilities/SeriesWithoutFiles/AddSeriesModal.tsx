@@ -66,7 +66,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
             value={searchText}
             type="text"
             placeholder="Search..."
-            onChange={e => setSearchText(e.target.value)}
+            onChange={event => setSearchText(event.target.value)}
             startIcon={mdiMagnify}
             disabled={isRefreshPending}
           />
@@ -103,7 +103,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
                             rel="noopener noreferrer"
                             className="text-panel-text-primary"
                             aria-label="Open AniDB series page"
-                            onClick={e => e.stopPropagation()}
+                            onClick={event => event.stopPropagation()}
                           >
                             <Icon path={mdiOpenInNew} size={0.833} />
                           </a>

@@ -61,8 +61,8 @@ const columns: UtilityHeaderType<SeriesType>[] = [
           rel="noreferrer noopener"
           className="flex gap-x-1 font-semibold"
           aria-label="Open AniDB series page"
-          onClick={e =>
-            e.stopPropagation()}
+          onClick={event =>
+            event.stopPropagation()}
         >
           <div>
             (
@@ -171,7 +171,7 @@ function SeriesWithoutFilesUtility() {
               startIcon={mdiMagnify}
               id="search"
               value={search}
-              onChange={e => setSearch(e.target.value)}
+              onChange={event => setSearch(event.target.value)}
               inputClassName="px-4 py-3"
             />
             <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />

@@ -19,7 +19,7 @@ export type CreditsModeType = 'Character' | 'Staff';
 
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
 
-const getUniqueRoles = (castList: SeriesCast[]) => [...new Set(castList.map(c => c.RoleDetails))];
+const getUniqueRoles = (castList: SeriesCast[]) => [...new Set(castList.map(cast => cast.RoleDetails))];
 
 const modeStates: { label?: string, value: CreditsModeType }[] = [
   { label: 'Characters', value: 'Character' },
@@ -82,13 +82,13 @@ const SeriesCredits = () => {
     Staff: getUniqueRoles(castByType.Staff),
   }), [castByType]);
 
-  const filteredCast = useMemo(() => (castByType[mode].filter(p => (
+  const filteredCast = useMemo(() => (castByType[mode].filter(item => (
     (search === ''
-      || !!([p?.Character?.Name, p?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
-    && !roleFilter.has(p?.RoleDetails)
-  )).sort((a, b) => {
-    if (a[mode].Name > b[mode].Name) return 1;
-    if (a[mode].Name < b[mode].Name) return -1;
+      || !!([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
+    && !roleFilter.has(item?.RoleDetails)
+  )).sort((castA, castB) => {
+    if (castA[mode].Name > castB[mode].Name) return 1;
+    if (castA[mode].Name < castB[mode].Name) return -1;
     return 0;
   })), [castByType, mode, search, roleFilter]);
 
