@@ -13,7 +13,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import 'react-toastify/dist/ReactToastify.min.css';
-import semver from 'semver';
 import { siDiscord } from 'simple-icons';
 
 import Button from '@/components/Input/Button';
@@ -24,7 +23,6 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useRandomImageMetadataQuery } from '@/core/react-query/image/queries';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { ImageTypeEnum } from '@/core/types/api/common';
-import { getParsedSupportedServerVersion, parseServerVersion } from '@/core/util';
 
 import type { RootState } from '@/core/store';
 
@@ -112,24 +110,6 @@ function LoginPage() {
 
     return versionQuery.data.Server.Version;
   }, [versionQuery.data, versionQuery.isFetching]);
-
-  useEffect(() => {
-    if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
-
-    const serverData = versionQuery.data.Server;
-
-    let isServerSupported = true;
-
-    if (!serverData.ReleaseDate && serverData.ReleaseChannel === 'Stable') isServerSupported = false;
-
-    const semverVersion = parseServerVersion(serverData.Version);
-    const mininumVersion = getParsedSupportedServerVersion();
-    if (semverVersion && semver.lt(semverVersion, mininumVersion)) isServerSupported = false;
-
-    if (!isServerSupported) {
-      navigate('/webui/unsupported');
-    }
-  }, [navigate, versionQuery.data]);
 
   return (
     <>

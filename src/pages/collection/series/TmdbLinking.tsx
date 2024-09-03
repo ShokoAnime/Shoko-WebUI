@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, filter, forEach, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -116,7 +116,7 @@ const TmdbLinking = () => {
   const [
     linkOverrides,
     setLinkOverrides,
-  ] = useImmer({} as Record<number, number[]>);
+  ] = useImmer<Record<number, number[]>>({});
 
   const estimateSize = useEventCallback((index: number) => {
     const episode = episodes[index];
@@ -173,14 +173,13 @@ const TmdbLinking = () => {
       const episodeId = toNumber(anidbEpisodeId);
       tempXrefs[episodeId] = [];
       forEach(overrideIds, (overrideId, index) => {
-        if (overrideId === 0) return;
         tempXrefs[episodeId].push({
           AnidbAnimeID: seriesQuery.data.IDs.AniDB,
           AnidbEpisodeID: episodeId,
           TmdbShowID: tmdbId,
           TmdbEpisodeID: overrideId,
           Index: index,
-          Rating: MatchRatingType.UserVerified,
+          Rating: (overrideId <= 0 ? MatchRatingType.None : MatchRatingType.UserVerified),
         });
       });
     });
@@ -281,7 +280,16 @@ const TmdbLinking = () => {
     if (type === 'Movie') {
       return Object.keys(linkOverrides).length === 0;
     }
-    return Object.keys(linkOverrides).length === 0 && !isNewLink;
+
+    const allEmptyLinks = every(
+      linkOverrides,
+      (overrides) => {
+        if (overrides[0] !== -1) return false;
+        return !some(overrides.slice(1), override => override !== 0);
+      },
+    );
+
+    return allEmptyLinks || (Object.keys(linkOverrides).length === 0 && !isNewLink);
   }, [isNewLink, linkOverrides, type]);
 
   const handleNewLinkEdit = useEventCallback(() => {
@@ -314,17 +322,29 @@ const TmdbLinking = () => {
             )}
           >
             <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-              AniDB |&nbsp;
+              <div className="shrink-0">
+                AniDB |&nbsp;
+              </div>
               <a
                 className="flex cursor-pointer font-semibold text-panel-text-primary"
                 href={`https://anidb.net/anime/${seriesQuery.data.IDs.AniDB}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-tooltip-id="tooltip"
+                data-tooltip-content={seriesQuery.data.Name}
               >
-                {seriesQuery.data.IDs.AniDB}
-                &nbsp;-&nbsp;
-                {seriesQuery.data.Name}
-                <Icon path={mdiOpenInNew} size={1} className="ml-2" />
+                <div className="shrink-0">
+                  {seriesQuery.data.IDs.AniDB}
+                  &nbsp;-&nbsp;
+                </div>
+
+                <div className="line-clamp-1">
+                  {seriesQuery.data.Name}
+                </div>
+
+                <div className="ml-2 shrink-0">
+                  <Icon path={mdiOpenInNew} size={1} />
+                </div>
               </a>
             </div>
 
@@ -336,17 +356,29 @@ const TmdbLinking = () => {
                   {tmdbShowOrMovieQuery.data && (
                     <>
                       <div className="flex items-center">
-                        TMDB |&nbsp;
+                        <div className="shrink-0">
+                          TMDB |&nbsp;
+                        </div>
                         <a
                           className="flex cursor-pointer font-semibold text-panel-text-primary"
                           href={`https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${tmdbId}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          data-tooltip-id="tooltip"
+                          data-tooltip-content={tmdbShowOrMovieQuery.data.Title}
                         >
-                          {tmdbId}
-                          &nbsp;-&nbsp;
-                          {tmdbShowOrMovieQuery.data.Title}
-                          <Icon path={mdiOpenInNew} size={1} className="ml-2" />
+                          <div className="shrink-0">
+                            {tmdbId}
+                            &nbsp;-&nbsp;
+                          </div>
+
+                          <div className="line-clamp-1">
+                            {tmdbShowOrMovieQuery.data.Title}
+                          </div>
+
+                          <div className="ml-2 shrink-0">
+                            <Icon path={mdiOpenInNew} size={1} />
+                          </div>
                         </a>
                       </div>
                       {isNewLink && (
@@ -376,12 +408,18 @@ const TmdbLinking = () => {
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.map((virtualItem) => {
-                const episode = episodes[virtualItem.index];
+                const episode = get(episodes, virtualItem.index, undefined);
                 const isOdd = virtualItem.index % 2 === 1;
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
-                const overrides = linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0];
+                const overrides = episode
+                  ? (linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0])
+                  : [0];
+
+                const existingXrefs = episode
+                  ? episodeXrefs?.[episode.IDs.AniDB]?.map(xref => xref.TmdbEpisodeID)
+                  : undefined;
 
                 return (
                   <div
@@ -410,6 +448,7 @@ const TmdbLinking = () => {
                               isOdd={isOdd}
                               setLinkOverrides={setLinkOverrides}
                               tmdbEpisodesPending={tmdbEpisodesQuery.isPending}
+                              existingXrefs={existingXrefs}
                               xrefs={finalEpisodeXrefs}
                             />
                           </div>

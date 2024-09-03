@@ -20,12 +20,14 @@ type Props = {
   offset: number;
   setLinkOverrides: Updater<Record<number, number[]>>;
   tmdbEpisodesPending: boolean;
+  existingXrefs?: number[];
   xrefs?: Record<string, TmdbEpisodeXrefType[]>;
 };
 
 const EpisodeRow = React.memo((props: Props) => {
   const {
     episode,
+    existingXrefs,
     isOdd,
     offset,
     setLinkOverrides,
@@ -66,11 +68,28 @@ const EpisodeRow = React.memo((props: Props) => {
     setLinkOverrides((draftState) => {
       if (!draftState[episodeId]) {
         draftState[episodeId] = map(xrefs?.[episodeId], item => item.TmdbEpisodeID);
+        if (draftState[episodeId].length === 0) draftState[episodeId].push(-1);
       }
 
-      // If index is 0, we are removing a link
-      if (offset === 0) draftState[episodeId].push(0);
-      else draftState[episodeId].splice(offset, 1);
+      // If offset is 0, we are adding a link
+      if (offset === 0) {
+        draftState[episodeId].push(0);
+        return;
+      }
+
+      draftState[episodeId].splice(offset, 1);
+
+      // When existing xrefs are present and are more than 1,
+      // we need to keep the first link to "overwrite" others
+      if (existingXrefs && existingXrefs.length > 1) {
+        return;
+      }
+
+      // When only one is preset, we can remove the override
+      // if existingXref was present or if it was the "first" empty link
+      if (draftState[episodeId].length === 1 && (existingXrefs ?? draftState[episodeId][0] === -1)) {
+        delete draftState[episodeId];
+      }
     });
   });
 
@@ -83,9 +102,15 @@ const EpisodeRow = React.memo((props: Props) => {
 
       if (newTmdbId === undefined) {
         delete draftState[episodeId][offset];
-      } else {
-        draftState[episodeId][offset] = newTmdbId;
+        return;
       }
+
+      if (newTmdbId === 0 && !existingXrefs && offset === 0) {
+        delete draftState[episodeId];
+        return;
+      }
+
+      draftState[episodeId][offset] = newTmdbId;
     });
   });
 

@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { countBy, flatMap } from 'lodash';
+import { countBy, filter, flatMap } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
+import { MatchRatingType } from '@/core/types/api/episode';
 
-import type { MatchRatingType } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 type Props = {
@@ -26,7 +26,13 @@ const TopPanel = (props: Props) => {
   const navigate = useNavigate();
 
   const flatXrefs = useMemo(
-    () => (xrefs ? flatMap(xrefs, xref => xref) : undefined),
+    () => {
+      if (!xrefs) return undefined;
+      return filter(
+        flatMap(xrefs, xref => xref),
+        xref => xref.Rating !== MatchRatingType.None,
+      );
+    },
     [xrefs],
   );
 

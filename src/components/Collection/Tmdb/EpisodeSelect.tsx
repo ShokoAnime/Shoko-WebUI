@@ -93,7 +93,12 @@ const EpisodeSelect = React.memo((props: Props) => {
             <div className="w-8 shrink-0">
               {tmdbEpisode?.EpisodeNumber ? padNumber(tmdbEpisode.EpisodeNumber) : 'XX'}
             </div>
-            <div className="line-clamp-1 grow text-left">
+
+            <div
+              className="line-clamp-1 grow text-left"
+              data-tooltip-id="tooltip"
+              data-tooltip-content={tmdbEpisode?.Title ?? ''}
+            >
               {tmdbEpisode?.Title ?? 'Entry Not Linked'}
             </div>
 
@@ -189,9 +194,15 @@ const EpisodeSelect = React.memo((props: Props) => {
                             : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
                         </div>
                         |
-                        <div className="ml-4 line-clamp-1 grow basis-0">
+
+                        <div
+                          className="ml-4 line-clamp-1 grow basis-0"
+                          data-tooltip-id="tooltip"
+                          data-tooltip-content={episode?.Title ?? ''}
+                        >
                           {episode?.Title ?? 'Do Not Link Entry'}
                         </div>
+
                         <div className="pr-4">
                           {episode?.AiredAt ?? ''}
                         </div>
