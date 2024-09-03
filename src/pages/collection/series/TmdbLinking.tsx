@@ -173,14 +173,13 @@ const TmdbLinking = () => {
       const episodeId = toNumber(anidbEpisodeId);
       tempXrefs[episodeId] = [];
       forEach(overrideIds, (overrideId, index) => {
-        if (overrideId === 0) return;
         tempXrefs[episodeId].push({
           AnidbAnimeID: seriesQuery.data.IDs.AniDB,
           AnidbEpisodeID: episodeId,
           TmdbShowID: tmdbId,
           TmdbEpisodeID: overrideId,
           Index: index,
-          Rating: MatchRatingType.UserVerified,
+          Rating: (overrideId <= 0 ? MatchRatingType.None : MatchRatingType.UserVerified),
         });
       });
     });
@@ -281,7 +280,16 @@ const TmdbLinking = () => {
     if (type === 'Movie') {
       return Object.keys(linkOverrides).length === 0;
     }
-    return Object.keys(linkOverrides).length === 0 && !isNewLink;
+
+    const allEmptyLinks = some(
+      linkOverrides,
+      (overrides) => {
+        if (overrides[0] !== -1) return false;
+        return !some(overrides.slice(1), override => override !== 0);
+      },
+    );
+
+    return allEmptyLinks || (Object.keys(linkOverrides).length === 0 && !isNewLink);
   }, [isNewLink, linkOverrides, type]);
 
   const handleNewLinkEdit = useEventCallback(() => {
@@ -385,6 +393,10 @@ const TmdbLinking = () => {
                   ? (linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0])
                   : [0];
 
+                const existingXrefs = episode
+                  ? episodeXrefs?.[episode.IDs.AniDB]?.map(xref => xref.TmdbEpisodeID)
+                  : undefined;
+
                 return (
                   <div
                     className={cx(
@@ -412,6 +424,7 @@ const TmdbLinking = () => {
                               isOdd={isOdd}
                               setLinkOverrides={setLinkOverrides}
                               tmdbEpisodesPending={tmdbEpisodesQuery.isPending}
+                              existingXrefs={existingXrefs}
                               xrefs={finalEpisodeXrefs}
                             />
                           </div>
