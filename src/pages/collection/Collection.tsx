@@ -220,7 +220,7 @@ function Collection() {
       <div className="flex grow">
         <CollectionView
           groupExtras={groupExtras ?? []}
-          fetchNextPage={() => groupsQuery.fetchNextPage()}
+          fetchNextPage={groupsQuery.fetchNextPage}
           isFetchingNextPage={groupsQuery.isFetchingNextPage}
           isFetching={isFetching}
           isSeries={isSeries}
