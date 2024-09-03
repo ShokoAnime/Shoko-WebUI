@@ -28,7 +28,7 @@ export type TmdbXrefType = {
 
 export type TmdbEpisodeXrefType = {
   TmdbShowID: number;
-  TmdbEpisodeID?: number;
+  TmdbEpisodeID: number;
   Index: number;
   Rating: MatchRatingType;
 } & TmdbXrefType;

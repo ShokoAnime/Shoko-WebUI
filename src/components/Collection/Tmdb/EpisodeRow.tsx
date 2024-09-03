@@ -18,74 +18,96 @@ import type { Updater } from 'use-immer';
 type Props = {
   episode: EpisodeType;
   isOdd: boolean;
-  overrides: Record<number, number>;
-  setLinkOverrides: Updater<Record<number, number>>;
+  offset: number;
+  overrides: Record<number, (number | undefined)[] | undefined>;
+  setLinkOverrides: Updater<Record<number, (number | undefined)[] | undefined>>;
   tmdbEpisodesPending: boolean;
-  xrefs?: TmdbEpisodeXrefType[];
+  xref?: TmdbEpisodeXrefType;
+  xrefsPending: boolean;
 };
 
 const EpisodeRow = React.memo((props: Props) => {
   const {
     episode,
     isOdd,
+    offset,
     overrides,
     setLinkOverrides,
     tmdbEpisodesPending,
-    xrefs,
+    xref,
+    xrefsPending,
   } = props;
-
-  // TODO: Add support for 1-n (1 AniDB - n TMDB) mapping
-  const xref = useMemo(
-    () => xrefs?.find(ref => ref.AnidbEpisodeID === episode.IDs.AniDB),
-    [episode.IDs.AniDB, xrefs],
-  );
 
   // This does not actually query the server. We already queried it in the parent component
   // This just gets the data from the cache
   const tmdbEpisodesQuery = useTmdbBulkEpisodesQuery({ IDs: [] });
   const tmdbEpisode = useMemo(() => {
-    if (!xref || !('TmdbEpisodeID' in xref)) return undefined;
+    if (!xref || xref.TmdbEpisodeID === 0) return undefined;
     return find(tmdbEpisodesQuery.data, { ID: xref.TmdbEpisodeID });
   }, [tmdbEpisodesQuery.data, xref]);
 
   const isPending = useMemo(
     () => {
       // Xrefs are not loaded yet
-      if (!xrefs) return true;
+      if (xrefsPending) return true;
       // Xrefs are loaded but episode doesn't have an xref
       if (!xref) return false;
 
       return !tmdbEpisode && tmdbEpisodesPending;
     },
-    [tmdbEpisode, tmdbEpisodesPending, xref, xrefs],
+    [tmdbEpisode, tmdbEpisodesPending, xref, xrefsPending],
   );
+
+  const addLink = useEventCallback(() => {
+    const anidbEpisodeId = episode.IDs.AniDB;
+    setLinkOverrides((draftState) => {
+      if (!draftState[anidbEpisodeId]) draftState[anidbEpisodeId] = [undefined];
+      draftState[anidbEpisodeId]![draftState[anidbEpisodeId]!.length] = undefined;
+    });
+  });
+
+  const removeLink = useEventCallback(() => {
+    setLinkOverrides((draftState) => {
+      if (!draftState[episode.IDs.AniDB]) draftState[episode.IDs.AniDB] = [undefined];
+      draftState[episode.IDs.AniDB]!.splice(offset, 1);
+    });
+  });
 
   const overrideLink = useEventCallback((newTmdbId?: number) => {
     const anidbEpisodeId = episode.IDs.AniDB;
     setLinkOverrides((draftState) => {
-      if (newTmdbId === null || newTmdbId === undefined || newTmdbId === tmdbEpisode?.ID) {
-        delete draftState[anidbEpisodeId];
-      } else draftState[anidbEpisodeId] = newTmdbId;
+      if (!draftState[anidbEpisodeId]) draftState[anidbEpisodeId] = [undefined];
+      if (
+        newTmdbId === null || newTmdbId === undefined
+        || (newTmdbId === tmdbEpisode?.ID && draftState[anidbEpisodeId]![offset] !== undefined)
+      ) {
+        draftState[anidbEpisodeId]![offset] = undefined;
+      } else draftState[anidbEpisodeId]![offset] = newTmdbId;
     });
   });
 
   const matchRating = useMemo(() => {
     if (isPending) return undefined;
-    if (overrides[episode.IDs.AniDB] === 0) return undefined;
-    if (overrides[episode.IDs.AniDB]) return MatchRatingType.UserVerified;
+    if (overrides[episode.IDs.AniDB]?.[offset] === 0) return undefined;
+    if (overrides[episode.IDs.AniDB]?.[offset]) return MatchRatingType.UserVerified;
     return xref?.Rating;
-  }, [episode, isPending, overrides, xref]);
+  }, [episode, isPending, overrides, xref, offset]);
 
   return (
     <>
-      <AniDBEpisode episode={episode} isOdd={isOdd} />
+      <AniDBEpisode
+        episode={episode}
+        isOdd={isOdd}
+        extra={offset > 0}
+        onIconClick={offset === 0 ? addLink : removeLink}
+      />
 
-      <MatchRating rating={matchRating} />
+      <MatchRating rating={matchRating} isOdd={isOdd} />
 
       {!isPending && (
         <EpisodeSelect
           isOdd={isOdd}
-          override={overrides[episode.IDs.AniDB]}
+          override={overrides[episode.IDs.AniDB]?.[offset]}
           overrideLink={overrideLink}
           tmdbEpisode={tmdbEpisode}
         />

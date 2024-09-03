@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { countBy } from 'lodash';
+import { countBy, flatMap } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -17,7 +17,7 @@ type Props = {
   disableCreateLink: boolean;
   handleCreateLink: () => void;
   seriesId: number;
-  xrefs?: TmdbEpisodeXrefType[];
+  xrefs?: Record<string, TmdbEpisodeXrefType[] | undefined>;
   xrefsCount?: number;
 };
 
@@ -25,18 +25,23 @@ const TopPanel = (props: Props) => {
   const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
   const navigate = useNavigate();
 
+  const flatXrefs = useMemo(() => (xrefs ? flatMap(xrefs, x => x) as TmdbEpisodeXrefType[] : undefined), [xrefs]);
+
   const matchRatingCounts = useMemo(
-    () => (xrefs ? countBy(xrefs, 'Rating') : {}),
-    [xrefs],
+    () => (flatXrefs ? countBy(flatXrefs, 'Rating') : {}),
+    [flatXrefs],
   ) as Record<MatchRatingType, number>;
 
   return (
-    <ShokoPanel title="Metadata Linking" options={<ItemCount count={xrefsCount ?? 0} suffix="Entries" />}>
+    <ShokoPanel
+      title="Metadata Linking"
+      options={<ItemCount count={xrefsCount ?? flatXrefs?.length ?? 0} suffix="Entries" />}
+    >
       <div className="flex items-center gap-x-3">
         <div
           className={cx(
             'flex grow items-center gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3',
-            !xrefs && 'opacity-50 pointer-events-none',
+            !flatXrefs && 'opacity-50 pointer-events-none',
           )}
         >
           <div className="flex items-center gap-x-2">

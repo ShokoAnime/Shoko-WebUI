@@ -19,7 +19,7 @@ import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
 type Props = {
   isOdd: boolean;
   overrideLink: (newTmdbId?: number) => void;
-  override: number;
+  override: number | undefined;
   tmdbEpisode?: TmdbEpisodeType;
 };
 
