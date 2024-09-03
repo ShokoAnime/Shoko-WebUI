@@ -197,7 +197,7 @@ export type SeriesRolePerson = {
 export type SeriesCast = {
   Language: string;
   Staff: SeriesRolePerson;
-  Character: SeriesRolePerson;
+  Character?: SeriesRolePerson;
   RoleName: string;
   RoleDetails: string;
 };

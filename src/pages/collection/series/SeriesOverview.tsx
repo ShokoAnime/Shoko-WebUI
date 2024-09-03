@@ -246,9 +246,9 @@ const SeriesOverview = () => {
       )}
       <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
-          {cast?.filter(credit => credit.RoleName === 'Seiyuu').slice(0, 20).map(seiyuu => (
+          {cast?.filter(credit => credit.RoleName === 'Seiyuu' && credit.Character).slice(0, 20).map(seiyuu => (
             <div
-              key={`${seiyuu.Character.Name}-${Math.random() * (cast.length + seiyuu.Character.Name.length)}`}
+              key={`${seiyuu.Character?.Name}-${Math.random() * (cast.length + (seiyuu.Character?.Name.length ?? 0))}`}
               className="flex flex-col items-center gap-y-3 pb-3"
             >
               <div className="flex gap-x-4">
@@ -262,7 +262,7 @@ const SeriesOverview = () => {
                 />
               </div>
               <div className="flex flex-col items-center">
-                <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character.Name}</span>
+                <span className="line-clamp-1 text-ellipsis text-xl font-semibold">{seiyuu.Character?.Name}</span>
                 <span className="line-clamp-1 text-ellipsis text-sm font-semibold opacity-65">
                   {seiyuu.Staff.Name}
                 </span>

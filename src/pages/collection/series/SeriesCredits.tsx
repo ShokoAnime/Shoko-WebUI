@@ -87,8 +87,10 @@ const SeriesCredits = () => {
       || !!([item?.Character?.Name, item?.Staff?.Name].some(name => cleanString(name).match(cleanString(search)))))
     && !roleFilter.has(item?.RoleDetails)
   )).sort((castA, castB) => {
-    if (castA[mode].Name > castB[mode].Name) return 1;
-    if (castA[mode].Name < castB[mode].Name) return -1;
+    const nameA = castA[mode]?.Name ?? '';
+    const nameB = castB[mode]?.Name ?? '';
+    if (nameA > nameB) return 1;
+    if (nameA < nameB) return -1;
     return 0;
   })), [castByType, mode, search, roleFilter]);
 

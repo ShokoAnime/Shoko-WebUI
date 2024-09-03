@@ -72,7 +72,7 @@ const CollectionView = (props: Props) => {
     () =>
       debounce(() => {
         fetchNextPage().catch(() => {});
-      }, 50),
+      }, 100),
     [fetchNextPage],
   );
 
@@ -113,7 +113,7 @@ const CollectionView = (props: Props) => {
           // same eg. as above, this will 16
           const toIndex = fromIndex + itemsPerRow;
 
-          // Here, i will be the actual index of the group in group list
+          // Here, index will be the actual index of the group in group list
           for (let index = fromIndex; index < toIndex; index += 1) {
             const item = items[index];
 
