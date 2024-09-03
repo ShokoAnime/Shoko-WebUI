@@ -1,9 +1,10 @@
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
+import React, { useContext, useEffect, useMemo } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
 import { BodyVisibleContext } from '@/core/router';
+import useAutoFocusRef from '@/hooks/useAutoFocusRef';
 
 type EndIcon = {
   icon: string;
@@ -42,7 +43,7 @@ type TooltipAttributes = {
 
 const Input = React.memo((props: Props) => {
   const {
-    autoFocus,
+    autoFocus = false,
     center,
     className,
     disabled,
@@ -64,14 +65,8 @@ const Input = React.memo((props: Props) => {
   } = props;
 
   const bodyVisible = useContext(BodyVisibleContext);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const inputRef = useAutoFocusRef(autoFocus, bodyVisible);
   const [isShow, setIsShow] = React.useState(false);
-
-  useEffect(() => {
-    if (autoFocus && bodyVisible && inputRef.current) {
-      inputRef.current?.focus();
-    }
-  }, [autoFocus, bodyVisible]);
 
   useEffect(() => {
     if (isOverlay) return;

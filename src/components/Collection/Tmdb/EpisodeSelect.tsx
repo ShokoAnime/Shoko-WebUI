@@ -123,6 +123,7 @@ const EpisodeSelect = React.memo((props: Props) => {
           className="z-[110] w-[var(--button-width)] rounded-lg bg-panel-background focus:outline-none"
         >
           <Input
+            autoFocus
             id="episode-search"
             type="text"
             value={searchText}
