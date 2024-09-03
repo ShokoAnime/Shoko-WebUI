@@ -165,7 +165,7 @@ const TmdbLinking = () => {
 
   // Overrides merged with episodeXrefs
   const finalEpisodeXrefs = useMemo(() => {
-    if (!episodeXrefs || !seriesQuery.data) return {};
+    if (!episodeXrefs || !seriesQuery.data) return undefined;
 
     const tempXrefs: Record<number, TmdbEpisodeXrefType[]> = { ...episodeXrefs };
 
@@ -381,7 +381,7 @@ const TmdbLinking = () => {
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
-                const overrides = linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs[episode.IDs.AniDB] ?? [0];
+                const overrides = linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0];
 
                 return (
                   <div
