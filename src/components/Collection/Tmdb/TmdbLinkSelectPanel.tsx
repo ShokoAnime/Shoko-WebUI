@@ -143,6 +143,7 @@ const TmdbLinkSelectPanel = () => {
         placeholder="Enter Title or TMDB ID..."
         inputClassName="!p-4"
         startIcon={mdiMagnify}
+        autoFocus
       />
 
       <div className="relative h-96 rounded-lg border border-panel-border bg-panel-input p-4">
