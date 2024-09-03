@@ -2,13 +2,12 @@ import React, { useMemo } from 'react';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { find } from 'lodash';
+import { find, map } from 'lodash';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeSelect from '@/components/Collection/Tmdb/EpisodeSelect';
 import MatchRating from '@/components/Collection/Tmdb/MatchRating';
 import { useTmdbBulkEpisodesQuery } from '@/core/react-query/tmdb/queries';
-import { MatchRatingType } from '@/core/types/api/episode';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -19,11 +18,9 @@ type Props = {
   episode: EpisodeType;
   isOdd: boolean;
   offset: number;
-  overrides: Record<number, (number | undefined)[] | undefined>;
-  setLinkOverrides: Updater<Record<number, (number | undefined)[] | undefined>>;
+  setLinkOverrides: Updater<Record<number, number[]>>;
   tmdbEpisodesPending: boolean;
-  xref?: TmdbEpisodeXrefType;
-  xrefsPending: boolean;
+  xrefs?: Record<string, TmdbEpisodeXrefType[]>;
 };
 
 const EpisodeRow = React.memo((props: Props) => {
@@ -31,12 +28,18 @@ const EpisodeRow = React.memo((props: Props) => {
     episode,
     isOdd,
     offset,
-    overrides,
     setLinkOverrides,
     tmdbEpisodesPending,
-    xref,
-    xrefsPending,
+    xrefs,
   } = props;
+
+  const xref = useMemo(
+    () => {
+      if (!xrefs?.[episode.IDs.AniDB]) return undefined;
+      return xrefs[episode.IDs.AniDB][offset];
+    },
+    [episode.IDs.AniDB, offset, xrefs],
+  );
 
   // This does not actually query the server. We already queried it in the parent component
   // This just gets the data from the cache
@@ -49,49 +52,47 @@ const EpisodeRow = React.memo((props: Props) => {
   const isPending = useMemo(
     () => {
       // Xrefs are not loaded yet
-      if (xrefsPending) return true;
+      if (!xrefs) return true;
       // Xrefs are loaded but episode doesn't have an xref
       if (!xref) return false;
 
       return !tmdbEpisode && tmdbEpisodesPending;
     },
-    [tmdbEpisode, tmdbEpisodesPending, xref, xrefsPending],
+    [tmdbEpisode, tmdbEpisodesPending, xref, xrefs],
   );
 
-  const addLink = useEventCallback(() => {
-    const anidbEpisodeId = episode.IDs.AniDB;
+  const editExtraEpisodeLink = useEventCallback(() => {
+    const episodeId = episode.IDs.AniDB;
     setLinkOverrides((draftState) => {
-      if (!draftState[anidbEpisodeId]) draftState[anidbEpisodeId] = [undefined];
-      draftState[anidbEpisodeId]![draftState[anidbEpisodeId]!.length] = undefined;
-    });
-  });
+      if (!draftState[episodeId]) {
+        draftState[episodeId] = map(xrefs?.[episodeId], item => item.TmdbEpisodeID);
+      }
 
-  const removeLink = useEventCallback(() => {
-    setLinkOverrides((draftState) => {
-      if (!draftState[episode.IDs.AniDB]) draftState[episode.IDs.AniDB] = [undefined];
-      draftState[episode.IDs.AniDB]!.splice(offset, 1);
+      // If index is 0, we are removing a link
+      if (offset === 0) draftState[episodeId].push(0);
+      else draftState[episodeId].splice(offset, 1);
     });
   });
 
   const overrideLink = useEventCallback((newTmdbId?: number) => {
-    const anidbEpisodeId = episode.IDs.AniDB;
+    const episodeId = episode.IDs.AniDB;
     setLinkOverrides((draftState) => {
-      if (!draftState[anidbEpisodeId]) draftState[anidbEpisodeId] = [undefined];
-      if (
-        newTmdbId === null || newTmdbId === undefined
-        || (newTmdbId === tmdbEpisode?.ID && draftState[anidbEpisodeId]![offset] !== undefined)
-      ) {
-        draftState[anidbEpisodeId]![offset] = undefined;
-      } else draftState[anidbEpisodeId]![offset] = newTmdbId;
+      if (!draftState[episodeId]) {
+        draftState[episodeId] = map(xrefs?.[episodeId], item => item.TmdbEpisodeID);
+      }
+
+      if (newTmdbId === undefined) {
+        delete draftState[episodeId][offset];
+      } else {
+        draftState[episodeId][offset] = newTmdbId;
+      }
     });
   });
 
   const matchRating = useMemo(() => {
     if (isPending) return undefined;
-    if (overrides[episode.IDs.AniDB]?.[offset] === 0) return undefined;
-    if (overrides[episode.IDs.AniDB]?.[offset]) return MatchRatingType.UserVerified;
     return xref?.Rating;
-  }, [episode, isPending, overrides, xref, offset]);
+  }, [isPending, xref]);
 
   return (
     <>
@@ -99,7 +100,7 @@ const EpisodeRow = React.memo((props: Props) => {
         episode={episode}
         isOdd={isOdd}
         extra={offset > 0}
-        onIconClick={offset === 0 ? addLink : removeLink}
+        onIconClick={editExtraEpisodeLink}
       />
 
       <MatchRating rating={matchRating} isOdd={isOdd} />
@@ -107,7 +108,7 @@ const EpisodeRow = React.memo((props: Props) => {
       {!isPending && (
         <EpisodeSelect
           isOdd={isOdd}
-          override={overrides[episode.IDs.AniDB]?.[offset]}
+          override={xref?.TmdbEpisodeID}
           overrideLink={overrideLink}
           tmdbEpisode={tmdbEpisode}
         />

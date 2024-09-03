@@ -38,7 +38,7 @@ export type TmdbSearchRequestType = {
   year?: number;
 } & PaginationType;
 
-type TmdbEpisodeXrefMappingRequestType = {
+export type TmdbEpisodeXrefMappingRequestType = {
   AniDBID: number;
   TmdbID: number;
   Replace?: boolean;

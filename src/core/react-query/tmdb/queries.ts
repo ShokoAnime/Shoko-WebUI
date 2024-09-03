@@ -4,6 +4,7 @@ import { toNumber } from 'lodash';
 
 import { axios } from '@/core/axios';
 import queryClient from '@/core/react-query/queryClient';
+import { cleanTmdbEpisodeXrefs } from '@/core/react-query/tmdb/helpers';
 
 import type {
   TmdbBulkRequestType,
@@ -28,13 +29,14 @@ export const useTmdbEpisodeXrefsQuery = (
   params: TmdbEpisodeXrefRequestType,
   enabled = true,
 ) =>
-  useQuery<ListResultType<TmdbEpisodeXrefType>>({
+  useQuery<ListResultType<TmdbEpisodeXrefType>, unknown, TmdbEpisodeXrefType[]>({
     queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params],
     queryFn: () =>
       axios.get(
         `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
         { params },
       ),
+    select: cleanTmdbEpisodeXrefs,
     enabled,
   });
 
@@ -64,7 +66,7 @@ export const useTmdbShowEpisodesQuery = (showId: number, params: TmdbShowEpisode
 
 export const useTmdbShowOrMovieQuery = (tmdbId: number, type: 'Show' | 'Movie', enabled = true) =>
   useQuery<TmdbBaseItemType>({
-    queryKey: ['series', 'tmdb', enabled ? type.toLowerCase() : 'unknown', tmdbId],
+    queryKey: ['series', 'tmdb', type, tmdbId],
     queryFn: () => axios.get(type === 'Movie' ? `Tmdb/Movie/Online/${tmdbId}` : `Tmdb/Show/${tmdbId}`),
     enabled,
   });
@@ -83,7 +85,7 @@ export const useTmdbSearchQuery = (
         try {
           const idLookupData: TmdbSearchResultType = await axios.get(`Tmdb/${type}/Online/${query}`);
           finalData.push(idLookupData);
-        } catch (e) {
+        } catch (error) {
           // Ignore, show/movie not found on TMDB with provided ID
         }
       }

@@ -17,13 +17,19 @@ import type { Updater } from 'use-immer';
 type Props = {
   episode: EpisodeType;
   isOdd: boolean;
-  overrides: Record<number, (number | undefined)[] | undefined>;
-  setLinkOverrides: Updater<Record<number, (number | undefined)[] | undefined>>;
+  overrides: Record<number, number[]>;
+  setLinkOverrides: Updater<Record<number, number[]>>;
   xrefs?: TmdbMovieXrefType[];
 };
 
 const MovieRow = React.memo((props: Props) => {
-  const { episode, isOdd, overrides, setLinkOverrides, xrefs } = props;
+  const {
+    episode,
+    isOdd,
+    overrides,
+    setLinkOverrides,
+    xrefs,
+  } = props;
 
   const [searchParams] = useSearchParams();
   const tmdbId = toNumber(searchParams.get('id'));
@@ -68,12 +74,11 @@ const MovieRow = React.memo((props: Props) => {
     setLinkOverrides((draftState) => {
       const anidbEpisodeId = episode.IDs.AniDB;
       const newTmdbId = tmdbMovie?.ID ? 0 : tmdbId;
-      if (!draftState[anidbEpisodeId]) draftState[anidbEpisodeId] = [undefined];
       // If already linked episode was unlinked and linked again, remove override
-      if (draftState[anidbEpisodeId]![0] === 0 && newTmdbId === tmdbId) delete draftState[anidbEpisodeId];
+      if (draftState[anidbEpisodeId]?.[0] === 0 && newTmdbId === tmdbId) delete draftState[anidbEpisodeId];
       // If new link was created and removed, remove override
-      else if (draftState[anidbEpisodeId]![0] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
-      else draftState[anidbEpisodeId]![0] = newTmdbId;
+      else if (draftState[anidbEpisodeId]?.[0] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
+      else draftState[anidbEpisodeId] = [newTmdbId];
     });
   });
 

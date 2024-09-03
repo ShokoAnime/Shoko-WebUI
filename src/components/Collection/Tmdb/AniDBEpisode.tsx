@@ -23,30 +23,15 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
       isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
     )}
   >
-    {!extra && (
-      <>
-        <div className="w-8">
-          {getEpisodePrefixAlt(episode.AniDB?.Type)}
-        </div>
-        <div className="w-8">{padNumber(episode.AniDB?.EpisodeNumber ?? 0)}</div>
-        <div className="line-clamp-1 grow text-left">{episode.Name}</div>
-        {onIconClick && (
-          <Button onClick={onIconClick} tooltip="Add link">
-            <Icon path={mdiPlus} size={1} className="text-panel-icon-action" />
-          </Button>
-        )}
-      </>
-    )}
-
-    {extra && (
-      <>
-        <div className="grow" />
-        {onIconClick && (
-          <Button onClick={onIconClick} tooltip="Remove link">
-            <Icon path={mdiMinus} size={1} className="text-panel-icon-action" />
-          </Button>
-        )}
-      </>
+    <div className={cx('w-8', extra && 'opacity-65')}>
+      {getEpisodePrefixAlt(episode.AniDB?.Type)}
+    </div>
+    <div className={cx('w-8', extra && 'opacity-65')}>{padNumber(episode.AniDB?.EpisodeNumber ?? 0)}</div>
+    <div className={cx('line-clamp-1 grow text-left', extra && 'opacity-65')}>{episode.Name}</div>
+    {onIconClick && (
+      <Button onClick={onIconClick} tooltip={extra ? 'Remove link' : 'Add link'}>
+        <Icon path={extra ? mdiMinus : mdiPlus} size={1} className="text-panel-icon-action" />
+      </Button>
     )}
   </div>
 ));

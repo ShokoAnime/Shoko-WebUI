@@ -17,7 +17,7 @@ type Props = {
   disableCreateLink: boolean;
   handleCreateLink: () => void;
   seriesId: number;
-  xrefs?: Record<string, TmdbEpisodeXrefType[] | undefined>;
+  xrefs?: Record<string, TmdbEpisodeXrefType[]>;
   xrefsCount?: number;
 };
 
@@ -25,7 +25,10 @@ const TopPanel = (props: Props) => {
   const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
   const navigate = useNavigate();
 
-  const flatXrefs = useMemo(() => (xrefs ? flatMap(xrefs, x => x) as TmdbEpisodeXrefType[] : undefined), [xrefs]);
+  const flatXrefs = useMemo(
+    () => (xrefs ? flatMap(xrefs, xref => xref) : undefined),
+    [xrefs],
+  );
 
   const matchRatingCounts = useMemo(
     () => (flatXrefs ? countBy(flatXrefs, 'Rating') : {}),

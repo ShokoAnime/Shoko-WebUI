@@ -19,7 +19,7 @@ import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
 type Props = {
   isOdd: boolean;
   overrideLink: (newTmdbId?: number) => void;
-  override: number | undefined;
+  override?: number;
   tmdbEpisode?: TmdbEpisodeType;
 };
 
@@ -40,11 +40,6 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (override === 0) {
-      setTmdbEpisode(undefined);
-      return;
-    }
-
     if (override) {
       const episodeOverride = episodes.find(episode => episode.ID === override);
       if (episodeOverride) {
@@ -57,20 +52,7 @@ const EpisodeSelect = React.memo((props: Props) => {
   }, [episodes, initialTmdbEpisode, override]);
 
   const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
-    if (!newSelectedEpisode) {
-      if (override === 0) {
-        // This resets the link to the initial state
-        overrideLink(initialTmdbEpisode?.ID);
-        setTmdbEpisode(initialTmdbEpisode);
-      } else {
-        overrideLink(initialTmdbEpisode ? 0 : undefined);
-        setTmdbEpisode(undefined);
-      }
-      return;
-    }
-
-    overrideLink(newSelectedEpisode.ID);
-    setTmdbEpisode(newSelectedEpisode);
+    overrideLink(newSelectedEpisode?.ID ?? 0);
   });
 
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
@@ -139,8 +121,8 @@ const EpisodeSelect = React.memo((props: Props) => {
             id="episode-search"
             type="text"
             value={searchText}
-            onChange={e => setSearchText(e.target.value)}
-            onKeyDown={e => e.stopPropagation()}
+            onChange={event => setSearchText(event.target.value)}
+            onKeyDown={event => event.stopPropagation()}
             placeholder="Enter Episode Title or Season/Episode Number..."
             inputClassName="!p-4"
             startIcon={mdiMagnify}

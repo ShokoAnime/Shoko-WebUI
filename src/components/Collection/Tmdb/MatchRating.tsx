@@ -20,7 +20,7 @@ const getAbbreviation = (rating?: MatchRatingType) => {
   }
 };
 
-const MatchRating = ({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingType }) => (
+const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingType }) => (
   <div
     className={cx(
       'flex justify-center items-center rounded-md border border-panel-border  w-14 text-button-primary-text',
@@ -36,6 +36,6 @@ const MatchRating = ({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingTy
   >
     {getAbbreviation(rating)}
   </div>
-);
+));
 
 export default MatchRating;

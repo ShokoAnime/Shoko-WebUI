@@ -139,7 +139,7 @@ const TmdbLinkSelectPanel = () => {
         id="link-search"
         type="text"
         value={searchText}
-        onChange={e => setSearchText(e.target.value)}
+        onChange={event => setSearchText(event.target.value)}
         placeholder="Enter Title or TMDB ID..."
         inputClassName="!p-4"
         startIcon={mdiMagnify}
