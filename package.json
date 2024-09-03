@@ -111,13 +111,6 @@
     "start": "cross-env NODE_ENV=development vite",
     "prepare": "husky"
   },
-  "lint-staged": {
-    "*.{ts,tsx}": [
-      "dprint fmt",
-      "eslint --cache"
-    ],
-    "*.css": "stylelint"
-  },
   "volta": {
     "node": "20.16.0"
   }

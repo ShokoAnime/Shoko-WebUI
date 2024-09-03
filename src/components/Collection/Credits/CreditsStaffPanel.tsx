@@ -6,7 +6,7 @@ import type { SeriesCast } from '@/core/types/api/series';
 import type { CreditsModeType } from '@/pages/collection/series/SeriesCredits';
 
 const getThumbnailUrl = (item: SeriesCast, mode: CreditsModeType) => {
-  const thumbnail = item[mode].Image ?? null;
+  const thumbnail = item[mode]?.Image ?? null;
   if (!thumbnail?.RelativeFilepath) return null;
   return `/api/v3/Image/${thumbnail.Source}/${thumbnail.Type}/${thumbnail.ID}`;
 };
