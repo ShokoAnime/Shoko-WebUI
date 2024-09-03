@@ -35,6 +35,7 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TmdbEpisodeXrefMappingRequestType } from '@/core/react-query/tmdb/types';
+import type { EpisodeType } from '@/core/types/api/episode';
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 const TmdbLinking = () => {
@@ -116,7 +117,7 @@ const TmdbLinking = () => {
   const [
     linkOverrides,
     setLinkOverrides,
-  ] = useImmer({} as Record<number, number[]>);
+  ] = useImmer<Record<number, number[]>>({});
 
   const estimateSize = useEventCallback((index: number) => {
     const episode = episodes[index];
@@ -376,12 +377,12 @@ const TmdbLinking = () => {
               style={{ height: rowVirtualizer.getTotalSize() }}
             >
               {virtualItems.map((virtualItem) => {
-                const episode = episodes[virtualItem.index];
+                const episode: EpisodeType | undefined = episodes[virtualItem.index];
                 const isOdd = virtualItem.index % 2 === 1;
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
-                const overrides = linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0];
+                const overrides = linkOverrides[episode?.IDs.AniDB] ?? finalEpisodeXrefs?.[episode?.IDs.AniDB] ?? [0];
 
                 return (
                   <div
