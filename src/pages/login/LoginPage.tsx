@@ -123,8 +123,8 @@ function LoginPage() {
     if (!serverData.ReleaseDate && serverData.ReleaseChannel === 'Stable') isServerSupported = false;
 
     const semverVersion = parseServerVersion(serverData.Version);
-    const mininumVersion = getParsedSupportedServerVersion();
-    if (semverVersion && semver.lt(semverVersion, mininumVersion)) isServerSupported = false;
+    const minimumVersion = getParsedSupportedServerVersion();
+    if (semverVersion && semver.lt(semverVersion, minimumVersion)) isServerSupported = false;
 
     if (!isServerSupported) {
       navigate('/webui/unsupported');
