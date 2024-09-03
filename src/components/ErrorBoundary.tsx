@@ -41,6 +41,8 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
   const handleStableWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Stable'));
   const handleDevWebUiUpdate = useEventCallback(() => handleWebUiUpdate('Dev'));
 
+  console.error(error, routeError);
+
   return (
     <div className="relative flex grow items-center justify-center overflow-hidden p-6">
       <div className="z-20 flex h-full max-w-[56.4375rem] flex-col items-center justify-center gap-y-4 overflow-y-auto md:gap-y-6">
@@ -50,7 +52,7 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
           The information below is absolutely (maybe) useless!
           <br />
           <br />
-          {error?.stack ?? routeError.data}
+          {error ? `${error.message}\n${error.stack}` : routeError.data}
         </pre>
         {routeError?.status === 404
           ? (

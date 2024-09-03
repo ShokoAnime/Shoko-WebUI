@@ -50,8 +50,8 @@ const NameTab = React.memo(({ groupId }: Props) => {
     toggleNameEditable();
   });
 
-  const updateName = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setGroupName(e.target.value);
+  const updateName = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setGroupName(event.target.value);
   });
 
   const resetName = useEventCallback(() => {

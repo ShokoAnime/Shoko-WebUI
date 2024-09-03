@@ -85,19 +85,19 @@ const parseLinks = (links: ManualLink[]) => {
   const manyToOne: ManualLinkManyToOne[] = [];
   let manyToMany: ManualLink[] = [];
 
-  forEach(groupedByFileId, (oTM) => {
-    if (oTM.length === 1) {
-      if (filter(filteredLinks, { EpisodeID: oTM[0].EpisodeID }).length === 1) {
-        oneToOne.push(oTM[0]);
+  forEach(groupedByFileId, (oneToManyLinks) => {
+    if (oneToManyLinks.length === 1) {
+      if (filter(filteredLinks, { EpisodeID: oneToManyLinks[0].EpisodeID }).length === 1) {
+        oneToOne.push(oneToManyLinks[0]);
       }
     } else {
-      oneToMany.push({ EpisodeIDs: oTM.map(a => a.EpisodeID), FileID: oTM[0].FileID });
+      oneToMany.push({ EpisodeIDs: oneToManyLinks.map(link => link.EpisodeID), FileID: oneToManyLinks[0].FileID });
     }
   });
 
-  forEach(groupedByEpisodeId, (mTO) => {
-    if (mTO.length > 1) {
-      manyToOne.push({ EpisodeID: mTO[0].EpisodeID, FileIDs: mTO.map(a => a.FileID) });
+  forEach(groupedByEpisodeId, (manyToOneLinks) => {
+    if (manyToOneLinks.length > 1) {
+      manyToOne.push({ EpisodeID: manyToOneLinks[0].EpisodeID, FileIDs: manyToOneLinks.map(link => link.FileID) });
     }
   });
 
@@ -108,7 +108,7 @@ const parseLinks = (links: ManualLink[]) => {
       }
     });
   });
-  manyToMany = uniqBy(manyToMany, l => `${l.FileID}-${l.EpisodeID}`);
+  manyToMany = uniqBy(manyToMany, link => `${link.FileID}-${link.EpisodeID}`);
 
   return { manyToMany, manyToOne, oneToMany, oneToOne, none };
 };
@@ -176,7 +176,7 @@ const AnimeSelectPanel = (
         id="link-search"
         type="text"
         value={searchText}
-        onChange={e => setSearchText(e.target.value)}
+        onChange={event => setSearchText(event.target.value)}
         placeholder="Enter Series Name or AniDB ID..."
         inputClassName="!p-4"
         startIcon={mdiMagnify}
@@ -240,7 +240,7 @@ function LinkFilesTab() {
     ), [selectedRows]);
 
   const initialSearchName = useMemo(
-    () => findMostCommonShowName(map(groupBy(links, 'FileID'), l => showDataMap.get(l[0].FileID)!.details)),
+    () => findMostCommonShowName(map(groupBy(links, 'FileID'), link => showDataMap.get(link[0].FileID)!.details)),
     [showDataMap, links],
   );
 
@@ -370,9 +370,9 @@ function LinkFilesTab() {
     }
     const filtered = items.slice(idx);
     forEach(orderedLinks, (link) => {
-      const ep = filtered.shift();
-      if (!ep) return;
-      addLink(link.FileID, ep.value, link.LinkID);
+      const episode = filtered.shift();
+      if (!episode) return;
+      addLink(link.FileID, episode.value, link.LinkID);
     });
   };
 
@@ -382,13 +382,13 @@ function LinkFilesTab() {
     let skipped = false;
     const newLinks: ManualLink[] = [];
     let specials = 0;
-    forEach(groupBy(orderedLinks, 'FileID'), (l) => {
-      const { FileID } = l[0];
+    forEach(groupBy(orderedLinks, 'FileID'), (link) => {
+      const { FileID } = link[0];
       const { details } = showDataMap.get(FileID)!;
       // skip links.
       if (!details) {
         skipped = true;
-        newLinks.push(...l);
+        newLinks.push(...link);
         return;
       }
 
@@ -400,10 +400,13 @@ function LinkFilesTab() {
         const episodeNumber = episodeType === EpisodeTypeEnum.Special && episodeStart === 0
           ? specials += 1
           : episodeStart;
-        const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
+        const episode = find(
+          episodes,
+          item => item.Type === episodeType && item.EpisodeNumber === episodeNumber,
+        );
         if (!episode) {
           skipped = true;
-          newLinks.push(...l);
+          newLinks.push(...link);
           return;
         }
         hasChanged = true;
@@ -414,7 +417,10 @@ function LinkFilesTab() {
       // multi episode link
       let foundLinks = false;
       for (let episodeNumber = episodeStart; episodeNumber <= episodeEnd; episodeNumber += 1) {
-        const episode = find(episodes, ep => ep.Type === episodeType && ep.EpisodeNumber === episodeNumber);
+        const episode = find(
+          episodes,
+          item => item.Type === episodeType && item.EpisodeNumber === episodeNumber,
+        );
         if (episode) {
           foundLinks = true;
           hasChanged = true;
@@ -423,7 +429,7 @@ function LinkFilesTab() {
       }
       if (!foundLinks) {
         skipped = true;
-        newLinks.push(...l);
+        newLinks.push(...link);
       }
     });
     if (hasChanged) {
@@ -457,7 +463,7 @@ function LinkFilesTab() {
 
     const shokoEpisodeResponse = seriesEpisodesData.data.pages[0];
 
-    const anidbMap = new Map(shokoEpisodeResponse.List.map(i => [i.IDs.AniDB, i.IDs.ID]));
+    const anidbMap = new Map(shokoEpisodeResponse.List.map(episode => [episode.IDs.AniDB, episode.IDs.ID]));
     const mappedLinks: ManualLink[] = manualLinks.map(({ EpisodeID, FileID, LinkID }) => ({
       LinkID,
       FileID,

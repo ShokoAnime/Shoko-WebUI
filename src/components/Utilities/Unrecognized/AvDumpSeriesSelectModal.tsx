@@ -96,7 +96,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
 
   const handleCopy = () => {
     copyToClipboard(ed2kLinks, 'ED2K hashes')
-      .then(() => setActiveStep(s => s + 1))
+      .then(() => setActiveStep(step => step + 1))
       .catch((error) => {
         console.error(error);
         setCopyFailed(true);
@@ -195,7 +195,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                 value={searchText}
                 type="text"
                 placeholder="Search..."
-                onChange={e => setSearchText(e.target.value)}
+                onChange={event => setSearchText(event.target.value)}
                 startIcon={mdiMagnify}
               />
               <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">

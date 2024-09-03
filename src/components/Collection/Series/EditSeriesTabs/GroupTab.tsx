@@ -156,7 +156,7 @@ function GroupTab({ seriesId }: Props) {
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
 
-  const updateSearch = useEventCallback((e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value));
+  const updateSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => setSearch(event.target.value));
 
   const { data: seriesGroup, isFetching } = useSeriesGroupQuery(seriesId, false);
   const groupsQuery = useFilteredGroupsInfiniteQuery({

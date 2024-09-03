@@ -8,8 +8,9 @@ const getAbbreviation = (rating?: MatchRatingType) => {
     case MatchRatingType.DateAndTitleMatches:
       return 'DT';
     case MatchRatingType.DateMatches:
+      return 'D';
     case MatchRatingType.TitleMatches:
-      return 'D/T';
+      return 'T';
     case MatchRatingType.UserVerified:
       return 'UO';
     case MatchRatingType.FirstAvailable:
@@ -19,20 +20,22 @@ const getAbbreviation = (rating?: MatchRatingType) => {
   }
 };
 
-const MatchRating = ({ rating }: { rating?: MatchRatingType }) => (
+const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingType }) => (
   <div
     className={cx(
-      'flex justify-center items-center rounded-md w-14 text-button-primary-text',
+      'flex justify-center items-center rounded-md border border-panel-border  w-14 text-button-primary-text',
       {
         'bg-panel-text-important': rating === MatchRatingType.DateAndTitleMatches,
         'bg-panel-text-warning': rating === MatchRatingType.DateMatches || rating === MatchRatingType.TitleMatches,
         'bg-panel-text-primary': rating === MatchRatingType.UserVerified,
         'bg-panel-text-danger': rating === MatchRatingType.FirstAvailable,
+        'bg-panel-background': !rating && !isOdd,
+        'bg-panel-background-alt': !rating && isOdd,
       },
     )}
   >
     {getAbbreviation(rating)}
   </div>
-);
+));
 
 export default MatchRating;

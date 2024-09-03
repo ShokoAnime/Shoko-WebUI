@@ -57,8 +57,8 @@ function ManuallyLinkedFilesRow(props: Props) {
         ? rowSelection[files[lastRowSelected].ID]
         : true;
       const tempRowSelection: Record<number, boolean> = {};
-      for (let i = fromIndex; i <= toIndex; i += 1) {
-        const id = files[i].ID;
+      for (let fileIndex = fromIndex; fileIndex <= toIndex; fileIndex += 1) {
+        const id = files[fileIndex].ID;
         tempRowSelection[id] = isSelected;
       }
       setRowSelection(tempRowSelection);
@@ -110,7 +110,7 @@ function ManuallyLinkedFilesRow(props: Props) {
                     target="_blank"
                     className="ml-2 text-panel-text-primary"
                     aria-label="Open AniDB episode page"
-                    onClick={e => e.stopPropagation()}
+                    onClick={event => event.stopPropagation()}
                   >
                     <Icon path={mdiOpenInNew} size={1} />
                   </a>

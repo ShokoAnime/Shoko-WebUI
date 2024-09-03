@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, map, reduce, toNumber } from 'lodash';
+import { debounce, filter, forEach, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -29,11 +29,13 @@ import {
   useTmdbMovieXrefsQuery,
   useTmdbShowOrMovieQuery,
 } from '@/core/react-query/tmdb/queries';
-import { EpisodeTypeEnum } from '@/core/types/api/episode';
+import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
+import type { TmdbEpisodeXrefMappingRequestType } from '@/core/react-query/tmdb/types';
+import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 const TmdbLinking = () => {
   const seriesId = toNumber(useParams().seriesId);
@@ -74,7 +76,12 @@ const TmdbLinking = () => {
     { tmdbShowID: tmdbId, pageSize: 0 },
     !createInProgress && !!seriesId && type === 'Show' && !!seriesQuery.data,
   );
-  const episodeXrefs = useMemo(() => episodeXrefsQuery.data?.List, [episodeXrefsQuery.data]);
+  const episodeXrefs = useMemo(
+    () => (episodeXrefsQuery.data
+      ? groupBy(episodeXrefsQuery.data, 'AnidbEpisodeID') as Record<string, TmdbEpisodeXrefType[]>
+      : undefined),
+    [episodeXrefsQuery.data],
+  );
 
   const movieXrefsQuery = useTmdbMovieXrefsQuery(
     seriesId,
@@ -83,17 +90,16 @@ const TmdbLinking = () => {
 
   const lastPageIds = useMemo(
     () => {
-      if (type !== 'Show' || !episodeXrefs) return [];
+      if (type !== 'Show' || !episodeXrefs || isEqual(episodeXrefs, {})) return [];
 
       const lastPage = episodesQuery.data?.pages.at(-1);
       if (!lastPage) return [];
 
       const lastPageAnidbIds = lastPage.List.map(episode => episode.IDs.AniDB);
 
-      return episodeXrefs
-        .filter(xref => lastPageAnidbIds.includes(xref.AnidbEpisodeID))
-        .map(xref => xref.TmdbEpisodeID)
-        .filter(tmdbEpisodeId => !!tmdbEpisodeId) as number[];
+      return filter(episodeXrefs, xrefs => some(xrefs, xref => lastPageAnidbIds.includes(xref.AnidbEpisodeID)))
+        .flatMap(xrefs => map(xrefs, xref => xref.TmdbEpisodeID))
+        .filter(tmdbEpisodeId => !!tmdbEpisodeId);
     },
     [episodeXrefs, episodesQuery.data, type],
   );
@@ -107,10 +113,21 @@ const TmdbLinking = () => {
 
   const { scrollRef } = useOutletContext<SeriesContextType>();
 
+  const [
+    linkOverrides,
+    setLinkOverrides,
+  ] = useImmer({} as Record<number, number[]>);
+
+  const estimateSize = useEventCallback((index: number) => {
+    const episode = episodes[index];
+    if (!episode) return 56; // 56px is the minimum height of a loaded row.
+    return 56 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
+  });
+
   const rowVirtualizer = useVirtualizer({
     count: episodeCount,
     getScrollElement: () => scrollRef.current,
-    estimateSize: () => 56, // 56px is the minimum height of a loaded row,
+    estimateSize,
     overscan: 10,
     gap: 8,
   });
@@ -124,41 +141,59 @@ const TmdbLinking = () => {
     [fetchNextEpisodesPage],
   );
 
-  const [
-    linkOverrides,
-    setLinkOverrides,
-  ] = useImmer<Record<number, number>>({});
-
-  const finalXrefs = useMemo<Record<number, number>>(
+  const movieXrefCount = useMemo(
     () => {
-      const tempXrefs: Record<number, number> = {};
+      if (!movieXrefsQuery.data) return 0;
 
-      const movieXrefs = movieXrefsQuery.data ?? [];
-      movieXrefs
-        .filter((xref) => {
-          if (linkOverrides[xref.AnidbEpisodeID] !== undefined) return linkOverrides[xref.AnidbEpisodeID] === tmdbId;
-          return xref.TmdbMovieID === tmdbId;
-        })
-        .forEach((xref) => {
-          tempXrefs[xref.AnidbEpisodeID] = xref.TmdbMovieID;
-        });
+      const tempXrefs: Record<number, number> = Object.fromEntries(
+        map(
+          filter(movieXrefsQuery.data, xref => xref.TmdbMovieID === tmdbId),
+          xref => [xref.AnidbEpisodeID, xref.TmdbMovieID],
+        ),
+      );
 
-      const finalLinkOverrides = { ...linkOverrides };
-      Object.keys(finalLinkOverrides).forEach((episodeId) => {
-        if (linkOverrides[episodeId] === 0) delete finalLinkOverrides[episodeId];
+      forEach(linkOverrides, (overrideIds, episodeId) => {
+        // The rule makes it unreadable....
+        // eslint-disable-next-line prefer-destructuring
+        tempXrefs[toNumber(episodeId)] = overrideIds[0];
       });
 
-      return { ...tempXrefs, ...finalLinkOverrides };
+      return Object.keys(tempXrefs).filter(key => tempXrefs[key] !== 0).length;
     },
     [linkOverrides, movieXrefsQuery.data, tmdbId],
   );
+
+  // Overrides merged with episodeXrefs
+  const finalEpisodeXrefs = useMemo(() => {
+    if (!episodeXrefs || !seriesQuery.data) return undefined;
+
+    const tempXrefs: Record<number, TmdbEpisodeXrefType[]> = { ...episodeXrefs };
+
+    forEach(linkOverrides, (overrideIds, anidbEpisodeId) => {
+      const episodeId = toNumber(anidbEpisodeId);
+      tempXrefs[episodeId] = [];
+      forEach(overrideIds, (overrideId, index) => {
+        if (overrideId === 0) return;
+        tempXrefs[episodeId].push({
+          AnidbAnimeID: seriesQuery.data.IDs.AniDB,
+          AnidbEpisodeID: episodeId,
+          TmdbShowID: tmdbId,
+          TmdbEpisodeID: overrideId,
+          Index: index,
+          Rating: MatchRatingType.UserVerified,
+        });
+      });
+    });
+
+    return tempXrefs;
+  }, [episodeXrefs, linkOverrides, seriesQuery.data, tmdbId]);
 
   const { mutateAsync: addLink } = useTmdbAddLinkMutation(seriesId, type ?? 'Show');
   const { mutateAsync: editEpisodeLinks } = useTmdbEditEpisodeXrefsMutation(seriesId);
   const { mutateAsync: deleteLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Show');
   const { mutateAsync: createAutoLinks } = useTmdbAddAutoXrefsMutation(seriesId);
 
-  const createLinks = useEventCallback(async () => {
+  const createEpisodeLinks = useEventCallback(async () => {
     setCreateInProgress(true);
     try {
       if (isNewLink) {
@@ -167,22 +202,33 @@ const TmdbLinking = () => {
       }
 
       if (Object.keys(linkOverrides).length > 0) {
-        // The two commented lines below can be used if we need 1-n mappings
-        // const set = new Set<string>();
+        const set = new Set<string>();
+
+        const newMappings = reduce(
+          linkOverrides,
+          (result, overrides, episodeId) => {
+            forEach(overrides, (overrideId, index) => {
+              if (index > 0 && overrideId === 0) return;
+              result.push({
+                AniDBID: toNumber(episodeId),
+                TmdbID: overrideId,
+                Replace: !set.has(episodeId) ? Boolean(set.add(episodeId)) : false,
+              });
+            });
+            return result;
+          },
+          [] as TmdbEpisodeXrefMappingRequestType[],
+        );
+
         await editEpisodeLinks({
           ResetAll: false,
-          Mapping: map(linkOverrides, (overrideId, episodeId) => ({
-            AniDBID: toNumber(episodeId),
-            TmdbID: overrideId,
-            Replace: true,
-            // Replace: !set.has(episodeId) ? Booelan(set.add(episodeId)) : false,
-          })),
+          Mapping: newMappings,
         });
       }
 
       resetQueries(['series', seriesId]);
       setLinkOverrides({});
-      toast.success('Links saved!');
+      toast.success('Series has been linked and TMDB related tasks for data and images have been added to the queue!');
     } catch (error) {
       toast.error('Failed to save links!');
     }
@@ -194,8 +240,8 @@ const TmdbLinking = () => {
     try {
       const linkGroups = reduce(
         linkOverrides,
-        (result, overrideId, episodeId) => {
-          if (overrideId) result.create.push(toNumber(episodeId));
+        (result, overrideIds, episodeId) => {
+          if (overrideIds[0]) result.create.push(toNumber(episodeId));
           else result.delete.push(toNumber(episodeId));
           return result;
         },
@@ -203,12 +249,12 @@ const TmdbLinking = () => {
       );
 
       const deleteLinkMutations = linkGroups.delete?.map(
-        episodeId => deleteLink({ ID: tmdbId, EpisodeID: toNumber(episodeId) }),
+        episodeId => deleteLink({ ID: tmdbId, EpisodeID: episodeId }),
       ) ?? [];
       await Promise.all(deleteLinkMutations);
 
       const newLinkMutations = linkGroups.create?.map(
-        episodeId => addLink({ ID: tmdbId, EpisodeID: toNumber(episodeId) }),
+        episodeId => addLink({ ID: tmdbId, EpisodeID: episodeId }),
       );
       await Promise.all(newLinkMutations);
 
@@ -228,7 +274,7 @@ const TmdbLinking = () => {
       return;
     }
 
-    createLinks().catch(console.error);
+    createEpisodeLinks().catch(console.error);
   });
 
   const disableCreateLink = useMemo(() => {
@@ -250,8 +296,8 @@ const TmdbLinking = () => {
         disableCreateLink={disableCreateLink}
         handleCreateLink={handleCreateLink}
         seriesId={seriesId}
-        xrefs={type === 'Show' ? episodeXrefs : undefined}
-        xrefsCount={type === 'Show' ? episodeXrefs?.length : Object.keys(finalXrefs).length}
+        xrefs={type === 'Show' ? finalEpisodeXrefs : undefined}
+        xrefsCount={type === 'Show' ? undefined : movieXrefCount}
       />
       <div className="flex grow flex-col rounded-lg border border-panel-border bg-panel-background px-4 py-6">
         {(seriesQuery.isPending || episodesQuery.isPending) && (
@@ -299,7 +345,7 @@ const TmdbLinking = () => {
                         >
                           {tmdbId}
                           &nbsp;-&nbsp;
-                          {tmdbShowOrMovieQuery.data?.Title}
+                          {tmdbShowOrMovieQuery.data.Title}
                           <Icon path={mdiOpenInNew} size={1} className="ml-2" />
                         </a>
                       </div>
@@ -335,9 +381,14 @@ const TmdbLinking = () => {
 
                 if (!episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
 
+                const overrides = linkOverrides[episode.IDs.AniDB] ?? finalEpisodeXrefs?.[episode.IDs.AniDB] ?? [0];
+
                 return (
                   <div
-                    className="absolute left-0 top-0 flex w-full gap-x-2"
+                    className={cx(
+                      'absolute left-0 top-0 flex w-full',
+                      type === 'Show' ? 'flex-col col-span-3 gap-y-2' : 'flex-row gap-x-2',
+                    )}
                     style={{
                       transform: `translateY(${virtualItem.start ?? 0}px)`,
                     }}
@@ -346,14 +397,24 @@ const TmdbLinking = () => {
                     data-index={virtualItem.index}
                   >
                     {episode && type === 'Show' && (
-                      <EpisodeRow
-                        episode={episode}
-                        isOdd={isOdd}
-                        overrides={linkOverrides}
-                        setLinkOverrides={setLinkOverrides}
-                        tmdbEpisodesPending={tmdbEpisodesQuery.isPending}
-                        xrefs={episodeXrefsQuery.data ? episodeXrefs : undefined}
-                      />
+                      map(
+                        overrides,
+                        (_, index) => (
+                          <div
+                            key={`episode-${episode.IDs.AniDB}-${index}`}
+                            className="relative left-0 top-0 flex w-full gap-x-2"
+                          >
+                            <EpisodeRow
+                              episode={episode}
+                              offset={index}
+                              isOdd={isOdd}
+                              setLinkOverrides={setLinkOverrides}
+                              tmdbEpisodesPending={tmdbEpisodesQuery.isPending}
+                              xrefs={finalEpisodeXrefs}
+                            />
+                          </div>
+                        ),
+                      )
                     )}
 
                     {episode && type === 'Movie' && (

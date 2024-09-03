@@ -63,19 +63,19 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
     setImageError(null);
 
     let complete = false;
-    const bg = new Image();
-    bg.setAttribute('lazy', 'true');
-    bg.onload = () => {
+    const background = new Image();
+    background.setAttribute('lazy', 'true');
+    background.onload = () => {
       if (complete) return;
       complete = true;
-      setBackgroundImage(bg);
+      setBackgroundImage(background);
     };
-    bg.onerror = () => {
+    background.onerror = () => {
       if (complete) return;
       complete = true;
       setImageError('Please refresh your browser to correct.');
     };
-    bg.src = imageSource;
+    background.src = imageSource;
     return () => {
       complete = true;
     };
@@ -116,7 +116,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
           aria-label="Link to image"
           rel="noopener noreferrer"
           target="_blank"
-          onClick={e => e.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>

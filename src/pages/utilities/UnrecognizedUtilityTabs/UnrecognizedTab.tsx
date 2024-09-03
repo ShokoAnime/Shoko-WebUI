@@ -360,7 +360,7 @@ function UnrecognizedTab() {
                 startIcon={mdiMagnify}
                 id="search"
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={event => setSearch(event.target.value)}
                 inputClassName={cx('px-4 py-3', searchClassName)}
                 overlayClassName="grow 2xl:w-auto 2xl:grow-0"
               />

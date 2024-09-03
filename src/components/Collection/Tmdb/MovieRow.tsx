@@ -7,7 +7,7 @@ import { find, map, toNumber } from 'lodash';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import Button from '@/components/Input/Button';
-import { useTmdbBulkMoviesQuery, useTmdbShowOrMovieQuery } from '@/core/react-query/tmdb/queries';
+import { useTmdbBulkMoviesOnlineQuery, useTmdbShowOrMovieQuery } from '@/core/react-query/tmdb/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -17,13 +17,19 @@ import type { Updater } from 'use-immer';
 type Props = {
   episode: EpisodeType;
   isOdd: boolean;
-  overrides: Record<number, number>;
-  setLinkOverrides: Updater<Record<number, number>>;
+  overrides: Record<number, number[]>;
+  setLinkOverrides: Updater<Record<number, number[]>>;
   xrefs?: TmdbMovieXrefType[];
 };
 
 const MovieRow = React.memo((props: Props) => {
-  const { episode, isOdd, overrides, setLinkOverrides, xrefs } = props;
+  const {
+    episode,
+    isOdd,
+    overrides,
+    setLinkOverrides,
+    xrefs,
+  } = props;
 
   const [searchParams] = useSearchParams();
   const tmdbId = toNumber(searchParams.get('id'));
@@ -34,19 +40,19 @@ const MovieRow = React.memo((props: Props) => {
   );
 
   const tmdbMovieQuery = useTmdbShowOrMovieQuery(tmdbId, 'Movie');
-  const tmdbBulkMoviesQuery = useTmdbBulkMoviesQuery(
+  const tmdbBulkMoviesQuery = useTmdbBulkMoviesOnlineQuery(
     { IDs: map(xrefs, item => item.TmdbMovieID) },
   );
   const tmdbMovie = useMemo(() => {
     if (!tmdbMovieQuery.data && !tmdbBulkMoviesQuery.data) return undefined;
 
     const override = overrides[episode.IDs.AniDB];
-    if (override === 0) return undefined;
+    if (override?.[0] === 0) return undefined;
 
     const tmdbMovies = [tmdbMovieQuery.data, ...(tmdbBulkMoviesQuery.data ?? [])];
 
-    if (override) {
-      return find(tmdbMovies, { ID: override });
+    if (override?.[0]) {
+      return find(tmdbMovies, { ID: override[0] });
     }
 
     if (!xref) return undefined;
@@ -69,10 +75,10 @@ const MovieRow = React.memo((props: Props) => {
       const anidbEpisodeId = episode.IDs.AniDB;
       const newTmdbId = tmdbMovie?.ID ? 0 : tmdbId;
       // If already linked episode was unlinked and linked again, remove override
-      if (draftState[anidbEpisodeId] === 0 && newTmdbId === tmdbId) delete draftState[anidbEpisodeId];
+      if (draftState[anidbEpisodeId]?.[0] === 0 && newTmdbId === tmdbId) delete draftState[anidbEpisodeId];
       // If new link was created and removed, remove override
-      else if (draftState[anidbEpisodeId] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
-      else draftState[anidbEpisodeId] = newTmdbId;
+      else if (draftState[anidbEpisodeId]?.[0] === tmdbId && newTmdbId === 0) delete draftState[anidbEpisodeId];
+      else draftState[anidbEpisodeId] = [newTmdbId];
     });
   });
 

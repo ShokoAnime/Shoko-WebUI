@@ -29,7 +29,7 @@ export function isDebug() {
   return DEV;
 }
 
-export const minimumSupportedServerVersion = '4.2.2.112';
+export const minimumSupportedServerVersion = '4.2.2.116';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
@@ -64,7 +64,7 @@ export function mergeDeep(...objects: object[]) {
   }, {});
 }
 
-export const formatThousand = (n: number) => formatThousands(n, ',');
+export const formatThousand = (num: number) => formatThousands(num, ',');
 
 export const copyToClipboard = async (text: string, entityName?: string) => {
   try {

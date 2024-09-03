@@ -60,7 +60,7 @@ function ModalPanel(props: Props) {
             fullHeight ? 'h-[75%]' : 'max-h-[75%]',
             className,
           )}
-          onClick={e => e.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <div>
             {header && (

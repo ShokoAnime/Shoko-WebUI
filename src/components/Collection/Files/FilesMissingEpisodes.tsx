@@ -24,7 +24,7 @@ const MissingEpisode = ({ episode, rowId }: FileMissingEpisodeProps) => (
       {padNumber(episode.EpisodeNumber)}
     </div>
     <div className="flex w-[46.875rem] flex-row">
-      {episode.Titles.find(e => e.Language === 'en')?.Name ?? '--'}
+      {episode.Titles.find(title => title.Language === 'en')?.Name ?? '--'}
       &nbsp;
       <a
         className="inline-flex items-center gap-0 text-panel-text-primary"

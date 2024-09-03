@@ -33,8 +33,8 @@ const seriesColumns: UtilityHeaderType<SeriesWithMultipleReleasesType>[] = [
           rel="noreferrer noopener"
           className="cursor-pointer text-panel-text-primary"
           aria-label="Open AniDB series page"
-          onClick={e =>
-            e.stopPropagation()}
+          onClick={event =>
+            event.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>
@@ -85,7 +85,7 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
           rel="noreferrer noopener"
           className="cursor-pointer text-panel-text-primary"
           aria-label="Open AniDB episode page"
-          onClick={e => e.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <Icon path={mdiOpenInNew} size={1} />
         </a>

@@ -20,10 +20,12 @@ const FilesSummary = ({ items, title }: Props) => {
     }
 
     const selectedSeriesCount = Object.keys(
-      groupBy(items.flatMap(x => x.SeriesIDs).map(x => x?.SeriesID), x => x?.ID),
+      groupBy(items.flatMap(file => file.SeriesIDs).map(xref => xref?.SeriesID), seriesIds => seriesIds?.ID),
     ).length;
-    const selectedSize = items.reduce((prev, cur) => prev + cur.Size, 0);
-    const selectedEpisodeCount = items.flatMap(x => x.SeriesIDs).map(x => x?.EpisodeIDs.flatMap(z => z.ID)).length;
+    const selectedSize = items.reduce((prev, current) => prev + current.Size, 0);
+    const selectedEpisodeCount = items
+      .flatMap(file => file.SeriesIDs)
+      .map(xref => xref?.EpisodeIDs.flatMap(episodeIDs => episodeIDs.ID)).length;
     return {
       seriesCount: selectedSeriesCount,
       totalSize: selectedSize,

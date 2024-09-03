@@ -28,7 +28,7 @@ const SuccessNotifyModal = (props: Props) => {
       <div className="flex h-fit w-full items-center justify-center">
         <div
           className="flex h-[66%] w-[37.5rem] flex-col rounded-lg border border-panel-border bg-panel-background drop-shadow-lg"
-          onClick={e => e.stopPropagation()}
+          onClick={event => event.stopPropagation()}
         >
           <div>
             <div className="rounded-t-lg border-b border-panel-border bg-panel-background-alt p-6 text-xl font-semibold">

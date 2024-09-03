@@ -19,7 +19,7 @@ import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
 type Props = {
   isOdd: boolean;
   overrideLink: (newTmdbId?: number) => void;
-  override: number;
+  override?: number;
   tmdbEpisode?: TmdbEpisodeType;
 };
 
@@ -40,11 +40,6 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (override === 0) {
-      setTmdbEpisode(undefined);
-      return;
-    }
-
     if (override) {
       const episodeOverride = episodes.find(episode => episode.ID === override);
       if (episodeOverride) {
@@ -57,20 +52,7 @@ const EpisodeSelect = React.memo((props: Props) => {
   }, [episodes, initialTmdbEpisode, override]);
 
   const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
-    if (!newSelectedEpisode) {
-      if (override === 0) {
-        // This resets the link to the initial state
-        overrideLink(initialTmdbEpisode?.ID);
-        setTmdbEpisode(initialTmdbEpisode);
-      } else {
-        overrideLink(initialTmdbEpisode ? 0 : undefined);
-        setTmdbEpisode(undefined);
-      }
-      return;
-    }
-
-    overrideLink(newSelectedEpisode.ID);
-    setTmdbEpisode(newSelectedEpisode);
+    overrideLink(newSelectedEpisode?.ID ?? 0);
   });
 
   const [scrollElement, setScrollElement] = useState<HTMLDivElement | null>(null);
@@ -139,8 +121,8 @@ const EpisodeSelect = React.memo((props: Props) => {
             id="episode-search"
             type="text"
             value={searchText}
-            onChange={e => setSearchText(e.target.value)}
-            onKeyDown={e => e.stopPropagation()}
+            onChange={event => setSearchText(event.target.value)}
+            onKeyDown={event => event.stopPropagation()}
             placeholder="Enter Episode Title or Season/Episode Number..."
             inputClassName="!p-4"
             startIcon={mdiMagnify}
@@ -151,65 +133,73 @@ const EpisodeSelect = React.memo((props: Props) => {
               className="h-80 w-full flex-col overflow-y-auto"
               ref={setScrollElement}
             >
-              <div
-                className="relative w-full"
-                style={{ height: rowVirtualizer.getTotalSize() }}
-              >
-                {virtualItems.map((virtualItem) => {
-                  const { index, key, start } = virtualItem;
+              {episodesQuery.isPending && (
+                <div className="flex size-full items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} spin size={3} />
+                </div>
+              )}
 
-                  const episode = index === 0 ? undefined : episodes[index - 1];
+              {!episodesQuery.isPending && (
+                <div
+                  className="relative w-full"
+                  style={{ height: rowVirtualizer.getTotalSize() }}
+                >
+                  {virtualItems.map((virtualItem) => {
+                    const { index, key, start } = virtualItem;
 
-                  if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
+                    const episode = index === 0 ? undefined : episodes[index - 1];
 
-                  if (index !== 0 && !episode) {
+                    if (index !== 0 && !episode && !episodesQuery.isFetchingNextPage) fetchNextPageDebounced();
+
+                    if (index !== 0 && !episode) {
+                      return (
+                        <div
+                          key={`loading-${key}`}
+                          className="absolute left-0 top-0 w-full"
+                          style={{
+                            transform: `translateY(${start ?? 0}px)`,
+                          }}
+                          ref={rowVirtualizer.measureElement}
+                          data-index={index}
+                        >
+                          <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
+                        </div>
+                      );
+                    }
+
                     return (
-                      <div
-                        key={`loading-${key}`}
-                        className="absolute left-0 top-0 w-full"
+                      <ListboxOption
+                        key={episode?.ID ?? 'entry-not-linked'}
+                        value={episode}
+                        className={cx(
+                          'absolute left-0 top-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
+                          'hover:text-panel-text-primary data-[selected]:text-panel-text-primary group',
+                        )}
                         style={{
                           transform: `translateY(${start ?? 0}px)`,
                         }}
                         ref={rowVirtualizer.measureElement}
                         data-index={index}
                       >
-                        <Icon path={mdiLoading} spin size={1} className="m-auto text-panel-text-primary" />
-                      </div>
+                        <div className="w-24 text-panel-text-important group-data-[selected]:text-panel-text-primary">
+                          {!episode && 'XX'}
+
+                          {episode && (episode.SeasonNumber === 0
+                            ? `Special ${padNumber(episode.EpisodeNumber)}`
+                            : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
+                        </div>
+                        |
+                        <div className="ml-4 line-clamp-1 grow basis-0">
+                          {episode?.Title ?? 'Do Not Link Entry'}
+                        </div>
+                        <div className="pr-4">
+                          {episode?.AiredAt ?? ''}
+                        </div>
+                      </ListboxOption>
                     );
-                  }
-
-                  return (
-                    <ListboxOption
-                      key={episode?.ID ?? 'entry-not-linked'}
-                      value={episode}
-                      className={cx(
-                        'absolute left-0 top-0 flex w-full basis-0 cursor-pointer gap-x-2 transition-colors',
-                        'hover:text-panel-text-primary data-[selected]:text-panel-text-primary group',
-                      )}
-                      style={{
-                        transform: `translateY(${start ?? 0}px)`,
-                      }}
-                      ref={rowVirtualizer.measureElement}
-                      data-index={index}
-                    >
-                      <div className="w-24 text-panel-text-important group-data-[selected]:text-panel-text-primary">
-                        {!episode && 'XX'}
-
-                        {episode && (episode.SeasonNumber === 0
-                          ? `Special ${padNumber(episode.EpisodeNumber)}`
-                          : `S${padNumber(episode.SeasonNumber)}E${padNumber(episode.EpisodeNumber)}`)}
-                      </div>
-                      |
-                      <div className="ml-4 line-clamp-1 grow basis-0">
-                        {episode?.Title ?? 'Do Not Link Entry'}
-                      </div>
-                      <div className="pr-4">
-                        {episode?.AiredAt ?? ''}
-                      </div>
-                    </ListboxOption>
-                  );
-                })}
-              </div>
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </ListboxOptions>

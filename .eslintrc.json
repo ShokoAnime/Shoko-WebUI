@@ -60,6 +60,7 @@
         "ignorePrimitives": { "boolean": true }
       }
     ],
+    "id-length": ["error", { "min": 3, "exceptions": ["cx", "ID", "id", "_", "__"], "properties": "never" }],
     "implicit-arrow-linebreak": "off",
     "import/order": [
       "error",
@@ -94,7 +95,7 @@
     ],
     "no-param-reassign": [
       "error",
-      { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState", "draftState", "draftState2"] }
+      { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState", "draftState", "draftState2", "reduceResult"] }
     ],
     "no-restricted-imports": [
       "error",

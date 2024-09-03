@@ -58,7 +58,7 @@ const LogsPage = () => {
         <div className="flex items-center gap-x-2">
           <Input
             id="search"
-            onChange={e => setSearch(e.target.value)}
+            onChange={event => setSearch(event.target.value)}
             type="text"
             value={search}
             placeholder="Search Logs..."

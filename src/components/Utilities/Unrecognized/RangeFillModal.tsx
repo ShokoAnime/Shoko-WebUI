@@ -28,7 +28,7 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
       header="Range Fill Options"
     >
       <div className="flex flex-col gap-y-2">
-        <SelectSmall label="Type" id="Type" value={epType} onChange={e => setEpType(e.target.value)}>
+        <SelectSmall label="Type" id="Type" value={epType} onChange={event => setEpType(event.target.value)}>
           <option value="Normal">Episode</option>
           <option value="Special">Special</option>
           <option value="Other">Other</option>
@@ -39,7 +39,7 @@ const RangeFillModal = ({ onClose, rangeFill, show }: Props) => {
             id="RangeStart"
             type="number"
             value={rangeStart}
-            onChange={e => setRangeStart(e.target.value)}
+            onChange={event => setRangeStart(event.target.value)}
             className="w-16 px-3 py-1 text-center"
           />
         </div>

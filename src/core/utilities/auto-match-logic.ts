@@ -61,7 +61,7 @@ const detectEpisodeType = (matchGroups: Record<string, string | undefined>): Epi
 export function detectShow(filePath: string | undefined | null): PathDetails | null {
   if (!filePath) return null;
 
-  let [fileName = null, parentDir = null, grandParentDir = null] = filePath.trim().split(/[/\\]+/).filter(s => s)
+  let [fileName = null, parentDir = null, grandParentDir = null] = filePath.trim().split(/[/\\]+/).filter(item => item)
     .reverse();
   if (grandParentDir && DriveLetterRegex.test(grandParentDir)) grandParentDir = null;
   else if (parentDir && DriveLetterRegex.test(parentDir)) parentDir = null;
@@ -83,7 +83,7 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
     if (match?.groups) {
       // We accept specials in-between episodes or episode ranges, so we split
       // the range and parse the text as floats.
-      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(s => s)
+      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(item => item)
         .map<number>(parseFloat) ?? new Array<number>();
 
       // Swap episode numbers if they're reversed.
@@ -190,7 +190,11 @@ export function findMostCommonShowName(showList: (PathDetails | null)[]): string
     return showNames[0];
   }
 
-  return reduce(showNames, (a, b) => (showNameMap.get(a)! > showNameMap.get(b)! ? a : b), showNames[0]);
+  return reduce(
+    showNames,
+    (result, showName) => (showNameMap.get(result)! > showNameMap.get(showName)! ? result : showName),
+    showNames[0],
+  );
 }
 
 function findSharedShowName(showNames: string[]): string {
