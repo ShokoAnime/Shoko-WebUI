@@ -27,7 +27,15 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
       {getEpisodePrefixAlt(episode.AniDB?.Type)}
     </div>
     <div className={cx('w-8', extra && 'opacity-65')}>{padNumber(episode.AniDB?.EpisodeNumber ?? 0)}</div>
-    <div className={cx('line-clamp-1 grow text-left', extra && 'opacity-65')}>{episode.Name}</div>
+
+    <div
+      className={cx('line-clamp-1 grow text-left', extra && 'opacity-65')}
+      data-tooltip-id="tooltip"
+      data-tooltip-content={episode.Name}
+    >
+      {episode.Name}
+    </div>
+
     {onIconClick && (
       <Button onClick={onIconClick} tooltip={extra ? 'Remove link' : 'Add link'}>
         <Icon path={extra ? mdiMinus : mdiPlus} size={1} className="text-panel-icon-action" />

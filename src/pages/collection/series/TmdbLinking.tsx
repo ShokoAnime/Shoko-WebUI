@@ -322,17 +322,29 @@ const TmdbLinking = () => {
             )}
           >
             <div className="flex items-center rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
-              AniDB |&nbsp;
+              <div className="shrink-0">
+                AniDB |&nbsp;
+              </div>
               <a
                 className="flex cursor-pointer font-semibold text-panel-text-primary"
                 href={`https://anidb.net/anime/${seriesQuery.data.IDs.AniDB}`}
                 target="_blank"
                 rel="noopener noreferrer"
+                data-tooltip-id="tooltip"
+                data-tooltip-content={seriesQuery.data.Name}
               >
-                {seriesQuery.data.IDs.AniDB}
-                &nbsp;-&nbsp;
-                {seriesQuery.data.Name}
-                <Icon path={mdiOpenInNew} size={1} className="ml-2" />
+                <div className="shrink-0">
+                  {seriesQuery.data.IDs.AniDB}
+                  &nbsp;-&nbsp;
+                </div>
+
+                <div className="line-clamp-1">
+                  {seriesQuery.data.Name}
+                </div>
+
+                <div className="ml-2 shrink-0">
+                  <Icon path={mdiOpenInNew} size={1} />
+                </div>
               </a>
             </div>
 
@@ -344,17 +356,29 @@ const TmdbLinking = () => {
                   {tmdbShowOrMovieQuery.data && (
                     <>
                       <div className="flex items-center">
-                        TMDB |&nbsp;
+                        <div className="shrink-0">
+                          TMDB |&nbsp;
+                        </div>
                         <a
                           className="flex cursor-pointer font-semibold text-panel-text-primary"
                           href={`https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${tmdbId}`}
                           target="_blank"
                           rel="noopener noreferrer"
+                          data-tooltip-id="tooltip"
+                          data-tooltip-content={tmdbShowOrMovieQuery.data.Title}
                         >
-                          {tmdbId}
-                          &nbsp;-&nbsp;
-                          {tmdbShowOrMovieQuery.data.Title}
-                          <Icon path={mdiOpenInNew} size={1} className="ml-2" />
+                          <div className="shrink-0">
+                            {tmdbId}
+                            &nbsp;-&nbsp;
+                          </div>
+
+                          <div className="line-clamp-1">
+                            {tmdbShowOrMovieQuery.data.Title}
+                          </div>
+
+                          <div className="ml-2 shrink-0">
+                            <Icon path={mdiOpenInNew} size={1} />
+                          </div>
                         </a>
                       </div>
                       {isNewLink && (
