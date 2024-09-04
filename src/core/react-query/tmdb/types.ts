@@ -42,6 +42,7 @@ export type TmdbEpisodeXrefMappingRequestType = {
   AniDBID: number;
   TmdbID: number;
   Replace?: boolean;
+  Index?: number | null;
 };
 
 export type TmdbEditEpisodeXrefsRequestType = {
