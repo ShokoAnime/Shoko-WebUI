@@ -6,7 +6,7 @@ import semver from 'semver';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useVersionQuery } from '@/core/react-query/init/queries';
-import { getParsedSupportedServerVersion, parseServerVersion } from '@/core/util';
+import { getParsedSupportedServerVersion, isDebug, parseServerVersion } from '@/core/util';
 
 const SentryErrorBoundaryWrapper = () => {
   const navigate = useNavigate();
@@ -17,6 +17,8 @@ const SentryErrorBoundaryWrapper = () => {
   }, [versionQuery.data]);
 
   useEffect(() => {
+    if (isDebug()) return;
+
     if (!versionQuery.data || versionQuery.data.Server.ReleaseChannel === 'Debug') return;
 
     const serverData = versionQuery.data?.Server;
