@@ -435,7 +435,7 @@ const TmdbLinking = () => {
                   <div
                     className={cx(
                       'absolute left-0 top-0 flex w-full gap-x-2',
-                      type === 'Show' && 'col-span-3',
+                      episode && type === 'Show' && 'flex-col gap-y-2',
                     )}
                     style={{
                       transform: `translateY(${virtualItem.start ?? 0}px)`,
@@ -448,7 +448,10 @@ const TmdbLinking = () => {
                       map(
                         overrides,
                         (_, index) => (
-                          <React.Fragment key={`episode-${episode.IDs.AniDB}-${index}`}>
+                          <div
+                            key={`episode-${episode.IDs.AniDB}-${index}`}
+                            className="relative left-0 top-0 flex w-full gap-x-2"
+                          >
                             <EpisodeRow
                               episode={episode}
                               offset={index}
@@ -458,7 +461,7 @@ const TmdbLinking = () => {
                               existingXrefs={existingXrefs}
                               xrefs={finalEpisodeXrefs}
                             />
-                          </React.Fragment>
+                          </div>
                         ),
                       )
                     )}
@@ -486,7 +489,14 @@ const TmdbLinking = () => {
                         >
                           <Icon path={mdiLoading} spin size={1} />
                         </div>
-                        {type === 'Show' && <div className="w-14" />}
+                        {type === 'Show' && (
+                          <div
+                            className={cx(
+                              'w-14 rounded-lg border border-panel-border',
+                              isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
+                            )}
+                          />
+                        )}
                         <div
                           className={cx(
                             'flex grow justify-center rounded-lg border border-panel-border p-4 text-panel-text-primary',
