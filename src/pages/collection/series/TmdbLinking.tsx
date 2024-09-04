@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -179,7 +179,7 @@ const TmdbLinking = () => {
           TmdbShowID: tmdbId,
           TmdbEpisodeID: overrideId,
           Index: index,
-          Rating: (overrideId <= 0 ? MatchRatingType.None : MatchRatingType.UserVerified),
+          Rating: (overrideId === 0 ? MatchRatingType.None : MatchRatingType.UserVerified),
         });
       });
     });
@@ -204,7 +204,7 @@ const TmdbLinking = () => {
         const set = new Set<string>();
 
         let lastTmdbId = -1;
-        let lastIndex = 0;
+        let currentIndex = 0;
         const newMappings = reduce(
           linkOverrides,
           (result, overrides, episodeId) => {
@@ -212,13 +212,13 @@ const TmdbLinking = () => {
               if (index > 0 && overrideId === 0) return;
               if (overrideId === lastTmdbId) {
                 if (overrideId === 0) {
-                  lastIndex = 0;
+                  currentIndex = 0;
                 } else {
-                  lastIndex += 1;
+                  currentIndex += 1;
                 }
               } else {
                 lastTmdbId = overrideId;
-                lastIndex = 0;
+                currentIndex = 0;
               }
               const replace = !set.has(episodeId) ? Boolean(set.add(episodeId)) : false;
               result.push({
@@ -227,7 +227,7 @@ const TmdbLinking = () => {
                 // Replace is used when we do multiple anidb episodes for a single tmdb episode.
                 Replace: replace,
                 // And index is used when we do multiple tmdb episodes for a single anidb episode.
-                Index: replace ? lastIndex : undefined,
+                Index: replace ? currentIndex : undefined,
               });
             });
             return result;
@@ -299,15 +299,7 @@ const TmdbLinking = () => {
 
     if (isNewLink) return false;
 
-    const allEmptyLinks = every(
-      linkOverrides,
-      (overrides) => {
-        if (overrides[0] !== -1) return false;
-        return !some(overrides.slice(1), override => override !== 0);
-      },
-    );
-
-    return allEmptyLinks || Object.keys(linkOverrides).length === 0;
+    return Object.keys(linkOverrides).length === 0;
   }, [isNewLink, linkOverrides, type]);
 
   const handleNewLinkEdit = useEventCallback(() => {
@@ -465,7 +457,7 @@ const TmdbLinking = () => {
                               offset={index}
                               isOdd={isOdd}
                               setLinkOverrides={setLinkOverrides}
-                              tmdbEpisodesPending={tmdbEpisodesQuery.isPending}
+                              tmdbEpisodesPending={lastPageIds.length > 0 && tmdbEpisodesQuery.isPending}
                               existingXrefs={existingXrefs}
                               xrefs={finalEpisodeXrefs}
                             />
