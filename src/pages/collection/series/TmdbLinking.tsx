@@ -199,32 +199,16 @@ const TmdbLinking = () => {
         await createAutoLinks({ tmdbShowID: tmdbId });
       } else if (Object.keys(linkOverrides).length > 0) {
         const set = new Set<string>();
-
-        let lastTmdbId = -1;
-        let currentIndex = 0;
         const newMappings = reduce(
           linkOverrides,
           (result, overrides, episodeId) => {
             forEach(overrides, (overrideId, index) => {
               if (index > 0 && overrideId === 0) return;
-              if (overrideId === lastTmdbId) {
-                if (overrideId === 0) {
-                  currentIndex = 0;
-                } else {
-                  currentIndex += 1;
-                }
-              } else {
-                lastTmdbId = overrideId;
-                currentIndex = 0;
-              }
-              const replace = !set.has(episodeId) ? Boolean(set.add(episodeId)) : false;
               result.push({
                 AniDBID: toNumber(episodeId),
                 TmdbID: overrideId,
-                // Replace is used when we do multiple anidb episodes for a single tmdb episode.
-                Replace: replace,
-                // And index is used when we do multiple tmdb episodes for a single anidb episode.
-                Index: replace ? currentIndex : undefined,
+                // Replace is used when we link multiple anidb episodes to a single tmdb episode.
+                Replace: !set.has(episodeId) ? Boolean(set.add(episodeId)) : false,
               });
             });
             return result;
