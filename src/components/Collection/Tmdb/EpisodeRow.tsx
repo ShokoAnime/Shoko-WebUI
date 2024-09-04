@@ -123,7 +123,7 @@ const EpisodeRow = React.memo((props: Props) => {
         episode={episode}
         isOdd={isOdd}
         extra={offset > 0}
-        onIconClick={(tmdbEpisode ?? xref?.TmdbEpisodeID) ? editExtraEpisodeLink : undefined}
+        onIconClick={(offset > 0 || (tmdbEpisode ?? xref?.TmdbEpisodeID)) ? editExtraEpisodeLink : undefined}
       />
 
       <MatchRating rating={matchRating} isOdd={isOdd} />
