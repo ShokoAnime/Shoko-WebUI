@@ -229,7 +229,7 @@ const TmdbLinking = () => {
           'Series has been linked and TMDB related tasks for data and images have been added to the queue!',
         );
       } else {
-        toast.success('Series has been linked!');
+        toast.success('Episode links have been updated!');
       }
     } catch (error) {
       toast.error('Failed to save links!');
