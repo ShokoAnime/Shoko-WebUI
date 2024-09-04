@@ -195,12 +195,9 @@ const TmdbLinking = () => {
   const createEpisodeLinks = useEventCallback(async () => {
     setCreateInProgress(true);
     try {
-      if (isNewLink) {
-        await addLink({ ID: tmdbId });
+      if (isNewLink && Object.keys(linkOverrides).length === 0) {
         await createAutoLinks({ tmdbShowID: tmdbId });
-      }
-
-      if (Object.keys(linkOverrides).length > 0) {
+      } else if (Object.keys(linkOverrides).length > 0) {
         const set = new Set<string>();
 
         let lastTmdbId = -1;
@@ -243,7 +240,13 @@ const TmdbLinking = () => {
 
       resetQueries(['series', seriesId]);
       setLinkOverrides({});
-      toast.success('Series has been linked and TMDB related tasks for data and images have been added to the queue!');
+      if (isNewLink) {
+        toast.success(
+          'Series has been linked and TMDB related tasks for data and images have been added to the queue!',
+        );
+      } else {
+        toast.success('Series has been linked!');
+      }
     } catch (error) {
       toast.error('Failed to save links!');
     }
