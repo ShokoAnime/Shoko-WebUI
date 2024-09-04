@@ -68,7 +68,6 @@ const EpisodeRow = React.memo((props: Props) => {
     setLinkOverrides((draftState) => {
       if (!draftState[episodeId]) {
         draftState[episodeId] = map(xrefs?.[episodeId], item => item.TmdbEpisodeID);
-        if (draftState[episodeId].length === 0) draftState[episodeId].push(-1);
       }
 
       // If offset is 0, we are adding a link
@@ -85,9 +84,8 @@ const EpisodeRow = React.memo((props: Props) => {
         return;
       }
 
-      // When only one is preset, we can remove the override
-      // if existingXref was present or if it was the "first" empty link
-      if (draftState[episodeId].length === 1 && (existingXrefs ?? draftState[episodeId][0] === -1)) {
+      // When only one is preset, we can remove the override if existingXref was present
+      if (draftState[episodeId].length === 1 && existingXrefs) {
         delete draftState[episodeId];
       }
     });
@@ -125,7 +123,7 @@ const EpisodeRow = React.memo((props: Props) => {
         episode={episode}
         isOdd={isOdd}
         extra={offset > 0}
-        onIconClick={editExtraEpisodeLink}
+        onIconClick={(tmdbEpisode ?? xref?.TmdbEpisodeID) ? editExtraEpisodeLink : undefined}
       />
 
       <MatchRating rating={matchRating} isOdd={isOdd} />
