@@ -13,6 +13,7 @@ import toast from '@/components/Toast';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTmdbRefreshMutation } from '@/core/react-query/tmdb/mutations';
 import { useTmdbAutoSearchQuery, useTmdbSearchQuery } from '@/core/react-query/tmdb/queries';
+import { SeriesTypeEnum } from '@/core/types/api/series';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { TmdbSearchResultType } from '@/core/types/api/tmdb';
@@ -50,12 +51,12 @@ const SearchResultRow = React.memo(({ linkType, result, selectLink }: SearchResu
   );
 });
 
-const TmdbLinkSelectPanel = () => {
+const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTypeEnum }) => {
   const { seriesId } = useParams();
 
   const [, setSearchParams] = useSearchParams();
 
-  const [linkType, setLinkType] = useState<'Show' | 'Movie'>('Show');
+  const [linkType, setLinkType] = useState<'Show' | 'Movie'>(seriesType === SeriesTypeEnum.Movie ? 'Movie' : 'Show');
   const [selectedId, setSelectedId] = useState(0);
   const [searchText, setSearchText] = useState('');
   const [debouncedSearch] = useDebounceValue(searchText, 200);
@@ -188,6 +189,6 @@ const TmdbLinkSelectPanel = () => {
       </div>
     </div>
   );
-};
+});
 
 export default TmdbLinkSelectPanel;

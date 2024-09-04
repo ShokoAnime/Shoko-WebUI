@@ -49,7 +49,7 @@ const TmdbLinking = () => {
   const type = useMemo(() => searchParams.get('type') ?? null, [searchParams]) as 'Show' | 'Movie' | null;
   const tmdbId = useMemo(() => toNumber(searchParams.get('id')), [searchParams]);
 
-  const seriesQuery = useSeriesQuery(seriesId, {}, !!seriesId);
+  const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
 
   const [createInProgress, setCreateInProgress] = useState(false);
 
@@ -394,7 +394,7 @@ const TmdbLinking = () => {
                   )}
                 </div>
               )
-              : <TmdbLinkSelectPanel />}
+              : <TmdbLinkSelectPanel seriesType={seriesQuery.data?.AniDB?.Type} />}
 
             <div
               className={cx(
