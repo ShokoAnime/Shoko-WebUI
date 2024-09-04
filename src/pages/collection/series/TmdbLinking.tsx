@@ -120,8 +120,8 @@ const TmdbLinking = () => {
 
   const estimateSize = useEventCallback((index: number) => {
     const episode = episodes[index];
-    if (!episode) return 56; // 56px is the minimum height of a loaded row.
-    return 56 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
+    if (!episode) return 60; // 60px is the minimum height of a loaded row.
+    return 60 * (linkOverrides[episode.IDs.AniDB]?.length || 1);
   });
 
   const rowVirtualizer = useVirtualizer({
@@ -434,8 +434,8 @@ const TmdbLinking = () => {
                 return (
                   <div
                     className={cx(
-                      'absolute left-0 top-0 flex w-full',
-                      type === 'Show' ? 'flex-col col-span-3 gap-y-2' : 'flex-row gap-x-2',
+                      'absolute left-0 top-0 flex w-full gap-x-2',
+                      type === 'Show' && 'col-span-3',
                     )}
                     style={{
                       transform: `translateY(${virtualItem.start ?? 0}px)`,
@@ -448,10 +448,7 @@ const TmdbLinking = () => {
                       map(
                         overrides,
                         (_, index) => (
-                          <div
-                            key={`episode-${episode.IDs.AniDB}-${index}`}
-                            className="relative left-0 top-0 flex w-full gap-x-2"
-                          >
+                          <React.Fragment key={`episode-${episode.IDs.AniDB}-${index}`}>
                             <EpisodeRow
                               episode={episode}
                               offset={index}
@@ -461,7 +458,7 @@ const TmdbLinking = () => {
                               existingXrefs={existingXrefs}
                               xrefs={finalEpisodeXrefs}
                             />
-                          </div>
+                          </React.Fragment>
                         ),
                       )
                     )}
