@@ -297,6 +297,8 @@ const TmdbLinking = () => {
       return Object.keys(linkOverrides).length === 0;
     }
 
+    if (isNewLink) return false;
+
     const allEmptyLinks = every(
       linkOverrides,
       (overrides) => {
@@ -305,7 +307,7 @@ const TmdbLinking = () => {
       },
     );
 
-    return allEmptyLinks || (Object.keys(linkOverrides).length === 0 && !isNewLink);
+    return allEmptyLinks || Object.keys(linkOverrides).length === 0;
   }, [isNewLink, linkOverrides, type]);
 
   const handleNewLinkEdit = useEventCallback(() => {
