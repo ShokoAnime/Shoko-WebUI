@@ -34,7 +34,7 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
       data-tooltip-content={episode.Name}
     >
       <div className="line-clamp-1 text-xs font-semibold opacity-65">
-        {episode.AniDB?.AirDate ?? 'Airdate Unknown'}
+        {episode.AniDB?.AirDate ?? '????-??-??'}
       </div>
       <div className="line-clamp-1">
         {episode.Name}
