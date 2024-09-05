@@ -23,7 +23,7 @@ const getAbbreviation = (rating?: MatchRatingType) => {
 const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingType }) => (
   <div
     className={cx(
-      'flex justify-center items-center rounded-md border border-panel-border  w-14 text-button-primary-text',
+      'flex justify-center items-center rounded-md border border-panel-border w-16 text-button-primary-text',
       {
         'bg-panel-text-important': rating === MatchRatingType.DateAndTitleMatches,
         'bg-panel-text-warning': rating === MatchRatingType.DateMatches || rating === MatchRatingType.TitleMatches,

@@ -45,6 +45,7 @@ const TopPanel = (props: Props) => {
     <ShokoPanel
       title="Metadata Linking"
       options={<ItemCount count={xrefsCount ?? flatXrefs?.length ?? 0} suffix="Entries" />}
+      className="sticky -top-6 z-10"
     >
       <div className="flex items-center gap-x-3">
         <div
