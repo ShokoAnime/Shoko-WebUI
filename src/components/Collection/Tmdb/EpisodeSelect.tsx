@@ -77,7 +77,7 @@ const EpisodeSelect = React.memo((props: Props) => {
     <Listbox value={tmdbEpisode ?? {}} by="ID" onChange={handleSelect}>
       <ListboxButton
         className={cx(
-          'flex grow basis-0 gap-x-6 rounded-lg border border-panel-border p-4',
+          'flex items-center grow basis-0 gap-x-6 rounded-lg border border-panel-border p-4',
           'data-[open]:border-panel-text-primary',
           isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
         )}
@@ -95,11 +95,16 @@ const EpisodeSelect = React.memo((props: Props) => {
             </div>
 
             <div
-              className="line-clamp-1 grow text-left"
+              className="flex grow flex-col text-left"
               data-tooltip-id="tooltip"
               data-tooltip-content={tmdbEpisode?.Title ?? ''}
             >
-              {tmdbEpisode?.Title ?? 'Entry Not Linked'}
+              <div className="line-clamp-1 text-xs font-semibold opacity-65">
+                {tmdbEpisode?.AiredAt ?? 'Airdate Unknown'}
+              </div>
+              <div className="line-clamp-1">
+                {tmdbEpisode?.Title ?? 'Entry Not Linked'}
+              </div>
             </div>
 
             <Icon path={mdiChevronDown} size={1} className="shrink-0 transition-transform" rotate={open ? 180 : 0} />

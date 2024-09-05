@@ -479,7 +479,7 @@ const TmdbLinking = () => {
                         {type === 'Show' && (
                           <div
                             className={cx(
-                              'w-14 rounded-lg border border-panel-border',
+                              'w-16 rounded-lg border border-panel-border',
                               isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
                             )}
                           />
