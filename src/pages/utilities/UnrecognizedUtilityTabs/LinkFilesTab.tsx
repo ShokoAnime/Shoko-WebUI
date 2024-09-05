@@ -613,7 +613,7 @@ function LinkFilesTab() {
   return (
     <>
       <TransitionDiv className="flex size-full grow flex-col">
-        <div>
+        <div className="sticky -top-6 z-10">
           <ShokoPanel title={<Title />} options={<ItemCount count={selectedRows.length} />}>
             <div className="flex items-center gap-x-3">
               <div className="relative box-border flex grow items-center rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
