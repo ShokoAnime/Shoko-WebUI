@@ -100,7 +100,7 @@ const EpisodeSelect = React.memo((props: Props) => {
               data-tooltip-content={tmdbEpisode?.Title ?? ''}
             >
               <div className="line-clamp-1 text-xs font-semibold opacity-65">
-                {tmdbEpisode?.AiredAt ?? '????-??-??'}
+                {tmdbEpisode?.AiredAt ?? (!tmdbEpisode ? 'XXXX-XX-XX' : '????-??-??')}
               </div>
               <div className="line-clamp-1">
                 {tmdbEpisode?.Title ?? 'Not Linked'}
