@@ -5,7 +5,7 @@ import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
-import { debounce, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
+import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
@@ -179,7 +179,7 @@ const TmdbLinking = () => {
           TmdbShowID: tmdbId,
           TmdbEpisodeID: overrideId,
           Index: index,
-          Rating: (overrideId === 0 ? MatchRatingType.None : MatchRatingType.UserVerified),
+          Rating: MatchRatingType.UserVerified,
         });
       });
     });
@@ -195,9 +195,17 @@ const TmdbLinking = () => {
   const createEpisodeLinks = useEventCallback(async () => {
     setCreateInProgress(true);
     try {
-      if (isNewLink && Object.keys(linkOverrides).length === 0) {
+      // If we're not giving the server any clues about which series to link
+      // then we need to first create the auto links before sending the
+      // mappings.
+      if (
+        isNewLink
+        && (Object.keys(linkOverrides).length === 0 || every(linkOverrides, links => every(links, link => link === 0)))
+      ) {
         await createAutoLinks({ tmdbShowID: tmdbId });
-      } else if (Object.keys(linkOverrides).length > 0) {
+      }
+
+      if (Object.keys(linkOverrides).length > 0) {
         const set = new Set<string>();
         const newMappings = reduce(
           linkOverrides,
