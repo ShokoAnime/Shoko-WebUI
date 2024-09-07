@@ -17,14 +17,14 @@ import useFlattenListResult from '@/hooks/useFlattenListResult';
 import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
 
 type Props = {
+  isDisabled: boolean;
   isOdd: boolean;
   overrideLink: (newTmdbId?: number) => void;
-  override?: number;
   tmdbEpisode?: TmdbEpisodeType;
 };
 
 const EpisodeSelect = React.memo((props: Props) => {
-  const { isOdd, override, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
+  const { isDisabled, isOdd, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
   const [searchParams] = useSearchParams();
   const tmdbId = toNumber(searchParams.get('id'));
 
@@ -40,16 +40,8 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (override) {
-      const episodeOverride = episodes.find(episode => episode.ID === override);
-      if (episodeOverride) {
-        setTmdbEpisode(episodeOverride);
-        return;
-      }
-    }
-
     setTmdbEpisode(initialTmdbEpisode);
-  }, [episodes, initialTmdbEpisode, override]);
+  }, [initialTmdbEpisode]);
 
   const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
     overrideLink(newSelectedEpisode?.ID ?? 0);
@@ -74,13 +66,21 @@ const EpisodeSelect = React.memo((props: Props) => {
   );
 
   return (
-    <Listbox value={tmdbEpisode ?? {}} by="ID" onChange={handleSelect}>
+    <Listbox
+      value={tmdbEpisode ?? {}}
+      by="ID"
+      onChange={handleSelect}
+      disabled={isDisabled}
+    >
       <ListboxButton
         className={cx(
           'flex items-center grow basis-0 gap-x-6 rounded-lg border border-panel-border p-4',
           'data-[open]:border-panel-text-primary',
           isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
+          isDisabled && 'opacity-65',
         )}
+        data-tooltip-id="tooltip"
+        data-tooltip-content={isDisabled ? 'Episode is linked to another show.' : ''}
       >
         {({ open }) => (
           <>
@@ -96,7 +96,7 @@ const EpisodeSelect = React.memo((props: Props) => {
 
             <div
               className="flex grow flex-col text-left"
-              data-tooltip-id="tooltip"
+              data-tooltip-id={!isDisabled ? 'tooltip' : ''}
               data-tooltip-content={tmdbEpisode?.Title ?? ''}
             >
               <div className="line-clamp-1 text-xs font-semibold opacity-65">

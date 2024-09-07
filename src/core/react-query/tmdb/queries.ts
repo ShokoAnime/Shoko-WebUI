@@ -3,12 +3,11 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { toNumber } from 'lodash';
 
 import { axios } from '@/core/axios';
+import { transformListResultSimplified } from '@/core/react-query/helpers';
 import queryClient from '@/core/react-query/queryClient';
-import { cleanTmdbEpisodeXrefs } from '@/core/react-query/tmdb/helpers';
 
 import type {
   TmdbBulkRequestType,
-  TmdbEpisodeXrefRequestType,
   TmdbSearchRequestType,
   TmdbShowEpisodesRequestType,
 } from '@/core/react-query/tmdb/types';
@@ -26,17 +25,17 @@ import type {
 export const useTmdbEpisodeXrefsQuery = (
   seriesId: number,
   isNewLink: boolean,
-  params: TmdbEpisodeXrefRequestType,
+  tmdbShowID: number,
   enabled = true,
 ) =>
   useQuery<ListResultType<TmdbEpisodeXrefType>, unknown, TmdbEpisodeXrefType[]>({
-    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params],
+    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, tmdbShowID],
     queryFn: () =>
       axios.get(
         `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
-        { params },
+        { params: { pageSize: 0, tmdbShowID: isNewLink ? tmdbShowID : undefined } },
       ),
-    select: cleanTmdbEpisodeXrefs,
+    select: transformListResultSimplified,
     enabled,
   });
 

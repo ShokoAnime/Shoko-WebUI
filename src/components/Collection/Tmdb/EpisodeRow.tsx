@@ -1,8 +1,9 @@
 import React, { useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { find, map } from 'lodash';
+import { find, map, toNumber } from 'lodash';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeSelect from '@/components/Collection/Tmdb/EpisodeSelect';
@@ -34,6 +35,9 @@ const EpisodeRow = React.memo((props: Props) => {
     tmdbEpisodesPending,
     xrefs,
   } = props;
+
+  const [searchParams] = useSearchParams();
+  const tmdbId = toNumber(searchParams.get('id'));
 
   const xref = useMemo(
     () => {
@@ -117,6 +121,11 @@ const EpisodeRow = React.memo((props: Props) => {
     return xref?.Rating;
   }, [isPending, xref]);
 
+  const isDisabled = useMemo(() => {
+    if (!tmdbEpisode) return false;
+    return tmdbEpisode.ShowID !== tmdbId;
+  }, [tmdbEpisode, tmdbId]);
+
   return (
     <>
       <AniDBEpisode
@@ -126,12 +135,16 @@ const EpisodeRow = React.memo((props: Props) => {
         onIconClick={(offset > 0 || (tmdbEpisode ?? xref?.TmdbEpisodeID)) ? editExtraEpisodeLink : undefined}
       />
 
-      <MatchRating rating={matchRating} isOdd={isOdd} />
+      <MatchRating
+        rating={matchRating}
+        isOdd={isOdd}
+        isDisabled={isDisabled}
+      />
 
       {!isPending && (
         <EpisodeSelect
+          isDisabled={isDisabled}
           isOdd={isOdd}
-          override={xref?.TmdbEpisodeID}
           overrideLink={overrideLink}
           tmdbEpisode={tmdbEpisode}
         />
