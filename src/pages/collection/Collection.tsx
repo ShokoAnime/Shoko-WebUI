@@ -35,15 +35,14 @@ const getFilter = (
   query: string,
   filterConditions: (FilterCondition | undefined)[],
   sortingCriteria?: SortingCriteria,
-  isSeriesSearch = true,
 ): FilterType => {
   let finalCondition: FilterCondition | undefined;
   const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
     let searchCondition: FilterCondition = {
-      Type: isSeriesSearch ? 'StringContains' : 'AnyContains',
+      Type: 'StringContains',
       Left: {
-        Type: isSeriesSearch ? 'NameSelector' : 'NamesSelector',
+        Type: 'NameSelector',
       },
       Parameter: query,
     };
@@ -126,7 +125,6 @@ function Collection() {
         debouncedGroupSearch,
         [activeFilter, filterQuery.data?.Expression],
         filterQuery.data?.Sorting,
-        false,
       ),
     },
     !isSeries && (!filterId || (!!filterId && filterQuery.isSuccess)),
@@ -146,7 +144,6 @@ function Collection() {
         debouncedSeriesSearch,
         [activeFilter, filterQuery.data?.Expression],
         filterQuery.data?.Sorting,
-        true,
       ),
       randomImages: showRandomPoster,
       includeDataFrom: ['AniDB', 'TMDB'],
