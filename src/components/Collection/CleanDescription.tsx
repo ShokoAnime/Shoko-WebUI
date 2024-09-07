@@ -2,21 +2,21 @@ import React, { useMemo } from 'react';
 import cx from 'classnames';
 
 // The question marks are there because people can't spell…
-const RemoveSummaryRegex = /\b(Sour?ce|Note|Summ?ary):([^\r\n]+|$)/mg;
+const CleanInfoLinesRegex = /\b((Modified )?Sour?ce|Note( [1-9])?|Summ?ary):(?!$)([^\r\n]+|$)/img;
 
-const RemoveBasedOnWrittenByRegex = /^(\*|\u2014) (based on|written by) ([^\r\n]+|$)/img;
+const CleanMiscLinesRegex = /^^(\*|\u2014 (adapted|source:?|summary|translated|written)|- (translated)|~ (adapted|description|summary|translated)) ([^\r\n]+|$)/img;
 
-const RemoveBBCodeRegex = /\[i\](.*?)\[\/i\]/sg;
+// This accounts for an AniDB API bug since BBCode is not supposed to be there
+const CleanBBCodeRegex = /\[i\](?!"The Sasami|"Stellar|In the distant| occurred in)(.*?)\[\/i\]/isg;
+const CleanExtraBBCodeRegex = /(\[i\]|\[\/i\])/ig; 
 
-const MultiSpacesRegex = /\s{2,}/g;
+const CleanMultiEmptyLinesRegex = /\n{2,}/g;
 
-const CleanMiscLinesRegex = /^(--|~) /sg;
-
-const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
+const CleanMultiSpacesRegex = /\s{2,}/g;
 
 // eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const LinkRegex =
-  /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
+  /(?<url>http:\/\/anidb\.net\/(?<type>ch|co|cr|[feast]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/ig;
 
 type Props = {
   className?: string;
@@ -27,12 +27,12 @@ type Props = {
 const CleanDescription = React.memo(({ altText, className, text }: Props) => {
   const modifiedText = useMemo(() => {
     const cleanedText = text
+      .replaceAll(CleanInfoLinesRegex, '')
       .replaceAll(CleanMiscLinesRegex, '')
-      .replaceAll(RemoveSummaryRegex, '')
-      .replaceAll(RemoveBasedOnWrittenByRegex, '')
-      .replaceAll(RemoveBBCodeRegex, '')
+      .replaceAll(CleanBBCodeRegex, '')
+      .replaceAll(CleanExtraBBCodeRegex, '')
       .replaceAll(CleanMultiEmptyLinesRegex, '\n')
-      .replaceAll(MultiSpacesRegex, ' ');
+      .replaceAll(CleanMultiSpacesRegex, ' ');
 
     const lines = [] as React.ReactNode[];
     let prevPos = 0;
