@@ -4,11 +4,12 @@ import cx from 'classnames';
 // The question marks are there because people can't spell…
 const CleanInfoLinesRegex = /\b((Modified )?Sour?ce|Note( [1-9])?|Summ?ary):(?!$)([^\r\n]+|$)/img;
 
-const CleanMiscLinesRegex = /^^(\*|\u2014 (adapted|source:?|summary|translated|written)|- (translated)|~ (adapted|description|summary|translated)) ([^\r\n]+|$)/img;
+const CleanMiscLinesRegex =
+  /^^(\*|\u2014 (adapted|source:?|summary|translated|written)|- (translated)|~ (adapted|description|summary|translated)) ([^\r\n]+|$)/img;
 
 // This accounts for an AniDB API bug since BBCode is not supposed to be there
 const CleanBBCodeRegex = /\[i\](?!"The Sasami|"Stellar|In the distant| occurred in)(.*?)\[\/i\]/isg;
-const CleanExtraBBCodeRegex = /(\[i\]|\[\/i\])/ig; 
+const CleanExtraBBCodeRegex = /(\[i\]|\[\/i\])/ig;
 
 const CleanMultiEmptyLinesRegex = /\n{2,}/g;
 
