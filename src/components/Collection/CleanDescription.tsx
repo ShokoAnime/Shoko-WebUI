@@ -4,8 +4,9 @@ import cx from 'classnames';
 // The question marks are there because people can't spell…
 const CleanInfoLinesRegex = /\b((Modified )?Sour?ce|Note( [1-9])?|Summ?ary):(?!$)([^\r\n]+|$)/img;
 
+// eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const CleanMiscLinesRegex =
-  /^^(\*|\u2014 (adapted|source:?|summary|translated|written)|- (translated)|~ (adapted|description|summary|translated)) ([^\r\n]+|$)/img;
+  /^(\*|\u2014 (adapted|source:?|summary|translated|written)|- (translated)|~ (adapted|description|summary|translated)) ([^\r\n]+|$)/img;
 
 // This accounts for an AniDB API bug since BBCode is not supposed to be there
 const CleanBBCodeRegex = /\[i\](?!"The Sasami|"Stellar|In the distant| occurred in)(.*?)\[\/i\]/isg;
