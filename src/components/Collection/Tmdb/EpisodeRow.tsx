@@ -131,7 +131,6 @@ const EpisodeRow = React.memo((props: Props) => {
       {!isPending && (
         <EpisodeSelect
           isOdd={isOdd}
-          override={xref?.TmdbEpisodeID}
           overrideLink={overrideLink}
           tmdbEpisode={tmdbEpisode}
         />

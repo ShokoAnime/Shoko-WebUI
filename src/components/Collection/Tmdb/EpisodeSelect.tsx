@@ -19,12 +19,11 @@ import type { TmdbEpisodeType } from '@/core/types/api/tmdb';
 type Props = {
   isOdd: boolean;
   overrideLink: (newTmdbId?: number) => void;
-  override?: number;
   tmdbEpisode?: TmdbEpisodeType;
 };
 
 const EpisodeSelect = React.memo((props: Props) => {
-  const { isOdd, override, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
+  const { isOdd, overrideLink, tmdbEpisode: initialTmdbEpisode } = props;
   const [searchParams] = useSearchParams();
   const tmdbId = toNumber(searchParams.get('id'));
 
@@ -40,16 +39,8 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (override) {
-      const episodeOverride = episodes.find(episode => episode.ID === override);
-      if (episodeOverride) {
-        setTmdbEpisode(episodeOverride);
-        return;
-      }
-    }
-
     setTmdbEpisode(initialTmdbEpisode);
-  }, [episodes, initialTmdbEpisode, override]);
+  }, [initialTmdbEpisode]);
 
   const handleSelect = useEventCallback((newSelectedEpisode?: TmdbEpisodeType) => {
     overrideLink(newSelectedEpisode?.ID ?? 0);
