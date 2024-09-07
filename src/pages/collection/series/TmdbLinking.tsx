@@ -74,7 +74,6 @@ const TmdbLinking = () => {
     seriesId,
     isNewLink,
     tmdbId,
-    { pageSize: 0 },
     !createInProgress && !!seriesId && type === 'Show' && !!seriesQuery.data,
   );
   const episodeXrefs = useMemo(

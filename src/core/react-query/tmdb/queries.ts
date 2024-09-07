@@ -8,7 +8,6 @@ import queryClient from '@/core/react-query/queryClient';
 
 import type {
   TmdbBulkRequestType,
-  TmdbEpisodeXrefRequestType,
   TmdbSearchRequestType,
   TmdbShowEpisodesRequestType,
 } from '@/core/react-query/tmdb/types';
@@ -27,15 +26,14 @@ export const useTmdbEpisodeXrefsQuery = (
   seriesId: number,
   isNewLink: boolean,
   tmdbShowID: number,
-  params: TmdbEpisodeXrefRequestType,
   enabled = true,
 ) =>
   useQuery<ListResultType<TmdbEpisodeXrefType>, unknown, TmdbEpisodeXrefType[]>({
-    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params, tmdbShowID],
+    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, tmdbShowID],
     queryFn: () =>
       axios.get(
         `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
-        { params: isNewLink ? { ...params, tmdbShowID } : params },
+        { params: { pageSize: 0, tmdbShowID: isNewLink ? tmdbShowID : undefined } },
       ),
     select: transformListResultSimplified,
     enabled,
