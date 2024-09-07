@@ -74,7 +74,7 @@ const getFilter = (
   return (
     finalCondition
       ? {
-        ApplyAtSeriesLevel: isSeriesSearch,
+        ApplyAtSeriesLevel: true,
         Expression: finalCondition,
         Sorting: sortingCriteria ?? { Type: 'Name', IsInverted: false },
       }
