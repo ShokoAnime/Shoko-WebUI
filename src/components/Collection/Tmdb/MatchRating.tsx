@@ -20,7 +20,13 @@ const getAbbreviation = (rating?: MatchRatingType) => {
   }
 };
 
-const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: MatchRatingType }) => (
+type Props = {
+  isDisabled: boolean;
+  isOdd: boolean;
+  rating?: MatchRatingType;
+};
+
+const MatchRating = React.memo(({ isDisabled, isOdd, rating }: Props) => (
   <div
     className={cx(
       'flex justify-center items-center rounded-md border border-panel-border w-16 text-button-primary-text',
@@ -31,6 +37,7 @@ const MatchRating = React.memo(({ isOdd, rating }: { isOdd: boolean, rating?: Ma
         'bg-panel-text-danger': rating === MatchRatingType.FirstAvailable,
         'bg-panel-background': (!rating || rating === MatchRatingType.None) && !isOdd,
         'bg-panel-background-alt': (!rating || rating === MatchRatingType.None) && isOdd,
+        'opacity-65': isDisabled,
       },
     )}
   >

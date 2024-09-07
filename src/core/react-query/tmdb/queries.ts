@@ -3,8 +3,8 @@ import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 import { toNumber } from 'lodash';
 
 import { axios } from '@/core/axios';
+import { transformListResultSimplified } from '@/core/react-query/helpers';
 import queryClient from '@/core/react-query/queryClient';
-import { cleanTmdbEpisodeXrefs } from '@/core/react-query/tmdb/helpers';
 
 import type {
   TmdbBulkRequestType,
@@ -26,17 +26,18 @@ import type {
 export const useTmdbEpisodeXrefsQuery = (
   seriesId: number,
   isNewLink: boolean,
+  tmdbShowID: number,
   params: TmdbEpisodeXrefRequestType,
   enabled = true,
 ) =>
   useQuery<ListResultType<TmdbEpisodeXrefType>, unknown, TmdbEpisodeXrefType[]>({
-    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params],
+    queryKey: ['series', seriesId, 'tmdb', 'cross-references', 'episode', isNewLink, params, tmdbShowID],
     queryFn: () =>
       axios.get(
         `Series/${seriesId}/TMDB/Show/CrossReferences/Episode${isNewLink ? '/Auto' : ''}`,
-        { params },
+        { params: isNewLink ? { ...params, tmdbShowID } : params },
       ),
-    select: cleanTmdbEpisodeXrefs,
+    select: transformListResultSimplified,
     enabled,
   });
 
