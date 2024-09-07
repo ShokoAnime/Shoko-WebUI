@@ -1,9 +1,5 @@
 import type { PaginationType } from '@/core/types/api';
 
-export type TmdbEpisodeXrefRequestType = {
-  tmdbShowID?: number;
-} & PaginationType;
-
 export type TmdbRefreshRequestType = {
   tmdbId: number;
   Force?: boolean;
