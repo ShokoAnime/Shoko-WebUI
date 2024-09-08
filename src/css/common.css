@@ -207,11 +207,6 @@ input:autofill {
   }
 
   /* stylelint-disable-next-line selector-class-pattern */
-  &.TvDB {
-    background-image: url('/images/community/24-TvDB.png');
-  }
-
-  /* stylelint-disable-next-line selector-class-pattern */
   &.MAL {
     background-image: url('/images/community/24-MAL.png');
   }

@@ -91,7 +91,6 @@ export type FileDetailedType = FileType & {
 
 export type FileIDsType = {
   AniDB: number;
-  TvDB: number[];
   ID: number;
 };
 

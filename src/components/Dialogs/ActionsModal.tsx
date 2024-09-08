@@ -41,8 +41,7 @@ const actions = {
   tvdb: {
     title: 'TvDB',
     data: [
-      'regen-tvdb-links',
-      'update-all-tvdb-info',
+      'purge-all-tvdb-info',
     ],
   },
   moviedb: {

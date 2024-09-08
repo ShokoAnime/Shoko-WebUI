@@ -256,7 +256,6 @@ export type SettingsTMDBType = {
 export const enum LanguageSource {
   AniDB = 'AniDB',
   TMDB = 'TMDB',
-  TvDB = 'TvDB',
 }
 
 export type SettingsLanguageType = {
@@ -291,7 +290,7 @@ export type SettingsLanguageType = {
   /**
    * Episode / season title source preference order.
    *
-   * @default [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB]
+   * @default [LanguageSource.TMDB, LanguageSource.AniDB]
    */
   EpisodeTitleSourceOrder: LanguageSource[];
 
@@ -305,7 +304,7 @@ export type SettingsLanguageType = {
   /**
    * Description source preference order.
    *
-   * @default [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB]
+   * @default [LanguageSource.TMDB, LanguageSource.AniDB]
    */
   DescriptionSourceOrder: LanguageSource[];
 };

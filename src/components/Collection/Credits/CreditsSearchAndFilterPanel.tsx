@@ -15,8 +15,6 @@ type Props = {
   uniqueRoles: string[];
   refreshAniDbAction: () => void;
   aniDbRefreshing: boolean;
-  refreshTvDbAction: () => void;
-  tvDbRefreshing: boolean;
 };
 const CreditsSearchAndFilterPanel = React.memo(
   (
@@ -26,10 +24,8 @@ const CreditsSearchAndFilterPanel = React.memo(
       handleSearchChange,
       inputPlaceholder,
       refreshAniDbAction,
-      refreshTvDbAction,
       roleFilter,
       search,
-      tvDbRefreshing,
       uniqueRoles,
     }: Props,
   ) => (
@@ -79,19 +75,6 @@ const CreditsSearchAndFilterPanel = React.memo(
           disabled={aniDbRefreshing}
         >
           Force refresh: AniDB
-          <Icon
-            path={mdiPlayCircleOutline}
-            className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"
-            size={1}
-          />
-        </button>
-        <button
-          type="button"
-          className="flex w-full flex-row justify-between disabled:cursor-not-allowed disabled:opacity-65"
-          onClick={refreshTvDbAction}
-          disabled={tvDbRefreshing}
-        >
-          Force refresh: TVDB
           <Icon
             path={mdiPlayCircleOutline}
             className="pointer-events-auto text-panel-icon-action group-disabled:cursor-not-allowed"

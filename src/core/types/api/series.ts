@@ -17,9 +17,6 @@ export type SeriesType = {
     Movies: TmdbMovieType[];
     Shows: TmdbShowType[];
   };
-  TvDB?: ({
-    ID: number;
-  })[];
 };
 
 export type SeriesWithMultipleReleasesType = {

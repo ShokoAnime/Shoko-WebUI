@@ -6,10 +6,7 @@ import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/Credits
 import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import toast from '@/components/Toast';
-import {
-  useRefreshSeriesAniDBInfoMutation,
-  useRefreshSeriesTvdbInfoMutatation,
-} from '@/core/react-query/series/mutations';
+import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -30,17 +27,10 @@ const SeriesCredits = () => {
   const { seriesId } = useParams();
 
   const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation();
-  const { isPending: pendingRefreshTvDb, mutate: refreshTvDbMutation } = useRefreshSeriesTvdbInfoMutatation();
 
   const refreshAniDb = useEventCallback(() => {
     refreshAniDbMutation({ seriesId: toNumber(seriesId), force: true }, {
       onSuccess: () => toast.success('AniDB refresh queued!'),
-    });
-  });
-
-  const refreshTvDb = useEventCallback(() => {
-    refreshTvDbMutation({ seriesId: toNumber(seriesId), force: true }, {
-      onSuccess: () => toast.success('TvDB refresh queued!'),
     });
   });
 
@@ -107,9 +97,7 @@ const SeriesCredits = () => {
           handleSearchChange={handleSearchChange}
           handleFilterChange={handleFilterChange}
           refreshAniDbAction={refreshAniDb}
-          refreshTvDbAction={refreshTvDb}
           aniDbRefreshing={pendingRefreshAniDb}
-          tvDbRefreshing={pendingRefreshTvDb}
         />
       </div>
 
