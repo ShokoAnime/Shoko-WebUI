@@ -102,6 +102,11 @@ export const useWatchSeriesEpisodesMutation = () =>
     },
   });
 
+export const useAutoSearchTmdbMatchMutation = () =>
+  useMutation({
+    mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/TMDB/Action/AutoSearch`),
+  });
+
 export const useRefreshSeriesTMDBInfoMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) =>

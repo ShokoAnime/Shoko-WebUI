@@ -3,6 +3,7 @@ import React from 'react';
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
 import {
+  useAutoSearchTmdbMatchMutation,
   useRefreshSeriesAniDBInfoMutation,
   useRefreshSeriesTMDBInfoMutation,
   useUpdateSeriesTMDBImagesMutation,
@@ -14,6 +15,7 @@ type Props = {
 
 const UpdateActionsTab = ({ seriesId }: Props) => {
   const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
+  const { mutate: autoMatchTmdb } = useAutoSearchTmdbMatchMutation();
   const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation();
   const { mutate: updateTmdbImages } = useUpdateSeriesTMDBImagesMutation();
 
@@ -39,6 +41,14 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
         name="Update AniDB Info - XML Cache"
         description="Updates AniDB data using information from local XML cache."
         onClick={() => triggerAnidbRefresh(false, true)}
+      />
+      <Action
+        name="Auto-Search TMDB Match"
+        description="Automatically searches for a TMDB match."
+        onClick={() =>
+          autoMatchTmdb(seriesId, {
+            onSuccess: () => toast.success('TMDB refresh queued!'),
+          })}
       />
       <Action
         name="Update TMDB Info"
