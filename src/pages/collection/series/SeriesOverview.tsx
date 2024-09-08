@@ -31,9 +31,17 @@ const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
+  const series = useMemo(
+    () =>
+      seriesQuery?.data
+        ?? {
+          IDs: { ID: 0, TMDB: { Movie: [], Show: [] }, AniDB: 0, TraktTv: [], TvDB: [] },
+          Links: [],
+        } as unknown as SeriesType,
+    [seriesQuery.data],
+  );
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
-    includeDataFrom: ['AniDB', 'TvDB'],
+    includeDataFrom: ['AniDB'],
     includeMissing: false,
     onlyUnwatched: false,
   }, !!seriesId);
@@ -83,11 +91,8 @@ const SeriesOverview = () => {
                   )}
                 >
                   {MetadataLinks.map((site) => {
-                    const idOrIds = series.IDs[site];
-
                     if (site === 'TMDB') {
-                      const tmdbIds = idOrIds as { Movie: number[], Show: number[] };
-
+                      const tmdbIds = series.IDs.TMDB;
                       if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
                         return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
                       }
@@ -108,9 +113,18 @@ const SeriesOverview = () => {
                       ];
                     }
 
-                    // Site is not TMDB, so it's either a single ID or an array of IDs
-                    let linkIds = (typeof idOrIds === 'number' ? [idOrIds] : idOrIds) as number[];
-                    if (linkIds.length === 0) linkIds = [0];
+                    if (site === 'TvDB') {
+                      const tvdbIds = (series.TvDB ?? []).map(({ ID }) => ID);
+                      if (tvdbIds.length === 0) tvdbIds.push(0);
+                      return tvdbIds.map(id => (
+                        <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
+                      ));
+                    }
+
+                    // Site is not TMDB or TvDB, so it's either a single ID or an array of IDs
+                    const idOrIds = series?.IDs[site] ?? [0];
+                    const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
+                    if (linkIds.length === 0) linkIds.push(0);
 
                     return linkIds.map(id => (
                       <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />

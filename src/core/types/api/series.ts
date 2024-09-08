@@ -17,6 +17,9 @@ export type SeriesType = {
     Movies: TmdbMovieType[];
     Shows: TmdbShowType[];
   };
+  TvDB?: ({
+    ID: number;
+  })[];
 };
 
 export type SeriesWithMultipleReleasesType = {
@@ -45,7 +48,6 @@ export type SeriesIDsType = {
   ParentGroup: number;
   TopLevelGroup: number;
   AniDB: number;
-  TvDB: number[];
   MAL: number[];
   TraktTv: number[];
   TMDB: {
