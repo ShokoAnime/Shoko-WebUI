@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { flatMap, get, round, toNumber } from 'lodash';
+import { flatMap, get, map, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
@@ -22,7 +22,7 @@ import {
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
-import type { SeriesCast, SeriesType } from '@/core/types/api/series';
+import type { SeriesCast } from '@/core/types/api/series';
 
 // Links
 const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv', 'TvDB'] as const;
@@ -30,15 +30,10 @@ const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv', 'TvDB'] as const;
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
-  const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId);
-  const series = useMemo(
-    () =>
-      seriesQuery?.data
-        ?? {
-          IDs: { ID: 0, TMDB: { Movie: [], Show: [] }, AniDB: 0, TraktTv: [], TvDB: [] },
-          Links: [],
-        } as unknown as SeriesType,
-    [seriesQuery.data],
+  const { data: series, ...seriesQuery } = useSeriesQuery(
+    toNumber(seriesId!),
+    { includeDataFrom: ['AniDB', 'TMDB'] },
+    !!seriesId,
   );
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
     includeDataFrom: ['AniDB'],
@@ -80,89 +75,89 @@ const SeriesOverview = () => {
             options={
               <MultiStateButton states={tabStates} activeState={currentTab} onStateChange={handleTabStateChange} />
             }
+            isFetching={seriesQuery.isFetching}
           >
-            {currentTab === 'metadata'
-              ? (
-                <div
-                  className={cx(
-                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
-                    // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
-                    MetadataLinks.length > 4 ? 'pr-4' : '',
-                  )}
-                >
-                  {MetadataLinks.map((site) => {
-                    if (site === 'TMDB') {
-                      const tmdbIds = series.IDs.TMDB;
-                      if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
-                        return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
-                      }
-
-                      return [
-                        ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
-                          ids.map(id => (
-                            <SeriesMetadata
-                              key={`${site}-${type}-${id}`}
-                              site={site}
-                              id={id}
-                              seriesId={series.IDs.ID}
-                              type={type}
-                            />
-                          ))),
-                        /* Show row to add new TMDB links */
-                        <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,
-                      ];
+            {series && currentTab === 'metadata' && (
+              <div
+                className={cx(
+                  'flex h-[15.625rem] flex-col gap-3 overflow-y-auto lg:gap-x-4 2xl:flex-nowrap 2xl:gap-x-6',
+                  // TODO: The below needs to check for how many links are rendered, not how many types of links can exist
+                  MetadataLinks.length > 4 ? 'pr-4' : '',
+                )}
+              >
+                {MetadataLinks.map((site) => {
+                  if (site === 'TMDB') {
+                    const tmdbIds = series.IDs.TMDB;
+                    if (tmdbIds.Movie.length + tmdbIds.Show.length === 0) {
+                      return <SeriesMetadata key={site} site={site} seriesId={series.IDs.ID} />;
                     }
 
-                    if (site === 'TvDB') {
-                      const tvdbIds = (series.TvDB ?? []).map(({ ID }) => ID);
-                      if (tvdbIds.length === 0) tvdbIds.push(0);
-                      return tvdbIds.map(id => (
-                        <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
-                      ));
-                    }
+                    return [
+                      ...flatMap(tmdbIds, (ids, type: 'Movie' | 'Show') =>
+                        ids.map(id => (
+                          <SeriesMetadata
+                            key={`${site}-${type}-${id}`}
+                            site={site}
+                            id={id}
+                            seriesId={series.IDs.ID}
+                            type={type}
+                          />
+                        ))),
+                      /* Show row to add new TMDB links */
+                      <SeriesMetadata key="TMDB-add-new" site="TMDB" seriesId={series.IDs.ID} />,
+                    ];
+                  }
 
-                    // Site is not TMDB or TvDB, so it's either a single ID or an array of IDs
-                    const idOrIds = series?.IDs[site] ?? [0];
-                    const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
-                    if (linkIds.length === 0) linkIds.push(0);
-
-                    return linkIds.map(id => (
+                  if (site === 'TvDB') {
+                    const tvdbIds = map(series.TvDB, ({ ID }) => ID);
+                    if (tvdbIds.length === 0) tvdbIds.push(0);
+                    return tvdbIds.map(id => (
                       <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
                     ));
-                  })}
-                </div>
-              )
-              : (
-                <div
-                  className={cx(
-                    'flex h-[15.625rem] flex-col gap-3 overflow-y-auto',
-                    series.Links.length > 4 ? 'pr-4' : '',
-                  )}
-                >
-                  {series.Links.map(link => (
-                    <a
-                      className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal text-panel-icon-action hover:bg-panel-toggle-background-hover"
-                      key={link.URL}
-                      href={link.URL}
-                      rel="noopener noreferrer"
-                      target="_blank"
-                    >
-                      <Icon
-                        className="text-panel-icon"
-                        path={mdiEarth}
-                        size={1}
-                      />
+                  }
 
-                      {link.Name}
-                      <Icon
-                        className="text-panel-icon-action"
-                        path={mdiOpenInNew}
-                        size={1}
-                      />
-                    </a>
-                  ))}
-                </div>
-              )}
+                  // Site is not TMDB or TvDB, so it's either a single ID or an array of IDs
+                  const idOrIds = series?.IDs[site] ?? [0];
+                  const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
+                  if (linkIds.length === 0) linkIds.push(0);
+
+                  return linkIds.map(id => (
+                    <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
+                  ));
+                })}
+              </div>
+            )}
+            {series && currentTab === 'links' && (
+              <div
+                className={cx(
+                  'flex h-[15.625rem] flex-col gap-3 overflow-y-auto',
+                  series.Links.length > 4 ? 'pr-4' : '',
+                )}
+              >
+                {series.Links.map(link => (
+                  <a
+                    className="flex w-full gap-x-2 rounded-lg border border-panel-border bg-panel-background px-4 py-3 text-left !text-base !font-normal text-panel-icon-action hover:bg-panel-toggle-background-hover"
+                    key={link.URL}
+                    href={link.URL}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    <Icon
+                      className="text-panel-icon"
+                      path={mdiEarth}
+                      size={1}
+                    />
+
+                    {link.Name}
+                    <Icon
+                      className="text-panel-icon-action"
+                      path={mdiOpenInNew}
+                      size={1}
+                    />
+                  </a>
+                ))}
+              </div>
+            )}
           </ShokoPanel>
           <ShokoPanel
             title="Episode On Deck"
