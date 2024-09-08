@@ -32,7 +32,7 @@ const SeriesOverview = () => {
 
   const { data: series, ...seriesQuery } = useSeriesQuery(
     toNumber(seriesId!),
-    { includeDataFrom: ['AniDB', 'TMDB'] },
+    { includeDataFrom: ['AniDB', 'TMDB', 'TvDB'] },
     !!seriesId,
   );
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
