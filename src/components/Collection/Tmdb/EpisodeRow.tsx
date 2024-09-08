@@ -145,6 +145,7 @@ const EpisodeRow = React.memo((props: Props) => {
         <EpisodeSelect
           isDisabled={isDisabled}
           isOdd={isOdd}
+          override={xref?.TmdbEpisodeID}
           overrideLink={overrideLink}
           tmdbEpisode={tmdbEpisode}
         />
