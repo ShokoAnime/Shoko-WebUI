@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { find, forEach, get, toNumber } from 'lodash';
+import { find, forEach, get, map, sortBy, toNumber } from 'lodash';
 
 import useRowSelection from '@/hooks/useRowSelection';
 
@@ -79,12 +79,19 @@ function ManuallyLinkedFilesRow(props: Props) {
           File
         </div>
       </div>
-      {files.map((file, index) => {
-        const episode = find(episodes, item => item.IDs.ID === get(file, 'SeriesIDs.0.EpisodeIDs.0.ID', 0))!;
-        const selected = rowSelection[file.ID];
-        const fileName = file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
-
-        return (
+      {sortBy(
+        map(files, file =>
+          [
+            file,
+            find(episodes, item => item.IDs.ID === get(file, 'SeriesIDs.0.EpisodeIDs.0.ID', 0))!,
+            rowSelection[file.ID],
+            file.Locations?.[0].RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>',
+          ] as const),
+        ([, episode]) => episode.AniDB!.Type,
+        ([, episode]) => episode.AniDB!.EpisodeNumber,
+        ([file]) => file.Created,
+      )
+        .map(([file, episode, selected, fileName], index) => (
           <div
             className={cx(
               'mt-2 border-panel-border border rounded-lg',
@@ -125,8 +132,7 @@ function ManuallyLinkedFilesRow(props: Props) {
               </div>
             </div>
           </div>
-        );
-      })}
+        ))}
     </div>
   );
 }
