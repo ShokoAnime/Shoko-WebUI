@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { flatMap, get, map, round, toNumber } from 'lodash';
+import { flatMap, get, round, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
@@ -25,14 +25,14 @@ import type { ImageType } from '@/core/types/api/common';
 import type { SeriesCast } from '@/core/types/api/series';
 
 // Links
-const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv', 'TvDB'] as const;
+const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv'] as const;
 
 const SeriesOverview = () => {
   const { seriesId } = useParams();
 
   const { data: series, ...seriesQuery } = useSeriesQuery(
     toNumber(seriesId!),
-    { includeDataFrom: ['AniDB', 'TMDB', 'TvDB'] },
+    { includeDataFrom: ['AniDB', 'TMDB'] },
     !!seriesId,
   );
   const nextUpEpisodeQuery = useSeriesNextUpQuery(toNumber(seriesId!), {
@@ -108,15 +108,7 @@ const SeriesOverview = () => {
                     ];
                   }
 
-                  if (site === 'TvDB') {
-                    const tvdbIds = map(series.TvDB, ({ ID }) => ID);
-                    if (tvdbIds.length === 0) tvdbIds.push(0);
-                    return tvdbIds.map(id => (
-                      <SeriesMetadata key={`${site}-${id}`} site={site} id={id} seriesId={series.IDs.ID} />
-                    ));
-                  }
-
-                  // Site is not TMDB or TvDB, so it's either a single ID or an array of IDs
+                  // Site is not TMDB, so it's either a single ID or an array of IDs
                   const idOrIds = series?.IDs[site] ?? [0];
                   const linkIds = typeof idOrIds === 'number' ? [idOrIds] : idOrIds;
                   if (linkIds.length === 0) linkIds.push(0);

@@ -51,22 +51,17 @@ const quickActions = {
     functionName: 'UpdateAllTraktInfo',
     info: 'Sync all info for Series from Trakt to Shoko.',
   },
-  'update-all-tvdb-info': {
-    name: 'Update All TvDB Info',
-    functionName: 'UpdateAllTvDBInfo',
-    info: 'Update all Series information with the latest data from TvDB.',
-  },
-  'regen-tvdb-links': {
-    name: 'Regenerate TvDB Links',
-    functionName: 'RegenerateAllTvDBEpisodeMatchings',
+  'purge-all-tvdb-info': {
+    name: 'Purge All TVDB Info',
+    functionName: 'PurgeAllOfTvDB',
     info:
-      'Recreates all episode matches for TvDB. This action is generally not required unless specifically instructed by a member of the Shoko team or mentioned in the release notes.',
+      'Purges all TVDB data from Shoko, including all images, episodes, series and cross-references. Will also disable auto-linking for TvDB. THIS IS A ONE-WAY ACTION AND WILL CLEAR OUT ALL TVDB DATA!',
   },
   'run-import': {
     name: 'Run Import',
     functionName: 'RunImport',
     info:
-      'This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (tvdb, trakt, tmdb, etc), and downloads missing images.',
+      'This checks for new files, hashes them etc, scans Drop Folders, checks and scans for community site links (trakt, tmdb, etc), and downloads missing images.',
   },
   'import-new-files': {
     name: 'Import New Files',
@@ -102,7 +97,7 @@ const quickActions = {
   'update-all-images': {
     name: 'Update All Images',
     functionName: 'UpdateAllImages',
-    info: 'Updates and downloads all missing images from AniDB and TvDB.',
+    info: 'Updates and downloads all missing images from AniDB and TMDB.',
   },
   'validate-all-images': {
     name: 'Validate All Images',

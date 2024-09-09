@@ -5,21 +5,19 @@ import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
 import { invalidateQueries } from '@/core/react-query/queryClient';
-import { useDeleteSeriesTvdbLinkMutation } from '@/core/react-query/series/mutations';
 import { useDeleteTmdbLinkMutation } from '@/core/react-query/tmdb/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   id?: number;
   seriesId: number;
-  site: 'AniDB' | 'TMDB' | 'TvDB' | 'TraktTv';
+  site: 'AniDB' | 'TMDB' | 'TraktTv';
   type?: 'Movie' | 'Show';
 };
 
 const MetadataLink = ({ id, seriesId, site, type }: Props) => {
   const navigate = useNavigate();
   const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Movie');
-  const { mutate: deleteTvdbLink } = useDeleteSeriesTvdbLinkMutation();
 
   const siteLink = useMemo(() => {
     if (!id) return '#';
@@ -28,8 +26,6 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
         return `https://anidb.net/anime/${id}`;
       case 'TMDB':
         return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
-      case 'TvDB':
-        return `https://thetvdb.com/?tab=series&id=${id}`;
       case 'TraktTv':
         // TODO: Figure how to get trakt series link using ID
         return '#';
@@ -40,7 +36,7 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
 
   const canAddLink = useMemo(() => site === 'TMDB', [site]);
   const canEditLink = useMemo(() => site === 'TMDB', [site]);
-  const canRemoveLink = useMemo(() => ['TMDB', 'TvDB'].includes(site), [site]);
+  const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
 
   const addLink = useEventCallback(() => {
     navigate('../tmdb-linking');
@@ -54,9 +50,6 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
   const removeLink = useEventCallback(() => {
     if (!id) return;
     switch (site) {
-      case 'TvDB':
-        deleteTvdbLink(seriesId);
-        break;
       case 'TMDB':
         deleteTmdbLink({ ID: id }, {
           onSuccess: () => invalidateQueries(['series', seriesId]),

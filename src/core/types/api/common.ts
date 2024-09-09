@@ -31,7 +31,6 @@ export type EpisodeImagesType = ImagesType & {
 
 export const enum ImageSourceEnum {
   AniDB = 'AniDB',
-  TvDB = 'TvDB',
   TMDB = 'TMDB',
   Shoko = 'Shoko',
 }
@@ -73,4 +72,4 @@ export type LogLineType = {
   Level: string;
 };
 
-export type DataSourceType = 'AniDB' | 'TvDB' | 'TMDB' | 'Trakt' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';
+export type DataSourceType = 'AniDB' | 'TMDB' | 'Trakt' | 'MAL' | 'AniList' | 'Animeshon' | 'Kitsu';

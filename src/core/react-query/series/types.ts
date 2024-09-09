@@ -70,11 +70,6 @@ export type RefreshSeriesAniDBInfoRequestType = {
   cacheOnly?: boolean;
 };
 
-export type RefreshSeriesTvdbInfoRequestType = {
-  seriesId: number;
-  force?: boolean;
-};
-
 export type WatchSeriesEpisodesRequestType = {
   seriesId: number;
   value: boolean;

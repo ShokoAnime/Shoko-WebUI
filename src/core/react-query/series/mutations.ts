@@ -8,7 +8,6 @@ import type {
   DeleteSeriesRequestType,
   RefreshAniDBSeriesRequestType,
   RefreshSeriesAniDBInfoRequestType,
-  RefreshSeriesTvdbInfoRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
@@ -36,12 +35,6 @@ export const useDeleteSeriesMutation = () =>
       invalidateQueries(['filter']);
       invalidateQueries(['series', 'without-files']);
     },
-  });
-
-export const useDeleteSeriesTvdbLinkMutation = () =>
-  useMutation({
-    mutationFn: (seriesId: number) => axios.delete(`Series/${seriesId}/TvDB`),
-    onSuccess: (_, seriesId) => invalidateQueries(['series', seriesId, 'episodes']),
   });
 
 // This is actually a query but we had to declare it as mutation to use it properly as lazy query.
@@ -80,12 +73,6 @@ export const useRefreshSeriesAniDBInfoMutation = () =>
       axios.post(`Series/${seriesId}/AniDB/Refresh`, null, { params }),
   });
 
-export const useRefreshSeriesTvdbInfoMutatation = () =>
-  useMutation({
-    mutationFn: ({ seriesId, ...params }: RefreshSeriesTvdbInfoRequestType) =>
-      axios.post(`Series/${seriesId}/TvDB/Refresh`, null, { params }),
-  });
-
 export const useRehashSeriesFilesMutation = () =>
   useMutation({
     mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/File/Rehash`),
@@ -113,6 +100,11 @@ export const useWatchSeriesEpisodesMutation = () =>
       invalidateQueries(['series', seriesId, 'data']);
       invalidateQueries(['series', seriesId, 'episodes']);
     },
+  });
+
+export const useAutoSearchTmdbMatchMutation = () =>
+  useMutation({
+    mutationFn: (seriesId: number) => axios.post(`Series/${seriesId}/TMDB/Action/AutoSearch`),
   });
 
 export const useRefreshSeriesTMDBInfoMutation = () =>

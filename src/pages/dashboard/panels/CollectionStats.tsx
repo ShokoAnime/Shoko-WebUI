@@ -53,7 +53,7 @@ function CollectionStats() {
   ];
 
   const childrenThird = [
-    <Item key="missing-links" title="Missing TvDB/TMDB Links" value={statsQuery.data?.SeriesWithMissingLinks} />,
+    <Item key="missing-links" title="Missing TMDB Links" value={statsQuery.data?.SeriesWithMissingLinks} />,
     <Item
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"

@@ -373,9 +373,9 @@ export const initialSettings: SettingsType = {
     SeriesTitleLanguageOrder: ['x-main'],
     SeriesTitleSourceOrder: [LanguageSource.AniDB, LanguageSource.TMDB],
     EpisodeTitleLanguageOrder: ['en'],
-    EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],
+    EpisodeTitleSourceOrder: [LanguageSource.TMDB, LanguageSource.AniDB],
     DescriptionLanguageOrder: ['en'],
-    DescriptionSourceOrder: [LanguageSource.TMDB, LanguageSource.TvDB, LanguageSource.AniDB],
+    DescriptionSourceOrder: [LanguageSource.TMDB, LanguageSource.AniDB],
   },
   TraktTv: {
     Enabled: false,
