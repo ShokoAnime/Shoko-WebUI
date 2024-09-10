@@ -137,6 +137,11 @@ function SettingsPage() {
     patchSettings({ newSettings });
   });
 
+  const handleCancel = useEventCallback(() => {
+    setNewSettings(settings);
+    dispatch(setMiscItem({ webuiPreviewTheme: '' }));
+  });
+
   const [containerRef, containerBounds] = useMeasure();
 
   return (
@@ -174,7 +179,7 @@ function SettingsPage() {
               {isShowFooter && (
                 <div className="flex justify-end gap-x-3 font-semibold">
                   <Button
-                    onClick={() => setNewSettings(settings)}
+                    onClick={handleCancel}
                     buttonType="secondary"
                     buttonSize="normal"
                   >
