@@ -2,6 +2,19 @@ import { createSlice } from '@reduxjs/toolkit';
 
 import type { PayloadAction } from '@reduxjs/toolkit';
 
+type State = {
+  trakt: {
+    usercode: string;
+    url: string;
+  };
+  plex: {
+    url: string;
+    authenticated: boolean;
+  };
+  webuiUpdateAvailable: boolean;
+  webuiPreviewTheme: string;
+};
+
 const miscSlice = createSlice({
   name: 'misc',
   initialState: {
@@ -14,8 +27,8 @@ const miscSlice = createSlice({
       authenticated: false,
     },
     webuiUpdateAvailable: false,
-    webuiPreviewTheme: null,
-  },
+    webuiPreviewTheme: '',
+  } as State,
   reducers: {
     setItem(sliceState, action: PayloadAction<object>) {
       return Object.assign({}, sliceState, action.payload);
