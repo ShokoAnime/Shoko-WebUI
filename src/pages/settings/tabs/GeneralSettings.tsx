@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import React, { useMemo } from 'react';
-import { mdiOpenInNew, mdiRefresh } from '@mdi/js';
+import React, { useMemo, useRef } from 'react';
+import { toast } from 'react-toastify';
+import { mdiBrushOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
@@ -8,9 +9,13 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
 import { useVersionQuery } from '@/core/react-query/init/queries';
+import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { uiVersion } from '@/core/util';
+import useEventCallback from '@/hooks/useEventCallback';
 import useSettingsContext from '@/hooks/useSettingsContext';
+
+let themeUpdateCounter = 0;
 
 const UI_VERSION = uiVersion();
 
@@ -27,8 +32,49 @@ function GeneralSettings() {
     { channel: newSettings.WebUI_Settings.updateChannel, force: true },
     false,
   );
+  const themePathHref = useMemo(() => document.getElementById('theme-css')!.attributes.getNamedItem('href')!, []);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const versionQuery = useVersionQuery();
   const themesQuery = useWebuiThemesQuery();
+  const { isPending: isUploading, mutate: uploadTheme } = useWebuiUploadThemeMutation();
+
+  const onOpenFileDialog = useEventCallback((event: React.SyntheticEvent) => {
+    if (isUploading) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
+    }
+  });
+
+  const onFileChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    if (isUploading) {
+      return;
+    }
+
+    event.preventDefault();
+    event.stopPropagation();
+    const file = event.target.files?.[0];
+    if (!file) return;
+    uploadTheme({ file }, {
+      async onSuccess(data) {
+        await themesQuery.refetch();
+
+        themeUpdateCounter += 1;
+        // URL cannot be built without a base, so we use localhost
+        const path = new URL(themePathHref.value, 'http://localhost');
+        path.searchParams.set('updateCount', themeUpdateCounter.toString());
+        // Remove base from URL and set value
+        themePathHref.value = `${path.pathname}${path.search}`;
+
+        updateSetting('WebUI_Settings', 'theme', `theme-${data.ID}`);
+        toast.info(`Successfully uploaded theme "${data.Name}"`);
+      },
+    });
+  });
 
   const currentTheme = useMemo(() => (
     themesQuery.data?.find(theme => `theme-${theme.ID}` === WebUI_Settings.theme)
@@ -120,7 +166,32 @@ function GeneralSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">Theme Options</div>
+        <div className="flex items-center justify-between">
+          <div className="font-semibold">Theme Options</div>
+          <input
+            ref={fileInputRef}
+            className="hidden"
+            multiple
+            id="file-input-field"
+            name="file"
+            type="file"
+            onChange={onFileChange}
+          />
+          <Button
+            buttonType="secondary"
+            buttonSize="small"
+            className="flex flex-row flex-wrap items-center gap-x-2"
+            onClick={onOpenFileDialog}
+            disabled={isUploading}
+            tooltip="Upload or install a new Theme"
+          >
+            <Icon
+              path={mdiBrushOutline}
+              size={0.85}
+            />
+            <span>Upload Theme</span>
+          </Button>
+        </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex items-center justify-between">
             Theme
