@@ -226,9 +226,9 @@ const ManuallyLinkedTab = () => {
         options={
           <ItemCount
             count={seriesCount}
-            selected={selectedRows.length}
+            selected={selectedFileIds.length}
             suffix="Series"
-            selectedSuffix={selectedRows.length === 1 ? 'Episode' : 'Episodes'}
+            selectedSuffix={selectedFileIds.length === 1 ? 'File' : 'Files'}
           />
         }
       >
