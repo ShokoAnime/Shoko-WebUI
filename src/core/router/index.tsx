@@ -139,7 +139,7 @@ const Router = () => {
 
   useEffect(() => {
     document.body.className = `${
-      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)
+      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme || theme)
     } theme-shoko-gray`;
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
