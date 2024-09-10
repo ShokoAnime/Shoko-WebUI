@@ -287,6 +287,9 @@ export const initialSettings: SettingsType = {
       tmdb: {
         includeRestricted: false,
       },
+      anidb: {
+        filterDescription: false,
+      },
     },
     dashboard: {
       hideQueueProcessor: false,

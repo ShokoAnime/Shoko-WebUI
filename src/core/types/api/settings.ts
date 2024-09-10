@@ -410,6 +410,9 @@ export type WebUISettingsType = {
     tmdb: {
       includeRestricted: boolean;
     };
+    anidb: {
+      filterDescription: boolean;
+    };
   };
   dashboard: {
     hideQueueProcessor: boolean;

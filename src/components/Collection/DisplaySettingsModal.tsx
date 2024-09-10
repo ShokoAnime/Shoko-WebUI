@@ -26,7 +26,12 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
     setNewSettings(settings);
   }, [dispatch, settings]);
 
-  const { image: imageSettings, list: listSettings, poster: posterSettings } = newSettings.WebUI_Settings.collection;
+  const {
+    anidb: anidbSettings,
+    image: imageSettings,
+    list: listSettings,
+    poster: posterSettings,
+  } = newSettings.WebUI_Settings.collection;
 
   const handleSettingChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const [type, key] = event.target.id.split('-') as [type: 'poster' | 'list' | 'image', key: string];
@@ -144,6 +149,21 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
               label="Show Backdrop if Thumbnail is missing"
               id="image-useThumbnailFallback"
               isChecked={imageSettings.useThumbnailFallback}
+              onChange={handleSettingChange}
+            />
+          </div>
+        </div>
+
+        <div className="border-b border-panel-border" />
+
+        <div className="flex flex-col gap-y-4">
+          <div className="font-semibold">AniDB Options</div>
+          <div className="flex flex-col gap-1">
+            <Checkbox
+              justify
+              label="Filter AniDB descriptions"
+              id="anidb-filterDescription"
+              isChecked={anidbSettings.filterDescription}
               onChange={handleSettingChange}
             />
           </div>
