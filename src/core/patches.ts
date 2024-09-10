@@ -40,5 +40,10 @@ export const webuiSettingsPatches = {
     webuiSettings.collection.tmdb.includeRestricted = false;
     return { ...webuiSettings, settingsRevision: 9 };
   },
+  10: (oldWebuiSettings) => {
+    const webuiSettings = oldWebuiSettings;
+    webuiSettings.collection.anidb.filterDescription = false;
+    return { ...webuiSettings, settingsRevision: 10 };
+  },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
 } as Record<number, (oldWebuiSettings: any) => WebUISettingsType>;
