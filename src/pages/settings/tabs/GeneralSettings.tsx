@@ -63,12 +63,12 @@ function GeneralSettings() {
       async onSuccess(data) {
         await themesQuery.refetch();
 
-        let path = themePathHref.value;
-        const index = path.indexOf('?');
-        if (index !== -1) path = path.substring(0, index);
         themeUpdateCounter += 1;
-        path += `?updateCount=${themeUpdateCounter}`;
-        themePathHref.value = path;
+        // URL cannot be built without a base, so we use localhost
+        const path = new URL(themePathHref.value, 'http://localhost');
+        path.searchParams.set('updateCount', themeUpdateCounter.toString());
+        // Remove base from URL and set value
+        themePathHref.value = `${path.pathname}${path.search}`;
 
         updateSetting('WebUI_Settings', 'theme', `theme-${data.ID}`);
         toast.info(`Successfully uploaded theme "${data.Name}"`);
