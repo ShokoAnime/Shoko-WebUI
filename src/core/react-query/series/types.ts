@@ -2,10 +2,16 @@ import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType, ImageType } from '@/core/types/api/common';
 import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 
+export enum IncludeOnlyFilterEnum {
+  true = 'true',
+  false = 'false',
+  only = 'only',
+}
+
 type SeriesEpisodesBaseRequestType = {
-  includeMissing?: string;
-  includeHidden?: string;
-  includeWatched?: string;
+  includeMissing?: IncludeOnlyFilterEnum;
+  includeHidden?: IncludeOnlyFilterEnum;
+  includeWatched?: IncludeOnlyFilterEnum;
   type?: EpisodeTypeEnum[];
   search?: string;
   fuzzy?: boolean;
@@ -35,6 +41,7 @@ export type SeriesEpisodesInfiniteRequestType =
     includeFiles?: boolean;
     includeAbsolutePaths?: boolean;
     includeMediaInfo?: boolean;
+    includeManuallyLinked?: IncludeOnlyFilterEnum;
   }
   & SeriesEpisodesBaseRequestType
   & PaginationType;

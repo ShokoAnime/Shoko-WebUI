@@ -194,7 +194,7 @@ function SeriesWithoutFilesUtility() {
           <UtilitiesTable
             columns={columns}
             count={seriesCount}
-            fetchNextPage={() => seriesQuery.fetchNextPage()}
+            fetchNextPage={seriesQuery.fetchNextPage}
             handleRowSelect={handleRowSelect}
             isFetchingNextPage={seriesQuery.isFetchingNextPage}
             rows={series}

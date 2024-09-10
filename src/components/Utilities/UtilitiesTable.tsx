@@ -1,12 +1,10 @@
-import React, { useMemo, useRef, useState } from 'react';
-import AnimateHeight from 'react-animate-height';
+import React, { useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { mdiChevronDown, mdiLoading, mdiMenuUp } from '@mdi/js';
+import { mdiLoading, mdiMenuUp } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce } from 'lodash';
-import { useToggle } from 'usehooks-ts';
 
 import { criteriaMap } from '@/components/Utilities/constants';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -22,7 +20,7 @@ import type { Updater } from 'use-immer';
 type Props = {
   columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
   count: number;
-  fetchNextPage?: (index?: number) => Promise<unknown>;
+  fetchNextPage?: () => Promise<unknown>;
   isFetchingNextPage?: boolean;
   rows: EpisodeType[] | FileType[] | SeriesType[];
   setSortCriteria?: React.Dispatch<React.SetStateAction<FileSortCriteriaEnum>>;
@@ -31,8 +29,7 @@ type Props = {
   handleRowSelect?: (id: number, select: boolean) => void;
   rowSelection?: Record<number, boolean>;
   setSelectedRows?: Updater<Record<number, boolean>>;
-  ExpandedNode?: React.ComponentType<{ id: number, open: boolean }>;
-  onExpand?: (id: number) => Promise<void>;
+  fetchNextPreviewPage?: (index?: number) => Promise<unknown>;
   isRenamer?: boolean;
 };
 
@@ -40,68 +37,23 @@ const selectRowId = (target: EpisodeType | FileType | SeriesType) => ('ID' in ta
 
 const Row = (
   props: {
-    ExpandedNode?: React.ComponentType<{ id: number, open: boolean }>;
     columns: UtilityHeaderType<EpisodeType | FileType | SeriesType>[];
     handleRowSelect: (event: React.MouseEvent, row: VirtualItem) => void;
-    onExpand?: (id: number) => Promise<void>;
     row: EpisodeType | FileType | SeriesType;
     selected: boolean;
     virtualRow: VirtualItem;
   },
 ) => {
   const {
-    ExpandedNode,
-    columns: tempColumns,
+    columns,
     handleRowSelect,
-    onExpand,
     row,
     selected,
     virtualRow,
   } = props;
-
-  const [open, toggleOpen] = useToggle(false);
-  const [loading, setLoading] = useState(false);
-
-  // TODO: Check if ExpandedNode changes reference on every render, if so this useEventCallback is useless
-  // If it is useless, so is the useEventCallback for handleSelect in UtilitiesTable
   const handleClick = useEventCallback((event: React.MouseEvent) => {
-    if (ExpandedNode) {
-      const id = selectRowId(row);
-      if (!open && onExpand) {
-        setLoading(true);
-        onExpand(id)
-          .then(() => {
-            toggleOpen();
-            setLoading(false);
-          })
-          .catch(console.error);
-      } else toggleOpen();
-    }
     handleRowSelect(event, virtualRow);
   });
-
-  const columns = useMemo<UtilityHeaderType<EpisodeType | FileType | SeriesType>[]>(
-    () => (ExpandedNode
-      ? [
-        ...tempColumns,
-        {
-          id: 'arrow',
-          name: '',
-          className: 'w-10',
-          item: () => (
-            <Icon
-              path={loading ? mdiLoading : mdiChevronDown}
-              spin={loading}
-              size={1}
-              rotate={open ? 180 : 0}
-              className="text-panel-text-primary transition-transform"
-            />
-          ),
-        },
-      ]
-      : tempColumns),
-    [tempColumns, ExpandedNode, loading, open],
-  );
 
   return (
     <div
@@ -115,24 +67,13 @@ const Row = (
       {!row
         ? <Icon path={mdiLoading} size={1} spin className="m-auto text-panel-text-primary" />
         : (
-          <>
-            <div className="flex items-center">
-              {columns.map(column => (
-                <div className={cx(column.className, 'px-2')} key={`${column.id}-${selectRowId(row)}`}>
-                  {column.item(row)}
-                </div>
-              ))}
-            </div>
-            {ExpandedNode && (
-              <AnimateHeight
-                height={open ? 'auto' : 0}
-                onClick={event => event.stopPropagation()}
-                className="cursor-default"
-              >
-                <ExpandedNode id={selectRowId(row)} open={open} />
-              </AnimateHeight>
-            )}
-          </>
+          <div className="flex items-center">
+            {columns.map(column => (
+              <div className={cx(column.className, 'px-2')} key={`${column.id}-${selectRowId(row)}`}>
+                {column.item(row)}
+              </div>
+            ))}
+          </div>
         )}
     </div>
   );
@@ -203,14 +144,13 @@ const HeaderItem = (
 
 const UtilitiesTable = (props: Props) => {
   const {
-    ExpandedNode,
     columns,
     count,
     fetchNextPage,
+    fetchNextPreviewPage,
     handleRowSelect,
     isFetchingNextPage,
     isRenamer,
-    onExpand,
     rowSelection,
     rows,
     setSelectedRows,
@@ -241,12 +181,12 @@ const UtilitiesTable = (props: Props) => {
 
   const fetchPageDebounced = useMemo(
     () => {
-      if (!fetchNextPage) return () => {};
+      if (!fetchNextPreviewPage) return () => {};
       return debounce((itemIndex: number) => {
-        fetchNextPage(itemIndex).catch(() => {});
+        fetchNextPreviewPage(itemIndex).catch(() => {});
       }, 50);
     },
-    [fetchNextPage],
+    [fetchNextPreviewPage],
   );
 
   const lastRowSelected = useRef<VirtualItem | null>(null);
@@ -292,15 +232,6 @@ const UtilitiesTable = (props: Props) => {
               className={column.className}
             />
           ))}
-          {ExpandedNode && (
-            <HeaderItem
-              key="placeholder"
-              className="w-10"
-              id="placeholder"
-              name=""
-              skipSort
-            />
-          )}
         </div>
       </div>
       <div className="relative grow">
@@ -325,9 +256,7 @@ const UtilitiesTable = (props: Props) => {
                   ref={virtualizer.measureElement}
                 >
                   <Row
-                    ExpandedNode={ExpandedNode}
                     columns={columns}
-                    onExpand={onExpand}
                     handleRowSelect={handleSelect}
                     row={row}
                     selected={(row && rowSelection) ? rowSelection[selectRowId(row)] : false}

@@ -1,6 +1,13 @@
 import React from 'react';
 
-const ItemCount = ({ count, selected, suffix }: { count: number, selected?: number, suffix?: string }) => (
+type Props = {
+  count: number;
+  selected?: number;
+  suffix?: string;
+  selectedSuffix?: string;
+};
+
+const ItemCount = ({ count, selected, selectedSuffix, suffix }: Props) => (
   <div className="text-lg font-semibold">
     <span>
       <span className="text-panel-text-important">
@@ -18,7 +25,7 @@ const ItemCount = ({ count, selected, suffix }: { count: number, selected?: numb
             {selected ?? 0}
             &nbsp;
           </span>
-          {suffix && suffix}
+          {selectedSuffix && `${selectedSuffix} `}
           Selected
         </span>
       </>
