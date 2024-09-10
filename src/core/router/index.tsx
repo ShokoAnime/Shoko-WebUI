@@ -130,7 +130,7 @@ export const BodyVisibleContext = createContext(false);
 
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
-  const webuiPreviewTheme = (useSelector((state: RootState) => state.misc.webuiPreviewTheme) as unknown) as string;
+  const webuiPreviewTheme = useSelector((state: RootState) => state.misc.webuiPreviewTheme);
 
   const settingsQuery = useSettingsQuery(!!apikey);
   const { theme } = settingsQuery.data.WebUI_Settings;
@@ -139,7 +139,7 @@ const Router = () => {
 
   useEffect(() => {
     document.body.className = `${
-      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme ?? theme)
+      apikey === '' ? globalThis.localStorage.getItem('theme') : (webuiPreviewTheme || theme)
     } theme-shoko-gray`;
     const timeoutId = setTimeout(() => {
       if (bodyRef.current) {
