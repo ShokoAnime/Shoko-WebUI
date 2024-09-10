@@ -1,8 +1,7 @@
 import React from 'react';
 
-import PlexSettings from '@/components/Settings/MetadataSitesSettings/PlexSettings';
+import TMDBDownloadSettings from '@/components/Settings/MetadataSitesSettings/TMDBDownloadSettings';
 import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettings';
-import TraktSettings from '@/components/Settings/MetadataSitesSettings/TraktSettings';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 function MetadataSitesSettings() {
@@ -27,9 +26,14 @@ function MetadataSitesSettings() {
       </div>
 
       <div className="border-b border-panel-border" />
-      <TraktSettings />
-      <div className="border-b border-panel-border" />
-      <PlexSettings />
+
+      <div className="flex flex-col gap-y-6">
+        <div className="flex items-center font-semibold">TMDB Download Options</div>
+        <div className="flex flex-col gap-y-1">
+          <TMDBDownloadSettings newSettings={newSettings} updateSetting={updateSetting} />
+        </div>
+      </div>
+
       <div className="border-b border-panel-border" />
     </>
   );
