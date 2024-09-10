@@ -268,7 +268,7 @@ const ManuallyLinkedTab = () => {
 
           {!seriesQuery.isPending && seriesCount === 0 && (
             <div className="flex grow items-center justify-center text-lg font-semibold">
-              No series with multiple files!
+              No series with manually linked files!
             </div>
           )}
 
