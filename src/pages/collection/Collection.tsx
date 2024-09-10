@@ -40,9 +40,9 @@ const getFilter = (
   const cleanFilterConditions = filterConditions.filter(condition => !!condition);
   if (query) {
     let searchCondition: FilterCondition = {
-      Type: 'StringContains',
+      Type: 'AnyContains',
       Left: {
-        Type: 'NameSelector',
+        Type: 'NamesSelector',
       },
       Parameter: query,
     };
