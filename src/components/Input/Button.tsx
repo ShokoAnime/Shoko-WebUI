@@ -46,7 +46,7 @@ const Button = React.memo(
         (loading || disabled) && 'opacity-65 cursor-default',
       ])}
       onClick={onClick}
-      disabled={disabled}
+      disabled={loading || disabled}
       data-tooltip-id="tooltip"
       data-tooltip-content={tooltip}
       data-tooltip-place={tooltipPlace ?? 'top'}

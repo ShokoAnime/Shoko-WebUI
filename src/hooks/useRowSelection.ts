@@ -4,10 +4,11 @@ import { useImmer } from 'use-immer';
 
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type { SeriesType } from '@/core/types/api/series';
 
-const useRowSelection = <T extends FileType | SeriesType>(items: T[]) => {
+const useRowSelection = <T extends EpisodeType | FileType | SeriesType>(items: T[]) => {
   const [rowSelection, setRowSelection] = useImmer<Record<number, boolean>>({});
 
   const selectedRows = useMemo(

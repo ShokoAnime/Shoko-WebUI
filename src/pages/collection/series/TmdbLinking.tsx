@@ -17,6 +17,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import {
   useDeleteTmdbLinkMutation,
   useTmdbAddAutoXrefsMutation,
@@ -62,7 +63,7 @@ const TmdbLinking = () => {
     seriesId,
     {
       includeDataFrom: ['AniDB'],
-      includeMissing: 'true',
+      includeMissing: IncludeOnlyFilterEnum.true,
       type: [EpisodeTypeEnum.Normal, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
       pageSize: 50,
     },

@@ -157,7 +157,7 @@ function IgnoredFilesTab() {
         {filesQuery.isSuccess && fileCount > 0 && (
           <UtilitiesTable
             count={fileCount}
-            fetchNextPage={() => filesQuery.fetchNextPage()}
+            fetchNextPage={filesQuery.fetchNextPage}
             handleRowSelect={handleRowSelect}
             columns={columns}
             isFetchingNextPage={filesQuery.isFetchingNextPage}

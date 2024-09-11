@@ -14,6 +14,7 @@ import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -26,9 +27,9 @@ const pageSize = 26;
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
   const [episodeFilterType, setEpisodeFilterType] = useState(EpisodeTypeEnum.Normal);
-  const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState('false');
-  const [episodeFilterWatched, setEpisodeFilterWatched] = useState('true');
-  const [episodeFilterHidden, setEpisodeFilterHidden] = useState('false');
+  const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState(IncludeOnlyFilterEnum.false);
+  const [episodeFilterWatched, setEpisodeFilterWatched] = useState(IncludeOnlyFilterEnum.true);
+  const [episodeFilterHidden, setEpisodeFilterHidden] = useState(IncludeOnlyFilterEnum.false);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState('');
@@ -44,13 +45,13 @@ const SeriesEpisodes = () => {
         setEpisodeFilterType(value as EpisodeTypeEnum);
         break;
       case 'status':
-        setEpisodeFilterAvailability(value);
+        setEpisodeFilterAvailability(value as IncludeOnlyFilterEnum);
         break;
       case 'watched':
-        setEpisodeFilterWatched(value);
+        setEpisodeFilterWatched(value as IncludeOnlyFilterEnum);
         break;
       case 'hidden':
-        setEpisodeFilterHidden(value);
+        setEpisodeFilterHidden(value as IncludeOnlyFilterEnum);
         break;
       default:
         break;

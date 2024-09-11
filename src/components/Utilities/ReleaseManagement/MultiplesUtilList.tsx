@@ -160,7 +160,7 @@ const MultiplesUtilList = (
           <UtilitiesTable
             columns={seriesColumns}
             count={seriesCount}
-            fetchNextPage={() => seriesQuery.fetchNextPage()}
+            fetchNextPage={seriesQuery.fetchNextPage}
             isFetchingNextPage={seriesQuery.isFetchingNextPage}
             rows={series}
             skipSort
@@ -183,7 +183,7 @@ const MultiplesUtilList = (
           <UtilitiesTable
             columns={episodeColumns}
             count={episodeCount}
-            fetchNextPage={() => episodesQuery.fetchNextPage()}
+            fetchNextPage={episodesQuery.fetchNextPage}
             isFetchingNextPage={episodesQuery.isFetchingNextPage}
             rows={episodes}
             skipSort

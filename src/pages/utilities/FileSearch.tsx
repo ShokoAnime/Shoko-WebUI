@@ -388,7 +388,7 @@ const FileSearch = () => {
           {filesQuery.isSuccess && fileCount > 0 && (
             <UtilitiesTable
               count={fileCount}
-              fetchNextPage={() => filesQuery.fetchNextPage()}
+              fetchNextPage={filesQuery.fetchNextPage}
               handleRowSelect={handleRowSelect}
               columns={staticColumns}
               isFetchingNextPage={filesQuery.isFetchingNextPage}

@@ -617,7 +617,7 @@ const Renamer = () => {
             rows={addedFiles}
             rowSelection={rowSelection}
             setSelectedRows={setRowSelection}
-            fetchNextPage={fetchPreviewPage}
+            fetchNextPreviewPage={fetchPreviewPage}
             isFetchingNextPage={previewPending}
             isRenamer
           />
