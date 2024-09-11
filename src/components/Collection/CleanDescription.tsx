@@ -4,23 +4,23 @@ import cx from 'classnames';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
 // The question marks are there because people can't spell…
-const RemoveSummaryRegex = /\b(Sour?ce|Note|Summ?ary):([^\r\n]+|$)/mg;
+const CleanInfoLinesRegex = /\b((Modified )?Sour?ce|Note( [1-9])?|Summ?ary):(?!$)([^\r\n]+|$)/img;
 
-const RemoveBasedOnWrittenByRegex = /^(\*|\u2014) (based on|written by) ([^\r\n]+|$)/img;
+// eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
+const CleanMiscLinesRegex =
+  /^(\*|[\u2014~-] (adapted|source|description|summary|translated|written):?) ([^\r\n]+|$)/img;
 
-const RemoveBBCodeRegex = /\[i\](.*?)\[\/i\]/sg;
+// This accounts for an AniDB API bug since BBCode is not supposed to be there
+const CleanBBCodeContentsRegex = /\[i\](?!"The Sasami|"Stellar|In the distant| occurred in)(.*?)\[\/i\]/isg;
+const CleanBBCodeTagsRegex = /\[\/?i\]/g;
 
-const CleanBBCodeTagsRegex = /\[\/?i\]/sg;
+const CleanMultiEmptyLinesRegex = /\n{2,}/g;
 
-const MultiSpacesRegex = /\s{2,}/g;
-
-const CleanMiscLinesRegex = /^(--|~) /sg;
-
-const CleanMultiEmptyLinesRegex = /\n{2,}/sg;
+const CleanMultiSpacesRegex = /\s{2,}/g;
 
 // eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const LinkRegex =
-  /(?<url>http:\/\/anidb\.net\/(?<type>ch|cr|[feat]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
+  /(?<url>http:\/\/anidb\.net\/(?<type>ch|co|cr|[feast]|(?:character|creator|file|episode|anime|tag)\/)(?<id>\d+)) \[(?<text>[^\]]+)]/g;
 
 type Props = {
   className?: string;
@@ -36,17 +36,17 @@ const CleanDescription = React.memo(({ altText, className, text }: Props) => {
     let cleanedText: string;
     if (filterDescription) {
       cleanedText = text
+        .replaceAll(CleanInfoLinesRegex, '')
         .replaceAll(CleanMiscLinesRegex, '')
-        .replaceAll(RemoveSummaryRegex, '')
-        .replaceAll(RemoveBasedOnWrittenByRegex, '')
-        .replaceAll(RemoveBBCodeRegex, '')
+        .replaceAll(CleanBBCodeContentsRegex, '')
+        .replaceAll(CleanBBCodeTagsRegex, '')
         .replaceAll(CleanMultiEmptyLinesRegex, '\n')
-        .replaceAll(MultiSpacesRegex, ' ');
+        .replaceAll(CleanMultiSpacesRegex, ' ');
     } else {
       cleanedText = text
         .replaceAll(CleanBBCodeTagsRegex, '')
         .replaceAll(CleanMultiEmptyLinesRegex, '\n')
-        .replaceAll(MultiSpacesRegex, ' ');
+        .replaceAll(CleanMultiSpacesRegex, ' ');
     }
 
     const lines = [] as React.ReactNode[];
@@ -75,7 +75,7 @@ const CleanDescription = React.memo(({ altText, className, text }: Props) => {
     return <CleanDescription className={className} text={altText ?? 'Description Not Available.'} />;
   }
 
-  return <div className={cx(className, 'pr-4 text-base')}>{modifiedText}</div>;
+  return <div className={cx(className, 'pr-4 text-base whitespace-pre-line')}>{modifiedText}</div>;
 });
 
 export default CleanDescription;
