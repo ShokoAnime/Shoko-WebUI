@@ -64,7 +64,7 @@ export type SettingsTraktType = {
   TokenExpirationDate: string;
   UpdateFrequency: SettingsUpdateFrequencyType;
   SyncFrequency: SettingsUpdateFrequencyType;
-  PIN: string;
+  AutoLink: boolean;
   AuthToken: string;
   RefreshToken: string;
 };

@@ -385,7 +385,7 @@ export const initialSettings: SettingsType = {
     TokenExpirationDate: '',
     UpdateFrequency: 1,
     SyncFrequency: 1,
-    PIN: '',
+    AutoLink: false,
     AuthToken: '',
     RefreshToken: '',
   },

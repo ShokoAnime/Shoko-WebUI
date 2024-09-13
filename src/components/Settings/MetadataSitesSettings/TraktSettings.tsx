@@ -60,21 +60,39 @@ const TraktSettings = () => {
     if (TraktTv.TokenExpirationDate) toast.dismiss('trakt-code');
   }, [TraktTv.TokenExpirationDate]);
 
+  const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = useEventCallback(
+    (event) => {
+      const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
+      updateSetting('TraktTv', event.target.id, value);
+    },
+  );
+
   return (
     <div className="flex flex-col gap-y-6">
-      <div className="flex items-center font-semibold">Trakt Options</div>
-      <div className="flex flex-col gap-y-2">
+      <div className="flex items-center justify-between font-semibold">
+        Trakt Options
+        {TraktTv.TokenExpirationDate !== '' && (
+          <Button
+            onClick={handleTraktClear}
+            className="px-4 py-1"
+            buttonType="danger"
+          >
+            Unlink
+          </Button>
+        )}
+      </div>
+      <div className="flex flex-col gap-y-1">
         <Checkbox
           justify
           label="Enabled"
-          id="trakt-enabled"
+          id="Enabled"
           isChecked={TraktTv.Enabled}
-          onChange={event => updateSetting('TraktTv', 'Enabled', event.target.checked)}
+          onChange={handleInputChange}
         />
         {TraktTv.TokenExpirationDate === '' && traktQuery.data?.usercode && (
           <div
             className={cx(
-              'flex justify-between items-center mt',
+              'flex h-8 justify-between items-center',
               !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >
@@ -95,7 +113,7 @@ const TraktSettings = () => {
         {TraktTv.TokenExpirationDate === '' && !traktQuery.data?.usercode && (
           <div
             className={cx(
-              'flex h-8 justify-between items-center',
+              'flex justify-between items-center',
               !TraktTv.Enabled && 'pointer-events-none opacity-65',
             )}
           >
@@ -104,60 +122,56 @@ const TraktSettings = () => {
               onClick={handleGetCode}
               buttonType="primary"
               buttonSize="small"
+              className="py-1.5 text-xs"
             >
               {traktQuery.isFetching ? 'Requesting...' : 'Get Code'}
             </Button>
           </div>
         )}
         {TraktTv.TokenExpirationDate !== '' && (
-          <>
-            <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-2')}>
-              <div className="flex h-8 justify-between">
-                <span>Token valid until</span>
-                {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Automatically Update Data</span>
-                <SelectSmall
-                  id="update-trakt-data"
-                  value={TraktTv.UpdateFrequency}
-                  onChange={event => updateSetting('TraktTv', 'UpdateFrequency', event.target.value)}
-                >
-                  <option value={1}>Never</option>
-                  <option value={2}>Every 6 Hours</option>
-                  <option value={3}>Every 12 Hours</option>
-                  <option value={4}>Every 24 Hours</option>
-                  <option value={5}>Once a Week</option>
-                  <option value={6}>Once a Month</option>
-                </SelectSmall>
-              </div>
-              <div className="flex items-center justify-between">
-                <span>Sync Frequency</span>
-                <SelectSmall
-                  id="sync-trakt-data"
-                  value={TraktTv.SyncFrequency}
-                  onChange={event => updateSetting('TraktTv', 'SyncFrequency', event.target.value)}
-                >
-                  <option value={1}>Never</option>
-                  <option value={2}>Every 6 Hours</option>
-                  <option value={3}>Every 12 Hours</option>
-                  <option value={4}>Every 24 Hours</option>
-                  <option value={5}>Once a Week</option>
-                  <option value={6}>Once a Month</option>
-                </SelectSmall>
-              </div>
+          <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-1')}>
+            <div className="flex h-8 justify-between items-center">
+              <span>Token valid until</span>
+              {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
+            </div>
+            <Checkbox
+              justify
+              label="Auto Link"
+              id="AutoLink"
+              isChecked={TraktTv.AutoLink}
+              onChange={handleInputChange}
+            />
+            <div className="flex items-center justify-between">
+              <span>Automatically Update Data</span>
+              <SelectSmall
+                id="UpdateFrequency"
+                value={TraktTv.UpdateFrequency}
+                onChange={handleInputChange}
+              >
+                <option value={1}>Never</option>
+                <option value={2}>Every 6 Hours</option>
+                <option value={3}>Every 12 Hours</option>
+                <option value={4}>Every 24 Hours</option>
+                <option value={5}>Once a Week</option>
+                <option value={6}>Once a Month</option>
+              </SelectSmall>
             </div>
             <div className="flex items-center justify-between">
-              Trakt Token
-              <Button
-                onClick={handleTraktClear}
-                className="px-4 py-1.5 text-xs font-semibold"
-                buttonType="danger"
+              <span>Sync Frequency</span>
+              <SelectSmall
+                id="SyncFrequency"
+                value={TraktTv.SyncFrequency}
+                onChange={handleInputChange}
               >
-                Clear
-              </Button>
+                <option value={1}>Never</option>
+                <option value={2}>Every 6 Hours</option>
+                <option value={3}>Every 12 Hours</option>
+                <option value={4}>Every 24 Hours</option>
+                <option value={5}>Once a Week</option>
+                <option value={6}>Once a Month</option>
+              </SelectSmall>
             </div>
-          </>
+          </div>
         )}
       </div>
     </div>
