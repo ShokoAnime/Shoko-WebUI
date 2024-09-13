@@ -94,7 +94,10 @@ const TraktSettings = () => {
         )}
         {TraktTv.TokenExpirationDate === '' && !traktQuery.data?.usercode && (
           <div
-            className={cx('flex justify-between items-center', !TraktTv.Enabled && 'pointer-events-none opacity-65')}
+            className={cx(
+              'flex h-8 justify-between items-center',
+              !TraktTv.Enabled && 'pointer-events-none opacity-65',
+            )}
           >
             Trakt Code
             <Button
@@ -107,9 +110,9 @@ const TraktSettings = () => {
           </div>
         )}
         {TraktTv.TokenExpirationDate !== '' && (
-          <div className="flex flex-col gap-y-2">
+          <>
             <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-2')}>
-              <div className="flex justify-between">
+              <div className="flex h-8 justify-between">
                 <span>Token valid until</span>
                 {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
               </div>
@@ -148,13 +151,13 @@ const TraktSettings = () => {
               Trakt Token
               <Button
                 onClick={handleTraktClear}
-                className="h-8 w-16 text-xs font-semibold"
+                className="px-4 py-1.5 text-xs font-semibold"
                 buttonType="danger"
               >
                 Clear
               </Button>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>
