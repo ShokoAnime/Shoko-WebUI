@@ -34,6 +34,7 @@ const initialUser = {
     Plex: false,
   },
   Avatar: '',
+  PlexUsernames: '',
 } as UserType;
 
 function UserManagementSettings() {
@@ -183,7 +184,7 @@ function UserManagementSettings() {
         <div className="flex items-center font-semibold">Current Users</div>
         <div className="flex flex-col gap-y-1">
           {users.map(user => (
-            <div className="flex justify-between" key={`user-${user.ID}`}>
+            <div className="flex h-8 justify-between" key={`user-${user.ID}`}>
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
                 <div onClick={() => setSelectedUser(user)}>
@@ -201,7 +202,29 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col gap-y-6">
-        <div className="flex items-center font-semibold">User Options</div>
+        <div className="flex items-center justify-between font-semibold">
+          User Options
+          <div className="flex gap-x-2">
+            <label
+              htmlFor="avatar"
+              className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-sm font-semibold drop-shadow-md hover:bg-button-secondary-hover"
+            >
+              Pick Avatar
+              <input
+                type="file"
+                id="avatar"
+                onChange={event => openAvatarModal(event)}
+                className="hidden"
+                accept="image/*"
+              />
+            </label>
+            {selectedUser.Avatar && (
+              <Button onClick={removeAvatar} buttonType="danger" buttonSize="small">
+                Remove Avatar
+              </Button>
+            )}
+          </div>
+        </div>
         <div className="flex flex-col gap-y-1">
           <div className="flex h-8 justify-between">
             <div className="mx-0 my-auto">Display Name</div>
@@ -238,27 +261,14 @@ function UserManagementSettings() {
             className="h-8"
           />
           <div className="flex items-center justify-between">
-            Change Avatar
-            <div className="flex gap-x-2">
-              <label
-                htmlFor="avatar"
-                className="flex cursor-pointer items-center rounded-lg border border-panel-border bg-button-secondary px-4 py-1 text-xs font-semibold drop-shadow-md hover:bg-button-secondary-hover"
-              >
-                Pick
-                <input
-                  type="file"
-                  id="avatar"
-                  onChange={event => openAvatarModal(event)}
-                  className="hidden"
-                  accept="image/*"
-                />
-              </label>
-              {selectedUser.Avatar && (
-                <Button onClick={removeAvatar} buttonType="danger" buttonSize="small">
-                  Remove
-                </Button>
-              )}
-            </div>
+            Plex Users
+            <InputSmall
+              id="PlexUsernames"
+              value={selectedUser.PlexUsernames}
+              type="text"
+              onChange={handleInputChange}
+              className="w-48 px-3 py-1"
+            />
           </div>
         </div>
       </div>
@@ -266,7 +276,7 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex flex-col">
-        <div className="mb-4 flex h-8 justify-between">
+        <div className="mb-4 flex justify-between">
           <div className="flex items-center font-semibold">Password</div>
           <Button
             onClick={() => handlePasswordChange()}

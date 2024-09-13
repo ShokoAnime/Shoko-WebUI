@@ -161,53 +161,51 @@ const PlexSettings = () => {
         <div className="flex items-center font-semibold">Plex Options</div>
         <PlexLinkButton />
       </div>
-      <div className="flex flex-col gap-y-2">
-        <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
-          <SelectSmall
-            label="Server"
-            id="server"
-            value={serverId}
-            onChange={handleServerChange}
-            isFetching={isAuthenticated && serversQuery.isPending}
-          >
-            <option value="" disabled>--Select Server--</option>
-            {map(
-              serversQuery.data,
-              server => <option value={server.ClientIdentifier} key={server.ClientIdentifier}>{server.Name}</option>,
+      <div className={cx('flex flex-col gap-y-2', !isAuthenticated && 'pointer-events-none opacity-65')}>
+        <SelectSmall
+          label="Server"
+          id="server"
+          value={serverId}
+          onChange={handleServerChange}
+          isFetching={isAuthenticated && serversQuery.isPending}
+        >
+          <option value="" disabled>--Select Server--</option>
+          {map(
+            serversQuery.data,
+            server => <option value={server.ClientIdentifier} key={server.ClientIdentifier}>{server.Name}</option>,
+          )}
+        </SelectSmall>
+        <AnimateHeight height={isAuthenticated && serversQuery.isSuccess && !!serverId ? 'auto' : 0}>
+          <div className="mb-2">Available Libraries</div>
+          <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input px-4 py-2">
+            {librariesQuery.isPending && (
+              <div className="flex justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} size={1} spin />
+              </div>
             )}
-          </SelectSmall>
-          <AnimateHeight height={isAuthenticated && serversQuery.isSuccess && !!serverId ? 'auto' : 0}>
-            <div className="mb-2">Available Libraries</div>
-            <div className="flex flex-col gap-y-2 rounded-lg bg-panel-input px-4 py-2">
-              {librariesQuery.isPending && (
-                <div className="flex justify-center text-panel-text-primary">
-                  <Icon path={mdiLoading} size={1} spin />
-                </div>
-              )}
 
-              {(librariesQuery.isError || librariesQuery.data?.length === 0) && (
-                <div className="flex justify-center">
-                  No libraries found!
-                </div>
-              )}
+            {(librariesQuery.isError || librariesQuery.data?.length === 0) && (
+              <div className="flex justify-center">
+                No libraries found!
+              </div>
+            )}
 
-              {librariesQuery.isSuccess && librariesQuery.data.length > 0
-                && map(
-                  librariesQuery.data,
-                  library => (
-                    <Checkbox
-                      justify
-                      label={library.Title}
-                      id={library.Key.toString()}
-                      isChecked={newSettings.Plex.Libraries.includes(library.Key)}
-                      onChange={handleLibraryChange}
-                      key={library.Key}
-                    />
-                  ),
-                )}
-            </div>
-          </AnimateHeight>
-        </div>
+            {librariesQuery.isSuccess && librariesQuery.data.length > 0
+              && map(
+                librariesQuery.data,
+                library => (
+                  <Checkbox
+                    justify
+                    label={library.Title}
+                    id={library.Key.toString()}
+                    isChecked={newSettings.Plex.Libraries.includes(library.Key)}
+                    onChange={handleLibraryChange}
+                    key={library.Key}
+                  />
+                ),
+              )}
+          </div>
+        </AnimateHeight>
       </div>
     </div>
   );

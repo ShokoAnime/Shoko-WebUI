@@ -5,6 +5,7 @@ type BaseUserType = {
   RestrictedTags: number[];
   Avatar: string;
   Password?: string;
+  PlexUsernames: string;
 };
 
 export type CommunitySitesType = {
