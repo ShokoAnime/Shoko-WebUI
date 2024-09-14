@@ -130,7 +130,7 @@ const TraktSettings = () => {
         )}
         {TraktTv.TokenExpirationDate !== '' && (
           <div className={cx(!TraktTv.Enabled && 'pointer-events-none opacity-65', 'flex flex-col gap-y-1')}>
-            <div className="flex h-8 justify-between items-center">
+            <div className="flex h-8 items-center justify-between">
               <span>Token valid until</span>
               {dayjs.unix(toNumber(TraktTv.TokenExpirationDate)).format('MMM Do YYYY, HH:mm')}
             </div>
