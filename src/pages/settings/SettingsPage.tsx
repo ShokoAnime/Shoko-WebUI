@@ -7,6 +7,7 @@ import useMeasure from 'react-use-measure';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { isEqual } from 'lodash';
+import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
@@ -56,9 +57,11 @@ function SettingsPage() {
     },
     [newSettings, settings, settingsQuery.isSuccess],
   );
+  const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
+  // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
   useEffect(() => {
-    if (!unsavedChanges) {
+    if (!debouncedUnsavedChanges) {
       if (toastId.current) toast.dismiss(toastId.current);
       return;
     }
@@ -68,7 +71,7 @@ function SettingsPage() {
       'Please save before leaving this page.',
       { autoClose: false, position: 'top-right' },
     );
-  }, [unsavedChanges]);
+  }, [debouncedUnsavedChanges]);
 
   useEffect(() => () => {
     if (toastId.current) toast.dismiss(toastId.current);
