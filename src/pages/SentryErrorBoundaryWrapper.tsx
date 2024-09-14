@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Outlet } from 'react-router';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import * as Sentry from '@sentry/react';
 import semver from 'semver';
 
@@ -9,6 +9,7 @@ import { useVersionQuery } from '@/core/react-query/init/queries';
 import { getParsedSupportedServerVersion, isDebug, parseServerVersion } from '@/core/util';
 
 const SentryErrorBoundaryWrapper = () => {
+  const { pathname } = useLocation();
   const navigate = useNavigate();
   const versionQuery = useVersionQuery();
 
@@ -31,8 +32,10 @@ const SentryErrorBoundaryWrapper = () => {
 
     if (!isServerSupported) {
       navigate('/webui/unsupported');
+    } else if (pathname === '/webui/unsupported') {
+      navigate('/webui');
     }
-  }, [navigate, versionQuery.data]);
+  }, [navigate, pathname, versionQuery.data]);
 
   return (
     <Sentry.ErrorBoundary
