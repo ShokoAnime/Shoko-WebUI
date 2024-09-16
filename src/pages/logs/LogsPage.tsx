@@ -5,7 +5,7 @@ import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { throttle } from 'lodash';
 
-import Button from '@/components/Input/Button';
+import IconButton from '@/components/Input/IconButton';
 import Input from '@/components/Input/Input';
 import { useLogsQuery } from '@/core/react-query/logs/queries';
 
@@ -55,7 +55,7 @@ const LogsPage = () => {
     <div className="flex grow flex-col gap-y-6">
       <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
         <div className="text-xl font-semibold">Logs</div>
-        <div className="flex items-center gap-x-2">
+        <div className="flex gap-x-2">
           <Input
             id="search"
             onChange={event => setSearch(event.target.value)}
@@ -67,21 +67,16 @@ const LogsPage = () => {
             disabled
           />
           {/* TODO: Disabled until functionality is implemented */}
-          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Filter"> */}
-          {/*   <Icon path={mdiFilterOutline} size={1} /> */}
-          {/* </Button> */}
-          {/* <Button buttonType="secondary" buttonSize="normal" tooltip="Settings"> */}
-          {/*   <Icon path={mdiCogOutline} size={1} /> */}
-          {/* </Button> */}
-          <Button
+          {/* <IconButton icon={mdiFilterOutline} buttonType="secondary" buttonSize="normal" tooltip="Filter"/> */}
+          {/* <IconButton icon={mdiCogOutline} buttonType="secondary" buttonSize="normal" tooltip="Settings"/> */}
+          <IconButton
+            icon={mdiArrowVerticalLock}
             buttonType="secondary"
             buttonSize="normal"
             className={cx(scrollToBottom ? 'text-panel-text-primary' : '!text-panel-text')}
             onClick={() => setScrollToBottom(prev => !prev)}
             tooltip={`${scrollToBottom ? 'Disable' : 'Enable'} scroll to bottom`}
-          >
-            <Icon path={mdiArrowVerticalLock} size={1} />
-          </Button>
+          />
         </div>
       </div>
 
