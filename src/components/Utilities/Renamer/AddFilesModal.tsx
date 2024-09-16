@@ -127,7 +127,8 @@ const AddFilesModal = ({ onClose, show }: Props) => {
                   type="number"
                   value={pageSize}
                   onChange={event => setPageSize(toNumber(event.target.value))}
-                  className="w-12 text-center"
+                  className="w-14 text-center"
+                  max={1000}
                 />
                 <Button
                   onClick={() => addRecentlyImportedFiles(pageSize)}
