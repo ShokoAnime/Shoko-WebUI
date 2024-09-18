@@ -431,6 +431,7 @@ export type WebUISettingsType = {
     shokoNewsPostsCount: number;
     recentlyImportedEpisodesCount: number;
     recentlyImportedSeriesCount: number;
+    recentlyImportedView: 'episodes' | 'series';
   };
 };
 

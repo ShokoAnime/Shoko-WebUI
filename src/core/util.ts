@@ -5,7 +5,7 @@ import calendar from 'dayjs/plugin/calendar';
 import durationPlugin from 'dayjs/plugin/duration';
 import formatThousands from 'format-thousands';
 import { enableMapSet } from 'immer';
-import { isObject, toNumber } from 'lodash';
+import { toNumber } from 'lodash';
 import semver from 'semver';
 
 import toast from '@/components/Toast';
@@ -41,28 +41,6 @@ export const parseServerVersion = (version: string) => {
 };
 
 export const getParsedSupportedServerVersion = () => parseServerVersion(minimumSupportedServerVersion)!;
-
-export function mergeDeep(...objects: object[]) {
-  return objects.reduce((prev, obj) => {
-    Object.keys(obj).forEach((key) => {
-      const pVal: unknown = prev[key];
-      const oVal: unknown = obj[key];
-
-      if (Array.isArray(pVal) && Array.isArray(oVal)) {
-        // eslint-disable-next-line no-param-reassign
-        prev[key] = Array.from(new Set(pVal.concat(...oVal as [])));
-      } else if (isObject(pVal) && isObject(oVal)) {
-        // eslint-disable-next-line no-param-reassign
-        prev[key] = mergeDeep(pVal, oVal);
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        prev[key] = oVal;
-      }
-    });
-
-    return prev;
-  }, {});
-}
 
 export const formatThousand = (num: number) => formatThousands(num, ',');
 
