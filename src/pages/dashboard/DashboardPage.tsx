@@ -149,9 +149,9 @@ function DashboardPage() {
   }, [currentLayout]);
 
   // settingsQuery.isSuccess is always true due to the existence of initialData
-  // settingsQuery.isStale will be true before the first actual fetch and it will never be true for fetched data
+  // settingsRevision will be 0 before the first actual fetch and it will never be 0 for fetched data
   // This is kind of a hack but it works
-  if (settingsQuery.isStale) {
+  if (settingsQuery.data.WebUI_Settings.settingsRevision === 0) {
     return (
       <div className="flex grow items-center justify-center text-panel-text-primary">
         <Icon path={mdiLoading} size={4} spin />

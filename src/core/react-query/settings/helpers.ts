@@ -1,3 +1,4 @@
+import { merge } from 'lodash';
 import semver from 'semver';
 
 import { webuiSettingsPatches } from '@/core/patches';
@@ -308,6 +309,7 @@ export const initialSettings: SettingsType = {
       shokoNewsPostsCount: 5,
       recentlyImportedEpisodesCount: 30,
       recentlyImportedSeriesCount: 20,
+      recentlyImportedView: 'episodes',
     },
   },
   FirstRun: false,
@@ -427,6 +429,13 @@ export const transformSettings = (response: SettingsServerType) => {
   let webuiSettings = JSON.parse(
     response.WebUI_Settings === '' ? '{}' : response.WebUI_Settings,
   ) as WebUISettingsType;
+
+  // Settings aren't fetched yet, transform is running on initialData
+  // Return without any operatations
+  if (webuiSettings.settingsRevision === 0) {
+    return { ...response, WebUI_Settings: webuiSettings };
+  }
+
   const currentSettingsRevision = webuiSettings.settingsRevision ?? 0;
   const versionedInitialSettings: WebUISettingsType = {
     ...initialSettings.WebUI_Settings,
@@ -444,7 +453,7 @@ export const transformSettings = (response: SettingsServerType) => {
         .forEach((key) => {
           webuiSettings = webuiSettingsPatches[key](webuiSettings);
         });
-      webuiSettings = Object.assign({}, initialSettings.WebUI_Settings, webuiSettings);
+      webuiSettings = merge({}, initialSettings.WebUI_Settings, webuiSettings);
     } catch {
       webuiSettings = versionedInitialSettings;
     }
