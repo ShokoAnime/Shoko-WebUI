@@ -41,11 +41,10 @@ type EditableNameComponentProps = {
   name: string;
   groupId: number;
   loading: boolean;
-  moveToNewGroup: () => void;
   renameGroup: ({ groupId, newName }: { groupId: number, newName: string }) => void;
 };
 const EditableNameComponent = React.memo(
-  ({ groupId, loading, moveToNewGroup, name, renameGroup }: EditableNameComponentProps) => {
+  ({ groupId, loading, name, renameGroup }: EditableNameComponentProps) => {
     const [editingName, setEditingName] = useState(false);
     const [modifiableName, setModifiableName] = useState(name);
 
@@ -69,12 +68,6 @@ const EditableNameComponent = React.memo(
 
     const endIcons: EndIcon[] = (!editingName)
       ? [
-        {
-          icon: mdiPlusCircleOutline,
-          className: 'text-panel-text-primary',
-          onClick: moveToNewGroup,
-          tooltip: 'Create and move to new group',
-        },
         {
           icon: mdiPencilCircleOutline,
           className: 'text-panel-text-primary',
@@ -195,7 +188,6 @@ function GroupTab({ seriesId }: Props) {
         groupId={seriesGroup?.IDs.ParentGroup ?? seriesGroup?.IDs.TopLevelGroup ?? 0}
         loading={isFetching}
         name={seriesGroup?.Name ?? ''}
-        moveToNewGroup={moveToNewGroup}
         renameGroup={renameGroup}
       />
       <Input
@@ -206,6 +198,14 @@ function GroupTab({ seriesId }: Props) {
         startIcon={mdiMagnify}
         placeholder="Group Search..."
         label="Move to group"
+        endIcons={[
+          {
+            icon: mdiPlusCircleOutline,
+            className: 'text-panel-text-primary',
+            onClick: moveToNewGroup,
+            tooltip: 'Create and move to new group',
+          },
+        ]}
       />
       <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6 pr-3">
         <div
