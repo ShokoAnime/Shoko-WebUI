@@ -123,7 +123,7 @@ function LoginPage() {
       />
       <div className="relative flex h-screen w-screen flex-col items-center justify-center gap-y-2">
         {loginError && (
-          <div className="flex w-full max-w-[51.625rem] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
+          <div className="flex w-full max-w-[50rem] justify-center gap-x-2 rounded-lg border border-panel-border bg-panel-background-transparent p-4 drop-shadow-md">
             <Icon className="text-panel-text-danger" path={mdiAlertCircleOutline} size={1} />
             <div className="font-semibold text-panel-text-danger">
               Invalid Username or Password. Try again.
@@ -133,7 +133,7 @@ function LoginPage() {
         <div className="flex flex-col items-center rounded-lg border border-panel-border bg-panel-background-transparent drop-shadow-md">
           <div className="flex w-[50rem] flex-row items-center gap-x-6 p-6">
             <div className="flex w-80 flex-col items-center gap-y-6 py-6">
-              <ShokoIcon className="w-[9.375rem]" />
+              <ShokoIcon className="size-32" />
               <div className="flex flex-col gap-y-1 text-center font-semibold">
                 <span>Version</span>
                 <span>{parsedVersion}</span>
@@ -258,7 +258,7 @@ function LoginPage() {
                 href="https://discord.gg/vpeHDsg"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-x-2"
+                className="flex items-center gap-x-2 transition-colors hover:text-header-icon-primary"
               >
                 <Icon path={siDiscord.path} size={1} />
                 Discord
@@ -267,7 +267,7 @@ function LoginPage() {
                 href="https://docs.shokoanime.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-x-2"
+                className="flex items-center gap-x-2 transition-colors hover:text-header-icon-primary"
               >
                 <Icon path={mdiHelpCircleOutline} size={1} />
                 Docs
@@ -276,7 +276,7 @@ function LoginPage() {
                 href="https://github.com/ShokoAnime"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-x-2"
+                className="flex items-center gap-x-2 transition-colors hover:text-header-icon-primary"
               >
                 <Icon path={mdiGithub} size={1} />
                 GitHub
