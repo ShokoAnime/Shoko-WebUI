@@ -266,11 +266,23 @@ function UnrecognizedTab() {
         id: 'importFolder',
         name: 'Import Folder',
         className: 'w-40',
-        item: file =>
-          find(
+        item: (file) => {
+          const importFolder = find(
             importFolders,
             { ID: file?.Locations[0]?.ImportFolderID ?? -1 },
-          )?.Name ?? '<Unknown>',
+          )?.Name ?? '<Unknown>';
+
+          return (
+            <div
+              className="truncate"
+              data-tooltip-id="tooltip"
+              data-tooltip-content={importFolder}
+              data-tooltip-delay-show={500}
+            >
+              {importFolder}
+            </div>
+          );
+        },
       },
       ...staticColumns,
       {
