@@ -43,7 +43,7 @@ const getAudioInfo = (file: FileType) => {
 
   const subtitleLanguages = map(file.MediaInfo?.Subtitles, item => item.LanguageCode).filter(item => !!item);
   if (subtitleLanguages && subtitleLanguages.length > 0) {
-    info.push(`${subtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${subtitleLanguages.join(',')})`);
+    info.push(`${subtitleLanguages.length > 1 ? 'Multi Subs' : 'Subs'} (${subtitleLanguages.join(', ')})`);
   }
 
   return info;
