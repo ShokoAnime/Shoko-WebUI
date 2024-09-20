@@ -1,17 +1,16 @@
 import React, { useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import { mdiEarth, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { flatMap, get, round, toNumber } from 'lodash';
+import { flatMap, get, map, round, toNumber } from 'lodash';
 
-import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import SeriesPoster from '@/components/SeriesPoster';
 import {
   useRelatedAnimeQuery,
   useSeriesCastQuery,
@@ -169,82 +168,47 @@ const SeriesOverview = () => {
       </div>
 
       {relatedAnime.length > 0 && (
-        <ShokoPanel title="Related Anime" className="w-full" transparent>
-          <div className={cx('flex gap-x-5', relatedAnime.length > 5 && ('mb-4'))}>
-            {relatedAnime.map((item) => {
-              const thumbnail = get(item, 'Poster', null);
-              const itemRelation = item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2');
-              return (
-                <Link
-                  key={item.ID}
-                  to={`/webui/collection/series/${item.ShokoID}`}
-                  className={cx(
-                    'flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold',
-                    !item.ShokoID && 'pointer-events-none',
-                  )}
-                >
-                  <BackgroundImagePlaceholderDiv
-                    image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
-                    hidePlaceholderOnHover
-                    overlayOnHover
-                    zoomOnHover
-                  >
-                    {item.ShokoID && (
-                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                        In Collection
-                      </div>
-                    )}
-                  </BackgroundImagePlaceholderDiv>
-                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-text-important">{itemRelation}</span>
-                </Link>
-              );
-            })}
-          </div>
+        <ShokoPanel
+          title="Related Anime"
+          className="w-full"
+          transparent
+          contentClassName={cx('!flex-row gap-x-6', relatedAnime.length > 7 && 'pb-4')}
+        >
+          {map(relatedAnime, item => (
+            <SeriesPoster
+              key={item.ID}
+              image={item.Poster}
+              title={item.Title}
+              subtitle={item.Relation.replace(/([a-z])([A-Z])/g, '$1 $2')}
+              shokoId={item.ShokoID}
+              anidbSeriesId={item.ID}
+              inCollection={!!item.ShokoID}
+            />
+          ))}
         </ShokoPanel>
       )}
 
       {similarAnime.length > 0 && (
-        <ShokoPanel title="Similar Anime" className="w-full" transparent>
-          <div className={cx('shoko-scrollbar flex gap-x-5', similarAnime.length > 5 && ('mb-4'))}>
-            {similarAnime.map((item) => {
-              const thumbnail = get(item, 'Poster', null);
-              return (
-                <Link
-                  key={item.ID}
-                  to={`/webui/collection/series/${item.ShokoID}`}
-                  className={cx(
-                    'flex w-[13.875rem] shrink-0 flex-col gap-y-2 text-center font-semibold',
-                    !item.ShokoID && 'pointer-events-none',
-                  )}
-                >
-                  <BackgroundImagePlaceholderDiv
-                    image={thumbnail}
-                    className="group h-[19.875rem] w-[13.875rem] rounded-lg border border-panel-border drop-shadow-md"
-                    hidePlaceholderOnHover
-                    overlayOnHover
-                    zoomOnHover
-                  >
-                    {item.ShokoID && (
-                      <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
-                        In Collection
-                      </div>
-                    )}
-                  </BackgroundImagePlaceholderDiv>
-                  <span className="line-clamp-1 text-ellipsis text-sm">{item.Title}</span>
-                  <span className="text-sm text-panel-text-important">
-                    {round(item.UserApproval.Value, 2)}
-                    % (
-                    {item.UserApproval.Votes}
-                    &nbsp;votes)
-                  </span>
-                </Link>
-              );
-            })}
-          </div>
+        <ShokoPanel
+          title="Similar Anime"
+          className="w-full"
+          transparent
+          contentClassName={cx('!flex-row gap-x-6', similarAnime.length > 7 && 'pb-4')}
+        >
+          {map(similarAnime, item => (
+            <SeriesPoster
+              key={item.ID}
+              image={item.Poster}
+              title={item.Title}
+              subtitle={`${round(item.UserApproval.Value, 2)}% (${item.UserApproval.Votes} votes)`}
+              shokoId={item.ShokoID}
+              anidbSeriesId={item.ID}
+              inCollection={!!item.ShokoID}
+            />
+          ))}
         </ShokoPanel>
       )}
+
       <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
           {cast?.filter(credit => credit.RoleName === 'Seiyuu' && credit.Character).slice(0, 20).map(seiyuu => (
