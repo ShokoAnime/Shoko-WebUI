@@ -52,7 +52,7 @@ const BackgroundImagePlaceholderDiv = React.memo((props: Props) => {
       setImageError(
         imageSource === null
           ? (
-            'Image is not available. Run the validate image action or wait for the image queue to settle.'
+            'Image is not available. Run the validate image action or wait for the queue to settle.'
           )
           : (
             'No image metadata.'
