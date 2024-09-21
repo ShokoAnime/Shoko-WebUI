@@ -55,7 +55,7 @@ const ShokoPanel = (
     <div
       className={cx(
         'flex grow flex-col shoko-scrollbar',
-        disableOverflow === false && 'overflow-y-auto',
+        !disableOverflow && 'overflow-y-auto',
         contentClassName,
       )}
       style={{ overflowAnchor: 'none' }} // To fix scroll jumping around randomly when queue items change

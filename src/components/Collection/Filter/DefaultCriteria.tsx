@@ -24,7 +24,7 @@ const DefaultCriteria = ({ criteria }: Props) => {
   const selectedCondition = useSelector(
     (state: RootState) => {
       const value: boolean | undefined = state.collection.filterConditions[criteria.Expression];
-      if (value === true || value === false) {
+      if (value !== undefined) {
         return value ? '1' : '0';
       }
       return value;

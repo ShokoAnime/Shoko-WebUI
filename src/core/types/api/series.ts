@@ -55,6 +55,7 @@ export type SeriesIDsType = {
 
 export type AniDBSeriesType = {
   ID: number;
+  ShokoID?: number;
   Type: SeriesTypeEnum;
   Restricted: boolean;
   Title: string;

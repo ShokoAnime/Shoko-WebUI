@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { produce } from 'immer';
+import { map } from 'lodash';
 
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -70,21 +71,39 @@ const RecentlyImported = () => {
           alternateColor
         />
       }
+      contentClassName="relative"
     >
-      <div className="shoko-scrollbar relative flex">
-        <TransitionDiv show={viewMode !== 'series'} className="absolute flex w-full">
-          {(recentEpisodesQuery.data?.length ?? 0) > 0
-            ? recentEpisodesQuery.data?.map(item => (
-              <EpisodeDetails episode={item} key={`${item.IDs.ShokoEpisode}-${item.IDs.ShokoFile}`} />
-            ))
-            : <div className="flex w-full justify-center font-semibold">No Recently Imported Episodes!</div>}
-        </TransitionDiv>
-        <TransitionDiv show={viewMode === 'series'} className="absolute flex w-full">
-          {(recentSeriesQuery.data?.length ?? 0) > 0
-            ? recentSeriesQuery.data?.map(item => <SeriesDetails series={item} key={item.IDs.ID} />)
-            : <div className="flex w-full justify-center font-semibold">No Recently Imported Series!</div>}
-        </TransitionDiv>
-      </div>
+      <TransitionDiv
+        show={viewMode !== 'series'}
+        className="absolute flex size-full gap-x-6"
+      >
+        {(!recentEpisodesQuery.data || recentEpisodesQuery.data.length === 0) && (
+          <div className="flex size-full flex-col justify-center pb-10 text-center">
+            No Recently Imported Episodes!
+          </div>
+        )}
+
+        {map(
+          recentEpisodesQuery.data,
+          item => <EpisodeDetails episode={item} key={`${item.IDs.ShokoEpisode}-${item.IDs.ShokoFile}`} />,
+        )}
+      </TransitionDiv>
+
+      <TransitionDiv
+        show={viewMode === 'series'}
+        className="absolute flex size-full gap-x-6"
+      >
+        {(!recentSeriesQuery.data || recentSeriesQuery.data.length === 0) && (
+          <div className="flex size-full flex-col justify-center pb-10 text-center">
+            No Recently Imported Series!
+          </div>
+        )}
+
+        {map(
+          recentSeriesQuery.data,
+          item => <SeriesDetails series={item} key={item.IDs.ID} />,
+        )}
+      </TransitionDiv>
     </ShokoPanel>
   );
 };

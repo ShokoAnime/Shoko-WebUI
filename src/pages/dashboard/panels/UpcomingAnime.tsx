@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import cx from 'classnames';
+import { map } from 'lodash';
 
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -37,39 +37,43 @@ const UpcomingAnime = () => {
       options={
         <MultiStateButton activeState={currentTab} states={tabStates} onStateChange={handleTabChange} alternateColor />
       }
+      contentClassName="relative"
     >
-      <div className="shoko-scrollbar relative flex">
-        <TransitionDiv show={currentTab !== 'all'} className="absolute flex w-full">
-          {(calendarQuery.data?.length ?? 0) > 0
-            ? calendarQuery.data?.map(item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />)
-            : (
-              <div className="flex w-full flex-col justify-center gap-y-2 text-center">
-                <div>No Upcoming Anime.</div>
-                <div>Start A Currently Airing Series To Populate This Section.</div>
-              </div>
-            )}
-        </TransitionDiv>
-        <TransitionDiv
-          show={currentTab === 'all'}
-          className={cx('shoko-scrollbar flex', calendarAllQuery.data?.length === 0 && ('h-full pb-[3.5rem]'))}
-        >
-          {(calendarAllQuery.data?.length ?? 0) > 0
-            ? calendarAllQuery.data?.map(item => (
-              <EpisodeDetails
-                episode={item}
-                showDate
-                key={item.IDs.ID}
-                isInCollection={item.IDs.ShokoSeries !== null}
-              />
-            ))
-            : (
-              <div className="flex w-full flex-col justify-center gap-y-2 text-center">
-                <div>No Upcoming Anime.</div>
-                <div>Enable Calendar To Populate This Section</div>
-              </div>
-            )}
-        </TransitionDiv>
-      </div>
+      <TransitionDiv
+        show={currentTab !== 'all'}
+        className="absolute flex size-full gap-x-6"
+      >
+        {(!calendarQuery.data || calendarQuery.data.length === 0) && (
+          <div className="flex size-full flex-col justify-center gap-y-2 pb-10 text-center">
+            <div>No Upcoming Anime.</div>
+            <div>Start A Currently Airing Series To Populate This Section.</div>
+          </div>
+        )}
+
+        {map(
+          calendarQuery.data,
+          item => <EpisodeDetails episode={item} showDate key={item.IDs.ID} />,
+        )}
+      </TransitionDiv>
+
+      <TransitionDiv
+        show={currentTab === 'all'}
+        className="absolute flex size-full gap-x-6"
+      >
+        {(!calendarAllQuery.data || calendarAllQuery.data.length === 0) && (
+          <div className="flex size-full flex-col justify-center gap-y-2 pb-10 text-center">
+            <div>No Upcoming Anime.</div>
+            <div>Enable Calendar To Populate This Section</div>
+          </div>
+        )}
+
+        {map(
+          calendarAllQuery.data,
+          item => (
+            <EpisodeDetails episode={item} showDate key={item.IDs.ID} isInCollection={item.IDs.ShokoSeries !== null} />
+          ),
+        )}
+      </TransitionDiv>
     </ShokoPanel>
   );
 };
