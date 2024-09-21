@@ -1,18 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { mdiArrowVerticalLock, mdiLoading, mdiMagnify } from '@mdi/js';
+import { mdiArrowVerticalLock, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { throttle } from 'lodash';
 
 import IconButton from '@/components/Input/IconButton';
-import Input from '@/components/Input/Input';
 import { useLogsQuery } from '@/core/react-query/logs/queries';
 
 const LogsPage = () => {
   const logLines = useLogsQuery().data;
   const [scrollToBottom, setScrollToBottom] = useState(true);
-  const [search, setSearch] = useState('');
 
   const parentRef = React.useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
@@ -56,17 +54,17 @@ const LogsPage = () => {
       <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
         <div className="text-xl font-semibold">Logs</div>
         <div className="flex gap-x-2">
-          <Input
-            id="search"
-            onChange={event => setSearch(event.target.value)}
-            type="text"
-            value={search}
-            placeholder="Search Logs..."
-            startIcon={mdiMagnify}
-            className="w-80"
-            disabled
-          />
           {/* TODO: Disabled until functionality is implemented */}
+          {/* <Input */}
+          {/*   id="search" */}
+          {/*   onChange={event => setSearch(event.target.value)} */}
+          {/*   type="text" */}
+          {/*   value={search} */}
+          {/*   placeholder="Search Logs..." */}
+          {/*   startIcon={mdiMagnify} */}
+          {/*   className="w-80" */}
+          {/*   disabled */}
+          {/* /> */}
           {/* <IconButton icon={mdiFilterOutline} buttonType="secondary" buttonSize="normal" tooltip="Filter"/> */}
           {/* <IconButton icon={mdiCogOutline} buttonType="secondary" buttonSize="normal" tooltip="Settings"/> */}
           <IconButton
