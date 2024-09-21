@@ -41,7 +41,7 @@ const EpisodeSelect = React.memo((props: Props) => {
   const [tmdbEpisode, setTmdbEpisode] = useState(initialTmdbEpisode);
 
   useEffect(() => {
-    if (override) {
+    if (override && override !== initialTmdbEpisode?.ID) {
       const episodeOverride = episodes.find(episode => episode.ID === override);
       if (episodeOverride) {
         setTmdbEpisode(episodeOverride);
