@@ -114,6 +114,7 @@ const SelectEpisodeList = React.memo((
               className="z-[110] w-[--button-width] origin-top rounded-lg bg-panel-background transition [--anchor-max-height:24rem] focus:outline-none"
             >
               <Input
+                autoFocus
                 className="grow"
                 id="epFilter"
                 type="text"
