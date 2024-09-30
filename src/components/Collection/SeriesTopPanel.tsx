@@ -47,25 +47,25 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
 });
 
 const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
-  const { WebUI_Settings: { collection: { image: { showRandomPoster } } } } = useSettingsQuery().data;
-  const [poster, setPoster] = useState<ImageType | null>(null);
   const { seriesId } = useParams();
+
   const tagsQuery = useSeriesTagsQuery(toNumber(seriesId!), { excludeDescriptions: true, filter: 1 }, !!seriesId);
-  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const tags = useMemo(() => tagsQuery?.data ?? [], [tagsQuery.data]);
 
+  const { showRandomPoster } = useSettingsQuery().data.WebUI_Settings.collection.image;
+  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomPoster);
+  const [poster, setPoster] = useState<ImageType>();
   useEffect(() => {
-    if (!imagesQuery.isSuccess) return;
-
-    const allPosters: ImageType[] = imagesQuery.data?.Posters ?? [];
-    if (allPosters.length === 0) return;
-
-    if (showRandomPoster) {
-      setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
+    if (!showRandomPoster) {
+      setPoster(series.Images?.Posters?.[0]);
       return;
     }
-    setPoster(allPosters.find(art => art.Preferred) ?? allPosters[0]);
-  }, [imagesQuery.data, imagesQuery.isSuccess, showRandomPoster]);
+
+    const allPosters = imagesQuery.data?.Posters ?? [];
+    if (allPosters.length === 0) return;
+
+    setPoster(allPosters[Math.floor(Math.random() * allPosters.length)]);
+  }, [imagesQuery.data, series, showRandomPoster]);
 
   // TODO: try to make this a grid for better responsiveness... but we'll have v3 soon so maybe not right now.
   return (

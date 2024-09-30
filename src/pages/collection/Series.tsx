@@ -16,7 +16,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { get, toNumber } from 'lodash';
+import { toNumber } from 'lodash';
 
 import EditSeriesModal from '@/components/Collection/Series/EditSeriesModal';
 import SeriesTopPanel from '@/components/Collection/SeriesTopPanel';
@@ -54,13 +54,10 @@ const Series = () => {
   const navigate = useNavigate();
   const { seriesId } = useParams();
 
-  const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId);
   const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
-  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
-  const [backdrop, setBackdrop] = useState<ImageType>();
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
 
   const dispatch = useDispatch();
@@ -80,19 +77,20 @@ const Series = () => {
     dispatch(setSeriesId(toNumber(seriesId) ?? -1));
   });
 
+  const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
+  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomBackdrop);
+  const [backdrop, setBackdrop] = useState<ImageType>();
   useEffect(() => {
-    if (!imagesQuery.isSuccess) return;
-
-    const allBackdrops: ImageType[] = get(imagesQuery.data, 'Backdrops', []);
-    if (!Array.isArray(allBackdrops) || allBackdrops.length === 0) return;
-
-    if (showRandomBackdrop) {
-      setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)]);
+    if (!showRandomBackdrop) {
+      setBackdrop(series.Images?.Backdrops?.[0]);
       return;
     }
 
-    setBackdrop(allBackdrops.find(image => image.Preferred) ?? allBackdrops[0]);
-  }, [imagesQuery.data, imagesQuery.isSuccess, series, showRandomBackdrop]);
+    const allBackdrops = imagesQuery.data?.Backdrops ?? [];
+    if (allBackdrops.length === 0) return;
+
+    setBackdrop(allBackdrops[Math.floor(Math.random() * allBackdrops.length)]);
+  }, [imagesQuery.data, series, showRandomBackdrop]);
 
   const [containerRef, containerBounds] = useMeasure();
 
