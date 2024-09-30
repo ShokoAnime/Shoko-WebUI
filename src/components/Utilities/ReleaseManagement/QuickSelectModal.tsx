@@ -7,6 +7,7 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useDeleteFilesMutation } from '@/core/react-query/file/mutations';
+import { resetQueries } from '@/core/react-query/queryClient';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -58,6 +59,7 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
       { fileIds, removeFolder: true },
       {
         onSuccess: () => {
+          resetQueries(['release-management']);
           toast.success(`${fileIds.length} ${fileIds.length === 1 ? 'file' : 'files'} deleted!`);
           onClose();
         },
