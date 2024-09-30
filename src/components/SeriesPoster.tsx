@@ -10,7 +10,7 @@ type Props = {
   children?: React.ReactNode;
   title: string;
   subtitle?: string;
-  image: ImageType | null;
+  image?: ImageType;
   shokoId?: number | null;
   anidbSeriesId?: number;
   anidbEpisodeId?: number;

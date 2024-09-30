@@ -11,7 +11,7 @@ type Props = {
   children?: React.ReactNode;
   className?: string;
   contain?: boolean;
-  image: ImageType | null;
+  image?: ImageType;
   hidePlaceholderOnHover?: boolean;
   overlayOnHover?: boolean;
   zoomOnHover?: boolean;

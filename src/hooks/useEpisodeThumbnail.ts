@@ -8,7 +8,7 @@ import type { EpisodeType } from '@/core/types/api/episode';
 function useEpisodeThumbnail(
   episode: EpisodeType,
   backdrop: ImageType | undefined,
-): ImageType | null {
+) {
   const { useThumbnailFallback } = useSettingsQuery().data.WebUI_Settings.collection.image;
   return useMemo(() => {
     if (episode.Images.Thumbnails.length) {
@@ -20,7 +20,7 @@ function useEpisodeThumbnail(
     }
 
     if (useThumbnailFallback && backdrop) return backdrop;
-    return null;
+    return undefined;
   }, [episode, useThumbnailFallback, backdrop]);
 }
 
