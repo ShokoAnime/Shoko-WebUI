@@ -65,12 +65,11 @@ function UserManagementSettings() {
     if (isEqual(selectedUser, user)) {
       toast.dismiss('unsaved');
     } else {
-      toast.info('', 'You have unsaved changes!', {
-        autoClose: false,
-        draggable: false,
-        closeOnClick: false,
-        toastId: 'unsaved',
-      });
+      toast.info(
+        'Unsaved Changes',
+        'Please save before leaving this page.',
+        { autoClose: false, position: 'top-right', toastId: 'unsaved' },
+      );
     }
   }, [selectedUser, users]);
 
