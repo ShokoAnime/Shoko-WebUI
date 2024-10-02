@@ -1,9 +1,9 @@
 import React from 'react';
-import { mdiCalendarMonthOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull, mdiContentCopy } from '@mdi/js';
+import { mdiCalendarMonthOutline, mdiClockOutline, mdiContentCopy, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
-import { convertTimeSpanToMs, dayjs, copyToClipboard } from '@/core/util';
+import { convertTimeSpanToMs, copyToClipboard, dayjs } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
