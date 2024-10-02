@@ -1,9 +1,9 @@
 import React from 'react';
-import { mdiCalendarMonthOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
+import { mdiCalendarMonthOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull, mdiContentCopy } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
-import { convertTimeSpanToMs, dayjs } from '@/core/util';
+import { convertTimeSpanToMs, dayjs, copyToClipboard } from '@/core/util';
 
 import type { EpisodeType } from '@/core/types/api/episode';
 
@@ -11,6 +11,10 @@ const getDuration = (duration: string) => {
   const minutes = dayjs.duration(convertTimeSpanToMs(duration)).asMinutes();
   const intMinutes = Math.round(toNumber(minutes));
   return `${intMinutes} minutes`;
+};
+
+const handleCopyToClipboard = (id: string) => {
+  copyToClipboard(id, 'Shoko episodeID').catch(console.error);
 };
 
 function EpisodeDetails({ episode }: { episode: EpisodeType }) {
@@ -50,6 +54,17 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
           &nbsp;(
           {episode.AniDB?.Rating.Votes}
           &nbsp;Votes)
+        </div>
+        <div
+          className="flex cursor-pointer items-center gap-x-2"
+          onClick={() => handleCopyToClipboard(episode.IDs.ID.toString())}
+        >
+          <Icon
+            className="hidden text-panel-icon-action lg:inline"
+            path={mdiContentCopy}
+            size={1}
+          />
+          Copy ShokoID
         </div>
         {episode.AniDB?.ID && (
           <a href={`https://anidb.net/episode/${episode.AniDB?.ID}`} target="_blank" rel="noopener noreferrer">

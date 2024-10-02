@@ -82,7 +82,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
     });
 
   const handleCopyToClipboard = (id: string) => {
-    copyToClipboard(id, 'ShokoID').catch(console.error);
+    copyToClipboard(id, 'Shoko fileID').catch(console.error);
   };
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
