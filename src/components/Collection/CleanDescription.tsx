@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import cx from 'classnames';
+import { trim } from 'lodash';
 
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 
@@ -69,7 +70,7 @@ const CleanDescription = React.memo(({ altText, className, text }: Props) => {
       lines.push(cleanedText.substring(prevPos));
     }
     LinkRegex.lastIndex = 0;
-    return lines.join('');
+    return trim(lines.join(''), '\n ');
   }, [text, filterDescription]);
 
   // Fallback to alt text if modified text is empty
