@@ -19,23 +19,24 @@ const newNewsCheck = (date: string) => {
 
 const NewsRow = ({ item }: { item: DashboardNewsType }) => {
   const { shokoNewsPostsCount } = useSettingsQuery().data.WebUI_Settings.dashboard;
+  const newsUrl = `https://shokoanime.com/blog/${item.filename.replace('.mdx', '')}`;
 
   return (
-    <div className="flex flex-col gap-y-1" key={item.title}>
+    <div className="flex flex-col gap-y-1" key={item.meta.title}>
       <div className={cx('flex gap-x-4 justify-between font-semibold', shokoNewsPostsCount > 4 && ('mr-4'))}>
-        <p>{item.date_published}</p>
-        {newNewsCheck(item.date_published) && <p className="text-panel-text-important">New!</p>}
+        <p>{item.meta.date}</p>
+        {newNewsCheck(item.meta.date) && <p className="text-panel-text-important">New!</p>}
       </div>
       <a
-        href={item.link}
+        href={newsUrl}
         rel="noopener noreferrer"
         target="_blank"
         className="flex items-center space-x-2 font-semibold text-panel-icon-action"
       >
-        <p className="font-semibold">{item.title}</p>
+        <p className="line-clamp-1 max-w-[350px] font-semibold">{item.meta.title}</p>
         <Icon path={mdiOpenInNew} size={1} />
       </a>
-      <p className="text-sm opacity-65">{item.content_text}</p>
+      <p className="text-sm opacity-65">{item.meta.quick}</p>
     </div>
   );
 };
@@ -48,7 +49,7 @@ function ShokoNews() {
   return (
     <ShokoPanel title="Shoko News" isFetching={newsQuery.isPending} editMode={layoutEditMode}>
       <div className="mr-3 flex flex-col gap-y-4">
-        {newsQuery.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.link} />)}
+        {newsQuery.data?.slice(0, shokoNewsPostsCount).map(item => <NewsRow item={item} key={item.meta.title} />)}
       </div>
     </ShokoPanel>
   );
