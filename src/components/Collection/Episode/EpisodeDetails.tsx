@@ -1,5 +1,5 @@
 import React from 'react';
-import { mdiCalendarMonthOutline, mdiClockOutline, mdiContentCopy, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
+import { mdiCalendarMonthOutline, mdiClipboardOutline, mdiClockOutline, mdiOpenInNew, mdiStarHalfFull } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { toNumber } from 'lodash';
 
@@ -14,7 +14,7 @@ const getDuration = (duration: string) => {
 };
 
 const handleCopyToClipboard = (id: string) => {
-  copyToClipboard(id, 'Shoko episodeID').catch(console.error);
+  copyToClipboard(id, 'Shoko Episode ID').catch(console.error);
 };
 
 function EpisodeDetails({ episode }: { episode: EpisodeType }) {
@@ -61,7 +61,7 @@ function EpisodeDetails({ episode }: { episode: EpisodeType }) {
         >
           <Icon
             className="hidden text-panel-icon-action lg:inline"
-            path={mdiContentCopy}
+            path={mdiClipboardOutline}
             size={1}
           />
           Copy ShokoID
