@@ -20,7 +20,7 @@ import { listItemSize } from '@/components/Collection/constants';
 import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { resetFilter, setFilterTag } from '@/core/slices/collection';
+import { setFilterTag } from '@/core/slices/collection';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
@@ -52,7 +52,6 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = useEventCallback(() => {
-    dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
       navigate('/webui/collection');
