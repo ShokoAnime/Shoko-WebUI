@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
@@ -20,9 +20,11 @@ import Button from '@/components/Input/Button';
 import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
+import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -46,17 +48,31 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   return output.join(' | ');
 };
 
-const SeriesTag = ({ text, type }: { text: string, type: 'AniDB' | 'User' }) => (
-  <div
-    className={cx(
-      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
-      type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
-    )}
-  >
-    <Icon path={mdiTagTextOutline} size="1rem" />
-    <span className="text-panel-text">{text}</span>
-  </div>
-);
+const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleClick = useEventCallback(() => {
+    dispatch(resetFilter());
+    addFilterCriteriaToStore('HasTag').then(() => {
+      dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
+      navigate('/webui/collection');
+    }).catch(console.error);
+  });
+
+  return (
+    <Button
+      className={cx(
+        'pointer-events-auto text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize cursor-pointer',
+        type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
+      )}
+      onClick={handleClick}
+      tooltip="Filter Tag"
+    >
+      <Icon path={mdiTagTextOutline} size="1rem" />
+      <span className="text-panel-text">{text}</span>
+    </Button>
+  );
+});
 
 type Props = {
   item: CollectionGroupType | SeriesType;
