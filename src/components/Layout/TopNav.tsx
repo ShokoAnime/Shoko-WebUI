@@ -167,7 +167,7 @@ function TopNav() {
           layoutEditMode && 'opacity-65 pointer-events-none',
         )}
       >
-        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between p-6">
+        <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-6 py-2">
           <Link to="/webui/dashboard" className="flex items-center gap-x-3">
             <ShokoIcon className="w-20" />
             <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>

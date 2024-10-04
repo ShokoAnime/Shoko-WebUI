@@ -4,6 +4,7 @@ import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { SeriesTypeEnum } from '@/core/types/api/series';
 import { dayjs } from '@/core/util';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -37,22 +38,23 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 };
 
 const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: SeriesType[] }) => (
-  <div className="flex min-h-full overflow-hidden transition-all">
-    <div className="ml-8 flex w-[26.125rem] grow flex-col gap-y-6 rounded-lg border border-panel-border bg-panel-background p-6">
-      <div className="text-xl font-semibold">Timeline</div>
-      {isFetching
-        ? (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={3} spin />
-          </div>
-        )
-        : (
-          <div className="flex flex-col gap-y-3">
-            {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
-          </div>
-        )}
-    </div>
-  </div>
+  <ShokoPanel
+    title="Timeline"
+    className="ml-8 flex w-[26.84rem] h-[calc(100vh-18rem)] sticky top-[6rem]"
+    contentClassName="gap-y-6"
+  >
+    {isFetching
+      ? (
+        <div className="flex grow items-center justify-center text-panel-text-primary">
+          <Icon path={mdiLoading} size={3} spin />
+        </div>
+      )
+      : (
+        <div className="flex flex-col gap-y-3">
+          {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
+        </div>
+      )}
+  </ShokoPanel>
 );
 
 export default TimelineSidebar;

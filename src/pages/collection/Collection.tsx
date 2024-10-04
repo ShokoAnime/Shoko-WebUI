@@ -198,7 +198,7 @@ function Collection() {
 
   return (
     <div className="flex grow flex-col gap-y-6">
-      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
+      <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6 sticky -top-6 z-10">
         <CollectionTitle
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
@@ -232,7 +232,7 @@ function Collection() {
           className={cx(
             'flex items-start transition-all',
             (!isSeries && showFilterSidebar)
-              ? 'w-[28.84rem] opacity-100 overflow-auto '
+              ? 'w-[28.84rem] opacity-100 '
               : 'w-0 opacity-0 overflow-hidden ',
           )}
         >
