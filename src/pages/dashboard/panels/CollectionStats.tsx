@@ -11,7 +11,6 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
-
 function CollectionStats() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
