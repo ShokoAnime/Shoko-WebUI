@@ -51,7 +51,7 @@ export const copyToClipboard = async (text: string, entityName?: string) => {
     } else {
       copy(text);
     }
-    if (entityName) toast.success(`${entityName} has been copied to clipboard!`);
+    if (entityName) toast.success(`${entityName} has been copied to the clipboard!`);
   } catch (error) {
     if (entityName) toast.error(`${entityName} copy failed!`);
     throw error;

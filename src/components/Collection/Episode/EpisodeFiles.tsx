@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
-  mdiContentCopy,
+  mdiClipboardOutline,
   mdiDatabaseSearchOutline,
   mdiFileDocumentMultipleOutline,
   mdiLoading,
@@ -82,7 +82,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
     });
 
   const handleCopyToClipboard = (id: string) => {
-    copyToClipboard(id, 'ShokoID').catch(console.error);
+    copyToClipboard(id, 'Shoko File ID').catch(console.error);
   };
 
   if (!episodeFiles.length || episodeFiles.length < 1) {
@@ -136,7 +136,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                 >
                   <Icon
                     className="hidden text-panel-icon-action lg:inline"
-                    path={mdiContentCopy}
+                    path={mdiClipboardOutline}
                     size={1}
                   />
                   Copy ShokoID
