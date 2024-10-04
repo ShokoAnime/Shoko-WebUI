@@ -5,16 +5,17 @@ import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
-import { resetFilter, setFilterValues } from '@/core/slices/collection';
+import { resetFilter } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
-function CollectionStats() {
+const Item = (
+  { filter, link, title, value = 0 }: { title: string, value?: string | number, link?: string, filter?: string },
+) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const handleMissingFilter = useEventCallback((filterName: string) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore(filterName).then(() => {
@@ -22,9 +23,8 @@ function CollectionStats() {
     }).catch(console.error);
   });
 
-  const Item = (
-    { link, title, value = 0, filter }: { title: string, value?: string | number, link?: string, filter?: string },
-  ) => (
+  return (
+    /* eslint-disable no-nested-ternary */
     <div className="flex">
       <div className="grow">
         {title}
@@ -42,8 +42,11 @@ function CollectionStats() {
         )
         : <div>{value}</div>}
     </div>
+    /* eslint-enable no-nested-ternary */
   );
+};
 
+function CollectionStats() {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const statsQuery = useDashbordStatsQuery();
