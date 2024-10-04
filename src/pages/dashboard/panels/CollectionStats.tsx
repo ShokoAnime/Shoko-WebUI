@@ -1,25 +1,41 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useNavigate } from 'react-router-dom';
 import prettyBytes from 'pretty-bytes';
 
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useDashbordStatsQuery } from '@/core/react-query/dashboard/queries';
+import { resetFilter, setFilterValues } from '@/core/slices/collection';
+import { addFilterCriteriaToStore } from '@/core/utilities/filter';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
 
-const Item = (
-  { link, title, value = 0 }: { title: string, value?: string | number, link?: string },
-) => (
-  <div className="flex">
-    <div className="grow">
-      {title}
-    </div>
-    {link ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link> : <div>{value}</div>}
-  </div>
-);
 
 function CollectionStats() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleMissingFilter = useEventCallback((filterName: string) => {
+    dispatch(resetFilter());
+    addFilterCriteriaToStore(filterName).then(() => {
+      navigate('/webui/collection');
+    }).catch(console.error);
+  });
+
+  const Item = (
+    { link, title, value = 0, click }: { title: string, value?: string | number, link?: string, click?: string },
+  ) => (
+    <div className="flex">
+      <div className="grow">
+        {title}
+      </div>
+      {link ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link>
+        : click ? <div className="cursor-pointer font-semibold text-panel-text-primary" onClick={() => handleMissingFilter(click)}>{value}</div>
+        : <div>{value}</div>}
+    </div>
+  );
+
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
   const statsQuery = useDashbordStatsQuery();
@@ -53,13 +69,24 @@ function CollectionStats() {
   ];
 
   const childrenThird = [
-    <Item key="missing-links" title="Missing TMDB Links" value={statsQuery.data?.SeriesWithMissingLinks} />,
+    <Item
+      key="missing-links"
+      title="Missing TMDB Links"
+      value={statsQuery.data?.SeriesWithMissingLinks}
+      click="MissingTmdbLink"
+    />,
     <Item
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
+      click="HasMissingEpisodesCollecting"
     />,
-    <Item key="missing-episodes" title="Missing Episodes (Total)" value={statsQuery.data?.MissingEpisodes} />,
+    <Item
+      key="missing-episodes"
+      title="Missing Episodes (Total)"
+      value={statsQuery.data?.MissingEpisodes}
+      click="HasMissingEpisodes"
+    />,
   ];
 
   return (
