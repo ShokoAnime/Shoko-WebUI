@@ -24,14 +24,23 @@ function CollectionStats() {
   });
 
   const Item = (
-    { link, title, value = 0, click }: { title: string, value?: string | number, link?: string, click?: string },
+    { link, title, value = 0, filter }: { title: string, value?: string | number, link?: string, filter?: string },
   ) => (
     <div className="flex">
       <div className="grow">
         {title}
       </div>
-      {link ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link>
-        : click ? <div className="cursor-pointer font-semibold text-panel-text-primary" onClick={() => handleMissingFilter(click)}>{value}</div>
+      {link
+        ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link>
+        : filter
+        ? (
+          <div
+            className="cursor-pointer font-semibold text-panel-text-primary"
+            onClick={() => handleMissingFilter(filter)}
+          >
+            {value}
+          </div>
+        )
         : <div>{value}</div>}
     </div>
   );
@@ -73,19 +82,19 @@ function CollectionStats() {
       key="missing-links"
       title="Missing TMDB Links"
       value={statsQuery.data?.SeriesWithMissingLinks}
-      click="MissingTmdbLink"
+      filter="MissingTmdbLink"
     />,
     <Item
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
-      click="HasMissingEpisodesCollecting"
+      filter="HasMissingEpisodesCollecting"
     />,
     <Item
       key="missing-episodes"
       title="Missing Episodes (Total)"
       value={statsQuery.data?.MissingEpisodes}
-      click="HasMissingEpisodes"
+      filter="HasMissingEpisodes"
     />,
   ];
 
