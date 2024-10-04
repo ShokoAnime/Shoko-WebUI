@@ -16,6 +16,7 @@ import cx from 'classnames';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import Button from '@/components/Input/Button';
 import { listItemSize } from '@/components/Collection/constants';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -152,21 +153,18 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
             image={poster}
-            className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-lg drop-shadow-md"
+            className="group h-[13.438rem] w-[9.25rem] shrink-0 rounded-lg drop-shadow-md"
             hidePlaceholderOnHover
             zoomOnHover
           >
             <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-              <div
+              <Button
                 className="pointer-events-auto h-fit"
                 onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
+                tooltip="Edit Series"
               >
-                <Icon
-                  path={mdiPencilCircleOutline}
-                  size="2rem"
-                  className="text-panel-icon"
-                />
-              </div>
+                <Icon path={mdiPencilCircleOutline} size="2rem" />
+              </Button>
             </div>
             {showGroupIndicator && groupCount > 1 && (
               <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">
