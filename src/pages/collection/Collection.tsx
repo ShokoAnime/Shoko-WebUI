@@ -232,7 +232,7 @@ function Collection() {
           className={cx(
             'flex items-start transition-all',
             (!isSeries && showFilterSidebar)
-              ? 'w-[28.84rem] opacity-100 '
+              ? 'w-[28rem] opacity-100 '
               : 'w-0 opacity-0 overflow-hidden ',
           )}
         >

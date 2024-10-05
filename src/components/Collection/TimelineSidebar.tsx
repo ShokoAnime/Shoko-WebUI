@@ -40,7 +40,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
 const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: SeriesType[] }) => (
   <ShokoPanel
     title="Timeline"
-    className="sticky top-24 ml-8 !h-[calc(100vh-18rem)] w-[26.84rem]"
+    className="sticky top-24 ml-6 !h-[calc(100vh-18rem)] w-[26.5rem]"
     contentClassName="gap-y-6"
   >
     {isFetching
