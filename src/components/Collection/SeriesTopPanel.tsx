@@ -28,7 +28,7 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   const handleClick = useEventCallback(() => {
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection');
+      navigate('/webui/collection', { state: { isTagLink: true } });
     }).catch(console.error);
   });
 

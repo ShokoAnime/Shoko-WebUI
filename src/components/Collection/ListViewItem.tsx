@@ -52,9 +52,9 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = useEventCallback(() => {
+    navigate('/webui/collection', { state: { isTagLink: true } });
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection');
     }).catch(console.error);
   });
 
