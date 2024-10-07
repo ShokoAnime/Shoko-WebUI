@@ -102,8 +102,14 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         </BackgroundImagePlaceholderDiv>
       </Link>
       <div>
-        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>
-          <Link to={viewRouteLink()} className="transition-colors hover:text-panel-text-primary">{item.Name}</Link>
+        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold">
+          <Link
+            to={viewRouteLink()}
+            className="transition-colors hover:text-panel-text-primary"
+            title={item.Name}
+          >
+            {item.Name}
+          </Link>
         </p>
         {showEpisodeCount && (
           <p

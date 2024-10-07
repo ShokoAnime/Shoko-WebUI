@@ -189,8 +189,14 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
           </BackgroundImagePlaceholderDiv>
         </Link>
         <div className="flex flex-col gap-y-3">
-          <div className="font-semibold" title={item.Name}>
-            <Link to={viewRouteLink()} className="transition-colors hover:text-panel-text-primary">{item.Name}</Link>
+          <div className="font-semibold">
+            <Link
+              to={viewRouteLink()}
+              className="transition-colors hover:text-panel-text-primary"
+              title={item.Name}
+            >
+              {item.Name}
+            </Link>
           </div>
 
           <div className="flex flex-col gap-y-3">
