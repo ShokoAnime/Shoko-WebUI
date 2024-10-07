@@ -333,6 +333,7 @@ export type PluginRenamerSettingsType = {
   EnabledRenamers: Record<string, boolean>;
   MoveOnImport: boolean;
   RenameOnImport: boolean;
+  AllowRelocationInsideDestinationOnImport: boolean;
   DefaultRenamer: string | null;
 };
 

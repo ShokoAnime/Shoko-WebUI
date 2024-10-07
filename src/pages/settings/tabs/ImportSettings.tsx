@@ -17,17 +17,20 @@ function ImportSettings() {
   } = newSettings.Import;
 
   const {
+    AllowRelocationInsideDestinationOnImport,
     MoveOnImport,
     RenameOnImport,
   } = newSettings.Plugins.Renamer;
 
-  const handleRenamerSettingChange = useEventCallback((type: 'MoveOnImport' | 'RenameOnImport', value: boolean) => {
-    const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
-      ...settings,
-      [type]: value,
-    }));
-    updateSetting('Plugins', 'Renamer', renamerSettings);
-  });
+  const handleRenamerSettingChange = useEventCallback(
+    (type: 'MoveOnImport' | 'RenameOnImport' | 'AllowRelocationInsideDestinationOnImport', value: boolean) => {
+      const renamerSettings = produce(newSettings.Plugins.Renamer, settings => ({
+        ...settings,
+        [type]: value,
+      }));
+      updateSetting('Plugins', 'Renamer', renamerSettings);
+    },
+  );
 
   return (
     <>
@@ -64,6 +67,14 @@ function ImportSettings() {
             id="move-on-import"
             isChecked={MoveOnImport}
             onChange={event => handleRenamerSettingChange('MoveOnImport', event.target.checked)}
+          />
+          <Checkbox
+            justify
+            label="Allow relocation inside destination on import"
+            id="allow-relocation-inside-destination-on-import"
+            isChecked={AllowRelocationInsideDestinationOnImport}
+            onChange={event =>
+              handleRenamerSettingChange('AllowRelocationInsideDestinationOnImport', event.target.checked)}
           />
           <Checkbox
             justify
