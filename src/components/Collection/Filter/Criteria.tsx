@@ -62,11 +62,11 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
 
   useEffect(() => {
     if (parameterExists) {
-      navigate('/webui/collection', { replace: true, state: { isTagLink: false } });
+      navigate('/webui/collection', { replace: true, state: { isFilterLink: false } });
       return;
     }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (!location.state?.isTagLink) setShowModal(true);
+    if (!location.state?.isFilterLink) setShowModal(true);
     // locate/navigate are only used to check/clear the tag link state, adding it to the deps would cause them to loop
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [parameterExists]);

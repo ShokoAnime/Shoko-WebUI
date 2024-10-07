@@ -6,7 +6,7 @@ const Action = (
 ) => (
   <div
     className={cx(
-      'flex flex-row justify-between gap-y-2 cursor-pointer hover:text-panel-text-primary',
+      'flex flex-row justify-between gap-y-2 cursor-pointer hover:text-panel-text-primary transition-colors',
       scroll ? 'mr-4' : '',
     )}
     onClick={onClick}

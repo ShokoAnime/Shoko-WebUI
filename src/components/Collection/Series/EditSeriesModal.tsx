@@ -69,7 +69,7 @@ const EditSeriesModal = () => {
                 className={cx(
                   activeTab === key
                     ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                    : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
                 )}
                 key={key}
                 onClick={() => setActiveTab(key)}

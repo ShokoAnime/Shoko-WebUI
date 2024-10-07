@@ -104,7 +104,7 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
   return (
     <div
       className={cx(
-        'flex flex-row justify-between gap-y-2 cursor-pointer hover:text-panel-text-primary',
+        'flex flex-row justify-between gap-y-2 cursor-pointer hover:text-panel-text-primary transition-colors',
         length > 5 ? 'mr-4' : '',
       )}
       onClick={handleAction}
@@ -138,7 +138,7 @@ function ActionsModal({ onClose, show }: Props) {
                 className={cx(
                   activeTab === key
                     ? 'w-[7.5rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                    : 'w-[7.5rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                    : 'w-[7.5rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
                 )}
                 key={key}
                 onClick={() => setActiveTab(key)}

@@ -18,22 +18,24 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
     : series.AniDB?.Type;
 
   return (
-    <Link to={`/webui/collection/series/${series.IDs.ID}`}>
-      <div className="flex gap-x-3" key={series.IDs.ID}>
+    <div className="flex gap-x-3" key={series.IDs.ID}>
+      <Link to={`/webui/collection/series/${series.IDs.ID}`}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-24 w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
+          className="group h-24 w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
+          overlayOnHover
+          zoomOnHover
         />
-        <div className="flex flex-col font-semibold">
-          <div className="flex gap-y-2">
-            {dayjs(series.AniDB?.AirDate).year()}
-            &nbsp;|&nbsp;
-            <div className="text-panel-text-important">{seriesType}</div>
-          </div>
-          <div className="line-clamp-2">{series.Name}</div>
+      </Link>
+      <div className="flex flex-col font-semibold">
+        <div className="flex gap-y-2">
+          {dayjs(series.AniDB?.AirDate).year()}
+          &nbsp;|&nbsp;
+          <div className="text-panel-text-important">{seriesType}</div>
         </div>
+        <div className="line-clamp-2">{series.Name}</div>
       </div>
-    </Link>
+    </div>
   );
 };
 
