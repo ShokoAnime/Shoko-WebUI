@@ -66,14 +66,14 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
   });
 
   return (
-    <Link to={viewRouteLink()}>
-      <div
-        className="group flex shrink-0 flex-col content-center gap-y-3"
-        style={{ width: '12.938rem' }}
-      >
+    <div
+      className="flex shrink-0 flex-col content-center gap-y-3"
+      style={{ width: '12.938rem' }}
+    >
+      <Link to={viewRouteLink()}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
+          className="group h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >
@@ -100,20 +100,22 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
         </BackgroundImagePlaceholderDiv>
-        <div>
-          <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>{item.Name}</p>
-          {showEpisodeCount && (
-            <p
-              className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
-              title={episodeCount.toString()}
-            >
-              {episodeCount}
-              &nbsp;Episodes
-            </p>
-          )}
-        </div>
+      </Link>
+      <div>
+        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>
+          <Link to={viewRouteLink()} className="transition-colors hover:text-panel-text-primary">{item.Name}</Link>
+        </p>
+        {showEpisodeCount && (
+          <p
+            className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
+            title={episodeCount.toString()}
+          >
+            {episodeCount}
+            &nbsp;Episodes
+          </p>
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 

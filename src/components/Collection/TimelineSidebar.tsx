@@ -31,7 +31,9 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
           &nbsp;|&nbsp;
           <div className="text-panel-text-important">{seriesType}</div>
         </div>
-        <div className="line-clamp-2">{series.Name}</div>
+        <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+          <div className="line-clamp-2 transition-colors hover:text-panel-text-primary">{series.Name}</div>
+        </Link>
       </div>
     </div>
   );
