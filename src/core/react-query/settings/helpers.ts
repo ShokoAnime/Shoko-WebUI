@@ -420,6 +420,7 @@ export const initialSettings: SettingsType = {
       EnabledRenamers: {},
       MoveOnImport: false,
       RenameOnImport: false,
+      AllowRelocationInsideDestinationOnImport: true,
       DefaultRenamer: null,
     },
   },
