@@ -15,7 +15,7 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setFilterTag } from '@/core/slices/collection';
+import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -26,9 +26,10 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = useEventCallback(() => {
+    dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection', { state: { isFilterLink: true } });
+      navigate('/webui/collection');
     }).catch(console.error);
   });
 
@@ -39,10 +40,9 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
         type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
       )}
       onClick={handleClick}
-      tooltip="Filter Tag"
     >
       <Icon path={mdiTagTextOutline} size="1.25rem" />
-      <span className="text-panel-text">{text}</span>
+      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
     </Button>
   );
 });

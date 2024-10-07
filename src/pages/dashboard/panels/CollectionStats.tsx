@@ -24,11 +24,11 @@ const Item = (
   });
 
   return (
-    /* eslint-disable no-nested-ternary */
     <div className="flex">
       <div className="grow">
         {title}
       </div>
+      {/* eslint-disable-next-line no-nested-ternary */}
       {link
         ? <Link to={link} className="font-semibold text-panel-text-primary">{value}</Link>
         : filter
@@ -42,7 +42,6 @@ const Item = (
         )
         : <div>{value}</div>}
     </div>
-    /* eslint-enable no-nested-ternary */
   );
 };
 

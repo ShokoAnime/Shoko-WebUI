@@ -26,7 +26,7 @@ const StarIcon = React.memo(({ handleHover, handleVote, hovered, index }: StarIc
     onMouseEnter={handleHover}
     onClick={handleVote}
   >
-    <Icon path={hovered ? mdiStar : mdiStarOutline} size={1} className="transition-all" />
+    <Icon path={hovered ? mdiStar : mdiStarOutline} size={1} />
   </div>
 ));
 

@@ -1,7 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { mdiLoading } from '@mdi/js';
-import { Icon } from '@mdi/react';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -43,19 +41,10 @@ const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: 
   <ShokoPanel
     title="Timeline"
     className="sticky top-24 ml-6 !h-[calc(100vh-18rem)] w-[26.5rem]"
-    contentClassName="gap-y-6"
+    contentClassName="gap-y-3"
+    isFetching={isFetching}
   >
-    {isFetching
-      ? (
-        <div className="flex grow items-center justify-center text-panel-text-primary">
-          <Icon path={mdiLoading} size={3} spin />
-        </div>
-      )
-      : (
-        <div className="flex flex-col gap-y-3">
-          {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
-        </div>
-      )}
+    {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
   </ShokoPanel>
 );
 

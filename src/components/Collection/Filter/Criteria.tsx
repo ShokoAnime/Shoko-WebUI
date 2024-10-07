@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useLocation, useNavigate } from 'react-router-dom';
 import { mdiCircleEditOutline, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -44,8 +43,6 @@ const ParameterList = ({ expression, value }: { expression: string, value: strin
 
 const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Props) => {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const openModal = useEventCallback(() => {
@@ -61,14 +58,8 @@ const Criteria = ({ criteria, parameterExists, transformedParameter, type }: Pro
   });
 
   useEffect(() => {
-    if (parameterExists) {
-      navigate('/webui/collection', { replace: true, state: { isFilterLink: false } });
-      return;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    if (!location.state?.isFilterLink) setShowModal(true);
-    // locate/navigate are only used to check/clear the tag link state, adding it to the deps would cause them to loop
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (parameterExists) return;
+    setShowModal(true);
   }, [parameterExists]);
 
   const Modal = useMemo(() => getModalComponent(type), [type]);

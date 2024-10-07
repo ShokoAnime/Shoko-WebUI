@@ -20,7 +20,7 @@ import { listItemSize } from '@/components/Collection/constants';
 import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setFilterTag } from '@/core/slices/collection';
+import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
@@ -52,10 +52,10 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const handleClick = useEventCallback(() => {
-    navigate('/webui/collection', { state: { isFilterLink: true } });
-    addFilterCriteriaToStore('HasTag').then(() => {
-      dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-    }).catch(console.error);
+    dispatch(resetFilter());
+    dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
+    addFilterCriteriaToStore('HasTag').catch(console.error);
+    navigate('/webui/collection');
   });
 
   return (
@@ -65,10 +65,9 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
         type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
       )}
       onClick={handleClick}
-      tooltip="Filter Tag"
     >
       <Icon path={mdiTagTextOutline} size="1rem" />
-      <span className="text-panel-text">{text}</span>
+      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
     </Button>
   );
 });
