@@ -318,7 +318,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
 });
 
 const FileSearch = () => {
-  const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.ImportedAt);
+  const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.CreatedAt);
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 250);
   const filesQuery = useFilesInfiniteQuery({
