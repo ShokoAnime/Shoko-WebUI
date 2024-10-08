@@ -159,7 +159,7 @@ function SettingsPage() {
                 to={item.path}
                 className={({ isActive }) => (isActive
                   ? 'w-full text-center bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
-                  : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover')}
+                  : 'w-full text-center py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
                 key={item.path}
               >
                 {item.name}

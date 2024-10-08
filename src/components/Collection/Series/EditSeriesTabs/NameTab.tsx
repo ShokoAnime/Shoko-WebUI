@@ -96,7 +96,7 @@ const NameTab = ({ seriesId }: Props) => {
           <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
             {seriesData?.AniDB?.Titles.map(title => (
               <div
-                className="flex justify-between last:border-none hover:text-panel-text-primary"
+                className="flex justify-between transition-colors last:border-none hover:text-panel-text-primary"
                 key={title.Name + title.Language}
                 onClick={() => setName(title.Name)}
               >

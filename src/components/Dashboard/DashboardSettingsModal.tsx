@@ -113,7 +113,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               className={cx(
                 activeTab === 'widgets'
                   ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
               )}
               key="widgets"
               onClick={() => setActiveTab('widgets')}
@@ -124,7 +124,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
               className={cx(
                 activeTab === 'options'
                   ? 'w-[12rem] text-center bg-panel-menu-item-background p-3 rounded-lg text-panel-menu-item-text cursor-pointer'
-                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer',
+                  : 'w-[12rem] text-center p-3 rounded-lg hover:bg-panel-menu-item-background-hover cursor-pointer transition-colors',
               )}
               key="options"
               onClick={() => setActiveTab('options')}

@@ -11,6 +11,7 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import CleanDescription from '@/components/Collection/CleanDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -33,7 +34,7 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
   });
 
   return (
-    <div
+    <Button
       className={cx(
         'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize h-fit cursor-pointer',
         type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
@@ -41,8 +42,8 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
       onClick={handleClick}
     >
       <Icon path={mdiTagTextOutline} size="1.25rem" />
-      <span className="text-panel-text">{text}</span>
-    </div>
+      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
+    </Button>
   );
 });
 

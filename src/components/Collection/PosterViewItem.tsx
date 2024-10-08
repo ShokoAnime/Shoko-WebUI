@@ -6,6 +6,7 @@ import { Icon } from '@mdi/react';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import Button from '@/components/Input/Button';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
@@ -65,14 +66,14 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
   });
 
   return (
-    <Link to={viewRouteLink()}>
-      <div
-        className="group flex shrink-0 flex-col content-center gap-y-3"
-        style={{ width: '12.938rem' }}
-      >
+    <div
+      className="flex shrink-0 flex-col content-center gap-y-3"
+      style={{ width: '12.938rem' }}
+    >
+      <Link to={viewRouteLink()}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
-          className="h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
+          className="group h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
           hidePlaceholderOnHover
           zoomOnHover
         >
@@ -84,16 +85,13 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
           <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-            <div
+            <Button
               className="pointer-events-auto h-fit"
               onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
+              tooltip="Edit Series"
             >
-              <Icon
-                path={mdiPencilCircleOutline}
-                size="2rem"
-                className="text-panel-icon"
-              />
-            </div>
+              <Icon path={mdiPencilCircleOutline} size="2rem" />
+            </Button>
           </div>
           {showGroupIndicator && !isSeries && groupCount > 1 && (
             <div className="absolute bottom-4 left-3 flex w-[90%] justify-center rounded-lg bg-panel-background-overlay py-2 text-sm font-semibold text-panel-text opacity-100 transition-opacity group-hover:opacity-0">
@@ -102,20 +100,28 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             </div>
           )}
         </BackgroundImagePlaceholderDiv>
-        <div>
-          <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold" title={item.Name}>{item.Name}</p>
-          {showEpisodeCount && (
-            <p
-              className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
-              title={episodeCount.toString()}
-            >
-              {episodeCount}
-              &nbsp;Episodes
-            </p>
-          )}
-        </div>
+      </Link>
+      <div>
+        <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold">
+          <Link
+            to={viewRouteLink()}
+            className="transition-colors hover:text-panel-text-primary"
+            title={item.Name}
+          >
+            {item.Name}
+          </Link>
+        </p>
+        {showEpisodeCount && (
+          <p
+            className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
+            title={episodeCount.toString()}
+          >
+            {episodeCount}
+            &nbsp;Episodes
+          </p>
+        )}
       </div>
-    </Link>
+    </div>
   );
 };
 

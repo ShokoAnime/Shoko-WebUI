@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import {
   mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
@@ -17,11 +17,14 @@ import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import { listItemSize } from '@/components/Collection/constants';
+import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
+import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -45,17 +48,29 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
   return output.join(' | ');
 };
 
-const SeriesTag = ({ text, type }: { text: string, type: 'AniDB' | 'User' }) => (
-  <div
-    className={cx(
-      'text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize',
-      type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
-    )}
-  >
-    <Icon path={mdiTagTextOutline} size="1rem" />
-    <span className="text-panel-text">{text}</span>
-  </div>
-);
+const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const handleClick = useEventCallback(() => {
+    dispatch(resetFilter());
+    dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
+    addFilterCriteriaToStore('HasTag').catch(console.error);
+    navigate('/webui/collection');
+  });
+
+  return (
+    <Button
+      className={cx(
+        'pointer-events-auto text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize cursor-pointer',
+        type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
+      )}
+      onClick={handleClick}
+    >
+      <Icon path={mdiTagTextOutline} size="1rem" />
+      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
+    </Button>
+  );
+});
 
 type Props = {
   item: CollectionGroupType | SeriesType;
@@ -152,21 +167,18 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
         <Link to={viewRouteLink()}>
           <BackgroundImagePlaceholderDiv
             image={poster}
-            className="group h-[12.5625rem] w-[8.625rem] shrink-0 rounded-lg drop-shadow-md"
+            className="group h-[13.438rem] w-[9.25rem] shrink-0 rounded-lg drop-shadow-md"
             hidePlaceholderOnHover
             zoomOnHover
           >
             <div className="pointer-events-none z-10 flex h-full bg-panel-background-poster-overlay p-3 opacity-0 transition-opacity group-hover:pointer-events-auto group-hover:opacity-100">
-              <div
+              <Button
                 className="pointer-events-auto h-fit"
                 onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
+                tooltip="Edit Series"
               >
-                <Icon
-                  path={mdiPencilCircleOutline}
-                  size="2rem"
-                  className="text-panel-icon"
-                />
-              </div>
+                <Icon path={mdiPencilCircleOutline} size="2rem" />
+              </Button>
             </div>
             {showGroupIndicator && groupCount > 1 && (
               <div className="absolute bottom-0 left-0 flex w-full justify-center rounded-bl-md bg-panel-background-overlay py-1.5 text-sm font-semibold opacity-100 transition-opacity group-hover:opacity-0">
@@ -177,7 +189,15 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
           </BackgroundImagePlaceholderDiv>
         </Link>
         <div className="flex flex-col gap-y-3">
-          <div className="font-semibold" title={item.Name}>{item.Name}</div>
+          <div className="font-semibold">
+            <Link
+              to={viewRouteLink()}
+              className="transition-colors hover:text-panel-text-primary"
+              title={item.Name}
+            >
+              {item.Name}
+            </Link>
+          </div>
 
           <div className="flex flex-col gap-y-3">
             <div className="flex flex-nowrap items-center gap-x-3">
