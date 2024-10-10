@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { mdiLoading, mdiMagnify } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -9,6 +10,8 @@ import { useDebounceValue } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
+import { resetActiveFilter } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
 
@@ -32,16 +35,28 @@ const TabButton = (
   );
 };
 
-const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => (
-  <div
-    // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
-    className={cx('flex justify-between pb-1 pr-4 font-semibold', item.Size === 0 && 'pointer-events-none opacity-65')}
-    key={item.IDs.ID}
-  >
-    <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={onClose}>{item.Name}</Link>
-    <span className="text-panel-text-important">{item.Size}</span>
-  </div>
-);
+const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => {
+  const dispatch = useDispatch();
+
+  const handleClose = useEventCallback(() => {
+    dispatch(resetActiveFilter());
+    onClose();
+  });
+
+  return (
+    <div
+      // TODO: Disable selecting empty filter presets for now. Remove the disable condition once editing presets is possible
+      className={cx(
+        'flex justify-between pb-1 pr-4 font-semibold',
+        item.Size === 0 && 'pointer-events-none opacity-65',
+      )}
+      key={item.IDs.ID}
+    >
+      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
+      <span className="text-panel-text-important">{item.Size}</span>
+    </div>
+  );
+};
 
 const SidePanel = (
   props: { activeFilter: number, activeTab: string, filterId: number, onClose: () => void, title: string },
