@@ -83,7 +83,7 @@ const FilterSidebar = () => {
         className="px-4 py-3"
         onClick={handleResetFilter}
       >
-        Clear filter
+        Clear Filter
       </Button>
       <AddCriteriaModal show={criteriaModal} onClose={showCriteriaModal(false)} />
     </ShokoPanel>

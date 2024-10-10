@@ -13,7 +13,10 @@ type Props = {
 
 const CollectionTitle = memo(({ count, filterActive, filterOrGroup, searchQuery }: Props) => (
   <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">
-    <Link to="/webui/collection" className={cx(filterOrGroup ? 'text-panel-text-primary' : 'pointer-events-none')}>
+    <Link
+      to="/webui/collection"
+      className={cx((filterOrGroup ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none')}
+    >
       Collection
     </Link>
     {filterOrGroup && (
