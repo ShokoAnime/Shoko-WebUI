@@ -58,7 +58,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     const [season, year] = overview.FirstAirSeason.split(' ');
     addFilterCriteriaToStore('InSeason').then(() => {
       dispatch(setFilterValues({ InSeason: [`${year}: ${season}`] }));
-      navigate('/webui/collection');
+      navigate('/webui/collection/filter/live');
     }).catch(console.error);
   });
 
