@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -88,7 +88,6 @@ function Collection() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const groupSearch = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
@@ -105,7 +104,7 @@ function Collection() {
 
   const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const activeFilter = useMemo(() => {
-    if (filterId !== 'live') return undefined;
+    if (!filterId) return undefined;
     return activeFilterFromStore;
   }, [activeFilterFromStore, filterId]);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && filterId !== 'live');
@@ -121,7 +120,7 @@ function Collection() {
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && location.pathname !== '/webui/collection/filter/live') {
+    if (!showFilterSidebar && !filterId) {
       dispatch(resetFilter());
       navigate('/webui/collection/filter/live');
     }
@@ -129,7 +128,7 @@ function Collection() {
   });
 
   useEffect(() => {
-    if (filterId !== 'live' && showFilterSidebar) toggleFilterSidebar();
+    if (!filterId && showFilterSidebar) toggleFilterSidebar();
   }, [filterId, showFilterSidebar, toggleFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
