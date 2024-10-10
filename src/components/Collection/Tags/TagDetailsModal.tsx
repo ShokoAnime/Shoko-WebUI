@@ -18,7 +18,7 @@ const SeriesLink = React.memo(({ extraPadding, series }: { series: SeriesType, e
   <Link
     to={`/webui/collection/series/${series.IDs.ID}`}
     className={cx(
-      'flex justify-between align-middle hover:text-panel-text-primary',
+      'flex justify-between align-middle hover:text-panel-text-primary transition-colors',
       extraPadding && ('pr-4'),
     )}
   >

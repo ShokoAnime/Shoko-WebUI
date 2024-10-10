@@ -106,7 +106,8 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
           <Link
             to={viewRouteLink()}
             className="transition-colors hover:text-panel-text-primary"
-            title={item.Name}
+            data-tooltip-id="tooltip"
+            data-tooltip-content={item.Name}
           >
             {item.Name}
           </Link>
@@ -114,7 +115,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
         {showEpisodeCount && (
           <p
             className="line-clamp-1 text-ellipsis text-center text-sm font-semibold opacity-65"
-            title={episodeCount.toString()}
+            title={`${episodeCount.toString()} Episodes`}
           >
             {episodeCount}
             &nbsp;Episodes

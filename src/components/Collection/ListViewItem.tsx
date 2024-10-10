@@ -55,7 +55,7 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
     dispatch(resetFilter());
     dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
     addFilterCriteriaToStore('HasTag').catch(console.error);
-    navigate('/webui/collection');
+    navigate('/webui/collection/filter/live');
   });
 
   return (
@@ -193,7 +193,8 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
             <Link
               to={viewRouteLink()}
               className="transition-colors hover:text-panel-text-primary"
-              title={item.Name}
+              data-tooltip-id="tooltip"
+              data-tooltip-content={item.Name}
             >
               {item.Name}
             </Link>

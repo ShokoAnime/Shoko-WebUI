@@ -29,7 +29,7 @@ const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'An
     dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection');
+      navigate('/webui/collection/filter/live');
     }).catch(console.error);
   });
 
