@@ -37,10 +37,9 @@ const TabButton = (
 
 const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => void }) => {
   const dispatch = useDispatch();
-  const clearFilter = useEventCallback(() => dispatch(resetActiveFilter()));
 
   const handleClose = useEventCallback(() => {
-    clearFilter();
+    dispatch(resetActiveFilter());
     onClose();
   });
 
