@@ -19,7 +19,7 @@ const Item = (
   const handleMissingFilter = useEventCallback((filterName: string) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore(filterName).then(() => {
-      navigate('/webui/collection');
+      navigate('/webui/collection/filter/live');
     }).catch(console.error);
   });
 

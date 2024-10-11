@@ -35,7 +35,8 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
           <Link
             to={`/webui/collection/series/${series.IDs.ID}`}
             className="transition-colors hover:text-panel-text-primary"
-            title={series.Name}
+            data-tooltip-id="tooltip"
+            data-tooltip-content={series.Name}
           >
             {series.Name}
           </Link>
