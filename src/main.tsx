@@ -9,7 +9,7 @@ import './css/main.css';
 
 if (!isDebug()) {
   Sentry.init({
-    dsn: 'https://f607489ccc764d73aeaed81ab2c97c04@o330862.ingest.sentry.io/1851857',
+    dsn: 'https://3f1973bb1fd51855c342e5838a6d620f@o330862.ingest.us.sentry.io/1851857',
     environment: 'production',
     release: `shoko-webui@${uiVersion()}`,
     integrations: [
