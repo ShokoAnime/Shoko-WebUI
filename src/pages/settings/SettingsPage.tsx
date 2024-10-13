@@ -40,7 +40,7 @@ function SettingsPage() {
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
-  const { mutate: patchSettings } = usePatchSettingsMutation();
+  const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
   const [newSettings, setNewSettings] = useState(settings);
 
@@ -193,6 +193,7 @@ function SettingsPage() {
                     onClick={validateAndPatchSettings}
                     buttonType="primary"
                     buttonSize="normal"
+                    loading={settingsPatchPending}
                     disabled={!unsavedChanges}
                   >
                     Save
