@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -83,8 +83,10 @@ const getFilter = (
 };
 
 function Collection() {
+  const { pathname } = useLocation();
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
+  const isLiveFilter = useMemo(() => pathname.endsWith('/live'), [pathname]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -104,10 +106,10 @@ function Collection() {
 
   const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const activeFilter = useMemo(() => {
-    if (!filterId) return undefined;
+    if (!isLiveFilter) return undefined;
     return activeFilterFromStore;
-  }, [activeFilterFromStore, filterId]);
-  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && filterId !== 'live');
+  }, [activeFilterFromStore, isLiveFilter]);
+  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && !isLiveFilter);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
   const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
@@ -120,16 +122,17 @@ function Collection() {
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && !filterId) {
+    if (!showFilterSidebar && !isLiveFilter) {
       dispatch(resetFilter());
-      navigate('/webui/collection/filter/live');
+      if (!groupId) navigate('/webui/collection/filter/live');
+      else navigate(`/webui/collection/group/${groupId}/live`);
     }
     toggleFilterSidebar();
   });
 
   useEffect(() => {
-    if (!filterId && showFilterSidebar) toggleFilterSidebar();
-  }, [filterId, showFilterSidebar, toggleFilterSidebar]);
+    if (!filterId && !groupId && showFilterSidebar) toggleFilterSidebar();
+  }, [filterId, groupId, showFilterSidebar, toggleFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
@@ -147,7 +150,7 @@ function Collection() {
         filterQuery.data?.Sorting,
       ),
     },
-    !isSeries && (!filterId || filterId === 'live' || (!!filterId && filterQuery.isSuccess)),
+    !isSeries && (!filterId || isLiveFilter || (!!filterId && filterQuery.isSuccess)),
   );
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(() => {
@@ -250,15 +253,18 @@ function Collection() {
         />
         <div
           className={cx(
-            'flex items-start transition-all',
-            (!isSeries && showFilterSidebar)
+            'flex items-start',
+            !isSeries && 'transition-all',
+            showFilterSidebar
               ? 'w-[28rem] opacity-100'
               : 'w-0 opacity-0 overflow-hidden ',
           )}
         >
           <FilterSidebar />
         </div>
-        {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
+        {isSeries && !showFilterSidebar && (
+          <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />
+        )}
       </div>
       <EditSeriesModal />
       <EditGroupModal />
