@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
@@ -37,7 +37,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     groupCount = reduce((item as CollectionGroupType).Sizes.SeriesTypes, (count, value) => count + value, 0);
   }
 
-  const viewRouteLink = () => {
+  const routeLink = useMemo(() => {
     let link = '/webui/collection/';
 
     if (isSeries) {
@@ -49,7 +49,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     }
 
     return link;
-  };
+  }, [isSeries, item]);
 
   const dispatch = useDispatch();
 
@@ -70,7 +70,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
       className="flex shrink-0 flex-col content-center gap-y-3"
       style={{ width: '12.938rem' }}
     >
-      <Link to={viewRouteLink()}>
+      <Link to={routeLink}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
           className="group h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
@@ -104,7 +104,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
       <div>
         <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold">
           <Link
-            to={viewRouteLink()}
+            to={routeLink}
             className="transition-colors hover:text-panel-text-primary"
             data-tooltip-id="tooltip"
             data-tooltip-content={item.Name}

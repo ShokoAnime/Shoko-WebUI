@@ -1,51 +1,18 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
-import { mdiTagTextOutline } from '@mdi/js';
-import { Icon } from '@mdi/react';
-import cx from 'classnames';
 import { toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CleanDescription from '@/components/Collection/CleanDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
-import Button from '@/components/Input/Button';
+import TagButton from '@/components/Collection/TagButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { resetFilter, setFilterTag } from '@/core/slices/collection';
-import { addFilterCriteriaToStore } from '@/core/utilities/filter';
-import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
-
-const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const handleClick = useEventCallback(() => {
-    dispatch(resetFilter());
-    addFilterCriteriaToStore('HasTag').then(() => {
-      dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection/filter/live');
-    }).catch(console.error);
-  });
-
-  return (
-    <Button
-      className={cx(
-        'text-sm font-semibold flex gap-x-3 items-center border-2 border-panel-tags rounded-lg py-2 px-3 whitespace-nowrap capitalize h-fit cursor-pointer',
-        type === 'User' ? 'text-panel-icon-important' : 'text-panel-icon-action',
-      )}
-      onClick={handleClick}
-    >
-      <Icon path={mdiTagTextOutline} size="1.25rem" />
-      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
-    </Button>
-  );
-});
 
 const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
   const { seriesId } = useParams();
@@ -113,7 +80,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
           transparent
         >
           {tags.slice(0, 10)
-            .map(tag => <SeriesTag key={tag.ID} text={tag.Name} type={tag.Source} />)}
+            .map(tag => <TagButton key={tag.ID} text={tag.Name} tagType={tag.Source} type="Series" />)}
         </ShokoPanel>
 
         <ShokoPanel

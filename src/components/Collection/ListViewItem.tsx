@@ -1,13 +1,12 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   mdiAlertCircleOutline,
   mdiCalendarMonthOutline,
   mdiEyeOutline,
   mdiFileDocumentMultipleOutline,
   mdiPencilCircleOutline,
-  mdiTagTextOutline,
   mdiTelevision,
   mdiTelevisionAmbientLight,
 } from '@mdi/js';
@@ -16,15 +15,14 @@ import cx from 'classnames';
 import { reduce } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
+import TagButton from '@/components/Collection/TagButton';
 import { listItemSize } from '@/components/Collection/constants';
 import Button from '@/components/Input/Button';
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { setGroupId } from '@/core/slices/modals/editGroup';
 import { setSeriesId } from '@/core/slices/modals/editSeries';
 import { dayjs, formatThousand } from '@/core/util';
-import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 import useMainPoster from '@/hooks/useMainPoster';
 
@@ -47,30 +45,6 @@ const renderFileSources = (sources: SeriesSizesFileSourcesType): string => {
 
   return output.join(' | ');
 };
-
-const SeriesTag = React.memo(({ text, type }: { text: string, type: 'User' | 'AniDB' }) => {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const handleClick = useEventCallback(() => {
-    dispatch(resetFilter());
-    dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-    addFilterCriteriaToStore('HasTag').catch(console.error);
-    navigate('/webui/collection/filter/live');
-  });
-
-  return (
-    <Button
-      className={cx(
-        'pointer-events-auto text-xs font-semibold flex gap-x-2 items-center border-2 border-panel-tags rounded-lg p-2 whitespace-nowrap capitalize cursor-pointer',
-        type === 'User' ? 'text-panel-text-important' : 'text-panel-text-primary',
-      )}
-      onClick={handleClick}
-    >
-      <Icon path={mdiTagTextOutline} size="1rem" />
-      <span className="text-panel-text transition-colors hover:text-panel-text-primary">{text}</span>
-    </Button>
-  );
-});
 
 type Props = {
   item: CollectionGroupType | SeriesType;
@@ -117,7 +91,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
     ];
   }, [isSeries, item, groupExtras?.AirDate, groupExtras?.EndDate]);
 
-  const viewRouteLink = () => {
+  const routeLink = useMemo(() => {
     let link = '/webui/collection/';
 
     if (isSeries) {
@@ -129,7 +103,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
     }
 
     return link;
-  };
+  }, [isSeries, item]);
 
   const tags = useMemo(
     () => {
@@ -164,7 +138,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
       }}
     >
       <div className="flex gap-x-3">
-        <Link to={viewRouteLink()}>
+        <Link to={routeLink}>
           <BackgroundImagePlaceholderDiv
             image={poster}
             className="group h-[13.438rem] w-[9.25rem] shrink-0 rounded-lg drop-shadow-md"
@@ -191,7 +165,7 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
         <div className="flex flex-col gap-y-3">
           <div className="font-semibold">
             <Link
-              to={viewRouteLink()}
+              to={routeLink}
               className="transition-colors hover:text-panel-text-primary"
               data-tooltip-id="tooltip"
               data-tooltip-content={item.Name}
@@ -305,7 +279,9 @@ const ListViewItem = ({ groupExtras, isSeries, isSidebarOpen, item }: Props) => 
       </div>
       {tags.length > 0 && (
         <div className="flex h-9 flex-wrap items-start gap-x-2 overflow-hidden">
-          {tags.map(tag => <SeriesTag key={`${groupExtras?.ID}-${tag.Name}`} text={tag.Name} type={tag.Source} />)
+          {tags.map(tag => (
+            <TagButton key={`${groupExtras?.ID}-${tag.Name}`} text={tag.Name} tagType={tag.Source} type="Collection" />
+          ))
             ?? ''}
         </div>
       )}
