@@ -43,7 +43,7 @@ function UserManagementSettings() {
   const currentUserQuery = useCurrentUserQuery();
   const usersQuery = useUsersQuery();
   const users = useMemo(() => usersQuery.data ?? [], [usersQuery.data]);
-  const { mutate: editUser } = usePutUserMutation();
+  const { isPending: editUserPending, mutate: editUser } = usePutUserMutation();
   const { mutate: deleteUser } = useDeleteUserMutation();
   const { isPending: isChangePasswordPending, mutate: changePassword } = useChangePasswordMutation();
   const [selectedUser, setSelectedUser] = useImmer(initialUser);
@@ -59,10 +59,18 @@ function UserManagementSettings() {
     if (users.length > 0) setSelectedUser(users[0]);
   }, [users, setSelectedUser]);
 
+  const unsavedChanges = useMemo(
+    () => {
+      if (!selectedUser.ID) return false;
+      const user = find(users, tempUser => tempUser.ID === selectedUser.ID);
+      return !isEqual(selectedUser, user);
+    },
+    [selectedUser, users],
+  );
+
   useEffect(() => {
-    if (isEqual(selectedUser, initialUser)) return;
-    const user = find(users, tempUser => tempUser.ID === selectedUser.ID);
-    if (isEqual(selectedUser, user)) {
+    if (!selectedUser.ID) return;
+    if (!unsavedChanges) {
       toast.dismiss('unsaved');
     } else {
       toast.info(
@@ -71,7 +79,7 @@ function UserManagementSettings() {
         { autoClose: false, position: 'top-right', toastId: 'unsaved' },
       );
     }
-  }, [selectedUser, users]);
+  }, [selectedUser, unsavedChanges]);
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = event.target;
@@ -374,7 +382,15 @@ function UserManagementSettings() {
 
       <div className="flex justify-end gap-x-3 font-semibold">
         <Button onClick={() => handleCancel()} buttonType="secondary" buttonSize="normal">Cancel</Button>
-        <Button onClick={() => editUser(selectedUser)} buttonType="primary" buttonSize="normal">Save</Button>
+        <Button
+          onClick={() => editUser(selectedUser)}
+          buttonType="primary"
+          buttonSize="normal"
+          disabled={!unsavedChanges}
+          loading={editUserPending}
+        >
+          Save
+        </Button>
       </div>
 
       <AvatarEditorModal
