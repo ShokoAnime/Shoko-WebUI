@@ -1,56 +1,88 @@
-import React, { memo } from 'react';
+import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
+import { resetFilter } from '@/core/slices/collection';
+import useEventCallback from '@/hooks/useEventCallback';
+
 type Props = {
   count: number;
   filterActive: boolean;
-  filterOrGroup?: string;
+  filterName?: string;
+  groupName?: string;
   searchQuery: string;
 };
 
-const CollectionTitle = memo(({ count, filterActive, filterOrGroup, searchQuery }: Props) => (
-  <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">
-    <Link
-      to="/webui/collection"
-      className={cx((filterOrGroup ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none')}
-    >
-      Collection
-    </Link>
-    {filterOrGroup && (
-      <>
-        <Icon className="flex-none" path={mdiChevronRight} size={1} />
-        <span className="truncate">
-          {filterOrGroup}
-        </span>
-      </>
-    )}
-    {filterActive && (
-      <>
-        <Icon className="flex-none" path={mdiChevronRight} size={1} />
-        Filtered
-      </>
-    )}
-    {searchQuery && (
-      <>
-        <Icon className="flex-none" path={mdiChevronRight} size={1} />
-        <span className="flex-none">
-          Search Results
-        </span>
-      </>
-    )}
-    {count >= 0 && (
-      <>
-        <span>|</span>
-        <span className="flex-none text-panel-text-important">
-          {`${count} Items`}
-          &nbsp;
-        </span>
-      </>
-    )}
-  </div>
-));
+const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName, searchQuery }: Props) => {
+  const { groupId } = useParams();
+  const dispatch = useDispatch();
+
+  const handlFilterReset = useEventCallback(() => {
+    dispatch(resetFilter());
+  });
+
+  return (
+    <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">
+      <Link
+        to="/webui/collection"
+        className={cx((filterName ?? groupName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none')}
+      >
+        Collection
+      </Link>
+      {groupName && (
+        <>
+          <Icon className="flex-none" path={mdiChevronRight} size={1} />
+          <Link
+            to={`/webui/collection/group/${groupId}`}
+            className={cx(
+              (filterName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none',
+              'truncate',
+            )}
+          >
+            {groupName}
+          </Link>
+        </>
+      )}
+      {filterName && (
+        <>
+          <Icon className="flex-none" path={mdiChevronRight} size={1} />
+          <span
+            className={cx('truncate', filterActive && 'text-panel-text-primary cursor-pointer')}
+            onClick={handlFilterReset}
+          >
+            {filterName}
+          </span>
+        </>
+      )}
+      {filterActive && (
+        <>
+          <Icon className="flex-none" path={mdiChevronRight} size={1} />
+          Filtered
+        </>
+      )}
+      {searchQuery && (
+        <>
+          <Icon className="flex-none" path={mdiChevronRight} size={1} />
+          <span className="flex-none">
+            Search Results
+          </span>
+        </>
+      )}
+      {count >= 0 && (
+        <>
+          <span>|</span>
+          <span className="flex-none text-panel-text-important">
+            {`${count} ${count === 1 ? 'Item' : 'Items'}`}
+            &nbsp;
+          </span>
+        </>
+      )}
+    </div>
+  );
+});
 
 export default CollectionTitle;

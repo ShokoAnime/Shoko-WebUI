@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -83,8 +83,10 @@ const getFilter = (
 };
 
 function Collection() {
+  const { pathname } = useLocation();
   const { filterId, groupId } = useParams();
   const isSeries = useMemo(() => !!groupId, [groupId]);
+  const isLiveFilter = useMemo(() => pathname.endsWith('/live'), [pathname]);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -107,9 +109,8 @@ function Collection() {
     if (!filterId) return undefined;
     return activeFilterFromStore;
   }, [activeFilterFromStore, filterId]);
-  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && filterId !== 'live');
+  const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && !isLiveFilter);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
-  const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
   const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
@@ -122,7 +123,7 @@ function Collection() {
   const handleFilterSidebarToggle = useEventCallback(() => {
     if (!showFilterSidebar && !filterId) {
       dispatch(resetFilter());
-      navigate('/webui/collection/filter/live');
+      navigate('filter/live');
     }
     toggleFilterSidebar();
   });
@@ -147,7 +148,7 @@ function Collection() {
         filterQuery.data?.Sorting,
       ),
     },
-    !isSeries && (!filterId || filterId === 'live' || (!!filterId && filterQuery.isSuccess)),
+    !isSeries && (!filterId || isLiveFilter || (!!filterId && filterQuery.isSuccess)),
   );
   const [groups, groupsTotal] = useFlattenListResult(groupsQuery.data);
   const lastPageIds = useMemo(() => {
@@ -222,7 +223,8 @@ function Collection() {
         <CollectionTitle
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
-          filterOrGroup={subsectionName}
+          filterName={filterQuery?.data?.Name}
+          groupName={groupQuery?.data?.Name}
           filterActive={!!activeFilter}
           searchQuery={isSeries ? seriesSearch : groupSearch}
         />
@@ -250,15 +252,18 @@ function Collection() {
         />
         <div
           className={cx(
-            'flex items-start transition-all',
-            (!isSeries && showFilterSidebar)
+            'flex items-start',
+            !isSeries && 'transition-all',
+            showFilterSidebar
               ? 'w-[28rem] opacity-100'
               : 'w-0 opacity-0 overflow-hidden ',
           )}
         >
           <FilterSidebar />
         </div>
-        {isSeries && <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />}
+        {isSeries && !showFilterSidebar && (
+          <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />
+        )}
       </div>
       <EditSeriesModal />
       <EditGroupModal />

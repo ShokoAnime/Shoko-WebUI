@@ -68,12 +68,8 @@ const TitleOptions = (props: Props) => {
           value={isSeries ? seriesSearch : groupSearch}
           onChange={event => setSearch(event.target.value)}
         />
-        {!isSeries && (
-          <>
-            <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />
-            <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
-          </>
-        )}
+        {!isSeries && <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />}
+        <OptionButton onClick={toggleFilterSidebar} icon={mdiFilterOutline} tooltip="Filter" />
         <OptionButton
           onClick={toggleMode}
           icon={mode === 'poster' ? mdiFormatListText : mdiViewGridOutline}

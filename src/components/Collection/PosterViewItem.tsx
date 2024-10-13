@@ -1,5 +1,4 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { mdiCheckboxMarkedCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
@@ -8,9 +7,9 @@ import { reduce } from 'lodash';
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
-import { setGroupId } from '@/core/slices/modals/editGroup';
-import { setSeriesId } from '@/core/slices/modals/editSeries';
-import useEventCallback from '@/hooks/useEventCallback';
+import useEditGroupCallback from '@/hooks/collection/useEditGroupCallback';
+import useEditSeriesCallback from '@/hooks/collection/useEditSeriesCallback';
+import useRouteLink from '@/hooks/collection/useRouteLink';
 import useMainPoster from '@/hooks/useMainPoster';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
@@ -37,40 +36,16 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     groupCount = reduce((item as CollectionGroupType).Sizes.SeriesTypes, (count, value) => count + value, 0);
   }
 
-  const viewRouteLink = () => {
-    let link = '/webui/collection/';
-
-    if (isSeries) {
-      link += `series/${item.IDs.ID}`;
-    } else if (item.Size === 1) {
-      link += `series/${(item as CollectionGroupType).IDs.MainSeries}`;
-    } else {
-      link += `group/${item.IDs.ID}`;
-    }
-
-    return link;
-  };
-
-  const dispatch = useDispatch();
-
-  const editSeriesModalCallback = useEventCallback((event: React.MouseEvent) => {
-    event.stopPropagation();
-    event.preventDefault();
-    dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
-  });
-
-  const editGroupModalCallback = useEventCallback((event: React.MouseEvent) => {
-    event.stopPropagation();
-    event.preventDefault();
-    dispatch(setGroupId(item.IDs.ParentGroup ?? item.IDs.TopLevelGroup));
-  });
+  const routeLink = useRouteLink(item);
+  const editSeriesModalCallback = useEditSeriesCallback(item);
+  const editGroupModalCallback = useEditGroupCallback(item);
 
   return (
     <div
       className="flex shrink-0 flex-col content-center gap-y-3"
       style={{ width: '12.938rem' }}
     >
-      <Link to={viewRouteLink()}>
+      <Link to={routeLink}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
           className="group h-[19rem] rounded-lg border border-panel-border drop-shadow-md"
@@ -104,7 +79,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
       <div>
         <p className="line-clamp-1 text-ellipsis text-center text-sm font-semibold">
           <Link
-            to={viewRouteLink()}
+            to={routeLink}
             className="transition-colors hover:text-panel-text-primary"
             data-tooltip-id="tooltip"
             data-tooltip-content={item.Name}

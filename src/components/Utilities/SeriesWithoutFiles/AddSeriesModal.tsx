@@ -90,7 +90,7 @@ const AddSeriesModal = ({ onClose, show }: Props) => {
                       onClick={() => createSeries(result.ID)}
                     >
                       <div className="line-clamp-1">{result.Title}</div>
-                      {result.ID === refreshParams?.anidbID
+                      {(result.ID === refreshParams?.anidbID && isRefreshPending)
                         ? (
                           <div className="text-panel-text-primary">
                             <Icon path={mdiLoading} size={0.833} spin />
