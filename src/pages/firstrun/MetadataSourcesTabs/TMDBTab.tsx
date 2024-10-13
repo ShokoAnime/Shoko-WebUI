@@ -3,7 +3,7 @@ import React from 'react';
 import TMDBDownloadSettings from '@/components/Settings/MetadataSitesSettings/TMDBDownloadSettings';
 import TMDBSettings from '@/components/Settings/MetadataSitesSettings/TMDBSettings';
 import TransitionDiv from '@/components/TransitionDiv';
-import useFirstRunSettingsContext from '@/hooks/UseFirstRunSettingsContext';
+import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
 function TMDBTab() {
   const { newSettings, setNewSettings, updateSetting } = useFirstRunSettingsContext();
