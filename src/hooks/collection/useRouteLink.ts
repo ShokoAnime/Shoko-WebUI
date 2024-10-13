@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useParams } from 'react-router';
 
 import type { CollectionGroupType } from '@/core/types/api/collection';
 import type { SeriesType } from '@/core/types/api/series';
 
-const useRouteLink = (isSeries: boolean, item: CollectionGroupType | SeriesType) => {
-  const { pathname } = useLocation();
+const useRouteLink = (item: CollectionGroupType | SeriesType) => {
+  const { filterId, groupId } = useParams();
 
   return useMemo(() => {
     let link = '/webui/collection';
 
-    if (isSeries) {
+    if (groupId) {
       return `${link}/series/${item.IDs.ID}`;
     }
 
@@ -20,12 +20,12 @@ const useRouteLink = (isSeries: boolean, item: CollectionGroupType | SeriesType)
 
     link += `/group/${item.IDs.ID}`;
 
-    if (pathname.endsWith('/live')) {
-      return `${link}/live`;
+    if (filterId) {
+      return `${link}/filter/${filterId}`;
     }
 
     return link;
-  }, [isSeries, item, pathname]);
+  }, [filterId, groupId, item]);
 };
 
 export default useRouteLink;

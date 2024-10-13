@@ -101,7 +101,7 @@ const ListViewItem = ({ groupExtras, isSeries = false, isSidebarOpen, item }: Pr
     [isSeries, groupExtras?.Tags, tagsQuery.data, showCustomTags, showTopTags],
   );
 
-  const routeLink = useRouteLink(isSeries, item);
+  const routeLink = useRouteLink(item);
   const editSeriesModalCallback = useEditSeriesCallback(item);
   const editGroupModalCallback = useEditGroupCallback(item);
 

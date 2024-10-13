@@ -10,7 +10,7 @@ import { useDebounceValue } from 'usehooks-ts';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { useFiltersQuery, useSubFiltersQuery } from '@/core/react-query/filter/queries';
-import { resetActiveFilter } from '@/core/slices/collection';
+import { resetFilter } from '@/core/slices/collection';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { CollectionFilterType } from '@/core/types/api/collection';
@@ -39,7 +39,7 @@ const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => vo
   const dispatch = useDispatch();
 
   const handleClose = useEventCallback(() => {
-    dispatch(resetActiveFilter());
+    dispatch(resetFilter());
     onClose();
   });
 

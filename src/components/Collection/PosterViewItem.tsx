@@ -36,7 +36,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
     groupCount = reduce((item as CollectionGroupType).Sizes.SeriesTypes, (count, value) => count + value, 0);
   }
 
-  const routeLink = useRouteLink(isSeries, item);
+  const routeLink = useRouteLink(item);
   const editSeriesModalCallback = useEditSeriesCallback(item);
   const editGroupModalCallback = useEditGroupCallback(item);
 

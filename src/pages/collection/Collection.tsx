@@ -106,12 +106,11 @@ function Collection() {
 
   const activeFilterFromStore = useSelector((state: RootState) => state.collection.activeFilter) as FilterCondition;
   const activeFilter = useMemo(() => {
-    if (!isLiveFilter) return undefined;
+    if (!filterId) return undefined;
     return activeFilterFromStore;
-  }, [activeFilterFromStore, isLiveFilter]);
+  }, [activeFilterFromStore, filterId]);
   const filterQuery = useFilterQuery(toNumber(filterId!), !!filterId && !isLiveFilter);
   const groupQuery = useGroupQuery(toNumber(groupId!), isSeries);
-  const subsectionName = isSeries ? groupQuery?.data?.Name : filterId && filterQuery?.data?.Name;
 
   const settings = useSettingsQuery().data;
   const viewSetting = settings.WebUI_Settings.collection.view;
@@ -122,17 +121,16 @@ function Collection() {
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && !isLiveFilter) {
+    if (!showFilterSidebar && !filterId) {
       dispatch(resetFilter());
-      if (!groupId) navigate('/webui/collection/filter/live');
-      else navigate(`/webui/collection/group/${groupId}/live`);
+      navigate('filter/live');
     }
     toggleFilterSidebar();
   });
 
   useEffect(() => {
-    if (!filterId && !groupId && showFilterSidebar) toggleFilterSidebar();
-  }, [filterId, groupId, showFilterSidebar, toggleFilterSidebar]);
+    if (!filterId && showFilterSidebar) toggleFilterSidebar();
+  }, [filterId, showFilterSidebar, toggleFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
@@ -225,7 +223,8 @@ function Collection() {
         <CollectionTitle
           // eslint-disable-next-line no-nested-ternary
           count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
-          filterOrGroup={subsectionName}
+          filterName={filterQuery?.data?.Name}
+          groupName={groupQuery?.data?.Name}
           filterActive={!!activeFilter}
           searchQuery={isSeries ? seriesSearch : groupSearch}
         />
