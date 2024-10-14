@@ -187,7 +187,7 @@ function FilterPresetsModal({ onClose, show }: Props) {
         )}
 
         {filtersQuery.isSuccess && activeTab === 'Filters' && (
-          <div className="flex max-h-96 grow flex-col gap-y-1 overflow-y-auto pl-8">
+          <div className="shoko-scrollbar flex max-h-96 grow flex-col gap-y-1 overflow-y-auto pl-8">
             {filters.filter(item => !item.IsDirectory).map(item => (
               <Item key={item.IDs.ID} item={item} onClose={onClose} />
             ))}

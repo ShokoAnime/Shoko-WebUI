@@ -136,7 +136,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
         <div className="border-r border-panel-border" />
         <div className="flex w-full flex-col gap-y-6">
           {activeTab === 'widgets' && (
-            <div className="overflow-y-scroll pr-4">
+            <div className="shoko-scrollbar overflow-y-scroll pr-4">
               <div className="flex flex-col gap-y-2 ">
                 <Checkbox
                   justify

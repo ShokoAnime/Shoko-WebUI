@@ -150,7 +150,7 @@ function ActionsModal({ onClose, show }: Props) {
         </div>
         <div className="border-r border-panel-border" />
         <div className="flex grow">
-          <div className="scroll-gutter flex grow flex-col gap-y-4 overflow-y-auto">
+          <div className="scroll-gutter shoko-scrollbar flex grow flex-col gap-y-4 overflow-y-auto">
             {isActionTab(activeTab)
               && actions[activeTab].data.map((key: string) => (
                 <Action actionKey={key} key={key} length={actions[activeTab].data.length} />
