@@ -81,7 +81,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
             />
             <Checkbox
               justify
-              label="Unwatched Epsiode Count"
+              label="Unwatched Episode Count"
               id="poster-showUnwatchedCount"
               isChecked={posterSettings.showUnwatchedCount}
               onChange={handleSettingChange}
