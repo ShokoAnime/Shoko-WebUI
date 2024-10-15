@@ -47,7 +47,7 @@ const SeriesVirtualizer = (
   });
 
   return (
-    <div className="shoko-scrollbar max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
+    <div className="max-h-[12.5rem] overflow-y-auto" ref={scrollRef}>
       <div className="relative" style={{ height: virtualizer.getTotalSize() }}>
         {virtualizer.getVirtualItems().map(({ index, key, size, start }) => {
           const series = data[index];
@@ -119,7 +119,7 @@ const TagDetailsModal = ({ onClose, show, tag }: { show: boolean, tag?: TagType,
     <ModalPanel show={show} onRequestClose={onClose} header={header} size="sm">
       <CleanDescription
         text={tag?.Description?.trim() ? tag.Description : 'Tag Description Not Available.'}
-        className="shoko-scrollbar max-h-62.5 overflow-y-auto pr-4 opacity-65"
+        className="max-h-62.5 overflow-y-auto pr-4 opacity-65"
       />
       {isSuccess && seriesCount > 0 && (
         <div className="flex flex-col gap-2">

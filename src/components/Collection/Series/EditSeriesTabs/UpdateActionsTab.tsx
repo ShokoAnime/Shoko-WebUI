@@ -26,7 +26,7 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
   };
 
   return (
-    <div className="shoko-scrollbar flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
+    <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
       <Action
         name="Update AniDB Info"
         description="Gets the latest series information from the AniDB database."

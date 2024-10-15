@@ -61,7 +61,7 @@ const DisplaySettingsModal = ({ onClose, show }: Props) => {
       noPadding
       noGap
     >
-      <div className="shoko-scrollbar flex max-h-96 flex-col gap-y-6 overflow-y-auto p-6">
+      <div className="flex max-h-96 flex-col gap-y-6 overflow-y-auto p-6">
         <div className="flex flex-col gap-y-4">
           <div className="font-semibold">Poster View Options</div>
           <div className="flex flex-col gap-y-1">
