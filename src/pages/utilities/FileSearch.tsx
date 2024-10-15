@@ -293,7 +293,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
             <span className="font-semibold">Series Name</span>
             <Link to={`/webui/collection/series/${seriesId}`}>
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
-                <ShokoIcon className="w-6" />
+                <ShokoIcon className="size-6" />
                 Shoko
                 <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
               </div>

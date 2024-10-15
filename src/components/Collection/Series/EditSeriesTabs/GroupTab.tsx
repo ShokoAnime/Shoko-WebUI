@@ -210,7 +210,7 @@ function GroupTab({ seriesId }: Props) {
       <div className="mt-2 flex grow select-none overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6 pr-3">
         <div
           className={cx(
-            'shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
+            'flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
             groupsResultSize > 4 && 'pr-4',
           )}
         >

@@ -54,7 +54,7 @@ const ShokoPanel = (
     </div>
     <div
       className={cx(
-        'flex grow flex-col shoko-scrollbar',
+        'flex grow flex-col',
         !disableOverflow && 'overflow-y-auto',
         contentClassName,
       )}

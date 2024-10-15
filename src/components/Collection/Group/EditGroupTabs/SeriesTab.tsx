@@ -64,7 +64,7 @@ const SeriesTab = React.memo(({ groupId }: Props) => {
       <div className="flex overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
         <div
           className={cx(
-            'shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
+            'flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input',
             (seriesSuccess && seriesData.length > 9) && 'pr-4',
           )}
         >

@@ -118,7 +118,7 @@ const NameTab = React.memo(({ groupId }: Props) => {
       />
       {nameEditable && (
         <div className="flex cursor-pointer overflow-y-auto rounded-lg border border-panel-border bg-panel-input p-6">
-          <div className="shoko-scrollbar flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
+          <div className="flex grow flex-col gap-y-2 overflow-y-auto bg-panel-input pr-4">
             {seriesData?.map(series => (
               <div
                 className="flex justify-between transition-colors last:border-none hover:text-panel-text-primary"

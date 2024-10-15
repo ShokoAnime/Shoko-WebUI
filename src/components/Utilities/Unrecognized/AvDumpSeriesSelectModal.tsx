@@ -147,7 +147,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                 )}
             </StepDescription>
             <div className="flex grow rounded-lg border border-panel-border bg-panel-input p-4">
-              <div className="shoko-scrollbar flex h-[14.5rem] flex-col gap-y-1 overflow-y-auto break-all rounded-lg bg-panel-input pr-4">
+              <div className="flex h-[14.5rem] flex-col gap-y-1 overflow-y-auto break-all rounded-lg bg-panel-input pr-4">
                 {links.length
                   ? links.map(link => <div key={`link-${link.split('|')[4]}`}>{link}</div>)
                   : <div>No files selected.</div>}
@@ -199,7 +199,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                 startIcon={mdiMagnify}
               />
               <div className="w-full rounded-lg border border-panel-border bg-panel-input p-4 capitalize">
-                <div className="shoko-scrollbar flex h-[9.5rem] flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2 ">
+                <div className="flex h-[9.5rem] flex-col gap-y-1 overflow-x-clip overflow-y-scroll rounded-lg bg-panel-input pr-2 ">
                   {searchQuery.isError || searchQuery.isFetching
                     ? (
                       <div className="flex h-full items-center justify-center">

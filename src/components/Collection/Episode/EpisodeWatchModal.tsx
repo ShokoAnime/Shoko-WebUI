@@ -63,12 +63,12 @@ const EpisodeWatchModal = (
     <ModalPanel
       show={show}
       onRequestClose={onRequestClose}
-      header="Watch options"
+      header="Watch Options"
       size="md"
       noPadding
       noGap
     >
-      <div className="flex h-[22rem] flex-row gap-x-6 p-6">
+      <div className="flex flex-row gap-x-6 p-6">
         <div className="flex shrink-0 gap-y-6 font-semibold">
           <div className="flex flex-col gap-y-1">
             {map(tabs, (value, key) => (
