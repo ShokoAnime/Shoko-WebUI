@@ -130,7 +130,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
     <ModalPanel
       show={show}
       onRequestClose={onClose}
-      header={<Title step={1} stepCount={2} count={fileIds.length} />}
+      header={<Title step={activeStep} stepCount={2} count={fileIds.length} />}
       size="sm"
       noPadding
     >
