@@ -347,7 +347,6 @@ export const initialSettings: SettingsType = {
     Calendar_UpdateFrequency: 1,
     Anime_UpdateFrequency: 1,
     MyList_UpdateFrequency: 1,
-    MyListStats_UpdateFrequency: 1,
     File_UpdateFrequency: 1,
     Notification_UpdateFrequency: 1,
     Notification_HandleMovedFiles: false,

@@ -53,7 +53,6 @@ export type SettingsAnidbUpdateType = {
   Calendar_UpdateFrequency: SettingsUpdateFrequencyType;
   Anime_UpdateFrequency: SettingsUpdateFrequencyType;
   MyList_UpdateFrequency: SettingsUpdateFrequencyType;
-  MyListStats_UpdateFrequency: SettingsUpdateFrequencyType;
   File_UpdateFrequency: SettingsUpdateFrequencyType;
   Notification_UpdateFrequency: SettingsUpdateFrequencyType;
   Notification_HandleMovedFiles: boolean;
