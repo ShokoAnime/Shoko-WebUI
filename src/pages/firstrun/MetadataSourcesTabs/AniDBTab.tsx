@@ -5,6 +5,7 @@ import cx from 'classnames';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import UpdateFrequencyValues from '@/components/Settings/UpdateFrequencyValues';
 import TransitionDiv from '@/components/TransitionDiv';
 import useFirstRunSettingsContext from '@/hooks/useFirstRunSettingsContext';
 
@@ -34,7 +35,6 @@ function AniDBTab({ setStatus }: Props) {
     MyList_SetWatched,
     MyList_StorageState,
     MyList_UpdateFrequency,
-    MyListStats_UpdateFrequency,
   } = newSettings.AniDb;
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
@@ -53,17 +53,6 @@ function AniDBTab({ setStatus }: Props) {
       setStatus({ type: 'success', text: '' });
     }
   };
-
-  const renderUpdateFrequencyValues = () => (
-    <>
-      <option value={1}>Never</option>
-      <option value={2}>Every 6 Hours</option>
-      <option value={3}>Every 12 Hours</option>
-      <option value={4}>Every 24 Hours</option>
-      <option value={5}>Once a Week</option>
-      <option value={6}>Once a Month</option>
-    </>
-  );
 
   return (
     <TransitionDiv className="flex flex-col gap-y-6">
@@ -186,7 +175,7 @@ function AniDBTab({ setStatus }: Props) {
           value={Calendar_UpdateFrequency}
           onChange={handleInputChange}
         >
-          {renderUpdateFrequencyValues()}
+          <UpdateFrequencyValues />
         </SelectSmall>
         <SelectSmall
           label="Anime Information"
@@ -194,7 +183,7 @@ function AniDBTab({ setStatus }: Props) {
           value={Anime_UpdateFrequency}
           onChange={handleInputChange}
         >
-          {renderUpdateFrequencyValues()}
+          <UpdateFrequencyValues />
         </SelectSmall>
         <SelectSmall
           label="Sync Mylist"
@@ -202,15 +191,7 @@ function AniDBTab({ setStatus }: Props) {
           value={MyList_UpdateFrequency}
           onChange={handleInputChange}
         >
-          {renderUpdateFrequencyValues()}
-        </SelectSmall>
-        <SelectSmall
-          label="Get Mylist Stats"
-          id="MyListStats_UpdateFrequency"
-          value={MyListStats_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          {renderUpdateFrequencyValues()}
+          <UpdateFrequencyValues />
         </SelectSmall>
         <SelectSmall
           label="Files With Missing Info"
@@ -218,7 +199,7 @@ function AniDBTab({ setStatus }: Props) {
           value={File_UpdateFrequency}
           onChange={handleInputChange}
         >
-          {renderUpdateFrequencyValues()}
+          <UpdateFrequencyValues />
         </SelectSmall>
       </div>
     </TransitionDiv>

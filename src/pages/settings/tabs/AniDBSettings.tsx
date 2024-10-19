@@ -6,20 +6,10 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
 import SelectSmall from '@/components/Input/SelectSmall';
+import UpdateFrequencyValues from '@/components/Settings/UpdateFrequencyValues';
 import toast from '@/components/Toast';
 import { useAniDBTestLoginMutation } from '@/core/react-query/settings/mutations';
 import useSettingsContext from '@/hooks/useSettingsContext';
-
-const UpdateFrequencyValues = () => (
-  <>
-    <option value={1}>Never</option>
-    <option value={2}>Every 6 Hours</option>
-    <option value={3}>Every 12 Hours</option>
-    <option value={4}>Every 24 Hours</option>
-    <option value={5}>Once a Week</option>
-    <option value={6}>Once a Month</option>
-  </>
-);
 
 function AniDBSettings() {
   const { newSettings, updateSetting } = useSettingsContext();
@@ -44,7 +34,6 @@ function AniDBSettings() {
     MyList_SetWatched,
     MyList_StorageState,
     MyList_UpdateFrequency,
-    MyListStats_UpdateFrequency,
     Notification_HandleMovedFiles,
     Notification_UpdateFrequency,
     Password,
@@ -286,16 +275,6 @@ function AniDBSettings() {
               id="sync-mylist"
               value={MyList_UpdateFrequency}
               onChange={event => updateSetting('AniDb', 'MyList_UpdateFrequency', event.target.value)}
-            >
-              <UpdateFrequencyValues />
-            </SelectSmall>
-          </div>
-          <div className="flex items-center justify-between">
-            <span>Get Mylist Stats</span>
-            <SelectSmall
-              id="get-mylist-stats"
-              value={MyListStats_UpdateFrequency}
-              onChange={event => updateSetting('AniDb', 'MyListStats_UpdateFrequency', event.target.value)}
             >
               <UpdateFrequencyValues />
             </SelectSmall>
