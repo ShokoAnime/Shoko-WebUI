@@ -100,7 +100,7 @@ const TagsSearchAndFilterPanel = React.memo(
       </button>
     ), [anidbRefreshPending, refreshAnidbCallback]);
     return (
-      <div className="flex w-400 shrink-0 flex-col gap-y-6">
+      <div className="flex w-100 shrink-0 flex-col gap-y-6">
         <ShokoPanel
           title="Search & Filter"
           className="w-full"

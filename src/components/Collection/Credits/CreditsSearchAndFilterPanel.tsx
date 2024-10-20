@@ -31,7 +31,7 @@ const CreditsSearchAndFilterPanel = React.memo(
   ) => (
     <ShokoPanel
       title="Search & Filter"
-      className="w-400"
+      className="w-100"
       contentClassName="gap-y-6"
       sticky
       transparent

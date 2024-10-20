@@ -58,7 +58,7 @@ const FileOverview = ({ overview }: Props) => {
   return (
     <ShokoPanel
       title="Files Overview"
-      className="w-400 shrink-0 grow"
+      className="w-100 shrink-0 grow"
       contentClassName="gap-y-6"
       transparent
       sticky

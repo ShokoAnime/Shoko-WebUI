@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import React, { useMemo, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { split, toNumber } from 'lodash';
+import { capitalize, split, toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import Button from '@/components/Input/Button';
@@ -39,38 +39,48 @@ const sizeMap = {
 const nullImage = {} as ImageType;
 
 const SeriesImages = () => {
-  const { seriesId } = useParams();
+  const { imageType, seriesId } = useParams();
 
-  const [tabType, setTabType] = useState<ImageTabType>('Posters');
+  const navigate = useNavigate();
+
+  const tabType = useMemo(() => {
+    if (!imageType) return 'Posters';
+    return capitalize(imageType) as ImageTabType;
+  }, [imageType]);
   const [selectedImage, setSelectedImage] = useState<ImageType>(nullImage);
   const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation();
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
-  const filepath = splitPath.join('/');
+  const filepath = splitPath[0] ? splitPath.join('/') : '-';
 
   const handleSelectionChange = (item: ImageType) => {
     setSelectedImage(old => ((old === item) ? nullImage : item));
   };
-  const resetSelectedImage = () => setSelectedImage(nullImage);
+
+  const handleSetPreferredImage = useEventCallback(() => {
+    changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
+      onSuccess: () => {
+        setSelectedImage(nullImage);
+        toast.success(`Series ${selectedImage.Type} image has been changed.`);
+      },
+    });
+  });
 
   const handleTabChange = useEventCallback((newType: ImageTabType) => {
-    setTabType((prevType) => {
-      if (newType !== prevType) resetSelectedImage();
-      return newType;
-    });
+    setSelectedImage(nullImage);
+    navigate(`../images/${newType.toLowerCase()}`);
   });
 
   if (!seriesId) return null;
 
   return (
     <div className="flex w-full gap-x-6">
-      <div className="flex w-400 shrink-0 flex-col gap-y-6">
+      <div className="flex w-100 min-w-64 flex-col">
         <ShokoPanel
           title="Selected Image Info"
-          className="w-full"
-          contentClassName="flex !flex-col gap-y-6 2xl:gap-x-6 h-full"
+          contentClassName="gap-y-6"
           fullHeight={false}
           transparent
           sticky
@@ -88,14 +98,7 @@ const SeriesImages = () => {
             buttonType="primary"
             buttonSize="normal"
             disabled={selectedImage === nullImage || selectedImage.Preferred}
-            onClick={() => {
-              changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
-                onSuccess: () => {
-                  resetSelectedImage();
-                  toast.success(`Series ${selectedImage.Type} image has been changed.`);
-                },
-              });
-            }}
+            onClick={handleSetPreferredImage}
           >
             {`Set As Preferred ${tabType.slice(0, -1)}`}
           </Button>
