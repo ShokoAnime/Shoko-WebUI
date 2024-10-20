@@ -213,10 +213,17 @@ const getStatusColumn = (
   },
 } as UtilityHeaderType<FileType>);
 
-const Menu = React.memo((
-  props: { disable: boolean, moveFiles: boolean, toggleMoveFiles: () => void, selectedRows: FileType[] },
-) => {
-  const { disable, moveFiles, selectedRows, toggleMoveFiles } = props;
+type MenuProps = {
+  disable: boolean;
+  moveFiles: boolean;
+  renameFiles: boolean;
+  toggleMoveFiles: () => void;
+  toggleRenameFiles: () => void;
+  selectedRows: FileType[];
+};
+
+const Menu = React.memo((props: MenuProps) => {
+  const { disable, moveFiles, renameFiles, selectedRows, toggleMoveFiles, toggleRenameFiles } = props;
 
   const dispatch = useDispatch();
 
@@ -248,6 +255,13 @@ const Menu = React.memo((
         isChecked={moveFiles}
         onChange={toggleMoveFiles}
         label="Move Files"
+        labelRight
+      />
+      <Checkbox
+        id="rename-files"
+        isChecked={renameFiles}
+        onChange={toggleRenameFiles}
+        label="Rename Files"
         labelRight
       />
     </div>
@@ -282,6 +296,7 @@ const Renamer = () => {
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
   const [moveFiles, toggleMoveFiles] = useToggle(settings.Plugins.Renamer.MoveOnImport);
+  const [renameFiles, toggleRenameFiles] = useToggle(settings.Plugins.Renamer.RenameOnImport);
   const [showSettings, toggleSettings] = useToggle(false);
   const [showAddFilesModal, toggleAddFilesModal] = useToggle(false);
   const [showConfigModal, toggleConfigModal] = useToggle(false);
@@ -312,7 +327,7 @@ const Renamer = () => {
     await previewRename(
       {
         move: moveFiles,
-        rename: true,
+        rename: renameFiles,
         FileIDs: pendingPreviews,
         Config: {
           RenamerID: renamer.RenamerID,
@@ -400,7 +415,7 @@ const Renamer = () => {
 
   useEffect(() => {
     dispatch(clearRenameResults());
-  }, [dispatch, moveFiles]);
+  }, [dispatch, moveFiles, renameFiles]);
 
   useEffect(() => {
     if (!renamerConfigsQuery.isSuccess) return;
@@ -438,7 +453,7 @@ const Renamer = () => {
       relocateFiles({
         configName: selectedConfig.Name,
         move: moveFiles,
-        rename: true,
+        rename: renameFiles,
         deleteEmptyDirectories: true,
         FileIDs: files.map(file => file.ID),
       });
@@ -452,7 +467,9 @@ const Renamer = () => {
           <Menu
             selectedRows={selectedRows}
             moveFiles={moveFiles}
+            renameFiles={renameFiles}
             toggleMoveFiles={toggleMoveFiles}
+            toggleRenameFiles={toggleRenameFiles}
             disable={relocatePending}
           />
           <div className="flex gap-x-3">
