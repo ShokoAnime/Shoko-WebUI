@@ -114,7 +114,7 @@ module.exports = {
         '62.5': '15.625rem',
       },
       width: {
-        '400': '25rem',
+        '100': '25rem',
       },
       opacity: {
         '65': '.65',

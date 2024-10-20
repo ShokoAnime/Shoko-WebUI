@@ -106,7 +106,8 @@ const router = sentryCreateBrowserRouter(
               <Route path="overview" element={<SeriesOverview />} />
               <Route path="episodes" element={<SeriesEpisodes />} />
               <Route path="credits" element={<SeriesCredits />} />
-              <Route path="images" element={<SeriesImages />} />
+              <Route path="images" element={<Navigate to="posters" replace />} />
+              <Route path="images/:imageType" element={<SeriesImages />} />
               <Route path="files" element={<SeriesFileSummary />} />
               <Route path="tags" element={<SeriesTags />} />
             </Route>
