@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 import SeriesRating from '@/components/Collection/Series/SeriesRating';
 import { formatThousand } from '@/core/util';
@@ -53,23 +54,21 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
       <div className="font-semibold">Missing</div>
       {(series.Sizes.Missing.Episodes > 0 || series.Sizes.Missing.Specials > 0)
         ? (
-          <div className="flex flex-row gap-x-1 font-normal">
+          <div className="flex gap-x-1">
             {series.Sizes.Missing.Episodes > 0 && (
-              <>
-                <span>{formatThousand(series.Sizes.Missing.Episodes)}</span>
-                <span>
-                  {series.Sizes.Missing.Episodes !== 1 ? 'Episodes' : 'Episode'}
-                </span>
-              </>
+              <Link to="episodes" state={{ initialMissingFilter: 'episodes' }} className="text-panel-text-primary">
+                {formatThousand(series.Sizes.Missing.Episodes)}
+                &nbsp;
+                {series.Sizes.Missing.Episodes !== 1 ? 'Episodes' : 'Episode'}
+              </Link>
             )}
             {series.Sizes.Missing.Episodes > 0 && series.Sizes.Missing.Specials > 0 && <span>|</span>}
             {series.Sizes.Missing.Specials > 0 && (
-              <>
-                <span>{formatThousand(series.Sizes.Missing.Specials)}</span>
-                <span>
-                  {series.Sizes.Missing.Specials !== 1 ? 'Specials' : 'Special'}
-                </span>
-              </>
+              <Link to="episodes" state={{ initialMissingFilter: 'specials' }} className="text-panel-text-primary">
+                {formatThousand(series.Sizes.Missing.Specials)}
+                &nbsp;
+                {series.Sizes.Missing.Specials !== 1 ? 'Specials' : 'Special'}
+              </Link>
             )}
           </div>
         )

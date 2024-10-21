@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { useOutletContext } from 'react-router-dom';
+import { useLocation, useOutletContext } from 'react-router-dom';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -26,6 +26,9 @@ const pageSize = 26;
 
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
+
+  const locationState = useLocation().state as { initialMissingFilter: 'episodes' | 'specials' };
+
   const [episodeFilterType, setEpisodeFilterType] = useState(EpisodeTypeEnum.Normal);
   const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState(IncludeOnlyFilterEnum.false);
   const [episodeFilterWatched, setEpisodeFilterWatched] = useState(IncludeOnlyFilterEnum.true);
@@ -34,6 +37,16 @@ const SeriesEpisodes = () => {
   const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
   const [search, setSearch] = useState('');
   const [debouncedSearch] = useDebounceValue(search, 200);
+
+  useEffect(() => {
+    if (!locationState) return;
+    setEpisodeFilterType(
+      locationState.initialMissingFilter === 'specials' ? EpisodeTypeEnum.Special : EpisodeTypeEnum.Normal,
+    );
+    setEpisodeFilterAvailability(IncludeOnlyFilterEnum.only);
+    // Clear state once consumed so it doesn't apply to refreshes
+    window.history.replaceState(null, '');
+  }, [locationState]);
 
   const onSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
