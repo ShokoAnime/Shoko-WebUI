@@ -36,8 +36,6 @@ const sizeMap = {
   Logos: { image: 'h-[clamp(15rem,_16vw,_21rem)]', grid: 'grid-cols-4' },
 };
 
-const nullImage = {} as ImageType;
-
 const SeriesImages = () => {
   const { imageType, seriesId } = useParams();
 
@@ -47,7 +45,7 @@ const SeriesImages = () => {
     if (!imageType) return 'Posters';
     return capitalize(imageType) as ImageTabType;
   }, [imageType]);
-  const [selectedImage, setSelectedImage] = useState<ImageType>(nullImage);
+  const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
   const images = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId).data;
   const { mutate: changeImage } = useChangeSeriesImageMutation();
 
@@ -56,20 +54,21 @@ const SeriesImages = () => {
   const filepath = splitPath[0] ? splitPath.join('/') : '-';
 
   const handleSelectionChange = (item: ImageType) => {
-    setSelectedImage(old => ((old === item) ? nullImage : item));
+    setSelectedImage(old => ((old === item) ? null : item));
   };
 
   const handleSetPreferredImage = useEventCallback(() => {
+    if (!selectedImage) return;
     changeImage({ seriesId: toNumber(seriesId), image: selectedImage }, {
       onSuccess: () => {
-        setSelectedImage(nullImage);
+        setSelectedImage(null);
         toast.success(`Series ${selectedImage.Type} image has been changed.`);
       },
     });
   });
 
   const handleTabChange = useEventCallback((newType: ImageTabType) => {
-    setSelectedImage(nullImage);
+    setSelectedImage(null);
     navigate(`../images/${newType.toLowerCase()}`);
   });
 
@@ -97,7 +96,7 @@ const SeriesImages = () => {
           <Button
             buttonType="primary"
             buttonSize="normal"
-            disabled={selectedImage === nullImage || selectedImage.Preferred}
+            disabled={!selectedImage || selectedImage.Preferred}
             onClick={handleSetPreferredImage}
           >
             {`Set As Preferred ${tabType.slice(0, -1)}`}
@@ -124,7 +123,7 @@ const SeriesImages = () => {
           {images?.[tabType].map(item => (
             <div
               onClick={() => handleSelectionChange(item)}
-              key={item?.ID}
+              key={`${item.Source}-${item.Type}-${item.ID}`}
               className="group flex cursor-pointer items-center justify-between"
             >
               <BackgroundImagePlaceholderDiv
