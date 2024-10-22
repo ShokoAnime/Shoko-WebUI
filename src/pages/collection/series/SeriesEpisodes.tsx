@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
-import { useLocation, useOutletContext } from 'react-router-dom';
+import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -24,52 +24,39 @@ import type { SeriesContextType } from '@/components/Collection/constants';
 
 const pageSize = 26;
 
+type FilterOptionsType = {
+  type: EpisodeTypeEnum[];
+  includeMissing: IncludeOnlyFilterEnum;
+  includeWatched: IncludeOnlyFilterEnum;
+  includeHidden: IncludeOnlyFilterEnum;
+  search: string;
+};
+
 const SeriesEpisodes = () => {
   const { seriesId } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const locationState = useLocation().state as { initialMissingFilter: 'episodes' | 'specials' };
-
-  const [episodeFilterType, setEpisodeFilterType] = useState(EpisodeTypeEnum.Normal);
-  const [episodeFilterAvailability, setEpisodeFilterAvailability] = useState(IncludeOnlyFilterEnum.false);
-  const [episodeFilterWatched, setEpisodeFilterWatched] = useState(IncludeOnlyFilterEnum.true);
-  const [episodeFilterHidden, setEpisodeFilterHidden] = useState(IncludeOnlyFilterEnum.false);
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
-  const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(search, 200);
+  const [debouncedSearch] = useDebounceValue(searchParams.get('search'), 200);
 
-  useEffect(() => {
-    if (!locationState) return;
-    setEpisodeFilterType(
-      locationState.initialMissingFilter === 'specials' ? EpisodeTypeEnum.Special : EpisodeTypeEnum.Normal,
-    );
-    setEpisodeFilterAvailability(IncludeOnlyFilterEnum.only);
-    // Clear state once consumed so it doesn't apply to refreshes
-    window.history.replaceState(null, '');
-  }, [locationState]);
+  const filterOptions = useMemo(() => ({
+    type: [searchParams.get('type') ?? EpisodeTypeEnum.Normal],
+    includeMissing: searchParams.get('includeMissing') ?? IncludeOnlyFilterEnum.false,
+    includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
+    includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,
+    search: debouncedSearch ?? '',
+  } as FilterOptionsType), [debouncedSearch, searchParams]);
 
-  const onSearchChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
-  });
-  const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+  const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
-    switch (eventType) {
-      case 'episodeType':
-        setEpisodeFilterType(value as EpisodeTypeEnum);
-        break;
-      case 'status':
-        setEpisodeFilterAvailability(value as IncludeOnlyFilterEnum);
-        break;
-      case 'watched':
-        setEpisodeFilterWatched(value as IncludeOnlyFilterEnum);
-        break;
-      case 'hidden':
-        setEpisodeFilterHidden(value as IncludeOnlyFilterEnum);
-        break;
-      default:
-        break;
-    }
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      newParams.set(eventType, value);
+      return newParams;
+    });
   });
+
   const onSelectionChange = useEventCallback((episodeId: number) => {
     setSelectedEpisodes((prevState) => {
       const selectionList = new Set(prevState);
@@ -80,19 +67,15 @@ const SeriesEpisodes = () => {
 
   useEffect(() => {
     setSelectedEpisodes(new Set());
-  }, [episodeFilterType, episodeFilterAvailability, episodeFilterWatched, episodeFilterHidden, debouncedSearch]);
+  }, [filterOptions]);
 
   const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId).data;
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
     toNumber(seriesId!),
     {
-      includeMissing: episodeFilterAvailability,
-      includeHidden: episodeFilterHidden,
-      type: [episodeFilterType],
-      includeWatched: episodeFilterWatched,
-      includeDataFrom: ['AniDB'],
-      search: debouncedSearch,
       pageSize,
+      includeDataFrom: ['AniDB'],
+      ...filterOptions,
     },
     !!seriesId,
   );
@@ -149,12 +132,8 @@ const SeriesEpisodes = () => {
   const handleMarkWatched = useEventCallback((watched: boolean) => {
     watchEpisode({
       seriesId: toNumber(seriesId),
-      includeMissing: episodeFilterAvailability,
-      includeHidden: episodeFilterHidden,
-      type: [episodeFilterType],
-      includeWatched: episodeFilterWatched,
       value: watched,
-      search: debouncedSearch,
+      ...filterOptions,
     }, {
       onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
       onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
@@ -171,13 +150,12 @@ const SeriesEpisodes = () => {
   return (
     <div className="flex w-full gap-x-6">
       <EpisodeSearchAndFilterPanel
-        onSearchChange={onSearchChange}
         onFilterChange={onFilterChange}
-        search={search}
-        episodeFilterType={episodeFilterType}
-        episodeFilterAvailability={episodeFilterAvailability}
-        episodeFilterWatched={episodeFilterWatched}
-        episodeFilterHidden={episodeFilterHidden}
+        search={filterOptions.search}
+        type={filterOptions.type[0]}
+        availability={filterOptions.includeMissing}
+        watched={filterOptions.includeWatched}
+        hidden={filterOptions.includeHidden}
         hasUnaired={hasUnairedEpisodes}
         hasMissing={hasMissingEpisodes}
       />

@@ -7,27 +7,25 @@ import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 
 type Props = {
-  episodeFilterType: string;
-  episodeFilterAvailability: string;
-  episodeFilterWatched: string;
-  episodeFilterHidden: string;
+  type: string;
+  availability: string;
+  watched: string;
+  hidden: string;
   search: string;
   hasUnaired: boolean;
   hasMissing: boolean;
-  onFilterChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
-  onSearchChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onFilterChange: (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => void;
 };
 
 const EpisodeSearchAndFilterPanel = React.memo(({
-  episodeFilterAvailability,
-  episodeFilterHidden,
-  episodeFilterType,
-  episodeFilterWatched,
+  availability,
   hasMissing,
   hasUnaired,
+  hidden,
   onFilterChange,
-  onSearchChange,
   search,
+  type,
+  watched,
 }: Props) => (
   <div className="flex flex-col gap-y-6">
     <ShokoPanel
@@ -46,13 +44,13 @@ const EpisodeSearchAndFilterPanel = React.memo(({
         type="text"
         placeholder="Search..."
         value={search}
-        onChange={onSearchChange}
+        onChange={onFilterChange}
       />
 
       <Select
-        id="episodeType"
+        id="type"
         label="Type"
-        value={episodeFilterType}
+        value={type}
         onChange={onFilterChange}
       >
         <option value="">All</option>
@@ -64,9 +62,9 @@ const EpisodeSearchAndFilterPanel = React.memo(({
       </Select>
 
       <Select
-        id="status"
+        id="includeMissing"
         label="Episode Status"
-        value={episodeFilterAvailability}
+        value={availability}
         onChange={onFilterChange}
       >
         <option value="true">All Episodes</option>
@@ -75,9 +73,9 @@ const EpisodeSearchAndFilterPanel = React.memo(({
       </Select>
 
       <Select
-        id="watched"
+        id="includeWatched"
         label="Watched State"
-        value={episodeFilterWatched}
+        value={watched}
         onChange={onFilterChange}
       >
         <option value="true">All</option>
@@ -86,9 +84,9 @@ const EpisodeSearchAndFilterPanel = React.memo(({
       </Select>
 
       <Select
-        id="hidden"
+        id="includeHidden"
         label="Hidden Status"
-        value={episodeFilterHidden}
+        value={hidden}
         onChange={onFilterChange}
       >
         <option value="true">Show All Entries</option>
