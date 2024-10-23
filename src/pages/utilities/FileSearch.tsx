@@ -232,14 +232,14 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
   );
 
   const seriesId: number = get(file, 'SeriesIDs[0].SeriesID.ID', 0);
-  const { data: seriesInfo, isPending: seriesQueryIsPending } = useSeriesQuery(
+  const { data: seriesInfo, isFetching: seriesQueryIsPending } = useSeriesQuery(
     seriesId,
     {},
     !!seriesId,
   );
 
   const episodeId: number = get(file, 'SeriesIDs[0].EpisodeIDs[0].ID', 0);
-  const { data: episodeInfo, isPending: episodeQueryIsPending } = useEpisodeAniDBQuery(
+  const { data: episodeInfo, isFetching: episodeQueryIsPending } = useEpisodeAniDBQuery(
     episodeId,
     !!episodeId,
   );
