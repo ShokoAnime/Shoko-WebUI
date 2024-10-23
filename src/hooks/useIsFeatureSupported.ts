@@ -6,18 +6,20 @@ import { parseServerVersion } from '@/core/util';
 
 import type { VersionType } from '@/core/types/api/init';
 
-enum FeatureType {
-  UnairedEpisodeFilter = '5.0.0-dev.18',
+export enum FeatureType {
+  UnairedEpisodeFilter = '5.0.0.18',
 }
 
 const useIsFeatureSupported = (feature: FeatureType) => {
   const version = queryClient.getQueryData<VersionType>(['init', 'version'])?.Server.Version ?? '1.0.0.0';
-  const parsedVersion = parseServerVersion(version);
 
   return useMemo(() => {
-    if (!parsedVersion) return false;
-    return semver.gte(parsedVersion, feature);
-  }, [feature, parsedVersion]);
+    const parsedVersion = parseServerVersion(version);
+    const parsedFeatureMinVersion = parseServerVersion(feature);
+
+    if (!parsedVersion || !parsedFeatureMinVersion) return false;
+    return semver.gte(parsedVersion, parsedFeatureMinVersion);
+  }, [feature, version]);
 };
 
 export default useIsFeatureSupported;

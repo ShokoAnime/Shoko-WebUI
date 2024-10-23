@@ -56,7 +56,10 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
         ? (
           <div className="flex gap-x-1">
             {series.Sizes.Missing.Episodes > 0 && (
-              <Link to="episodes?type=Normal&includeMissing=only" className="text-panel-text-primary">
+              <Link
+                to="episodes?type=Normal&includeMissing=only&includeUnaired=false"
+                className="text-panel-text-primary"
+              >
                 {formatThousand(series.Sizes.Missing.Episodes)}
                 &nbsp;
                 {series.Sizes.Missing.Episodes !== 1 ? 'Episodes' : 'Episode'}
@@ -64,7 +67,10 @@ const SeriesUserStats = React.memo(({ series }: SeriesInfoProps) => (
             )}
             {series.Sizes.Missing.Episodes > 0 && series.Sizes.Missing.Specials > 0 && <span>|</span>}
             {series.Sizes.Missing.Specials > 0 && (
-              <Link to="episodes?type=Special&includeMissing=only" className="text-panel-text-primary">
+              <Link
+                to="episodes?type=Special&includeMissing=only&includeUnaired=false"
+                className="text-panel-text-primary"
+              >
                 {formatThousand(series.Sizes.Missing.Specials)}
                 &nbsp;
                 {series.Sizes.Missing.Specials !== 1 ? 'Specials' : 'Special'}

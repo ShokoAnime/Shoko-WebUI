@@ -12,6 +12,7 @@ type SeriesEpisodesBaseRequestType = {
   includeMissing?: IncludeOnlyFilterEnum;
   includeHidden?: IncludeOnlyFilterEnum;
   includeWatched?: IncludeOnlyFilterEnum;
+  includeUnaired?: IncludeOnlyFilterEnum;
   type?: EpisodeTypeEnum[];
   search?: string;
   fuzzy?: boolean;

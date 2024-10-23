@@ -29,6 +29,7 @@ type FilterOptionsType = {
   includeMissing: IncludeOnlyFilterEnum;
   includeWatched: IncludeOnlyFilterEnum;
   includeHidden: IncludeOnlyFilterEnum;
+  includeUnaired: IncludeOnlyFilterEnum;
   search: string;
 };
 
@@ -45,6 +46,7 @@ const SeriesEpisodes = () => {
     includeMissing: searchParams.get('includeMissing') ?? IncludeOnlyFilterEnum.false,
     includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
     includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,
+    includeUnaired: searchParams.get('includeUnaired') ?? IncludeOnlyFilterEnum.false,
     search: debouncedSearch ?? '',
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 
@@ -156,6 +158,7 @@ const SeriesEpisodes = () => {
         availability={filterOptions.includeMissing}
         watched={filterOptions.includeWatched}
         hidden={filterOptions.includeHidden}
+        unaired={filterOptions.includeUnaired}
         hasUnaired={hasUnairedEpisodes}
         hasMissing={hasMissingEpisodes}
       />
