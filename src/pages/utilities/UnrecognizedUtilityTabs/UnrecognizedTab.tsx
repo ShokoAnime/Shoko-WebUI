@@ -327,7 +327,9 @@ function UnrecognizedTab() {
   const dumpInProgress = some(avdumpList.sessions, session => session.status === 'Running');
 
   const handleAvdumpClick = useEventCallback(() => {
-    setSeriesSelectModal(true);
+    if (isAvdumpFinished && !dumpInProgress) {
+      setSeriesSelectModal(true);
+    }
 
     if (!isAvdumpFinished || dumpInProgress) {
       avdumpFiles({
