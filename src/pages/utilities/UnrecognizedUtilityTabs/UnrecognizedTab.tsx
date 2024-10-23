@@ -19,7 +19,6 @@ import {
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { countBy, every, find, some } from 'lodash';
-import { useDebounceValue } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -50,6 +49,7 @@ import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
+import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
@@ -241,20 +241,31 @@ const Menu = (
 function UnrecognizedTab() {
   const navigate = useNavigate();
 
+  const {
+    debouncedSearch,
+    search,
+    setSearch,
+    setSortCriteria,
+    sortCriteria,
+  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ImportFolderName);
   const [seriesSelectModal, setSeriesSelectModal] = useState(false);
-  const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(search, 200);
+
   const { mutate: avdumpFiles } = useAvdumpFilesMutation();
 
   const importFolderQuery = useImportFoldersQuery();
   const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
 
+  const sortOrder = useMemo(() => {
+    if (!sortCriteria) return undefined;
+    if (debouncedSearch) return [sortCriteria];
+    return [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+  }, [debouncedSearch, sortCriteria]);
+
   const filesQuery = useFilesInfiniteQuery(
     {
       pageSize: 200,
       include_only: ['Unrecognized'],
-      sortOrder: [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+      sortOrder,
     },
     debouncedSearch,
   );
@@ -372,7 +383,7 @@ function UnrecognizedTab() {
                 startIcon={mdiMagnify}
                 id="search"
                 value={search}
-                onChange={event => setSearch(event.target.value)}
+                onChange={setSearch}
                 inputClassName={cx('px-4 py-3', searchClassName)}
                 overlayClassName="grow 2xl:w-auto 2xl:grow-0"
               />

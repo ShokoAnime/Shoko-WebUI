@@ -18,7 +18,6 @@ import Icon from '@mdi/react';
 import cx from 'classnames';
 import { forEach, get, reverse } from 'lodash';
 import prettyBytes from 'pretty-bytes';
-import { useDebounceValue } from 'usehooks-ts';
 
 import DeleteFilesModal from '@/components/Dialogs/DeleteFilesModal';
 import Button from '@/components/Input/Button';
@@ -46,6 +45,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
 import useRowSelection from '@/hooks/useRowSelection';
+import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { FileType } from '@/core/types/api/file';
 import type { Updater } from 'use-immer';
@@ -318,12 +318,17 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
 });
 
 const FileSearch = () => {
-  const [sortCriteria, setSortCriteria] = useState(-FileSortCriteriaEnum.CreatedAt);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(search, 250);
+  const {
+    debouncedSearch,
+    search,
+    setSearch,
+    setSortCriteria,
+    sortCriteria,
+  } = useTableSearchSortCriteria(-FileSortCriteriaEnum.CreatedAt);
+
   const filesQuery = useFilesInfiniteQuery({
     include: ['XRefs'],
-    sortOrder: [sortCriteria],
+    sortOrder: sortCriteria ? [sortCriteria] : undefined,
     pageSize: 50,
   }, debouncedSearch);
   const [files, fileCount] = useFlattenListResult<FileType>(filesQuery.data);
@@ -363,7 +368,7 @@ const FileSearch = () => {
             placeholder="Search..."
             startIcon={mdiMagnify}
             id="search"
-            onChange={event => setSearch(event.target.value)}
+            onChange={setSearch}
             value={search}
             inputClassName="px-4 py-3"
           />

@@ -1,8 +1,7 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading, mdiMagnify, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { countBy, find } from 'lodash';
-import { useDebounceValue } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -21,6 +20,7 @@ import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
+import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { Updater } from 'use-immer';
@@ -80,18 +80,28 @@ const Menu = (
 };
 
 function IgnoredFilesTab() {
-  const [sortCriteria, setSortCriteria] = useState(FileSortCriteriaEnum.ImportFolderName);
-  const [search, setSearch] = useState('');
-  const [debouncedSearch] = useDebounceValue(search, 200);
+  const {
+    debouncedSearch,
+    search,
+    setSearch,
+    setSortCriteria,
+    sortCriteria,
+  } = useTableSearchSortCriteria(FileSortCriteriaEnum.ImportFolderName);
 
   const importFolderQuery = useImportFoldersQuery();
   const importFolders = useMemo(() => importFolderQuery?.data ?? [], [importFolderQuery.data]);
+
+  const sortOrder = useMemo(() => {
+    if (!sortCriteria) return undefined;
+    if (debouncedSearch) return [sortCriteria];
+    return [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath];
+  }, [debouncedSearch, sortCriteria]);
 
   const filesQuery = useFilesInfiniteQuery(
     {
       pageSize: 50,
       include_only: ['Ignored'],
-      sortOrder: [sortCriteria, FileSortCriteriaEnum.FileName, FileSortCriteriaEnum.RelativePath],
+      sortOrder,
     },
     debouncedSearch,
   );
@@ -132,7 +142,7 @@ function IgnoredFilesTab() {
               startIcon={mdiMagnify}
               id="search"
               value={search}
-              onChange={event => setSearch(event.target.value)}
+              onChange={setSearch}
               inputClassName="px-4 py-3"
             />
             <Menu
