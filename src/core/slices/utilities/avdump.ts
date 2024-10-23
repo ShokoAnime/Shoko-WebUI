@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { forEach } from 'lodash';
 
+import toast from '@/components/Toast';
 import { AVDumpEventTypeEnum } from '@/core/signalr/types';
 
 import type { AVDumpEventType, AVDumpRestoreType } from '@/core/signalr/types';
@@ -61,6 +62,10 @@ const avdumpSlice = createSlice({
             session.status = 'Failed';
             session.progress = 100;
           }
+          break;
+
+        case AVDumpEventTypeEnum.InstallException:
+          toast.error('AVDump failed to install!', event.Message);
           break;
 
         default:
