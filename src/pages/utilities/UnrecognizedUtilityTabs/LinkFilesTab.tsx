@@ -13,7 +13,7 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import { filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
+import { countBy, filter, find, findIndex, forEach, groupBy, map, orderBy, reduce, toInteger, uniqBy } from 'lodash';
 import { useImmer } from 'use-immer';
 import { useDebounceValue } from 'usehooks-ts';
 
@@ -488,37 +488,44 @@ function LinkFilesTab() {
       return;
     }
 
-    await Promise.all([
-      ...map(none, ({ FileID }) => {
-        if (FileID === 0) return;
-        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        toast.warning('Episode linking skipped!', `Path: ${path}`);
-      }),
-      ...map(oneToOne, ({ EpisodeID, FileID }) => {
-        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        return linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }, {
-          onSuccess: () => toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`),
-          onError: () => toast.error('Failed at 1:1 linking!', `Path: ${path}`),
-        });
-      }),
-      ...map(oneToMany, ({ EpisodeIDs, FileID }) => {
-        const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        return linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }, {
-          onSuccess: () => toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`),
-          onError: () => toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`),
-        });
-      }),
-      ...map(manyToOne, ({ EpisodeID, FileIDs }) => {
-        const episode = find(episodes, ['ID', EpisodeID]);
-        const episodeDetails = episode
-          ? `Episode: ${episode.EpisodeNumber} - ${episode.Title}`
-          : `Episode: ${EpisodeID}`;
-        return linkManyFilesToOneEpisode({ episodeID: EpisodeID, fileIDs: FileIDs }, {
-          onSuccess: () => toast.success(`Scheduled a ${FileIDs.length}:1 mapping for linking!`, episodeDetails),
-          onError: () => toast.error(`Failed at ${FileIDs.length}:1 linking!`, episodeDetails),
-        });
-      }),
-    ]);
+    forEach(none, ({ FileID }) => {
+      if (FileID === 0) return;
+      const { path = '<missing file path>' } = showDataMap.get(FileID)!;
+      toast.warning('Episode linking skipped!', `Path: ${path}`);
+    });
+
+    await Promise
+      .allSettled(map(
+        oneToOne,
+        ({ EpisodeID, FileID }) => linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }),
+      ))
+      .then((results) => {
+        const counts = countBy(results, 'status');
+        if (counts.fulfilled > 0) toast.success(`Scheduled a 1:1 linking for ${counts.fulfilled} files!`);
+        if (counts.rejected > 0) toast.error(`Failed 1:1 linking for ${counts.rejected} files!`);
+      });
+
+    await Promise
+      .allSettled(map(
+        oneToMany,
+        ({ EpisodeIDs, FileID }) => linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }),
+      ))
+      .then((results) => {
+        const counts = countBy(results, 'status');
+        if (counts.fulfilled > 0) toast.success(`Scheduled a 1:N linking for ${counts.fulfilled} files!`);
+        if (counts.rejected > 0) toast.error(`Failed 1:N linking for ${counts.rejected} files!`);
+      });
+
+    await Promise
+      .allSettled(map(
+        manyToOne,
+        ({ EpisodeID, FileIDs }) => linkManyFilesToOneEpisode({ episodeID: EpisodeID, fileIDs: FileIDs }),
+      ))
+      .then((results) => {
+        const counts = countBy(results, 'status');
+        if (counts.fulfilled > 0) toast.success(`Scheduled an N:1 linking for ${counts.fulfilled} files!`);
+        if (counts.rejected > 0) toast.error(`Failed N:1 linking for ${counts.rejected} files!`);
+      });
 
     setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
     setLinks([]);
