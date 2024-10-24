@@ -157,7 +157,7 @@ const AnimeSelectPanel = (
 
   const searchRows = useMemo(() => {
     const rows: React.ReactNode[] = [];
-    if (!seriesUpdating) {
+    if (!seriesUpdating && !searchQuery.isPending) {
       forEach(searchQuery.data, (data) => {
         rows.push(<AnimeResultRow key={data.ID} data={data} changeSelectedSeries={changeSelectedSeries} />);
       });
@@ -169,7 +169,7 @@ const AnimeSelectPanel = (
       );
     }
     return rows;
-  }, [searchQuery.data, seriesUpdating, changeSelectedSeries]);
+  }, [seriesUpdating, searchQuery.isPending, searchQuery.data, changeSelectedSeries]);
 
   return (
     <div className="flex w-1/2 flex-col gap-y-2 contain-strict">
@@ -228,6 +228,11 @@ function LinkFilesTab() {
     },
     !!selectedSeries.ID && selectedSeries.Type !== SeriesTypeEnum.Unknown,
   );
+
+  const selectedSeriesLoaded = useMemo(() => !!selectedSeries?.ID && !anidbEpisodesQuery.isFetching, [
+    anidbEpisodesQuery.isFetching,
+    selectedSeries?.ID,
+  ]);
 
   const showDataMap = useMemo(() =>
     new Map(
@@ -665,14 +670,14 @@ function LinkFilesTab() {
           <div
             className={cx(
               'grid gap-y-2 gap-x-6 auto-rows-min',
-              selectedSeries?.ID ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1',
+              selectedSeriesLoaded ? 'w-full grid-cols-2' : 'w-1/2 grid-cols-1',
             )}
           >
             <div className="flex justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
               Selected Files
               <Icon size={1} path={mdiSortAlphabeticalAscending} />
             </div>
-            {selectedSeries?.ID && (
+            {selectedSeriesLoaded && (
               <div className="flex rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
                 AniDB |&nbsp;
                 <a
@@ -691,12 +696,12 @@ function LinkFilesTab() {
                 </Button>
               </div>
             )}
-            {selectedSeries.ID ? renderDynamicFileLinks() : renderStaticFileLinks()}
+            {selectedSeriesLoaded ? renderDynamicFileLinks() : renderStaticFileLinks()}
           </div>
-          {!selectedSeries?.ID && (
+          {!selectedSeriesLoaded && (
             <AnimeSelectPanel
               changeSelectedSeries={changeSelectedSeries}
-              seriesUpdating={seriesUpdating}
+              seriesUpdating={seriesUpdating || anidbEpisodesQuery.isFetching}
               placeholder={initialSearchName}
             />
           )}
