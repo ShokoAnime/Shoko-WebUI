@@ -205,8 +205,8 @@ function LinkFilesTab() {
     () => selectedRows.map(file => ({ LinkID: generateLinkID(), FileID: file.ID, EpisodeID: 0 })),
   );
 
-  const { mutate: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
-  const { mutate: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
+  const { mutateAsync: linkOneFileToManyEpisodes } = useLinkOneFileToManyEpisodesMutation();
+  const { mutateAsync: linkManyFilesToOneEpisode } = useLinkManyFilesToOneEpisodeMutation();
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
   const { mutateAsync: refreshSeries } = useRefreshAniDBSeriesMutation();
@@ -349,6 +349,7 @@ function LinkFilesTab() {
     if (isLinking) return;
     setSelectedLink(-1);
     const doesNotExist = selectedSeries.ShokoID === null;
+    setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
     if (doesNotExist) {
       try {
         await refreshSeries({ anidbID: selectedSeries.ID, createSeriesEntry: true, immediate: true });
@@ -359,7 +360,6 @@ function LinkFilesTab() {
         setLoading({ isLinking: false, isLinkingRunning: false, createdNewSeries: false });
       }
     }
-    setLoading({ isLinking: true, createdNewSeries: doesNotExist, isLinkingRunning: false });
   });
 
   const rangeFill = (rangeStart: string, epType: string) => {
@@ -496,14 +496,14 @@ function LinkFilesTab() {
       }),
       ...map(oneToOne, ({ EpisodeID, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }, {
+        return linkOneFileToManyEpisodes({ episodeIDs: [EpisodeID], fileId: FileID }, {
           onSuccess: () => toast.success('Scheduled a 1:1 mapping for linking!', `Path: ${path}`),
           onError: () => toast.error('Failed at 1:1 linking!', `Path: ${path}`),
         });
       }),
       ...map(oneToMany, ({ EpisodeIDs, FileID }) => {
         const { path = '<missing file path>' } = showDataMap.get(FileID)!;
-        linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }, {
+        return linkOneFileToManyEpisodes({ episodeIDs: EpisodeIDs, fileId: FileID }, {
           onSuccess: () => toast.success(`Scheduled a 1:${EpisodeIDs.length} mapping for linking!`, `Path: ${path}`),
           onError: () => toast.error(`Failed at 1:${EpisodeIDs.length} linked!`, `Path: ${path}`),
         });
@@ -513,7 +513,7 @@ function LinkFilesTab() {
         const episodeDetails = episode
           ? `Episode: ${episode.EpisodeNumber} - ${episode.Title}`
           : `Episode: ${EpisodeID}`;
-        linkManyFilesToOneEpisode({ episodeID: EpisodeID, fileIDs: FileIDs }, {
+        return linkManyFilesToOneEpisode({ episodeID: EpisodeID, fileIDs: FileIDs }, {
           onSuccess: () => toast.success(`Scheduled a ${FileIDs.length}:1 mapping for linking!`, episodeDetails),
           onError: () => toast.error(`Failed at ${FileIDs.length}:1 linking!`, episodeDetails),
         });
