@@ -388,7 +388,7 @@ const Renamer = () => {
   });
 
   const handleDeleteConfig = useEventCallback(() => {
-    if (!newConfig || !renamer) return;
+    if (!renamer) return;
     deleteConfig(selectedConfig.Name, {
       onSuccess: () => toast.success(`"${selectedConfig.Name}" deleted successfully!`),
       onError: () => toast.error(`"${selectedConfig.Name}" could not be deleted!`),
