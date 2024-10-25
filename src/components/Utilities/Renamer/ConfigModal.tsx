@@ -106,7 +106,7 @@ const ConfigModal = (props: Props) => {
         disabled={rename}
       >
         {renamers?.map(renamer => (
-          <option key={renamer.Name} value={renamer.Name}>
+          <option key={renamer.RenamerID} value={renamer.RenamerID}>
             {renamer.Name}
           </option>
         ))}
