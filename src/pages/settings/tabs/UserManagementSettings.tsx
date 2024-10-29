@@ -180,7 +180,7 @@ function UserManagementSettings() {
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">User Management</div>
         <div>
-          ConfigureShoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
+          Configure Shoko user accounts by changing usernames, passwords, avatars, and specifying which tags a user is
           restricted from viewing.
         </div>
       </div>
