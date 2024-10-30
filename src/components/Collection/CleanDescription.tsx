@@ -7,7 +7,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 // The question marks are there because people can't spell…
 // eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const CleanInfoLinesRegex =
-  /\(?\b((Modified )?Sour?ce|Note( [1-9])?|Summ?ary|From|See Also):(?!$| a daikon)([^\r\n]+|$)/img;
+  /\(?\b((Modified )?Sour?ces?|Note( [1-9])?|Summ?ary|From|See Also):(?!$| a daikon)([^\r\n]+|$)/img;
 
 // eslint-disable-next-line operator-linebreak -- Because dprint and eslint can't agree otherwise. Feel free to fix it.
 const CleanMiscLinesRegex =
