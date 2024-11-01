@@ -107,7 +107,7 @@ const ConfigModal = (props: Props) => {
       >
         {renamers?.map(renamer => (
           <option key={renamer.RenamerID} value={renamer.RenamerID}>
-            {renamer.Name}
+            {`${renamer.Name} - ${renamer.Version}`}
           </option>
         ))}
 

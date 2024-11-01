@@ -38,7 +38,7 @@ import {
   useRenamerRelocateMutation,
   useRenamerSaveConfigMutation,
 } from '@/core/react-query/renamer/mutations';
-import { useRenamerByConfigQuery, useRenamerConfigsQuery } from '@/core/react-query/renamer/queries';
+import { useRenamerByConfigQuery, useRenamerConfigsQuery, useRenamersQuery } from '@/core/react-query/renamer/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
@@ -265,6 +265,30 @@ const Menu = React.memo((props: MenuProps) => {
         labelRight
       />
     </div>
+  );
+});
+
+const ConfigOption = React.memo(({ config }: { config: RenamerConfigType }) => {
+  const renamersQuery = useRenamersQuery();
+
+  const currentRenamer = useMemo(
+    () => find(renamersQuery.data, item => item.RenamerID === config.RenamerID),
+    [config.RenamerID, renamersQuery.data],
+  );
+
+  let configName: string;
+  if (renamersQuery.isPending) {
+    configName = 'Loading...';
+  } else if (currentRenamer) {
+    configName = `${config.Name} (${currentRenamer.Name} - ${currentRenamer.Version})`;
+  } else {
+    configName = `${config.Name} (<Unknown>)`;
+  }
+
+  return (
+    <option value={config.Name}>
+      {configName}
+    </option>
   );
 });
 
@@ -521,9 +545,7 @@ const Renamer = () => {
                     onChange={event => changeSelectedConfig(event.target.value)}
                   >
                     {renamerConfigsQuery.data.map(renamerConfig => (
-                      <option key={renamerConfig.Name} value={renamerConfig.Name}>
-                        {renamerConfig.Name}
-                      </option>
+                      <ConfigOption config={renamerConfig} key={renamerConfig.Name} />
                     ))}
 
                     {renamerConfigsQuery.data.length === 0 && (
