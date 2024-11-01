@@ -277,7 +277,9 @@ const ConfigOption = React.memo(({ config }: { config: RenamerConfigType }) => {
   );
 
   let configName: string;
-  if (currentRenamer) {
+  if (renamersQuery.isPending) {
+    configName = 'Loading...';
+  } else if (currentRenamer) {
     configName = `${config.Name} (${currentRenamer.Name} - ${currentRenamer.Version})`;
   } else {
     configName = `${config.Name} (<Unknown>)`;
