@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import type { PlacesType } from 'react-tooltip';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import { BodyVisibleContext } from '@/core/router';
 import useAutoFocusRef from '@/hooks/useAutoFocusRef';
+import useBodyVisibleContext from '@/hooks/useBodyVisibleContext';
 
 type EndIcon = {
   icon: string;
@@ -64,7 +64,7 @@ const Input = React.memo((props: Props) => {
     value,
   } = props;
 
-  const bodyVisible = useContext(BodyVisibleContext);
+  const bodyVisible = useBodyVisibleContext();
   const inputRef = useAutoFocusRef(autoFocus, bodyVisible);
   const [isShow, setIsShow] = React.useState(false);
 
