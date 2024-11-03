@@ -1,5 +1,5 @@
 /* global globalThis */
-import React, { createContext, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Navigate, Route } from 'react-router';
 import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import { BodyVisibleContext } from '@/hooks/useBodyVisibleContext';
 import SentryErrorBoundaryWrapper from '@/pages/SentryErrorBoundaryWrapper';
 import Collection from '@/pages/collection/Collection';
 import Series from '@/pages/collection/Series';
@@ -129,8 +130,6 @@ const router = sentryCreateBrowserRouter(
     </Route>,
   ),
 );
-
-export const BodyVisibleContext = createContext(false);
 
 const Router = () => {
   const apikey = useSelector((state: RootState) => state.apiSession.apikey);
