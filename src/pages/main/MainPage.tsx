@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { Tooltip } from 'react-tooltip';
+import { mdiLoading } from '@mdi/js';
+import { Icon } from '@mdi/react';
 
 import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
 import TopNav from '@/components/Layout/TopNav';
@@ -13,13 +15,30 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 function MainPage() {
   const dispatch = useDispatch();
 
-  const { notifications, toastPosition } = useSettingsQuery().data.WebUI_Settings;
+  const settingsQuery = useSettingsQuery();
+  const { notifications, toastPosition } = settingsQuery.data.WebUI_Settings;
+
+  // settingsQuery.isSuccess is always true due to the existence of initialData
+  // settingsRevision will be 0 before the first actual fetch and it will never be 0 for fetched data
+  // This is kind of a hack but it works
+  const isSettingsLoaded = useMemo(
+    () => settingsQuery.data.WebUI_Settings.settingsRevision > 0,
+    [settingsQuery.data],
+  );
 
   useEffect(() => {
-    dispatch({ type: Events.MAINPAGE_LOADED });
-  }, [dispatch]);
+    if (isSettingsLoaded) dispatch({ type: Events.MAINPAGE_LOADED });
+  }, [dispatch, isSettingsLoaded]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  if (!isSettingsLoaded) {
+    return (
+      <div className="flex grow items-center justify-center text-panel-text-primary">
+        <Icon path={mdiLoading} size={4} spin />
+      </div>
+    );
+  }
 
   return (
     <>
