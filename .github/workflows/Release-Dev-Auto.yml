@@ -15,19 +15,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Setup Node.js v20
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
-      - name: Setup pnpm and install dependencies
-        uses: pnpm/action-setup@v3
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
         with:
           version: 9
-          run_install: true
+          run_install: false
 
-      - name: Lint
-        run: pnpm lint --quiet
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Determine bump type
         uses: zwaldowski/match-label-action@v5
@@ -37,7 +38,7 @@ jobs:
           default_match: prerelease
 
       - name: Get new version
-        uses: zwaldowski/semver-release-action@v3
+        uses: zwaldowski/semver-release-action@v4
         id: semver
         with:
           bump: ${{ steps.bump.outputs.match }}
