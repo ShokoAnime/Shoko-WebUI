@@ -320,7 +320,11 @@ const Renamer = () => {
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
 
   const [moveFiles, toggleMoveFiles] = useToggle(settings.Plugins.Renamer.MoveOnImport);
-  const [renameFiles, toggleRenameFiles] = useToggle(settings.Plugins.Renamer.RenameOnImport);
+  // In the case where move on import is not selected, we will assume the user wants to rename files when
+  // they open this page. Otherwise, why are they here? In most cases, it would be for renaming.
+  const [renameFiles, toggleRenameFiles] = useToggle(
+    settings.Plugins.Renamer.MoveOnImport ? settings.Plugins.Renamer.RenameOnImport : true,
+  );
   const [showSettings, toggleSettings] = useToggle(false);
   const [showAddFilesModal, toggleAddFilesModal] = useToggle(false);
   const [showConfigModal, toggleConfigModal] = useToggle(false);
@@ -484,6 +488,14 @@ const Renamer = () => {
     });
   });
 
+  const [renameDisabled, renameDisabledReason] = useMemo(() => {
+    if (relocatePending) return [true, 'Renaming in progress...'];
+    if (configEdited) return [true, 'Config has been edited, please save before renaming files'];
+    if (addedFiles.length === 0) return [true, 'No files added'];
+    if (!moveFiles && !renameFiles) return [true, 'Neither rename nor move is selected. No action to be performed'];
+    return [false, ''];
+  }, [addedFiles.length, configEdited, moveFiles, relocatePending, renameFiles]);
+
   return (
     <div className="flex grow flex-col gap-y-3">
       <ShokoPanel title="File Rename">
@@ -521,8 +533,8 @@ const Renamer = () => {
               className="flex h-13 flex-wrap items-center gap-x-2"
               onClick={handleRename}
               loading={relocatePending}
-              disabled={configEdited || relocatePending || addedFiles.length === 0}
-              tooltip={configEdited ? 'Config has been edited, please save before relocating files' : ''}
+              disabled={renameDisabled}
+              tooltip={renameDisabledReason}
             >
               <Icon path={mdiFileDocumentEditOutline} size={1} />
               Rename Files

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLocation } from 'react-router-dom';
-import { mdiLoading, mdiMenuDown } from '@mdi/js';
+import { mdiMenuDown } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { produce } from 'immer';
 
@@ -147,17 +147,6 @@ function DashboardPage() {
   useEffect(() => {
     window.dispatchEvent(new Event('resize'));
   }, [currentLayout]);
-
-  // settingsQuery.isSuccess is always true due to the existence of initialData
-  // settingsRevision will be 0 before the first actual fetch and it will never be 0 for fetched data
-  // This is kind of a hack but it works
-  if (settingsQuery.data.WebUI_Settings.settingsRevision === 0) {
-    return (
-      <div className="flex grow items-center justify-center text-panel-text-primary">
-        <Icon path={mdiLoading} size={4} spin />
-      </div>
-    );
-  }
 
   return (
     <>
