@@ -137,7 +137,7 @@
     "react/prefer-stateless-function": "off",
     "react/prop-types": "off",
     "react/require-default-props": "off",
-    "react-refresh/only-export-components": "warn",
+    "react-refresh/only-export-components": "error",
     "sort-destructure-keys/sort-destructure-keys": 2,
     "no-undef": "error"
   }
