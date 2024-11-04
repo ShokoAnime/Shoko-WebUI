@@ -63,7 +63,7 @@ const PosterViewItem = ({ isSeries = false, item }: Props) => {
             <Button
               className="pointer-events-auto h-fit"
               onClick={(isSeries || item.Size === 1) ? editSeriesModalCallback : editGroupModalCallback}
-              tooltip="Edit Series"
+              tooltip={(isSeries || item.Size === 1) ? 'Edit Series' : 'Edit Group'}
             >
               <Icon path={mdiPencilCircleOutline} size="2rem" />
             </Button>

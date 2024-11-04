@@ -103,10 +103,19 @@ const MovieRow = React.memo((props: Props) => {
             data-tooltip-id="tooltip"
             data-tooltip-content={lockMovie ? 'This episode is already linked to a different movie!' : ''}
           >
-            <div className={cx('flex gap-x-6', lockMovie && 'opacity-65 pointer-events-none')}>
+            <div className={cx('flex gap-x-6 items-center', lockMovie && 'opacity-65 pointer-events-none')}>
               Movie
-              <div className="line-clamp-1">
-                {tmdbMovie?.Title ?? 'Entry Not Linked'}
+              <div
+                className="flex grow flex-col text-left"
+                data-tooltip-id="tooltip"
+                data-tooltip-content={tmdbMovie?.Title ?? ''}
+              >
+                <div className="line-clamp-1 text-xs font-semibold opacity-65">
+                  {tmdbMovie?.Title ? tmdbMovie?.ReleasedAt ?? 'Airdate Unknown' : ''}
+                </div>
+                <div className="line-clamp-1">
+                  {tmdbMovie?.Title ?? 'Entry Not Linked'}
+                </div>
               </div>
             </div>
             {!lockMovie

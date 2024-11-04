@@ -15,6 +15,7 @@ export type TmdbBaseItemType = {
   ID: number;
   Title: string;
   Overview: string;
+  ReleasedAt: string;
 };
 
 export type TmdbMovieType = TmdbBaseItemType;
