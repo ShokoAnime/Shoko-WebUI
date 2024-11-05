@@ -61,10 +61,17 @@ const TopPanel = (props: Props) => {
             Dates and Title Match (DT)
           </div>
           <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {(matchRatingCounts.DateMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)}
+            <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
+              {matchRatingCounts.TitleMatches ?? 0}
             </div>
-            Dates or Title Match (D/T)
+            Title Match (T)
+          </div>
+          <div className="flex items-center gap-x-2">
+            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
+              {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
+                + (matchRatingCounts.TitleKindaMatches ?? 0)}
+            </div>
+            Dates and/or Title Kinda Match (~DT/D/~T)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">

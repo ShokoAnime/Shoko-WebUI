@@ -71,8 +71,10 @@ export type EpisodeFilesQueryType = {
 
 export enum MatchRatingType {
   UserVerified = 'UserVerified',
+  DateAndTitleKindaMatches = 'DateAndTitleKindaMatches',
   DateAndTitleMatches = 'DateAndTitleMatches',
   DateMatches = 'DateMatches',
+  TitleKindaMatches = 'TitleKindaMatches',
   TitleMatches = 'TitleMatches',
   FirstAvailable = 'FirstAvailable',
   None = 'None',
