@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React from 'react';
-import cx from 'classnames';
 
 import Checkbox from '@/components/Input/Checkbox';
 import InputSmall from '@/components/Input/InputSmall';
@@ -80,18 +79,13 @@ function AniDBTab({ setStatus }: Props) {
           justify
         />
         <Checkbox
-          label="Related Anime"
+          label="Always Download Related Anime"
           id="DownloadRelatedAnime"
           isChecked={DownloadRelatedAnime}
           onChange={handleInputChange}
           justify
         />
-        <div
-          className={cx(
-            'flex justify-between items-center transition-opacity',
-            !DownloadRelatedAnime && 'pointer-events-none opacity-65',
-          )}
-        >
+        <div className="flex items-center justify-between transition-opacity">
           Related Depth
           <InputSmall
             id="max-relation-depth"
