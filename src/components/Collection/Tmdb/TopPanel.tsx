@@ -54,49 +54,32 @@ const TopPanel = (props: Props) => {
             !flatXrefs && 'opacity-50 pointer-events-none',
           )}
         >
-          Match Types
+          Match Type
           <span>|</span>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
-              {matchRatingCounts.DateAndTitleMatches ?? 0}
+              {(matchRatingCounts.DateAndTitleMatches ?? 0) + (matchRatingCounts.TitleMatches ?? 0)}
             </div>
-            Date & Title (DT)
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
-              {matchRatingCounts.TitleMatches ?? 0}
-            </div>
-            Title (T)
+            Perfect
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {matchRatingCounts.DateAndTitleKindaMatches ?? 0}
+              {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
+                + (matchRatingCounts.TitleKindaMatches ?? 0)}
             </div>
-            Date & Approx. Title (~DT)
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {matchRatingCounts.DateMatches ?? 0}
-            </div>
-            Date (D)
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {matchRatingCounts.TitleKindaMatches ?? 0}
-            </div>
-            Approx. Title (~T)
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">
-              {matchRatingCounts.UserVerified ?? 0}
-            </div>
-            User Override (UO)
+            Approximate
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-danger px-2 text-button-primary-text">
               {matchRatingCounts.FirstAvailable ?? 0}
             </div>
-            Best Guess (BG)
+            Fallback
+          </div>
+          <div className="flex items-center gap-x-2">
+            <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">
+              {matchRatingCounts.UserVerified ?? 0}
+            </div>
+            Override
           </div>
         </div>
         <Button

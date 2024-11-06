@@ -6,21 +6,21 @@ import { MatchRatingType } from '@/core/types/api/episode';
 const getAbbreviation = (rating?: MatchRatingType) => {
   switch (rating) {
     case MatchRatingType.DateAndTitleMatches:
-      return 'DT';
+      return ['DT', 'Date & Title'];
     case MatchRatingType.DateAndTitleKindaMatches:
-      return '~DT';
+      return ['~DT', 'Date & Approx. Title'];
     case MatchRatingType.DateMatches:
-      return 'D';
+      return ['D', 'Date'];
     case MatchRatingType.TitleMatches:
-      return 'T';
+      return ['T', 'Title'];
     case MatchRatingType.TitleKindaMatches:
-      return '~T';
+      return ['~T', 'Approx. Title'];
     case MatchRatingType.UserVerified:
-      return 'UO';
+      return ['UO', 'User Override'];
     case MatchRatingType.FirstAvailable:
-      return 'BG';
+      return ['BG', 'Best Guess'];
     default:
-      return '';
+      return ['', ''];
   }
 };
 
@@ -46,8 +46,10 @@ const MatchRating = React.memo(({ isDisabled, isOdd, rating }: Props) => (
         'opacity-65': isDisabled,
       },
     )}
+    data-tooltip-id="tooltip"
+    data-tooltip-content={getAbbreviation(rating)[1]}
   >
-    {getAbbreviation(rating)}
+    {getAbbreviation(rating)[0]}
   </div>
 ));
 
