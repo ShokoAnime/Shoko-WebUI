@@ -54,30 +54,32 @@ const TopPanel = (props: Props) => {
             !flatXrefs && 'opacity-50 pointer-events-none',
           )}
         >
+          Match Types
+          <span>|</span>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
               {matchRatingCounts.DateAndTitleMatches ?? 0}
             </div>
-            Dates and Title Match (DT)
+            Date & Title (DT)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-important px-2 text-button-primary-text">
               {matchRatingCounts.TitleMatches ?? 0}
             </div>
-            Title Match (T)
+            Title (T)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {(matchRatingCounts.DateAndTitleKindaMatches ?? 0) + (matchRatingCounts.DateMatches ?? 0)
-                + (matchRatingCounts.TitleKindaMatches ?? 0)}
+              {(matchRatingCounts.DateMatches ?? 0) + (matchRatingCounts.TitleKindaMatches ?? 0)
+                + (matchRatingCounts.DateAndTitleKindaMatches ?? 0)}
             </div>
-            Dates and/or Title Kinda Match (~DT/D/~T)
+            Date + Approx. Title + Approx. Date & Title (D/~T/~DT)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">
               {matchRatingCounts.UserVerified ?? 0}
             </div>
-            User Overridden (UO)
+            User Override (UO)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-danger px-2 text-button-primary-text">
