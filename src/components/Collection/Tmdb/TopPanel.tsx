@@ -70,6 +70,12 @@ const TopPanel = (props: Props) => {
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
+              {matchRatingCounts.DateAndTitleKindaMatches ?? 0}
+            </div>
+            Date & Approx. Title (~DT)
+          </div>
+          <div className="flex items-center gap-x-2">
+            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
               {matchRatingCounts.DateMatches ?? 0}
             </div>
             Date (D)
@@ -79,12 +85,6 @@ const TopPanel = (props: Props) => {
               {matchRatingCounts.TitleKindaMatches ?? 0}
             </div>
             Approx. Title (~T)
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="rounded-md bg-panel-text-warning px-2 text-button-primary-text">
-              {matchRatingCounts.DateAndTitleKindaMatches ?? 0}
-            </div>
-            Date & Approx. Title (~DT)
           </div>
           <div className="flex items-center gap-x-2">
             <div className="rounded-md bg-panel-text-primary px-2 text-button-primary-text">
