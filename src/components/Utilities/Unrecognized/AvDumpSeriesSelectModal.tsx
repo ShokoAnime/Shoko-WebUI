@@ -143,7 +143,7 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                   'Manually copy the ED2K hashes from the box below, then proceed to the next step.'
                 )
                 : (
-                  'Click the blue button below to copy the ED2K hashes for use in the next step.'
+                  'Click the rightmost button below to copy the ED2K hashes for use in the next step.'
                 )}
             </StepDescription>
             <div className="flex grow rounded-lg border border-panel-border bg-panel-input p-4">
@@ -207,19 +207,30 @@ function AvDumpSeriesSelectModal({ getLinks, onClose, show }: Props) {
                       </div>
                     )
                     : (searchQuery.data ?? []).map(result => (
-                      <a
-                        href={`https://anidb.net/anime/${result.ID}/release/add`}
-                        key={result.ID}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-between"
-                        onClick={() => setClickedLink(true)}
-                      >
-                        <div className="line-clamp-1">{result.Title}</div>
-                        <div className="text-panel-text-primary">
+                      <div key={result.ID} className="flex justify-between">
+                        <a
+                          href={`https://anidb.net/anime/${result.ID}/release/add`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          onClick={() => setClickedLink(true)}
+                          data-tooltip-id="tooltip"
+                          className="transition-colors hover:text-panel-text-primary"
+                          data-tooltip-content="Mass Add"
+                        >
+                          <div className="line-clamp-1">{result.Title}</div>
+                        </a>
+                        <a
+                          href={`https://anidb.net/anime/${result.ID}`}
+                          aria-label="Check Series"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="items-center text-panel-text-primary"
+                          data-tooltip-id="tooltip"
+                          data-tooltip-content="Check Series"
+                        >
                           <Icon path={mdiOpenInNew} size={0.833} />
-                        </div>
-                      </a>
+                        </a>
+                      </div>
                     ))}
                 </div>
               </div>
