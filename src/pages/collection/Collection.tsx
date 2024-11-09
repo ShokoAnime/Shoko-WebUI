@@ -186,6 +186,7 @@ function Collection() {
     },
     [groups, groupsTotal, isSeries, seriesQuery.data],
   );
+  const item = items[0];
 
   useEffect(() => {
     if (!isSeries || debouncedSeriesSearch || !seriesQuery.isSuccess) return;
@@ -229,8 +230,9 @@ function Collection() {
           searchQuery={isSeries ? seriesSearch : groupSearch}
         />
         <TitleOptions
-          isSeries={isSeries}
           groupSearch={groupSearch}
+          isSeries={isSeries}
+          item={item}
           mode={mode}
           seriesSearch={seriesSearch}
           setSearch={setSearch}

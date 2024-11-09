@@ -391,6 +391,7 @@ const TmdbLinking = () => {
                         <Button
                           className="text-panel-text-primary"
                           onClick={handleNewLinkEdit}
+                          tooltip="Edit Link"
                         >
                           <Icon path={mdiPencilCircleOutline} size={1} />
                         </Button>
