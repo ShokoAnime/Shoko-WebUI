@@ -119,7 +119,10 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
         </div>
         <div className="flex gap-x-2">
           <Button
-            className={cx('flex gap-x-2 item', linkType === 'Show' && 'text-panel-text-primary')}
+            className={cx(
+              'flex gap-x-2 item hover:text-panel-text-primary transition-colors',
+              linkType === 'Show' && 'text-panel-text-primary',
+            )}
             onClick={() => setLinkType('Show')}
           >
             <Icon path={mdiTelevision} size={1} />
@@ -127,7 +130,10 @@ const TmdbLinkSelectPanel = React.memo(({ seriesType }: { seriesType?: SeriesTyp
           </Button>
           |
           <Button
-            className={cx('flex gap-x-2', linkType === 'Movie' && 'text-panel-text-primary')}
+            className={cx(
+              'flex gap-x-2 hover:text-panel-text-primary transition-colors',
+              linkType === 'Movie' && 'text-panel-text-primary',
+            )}
             onClick={() => setLinkType('Movie')}
           >
             <Icon path={mdiFilmstrip} size={1} />

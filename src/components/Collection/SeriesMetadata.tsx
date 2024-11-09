@@ -90,19 +90,19 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
               ? (
                 <>
                   {canEditLink && (
-                    <Button onClick={editLink} tooltip="Edit link">
+                    <Button onClick={editLink} tooltip="Edit Link">
                       <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
                     </Button>
                   )}
                   {canRemoveLink && (
-                    <Button onClick={removeLink} tooltip="Remove link">
+                    <Button onClick={removeLink} tooltip="Remove Link">
                       <Icon className="text-panel-icon-danger" path={mdiCloseCircleOutline} size={1} />
                     </Button>
                   )}
                 </>
               )
               : canAddLink && (
-                <Button onClick={addLink} tooltip="Add link">
+                <Button onClick={addLink} tooltip="Add Link">
                   <Icon className="text-panel-icon-action" path={mdiPlusCircleOutline} size={1} />
                 </Button>
               )}

@@ -122,6 +122,7 @@ const MovieRow = React.memo((props: Props) => {
               && (
                 <Button
                   onClick={handleOverrideLink}
+                  tooltip={tmdbMovie ? 'Remove Link' : 'Add Link'}
                 >
                   <Icon
                     path={tmdbMovie ? mdiLinkOff : mdiLinkPlus}
