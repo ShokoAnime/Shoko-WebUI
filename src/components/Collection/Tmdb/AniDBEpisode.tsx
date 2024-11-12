@@ -23,10 +23,10 @@ const AniDBEpisode = React.memo(({ episode, extra, isOdd, onIconClick }: Props) 
       isOdd ? 'bg-panel-background-alt' : 'bg-panel-background',
     )}
   >
-    <div className={cx('w-8', extra && 'opacity-65')}>
+    <div className={cx('w-8 shrink-0', extra && 'opacity-65')}>
       {getEpisodePrefixAlt(episode.AniDB?.Type)}
     </div>
-    <div className={cx('w-8', extra && 'opacity-65')}>{padNumber(episode.AniDB?.EpisodeNumber ?? 0)}</div>
+    <div className={cx('w-8 shrink-0', extra && 'opacity-65')}>{padNumber(episode.AniDB?.EpisodeNumber ?? 0)}</div>
 
     <div
       className={cx('flex flex-col grow', extra && 'opacity-65')}
