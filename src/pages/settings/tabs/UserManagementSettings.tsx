@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { mdiCircleEditOutline, mdiLoading, mdiMagnify, mdiMinusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { cloneDeep, find, isEqual, remove } from 'lodash';
+import { find, isEqual, map, remove } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
@@ -23,53 +24,40 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { UserType } from '@/core/types/api/user';
 
-const initialUser = {
-  ID: 0,
-  Username: '',
-  IsAdmin: true,
-  RestrictedTags: [],
-  CommunitySites: {
-    AniDB: true,
-    Trakt: false,
-    Plex: false,
-  },
-  Avatar: '',
-  PlexUsernames: '',
-} as UserType;
-
 function UserManagementSettings() {
   const dispatch = useDispatch();
 
   const currentUserQuery = useCurrentUserQuery();
   const usersQuery = useUsersQuery();
-  const users = useMemo(() => usersQuery.data ?? [], [usersQuery.data]);
   const { isPending: editUserPending, mutate: editUser } = usePutUserMutation();
   const { mutate: deleteUser } = useDeleteUserMutation();
   const { isPending: isChangePasswordPending, mutate: changePassword } = useChangePasswordMutation();
-  const [selectedUser, setSelectedUser] = useImmer(initialUser);
+
+  const [selectedUser, setSelectedUser] = useImmer<UserType | undefined>(undefined);
   const [newPassword, setNewPassword] = useState('');
-  const [logoutOthers, setLogoutOthers] = useState(false);
+  const [logoutOthers, toggleLogoutOthers, setLogoutOthers] = useToggle(false);
   const [tagSearch, setTagSearch] = useState('');
   const [avatarFile, setAvatarFile] = useState<File>();
-  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [showAvatarModal, toggleAvatarModal] = useToggle(false);
 
   const tagsQuery = useAniDBTagsQuery({ pageSize: 0, excludeDescriptions: true });
 
   useEffect(() => {
-    if (users.length > 0) setSelectedUser(users[0]);
-  }, [users, setSelectedUser]);
+    if (!usersQuery.data || !!selectedUser) return;
+    setSelectedUser(usersQuery.data[0]);
+  }, [selectedUser, setSelectedUser, usersQuery.data]);
 
   const unsavedChanges = useMemo(
     () => {
-      if (!selectedUser.ID) return false;
-      const user = find(users, tempUser => tempUser.ID === selectedUser.ID);
+      if (!selectedUser?.ID) return false;
+      const user = find(usersQuery.data, tempUser => tempUser.ID === selectedUser.ID);
       return !isEqual(selectedUser, user);
     },
-    [selectedUser, users],
+    [selectedUser, usersQuery.data],
   );
 
   useEffect(() => {
-    if (!selectedUser.ID) return;
+    if (!selectedUser?.ID) return;
     if (!unsavedChanges) {
       toast.dismiss('unsaved');
     } else {
@@ -84,10 +72,12 @@ function UserManagementSettings() {
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id } = event.target;
     const value = event.target.type === 'checkbox' ? event.target.checked : event.target.value;
-    const tempUser = cloneDeep(selectedUser);
-    if ((id === 'Trakt' || id === 'AniDB') && typeof value === 'boolean') tempUser.CommunitySites[id] = value;
-    else tempUser[id] = value;
-    setSelectedUser(tempUser);
+
+    setSelectedUser((draftState) => {
+      if (!draftState) return;
+      if ((id === 'Trakt' || id === 'AniDB') && typeof value === 'boolean') draftState.CommunitySites[id] = value;
+      else draftState[id] = value;
+    });
   };
 
   useEffect(() => {
@@ -103,7 +93,8 @@ function UserManagementSettings() {
     }
   }, [newPassword]);
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = useEventCallback(() => {
+    if (!selectedUser) return;
     changePassword({
       Password: newPassword,
       RevokeAPIKeys: logoutOthers,
@@ -119,13 +110,13 @@ function UserManagementSettings() {
         } else toast.success('Password changed successfully!');
       },
     });
-  };
+  });
 
-  const handleCancel = () => {
+  const handleCancel = useEventCallback(() => {
     setNewPassword('');
     setLogoutOthers(false);
-    setSelectedUser(find(users, user => user.ID === selectedUser.ID)!);
-  };
+    setSelectedUser(find(usersQuery.data, user => user.ID === selectedUser?.ID));
+  });
 
   const openAvatarModal = (event: React.ChangeEvent<HTMLInputElement>) => {
     const avatar = event.target.files?.[0];
@@ -133,21 +124,17 @@ function UserManagementSettings() {
     event.target.value = ''; // This is a hack (yes, another) to make the onChange trigger even when same file is selected
     if (!avatar) return;
     setAvatarFile(avatar);
-    setShowAvatarModal(true);
+    toggleAvatarModal();
   };
 
   const changeAvatar = (avatar: string) => {
-    setSelectedUser((immerState) => {
-      immerState.Avatar = avatar;
+    setSelectedUser((draftState) => {
+      if (!draftState) return;
+      draftState.Avatar = avatar;
     });
   };
 
-  const removeAvatar = useEventCallback(() => {
-    // Setting the avatar to an empty string will tell the server to remove the avatar.
-    setSelectedUser((immerState) => {
-      immerState.Avatar = '';
-    });
-  });
+  const removeAvatar = useEventCallback(() => changeAvatar(''));
 
   const deleteSelectedUser = (user: UserType) => {
     if (currentUserQuery.data?.ID === user.ID) {
@@ -161,19 +148,29 @@ function UserManagementSettings() {
   };
 
   const handleTagChange = (tagId: number, selected: boolean) => {
-    const tempUser = cloneDeep(selectedUser);
-    if (selected && !tempUser.RestrictedTags.find(tag => tag === tagId)) {
-      tempUser.RestrictedTags.push(tagId);
-      tempUser.RestrictedTags = tempUser.RestrictedTags.sort((tagA, tagB) => {
+    setSelectedUser((draftState) => {
+      if (!draftState) return;
+
+      if (!selected) {
+        remove(draftState.RestrictedTags, tag => tag === tagId);
+        return;
+      }
+
+      if (draftState.RestrictedTags.find(tag => tag === tagId)) return;
+
+      draftState.RestrictedTags.push(tagId);
+      draftState.RestrictedTags = draftState.RestrictedTags.sort((tagA, tagB) => {
         const tagAName = tagsQuery.data?.find(tag => tag.ID === tagA)?.Name;
         const tagBName = tagsQuery.data?.find(tag => tag.ID === tagB)?.Name;
         if (tagAName === undefined || tagBName === undefined) return 0;
         return tagAName?.localeCompare(tagBName);
       });
-    }
-    if (!selected) remove(tempUser.RestrictedTags, tag => tag === tagId);
-    setSelectedUser(tempUser);
+    });
   };
+
+  if (!selectedUser) {
+    return <Icon path={mdiLoading} size={4} spin className="m-auto text-panel-text-primary" />;
+  }
 
   return (
     <>
@@ -190,7 +187,7 @@ function UserManagementSettings() {
       <div className="flex flex-col gap-y-6">
         <div className="flex items-center font-semibold">Current Users</div>
         <div className="flex flex-col gap-y-1">
-          {users.map(user => (
+          {map(usersQuery.data, user => (
             <div className="flex h-8 justify-between" key={`user-${user.ID}`}>
               <div>{user.Username}</div>
               <div className="flex gap-x-2">
@@ -286,7 +283,7 @@ function UserManagementSettings() {
         <div className="mb-4 flex justify-between">
           <div className="flex items-center font-semibold">Password</div>
           <Button
-            onClick={() => handlePasswordChange()}
+            onClick={handlePasswordChange}
             loading={isChangePasswordPending}
             disabled={newPassword === ''}
             buttonType="primary"
@@ -313,7 +310,7 @@ function UserManagementSettings() {
               label="Logout all sessions"
               id="logout-all"
               isChecked={logoutOthers}
-              onChange={event => setLogoutOthers(event.target.checked)}
+              onChange={toggleLogoutOthers}
               className="justify-between"
             />
           </div>
@@ -381,7 +378,7 @@ function UserManagementSettings() {
       <div className="border-b border-panel-border" />
 
       <div className="flex justify-end gap-x-3 font-semibold">
-        <Button onClick={() => handleCancel()} buttonType="secondary" buttonSize="normal">Cancel</Button>
+        <Button onClick={handleCancel} buttonType="secondary" buttonSize="normal">Cancel</Button>
         <Button
           onClick={() => editUser(selectedUser)}
           buttonType="primary"
@@ -395,7 +392,7 @@ function UserManagementSettings() {
 
       <AvatarEditorModal
         show={showAvatarModal}
-        onClose={() => setShowAvatarModal(false)}
+        onClose={toggleAvatarModal}
         image={avatarFile}
         changeAvatar={changeAvatar}
       />
