@@ -33,7 +33,6 @@ function AniDBTab({ setStatus }: Props) {
     MyList_SetUnwatched,
     MyList_SetWatched,
     MyList_StorageState,
-    MyList_UpdateFrequency,
   } = newSettings.AniDb;
 
   const handleInputChange: React.ChangeEventHandler<HTMLInputElement | HTMLSelectElement> = (event) => {
@@ -175,14 +174,6 @@ function AniDBTab({ setStatus }: Props) {
           label="Anime Information"
           id="Anime_UpdateFrequency"
           value={Anime_UpdateFrequency}
-          onChange={handleInputChange}
-        >
-          <UpdateFrequencyValues />
-        </SelectSmall>
-        <SelectSmall
-          label="Sync Mylist"
-          id="MyList_UpdateFrequency"
-          value={MyList_UpdateFrequency}
           onChange={handleInputChange}
         >
           <UpdateFrequencyValues />
