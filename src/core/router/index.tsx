@@ -102,7 +102,16 @@ const router = sentryCreateBrowserRouter(
             <Route path="filter/:filterId" element={<Collection />} />
             <Route path="group/:groupId" element={<Collection />} />
             <Route path="group/:groupId/filter/:filterId" element={<Collection />} />
-            <Route path="series/:seriesId" element={<Series />} />
+            <Route path="series/:seriesId" element={<Series />}>
+              <Route index element={<Navigate to="overview" replace />} />
+              <Route path="overview" element={<SeriesOverview />} />
+              <Route path="episodes" element={<SeriesEpisodes />} />
+              <Route path="credits" element={<SeriesCredits />} />
+              <Route path="images" element={<Navigate to="posters" replace />} />
+              <Route path="images/:imageType" element={<SeriesImages />} />
+              <Route path="files" element={<SeriesFileSummary />} />
+              <Route path="tags" element={<SeriesTags />} />
+            </Route>
             <Route path="series/:seriesId/filter/:filterId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />
@@ -114,6 +123,7 @@ const router = sentryCreateBrowserRouter(
               <Route path="tags" element={<SeriesTags />} />
             </Route>
             <Route path="series/:seriesId/tmdb-linking" element={<TmdbLinking />} />
+            <Route path="series/:seriesId/filter/:filterId/tmdb-linking" element={<TmdbLinking />} />
           </Route>
           <Route path="settings" element={<SettingsPage />}>
             <Route index element={<Navigate to="general" replace />} />

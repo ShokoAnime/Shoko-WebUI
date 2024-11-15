@@ -40,6 +40,7 @@ import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
 const TmdbLinking = () => {
   const seriesId = toNumber(useParams().seriesId);
+  const { filterId } = useParams();
 
   const navigate = useNavigate();
   if (seriesId === 0) {
@@ -310,6 +311,7 @@ const TmdbLinking = () => {
         disableCreateLink={disableCreateLink}
         handleCreateLink={handleCreateLink}
         seriesId={seriesId}
+        filterId={filterId}
         xrefs={type === 'Show' ? finalEpisodeXrefs : undefined}
         xrefsCount={type === 'Show' ? undefined : movieXrefCount}
       />

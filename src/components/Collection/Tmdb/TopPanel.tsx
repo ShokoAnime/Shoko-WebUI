@@ -15,6 +15,7 @@ import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 type Props = {
   createInProgress: boolean;
   disableCreateLink: boolean;
+  filterId?: string;
   handleCreateLink: () => void;
   seriesId: number;
   xrefs?: Record<string, TmdbEpisodeXrefType[]>;
@@ -22,8 +23,12 @@ type Props = {
 };
 
 const TopPanel = (props: Props) => {
-  const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
+  const { createInProgress, disableCreateLink, filterId, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
   const navigate = useNavigate();
+
+  const returnLink = filterId
+    ? `/webui/collection/series/${seriesId}/filter/${filterId}`
+    : `/webui/collection/series/${seriesId}`;
 
   const flatXrefs = useMemo(
     () => {
@@ -86,7 +91,7 @@ const TopPanel = (props: Props) => {
           buttonType="secondary"
           buttonSize="normal"
           className="flex flex-row flex-wrap items-center gap-x-2 py-3"
-          onClick={() => navigate(`/webui/collection/series/${seriesId}`)}
+          onClick={() => navigate(`${returnLink}`)}
         >
           Cancel
         </Button>
