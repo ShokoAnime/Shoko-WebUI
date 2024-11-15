@@ -27,8 +27,7 @@ const MetadataLink = ({ id, seriesId, site, type }: Props) => {
       case 'TMDB':
         return `https://www.themoviedb.org/${type === 'Show' ? 'tv' : 'movie'}/${id}`;
       case 'TraktTv':
-        // TODO: Figure how to get trakt series link using ID
-        return '#';
+        return `https://trakt.tv/shows/${id}`;
       default:
         return '#';
     }
