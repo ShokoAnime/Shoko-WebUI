@@ -11,11 +11,13 @@ const useRouteLink = (item: CollectionGroupType | SeriesType) => {
     let link = '/webui/collection';
 
     if (groupId) {
-      return `${link}/series/${item.IDs.ID}`;
+      return filterId ? `${link}/series/${item.IDs.ID}/filter/${filterId}` : `${link}/series/${item.IDs.ID}`;
     }
 
     if (item.Size === 1) {
-      return `${link}/series/${(item as CollectionGroupType).IDs.MainSeries}`;
+      return filterId
+        ? `${link}/series/${(item as CollectionGroupType).IDs.MainSeries}/filter/${filterId}`
+        : `${link}/series/${(item as CollectionGroupType).IDs.MainSeries}`;
     }
 
     link += `/group/${item.IDs.ID}`;

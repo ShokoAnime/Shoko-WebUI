@@ -102,7 +102,8 @@ const router = sentryCreateBrowserRouter(
             <Route path="filter/:filterId" element={<Collection />} />
             <Route path="group/:groupId" element={<Collection />} />
             <Route path="group/:groupId/filter/:filterId" element={<Collection />} />
-            <Route path="series/:seriesId" element={<Series />}>
+            <Route path="series/:seriesId" element={<Series />} />
+            <Route path="series/:seriesId/filter/:filterId" element={<Series />}>
               <Route index element={<Navigate to="overview" replace />} />
               <Route path="overview" element={<SeriesOverview />} />
               <Route path="episodes" element={<SeriesEpisodes />} />

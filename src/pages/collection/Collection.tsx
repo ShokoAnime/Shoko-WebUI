@@ -121,9 +121,9 @@ function Collection() {
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && !filterId) {
+    if (!showFilterSidebar && (!filterId || !isLiveFilter)) {
       dispatch(resetFilter());
-      navigate('filter/live');
+      navigate('/webui/collection/filter/live');
     }
     toggleFilterSidebar();
   });

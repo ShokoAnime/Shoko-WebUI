@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -18,17 +18,23 @@ type Props = {
 };
 
 const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName, searchQuery }: Props) => {
-  const { groupId } = useParams();
+  const { filterId, groupId } = useParams();
   const dispatch = useDispatch();
 
   const handlFilterReset = useEventCallback(() => {
     dispatch(resetFilter());
   });
 
+  const filterLink = useMemo(() => {
+    if (filterId) return `filter/${filterId}`;
+    if (filterActive) return 'filter/live';
+    return undefined;
+  }, [filterId, filterActive]);
+
   return (
     <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">
       <Link
-        to="/webui/collection"
+        to={filterLink ? `/webui/collection/${filterLink}` : '/webui/collection'}
         className={cx((filterName ?? groupName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none')}
       >
         Collection
@@ -37,7 +43,7 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
         <>
           <Icon className="flex-none" path={mdiChevronRight} size={1} />
           <Link
-            to={`/webui/collection/group/${groupId}`}
+            to={filterLink ? `/webui/collection/group/${groupId}/${filterLink}` : `/webui/collection/group/${groupId}`}
             className={cx(
               (filterName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none',
               'truncate',
