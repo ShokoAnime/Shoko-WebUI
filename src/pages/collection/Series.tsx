@@ -40,6 +40,7 @@ const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
         'flex items-center gap-x-3 transition-colors hover:text-panel-text-primary',
         isActive && 'text-panel-text-primary',
       )}
+    replace
   >
     <Icon path={icon} size={1} />
     {text}
