@@ -240,6 +240,8 @@ const TmdbLinking = () => {
       } else {
         toast.success('Episode links have been updated!');
       }
+      // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
+      navigate(`../series/${seriesId}`);
     } catch (error) {
       toast.error('Failed to save links!');
     }
@@ -272,6 +274,8 @@ const TmdbLinking = () => {
       resetQueries(['series', seriesId]);
       setLinkOverrides({});
       toast.success('Links saved!');
+      // Note: The tmdb linking page's parent is the collection page, so we need to navigate from the collection page to the series page, even though we use the series id on the tmdb linking page too.
+      navigate(`../series/${seriesId}`);
     } catch (error) {
       console.error(error);
       toast.error('Failed to save links!');
