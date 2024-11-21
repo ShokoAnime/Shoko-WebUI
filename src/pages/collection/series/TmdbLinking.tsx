@@ -64,6 +64,7 @@ const TmdbLinking = () => {
     {
       includeDataFrom: ['AniDB'],
       includeMissing: IncludeOnlyFilterEnum.true,
+      includeUnaired: IncludeOnlyFilterEnum.true,
       type: [EpisodeTypeEnum.Normal, EpisodeTypeEnum.Special, EpisodeTypeEnum.Other],
       pageSize: 50,
     },
