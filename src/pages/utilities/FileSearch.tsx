@@ -202,7 +202,7 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex break-after-all justify-between capitalize">
-          <span className="font-semibold">Hash</span>
+          <span className="font-semibold">ED2K</span>
         </div>
         <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
       </div>

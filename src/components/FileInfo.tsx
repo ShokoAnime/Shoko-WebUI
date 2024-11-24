@@ -55,7 +55,7 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
           <div className="text-xl font-semibold opacity-65">File Hashes</div>
           <div className="flex flex-col gap-y-1">
             <div className="flex">
-              <div className="min-w-[9.375rem] font-semibold">Hash</div>
+              <div className="min-w-[9.375rem] font-semibold">ED2K</div>
               {mediaInfo.Hashes.ED2K ?? ''}
             </div>
             <div className="flex">
