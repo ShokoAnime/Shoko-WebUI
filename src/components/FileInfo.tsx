@@ -1,12 +1,23 @@
-import React from 'react';
+import React, { useMemo } from 'react';
+import { mdiClipboardOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import prettyBytes from 'pretty-bytes';
 
+import { copyToClipboard } from '@/core/util';
+import getEd2kLink from '@/core/utilities/getEd2kLink';
+import useEventCallback from '@/hooks/useEventCallback';
 import useMediaInfo from '@/hooks/useMediaInfo';
 
 import type { FileType } from '@/core/types/api/file';
 
 const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
+
+  const hash = useMemo(() => getEd2kLink(file), [file]);
+  const handleCopy = useEventCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    copyToClipboard(hash, 'ED2K hash').catch(console.error);
+  });
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -56,7 +67,12 @@ const FileInfo = ({ compact, file }: { compact?: boolean, file: FileType }) => {
           <div className="flex flex-col gap-y-1">
             <div className="flex">
               <div className="min-w-[9.375rem] font-semibold">ED2K</div>
-              {mediaInfo.Hashes.ED2K ?? ''}
+              <div className="flex gap-x-2">
+                {mediaInfo.Hashes.ED2K ?? ''}
+                <div className="cursor-pointer text-panel-icon-action" onClick={handleCopy}>
+                  <Icon path={mdiClipboardOutline} size={1} />
+                </div>
+              </div>
             </div>
             <div className="flex">
               <div className="min-w-[9.375rem] font-semibold">CRC</div>

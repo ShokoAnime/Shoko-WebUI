@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   mdiChevronLeft,
   mdiChevronRight,
+  mdiClipboardOutline,
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
   mdiDatabaseSyncOutline,
@@ -41,6 +42,8 @@ import { invalidateQueries } from '@/core/react-query/queryClient';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
+import { copyToClipboard } from '@/core/util';
+import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
@@ -169,6 +172,12 @@ const Menu = (
 
 const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
   const mediaInfo = useMediaInfo(file);
+  const ed2kHash = useMemo(() => getEd2kLink(file), [file]);
+
+  const copyEd2kLink = useEventCallback((event: React.MouseEvent) => {
+    event.stopPropagation();
+    copyToClipboard(ed2kHash, 'ED2K Hash').catch(console.error);
+  });
 
   return (
     <>
@@ -204,7 +213,12 @@ const MediaInfoDetails = React.memo(({ file }: { file: FileType }) => {
         <div className="flex break-after-all justify-between capitalize">
           <span className="font-semibold">ED2K</span>
         </div>
-        <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
+        <div className="flex break-after-all justify-between">
+          <span className="break-all">{mediaInfo.Hashes.ED2K ?? ''}</span>
+          <div className="cursor-pointer text-panel-icon-action" onClick={copyEd2kLink}>
+            <Icon path={mdiClipboardOutline} size={1} />
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between capitalize">

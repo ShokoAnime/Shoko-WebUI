@@ -14,6 +14,7 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import { useAvdumpFilesMutation } from '@/core/react-query/avdump/mutations';
 import { copyToClipboard } from '@/core/util';
+import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { RootState } from '@/core/store';
@@ -25,13 +26,7 @@ const AVDumpFileIcon = ({ file, truck = false }: { file: FileType, truck?: boole
   const fileId = file.ID;
   const dumpSession = avdumpList.sessions[avdumpList.sessionMap[fileId]];
 
-  const hash = useMemo(
-    () =>
-      `ed2k://|file|${
-        file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
-      }|${file.Size}|${file.Hashes.ED2K}|/`,
-    [file],
-  );
+  const hash = useMemo(() => getEd2kLink(file), [file]);
 
   const { color, path, state, title } = useMemo(() => {
     if (dumpSession?.status === 'Running') {
