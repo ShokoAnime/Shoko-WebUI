@@ -46,6 +46,7 @@ import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries'
 import { invalidateQueries } from '@/core/react-query/queryClient';
 import { addFiles } from '@/core/slices/utilities/renamer';
 import { FileSortCriteriaEnum } from '@/core/types/api/file';
+import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useRowSelection from '@/hooks/useRowSelection';
@@ -347,10 +348,7 @@ function UnrecognizedTab() {
   const getED2KLinks = useEventCallback(() => ({
     fileIds: selectedRows.map(file => file.ID),
     links: selectedRows.map(
-      file =>
-        `ed2k://|file|${
-          file.Locations[0]?.RelativePath?.split(/[\\/]+/g).pop() ?? ''
-        }|${file.Size}|${file.Hashes.ED2K}|/`,
+      file => getEd2kLink(file),
     ).toSorted(),
   }));
 
