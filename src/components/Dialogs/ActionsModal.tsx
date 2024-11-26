@@ -51,6 +51,7 @@ const actions = {
       'delete-ununsed-tmdb-shows',
       'update-all-tmdb-movies',
       'delete-ununsed-tmdb-movies',
+      'download-missing-tmdb-people',
     ],
   },
   shoko: {
