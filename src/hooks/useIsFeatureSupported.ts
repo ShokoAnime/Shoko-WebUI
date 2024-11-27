@@ -8,6 +8,7 @@ import type { VersionType } from '@/core/types/api/init';
 
 export enum FeatureType {
   UnairedEpisodeFilter = '5.0.0.18',
+  RepairTmdbPeopleAction = '5.0.0.61',
 }
 
 const useIsFeatureSupported = (feature: FeatureType) => {

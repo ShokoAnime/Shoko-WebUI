@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -7,6 +7,7 @@ import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
+import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 const actions = {
   import: {
@@ -121,6 +122,12 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
 
 function ActionsModal({ onClose, show }: Props) {
   const [activeTab, setActiveTab] = useState('import');
+
+  const isRepairTmdbPeopleSupported = useIsFeatureSupported(FeatureType.RepairTmdbPeopleAction);
+  useEffect(() => {
+    const action = 'download-missing-tmdb-people';
+    if (isRepairTmdbPeopleSupported && !actions.moviedb.data.includes(action)) actions.moviedb.data.push(action);
+  }, [isRepairTmdbPeopleSupported]);
 
   return (
     <ModalPanel

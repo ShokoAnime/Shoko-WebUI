@@ -124,6 +124,11 @@ const quickActions = {
     functionName: 'PurgeAllUnusedTmdbShows',
     info: 'Delete all unused TMDB Shows that are not linked to any AniDB anime.',
   },
+  'download-missing-tmdb-people': {
+    name: 'Download Missing TMDB People',
+    functionName: 'DownloadMissingTmdbPeople',
+    info: 'Downloads any Tmdb People missing in the local database.',
+  },
   'plex-sync-all': {
     name: 'Sync Plex Watch Status',
     functionName: 'PlexSyncAll',
