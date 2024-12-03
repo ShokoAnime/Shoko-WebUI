@@ -45,13 +45,13 @@ const actions = {
       'purge-all-tvdb-info',
     ],
   },
-  moviedb: {
+  tmdb: {
     title: 'TMDB',
     data: [
       'update-all-tmdb-shows',
-      'delete-ununsed-tmdb-shows',
+      'delete-unused-tmdb-shows',
       'update-all-tmdb-movies',
-      'delete-ununsed-tmdb-movies',
+      'delete-unused-tmdb-movies',
     ],
   },
   shoko: {
@@ -124,10 +124,21 @@ function ActionsModal({ onClose, show }: Props) {
   const [activeTab, setActiveTab] = useState('import');
 
   const isRepairTmdbPeopleSupported = useIsFeatureSupported(FeatureType.RepairTmdbPeopleAction);
+  const isPurgeMovieCollectionAndAlternateOrderingActionsSupported = useIsFeatureSupported(
+    FeatureType.PurgeMovieCollectionAndAlternateOrderingActions,
+  );
   useEffect(() => {
-    const action = 'download-missing-tmdb-people';
-    if (isRepairTmdbPeopleSupported && !actions.moviedb.data.includes(action)) actions.moviedb.data.push(action);
-  }, [isRepairTmdbPeopleSupported]);
+    const action0 = 'download-missing-tmdb-people';
+    if (isRepairTmdbPeopleSupported && !actions.tmdb.data.includes(action0)) actions.tmdb.data.push(action0);
+    const action1 = 'purge-tmdb-movie-collections';
+    const action2 = 'purge-tmdb-show-alternate-orderings';
+    if (isPurgeMovieCollectionAndAlternateOrderingActionsSupported && !actions.tmdb.data.includes(action1)) {
+      actions.tmdb.data.push(action1);
+    }
+    if (isPurgeMovieCollectionAndAlternateOrderingActionsSupported && !actions.tmdb.data.includes(action2)) {
+      actions.tmdb.data.push(action2);
+    }
+  }, [isRepairTmdbPeopleSupported, isPurgeMovieCollectionAndAlternateOrderingActionsSupported]);
 
   return (
     <ModalPanel
