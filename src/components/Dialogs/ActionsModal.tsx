@@ -51,6 +51,9 @@ const actions = {
       'delete-unused-tmdb-shows',
       'update-all-tmdb-movies',
       'delete-unused-tmdb-movies',
+      'download-missing-tmdb-people',
+      'purge-tmdb-movie-collections',
+      'purge-tmdb-show-alternate-orderings',
     ],
   },
   shoko: {
