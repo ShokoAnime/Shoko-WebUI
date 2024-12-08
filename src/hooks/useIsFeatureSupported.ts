@@ -7,9 +7,7 @@ import { parseServerVersion } from '@/core/util';
 import type { VersionType } from '@/core/types/api/init';
 
 export enum FeatureType {
-  UnairedEpisodeFilter = '5.0.0.18',
-  RepairTmdbPeopleAction = '5.0.0.61',
-  PurgeMovieCollectionAndAlternateOrderingActions = '5.0.0.76',
+  Placeholder = '5.0.0.0', // This is as a placeholder so the string conversion for `parseServerVersion` works and also serves as an example
 }
 
 const useIsFeatureSupported = (feature: FeatureType) => {
