@@ -5,7 +5,6 @@ import Icon from '@mdi/react';
 import Input from '@/components/Input/Input';
 import Select from '@/components/Input/Select';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 type Props = {
   type: string;
@@ -31,8 +30,6 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
     unaired,
     watched,
   } = props;
-
-  const isUnairedFilterSupported = useIsFeatureSupported(FeatureType.UnairedEpisodeFilter);
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -102,22 +99,16 @@ const EpisodeSearchAndFilterPanel = React.memo((props: Props) => {
           <option value="only">Show Only Hidden Entries</option>
         </Select>
 
-        <div
-          data-tooltip-id="tooltip"
-          data-tooltip-content={`This feature is only supported on server version >=${FeatureType.UnairedEpisodeFilter}`}
+        <Select
+          id="includeUnaired"
+          label="Air Status"
+          value={unaired}
+          onChange={onFilterChange}
         >
-          <Select
-            id="includeUnaired"
-            label="Air Status"
-            value={unaired}
-            onChange={onFilterChange}
-            disabled={!isUnairedFilterSupported}
-          >
-            <option value="true">All</option>
-            <option value="only">Unaired</option>
-            <option value="false">Aired</option>
-          </Select>
-        </div>
+          <option value="true">All</option>
+          <option value="only">Unaired</option>
+          <option value="false">Aired</option>
+        </Select>
 
         {(hasUnaired || hasMissing) && <hr className="border border-panel-border" />}
         <div className="flex flex-col gap-y-3">

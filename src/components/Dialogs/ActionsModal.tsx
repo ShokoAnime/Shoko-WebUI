@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import cx from 'classnames';
 import { map } from 'lodash';
 
@@ -7,7 +7,6 @@ import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
-import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 const actions = {
   import: {
@@ -122,23 +121,6 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
 
 function ActionsModal({ onClose, show }: Props) {
   const [activeTab, setActiveTab] = useState('import');
-
-  const isRepairTmdbPeopleSupported = useIsFeatureSupported(FeatureType.RepairTmdbPeopleAction);
-  const isPurgeMovieCollectionAndAlternateOrderingActionsSupported = useIsFeatureSupported(
-    FeatureType.PurgeMovieCollectionAndAlternateOrderingActions,
-  );
-  useEffect(() => {
-    const action0 = 'download-missing-tmdb-people';
-    if (isRepairTmdbPeopleSupported && !actions.tmdb.data.includes(action0)) actions.tmdb.data.push(action0);
-    const action1 = 'purge-tmdb-movie-collections';
-    const action2 = 'purge-tmdb-show-alternate-orderings';
-    if (isPurgeMovieCollectionAndAlternateOrderingActionsSupported && !actions.tmdb.data.includes(action1)) {
-      actions.tmdb.data.push(action1);
-    }
-    if (isPurgeMovieCollectionAndAlternateOrderingActionsSupported && !actions.tmdb.data.includes(action2)) {
-      actions.tmdb.data.push(action2);
-    }
-  }, [isRepairTmdbPeopleSupported, isPurgeMovieCollectionAndAlternateOrderingActionsSupported]);
 
   return (
     <ModalPanel
