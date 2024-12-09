@@ -155,7 +155,7 @@ const Series = () => {
 
       <EditSeriesModal />
 
-      <Outlet context={{ backdrop, scrollRef } satisfies SeriesContextType} />
+      <Outlet context={{ backdrop, scrollRef, series } satisfies SeriesContextType} />
 
       <div
         className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-5"

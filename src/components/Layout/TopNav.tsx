@@ -185,7 +185,7 @@ function TopNav() {
             <NavLink
               to="settings"
               className={({ isActive }) =>
-                cx({ 'text-header-icon-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
+                cx({ 'text-topnav-text-primary': isActive, 'opacity-65 pointer-events-none': layoutEditMode })}
               onClick={closeModalsAndSubmenus}
               data-tooltip-id="tooltip"
               data-tooltip-content="Settings"
@@ -348,7 +348,7 @@ function TopNav() {
               icon={mdiFileSearchOutline}
               onClick={closeModalsAndSubmenus}
               path="utilities/file-search"
-              text="Files Search"
+              text="File Search"
             />
             <LinkMenuItem
               icon={mdiFileDocumentEditOutline}

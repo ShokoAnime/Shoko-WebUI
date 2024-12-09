@@ -9,6 +9,7 @@ function MetadataSitesSettings() {
 
   return (
     <>
+      <title>Settings &gt; Metadata Sites | Shoko</title>
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">Metadata Sites</div>
         <div>

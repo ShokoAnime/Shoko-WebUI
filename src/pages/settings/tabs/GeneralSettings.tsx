@@ -82,6 +82,7 @@ function GeneralSettings() {
 
   return (
     <>
+      <title>Settings &gt; General | Shoko</title>
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">General</div>
         <div>

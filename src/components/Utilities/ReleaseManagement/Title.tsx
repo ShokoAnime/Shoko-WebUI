@@ -19,8 +19,8 @@ const Title = () => (
     Release Management
     <Icon path={mdiChevronRight} size={1} />
     <TabButton id="multiples" name="Multiples" />
-    {/* <div>|</div> */}
-    {/* <TabButton id="duplicates" name="Duplicates" /> */}
+    <div>|</div>
+    <TabButton id="duplicates" name="Duplicates" />
   </div>
 );
 

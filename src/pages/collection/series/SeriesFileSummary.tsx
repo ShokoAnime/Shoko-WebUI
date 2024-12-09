@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { useParams } from 'react-router';
+import { useOutletContext } from 'react-router-dom';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { toNumber } from 'lodash';
 
 import FileMissingEpisodes from '@/components/Collection/Files/FilesMissingEpisodes';
 import FileOverview from '@/components/Collection/Files/FilesOverview';
@@ -10,6 +9,7 @@ import FilesSummaryGroups from '@/components/Collection/Files/FilesSummaryGroup'
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 
+import type { SeriesContextType } from '@/components/Collection/constants';
 import type { WebuiSeriesFileSummaryType } from '@/core/types/api/webui';
 
 type ModeType = 'Series' | 'Missing';
@@ -47,43 +47,43 @@ const FilesSelectionHeader = React.memo(({ fileSummary, mode, setMode }: FileSel
 ));
 
 const SeriesFileSummary = () => {
-  const { seriesId } = useParams();
+  const { series } = useOutletContext<SeriesContextType>();
 
   const [mode, setMode] = useState<ModeType>('Series');
 
   const { data: fileSummary, isLoading } = useSeriesFileSummaryQuery(
-    toNumber(seriesId!),
+    series.IDs.ID,
     { groupBy: 'GroupName,FileVersion,FileLocation,AudioLanguages,SubtitleLanguages,VideoResolution' },
-    !!seriesId,
   );
 
-  if (!seriesId) return null;
-
   return (
-    <div className="flex w-full gap-x-6">
-      <div className="flex flex-col gap-y-6">
-        <FileOverview overview={fileSummary?.Overview} />
-      </div>
+    <>
+      <title>{`${series.Name} > Files | Shoko`}</title>
+      <div className="flex w-full gap-x-6">
+        <div className="flex flex-col gap-y-6">
+          <FileOverview overview={fileSummary?.Overview} />
+        </div>
 
-      <div className="flex w-full flex-col gap-y-6">
-        <FilesSelectionHeader
-          mode={mode}
-          setMode={setMode}
-          fileSummary={fileSummary}
-        />
+        <div className="flex w-full flex-col gap-y-6">
+          <FilesSelectionHeader
+            mode={mode}
+            setMode={setMode}
+            fileSummary={fileSummary}
+          />
 
-        <div className="flex grow flex-col gap-y-6">
-          {isLoading && (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} spin size={3} />
-            </div>
-          )}
-          {mode === 'Series'
-            ? <FilesSummaryGroups groups={fileSummary?.Groups} />
-            : <FileMissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
+          <div className="flex grow flex-col gap-y-6">
+            {isLoading && (
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} spin size={3} />
+              </div>
+            )}
+            {mode === 'Series'
+              ? <FilesSummaryGroups groups={fileSummary?.Groups} />
+              : <FileMissingEpisodes missingEps={fileSummary?.MissingEpisodes} />}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

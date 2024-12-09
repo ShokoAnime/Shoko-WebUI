@@ -19,7 +19,7 @@ export type SeriesType = {
   };
 };
 
-export type SeriesWithMultipleReleasesType = {
+export type ReleaseManagementSeriesType = {
   EpisodeCount: number;
 } & SeriesType;
 

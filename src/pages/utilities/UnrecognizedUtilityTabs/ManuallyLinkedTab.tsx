@@ -220,97 +220,100 @@ const ManuallyLinkedTab = () => {
   }, [seriesQuery.data]);
 
   return (
-    <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
-      <ShokoPanel
-        title={<Title />}
-        options={
-          <ItemCount
-            count={seriesCount}
-            selected={selectedFileIds.length}
-            suffix="Series"
-            selectedSuffix={selectedFileIds.length === 1 ? 'File' : 'Files'}
-          />
-        }
-      >
-        <div className="flex items-center gap-x-3">
-          <Input
-            type="text"
-            placeholder="Search..."
-            startIcon={mdiMagnify}
-            id="search"
-            value={search}
-            onChange={event => setSearch(event.target.value)}
-            inputClassName="px-4 py-3"
-          />
-          <Menu selectedFileIds={selectedFileIds} setSelectedRows={setRowSelection} />
-          <TransitionDiv show={selectedFileIds.length !== 0} className="flex gap-x-3">
-            <Button
-              buttonType="primary"
-              buttonSize="normal"
-              className="flex gap-x-2.5 px-4 py-3 font-semibold"
-              onClick={unlinkFiles}
-              loading={unlinkingInProgress}
-            >
-              <Icon path={mdiLinkOff} size={1} />
-              Unlink
-            </Button>
-          </TransitionDiv>
-        </div>
-      </ShokoPanel>
-
-      <div className="flex grow gap-x-3">
-        <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-          {seriesQuery.isPending && (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} size={4} spin />
-            </div>
-          )}
-
-          {!seriesQuery.isPending && seriesCount === 0 && (
-            <div className="flex grow items-center justify-center text-lg font-semibold">
-              No series with manually linked files!
-            </div>
-          )}
-
-          {seriesQuery.isSuccess && seriesCount > 0 && (
-            <UtilitiesTable
-              columns={seriesColumns}
+    <>
+      <title>Utilities &gt; Manually Linked Files | Shoko</title>
+      <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
+        <ShokoPanel
+          title={<Title />}
+          options={
+            <ItemCount
               count={seriesCount}
-              fetchNextPage={seriesQuery.fetchNextPage}
-              isFetchingNextPage={seriesQuery.isFetchingNextPage}
-              rows={series}
-              skipSort
-              handleRowSelect={(id, _) => setSelectedSeries(id)}
-              rowSelection={{ [selectedSeries]: true }}
+              selected={selectedFileIds.length}
+              suffix="Series"
+              selectedSuffix={selectedFileIds.length === 1 ? 'File' : 'Files'}
             />
-          )}
-        </div>
-
-        <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-          {selectedSeries === 0 && <div className="m-auto text-lg font-semibold">Select Series to Populate</div>}
-
-          {selectedSeries > 0 && episodesQuery.isPending && (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} size={4} spin />
-            </div>
-          )}
-
-          {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount > 0 && (
-            <UtilitiesTable
-              columns={episodeColumns}
-              count={episodeCount}
-              fetchNextPage={episodesQuery.fetchNextPage}
-              isFetchingNextPage={episodesQuery.isFetchingNextPage}
-              rows={episodes}
-              skipSort
-              handleRowSelect={handleRowSelect}
-              rowSelection={rowSelection}
-              setSelectedRows={setRowSelection}
+          }
+        >
+          <div className="flex items-center gap-x-3">
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              value={search}
+              onChange={event => setSearch(event.target.value)}
+              inputClassName="px-4 py-3"
             />
-          )}
+            <Menu selectedFileIds={selectedFileIds} setSelectedRows={setRowSelection} />
+            <TransitionDiv show={selectedFileIds.length !== 0} className="flex gap-x-3">
+              <Button
+                buttonType="primary"
+                buttonSize="normal"
+                className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                onClick={unlinkFiles}
+                loading={unlinkingInProgress}
+              >
+                <Icon path={mdiLinkOff} size={1} />
+                Unlink
+              </Button>
+            </TransitionDiv>
+          </div>
+        </ShokoPanel>
+
+        <div className="flex grow gap-x-3">
+          <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
+            {seriesQuery.isPending && (
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} size={4} spin />
+              </div>
+            )}
+
+            {!seriesQuery.isPending && seriesCount === 0 && (
+              <div className="flex grow items-center justify-center text-lg font-semibold">
+                No series with manually linked files!
+              </div>
+            )}
+
+            {seriesQuery.isSuccess && seriesCount > 0 && (
+              <UtilitiesTable
+                columns={seriesColumns}
+                count={seriesCount}
+                fetchNextPage={seriesQuery.fetchNextPage}
+                isFetchingNextPage={seriesQuery.isFetchingNextPage}
+                rows={series}
+                skipSort
+                handleRowSelect={(id, _) => setSelectedSeries(id)}
+                rowSelection={{ [selectedSeries]: true }}
+              />
+            )}
+          </div>
+
+          <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
+            {selectedSeries === 0 && <div className="m-auto text-lg font-semibold">Select Series to Populate</div>}
+
+            {selectedSeries > 0 && episodesQuery.isPending && (
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} size={4} spin />
+              </div>
+            )}
+
+            {selectedSeries > 0 && episodesQuery.isSuccess && episodeCount > 0 && (
+              <UtilitiesTable
+                columns={episodeColumns}
+                count={episodeCount}
+                fetchNextPage={episodesQuery.fetchNextPage}
+                isFetchingNextPage={episodesQuery.isFetchingNextPage}
+                rows={episodes}
+                skipSort
+                handleRowSelect={handleRowSelect}
+                rowSelection={rowSelection}
+                setSelectedRows={setRowSelection}
+              />
+            )}
+          </div>
         </div>
-      </div>
-    </TransitionDiv>
+      </TransitionDiv>
+    </>
   );
 };
 

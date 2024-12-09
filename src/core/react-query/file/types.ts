@@ -8,6 +8,12 @@ export type DeleteFileRequestType = {
   removeFolder: boolean;
 };
 
+export type DeleteFileLocationRequestType = {
+  locationId: number;
+  deleteFile?: boolean;
+  deleteFolder?: boolean;
+};
+
 export type IgnoreFileRequestType = {
   fileId: number;
   ignore: boolean;

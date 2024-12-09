@@ -1,13 +1,13 @@
 import type { PaginationType } from '@/core/types/api';
 import type { DataSourceType } from '@/core/types/api/common';
 
-export type SeriesWithMultipleReleasesRequestType = {
+export type ReleaseManagementSeriesRequestType = {
   ignoreVariations?: boolean;
   includeDataFrom?: DataSourceType[];
   onlyFinishedSeries?: boolean;
 } & PaginationType;
 
-export type SeriesEpisodesWithMultipleReleasesType = {
+export type ReleaseManagementSeriesEpisodesType = {
   includeDataFrom?: DataSourceType[];
   includeFiles?: boolean;
   includeMediaInfo?: boolean;

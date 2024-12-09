@@ -174,6 +174,7 @@ function UserManagementSettings() {
 
   return (
     <>
+      <title>Settings &gt; User Management | Shoko</title>
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">User Management</div>
         <div>

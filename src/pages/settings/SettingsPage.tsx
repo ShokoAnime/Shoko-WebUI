@@ -36,7 +36,7 @@ function SettingsPage() {
 
   const { pathname } = useLocation();
 
-  const toastId = useRef<number | string>();
+  const toastId = useRef<number | string>(undefined);
 
   const settingsQuery = useSettingsQuery();
   const settings = settingsQuery.data;
