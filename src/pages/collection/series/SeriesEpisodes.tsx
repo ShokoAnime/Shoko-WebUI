@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
 import { useOutletContext, useSearchParams } from 'react-router-dom';
 import { mdiCloseCircleOutline, mdiEyeOutline, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import { debounce, toNumber } from 'lodash';
+import { debounce } from 'lodash';
 import { useDebounceValue } from 'usehooks-ts';
 
 import EpisodeSearchAndFilterPanel from '@/components/Collection/Episode/EpisodeSearchAndFilterPanel';
@@ -13,7 +12,7 @@ import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
-import { useSeriesEpisodesInfiniteQuery, useSeriesQuery } from '@/core/react-query/series/queries';
+import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { EpisodeTypeEnum } from '@/core/types/api/episode';
 import { dayjs } from '@/core/util';
@@ -34,7 +33,8 @@ type FilterOptionsType = {
 };
 
 const SeriesEpisodes = () => {
-  const { seriesId } = useParams();
+  const { series } = useOutletContext<SeriesContextType>();
+
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [showOptionsModal, setShowOptionsModal] = useState(false);
@@ -71,15 +71,13 @@ const SeriesEpisodes = () => {
     setSelectedEpisodes(new Set());
   }, [filterOptions]);
 
-  const seriesQueryData = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId).data;
   const seriesEpisodesQuery = useSeriesEpisodesInfiniteQuery(
-    toNumber(seriesId!),
+    series.IDs.ID,
     {
       pageSize,
       includeDataFrom: ['AniDB'],
       ...filterOptions,
     },
-    !!seriesId,
   );
   const {
     data,
@@ -92,20 +90,18 @@ const SeriesEpisodes = () => {
 
   const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
 
-  const anidbSeriesId = useMemo(() => seriesQueryData?.IDs.AniDB ?? 0, [seriesQueryData]);
-
   const hasMissingEpisodes = useMemo(
-    () => ((seriesQueryData?.Sizes.Missing.Episodes ?? 0) > 0),
-    [seriesQueryData?.Sizes],
+    () => ((series.Sizes.Missing.Episodes ?? 0) > 0),
+    [series.Sizes],
   );
 
   const startDate = useMemo(
-    () => (seriesQueryData?.AniDB?.AirDate != null ? dayjs(seriesQueryData?.AniDB?.AirDate) : null),
-    [seriesQueryData],
+    () => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null),
+    [series],
   );
   const endDate = useMemo(
-    () => (seriesQueryData?.AniDB?.EndDate != null ? dayjs(seriesQueryData?.AniDB?.EndDate) : null),
-    [seriesQueryData],
+    () => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null),
+    [series],
   );
   const hasUnairedEpisodes = useMemo(
     () => (!!startDate && (endDate === null || endDate.isAfter(dayjs()))),
@@ -133,7 +129,7 @@ const SeriesEpisodes = () => {
 
   const handleMarkWatched = useEventCallback((watched: boolean) => {
     watchEpisode({
-      seriesId: toNumber(seriesId),
+      seriesId: series.IDs.ID,
       value: watched,
       ...filterOptions,
     }, {
@@ -150,105 +146,108 @@ const SeriesEpisodes = () => {
   const openOptionsModal = useEventCallback(() => setShowOptionsModal(true));
 
   return (
-    <div className="flex w-full gap-x-6">
-      <EpisodeSearchAndFilterPanel
-        onFilterChange={onFilterChange}
-        search={filterOptions.search}
-        type={filterOptions.type[0]}
-        availability={filterOptions.includeMissing}
-        watched={filterOptions.includeWatched}
-        hidden={filterOptions.includeHidden}
-        unaired={filterOptions.includeUnaired}
-        hasUnaired={hasUnairedEpisodes}
-        hasMissing={hasMissingEpisodes}
-      />
-      <div className="flex grow flex-col gap-y-4">
-        <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
-          <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
-            <span>Episodes</span>
-            <span className="hidden px-2 2xl:inline">|</span>
-            <span>
-              <span className="pr-2 text-panel-text-important">
-                {isSuccess ? episodeCount : '-'}
+    <>
+      <title>{`${series.Name} > Episodes | Shoko`}</title>
+      <div className="flex w-full gap-x-6">
+        <EpisodeSearchAndFilterPanel
+          onFilterChange={onFilterChange}
+          search={filterOptions.search}
+          type={filterOptions.type[0]}
+          availability={filterOptions.includeMissing}
+          watched={filterOptions.includeWatched}
+          hidden={filterOptions.includeHidden}
+          unaired={filterOptions.includeUnaired}
+          hasUnaired={hasUnairedEpisodes}
+          hasMissing={hasMissingEpisodes}
+        />
+        <div className="flex grow flex-col gap-y-4">
+          <div className="flex h-[6.125rem] items-center justify-between rounded-lg border border-panel-border bg-panel-background-transparent px-6 py-4">
+            <div className="flex flex-wrap text-xl font-semibold 2xl:flex-nowrap">
+              <span>Episodes</span>
+              <span className="hidden px-2 2xl:inline">|</span>
+              <span>
+                <span className="pr-2 text-panel-text-important">
+                  {isSuccess ? episodeCount : '-'}
+                </span>
+                Entries Listed
+                {selectedEpisodes.size > 0 && (
+                  <>
+                    &nbsp;|&nbsp;
+                    <span className="text-panel-text-important">
+                      {selectedEpisodes.size}
+                    </span>
+                    &nbsp;Entries Selected
+                  </>
+                )}
               </span>
-              Entries Listed
+            </div>
+            <div className="flex flex-row gap-x-2">
               {selectedEpisodes.size > 0 && (
-                <>
-                  &nbsp;|&nbsp;
-                  <span className="text-panel-text-important">
-                    {selectedEpisodes.size}
-                  </span>
-                  &nbsp;Entries Selected
-                </>
+                <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
+                  <Icon path={mdiCloseCircleOutline} size={1} />
+                  Cancel Selection
+                </Button>
               )}
-            </span>
-          </div>
-          <div className="flex flex-row gap-x-2">
-            {selectedEpisodes.size > 0 && (
-              <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={resetSelection}>
-                <Icon path={mdiCloseCircleOutline} size={1} />
-                Cancel Selection
+              <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
+                <Icon path={mdiEyeOutline} size={1} />
+                Options
               </Button>
-            )}
-            <Button buttonType="secondary" buttonSize="normal" className="flex gap-x-2" onClick={openOptionsModal}>
-              <Icon path={mdiEyeOutline} size={1} />
-              Options
-            </Button>
+            </div>
+          </div>
+          <div className="grow">
+            {isPending
+              ? (
+                <div className="flex h-full items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} spin size={4} />
+                </div>
+              )
+              : (
+                <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
+                  {virtualItems.map((virtualItem) => {
+                    const page = Math.ceil((virtualItem.index + 1) / pageSize);
+                    const episode = episodes[virtualItem.index];
+
+                    if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
+
+                    return (
+                      <div
+                        key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
+                        className="absolute left-0 top-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
+                        data-index={virtualItem.index}
+                        style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
+                        ref={rowVirtualizer.measureElement}
+                      >
+                        {episode
+                          ? (
+                            <EpisodeSummary
+                              selected={selectedEpisodes.has(episode.IDs.ID)}
+                              onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
+                              seriesId={series.IDs.ID}
+                              anidbSeriesId={series.IDs.AniDB}
+                              episode={episode}
+                              page={page}
+                            />
+                          )
+                          : (
+                            <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
+                              <Icon path={mdiLoading} spin size={3} />
+                            </div>
+                          )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
           </div>
         </div>
-        <div className="grow">
-          {isPending
-            ? (
-              <div className="flex h-full items-center justify-center text-panel-text-primary">
-                <Icon path={mdiLoading} spin size={4} />
-              </div>
-            )
-            : (
-              <div className="relative w-full" style={{ height: rowVirtualizer.getTotalSize() }}>
-                {virtualItems.map((virtualItem) => {
-                  const page = Math.ceil((virtualItem.index + 1) / pageSize);
-                  const episode = episodes[virtualItem.index];
-
-                  if (!episode && !isFetchingNextPage) fetchNextPageDebounced();
-
-                  return (
-                    <div
-                      key={episode ? episode.IDs.ID : `loading-${virtualItem.key}`}
-                      className="absolute left-0 top-0 flex w-full flex-col rounded-lg border border-panel-border bg-panel-background-transparent"
-                      data-index={virtualItem.index}
-                      style={{ transform: `translateY(${virtualItem.start ?? 0}px)` }}
-                      ref={rowVirtualizer.measureElement}
-                    >
-                      {episode
-                        ? (
-                          <EpisodeSummary
-                            selected={selectedEpisodes.has(episode.IDs.ID)}
-                            onSelectionChange={() => onSelectionChange(episode.IDs.ID)}
-                            seriesId={toNumber(seriesId)}
-                            anidbSeriesId={anidbSeriesId}
-                            episode={episode}
-                            page={page}
-                          />
-                        )
-                        : (
-                          <div className="flex h-[20.75rem] items-center justify-center p-6 text-panel-text-primary">
-                            <Icon path={mdiLoading} spin size={3} />
-                          </div>
-                        )}
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-        </div>
+        <EpisodeWatchModal
+          show={showOptionsModal}
+          onRequestClose={() => setShowOptionsModal(false)}
+          markFilteredWatched={markFilteredWatched}
+          markFilteredUnwatched={markFilteredUnwatched}
+        />
       </div>
-      <EpisodeWatchModal
-        show={showOptionsModal}
-        onRequestClose={() => setShowOptionsModal(false)}
-        markFilteredWatched={markFilteredWatched}
-        markFilteredUnwatched={markFilteredUnwatched}
-      />
-    </div>
+    </>
   );
 };
 

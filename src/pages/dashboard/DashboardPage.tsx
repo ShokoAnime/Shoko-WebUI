@@ -150,6 +150,7 @@ function DashboardPage() {
 
   return (
     <>
+      <title>Dashboard | Shoko</title>
       <ResponsiveGridLayout
         layouts={currentLayout}
         breakpoints={{ lg: 1024, md: 768, sm: 640 }} // These match tailwind breakpoints (for consistency)

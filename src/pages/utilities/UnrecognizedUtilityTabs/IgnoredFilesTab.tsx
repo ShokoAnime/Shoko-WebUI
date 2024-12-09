@@ -132,54 +132,57 @@ function IgnoredFilesTab() {
   } = useRowSelection<FileType>(files);
 
   return (
-    <div className="flex grow flex-col gap-y-6">
-      <div>
-        <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
-          <div className="flex items-center gap-x-3">
-            <Input
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              id="search"
-              value={search}
-              onChange={setSearch}
-              inputClassName="px-4 py-3"
-            />
-            <Menu
-              selectedRows={selectedRows}
+    <>
+      <title>Utilities &gt; Ignored Files | Shoko</title>
+      <div className="flex grow flex-col gap-y-6">
+        <div>
+          <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
+            <div className="flex items-center gap-x-3">
+              <Input
+                type="text"
+                placeholder="Search..."
+                startIcon={mdiMagnify}
+                id="search"
+                value={search}
+                onChange={setSearch}
+                inputClassName="px-4 py-3"
+              />
+              <Menu
+                selectedRows={selectedRows}
+                setSelectedRows={setRowSelection}
+              />
+            </div>
+          </ShokoPanel>
+        </div>
+
+        <TransitionDiv className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
+          {filesQuery.isPending && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
+
+          {!filesQuery.isPending && fileCount === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">No ignored file(s)!</div>
+          )}
+
+          {filesQuery.isSuccess && fileCount > 0 && (
+            <UtilitiesTable
+              count={fileCount}
+              fetchNextPage={filesQuery.fetchNextPage}
+              handleRowSelect={handleRowSelect}
+              columns={columns}
+              isFetchingNextPage={filesQuery.isFetchingNextPage}
+              rows={files}
+              rowSelection={rowSelection}
               setSelectedRows={setRowSelection}
+              setSortCriteria={setSortCriteria}
+              sortCriteria={sortCriteria}
             />
-          </div>
-        </ShokoPanel>
+          )}
+        </TransitionDiv>
       </div>
-
-      <TransitionDiv className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background p-6">
-        {filesQuery.isPending && (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
-
-        {!filesQuery.isPending && fileCount === 0 && (
-          <div className="flex grow items-center justify-center font-semibold">No ignored file(s)!</div>
-        )}
-
-        {filesQuery.isSuccess && fileCount > 0 && (
-          <UtilitiesTable
-            count={fileCount}
-            fetchNextPage={filesQuery.fetchNextPage}
-            handleRowSelect={handleRowSelect}
-            columns={columns}
-            isFetchingNextPage={filesQuery.isFetchingNextPage}
-            rows={files}
-            rowSelection={rowSelection}
-            setSelectedRows={setRowSelection}
-            setSortCriteria={setSortCriteria}
-            sortCriteria={sortCriteria}
-          />
-        )}
-      </TransitionDiv>
-    </div>
+    </>
   );
 }
 

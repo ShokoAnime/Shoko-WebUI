@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useOutletContext } from 'react-router-dom';
 import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
 
 import CleanDescription from '@/components/Collection/CleanDescription';
@@ -11,6 +10,7 @@ import TagsSearchAndFilterPanel from '@/components/Collection/Tags/TagsSearchAnd
 import { useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
+import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TagType } from '@/core/types/api/tags';
 
 const cleanString = (input = '') => input.replaceAll(' ', '').toLowerCase();
@@ -47,7 +47,7 @@ const SingleTag = React.memo(({ onTagExpand, tag }: { tag: TagType, onTagExpand:
 });
 
 const SeriesTags = () => {
-  const { seriesId } = useParams();
+  const { series } = useOutletContext<SeriesContextType>();
 
   const [selectedTag, setSelectedTag] = useState<TagType>();
   const [showTagModal, toggleShowTagModal] = useToggle(false);
@@ -83,11 +83,7 @@ const SeriesTags = () => {
     }
   });
 
-  const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(
-    toNumber(seriesId!),
-    { filter: 1 },
-    !!seriesId,
-  );
+  const { data: tagsQueryData, isLoading, isSuccess } = useSeriesTagsQuery(series.IDs.ID, { filter: 1 });
 
   const filteredTags = useMemo(
     () =>
@@ -133,39 +129,40 @@ const SeriesTags = () => {
   });
   const clearTagSelection = useEventCallback(toggleShowTagModal);
 
-  if (!seriesId) return null;
-
   return (
-    <div className="flex w-full gap-x-6">
-      <TagsSearchAndFilterPanel
-        seriesId={toNumber(seriesId)}
-        search={search}
-        tagSourceFilter={tagSourceFilter}
-        showSpoilers={showSpoilers}
-        sort={sort}
-        handleInputChange={handleInputChange}
-        toggleSort={toggleSort}
-      />
-      <div className="flex w-full flex-col gap-y-6">
-        {header}
-        <div className="flex grow flex-col gap-y-6">
-          {isLoading
-            ? (
-              <div className="flex grow items-center justify-center text-panel-text-primary">
-                <Icon path={mdiLoading} spin size={1} />
-              </div>
-            )
-            : (
-              <div className="grid grid-cols-3 gap-4 2xl:gap-6">
-                {filteredTags?.map(tag => (
-                  <SingleTag key={`${tag.Source}-${tag.ID}`} tag={tag} onTagExpand={onTagSelection} />
-                ))}
-              </div>
-            )}
+    <>
+      <title>{`${series.Name} > Tags | Shoko`}</title>
+      <div className="flex w-full gap-x-6">
+        <TagsSearchAndFilterPanel
+          seriesId={series.IDs.ID}
+          search={search}
+          tagSourceFilter={tagSourceFilter}
+          showSpoilers={showSpoilers}
+          sort={sort}
+          handleInputChange={handleInputChange}
+          toggleSort={toggleSort}
+        />
+        <div className="flex w-full flex-col gap-y-6">
+          {header}
+          <div className="flex grow flex-col gap-y-6">
+            {isLoading
+              ? (
+                <div className="flex grow items-center justify-center text-panel-text-primary">
+                  <Icon path={mdiLoading} spin size={1} />
+                </div>
+              )
+              : (
+                <div className="grid grid-cols-3 gap-4 2xl:gap-6">
+                  {filteredTags?.map(tag => (
+                    <SingleTag key={`${tag.Source}-${tag.ID}`} tag={tag} onTagExpand={onTagSelection} />
+                  ))}
+                </div>
+              )}
+          </div>
         </div>
+        <TagDetailsModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
       </div>
-      <TagDetailsModal show={showTagModal} tag={selectedTag} onClose={clearTagSelection} />
-    </div>
+    </>
   );
 };
 

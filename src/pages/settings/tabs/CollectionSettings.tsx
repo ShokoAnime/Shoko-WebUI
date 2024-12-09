@@ -150,6 +150,7 @@ const CollectionSettings = () => {
 
   return (
     <>
+      <title>Settings &gt; Collection | Shoko</title>
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">Collection</div>
         <div>

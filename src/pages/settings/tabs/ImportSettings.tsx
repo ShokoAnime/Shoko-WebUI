@@ -34,6 +34,7 @@ function ImportSettings() {
 
   return (
     <>
+      <title>Settings &gt; Import | Shoko</title>
       <div className="flex flex-col gap-y-1">
         <div className="text-xl font-semibold">Import</div>
         <div>

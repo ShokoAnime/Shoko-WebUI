@@ -374,81 +374,84 @@ const FileSearch = () => {
   const selectedId = useMemo(() => fileSearchSelectedRows[viewIndex]?.ID, [fileSearchSelectedRows, viewIndex]);
 
   return (
-    <div className="flex grow flex-col gap-y-6">
-      <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
-        <div className="flex items-center gap-x-3">
-          <Input
-            type="text"
-            placeholder="Search..."
-            startIcon={mdiMagnify}
-            id="search"
-            onChange={setSearch}
-            value={search}
-            inputClassName="px-4 py-3"
-          />
-          <Menu
-            selectedRows={selectedRows}
-            setSelectedRows={setRowSelection}
-          />
-        </div>
-      </ShokoPanel>
-      <div className="flex grow justify-between gap-x-6 overflow-y-auto contain-strict">
-        <div className="flex w-full rounded-lg border border-panel-border bg-panel-background p-6 lg:max-w-[75%]">
-          {filesQuery.isPending && (
-            <div className="flex grow items-center justify-center text-panel-text-primary">
-              <Icon path={mdiLoading} size={4} spin />
-            </div>
-          )}
-
-          {!filesQuery.isPending && fileCount === 0 && (
-            <div className="flex grow items-center justify-center font-semibold">No search results!</div>
-          )}
-
-          {filesQuery.isSuccess && fileCount > 0 && (
-            <UtilitiesTable
-              count={fileCount}
-              fetchNextPage={filesQuery.fetchNextPage}
-              handleRowSelect={handleRowSelect}
-              columns={staticColumns}
-              isFetchingNextPage={filesQuery.isFetchingNextPage}
-              rows={files}
-              rowSelection={rowSelection}
-              setSelectedRows={setRowSelection}
-              setSortCriteria={setSortCriteria}
-              sortCriteria={sortCriteria}
+    <>
+      <title>Utilities &gt; File Search | Shoko</title>
+      <div className="flex grow flex-col gap-y-6">
+        <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
+          <div className="flex items-center gap-x-3">
+            <Input
+              type="text"
+              placeholder="Search..."
+              startIcon={mdiMagnify}
+              id="search"
+              onChange={setSearch}
+              value={search}
+              inputClassName="px-4 py-3"
             />
-          )}
-        </div>
-        <div className="flex w-full flex-col lg:max-w-[25%]">
-          {selectedRows?.length > 0 && (
-            <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
-              <div className="flex w-full grow flex-col gap-y-6 overflow-y-auto pr-4">
-                <FilesSummary title="Selected Summary" items={selectedRows} />
-                <div className="flex w-full text-xl font-semibold">
-                  <div className="flex w-full justify-between">
-                    <span className="grow">Selected File</span>
-                    <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
-                      <Button buttonType="secondary" onClick={onPrevView}>
-                        <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
-                      </Button>
-                      <Button buttonType="secondary" onClick={onNextView}>
-                        <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
-                      </Button>
+            <Menu
+              selectedRows={selectedRows}
+              setSelectedRows={setRowSelection}
+            />
+          </div>
+        </ShokoPanel>
+        <div className="flex grow justify-between gap-x-6 overflow-y-auto contain-strict">
+          <div className="flex w-full rounded-lg border border-panel-border bg-panel-background p-6 lg:max-w-[75%]">
+            {filesQuery.isPending && (
+              <div className="flex grow items-center justify-center text-panel-text-primary">
+                <Icon path={mdiLoading} size={4} spin />
+              </div>
+            )}
+
+            {!filesQuery.isPending && fileCount === 0 && (
+              <div className="flex grow items-center justify-center font-semibold">No search results!</div>
+            )}
+
+            {filesQuery.isSuccess && fileCount > 0 && (
+              <UtilitiesTable
+                count={fileCount}
+                fetchNextPage={filesQuery.fetchNextPage}
+                handleRowSelect={handleRowSelect}
+                columns={staticColumns}
+                isFetchingNextPage={filesQuery.isFetchingNextPage}
+                rows={files}
+                rowSelection={rowSelection}
+                setSelectedRows={setRowSelection}
+                setSortCriteria={setSortCriteria}
+                sortCriteria={sortCriteria}
+              />
+            )}
+          </div>
+          <div className="flex w-full flex-col lg:max-w-[25%]">
+            {selectedRows?.length > 0 && (
+              <div className="flex size-full flex-col overflow-y-auto overflow-x-hidden rounded-lg border border-panel-border bg-panel-background p-6">
+                <div className="flex w-full grow flex-col gap-y-6 overflow-y-auto pr-4">
+                  <FilesSummary title="Selected Summary" items={selectedRows} />
+                  <div className="flex w-full text-xl font-semibold">
+                    <div className="flex w-full justify-between">
+                      <span className="grow">Selected File</span>
+                      <div className={cx('flex', selectedRows.length <= 1 ? 'hidden' : '')}>
+                        <Button buttonType="secondary" onClick={onPrevView}>
+                          <Icon className="text-panel-icon-action" path={mdiChevronLeft} size={1} />
+                        </Button>
+                        <Button buttonType="secondary" onClick={onNextView}>
+                          <Icon className="text-panel-icon-action" path={mdiChevronRight} size={1} />
+                        </Button>
+                      </div>
                     </div>
                   </div>
+                  <FileDetails fileId={selectedId} />
                 </div>
-                <FileDetails fileId={selectedId} />
               </div>
-            </div>
-          )}
-          {!selectedRows?.length && (
-            <div className="flex size-full flex-col rounded-lg border border-panel-border bg-panel-background p-6">
-              <div className="flex grow items-center justify-center font-semibold">Select File To Populate</div>
-            </div>
-          )}
+            )}
+            {!selectedRows?.length && (
+              <div className="flex size-full flex-col rounded-lg border border-panel-border bg-panel-background p-6">
+                <div className="flex grow items-center justify-center font-semibold">Select File To Populate</div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default FileSearch;

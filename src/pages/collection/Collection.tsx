@@ -219,57 +219,60 @@ function Collection() {
   });
 
   return (
-    <div className="flex grow flex-col gap-y-6">
-      <div className="sticky -top-6 z-10 flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
-        <CollectionTitle
-          // eslint-disable-next-line no-nested-ternary
-          count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
-          filterName={filterQuery?.data?.Name}
-          groupName={groupQuery?.data?.Name}
-          filterActive={!!activeFilter}
-          searchQuery={isSeries ? seriesSearch : groupSearch}
-        />
-        <TitleOptions
-          groupSearch={groupSearch}
-          isSeries={isSeries}
-          item={item}
-          mode={mode}
-          seriesSearch={seriesSearch}
-          setSearch={setSearch}
-          toggleFilterSidebar={handleFilterSidebarToggle}
-          toggleMode={toggleMode}
-        />
-      </div>
-      <div className="flex grow">
-        <CollectionView
-          groupExtras={groupExtras ?? []}
-          fetchNextPage={groupsQuery.fetchNextPage}
-          isFetchingNextPage={groupsQuery.isFetchingNextPage}
-          isFetching={isFetching}
-          isSeries={isSeries}
-          isSidebarOpen={showFilterSidebar}
-          items={items}
-          mode={mode}
-          total={total}
-        />
-        <div
-          className={cx(
-            'flex items-start',
-            !isSeries && 'transition-all',
-            showFilterSidebar
-              ? 'w-[28rem] opacity-100'
-              : 'w-0 opacity-0 overflow-hidden ',
-          )}
-        >
-          <FilterSidebar />
+    <>
+      <title>{`${isSeries ? groupQuery?.data?.Name : 'Collection'} | Shoko`}</title>
+      <div className="flex grow flex-col gap-y-6">
+        <div className="sticky -top-6 z-10 flex items-center justify-between rounded-lg border border-panel-border bg-panel-background p-6">
+          <CollectionTitle
+            // eslint-disable-next-line no-nested-ternary
+            count={(total === 0 && isFetching) ? -1 : (isSeries ? total : groupsTotal)}
+            filterName={filterQuery?.data?.Name}
+            groupName={groupQuery?.data?.Name}
+            filterActive={!!activeFilter}
+            searchQuery={isSeries ? seriesSearch : groupSearch}
+          />
+          <TitleOptions
+            groupSearch={groupSearch}
+            isSeries={isSeries}
+            item={item}
+            mode={mode}
+            seriesSearch={seriesSearch}
+            setSearch={setSearch}
+            toggleFilterSidebar={handleFilterSidebarToggle}
+            toggleMode={toggleMode}
+          />
         </div>
-        {isSeries && !showFilterSidebar && (
-          <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />
-        )}
+        <div className="flex grow">
+          <CollectionView
+            groupExtras={groupExtras ?? []}
+            fetchNextPage={groupsQuery.fetchNextPage}
+            isFetchingNextPage={groupsQuery.isFetchingNextPage}
+            isFetching={isFetching}
+            isSeries={isSeries}
+            isSidebarOpen={showFilterSidebar}
+            items={items}
+            mode={mode}
+            total={total}
+          />
+          <div
+            className={cx(
+              'flex items-start',
+              !isSeries && 'transition-all',
+              showFilterSidebar
+                ? 'w-[28rem] opacity-100'
+                : 'w-0 opacity-0 overflow-hidden ',
+            )}
+          >
+            <FilterSidebar />
+          </div>
+          {isSeries && !showFilterSidebar && (
+            <TimelineSidebar series={timelineSeries} isFetching={seriesQuery.isPending} />
+          )}
+        </div>
+        <EditSeriesModal />
+        <EditGroupModal />
       </div>
-      <EditSeriesModal />
-      <EditGroupModal />
-    </div>
+    </>
   );
 }
 

@@ -5,6 +5,7 @@ import TraktSettings from '@/components/Settings/MetadataSitesSettings/TraktSett
 
 const IntegrationsSettings = () => (
   <>
+    <title>Settings &gt; Integrations | Shoko</title>
     <div className="flex flex-col gap-y-1">
       <div className="text-xl font-semibold">Integrations</div>
       <div>

@@ -158,53 +158,56 @@ function SeriesWithoutFilesUtility() {
   } = useRowSelection<SeriesType>(series);
 
   return (
-    <div className="flex grow flex-col gap-y-6">
-      <div>
-        <ShokoPanel
-          title="Series Without Files"
-          options={<ItemCount count={seriesCount} selected={selectedRows?.length} suffix="Series" />}
-        >
-          <div className="flex items-center gap-x-3">
-            <Input
-              type="text"
-              placeholder="Search..."
-              startIcon={mdiMagnify}
-              id="search"
-              value={search}
-              onChange={event => setSearch(event.target.value)}
-              inputClassName="px-4 py-3"
+    <>
+      <title>Utilities &gt; Series Without Files | Shoko</title>
+      <div className="flex grow flex-col gap-y-6">
+        <div>
+          <ShokoPanel
+            title="Series Without Files"
+            options={<ItemCount count={seriesCount} selected={selectedRows?.length} suffix="Series" />}
+          >
+            <div className="flex items-center gap-x-3">
+              <Input
+                type="text"
+                placeholder="Search..."
+                startIcon={mdiMagnify}
+                id="search"
+                value={search}
+                onChange={event => setSearch(event.target.value)}
+                inputClassName="px-4 py-3"
+              />
+              <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
+            </div>
+          </ShokoPanel>
+        </div>
+
+        <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
+          {seriesQuery.isPending && (
+            <div className="flex grow items-center justify-center text-panel-text-primary">
+              <Icon path={mdiLoading} size={4} spin />
+            </div>
+          )}
+
+          {!seriesQuery.isPending && seriesCount === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">No series without files!</div>
+          )}
+
+          {seriesQuery.isSuccess && seriesCount > 0 && (
+            <UtilitiesTable
+              columns={columns}
+              count={seriesCount}
+              fetchNextPage={seriesQuery.fetchNextPage}
+              handleRowSelect={handleRowSelect}
+              isFetchingNextPage={seriesQuery.isFetchingNextPage}
+              rows={series}
+              rowSelection={rowSelection}
+              setSelectedRows={setRowSelection}
+              skipSort
             />
-            <Menu selectedRows={selectedRows} setSelectedRows={setRowSelection} />
-          </div>
-        </ShokoPanel>
+          )}
+        </div>
       </div>
-
-      <div className="flex grow overflow-y-auto rounded-lg border border-panel-border bg-panel-background px-4 py-6">
-        {seriesQuery.isPending && (
-          <div className="flex grow items-center justify-center text-panel-text-primary">
-            <Icon path={mdiLoading} size={4} spin />
-          </div>
-        )}
-
-        {!seriesQuery.isPending && seriesCount === 0 && (
-          <div className="flex grow items-center justify-center font-semibold">No series without files!</div>
-        )}
-
-        {seriesQuery.isSuccess && seriesCount > 0 && (
-          <UtilitiesTable
-            columns={columns}
-            count={seriesCount}
-            fetchNextPage={seriesQuery.fetchNextPage}
-            handleRowSelect={handleRowSelect}
-            isFetchingNextPage={seriesQuery.isFetchingNextPage}
-            rows={series}
-            rowSelection={rowSelection}
-            setSelectedRows={setRowSelection}
-            skipSort
-          />
-        )}
-      </div>
-    </div>
+    </>
   );
 }
 

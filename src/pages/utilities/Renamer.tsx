@@ -497,184 +497,187 @@ const Renamer = () => {
   }, [addedFiles.length, configEdited, moveFiles, relocatePending, renameFiles]);
 
   return (
-    <div className="flex grow flex-col gap-y-3">
-      <ShokoPanel title="File Rename">
-        <div className="flex items-center gap-x-3">
-          <Menu
-            selectedRows={selectedRows}
-            moveFiles={moveFiles}
-            renameFiles={renameFiles}
-            toggleMoveFiles={toggleMoveFiles}
-            toggleRenameFiles={toggleRenameFiles}
-            disable={relocatePending}
-          />
-          <div className="flex gap-x-3">
-            <Button
-              buttonType="secondary"
-              buttonSize="normal"
-              className="flex h-13 items-center"
-              onClick={toggleSettings}
-              disabled={!renamerConfigsQuery.isSuccess}
-            >
-              <Icon path={mdiCogOutline} size={1} />
-            </Button>
-            <Button
-              buttonType="secondary"
-              buttonSize="normal"
-              className="flex h-13 items-center"
-              onClick={toggleAddFilesModal}
-              disabled={relocatePending}
-            >
-              Add Files
-            </Button>
-            <Button
-              buttonType="primary"
-              buttonSize="normal"
-              className="flex h-13 flex-wrap items-center gap-x-2"
-              onClick={handleRename}
-              loading={relocatePending}
-              disabled={renameDisabled}
-              tooltip={renameDisabledReason}
-            >
-              <Icon path={mdiFileDocumentEditOutline} size={1} />
-              Rename Files
-            </Button>
+    <>
+      <title>Utilities &gt; File Rename | Shoko</title>
+      <div className="flex grow flex-col gap-y-3">
+        <ShokoPanel title="File Rename">
+          <div className="flex items-center gap-x-3">
+            <Menu
+              selectedRows={selectedRows}
+              moveFiles={moveFiles}
+              renameFiles={renameFiles}
+              toggleMoveFiles={toggleMoveFiles}
+              toggleRenameFiles={toggleRenameFiles}
+              disable={relocatePending}
+            />
+            <div className="flex gap-x-3">
+              <Button
+                buttonType="secondary"
+                buttonSize="normal"
+                className="flex h-13 items-center"
+                onClick={toggleSettings}
+                disabled={!renamerConfigsQuery.isSuccess}
+              >
+                <Icon path={mdiCogOutline} size={1} />
+              </Button>
+              <Button
+                buttonType="secondary"
+                buttonSize="normal"
+                className="flex h-13 items-center"
+                onClick={toggleAddFilesModal}
+                disabled={relocatePending}
+              >
+                Add Files
+              </Button>
+              <Button
+                buttonType="primary"
+                buttonSize="normal"
+                className="flex h-13 flex-wrap items-center gap-x-2"
+                onClick={handleRename}
+                loading={relocatePending}
+                disabled={renameDisabled}
+                tooltip={renameDisabledReason}
+              >
+                <Icon path={mdiFileDocumentEditOutline} size={1} />
+                Rename Files
+              </Button>
+            </div>
+            <AddFilesModal show={showAddFilesModal} onClose={toggleAddFilesModal} />
           </div>
-          <AddFilesModal show={showAddFilesModal} onClose={toggleAddFilesModal} />
-        </div>
-      </ShokoPanel>
+        </ShokoPanel>
 
-      <AnimateHeight height={showSettings ? 'auto' : 0}>
-        <div className={cx('my-3 flex !h-[32rem] gap-x-6', relocatePending && 'opacity-65 pointer-events-none')}>
-          {renamerConfigsQuery.isSuccess && (
-            <>
-              <div className="flex w-1/3 flex-col gap-y-6">
-                <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={!renamerSettingsExist}>
-                  <Select
-                    label="Config"
-                    id="renamer-config"
-                    value={selectedConfig.Name}
-                    onChange={event => changeSelectedConfig(event.target.value)}
-                  >
-                    {renamerConfigsQuery.data.map(renamerConfig => (
-                      <ConfigOption config={renamerConfig} key={renamerConfig.Name} />
-                    ))}
+        <AnimateHeight height={showSettings ? 'auto' : 0}>
+          <div className={cx('my-3 flex !h-[32rem] gap-x-6', relocatePending && 'opacity-65 pointer-events-none')}>
+            {renamerConfigsQuery.isSuccess && (
+              <>
+                <div className="flex w-1/3 flex-col gap-y-6">
+                  <ShokoPanel title="Renamer Selection" contentClassName="gap-y-5" fullHeight={!renamerSettingsExist}>
+                    <Select
+                      label="Config"
+                      id="renamer-config"
+                      value={selectedConfig.Name}
+                      onChange={event => changeSelectedConfig(event.target.value)}
+                    >
+                      {renamerConfigsQuery.data.map(renamerConfig => (
+                        <ConfigOption config={renamerConfig} key={renamerConfig.Name} />
+                      ))}
 
-                    {renamerConfigsQuery.data.length === 0 && (
-                      <option key="na" value="na">
-                        No renamer found!
-                      </option>
-                    )}
-                  </Select>
-                  <div className="flex justify-end gap-x-3 font-semibold">
-                    <Button
-                      onClick={handleSetAsDefault}
-                      buttonType="secondary"
-                      buttonSize="normal"
-                      loading={settingsPatchPending}
-                      disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
-                        || settingsPatchPending}
-                      tooltip={selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer
-                        ? 'Already set as default!'
-                        : ''}
-                    >
-                      Set as default
-                    </Button>
-                    <Button
-                      onClick={handleDeleteConfig}
-                      buttonType="danger"
-                      buttonSize="normal"
-                      loading={deletePending}
-                      disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer) || deletePending}
-                      tooltip={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
-                        ? 'Cannot delete default config!'
-                        : ''}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      onClick={() => openConfigModal(true)}
-                      buttonType="secondary"
-                      buttonSize="normal"
-                    >
-                      Rename
-                    </Button>
-                    <Button
-                      onClick={() => openConfigModal(false)}
-                      buttonType="secondary"
-                      buttonSize="normal"
-                    >
-                      New
-                    </Button>
-                    <Button
-                      onClick={handleSaveConfig}
-                      buttonType="primary"
-                      buttonSize="normal"
-                      loading={savePending}
-                      disabled={savePending || !renamer?.DefaultSettings}
-                      tooltip={!renamer?.DefaultSettings ? 'Renamer does not have any settings to save.' : ''}
-                    >
-                      Save
-                    </Button>
-                    <ConfigModal
-                      show={showConfigModal}
-                      onClose={toggleConfigModal}
-                      rename={configModelRename}
-                      config={selectedConfig}
-                      changeSelectedConfig={changeSelectedConfig}
-                    />
-                  </div>
-                </ShokoPanel>
-
-                {renamerSettingsExist && (
-                  <ShokoPanel title="Selected Renamer Config">
-                    {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
-                    {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
-                    {newConfig && renamer?.Settings && showSettings && (
-                      <RenamerSettings
-                        newConfig={newConfig}
-                        setNewConfig={setNewConfig}
-                        settingsModel={renamer.Settings}
+                      {renamerConfigsQuery.data.length === 0 && (
+                        <option key="na" value="na">
+                          No renamer found!
+                        </option>
+                      )}
+                    </Select>
+                    <div className="flex justify-end gap-x-3 font-semibold">
+                      <Button
+                        onClick={handleSetAsDefault}
+                        buttonType="secondary"
+                        buttonSize="normal"
+                        loading={settingsPatchPending}
+                        disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
+                          || settingsPatchPending}
+                        tooltip={selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer
+                          ? 'Already set as default!'
+                          : ''}
+                      >
+                        Set as default
+                      </Button>
+                      <Button
+                        onClick={handleDeleteConfig}
+                        buttonType="danger"
+                        buttonSize="normal"
+                        loading={deletePending}
+                        disabled={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer) || deletePending}
+                        tooltip={(selectedConfig.Name === settings.Plugins.Renamer.DefaultRenamer)
+                          ? 'Cannot delete default config!'
+                          : ''}
+                      >
+                        Delete
+                      </Button>
+                      <Button
+                        onClick={() => openConfigModal(true)}
+                        buttonType="secondary"
+                        buttonSize="normal"
+                      >
+                        Rename
+                      </Button>
+                      <Button
+                        onClick={() => openConfigModal(false)}
+                        buttonType="secondary"
+                        buttonSize="normal"
+                      >
+                        New
+                      </Button>
+                      <Button
+                        onClick={handleSaveConfig}
+                        buttonType="primary"
+                        buttonSize="normal"
+                        loading={savePending}
+                        disabled={savePending || !renamer?.DefaultSettings}
+                        tooltip={!renamer?.DefaultSettings ? 'Renamer does not have any settings to save.' : ''}
+                      >
+                        Save
+                      </Button>
+                      <ConfigModal
+                        show={showConfigModal}
+                        onClose={toggleConfigModal}
+                        rename={configModelRename}
+                        config={selectedConfig}
+                        changeSelectedConfig={changeSelectedConfig}
                       />
-                    )}
+                    </div>
                   </ShokoPanel>
-                )}
-              </div>
 
-              <ShokoPanel title="Selected Renamer Script" className="w-2/3" disableOverflow>
-                {newConfig && renamer?.Settings && (
-                  <RenamerScript
-                    newConfig={newConfig}
-                    setNewConfig={setNewConfig}
-                    settingsModel={renamer.Settings}
-                  />
-                )}
-              </ShokoPanel>
-            </>
+                  {renamerSettingsExist && (
+                    <ShokoPanel title="Selected Renamer Config">
+                      {/* TODO: Maybe a todo... The transition div for checkbox is buggy when AnimateHeight is used. */}
+                      {/* It doesn't appear before a click event when height is changed. Adding showSetting force re-renders it. */}
+                      {newConfig && renamer?.Settings && showSettings && (
+                        <RenamerSettings
+                          newConfig={newConfig}
+                          setNewConfig={setNewConfig}
+                          settingsModel={renamer.Settings}
+                        />
+                      )}
+                    </ShokoPanel>
+                  )}
+                </div>
+
+                <ShokoPanel title="Selected Renamer Script" className="w-2/3" disableOverflow>
+                  {newConfig && renamer?.Settings && (
+                    <RenamerScript
+                      newConfig={newConfig}
+                      setNewConfig={setNewConfig}
+                      settingsModel={renamer.Settings}
+                    />
+                  )}
+                </ShokoPanel>
+              </>
+            )}
+          </div>
+        </AnimateHeight>
+
+        <ShokoPanel title="Renamer Preview" className="min-h-[40rem] grow">
+          {addedFiles.length === 0 && (
+            <div className="flex grow items-center justify-center font-semibold">No files selected!</div>
           )}
-        </div>
-      </AnimateHeight>
 
-      <ShokoPanel title="Renamer Preview" className="min-h-[40rem] grow">
-        {addedFiles.length === 0 && (
-          <div className="flex grow items-center justify-center font-semibold">No files selected!</div>
-        )}
-
-        {addedFiles.length > 0 && (
-          <UtilitiesTable
-            columns={columns}
-            count={addedFiles.length}
-            handleRowSelect={handleRowSelect}
-            rows={addedFiles}
-            rowSelection={rowSelection}
-            setSelectedRows={setRowSelection}
-            fetchNextPreviewPage={fetchPreviewPage}
-            isFetchingNextPage={previewPending}
-            isRenamer
-          />
-        )}
-      </ShokoPanel>
-    </div>
+          {addedFiles.length > 0 && (
+            <UtilitiesTable
+              columns={columns}
+              count={addedFiles.length}
+              handleRowSelect={handleRowSelect}
+              rows={addedFiles}
+              rowSelection={rowSelection}
+              setSelectedRows={setRowSelection}
+              fetchNextPreviewPage={fetchPreviewPage}
+              isFetchingNextPage={previewPending}
+              isRenamer
+            />
+          )}
+        </ShokoPanel>
+      </div>
+    </>
   );
 };
 
