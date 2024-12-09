@@ -41,7 +41,7 @@ import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
-import MultiplesUtil from '@/pages/utilities/ReleaseManagementUtilityTabs/MultiplesUtil';
+import ReleaseManagement from '@/pages/utilities/ReleaseManagement';
 import Renamer from '@/pages/utilities/Renamer';
 import SeriesWithoutFilesUtility from '@/pages/utilities/SeriesWithoutFilesUtility';
 import IgnoredFilesTab from '@/pages/utilities/UnrecognizedUtilityTabs/IgnoredFilesTab';
@@ -91,7 +91,8 @@ const router = sentryCreateBrowserRouter(
             <Route path="unrecognized/manually-linked-files" element={<ManuallyLinkedTab />} />
             <Route path="unrecognized/ignored-files" element={<IgnoredFilesTab />} />
             <Route path="release-management" element={<Navigate to="multiples" replace />} />
-            <Route path="release-management/multiples" element={<MultiplesUtil />} />
+            <Route path="release-management/multiples" element={<ReleaseManagement type="multiples" />} />
+            <Route path="release-management/duplicates" element={<ReleaseManagement type="duplicates" />} />
             <Route path="series-without-files" element={<SeriesWithoutFilesUtility />} />
             <Route path="file-search" element={<FileSearch />} />
             <Route path="renamer" element={<Renamer />} />

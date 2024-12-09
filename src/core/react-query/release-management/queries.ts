@@ -3,19 +3,22 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { axios } from '@/core/axios';
 
 import type {
-  SeriesEpisodesWithMultipleReleasesType,
-  SeriesWithMultipleReleasesRequestType,
+  ReleaseManagementSeriesEpisodesType,
+  ReleaseManagementSeriesRequestType,
 } from '@/core/react-query/release-management/types';
 import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
-import type { SeriesWithMultipleReleasesType } from '@/core/types/api/series';
+import type { ReleaseManagementSeriesType } from '@/core/types/api/series';
 
-export const useSeriesWithMultipleReleases = (params: SeriesWithMultipleReleasesRequestType) =>
-  useInfiniteQuery<ListResultType<SeriesWithMultipleReleasesType>>({
-    queryKey: ['release-management', 'series', params],
+export const useReleaseManagementSeries = (
+  type: 'multiples' | 'duplicates',
+  params: ReleaseManagementSeriesRequestType,
+) =>
+  useInfiniteQuery<ListResultType<ReleaseManagementSeriesType>>({
+    queryKey: ['release-management', 'series', type, params],
     queryFn: ({ pageParam }) =>
       axios.get(
-        'ReleaseManagement/Series',
+        `ReleaseManagement/${type === 'multiples' ? 'MultipleReleases' : 'DuplicateFiles'}/Series`,
         {
           params: {
             ...params,
@@ -31,16 +34,17 @@ export const useSeriesWithMultipleReleases = (params: SeriesWithMultipleReleases
     },
   });
 
-export const useSeriesEpisodesWithMultipleReleases = (
+export const useReleaseManagementSeriesEpisodes = (
+  type: 'multiples' | 'duplicates',
   seriesId: number,
-  params: SeriesEpisodesWithMultipleReleasesType,
+  params: ReleaseManagementSeriesEpisodesType,
   enabled = true,
 ) =>
   useInfiniteQuery<ListResultType<EpisodeType>>({
-    queryKey: ['release-management', 'series', 'episodes', seriesId, params],
+    queryKey: ['release-management', 'series', 'episodes', type, seriesId, params],
     queryFn: ({ pageParam }) =>
       axios.get(
-        `ReleaseManagement/Series/${seriesId}`,
+        `ReleaseManagement/${type === 'multiples' ? 'MultipleReleases' : 'DuplicateFiles'}/Series/${seriesId}/Episodes`,
         {
           params: {
             ...params,

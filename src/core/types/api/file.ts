@@ -9,6 +9,8 @@ type XRefsType = {
 };
 
 type FileTypeLocation = {
+  ID: number;
+  FileID: number;
   ImportFolderID: number;
   RelativePath: string;
   AbsolutePath?: string;
