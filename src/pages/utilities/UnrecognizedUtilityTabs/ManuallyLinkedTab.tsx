@@ -221,7 +221,7 @@ const ManuallyLinkedTab = () => {
 
   return (
     <>
-      <title>Utilities &gt; Manually Linked Files | Shoko</title>
+      <title>Manually Linked Files | Shoko</title>
       <TransitionDiv className="flex grow flex-col gap-y-6 overflow-y-auto">
         <ShokoPanel
           title={<Title />}

@@ -52,56 +52,59 @@ function AniDBAccount() {
   };
 
   return (
-    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6">
-      <div className="text-xl font-semibold">Adding Your AniDB Account</div>
-      <div className="text-justify">
-        Shoko utilizes AniDB to compare file hashes with its vast database, enabling a quick identification and addition
-        of series to your collection. Additionally, AniDB provides supplementary information about series and episodes,
-        enhancing your user experience.
-      </div>
-      <div className="text-justify">
-        An AniDB account is required to use Shoko. If you don&lsquo;t already have an account,
-        <a
-          href="https://anidb.net/"
-          target="_blank"
-          rel="noreferrer"
-          className="font-semibold text-panel-text-primary hover:underline"
-        >
-          {' '}
-          Click Here
-          {' '}
-        </a>
-        to create one. Please note that, due to limitations with AniDB&lsquo;s API, your password must consist of only
-        <span className="font-semibold text-panel-text-important">{' alphanumeric '}</span>
-        characters. Using any other characters will result in a ban when you attempt to log in.
-      </div>
-      <form className="flex flex-col" onSubmit={handleTest}>
-        <Input
-          id="Username"
-          value={Username ?? ''}
-          label="Username"
-          type="text"
-          placeholder="Username"
-          onChange={handleInputChange}
+    <>
+      <title>First Run &gt; AniDB Account | Shoko</title>
+      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6">
+        <div className="text-xl font-semibold">Adding Your AniDB Account</div>
+        <div className="text-justify">
+          Shoko utilizes AniDB to compare file hashes with its vast database, enabling a quick identification and
+          addition of series to your collection. Additionally, AniDB provides supplementary information about series and
+          episodes, enhancing your user experience.
+        </div>
+        <div className="text-justify">
+          An AniDB account is required to use Shoko. If you don&lsquo;t already have an account,
+          <a
+            href="https://anidb.net/"
+            target="_blank"
+            rel="noreferrer"
+            className="font-semibold text-panel-text-primary hover:underline"
+          >
+            {' '}
+            Click Here
+            {' '}
+          </a>
+          to create one. Please note that, due to limitations with AniDB&lsquo;s API, your password must consist of only
+          <span className="font-semibold text-panel-text-important">{' alphanumeric '}</span>
+          characters. Using any other characters will result in a ban when you attempt to log in.
+        </div>
+        <form className="flex flex-col" onSubmit={handleTest}>
+          <Input
+            id="Username"
+            value={Username ?? ''}
+            label="Username"
+            type="text"
+            placeholder="Username"
+            onChange={handleInputChange}
+          />
+          <Input
+            id="Password"
+            value={Password ?? ''}
+            label="Password"
+            type="password"
+            placeholder="Password"
+            onChange={handleInputChange}
+            className="mt-9"
+          />
+          <input type="submit" hidden />
+        </form>
+        <Footer
+          nextDisabled={!Username || !Password}
+          saveFunction={handleTest}
+          isFetching={isAnidbLoginPending}
+          status={anidbStatus}
         />
-        <Input
-          id="Password"
-          value={Password ?? ''}
-          label="Password"
-          type="password"
-          placeholder="Password"
-          onChange={handleInputChange}
-          className="mt-9"
-        />
-        <input type="submit" hidden />
-      </form>
-      <Footer
-        nextDisabled={!Username || !Password}
-        saveFunction={handleTest}
-        isFetching={isAnidbLoginPending}
-        status={anidbStatus}
-      />
-    </TransitionDiv>
+      </TransitionDiv>
+    </>
   );
 }
 

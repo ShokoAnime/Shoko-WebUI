@@ -159,7 +159,7 @@ function SeriesWithoutFilesUtility() {
 
   return (
     <>
-      <title>Utilities &gt; Series Without Files | Shoko</title>
+      <title>Series Without Files | Shoko</title>
       <div className="flex grow flex-col gap-y-6">
         <div>
           <ShokoPanel

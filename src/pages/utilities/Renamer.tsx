@@ -498,7 +498,7 @@ const Renamer = () => {
 
   return (
     <>
-      <title>Utilities &gt; File Rename | Shoko</title>
+      <title>File Renamer | Shoko</title>
       <div className="flex grow flex-col gap-y-3">
         <ShokoPanel title="File Rename">
           <div className="flex items-center gap-x-3">
