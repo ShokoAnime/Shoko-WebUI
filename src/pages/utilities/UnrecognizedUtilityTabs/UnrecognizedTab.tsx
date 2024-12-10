@@ -373,7 +373,7 @@ function UnrecognizedTab() {
 
   return (
     <>
-      <title>Utilities &gt; Unrecognized Files | Shoko</title>
+      <title>Unrecognized Files | Shoko</title>
       <div className="flex grow flex-col gap-y-6" ref={tabContainerRef}>
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>

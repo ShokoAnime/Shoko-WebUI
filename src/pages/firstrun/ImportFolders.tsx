@@ -90,6 +90,7 @@ function ImportFolders() {
 
   return (
     <>
+      <title>First Run &gt; Import Folders | Shoko</title>
       <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
         <div className="text-xl font-semibold">Import Folders</div>
         <div className="text-justify">

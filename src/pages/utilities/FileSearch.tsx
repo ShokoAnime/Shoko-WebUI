@@ -375,7 +375,7 @@ const FileSearch = () => {
 
   return (
     <>
-      <title>Utilities &gt; File Search | Shoko</title>
+      <title>File Search | Shoko</title>
       <div className="flex grow flex-col gap-y-6">
         <ShokoPanel title="File Search" options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>
           <div className="flex items-center gap-x-3">

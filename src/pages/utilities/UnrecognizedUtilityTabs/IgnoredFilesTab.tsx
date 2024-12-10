@@ -133,7 +133,7 @@ function IgnoredFilesTab() {
 
   return (
     <>
-      <title>Utilities &gt; Ignored Files | Shoko</title>
+      <title>Ignored Files | Shoko</title>
       <div className="flex grow flex-col gap-y-6">
         <div>
           <ShokoPanel title={<Title />} options={<ItemCount count={fileCount} selected={selectedRows?.length} />}>

@@ -67,39 +67,42 @@ function MetadataSources() {
   });
 
   return (
-    <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
-      <div className="text-xl font-semibold">Metadata Sites</div>
-      <div className="text-justify">
-        Shoko offers support for various community sites that provide additional metadata for the series in your
-        collection. We highly recommend that you review the settings for each site and configure them to meet your
-        preferences.
-      </div>
-      <div className="flex items-center gap-x-2 pb-3 text-xl font-semibold">
-        <div>Recently Imported</div>
-        <Icon path={mdiChevronRight} size={1} />
-        <TabButton
-          active={activeTab === 'anidb'}
-          setActiveTab={setActiveTab}
-          tabKey="anidb"
-          title="AniDB"
+    <>
+      <title>First Run &gt; Metadata Sources | Shoko</title>
+      <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
+        <div className="text-xl font-semibold">Metadata Sites</div>
+        <div className="text-justify">
+          Shoko offers support for various community sites that provide additional metadata for the series in your
+          collection. We highly recommend that you review the settings for each site and configure them to meet your
+          preferences.
+        </div>
+        <div className="flex items-center gap-x-2 pb-3 text-xl font-semibold">
+          <div>Recently Imported</div>
+          <Icon path={mdiChevronRight} size={1} />
+          <TabButton
+            active={activeTab === 'anidb'}
+            setActiveTab={setActiveTab}
+            tabKey="anidb"
+            title="AniDB"
+          />
+          |
+          <TabButton
+            active={activeTab === 'moviedb'}
+            setActiveTab={setActiveTab}
+            tabKey="moviedb"
+            title="TMDB"
+          />
+        </div>
+        <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
+          <TabContent setStatus={setStatus} tab={activeTab} />
+        </div>
+        <Footer
+          nextPage="start-server"
+          saveFunction={handleSave}
+          status={status}
         />
-        |
-        <TabButton
-          active={activeTab === 'moviedb'}
-          setActiveTab={setActiveTab}
-          tabKey="moviedb"
-          title="TMDB"
-        />
-      </div>
-      <div className="flex h-80 shrink flex-col overflow-y-auto pr-8">
-        <TabContent setStatus={setStatus} tab={activeTab} />
-      </div>
-      <Footer
-        nextPage="start-server"
-        saveFunction={handleSave}
-        status={status}
-      />
-    </TransitionDiv>
+      </TransitionDiv>
+    </>
   );
 }
 

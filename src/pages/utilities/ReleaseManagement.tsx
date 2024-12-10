@@ -90,7 +90,7 @@ const ReleaseManagement = ({ type }: Props) => {
 
   return (
     <>
-      <title>{`Utilities > ${type === 'multiples' ? 'Multiple Releases' : 'Duplicate Files'} | Shoko`}</title>
+      <title>{`${type === 'multiples' ? 'Multiple Releases' : 'Duplicate Files'} | Shoko`}</title>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto">
         <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
           <div className="flex items-center gap-x-3">
