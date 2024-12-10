@@ -62,7 +62,12 @@ function CollectionStats() {
       title="Collection Size"
       value={`${prettyBytes(statsQuery.data?.FileSize ?? 0, { binary: true })}`}
     />,
-    <Item key="files" title="Files" value={statsQuery.data?.FileCount} />,
+    <Item
+      key="files"
+      title="Files"
+      value={statsQuery.data?.FileCount}
+      link="/webui/utilities/file-search"
+    />,
     <Item
       key="unrecognized-files"
       title="Unknown Files"
@@ -73,9 +78,14 @@ function CollectionStats() {
       key="multiple-files"
       title="Duplicate Episodes"
       value={statsQuery.data?.EpisodesWithMultipleFiles}
-      link="/webui/utilities/release-management"
+      link="/webui/utilities/release-management/multiples"
     />,
-    <Item key="duplicate-files" title="Duplicate Hashes" value={statsQuery.data?.FilesWithDuplicateLocations} />,
+    <Item
+      key="duplicate-files"
+      title="Duplicate Hashes"
+      value={statsQuery.data?.EpisodesWithMultipleFiles}
+      link="/webui/utilities/release-management/duplicates"
+    />,
   ];
 
   const childrenThird = [
