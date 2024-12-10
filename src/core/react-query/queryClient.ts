@@ -2,6 +2,8 @@ import { QueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
 import toast from '@/components/Toast';
+import Events from '@/core/events';
+import store from '@/core/store';
 
 import type { QueryKey } from '@tanstack/react-query';
 import type { AxiosError, AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -27,6 +29,14 @@ const queryClient = new QueryClient({
         } else {
           errorHeader = '[API]';
           errorMessage = `Error ${error.message}`;
+        }
+
+        if (
+          isAxiosError(error) && (error.request as XMLHttpRequest).responseURL.endsWith('/Settings')
+          && errorStatus === 401
+        ) {
+          store.dispatch({ type: Events.AUTH_LOGOUT });
+          return false;
         }
 
         if (errorStatus !== 404 && failureCount < 4) return true; // 1 initial request + retry 4 times
