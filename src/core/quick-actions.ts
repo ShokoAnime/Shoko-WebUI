@@ -104,6 +104,11 @@ const quickActions = {
     functionName: 'ValidateAllImages',
     info: 'Identifies any invalid images and re-downloads them.',
   },
+  'search-for-tmdb-matches': {
+    name: 'Search for TMDB Matches',
+    functionName: 'SearchForTmdbMatches',
+    info: 'Scan for TMDB matches for all unlinked AniDB anime.',
+  },
   'update-all-tmdb-movies': {
     name: 'Update All TMDB Movies',
     functionName: 'UpdateAllTmdbMovies',

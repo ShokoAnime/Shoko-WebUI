@@ -47,6 +47,7 @@ const actions = {
   tmdb: {
     title: 'TMDB',
     data: [
+      'search-for-tmdb-matches',
       'update-all-tmdb-shows',
       'delete-unused-tmdb-shows',
       'update-all-tmdb-movies',

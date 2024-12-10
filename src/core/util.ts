@@ -29,7 +29,7 @@ export function isDebug() {
   return DEV;
 }
 
-export const minimumSupportedServerVersion = '5.0.0.81';
+export const minimumSupportedServerVersion = '5.0.0.86';
 
 export const parseServerVersion = (version: string) => {
   const semverVersion = semver.coerce(version)?.raw;
