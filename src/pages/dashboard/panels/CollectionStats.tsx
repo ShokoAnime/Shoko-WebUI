@@ -83,7 +83,7 @@ function CollectionStats() {
     <Item
       key="duplicate-files"
       title="Duplicate Hashes"
-      value={statsQuery.data?.EpisodesWithMultipleFiles}
+      value={statsQuery.data?.FilesWithDuplicateLocations}
       link="/webui/utilities/release-management/duplicates"
     />,
   ];
