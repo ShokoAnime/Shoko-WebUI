@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { mdiCloseCircleOutline, mdiFileDocumentMultipleOutline, mdiRefresh, mdiSelectMultiple } from '@mdi/js';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useParams } from 'react-router';
+import {
+  mdiCloseCircleOutline,
+  mdiEyeOffOutline,
+  mdiFileDocumentMultipleOutline,
+  mdiRefresh,
+  mdiSelectMultiple,
+} from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 import { map, toNumber } from 'lodash';
@@ -16,43 +23,64 @@ import QuickSelectModal from '@/components/Utilities/ReleaseManagement/QuickSele
 import SeriesList from '@/components/Utilities/ReleaseManagement/SeriesList';
 import Title from '@/components/Utilities/ReleaseManagement/Title';
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
+import { useHideEpisodeMutation } from '@/core/react-query/episode/mutations';
 import {
   useDeleteFileLocationMutation,
   useDeleteFileMutation,
   useMarkVariationMutation,
 } from '@/core/react-query/file/mutations';
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
+import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { AxiosResponse } from 'axios';
 
-type Props = {
-  type: 'multiples' | 'duplicates';
-};
+const titleMap = {
+  [ReleaseManagementItemType.MultipleReleases]: 'Multiple Releases',
+  [ReleaseManagementItemType.DuplicateFiles]: 'Duplicate Files',
+  [ReleaseManagementItemType.MissingEpisodes]: 'Missing Episodes',
+} as const;
 
-const ReleaseManagement = ({ type }: Props) => {
-  const [ignoreVariations, toggleIgnoreVariations] = useToggle(true);
-  const [onlyFinishedSeries, toggleOnlyFinishedSeries] = useToggle(false);
+const ReleaseManagement = () => {
+  const { itemType } = useParams();
+
+  const type = useMemo(() => {
+    if (itemType === 'duplicates') return ReleaseManagementItemType.DuplicateFiles;
+    if (itemType === 'missing-episodes') return ReleaseManagementItemType.MissingEpisodes;
+    return ReleaseManagementItemType.MultipleReleases;
+  }, [itemType]);
+
+  const [ignoreVariations, toggleIgnoreVariations, setIgnoreVariations] = useToggle(true);
+  const [onlyCollecting, toggleOnlyCollecting, setOnlyCollecting] = useToggle(false);
+  const [onlyFinishedSeries, toggleOnlyFinishedSeries, setOnlyFinishedSeries] = useToggle(false);
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
+  const [selectedEpisodes, setSelectedEpisodes] = useState<EpisodeType[]>([]);
   const [operationsPending, setOperationsPending] = useState(false);
   const [fileOptions, setFileOptions] = useState<ReleaseManagementOptionsType>({});
   const [showQuickSelectModal, toggleShowQuickSelectModal] = useToggle(false);
 
-  useEffect(() => () => {
+  useEffect(() => {
+    setIgnoreVariations(true);
+    setOnlyCollecting(false);
+    setOnlyFinishedSeries(false);
     setSelectedSeries(0);
-  }, []);
+    setSelectedEpisode(undefined);
+    setSelectedEpisodes([]);
+  }, [itemType, setIgnoreVariations, setOnlyCollecting, setOnlyFinishedSeries]);
 
   const { mutateAsync: deleteFile } = useDeleteFileMutation();
   const { mutateAsync: markVariation } = useMarkVariationMutation();
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
+  const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
 
-  const handleCheckboxChange = (checkboxType: 'variations' | 'series') => {
-    if (checkboxType === 'variations') toggleIgnoreVariations();
-    if (checkboxType === 'series') toggleOnlyFinishedSeries();
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.id === 'ignore-variations') toggleIgnoreVariations();
+    if (event.target.id === 'only-collecting') toggleOnlyCollecting();
+    if (event.target.id === 'only-finished-series') toggleOnlyFinishedSeries();
   };
 
   const confirmChanges = useEventCallback(() => {
@@ -60,7 +88,7 @@ const ReleaseManagement = ({ type }: Props) => {
 
     let operations: (Promise<AxiosResponse<unknown, unknown>> | null)[];
 
-    if (type === 'multiples') {
+    if (type === ReleaseManagementItemType.MultipleReleases) {
       operations = map(fileOptions, (option, id) => {
         if (!selectedEpisode) return null;
 
@@ -88,9 +116,24 @@ const ReleaseManagement = ({ type }: Props) => {
       });
   });
 
+  const hideEpisodes = useEventCallback(() => {
+    setOperationsPending(true);
+
+    const operations = map(selectedEpisodes, episode => hideEpisode({ episodeId: episode.IDs.ID, hidden: true }));
+
+    Promise.all(operations)
+      .then(() => toast.success('Successful!'))
+      .catch(() => toast.error('One or more operations failed!'))
+      .finally(() => {
+        setOperationsPending(false);
+        resetQueries(['release-management']);
+        setSelectedEpisodes([]);
+      });
+  });
+
   return (
     <>
-      <title>{`${type === 'multiples' ? 'Multiple Releases' : 'Duplicate Files'} | Shoko`}</title>
+      <title>{`${titleMap[type]} | Shoko`}</title>
       <div className="flex grow flex-col gap-y-6 overflow-y-auto">
         <ShokoPanel title={<Title />} options={<ItemCount count={seriesCount} suffix="Series" />}>
           <div className="flex items-center gap-x-3">
@@ -106,12 +149,22 @@ const ReleaseManagement = ({ type }: Props) => {
                 name="Refresh"
               />
 
-              {type === 'multiples' && (
+              {type === ReleaseManagementItemType.MultipleReleases && (
                 <Checkbox
                   id="ignore-variations"
                   isChecked={ignoreVariations}
-                  onChange={() => handleCheckboxChange('variations')}
+                  onChange={handleCheckboxChange}
                   label="Ignore Variations"
+                  labelRight
+                />
+              )}
+
+              {type === ReleaseManagementItemType.MissingEpisodes && (
+                <Checkbox
+                  id="only-collecting"
+                  isChecked={onlyCollecting}
+                  onChange={handleCheckboxChange}
+                  label="Only Collecting"
                   labelRight
                 />
               )}
@@ -119,7 +172,7 @@ const ReleaseManagement = ({ type }: Props) => {
               <Checkbox
                 id="only-finished-series"
                 isChecked={onlyFinishedSeries}
-                onChange={() => handleCheckboxChange('series')}
+                onChange={handleCheckboxChange}
                 label="Only Finished Series"
                 labelRight
               />
@@ -137,7 +190,7 @@ const ReleaseManagement = ({ type }: Props) => {
             {/*   </Button> */}
             {/* )} */}
 
-            {(type === 'multiples' && !selectedEpisode) && (
+            {(type === ReleaseManagementItemType.MultipleReleases && !selectedEpisode) && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
@@ -146,6 +199,18 @@ const ReleaseManagement = ({ type }: Props) => {
               >
                 <Icon path={mdiSelectMultiple} size={0.8333} />
                 Quick Select
+              </Button>
+            )}
+
+            {(type === ReleaseManagementItemType.MissingEpisodes) && (
+              <Button
+                buttonType="primary"
+                className="flex gap-x-2.5 px-4 py-3 font-semibold"
+                onClick={hideEpisodes}
+                loading={operationsPending}
+              >
+                <Icon path={mdiEyeOffOutline} size={0.8333} />
+                Hide
               </Button>
             )}
 
@@ -178,23 +243,27 @@ const ReleaseManagement = ({ type }: Props) => {
             <SeriesList
               type={type}
               ignoreVariations={ignoreVariations}
+              onlyCollecting={onlyCollecting}
               onlyFinishedSeries={onlyFinishedSeries}
               setSelectedEpisode={setSelectedEpisode}
+              setSelectedEpisodes={setSelectedEpisodes}
               setSelectedSeriesId={setSelectedSeries}
               setSeriesCount={setSeriesCount}
             />
           </TransitionDiv>
 
-          <TransitionDiv
-            show={!!selectedEpisode}
-            className="absolute flex size-full flex-col gap-y-6 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6"
-          >
-            <Episode
-              type={type}
-              episode={selectedEpisode}
-              setFileOptions={setFileOptions}
-            />
-          </TransitionDiv>
+          {type !== ReleaseManagementItemType.MissingEpisodes && (
+            <TransitionDiv
+              show={!!selectedEpisode}
+              className="absolute flex size-full flex-col gap-y-6 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6"
+            >
+              <Episode
+                type={type}
+                episode={selectedEpisode}
+                setFileOptions={setFileOptions}
+              />
+            </TransitionDiv>
+          )}
         </div>
 
         <QuickSelectModal

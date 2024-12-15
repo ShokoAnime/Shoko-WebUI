@@ -5,13 +5,14 @@ import { countBy, flatMap, forEach, map, toNumber } from 'lodash';
 
 import FileInfo from '@/components/FileInfo';
 import Select from '@/components/Input/Select';
+import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
 
 type Props = {
-  type: 'multiples' | 'duplicates';
+  type: ReleaseManagementItemType;
   episode: EpisodeType | undefined;
   setFileOptions: (options: ReleaseManagementOptionsType) => void;
 };
@@ -22,7 +23,7 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
       const tempOptions: ReleaseManagementOptionsType = {};
       if (!episode) return tempOptions;
 
-      if (type === 'multiples') {
+      if (type === ReleaseManagementItemType.MultipleReleases) {
         forEach(episode.Files, (file) => {
           if (file.IsVariation) tempOptions[file.ID] = 'variation';
           else tempOptions[file.ID] = 'keep';
@@ -61,7 +62,7 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
         <div>
           <span className="text-panel-text-important">{optionCounts.keep ?? 0}</span>
           &nbsp;Kept |&nbsp;
-          {type === 'multiples' && (
+          {type === ReleaseManagementItemType.MultipleReleases && (
             <>
               <span className="text-panel-text-warning">{optionCounts.variation ?? 0}</span>
               &nbsp;Variation |&nbsp;
@@ -72,7 +73,7 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
         </div>
       </div>
 
-      {type === 'duplicates' && flatMap(episode.Files, file =>
+      {type === ReleaseManagementItemType.DuplicateFiles && flatMap(episode.Files, file =>
         map(file.Locations, (location, index) => {
           const absolutePath = location.AbsolutePath ?? '??';
           const fileName = absolutePath.split(/[/\\]+/).pop();
@@ -131,7 +132,7 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
           );
         }))}
 
-      {type === 'multiples' && episode.Files?.map(file => (
+      {type === ReleaseManagementItemType.MultipleReleases && episode.Files?.map(file => (
         <div
           key={file.ID}
           className="flex justify-between gap-x-4 rounded-lg border border-panel-border bg-panel-background-alt p-4"

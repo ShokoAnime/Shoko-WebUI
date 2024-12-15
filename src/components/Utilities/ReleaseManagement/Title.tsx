@@ -21,6 +21,8 @@ const Title = () => (
     <TabButton id="multiples" name="Multiples" />
     <div>|</div>
     <TabButton id="duplicates" name="Duplicates" />
+    <div>|</div>
+    <TabButton id="missing-episodes" name="Missing Episodes" />
   </div>
 );
 
