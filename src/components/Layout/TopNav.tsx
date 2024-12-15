@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import AnimateHeight from 'react-animate-height';
 import { useDispatch, useSelector } from 'react-redux';
-import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router';
 import {
   mdiCogOutline,
   mdiDownloadCircleOutline,
@@ -45,6 +45,7 @@ import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';
 import { NetworkAvailabilityEnum } from '@/core/signalr/types';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import AniDBBanDetectionItem from './AniDBBanDetectionItem';
 
@@ -72,7 +73,7 @@ const QueueCount = () => {
 function TopNav() {
   const dispatch = useDispatch();
 
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
   const { pathname } = useLocation();
 
   const networkStatus = useSelector((state: RootState) => state.mainpage.networkStatus);

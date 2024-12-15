@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router';
 import {
   mdiChevronLeft,
   mdiChevronRight,
@@ -47,6 +47,7 @@ import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
 import useMediaInfo from '@/hooks/useMediaInfo';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
@@ -65,7 +66,7 @@ const Menu = (
   } = props;
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 

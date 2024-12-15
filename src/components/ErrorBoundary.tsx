@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useRouteError } from 'react-router-dom';
+import { useRouteError } from 'react-router';
 
 import ShokoMascot from '@/../images/shoko_mascot.png';
 import Button from '@/components/Input/Button';
@@ -8,6 +8,7 @@ import Events from '@/core/events';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useUpdateWebuiMutation } from '@/core/react-query/webui/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type RouteError = {
   data: string;
@@ -19,7 +20,7 @@ type RouteError = {
 const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () => void }) => {
   const dispatch = useDispatch();
   const routeError = useRouteError() as RouteError;
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const versionQuery = useVersionQuery();
   const { isPending: isUpdateWebuiPending, mutate: updateWebui } = useUpdateWebuiMutation();

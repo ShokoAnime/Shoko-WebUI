@@ -1,16 +1,16 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
 import toast from '@/components/Toast';
 import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
   seriesId: number;
 };
 
 const DeleteActionsTab = ({ seriesId }: Props) => {
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
 

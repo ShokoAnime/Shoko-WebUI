@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate, useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
@@ -8,6 +8,7 @@ import { useLoginMutation } from '@/core/react-query/auth/mutations';
 import { useStartServerMutation } from '@/core/react-query/init/mutations';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import Footer from './Footer';
 
@@ -19,7 +20,7 @@ type OutletContextType = {
 
 function StartServer() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const [pollingInterval, setPollingInterval] = useState(0);
 

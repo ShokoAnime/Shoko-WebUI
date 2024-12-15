@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useParams } from 'react-router';
-import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useParams, useSearchParams } from 'react-router';
 import cx from 'classnames';
 import { cloneDeep, toNumber } from 'lodash';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
@@ -27,6 +26,7 @@ import { resetFilter } from '@/core/slices/collection';
 import { buildFilter } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
 import type { FilterCondition, FilterType, SortingCriteria } from '@/core/types/api/filter';
@@ -89,7 +89,7 @@ function Collection() {
   const isLiveFilter = useMemo(() => pathname.endsWith('/live'), [pathname]);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const [searchParams, setSearchParams] = useSearchParams();
   const groupSearch = useMemo(() => searchParams.get('q') ?? '', [searchParams]);

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import { mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -9,6 +8,7 @@ import Button from '@/components/Input/Button';
 import { resetFilter, setFilterTag } from '@/core/slices/collection';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
   tagType: 'User' | 'AniDB';
@@ -18,7 +18,7 @@ type Props = {
 
 const TagButton = React.memo(({ tagType, text, type }: Props) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
   const handleClick = useEventCallback(() => {
     dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {

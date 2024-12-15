@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 import { useParams } from 'react-router';
-import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 import { toNumber } from 'lodash';
 
@@ -10,6 +9,7 @@ import { resetFilter, setFilterValues } from '@/core/slices/collection';
 import { convertTimeSpanToMs, dayjs } from '@/core/util';
 import { addFilterCriteriaToStore } from '@/core/utilities/filter';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesType } from '@/core/types/api/series';
 import type { WebuiSeriesDetailsType } from '@/core/types/api/webui';
@@ -22,7 +22,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
   const { seriesId } = useParams();
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   // Series Data;
   const seriesOverviewQuery = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);

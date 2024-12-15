@@ -1,18 +1,18 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import Button from '@/components/Input/Button';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useServerStatusQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 function Acknowledgement() {
   const dispatch = useDispatch();
 
   const serverStatusQuery = useServerStatusQuery();
 
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const handleNext = () => {
     dispatch(setFirstRunSaved('acknowledgement'));

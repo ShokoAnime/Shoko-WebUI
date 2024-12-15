@@ -1,10 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import cx from 'classnames';
 
 import Button from '@/components/Input/Button';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { TestStatusType } from '@/core/slices/firstrun';
 
@@ -19,7 +19,7 @@ type Props = {
 };
 
 function Footer(props: Props) {
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const { mutate: runAction } = useRunActionMutation();
 

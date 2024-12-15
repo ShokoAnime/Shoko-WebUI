@@ -1,8 +1,7 @@
 /* global globalThis */
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Navigate, Route } from 'react-router';
-import { RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router';
 import * as Sentry from '@sentry/react';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -53,7 +52,7 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 
 import type { RootState } from '@/core/store';
 
-const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouter(createBrowserRouter);
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV7(createBrowserRouter);
 
 const router = sentryCreateBrowserRouter(
   createRoutesFromElements(
@@ -129,11 +128,6 @@ const router = sentryCreateBrowserRouter(
       </Route>
     </Route>,
   ),
-  {
-    future: {
-      v7_relativeSplatPath: true,
-    },
-  },
 );
 
 const Router = () => {
@@ -163,12 +157,7 @@ const Router = () => {
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
       <BodyVisibleContext.Provider value={bodyVisible}>
-        <RouterProvider
-          router={router}
-          future={{
-            v7_startTransition: true,
-          }}
-        />
+        <RouterProvider router={router} />
       </BodyVisibleContext.Provider>
     </div>
   );

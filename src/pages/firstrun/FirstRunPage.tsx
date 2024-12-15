@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Outlet } from 'react-router';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { siDiscord } from 'simple-icons';
@@ -11,6 +10,7 @@ import ShokoIcon from '@/components/ShokoIcon';
 import { useServerStatusQuery, useVersionQuery } from '@/core/react-query/init/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { RootState } from '@/core/store';
 
@@ -37,7 +37,7 @@ const MenuItem = ({ id, text }: { text: string, id: string }) => {
 };
 
 function FirstRunPage() {
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const versionQuery = useVersionQuery();
   const settingsQuery = useSettingsQuery();

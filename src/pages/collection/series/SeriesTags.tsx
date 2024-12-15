@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 import { mdiLoading, mdiTagTextOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useDebounceValue, useToggle } from 'usehooks-ts';
