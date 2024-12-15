@@ -129,6 +129,11 @@ const router = sentryCreateBrowserRouter(
       </Route>
     </Route>,
   ),
+  {
+    future: {
+      v7_relativeSplatPath: true,
+    },
+  },
 );
 
 const Router = () => {
@@ -158,7 +163,12 @@ const Router = () => {
   return (
     <div id="app-container" className="flex h-screen" ref={bodyRef}>
       <BodyVisibleContext.Provider value={bodyVisible}>
-        <RouterProvider router={router} />
+        <RouterProvider
+          router={router}
+          future={{
+            v7_startTransition: true,
+          }}
+        />
       </BodyVisibleContext.Provider>
     </div>
   );
