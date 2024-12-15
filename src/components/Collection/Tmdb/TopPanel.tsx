@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { mdiLinkPlus } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -9,6 +8,7 @@ import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import ItemCount from '@/components/Utilities/ItemCount';
 import { MatchRatingType } from '@/core/types/api/episode';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 
@@ -23,7 +23,7 @@ type Props = {
 
 const TopPanel = (props: Props) => {
   const { createInProgress, disableCreateLink, handleCreateLink, seriesId, xrefs, xrefsCount } = props;
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const flatXrefs = useMemo(
     () => {

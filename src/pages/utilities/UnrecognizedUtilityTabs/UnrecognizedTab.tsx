@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 import useMeasure from 'react-use-measure';
 import {
   mdiCloseCircleOutline,
@@ -49,6 +48,7 @@ import { FileSortCriteriaEnum } from '@/core/types/api/file';
 import getEd2kLink from '@/core/utilities/getEd2kLink';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 import useRowSelection from '@/hooks/useRowSelection';
 import useTableSearchSortCriteria from '@/hooks/utilities/useTableSearchSortCriteria';
 
@@ -71,7 +71,7 @@ const Menu = (
   } = props;
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const [showConfirmModal, setShowConfirmModal] = useState(false);
 
@@ -240,7 +240,7 @@ const Menu = (
 };
 
 function UnrecognizedTab() {
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const {
     debouncedSearch,

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 import Input from '@/components/Input/Input';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useSetDefaultUserMutation } from '@/core/react-query/init/mutations';
 import { useDefaultUserQuery } from '@/core/react-query/init/queries';
 import { setSaved as setFirstRunSaved, setUser as setUserState } from '@/core/slices/firstrun';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import Footer from './Footer';
 
@@ -14,7 +14,7 @@ import type { TestStatusType } from '@/core/slices/firstrun';
 
 function LocalAccount() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const { isPending: createUserPending, mutate: createUser } = useSetDefaultUserMutation();
   const defaultUserQuery = useDefaultUserQuery();

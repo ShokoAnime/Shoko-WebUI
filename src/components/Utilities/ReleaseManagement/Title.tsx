@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { mdiChevronRight } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
@@ -21,6 +21,8 @@ const Title = () => (
     <TabButton id="multiples" name="Multiples" />
     <div>|</div>
     <TabButton id="duplicates" name="Duplicates" />
+    <div>|</div>
+    <TabButton id="missing-episodes" name="Missing Episodes" />
   </div>
 );
 

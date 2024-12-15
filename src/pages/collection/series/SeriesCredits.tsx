@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext } from 'react-router';
 
 import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
 import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';

@@ -105,6 +105,7 @@
           { "group": ["usehooks-ts"], "importNames": ["useCopyToClipboard"], "message": "Please use copyToClipboard from @/core/util instead." }
         ],
         "paths": [
+          { "name": "react-router", "importNames": ["useNavigate"], "message": "Please use @/hooks/useNavigateVoid instead." },
           { "name": "usehooks-ts", "importNames": ["useEventCallback"], "message": "Please use @/hooks/useEventCallback instead." }
         ]
       }

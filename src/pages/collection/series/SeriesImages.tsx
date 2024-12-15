@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate, useParams } from 'react-router';
-import { useOutletContext } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router';
 import { mdiStarCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -14,6 +13,7 @@ import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
@@ -43,7 +43,7 @@ const SeriesImages = () => {
 
   const { series } = useOutletContext<SeriesContextType>();
 
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
 
   const tabType = useMemo(() => {
     if (!imageType) return 'Posters';

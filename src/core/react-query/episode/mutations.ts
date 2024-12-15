@@ -9,7 +9,7 @@ import type { ListResultType } from '@/core/types/api';
 import type { EpisodeType } from '@/core/types/api/episode';
 import type { InfiniteData } from '@tanstack/react-query';
 
-export const useHideEpisodeMutation = (seriesId: number, nextUp = false) =>
+export const useHideEpisodeMutation = (seriesId?: number, nextUp = false) =>
   useMutation({
     mutationFn: ({ episodeId, hidden }: HideEpisodeRequestType) =>
       axios.post(
@@ -23,6 +23,8 @@ export const useHideEpisodeMutation = (seriesId: number, nextUp = false) =>
         },
       ),
     onSuccess: () => {
+      if (!seriesId) return;
+
       invalidateQueries(['series', seriesId, 'data']);
 
       if (nextUp) {

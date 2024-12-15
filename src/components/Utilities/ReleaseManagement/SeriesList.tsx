@@ -8,8 +8,11 @@ import {
   useReleaseManagementSeries,
   useReleaseManagementSeriesEpisodes,
 } from '@/core/react-query/release-management/queries';
+import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
+import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useRowSelection from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -127,29 +130,65 @@ const duplicatesEpisodeFileCountColumn: UtilityHeaderType<EpisodeType> = {
 };
 
 type Props = {
-  type: 'multiples' | 'duplicates';
+  type: ReleaseManagementItemType;
   ignoreVariations: boolean;
+  onlyCollecting: boolean;
   onlyFinishedSeries: boolean;
   setSelectedEpisode: (episode: EpisodeType) => void;
+  setSelectedEpisodes: (episodes: EpisodeType[]) => void;
   setSelectedSeriesId: (id: number) => void;
   setSeriesCount: (count: number) => void;
 };
 
 const SeriesList = (
-  { ignoreVariations, onlyFinishedSeries, setSelectedEpisode, setSelectedSeriesId, setSeriesCount, type }: Props,
+  {
+    ignoreVariations,
+    onlyCollecting,
+    onlyFinishedSeries,
+    setSelectedEpisode,
+    setSelectedEpisodes,
+    setSelectedSeriesId,
+    setSeriesCount,
+    type,
+  }: Props,
 ) => {
   const [selectedSeries, setSelectedSeries] = useState(0);
 
-  const seriesQuery = useReleaseManagementSeries(type, { ignoreVariations, onlyFinishedSeries, pageSize: 25 });
+  const seriesQuery = useReleaseManagementSeries(
+    type,
+    { ignoreVariations, collecting: onlyCollecting, onlyFinishedSeries, pageSize: 25 },
+  );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
   const episodesQuery = useReleaseManagementSeriesEpisodes(
     type,
     selectedSeries,
-    { ignoreVariations, includeDataFrom: ['AniDB'], includeAbsolutePaths: true, pageSize: 25 },
+    {
+      ignoreVariations,
+      collecting: onlyCollecting,
+      includeDataFrom: ['AniDB'],
+      includeAbsolutePaths: true,
+      pageSize: 25,
+    },
     selectedSeries > 0,
   );
   const [episodes, episodeCount] = useFlattenListResult(episodesQuery.data);
+
+  const {
+    handleRowSelect,
+    rowSelection,
+    selectedRows,
+    setRowSelection,
+  } = useRowSelection<EpisodeType>(episodes);
+
+  useEffect(() => {
+    setSelectedEpisodes(selectedRows);
+  }, [selectedRows, setSelectedEpisodes]);
+
+  const handleEpisodeSelect = useEventCallback((episodeId: number, select: boolean) => {
+    if (type === ReleaseManagementItemType.MissingEpisodes) handleRowSelect(episodeId, select);
+    else setSelectedEpisode(episodes.filter(episode => episode.IDs.ID === episodeId)[0]);
+  });
 
   useEffect(() => {
     setSelectedSeriesId(selectedSeries);
@@ -161,10 +200,26 @@ const SeriesList = (
     setSelectedSeries(0);
   }, [seriesQuery.data]);
 
-  const episodeColumns = useMemo(() => [
-    episodeNameColumn,
-    type === 'multiples' ? multiplesEpisodeFileCountColumn : duplicatesEpisodeFileCountColumn,
-  ], [type]);
+  const episodeColumns = useMemo(() => {
+    if (type !== ReleaseManagementItemType.MissingEpisodes) {
+      return [
+        episodeNameColumn,
+        type === ReleaseManagementItemType.MultipleReleases
+          ? multiplesEpisodeFileCountColumn
+          : duplicatesEpisodeFileCountColumn,
+      ];
+    }
+
+    return [
+      episodeNameColumn,
+      {
+        id: 'selected-count',
+        name: selectedRows.length > 0 ? `${selectedRows.length} Selected` : '',
+        className: 'w-28 text-panel-text-important',
+        item: () => <div />,
+      },
+    ];
+  }, [selectedRows.length, type]);
 
   return (
     <>
@@ -178,7 +233,9 @@ const SeriesList = (
         {!seriesQuery.isPending && seriesCount === 0 && (
           <div className="flex grow items-center justify-center text-lg font-semibold">
             No series with
-            {type === 'multiples' ? ' multiple releases!' : ' duplicate files!'}
+            {type === ReleaseManagementItemType.MultipleReleases && ' multiple releases!'}
+            {type === ReleaseManagementItemType.DuplicateFiles && ' duplicate files!'}
+            {type === ReleaseManagementItemType.MissingEpisodes && ' missing episodes!'}
           </div>
         )}
 
@@ -197,7 +254,7 @@ const SeriesList = (
       </div>
 
       <div className="flex w-1/2 overflow-y-auto rounded-md border border-panel-border bg-panel-background p-6">
-        {selectedSeries === 0 && <div className="m-auto text-lg font-semibold">Select Series to Populate</div>}
+        {selectedSeries === 0 && <div className="m-auto text-lg font-semibold">Select series to populate</div>}
 
         {selectedSeries > 0 && episodesQuery.isPending && (
           <div className="flex grow items-center justify-center text-panel-text-primary">
@@ -213,8 +270,9 @@ const SeriesList = (
             isFetchingNextPage={episodesQuery.isFetchingNextPage}
             rows={episodes}
             skipSort
-            handleRowSelect={(id, _) => setSelectedEpisode(episodes.filter(episode => episode.IDs.ID === id)[0])}
-            rowSelection={{}}
+            handleRowSelect={handleEpisodeSelect}
+            rowSelection={rowSelection}
+            setSelectedRows={setRowSelection}
           />
         )}
       </div>

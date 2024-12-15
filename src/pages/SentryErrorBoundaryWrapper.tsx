@@ -1,16 +1,16 @@
 import React, { useEffect } from 'react';
-import { Outlet } from 'react-router';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router';
 import * as Sentry from '@sentry/react';
 import semver from 'semver';
 
 import ErrorBoundary from '@/components/ErrorBoundary';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { getParsedSupportedServerVersion, isDebug, parseServerVersion } from '@/core/util';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 const SentryErrorBoundaryWrapper = () => {
   const { pathname } = useLocation();
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
   const versionQuery = useVersionQuery();
 
   useEffect(() => {

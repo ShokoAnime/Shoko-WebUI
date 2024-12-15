@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useParams } from 'react-router';
-import { useNavigate, useOutletContext, useSearchParams } from 'react-router-dom';
+import { useOutletContext, useParams, useSearchParams } from 'react-router';
 import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
@@ -33,6 +32,7 @@ import {
 import { EpisodeTypeEnum, MatchRatingType } from '@/core/types/api/episode';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
+import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { TmdbEpisodeXrefMappingRequestType } from '@/core/react-query/tmdb/types';
@@ -41,7 +41,7 @@ import type { TmdbEpisodeXrefType } from '@/core/types/api/tmdb';
 const TmdbLinking = () => {
   const seriesId = toNumber(useParams().seriesId);
 
-  const navigate = useNavigate();
+  const navigate = useNavigateVoid();
   if (seriesId === 0) {
     navigate('..');
   }

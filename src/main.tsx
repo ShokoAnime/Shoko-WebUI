@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router-dom';
+import { createRoutesFromChildren, matchRoutes, useLocation, useNavigationType } from 'react-router';
 import * as Sentry from '@sentry/react';
 import { createRoot } from 'react-dom/client';
 
@@ -13,7 +13,7 @@ if (!isDebug()) {
     environment: 'production',
     release: `shoko-webui@${uiVersion()}`,
     integrations: [
-      Sentry.reactRouterV6BrowserTracingIntegration({
+      Sentry.reactRouterV7BrowserTracingIntegration({
         useEffect: React.useEffect,
         useLocation,
         useNavigationType,
