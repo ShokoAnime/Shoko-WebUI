@@ -100,13 +100,13 @@ function CollectionStats() {
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
-      filter="HasMissingEpisodesCollecting"
+      link="/webui/utilities/release-management/missing-episodes?onlyCollecting=true"
     />,
     <Item
       key="missing-episodes"
       title="Missing Episodes (Total)"
       value={statsQuery.data?.MissingEpisodes}
-      filter="HasMissingEpisodes"
+      link="/webui/utilities/release-management/missing-episodes"
     />,
   ];
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 import {
   mdiCloseCircleOutline,
   mdiEyeOffOutline,
@@ -45,6 +45,7 @@ const titleMap = {
 
 const ReleaseManagement = () => {
   const { itemType } = useParams();
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const type = useMemo(() => {
     if (itemType === 'duplicates') return ReleaseManagementItemType.DuplicateFiles;
@@ -52,9 +53,20 @@ const ReleaseManagement = () => {
     return ReleaseManagementItemType.MultipleReleases;
   }, [itemType]);
 
-  const [ignoreVariations, toggleIgnoreVariations, setIgnoreVariations] = useToggle(true);
-  const [onlyCollecting, toggleOnlyCollecting, setOnlyCollecting] = useToggle(false);
-  const [onlyFinishedSeries, toggleOnlyFinishedSeries, setOnlyFinishedSeries] = useToggle(false);
+  const filterOptions = useMemo(() => ({
+    ignoreVariations: (searchParams.get('ignoreVariations') ?? 'true') === 'true',
+    onlyCollecting: searchParams.get('onlyCollecting') === 'true',
+    onlyFinishedSeries: searchParams.get('onlyFinishedSeries') === 'true',
+  }), [searchParams]);
+
+  const handleFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      newParams.set(event.target.id, String(event.target.checked));
+      return newParams;
+    });
+  });
+
   const [seriesCount, setSeriesCount] = useState(0);
   const [selectedSeries, setSelectedSeries] = useState(0);
   const [selectedEpisode, setSelectedEpisode] = useState<EpisodeType>();
@@ -64,24 +76,15 @@ const ReleaseManagement = () => {
   const [showQuickSelectModal, toggleShowQuickSelectModal] = useToggle(false);
 
   useEffect(() => {
-    setIgnoreVariations(true);
-    setOnlyCollecting(false);
-    setOnlyFinishedSeries(false);
     setSelectedSeries(0);
     setSelectedEpisode(undefined);
     setSelectedEpisodes([]);
-  }, [itemType, setIgnoreVariations, setOnlyCollecting, setOnlyFinishedSeries]);
+  }, [itemType]);
 
   const { mutateAsync: deleteFile } = useDeleteFileMutation();
   const { mutateAsync: markVariation } = useMarkVariationMutation();
   const { mutateAsync: deleteFileLocation } = useDeleteFileLocationMutation();
   const { mutateAsync: hideEpisode } = useHideEpisodeMutation();
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.id === 'ignore-variations') toggleIgnoreVariations();
-    if (event.target.id === 'only-collecting') toggleOnlyCollecting();
-    if (event.target.id === 'only-finished-series') toggleOnlyFinishedSeries();
-  };
 
   const confirmChanges = useEventCallback(() => {
     setOperationsPending(true);
@@ -151,9 +154,9 @@ const ReleaseManagement = () => {
 
               {type === ReleaseManagementItemType.MultipleReleases && (
                 <Checkbox
-                  id="ignore-variations"
-                  isChecked={ignoreVariations}
-                  onChange={handleCheckboxChange}
+                  id="ignoreVariations"
+                  isChecked={filterOptions.ignoreVariations}
+                  onChange={handleFilterChange}
                   label="Ignore Variations"
                   labelRight
                 />
@@ -161,18 +164,18 @@ const ReleaseManagement = () => {
 
               {type === ReleaseManagementItemType.MissingEpisodes && (
                 <Checkbox
-                  id="only-collecting"
-                  isChecked={onlyCollecting}
-                  onChange={handleCheckboxChange}
+                  id="onlyCollecting"
+                  isChecked={filterOptions.onlyCollecting}
+                  onChange={handleFilterChange}
                   label="Only Collecting"
                   labelRight
                 />
               )}
 
               <Checkbox
-                id="only-finished-series"
-                isChecked={onlyFinishedSeries}
-                onChange={handleCheckboxChange}
+                id="onlyFinishedSeries"
+                isChecked={filterOptions.onlyFinishedSeries}
+                onChange={handleFilterChange}
                 label="Only Finished Series"
                 labelRight
               />
@@ -242,9 +245,9 @@ const ReleaseManagement = () => {
           <TransitionDiv show={!selectedEpisode} className="absolute flex size-full gap-x-3">
             <SeriesList
               type={type}
-              ignoreVariations={ignoreVariations}
-              onlyCollecting={onlyCollecting}
-              onlyFinishedSeries={onlyFinishedSeries}
+              ignoreVariations={filterOptions.ignoreVariations}
+              onlyCollecting={filterOptions.onlyCollecting}
+              onlyFinishedSeries={filterOptions.onlyFinishedSeries}
               setSelectedEpisode={setSelectedEpisode}
               setSelectedEpisodes={setSelectedEpisodes}
               setSelectedSeriesId={setSelectedSeries}
