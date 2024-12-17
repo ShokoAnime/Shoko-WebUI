@@ -12,7 +12,6 @@ import {
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
-import 'react-toastify/dist/ReactToastify.min.css';
 import { siDiscord } from 'simple-icons';
 
 import Button from '@/components/Input/Button';
