@@ -101,8 +101,6 @@ const Action = ({ actionKey, length }: { actionKey: string, length: number }) =>
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
-    setTimeout(() => {
-    }, 2000);
   });
 
   return (

@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Outlet } from 'react-router';
 import { Slide, ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.min.css';
 import { Tooltip } from 'react-tooltip';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
