@@ -4,7 +4,6 @@ import { useOutletContext } from 'react-router';
 import CreditsSearchAndFilterPanel from '@/components/Collection/Credits/CreditsSearchAndFilterPanel';
 import StaffPanelVirtualizer from '@/components/Collection/Credits/CreditsStaffVirtualizer';
 import MultiStateButton from '@/components/Input/MultiStateButton';
-import toast from '@/components/Toast';
 import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
 import { useSeriesCastQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -26,12 +25,12 @@ const modeStates: { label?: string, value: CreditsModeType }[] = [
 const SeriesCredits = () => {
   const { series } = useOutletContext<SeriesContextType>();
 
-  const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation();
+  const { isPending: pendingRefreshAniDb, mutate: refreshAniDbMutation } = useRefreshSeriesAniDBInfoMutation(
+    series.IDs.ID,
+  );
 
   const refreshAniDb = useEventCallback(() => {
-    refreshAniDbMutation({ seriesId: series.IDs.ID, force: true }, {
-      onSuccess: () => toast.success('AniDB refresh queued!'),
-    });
+    refreshAniDbMutation({ force: true });
   });
 
   const [mode, setMode] = useState<CreditsModeType>(modeStates[0].value);

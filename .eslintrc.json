@@ -106,6 +106,7 @@
         ],
         "paths": [
           { "name": "react-router", "importNames": ["useNavigate"], "message": "Please use @/hooks/useNavigateVoid instead." },
+          { "name": "react-toastify", "importNames": ["toast"], "message": "Please use @/components/Toast instead." },
           { "name": "usehooks-ts", "importNames": ["useEventCallback"], "message": "Please use @/hooks/useEventCallback instead." }
         ]
       }

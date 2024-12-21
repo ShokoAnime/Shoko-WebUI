@@ -10,7 +10,6 @@ import EpisodeSearchAndFilterPanel from '@/components/Collection/Episode/Episode
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import EpisodeWatchModal from '@/components/Collection/Episode/EpisodeWatchModal';
 import Button from '@/components/Input/Button';
-import toast from '@/components/Toast';
 import { useWatchSeriesEpisodesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesEpisodesInfiniteQuery } from '@/core/react-query/series/queries';
 import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
@@ -88,7 +87,7 @@ const SeriesEpisodes = () => {
   } = seriesEpisodesQuery;
   const [episodes, episodeCount] = useFlattenListResult(data);
 
-  const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation();
+  const { mutate: watchEpisode } = useWatchSeriesEpisodesMutation(series.IDs.ID);
 
   const hasMissingEpisodes = useMemo(
     () => ((series.Sizes.Missing.Episodes ?? 0) > 0),
@@ -127,19 +126,8 @@ const SeriesEpisodes = () => {
     [fetchNextPage],
   );
 
-  const handleMarkWatched = useEventCallback((watched: boolean) => {
-    watchEpisode({
-      seriesId: series.IDs.ID,
-      value: watched,
-      ...filterOptions,
-    }, {
-      onSuccess: () => toast.success(`Episodes marked as ${watched ? 'watched' : 'unwatched'}!`),
-      onError: () => toast.error(`Failed to mark episodes as ${watched ? 'watched' : 'unwatched'}!`),
-    });
-  });
-
-  const markFilteredWatched = useEventCallback(() => handleMarkWatched(true));
-  const markFilteredUnwatched = useEventCallback(() => handleMarkWatched(false));
+  const markFilteredWatched = useEventCallback(() => watchEpisode({ value: true, ...filterOptions }));
+  const markFilteredUnwatched = useEventCallback(() => watchEpisode({ value: false, ...filterOptions }));
 
   const resetSelection = useEventCallback(() => setSelectedEpisodes(new Set()));
 

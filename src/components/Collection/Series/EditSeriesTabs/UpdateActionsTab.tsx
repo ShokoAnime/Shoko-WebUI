@@ -1,29 +1,35 @@
 import React from 'react';
 
 import Action from '@/components/Collection/Series/EditSeriesTabs/Action';
-import toast from '@/components/Toast';
 import {
   useAutoSearchTmdbMatchMutation,
   useRefreshSeriesAniDBInfoMutation,
   useRefreshSeriesTMDBInfoMutation,
+  useRefreshSeriesTraktInfoMutation,
+  useSyncSeriesTraktMutation,
   useUpdateSeriesTMDBImagesMutation,
 } from '@/core/react-query/series/mutations';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   seriesId: number;
 };
 
 const UpdateActionsTab = ({ seriesId }: Props) => {
-  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
-  const { mutate: autoMatchTmdb } = useAutoSearchTmdbMatchMutation();
-  const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation();
-  const { mutate: updateTmdbImages } = useUpdateSeriesTMDBImagesMutation();
+  const { mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(seriesId);
+  const { mutate: autoMatchTmdb } = useAutoSearchTmdbMatchMutation(seriesId);
+  const { mutate: refreshTmdb } = useRefreshSeriesTMDBInfoMutation(seriesId);
+  const { mutate: updateTmdbImagesMutation } = useUpdateSeriesTMDBImagesMutation(seriesId);
+  const { mutate: refreshTrakt } = useRefreshSeriesTraktInfoMutation(seriesId);
+  const { mutate: syncTrakt } = useSyncSeriesTraktMutation(seriesId);
 
   const triggerAnidbRefresh = (force: boolean, cacheOnly: boolean) => {
-    refreshAnidb({ seriesId, force, cacheOnly }, {
-      onSuccess: () => toast.success('AniDB refresh queued!'),
-    });
+    refreshAnidb({ force, cacheOnly });
   };
+
+  const updateTmdbImagesForce = useEventCallback(() => {
+    updateTmdbImagesMutation({ force: true });
+  });
 
   return (
     <div className="flex h-[22rem] grow flex-col gap-y-4 overflow-y-auto">
@@ -45,26 +51,27 @@ const UpdateActionsTab = ({ seriesId }: Props) => {
       <Action
         name="Auto-Search TMDB Match"
         description="Automatically searches for a TMDB match."
-        onClick={() =>
-          autoMatchTmdb(seriesId, {
-            onSuccess: () => toast.success('TMDB refresh queued!'),
-          })}
+        onClick={autoMatchTmdb}
       />
       <Action
         name="Update TMDB Info"
         description="Gets the latest series information from TMDB."
-        onClick={() =>
-          refreshTmdb(seriesId, {
-            onSuccess: () => toast.success('TMDB refresh queued!'),
-          })}
+        onClick={refreshTmdb}
       />
       <Action
         name="Update TMDB Images - Force"
         description="Forces a complete redownload of images from TMDB."
-        onClick={() =>
-          updateTmdbImages({ seriesId, force: true }, {
-            onSuccess: () => toast.success('TMDB image download queued!'),
-          })}
+        onClick={updateTmdbImagesForce}
+      />
+      <Action
+        name="Update Trakt Show Info"
+        description="Gets the latest show information from Trakt."
+        onClick={refreshTrakt}
+      />
+      <Action
+        name="Sync Trakt Status"
+        description="Syncs episode status between Shoko and Trakt."
+        onClick={syncTrakt}
       />
     </div>
   );
