@@ -1,5 +1,5 @@
 import type { PaginationType } from '@/core/types/api';
-import type { DataSourceType, ImageType } from '@/core/types/api/common';
+import type { DataSourceType } from '@/core/types/api/common';
 import type { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 export enum IncludeOnlyFilterEnum {
@@ -16,11 +16,6 @@ type SeriesEpisodesBaseRequestType = {
   type?: EpisodeTypeEnum[];
   search?: string;
   fuzzy?: boolean;
-};
-
-export type ChangeSeriesImageRequestType = {
-  seriesId: number;
-  image: ImageType;
 };
 
 export type DeleteSeriesRequestType = {
@@ -73,12 +68,10 @@ export type RefreshAniDBSeriesRequestType = {
 };
 
 export type RefreshSeriesAniDBInfoRequestType = {
-  seriesId: number;
   force?: boolean;
   cacheOnly?: boolean;
 };
 
 export type WatchSeriesEpisodesRequestType = {
-  seriesId: number;
   value: boolean;
 } & SeriesEpisodesBaseRequestType;

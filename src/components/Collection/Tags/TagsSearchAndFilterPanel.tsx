@@ -5,7 +5,6 @@ import Icon from '@mdi/react';
 import Checkbox from '@/components/Input/Checkbox';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import { useRefreshSeriesAniDBInfoMutation } from '@/core/react-query/series/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -22,11 +21,9 @@ type Props = {
 };
 const TagsSearchAndFilterPanel = React.memo(
   ({ handleInputChange, search, seriesId, showSpoilers, sort, tagSourceFilter, toggleSort }: Props) => {
-    const { isPending: anidbRefreshPending, mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation();
+    const { isPending: anidbRefreshPending, mutate: refreshAnidb } = useRefreshSeriesAniDBInfoMutation(seriesId);
     const refreshAnidbCallback = useEventCallback(() => {
-      refreshAnidb({ seriesId, force: true }, {
-        onSuccess: () => toast.success('AniDB refresh queued!'),
-      });
+      refreshAnidb({ force: true });
     });
 
     const searchInput = useMemo(() => (

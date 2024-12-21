@@ -4,7 +4,6 @@ import cx from 'classnames';
 import { useToggle } from 'usehooks-ts';
 
 import Input from '@/components/Input/Input';
-import toast from '@/components/Toast';
 import { useOverrideSeriesTitleMutation } from '@/core/react-query/series/mutations';
 import { useSeriesQuery } from '@/core/react-query/series/queries';
 
@@ -18,7 +17,7 @@ const NameTab = ({ seriesId }: Props) => {
 
   const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
 
-  const { mutate: overrideTitle } = useOverrideSeriesTitleMutation();
+  const { mutate: overrideTitle } = useOverrideSeriesTitleMutation(seriesId);
 
   useEffect(() => {
     setName(seriesData?.Name ?? '');
@@ -50,12 +49,8 @@ const NameTab = ({ seriesId }: Props) => {
         icon: mdiCheckUnderlineCircleOutline,
         className: 'text-panel-text-primary',
         onClick: () =>
-          overrideTitle({ seriesId: seriesData.IDs.ID, Title: name }, {
-            onSuccess: () => {
-              toast.success('Name updated successfully!');
-              toggleNameEditable();
-            },
-            onError: () => toast.error('Name could not be updated!'),
+          overrideTitle(name, {
+            onSuccess: () => toggleNameEditable(),
           }),
         tooltip: 'Save name',
       },
@@ -66,7 +61,6 @@ const NameTab = ({ seriesId }: Props) => {
     name,
     nameEditable,
     overrideTitle,
-    seriesData?.IDs.ID,
     seriesData?.Name,
     toggleNameEditable,
   ]);

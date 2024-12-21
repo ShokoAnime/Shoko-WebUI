@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo, useRef } from 'react';
-import { toast } from 'react-toastify';
 import { mdiBrushOutline, mdiOpenInNew, mdiRefresh } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
@@ -8,6 +7,7 @@ import cx from 'classnames';
 import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import SelectSmall from '@/components/Input/SelectSmall';
+import toast from '@/components/Toast';
 import { useVersionQuery } from '@/core/react-query/init/queries';
 import { useWebuiUploadThemeMutation } from '@/core/react-query/webui/mutations';
 import { useWebuiThemesQuery, useWebuiUpdateCheckQuery } from '@/core/react-query/webui/queries';

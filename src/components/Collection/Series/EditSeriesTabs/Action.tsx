@@ -20,4 +20,4 @@ const Action = (
   </div>
 );
 
-export default Action;
+export default React.memo(Action);

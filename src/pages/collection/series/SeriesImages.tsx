@@ -9,7 +9,6 @@ import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlacehold
 import Button from '@/components/Input/Button';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
-import toast from '@/components/Toast';
 import { useChangeSeriesImageMutation } from '@/core/react-query/series/mutations';
 import { useSeriesImagesQuery } from '@/core/react-query/series/queries';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -51,7 +50,7 @@ const SeriesImages = () => {
   }, [imageType]);
   const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
   const images = useSeriesImagesQuery(series.IDs.ID).data;
-  const { mutate: changeImage } = useChangeSeriesImageMutation();
+  const { mutate: changeImage } = useChangeSeriesImageMutation(series.IDs.ID);
 
   const splitPath = split(selectedImage?.RelativeFilepath ?? '-', '/');
   const filename = splitPath[0] === '-' ? '-' : splitPath.pop();
@@ -63,11 +62,8 @@ const SeriesImages = () => {
 
   const handleSetPreferredImage = useEventCallback(() => {
     if (!selectedImage) return;
-    changeImage({ seriesId: series.IDs.ID, image: selectedImage }, {
-      onSuccess: () => {
-        setSelectedImage(null);
-        toast.success(`Series ${selectedImage.Type} image has been changed.`);
-      },
+    changeImage(selectedImage, {
+      onSuccess: () => setSelectedImage(null),
     });
   });
 
