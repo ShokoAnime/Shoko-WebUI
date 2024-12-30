@@ -62,8 +62,8 @@ const SeriesCredits = () => {
 
   const cast = useSeriesCastQuery(series.IDs.ID).data;
   const castByType = useMemo(() => ({
-    Character: cast?.filter(credit => credit.RoleName === 'Seiyuu') ?? [],
-    Staff: cast?.filter(credit => credit.RoleName !== 'Seiyuu') ?? [],
+    Character: cast?.filter(credit => credit.RoleName === 'Actor') ?? [],
+    Staff: cast?.filter(credit => credit.RoleName !== 'Actor') ?? [],
   }), [cast]);
 
   const uniqueRoles = useMemo(() => ({
@@ -89,7 +89,7 @@ const SeriesCredits = () => {
       <div className="flex w-full gap-x-6">
         <div className="flex flex-col gap-y-6">
           <CreditsSearchAndFilterPanel
-            inputPlaceholder={mode === 'Character' ? 'Character or Seiyuu\'s Name...' : 'Staff Name...'}
+            inputPlaceholder={mode === 'Character' ? 'Character or Actor\'s Name...' : 'Staff Name...'}
             search={search}
             roleFilter={roleFilter}
             uniqueRoles={uniqueRoles[mode]}
