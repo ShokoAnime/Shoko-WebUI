@@ -204,9 +204,9 @@ const SeriesOverview = () => {
         </ShokoPanel>
       )}
 
-      <ShokoPanel title="Top 20 Seiyuu" className="w-full" transparent>
+      <ShokoPanel title="Top 20 Actors" className="w-full" transparent>
         <div className="z-10 flex w-full gap-x-6">
-          {cast?.filter(credit => credit.RoleName === 'Seiyuu' && credit.Character).slice(0, 20).map(seiyuu => (
+          {cast?.filter(credit => credit.RoleName === 'Actor' && credit.Character).slice(0, 20).map(seiyuu => (
             <div
               key={`${seiyuu.Character?.Name}-${Math.random() * (cast.length + (seiyuu.Character?.Name.length ?? 0))}`}
               className="flex flex-col items-center gap-y-3 pb-3"
