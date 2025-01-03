@@ -226,6 +226,7 @@ function LinkFilesTab() {
     {
       pageSize: 0,
       includeMissing: IncludeOnlyFilterEnum.true,
+      includeUnaired: IncludeOnlyFilterEnum.true,
     },
     !!selectedSeries.ID && selectedSeries.Type !== SeriesTypeEnum.Unknown,
   );
