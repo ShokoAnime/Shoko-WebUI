@@ -39,7 +39,7 @@ const PlexLinkButton = () => {
   const handleLogin = useEventCallback(() => {
     window.open(loginUrlQuery?.data, '_blank');
     setPlexPollingInterval(1000);
-    toast.info('Checking plex login status!', '', {
+    toast.info('Checking Plex login status!', '', {
       autoClose: false,
       draggable: false,
       closeOnClick: false,
