@@ -217,6 +217,7 @@ function LinkFilesTab() {
     {
       includeMissing: IncludeOnlyFilterEnum.true,
       includeHidden: IncludeOnlyFilterEnum.true,
+      includeUnaired: IncludeOnlyFilterEnum.true,
       pageSize: 0,
     },
     false,
