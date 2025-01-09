@@ -24,7 +24,7 @@ export const useRenamerConfigsQuery = (enabled = true) =>
 export const useRenamerByConfigQuery = (renamerConfig: string, enabled = true) =>
   useQuery<RenamerResponseType, unknown, RenamerType>({
     queryKey: ['renamer', 'by-config', renamerConfig],
-    queryFn: () => axios.get(`Renamer/Config/${renamerConfig}/Renamer`),
+    queryFn: () => axios.get(`Renamer/Config/${encodeURIComponent(renamerConfig)}/Renamer`),
     select: transformRenamer,
     enabled,
   });

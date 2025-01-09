@@ -25,7 +25,7 @@ export const useRenamerRelocateMutation = () =>
     mutationFn: (
       { FileIDs, configName, deleteEmptyDirectories, move, rename },
     ) =>
-      axios.post(`Renamer/Config/${configName}/Relocate`, FileIDs, {
+      axios.post(`Renamer/Config/${encodeURIComponent(configName)}/Relocate`, FileIDs, {
         params: { deleteEmptyDirectories, move, rename },
       }),
     onSuccess: updateResults,
@@ -34,19 +34,21 @@ export const useRenamerRelocateMutation = () =>
 
 export const useRenamerDeleteConfigMutation = () =>
   useMutation({
-    mutationFn: (configName: string) => axios.delete(`Renamer/Config/${configName}`),
+    mutationFn: (configName: string) => axios.delete(`Renamer/Config/${encodeURIComponent(configName)}`),
     onSuccess: () => invalidateQueries(['renamer']),
   });
 
 export const useRenamerSaveConfigMutation = () =>
   useMutation({
-    mutationFn: (config: RenamerConfigResponseType) => axios.put(`Renamer/Config/${config.Name}`, config),
+    mutationFn: (config: RenamerConfigResponseType) =>
+      axios.put(`Renamer/Config/${encodeURIComponent(config.Name)}`, config),
     onSuccess: () => invalidateQueries(['renamer']),
   });
 
 export const useRenamerPatchConfigMutation = () =>
   useMutation<RenamerConfigType, unknown, RenamerPatchRequestType>({
-    mutationFn: ({ configName, operations }) => axios.patch(`Renamer/Config/${configName}`, operations),
+    mutationFn: ({ configName, operations }) =>
+      axios.patch(`Renamer/Config/${encodeURIComponent(configName)}`, operations),
     onMutate: ({ configName, operations }) => {
       const data = queryClient.getQueryData<RenamerConfigType[]>(['renamer', 'config'])?.slice();
       if (!data) return;
