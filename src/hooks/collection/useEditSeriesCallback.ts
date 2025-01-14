@@ -13,7 +13,11 @@ const useEditSeriesCallback = (item: CollectionGroupType | SeriesType) => {
   return useEventCallback((event: React.MouseEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    dispatch(setSeriesId(('MainSeries' in item.IDs) ? item.IDs.MainSeries : item.IDs.ID));
+    dispatch(
+      setSeriesId(
+        ('MainSeries' in item.IDs) ? [item.IDs.MainSeries, item.IDs.MainAnime] : [item.IDs.ID, item.IDs.AniDB],
+      ),
+    );
   });
 };
 

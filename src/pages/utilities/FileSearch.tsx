@@ -246,7 +246,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
     },
   );
 
-  const seriesId: number = get(file, 'SeriesIDs[0].SeriesID.ID', 0);
+  const seriesId: number = get(file, 'SeriesIDs[0].SeriesID.AniDB', 0);
   const { data: seriesInfo, isFetching: seriesQueryIsPending } = useSeriesQuery(
     seriesId,
     {},

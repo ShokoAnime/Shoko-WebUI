@@ -1,8 +1,6 @@
 import React, { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
 import cx from 'classnames';
-import { toNumber } from 'lodash';
 
 import { useSeriesOverviewQuery } from '@/core/react-query/webui/queries';
 import { resetFilter, setFilterValues } from '@/core/slices/collection';
@@ -19,13 +17,11 @@ type SeriesInfoProps = {
 };
 
 const SeriesInfo = ({ series }: SeriesInfoProps) => {
-  const { seriesId } = useParams();
-
   const dispatch = useDispatch();
   const navigate = useNavigateVoid();
 
   // Series Data;
-  const seriesOverviewQuery = useSeriesOverviewQuery(toNumber(seriesId!), !!seriesId);
+  const seriesOverviewQuery = useSeriesOverviewQuery(series.IDs.ID, !!series);
   const overview = seriesOverviewQuery?.data ?? {} as WebuiSeriesDetailsType;
   const startDate = useMemo(() => (series.AniDB?.AirDate != null ? dayjs(series.AniDB?.AirDate) : null), [series]);
   const endDate = useMemo(() => (series.AniDB?.EndDate != null ? dayjs(series.AniDB?.EndDate) : null), [series]);
@@ -62,7 +58,7 @@ const SeriesInfo = ({ series }: SeriesInfoProps) => {
     }).catch(console.error);
   });
 
-  if (!seriesId) return null;
+  if (!series) return null;
 
   return (
     <>

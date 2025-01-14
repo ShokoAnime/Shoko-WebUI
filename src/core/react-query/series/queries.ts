@@ -29,13 +29,13 @@ import type {
 import type { TagType } from '@/core/types/api/tags';
 
 export const useSeriesQuery = (
-  seriesId: number,
+  anidbAnimeId: number,
   params: SeriesRequestType,
   enabled = true,
 ) =>
   useQuery<SeriesType>({
-    queryKey: ['series', seriesId, 'data', params],
-    queryFn: () => axios.get(`Series/${seriesId}`, { params }),
+    queryKey: ['series', anidbAnimeId, 'data', params],
+    queryFn: () => axios.get(`Series/AniDB/${anidbAnimeId}/Series`, { params }),
     enabled,
   });
 

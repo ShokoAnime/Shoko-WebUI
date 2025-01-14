@@ -22,6 +22,7 @@ const SeriesDetails = React.memo(({ series }: Props) => {
       image={mainPoster}
       title={series.Name}
       subtitle={fileCount}
+      anidbSeriesId={series.IDs.AniDB}
       shokoId={series.IDs.ID}
     />
   );

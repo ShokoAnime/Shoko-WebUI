@@ -29,7 +29,6 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 import type { SeriesContextType } from '@/components/Collection/constants';
 import type { ImageType } from '@/core/types/api/common';
-import type { SeriesType } from '@/core/types/api/series';
 
 type SeriesTabProps = (props: { icon: string, text: string, to: string }) => React.ReactNode;
 const SeriesTab: SeriesTabProps = ({ icon, text, to }) => (
@@ -56,7 +55,7 @@ const Series = () => {
   const { seriesId } = useParams();
 
   const seriesQuery = useSeriesQuery(toNumber(seriesId!), { includeDataFrom: ['AniDB', 'TMDB'] }, !!seriesId);
-  const series = useMemo(() => seriesQuery?.data ?? {} as SeriesType, [seriesQuery.data]);
+  const series = useMemo(() => seriesQuery?.data, [seriesQuery.data]);
   const groupQuery = useGroupQuery(series?.IDs?.ParentGroup ?? 0, !!series?.IDs?.ParentGroup);
 
   const { scrollRef } = useOutletContext<{ scrollRef: React.RefObject<HTMLDivElement> }>();
@@ -64,6 +63,7 @@ const Series = () => {
   const dispatch = useDispatch();
 
   const [mainTitle, originalTitle] = useMemo(() => {
+    if (!series) return [null, null];
     const tempMainTitle = series.AniDB?.Titles.find(title => title.Type === 'Main');
     const tempOriginalTitle = series.AniDB?.Titles.find(
       title => title.Language === languageMapping[tempMainTitle?.Language ?? ''] && title.Type === 'Official',
@@ -75,15 +75,15 @@ const Series = () => {
   }, [series]);
 
   const onClickHandler = useEventCallback(() => {
-    dispatch(setSeriesId(toNumber(seriesId) ?? -1));
+    dispatch(setSeriesId(series ? [series.IDs.ID, series.IDs.AniDB] : [-1, -1]));
   });
 
   const { showRandomBackdrop } = useSettingsQuery().data.WebUI_Settings.collection.image;
-  const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomBackdrop);
+  const imagesQuery = useSeriesImagesQuery(series?.IDs.AniDB ?? 0, !!series && showRandomBackdrop);
   const [backdrop, setBackdrop] = useState<ImageType>();
   useEffect(() => {
     if (!showRandomBackdrop) {
-      setBackdrop(series.Images?.Backdrops?.[0]);
+      setBackdrop(series?.Images?.Backdrops?.[0]);
       return;
     }
 
@@ -100,7 +100,7 @@ const Series = () => {
     return null;
   }
 
-  if (!seriesQuery.isSuccess) {
+  if (!series) {
     return (
       <div className="flex grow items-center justify-center text-panel-text-primary">
         <Icon path={mdiLoading} size={4} spin />

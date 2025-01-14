@@ -20,7 +20,7 @@ const FilesSummary = ({ items, title }: Props) => {
     }
 
     const selectedSeriesCount = Object.keys(
-      groupBy(items.flatMap(file => file.SeriesIDs).map(xref => xref?.SeriesID), seriesIds => seriesIds?.ID),
+      groupBy(items.flatMap(file => file.SeriesIDs).map(xref => xref?.SeriesID), seriesIds => seriesIds?.AniDB),
     ).length;
     const selectedSize = items.reduce((prev, current) => prev + current.Size, 0);
     const selectedEpisodeCount = items
