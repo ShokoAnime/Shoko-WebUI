@@ -310,6 +310,7 @@ export const initialSettings: SettingsType = {
       recentlyImportedEpisodesCount: 30,
       recentlyImportedSeriesCount: 20,
       recentlyImportedView: 'episodes',
+      upcomingAnimeView: 'collection',
     },
   },
   FirstRun: false,

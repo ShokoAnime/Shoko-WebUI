@@ -432,6 +432,7 @@ export type WebUISettingsType = {
     recentlyImportedEpisodesCount: number;
     recentlyImportedSeriesCount: number;
     recentlyImportedView: 'episodes' | 'series';
+    upcomingAnimeView: 'collection' | 'all';
   };
 };
 
