@@ -1,33 +1,44 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { produce } from 'immer';
 import { map } from 'lodash';
 
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import TransitionDiv from '@/components/TransitionDiv';
 import { useDashboardCalendarQuery } from '@/core/react-query/dashboard/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 import EpisodeDetails from '@/pages/dashboard/components/EpisodeDetails';
 
 import type { RootState } from '@/core/store';
 
-type TabType = 'collection_only' | 'all';
+type TabType = 'collection' | 'all';
 const tabStates: { label?: string, value: TabType }[] = [
-  { label: 'My Collection', value: 'collection_only' },
+  { label: 'My Collection', value: 'collection' },
   { label: 'All', value: 'all' },
 ];
 
 const UpcomingAnime = () => {
   const layoutEditMode = useSelector((state: RootState) => state.mainpage.layoutEditMode);
 
-  const [currentTab, setCurrentTab] = useState<TabType>(tabStates[0].value);
-  const handleTabChange = useEventCallback((newTab: TabType) => setCurrentTab(newTab));
+  const settings = useSettingsQuery().data;
+  const { hideR18Content, upcomingAnimeView } = useSettingsQuery().data.WebUI_Settings.dashboard;
+  const { mutate: patchSettings } = usePatchSettingsMutation();
 
-  const { hideR18Content } = useSettingsQuery().data.WebUI_Settings.dashboard;
+  const [currentTab, setCurrentTab] = useState<TabType>(upcomingAnimeView);
 
   const calendarQuery = useDashboardCalendarQuery({ showAll: false, includeRestricted: !hideR18Content });
   const calendarAllQuery = useDashboardCalendarQuery({ showAll: true, includeRestricted: !hideR18Content });
+
+  const handleTabChange = useEventCallback((newTab: TabType) => {
+    setCurrentTab(newTab);
+    const newSettings = produce(settings, (draftState) => {
+      draftState.WebUI_Settings.dashboard.upcomingAnimeView = newTab;
+    });
+    patchSettings({ newSettings });
+  });
 
   return (
     <ShokoPanel
