@@ -22,3 +22,12 @@ export const useUserTagsQuery = (params: TagsRequestType, enabled = true) =>
     select: transformListResultSimplified,
     enabled,
   });
+
+export const useSeriesUserTagsSetQuery = (seriesId: number, enabled = true) =>
+  useQuery<TagType[], unknown, Set<number>>({
+    queryKey: ['series', seriesId, 'tags', 'user'],
+    queryFn: () => axios.get(`Series/${seriesId}/Tags/User`),
+    select: data => new Set(data.map(tag => tag.ID)),
+    enabled,
+    initialData: [],
+  });
