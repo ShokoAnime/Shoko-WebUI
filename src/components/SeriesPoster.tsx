@@ -81,9 +81,9 @@ const SeriesPoster = React.memo((props: Props) => {
     </>
   );
 
-  if (shokoId) {
+  if (shokoId && anidbSeriesId) {
     return (
-      <Link className={cx(baseClassName, 'group')} to={`/webui/collection/series/${shokoId}`}>
+      <Link className={cx(baseClassName, 'group')} to={`/webui/collection/series/${anidbSeriesId}`}>
         {content}
       </Link>
     );

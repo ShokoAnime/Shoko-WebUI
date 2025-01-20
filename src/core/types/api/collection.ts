@@ -3,11 +3,11 @@ import type { SeriesSizesType } from './series';
 
 export type CollectionGroupType = {
   IDs: {
-    DefaultSeries: number | null;
     ParentGroup: number | null;
     TopLevelGroup: number;
     ID: number;
     MainSeries: number;
+    MainAnime: number;
   };
   SortName: string | null;
   Description: string | null;

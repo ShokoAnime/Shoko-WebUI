@@ -40,10 +40,13 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     className: 'w-32',
     item: series => (
       <Link
-        to={`/webui/collection/series/${series.IDs.ID}`}
+        to={`/webui/collection/series/${series.IDs.AniDB}`}
         className="flex gap-x-2 text-panel-text-primary"
       >
         {series.IDs.ID}
+        &nbsp;(a
+        {series.IDs.AniDB}
+        )
         <Icon path={mdiOpenInNew} size={1} />
       </Link>
     ),

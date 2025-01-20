@@ -101,7 +101,7 @@ const RecentlyImported = () => {
 
         {map(
           recentSeriesQuery.data,
-          item => <SeriesDetails series={item} key={item.IDs.ID} />,
+          item => <SeriesDetails series={item} key={item.IDs.AniDB} />,
         )}
       </TransitionDiv>
     </ShokoPanel>

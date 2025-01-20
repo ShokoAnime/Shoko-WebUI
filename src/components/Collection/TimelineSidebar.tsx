@@ -16,8 +16,8 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
     : series.AniDB?.Type;
 
   return (
-    <div className="flex gap-x-3" key={series.IDs.ID}>
-      <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+    <div className="flex gap-x-3" key={series.IDs.AniDB}>
+      <Link to={`/webui/collection/series/${series.IDs.AniDB}`}>
         <BackgroundImagePlaceholderDiv
           image={mainPoster}
           className="group h-24 w-[4.4375rem] shrink-0 rounded-lg border border-panel-border drop-shadow-md"
@@ -33,7 +33,7 @@ const TimelineItem = ({ series }: { series: SeriesType }) => {
         </div>
         <div className="line-clamp-2">
           <Link
-            to={`/webui/collection/series/${series.IDs.ID}`}
+            to={`/webui/collection/series/${series.IDs.AniDB}`}
             className="transition-colors hover:text-panel-text-primary"
             data-tooltip-id="tooltip"
             data-tooltip-content={series.Name}
@@ -53,7 +53,7 @@ const TimelineSidebar = ({ isFetching, series }: { isFetching: boolean, series: 
     contentClassName="gap-y-3"
     isFetching={isFetching}
   >
-    {series.map(item => <TimelineItem series={item} key={item.IDs.ID} />)}
+    {series.map(item => <TimelineItem series={item} key={item.IDs.AniDB} />)}
   </ShokoPanel>
 );
 

@@ -16,7 +16,7 @@ import type { TagType } from '@/core/types/api/tags';
 
 const SeriesLink = React.memo(({ extraPadding, series }: { series: SeriesType, extraPadding: boolean }) => (
   <Link
-    to={`/webui/collection/series/${series.IDs.ID}`}
+    to={`/webui/collection/series/${series.IDs.AniDB}`}
     className={cx(
       'flex justify-between align-middle hover:text-panel-text-primary transition-colors',
       extraPadding && ('pr-4'),

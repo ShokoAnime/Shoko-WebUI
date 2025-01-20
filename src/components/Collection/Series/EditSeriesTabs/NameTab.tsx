@@ -9,13 +9,14 @@ import { useSeriesQuery } from '@/core/react-query/series/queries';
 
 type Props = {
   seriesId: number;
+  animeId: number;
 };
 
-const NameTab = ({ seriesId }: Props) => {
+const NameTab = ({ animeId, seriesId }: Props) => {
   const [name, setName] = useState('');
   const [nameEditable, toggleNameEditable] = useToggle(false);
 
-  const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] });
+  const { data: seriesData, isError, isFetching, isSuccess } = useSeriesQuery(animeId, { includeDataFrom: ['AniDB'] });
 
   const { mutate: overrideTitle } = useOverrideSeriesTitleMutation(seriesId);
 

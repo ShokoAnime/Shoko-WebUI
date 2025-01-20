@@ -75,6 +75,7 @@ function EpisodeDetails({ episode, isInCollection = false, showDate = false }: P
         title={episode.SeriesTitle}
         subtitle={title}
         shokoId={episode.IDs.ShokoSeries}
+        anidbSeriesId={episode.IDs.Series}
         anidbEpisodeId={episode.IDs.ID}
         inCollection={isInCollection}
       >

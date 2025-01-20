@@ -26,11 +26,11 @@ const tabs = {
   // stats: 'Personal Stats',
 };
 
-const renderTab = (activeTab: string, seriesId = -1) => {
+const renderTab = (activeTab: string, seriesId: number, animeId: number) => {
   if (seriesId === -1) return null;
   switch (activeTab) {
     case 'name':
-      return <NameTab seriesId={seriesId} />;
+      return <NameTab animeId={animeId} seriesId={seriesId} />;
     case 'file_actions':
       return <FileActionsTab seriesId={seriesId} />;
     case 'delete_actions':
@@ -48,11 +48,13 @@ const renderTab = (activeTab: string, seriesId = -1) => {
 const EditSeriesModal = () => {
   const dispatch = useDispatch();
 
-  const seriesId = useSelector((state: RootState) => state.modals.editSeries.seriesId);
+  const [seriesId, animeId] = useSelector((
+    state: RootState,
+  ) => [state.modals.editSeries.seriesId, state.modals.editSeries.animeId]);
 
   const onClose = useEventCallback(() => {
     if (seriesId === -1) return;
-    dispatch(setSeriesId(-1));
+    dispatch(setSeriesId([-1, -1]));
   });
 
   useEffect(() => onClose, [onClose]);
@@ -81,7 +83,7 @@ const EditSeriesModal = () => {
         </div>
         <div className="border-r border-panel-border" />
         <div className="grow">
-          {renderTab(activeTab, seriesId)}
+          {renderTab(activeTab, seriesId, animeId)}
         </div>
       </div>
     </ModalPanel>
