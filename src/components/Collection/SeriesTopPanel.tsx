@@ -1,5 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
+import { mdiTagPlusOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import { toNumber } from 'lodash';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
@@ -7,9 +9,12 @@ import CleanDescription from '@/components/Collection/CleanDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
 import TagButton from '@/components/Collection/TagButton';
+import CustomTagModal from '@/components/Dialogs/CustomTagModal';
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
+import useEventCallback from '@/hooks/useEventCallback';
 
 import type { ImageType } from '@/core/types/api/common';
 import type { SeriesType } from '@/core/types/api/series';
@@ -23,6 +28,17 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
   const { showRandomPoster } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomPoster);
   const [poster, setPoster] = useState<ImageType>();
+  const [showTagModal, setShowTagModal] = useState(false);
+
+  const handleEditTagsClickHandler = useEventCallback(() => {
+    if (!seriesId) return;
+    setShowTagModal(true);
+  });
+
+  const handleCloseModal = useEventCallback(() => {
+    setShowTagModal(false);
+  });
+
   useEffect(() => {
     if (!showRandomPoster) {
       setPoster(series.Images?.Posters?.[0]);
@@ -78,7 +94,15 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
           contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
+          options={
+            <div className="flex gap-x-2">
+              <Button onClick={handleEditTagsClickHandler} tooltip="Edit Tags">
+                <Icon className="text-panel-icon-important" path={mdiTagPlusOutline} size={1} />
+              </Button>
+            </div>
+          }
         >
+          <CustomTagModal seriesId={Number(seriesId)} show={showTagModal} onClose={handleCloseModal} />
           {tags.slice(0, 10)
             .map(tag => <TagButton key={tag.ID} text={tag.Name} tagType={tag.Source} type="Series" />)}
         </ShokoPanel>
