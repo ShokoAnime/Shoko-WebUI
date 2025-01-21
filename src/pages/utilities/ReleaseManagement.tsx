@@ -32,6 +32,7 @@ import {
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import useEventCallback from '@/hooks/useEventCallback';
+import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -134,6 +135,8 @@ const ReleaseManagement = () => {
       });
   });
 
+  const isDuplicatesQuickSelectSupported = useIsFeatureSupported(FeatureType.DuplicatesQuickSelect);
+
   return (
     <>
       <title>{`${titleMap[type]} | Shoko`}</title>
@@ -193,7 +196,8 @@ const ReleaseManagement = () => {
             {/*   </Button> */}
             {/* )} */}
 
-            {(type === ReleaseManagementItemType.MultipleReleases && !selectedEpisode) && (
+            {(type === ReleaseManagementItemType.MultipleReleases || isDuplicatesQuickSelectSupported)
+              && !selectedEpisode && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
@@ -273,6 +277,7 @@ const ReleaseManagement = () => {
           show={showQuickSelectModal}
           onClose={toggleShowQuickSelectModal}
           seriesId={selectedSeries}
+          type={type}
         />
       </div>
     </>

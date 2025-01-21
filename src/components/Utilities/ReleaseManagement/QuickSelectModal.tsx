@@ -8,6 +8,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useDeleteFilesMutation } from '@/core/react-query/file/mutations';
 import { resetQueries } from '@/core/react-query/queryClient';
+import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
@@ -15,14 +16,16 @@ type Props = {
   show: boolean;
   onClose: () => void;
   seriesId: number;
+  type: ReleaseManagementItemType;
 };
 
-const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
+const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   const fileSummaryQuery = useSeriesFileSummaryQuery(
     seriesId,
     {
-      groupBy:
-        'GroupName,FileSource,FileVersion,ImportFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters',
+      groupBy: type === ReleaseManagementItemType.MultipleReleases
+        ? 'GroupName,FileSource,FileVersion,ImportFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
+        : 'ImportFolder,MultipleLocations',
       includeEpisodeDetails: true,
     },
     show,
@@ -76,68 +79,92 @@ const QuickSelectModal = ({ onClose, seriesId, show }: Props) => {
           (group, index) => (
             <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
               <div className="flex flex-col gap-y-1">
-                <div className="font-semibold">
-                  {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
-                  &nbsp;-&nbsp;
-                  {group.Episodes?.length}
-                  &nbsp;Episodes
-                  {group.RangeByType.Normal && (
-                    <>
-                      &nbsp;(
-                      {group.RangeByType.Normal.Range}
-                      )
-                    </>
-                  )}
-                  &nbsp;-&nbsp;
-                  {`v${group.FileVersion}`}
-                </div>
-                <div className="flex flex-wrap text-sm opacity-65">
-                  Import Folder:&nbsp;
-                  {group.ImportFolder}
-                </div>
-                <div className="flex flex-wrap text-sm opacity-65">
-                  {group.FileSource}
-                  &nbsp;|&nbsp;
-                  {group.VideoCodecs?.toUpperCase()}
-                  &nbsp;|&nbsp;
-                  {group.VideoResolution}
-                  {group.AudioLanguages && (
-                    <>
+                {type === ReleaseManagementItemType.DuplicateFiles && (
+                  <>
+                    <div className="font-semibold">
+                      Import Folder:&nbsp;
+                      {group.ImportFolder}
+                    </div>
+                    <div className="flex flex-wrap text-sm opacity-65">
+                      {group.Episodes?.length}
+                      &nbsp;Episodes
+                      {group.RangeByType.Normal && (
+                        <>
+                          &nbsp;(
+                          {group.RangeByType.Normal.Range}
+                          )
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                {type === ReleaseManagementItemType.MultipleReleases && (
+                  <>
+                    <div className="font-semibold">
+                      {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
+                      &nbsp;-&nbsp;
+                      {group.Episodes?.length}
+                      &nbsp;Episodes
+                      {group.RangeByType.Normal && (
+                        <>
+                          &nbsp;(
+                          {group.RangeByType.Normal.Range}
+                          )
+                        </>
+                      )}
+                      &nbsp;-&nbsp;
+                      {`v${group.FileVersion}`}
+                    </div>
+                    <div className="flex flex-wrap text-sm opacity-65">
+                      Import Folder:&nbsp;
+                      {group.ImportFolder}
+                    </div>
+                    <div className="flex flex-wrap text-sm opacity-65">
+                      {group.FileSource}
                       &nbsp;|&nbsp;
-                      <div>
-                        {group.AudioLanguages.length === 0 ? 'No Audio' : (
-                          <>
-                            {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
-                            Audio (
-                            {group.AudioLanguages.join(', ')}
-                            )
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-                  {group.SubtitleLanguages && (
-                    <>
+                      {group.VideoCodecs?.toUpperCase()}
                       &nbsp;|&nbsp;
-                      <div>
-                        {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
-                          <>
-                            {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
-                            Subs (
-                            {group.SubtitleLanguages.join(', ')}
-                            )
-                          </>
-                        )}
-                      </div>
-                    </>
-                  )}
-                  {group.VideoHasChapters && (
-                    <>
-                      &nbsp;|&nbsp;
-                      <div>Chaptered</div>
-                    </>
-                  )}
-                </div>
+                      {group.VideoResolution}
+                      {group.AudioLanguages && (
+                        <>
+                          &nbsp;|&nbsp;
+                          <div>
+                            {group.AudioLanguages.length === 0 ? 'No Audio' : (
+                              <>
+                                {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
+                                Audio (
+                                {group.AudioLanguages.join(', ')}
+                                )
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                      {group.SubtitleLanguages && (
+                        <>
+                          &nbsp;|&nbsp;
+                          <div>
+                            {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
+                              <>
+                                {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
+                                Subs (
+                                {group.SubtitleLanguages.join(', ')}
+                                )
+                              </>
+                            )}
+                          </div>
+                        </>
+                      )}
+                      {group.VideoHasChapters && (
+                        <>
+                          &nbsp;|&nbsp;
+                          <div>Chaptered</div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
               </div>
               <Checkbox
                 id={`checkbox-${index}`}
