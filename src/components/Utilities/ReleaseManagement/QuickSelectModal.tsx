@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { map, toNumber } from 'lodash';
+import React, { useEffect, useMemo } from 'react';
+import { forEach, map, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
 
 import Button from '@/components/Input/Button';
@@ -7,10 +7,13 @@ import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import { useDeleteFilesMutation } from '@/core/react-query/file/mutations';
+import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import { useSeriesFileSummaryQuery } from '@/core/react-query/webui/queries';
 import useEventCallback from '@/hooks/useEventCallback';
+
+import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 type Props = {
   show: boolean;
@@ -25,12 +28,23 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
     {
       groupBy: type === ReleaseManagementItemType.MultipleReleases
         ? 'GroupName,FileSource,FileVersion,ImportFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
-        : 'ImportFolder,MultipleLocations',
+        : 'ImportFolder,FileLocation,MultipleLocations',
       includeEpisodeDetails: true,
     },
     show,
   );
   const fileSummary = fileSummaryQuery.data;
+
+  const importFoldersQuery = useImportFoldersQuery();
+  const importFolders = useMemo<Record<number, ImportFolderType>>(() => {
+    const result = {};
+
+    forEach(importFoldersQuery.data, (folder) => {
+      result[folder.ID] = folder;
+    });
+
+    return result;
+  }, [importFoldersQuery]);
 
   const { isPending: isDeleting, mutate: deleteFiles } = useDeleteFilesMutation();
 
@@ -76,104 +90,112 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
       {fileSummaryQuery.isSuccess && (
         map(
           fileSummary?.Groups,
-          (group, index) => (
-            <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
-              <div className="flex flex-col gap-y-1">
-                {type === ReleaseManagementItemType.DuplicateFiles && (
-                  <>
-                    <div className="font-semibold">
-                      Import Folder:&nbsp;
-                      {group.ImportFolder}
-                    </div>
-                    <div className="flex flex-wrap text-sm opacity-65">
-                      {group.Episodes?.length}
-                      &nbsp;Episodes
-                      {group.RangeByType.Normal && (
-                        <>
-                          &nbsp;(
-                          {group.RangeByType.Normal.Range}
-                          )
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
+          (group, index) => {
+            const importFolder = importFolders[group.ImportFolder!];
 
-                {type === ReleaseManagementItemType.MultipleReleases && (
-                  <>
-                    <div className="font-semibold">
-                      {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
-                      &nbsp;-&nbsp;
-                      {group.Episodes?.length}
-                      &nbsp;Episodes
-                      {group.RangeByType.Normal && (
-                        <>
-                          &nbsp;(
-                          {group.RangeByType.Normal.Range}
-                          )
-                        </>
-                      )}
-                      &nbsp;-&nbsp;
-                      {`v${group.FileVersion}`}
-                    </div>
-                    <div className="flex flex-wrap text-sm opacity-65">
-                      Import Folder:&nbsp;
-                      {group.ImportFolder}
-                    </div>
-                    <div className="flex flex-wrap text-sm opacity-65">
-                      {group.FileSource}
-                      &nbsp;|&nbsp;
-                      {group.VideoCodecs?.toUpperCase()}
-                      &nbsp;|&nbsp;
-                      {group.VideoResolution}
-                      {group.AudioLanguages && (
-                        <>
-                          &nbsp;|&nbsp;
-                          <div>
-                            {group.AudioLanguages.length === 0 ? 'No Audio' : (
-                              <>
-                                {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
-                                Audio (
-                                {group.AudioLanguages.join(', ')}
-                                )
-                              </>
-                            )}
-                          </div>
-                        </>
-                      )}
-                      {group.SubtitleLanguages && (
-                        <>
-                          &nbsp;|&nbsp;
-                          <div>
-                            {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
-                              <>
-                                {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
-                                Subs (
-                                {group.SubtitleLanguages.join(', ')}
-                                )
-                              </>
-                            )}
-                          </div>
-                        </>
-                      )}
-                      {group.VideoHasChapters && (
-                        <>
-                          &nbsp;|&nbsp;
-                          <div>Chaptered</div>
-                        </>
-                      )}
-                    </div>
-                  </>
-                )}
+            return (
+              <div key={`group-${index}`} className="flex items-center justify-between gap-x-3">
+                <div className="flex flex-col gap-y-1">
+                  {type === ReleaseManagementItemType.DuplicateFiles && (
+                    <>
+                      <div className="font-semibold">
+                        Import Folder:&nbsp;
+                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                      </div>
+                      <div className="flex flex-wrap break-all text-sm opacity-65">
+                        Location:&nbsp;
+                        {group.FileLocation?.replace(importFolder.Path, '')}
+                      </div>
+                      <div className="flex flex-wrap text-sm opacity-65">
+                        {group.Episodes?.length}
+                        &nbsp;Episodes
+                        {group.RangeByType.Normal && (
+                          <>
+                            &nbsp;(
+                            {group.RangeByType.Normal.Range}
+                            )
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {type === ReleaseManagementItemType.MultipleReleases && (
+                    <>
+                      <div className="font-semibold">
+                        {group.GroupName === 'None' ? 'Manual link' : group.GroupName}
+                        &nbsp;-&nbsp;
+                        {group.Episodes?.length}
+                        &nbsp;Episodes
+                        {group.RangeByType.Normal && (
+                          <>
+                            &nbsp;(
+                            {group.RangeByType.Normal.Range}
+                            )
+                          </>
+                        )}
+                        &nbsp;-&nbsp;
+                        {`v${group.FileVersion}`}
+                      </div>
+                      <div className="flex flex-wrap text-sm opacity-65">
+                        Import Folder:&nbsp;
+                        {`${importFolder.Name} (ID: ${importFolder.ID})`}
+                      </div>
+                      <div className="flex flex-wrap text-sm opacity-65">
+                        {group.FileSource}
+                        &nbsp;|&nbsp;
+                        {group.VideoCodecs?.toUpperCase()}
+                        &nbsp;|&nbsp;
+                        {group.VideoResolution}
+                        {group.AudioLanguages && (
+                          <>
+                            &nbsp;|&nbsp;
+                            <div>
+                              {group.AudioLanguages.length === 0 ? 'No Audio' : (
+                                <>
+                                  {group.AudioLanguages.length > 1 ? 'Multi ' : 'Single '}
+                                  Audio (
+                                  {group.AudioLanguages.join(', ')}
+                                  )
+                                </>
+                              )}
+                            </div>
+                          </>
+                        )}
+                        {group.SubtitleLanguages && (
+                          <>
+                            &nbsp;|&nbsp;
+                            <div>
+                              {group.SubtitleLanguages.length === 0 ? 'No Subs' : (
+                                <>
+                                  {group.SubtitleLanguages.length > 1 ? 'Multi ' : 'Single '}
+                                  Subs (
+                                  {group.SubtitleLanguages.join(', ')}
+                                  )
+                                </>
+                              )}
+                            </div>
+                          </>
+                        )}
+                        {group.VideoHasChapters && (
+                          <>
+                            &nbsp;|&nbsp;
+                            <div>Chaptered</div>
+                          </>
+                        )}
+                      </div>
+                    </>
+                  )}
+                </div>
+                <Checkbox
+                  id={`checkbox-${index}`}
+                  isChecked={groupsToDelete.has(index)}
+                  onChange={handleCheckboxChange}
+                  label="Delete"
+                />
               </div>
-              <Checkbox
-                id={`checkbox-${index}`}
-                isChecked={groupsToDelete.has(index)}
-                onChange={handleCheckboxChange}
-                label="Delete"
-              />
-            </div>
-          ),
+            );
+          },
         )
       )}
 
