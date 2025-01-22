@@ -156,7 +156,7 @@ const SeriesList = (
 
   const seriesQuery = useReleaseManagementSeries(
     type,
-    { ignoreVariations, collecting: onlyCollecting, onlyFinishedSeries, pageSize: 25 },
+    { ignoreVariations, collecting: onlyCollecting, onlyFinishedSeries, pageSize: 50 },
   );
   const [series, seriesCount] = useFlattenListResult(seriesQuery.data);
 
@@ -168,7 +168,7 @@ const SeriesList = (
       collecting: onlyCollecting,
       includeDataFrom: ['AniDB'],
       includeAbsolutePaths: true,
-      pageSize: 25,
+      pageSize: 50,
     },
     selectedSeries > 0,
   );
