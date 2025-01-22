@@ -135,7 +135,7 @@ const ReleaseManagement = () => {
       });
   });
 
-  const isDuplicatesQuickSelectSupported = useIsFeatureSupported(FeatureType.DuplicatesQuickSelect);
+  const isQuickSelectSupported = useIsFeatureSupported(FeatureType.ReleaseManagementQuickSelect);
 
   return (
     <>
@@ -196,13 +196,13 @@ const ReleaseManagement = () => {
             {/*   </Button> */}
             {/* )} */}
 
-            {(type === ReleaseManagementItemType.MultipleReleases || isDuplicatesQuickSelectSupported)
-              && !selectedEpisode && (
+            {!selectedEpisode && (
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                disabled={!selectedSeries}
+                disabled={!selectedSeries || !isQuickSelectSupported}
                 onClick={toggleShowQuickSelectModal}
+                tooltip={isQuickSelectSupported ? '' : 'Only supported on server version >=5.1.0.6'}
               >
                 <Icon path={mdiSelectMultiple} size={0.8333} />
                 Quick Select
