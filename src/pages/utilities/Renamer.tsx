@@ -408,11 +408,20 @@ const Renamer = () => {
 
   const handleSaveConfig = useEventCallback(() => {
     if (!newConfig || !renamer) return;
-    saveConfig({
-      RenamerID: renamer.RenamerID,
-      Name: selectedConfig.Name,
-      Settings: map(newConfig, config => config),
-    });
+    saveConfig(
+      {
+        RenamerID: renamer.RenamerID,
+        Name: selectedConfig.Name,
+        Settings: map(newConfig, config => config),
+      },
+      {
+        onSuccess: () => {
+          changeSelectedConfig(selectedConfig.Name);
+          toast.success(`"${selectedConfig.Name}" saved successfully!`);
+        },
+        onError: () => toast.error(`"${selectedConfig.Name}" could not be saved!`),
+      },
+    );
   });
 
   const handleDeleteConfig = useEventCallback(() => {
