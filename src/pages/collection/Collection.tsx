@@ -117,20 +117,22 @@ function Collection() {
   const { showRandomPoster } = settings.WebUI_Settings.collection.image;
 
   const [mode, setMode] = useState<'poster' | 'list'>('poster');
-  const [showFilterSidebar, toggleFilterSidebar] = useToggle(false);
+  const [showFilterSidebar, toggleFilterSidebar, setShowFilterSidebar] = useToggle();
   const [timelineSeries, setTimelineSeries] = useState<SeriesType[]>([]);
 
   const handleFilterSidebarToggle = useEventCallback(() => {
-    if (!showFilterSidebar && !filterId) {
+    if (!filterId) {
       dispatch(resetFilter());
       navigate('filter/live');
+      return;
     }
     toggleFilterSidebar();
   });
 
   useEffect(() => {
-    if (!filterId && showFilterSidebar) toggleFilterSidebar();
-  }, [filterId, showFilterSidebar, toggleFilterSidebar]);
+    if (filterId === 'live') setShowFilterSidebar(true);
+    if (!filterId) setShowFilterSidebar(false);
+  }, [filterId, setShowFilterSidebar]);
 
   const { mutate: patchSettings } = usePatchSettingsMutation();
 
