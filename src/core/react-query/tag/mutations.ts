@@ -12,7 +12,7 @@ import type { TagType } from '@/core/types/api/tags';
 
 export const useCreateUserTagMutation = () =>
   useMutation<TagType, unknown, CreateUserTagRequestType>({
-    mutationFn: (body: CreateUserTagRequestType) => axios.post('Tag/User/', body),
+    mutationFn: (body: CreateUserTagRequestType) => axios.post('Tag/User', body),
     onSuccess: () => {
       invalidateQueries(['tags', 'user']);
     },

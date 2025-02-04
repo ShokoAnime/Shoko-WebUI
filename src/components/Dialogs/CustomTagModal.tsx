@@ -7,6 +7,7 @@ import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import { invalidateQueries } from '@/core/react-query/queryClient';
+import { useSeriesUserTagsSetQuery } from '@/core/react-query/series/queries';
 import {
   useAddUserTagMutation,
   useCreateUserTagMutation,
@@ -14,7 +15,7 @@ import {
   useRemoveUserTagMutation,
   useUpdateUserTagMutation,
 } from '@/core/react-query/tag/mutations';
-import { useSeriesUserTagsSetQuery, useUserTagsQuery } from '@/core/react-query/tag/queries';
+import { useUserTagsQuery } from '@/core/react-query/tag/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 export type Props = {
