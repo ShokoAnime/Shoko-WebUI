@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import cx from 'classnames';
 import { map } from 'lodash';
 
+import FileActionsTab from '@/components/Collection/Group/EditGroupTabs/FileActionsTab';
 import NameTab from '@/components/Collection/Group/EditGroupTabs/NameTab';
 import SeriesTab from '@/components/Collection/Group/EditGroupTabs/SeriesTab';
 import ModalPanel from '@/components/Panels/ModalPanel';
@@ -14,6 +15,7 @@ import type { RootState } from '@/core/store';
 const tabs = {
   name: 'Name',
   series: 'Series',
+  file_actions: 'File Actions',
 };
 
 const renderTab = (activeTab: string, groupId: number) => {
@@ -24,6 +26,8 @@ const renderTab = (activeTab: string, groupId: number) => {
   switch (activeTab) {
     case 'series':
       return <SeriesTab groupId={groupId} />;
+    case 'file_actions':
+      return <FileActionsTab groupId={groupId} />;
     case 'name':
     default:
       return <NameTab groupId={groupId} />;

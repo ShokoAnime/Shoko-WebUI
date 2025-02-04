@@ -5,6 +5,9 @@ import { axios } from '@/core/axios';
 import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type { MoveSeriesGroupRequestType, PatchGroupRequestType } from '@/core/react-query/group/types';
+import type { ListResultType } from '@/core/types/api';
+import type { FileType } from '@/core/types/api/file';
+import type { SeriesType } from '@/core/types/api/series';
 
 // TODO: FIX INVALIDATIONS
 
@@ -56,4 +59,29 @@ export const useMoveGroupMutation = () =>
       defaultInvalidations(seriesId);
       toast.success('Moved series into new group!');
     },
+  });
+
+export const useRelocateGroupFilesMutation = (groupId: number) =>
+  useMutation({
+    mutationFn: async () => {
+      const targetSeries = await axios.get<unknown, SeriesType[]>(`Group/${groupId}/Series`, {
+        params: { recursive: true },
+      });
+
+      const arrayWithResults = await Promise.all(
+        targetSeries.map(
+          serie =>
+            axios.get<unknown, ListResultType<FileType>>(`Series/${serie.IDs.ID}/File`, {
+              params: { pageSize: 0 },
+            }),
+        ),
+      );
+
+      const targetFiles = arrayWithResults
+        .map(serie => serie.List.map(item => item.ID))
+        .reduce((acc, val) => acc.concat(val));
+
+      return axios.post('Renamer/Relocate', targetFiles);
+    },
+    onSuccess: () => toast.success('Group files renamed/moved!'),
   });
