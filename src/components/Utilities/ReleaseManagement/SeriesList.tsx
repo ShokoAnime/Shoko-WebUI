@@ -1,8 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router';
 import { mdiLoading, mdiOpenInNew } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { forEach } from 'lodash';
 
+import ShokoIcon from '@/components/ShokoIcon';
 import UtilitiesTable from '@/components/Utilities/UtilitiesTable';
 import {
   useReleaseManagementSeries,
@@ -21,16 +23,11 @@ import type { ReleaseManagementSeriesType } from '@/core/types/api/series';
 const seriesColumns: UtilityHeaderType<ReleaseManagementSeriesType>[] = [
   {
     id: 'series',
-    name: 'Series (AniDB ID)',
+    name: 'Series',
     className: 'grow basis-0 overflow-hidden',
     item: series => (
       <div className="flex items-center gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         <span className="line-clamp-1">{series.Name}</span>
-        <div>
-          (
-          <span className="text-panel-text-primary">{series.IDs.AniDB}</span>
-          )
-        </div>
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
           target="_blank"
@@ -40,8 +37,20 @@ const seriesColumns: UtilityHeaderType<ReleaseManagementSeriesType>[] = [
           onClick={event =>
             event.stopPropagation()}
         >
-          <Icon path={mdiOpenInNew} size={1} />
+          <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+            <div className="metadata-link-icon AniDB" />
+            {series.IDs.AniDB}
+            <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+          </div>
         </a>
+        <span>|</span>
+        <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+          <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+            <ShokoIcon className="size-6" />
+            {series.IDs.ID}
+            <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+          </div>
+        </Link>
       </div>
     ),
   },
@@ -77,11 +86,6 @@ const episodeNameColumn: UtilityHeaderType<EpisodeType> = {
         &nbsp;-&nbsp;
         {episode.Name}
       </span>
-      <div>
-        (
-        <span className="text-panel-text-primary">{episode.IDs.AniDB}</span>
-        )
-      </div>
       <a
         href={`https://anidb.net/episode/${episode.IDs.AniDB}`}
         target="_blank"
@@ -90,7 +94,11 @@ const episodeNameColumn: UtilityHeaderType<EpisodeType> = {
         aria-label="Open AniDB episode page"
         onClick={event => event.stopPropagation()}
       >
-        <Icon path={mdiOpenInNew} size={1} />
+        <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+          <div className="metadata-link-icon AniDB" />
+          {episode.IDs.AniDB}
+          <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+        </div>
       </a>
     </div>
   ),
