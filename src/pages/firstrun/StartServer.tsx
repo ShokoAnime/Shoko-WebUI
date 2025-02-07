@@ -54,7 +54,9 @@ function StartServer() {
   };
 
   useEffect(() => {
-    if (serverStatusQuery.data?.State === 2 || serverStatusQuery.data?.State === 3) setPollingInterval(0);
+    if (serverStatusQuery.data?.State === 'Started' || serverStatusQuery.data?.State === 'Failed') {
+      setPollingInterval(0);
+    }
   }, [serverStatusQuery.data]);
 
   return (
@@ -69,13 +71,14 @@ function StartServer() {
         <div className="flex flex-col">
           <div className="flex gap-x-2">
             <span className="font-semibold">Status:</span>
-            {serverStatusQuery.data?.State === 2
+            {serverStatusQuery.data?.State === 'Started'
               ? <span className="font-semibold">Started!</span>
               : (serverStatusQuery.data?.StartupMessage ?? <span className="font-semibold">Not Started!</span>)}
           </div>
           <div className="mt-24 flex items-center justify-center">
             {pollingInterval === 0
-              && ((!serverStatusQuery.isSuccess && !serverStatusQuery.isError) || serverStatusQuery.data?.State === 4)
+              && ((!serverStatusQuery.isSuccess && !serverStatusQuery.isError)
+                || serverStatusQuery.data?.State === 'Failed')
               && (
                 <Button onClick={() => handleStart()} buttonType="primary" className="w-64 py-2 font-semibold">
                   Start Server
@@ -84,8 +87,8 @@ function StartServer() {
           </div>
         </div>
         <Footer
-          prevDisabled={serverStatusQuery.data?.State !== 4}
-          nextDisabled={serverStatusQuery.data?.State !== 2}
+          prevDisabled={serverStatusQuery.data?.State !== 'Failed'}
+          nextDisabled={serverStatusQuery.data?.State !== 'Started'}
           saveFunction={handleNext}
         />
       </TransitionDiv>

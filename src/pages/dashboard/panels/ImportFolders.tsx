@@ -42,18 +42,10 @@ function ImportFolders() {
 
   const renderFolder = (folder: ImportFolderType) => {
     let flags = '';
-    switch (folder.DropFolderType) {
-      case 1:
-        flags = 'Source';
-        break;
-      case 2:
-        flags = 'Destination';
-        break;
-      case 3:
-        flags = 'Source, Destination';
-        break;
-      default:
-    }
+
+    if (folder.DropFolderType === 'Both') flags = 'Source, Destination';
+    else if (folder.DropFolderType !== 'Excluded') flags = folder.DropFolderType ?? '';
+
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
 
     return (
