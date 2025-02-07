@@ -49,7 +49,7 @@ function FirstRunPage() {
   useEffect(() => {
     if (
       (serverStatusQuery.isSuccess || serverStatusQuery.isError) && !isPersistent && !serverStatusQuery.isPending
-      && serverStatusQuery.data?.State !== 4
+      && serverStatusQuery.data?.State !== 'Waiting'
     ) {
       navigate('../login', { replace: true });
     }

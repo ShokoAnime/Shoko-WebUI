@@ -25,11 +25,11 @@ import type { ImportFolderType } from '@/core/types/api/import-folder';
 
 const defaultImportFolder = {
   WatchForNewFiles: false,
-  DropFolderType: 0 as 0 | 1 | 2 | 3,
+  DropFolderType: 'Excluded',
   Path: '',
   Name: '',
   ID: 0,
-};
+} as ImportFolderType;
 
 function ImportFolderModal() {
   const dispatch = useDispatch();
@@ -127,14 +127,14 @@ function ImportFolderModal() {
             <Select
               label="Drop Type"
               id="DropFolderType"
-              value={importFolder.DropFolderType}
+              value={importFolder.DropFolderType ?? 'Excluded'}
               onChange={handleInputChange}
               className="w-full"
             >
-              <option value={0}>None</option>
-              <option value={1}>Source</option>
-              <option value={2}>Destination</option>
-              <option value={3}>Both</option>
+              <option value="Excluded">None</option>
+              <option value="Source">Source</option>
+              <option value="Destination">Destination</option>
+              <option value="Both">Both</option>
             </Select>
             <Select
               label="Watch For New Files"
