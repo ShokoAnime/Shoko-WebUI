@@ -32,7 +32,6 @@ import {
 import { invalidateQueries, resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
 import useEventCallback from '@/hooks/useEventCallback';
-import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 
 import type { ReleaseManagementOptionsType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -135,8 +134,6 @@ const ReleaseManagement = () => {
       });
   });
 
-  const isQuickSelectSupported = useIsFeatureSupported(FeatureType.ReleaseManagementQuickSelect);
-
   return (
     <>
       <title>{`${titleMap[type]} | Shoko`}</title>
@@ -200,9 +197,8 @@ const ReleaseManagement = () => {
               <Button
                 buttonType="secondary"
                 className="flex gap-x-2.5 px-4 py-3 font-semibold"
-                disabled={!selectedSeries || !isQuickSelectSupported}
+                disabled={!selectedSeries}
                 onClick={toggleShowQuickSelectModal}
-                tooltip={isQuickSelectSupported ? '' : 'Only supported on server version >=5.1.0.6'}
               >
                 <Icon path={mdiSelectMultiple} size={0.8333} />
                 Quick Select

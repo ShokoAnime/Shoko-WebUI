@@ -39,21 +39,12 @@ const Folder = (props: ImportFolderType) => {
 
   const flags = useMemo(() => {
     let tempFlags = '';
-    switch (DropFolderType) {
-      case 1:
-        tempFlags = 'Source';
-        break;
-      case 2:
-        tempFlags = 'Destination';
-        break;
-      case 3:
-        tempFlags = 'Source, Destination';
-        break;
-      default:
-    }
-    if (WatchForNewFiles) {
-      tempFlags += DropFolderType ? ', Watch' : 'Watch';
-    }
+
+    if (DropFolderType === 'Both') tempFlags = 'Source, Destination';
+    else if (DropFolderType !== 'Excluded') tempFlags = DropFolderType ?? '';
+
+    if (WatchForNewFiles) tempFlags += DropFolderType ? ', Watch' : 'Watch';
+
     return tempFlags;
   }, [DropFolderType, WatchForNewFiles]);
 
