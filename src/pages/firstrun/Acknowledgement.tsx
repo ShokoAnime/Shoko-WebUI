@@ -53,7 +53,7 @@ function Acknowledgement() {
           onClick={handleNext}
           buttonType="primary"
           className="py-2 font-semibold"
-          disabled={serverStatusQuery.data?.State !== 4}
+          disabled={serverStatusQuery.data?.State !== 'Waiting'}
         >
           Continue
         </Button>
