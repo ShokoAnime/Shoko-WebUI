@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router';
 import {
   mdiCloseCircleOutline,
   mdiDatabaseSearchOutline,
@@ -15,6 +16,7 @@ import { useDebounceValue } from 'usehooks-ts';
 import Button from '@/components/Input/Button';
 import Input from '@/components/Input/Input';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import ShokoIcon from '@/components/ShokoIcon';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
 import ItemCount from '@/components/Utilities/ItemCount';
@@ -41,16 +43,11 @@ import type { Updater } from 'use-immer';
 const seriesColumns: UtilityHeaderType<SeriesType>[] = [
   {
     id: 'series',
-    name: 'Series (AniDB ID)',
+    name: 'Series',
     className: 'grow basis-0 overflow-hidden',
     item: series => (
       <div className="flex items-center gap-x-1" data-tooltip-id="tooltip" data-tooltip-content={series.Name}>
         <span className="line-clamp-1">{series.Name}</span>
-        <div>
-          (
-          <span className="text-panel-text-primary">{series.IDs.AniDB}</span>
-          )
-        </div>
         <a
           href={`https://anidb.net/anime/${series.IDs.AniDB}`}
           target="_blank"
@@ -60,8 +57,20 @@ const seriesColumns: UtilityHeaderType<SeriesType>[] = [
           onClick={event =>
             event.stopPropagation()}
         >
-          <Icon path={mdiOpenInNew} size={1} />
+          <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+            <div className="metadata-link-icon AniDB" />
+            {series.IDs.AniDB}
+            <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+          </div>
         </a>
+        <span>|</span>
+        <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+          <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+            <ShokoIcon className="size-6" />
+            {series.IDs.ID}
+            <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+          </div>
+        </Link>
       </div>
     ),
   },
@@ -93,11 +102,6 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
           &nbsp;-&nbsp;
           {episode.Name}
         </span>
-        <div>
-          (
-          <span className="text-panel-text-primary">{episode.IDs.AniDB}</span>
-          )
-        </div>
         <a
           href={`https://anidb.net/episode/${episode.IDs.AniDB}`}
           target="_blank"
@@ -106,7 +110,11 @@ const episodeColumns: UtilityHeaderType<EpisodeType>[] = [
           aria-label="Open AniDB episode page"
           onClick={event => event.stopPropagation()}
         >
-          <Icon path={mdiOpenInNew} size={1} />
+          <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
+            <div className="metadata-link-icon AniDB" />
+            {episode.IDs.AniDB}
+            <Icon className="text-panel-icon-action" path={mdiOpenInNew} size={1} />
+          </div>
         </a>
       </div>
     ),

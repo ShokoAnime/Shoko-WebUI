@@ -1,8 +1,13 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { mdiDatabaseSearchOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
+import toast from '@/components/Toast';
 import AVDumpFileIcon from '@/components/Utilities/Unrecognized/AvDumpFileIcon';
+import { useRescanFileMutation } from '@/core/react-query/file/mutations';
 import { useFilesInfiniteQuery } from '@/core/react-query/file/queries';
 import { FileSortCriteriaEnum, type FileType } from '@/core/types/api/file';
 import { dayjs } from '@/core/util';
@@ -12,6 +17,13 @@ import type { RootState } from '@/core/store';
 const FileItem = ({ file }: { file: FileType }) => {
   const createdTime = dayjs(file.Created);
   const fileName = file.Locations[0]?.RelativePath.split(/[/\\]/g).pop() ?? '<missing file path>';
+  const { mutate: rescanFile } = useRescanFileMutation();
+  const handleRescan = (id: number) =>
+    rescanFile(id, {
+      onSuccess: () => toast.success('Rescanning file!'),
+      onError: error => toast.error(`Rescan failed for file! ${error.message}`),
+    });
+
   return (
     <div
       key={file.ID}
@@ -31,6 +43,16 @@ const FileItem = ({ file }: { file: FileType }) => {
           {fileName}
         </span>
       </div>
+      <Button onClick={() => handleRescan(file.ID)} tooltip="Rescan File">
+        <Icon
+          className="text-panel-icon-action"
+          path={mdiDatabaseSearchOutline}
+          size={1}
+          horizontal
+          vertical
+          rotate={180}
+        />
+      </Button>
       <AVDumpFileIcon truck file={file} />
     </div>
   );
