@@ -10,9 +10,7 @@ import type {
   RefreshSeriesAniDBInfoRequestType,
   WatchSeriesEpisodesRequestType,
 } from '@/core/react-query/series/types';
-import type { ListResultType } from '@/core/types/api';
 import type { ImageType } from '@/core/types/api/common';
-import type { FileType } from '@/core/types/api/file';
 import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
 
 export const useChangeSeriesImageMutation = (seriesId: number) =>
@@ -153,12 +151,6 @@ export const useSyncSeriesTraktMutation = (seriesId: number) =>
 
 export const useRelocateSeriesFilesMutation = (seriesId: number) =>
   useMutation({
-    mutationFn: async () => {
-      const data = await axios.get<unknown, ListResultType<FileType>>(`Series/${seriesId}/File`, {
-        params: { pageSize: 0 },
-      });
-      const targetFiles = data.List.map(item => item.ID);
-      return axios.post('Renamer/Relocate', targetFiles);
-    },
+    mutationFn: () => axios.post(`Series/${seriesId}/File/Relocate`),
     onSuccess: () => toast.success('Series files renamed/moved!'),
   });
