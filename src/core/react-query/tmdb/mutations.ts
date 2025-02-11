@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
+import { invalidateQueries } from '@/core/react-query/queryClient';
 
 import type {
   TmdbAddAutoXrefsRequestType,
@@ -39,4 +40,12 @@ export const useTmdbAddAutoXrefsMutation = (seriesId: number) =>
 export const useDeleteTmdbLinkMutation = (seriesId: number, linkType: 'Movie' | 'Show') =>
   useMutation({
     mutationFn: (data: TmdbDeleteLinkRequestType) => axios.delete(`Series/${seriesId}/TMDB/${linkType}`, { data }),
+  });
+
+export const useSetPreferredTmdbShowOrderingMutation = (showId: number) =>
+  useMutation({
+    mutationKey: ['series', 'tmdb', 'show', showId, 'ordering', 'set-preferred'],
+    mutationFn: (alternateOrderingId: string) =>
+      axios.post(`/TMDB/Show/${showId}/Ordering/SetPreferred`, { alternateOrderingId }),
+    onSuccess: () => invalidateQueries(['series', 'tmdb', 'show', showId, 'ordering']),
   });

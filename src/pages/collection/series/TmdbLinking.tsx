@@ -1,17 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { useOutletContext, useParams, useSearchParams } from 'react-router';
-import { mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
+import { mdiCogOutline, mdiLoading, mdiOpenInNew, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import cx from 'classnames';
 import { debounce, every, filter, forEach, get, groupBy, isEqual, map, reduce, some, toNumber } from 'lodash';
 import { useImmer } from 'use-immer';
+import { useToggle } from 'usehooks-ts';
 
 import AniDBEpisode from '@/components/Collection/Tmdb/AniDBEpisode';
 import EpisodeRow from '@/components/Collection/Tmdb/EpisodeRow';
 import MovieRow from '@/components/Collection/Tmdb/MovieRow';
 import TmdbLinkSelectPanel from '@/components/Collection/Tmdb/TmdbLinkSelectPanel';
 import TopPanel from '@/components/Collection/Tmdb/TopPanel';
+import TmdbShowSettingsModal from '@/components/Dialogs/TmdbShowSettingsModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import { resetQueries } from '@/core/react-query/queryClient';
@@ -51,6 +53,9 @@ const TmdbLinking = () => {
   const tmdbId = useMemo(() => toNumber(searchParams.get('id')), [searchParams]);
 
   const seriesQuery = useSeriesQuery(seriesId, { includeDataFrom: ['AniDB'] }, !!seriesId);
+
+  const [toggledSettingsModal, toggleShowSettingsModal] = useToggle();
+  const showSettings = type === 'Show' && tmdbId > 0;
 
   const [createInProgress, setCreateInProgress] = useState(false);
 
@@ -366,7 +371,7 @@ const TmdbLinking = () => {
                 <div className="flex items-center justify-between rounded-lg border border-panel-border bg-panel-background-alt p-4 font-semibold">
                   {tmdbShowOrMovieQuery.data && (
                     <>
-                      <div className="flex items-center">
+                      <div className="flex grow items-center">
                         <div className="shrink-0">
                           TMDB |&nbsp;
                         </div>
@@ -391,6 +396,23 @@ const TmdbLinking = () => {
                             <Icon path={mdiOpenInNew} size={1} />
                           </div>
                         </a>
+                        <div className="grow" />
+                        <div className="shrink-0">
+                          {showSettings
+                            ? (
+                              <>
+                                <TmdbShowSettingsModal
+                                  show={toggledSettingsModal}
+                                  showId={tmdbId}
+                                  onClose={toggleShowSettingsModal}
+                                />
+                                <Button onClick={toggleShowSettingsModal} tooltip="Open Settings">
+                                  <Icon className="text-panel-icon-action" path={mdiCogOutline} size={1} />
+                                </Button>
+                              </>
+                            )
+                            : null}
+                        </div>
                       </div>
                       {isNewLink && (
                         <Button
