@@ -41,19 +41,17 @@ function orderingToDescription(ordering: AlternateOrderingTypeEnum | undefined):
 
 function TmdbShowSettingsModal({ onClose, show, showId }: Props) {
   const orderingQuery = useTmdbShowOrderingQuery(showId, show && showId > 0);
-  const { mutate: setOrdering, status: setOrderingStatus, submittedAt } = useSetPreferredTmdbShowOrderingMutation(
+  const { mutate: setOrdering, status: setOrderingStatus } = useSetPreferredTmdbShowOrderingMutation(
     showId,
   );
-  const { data: orderingList, fetchStatus } = orderingQuery;
+  const { data: orderingList } = orderingQuery;
   const [selectedOrderingId, setSelectedOrderingId] = useState<string>('');
   const selectedOrdering = useMemo(() => orderingList.find(ordering => ordering.OrderingID === selectedOrderingId), [
     orderingList,
     selectedOrderingId,
   ]);
 
-  const lockedControls = fetchStatus === 'fetching' && submittedAt - Date.now() > 100;
-  const canSave = !lockedControls && setOrderingStatus !== 'pending' && selectedOrdering != null
-    && !selectedOrdering.InUse;
+  const canSave = setOrderingStatus !== 'pending' && selectedOrdering != null && !selectedOrdering.InUse;
 
   const handleClose = useEventCallback(() => {
     setSelectedOrderingId('');
@@ -96,10 +94,9 @@ function TmdbShowSettingsModal({ onClose, show, showId }: Props) {
 
   useLayoutEffect(() => {
     if (show) {
-      orderingQuery.refetch({ cancelRefetch: true }).catch(console.error);
+      orderingQuery.refetch().catch(console.error);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [show, showId]);
+  }, [show, showId, orderingQuery]);
 
   return (
     <ModalPanel
@@ -121,10 +118,8 @@ function TmdbShowSettingsModal({ onClose, show, showId }: Props) {
               onClick={handleOrderingClick}
               className={cx(
                 'flex flex-row justify-between transition-colors',
-                lockedControls && 'opacity-65',
-                !lockedControls && !ordering.InUse && 'cursor-pointer',
-                !lockedControls && ordering.InUse
-                  && (!selectedOrdering || selectedOrdering.OrderingID !== ordering.OrderingID)
+                !ordering.InUse && 'cursor-pointer',
+                ordering.InUse && (!selectedOrdering || selectedOrdering.OrderingID !== ordering.OrderingID)
                   && 'text-panel-text-primary',
                 selectedOrdering?.OrderingID === ordering.OrderingID && 'text-panel-text-important',
               )}

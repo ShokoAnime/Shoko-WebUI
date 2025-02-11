@@ -8,7 +8,6 @@ import { flatMap, get, map, round } from 'lodash';
 import CharacterImage from '@/components/CharacterImage';
 import EpisodeSummary from '@/components/Collection/Episode/EpisodeSummary';
 import SeriesMetadata from '@/components/Collection/SeriesMetadata';
-import TmdbShowSettingsModal from '@/components/Dialogs/TmdbShowSettingsModal';
 import MultiStateButton from '@/components/Input/MultiStateButton';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import SeriesPoster from '@/components/SeriesPoster';
@@ -29,10 +28,6 @@ const MetadataLinks = ['AniDB', 'TMDB', 'TraktTv'] as const;
 
 const SeriesOverview = () => {
   const { series } = useOutletContext<SeriesContextType>();
-
-  const [selectedTmdbShowId, setSelectedTmdbShowId] = useState<number>(-1);
-  const showTmdbSettingsModal = selectedTmdbShowId > 0;
-  const handleTmdbSettingsClose = useEventCallback(() => setSelectedTmdbShowId(-1));
 
   const nextUpEpisodeQuery = useSeriesNextUpQuery(series.IDs.ID, {
     includeDataFrom: ['AniDB'],
@@ -100,7 +95,6 @@ const SeriesOverview = () => {
                             id={id}
                             seriesId={series.IDs.ID}
                             type={type}
-                            openTmdbShowSettings={setSelectedTmdbShowId}
                           />
                         ))),
                       /* Show row to add new TMDB links */
@@ -236,11 +230,6 @@ const SeriesOverview = () => {
             </div>
           ))}
         </div>
-        <TmdbShowSettingsModal
-          show={showTmdbSettingsModal}
-          onClose={handleTmdbSettingsClose}
-          showId={selectedTmdbShowId}
-        />
       </ShokoPanel>
     </>
   );
