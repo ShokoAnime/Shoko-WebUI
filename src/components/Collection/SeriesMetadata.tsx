@@ -1,11 +1,5 @@
 import React, { useMemo } from 'react';
-import {
-  mdiCloseCircleOutline,
-  mdiCogOutline,
-  mdiOpenInNew,
-  mdiPencilCircleOutline,
-  mdiPlusCircleOutline,
-} from '@mdi/js';
+import { mdiCloseCircleOutline, mdiOpenInNew, mdiPencilCircleOutline, mdiPlusCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
 import Button from '@/components/Input/Button';
@@ -16,13 +10,12 @@ import useNavigateVoid from '@/hooks/useNavigateVoid';
 
 type Props = {
   id?: number;
-  openTmdbShowSettings?: (showId: number) => void;
   seriesId: number;
   site: 'AniDB' | 'TMDB' | 'TraktTv';
   type?: 'Movie' | 'Show';
 };
 
-const MetadataLink = ({ id, openTmdbShowSettings, seriesId, site, type }: Props) => {
+const MetadataLink = ({ id, seriesId, site, type }: Props) => {
   const navigate = useNavigateVoid();
   const { mutate: deleteTmdbLink } = useDeleteTmdbLinkMutation(seriesId, type ?? 'Movie');
 
@@ -41,21 +34,11 @@ const MetadataLink = ({ id, openTmdbShowSettings, seriesId, site, type }: Props)
   }, [id, site, type]);
 
   const canAddLink = useMemo(() => site === 'TMDB', [site]);
-  const canOpenSettings = useMemo(() => site === 'TMDB' && type === 'Show' && openTmdbShowSettings != null, [
-    site,
-    type,
-    openTmdbShowSettings,
-  ]);
   const canEditLink = useMemo(() => site === 'TMDB', [site]);
   const canRemoveLink = useMemo(() => site === 'TMDB', [site]);
 
   const addLink = useEventCallback(() => {
     navigate('../tmdb-linking');
-  });
-
-  const openSettings = useEventCallback(() => {
-    if (!id || !type || !canOpenSettings) return;
-    openTmdbShowSettings!(id);
   });
 
   const editLink = useEventCallback(() => {
@@ -105,11 +88,6 @@ const MetadataLink = ({ id, openTmdbShowSettings, seriesId, site, type }: Props)
             {id
               ? (
                 <>
-                  {canOpenSettings && (
-                    <Button onClick={openSettings} tooltip="Open Settings">
-                      <Icon className="text-panel-icon-action" path={mdiCogOutline} size={1} />
-                    </Button>
-                  )}
                   {canEditLink && (
                     <Button onClick={editLink} tooltip="Edit Link">
                       <Icon className="text-panel-icon-action" path={mdiPencilCircleOutline} size={1} />
