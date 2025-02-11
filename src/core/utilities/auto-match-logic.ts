@@ -83,7 +83,9 @@ export function detectShow(filePath: string | undefined | null): PathDetails | n
     if (match?.groups) {
       // We accept specials in-between episodes or episode ranges, so we split
       // the range and parse the text as floats.
-      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-').filter(item => item)
+      let [episodeStart = 1, episodeEnd = episodeStart] = match.groups.episode?.split('-')
+        .filter(item => item)
+        .map(str => (str.startsWith('E') ? str.slice(1) : str))
         .map<number>(parseFloat) ?? new Array<number>();
 
       // Swap episode numbers if they're reversed.
