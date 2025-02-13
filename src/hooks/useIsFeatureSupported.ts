@@ -8,6 +8,7 @@ import type { VersionType } from '@/core/types/api/init';
 
 export enum FeatureType {
   Placeholder = '5.0.0.0', // This is as a placeholder so the string conversion for `parseServerVersion` works and also serves as an example
+  RelocateSeriesFiles = '5.1.0.35',
 }
 
 const useIsFeatureSupported = (feature: FeatureType) => {
