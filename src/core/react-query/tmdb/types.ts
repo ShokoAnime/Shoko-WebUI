@@ -49,3 +49,62 @@ export type TmdbEditEpisodeXrefsRequestType = {
 export type TmdbShowEpisodesRequestType = {
   search?: string;
 } & PaginationType;
+
+export type TmdbShowOrderingInformationType = {
+  /**
+   * The ordering ID.
+   */
+  OrderingID: string;
+
+  /**
+   * The alternate ordering type. Will not be set if the main ordering is
+   * used.
+   */
+  OrderingType?: AlternateOrderingTypeEnum;
+
+  /**
+   * English name of the ordering scheme.
+   */
+  OrderingName: string;
+
+  /**
+   * The number of episodes in the ordering scheme.
+   */
+  EpisodeCount: number;
+
+  /**
+   * The number of hidden episodes in the ordering scheme.
+   */
+  HiddenEpisodeCount: number;
+
+  /**
+   * The number of seasons in the ordering scheme.
+   */
+  SeasonCount: number;
+
+  /**
+   * Indicates the current ordering is the default ordering for the show.
+   */
+  IsDefault: boolean;
+
+  /**
+   * Indicates the current ordering is the preferred ordering for the show.
+   */
+  IsPreferred: boolean;
+
+  /**
+   * Indicates the current ordering is in use for the show.
+   */
+  InUse: boolean;
+};
+
+export const enum AlternateOrderingTypeEnum {
+  Unknown = 'Unknown',
+  OriginalAirDate = 'OriginalAirDate',
+  Absolute = 'Absolute',
+  DVD = 'DVD',
+  Digital = 'Digital',
+  StoryArc = 'StoryArc',
+  Production = 'Production',
+  TV = 'TV',
+}

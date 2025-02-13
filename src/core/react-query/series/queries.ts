@@ -134,6 +134,15 @@ export const useSeriesTagsQuery = (seriesId: number, params: SeriesTagsRequestTy
     enabled,
   });
 
+export const useSeriesUserTagsSetQuery = (seriesId: number, enabled = true) =>
+  useQuery<TagType[], unknown, Set<number>>({
+    queryKey: ['series', seriesId, 'tags', 'user'],
+    queryFn: () => axios.get(`Series/${seriesId}/Tags/User`),
+    select: data => new Set(data.map(tag => tag.ID)),
+    enabled,
+    initialData: [],
+  });
+
 export const useSeriesWithLinkedFilesInfiniteQuery = (params: SeriesWithLinkedFilesRequestType) =>
   useInfiniteQuery<ListResultType<SeriesType>>({
     queryKey: ['series', 'linked-files', params],

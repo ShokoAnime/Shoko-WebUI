@@ -1,12 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
+import { mdiTagPlusOutline } from '@mdi/js';
+import Icon from '@mdi/react';
 import { toNumber } from 'lodash';
+import { useToggle } from 'usehooks-ts';
 
 import BackgroundImagePlaceholderDiv from '@/components/BackgroundImagePlaceholderDiv';
 import CleanDescription from '@/components/Collection/CleanDescription';
 import SeriesInfo from '@/components/Collection/SeriesInfo';
 import SeriesUserStats from '@/components/Collection/SeriesUserStats';
 import TagButton from '@/components/Collection/TagButton';
+import CustomTagModal from '@/components/Dialogs/CustomTagModal';
+import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import { useSeriesImagesQuery, useSeriesTagsQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -23,6 +28,8 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
   const { showRandomPoster } = useSettingsQuery().data.WebUI_Settings.collection.image;
   const imagesQuery = useSeriesImagesQuery(toNumber(seriesId!), !!seriesId && showRandomPoster);
   const [poster, setPoster] = useState<ImageType>();
+  const [showTagModal, toggleTagModal] = useToggle(false);
+
   useEffect(() => {
     if (!showRandomPoster) {
       setPoster(series.Images?.Posters?.[0]);
@@ -78,7 +85,15 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
           contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
+          options={
+            <div className="flex gap-x-2">
+              <Button onClick={toggleTagModal} tooltip="Edit Tags">
+                <Icon className="text-panel-icon-important" path={mdiTagPlusOutline} size={1} />
+              </Button>
+            </div>
+          }
         >
+          <CustomTagModal seriesId={toNumber(seriesId)} show={showTagModal} onClose={toggleTagModal} />
           {tags.slice(0, 10)
             .map(tag => <TagButton key={tag.ID} text={tag.Name} tagType={tag.Source} type="Series" />)}
         </ShokoPanel>
