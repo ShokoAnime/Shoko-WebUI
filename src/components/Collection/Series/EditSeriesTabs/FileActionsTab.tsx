@@ -36,7 +36,7 @@ const FileActionsTab = ({ seriesId }: Props) => {
       <Action
         name="Rename/Move Files"
         description="Rename/Move every file associated with the group."
-        onClick={useIsFeatureSupported(FeatureType.RelocateSeriesFiles) ? relocateSeriesFiles : unsuported}
+        onClick={useIsFeatureSupported(FeatureType.RelocateSeriesFiles) ? relocateSeriesFiles : showUnsupportedToast}
       />
     </div>
   );

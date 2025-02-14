@@ -11,7 +11,7 @@ type Props = {
 
 const FileActionsTab = ({ groupId }: Props) => {
   const { mutate: relocateGroupFiles } = useRelocateGroupFilesMutation(groupId);
-  const unsuported = () => {
+  const showUnsupportedToast = () => {
     toast.error(`This feature require server version >= ${FeatureType.RelocateSeriesFiles}`);
   };
 
@@ -20,7 +20,7 @@ const FileActionsTab = ({ groupId }: Props) => {
       <Action
         name="Rename/Move Files"
         description="Rename/Move every file associated with the group."
-        onClick={useIsFeatureSupported(FeatureType.RelocateSeriesFiles) ? relocateGroupFiles : unsuported}
+        onClick={useIsFeatureSupported(FeatureType.RelocateSeriesFiles) ? relocateGroupFiles : showUnsupportedToast}
       />
     </div>
   );
