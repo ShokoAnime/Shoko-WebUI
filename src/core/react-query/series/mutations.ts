@@ -148,3 +148,9 @@ export const useSyncSeriesTraktMutation = (seriesId: number) =>
     mutationFn: () => axios.post(`Series/${seriesId}/Trakt/Sync`),
     onSuccess: () => toast.success('Trakt sync queued!'),
   });
+
+export const useRelocateSeriesFilesMutation = (seriesId: number) =>
+  useMutation({
+    mutationFn: () => axios.post(`Series/${seriesId}/File/Relocate`),
+    onSuccess: () => toast.success('Series files renamed/moved!'),
+  });
