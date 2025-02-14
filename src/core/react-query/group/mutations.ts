@@ -68,7 +68,7 @@ export const useRelocateGroupFilesMutation = (groupId: number) =>
 
       return Promise.all(
         targetSeries.map(
-          serie => axios.post(`Series/${serie.IDs.ID}/File/Relocate`),
+          series => axios.post(`Series/${series.IDs.ID}/File/Relocate`),
         ),
       );
     },
