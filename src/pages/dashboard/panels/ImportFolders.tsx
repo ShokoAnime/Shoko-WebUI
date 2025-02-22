@@ -44,7 +44,7 @@ function ImportFolders() {
     let flags = '';
 
     if (folder.DropFolderType === 'Both') flags = 'Source, Destination';
-    else if (folder.DropFolderType !== 'Excluded') flags = folder.DropFolderType ?? '';
+    else if (folder.DropFolderType !== 'None') flags = folder.DropFolderType ?? '';
 
     if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
 
