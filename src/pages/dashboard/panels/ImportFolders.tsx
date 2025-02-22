@@ -46,7 +46,7 @@ function ImportFolders() {
     if (folder.DropFolderType === 'Both') flags = 'Source, Destination';
     else if (folder.DropFolderType !== 'None') flags = folder.DropFolderType ?? '';
 
-    if (folder.WatchForNewFiles) flags += folder.DropFolderType ? ', Watch' : 'Watch';
+    if (folder.WatchForNewFiles) flags += flags ? ', Watch' : 'Watch';
 
     return (
       <div key={folder.ID} className="flex flex-col border-t border-panel-border py-6 first:border-t-0">

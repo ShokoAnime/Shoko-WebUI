@@ -43,7 +43,7 @@ const Folder = (props: ImportFolderType) => {
     if (DropFolderType === 'Both') tempFlags = 'Source, Destination';
     else if (DropFolderType !== 'None') tempFlags = DropFolderType ?? '';
 
-    if (WatchForNewFiles) tempFlags += DropFolderType ? ', Watch' : 'Watch';
+    if (WatchForNewFiles) tempFlags += tempFlags ? ', Watch' : 'Watch';
 
     return tempFlags;
   }, [DropFolderType, WatchForNewFiles]);
