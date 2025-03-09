@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { reduce } from 'lodash';
 
 import SeriesPoster from '@/components/SeriesPoster';
 import useMainPoster from '@/hooks/useMainPoster';
@@ -12,16 +13,26 @@ type Props = {
 const SeriesDetails = React.memo(({ series }: Props) => {
   const mainPoster = useMainPoster(series);
 
-  const fileCount = useMemo(
-    () => `${series.Size} ${series.Size === 1 ? 'File' : 'Files'}`,
-    [series.Size],
+  const subtitle = useMemo(
+    () => {
+      const episodeCount = series.Size;
+      const episodeText = `${episodeCount} ${episodeCount === 1 ? 'Episode' : 'Episodes'}`;
+      const fileCount = reduce(series.Sizes.FileSources, (total, value) => total + value, 0);
+      if (episodeCount === fileCount) {
+        return episodeText;
+      }
+
+      const fileText = `${fileCount} ${fileCount === 1 ? 'File' : 'Files'}`;
+      return `${episodeText} | ${fileText}`;
+    },
+    [series.Sizes, series.Size],
   );
 
   return (
     <SeriesPoster
       image={mainPoster}
       title={series.Name}
-      subtitle={fileCount}
+      subtitle={subtitle}
       shokoId={series.IDs.ID}
     />
   );
