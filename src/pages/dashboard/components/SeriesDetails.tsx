@@ -18,6 +18,10 @@ const SeriesDetails = React.memo(({ series }: Props) => {
       const episodeCount = series.Size;
       const episodeText = `${episodeCount} ${episodeCount === 1 ? 'Episode' : 'Episodes'}`;
       const fileCount = reduce(series.Sizes.FileSources, (total, value) => total + value, 0);
+      if (episodeCount === fileCount) {
+        return episodeText;
+      }
+
       const fileText = `${fileCount} ${fileCount === 1 ? 'File' : 'Files'}`;
       return `${episodeText} | ${fileText}`;
     },
