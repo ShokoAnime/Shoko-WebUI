@@ -58,7 +58,7 @@ export type RenamerResultType = {
   FileID: number;
   FileLocationID?: number;
   ConfigName?: string;
-  ImportFolderID?: number;
+  ManagedFolderID?: number;
   IsSuccess: boolean;
   IsRelocated?: boolean;
   IsPreview?: boolean;

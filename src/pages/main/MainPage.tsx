@@ -6,7 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
+import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import TopNav from '@/components/Layout/TopNav';
 import Events from '@/core/events';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -58,7 +58,7 @@ function MainPage() {
         className="z-[10000]"
       />
       <div className="flex grow flex-col overflow-x-clip">
-        <ImportFolderModal />
+        <ManagedFolderModal />
         <TopNav />
         <div className="scroll-gutter grow overflow-y-auto py-6 contain-strict" ref={scrollRef}>
           <div className="scroll-no-gutter mx-auto flex min-h-full w-full max-w-[120rem] flex-col px-6">
