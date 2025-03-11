@@ -57,6 +57,7 @@
     "@stylistic/stylelint-plugin": "^3.1.1",
     "@tanstack/eslint-plugin-query": "^5.62.1",
     "@types/format-thousands": "^2.0.3",
+    "@types/json-schema": "^7.0.15",
     "@types/lodash": "^4.17.13",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.1",

@@ -57,7 +57,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
     combineContinueWatching,
     hideCollectionStats,
     hideContinueWatching,
-    hideImportFolders,
+    hideManagedFolders,
     hideMediaType,
     hideNextUp,
     hideQueueProcessor,
@@ -175,9 +175,9 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
                 />
                 <Checkbox
                   justify
-                  label="Hide Import Folders"
-                  id="hideImportFolders"
-                  isChecked={hideImportFolders}
+                  label="Hide Managed Folders"
+                  id="hideManagedFolders"
+                  isChecked={hideManagedFolders}
                   onChange={handleUpdate}
                 />
                 <Checkbox
