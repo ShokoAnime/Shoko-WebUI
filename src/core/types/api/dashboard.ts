@@ -8,6 +8,8 @@ export type DashboardSeriesSummaryType = {
   Special?: number;
   Web: number;
   Other: number;
+  MusicVideo?: number;
+  Unknown?: number;
   None?: number;
 };
 

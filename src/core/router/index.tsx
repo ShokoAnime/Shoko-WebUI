@@ -22,8 +22,8 @@ import Acknowledgement from '@/pages/firstrun/Acknowledgement';
 import AniDBAccount from '@/pages/firstrun/AniDBAccount';
 import DataCollection from '@/pages/firstrun/DataCollection';
 import FirstRunPage from '@/pages/firstrun/FirstRunPage';
-import ImportFolders from '@/pages/firstrun/ImportFolders';
 import LocalAccount from '@/pages/firstrun/LocalAccount';
+import ManagedFolders from '@/pages/firstrun/ManagedFolders';
 import MetadataSources from '@/pages/firstrun/MetadataSources';
 import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
@@ -69,7 +69,7 @@ const router = sentryCreateBrowserRouter(
           <Route path="anidb-account" element={<AniDBAccount />} />
           <Route path="metadata-sources" element={<MetadataSources />} />
           <Route path="start-server" element={<StartServer />} />
-          <Route path="import-folders" element={<ImportFolders />} />
+          <Route path="managed-folders" element={<ManagedFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
         </Route>
         <Route path="unsupported" element={<UnsupportedPage />} />

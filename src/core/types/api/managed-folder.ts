@@ -1,4 +1,4 @@
-export type ImportFolderType = {
+export type ManagedFolderType = {
   ID: number;
   WatchForNewFiles?: boolean;
   DropFolderType?: 'None' | 'Source' | 'Destination' | 'Both';

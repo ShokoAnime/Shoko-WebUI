@@ -66,7 +66,7 @@ const quickActions = {
   'import-new-files': {
     name: 'Import New Files',
     functionName: 'ImportNewFiles',
-    info: 'Queues a task to import only new files found in the import folder',
+    info: 'Queues a task to import only new files found in the managed folders.',
   },
   'avdump-mismatched-files': {
     name: 'AVDump Mismatched Files',

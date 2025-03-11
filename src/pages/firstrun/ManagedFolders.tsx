@@ -3,23 +3,20 @@ import { useDispatch } from 'react-redux';
 import { mdiMinusCircleOutline, mdiPencilCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 
-import ImportFolderModal from '@/components/Dialogs/ImportFolderModal';
+import ManagedFolderModal from '@/components/Dialogs/ManagedFolderModal';
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import { useDeleteImportFolderMutation } from '@/core/react-query/import-folder/mutations';
-import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
+import { useDeleteManagedFolderMutation } from '@/core/react-query/managed-folder/mutations';
+import { useManagedFoldersQuery } from '@/core/react-query/managed-folder/queries';
 import { setSaved as setFirstRunSaved } from '@/core/slices/firstrun';
-import {
-  setEdit as setImportFolderModalEdit,
-  setStatus as setImportFolderModalStatus,
-} from '@/core/slices/modals/importFolder';
+import { setEdit as setFolderModalEdit, setStatus as setFolderModalStatus } from '@/core/slices/modals/managedFolder';
 
 import Footer from './Footer';
 
-import type { ImportFolderType } from '@/core/types/api/import-folder';
+import type { ManagedFolderType } from '@/core/types/api/managed-folder';
 
-const Folder = (props: ImportFolderType) => {
+const Folder = (props: ManagedFolderType) => {
   const {
     DropFolderType,
     ID,
@@ -29,11 +26,11 @@ const Folder = (props: ImportFolderType) => {
   } = props;
 
   const dispatch = useDispatch();
-  const { mutate: deleteFolder } = useDeleteImportFolderMutation();
+  const { mutate: deleteFolder } = useDeleteManagedFolderMutation();
 
   const handleDeleteFolder = (folderId: number) => {
     deleteFolder({ folderId }, {
-      onSuccess: () => toast.success('Import folder deleted!'),
+      onSuccess: () => toast.success('Managed folder deleted!'),
     });
   };
 
@@ -53,7 +50,7 @@ const Folder = (props: ImportFolderType) => {
       <div className="flex justify-between font-semibold">
         {Name}
         <div className="flex gap-x-3">
-          <Button onClick={() => dispatch(setImportFolderModalEdit(ID))}>
+          <Button onClick={() => dispatch(setFolderModalEdit(ID))}>
             <Icon path={mdiPencilCircleOutline} size={1} className="text-panel-text-primary" />
           </Button>
           <Button onClick={() => handleDeleteFolder(ID)}>
@@ -73,45 +70,45 @@ const Folder = (props: ImportFolderType) => {
   );
 };
 
-function ImportFolders() {
+function ManagedFolders() {
   const dispatch = useDispatch();
 
-  const importFolderQuery = useImportFoldersQuery();
-  const importFolders = importFolderQuery?.data ?? [] as ImportFolderType[];
+  const managedFolderQuery = useManagedFoldersQuery();
+  const managedFolders = managedFolderQuery?.data ?? [] as ManagedFolderType[];
 
   return (
     <>
-      <title>First Run &gt; Import Folders | Shoko</title>
+      <title>First Run &gt; Managed Folders | Shoko</title>
       <TransitionDiv className="flex max-w-[38rem] flex-col justify-center gap-y-6 overflow-y-auto">
-        <div className="text-xl font-semibold">Import Folders</div>
+        <div className="text-xl font-semibold">Managed Folders</div>
         <div className="text-justify">
-          For Shoko to function correctly, at least one import folder is required. However, you can add as many import
+          For Shoko to function correctly, at least one managed folder is required. However, you can add as many import
           folders as you desire. It&apos;s important to note that you can only select one folder to be the designated
           drop destination.
         </div>
         <div className="flex font-semibold">
-          <Button onClick={() => dispatch(setImportFolderModalStatus(true))} buttonType="primary" className="px-6 py-2">
-            Add Import Folder
+          <Button onClick={() => dispatch(setFolderModalStatus(true))} buttonType="primary" className="px-6 py-2">
+            Add Managed Folder
           </Button>
         </div>
-        {importFolders.length > 0
+        {managedFolders.length > 0
           ? (
             <>
               <div className="font-semibold">
-                Current Import Folders
+                Current Managed Folders
               </div>
               <div className="flex max-h-80 flex-col gap-y-6 overflow-y-auto">
-                {importFolders.map(folder => <Folder key={folder.ID} {...folder} />)}
+                {managedFolders.map(folder => <Folder key={folder.ID} {...folder} />)}
               </div>
             </>
           )
-          : <div className="font-semibold">No Import Folders Added</div>}
-        <Footer nextPage="data-collection" saveFunction={() => dispatch(setFirstRunSaved('import-folders'))} />
+          : <div className="font-semibold">No Managed Folders Added</div>}
+        <Footer nextPage="data-collection" saveFunction={() => dispatch(setFirstRunSaved('managed-folders'))} />
       </TransitionDiv>
 
-      <ImportFolderModal />
+      <ManagedFolderModal />
     </>
   );
 }
 
-export default ImportFolders;
+export default ManagedFolders;

@@ -58,9 +58,9 @@ const useMediaInfo = (file: FileType): FileInfo =>
     const fileName = absolutePath.split(/[/\\]+/).pop();
     const folderPath = absolutePath.slice(0, absolutePath.replaceAll('\\', '/').lastIndexOf('/') + 1);
 
-    const groupInfo = [file.AniDB?.ReleaseGroup?.Name ?? 'Unknown'];
-    if (file.AniDB?.Source) groupInfo.push(file.AniDB.Source);
-    if (file.AniDB?.Version) groupInfo.push(`v${file.AniDB.Version}`);
+    const groupInfo = [file.ReleaseInfo?.Group?.Name ?? 'Unknown'];
+    if (file.ReleaseInfo?.Source) groupInfo.push(file.ReleaseInfo.Source);
+    if (file.ReleaseInfo?.Revision) groupInfo.push(`v${file.ReleaseInfo.Revision}`);
 
     return {
       Name: fileName ?? '',
@@ -68,14 +68,14 @@ const useMediaInfo = (file: FileType): FileInfo =>
       Size: file.Size ?? 0,
       Group: groupInfo.join(' | '),
       Hashes: {
-        ED2K: file.Hashes?.ED2K ?? '',
-        SHA1: file.Hashes?.SHA1 ?? '',
-        CRC32: file.Hashes?.CRC32 ?? '',
-        MD5: file.Hashes?.MD5 ?? '',
+        ED2K: file.Hashes?.find(hash => hash.Type === 'ED2K')?.Value ?? '',
+        SHA1: file.Hashes?.find(hash => hash.Type === 'SHA1')?.Value ?? '',
+        CRC32: file.Hashes?.find(hash => hash.Type === 'CRC32')?.Value ?? '',
+        MD5: file.Hashes?.find(hash => hash.Type === 'MD5')?.Value ?? '',
       },
       VideoInfo: videoInfo,
       AudioInfo: audioInfo,
-      Chapters: file.AniDB?.Chaptered ?? false,
+      Chapters: file.ReleaseInfo?.IsChaptered ?? false,
     };
   }, [file]);
 
