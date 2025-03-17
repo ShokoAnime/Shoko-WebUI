@@ -36,7 +36,7 @@ import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
-import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
+import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -118,7 +118,7 @@ const router = sentryCreateBrowserRouter(
             <Route path="general" element={<GeneralSettings />} />
             <Route path="import" element={<ImportSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
-            <Route path="metadata-sites" element={<MetadataSitesSettings />} />
+            <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />

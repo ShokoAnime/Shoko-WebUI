@@ -21,7 +21,7 @@ const items = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
   { name: 'AniDB', path: 'anidb' },
-  { name: 'Metadata Sites', path: 'metadata-sites' },
+  { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
   { name: 'Integrations', path: 'integrations' },
   // { name: 'Display', path: 'display' },
