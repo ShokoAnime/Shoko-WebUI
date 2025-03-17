@@ -30,7 +30,7 @@ export type FileType = {
   Updated: string;
   IsVariation: boolean;
   SeriesIDs?: XRefsType[];
-  ReleaseInfo?: ReleaseInfoType;
+  Release?: ReleaseInfoType;
   MediaInfo?: FileMediaInfoType;
   AVDump: FileAVDumpType;
 };

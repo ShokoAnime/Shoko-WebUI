@@ -58,9 +58,9 @@ const useMediaInfo = (file: FileType): FileInfo =>
     const fileName = absolutePath.split(/[/\\]+/).pop();
     const folderPath = absolutePath.slice(0, absolutePath.replaceAll('\\', '/').lastIndexOf('/') + 1);
 
-    const groupInfo = [file.ReleaseInfo?.Group?.Name ?? 'Unknown'];
-    if (file.ReleaseInfo?.Source) groupInfo.push(file.ReleaseInfo.Source);
-    if (file.ReleaseInfo?.Revision) groupInfo.push(`v${file.ReleaseInfo.Revision}`);
+    const groupInfo = [file.Release?.Group?.Name ?? 'Unknown'];
+    if (file.Release?.Source) groupInfo.push(file.Release.Source);
+    if (file.Release?.Revision) groupInfo.push(`v${file.Release.Revision}`);
 
     return {
       Name: fileName ?? '',
@@ -75,7 +75,7 @@ const useMediaInfo = (file: FileType): FileInfo =>
       },
       VideoInfo: videoInfo,
       AudioInfo: audioInfo,
-      Chapters: file.ReleaseInfo?.IsChaptered ?? false,
+      Chapters: file.Release?.IsChaptered ?? false,
     };
   }, [file]);
 

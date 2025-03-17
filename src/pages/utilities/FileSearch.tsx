@@ -241,8 +241,7 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
   const { data: file, isPending: fileQueryIsPending } = useFileQuery(
     fileId,
     {
-      include: ['XRefs', 'MediaInfo', 'AbsolutePaths'],
-      includeDataFrom: ['AniDB'],
+      include: ['XRefs', 'MediaInfo', 'ReleaseInfo', 'AbsolutePaths'],
     },
   );
 
@@ -289,8 +288,8 @@ const FileDetails = React.memo(({ fileId }: { fileId: number }) => {
       <div className="flex flex-col gap-y-1">
         <div className="flex justify-between">
           <span className="font-semibold">File Name</span>
-          {file.ReleaseInfo?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
-            <a href={file.ReleaseInfo.ReleaseURI} target="_blank" rel="noopener noreferrer">
+          {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+            <a href={file.Release.ReleaseURI} target="_blank" rel="noopener noreferrer">
               <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                 <div className="metadata-link-icon AniDB" />
                 AniDB File
