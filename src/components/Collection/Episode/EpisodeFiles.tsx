@@ -92,7 +92,7 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
   return (
     <div className="flex flex-col gap-y-6 p-6 pt-4">
       {map(episodeFiles, (file) => {
-        const releaseGroup = file.ReleaseInfo?.Group;
+        const releaseGroup = file.Release?.Group;
 
         return (
           <div className="flex flex-col gap-y-6" key={file.ID}>
@@ -140,8 +140,8 @@ const EpisodeFiles = ({ anidbSeriesId, episodeFiles, episodeId, seriesId }: Prop
                   />
                   Copy ShokoID
                 </div>
-                {file.ReleaseInfo?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
-                  <a href={file.ReleaseInfo.ReleaseURI} target="_blank" rel="noopener noreferrer">
+                {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
+                  <a href={file.Release.ReleaseURI} target="_blank" rel="noopener noreferrer">
                     <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
                       <div className="metadata-link-icon AniDB" />
                       AniDB
