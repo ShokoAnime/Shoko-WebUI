@@ -1,16 +1,15 @@
 import React, { memo, useState } from 'react';
-import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline, mdiCircleHalfFull } from '@mdi/js';
+import { mdiCheckboxBlankCircleOutline, mdiCheckboxMarkedCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
 import cx from 'classnames';
 
-import TransitionDiv from '@/components/TransitionDiv';
-
 type Props = {
   id: string;
-  label?: string;
+  label?: React.ReactNode;
+  labelClassName?: string;
   isChecked: boolean;
   disabled?: boolean;
-  intermediate?: boolean;
+  readOnly?: boolean;
   className?: string;
   labelRight?: boolean;
   justify?: boolean;
@@ -18,7 +17,18 @@ type Props = {
 };
 
 const Checkbox = memo((props: Props) => {
-  const { className, disabled = false, id, intermediate, isChecked, justify, label, labelRight, onChange } = props;
+  const {
+    className,
+    disabled = false,
+    id,
+    isChecked,
+    justify,
+    label,
+    labelClassName,
+    labelRight,
+    onChange,
+    readOnly = false,
+  } = props;
   const [focused, setFocused] = useState(false);
 
   return (
@@ -27,17 +37,20 @@ const Checkbox = memo((props: Props) => {
       className={cx([
         justify && 'justify-between',
         `${className}`,
-        'flex items-center transition ease-in-out',
+        'flex items-center transition ease-in-out gap-x-2',
         focused && 'ring-2 ring-panel-icon-action ring-inset',
-        disabled ? 'opacity-65 cursor-auto' : 'cursor-pointer',
+        disabled && 'opacity-65',
+        disabled || readOnly ? 'cursor-auto' : 'cursor-pointer',
         'h-8',
       ])}
     >
       <input
         id={id}
         type="checkbox"
-        checked={!disabled && isChecked}
-        onChange={disabled ? undefined : onChange}
+        checked={isChecked}
+        disabled={disabled}
+        readOnly={readOnly}
+        onChange={disabled || readOnly ? undefined : onChange}
         className="absolute size-0 overflow-hidden whitespace-nowrap border-0 p-0"
         style={{
           clip: 'rect(0 0 0 0)',
@@ -47,27 +60,19 @@ const Checkbox = memo((props: Props) => {
         onBlur={() => setFocused(false)}
       />
       {!labelRight && (
-        <span className="mr-2 flex items-center">
+        <span className={`${labelClassName} flex items-center`}>
           {label}
         </span>
       )}
-      {!intermediate && isChecked && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
-          <Icon className="text-panel-icon-action" path={mdiCheckboxMarkedCircleOutline} size={1} />
-        </TransitionDiv>
-      )}
-      {!intermediate && !isChecked && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
-          <Icon className="text-panel-icon-action" path={mdiCheckboxBlankCircleOutline} size={1} />
-        </TransitionDiv>
-      )}
-      {intermediate && (
-        <TransitionDiv className="flex text-panel-icon-action" enterFrom="opacity-65" appear={false}>
-          <Icon className="text-panel-icon-action" path={mdiCircleHalfFull} size={1} />
-        </TransitionDiv>
-      )}
+      <div className="flex text-panel-icon-action">
+        <Icon
+          className="text-panel-icon-action"
+          path={isChecked ? mdiCheckboxMarkedCircleOutline : mdiCheckboxBlankCircleOutline}
+          size={1}
+        />
+      </div>
       {labelRight && (
-        <span className="ml-2 flex items-center">
+        <span className={`${labelClassName} flex items-center`}>
           {label}
         </span>
       )}

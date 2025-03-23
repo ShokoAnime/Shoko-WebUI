@@ -17,6 +17,7 @@ type Props = {
   suffixes?: React.ReactNode;
   min?: number;
   max?: number;
+  step?: number;
 };
 
 const InputSmall = React.memo((props: Props) => {
@@ -31,6 +32,7 @@ const InputSmall = React.memo((props: Props) => {
     onChange,
     onKeyUp,
     placeholder,
+    step,
     suffixes,
     type,
     value,
@@ -68,6 +70,7 @@ const InputSmall = React.memo((props: Props) => {
         autoComplete={autoComplete ?? 'on'}
         min={min}
         max={max}
+        step={step}
       />
 
       {suffixes}

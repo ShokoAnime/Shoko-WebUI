@@ -30,6 +30,9 @@
     }
   },
   "rules": {
+    "@typescript-eslint/comma-dangle": "off", // deprecated rule https://typescript-eslint.io/rules/comma-dangle/
+    "function-paren-newline": "off", // deprecated rule https://eslint.org/docs/latest/rules/function-paren-newline
+    "operator-linebreak": "off", // deprecated rule https://eslint.org/docs/latest/rules/operator-linebreak
     "@typescript-eslint/consistent-type-imports": "error",
     "@typescript-eslint/indent": "off",
     "@typescript-eslint/no-floating-promises": [
@@ -93,6 +96,7 @@
       "error",
       { "allow": ["warn", "error"] }
     ],
+    "no-continue": "off",
     "no-param-reassign": [
       "error",
       { "props": true, "ignorePropertyModificationsFor": ["sliceState", "immerState", "draftState", "draftState2", "reduceResult"] }
