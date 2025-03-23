@@ -35,6 +35,7 @@ import ApiKey from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
 import DynamicSettings from '@/pages/settings/tabs/DynamicSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
+import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
 import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
@@ -118,6 +119,7 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Navigate to="general" replace />} />
             <Route path="general" element={<GeneralSettings />} />
             <Route path="import" element={<ImportSettings />} />
+            <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
             <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />

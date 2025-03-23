@@ -1,9 +1,13 @@
 import React from 'react';
 import cx from 'classnames';
 
-import type { TabType } from '@/components/Configuration/hooks/useTabs';
+export type TabType = {
+  name: string;
+  onClick: () => void;
+  current: boolean;
+};
 
-type TabPillsProps = {
+export type TabPillsProps = {
   tabs: TabType[];
 };
 

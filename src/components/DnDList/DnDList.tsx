@@ -6,12 +6,13 @@ import PortalAwareItem from './PortalAwareItem';
 import type { DraggableProvided, DraggableStateSnapshot, DropResult, DroppableProvided } from '@hello-pangea/dnd';
 
 type Props = {
+  className?: string;
   onDragEnd: (result: DropResult) => void;
   children: { key: string, item: React.ReactNode }[];
 };
 
 function DnDList(props: Props) {
-  const { children, onDragEnd } = props;
+  const { children, className = '', onDragEnd } = props;
   return (
     <DragDropContext onDragEnd={onDragEnd}>
       <Droppable droppableId="droppable">
@@ -19,7 +20,7 @@ function DnDList(props: Props) {
           <div
             ref={droppableProvided.innerRef}
             {...droppableProvided.droppableProps}
-            className="grow"
+            className={`${className} grow`}
           >
             {children.map((child, index) => (
               <Draggable
