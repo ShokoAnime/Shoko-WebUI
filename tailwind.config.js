@@ -29,6 +29,8 @@ module.exports = {
         'sans': ['Sora', ...defaultTheme.fontFamily.sans],
       },
       fontSize: {
+        '2xs': ['0.5rem', '0.75rem'],
+        xs: ['0.75rem', '1rem'],
         sm: ['0.875rem', '1.4rem'],
         base: ['1rem', '1.6rem'],
         lg: ['1.125rem', '1.8rem'],
@@ -115,6 +117,10 @@ module.exports = {
       },
       width: {
         '100': '25rem',
+      },
+      height: {
+        '128': '32rem',
+        '192': '48rem',
       },
       opacity: {
         '65': '.65',

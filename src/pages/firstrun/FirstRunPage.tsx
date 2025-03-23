@@ -77,7 +77,7 @@ function FirstRunPage() {
   };
 
   const saveSettings = async () => {
-    await patchSettings({ newSettings, skipValidation: true });
+    await patchSettings({ newSettings });
   };
 
   const parsedVersion = useMemo(() => {

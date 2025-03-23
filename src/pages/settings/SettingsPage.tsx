@@ -10,6 +10,7 @@ import { useDebounceValue } from 'usehooks-ts';
 
 import Button from '@/components/Input/Button';
 import toast from '@/components/Toast';
+import { useConfigurationGetAllQuery } from '@/core/react-query/configuration/queries';
 import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { setItem as setMiscItem } from '@/core/slices/misc';
@@ -17,7 +18,7 @@ import useEventCallback from '@/hooks/useEventCallback';
 
 import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 
-const items = [
+const staticItems = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
   { name: 'AniDB', path: 'anidb' },
@@ -37,9 +38,36 @@ function SettingsPage() {
 
   const toastId = useRef<number | string>(undefined);
 
+  const [[showHiddenSettings, clickCount], setShowHiddenSettings] = useState([false, 0]);
+
   const settingsQuery = useSettingsQuery();
+  const configQuery = useConfigurationGetAllQuery();
   const settings = settingsQuery.data;
   const { isPending: settingsPatchPending, mutate: patchSettings } = usePatchSettingsMutation();
+
+  const handleHiddenSettingChange = useEventCallback(() => {
+    if (clickCount === 6) {
+      toast.info(`${showHiddenSettings ? 'Hiding' : 'Showing'} hidden settings.`);
+      setShowHiddenSettings([!showHiddenSettings, 0]);
+      return;
+    }
+    if (clickCount >= 3) {
+      toast.info(`Press ${6 - clickCount} more times to ${showHiddenSettings ? 'hide' : 'show'} hidden settings.`);
+    }
+
+    setShowHiddenSettings([showHiddenSettings, clickCount + 1]);
+  });
+
+  const items = useMemo(() => {
+    if (!configQuery.isSuccess) return [];
+    return configQuery.data
+      .filter(config => showHiddenSettings || !config.IsHidden)
+      .map(config => ({
+        name: config.Name,
+        pluginName: config.Plugin.Name,
+        path: `dynamic/${config.ID}`,
+      }));
+  }, [configQuery.data, configQuery.isSuccess, showHiddenSettings]);
 
   const [newSettings, setNewSettings] = useState(settings);
 
@@ -58,6 +86,13 @@ function SettingsPage() {
   );
   const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
+  const isSpecialPage = useMemo(() => {
+    const path = pathname.split('/').pop();
+    if (!path) return false;
+    if (pathname.includes('settings/dynamic/')) return true;
+    return ['user-management', 'api-keys', 'dynamic'].includes(path);
+  }, [pathname]);
+
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
   useEffect(() => {
     if (!debouncedUnsavedChanges) {
@@ -66,8 +101,8 @@ function SettingsPage() {
     }
 
     toastId.current = toast.info(
-      'Unsaved Changes',
-      'Please save before leaving this page.',
+      'Unsaved Changes for Core Settings',
+      'Please save before leaving the settings.',
       { autoClose: false, position: 'top-right' },
     );
   }, [debouncedUnsavedChanges]);
@@ -91,12 +126,6 @@ function SettingsPage() {
       dispatch(setMiscItem({ webuiPreviewTheme: value }));
     }
   };
-
-  const isShowFooter = useMemo(() => {
-    const path = pathname.split('/').pop();
-    if (!path) return true;
-    return !['user-management', 'api-keys'].includes(path);
-  }, [pathname]);
 
   const settingContext = {
     newSettings,
@@ -151,9 +180,9 @@ function SettingsPage() {
     <div className="flex min-h-full grow justify-center gap-x-6" ref={containerRef}>
       <div className="relative top-0 z-10 flex w-[21.875rem] flex-col gap-y-4 rounded-lg border border-panel-border bg-panel-background-transparent p-6 font-semibold">
         <div className="sticky top-6">
-          <div className="mb-8 text-center text-xl opacity-100">Settings</div>
+          <div className="mb-8 text-center text-xl opacity-100">Core Settings</div>
           <div className="flex flex-col items-center gap-y-2">
-            {items.map(item => (
+            {staticItems.map(item => (
               <NavLink
                 to={item.path}
                 className={({ isActive }) => (isActive
@@ -164,6 +193,32 @@ function SettingsPage() {
                 {item.name}
               </NavLink>
             ))}
+          </div>
+          <div className="my-8 text-center text-xl opacity-100" onClick={handleHiddenSettingChange}>
+            Plugin Settings
+          </div>
+          <div className="flex flex-col items-center gap-y-2">
+            {items.map(item => (
+              <NavLink
+                to={item.path}
+                className={({ isActive }) => (isActive
+                  ? 'w-full text-center flex flex-col bg-panel-menu-item-background py-2 px-2 rounded-lg text-panel-menu-item-text'
+                  : 'w-full text-center flex flex-col py-2 px-2 rounded-lg hover:bg-panel-menu-item-background-hover transition-colors')}
+                key={item.path}
+              >
+                {item.name === item.pluginName && <span>{item.name}</span>}
+                {item.name !== item.pluginName && (
+                  <>
+                    <span>{item.name}</span>
+                    <span className="text-sm opacity-65">{item.pluginName}</span>
+                  </>
+                )}
+              </NavLink>
+            ))}
+            {configQuery.isFetching && items.length === 0 && <span className="text-sm opacity-65">Loading…</span>}
+            {!configQuery.isFetching && items.length === 0 && (
+              <span className="text-sm opacity-65">No configurations</span>
+            )}
           </div>
         </div>
       </div>
@@ -179,7 +234,7 @@ function SettingsPage() {
               <Outlet
                 context={settingContext}
               />
-              {isShowFooter && (
+              {!isSpecialPage && (
                 <div className="flex justify-end gap-x-3 font-semibold">
                   <Button
                     onClick={handleCancel}
