@@ -1,9 +1,9 @@
 import React from 'react';
 
 import AnySchema from '@/components/Configuration/AnySchema';
-import TabPills from '@/components/Configuration/SectionContainer/TabPills';
 import useSections from '@/components/Configuration/hooks/useSections';
 import useTabs from '@/components/Configuration/hooks/useTabs';
+import TabPills from '@/components/TabPills';
 
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 

@@ -6,12 +6,7 @@ import { pathToString } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { SectionType } from '@/components/Configuration/hooks/useSections';
-
-export type TabType = {
-  name: string;
-  onClick: () => void;
-  current: boolean;
-};
+import type { TabType } from '@/components/TabPills';
 
 function useTabs(sections: SectionType[], path: (string | number)[]): [SectionType | undefined, TabType[]] {
   const currentPath = useMemo(() => (pathToString(['tab', ...path])), [path]);

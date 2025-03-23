@@ -22,13 +22,13 @@ import type {
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 
 type DynamicConfigurationProps = {
-  configGuid: string | undefined;
+  configGuid: string | undefined | null;
   setTitle?: boolean;
 };
 
 function DynamicConfiguration(props: DynamicConfigurationProps): React.JSX.Element {
   const { configGuid, setTitle } = props;
-  const schemaQuery = useConfigurationJsonSchemaQuery(configGuid!, Boolean(configGuid));
+  const schemaQuery = useConfigurationJsonSchemaQuery(configGuid!, configGuid != null);
   const { config, info, schema } = schemaQuery.data ?? {};
   if (!schema || !info || !config || !configGuid) {
     return (
@@ -176,13 +176,18 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
 
   return (
     <>
-      {props.setTitle && <title>{`Settings > Plugin > ${schema.title} | Shoko`}</title>}
-      <div className="flex flex-col gap-y-1">
-        <div className="text-xl font-semibold">{schema.title}</div>
-        <div>
-          {schema.description ?? 'No description provided.'}
-        </div>
-      </div>
+      {props.setTitle && (
+        <>
+          <title>{`Settings > Plugin > ${schema.title} | Shoko`}</title>
+          <div className="flex flex-col gap-y-1">
+            <div className="text-xl font-semibold">{schema.title}</div>
+            <div>
+              {schema.description ?? 'No description provided.'}
+            </div>
+          </div>
+        </>
+      )}
+
       <AnySchema
         rootSchema={schema}
         schema={schema}
