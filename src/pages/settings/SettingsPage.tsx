@@ -21,6 +21,7 @@ import type { PluginRenamerSettingsType } from '@/core/types/api/settings';
 const staticItems = [
   { name: 'General', path: 'general' },
   { name: 'Import', path: 'import' },
+  { name: 'Hashing & Release', path: 'hashing-release' },
   { name: 'AniDB', path: 'anidb' },
   { name: 'TMDB', path: 'tmdb' },
   { name: 'Collection', path: 'collection' },
@@ -90,7 +91,7 @@ function SettingsPage() {
     const path = pathname.split('/').pop();
     if (!path) return false;
     if (pathname.includes('settings/dynamic/')) return true;
-    return ['user-management', 'api-keys', 'dynamic'].includes(path);
+    return ['user-management', 'api-keys', 'hashing-release', 'dynamic'].includes(path);
   }, [pathname]);
 
   // Use debounced value for unsaved changes to avoid flashing the toast for certain changes
@@ -210,7 +211,7 @@ function SettingsPage() {
                 {item.name !== item.pluginName && (
                   <>
                     <span>{item.name}</span>
-                    <span className="text-sm opacity-65">{item.pluginName}</span>
+                    <span className="text-xs opacity-65">{item.pluginName}</span>
                   </>
                 )}
               </NavLink>

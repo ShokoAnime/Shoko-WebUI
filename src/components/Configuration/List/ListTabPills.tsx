@@ -5,7 +5,7 @@ import cx from 'classnames';
 
 import useEventCallback from '@/hooks/useEventCallback';
 
-import type { TabType } from '@/components/Configuration/hooks/useTabs';
+import type { TabType } from '@/components/TabPills';
 
 type ListTabPillsProps = {
   tabs: TabType[];

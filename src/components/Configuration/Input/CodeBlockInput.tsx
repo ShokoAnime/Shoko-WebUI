@@ -51,7 +51,9 @@ function CodeBlockInput(props: AnySchemaProps): React.JSX.Element | null {
 
   const defaultValue = useMemo(() => {
     if (uiDefinition.codeAutoFormatOnLoad && uiDefinition.codeLanguage === 'Json') {
-      return JSON.stringify(JSON.parse((props.config as string | null) ?? ''), undefined, 2);
+      try {
+        return JSON.stringify(JSON.parse((props.config as string | null) ?? ''), undefined, 2);
+      } catch { /**/ }
     }
     return (props.config as string | null) ?? '';
     // eslint-disable-next-line react-hooks/exhaustive-deps
