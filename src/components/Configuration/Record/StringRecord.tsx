@@ -5,6 +5,7 @@ import UnableToRenderSchema from '@/components/Configuration/UnableToRenderSchem
 import type { AnySchemaProps } from '@/components/Configuration/AnySchema';
 
 function StringRecord(props: AnySchemaProps): React.JSX.Element | null {
+  // TODO: implement this when we get need it.
   return <UnableToRenderSchema type="Record (String)" schema={props.schema} path={props.path} />;
 }
 
