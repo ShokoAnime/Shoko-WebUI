@@ -1,9 +1,11 @@
 import React from 'react';
 import { mdiChevronDown, mdiLoading } from '@mdi/js';
 import { Icon } from '@mdi/react';
+import cx from 'classnames';
 
 type Props = {
   id: string;
+  disabled?: boolean;
   value: string | number;
   onChange: React.ChangeEventHandler<HTMLSelectElement>;
   className?: string;
@@ -15,7 +17,8 @@ type Props = {
 function SelectSmall(props: Props) {
   const {
     children,
-    className,
+    className = '',
+    disabled,
     id,
     isFetching,
     label,
@@ -33,8 +36,9 @@ function SelectSmall(props: Props) {
       {isFetching
         ? <Icon path={mdiLoading} size={1} spin className="text-panel-text-primary" />
         : (
-          <div className="relative w-auto">
+          <div className={cx('relative', className.includes('w-full') ? 'w-full' : 'w-auto')}>
             <select
+              disabled={disabled}
               id={id}
               value={value}
               onChange={onChange}
