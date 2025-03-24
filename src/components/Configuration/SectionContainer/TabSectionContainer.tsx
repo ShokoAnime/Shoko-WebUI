@@ -15,13 +15,13 @@ function TabSectionContainer(props: AnySchemaProps): React.JSX.Element {
     props.path,
     props.performAction,
     props.configHasChanged,
+    props.advancedMode,
   );
   const [
     {
       buttons: { auto: sectionAutoButtons = [], bottom: sectionBottomButtons = [], top: sectionTopButtons = [] } = {},
       description,
       elements = [],
-      title = '',
     } = {},
     tabs,
   ] = useTabs(sections, props.path);
@@ -31,26 +31,19 @@ function TabSectionContainer(props: AnySchemaProps): React.JSX.Element {
 
       <div className="border-b border-panel-border" />
 
-      {props.renderHeader && (
-        <>
-          <div className="flex flex-row gap-x-1">
-            <div className="flex grow flex-col gap-y-1">
-              <div className="text-lg font-semibold">{title}</div>
-              <div>
-                {description ?? 'No description provided.'}
-              </div>
-            </div>
+      <div className="flex flex-row gap-x-1">
+        <div className="flex grow flex-col">
+          {description ?? 'No description provided.'}
+        </div>
 
-            {(sectionTopButtons.length > 0 || topButtons.length > 0) && (
-              <div className="justify-end gap-x-3 self-center font-semibold">
-                {[...sectionTopButtons, ...topButtons]}
-              </div>
-            )}
+        {(sectionTopButtons.length > 0 || topButtons.length > 0) && (
+          <div className="justify-end gap-x-3 self-center font-semibold">
+            {[...sectionTopButtons, ...topButtons]}
           </div>
+        )}
+      </div>
 
-          <div className="border-b border-panel-border" />
-        </>
-      )}
+      <div className="border-b border-panel-border" />
 
       {elements.map((element, index) => (
         <AnySchema
