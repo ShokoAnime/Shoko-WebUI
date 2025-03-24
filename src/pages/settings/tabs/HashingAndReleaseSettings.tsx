@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircle, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
-import cx from 'classnames';
 import { cloneDeep } from 'lodash';
 
 import ConfigurationModal from '@/components/Dialogs/ConfigurationModal';
@@ -55,6 +54,16 @@ function HashingAndReleaseSettings() {
     hashingProvidersQuery.data,
     releaseProvidersQuery.data,
   ]);
+  const hashOrder = useMemo(() => {
+    const hashes = Array.from(new Set(initialState.hashProviders.flatMap(pro => pro.AvailableHashTypes)));
+    hashes.splice(hashes.indexOf('ED2K'), 1);
+    hashes.unshift('ED2K');
+    return hashes
+      .map(hash => ({
+        hash,
+        providerIDs: initialState.hashProviders.filter(pro => pro.AvailableHashTypes.includes(hash)).map(pro => pro.ID),
+      }));
+  }, [initialState]);
   const [state, setState] = useState(initialState);
   const isReady = hashingProviderSummaryQuery.isSuccess
     && hashingProvidersQuery.isSuccess
@@ -63,26 +72,22 @@ function HashingAndReleaseSettings() {
 
   const unsavedChanges = useMemo(() => JSON.stringify(state) !== JSON.stringify(initialState), [state, initialState]);
 
-  const handleDragHasher = useEventCallback((result: DropResult) => {
-    if (!result.destination || result.destination.index === result.source.index || !hashingProvidersQuery.isSuccess) {
-      return;
-    }
-
-    const sta = cloneDeep(state);
-    const [removed] = sta.hashProviders.splice(result.source.index, 1);
-    sta.hashProviders.splice(result.destination.index, 0, removed);
-    setState(sta);
-  });
-
-  const handleToggleHashingProviderHash = useEventCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleToggleHashingProviderHash = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.currentTarget.id.slice(0, 36);
     const sta = cloneDeep(state);
     const provider = sta.hashProviders.find(pro => pro.ID === id);
     if (!provider) return;
     const hash = event.currentTarget.id.slice(37);
-    const hashes = provider.EnabledHashTypes;
-    if (hashes.includes(hash)) hashes.splice(hashes.indexOf(hash), 1);
-    else hashes.push(hash);
+    if (provider.EnabledHashTypes.includes(hash)) {
+      provider.EnabledHashTypes.splice(provider.EnabledHashTypes.indexOf(hash), 1);
+    } else provider.EnabledHashTypes.push(hash);
+
+    const otherProviders = sta.hashProviders.filter(pro => pro.EnabledHashTypes.includes(hash) && pro.ID !== id);
+    if (otherProviders.length > 0) {
+      for (const pro of otherProviders) {
+        pro.EnabledHashTypes.splice(pro.EnabledHashTypes.indexOf(hash), 1);
+      }
+    }
 
     sta.noEd2k = sta.hashProviders.length > 0 && !sta.hashProviders.some(pro => pro.EnabledHashTypes.includes('ED2K'));
     setState(sta);
@@ -231,89 +236,79 @@ function HashingAndReleaseSettings() {
             ? (
               <>
                 Run all enabled providers in parallel, and wait until all providers have computed their hashes, then
-                merge their lists in the order defined by the priority below.
+                merge their lists.
               </>
             )
             : (
               <>
-                Run each enabled provider in sequential order defined by the priority below on the file, until all
-                providers have computed their hashes.
+                Run each enabled provider in sequential order, until all providers have computed their hashes.
               </>
             )}
         </div>
 
-        <div>
-          <div className="mt-2 flex justify-between">
-            <span className="flex gap-x-1.5">
-              Hashing Providers
-              <span className="self-center text-xs opacity-65">(Drag to Reorder)</span>
-            </span>
-          </div>
-          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
-            <DnDList onDragEnd={handleDragHasher} className="flex flex-col gap-y-2">
-              {state.hashProviders.map(definition => ({
-                key: definition.ID,
-                item: (
-                  <div className="flex items-center justify-between">
-                    <div className="flex flex-col gap-y-1">
-                      <span className="flex gap-x-1.5">
-                        {definition.Name}
-                        <span className="self-center text-xs opacity-65">
-                          (
-                          {definition.Plugin.Name}
-                          )
+        {hashOrder.map(({ hash, providerIDs }) => (
+          <div key={hash}>
+            <div className="mt-2 flex justify-between">
+              <span className="flex gap-x-1">
+                <span className="">
+                  {hash}
+                </span>
+                Providers
+              </span>
+            </div>
+            <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+              <div className="flex grow flex-col gap-y-2">
+                {state.hashProviders.filter(provider => providerIDs.includes(provider.ID)).map(definition => (
+                  <Checkbox
+                    key={definition.ID}
+                    id={`${definition.ID}-${hash}`}
+                    isChecked={definition.EnabledHashTypes.includes(hash)}
+                    onChange={handleToggleHashingProviderHash}
+                    labelRight
+                    justify
+                    className="grow"
+                    labelClassName="grow"
+                    label={
+                      <>
+                        <span className="flex grow gap-x-1.5">
+                          {definition.Name}
+                          <span className="self-center text-xs opacity-65">
+                            (
+                            {definition.Plugin.Name}
+                            )
+                          </span>
                         </span>
-                      </span>
-                      <div className="isolate flex gap-x-2 overflow-x-auto">
-                        {definition.AvailableHashTypes.map(tab => (
+                        <span className="flex gap-x-1">
+                          {definition.Configuration && (
+                            <button
+                              id={`${definition.ID}-config`}
+                              type="button"
+                              onClick={handleOpenConfig}
+                              className="text-button-primary"
+                            >
+                              <Icon path={mdiCog} size={1} />
+                            </button>
+                          )}
                           <button
-                            // eslint-disable-next-line react/no-array-index-key
-                            key={`tab-${tab}`}
-                            id={`${definition.ID}-${tab}`}
+                            id={`${definition.ID}-info`}
                             type="button"
-                            onClick={handleToggleHashingProviderHash}
-                            aria-current={definition.EnabledHashTypes.includes(tab) ? 'page' : undefined}
-                            className={cx(
-                              'whitespace-nowrap group relative min-w-0 overflow-hidden shrink-0 px-2 py-2 text-center text-xs font-medium rounded-lg focus:z-10',
-                              definition.EnabledHashTypes.includes(tab)
-                                ? '!bg-panel-toggle-background text-panel-toggle-text'
-                                : 'bg-panel-background hover:bg-panel-toggle-background-hover text-panel-toggle-text-alt',
-                            )}
+                            onClick={handleOpenInfo}
+                            className="text-button-primary"
                           >
-                            <span>{tab}</span>
+                            <Icon path={mdiInformationVariantCircle} size={1} />
                           </button>
-                        ))}
-                      </div>
-                    </div>
-                    <span className="flex gap-x-1">
-                      {definition.Configuration && (
-                        <button
-                          id={`${definition.ID}-config`}
-                          type="button"
-                          onClick={handleOpenConfig}
-                          className="text-button-primary"
-                        >
-                          <Icon path={mdiCog} size={1} />
-                        </button>
-                      )}
-                      <button
-                        id={`${definition.ID}-info`}
-                        type="button"
-                        onClick={handleOpenInfo}
-                        className="text-button-primary"
-                      >
-                        <Icon path={mdiInformationVariantCircle} size={1} />
-                      </button>
-                    </span>
-                  </div>
-                ),
-              }))}
-            </DnDList>
+                        </span>
+                      </>
+                    }
+                  />
+                ))}
+              </div>
+            </div>
+            <div className="mt-1 text-sm text-panel-text opacity-65">
+              {`Enabled provider for the ${hash} algorithm. Unselect all to disable the algorithm.`}
+            </div>
           </div>
-          <div className="mt-1 text-sm text-panel-text opacity-65">
-            Enabled hashes per provider, in priority order.
-          </div>
-        </div>
+        ))}
       </div>
 
       <div className="border-b border-panel-border" />
@@ -363,49 +358,47 @@ function HashingAndReleaseSettings() {
               {state.releaseProviders.map(definition => ({
                 key: definition.ID,
                 item: (
-                  <div className="flex items-center justify-between gap-x-1">
-                    <Checkbox
-                      id={definition.ID}
-                      isChecked={definition.IsEnabled}
-                      onChange={handleToggleReleaseInfoProvider}
-                      labelRight
-                      justify
-                      className="grow"
-                      labelClassName="grow"
-                      label={
-                        <>
-                          <span className="flex grow gap-x-1.5">
-                            {definition.Name}
-                            <span className="self-center text-xs opacity-65">
-                              (
-                              {definition.Plugin.Name}
-                              )
-                            </span>
+                  <Checkbox
+                    id={definition.ID}
+                    isChecked={definition.IsEnabled}
+                    onChange={handleToggleReleaseInfoProvider}
+                    labelRight
+                    justify
+                    className="grow"
+                    labelClassName="grow"
+                    label={
+                      <>
+                        <span className="flex grow gap-x-1.5">
+                          {definition.Name}
+                          <span className="self-center text-xs opacity-65">
+                            (
+                            {definition.Plugin.Name}
+                            )
                           </span>
-                          <span className="flex gap-x-1">
-                            {definition.Configuration && (
-                              <button
-                                id={`${definition.ID}-config`}
-                                type="button"
-                                onClick={handleOpenConfig}
-                                className="text-button-primary"
-                              >
-                                <Icon path={mdiCog} size={1} />
-                              </button>
-                            )}
+                        </span>
+                        <span className="flex gap-x-1">
+                          {definition.Configuration && (
                             <button
-                              id={`${definition.ID}-info`}
+                              id={`${definition.ID}-config`}
                               type="button"
-                              onClick={handleOpenInfo}
+                              onClick={handleOpenConfig}
                               className="text-button-primary"
                             >
-                              <Icon path={mdiInformationVariantCircle} size={1} />
+                              <Icon path={mdiCog} size={1} />
                             </button>
-                          </span>
-                        </>
-                      }
-                    />
-                  </div>
+                          )}
+                          <button
+                            id={`${definition.ID}-info`}
+                            type="button"
+                            onClick={handleOpenInfo}
+                            className="text-button-primary"
+                          >
+                            <Icon path={mdiInformationVariantCircle} size={1} />
+                          </button>
+                        </span>
+                      </>
+                    }
+                  />
                 ),
               }))}
             </DnDList>
