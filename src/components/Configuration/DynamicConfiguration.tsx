@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { cloneDeep, get, isEqual, set, unset } from 'lodash';
@@ -19,6 +20,7 @@ import type {
   JSONSchema4WithUiDefinition,
   SectionsConfigurationUiDefinitionType,
 } from '@/core/react-query/configuration/types';
+import type { RootState } from '@/core/store';
 import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 
 type DynamicConfigurationProps = {
@@ -65,6 +67,7 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
   );
   const { mutate: defaultSaveRemote } = useSaveConfigurationActionMutation(props.configGuid);
   const { mutate: performActionRemote } = usePerformConfigurationActionMutation(props.configGuid);
+  const showAdvancedSettings = useSelector((state: RootState) => state.misc.advancedMode);
   const hasChanged = useMemo(() => !isEqual(config, props.config), [config, props.config]);
   const toastId = useRef<number | string>(undefined);
 
@@ -196,7 +199,7 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
         path={[]}
         restartPendingFor={props.info.RestartPendingFor}
         loadedEnvironmentVariables={props.info.LoadedEnvironmentVariables}
-        advancedMode
+        advancedMode={showAdvancedSettings}
         performAction={performAction}
         updateField={updateField}
         renderHeader={false}

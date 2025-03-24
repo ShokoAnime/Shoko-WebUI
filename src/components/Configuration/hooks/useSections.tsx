@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { get, isEqual } from 'lodash';
 
+import { getVisibility } from '@/components/Configuration/hooks/useVisibility';
 import Button from '@/components/Input/Button';
 import { resolveReference } from '@/core/schema';
 
@@ -20,9 +21,6 @@ export type SectionElementType = {
 export type SectionType = {
   title: string;
   description: string | null;
-  hideByDefault: boolean;
-  toggle: { path: string, value: unknown } | null;
-  config: unknown;
   elements: SectionElementType[];
   buttons: ActionButtonType;
 };
@@ -40,10 +38,12 @@ function useSections(
   path: (string | number)[],
   performAction: (path: (string | number)[], action: string) => void,
   configHasChanged: boolean,
+  advancedMode: boolean,
 ): { buttons: ActionButtonType, sections: SectionType[] } {
   return useMemo(() => {
+    const resolvedContainerSchema = resolveReference(rootSchema, schema);
     const { actions: { customActions }, sectionAppendFloatingAtEnd, sectionName: defaultSectionName = 'Default' } =
-      schema['x-uiDefinition']! as SectionsConfigurationUiDefinitionType;
+      resolvedContainerSchema['x-uiDefinition']! as SectionsConfigurationUiDefinitionType;
     const sections = new Array<SectionType>();
     const extraSection = new Map<string, SectionElementType[]>();
     const buttons = new Map<string | undefined, ActionButtonType>([[defaultSectionName, {
@@ -92,11 +92,24 @@ function useSections(
       }
     }
 
-    for (const [key, value] of Object.entries(schema.properties! as Record<string, JSONSchema4WithUiDefinition>)) {
-      if (schema === rootSchema && key === '$schema') continue;
-
+    for (
+      const [key, value] of Object.entries(
+        resolvedContainerSchema.properties! as Record<string, JSONSchema4WithUiDefinition>,
+      )
+    ) {
+      if (resolvedContainerSchema === rootSchema && key === '$schema') continue;
       const subConfig = (config as Record<string, unknown>)[key];
       const resolvedSchema = resolveReference(rootSchema, value);
+      const type = resolvedSchema.type instanceof Array
+        ? resolvedSchema.type.find(typ => typ !== 'null') ?? 'null'
+        : resolvedSchema.type ?? 'null';
+      const visibility = getVisibility(
+        value,
+        type === 'object' ? subConfig : config,
+        advancedMode,
+        [],
+      );
+      if (visibility === 'hidden') continue;
       const uiDefinition = Object.assign({}, value['x-uiDefinition']!, resolvedSchema['x-uiDefinition']!);
       const sectionName = uiDefinition.sectionName ?? defaultSectionName;
       if (uiDefinition.sectionName) {
@@ -106,35 +119,17 @@ function useSections(
         }
         sectionList.push({ key, schema: value, config: subConfig, parentConfig: config, path: [...path, key] });
       } else if (uiDefinition.elementType === 'section-container') {
-        const visibility = uiDefinition.visibility ?? { default: 'visible', advanced: false };
-        const hideByDefault = visibility.default === 'hidden'
-          && (!visibility.toggle || visibility.toggle.visibility === 'visible');
-        const toggle = visibility.toggle && visibility.toggle.visibility === (hideByDefault ? 'visible' : 'hidden')
-          ? { path: visibility.toggle.path, value: visibility.toggle.value }
-          : null;
         sections.push({
           title: value?.title ?? resolvedSchema.title ?? key,
           description: value.description ?? resolvedSchema.description ?? null,
-          hideByDefault,
-          toggle,
-          config,
-          elements: [{ key, schema: value, config: subConfig, parentConfig: config, path }],
+          elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
         });
       } else if (uiDefinition.elementType === 'list' && uiDefinition.listElementType === 'section-container') {
-        const visibility = uiDefinition.visibility ?? { default: 'visible', advanced: false };
-        const hideByDefault = visibility.default === 'hidden'
-          && (!visibility.toggle || visibility.toggle.visibility === 'visible');
-        const toggle = visibility.toggle && visibility.toggle.visibility === (hideByDefault ? 'visible' : 'hidden')
-          ? { path: visibility.toggle.path, value: visibility.toggle.value }
-          : null;
         sections.push({
           title: value?.title ?? resolvedSchema.title ?? key,
           description: value.description ?? resolvedSchema.description ?? null,
-          hideByDefault,
-          toggle,
-          config,
-          elements: [{ key, schema: value, config: subConfig, parentConfig: config, path }],
+          elements: [{ key, schema: resolvedSchema, config: subConfig, parentConfig: config, path }],
           buttons: { auto: [], top: [], bottom: [] },
         });
       } else {
@@ -154,10 +149,10 @@ function useSections(
             title: extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
               ? schema.title
               : title,
-            description: null,
-            hideByDefault: false,
-            toggle: null,
-            config: null,
+            description:
+              extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
+                ? schema.description ?? null
+                : null,
             elements,
             buttons: buttons.get(title) ?? { auto: [], top: [], bottom: [] },
           });
@@ -168,10 +163,10 @@ function useSections(
             title: extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
               ? schema.title
               : title,
-            description: null,
-            hideByDefault: false,
-            toggle: null,
-            config: null,
+            description:
+              extraSection.size === 1 && sections.length === 0 && title === defaultSectionName && schema.title
+                ? schema.description ?? null
+                : null,
             elements,
             buttons: buttons.get(title) ?? { auto: [], top: [], bottom: [] },
           });
@@ -181,7 +176,7 @@ function useSections(
     }
 
     return { buttons: buttons.get(defaultSectionName)!, sections };
-  }, [rootSchema, schema, config, path, performAction, configHasChanged]);
+  }, [rootSchema, schema, config, path, performAction, configHasChanged, advancedMode]);
 }
 
 export default useSections;
