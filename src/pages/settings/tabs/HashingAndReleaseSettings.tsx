@@ -121,6 +121,9 @@ function HashingAndReleaseSettings() {
     const sta = cloneDeep(state);
     const [removed] = sta.releaseProviders.splice(result.source.index, 1);
     sta.releaseProviders.splice(result.destination.index, 0, removed);
+    for (let priority = 0; priority < sta.releaseProviders.length; priority += 1) {
+      sta.releaseProviders[priority].Priority = priority;
+    }
     setState(sta);
   });
 
