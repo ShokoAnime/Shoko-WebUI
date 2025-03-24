@@ -62,7 +62,7 @@ function AnySchema(props: AnySchemaProps): React.JSX.Element | null {
     return (
       <SectionContainer
         rootSchema={props.rootSchema}
-        schema={resolvedSchema}
+        schema={props.schema}
         parentConfig={props.parentConfig}
         config={props.config}
         path={props.path}
@@ -81,7 +81,7 @@ function AnySchema(props: AnySchemaProps): React.JSX.Element | null {
     return (
       <AnyList
         rootSchema={props.rootSchema}
-        schema={resolvedSchema}
+        schema={props.schema}
         parentConfig={props.parentConfig}
         config={props.config}
         path={props.path}
@@ -100,7 +100,7 @@ function AnySchema(props: AnySchemaProps): React.JSX.Element | null {
     return (
       <AnyRecord
         rootSchema={props.rootSchema}
-        schema={resolvedSchema}
+        schema={props.schema}
         parentConfig={props.parentConfig}
         config={props.config}
         path={props.path}

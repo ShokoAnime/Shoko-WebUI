@@ -13,6 +13,7 @@ function MinimalSectionContainer(props: AnySchemaProps): React.JSX.Element {
     props.path,
     props.performAction,
     props.configHasChanged,
+    props.advancedMode,
   );
   return (
     <>
@@ -40,7 +41,8 @@ function MinimalSectionContainer(props: AnySchemaProps): React.JSX.Element {
             advancedMode={props.advancedMode}
             performAction={props.performAction}
             updateField={props.updateField}
-            renderHeader={sections.length > 1}
+            renderHeader={props.renderHeader
+              && (sections.length > 1 || (sections.length === 1 && sections[0].title !== 'Default'))}
             configHasChanged={props.configHasChanged}
             section={section}
           />

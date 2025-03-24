@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { get, isEqual } from 'lodash';
 
+import { getVisibility } from '@/components/Configuration/hooks/useVisibility';
 import Button from '@/components/Input/Button';
 import { createDefaultItemForSchema, pathToString, resolveListReference, resolveReference } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -68,13 +69,9 @@ function useListSections(
 
   const resolvedSections = useMemo(() => {
     const sections = new Array<SectionType>();
-    const visibility = itemDefinition.visibility ?? { default: 'visible', advanced: false };
-    const hideByDefault = visibility.default === 'hidden'
-      && (!visibility.toggle || visibility.toggle.visibility === 'visible');
-    const toggle = visibility.toggle && visibility.toggle.visibility === (hideByDefault ? 'visible' : 'hidden')
-      ? { path: visibility.toggle.path, value: visibility.toggle.value }
-      : null;
     for (const [index, item] of configList.entries()) {
+      const visibility = getVisibility(itemSchema, item, false, []);
+      if (visibility === 'hidden') return sections;
       const itemPath = [...path, index];
       const itemTitle = (item[listDefinition.primaryKey] as string | undefined) ?? '';
       const itemKey = `item-${itemTitle}-${index}`;
@@ -132,9 +129,6 @@ function useListSections(
       sections.push({
         title: itemTitle,
         description: '',
-        hideByDefault,
-        toggle,
-        config: item,
         elements: [{ key: itemKey, schema: itemSchema, config: item, parentConfig: item, path: itemPath }],
         buttons,
       });

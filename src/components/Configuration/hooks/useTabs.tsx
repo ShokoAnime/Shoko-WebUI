@@ -1,6 +1,5 @@
 import { useLayoutEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router';
-import { get, isEqual } from 'lodash';
 
 import { pathToString } from '@/core/schema';
 import useEventCallback from '@/hooks/useEventCallback';
@@ -38,16 +37,7 @@ function useTabs(sections: SectionType[], path: (string | number)[]): [SectionTy
 
   const tabDetails = useMemo(() => {
     const tabs = new Array<TabType>();
-    for (const [index, { config, hideByDefault, title, toggle }] of sections.entries()) {
-      if (toggle) {
-        const value = get(config, toggle.path.split('.')) as unknown;
-        const isToggled = isEqual(value, toggle.value);
-        if (hideByDefault !== isToggled) {
-          continue;
-        }
-      } else if (hideByDefault) {
-        continue;
-      }
+    for (const [index, { title }] of sections.entries()) {
       tabs.push({
         name: title,
         onClick: () => {

@@ -11,17 +11,13 @@ import type { SectionsConfigurationUiDefinitionType } from '@/core/react-query/c
 
 function AnySectionContainer(props: AnySchemaProps): React.JSX.Element {
   const resolvedSchema = useReference(props.rootSchema, props.schema);
-  const uiDefinition = Object.assign(
-    { elementType: 'auto', elementSize: 'default' },
-    props.schema['x-uiDefinition'],
-    resolvedSchema['x-uiDefinition'],
-  ) as SectionsConfigurationUiDefinitionType;
+  const uiDefinition = resolvedSchema['x-uiDefinition'] as SectionsConfigurationUiDefinitionType;
   switch (uiDefinition.sectionType) {
     case 'field-set':
       return (
         <FieldSetSectionContainer
           rootSchema={props.rootSchema}
-          schema={resolvedSchema}
+          schema={props.schema}
           parentConfig={props.parentConfig}
           config={props.config}
           path={props.path}
@@ -38,7 +34,7 @@ function AnySectionContainer(props: AnySchemaProps): React.JSX.Element {
       return (
         <TabSectionContainer
           rootSchema={props.rootSchema}
-          schema={resolvedSchema}
+          schema={props.schema}
           parentConfig={props.parentConfig}
           config={props.config}
           path={props.path}
@@ -55,7 +51,7 @@ function AnySectionContainer(props: AnySchemaProps): React.JSX.Element {
       return (
         <MinimalSectionContainer
           rootSchema={props.rootSchema}
-          schema={resolvedSchema}
+          schema={props.schema}
           parentConfig={props.parentConfig}
           config={props.config}
           path={props.path}
