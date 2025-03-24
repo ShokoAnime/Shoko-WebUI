@@ -34,7 +34,7 @@ const renamerSlice = createSlice({
         if (!file) return;
         if (result.RelativePath) file.Locations[0].RelativePath = result.RelativePath;
         if (result.AbsolutePath) file.Locations[0].AbsolutePath = result.AbsolutePath;
-        if (result.ImportFolderID) file.Locations[0].ImportFolderID = result.ImportFolderID;
+        if (result.ManagedFolderID) file.Locations[0].ManagedFolderID = result.ManagedFolderID;
       });
     },
     addRenameResults(sliceState, action: PayloadAction<Record<number, RenamerResultType>>) {

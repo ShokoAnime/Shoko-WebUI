@@ -7,6 +7,7 @@ import cx from 'classnames';
 import { buttonSizeClasses, buttonTypeClasses } from '@/components/Input/Button.utils';
 
 type Props = {
+  id?: string;
   buttonType?: string;
   buttonSize?: string;
   className?: string;
@@ -23,11 +24,12 @@ type Props = {
 const Button = React.memo(
   (
     {
-      buttonSize = '',
-      buttonType = '',
+      buttonSize,
+      buttonType,
       children,
       className,
       disabled,
+      id,
       loading,
       loadingSize,
       onClick,
@@ -37,12 +39,13 @@ const Button = React.memo(
     }: Props,
   ) => (
     <button
+      id={id}
       type={submit ? 'submit' : 'button'}
       className={cx([
         className,
         'relative button text-sm font-semibold transition ease-in-out rounded-lg outline-none',
-        buttonType && `${buttonTypeClasses[buttonType]}`,
-        buttonSize && `${buttonSizeClasses[buttonSize]}`,
+        buttonType && `${buttonTypeClasses[buttonType] || ''}`,
+        buttonSize && `${buttonSizeClasses[buttonSize] || ''}`,
         (loading || disabled) && 'opacity-65 cursor-default',
       ])}
       onClick={onClick}

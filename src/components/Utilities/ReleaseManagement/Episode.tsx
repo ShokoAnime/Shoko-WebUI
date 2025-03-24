@@ -111,17 +111,17 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
                   <option value="delete">Will be deleted</option>
                 </Select>
 
-                {file.AniDB?.ID && (
+                {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
                   <div className="flex gap-x-2">
                     <div className="metadata-link-icon AniDB" />
                     <a
-                      href={`https://anidb.net/file/${file.AniDB.ID}`}
+                      href={file.Release.ReleaseURI}
                       target="_blank"
                       rel="noreferrer noopener"
                       className="flex cursor-pointer gap-x-1 font-semibold text-panel-text-primary"
                       aria-label="Open AniDB file page"
                     >
-                      {file.AniDB.ID}
+                      {file.Release.ReleaseURI.split('/').pop()}
                       <span>(AniDB)</span>
                       <Icon path={mdiOpenInNew} size={1} />
                     </a>
@@ -150,17 +150,17 @@ const Episode = ({ episode, setFileOptions, type }: Props) => {
               <option value="variation">Marked as Variation</option>
             </Select>
 
-            {file.AniDB?.ID && (
+            {file.Release?.ReleaseURI?.startsWith('https://anidb.net/file/') && (
               <div className="flex gap-x-2">
                 <div className="metadata-link-icon AniDB" />
                 <a
-                  href={`https://anidb.net/file/${file.AniDB.ID}`}
+                  href={file.Release.ReleaseURI}
                   target="_blank"
                   rel="noreferrer noopener"
                   className="flex cursor-pointer gap-x-1 font-semibold text-panel-text-primary"
                   aria-label="Open AniDB file page"
                 >
-                  {file.AniDB.ID}
+                  {file.Release.ReleaseURI.split('/').pop()}
                   <span>(AniDB)</span>
                   <Icon path={mdiOpenInNew} size={1} />
                 </a>
