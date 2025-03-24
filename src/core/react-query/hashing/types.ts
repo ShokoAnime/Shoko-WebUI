@@ -11,6 +11,5 @@ export type UpdateManyHashingProviderInfoType = UpdateOneHashingProviderInfoType
 };
 
 export type UpdateOneHashingProviderInfoType = {
-  Priority?: number | null;
   EnabledHashTypes?: string[] | null;
 };
