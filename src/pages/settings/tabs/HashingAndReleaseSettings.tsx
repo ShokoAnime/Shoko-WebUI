@@ -178,12 +178,12 @@ function HashingAndReleaseSettings() {
 
   useEffect(() => {
     if (!unsavedChanges) {
-      toast.dismiss('unsaved');
+      toast.dismiss('hashing-release-unsaved');
     } else {
       toast.info(
         'Unsaved Changes',
         'Please save before leaving this page.',
-        { autoClose: false, position: 'top-right', toastId: 'unsaved' },
+        { autoClose: false, position: 'top-right', toastId: 'hashing-release-unsaved' },
       );
     }
   }, [unsavedChanges]);
@@ -199,6 +199,11 @@ function HashingAndReleaseSettings() {
       );
     }
   }, [state.noEd2k]);
+
+  useEffect(() => () => {
+    toast.dismiss('hashing-release-unsaved');
+    toast.dismiss('no-ed2k');
+  }, []);
 
   useEffect(() => {
     setState(cloneDeep(initialState));
