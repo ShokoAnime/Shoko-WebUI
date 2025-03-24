@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { mdiCog, mdiInformationVariantCircle, mdiLoading } from '@mdi/js';
 import Icon from '@mdi/react';
 import { cloneDeep } from 'lodash';
+import { useDebounceValue } from 'usehooks-ts';
 
 import ConfigurationModal from '@/components/Dialogs/ConfigurationModal';
 import ProviderInfoModal from '@/components/Dialogs/ProviderInfoModal';
@@ -71,6 +72,7 @@ function HashingAndReleaseSettings() {
     && releaseProvidersQuery.isSuccess;
 
   const unsavedChanges = useMemo(() => JSON.stringify(state) !== JSON.stringify(initialState), [state, initialState]);
+  const [debouncedUnsavedChanges] = useDebounceValue(unsavedChanges, 100);
 
   const handleToggleHashingProviderHash = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const id = event.currentTarget.id.slice(0, 36);
@@ -180,7 +182,7 @@ function HashingAndReleaseSettings() {
   });
 
   useEffect(() => {
-    if (!unsavedChanges) {
+    if (!debouncedUnsavedChanges) {
       toast.dismiss('hashing-release-unsaved');
     } else {
       toast.info(
@@ -189,7 +191,7 @@ function HashingAndReleaseSettings() {
         { autoClose: false, position: 'top-right', toastId: 'hashing-release-unsaved' },
       );
     }
-  }, [unsavedChanges]);
+  }, [debouncedUnsavedChanges]);
 
   useEffect(() => {
     if (!state.noEd2k) {
