@@ -203,6 +203,7 @@ function SettingsPage() {
           )}
       </div>
       <div
+        id="settings-background"
         className="fixed left-0 top-0 -z-10 w-full bg-cover bg-fixed opacity-20"
         // If this height feels like a hack, you figure out how to fix it
         // 3rem accounts for the top and bottom padding of the container (1.5rem each side)
