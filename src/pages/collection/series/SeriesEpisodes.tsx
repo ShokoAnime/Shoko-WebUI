@@ -38,7 +38,9 @@ const SeriesEpisodes = () => {
 
   const [showOptionsModal, setShowOptionsModal] = useState(false);
   const [selectedEpisodes, setSelectedEpisodes] = useState<Set<number>>(new Set());
-  const [debouncedSearch] = useDebounceValue(searchParams.get('search'), 200);
+
+  const [search, setSearch] = useState(searchParams.get('search') ?? '');
+  const [debouncedSearch] = useDebounceValue(search, 200);
 
   const filterOptions = useMemo(() => ({
     type: [searchParams.get('type') ?? EpisodeTypeEnum.Normal],
@@ -46,17 +48,36 @@ const SeriesEpisodes = () => {
     includeWatched: searchParams.get('includeWatched') ?? IncludeOnlyFilterEnum.true,
     includeHidden: searchParams.get('includeHidden') ?? IncludeOnlyFilterEnum.false,
     includeUnaired: searchParams.get('includeUnaired') ?? IncludeOnlyFilterEnum.false,
-    search: debouncedSearch ?? '',
+    search: debouncedSearch,
   } as FilterOptionsType), [debouncedSearch, searchParams]);
 
   const onFilterChange = useEventCallback((event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { id: eventType, value } = event.target;
+
+    if (eventType === 'search') {
+      setSearch(value);
+      return;
+    }
+
     setSearchParams((currentParams) => {
       const newParams = new URLSearchParams(currentParams);
       newParams.set(eventType, value);
       return newParams;
     });
   });
+
+  useEffect(() => {
+    setSearchParams((currentParams) => {
+      const newParams = new URLSearchParams(currentParams);
+      newParams.set('search', debouncedSearch);
+
+      if (!debouncedSearch) {
+        newParams.delete('search');
+      }
+
+      return newParams;
+    });
+  }, [debouncedSearch, setSearchParams]);
 
   const onSelectionChange = useEventCallback((episodeId: number) => {
     setSelectedEpisodes((prevState) => {
@@ -139,7 +160,7 @@ const SeriesEpisodes = () => {
       <div className="flex w-full gap-x-6">
         <EpisodeSearchAndFilterPanel
           onFilterChange={onFilterChange}
-          search={filterOptions.search}
+          search={search}
           type={filterOptions.type[0]}
           availability={filterOptions.includeMissing}
           watched={filterOptions.includeWatched}
