@@ -66,6 +66,7 @@ export type SettingsTraktType = {
   AutoLink: boolean;
   AuthToken: string;
   RefreshToken: string;
+  VipStatus: boolean;
 };
 
 export type SettingsTMDBType = {

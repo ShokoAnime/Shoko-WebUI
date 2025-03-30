@@ -13,6 +13,7 @@ import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { useTraktCodeQuery } from '@/core/react-query/trakt/queries';
 import { copyToClipboard, dayjs } from '@/core/util';
 import useEventCallback from '@/hooks/useEventCallback';
+import useIsFeatureSupported, { FeatureType } from '@/hooks/useIsFeatureSupported';
 import useSettingsContext from '@/hooks/useSettingsContext';
 
 const TraktSettings = () => {
@@ -22,6 +23,8 @@ const TraktSettings = () => {
   const settings = useSettingsQuery().data;
   const traktQuery = useTraktCodeQuery(false);
   const { mutate: patchSettings } = usePatchSettingsMutation();
+
+  const isTraktVipCheckSupported = useIsFeatureSupported(FeatureType.TraktVipCheck);
 
   const handleGetCode = useEventCallback(() => {
     traktQuery.refetch().then(
@@ -171,6 +174,15 @@ const TraktSettings = () => {
                 <option value={6}>Once a Month</option>
               </SelectSmall>
             </div>
+            {isTraktVipCheckSupported && (
+              <Checkbox
+                justify
+                label="VIP"
+                id="VipStatus"
+                isChecked={TraktTv.VipStatus}
+                onChange={handleInputChange}
+              />
+            )}
           </div>
         )}
       </div>

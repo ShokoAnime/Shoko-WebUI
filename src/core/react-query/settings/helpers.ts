@@ -390,6 +390,7 @@ export const initialSettings: SettingsType = {
     AutoLink: false,
     AuthToken: '',
     RefreshToken: '',
+    VipStatus: false,
   },
   Plex: {
     Server: '',
