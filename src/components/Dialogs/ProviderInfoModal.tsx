@@ -22,7 +22,10 @@ function ProviderInfoModal(props: Props) {
       size="md"
       overlayClassName="!z-[90]"
     >
-      {provider?.Description}
+      {provider?.Description?.split(/\r\n|\n|\r/g).map((line, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <p key={index}>{line}</p>
+      ))}
     </ModalPanel>
   );
 }
