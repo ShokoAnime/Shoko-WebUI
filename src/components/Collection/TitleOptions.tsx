@@ -1,5 +1,4 @@
 import React from 'react';
-import type { Dispatch, SetStateAction } from 'react';
 import {
   mdiCogOutline,
   mdiFilterMenuOutline,
@@ -26,7 +25,7 @@ type Props = {
   item: CollectionGroupType | SeriesType;
   mode: string;
   seriesSearch: string;
-  setSearch: Dispatch<SetStateAction<string>>;
+  setSearch: (event: React.ChangeEvent<HTMLInputElement>) => void;
   toggleFilterSidebar: () => void;
   toggleMode: () => void;
 };
@@ -74,7 +73,7 @@ const TitleOptions = (props: Props) => {
           placeholder="Search..."
           startIcon={mdiMagnify}
           value={isSeries ? seriesSearch : groupSearch}
-          onChange={event => setSearch(event.target.value)}
+          onChange={setSearch}
         />
         {!isSeries && <OptionButton onClick={toggleFilterModal} icon={mdiFilterMenuOutline} tooltip="Filter Presets" />}
         {isSeries && <OptionButton onClick={editGroupModalCallback} icon={mdiPencil} tooltip="Edit Group" />}

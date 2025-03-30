@@ -92,15 +92,26 @@ function Collection() {
   const navigate = useNavigateVoid();
 
   const [searchParams, setSearchParams] = useSearchParams();
-  const groupSearch = useMemo(() => searchParams.get('q') ?? '', [searchParams]);
-  const seriesSearch = useMemo(() => searchParams.get('qs') ?? '', [searchParams]);
-  const setSearch = (query: string) => {
+  const [groupSearch, setGroupSearch] = useState(searchParams.get('q') ?? '');
+  const [seriesSearch, setSeriesSearch] = useState(searchParams.get('qs') ?? '');
+  const setSearch = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const query = event.target.value;
+
     if (!query) {
       setSearchParams({}, { replace: true });
+      setGroupSearch('');
+      setSeriesSearch('');
       return;
     }
-    setSearchParams({ [isSeries ? 'qs' : 'q']: query }, { replace: true });
-  };
+
+    if (isSeries) {
+      setSearchParams({ qs: query }, { replace: true });
+      setSeriesSearch(query);
+    } else {
+      setSearchParams({ q: query }, { replace: true });
+      setGroupSearch(query);
+    }
+  });
   const [debouncedGroupSearch] = useDebounceValue(groupSearch, 200);
   const [debouncedSeriesSearch] = useDebounceValue(seriesSearch, 200);
 
