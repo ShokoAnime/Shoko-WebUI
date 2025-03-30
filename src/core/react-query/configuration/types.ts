@@ -150,10 +150,16 @@ export type ConfigurationActionResultType = {
   ShowDefaultSaveMessage: boolean;
   RefreshConfiguration: boolean;
   Messages: ConfigurationActionResultMessageType[];
+  Redirect: ConfigurationActionRedirectType | null;
 };
 
 export type ConfigurationActionResultMessageType = {
   Title?: string;
   Message: string;
   Theme: DisplayColorTheme;
+};
+
+export type ConfigurationActionRedirectType = {
+  Location: string;
+  OpenInNewTab: boolean;
 };
