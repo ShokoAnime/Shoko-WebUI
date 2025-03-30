@@ -22,7 +22,8 @@ const AniDBBanDetectionItem = ({ banStatus, type }: Props) => {
     return null;
   }
 
-  const expiryTime = dayjs(banStatus.UpdateTime).add(banStatus.PauseTimeSecs, 's');
+  // The ban status update time is in UTC, as guaranteed by the server. Add the pause time to it, and explicitly convert to local
+  const expiryTime = dayjs.utc(banStatus.UpdateTime).add(banStatus.PauseTimeSecs, 's').local();
 
   return (
     <>
