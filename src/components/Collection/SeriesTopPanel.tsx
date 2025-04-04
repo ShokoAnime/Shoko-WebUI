@@ -58,7 +58,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       <div className="flex w-full max-w-[56.25rem] flex-col gap-y-6">
         <ShokoPanel
           title="Series Description"
-          className="!h-[16.5rem]"
+          className="!h-64"
           contentClassName="contain-strict"
           transparent
         >
@@ -70,7 +70,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
 
         <ShokoPanel
           title="Series Information"
-          className="!h-[14.5rem]"
+          className="!h-60"
           transparent
         >
           <div className="grid h-32 grid-cols-1 gap-x-12 gap-y-2 overflow-y-auto pr-2 text-base font-normal 2xl:grid-cols-2 2xl:pr-0">
@@ -81,7 +81,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
       <div className="flex w-full flex-col gap-y-6">
         <ShokoPanel
           title="Top 10 Tags"
-          className="!h-[16.5rem]"
+          className="!h-64"
           contentClassName="!flex-row flex-wrap gap-3 content-start contain-strict"
           isFetching={tagsQuery.isFetching}
           transparent
@@ -100,7 +100,7 @@ const SeriesTopPanel = React.memo(({ series }: { series: SeriesType }) => {
 
         <ShokoPanel
           title="User Stats"
-          className="!h-[14.5rem]"
+          className="!h-60"
           contentClassName="flex-wrap gap-3"
           transparent
         >
