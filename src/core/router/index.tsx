@@ -22,8 +22,8 @@ import Acknowledgement from '@/pages/firstrun/Acknowledgement';
 import AniDBAccount from '@/pages/firstrun/AniDBAccount';
 import DataCollection from '@/pages/firstrun/DataCollection';
 import FirstRunPage from '@/pages/firstrun/FirstRunPage';
-import ImportFolders from '@/pages/firstrun/ImportFolders';
 import LocalAccount from '@/pages/firstrun/LocalAccount';
+import ManagedFolders from '@/pages/firstrun/ManagedFolders';
 import MetadataSources from '@/pages/firstrun/MetadataSources';
 import StartServer from '@/pages/firstrun/StartServer';
 import LoginPage from '@/pages/login/LoginPage';
@@ -33,10 +33,12 @@ import SettingsPage from '@/pages/settings/SettingsPage';
 import AniDBSettings from '@/pages/settings/tabs/AniDBSettings';
 import ApiKey from '@/pages/settings/tabs/ApiKeys';
 import CollectionSettings from '@/pages/settings/tabs/CollectionSettings';
+import DynamicSettings from '@/pages/settings/tabs/DynamicSettings';
 import GeneralSettings from '@/pages/settings/tabs/GeneralSettings';
+import HashingAndReleaseSettings from '@/pages/settings/tabs/HashingAndReleaseSettings';
 import ImportSettings from '@/pages/settings/tabs/ImportSettings';
 import IntegrationsSettings from '@/pages/settings/tabs/IntegrationsSettings';
-import MetadataSitesSettings from '@/pages/settings/tabs/MetadataSitesSettings';
+import TmdbSettings from '@/pages/settings/tabs/TmdbSettings';
 import UserManagementSettings from '@/pages/settings/tabs/UserManagementSettings';
 import UnsupportedPage from '@/pages/unsupported/UnsupportedPage';
 import FileSearch from '@/pages/utilities/FileSearch';
@@ -69,7 +71,7 @@ const router = sentryCreateBrowserRouter(
           <Route path="anidb-account" element={<AniDBAccount />} />
           <Route path="metadata-sources" element={<MetadataSources />} />
           <Route path="start-server" element={<StartServer />} />
-          <Route path="import-folders" element={<ImportFolders />} />
+          <Route path="managed-folders" element={<ManagedFolders />} />
           <Route path="data-collection" element={<DataCollection />} />
         </Route>
         <Route path="unsupported" element={<UnsupportedPage />} />
@@ -117,12 +119,14 @@ const router = sentryCreateBrowserRouter(
             <Route index element={<Navigate to="general" replace />} />
             <Route path="general" element={<GeneralSettings />} />
             <Route path="import" element={<ImportSettings />} />
+            <Route path="hashing-release" element={<HashingAndReleaseSettings />} />
             <Route path="anidb" element={<AniDBSettings />} />
-            <Route path="metadata-sites" element={<MetadataSitesSettings />} />
+            <Route path="tmdb" element={<TmdbSettings />} />
             <Route path="collection" element={<CollectionSettings />} />
             <Route path="integrations" element={<IntegrationsSettings />} />
             <Route path="user-management" element={<UserManagementSettings />} />
             <Route path="api-keys" element={<ApiKey />} />
+            <Route path="dynamic/:configGuid" element={<DynamicSettings />} />
           </Route>
         </Route>
       </Route>

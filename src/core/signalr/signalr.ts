@@ -28,6 +28,7 @@ import type {
   AniDBBanItemType,
   NetworkAvailabilityEnum,
   QueueStatusType,
+  RestartRequiredType,
 } from '@/core/signalr/types';
 import type store from '@/core/store';
 import type { RootState } from '@/core/store';
@@ -65,6 +66,21 @@ const onAniDBUDPStateUpdate = (dispatch: typeof store.dispatch) => (state: AniDB
 
 const onAniDBHttpStateUpdate = (dispatch: typeof store.dispatch) => (state: AniDBBanItemType) => {
   dispatch(setHttpBanStatus(state));
+};
+
+let restartToastId: number | string | undefined;
+
+const onRestartRequiredUpdate = (state: RestartRequiredType) => {
+  if (state.RequiresRestart) {
+    if (restartToastId) return;
+    restartToastId = toast.info('Restart required!', 'A restart is pending. Please restart the application.', {
+      autoClose: false,
+      position: 'top-right',
+    });
+  } else {
+    if (restartToastId) toast.dismiss(restartToastId);
+    restartToastId = undefined;
+  }
 };
 
 // Network Events
@@ -115,7 +131,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump';
+      const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump,configuration';
 
       const protocol = new JsonHubProtocol();
 
@@ -158,6 +174,9 @@ async (action: UnknownAction) => {
       connectionEvents.on('ShokoEvent:FileMoved', () => handleEvent('FileMoved'));
       connectionEvents.on('ShokoEvent:FileRenamed', () => handleEvent('FileRenamed'));
       connectionEvents.on('ShokoEvent:SeriesUpdated', () => handleEvent('SeriesUpdated'));
+
+      connectionEvents.on('Configuration:OnConnected', onRestartRequiredUpdate);
+      connectionEvents.on('Configuration:RequiresRestart', onRestartRequiredUpdate);
 
       connectionEvents.onreconnecting(
         () =>
