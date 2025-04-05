@@ -6,6 +6,7 @@ import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
 import quickActions from '@/core/quick-actions';
 import { useRunActionMutation } from '@/core/react-query/action/mutations';
+import { useInvalidatePlexTokenMutation } from '@/core/react-query/plex/mutations';
 import useEventCallback from '@/hooks/useEventCallback';
 
 const actions = {
@@ -80,6 +81,7 @@ const actions = {
     title: 'Plex',
     data: [
       'plex-sync-all',
+      'plex-force-unlink',
     ],
   },
 };
@@ -93,11 +95,18 @@ type Props = {
 
 const Action = ({ actionKey, length }: { actionKey: string, length: number }) => {
   const { mutate: runAction } = useRunActionMutation();
+  const { mutate: invalidatePlexToken } = useInvalidatePlexTokenMutation();
 
   const action = useMemo(() => quickActions[actionKey], [actionKey]);
   const { functionName, name } = action;
 
   const handleAction = useEventCallback(() => {
+    if (actionKey === 'plex-force-unlink') {
+      invalidatePlexToken(undefined, {
+        onSuccess: () => toast.success('Plex token invalidated!'),
+      });
+      return;
+    }
     runAction(functionName, {
       onSuccess: () => toast.success(`Running action "${name}"`),
     });
