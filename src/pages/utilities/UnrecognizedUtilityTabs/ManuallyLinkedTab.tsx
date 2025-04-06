@@ -33,7 +33,7 @@ import { IncludeOnlyFilterEnum } from '@/core/react-query/series/types';
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { episodeOrSeriesIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -194,7 +194,7 @@ const ManuallyLinkedTab = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection(episodes);
+  } = useRowSelection(episodes, episodeOrSeriesIdSelector);
 
   const selectedFileIds = useMemo(
     () => selectedRows.flatMap(row => row.Files?.map(file => file.ID) ?? []),
