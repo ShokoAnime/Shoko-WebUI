@@ -43,7 +43,7 @@ import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations'
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import { clearFiles, clearRenameResults, removeFiles } from '@/core/slices/utilities/renamer';
 import useEventCallback from '@/hooks/useEventCallback';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { fileIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { RootState } from '@/core/store';
@@ -464,7 +464,7 @@ const Renamer = () => {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<FileType>(addedFiles);
+  } = useRowSelection(addedFiles, fileIdSelector);
 
   const columns = useMemo(() => {
     const managedFolders = managedFolderQuery?.data ?? [];
