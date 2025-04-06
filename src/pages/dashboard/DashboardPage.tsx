@@ -100,7 +100,7 @@ function DashboardPage() {
         ? initialSettings.WebUI_Settings.layout.dashboard
         : currentLayout;
     });
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => {
         dispatch(setLayoutEditMode(false));
         toast.dismiss('layoutEditMode');

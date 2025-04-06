@@ -437,7 +437,7 @@ const Renamer = () => {
     const newSettings = produce(settings, (draftState) => {
       draftState.Plugins.Renamer.DefaultRenamer = selectedConfig.Name;
     });
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => {
         toast.success(`"${selectedConfig.Name}" set as default renamer!`);
       },

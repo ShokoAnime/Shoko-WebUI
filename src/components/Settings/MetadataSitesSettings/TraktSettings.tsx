@@ -45,7 +45,7 @@ const TraktSettings = () => {
   });
 
   const handleTraktClear = useEventCallback(
-    () => patchSettings({ newSettings: { ...settings, TraktTv: initialSettings.TraktTv } }),
+    () => patchSettings({ ...settings, TraktTv: initialSettings.TraktTv }),
   );
 
   const handleCopy = useEventCallback(() => {

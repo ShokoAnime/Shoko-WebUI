@@ -80,7 +80,7 @@ const DashboardSettingsModal = ({ onClose, show }: Props) => {
   };
 
   const handleSave = useEventCallback(() => {
-    patchSettings({ newSettings }, {
+    patchSettings(newSettings, {
       onSuccess: () => onClose(),
     });
   });
