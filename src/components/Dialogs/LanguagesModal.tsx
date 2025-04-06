@@ -47,12 +47,10 @@ function LanguagesModal({ onClose, type }: Props) {
     }
 
     patchSettings({
-      newSettings: {
-        ...settings,
-        Language: {
-          ...settings.Language,
-          [preferenceType]: languages,
-        },
+      ...settings,
+      Language: {
+        ...settings.Language,
+        [preferenceType]: languages,
       },
     }, {
       onSuccess: onClose,

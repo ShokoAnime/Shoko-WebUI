@@ -186,7 +186,7 @@ function SettingsPage() {
       return;
     }
 
-    patchSettings({ newSettings });
+    patchSettings(newSettings);
   });
 
   const handleCancel = useEventCallback(() => {
