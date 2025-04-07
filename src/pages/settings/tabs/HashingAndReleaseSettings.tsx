@@ -21,6 +21,8 @@ import {
   useUpdateReleaseInfoSettingsMutation,
 } from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery, useReleaseInfoSummaryQuery } from '@/core/react-query/release-info/queries';
+import { usePatchSettingsMutation } from '@/core/react-query/settings/mutations';
+import { useSettingsQuery } from '@/core/react-query/settings/queries';
 import useEventCallback from '@/hooks/useEventCallback';
 
 import type { HashProviderInfoType } from '@/core/types/api/hashing';
@@ -35,11 +37,13 @@ function HashingAndReleaseSettings() {
     { show: boolean, configGuid: string | null, title: string, description: string }
   >(() => ({ show: false, configGuid: null, title: '', description: '' }));
   const hashingProviderSummaryQuery = useHashingSummaryQuery();
+  const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
+  const settingsQuery = useSettingsQuery();
   const hashingProvidersQuery = useHashingProvidersQuery();
+  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
+  const { mutate: patchSettings } = usePatchSettingsMutation();
   const { mutate: updateHashingSettings } = useUpdateHashingSettingsMutation();
   const { mutate: updateHashingProviders } = useUpdateManyHashingProvidersMutation();
-  const releaseProviderSummaryQuery = useReleaseInfoSummaryQuery();
-  const releaseProvidersQuery = useReleaseInfoProvidersQuery();
   const { mutate: updateReleaseInfoSettings } = useUpdateReleaseInfoSettingsMutation();
   const { mutate: updateReleaseInfoProviders } = useUpdateManyReleaseInfoProvidersMutation();
   const initialState = useMemo(() => ({
@@ -49,7 +53,44 @@ function HashingAndReleaseSettings() {
     hashProviders: hashingProvidersQuery.data ?? [],
     releaseSummary: releaseProviderSummaryQuery.data ?? { ParallelMode: false },
     releaseProviders: releaseProvidersQuery.data ?? [],
+    webuiReleaseProviders: (() => {
+      const releaseProviders = releaseProvidersQuery.data?.slice() ?? [];
+      const webuiProviders = settingsQuery.data?.WebUI_Settings.linking.enabledReleaseProviders ?? [];
+      const webuiProviderOrder = settingsQuery.data?.WebUI_Settings.linking.releaseProviderOrder ?? [];
+
+      const anidbProviderIndex = releaseProviders.findIndex(provider =>
+        provider.Name === 'AniDB' && provider.Plugin.Name === 'Shoko Core'
+      );
+      if (anidbProviderIndex !== -1) {
+        const anidbProviderId = releaseProviders[anidbProviderIndex].ID;
+        releaseProviders.splice(anidbProviderIndex, 1);
+        if (webuiProviderOrder.includes(anidbProviderId)) {
+          webuiProviderOrder.splice(webuiProviderOrder.indexOf(anidbProviderId), 0, anidbProviderId);
+        }
+        if (webuiProviders.includes(anidbProviderId)) {
+          webuiProviders.splice(webuiProviders.indexOf(anidbProviderId), 0, anidbProviderId);
+        }
+      }
+
+      return releaseProviders
+        .sort((providerA, providerB) => {
+          const idA = providerA.ID;
+          const idB = providerB.ID;
+          const indexA = webuiProviderOrder.indexOf(idA);
+          const indexB = webuiProviderOrder.indexOf(idB);
+          if (indexA === -1 && indexB === -1) return 0;
+          if (indexA === -1) return 1;
+          if (indexB === -1) return -1;
+          return indexA - indexB;
+        })
+        .map((provider, index) => ({
+          ...provider,
+          IsEnabled: webuiProviders.includes(provider.ID),
+          Priority: index,
+        }));
+    })(),
   }), [
+    settingsQuery.data,
     hashingProviderSummaryQuery.data,
     releaseProviderSummaryQuery.data,
     hashingProvidersQuery.data,
@@ -102,10 +143,18 @@ function HashingAndReleaseSettings() {
   });
 
   const handleToggleReleaseInfoProvider = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const { id } = event.target;
+    const id = event.target.id.slice(0, 36);
     const { checked } = event.target;
     const sta = cloneDeep(state);
     sta.releaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
+    setState(sta);
+  });
+
+  const handleToggleWebuiReleaseInfoProvider = useEventCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const id = event.target.id.slice(0, 36);
+    const { checked } = event.target;
+    const sta = cloneDeep(state);
+    sta.webuiReleaseProviders.find(pro => pro.ID === id)!.IsEnabled = checked;
     setState(sta);
   });
 
@@ -125,6 +174,20 @@ function HashingAndReleaseSettings() {
     sta.releaseProviders.splice(result.destination.index, 0, removed);
     for (let priority = 0; priority < sta.releaseProviders.length; priority += 1) {
       sta.releaseProviders[priority].Priority = priority;
+    }
+    setState(sta);
+  });
+
+  const handleDragReleaseWebui = useEventCallback((result: DropResult) => {
+    if (!result.destination || result.destination.index === result.source.index || !releaseProvidersQuery.isSuccess) {
+      return;
+    }
+
+    const sta = cloneDeep(state);
+    const [removed] = sta.webuiReleaseProviders.splice(result.source.index, 1);
+    sta.webuiReleaseProviders.splice(result.destination.index, 0, removed);
+    for (let priority = 0; priority < sta.webuiReleaseProviders.length; priority += 1) {
+      sta.webuiReleaseProviders[priority].Priority = priority;
     }
     setState(sta);
   });
@@ -157,6 +220,31 @@ function HashingAndReleaseSettings() {
     setState(cloneDeep(initialState));
   });
 
+  const updateWebuiReleaseInfoProviders = useEventCallback(
+    async (providers: ReleaseProviderInfoType[]): Promise<void> => {
+      const settings = cloneDeep(settingsQuery.data);
+      const anidbProviderIndex = providers.findIndex(provider =>
+        provider.Name === 'AniDB' && provider.Plugin.Name === 'Shoko Core'
+      );
+      if (anidbProviderIndex !== -1) {
+        providers.splice(anidbProviderIndex, 1);
+      }
+
+      const { enabledReleaseProviders, releaseProviderOrder } = settings.WebUI_Settings.linking;
+      enabledReleaseProviders.length = 0;
+      releaseProviderOrder.length = 0;
+
+      for (const provider of providers) {
+        releaseProviderOrder.push(provider.ID);
+        if (provider.IsEnabled) {
+          enabledReleaseProviders.push(provider.ID);
+        }
+      }
+
+      await (patchSettings(settings) as unknown as Promise<unknown>);
+    },
+  );
+
   const handleSave = useEventCallback(() => {
     const promises: Promise<unknown>[] = [];
     if (JSON.stringify(initialState.hashSummary) !== JSON.stringify(state.hashSummary)) {
@@ -170,6 +258,9 @@ function HashingAndReleaseSettings() {
     }
     if (JSON.stringify(initialState.releaseProviders) !== JSON.stringify(state.releaseProviders)) {
       promises.push(updateReleaseInfoProviders(state.releaseProviders) as unknown as Promise<unknown>);
+    }
+    if (JSON.stringify(initialState.webuiReleaseProviders) !== JSON.stringify(state.webuiReleaseProviders)) {
+      promises.push(updateWebuiReleaseInfoProviders(state.webuiReleaseProviders));
     }
     Promise.all(promises)
       .then(() => {
@@ -359,7 +450,7 @@ function HashingAndReleaseSettings() {
         <div>
           <div className="mt-2 flex justify-between">
             <span className="flex gap-x-1.5">
-              Release Providers
+              Auto-Linking Release Providers
               <span className="self-center text-xs opacity-65">(Drag to Reorder)</span>
             </span>
           </div>
@@ -369,7 +460,7 @@ function HashingAndReleaseSettings() {
                 key: definition.ID,
                 item: (
                   <Checkbox
-                    id={definition.ID}
+                    id={`${definition.ID}-server`}
                     isChecked={definition.IsEnabled}
                     onChange={handleToggleReleaseInfoProvider}
                     labelRight
@@ -414,7 +505,71 @@ function HashingAndReleaseSettings() {
             </DnDList>
           </div>
           <div className="mt-1 text-sm text-panel-text opacity-65">
-            Enabled release providers, in priority order.
+            Enabled auto-search release providers in the automated linking process, in priority order.
+          </div>
+        </div>
+
+        <div className="border-b border-panel-border" />
+
+        <div>
+          <div className="mt-2 flex justify-between">
+            <span className="flex gap-x-1.5">
+              Manual Linking Release Providers
+              <span className="self-center text-xs opacity-65">(Drag to Reorder)</span>
+            </span>
+          </div>
+          <div className="mt-2 flex min-h-10 rounded-lg border border-panel-border bg-panel-input px-4 py-2">
+            <DnDList onDragEnd={handleDragReleaseWebui}>
+              {state.webuiReleaseProviders.map(definition => ({
+                key: definition.ID,
+                item: (
+                  <Checkbox
+                    id={`${definition.ID}-webui`}
+                    isChecked={definition.IsEnabled}
+                    onChange={handleToggleWebuiReleaseInfoProvider}
+                    labelRight
+                    justify
+                    className="grow"
+                    labelClassName="grow"
+                    label={
+                      <>
+                        <span className="flex grow gap-x-1.5">
+                          {definition.Name}
+                          <span className="self-center text-xs opacity-65">
+                            (
+                            {definition.Plugin.Name}
+                            )
+                          </span>
+                        </span>
+                        <span className="flex gap-x-1">
+                          {definition.Configuration && (
+                            <button
+                              id={`${definition.ID}-config`}
+                              type="button"
+                              onClick={handleOpenConfig}
+                              className="text-button-primary"
+                            >
+                              <Icon path={mdiCog} size={1} />
+                            </button>
+                          )}
+                          <button
+                            id={`${definition.ID}-info`}
+                            type="button"
+                            onClick={handleOpenInfo}
+                            className="text-button-primary"
+                          >
+                            <Icon path={mdiInformationVariantCircle} size={1} />
+                          </button>
+                        </span>
+                      </>
+                    }
+                  />
+                ),
+              }))}
+            </DnDList>
+          </div>
+          <div className="mt-1 text-sm text-panel-text opacity-65">
+            Enabled auto-search release providers in the manual linking process, in priority order.
           </div>
         </div>
       </div>

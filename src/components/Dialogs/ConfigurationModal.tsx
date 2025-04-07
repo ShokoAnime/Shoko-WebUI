@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import DynamicConfiguration from '@/components/Configuration/DynamicConfiguration';
 import ModalPanel from '@/components/Panels/ModalPanel';
+import useEventCallback from '@/hooks/useEventCallback';
 
 type Props = {
   show: boolean;
@@ -13,6 +14,26 @@ type Props = {
 
 function ConfigurationModal(props: Props) {
   const { configGuid, description, onClose, show, title } = props;
+
+  const onKeyboard = useEventCallback((event: KeyboardEvent) => {
+    if (!show) return;
+    event.stopPropagation();
+    event.preventDefault();
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  });
+
+  useEffect(() => {
+    if (show) {
+      window.addEventListener('keydown', onKeyboard);
+    }
+    return () => {
+      if (!show) return;
+      window.removeEventListener('keydown', onKeyboard);
+    };
+  }, [onKeyboard, show]);
+
   return (
     <ModalPanel
       show={configGuid != null && show}
@@ -20,9 +41,10 @@ function ConfigurationModal(props: Props) {
       header={title}
       subHeader={description ?? undefined}
       size="md"
+      shouldCloseOnEsc={false}
       overlayClassName="!z-[90]"
     >
-      <DynamicConfiguration configGuid={configGuid} />
+      <DynamicConfiguration configGuid={configGuid} onSave={onClose} />
     </ModalPanel>
   );
 }

@@ -390,6 +390,10 @@ export type WebUISettingsType = {
   toastPosition: 'top-right' | 'bottom-right';
   updateChannel: 'Stable' | 'Dev';
   layout: Record<string, LayoutType>;
+  linking: {
+    enabledReleaseProviders: string[];
+    releaseProviderOrder: string[];
+  };
   collection: {
     view: 'poster' | 'list';
     poster: {

@@ -27,10 +27,11 @@ import type { ConfigurationInfoType } from '@/core/types/api/configuration';
 type DynamicConfigurationProps = {
   configGuid: string | undefined | null;
   setTitle?: boolean;
+  onSave?: () => void;
 };
 
 function DynamicConfiguration(props: DynamicConfigurationProps): React.JSX.Element {
-  const { configGuid, setTitle } = props;
+  const { configGuid, onSave, setTitle } = props;
   const schemaQuery = useConfigurationJsonSchemaQuery(configGuid!, configGuid != null);
   const { config, info, schema } = schemaQuery.data ?? {};
   if (!schema || !info || !config || !configGuid) {
@@ -48,6 +49,7 @@ function DynamicConfiguration(props: DynamicConfigurationProps): React.JSX.Eleme
       config={config}
       configGuid={configGuid}
       setTitle={setTitle}
+      onSave={onSave}
     />
   );
 }
@@ -60,6 +62,7 @@ type InternalPageWithSchemaAndConfigProps = {
   config: unknown;
   configGuid: string;
   setTitle?: boolean;
+  onSave?: () => void;
 };
 
 function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigProps): React.JSX.Element {
@@ -171,6 +174,7 @@ function InternalPageWithSchemaAndConfig(props: InternalPageWithSchemaAndConfigP
       },
       onSuccess() {
         toast.success(`Successfully saved configuration for "${schema.title}"`);
+        if (props.onSave) props.onSave();
       },
     });
   });

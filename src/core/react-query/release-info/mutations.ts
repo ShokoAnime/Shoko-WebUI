@@ -8,6 +8,7 @@ import type {
   UpdateOneReleaseInfoProviderType,
   UpdateReleaseInfoSettingsType,
 } from '@/core/react-query/release-info/types';
+import type { ReleaseInfoType } from '@/core/types/api/file';
 
 export const useUpdateReleaseInfoSettingsMutation = () =>
   useMutation({
@@ -29,4 +30,12 @@ export const useUpdateReleaseInfoProviderMutation = (providerGuid: string) =>
     mutationFn: (provider: UpdateOneReleaseInfoProviderType) =>
       axios.put(`/ReleaseInfo/Provider/${providerGuid}`, provider),
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
+  });
+
+export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
+  useMutation({
+    mutationFn: ({ fileId, providerIDs = [] }: { fileId: number, providerIDs?: string[] }) =>
+      axios.post<unknown, ReleaseInfoType | null>(`/ReleaseInfo/File/${fileId}/AutoPreview`, undefined, {
+        params: { providerIDs },
+      }),
   });
