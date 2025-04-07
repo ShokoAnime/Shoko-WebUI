@@ -15,6 +15,7 @@ type Props = {
   onRequestClose?: () => void;
   onAfterOpen?: () => void;
   overlayClassName?: string;
+  shouldCloseOnEsc?: boolean;
 };
 
 const sizeClass = {
@@ -34,6 +35,7 @@ function ModalPanel(props: Props) {
     onAfterOpen,
     onRequestClose,
     overlayClassName,
+    shouldCloseOnEsc,
     show,
     size,
     subHeader,
@@ -50,6 +52,7 @@ function ModalPanel(props: Props) {
       className="mt-20 flex h-full items-center justify-center"
       onAfterOpen={onAfterOpen}
       closeTimeoutMS={150}
+      shouldCloseOnEsc={shouldCloseOnEsc}
     >
       <div className="flex size-full items-center justify-center" onClick={onRequestClose}>
         <div

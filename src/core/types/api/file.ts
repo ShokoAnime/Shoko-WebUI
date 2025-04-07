@@ -44,6 +44,7 @@ export type ReleaseInfoType = {
   Comment: string | null;
   OriginalFilename: string | null;
   IsCensored: boolean | null;
+  IsCreditless: boolean | null;
   IsChaptered: boolean | null;
   IsCorrupted: boolean;
   Source: ReleaseSource;
@@ -51,6 +52,7 @@ export type ReleaseInfoType = {
   Hashes: FileHashDigestType[] | null;
   MediaInfo: ReleaseMediaInfoType | null;
   CrossReferences: ReleaseCrossReferenceType[];
+  Metadata: string | null;
   Released: string | null;
   Updated: string;
   Created: string;
@@ -70,7 +72,7 @@ export enum ReleaseSource {
 }
 
 export type ReleaseGroupType = {
-  ID: number;
+  ID: string;
   Name: string;
   ShortName: string;
   Source: string;

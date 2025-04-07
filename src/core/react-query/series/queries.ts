@@ -1,7 +1,9 @@
+import { useEffect } from 'react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
 
 import { axios } from '@/core/axios';
 import { transformListResultSimplified } from '@/core/react-query/helpers';
+import queryClient from '@/core/react-query/queryClient';
 
 import type {
   SeriesAniDBEpisodesRequestType,
@@ -45,6 +47,43 @@ export const useSeriesAniDBQuery = (anidbId: number, enabled = true) =>
     queryFn: () => axios.get(`Series/AniDB/${anidbId}`),
     enabled,
   });
+
+const animePlaceholderKey = ['series', 'anidb', 'bulk', 'placeholder'] as const;
+
+export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = true) => {
+  useEffect(() => () => {
+    queryClient.removeQueries({ queryKey: animePlaceholderKey });
+  }, []);
+
+  return useQuery<Record<number, SeriesAniDBSearchResult | null>>({
+    queryKey: ['series', 'anidb', 'bulk', anidbIds],
+    queryFn: async () => {
+      const existingPlaceholder =
+        queryClient.getQueryData<Record<number, SeriesAniDBSearchResult | null>>(animePlaceholderKey) ?? {};
+      const existingEntries = Object.entries(existingPlaceholder)
+        .map(([key, value]) => [Number(key), value] as const)
+        .filter(([key]) => !Number.isNaN(key) && Number.isInteger(key));
+      const existingKeys = new Map(existingEntries);
+      const missingKeys = anidbIds.filter((key): key is number =>
+        key != null && !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key)
+      );
+      const responses = await Promise.all(
+        missingKeys.map(anidbId =>
+          axios.get<unknown, SeriesAniDBSearchResult>(`Series/AniDB/${anidbId}`).catch(() => null)
+        ),
+      );
+      const entries = Object.fromEntries([
+        ...existingEntries,
+        ...responses.map((episode, index) => [missingKeys[index], episode] as const),
+      ]);
+      queryClient.setQueryData(animePlaceholderKey, entries);
+      return entries;
+    },
+    placeholderData: queryClient.getQueryData<Record<number, SeriesAniDBSearchResult | null>>(animePlaceholderKey)
+      ?? {},
+    enabled,
+  });
+};
 
 export const useSeriesAniDBEpisodesQuery = (anidbId: number, params: SeriesAniDBEpisodesRequestType, enabled = true) =>
   useQuery<ListResultType<AniDBEpisodeType>, unknown, AniDBEpisodeType[]>({
