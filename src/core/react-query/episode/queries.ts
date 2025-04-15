@@ -43,7 +43,7 @@ export const useEpisodeAniDbBulkQuery = (anidbIds: number[], enabled = true) => 
         queryClient.getQueryData<Record<number, AniDBEpisodeType | null>>(episodePlaceholderKey) ?? {};
       const existingEntries = Object.entries(existingPlaceholder)
         .map(([key, value]) => [Number(key), value] as const)
-        .filter(([key]) => !Number.isNaN(key) && Number.isInteger(key));
+        .filter(([key, value]) => !Number.isNaN(key) && Number.isInteger(key) && value != null);
       const existingKeys = new Map(existingEntries);
       const missingKeys = anidbIds.filter(key => !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key));
       const responses = await Promise.all(
