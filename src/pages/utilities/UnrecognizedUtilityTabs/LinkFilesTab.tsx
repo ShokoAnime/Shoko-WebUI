@@ -25,7 +25,10 @@ import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/EditReleas
 import MenuButton from '@/components/Utilities/Unrecognized/MenuButton';
 import Title from '@/components/Utilities/Unrecognized/Title';
 import { useEpisodeAniDbBulkQuery } from '@/core/react-query/episode/queries';
-import { useAutoPreviewReleaseInfoForFileByIdMutation } from '@/core/react-query/release-info/mutations';
+import {
+  useAutoPreviewReleaseInfoForFileByIdMutation,
+  useSubmitReleaseInfoForFileByIdMutation,
+} from '@/core/react-query/release-info/mutations';
 import { useReleaseInfoProvidersQuery } from '@/core/react-query/release-info/queries';
 import { useSeriesAniDbBulkQuery } from '@/core/react-query/series/queries';
 import { useSettingsQuery } from '@/core/react-query/settings/queries';
@@ -38,8 +41,6 @@ import LinkFilesTabVideo from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFil
 
 import type { FileType, ReleaseInfoType } from '@/core/types/api/file';
 import type { ReleaseProviderInfoType } from '@/core/types/api/release-info';
-
-const SLOWNESS_FACTOR = 1_000;
 
 export type ManualLink = {
   id: number;
@@ -87,6 +88,7 @@ function LinkFilesTab() {
   const settingsQuery = useSettingsQuery();
   const episodeQuery = useEpisodeAniDbBulkQuery(episodeIds);
   const animeQuery = useSeriesAniDbBulkQuery(animeIds);
+  const { mutate: submitLinkRemote } = useSubmitReleaseInfoForFileByIdMutation();
   const { mutate: autoLinkPreview } = useAutoPreviewReleaseInfoForFileByIdMutation();
   const navigate = useNavigateVoid();
 
@@ -408,20 +410,15 @@ function LinkFilesTab() {
     focusLinks([]);
   });
 
-  const searchLink = useEventCallback(async (link: ManualLink) => {
+  const searchLink = useEventCallback((link: ManualLink) => {
     const enabledReleaseProviders = link.providers.filter(provider => provider.IsEnabled).map(provider => provider.ID);
     link.state = 'pending';
-    const aPromiseOfSlowness = new Promise<void>((resolve) => {
-      setTimeout(resolve, SLOWNESS_FACTOR);
-    });
     if (enabledReleaseProviders.length > 0) {
       autoLinkPreview({ fileId: link.file.ID, providerIDs: enabledReleaseProviders }, {
-        async onSettled(data, error) {
+        onSettled(data, error) {
           if (!error && data) {
             link.release = data;
           }
-
-          await aPromiseOfSlowness;
 
           setLoading((prev) => {
             const links = cloneDeep(prev.links);
@@ -434,7 +431,6 @@ function LinkFilesTab() {
         },
       });
     } else {
-      await aPromiseOfSlowness;
       setLoading((prev) => {
         const links = cloneDeep(prev.links);
         const index = links.findIndex(lin => lin.id === link.id);
@@ -446,20 +442,33 @@ function LinkFilesTab() {
     }
   });
 
-  const submitLink = useEventCallback(async (link: ManualLink) => {
-    const aPromiseOfSlowness = new Promise<void>((resolve) => {
-      setTimeout(resolve, SLOWNESS_FACTOR);
-    });
-    await aPromiseOfSlowness;
-    link.state = 'submitted';
-    setLoading((prev) => {
-      const links = cloneDeep(prev.links);
-      const index = links.findIndex(lin => lin.id === link.id);
-      if (index !== -1) {
-        links[index] = link;
-      }
-      return { ...prev, links };
-    });
+  const submitLink = useEventCallback((link: ManualLink) => {
+    if (link.release.CrossReferences.length > 0) {
+      submitLinkRemote({ fileId: link.file.ID, release: link.release }, {
+        onSettled(_, error) {
+          link.state = error ? 'pending' : 'submitted';
+
+          setLoading((prev) => {
+            const links = cloneDeep(prev.links);
+            const index = links.findIndex(lin => lin.id === link.id);
+            if (index !== -1) {
+              links[index] = link;
+            }
+            return { ...prev, links };
+          });
+        },
+      });
+    } else {
+      link.state = 'pending';
+      setLoading((prev) => {
+        const links = cloneDeep(prev.links);
+        const index = links.findIndex(lin => lin.id === link.id);
+        if (index !== -1) {
+          links[index] = link;
+        }
+        return { ...prev, links };
+      });
+    }
   });
 
   const onKeyboard = useEventCallback((event: KeyboardEvent) => {
@@ -585,13 +594,13 @@ function LinkFilesTab() {
     if (!state.isLoading) {
       const links = cloneDeep(state.links);
       if (state.links.some(link => link.state === 'auto-linking')) {
-        searchLink(cloneDeep(state.links.find(link => link.state === 'auto-linking')!)).catch(console.error);
+        searchLink(cloneDeep(state.links.find(link => link.state === 'auto-linking')!));
       } else if (state.links.some(link => link.state === 'auto-link-queue')) {
         const firstWaiting = links.find(link => link.state === 'auto-link-queue')!;
         firstWaiting.state = 'auto-linking';
       }
       if (state.links.some(link => link.state === 'submitting')) {
-        submitLink(cloneDeep(state.links.find(link => link.state === 'submitting')!)).catch(console.error);
+        submitLink(cloneDeep(state.links.find(link => link.state === 'submitting')!));
       } else if (state.links.some(link => link.state === 'submit-queue')) {
         const firstWaiting = links.find(link => link.state === 'submit-queue')!;
         firstWaiting.state = 'submitting';
