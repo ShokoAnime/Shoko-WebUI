@@ -32,6 +32,12 @@ export const useUpdateReleaseInfoProviderMutation = (providerGuid: string) =>
     onSuccess: () => invalidateQueries(['release-info', 'providers']),
   });
 
+export const useSubmitReleaseInfoForFileByIdMutation = () =>
+  useMutation({
+    mutationFn: ({ fileId, release }: { fileId: number, release: ReleaseInfoType }) =>
+      axios.post<unknown, void>(`/ReleaseInfo/File/${fileId}`, release),
+  });
+
 export const useAutoPreviewReleaseInfoForFileByIdMutation = () =>
   useMutation({
     mutationFn: ({ fileId, providerIDs = [] }: { fileId: number, providerIDs?: string[] }) =>
