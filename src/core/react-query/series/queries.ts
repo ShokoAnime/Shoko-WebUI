@@ -62,7 +62,7 @@ export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = t
         queryClient.getQueryData<Record<number, SeriesAniDBSearchResult | null>>(animePlaceholderKey) ?? {};
       const existingEntries = Object.entries(existingPlaceholder)
         .map(([key, value]) => [Number(key), value] as const)
-        .filter(([key]) => !Number.isNaN(key) && Number.isInteger(key));
+        .filter(([key, value]) => !Number.isNaN(key) && Number.isInteger(key) && value != null);
       const existingKeys = new Map(existingEntries);
       const missingKeys = anidbIds.filter((key): key is number =>
         key != null && !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key)
