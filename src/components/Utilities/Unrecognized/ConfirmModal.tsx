@@ -20,11 +20,13 @@ function ConfirmModal(props: ConfirmProps): React.JSX.Element {
 
   const onKeyboard = useEventCallback((event: KeyboardEvent) => {
     if (!show) return;
-    event.stopPropagation();
-    event.preventDefault();
     if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
       onClose();
     } else if (event.key === 'Enter') {
+      event.stopPropagation();
+      event.preventDefault();
       onConfirm();
     }
   });

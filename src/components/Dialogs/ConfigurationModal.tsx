@@ -17,9 +17,9 @@ function ConfigurationModal(props: Props) {
 
   const onKeyboard = useEventCallback((event: KeyboardEvent) => {
     if (!show) return;
-    event.stopPropagation();
-    event.preventDefault();
     if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
       onClose();
     }
   });
