@@ -464,10 +464,10 @@ function LinkFilesTab() {
 
   const onKeyboard = useEventCallback((event: KeyboardEvent) => {
     if (auto.show || edit.show || shouldConfirm) return;
-    event.stopPropagation();
-    event.preventDefault();
 
     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      event.stopPropagation();
+      event.preventDefault();
       const isUp = event.key === 'ArrowUp';
       if (focusedLinks.length === 0) {
         if (selectedLinks.length > 0) {
@@ -497,6 +497,8 @@ function LinkFilesTab() {
         }
       }
     } else if (event.key === 'PageUp' || event.key === 'PageDown') {
+      event.stopPropagation();
+      event.preventDefault();
       const isUp = event.key === 'PageUp';
       const nextIndex = isUp ? 0 : state.links.length - 1;
       if (focusedLinks.length > 0 && event.shiftKey) {
@@ -511,6 +513,8 @@ function LinkFilesTab() {
         focusLinks([nextIndex], nextIndex);
       }
     } else if (event.key === ' ') {
+      event.stopPropagation();
+      event.preventDefault();
       if (focusedLinks.length === 0) {
         if (selectedLinks.length === 0) {
           focusLinks([0], 0);
@@ -529,23 +533,39 @@ function LinkFilesTab() {
       (event.key === 'd' || event.key === 'Delete' || event.key === 'Backspace') && !event.altKey && !event.metaKey
       && !event.shiftKey
     ) {
+      event.stopPropagation();
+      event.preventDefault();
       if (selectLinks.length > 0 || focusedLinks.length > 0) {
         removeLinksFromPage();
       }
     } else if (event.key === 'q' && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
       addLinksToSubmitQueue();
     } else if (event.key === 'r' && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
       removeLinksFromSubmitQueue();
       removeLinksFromSearchQueue();
     } else if (event.key === 'a' && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
       toggleAllSelectedLinks();
     } else if (event.key === 's' && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
       openSearchDialog();
     } else if (event.key === 'e' && !event.altKey && !event.metaKey && !event.shiftKey) {
+      event.stopPropagation();
+      event.preventDefault();
       openEditDialog();
     } else if (event.key === 'Escape') {
+      event.stopPropagation();
+      event.preventDefault();
       handleCancel();
     } else if (event.key === 'Enter') {
+      event.stopPropagation();
+      event.preventDefault();
       if (isDone) {
         completeLinking();
       } else if (canSubmit) {
