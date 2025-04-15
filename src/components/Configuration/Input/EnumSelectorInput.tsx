@@ -29,7 +29,7 @@ function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
   const options = useMemo(() => {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
     const definitions = uiDefinition.enumDefinitions;
-    const defaultValue = resolvedSchema.default ?? definitions[0].value;
+    const defaultValue = props.schema.default ?? definitions[0].value;
     const isFlag = uiDefinition.enumIsFlag;
     return {
       isFlag,
@@ -40,7 +40,7 @@ function EnumSelectorInput(props: AnySchemaProps): React.JSX.Element {
         </option>
       )),
     };
-  }, [props.schema, resolvedSchema.default]);
+  }, [props.schema]);
   const size = useMemo(() => {
     const uiDefinition = props.schema['x-uiDefinition'] as EnumConfigurationUiDefinitionType;
     if (uiDefinition.elementSize === 'full') {
