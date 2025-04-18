@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { mdiCloseCircleOutline, mdiLoading, mdiPauseCircleOutline, mdiPlayCircleOutline } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { map } from 'lodash';
+import { map, uniqBy } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
@@ -89,11 +89,18 @@ const QueueItem = ({ item }: { item: QueueItemType }) => (
   </div>
 );
 
-const QueueItems = () => { // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
+const QueueItems = () => {
+  const currentlyExecuting = useSelector((state: RootState) => state.mainpage.queueStatus.CurrentlyExecuting);
+  // This is a separate component so that the whole ShokoPanel doesn't re-render on queue items change
   const queueItemsQuery = useQueueItemsQuery({ pageSize: 100, showAll: true });
+  const list = useMemo(() => {
+    if (!queueItemsQuery.data?.Total) return currentlyExecuting;
+    const data = queueItemsQuery.data.List.filter(item => !item.IsRunning);
+    return uniqBy([...currentlyExecuting, ...data], 'Key');
+  }, [currentlyExecuting, queueItemsQuery.data]);
 
-  return queueItemsQuery.data && queueItemsQuery.data?.Total > 0
-    ? queueItemsQuery.data.List.map(item => <QueueItem item={item} key={item.Key} />)
+  return list.length > 0
+    ? list.map(item => <QueueItem item={item} key={item.Key} />)
     : <div className="flex grow items-center justify-center pb-14 font-semibold">Queue is empty!</div>;
 };
 
