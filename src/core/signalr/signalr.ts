@@ -38,17 +38,22 @@ let connectionEvents: HubConnection;
 
 // Queue Events
 
+const queueEventThrottling = throttle(() => {
+  handleEvent('QueueStateChanged');
+}, 1000);
+
 const onQueueStateChange = (dispatch: typeof store.dispatch) =>
   throttle((state: QueueStatusType) => {
-    handleEvent('QueueStateChanged');
+    queueEventThrottling();
     if (!state) {
       dispatch(resetQueueStatus());
       return;
     }
     dispatch(setQueueStatus(state));
-  }, 1000);
+  }, 500);
 
 const onQueueConnected = (dispatch: typeof store.dispatch) => (state: QueueStatusType) => {
+  handleEvent('QueueStateChanged');
   dispatch(setQueueStatus(state));
   dispatch(setFetched('queueStatus'));
 };
