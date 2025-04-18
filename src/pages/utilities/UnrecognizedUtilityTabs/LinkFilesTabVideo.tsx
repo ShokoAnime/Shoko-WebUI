@@ -18,6 +18,84 @@ export type LinksFilesTab2FileProps = {
   focusedLink: boolean;
 };
 
+function parseProviderName(providerName: string, state: ManualLink['state'] | 'can-submit'): React.ReactNode {
+  if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
+    return null;
+  }
+  if (providerName.endsWith('+User')) {
+    return (
+      <span className="text-sm font-semibold">
+        {providerName.slice(0, -5)}
+        <span className="opacity-65">(Edited by User)</span>
+      </span>
+    );
+  }
+  return (
+    <span className="text-sm font-semibold">
+      {providerName}
+    </span>
+  );
+}
+
+function parseLinkState(state: ManualLink['state'] | 'can-submit'): React.ReactNode {
+  switch (state) {
+    case 'can-submit':
+      return (
+        <span className="text-panel-text-important">
+          Ready for Submission
+        </span>
+      );
+    case 'init':
+      return (
+        <span className="opacity-65">
+          Initial State
+        </span>
+      );
+    case 'pending':
+      return (
+        <span className="text-panel-text-warning">
+          Missing Episodes
+        </span>
+      );
+    case 'search-queue':
+      return (
+        <span className="opacity-65">
+          In Search Queue
+        </span>
+      );
+    case 'searching':
+      return (
+        <span className="text-panel-text-primary">
+          Searching for a Match
+        </span>
+      );
+    case 'submit-queue':
+      return (
+        <span className="opacity-65">
+          In Submit Queue
+        </span>
+      );
+    case 'submitting':
+      return (
+        <span className="text-panel-text-primary">
+          Submitting Match
+        </span>
+      );
+    case 'submitted':
+      return (
+        <span className="text-panel-text-important">
+          Completed
+        </span>
+      );
+    default:
+      return (
+        <span className="text-panel-text-warning">
+          {state}
+        </span>
+      );
+  }
+}
+
 function parseReleaseSource(releaseSource: ReleaseSource): string {
   switch (releaseSource) {
     case ReleaseSource.BluRay:
@@ -48,12 +126,12 @@ function LinkFilesTabVideo(props: LinksFilesTab2FileProps): React.JSX.Element {
   let border = '' as string;
   if (!isInFocus) {
     if (isSelected) {
-      if (!(linkState === 'auto-linking' || linkState === 'submitting' || linkState === 'submitted')) {
+      if (!(linkState === 'searching' || linkState === 'submitting' || linkState === 'submitted')) {
         border = 'border-panel-text-primary';
       } else if (linkState === 'submitted') {
         border = 'border-panel-text-important';
       }
-    } else if (linkState === 'auto-linking' || linkState === 'submitting') {
+    } else if (linkState === 'searching' || linkState === 'submitting') {
       border = 'border-panel-text-primary';
     } else if (linkState === 'submitted') {
       border = 'border-panel-text-important';
@@ -70,17 +148,18 @@ function LinkFilesTabVideo(props: LinksFilesTab2FileProps): React.JSX.Element {
       className={cx(
         'col-start-1 flex w-full flex-col gap-y-2 rounded-lg p-4 border leading-5 transition-colors',
         border,
-        isSelected && !(linkState === 'submitting' || linkState === 'auto-linking' || linkState === 'submitted')
+        isSelected && !(linkState === 'submitting' || linkState === 'searching' || linkState === 'submitted')
           && 'bg-panel-background-selected-row cursor-pointer',
-        isSelected && (linkState === 'submitting' || linkState === 'auto-linking')
+        isSelected && (linkState === 'submitting' || linkState === 'searching')
           && 'bg-panel-background-selected-row cursor-pointer',
         isSelected && linkState === 'submitted' && 'bg-panel-background-selected-row cursor-pointer',
         !isSelected && linkState === 'init' && 'bg-panel-background cursor-pointer',
         !isSelected && linkState === 'pending' && 'bg-panel-background cursor-pointer',
         !isSelected && linkState === 'can-submit' && 'bg-panel-background-alt cursor-pointer',
-        !isSelected && linkState === 'auto-link-queue' && 'opacity-65 bg-panel-background cursor-pointer',
-        !isSelected && linkState === 'auto-linking' && 'bg-panel-background-alt cursor-progress',
-        !isSelected && linkState === 'submit-queue' && 'opacity-65 bg-panel-background cursor-wait',
+        !isSelected && linkState === 'search-queue'
+          && 'opacity-65 bg-panel-background-alt cursor-pointer animate-pulse',
+        !isSelected && linkState === 'searching' && 'bg-panel-background-alt cursor-progress',
+        !isSelected && linkState === 'submit-queue' && 'opacity-65 bg-panel-background-alt cursor-wait',
         !isSelected && linkState === 'submitting' && 'bg-panel-background-alt cursor-progress',
         !isSelected && linkState === 'submitted' && 'bg-panel-background',
       )}
@@ -90,10 +169,14 @@ function LinkFilesTabVideo(props: LinksFilesTab2FileProps): React.JSX.Element {
       <div className="grid grid-cols-2 gap-2">
         <div className="col-span-2 -ml-1 flex w-full flex-row place-items-center gap-x-2 border-b border-panel-border pb-1">
           <div className="flex grow flex-col">
-            <span className="line-clamp-1 text-sm font-semibold opacity-65">
-              {link.release.ProviderName}
-              &nbsp;|&nbsp;
-              {linkState}
+            <span className="line-clamp-1">
+              {[
+                parseLinkState(linkState),
+                parseProviderName(link.release.ProviderName, linkState),
+              ].filter(node => node != null).flatMap((node, index) => [
+                index > 0 ? ' - ' : null,
+                node,
+              ])}
             </span>
           </div>
         </div>
@@ -169,21 +252,22 @@ function LinkFilesTabVideo(props: LinksFilesTab2FileProps): React.JSX.Element {
           </span>
         </div>
         <div className="col-span-2 -mt-1 flex flex-col border-t border-panel-border pt-1">
-          {link.release.CrossReferences.length > 0 && (
-            link.release.CrossReferences.map(xref => (
-              <LinkFilesTabCrossReference
-                key={`${xref.AnidbEpisodeID}-${xref.AnidbAnimeID}-${xref.PercentageStart}-${xref.PercentageEnd}`}
-                xref={xref}
-                anime={animeDict[xref.AnidbAnimeID ?? -1] ?? null}
-                episode={episodeDict[xref.AnidbEpisodeID] ?? null}
-              />
-            ))
-          )}
-          {link.release.CrossReferences.length === 0 && (
-            <div>
-              No Episodes
-            </div>
-          )}
+          {link.release.CrossReferences.length > 0
+            ? (
+              link.release.CrossReferences.map(xref => (
+                <LinkFilesTabCrossReference
+                  key={`${xref.AnidbEpisodeID}-${xref.AnidbAnimeID}-${xref.PercentageStart}-${xref.PercentageEnd}`}
+                  xref={xref}
+                  anime={animeDict[xref.AnidbAnimeID ?? -1] ?? null}
+                  episode={episodeDict[xref.AnidbEpisodeID] ?? null}
+                />
+              ))
+            )
+            : (
+              <span className="text-sm font-semibold">
+                Not Yet Linked
+              </span>
+            )}
         </div>
       </div>
     </div>

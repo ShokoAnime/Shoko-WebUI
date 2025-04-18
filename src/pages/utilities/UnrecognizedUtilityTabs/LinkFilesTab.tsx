@@ -12,13 +12,12 @@ import {
   mdiTrayPlus,
 } from '@mdi/js';
 import { Icon } from '@mdi/react';
-import { cloneDeep, orderBy } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 import Button from '@/components/Input/Button';
 import ShokoPanel from '@/components/Panels/ShokoPanel';
 import toast from '@/components/Toast';
 import TransitionDiv from '@/components/TransitionDiv';
-import ItemCount from '@/components/Utilities/ItemCount';
 import AutoSearchReleaseModal from '@/components/Utilities/Unrecognized/AutoSearchReleaseModal';
 import ConfirmModal from '@/components/Utilities/Unrecognized/ConfirmModal';
 import EditReleaseInfoModal from '@/components/Utilities/Unrecognized/EditReleaseInfoModal';
@@ -46,7 +45,7 @@ export type ManualLink = {
   id: number;
   file: FileType;
   providers: ReleaseProviderInfoType[];
-  state: 'init' | 'pending' | 'auto-link-queue' | 'auto-linking' | 'submit-queue' | 'submitting' | 'submitted';
+  state: 'init' | 'pending' | 'search-queue' | 'searching' | 'submit-queue' | 'submitting' | 'submitted';
   release: ReleaseInfoType;
 };
 
@@ -103,18 +102,26 @@ function LinkFilesTab() {
   const anyLinks = selectedLinks.length > 0 ? selectedLinks : state.links;
   const canSubmit = !state.isLoading && state.links.length > 0
     && state.links.some(link => link.state === 'pending' && link.release.CrossReferences.length > 0);
-  const isDone = !state.isLoading && state.links.length > 0 && state.links.every(link => link.state === 'submitted');
+  const submitCount = state.links.filter(link =>
+    link.state === 'submitting' || link.state === 'submit-queue'
+    || (link.state === 'pending' && link.release.CrossReferences.length > 0)
+  ).length;
+  const submittedCount = state.links.filter(link => link.state === 'submitted').length;
+
+  const scrollToLink = useEventCallback((index: number) => {
+    const { id } = state.links[index] ?? { id: -1 };
+    const element = window.document.querySelector(`div[data-video-link-id="${id}"]`);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
 
   const focusLinks = useEventCallback(
     (initialIndexes: number[] | ((prev: number[]) => number[]), focusIndex?: number) => {
       const indexes = typeof initialIndexes === 'function' ? initialIndexes(focusedLinks) : initialIndexes;
       if (focusIndex != null || indexes.length > 0) {
         const index = focusIndex ?? indexes[indexes.length - 1];
-        const { id } = state.links[index] ?? { id: -1 };
-        const element = window.document.querySelector(`div[data-video-link-id="${id}"]`);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
+        scrollToLink(index);
       }
       setFocusedLinks(indexes);
     },
@@ -123,7 +130,6 @@ function LinkFilesTab() {
   const completeLinking = useEventCallback(() => {
     toast.info('Linking complete');
     navigate('/webui/utilities/unrecognized/files', { replace: true });
-    setLoading(prev => ({ ...prev, isLoading: true }));
   });
 
   const onConfirmed = useEventCallback(() => {
@@ -143,8 +149,6 @@ function LinkFilesTab() {
       lastSelectedLinkIndexRef.current = null;
     } else if (canSubmit) {
       setShouldConfirm(true);
-    } else if (isDone) {
-      completeLinking();
     } else {
       onConfirmed();
     }
@@ -176,7 +180,7 @@ function LinkFilesTab() {
       )
     ) {
       link.providers = cloneDeep(providers);
-      link.state = 'auto-link-queue';
+      link.state = 'search-queue';
     }
     setLoading(prev => ({ ...prev, links }));
     setLinkSelection({});
@@ -226,7 +230,19 @@ function LinkFilesTab() {
       releaseProviders: ReleaseProviderInfoType[],
     ) => {
       const links: ManualLink[] = [];
-      for (const file of orderBy(files, fil => fil.Locations[0]?.RelativePath ?? fil.ID)) {
+      for (
+        const file of files.slice().sort((fileA, fileB) => {
+          let locationA = (fileA.Locations.find(loc => loc.IsAccessible) ?? fileA.Locations[0])?.RelativePath ?? '';
+          let locationB = (fileB.Locations.find(loc => loc.IsAccessible) ?? fileB.Locations[0])?.RelativePath ?? '';
+          if (locationA.startsWith('dot')) locationA = `.${locationA.substring(3)}`;
+          if (locationB.startsWith('dot')) locationB = `.${locationB.substring(3)}`;
+          return locationA.localeCompare(locationB, 'en-US', {
+            numeric: true,
+            ignorePunctuation: true,
+            sensitivity: 'base',
+          });
+        })
+      ) {
         const release: ReleaseInfoType = {
           ID: null,
           ReleaseURI: null,
@@ -282,7 +298,7 @@ function LinkFilesTab() {
           id: generateLinkID(),
           file,
           providers,
-          state: providers.length > 0 && providers.some(provider => provider.IsEnabled) ? 'auto-link-queue' : 'init',
+          state: providers.length > 0 && providers.some(provider => provider.IsEnabled) ? 'search-queue' : 'init',
           release,
         };
         const path = file?.Locations?.[0]?.RelativePath || '';
@@ -379,7 +395,7 @@ function LinkFilesTab() {
   const removeLinksFromSearchQueue = useEventCallback(() => {
     const links = cloneDeep(state.links);
     const selectedIds = selectedLinks.map(link => link.id);
-    for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'auto-link-queue')) {
+    for (const link of links.filter(lin => selectedIds.includes(lin.id) && lin.state === 'search-queue')) {
       link.state = 'pending';
     }
     setLoading(prev => ({ ...prev, links }));
@@ -396,13 +412,13 @@ function LinkFilesTab() {
 
   const removeLinksFromPage = useEventCallback(() => {
     // eslint-disable-next-line no-nested-ternary
-    const selectedIds = selectLinks.length > 0
+    const selectedIds = selectedLinks.length > 0
       ? selectedLinks.map(link => link.id)
       : focusedLinks.length > 0
       ? focusedLinks.map(index => state.links[index].id)
       : [];
     const links = cloneDeep(state.links).filter(lin =>
-      lin.state === 'auto-linking' || lin.state === 'submitting' || !selectedIds.includes(lin.id)
+      lin.state === 'searching' || lin.state === 'submitting' || !selectedIds.includes(lin.id)
     );
     lastSelectedLinkIndexRef.current = null;
     setLoading(prev => ({ ...prev, links }));
@@ -544,7 +560,7 @@ function LinkFilesTab() {
     ) {
       event.stopPropagation();
       event.preventDefault();
-      if (selectLinks.length > 0 || focusedLinks.length > 0) {
+      if (selectedLinks.length > 0 || focusedLinks.length > 0) {
         removeLinksFromPage();
       }
     } else if (event.key === 'q' && !event.altKey && !event.metaKey && !event.shiftKey) {
@@ -575,9 +591,7 @@ function LinkFilesTab() {
     } else if (event.key === 'Enter') {
       event.stopPropagation();
       event.preventDefault();
-      if (isDone) {
-        completeLinking();
-      } else if (canSubmit) {
+      if (canSubmit) {
         submitPending();
       }
     }
@@ -593,23 +607,44 @@ function LinkFilesTab() {
   useEffect(() => {
     if (!state.isLoading) {
       const links = cloneDeep(state.links);
-      if (state.links.some(link => link.state === 'auto-linking')) {
-        searchLink(cloneDeep(state.links.find(link => link.state === 'auto-linking')!));
-      } else if (state.links.some(link => link.state === 'auto-link-queue')) {
-        const firstWaiting = links.find(link => link.state === 'auto-link-queue')!;
-        firstWaiting.state = 'auto-linking';
+      if (state.links.length > 0 && state.links.every(link => link.state === 'submitted')) {
+        completeLinking();
       }
-      if (state.links.some(link => link.state === 'submitting')) {
-        submitLink(cloneDeep(state.links.find(link => link.state === 'submitting')!));
-      } else if (state.links.some(link => link.state === 'submit-queue')) {
-        const firstWaiting = links.find(link => link.state === 'submit-queue')!;
-        firstWaiting.state = 'submitting';
+
+      if (
+        !state.links.some(link => link.state === 'searching') && state.links.some(link => link.state === 'search-queue')
+      ) {
+        const firstWaiting = links.find(link => link.state === 'search-queue')!;
+        firstWaiting.state = 'searching';
+        searchLink(cloneDeep(firstWaiting));
       }
+
+      if (
+        !state.links.some(link => link.state === 'submitting')
+        && state.links.some(link => link.state === 'submit-queue')
+      ) {
+        const firstWaiting = links.findIndex(link => link.state === 'submit-queue');
+        links[firstWaiting].state = 'submitting';
+        submitLink(cloneDeep(links[firstWaiting]));
+        if (!focusedLinks.length) {
+          scrollToLink(firstWaiting);
+        }
+      }
+
       if (JSON.stringify(state.links) !== JSON.stringify(links)) {
         setLoading(prev => ({ ...prev, links }));
       }
     }
-  }, [state.links, state.isLoading, searchLink, submitLink]);
+  }, [
+    state.links,
+    state.isLoading,
+    searchLink,
+    submitLink,
+    completeLinking,
+    setLoading,
+    focusedLinks.length,
+    scrollToLink,
+  ]);
 
   useEffect(() => {
     if (state.links.length === 0 && !state.isLoading) {
@@ -640,7 +675,46 @@ function LinkFilesTab() {
         <div className="sticky -top-6 z-10">
           <ShokoPanel
             title={<Title />}
-            options={<ItemCount count={selectedRows.length} selected={selectedLinks.length} />}
+            options={
+              <div className="text-lg font-semibold">
+                {(submitCount + submittedCount) > 0 && (
+                  <>
+                    <span>
+                      <span className="text-panel-text-important">
+                        {submittedCount}
+                        &nbsp;
+                      </span>
+                      / &nbsp;
+                      <span className="text-panel-text-important">
+                        {submitCount + submittedCount}
+                        &nbsp;
+                      </span>
+                      Submitted
+                    </span>
+                    <span>&nbsp;|&nbsp;</span>
+                  </>
+                )}
+                <span>
+                  <span className="text-panel-text-important">
+                    {state.links.length}
+                    &nbsp;
+                  </span>
+                  {state.links.length === 1 ? 'File' : 'Files'}
+                </span>
+                {selectedLinks.length > 0 && (
+                  <>
+                    <span>&nbsp;|&nbsp;</span>
+                    <span>
+                      <span className="text-panel-text-important">
+                        {selectedLinks.length}
+                        &nbsp;
+                      </span>
+                      Selected
+                    </span>
+                  </>
+                )}
+              </div>
+            }
           >
             <div className="flex items-center gap-x-3">
               <div className="relative box-border flex grow items-center gap-x-4 overflow-auto whitespace-nowrap rounded-lg border border-panel-border bg-panel-background-alt px-4 py-3">
@@ -664,9 +738,9 @@ function LinkFilesTab() {
                   name={selectedLinks.length === state.links.length ? 'Unselect All (A)' : 'Select All (A)'}
                   disabled={state.isLoading}
                 />
-                {(selectedLinks.some(link => link.state !== 'auto-linking' && link.state !== 'submitting')
+                {(selectedLinks.some(link => link.state !== 'searching' && link.state !== 'submitting')
                   || focusedLinks.some(index =>
-                    state.links[index].state !== 'auto-linking' && state.links[index].state !== 'submitting'
+                    state.links[index].state !== 'searching' && state.links[index].state !== 'submitting'
                   )) && (
                   <MenuButton
                     onClick={removeLinksFromPage}
@@ -675,7 +749,7 @@ function LinkFilesTab() {
                     disabled={state.isLoading}
                   />
                 )}
-                {anyLinks.some(link => link.state === 'auto-link-queue') && (
+                {anyLinks.some(link => link.state === 'search-queue') && (
                   <MenuButton
                     onClick={removeLinksFromSearchQueue}
                     icon={mdiTrayMinus}
@@ -704,26 +778,14 @@ function LinkFilesTab() {
                 <Button onClick={handleCancel} buttonType="secondary" className="px-4 py-3" disabled={state.isLoading}>
                   Cancel (Esc)
                 </Button>
-                {isDone
-                  ? (
-                    <Button
-                      onClick={completeLinking}
-                      buttonType="primary"
-                      className="px-4 py-3"
-                    >
-                      Finish Linking
-                    </Button>
-                  )
-                  : (
-                    <Button
-                      onClick={submitPending}
-                      buttonType="primary"
-                      className="px-4 py-3"
-                      disabled={!canSubmit}
-                    >
-                      Submit Pending (Enter)
-                    </Button>
-                  )}
+                <Button
+                  onClick={submitPending}
+                  buttonType="primary"
+                  className="px-4 py-3"
+                  disabled={!canSubmit}
+                >
+                  Submit Pending (Enter)
+                </Button>
               </div>
             </div>
           </ShokoPanel>
