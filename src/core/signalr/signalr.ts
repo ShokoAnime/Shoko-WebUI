@@ -136,7 +136,7 @@ async (action: UnknownAction) => {
       if (connectionEvents !== undefined && connectionEvents.state !== HubConnectionState.Disconnected) {
         return next(action);
       }
-      const connectionHub = '/signalr/aggregate?feeds=anidb,shoko,queue,network,avdump,configuration';
+      const connectionHub = '/signalr/aggregate?feeds=anidb,file,metadata,release,queue,network,avdump,configuration';
 
       const protocol = new JsonHubProtocol();
 
@@ -159,29 +159,38 @@ async (action: UnknownAction) => {
         .build();
 
       // event handlers, you can use these to dispatch actions to update your Redux store
-      connectionEvents.on('Queue:QueueStateChanged', onQueueStateChange(dispatch));
-      connectionEvents.on('Queue:OnConnected', onQueueConnected(dispatch));
+      connectionEvents.on('Queue:connected', onQueueConnected(dispatch));
+      connectionEvents.on('queue:state.changed', onQueueStateChange(dispatch));
 
-      connectionEvents.on('AniDB:OnConnected', onAniDBConnected(dispatch));
-      connectionEvents.on('AniDB:AniDBUDPStateUpdate', onAniDBUDPStateUpdate(dispatch));
-      connectionEvents.on('AniDB:AniDBHttpStateUpdate', onAniDBHttpStateUpdate(dispatch));
+      connectionEvents.on('anidb:connected', onAniDBConnected(dispatch));
+      connectionEvents.on('AniDB:udb.stateUpdate', onAniDBUDPStateUpdate(dispatch));
+      connectionEvents.on('AniDB:http.stateUpdate', onAniDBHttpStateUpdate(dispatch));
 
-      connectionEvents.on('Network:OnConnected', onNetworkChanged(dispatch));
-      connectionEvents.on('Network:NetworkAvailabilityChanged', onNetworkChanged(dispatch));
+      connectionEvents.on('network:connected', onNetworkChanged(dispatch));
+      connectionEvents.on('network:availabilityChanged', onNetworkChanged(dispatch));
 
-      connectionEvents.on('AVDump:OnConnected', onAvDumpConnected(dispatch));
-      connectionEvents.on('AVDump:Event', onAvDumpEvent(dispatch));
+      connectionEvents.on('avdump:connected', onAvDumpConnected(dispatch));
+      connectionEvents.on('avdump:event', onAvDumpEvent(dispatch));
 
-      connectionEvents.on('ShokoEvent:FileDeleted', () => handleEvent('FileDeleted'));
-      connectionEvents.on('ShokoEvent:FileDetected', () => handleEvent('FileDetected'));
-      connectionEvents.on('ShokoEvent:FileHashed', () => handleEvent('FileHashed'));
-      connectionEvents.on('ShokoEvent:FileMatched', () => handleEvent('FileMatched'));
-      connectionEvents.on('ShokoEvent:FileMoved', () => handleEvent('FileMoved'));
-      connectionEvents.on('ShokoEvent:FileRenamed', () => handleEvent('FileRenamed'));
-      connectionEvents.on('ShokoEvent:SeriesUpdated', () => handleEvent('SeriesUpdated'));
+      connectionEvents.on('file:detected', () => handleEvent('FileDetected'));
+      connectionEvents.on('file:hashed', () => handleEvent('FileHashed'));
+      connectionEvents.on(
+        'file:relocated',
+        (
+          event: { Moved: boolean, Renamed: boolean },
+        ) => (!event.Moved && event.Renamed ? handleEvent('FileRenamed') : handleEvent('FileMoved')),
+      );
+      connectionEvents.on('file:deleted', () => handleEvent('FileDeleted'));
 
-      connectionEvents.on('Configuration:OnConnected', onRestartRequiredUpdate);
-      connectionEvents.on('Configuration:RequiresRestart', onRestartRequiredUpdate);
+      connectionEvents.on('release:saved', () => handleEvent('FileMatched'));
+      connectionEvents.on('release:deleted', () => handleEvent('FileMatched'));
+
+      connectionEvents.on('metadata:series.added', () => handleEvent('SeriesUpdated'));
+      connectionEvents.on('metadata:series.updated', () => handleEvent('SeriesUpdated'));
+      connectionEvents.on('metadata:series.removed', () => handleEvent('SeriesUpdated'));
+
+      connectionEvents.on('configuration:connected', onRestartRequiredUpdate);
+      connectionEvents.on('configuration:requiresRestart', onRestartRequiredUpdate);
 
       connectionEvents.onreconnecting(
         () =>
