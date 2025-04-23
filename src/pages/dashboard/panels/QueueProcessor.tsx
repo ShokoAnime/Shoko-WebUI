@@ -56,6 +56,8 @@ const Title = () => {
     <div className="flex items-center">
       Queue Processor |&nbsp;
       <div>
+        <span className="text-panel-text-important">{queue.CurrentlyExecuting.length}</span>
+        &nbsp;/&nbsp;
         <span className="text-panel-text-important">{queue.ThreadCount}</span>
         &nbsp;Workers
       </div>
