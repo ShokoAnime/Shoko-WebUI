@@ -21,6 +21,7 @@ import type { ImagesType } from '@/core/types/api/common';
 import type { AniDBEpisodeType, EpisodeType } from '@/core/types/api/episode';
 import type { FileType } from '@/core/types/api/file';
 import type {
+  AniDBSeriesType,
   SeriesAniDBRelatedType,
   SeriesAniDBSearchResult,
   SeriesAniDBSimilarType,
@@ -55,11 +56,11 @@ export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = t
     queryClient.removeQueries({ queryKey: animePlaceholderKey });
   }, []);
 
-  return useQuery<Record<number, SeriesAniDBSearchResult | null>>({
+  return useQuery<Record<number, AniDBSeriesType | null>>({
     queryKey: ['series', 'anidb', 'bulk', anidbIds],
     queryFn: async () => {
-      const existingPlaceholder =
-        queryClient.getQueryData<Record<number, SeriesAniDBSearchResult | null>>(animePlaceholderKey) ?? {};
+      const existingPlaceholder = queryClient.getQueryData<Record<number, AniDBSeriesType | null>>(animePlaceholderKey)
+        ?? {};
       const existingEntries = Object.entries(existingPlaceholder)
         .map(([key, value]) => [Number(key), value] as const)
         .filter(([key, value]) => !Number.isNaN(key) && Number.isInteger(key) && value != null);
@@ -68,9 +69,7 @@ export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = t
         key != null && !Number.isNaN(key) && Number.isInteger(key) && !existingKeys.has(key)
       );
       const responses = await Promise.all(
-        missingKeys.map(anidbId =>
-          axios.get<unknown, SeriesAniDBSearchResult>(`Series/AniDB/${anidbId}`).catch(() => null)
-        ),
+        missingKeys.map(anidbId => axios.get<unknown, AniDBSeriesType>(`Series/AniDB/${anidbId}`).catch(() => null)),
       );
       const entries = Object.fromEntries([
         ...existingEntries,
@@ -79,7 +78,7 @@ export const useSeriesAniDbBulkQuery = (anidbIds: (number | null)[], enabled = t
       queryClient.setQueryData(animePlaceholderKey, entries);
       return entries;
     },
-    placeholderData: queryClient.getQueryData<Record<number, SeriesAniDBSearchResult | null>>(animePlaceholderKey)
+    placeholderData: queryClient.getQueryData<Record<number, AniDBSeriesType | null>>(animePlaceholderKey)
       ?? {},
     enabled,
   });

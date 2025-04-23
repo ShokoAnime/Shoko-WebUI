@@ -4,12 +4,12 @@ import { EpisodeTypeEnum } from '@/core/types/api/episode';
 
 import type { AniDBEpisodeType } from '@/core/types/api/episode';
 import type { ReleaseCrossReferenceType } from '@/core/types/api/file';
-import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
+import type { AniDBSeriesType } from '@/core/types/api/series';
 
 export type LinkFilesTab2CrossReferenceProps = {
   xref: ReleaseCrossReferenceType;
   episode: AniDBEpisodeType | null;
-  anime: SeriesAniDBSearchResult | null;
+  anime: AniDBSeriesType | null;
 };
 
 function episodeNumber(episode: AniDBEpisodeType): string {
@@ -45,7 +45,9 @@ function LinkFilesTabCrossReference(props: LinkFilesTab2CrossReferenceProps): Re
             {episodeNumber(episode)}
           </span>
           &nbsp;-&nbsp;
-          {episode.Title}
+          <span>
+            {episode.Title}
+          </span>
         </>
       )}
       {!episode && (
@@ -54,7 +56,17 @@ function LinkFilesTabCrossReference(props: LinkFilesTab2CrossReferenceProps): Re
             ??
           </span>
           &nbsp;-&nbsp;
-          {'<unknown>'}
+          <span className="opacity-65">
+            &lt;unknown&gt;
+          </span>
+        </>
+      )}
+      {(xref.PercentageStart !== 0 || xref.PercentageEnd !== 100) && (
+        <>
+          &nbsp;
+          <span className="text-panel-text-important">
+            {`(${xref.PercentageStart}-${xref.PercentageEnd}%)`}
+          </span>
         </>
       )}
       &nbsp;
@@ -69,13 +81,32 @@ function LinkFilesTabCrossReference(props: LinkFilesTab2CrossReferenceProps): Re
         {xref.AnidbEpisodeID}
         )
       </a>
-      {xref.PercentageStart !== 0 || xref.PercentageEnd !== 100
-        ? ` (${xref.PercentageStart}-${xref.PercentageEnd}%)`
-        : ''}
       {xref.AnidbAnimeID != null && xref.AnidbAnimeID > 0 && (
         <>
           &nbsp;|&nbsp;
-          {anime?.Title ?? '<unknown>'}
+          {anime
+            ? (
+              <>
+                <span>
+                  {anime.Title}
+                </span>
+                {anime.AirDate && !anime.Title.endsWith(` (${anime.AirDate.slice(0, 4)})`) && (
+                  <>
+                    &nbsp;
+                    <span className="opacity-65">
+                      (
+                      {anime.AirDate.slice(0, 4)}
+                      )
+                    </span>
+                  </>
+                )}
+              </>
+            )
+            : (
+              <span className="opacity-65">
+                &lt;unknown&gt;
+              </span>
+            )}
           &nbsp;
           <a
             className="text-panel-text-primary"
