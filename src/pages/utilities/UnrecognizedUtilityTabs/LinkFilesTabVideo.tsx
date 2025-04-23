@@ -6,12 +6,12 @@ import { ReleaseSource } from '@/core/types/api/file';
 import LinkFilesTabCrossReference from './LinkFilesTabCrossReference';
 
 import type { AniDBEpisodeType } from '@/core/types/api/episode';
-import type { SeriesAniDBSearchResult } from '@/core/types/api/series';
+import type { AniDBSeriesType } from '@/core/types/api/series';
 import type { ManualLink } from '@/pages/utilities/UnrecognizedUtilityTabs/LinkFilesTab';
 
 export type LinksFilesTab2FileProps = {
   link: ManualLink;
-  animeRecord: Record<number, SeriesAniDBSearchResult | null>;
+  animeRecord: Record<number, AniDBSeriesType | null>;
   episodeRecord: Record<number, AniDBEpisodeType | null>;
   selectLink: (event: React.MouseEvent<HTMLElement>) => void;
   selectedLinkDict: Record<number, boolean>;
