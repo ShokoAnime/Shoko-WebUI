@@ -58,7 +58,7 @@ export type ReleaseInfoType = {
   Created: string;
 };
 
-export enum ReleaseSource {
+export const enum ReleaseSource {
   Unknown = 'Unknown',
   Other = 'Other',
   TV = 'TV',
