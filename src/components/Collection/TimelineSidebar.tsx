@@ -11,9 +11,9 @@ import type { SeriesType } from '@/core/types/api/series';
 
 const TimelineItem = ({ series }: { series: SeriesType }) => {
   const mainPoster = useMainPoster(series);
-  const seriesType = series.AniDB?.Type === SeriesTypeEnum.TVSpecial
-    ? 'TV Special'
-    : series.AniDB?.Type;
+  let seriesType = series.AniDB?.Type as string | undefined;
+  if (seriesType === SeriesTypeEnum.TVSpecial) seriesType = 'TV Special';
+  else if (seriesType === SeriesTypeEnum.MusicVideo) seriesType = 'Music Video';
 
   return (
     <div className="flex gap-x-3" key={series.IDs.ID}>

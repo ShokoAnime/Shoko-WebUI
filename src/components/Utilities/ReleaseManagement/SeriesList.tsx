@@ -14,7 +14,7 @@ import { ReleaseManagementItemType } from '@/core/react-query/release-management
 import { getEpisodePrefix } from '@/core/utilities/getEpisodePrefix';
 import useEventCallback from '@/hooks/useEventCallback';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { episodeOrSeriesIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { EpisodeType } from '@/core/types/api/episode';
@@ -187,7 +187,7 @@ const SeriesList = (
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<EpisodeType>(episodes);
+  } = useRowSelection(episodes, episodeOrSeriesIdSelector);
 
   useEffect(() => {
     setSelectedEpisodes(selectedRows);

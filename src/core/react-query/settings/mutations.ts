@@ -4,7 +4,7 @@ import jsonpatch from 'fast-json-patch';
 import { axios } from '@/core/axios';
 import queryClient, { invalidateQueries } from '@/core/react-query/queryClient';
 
-import type { AniDBLoginRequestType, SettingsPatchRequestType } from '@/core/react-query/settings/types';
+import type { AniDBLoginRequestType } from '@/core/react-query/settings/types';
 import type { SettingsServerType, SettingsType } from '@/core/types/api/settings';
 
 export const useAniDBTestLoginMutation = () =>
@@ -19,7 +19,7 @@ export const useCheckNetworkConnectivityMutation = () =>
 
 export const usePatchSettingsMutation = () =>
   useMutation({
-    mutationFn: ({ newSettings, ...params }: SettingsPatchRequestType) => {
+    mutationFn: (newSettings: SettingsType) => {
       const oldSettings = queryClient.getQueryData<SettingsType>(['settings'])!;
       const original: SettingsServerType = {
         ...oldSettings,
@@ -30,7 +30,7 @@ export const usePatchSettingsMutation = () =>
         WebUI_Settings: JSON.stringify(newSettings.WebUI_Settings),
       };
       const data = jsonpatch.compare(original, changed);
-      return axios.patch('Settings', data, { params });
+      return axios.patch('Settings', data);
     },
     onSuccess: () => invalidateQueries(['settings']),
   });

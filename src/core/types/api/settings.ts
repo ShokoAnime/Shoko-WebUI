@@ -390,6 +390,10 @@ export type WebUISettingsType = {
   toastPosition: 'top-right' | 'bottom-right';
   updateChannel: 'Stable' | 'Dev';
   layout: Record<string, LayoutType>;
+  linking: {
+    enabledReleaseProviders: string[];
+    releaseProviderOrder: string[];
+  };
   collection: {
     view: 'poster' | 'list';
     poster: {
@@ -421,7 +425,7 @@ export type WebUISettingsType = {
     hideRecentlyImported: boolean;
     hideCollectionStats: boolean;
     hideMediaType: boolean;
-    hideImportFolders: boolean;
+    hideManagedFolders: boolean;
     hideShokoNews: boolean;
     hideContinueWatching: boolean;
     hideNextUp: boolean;

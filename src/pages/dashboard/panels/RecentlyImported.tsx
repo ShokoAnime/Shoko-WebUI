@@ -55,7 +55,7 @@ const RecentlyImported = () => {
     const newSettings = produce(settings, (draftState) => {
       draftState.WebUI_Settings.dashboard.recentlyImportedView = newTab;
     });
-    patchSettings({ newSettings });
+    patchSettings(newSettings);
   });
 
   return (
