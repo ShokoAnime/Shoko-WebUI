@@ -22,10 +22,10 @@ function parseProviderName(providerName: string, state: ManualLink['state'] | 'c
   if (providerName === 'User' || state === 'search-queue' || state === 'searching') {
     return null;
   }
-  if (providerName.endsWith('+User')) {
+  if (providerName.match(/\+User\b/)) {
     return (
       <span className="text-sm font-semibold">
-        {providerName.slice(0, -5)}
+        {providerName.replace(/\+User\b/, '').replace(/\+/g, ' & ')}
         <span className="opacity-65">(Edited by User)</span>
       </span>
     );
