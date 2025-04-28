@@ -6,7 +6,7 @@ import Button from '@/components/Input/Button';
 import Checkbox from '@/components/Input/Checkbox';
 import ModalPanel from '@/components/Panels/ModalPanel';
 import toast from '@/components/Toast';
-import { useDeleteFilesMutation } from '@/core/react-query/file/mutations';
+import { useDeleteFileLocationsMutation, useDeleteFilesMutation } from '@/core/react-query/file/mutations';
 import { useImportFoldersQuery } from '@/core/react-query/import-folder/queries';
 import { resetQueries } from '@/core/react-query/queryClient';
 import { ReleaseManagementItemType } from '@/core/react-query/release-management/types';
@@ -30,6 +30,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
         ? 'GroupName,FileSource,FileVersion,ImportFolder,VideoCodecs,VideoResolution,AudioLanguages,SubtitleLanguages,VideoHasChapters'
         : 'ImportFolder,FileLocation,MultipleLocations',
       includeEpisodeDetails: true,
+      includeLocationDetails: type === ReleaseManagementItemType.DuplicateFiles,
     },
     show,
   );
@@ -46,7 +47,8 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
     return result;
   }, [importFoldersQuery]);
 
-  const { isPending: isDeleting, mutate: deleteFiles } = useDeleteFilesMutation();
+  const { isPending: isDeletingFiles, mutate: deleteFiles } = useDeleteFilesMutation();
+  const { isPending: isDeletingLocations, mutate: deleteLocations } = useDeleteFileLocationsMutation();
 
   const [groupsToDelete, setGroupsToDelete] = useImmer<Set<number>>(new Set());
 
@@ -63,24 +65,51 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
   });
 
   const handleConfirm = useEventCallback(() => {
-    const fileIds = map(
+    if (type === ReleaseManagementItemType.MultipleReleases) {
+      const fileIds = map(
+        [...groupsToDelete],
+        groupIndex =>
+          map(
+            fileSummary?.Groups[groupIndex].Episodes,
+            episode => episode.FileID,
+          ),
+      ).flat();
+
+      deleteFiles(
+        { fileIds, removeFolder: true },
+        {
+          onSuccess: () => {
+            resetQueries(['release-management']);
+            toast.success(`${fileIds.length} ${fileIds.length === 1 ? 'file' : 'files'} deleted!`);
+            onClose();
+          },
+          onError: () => toast.error('Files could not be deleted!'),
+        },
+      );
+
+      return;
+    }
+
+    const locationIds = map(
       [...groupsToDelete],
       groupIndex =>
         map(
-          fileSummary?.Groups[groupIndex].Episodes,
-          episode => episode.FileID,
+          fileSummary?.Groups[groupIndex].Locations,
+          location => location.ID,
         ),
     ).flat();
 
-    deleteFiles(
-      { fileIds, removeFolder: true },
+    deleteLocations(
+      { locationIds, removeFolder: true },
       {
         onSuccess: () => {
           resetQueries(['release-management']);
-          toast.success(`${fileIds.length} ${fileIds.length === 1 ? 'file' : 'files'} deleted!`);
+          toast.success(
+            `${locationIds.length} ${locationIds.length === 1 ? 'duplicate file' : 'duplicate files'} deleted!`,
+          );
           onClose();
         },
-        onError: () => toast.error('Files could not be deleted!'),
+        onError: () => toast.error('Duplicate files could not be deleted!'),
       },
     );
   });
@@ -205,7 +234,7 @@ const QuickSelectModal = ({ onClose, seriesId, show, type }: Props) => {
           onClick={handleConfirm}
           buttonType="primary"
           className="px-6 py-2"
-          loading={isDeleting}
+          loading={isDeletingFiles || isDeletingLocations}
         >
           Confirm
         </Button>

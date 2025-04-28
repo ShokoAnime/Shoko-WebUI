@@ -18,7 +18,7 @@ const FileActionsTab = ({ seriesId }: Props) => {
   const { mutate: rescanSeriesFiles } = useRescanSeriesFilesMutation(seriesId);
   const { mutate: relocateSeriesFiles } = useRelocateSeriesFilesMutation(seriesId);
   const showUnsupportedToast = () => {
-    toast.error(`This feature require server version >= ${FeatureType.RelocateSeriesFiles}`);
+    toast.error(`This feature requires server version >= ${FeatureType.RelocateSeriesFiles}`);
   };
 
   return (

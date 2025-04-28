@@ -12,7 +12,7 @@ type Props = {
 const FileActionsTab = ({ groupId }: Props) => {
   const { mutate: relocateGroupFiles } = useRelocateGroupFilesMutation(groupId);
   const showUnsupportedToast = () => {
-    toast.error(`This feature require server version >= ${FeatureType.RelocateSeriesFiles}`);
+    toast.error(`This feature requires server version >= ${FeatureType.RelocateSeriesFiles}`);
   };
 
   return (

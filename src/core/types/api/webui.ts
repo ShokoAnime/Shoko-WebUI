@@ -63,6 +63,13 @@ export type WebuiSeriesFileSummaryGroupType = {
     Size: number;
     Type: EpisodeTypeEnum;
   }[];
+  Locations?: {
+    ID: number;
+    FileID: number;
+    ImportFolderID: number;
+    IsAccessible: boolean;
+    RelativePath: string;
+  }[];
 };
 
 export type WebuiSeriesFileSummaryGroupRangeByType = {
