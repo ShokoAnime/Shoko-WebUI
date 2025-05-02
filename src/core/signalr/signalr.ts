@@ -163,8 +163,8 @@ async (action: UnknownAction) => {
       connectionEvents.on('queue:state.changed', onQueueStateChange(dispatch));
 
       connectionEvents.on('anidb:connected', onAniDBConnected(dispatch));
-      connectionEvents.on('AniDB:udb.stateUpdate', onAniDBUDPStateUpdate(dispatch));
-      connectionEvents.on('AniDB:http.stateUpdate', onAniDBHttpStateUpdate(dispatch));
+      connectionEvents.on('anidb:udb.stateUpdate', onAniDBUDPStateUpdate(dispatch));
+      connectionEvents.on('anidb:http.stateUpdate', onAniDBHttpStateUpdate(dispatch));
 
       connectionEvents.on('network:connected', onNetworkChanged(dispatch));
       connectionEvents.on('network:availabilityChanged', onNetworkChanged(dispatch));
