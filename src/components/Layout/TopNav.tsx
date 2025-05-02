@@ -130,7 +130,7 @@ function TopNav() {
           <Button
             onClick={() => {
               toast.dismiss('webui-update');
-              navigate('/webui/dashboard');
+              navigate('/dashboard');
               setTimeout(() => window.location.reload(), 100);
             }}
             buttonType="primary"
@@ -169,7 +169,7 @@ function TopNav() {
         )}
       >
         <div className="mx-auto flex w-full max-w-[120rem] items-center justify-between px-6 py-2">
-          <Link to="/webui/dashboard" className="flex items-center gap-x-3">
+          <Link to="/dashboard" className="flex items-center gap-x-3">
             <ShokoIcon className="w-20" />
             <span className="mt-1 text-2xl font-semibold text-header-text">Shoko</span>
           </Link>
@@ -235,7 +235,7 @@ function TopNav() {
                   closeModalsAndSubmenus(undefined, 'utilities');
                   setShowUtilitiesMenu(prev => !prev);
                 }}
-                isHighlighted={showUtilitiesMenu || startsWith(pathname, '/webui/utilities/')}
+                isHighlighted={showUtilitiesMenu || startsWith(pathname, '/utilities/')}
               />
               <LinkMenuItem
                 onClick={closeModalsAndSubmenus}
@@ -255,7 +255,7 @@ function TopNav() {
               />
             </div>
             <div className="flex justify-end gap-6">
-              {pathname === '/webui/dashboard' && (
+              {pathname === '/dashboard' && (
                 <MenuItem
                   id="dashboard-settings"
                   text="Dashboard Settings"

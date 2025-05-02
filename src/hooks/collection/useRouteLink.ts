@@ -8,7 +8,7 @@ const useRouteLink = (item: CollectionGroupType | SeriesType) => {
   const { filterId, groupId } = useParams();
 
   return useMemo(() => {
-    let link = '/webui/collection';
+    let link = '/collection';
 
     if (groupId) {
       return `${link}/series/${item.IDs.ID}`;

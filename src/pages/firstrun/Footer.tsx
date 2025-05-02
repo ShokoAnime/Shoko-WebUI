@@ -31,7 +31,7 @@ function Footer(props: Props) {
 
   const handleFinish = useEventCallback(() => {
     runAction('RunImport');
-    navigate('/webui/dashboard', { replace: true, state: { firstRun: true } });
+    navigate('/dashboard', { replace: true, state: { firstRun: true } });
   });
 
   const {

@@ -52,7 +52,7 @@ const Item = ({ item, onClose }: { item: CollectionFilterType, onClose: () => vo
       )}
       key={item.IDs.ID}
     >
-      <Link to={`/webui/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
+      <Link to={`/collection/filter/${item.IDs.ID}`} onClick={handleClose}>{item.Name}</Link>
       <span className="text-panel-text-important">{item.Size}</span>
     </div>
   );
