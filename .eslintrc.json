@@ -21,6 +21,9 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
+  "globals": {
+    "WEBUI_PREFIX": true
+  },
   "settings": {
     "import/resolver": {
       "typescript": {}

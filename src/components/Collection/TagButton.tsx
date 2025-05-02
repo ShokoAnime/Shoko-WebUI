@@ -23,7 +23,7 @@ const TagButton = React.memo(({ tagType, text, type }: Props) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore('HasTag').then(() => {
       dispatch(setFilterTag({ HasTag: [{ Name: text, isExcluded: false }] }));
-      navigate('/webui/collection/filter/live');
+      navigate('/collection/filter/live');
     }).catch(console.error);
   });
 

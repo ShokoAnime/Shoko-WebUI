@@ -27,7 +27,7 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
   return (
     <div className="flex min-w-0 items-center gap-x-2 text-xl font-semibold">
       <Link
-        to="/webui/collection"
+        to="/collection"
         className={cx((filterName ?? groupName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none')}
       >
         Collection
@@ -36,7 +36,7 @@ const CollectionTitle = React.memo(({ count, filterActive, filterName, groupName
         <>
           <Icon className="flex-none" path={mdiChevronRight} size={1} />
           <Link
-            to={`/webui/collection/group/${groupId}`}
+            to={`/collection/group/${groupId}`}
             className={cx(
               (filterName ?? filterActive) ? 'text-panel-text-primary' : 'pointer-events-none',
               'truncate',

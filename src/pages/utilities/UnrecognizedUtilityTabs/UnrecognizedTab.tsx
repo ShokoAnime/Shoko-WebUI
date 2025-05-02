@@ -156,7 +156,7 @@ const Menu = (
 
   const handleRename = useEventCallback(() => {
     dispatch(addFiles(selectedRows));
-    navigate('/webui/utilities/renamer');
+    navigate('/utilities/renamer');
   });
 
   const renderSelectedRowActions = useMemo(() => (

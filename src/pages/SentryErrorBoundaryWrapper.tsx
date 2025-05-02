@@ -31,9 +31,9 @@ const SentryErrorBoundaryWrapper = () => {
     if (semverVersion && semver.lt(semverVersion, minimumVersion)) isServerSupported = false;
 
     if (!isServerSupported) {
-      navigate('/webui/unsupported');
-    } else if (pathname === '/webui/unsupported') {
-      navigate('/webui');
+      navigate('/unsupported');
+    } else if (pathname === '/unsupported') {
+      navigate('/');
     }
   }, [navigate, pathname, versionQuery.data]);
 

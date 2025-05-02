@@ -64,7 +64,7 @@ const seriesColumns: UtilityHeaderType<SeriesType>[] = [
           </div>
         </a>
         <span>|</span>
-        <Link to={`/webui/collection/series/${series.IDs.ID}`}>
+        <Link to={`/collection/series/${series.IDs.ID}`}>
           <div className="flex items-center gap-x-2 font-semibold text-panel-text-primary">
             <ShokoIcon className="size-6" />
             {series.IDs.ID}
