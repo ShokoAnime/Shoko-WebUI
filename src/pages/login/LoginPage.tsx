@@ -50,7 +50,7 @@ function LoginPage() {
 
   const setRedirect = () => {
     if (seriesId === 0) return;
-    setSearchParams(`redirectTo=/webui/collection/series/${seriesId}`, { replace: true });
+    setSearchParams(`redirectTo=/collection/series/${seriesId}`, { replace: true });
   };
 
   useEffect(() => {
@@ -72,7 +72,7 @@ function LoginPage() {
     else if (serverStatusQuery.data?.State !== 'Starting') setPollingInterval(0);
 
     if (serverStatusQuery.data?.State === 'Started' && apiSession.apikey !== '') {
-      navigate(searchParams.get('redirectTo') ?? '/webui', { replace: true });
+      navigate(searchParams.get('redirectTo') ?? '/', { replace: true });
     }
   }, [serverStatusQuery.data, apiSession, navigate, searchParams]);
 
@@ -90,7 +90,7 @@ function LoginPage() {
       {
         onSuccess: () => {
           setLoginError(false);
-          navigate(searchParams.get('redirectTo') ?? '/webui');
+          navigate(searchParams.get('redirectTo') ?? '/');
         },
         onError: () => setLoginError(true),
       },
@@ -224,7 +224,7 @@ function LoginPage() {
                     </div>
                   </div>
                   <Button
-                    onClick={() => navigate('/webui/firstrun')}
+                    onClick={() => navigate('/firstrun')}
                     buttonType="primary"
                     className="py-2 font-semibold"
                   >

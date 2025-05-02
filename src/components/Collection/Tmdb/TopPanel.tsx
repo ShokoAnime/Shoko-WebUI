@@ -86,7 +86,7 @@ const TopPanel = (props: Props) => {
           buttonType="secondary"
           buttonSize="normal"
           className="flex flex-row flex-wrap items-center gap-x-2 py-3"
-          onClick={() => navigate(`/webui/collection/series/${seriesId}`)}
+          onClick={() => navigate(`/collection/series/${seriesId}`)}
         >
           Cancel
         </Button>

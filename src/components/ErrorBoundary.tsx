@@ -60,7 +60,7 @@ const ErrorBoundary = ({ error, resetError }: { error?: Error, resetError?: () =
           {routeError?.status === 404
             ? (
               <Button
-                onClick={() => navigate('/webui', { replace: true })}
+                onClick={() => navigate('/', { replace: true })}
                 className="px-4 py-2 drop-shadow-md"
                 buttonType="primary"
               >
