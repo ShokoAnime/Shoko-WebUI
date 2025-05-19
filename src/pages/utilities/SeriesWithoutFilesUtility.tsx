@@ -27,7 +27,7 @@ import { useDeleteSeriesMutation } from '@/core/react-query/series/mutations';
 import { useSeriesWithoutFilesInfiniteQuery } from '@/core/react-query/series/queries';
 import { dayjs } from '@/core/util';
 import useFlattenListResult from '@/hooks/useFlattenListResult';
-import useRowSelection from '@/hooks/useRowSelection';
+import useRowSelection, { episodeOrSeriesIdSelector } from '@/hooks/useRowSelection';
 
 import type { UtilityHeaderType } from '@/components/Utilities/constants';
 import type { SeriesType } from '@/core/types/api/series';
@@ -40,7 +40,7 @@ const columns: UtilityHeaderType<SeriesType>[] = [
     className: 'w-32',
     item: series => (
       <Link
-        to={`/webui/collection/series/${series.IDs.ID}`}
+        to={`/collection/series/${series.IDs.ID}`}
         className="flex gap-x-2 text-panel-text-primary"
       >
         {series.IDs.ID}
@@ -155,7 +155,7 @@ function SeriesWithoutFilesUtility() {
     rowSelection,
     selectedRows,
     setRowSelection,
-  } = useRowSelection<SeriesType>(series);
+  } = useRowSelection(series, episodeOrSeriesIdSelector);
 
   return (
     <>

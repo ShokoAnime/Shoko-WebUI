@@ -20,7 +20,7 @@ const Item = (
   const handleMissingFilter = useEventCallback((filterName: string) => {
     dispatch(resetFilter());
     addFilterCriteriaToStore(filterName).then(() => {
-      navigate('/webui/collection/filter/live');
+      navigate('/collection/filter/live');
     }).catch(console.error);
   });
 
@@ -67,25 +67,25 @@ function CollectionStats() {
       key="files"
       title="Files"
       value={statsQuery.data?.FileCount}
-      link="/webui/utilities/file-search"
+      link="/utilities/file-search"
     />,
     <Item
       key="unrecognized-files"
       title="Unknown Files"
       value={statsQuery.data?.UnrecognizedFiles}
-      link="/webui/utilities/unrecognized"
+      link="/utilities/unrecognized"
     />,
     <Item
       key="multiple-files"
       title="Duplicate Episodes"
       value={statsQuery.data?.EpisodesWithMultipleFiles}
-      link="/webui/utilities/release-management/multiples"
+      link="/utilities/release-management/multiples"
     />,
     <Item
       key="duplicate-files"
       title="Duplicate Hashes"
       value={statsQuery.data?.FilesWithDuplicateLocations}
-      link="/webui/utilities/release-management/duplicates"
+      link="/utilities/release-management/duplicates"
     />,
   ];
 
@@ -100,13 +100,13 @@ function CollectionStats() {
       key="missing-episodes-collecting"
       title="Missing Episodes (Collecting)"
       value={statsQuery.data?.MissingEpisodesCollecting}
-      link="/webui/utilities/release-management/missing-episodes?onlyCollecting=true"
+      link="/utilities/release-management/missing-episodes?onlyCollecting=true"
     />,
     <Item
       key="missing-episodes"
       title="Missing Episodes (Total)"
       value={statsQuery.data?.MissingEpisodes}
-      link="/webui/utilities/release-management/missing-episodes"
+      link="/utilities/release-management/missing-episodes"
     />,
   ];
 

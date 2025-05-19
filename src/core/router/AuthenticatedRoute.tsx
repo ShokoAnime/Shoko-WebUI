@@ -19,7 +19,7 @@ function AuthenticatedRoute(props: Props) {
 
   return (serverState === 'Started' && isAuthenticated)
     ? props.children
-    : <Navigate to={from === '/' || from === '/webui/' ? '/webui/login' : `/webui/login?redirectTo=${from}`} replace />;
+    : <Navigate to={from === '/' || from === WEBUI_PREFIX ? '/login' : `/login?redirectTo=${from}`} replace />;
 }
 
 export default AuthenticatedRoute;

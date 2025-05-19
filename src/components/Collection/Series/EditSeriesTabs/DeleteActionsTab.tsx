@@ -14,7 +14,7 @@ const DeleteActionsTab = ({ seriesId }: Props) => {
 
   const { mutate: deleteSeries } = useDeleteSeriesMutation();
 
-  const navigateToCollection = () => navigate('/webui/collection');
+  const navigateToCollection = () => navigate('/collection');
 
   return (
     <div className="flex grow flex-col gap-y-4 overflow-y-auto">
