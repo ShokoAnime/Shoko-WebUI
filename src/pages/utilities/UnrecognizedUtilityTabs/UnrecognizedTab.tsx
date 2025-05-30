@@ -60,13 +60,11 @@ const Menu = (
   props: {
     selectedRows: FileType[];
     setSelectedRows: Updater<Record<number, boolean>>;
-    setSeriesSelectModal(this: void, show: boolean): void;
   },
 ) => {
   const {
     selectedRows,
     setSelectedRows,
-    setSeriesSelectModal,
   } = props;
 
   const dispatch = useDispatch();
@@ -191,7 +189,6 @@ const Menu = (
     rehashFiles,
     rescanFiles,
     setSelectedRows,
-    setSeriesSelectModal,
     showDeleteConfirmation,
     selectedRows,
   ]);
@@ -389,7 +386,6 @@ function UnrecognizedTab() {
               <Menu
                 selectedRows={selectedRows}
                 setSelectedRows={setRowSelection}
-                setSeriesSelectModal={setSeriesSelectModal}
               />
               <div className={cx('gap-x-3', selectedRows.length !== 0 ? 'flex' : 'hidden')}>
                 <Button

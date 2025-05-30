@@ -39,6 +39,7 @@ export const useGroupViewQuery = (params: GroupViewRequestType, enabled = true) 
   });
 
   return {
+    // eslint-disable-next-line @tanstack/query/no-rest-destructuring
     ...groupViewQuery,
     isSuccess: query.isSuccess,
     isPending: query.isPending,

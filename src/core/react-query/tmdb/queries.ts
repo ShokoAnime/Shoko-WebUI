@@ -130,6 +130,7 @@ export const useTmdbBulkEpisodesQuery = (data: TmdbBulkRequestType, enabled = tr
   });
 
   return {
+    // eslint-disable-next-line @tanstack/query/no-rest-destructuring
     ...bulkEpisodesQuery,
     isSuccess: query.isSuccess,
     isPending: query.isPending,
