@@ -8,7 +8,6 @@ import {
   mdiDumpTruck,
   mdiEyeOffOutline,
   mdiFileDocumentEditOutline,
-  mdiFileDocumentOutline,
   mdiLoading,
   mdiMagnify,
   mdiMinusCircleOutline,
@@ -176,7 +175,6 @@ const Menu = (
       </div>
       <MenuButton onClick={rescanFiles} icon={mdiDatabaseSearchOutline} name="Rescan" />
       <MenuButton onClick={rehashFiles} icon={mdiDatabaseSyncOutline} name="Rehash" />
-      <MenuButton onClick={() => setSeriesSelectModal(true)} icon={mdiFileDocumentOutline} name="Add To AniDB" />
       <MenuButton onClick={handleRename} icon={mdiFileDocumentEditOutline} name="Rename" />
       <MenuButton onClick={ignoreFiles} icon={mdiEyeOffOutline} name="Ignore" />
       <MenuButton onClick={showDeleteConfirmation} icon={mdiMinusCircleOutline} name="Delete" highlight />
