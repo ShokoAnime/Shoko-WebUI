@@ -112,7 +112,7 @@ const Series = () => {
     <div className="flex flex-col gap-y-6" ref={containerRef}>
       <div className="my-6 flex flex-col items-center gap-y-3">
         <div className="flex flex-row items-center gap-x-4">
-          <Link className="text-xl font-semibold text-panel-text-primary" to="/webui/collection">
+          <Link className="text-xl font-semibold text-panel-text-primary" to="/collection">
             Collection
           </Link>
           <Icon className="flex-none text-panel-icon" path={mdiChevronRight} size={1} />
@@ -120,7 +120,7 @@ const Series = () => {
             <>
               <Link
                 className="text-xl font-semibold text-panel-text-primary"
-                to={`/webui/collection/group/${series.IDs.ParentGroup}`}
+                to={`/collection/group/${series.IDs.ParentGroup}`}
               >
                 {groupQuery.data.Name}
               </Link>

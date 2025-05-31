@@ -52,15 +52,13 @@ import AuthenticatedRoute from './AuthenticatedRoute';
 
 import type { RootState } from '@/core/store';
 
-const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV7(createBrowserRouter);
+const sentryCreateBrowserRouter = Sentry.wrapCreateBrowserRouterV7(createBrowserRouter) as typeof createBrowserRouter;
 
 const router = sentryCreateBrowserRouter(
   createRoutesFromElements(
     <Route path="/" errorElement={<ErrorBoundary />}>
-      <Route index element={<Navigate to="/webui" replace />} />
-      <Route path="index.html" element={<Navigate to="/webui" replace />} />
-      <Route path="webui" element={<SentryErrorBoundaryWrapper />}>
-        <Route path="index.html" element={<Navigate to="/webui" replace />} />
+      <Route element={<SentryErrorBoundaryWrapper />}>
+        <Route path="index.html" element={<Navigate to="/" replace />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="firstrun" element={<FirstRunPage />}>
           <Route index element={<Navigate to="acknowledgement" replace />} />
@@ -128,6 +126,9 @@ const router = sentryCreateBrowserRouter(
       </Route>
     </Route>,
   ),
+  {
+    basename: WEBUI_PREFIX,
+  },
 );
 
 const Router = () => {
