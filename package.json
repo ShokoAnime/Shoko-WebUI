@@ -1,6 +1,6 @@
 {
   "name": "shoko-webui",
-  "version": "2.2.1-dev",
+  "version": "2.3.0-dev",
   "private": true,
   "sideEffects": false,
   "engines": {
@@ -10,7 +10,6 @@
   "dependencies": {
     "@fontsource/sora": "^5.2.5",
     "@headlessui/react": "^2.2.4",
-    "@headlessui/tailwindcss": "^0.2.2",
     "@hello-pangea/dnd": "^18.0.1",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
@@ -55,6 +54,7 @@
     "@sentry/vite-plugin": "^3.5.0",
     "@stylistic/stylelint-config": "^2.0.0",
     "@stylistic/stylelint-plugin": "^3.1.2",
+    "@tailwindcss/vite": "^4.1.8",
     "@tanstack/eslint-plugin-query": "^5.78.0",
     "@types/format-thousands": "^2.0.3",
     "@types/lodash": "^4.17.17",
@@ -84,15 +84,10 @@
     "eslint-plugin-tailwindcss": "^3.18.0",
     "husky": "^9.1.7",
     "lint-staged": "^16.1.0",
-    "postcss": "^8.5.4",
-    "postcss-import": "^16.1.0",
-    "postcss-load-config": "^6.0.1",
-    "postcss-preset-env": "^10.2.0",
     "stylelint": "^16.20.0",
     "stylelint-config-standard": "^36.0.1",
     "stylelint-config-tailwindcss": "^1.0.0",
-    "tailwindcss": "^3.4.17",
-    "tailwindcss-text-fill-stroke": "2.0.0-beta.3",
+    "tailwindcss": "^4.1.8",
     "typescript": "5.6.3",
     "vite": "^6.3.5",
     "vite-plugin-webpackchunkname": "^1.0.3"

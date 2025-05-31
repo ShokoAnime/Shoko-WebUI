@@ -37,7 +37,7 @@ function BrowseFolderModal(props: Props) {
       size="sm"
       overlayClassName="!z-[90]"
     >
-      <div className="rounded border border-panel-border bg-panel-input p-4">
+      <div className="rounded-sm border border-panel-border bg-panel-input p-4">
         <TreeView />
       </div>
       <div className="flex justify-end gap-x-3 font-semibold">
